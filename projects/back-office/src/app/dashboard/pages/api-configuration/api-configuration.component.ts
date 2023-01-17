@@ -126,7 +126,7 @@ export class ApiConfigurationComponent
                 this.apiForm.controls.settings = this.buildSettingsForm(value);
                 this.apiForm.controls.settings.updateValueAndValidity();
               });
-              this.loading = res.data.loading;
+              this.loading = res.loading;
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant(
@@ -221,7 +221,7 @@ export class ApiConfigurationComponent
       .subscribe((res) => {
         if (res.data) {
           this.apiConfiguration = res.data.editApiConfiguration;
-          this.loading = res.data.loading;
+          this.loading = res.loading;
         }
       });
   }
@@ -269,14 +269,14 @@ export class ApiConfigurationComponent
             }),
             { error: true }
           );
-          this.loading = false;
+          this.loading = res.loading;
         } else {
           this.apiConfiguration = res.data?.editApiConfiguration;
           this.apiForm.controls.settings = this.buildSettingsForm(
             this.apiForm.value.authType
           );
           this.apiForm.markAsPristine();
-          this.loading = res.data?.loading || false;
+          this.loading = res.loading;
         }
       });
   }

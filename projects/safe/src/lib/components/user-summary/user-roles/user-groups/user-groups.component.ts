@@ -61,7 +61,7 @@ export class UserGroupsComponent implements OnInit {
           if (res.data) {
             this.groups = res.data.groups;
           }
-          this.loading = res.loading;
+          this.loading = false;
         },
         (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });

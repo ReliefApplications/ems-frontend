@@ -18,7 +18,6 @@ export const GET_ROLES = gql`
 
 /** Model for GetRolesQueryResponse object */
 export interface GetRolesQueryResponse {
-  loading: boolean;
   roles: Role[];
 }
 
@@ -35,6 +34,5 @@ export const GET_GROUPS = gql`
 
 /** Model for GetGroupsQueryResponse object */
 export interface GetGroupsQueryResponse {
-  loading: boolean;
   groups: Group[];
 }

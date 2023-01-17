@@ -29,6 +29,5 @@ export const GET_RESOURCE_AGGREGATIONS = gql`
 
 /** Model for GetResourceAggregationsResponse object */
 export interface GetResourceAggregationsResponse {
-  loading: boolean;
   resource: Resource;
 }

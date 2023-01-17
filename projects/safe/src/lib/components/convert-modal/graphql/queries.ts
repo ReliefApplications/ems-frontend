@@ -47,6 +47,5 @@ export const GET_RECORD_DETAILS = gql`
 
 /** Model for GetRecordDetailsQueryResponse object */
 export interface GetRecordDetailsQueryResponse {
-  loading: boolean;
   record: Record;
 }

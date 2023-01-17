@@ -24,7 +24,6 @@ export const GET_FORM_BY_ID = gql`
 
 /** Model for GetFormByIdQueryResponse object */
 export interface GetFormByIdQueryResponse {
-  loading: boolean;
   form: Form;
 }
 
@@ -88,6 +87,5 @@ export const GET_RESOURCE_BY_ID = gql`
 
 /** Model for GetResourceByIdQueryResponse object */
 export interface GetResourceByIdQueryResponse {
-  loading: boolean;
   resource: Resource;
 }

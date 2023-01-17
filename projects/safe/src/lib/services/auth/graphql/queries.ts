@@ -42,6 +42,5 @@ export const GET_PROFILE = gql`
 
 /** Model for GetProfileQueryResponse object */
 export interface GetProfileQueryResponse {
-  loading: boolean;
   me: User;
 }

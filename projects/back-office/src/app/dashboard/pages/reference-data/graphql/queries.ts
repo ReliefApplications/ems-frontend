@@ -42,7 +42,6 @@ export const GET_REFERENCE_DATA = gql`
 
 /** Get ref data gql query response interface */
 export interface GetReferenceDataQueryResponse {
-  loading: boolean;
   referenceData: ReferenceData;
 }
 
@@ -84,7 +83,6 @@ export const GET_API_CONFIGURATIONS_NAMES = gql`
 
 /** Model for GetApiConfigurationQueryResponse object */
 export interface GetApiConfigurationsQueryResponse {
-  loading: boolean;
   apiConfigurations: {
     edges: {
       node: ApiConfiguration;

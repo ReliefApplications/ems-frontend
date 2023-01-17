@@ -128,7 +128,7 @@ export class SafeApplicationUsersComponent
   /**
    * Export the list of users
    *
-   * @param type The type of file we want ('csv' or 'xslx')
+   * @param type The type of file we want ('csv' or 'xlsx')
    */
   onExport(type: 'csv' | 'xlsx'): void {
     this.applicationService.downloadUsers(type);

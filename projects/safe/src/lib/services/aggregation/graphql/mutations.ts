@@ -16,7 +16,6 @@ export const ADD_AGGREGATION = gql`
 
 /** Model for AddAggregationMutationResponse object */
 export interface AddAggregationMutationResponse {
-  loading: boolean;
   addAggregation: Aggregation;
 }
 
@@ -39,7 +38,6 @@ export const EDIT_AGGREGATION = gql`
 
 /** Model for EditAggregationMutationResponse object */
 export interface EditAggregationMutationResponse {
-  loading: boolean;
   editAggregation: Aggregation;
 }
 
@@ -58,6 +56,5 @@ export const DELETE_AGGREGATION = gql`
 
 /** Model for deleteAggregationMutationResponse object */
 export interface deleteAggregationMutationResponse {
-  loading: boolean;
   deleteAggregation: Aggregation;
 }

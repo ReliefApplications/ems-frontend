@@ -13,7 +13,6 @@ export const RESTORE_RECORD = gql`
 
 /** Restore record gql mutation response interface */
 export interface RestoreRecordMutationResponse {
-  loading: boolean;
   restoreRecord: Record;
 }
 
@@ -57,7 +56,6 @@ export const EDIT_RESOURCE = gql`
 
 /** Edit resource gql mutation response interface */
 export interface EditResourceMutationResponse {
-  loading: boolean;
   editResource: Resource;
 }
 
@@ -73,6 +71,5 @@ export const DELETE_RECORD = gql`
 
 /** Delete record gql mutation response interface */
 export interface DeleteRecordMutationResponse {
-  loading: boolean;
   deleteRecord: Record;
 }

@@ -47,7 +47,6 @@ export const GET_REFERENCE_DATAS = gql`
 
 /** Get list of ref data gql query response interface */
 export interface GetReferenceDatasQueryResponse {
-  loading: boolean;
   referenceDatas: {
     edges: {
       node: ReferenceData;

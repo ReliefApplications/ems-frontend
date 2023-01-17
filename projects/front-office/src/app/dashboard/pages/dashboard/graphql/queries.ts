@@ -36,7 +36,7 @@ export const GET_DASHBOARD_BY_ID = gql`
  */
 export interface GetDashboardByIdQueryResponse {
   /** Loading state of the query */
-  loading: boolean;
+
   /** Application dashboard */
   dashboard: Dashboard;
 }

@@ -52,6 +52,5 @@ export const GET_DASHBOARD_BY_ID = gql`
 
 /** Model for GetDashboardByIdQueryResponse object */
 export interface GetDashboardByIdQueryResponse {
-  loading: boolean;
   dashboard: Dashboard;
 }
