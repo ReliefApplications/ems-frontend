@@ -129,7 +129,7 @@ export const routes = [
                   {
                     path: '',
                     loadChildren: () =>
-                      import('@safe/module').then(
+                      import('@safe/builder').then(
                         (m) => m.SafeApplicationUsersViewModule
                       ),
                     // canActivate: [SafePermissionGuard]
