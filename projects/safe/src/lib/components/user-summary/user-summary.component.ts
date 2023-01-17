@@ -69,7 +69,7 @@ export class SafeUserSummaryComponent implements OnInit {
               this.user.name as string
             );
           }
-          this.loading = res.data.loading;
+          this.loading = false;
         },
         (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -96,7 +96,7 @@ export class SafeUserSummaryComponent implements OnInit {
         (res) => {
           if (res.data) {
             this.user = res.data.editUserProfile;
-            this.loading = res.loading;
+            this.loading = false;
           }
         },
         (err) => {
@@ -133,7 +133,7 @@ export class SafeUserSummaryComponent implements OnInit {
         (res) => {
           if (res.data) {
             this.user = res.data.editUser;
-            this.loading = res.loading;
+            this.loading = false;
           }
         },
         (err) => {

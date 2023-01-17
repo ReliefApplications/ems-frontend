@@ -28,7 +28,6 @@ export const ADD_USERS = gql`
 
 /** Model for AddUsersMutationResponse object */
 export interface AddUsersMutationResponse {
-  loading: boolean;
   addUsers: User[];
 }
 
@@ -43,7 +42,6 @@ export const DELETE_USERS = gql`
 
 /** Model for DeleteUsersMutationResponse object */
 export interface DeleteUsersMutationResponse {
-  loading: boolean;
   deleteUsers: number;
 }
 
@@ -87,6 +85,5 @@ export const EDIT_USER = gql`
 
 /** Model for EditUserMutationResponse object */
 export interface EditUserMutationResponse {
-  loading: boolean;
   editUser: User;
 }

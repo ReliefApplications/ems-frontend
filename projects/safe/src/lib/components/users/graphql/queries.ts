@@ -5,7 +5,6 @@ import { User } from '../../../models/user.model';
 
 /** Model for GetUsersQueryResponse object */
 export interface GetUsersQueryResponse {
-  loading: boolean;
   users: User[];
 }
 

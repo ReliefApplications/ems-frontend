@@ -44,7 +44,6 @@ export const GET_RESOURCE = gql`
 
 /** Model for GetResourceByIdQueryResponse object */
 export interface GetResourceByIdQueryResponse {
-  loading: boolean;
   resource: Resource;
 }
 
@@ -75,7 +74,6 @@ export const GET_RECORD_BY_ID = gql`
 
 /** Model for GetRecordByIdQueryResponse object */
 export interface GetRecordByIdQueryResponse {
-  loading: boolean;
   record: Record;
 }
 
@@ -118,7 +116,6 @@ export const GET_RESOURCES = gql`
 
 /** Model for GetResourcesQueryResponse object */
 export interface GetResourcesQueryResponse {
-  loading: boolean;
   resources: {
     edges: {
       node: Resource;
@@ -153,7 +150,6 @@ export const GET_LAYOUT = gql`
 
 /** Model for GetLayoutQueryResponse object */
 export interface GetLayoutQueryResponse {
-  loading: boolean;
   resource: Resource;
 }
 
@@ -178,6 +174,5 @@ export const GET_AGGREGATION = gql`
 
 /** Model for GetAggregationQueryResponse object */
 export interface GetAggregationQueryResponse {
-  loading: boolean;
   resource: Resource;
 }

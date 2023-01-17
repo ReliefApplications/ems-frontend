@@ -157,7 +157,7 @@ export class ReferenceDataComponent
               this.referenceForm.get('type')?.valueChanges.subscribe((type) => {
                 this.loadApiConfigurations(type);
               });
-              this.loading = res.data.loading;
+              this.loading = res.loading;
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
@@ -247,7 +247,7 @@ export class ReferenceDataComponent
       .subscribe((res) => {
         if (res.data) {
           this.referenceData = res.data.editReferenceData;
-          this.loading = res.data.loading;
+          this.loading = res.loading;
         }
       });
   }
@@ -317,11 +317,11 @@ export class ReferenceDataComponent
             ),
             { error: true }
           );
-          this.loading = false;
+          this.loading = res.loading;
         } else {
           this.referenceData = res.data?.editReferenceData;
           this.referenceForm.markAsPristine();
-          this.loading = res.data?.loading || false;
+          this.loading = res.loading;
         }
       });
   }

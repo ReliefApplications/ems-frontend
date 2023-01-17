@@ -124,7 +124,7 @@ export class SafeRecordDropdownComponent
         .subscribe((res) => {
           this.records.next(res.data.resource.records.edges.map((x) => x.node));
           this.pageInfo = res.data.resource.records.pageInfo;
-          this.loading = res.loading;
+          this.loading = false;
         });
     }
   }

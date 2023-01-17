@@ -48,7 +48,6 @@ export const EDIT_ROLE = gql`
 
 /** Interface of edit role mutation response */
 export interface EditRoleMutationResponse {
-  loading: boolean;
   editRole: Role;
 }
 

@@ -14,7 +14,6 @@ export const DELETE_ROLE = gql`
 
 /** Model for DeleteRoleMutationResponse object */
 export interface DeleteRoleMutationResponse {
-  loading: boolean;
   deleteRole: Role;
 }
 
@@ -36,7 +35,6 @@ export const ADD_ROLE = gql`
 
 /** Model for AddRoleMutationResponse object */
 export interface AddRoleMutationResponse {
-  loading: boolean;
   addRole: Role;
 }
 
@@ -54,7 +52,6 @@ export const ADD_GROUP = gql`
 
 /** Model for AddGroupMutationResponse object */
 export interface AddGroupMutationResponse {
-  loading: boolean;
   addGroup: Group;
 }
 
@@ -71,7 +68,6 @@ export const DELETE_GROUP = gql`
 
 /** Model for DeleteGroupMutationResponse object */
 export interface DeleteGroupMutationResponse {
-  loading: boolean;
   deleteGroup: Group;
 }
 
@@ -89,6 +85,5 @@ export const FETCH_GROUPS = gql`
 
 /** Model for AddGroupMutationResponse object */
 export interface FetchGroupsMutationResponse {
-  loading: boolean;
   fetchGroups: Group[];
 }

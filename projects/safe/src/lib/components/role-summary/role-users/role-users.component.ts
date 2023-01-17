@@ -72,7 +72,7 @@ export class RoleUsersComponent
         );
         this.pageInfo.length = res.data.role.users.totalCount;
         this.pageInfo.endCursor = res.data.role.users.pageInfo.endCursor;
-        this.loading = res.loading;
+        this.loading = false;
         this.updating = false;
       });
   }

@@ -117,7 +117,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
             });
             this.applicationId =
               this.step?.workflow?.page?.application?.id || '';
-            this.loading = res.data.loading;
+            this.loading = res.loading;
           });
       } else {
         this.querySubscription = this.apollo
@@ -144,7 +144,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
               tabName: new FormControl(this.page?.name, Validators.required),
             });
             this.applicationId = this.page?.application?.id || '';
-            this.loading = res2.data.loading;
+            this.loading = res2.loading;
           });
       }
     });

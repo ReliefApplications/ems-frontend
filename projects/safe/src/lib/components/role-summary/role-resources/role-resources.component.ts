@@ -124,8 +124,8 @@ export class RoleResourcesComponent
         );
         this.pageInfo.length = res.data.resources.totalCount;
         this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
-        this.loading = res.loading;
-        this.updating = res.loading;
+        this.loading = false;
+        this.updating = false;
         this.filterLoading = false;
       });
   }

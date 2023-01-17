@@ -51,7 +51,7 @@ export class SafeRoleSummaryComponent implements OnInit {
             this.role.title as string
           );
         }
-        this.loading = res.data.loading;
+        this.loading = false;
       });
   }
 
@@ -71,7 +71,7 @@ export class SafeRoleSummaryComponent implements OnInit {
       .subscribe((res) => {
         if (res.data) {
           this.role = res.data.editRole;
-          this.loading = res.data.loading;
+          this.loading = false;
         }
       });
   }
