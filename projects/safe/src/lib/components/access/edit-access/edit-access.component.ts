@@ -29,7 +29,6 @@ export class SafeEditAccessComponent
   implements OnInit
 {
   // === DATA ===
-  public loading = true;
   public roles: Role[] = [];
 
   // === REACTIVE FORM ===
@@ -65,9 +64,8 @@ export class SafeEditAccessComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
+      .subscribe(({ data }) => {
         this.roles = data.roles;
-        this.loading = loading;
       });
     this.accessForm = this.formBuilder.group({
       canSee: [

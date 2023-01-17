@@ -2,6 +2,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { QueryField } from '../../services/query-builder/query-builder.service';
 import { prettifyLabel } from '../../utils/prettify';
+import { FILTER_OPERATORS } from '../filter/filter.const';
 
 /** Creating a new instance of the FormBuilder class. */
 const formBuilder = new FormBuilder();
@@ -21,11 +22,17 @@ export const createFilterGroup = (filter: any): FormGroup => {
     });
   }
   if (filter?.field) {
-    return formBuilder.group({
+    const group = formBuilder.group({
       field: filter.field,
       operator: filter.operator || 'eq',
       value: Array.isArray(filter.value) ? [filter.value] : filter.value,
     });
+    if (
+      FILTER_OPERATORS.find((op) => op.value === filter.operator)?.disableValue
+    ) {
+      group.get('value')?.disable();
+    }
+    return group;
   }
   return formBuilder.group({
     logic: 'and',

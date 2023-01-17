@@ -183,7 +183,6 @@ export const GET_QUERY_TYPES = gql`
 // TODO: check type of __schema
 /** Model for GetQueryTypes object */
 export interface GetQueryTypes {
-  loading: boolean;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __schema: any;
 }

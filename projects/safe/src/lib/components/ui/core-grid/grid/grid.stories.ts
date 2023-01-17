@@ -191,7 +191,7 @@ const DEFAULT_FIELDS = [
   },
 ];
 
-/** Exoprt a template with mock properties */
+/** Export a template with mock properties */
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {
@@ -219,7 +219,6 @@ export const ERROR = TEMPLATE.bind({});
 ERROR.storyName = 'With error';
 ERROR.args = {
   fields: DEFAULT_FIELDS,
-  error: true,
   data: {
     data: [],
     total: 0,
@@ -231,7 +230,6 @@ export const LOADING = TEMPLATE.bind({});
 LOADING.storyName = 'Loading';
 LOADING.args = {
   ...DEFAULT.args,
-  loading: true,
 };
 
 /** Export a template with a size fixed */

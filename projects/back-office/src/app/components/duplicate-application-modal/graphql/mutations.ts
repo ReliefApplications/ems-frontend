@@ -34,6 +34,5 @@ export const DUPLICATE_APPLICATION = gql`
 
 /** Duplication application gql mutation response interface */
 export interface DuplicateApplicationMutationResponse {
-  loading: boolean;
   duplicateApplication: Application;
 }

@@ -28,7 +28,6 @@ export const ADD_PAGE = gql`
 
 /** Model for AddPageMutationResponse object */
 export interface AddPageMutationResponse {
-  loading: boolean;
   addPage: Page;
 }
 
@@ -52,7 +51,6 @@ export const DUPLICATE_PAGE = gql`
 
 /** Interface of duplicate page mutation. */
 export interface duplicatePageMutationResponse {
-  loading: boolean;
   duplicatePage: Page;
 }
 
@@ -69,7 +67,6 @@ export const DELETE_PAGE = gql`
 
 /** Model for DeletePageMutationResponse object */
 export interface DeletePageMutationResponse {
-  loading: boolean;
   deletePage: Page;
 }
 
@@ -92,7 +89,6 @@ export const ADD_ROLE = gql`
 
 /** Model for AddRoleMutationResponse object */
 export interface AddRoleMutationResponse {
-  loading: boolean;
   addRole: Role;
 }
 
@@ -133,7 +129,6 @@ export const EDIT_ROLE = gql`
 
 /** Model for EditRoleMutationResponse object */
 export interface EditRoleMutationResponse {
-  loading: boolean;
   editRole: Role;
 }
 
@@ -150,7 +145,6 @@ export const DELETE_ROLE = gql`
 
 /** Model for DeleteRoleMutationResponse object */
 export interface DeleteRoleMutationResponse {
-  loading: boolean;
   deleteRole: Role;
 }
 
@@ -180,7 +174,6 @@ export const ADD_ROLE_TO_USERS = gql`
 
 /** Model for AddRoleToUsersMutationResponse object */
 export interface AddRoleToUsersMutationResponse {
-  loading: boolean;
   addRoleToUsers: User[];
 }
 
@@ -230,7 +223,6 @@ export const ADD_CHANNEL = gql`
 
 /** Model for AddChannelMutationResponse object */
 export interface AddChannelMutationResponse {
-  loading: boolean;
   addChannel: Channel;
 }
 
@@ -248,7 +240,6 @@ export const EDIT_CHANNEL = gql`
 
 /** Model for EditChannelMutationResponse object */
 export interface EditChannelMutationResponse {
-  loading: boolean;
   editChannel: Channel;
 }
 
@@ -266,7 +257,6 @@ export const DELETE_CHANNEL = gql`
 
 /** Model for DeleteChannelMutationResponse object */
 export interface DeleteChannelMutationResponse {
-  loading: boolean;
   deleteChannel: Channel;
 }
 
@@ -304,7 +294,6 @@ export const ADD_SUBSCRIPTION = gql`
 
 /** Model for AddSubscriptionMutationResponse object */
 export interface AddSubscriptionMutationResponse {
-  loading: boolean;
   addSubscription: Subscription;
 }
 
@@ -344,7 +333,6 @@ export const EDIT_SUBSCRIPTION = gql`
 
 /** Model for EditSubscriptionMutationResponse object */
 export interface EditSubscriptionMutationResponse {
-  loading: boolean;
   editSubscription: Subscription;
 }
 
@@ -361,7 +349,6 @@ export const DELETE_SUBSCRIPTION = gql`
 
 /** Model for DeleteSubscriptionMutationResponse object */
 export interface DeleteSubscriptionMutationResponse {
-  loading: boolean;
   deleteSubscription: Subscription;
 }
 
@@ -379,7 +366,6 @@ export const ADD_POSITION_ATTRIBUTE_CATEGORY = gql`
 
 /** Model for AddPositionAttributeCategoryMutationResponse object */
 export interface AddPositionAttributeCategoryMutationResponse {
-  loading: boolean;
   addPositionAttributeCategory: PositionAttributeCategory;
 }
 
@@ -405,7 +391,6 @@ export const EDIT_POSITION_ATTRIBUTE_CATEGORY = gql`
 
 /** Model for EditPositionAttributeCategoryMutationResponse object */
 export interface EditPositionAttributeCategoryMutationResponse {
-  loading: boolean;
   editPositionAttributeCategory: PositionAttributeCategory;
 }
 
@@ -422,7 +407,6 @@ export const DELETE_POSITION_ATTRIBUTE_CATEGORY = gql`
 
 /** Model for DeletePositionAttributeCategoryMutationResponse object */
 export interface DeletePositionAttributeCategoryMutationResponse {
-  loading: boolean;
   deletePositionAttributeCategory: PositionAttributeCategory;
 }
 
@@ -488,7 +472,6 @@ export const EDIT_APPLICATION = gql`
 
 /** Model for EditApplicationMutationResponse object */
 export interface EditApplicationMutationResponse {
-  loading: boolean;
   editApplication: Application;
 }
 
@@ -507,7 +490,6 @@ export const TOGGLE_APPLICATION_LOCK = gql`
 
 /** Model for ToggleApplicationLockMutationResponse object */
 export interface ToggleApplicationLockMutationResponse {
-  loading: boolean;
   toggleApplicationLock: Application;
 }
 
@@ -527,7 +509,6 @@ export const ADD_TEMPLATE = gql`
 
 /** Model for AddTemplateMutationResponse object */
 export interface AddTemplateMutationResponse {
-  loading: boolean;
   addTemplate: Template;
 }
 
@@ -549,7 +530,6 @@ export const UPDATE_TEMPLATE = gql`
 
 /** Model for UpdateTemplateMutationResponse object */
 export interface UpdateTemplateMutationResponse {
-  loading: boolean;
   editTemplate: Template;
 }
 
@@ -567,7 +547,6 @@ export const DELETE_TEMPLATE = gql`
 
 /** Model for DeleteTemplateMutationResponse object */
 export interface DeleteTemplateMutationResponse {
-  loading: boolean;
   deleteTemplate: Template;
 }
 

@@ -14,7 +14,6 @@ export const EDIT_WORKFLOW = gql`
 
 /** Edit workflow gql mutation response interface */
 export interface EditWorkflowMutationResponse {
-  loading: boolean;
   editWorkflow: Workflow;
 }
 
@@ -31,7 +30,6 @@ export const DELETE_STEP = gql`
 
 /** Delete step gql mutation response interface */
 export interface DeleteStepMutationResponse {
-  loading: boolean;
   deleteStep: Step;
 }
 
@@ -62,7 +60,6 @@ export const EDIT_PAGE = gql`
 
 /** Edit page gql mutation response interface */
 export interface EditPageMutationResponse {
-  loading: boolean;
   editPage: Page;
 }
 
@@ -84,6 +81,5 @@ export const ADD_FORM = gql`
 
 /** Add form gql mutation response interface */
 export interface AddFormMutationResponse {
-  loading: boolean;
   addForm: Form;
 }
