@@ -134,21 +134,21 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup =>
   fb.group({
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],
-    resource: [get(value, 'resource', null), Validators.required],
-    query: createQueryForm(get(value, 'query', DEFAULT_MAP.query), true),
-    latitude: [
-      get(value, 'latitude', DEFAULT_MAP.latitude),
-      [Validators.min(-90), Validators.max(90)],
-    ],
-    longitude: [
-      get(value, 'longitude', DEFAULT_MAP.longitude),
-      [Validators.min(-180), Validators.max(180)],
-    ],
+    // resource: [get(value, 'resource', null), Validators.required],
+    // query: createQueryForm(get(value, 'query', DEFAULT_MAP.query), true),
+    // latitude: [
+    //   get(value, 'latitude', DEFAULT_MAP.latitude),
+    //   [Validators.min(-90), Validators.max(90)],
+    // ],
+    // longitude: [
+    //   get(value, 'longitude', DEFAULT_MAP.longitude),
+    //   [Validators.min(-180), Validators.max(180)],
+    // ],
     zoom: [
       get(value, 'zoom', DEFAULT_MAP.zoom),
       [Validators.min(2), Validators.max(18)],
     ],
-    category: [get(value, 'category', DEFAULT_MAP.category)],
+    // category: [get(value, 'category', DEFAULT_MAP.category)],
     basemap: [get(value, 'basemap', DEFAULT_MAP.basemap)],
     centerLong: [
       get(value, 'centerLong', DEFAULT_MAP.centerLong),
@@ -158,16 +158,16 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup =>
       get(value, 'centerLat', DEFAULT_MAP.centerLat),
       [Validators.min(-90), Validators.max(90)],
     ],
-    popupFields: [get(value, 'popupFields', DEFAULT_MAP.popupFields)],
-    onlineLayers: [get(value, 'onlineLayers', DEFAULT_MAP.onlineLayers)],
-    markerRules: fb.array(
-      get(value, 'markerRules', DEFAULT_MAP.markersRules).map((x: any) =>
-        markerRuleForm(x)
-      )
-    ),
-    clorophlets: fb.array(
-      get(value, 'clorophlets', DEFAULT_MAP.clorophlets).map((x: any) =>
-        clorophletForm(x)
-      )
-    ),
+    // popupFields: [get(value, 'popupFields', DEFAULT_MAP.popupFields)],
+    // onlineLayers: [get(value, 'onlineLayers', DEFAULT_MAP.onlineLayers)],
+    // markerRules: fb.array(
+    //   get(value, 'markerRules', DEFAULT_MAP.markersRules).map((x: any) =>
+    //     markerRuleForm(x)
+    //   )
+    // ),
+    // clorophlets: fb.array(
+    //   get(value, 'clorophlets', DEFAULT_MAP.clorophlets).map((x: any) =>
+    //     clorophletForm(x)
+    //   )
+    // ),
   });
