@@ -1,3 +1,11 @@
+## [1.3.6](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.5...v1.3.6) (2023-01-17)
+
+
+### Bug Fixes
+
+* storybook build not working ([6471ddd](https://github.com/ReliefApplications/oort-frontend/commit/6471ddd362140aa468650d4729b5cfb2a36ee63d))
+* widget choice could prevent items below to be clicked ([f70b1a6](https://github.com/ReliefApplications/oort-frontend/commit/f70b1a675ae480047f99bb0cd867414cb05c3367))
+
 ## [1.3.5](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.4...v1.3.5) (2023-01-16)
 
 
