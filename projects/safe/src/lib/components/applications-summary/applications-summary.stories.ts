@@ -36,31 +36,26 @@ DEFAULT.args = {
     {
       name: 'Dummy Application',
       createdAt: new Date(),
-      usersCount: 250,
       status: status.active,
     },
     {
       name: 'Dummy Application',
       createdAt: new Date(),
-      usersCount: 250,
       status: status.pending,
     },
     {
       name: 'Dummy Application',
       createdAt: new Date(),
-      usersCount: 250,
       status: status.archived,
     },
     {
       name: 'Dummy Application',
       createdAt: new Date(),
-      usersCount: 250,
       status: status.active,
     },
     {
       name: 'Dummy Application',
       createdAt: new Date(),
-      usersCount: 250,
     },
   ],
 };
