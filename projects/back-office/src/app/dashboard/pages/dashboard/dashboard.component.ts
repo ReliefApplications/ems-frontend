@@ -109,10 +109,10 @@ export class DashboardComponent
             id: this.id,
           },
         })
-        .subscribe(
-          (res) => {
-            if (res.data.dashboard) {
-              this.dashboard = res.data.dashboard;
+        .subscribe({
+          next: ({ data, loading }) => {
+            if (data.dashboard) {
+              this.dashboard = data.dashboard;
               this.dashboardService.openDashboard(this.dashboard);
               this.dashboardNameForm = new FormGroup({
                 dashboardName: new FormControl(
@@ -120,8 +120,8 @@ export class DashboardComponent
                   Validators.required
                 ),
               });
-              this.tiles = res.data.dashboard.structure
-                ? [...res.data.dashboard.structure]
+              this.tiles = data.dashboard.structure
+                ? [...data.dashboard.structure]
                 : [];
               this.generatedTiles =
                 this.tiles.length === 0
@@ -132,7 +132,7 @@ export class DashboardComponent
                 : this.dashboard.step
                 ? this.dashboard.step.workflow?.page?.application?.id
                 : '';
-              this.loading = res.loading;
+              this.loading = loading;
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
@@ -149,11 +149,11 @@ export class DashboardComponent
               this.router.navigate(['/applications']);
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             this.router.navigate(['/applications']);
-          }
-        );
+          },
+        });
     });
   }
 
@@ -286,15 +286,15 @@ export class DashboardComponent
           structure: this.tiles,
         },
       })
-      .subscribe(
-        () => {
+      .subscribe({
+        next: () => {
           this.dashboardService.openDashboard({
             ...this.dashboard,
             structure: this.tiles,
           });
         },
-        () => (this.loading = false)
-      );
+        complete: () => (this.loading = false),
+      });
   }
 
   /**
@@ -312,10 +312,10 @@ export class DashboardComponent
             permissions: e,
           },
         })
-        .subscribe((res) => {
+        .subscribe(({ data }) => {
           this.dashboard = {
             ...this.dashboard,
-            permissions: res.data?.editStep.permissions,
+            permissions: data?.editStep.permissions,
           };
         });
     } else {
@@ -327,10 +327,10 @@ export class DashboardComponent
             permissions: e,
           },
         })
-        .subscribe((res) => {
+        .subscribe(({ data }) => {
           this.dashboard = {
             ...this.dashboard,
-            permissions: res.data?.editPage.permissions,
+            permissions: data?.editPage.permissions,
           };
         });
     }
@@ -362,20 +362,20 @@ export class DashboardComponent
             name: dashboardName,
           },
         })
-        .subscribe((res) => {
-          if (res.data?.editStep) {
+        .subscribe(({ errors, data }) => {
+          if (data?.editStep) {
             this.dashboard = {
               ...this.dashboard,
-              name: res.data?.editStep.name,
+              name: data?.editStep.name,
             };
-            this.workflowService.updateStepName(res.data.editStep);
+            this.workflowService.updateStepName(data.editStep);
           } else {
             this.snackBar.openSnackBar(
               this.translateService.instant(
                 'common.notifications.objectNotUpdated',
                 {
                   type: this.translateService.instant('common.step.one'),
-                  error: res.errors ? res.errors[0].message : '',
+                  error: errors ? errors[0].message : '',
                 }
               )
             );
@@ -390,10 +390,10 @@ export class DashboardComponent
             name: dashboardName,
           },
         })
-        .subscribe((res) => {
-          this.dashboard = { ...this.dashboard, name: res.data?.editPage.name };
-          if (res.data?.editPage) {
-            this.applicationService.updatePageName(res.data.editPage);
+        .subscribe(({ data }) => {
+          this.dashboard = { ...this.dashboard, name: data?.editPage.name };
+          if (data?.editPage) {
+            this.applicationService.updatePageName(data.editPage);
           }
         });
     }

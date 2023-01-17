@@ -117,8 +117,8 @@ export class AddFormModalComponent implements OnInit {
           id,
         },
       })
-      .subscribe((res) => {
-        this.templates = res.data.resource.forms || [];
+      .subscribe(({ data }) => {
+        this.templates = data.resource.forms || [];
       });
   }
 

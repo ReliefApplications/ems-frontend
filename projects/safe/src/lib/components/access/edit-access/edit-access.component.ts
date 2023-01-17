@@ -65,9 +65,9 @@ export class SafeEditAccessComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.roles = res.data.roles;
-        this.loading = res.loading;
+      .subscribe(({ data, loading }) => {
+        this.roles = data.roles;
+        this.loading = loading;
       });
     this.accessForm = this.formBuilder.group({
       canSee: [

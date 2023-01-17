@@ -47,9 +47,9 @@ export class UsersComponent implements OnInit {
           .watchQuery<GetRolesQueryResponse>({
             query: GET_ROLES,
           })
-          .valueChanges.subscribe((resRoles) => {
-            this.roles = resRoles.data.roles;
-            this.loading = resRoles.loading;
+          .valueChanges.subscribe(({ data, loading }) => {
+            this.roles = data.roles;
+            this.loading = loading;
           });
       });
   }

@@ -64,15 +64,15 @@ export class RoleUsersComponent
     });
     this.usersQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.cachedUsers = res.data.role.users.edges.map((x) => x.node);
+      .subscribe(({ data, loading }) => {
+        this.cachedUsers = data.role.users.edges.map((x) => x.node);
         this.users.data = this.cachedUsers.slice(
           this.pageInfo.pageSize * this.pageInfo.pageIndex,
           this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         );
-        this.pageInfo.length = res.data.role.users.totalCount;
-        this.pageInfo.endCursor = res.data.role.users.pageInfo.endCursor;
-        this.loading = res.loading;
+        this.pageInfo.length = data.role.users.totalCount;
+        this.pageInfo.endCursor = data.role.users.pageInfo.endCursor;
+        this.loading = loading;
         this.updating = false;
       });
   }

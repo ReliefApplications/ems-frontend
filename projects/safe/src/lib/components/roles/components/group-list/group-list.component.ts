@@ -97,10 +97,10 @@ export class SafeGroupListComponent
         query: GET_GROUPS,
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.groups.data = res.data.groups;
-        // this.manualCreation = res.data.groups.manualCreation;
-        this.loading = res.loading;
+      .subscribe(({ data, loading }) => {
+        this.groups.data = data.groups;
+        // this.manualCreation = data.groups.manualCreation;
+        this.loading = loading;
       });
   }
 
@@ -137,8 +137,8 @@ export class SafeGroupListComponent
               },
             })
             .pipe(takeUntil(this.destroy$))
-            .subscribe(
-              () => {
+            .subscribe({
+              next: () => {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectCreated', {
                     type: this.translate
@@ -149,10 +149,10 @@ export class SafeGroupListComponent
                 );
                 this.getGroups();
               },
-              (err) => {
+              error: (err) => {
                 console.log(err);
-              }
-            );
+              },
+            });
         }
       });
   }
@@ -175,10 +175,10 @@ export class SafeGroupListComponent
     this.apollo
       .mutate<FetchGroupsMutationResponse>({ mutation: FETCH_GROUPS })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        (res) => {
-          if (res.data) this.groups.data = res.data.fetchGroups || [];
-          this.loadingFetch = res.loading;
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data) this.groups.data = data.fetchGroups || [];
+          this.loadingFetch = loading;
           snackBarRef.instance.data = {
             message: this.translate.instant(
               'common.notifications.groups.ready'
@@ -187,7 +187,7 @@ export class SafeGroupListComponent
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
         },
-        () => {
+        error: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant(
               'common.notifications.groups.error'
@@ -196,8 +196,8 @@ export class SafeGroupListComponent
             error: true,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
-        }
-      );
+        },
+      });
   }
 
   /**

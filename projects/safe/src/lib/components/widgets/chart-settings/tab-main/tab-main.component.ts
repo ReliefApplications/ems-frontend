@@ -107,8 +107,8 @@ export class TabMainComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.resource = res.data.resource;
+      .subscribe(({ data }) => {
+        this.resource = data.resource;
         if (aggregationId && this.resource.aggregations?.edges[0]) {
           this.aggregation = this.resource.aggregations.edges[0].node;
           this.setAvailableSeriesFields();
@@ -197,8 +197,8 @@ export class TabMainComponent
         this.aggregationService
           .editAggregation(this.aggregation, value, this.resource?.id)
           .pipe(takeUntil(this.destroy$))
-          .subscribe((res) => {
-            if (res.data?.editAggregation) {
+          .subscribe(({ data }) => {
+            if (data?.editAggregation) {
               this.getResource(this.resource?.id as string);
             }
           });

@@ -63,10 +63,10 @@ export const init = (
             applications: question.applications,
           },
         })
-        .subscribe((res) => {
-          if (res.data.users) {
+        .subscribe(({ data }) => {
+          if (data.users) {
             const users: any = [];
-            for (const user of res.data.users) {
+            for (const user of data.users) {
               if (!users.some((el: any) => el.value === user.id)) {
                 users.push({ value: user.id, text: user.username });
               }
