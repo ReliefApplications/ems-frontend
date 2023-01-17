@@ -1,3 +1,10 @@
+## [1.3.7](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.6...v1.3.7) (2023-01-17)
+
+
+### Bug Fixes
+
+* filters without needed value could break + metadata fetched too often when editing role access ([1dd2a16](https://github.com/ReliefApplications/oort-frontend/commit/1dd2a166b015910addd71b5afa41c83b9765dbd5))
+
 ## [1.3.6](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.5...v1.3.6) (2023-01-17)
 
 
