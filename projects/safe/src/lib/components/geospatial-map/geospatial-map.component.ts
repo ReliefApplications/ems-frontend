@@ -27,7 +27,7 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
 
   // Map
   public map: any;
-  public mapID = `map-${Math.random().toString(36).substr(2, 9)}`;
+  public mapID = `map-${Math.random().toString(36)}`;
 
   // output
   private timeout: NodeJS.Timeout | null = null;
