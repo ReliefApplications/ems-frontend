@@ -5,10 +5,40 @@ import {
   Input,
   Output,
 } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { FeatureCollection } from 'geojson';
 
 // Leaflet
 declare let L: any;
+
+/** Available languages in the geoman library */
+const GEOMAN_LANGUAGES = [
+  'cz',
+  'da',
+  'de',
+  'el',
+  'en',
+  'es',
+  'fa',
+  'fi',
+  'fr',
+  'hu',
+  'id',
+  'it',
+  'ja',
+  'ko',
+  'nl',
+  'no',
+  'pl',
+  'pt_br',
+  'ro',
+  'ru',
+  'sv',
+  'tr',
+  'ua',
+  'zh',
+  'zh_tw',
+];
 
 /**
  * Component for displaying the input map
@@ -36,15 +66,31 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
   /**
    * Component for displaying the input map
    * of the geospatial type question.
+   *
+   * @param translate the translation service
    */
-  constructor() {}
+  constructor(private translate: TranslateService) {}
 
   ngAfterViewInit(): void {
     this.drawMap();
+
+    // set language
+    const setLang = (lang: string) => {
+      if (GEOMAN_LANGUAGES.includes(lang)) {
+        this.map.pm.setLang(lang);
+      } else {
+        console.warn(`Language "${lang}" not supported by geoman`);
+        this.map.pm.setLang('en');
+      }
+    };
+    setLang(this.translate.currentLang || 'en');
+    this.translate.onLangChange.subscribe((event) => {
+      setLang(event.lang);
+    });
   }
 
   /** Creates map */
-  public drawMap(): void {
+  private drawMap(): void {
     // creates layer
     const layer = L.tileLayer(
       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -106,7 +152,7 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
    *
    * @returns GeoJSON FeatureCollection
    */
-  public getMapFeatures(): FeatureCollection {
+  private getMapFeatures(): FeatureCollection {
     return {
       type: 'FeatureCollection',
       features: this.map.pm.getGeomanLayers().map((l: any) => {
@@ -122,7 +168,7 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
   }
 
   /** Emits event with new map geoJSON value */
-  public onMapChange(): void {
+  private onMapChange(): void {
     if (this.timeout) clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
       this.mapChange.emit(this.getMapFeatures());
