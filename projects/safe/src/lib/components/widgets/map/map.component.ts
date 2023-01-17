@@ -76,12 +76,11 @@ export class SafeMapComponent
    * @param environment platform environment
    * @param apollo Apollo client
    * @param queryBuilder The queryBuilder service
-   * @param domService Shared dom service
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    private queryBuilder: QueryBuilderService,
+    private queryBuilder: QueryBuilderService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -205,15 +204,13 @@ export class SafeMapComponent
   private getData(): void {
     this.map.closePopup(this.popupMarker);
 
-    this.dataQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        const today = new Date();
-        this.lastUpdate =
-          ('0' + today.getHours()).slice(-2) +
-          ':' +
-          ('0' + today.getMinutes()).slice(-2);
-      });
+    this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      const today = new Date();
+      this.lastUpdate =
+        ('0' + today.getHours()).slice(-2) +
+        ':' +
+        ('0' + today.getMinutes()).slice(-2);
+    });
   }
 
   /**
