@@ -11,6 +11,8 @@ import {
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 
+import 'leaflet.control.layers.tree';
+
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
 //import 'leaflet.markercluster';
@@ -48,6 +50,76 @@ const BASEMAP_LAYERS: any = {
   OSM: 'OSM:Standard',
   'OSM:Streets': 'OSM:Streets',
 };
+
+const TEST_VALUE: any = {
+  name: 'layer_group',
+  type: 'Group',
+  layers: [
+    {
+      type: 'Markers',
+      longitude: 10,
+      latitude: 10,
+      name: 'Ben',
+      color: '#ff7a7a',
+    },
+    {
+      type: 'Markers',
+      longitude: 4,
+      latitude: 4,
+      name: 'Jhin',
+      color: '#00ff00'
+    },
+  ]
+};
+
+const overlaysTreeTest = {
+  label: 'Points of Interest',
+  selectAllCheckbox: 'Un/select all',
+  children: [
+    {
+      label: 'Europe',
+      selectAllCheckbox: true,
+      children: [
+        {
+          label: 'France',
+          selectAllCheckbox: true,
+          children: [
+              { label: 'Tour Eiffel', layer: L.marker([48.8582441, 2.2944775]) },
+              { label: 'Notre Dame', layer: L.marker([48.8529540, 2.3498726]) },
+              { label: 'Louvre', layer: L.marker([48.8605847, 2.3376267]) },
+          ]
+        }, {
+          label: 'Germany',
+          selectAllCheckbox: true,
+          children: [
+              { label: 'Branderburger Tor', layer: L.marker([52.5162542, 13.3776805])},
+              { label: 'Kölner Dom', layer: L.marker([50.9413240, 6.9581201])},
+          ]
+        }, {
+          label: 'Spain',
+          selectAllCheckbox: 'De/seleccionar todo',
+          children: [
+              { label: 'Palacio Real', layer: L.marker([40.4184145, -3.7137051])},
+              { label: 'La Alhambra', layer: L.marker([37.1767829, -3.5892795])},
+          ]
+        }
+      ]
+    }, {
+      label: 'Asia',
+      selectAllCheckbox: true,
+      children: [
+        {
+          label: 'Jordan',
+          selectAllCheckbox: true,
+          children: [
+            { label: 'Petra', layer: L.marker([30.3292215, 35.4432464]) },
+            { label: 'Wadi Rum', layer: L.marker([29.6233486, 35.4390656]) }
+          ]
+        },
+      ]
+    }
+  ]
+}
 
 /** Component for the map widget */
 @Component({
@@ -244,13 +316,25 @@ export class SafeMapComponent
           ':' +
           ('0' + today.getMinutes()).slice(-2);
         // Empties all variables used in map
-        this.setLayers(res);
+        //this.setLayers(res);
+        let ctl = L.control
+        .layers.tree(null, null, {
+          collapsed: false,
+          namedToggle: true,
+          collapseAll: '',
+          expandAll: '',
+        });
+        ctl.addTo(this.map).collapseTree().expandSelected();
+        ctl.setOverlayTree(overlaysTreeTest).collapseTree(false).expandSelected(true);
+        /*
         this.legendControl.update(
           this.map,
           this.settings,
           this.overlays,
           Object.keys(this.markersCategories)
         );
+        this.map.layers
+        */
       });
   }
 
@@ -264,7 +348,6 @@ export class SafeMapComponent
     if (this.layerControl) {
       this.layerControl.remove();
     }
-
     // Creates a featureGroup which will contain all the markers/pointer
     if (!this.markersLayer) {
       const markersLayerGroup = L.featureGroup().addTo(this.map);
@@ -296,6 +379,11 @@ export class SafeMapComponent
       this.markersCategories['undefined'] = allLayers;
     }
 
+    this.overlays['label'] = 'layers';
+    this.overlays['children'] = [];
+    this.overlays['selectAllCheckbox'] = 'Un/select all';
+
+    /*
     // Renders all the markers
     Object.keys(this.markersCategories).map((name: string) => {
       if (name !== 'null') {
@@ -323,6 +411,7 @@ export class SafeMapComponent
     // Loops throught online layers and add them to the map
     if (this.settings.onlineLayers) {
       this.settings.onlineLayers.map((layer: any) => {
+        console.log(layer);
         this.overlays[layer.title] = L.esri.featureLayer({
           url: layer.url + '/0',
           simplifyFactor: 1,
@@ -337,10 +426,35 @@ export class SafeMapComponent
         });
       });
     }
+    */
+
+    if (TEST_VALUE.type === 'Group') {
+      const markers: any[] = [];
+      const groupOverlay: {label: string, selectAllCheckbox: boolean, children: any[]} = {
+        label: TEST_VALUE.name,
+        children: [],
+        selectAllCheckbox: true,
+      }
+      for (let layer of TEST_VALUE.layers) {
+        const options = MARKER_OPTIONS;
+        options.color = layer.color;
+        const name = layer.name;
+        const marker = L.circleMarker([layer.latitude, layer.longitude], options);
+        markers.push(marker)
+        const overlayMarker = {label: name, layer: marker}
+        groupOverlay.children.push(overlayMarker);
+      }
+      const layer_group = L.layerGroup(markers);
+      console.log('layer group', layer_group);
+      
+      this.overlays.children.push(groupOverlay)
+      layer_group.addTo(this.map);
+      console.log('overlay', this.overlays);
+    }
     // Set ups a layer control with the new layers.
     if (Object.keys(this.overlays).length > 0) {
       this.layerControl = L.control
-        .layers(null, this.overlays, { collapsed: true })
+        .layers.tree(undefined, this.overlays)
         .addTo(this.map);
     }
   }
