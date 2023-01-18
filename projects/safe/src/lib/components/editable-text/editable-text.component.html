@@ -1,0 +1,21 @@
+<div class="flex items-center overflow-hidden">
+    <ng-container *ngIf="!formActive">
+        <h1 class="!m-0 overflow-hidden text-ellipsis hover:bg-neutral-200 rounded-lg" (click)="toggleFormActive()">
+            {{ text }}
+        </h1>
+    </ng-container>
+    <ng-container *ngIf="formActive">
+        <form [formGroup]="textForm" (ngSubmit)="applyAction(true)">
+            <mat-form-field appearance="outline">
+                <mat-label>{{ 'common.name' | translate }}</mat-label>
+                <input matInput formControlName="text" type="string" />
+                <safe-button matSuffix type="submit" [isIcon]="true" icon="done" variant="primary"
+                    [disabled]="!textForm.valid">
+                </safe-button>
+                <safe-button matSuffix mat-icon-button [isIcon]="true" icon="close" variant="danger"
+                    (click)="applyAction(false)">
+                </safe-button>
+            </mat-form-field>
+        </form>
+    </ng-container>
+</div>
