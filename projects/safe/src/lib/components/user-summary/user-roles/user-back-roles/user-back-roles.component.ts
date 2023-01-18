@@ -55,16 +55,16 @@ export class UserBackRolesComponent implements OnInit {
       .query<GetRolesQueryResponse>({
         query: GET_ROLES,
       })
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            this.roles = res.data.roles;
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data) {
+            this.roles = data.roles;
           }
-          this.loading = false;
+          this.loading = loading;
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
-        }
-      );
+        },
+      });
   }
 }

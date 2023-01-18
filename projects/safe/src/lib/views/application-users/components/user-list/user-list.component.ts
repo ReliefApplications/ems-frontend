@@ -107,18 +107,18 @@ export class UserListComponent
             });
           this.usersQuery.valueChanges
             .pipe(takeUntil(this.destroy$))
-            .subscribe((res) => {
-              this.cachedUsers = res.data.application.users.edges.map(
+            .subscribe(({ data, loading }) => {
+              this.cachedUsers = data.application.users.edges.map(
                 (x) => x.node
               );
               this.users.data = this.cachedUsers.slice(
                 this.pageInfo.pageSize * this.pageInfo.pageIndex,
                 this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
               );
-              this.pageInfo.length = res.data.application.users.totalCount;
+              this.pageInfo.length = data.application.users.totalCount;
               this.pageInfo.endCursor =
-                res.data.application.users.pageInfo.endCursor;
-              this.loading = res.loading;
+                data.application.users.pageInfo.endCursor;
+              this.loading = loading;
               this.updating = false;
             });
         }

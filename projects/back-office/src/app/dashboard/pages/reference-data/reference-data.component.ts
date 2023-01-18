@@ -119,10 +119,10 @@ export class ReferenceDataComponent
           },
         })
         .valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe(
-          (res) => {
-            if (res.data.referenceData) {
-              this.referenceData = res.data.referenceData;
+        .subscribe({
+          next: ({ data, loading }) => {
+            if (data.referenceData) {
+              this.referenceData = data.referenceData;
               this.breadcrumbService.setBreadcrumb(
                 '@referenceData',
                 this.referenceData.name as string
@@ -157,7 +157,7 @@ export class ReferenceDataComponent
               this.referenceForm.get('type')?.valueChanges.subscribe((type) => {
                 this.loadApiConfigurations(type);
               });
-              this.loading = res.loading;
+              this.loading = loading;
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
@@ -174,11 +174,11 @@ export class ReferenceDataComponent
               this.router.navigate(['/referencedata']);
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             this.router.navigate(['/referencedata']);
-          }
-        );
+          },
+        });
     }
   }
 
@@ -202,9 +202,9 @@ export class ReferenceDataComponent
               id: this.referenceForm.value.apiConfiguration,
             },
           })
-          .subscribe((res) => {
-            if (res.data.apiConfiguration) {
-              this.selectedApiConfiguration = res.data.apiConfiguration;
+          .subscribe(({ data }) => {
+            if (data.apiConfiguration) {
+              this.selectedApiConfiguration = data.apiConfiguration;
             }
           });
       }
@@ -216,8 +216,8 @@ export class ReferenceDataComponent
             first: ITEMS_PER_PAGE,
           },
         });
-      // this.apiConfigurationsQuery.valueChanges.subscribe((res) => {
-      //   this.loading = res.loading;
+      // this.apiConfigurationsQuery.valueChanges.subscribe(({ loading }) => {
+      //   this.loading = loading;
       // });
     } else {
       this.referenceForm.get('apiConfiguration')?.clearValidators();
@@ -244,10 +244,10 @@ export class ReferenceDataComponent
           permissions: e,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.referenceData = res.data.editReferenceData;
-          this.loading = res.loading;
+      .subscribe(({ data, loading }) => {
+        if (data) {
+          this.referenceData = data.editReferenceData;
+          this.loading = loading;
         }
       });
   }
@@ -305,23 +305,23 @@ export class ReferenceDataComponent
         mutation: EDIT_REFERENCE_DATA,
         variables,
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ errors, data, loading }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
             this.translateService.instant(
               'common.notifications.objectNotUpdated',
               {
                 type: this.translateService.instant('common.referenceData.one'),
-                error: res.errors[0].message,
+                error: errors[0].message,
               }
             ),
             { error: true }
           );
-          this.loading = res.loading;
+          this.loading = false;
         } else {
-          this.referenceData = res.data?.editReferenceData;
+          this.referenceData = data?.editReferenceData;
           this.referenceForm.markAsPristine();
-          this.loading = res.loading;
+          this.loading = loading || false;
         }
       });
   }

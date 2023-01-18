@@ -90,10 +90,10 @@ export class AddStepComponent
         });
 
         this.forms$ = this.forms.asObservable();
-        this.formsQuery.valueChanges.subscribe((res) => {
-          this.forms.next(res.data.forms.edges.map((x) => x.node));
-          this.pageInfo = res.data.forms.pageInfo;
-          this.loadingMore = res.loading;
+        this.formsQuery.valueChanges.subscribe(({ data, loading }) => {
+          this.forms.next(data.forms.edges.map((x) => x.node));
+          this.pageInfo = data.forms.pageInfo;
+          this.loadingMore = loading;
         });
         contentControl.setValidators([Validators.required]);
         contentControl.updateValueAndValidity();
@@ -170,29 +170,29 @@ export class AddStepComponent
     const dialogRef = this.dialog.open(AddFormModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        const data = { name: value.name };
+        const variablesData = { name: value.name };
         Object.assign(
-          data,
+          variablesData,
           value.resource && { resource: value.resource },
           value.template && { template: value.template }
         );
         this.apollo
           .mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,
-            variables: data,
+            variables: variablesData,
           })
-          .subscribe(
-            (res) => {
-              if (res.data) {
-                const { id } = res.data.addForm;
+          .subscribe({
+            next: ({ data }) => {
+              if (data) {
+                const { id } = data.addForm;
                 this.stepForm.controls.content.setValue(id);
                 this.onSubmit();
               }
             },
-            (err) => {
+            error: (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
-            }
-          );
+            },
+          });
       }
     });
   }

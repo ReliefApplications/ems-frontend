@@ -95,12 +95,12 @@ export class SafeProfileComponent
           },
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ data }) => {
+        if (data) {
           this.snackBar.openSnackBar(
             this.translate.instant('pages.profile.notifications.updated')
           );
-          this.user.name = res.data.editUserProfile.name;
+          this.user.name = data.editUserProfile.name;
         }
       });
   }
@@ -125,12 +125,12 @@ export class SafeProfileComponent
             },
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('pages.profile.notifications.updated')
             );
-            this.user.favoriteApp = res.data.editUserProfile.favoriteApp;
+            this.user.favoriteApp = data.editUserProfile.favoriteApp;
           }
         });
     }

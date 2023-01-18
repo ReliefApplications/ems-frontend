@@ -156,8 +156,8 @@ export class SafeFormModalComponent implements OnInit {
               id,
             },
           })
-        ).then((res) => {
-          this.record = res.data.record;
+        ).then(({ data }) => {
+          this.record = data.record;
           this.modifiedAt = this.isMultiEdition
             ? null
             : this.record.modifiedAt || null;
@@ -177,8 +177,8 @@ export class SafeFormModalComponent implements OnInit {
               id: this.data.template,
             },
           })
-        ).then((res) => {
-          this.form = res.data.form;
+        ).then(({ data }) => {
+          this.form = data.form;
           if (this.data.prefillData) {
             this.storedMergedData = this.data.prefillData;
           }
@@ -361,9 +361,9 @@ export class SafeFormModalComponent implements OnInit {
             data: survey.data,
           },
         })
-        .subscribe((res) => {
-          if (res.errors) {
-            this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, {
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
               error: true,
             });
             this.ngZone.run(() => {
@@ -373,7 +373,7 @@ export class SafeFormModalComponent implements OnInit {
             this.ngZone.run(() => {
               this.dialogRef.close({
                 template: this.data.template,
-                data: res.data?.addRecord,
+                data: data?.addRecord,
               });
             });
           }
@@ -398,11 +398,11 @@ export class SafeFormModalComponent implements OnInit {
           template: this.data.template,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ data }) => {
+        if (data) {
           this.dialogRef.close({
             template: this.form?.id,
-            data: res.data.editRecord,
+            data: data.editRecord,
           });
         }
       });
@@ -415,21 +415,21 @@ export class SafeFormModalComponent implements OnInit {
    * @param survey current survey.
    */
   public updateMultipleData(ids: any, survey: any): void {
-    const data = cleanRecord(survey.data);
+    const recordData = cleanRecord(survey.data);
     this.apollo
       .mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
-          data,
+          data: recordData,
           template: this.data.template,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ data }) => {
+        if (data) {
           this.dialogRef.close({
             template: this.form?.id,
-            data: res.data.editRecords,
+            data: data.editRecords,
           });
         }
       });

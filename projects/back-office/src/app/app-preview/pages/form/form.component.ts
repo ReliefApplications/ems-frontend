@@ -85,9 +85,9 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
                   id: this.step.content,
                 },
               })
-              .valueChanges.subscribe((res2) => {
-                this.form = res2.data.form;
-                this.loading = res2.loading;
+              .valueChanges.subscribe(({ data, loading }) => {
+                this.form = data.form;
+                this.loading = loading;
               });
           });
       } else {
@@ -107,11 +107,11 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
                   id: this.page.content,
                 },
               })
-              .subscribe((res2) => {
-                if (res2.data) {
-                  this.form = res2.data.form;
+              .subscribe(({ data, loading }) => {
+                if (data) {
+                  this.form = data.form;
                 }
-                this.loading = res2.loading;
+                this.loading = loading;
               });
           });
       }
