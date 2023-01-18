@@ -38,7 +38,6 @@ export const GET_RESOURCES_EXTENDED = gql`
 
 /** Model for GetResourcesQueryResponse object */
 export interface GetResourcesQueryResponse {
-  loading: boolean;
   resources: {
     edges: {
       node: Resource;

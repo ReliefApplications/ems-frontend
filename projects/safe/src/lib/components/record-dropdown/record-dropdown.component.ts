@@ -100,9 +100,9 @@ export class SafeRecordDropdownComponent
           },
         })
         .pipe(takeUntil(this.destroy$))
-        .subscribe((res) => {
-          if (res.data.record) {
-            this.selectedRecord = res.data.record;
+        .subscribe(({ data }) => {
+          if (data.record) {
+            this.selectedRecord = data.record;
           }
         });
     }
@@ -121,10 +121,10 @@ export class SafeRecordDropdownComponent
       this.records$ = this.records.asObservable();
       this.recordsQuery.valueChanges
         .pipe(takeUntil(this.destroy$))
-        .subscribe((res) => {
-          this.records.next(res.data.resource.records.edges.map((x) => x.node));
-          this.pageInfo = res.data.resource.records.pageInfo;
-          this.loading = res.loading;
+        .subscribe(({ data, loading }) => {
+          this.records.next(data.resource.records.edges.map((x) => x.node));
+          this.pageInfo = data.resource.records.pageInfo;
+          this.loading = loading;
         });
     }
   }

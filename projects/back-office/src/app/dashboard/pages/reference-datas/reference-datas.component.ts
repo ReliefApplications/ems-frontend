@@ -4,8 +4,6 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
-  PermissionsManagement,
-  PermissionType,
   ReferenceData,
   SafeAuthService,
   SafeConfirmService,
@@ -54,9 +52,6 @@ export class ReferenceDatasComponent
   ];
   dataSource = new MatTableDataSource<ReferenceData>([]);
   public cachedReferenceDatas: ReferenceData[] = [];
-
-  // === PERMISSIONS ===
-  canAdd = false;
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -108,28 +103,19 @@ export class ReferenceDatasComponent
 
     this.referenceDatasQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.cachedReferenceDatas = res.data.referenceDatas.edges.map(
+      .subscribe(({ data, loading }) => {
+        this.cachedReferenceDatas = data.referenceDatas.edges.map(
           (x) => x.node
         );
         this.dataSource.data = this.cachedReferenceDatas.slice(
           this.pageInfo.pageSize * this.pageInfo.pageIndex,
           this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         );
-        this.pageInfo.length = res.data.referenceDatas.totalCount;
-        this.pageInfo.endCursor = res.data.referenceDatas.pageInfo.endCursor;
-        this.loading = res.loading;
+        this.pageInfo.length = data.referenceDatas.totalCount;
+        this.pageInfo.endCursor = data.referenceDatas.pageInfo.endCursor;
+        this.loading = loading;
         this.filterPredicate();
       });
-
-    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.canAdd = this.authService.userHasClaim(
-        PermissionsManagement.getRightFromPath(
-          this.router.url,
-          PermissionType.create
-        )
-      );
-    });
   }
 
   /**
@@ -229,32 +215,32 @@ export class ReferenceDatasComponent
               name: value.name,
             },
           })
-          .subscribe(
-            (res) => {
-              if (res.errors) {
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
                     {
                       type: this.translate.instant('common.referenceData.one'),
-                      error: res.errors[0].message,
+                      error: errors[0].message,
                     }
                   ),
                   { error: true }
                 );
               } else {
-                if (res.data) {
+                if (data) {
                   this.router.navigate([
                     '/referencedata',
-                    res.data.addReferenceData.id,
+                    data.addReferenceData.id,
                   ]);
                 }
               }
             },
-            (err) => {
+            error: (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
-            }
-          );
+            },
+          });
       }
     });
   }

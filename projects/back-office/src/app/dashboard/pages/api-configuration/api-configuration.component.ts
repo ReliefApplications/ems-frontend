@@ -93,10 +93,10 @@ export class ApiConfigurationComponent
           },
         })
         .valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe(
-          (res) => {
-            if (res.data.apiConfiguration) {
-              this.apiConfiguration = res.data.apiConfiguration;
+        .subscribe({
+          next: ({ data, loading }) => {
+            if (data.apiConfiguration) {
+              this.apiConfiguration = data.apiConfiguration;
               this.breadcrumbService.setBreadcrumb(
                 '@api',
                 this.apiConfiguration.name as string
@@ -126,7 +126,7 @@ export class ApiConfigurationComponent
                 this.apiForm.controls.settings = this.buildSettingsForm(value);
                 this.apiForm.controls.settings.updateValueAndValidity();
               });
-              this.loading = res.data.loading;
+              this.loading = loading;
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant(
@@ -143,11 +143,11 @@ export class ApiConfigurationComponent
               this.router.navigate(['/settings/apiconfigurations']);
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             this.router.navigate(['/settings/apiconfigurations']);
-          }
-        );
+          },
+        });
     }
   }
 
@@ -218,10 +218,10 @@ export class ApiConfigurationComponent
           permissions: e,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.apiConfiguration = res.data.editApiConfiguration;
-          this.loading = res.data.loading;
+      .subscribe(({ data, loading }) => {
+        if (data) {
+          this.apiConfiguration = data.editApiConfiguration;
+          this.loading = loading;
         }
       });
   }
@@ -260,23 +260,23 @@ export class ApiConfigurationComponent
         mutation: EDIT_API_CONFIGURATION,
         variables,
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ errors, data, loading }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotUpdated', {
               type: this.translate.instant('common.apiConfiguration.one'),
-              error: res.errors[0].message,
+              error: errors[0].message,
             }),
             { error: true }
           );
           this.loading = false;
         } else {
-          this.apiConfiguration = res.data?.editApiConfiguration;
+          this.apiConfiguration = data?.editApiConfiguration;
           this.apiForm.controls.settings = this.buildSettingsForm(
             this.apiForm.value.authType
           );
           this.apiForm.markAsPristine();
-          this.loading = res.data?.loading || false;
+          this.loading = loading || false;
         }
       });
   }

@@ -6,7 +6,6 @@ import {
   ContentType,
   CONTENT_TYPES,
   Form,
-  Permissions,
   SafeAuthService,
   SafeSnackBarService,
   SafeUnsubscribeComponent,
@@ -18,7 +17,6 @@ import { AddFormMutationResponse, ADD_FORM } from '../../graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from '../../graphql/queries';
 import { AddFormModalComponent } from '../../../../../components/add-form-modal/add-form-modal.component';
 import { MatSelect } from '@angular/material/select';
-import { takeUntil } from 'rxjs/operators';
 
 /** Default items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -52,9 +50,6 @@ export class AddStepComponent
   // === REACTIVE FORM ===
   public stepForm: FormGroup = new FormGroup({});
   public stage = 1;
-
-  // === PERMISSIONS ===
-  canCreateForm = false;
 
   /**
    * Add step page component
@@ -95,10 +90,10 @@ export class AddStepComponent
         });
 
         this.forms$ = this.forms.asObservable();
-        this.formsQuery.valueChanges.subscribe((res) => {
-          this.forms.next(res.data.forms.edges.map((x) => x.node));
-          this.pageInfo = res.data.forms.pageInfo;
-          this.loadingMore = res.loading;
+        this.formsQuery.valueChanges.subscribe(({ data, loading }) => {
+          this.forms.next(data.forms.edges.map((x) => x.node));
+          this.pageInfo = data.forms.pageInfo;
+          this.loadingMore = loading;
         });
         contentControl.setValidators([Validators.required]);
         contentControl.updateValueAndValidity();
@@ -108,11 +103,6 @@ export class AddStepComponent
         contentControl.updateValueAndValidity();
       }
       this.onNext();
-    });
-    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.canCreateForm = this.authService.userHasClaim(
-        Permissions.canManageForms
-      );
     });
   }
 
@@ -180,29 +170,29 @@ export class AddStepComponent
     const dialogRef = this.dialog.open(AddFormModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        const data = { name: value.name };
+        const variablesData = { name: value.name };
         Object.assign(
-          data,
+          variablesData,
           value.resource && { resource: value.resource },
           value.template && { template: value.template }
         );
         this.apollo
           .mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,
-            variables: data,
+            variables: variablesData,
           })
-          .subscribe(
-            (res) => {
-              if (res.data) {
-                const { id } = res.data.addForm;
+          .subscribe({
+            next: ({ data }) => {
+              if (data) {
+                const { id } = data.addForm;
                 this.stepForm.controls.content.setValue(id);
                 this.onSubmit();
               }
             },
-            (err) => {
+            error: (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
-            }
-          );
+            },
+          });
       }
     });
   }

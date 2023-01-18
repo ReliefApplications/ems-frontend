@@ -101,8 +101,8 @@ export class SafeSchedulerSettingsComponent implements OnInit {
     // if (e.value === 'resource') {
     //   this.apollo.query<GetResourcesQueryResponse>({
     //     query: GET_RESOURCES
-    //   }).subscribe(res => {
-    //     this.sources = res.data.resources.edges.map(x => x.node.source = { id: source.id, name: source.name });
+    //   }).subscribe(({ data }) => {
+    //     this.sources = data.resources.edges.map(x => x.node.source = { id: source.id, name: source.name });
     //     if (!init) {
     //       this.tileForm.get('source')?.setValue(null);
     //       this.tileForm.get('events.title')?.setValue(null);
@@ -115,8 +115,8 @@ export class SafeSchedulerSettingsComponent implements OnInit {
     // } else {
     //   this.apollo.query<GetFormsQueryResponse>({
     //     query: GET_FORMS
-    //   }).subscribe(res => {
-    //     this.sources = res.data.forms.map(source => source = { id: source.id, name: source.name });
+    //   }).subscribe(({ data }) => {
+    //     this.sources = data.forms.map(source => source = { id: source.id, name: source.name });
     //     if (!init) {
     //       this.tileForm.get('source')?.setValue(null);
     //       this.tileForm.get('events.title')?.setValue(null);
@@ -143,9 +143,9 @@ export class SafeSchedulerSettingsComponent implements OnInit {
             id: e.value,
           },
         })
-        .subscribe((res) => {
-          this.fields = res.data.resource.fields || [];
-          this.forms = res.data.resource.forms || [];
+        .subscribe(({ data }) => {
+          this.fields = data.resource.fields || [];
+          this.forms = data.resource.forms || [];
         });
     } else {
       this.apollo
@@ -155,9 +155,9 @@ export class SafeSchedulerSettingsComponent implements OnInit {
             id: e.value,
           },
         })
-        .subscribe((res) => {
-          this.fields = res.data.form.fields || [];
-          this.forms = [{ id: res.data.form.id, name: res.data.form.name }];
+        .subscribe(({ data }) => {
+          this.fields = data.form.fields || [];
+          this.forms = [{ id: data.form.id, name: data.form.name }];
         });
     }
   }

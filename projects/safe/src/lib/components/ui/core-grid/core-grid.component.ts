@@ -57,7 +57,7 @@ import { SafeDateTranslateService } from '../../../services/date-translate/date-
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
 
 /**
  * Default file name when exporting grid data.
@@ -377,14 +377,14 @@ export class SafeCoreGridComponent
       this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
       if (this.metaQuery) {
         this.loading = true;
-        this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe(
-          async (res: any) => {
+        this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
+          next: async ({ data }: any) => {
             this.status = {
               error: false,
             };
-            for (const field in res.data) {
-              if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-                this.metaFields = Object.assign({}, res.data[field]);
+            for (const field in data) {
+              if (Object.prototype.hasOwnProperty.call(data, field)) {
+                this.metaFields = Object.assign({}, data[field]);
                 try {
                   await this.gridService.populateMetaFields(this.metaFields);
                 } catch (err) {
@@ -402,7 +402,7 @@ export class SafeCoreGridComponent
             }
             this.getRecords();
           },
-          (err: any) => {
+          error: (err: any) => {
             this.loading = false;
             this.status = {
               error: true,
@@ -416,8 +416,8 @@ export class SafeCoreGridComponent
                 }
               ),
             };
-          }
-        );
+          },
+        });
       } else {
         this.loading = false;
         this.status = {
@@ -444,9 +444,9 @@ export class SafeCoreGridComponent
           },
         })
         .pipe(takeUntil(this.destroy$))
-        .subscribe((res) => {
-          if (res.data.form.structure) {
-            this.templateStructure = res.data.form.structure;
+        .subscribe(({ data }) => {
+          if (data.form.structure) {
+            this.templateStructure = data.form.structure;
           }
         });
   }
@@ -598,8 +598,8 @@ export class SafeCoreGridComponent
         }
       }
       promises.push(
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
+        firstValueFrom(
+          this.apollo.mutate<EditRecordMutationResponse>({
             mutation: EDIT_RECORD,
             variables: {
               id: item.id,
@@ -608,7 +608,7 @@ export class SafeCoreGridComponent
               lang: this.translate.currentLang,
             },
           })
-          .toPromise()
+        )
       );
     }
     return promises;
@@ -623,22 +623,22 @@ export class SafeCoreGridComponent
     this.loading = true;
     this.updatedItems = [];
     if (this.dataQuery) {
-      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
-        (res) => {
+      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+        next: ({ data }) => {
           this.loading = false;
           this.status = {
             error: false,
           };
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+          for (const field in data) {
+            if (Object.prototype.hasOwnProperty.call(data, field)) {
               const nodes =
-                res.data[field].edges.map((x: any) => ({
+                data[field].edges.map((x: any) => ({
                   ...x.node,
                   _meta: {
                     style: x.meta.style,
                   },
                 })) || [];
-              this.totalCount = res.data[field].totalCount;
+              this.totalCount = data[field].totalCount;
               this.items = cloneData(nodes);
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
@@ -658,7 +658,7 @@ export class SafeCoreGridComponent
             }
           }
         },
-        (err: any) => {
+        error: (err: any) => {
           this.status = {
             error: true,
             message: this.translate.instant(
@@ -672,8 +672,8 @@ export class SafeCoreGridComponent
             ),
           };
           this.loading = false;
-        }
-      );
+        },
+      });
     } else {
       this.loading = false;
     }
@@ -984,8 +984,8 @@ export class SafeCoreGridComponent
           const promises: Promise<any>[] = [];
           for (const item of items) {
             promises.push(
-              this.apollo
-                .mutate<ConvertRecordMutationResponse>({
+              firstValueFrom(
+                this.apollo.mutate<ConvertRecordMutationResponse>({
                   mutation: CONVERT_RECORD,
                   variables: {
                     id: item.id ? item.id : item,
@@ -993,7 +993,7 @@ export class SafeCoreGridComponent
                     copyRecord: value.copyRecord,
                   },
                 })
-                .toPromise()
+              )
             );
           }
           Promise.all(promises).then(() => {

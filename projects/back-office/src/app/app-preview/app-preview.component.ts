@@ -1,16 +1,60 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AbilityBuilder } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
 import {
+  AppAbility,
   Application,
   ContentType,
-  Permissions,
   SafeApplicationService,
   SafeUnsubscribeComponent,
 } from '@safe/builder';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { PreviewService } from '../services/preview.service';
+
+/**
+ * Creates a ability object the app preview
+ * given the application and the role to preview with
+ *
+ * @param app The application being previewed
+ * @param role The role to preview with
+ * @returns The ability object
+ */
+const getAbilityForAppPreview = (app: Application, role: string) => {
+  const { can, rules } = new AbilityBuilder(AppAbility);
+  const permissions =
+    app.roles?.find((x) => x.id === role)?.permissions?.map((p) => p.type) ||
+    [];
+
+  console.log(permissions);
+  // === Role ===
+  if (permissions.includes('can_see_roles')) {
+    can(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);
+  }
+
+  // === User ===
+  if (permissions.includes('can_see_users')) {
+    can(['create', 'read', 'update', 'delete'], 'User');
+  }
+
+  // === Template ===
+  if (permissions.includes('can_manage_templates')) {
+    can(['create', 'read', 'update', 'delete', 'manage'], 'Template');
+  }
+
+  // === Distribution list ===
+  if (permissions.includes('can_manage_distribution_lists')) {
+    can(['create', 'read', 'update', 'delete', 'manage'], 'DistributionList');
+  }
+
+  // === Custom notifications===
+  if (permissions.includes('can_manage_custom_notifications')) {
+    can(['create', 'read', 'update', 'delete', 'manage'], 'CustomNotification');
+  }
+
+  return new AppAbility(rules);
+};
 
 /**
  * Main component of Application preview capacity.
@@ -77,115 +121,88 @@ export class AppPreviewComponent
       .subscribe((application: Application | null) => {
         if (application) {
           this.title = application.name + ' (Preview)';
-          const role = application.roles?.find((x) =>
-            this.role ? x.id === this.role : true
-          );
-          const adminNavItems = [];
-          if (role) {
+          const ability = getAbilityForAppPreview(application, this.role);
+          const adminNavItems: any[] = [];
+          if (ability.can('read', 'User')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.user.few'),
+              path: './settings/users',
+              icon: 'supervisor_account',
+            });
+          }
+          if (ability.can('read', 'Role')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.role.few'),
+              path: './settings/roles',
+              icon: 'admin_panel_settings',
+            });
+          }
+          if (ability.can('manage', 'Template')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.template.few'),
+              path: './settings/templates',
+              icon: 'description',
+            });
+          }
+          if (ability.can('manage', 'DistributionList')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.distributionList.few'),
+              path: './settings/distribution-lists',
+              icon: 'mail',
+            });
+          }
+          if (ability.can('manage', 'CustomNotification')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.customNotification.few'),
+              path: './settings/notifications',
+              icon: 'schedule_send',
+            });
+          }
+          this.navGroups = [
+            {
+              name: 'Pages',
+              navItems: application.pages
+                ?.filter((x) => x.content)
+                .map((x) => ({
+                  name: x.name,
+                  path:
+                    x.type === ContentType.form
+                      ? `./${x.type}/${x.id}`
+                      : `./${x.type}/${x.content}`,
+                  icon: this.getNavIcon(x.type || ''),
+                })),
+            },
+            {
+              name: 'Administration',
+              navItems: adminNavItems,
+            },
+          ];
+          if (!this.application || application.id !== this.application.id) {
+            const firstPage = get(application, 'pages', [])[0];
             if (
-              role.permissions?.some(
-                (x) => x.type === Permissions.canSeeUsers && !x.global
-              )
+              this.router.url.endsWith('/') ||
+              (this.application && application.id !== this.application?.id) ||
+              !firstPage
             ) {
-              adminNavItems.push({
-                name: this.translate.instant('common.user.few'),
-                path: './settings/users',
-                icon: 'supervisor_account',
-              });
-            }
-            if (
-              role.permissions?.some(
-                (x) => x.type === Permissions.canSeeRoles && !x.global
-              )
-            ) {
-              adminNavItems.push({
-                name: this.translate.instant('common.role.few'),
-                path: './settings/roles',
-                icon: 'admin_panel_settings',
-              });
-            }
-            if (
-              role.permissions?.some(
-                (x) => x.type === Permissions.canManageTemplates && !x.global
-              )
-            ) {
-              adminNavItems.push({
-                name: this.translate.instant('common.template.few'),
-                path: './settings/templates',
-                icon: 'description',
-              });
-            }
-            if (
-              role.permissions?.some(
-                (x) =>
-                  x.type === Permissions.canManageDistributionLists && !x.global
-              )
-            ) {
-              adminNavItems.push({
-                name: this.translate.instant('common.customNotification.few'),
-                path: './settings/distribution-lists',
-                icon: 'mail',
-              });
-            }
-            if (
-              role.permissions?.some(
-                (x) =>
-                  x.type === Permissions.canManageCustomNotifications &&
-                  !x.global
-              )
-            ) {
-              adminNavItems.push({
-                name: this.translate.instant('common.distributionList.few'),
-                path: './settings/notifications',
-                icon: 'schedule_send',
-              });
-            }
-            this.navGroups = [
-              {
-                name: 'Pages',
-                navItems: application.pages
-                  ?.filter((x) => x.content)
-                  .map((x) => ({
-                    name: x.name,
-                    path:
-                      x.type === ContentType.form
-                        ? `./${x.type}/${x.id}`
-                        : `./${x.type}/${x.content}`,
-                    icon: this.getNavIcon(x.type || ''),
-                  })),
-              },
-              {
-                name: 'Administration',
-                navItems: adminNavItems,
-              },
-            ];
-            if (!this.application || application.id !== this.application.id) {
-              const firstPage = get(application, 'pages', [])[0];
-              if (
-                this.router.url.endsWith('/') ||
-                (this.application && application.id !== this.application?.id) ||
-                !firstPage
-              ) {
-                if (firstPage) {
-                  this.router.navigate(
-                    [
-                      `./${firstPage.type}/${
-                        firstPage.type === ContentType.form
-                          ? firstPage.id
-                          : firstPage.content
-                      }`,
-                    ],
-                    { relativeTo: this.route }
-                  );
-                } else {
-                  this.router.navigate([`./`], { relativeTo: this.route });
-                }
+              if (firstPage) {
+                this.router.navigate(
+                  [
+                    `./${firstPage.type}/${
+                      firstPage.type === ContentType.form
+                        ? firstPage.id
+                        : firstPage.content
+                    }`,
+                  ],
+                  { relativeTo: this.route }
+                );
+              } else {
+                this.router.navigate([`./`], { relativeTo: this.route });
               }
             }
-            this.application = application;
-          } else {
-            this.navGroups = [];
           }
+          this.application = application;
+        } else {
+          this.navGroups = [];
         }
       });
   }

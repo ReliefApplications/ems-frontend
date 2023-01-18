@@ -166,10 +166,10 @@ export class WorkflowComponent
           name: workflowName,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.workflow = { ...this.workflow, name: res.data.editPage.name };
-          this.applicationService.updatePageName(res.data.editPage);
+      .subscribe(({ data }) => {
+        if (data) {
+          this.workflow = { ...this.workflow, name: data.editPage.name };
+          this.applicationService.updatePageName(data.editPage);
         }
       });
   }
@@ -188,10 +188,10 @@ export class WorkflowComponent
           permissions: e,
         },
       })
-      .subscribe((res) => {
+      .subscribe(({ data }) => {
         this.workflow = {
           ...this.workflow,
-          permissions: res.data?.editPage.permissions,
+          permissions: data?.editPage.permissions,
         };
       });
   }
@@ -253,15 +253,15 @@ export class WorkflowComponent
                 id: step.id,
               },
             })
-            .subscribe((res) => {
-              if (res.data) {
+            .subscribe(({ data }) => {
+              if (data) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectDeleted', {
                     value: this.translate.instant('common.step.one'),
                   })
                 );
                 this.steps = this.steps.filter(
-                  (x) => x.id !== res.data?.deleteStep.id
+                  (x) => x.id !== data?.deleteStep.id
                 );
                 if (index === this.activeStep) {
                   this.onOpenStep(-1);
@@ -317,8 +317,8 @@ export class WorkflowComponent
           steps: steps.map((step) => step.id),
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ errors, data }) => {
+        if (data) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectReordered', {
               type: this.translate.instant('common.step.one'),
@@ -333,7 +333,7 @@ export class WorkflowComponent
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotUpdated', {
               type: this.translate.instant('common.workflow.one'),
-              error: res.errors ? res.errors[0].message : '',
+              error: errors ? errors[0].message : '',
             })
           );
         }

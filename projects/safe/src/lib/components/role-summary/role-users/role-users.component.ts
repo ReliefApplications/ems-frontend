@@ -22,6 +22,7 @@ export class RoleUsersComponent
   implements OnInit
 {
   @Input() role!: Role;
+  @Input() autoAssigned = false;
   public loading = true;
   public updating = false;
 
@@ -38,6 +39,11 @@ export class RoleUsersComponent
     endCursor: '',
   };
 
+  /** @returns empty state of the table */
+  get empty(): boolean {
+    return !this.loading && this.users.data.length === 0;
+  }
+
   /**
    * Users component for role summary
    *
@@ -53,19 +59,20 @@ export class RoleUsersComponent
       variables: {
         id: this.role.id,
         first: DEFAULT_PAGE_SIZE,
+        automated: this.autoAssigned,
       },
     });
     this.usersQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.cachedUsers = res.data.role.users.edges.map((x) => x.node);
+      .subscribe(({ data, loading }) => {
+        this.cachedUsers = data.role.users.edges.map((x) => x.node);
         this.users.data = this.cachedUsers.slice(
           this.pageInfo.pageSize * this.pageInfo.pageIndex,
           this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         );
-        this.pageInfo.length = res.data.role.users.totalCount;
-        this.pageInfo.endCursor = res.data.role.users.pageInfo.endCursor;
-        this.loading = res.loading;
+        this.pageInfo.length = data.role.users.totalCount;
+        this.pageInfo.endCursor = data.role.users.pageInfo.endCursor;
+        this.loading = loading;
         this.updating = false;
       });
   }

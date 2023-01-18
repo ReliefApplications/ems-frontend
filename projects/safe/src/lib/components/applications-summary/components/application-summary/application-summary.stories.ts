@@ -35,7 +35,6 @@ DEFAULT.args = {
   application: {
     name: 'Dummy Application',
     createdAt: new Date(),
-    usersCount: 250,
     status: status.active,
   },
 };

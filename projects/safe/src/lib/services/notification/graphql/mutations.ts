@@ -28,7 +28,6 @@ export const SEE_NOTIFICATION = gql`
 
 /** Model for SeeNotificationMutationResponse object */
 export interface SeeNotificationMutationResponse {
-  loading: boolean;
   seeNotification: Notification;
 }
 
@@ -43,6 +42,5 @@ export const SEE_NOTIFICATIONS = gql`
 
 /** Model for SeeNotificationsMutationResponse object */
 export interface SeeNotificationsMutationResponse {
-  loading: boolean;
   seeNotifications: boolean;
 }

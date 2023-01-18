@@ -61,8 +61,8 @@ export class RoleChannelsComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.channels = res.data.channels;
+      .subscribe(({ data }) => {
+        this.channels = data.channels;
         // Move channels in an array under corresponding applications.
         this.applications = Array.from(
           new Set(this.channels.map((x) => x.application?.name))

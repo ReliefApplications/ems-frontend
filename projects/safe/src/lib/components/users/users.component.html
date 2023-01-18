@@ -59,7 +59,6 @@
   <!-- Actions -->
   <div class="flex gap-2 items-center">
     <safe-button
-      class="export-users"
       icon="file_download"
       category="secondary"
       variant="primary"
@@ -75,7 +74,6 @@
       <button mat-menu-item (click)="onExport('xlsx')">.xlsx</button>
     </mat-menu>
     <safe-button
-      class="export-users"
       icon="send"
       category="secondary"
       variant="primary"
@@ -105,11 +103,12 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" mat-table [dataSource]="users" matSort>
+    <table *ngIf="!loading" mat-table [dataSource]="users">
       <!-- Checkbox Column -->
       <ng-container matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef>
           <mat-checkbox
+            class="mr-2"
             (change)="$event ? masterToggle() : null"
             [checked]="selection.hasValue() && isAllSelected()"
             [indeterminate]="selection.hasValue() && !isAllSelected()"
@@ -119,6 +118,7 @@
         </th>
         <td mat-cell *matCellDef="let row">
           <mat-checkbox
+            class="mr-2"
             (click)="$event.stopPropagation()"
             (change)="$event ? selection.toggle(row) : null"
             [checked]="selection.isSelected(row)"
@@ -129,7 +129,7 @@
       </ng-container>
       <ng-container matColumnDef="username">
         <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+          <span class="headerTitle">
             {{ 'models.user.username' | translate }}
           </span>
         </th>
@@ -138,16 +138,18 @@
 
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+          <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        <td mat-cell *matCellDef="let element" class="font-bold">
+          {{ element.name }}
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="roles">
         <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+          <span class="headerTitle">
             {{ 'common.role.few' | translate }}
           </span>
         </th>
@@ -156,22 +158,9 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="attributes" *ngIf="applicationService">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
-            {{ 'common.positionAttribute.few' | translate }}
-          </span>
-        </th>
-        <td mat-cell *matCellDef="let element">
-          <span *ngFor="let attribute of element.positionAttributes">
-            {{ attribute.value }},
-          </span>
-        </td>
-      </ng-container>
-
       <ng-container matColumnDef="oid">
         <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+          <span class="headerTitle">
             {{ 'common.id' | translate }}
           </span>
         </th>
@@ -179,7 +168,7 @@
       </ng-container>
 
       <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+        <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
           <safe-button
             [isIcon]="true"

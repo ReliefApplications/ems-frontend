@@ -7,13 +7,13 @@
 @import 'tailwindcss/utilities';
 
 .sv_main {
-  --primary-color: #{$primary_500};
-  --secondary-color: #{$primary_500};
+  --primary-color: #{rgb($primary_500)};
+  --secondary-color: #{rgb($primary_500)};
   // --primary-text-color: #676a6c;
   // --secondary-text-color: #a7a7a7;
   // --inverted-text-color: #ffffff;
-  --primary-hover-color: #{$primary_500};
-  --selection-border-color: #{$primary_500};
+  --primary-hover-color: #{rgb($primary_500)};
+  --selection-border-color: #{rgb($primary_500)};
   // --primary-icon-color: #3d4d5d;
   // --primary-bg-color: #fff;
   // --secondary-bg-color: #f4f4f4;
@@ -23,43 +23,44 @@
 }
 
 $safe-palette: (
-  50: $primary_50,
-  100: $primary_100,
-  200: $primary_200,
-  300: $primary_300,
-  400: $primary_400,
-  500: $primary_500,
-  600: $primary_600,
-  700: $primary_700,
-  800: $primary_800,
-  900: $primary_900,
-  A100: $primary_A100,
-  A200: $primary_A200,
-  A400: $primary_A400,
-  A700: $primary_A700,
-  contrast: (
-    50: #000000,
-    100: #000000,
-    200: #000000,
-    300: #000000,
-    400: #ffffff,
-    500: #ffffff,
-    600: #ffffff,
-    700: #ffffff,
-    800: #ffffff,
-    900: #ffffff,
-    A100: #000000,
-    A200: #000000,
-    A400: #ffffff,
-    A700: #ffffff,
-  ),
+  50: rgb($primary_50),
+  100: rgb($primary_100),
+  200: rgb($primary_200),
+  300: rgb($primary_300),
+  400: rgb($primary_400),
+  500: rgb($primary_500),
+  600: rgb($primary_600),
+  700: rgb($primary_700),
+  800: rgb($primary_800),
+  900: rgb($primary_900),
+  // A100: $primary_A100,
+  // A200: $primary_A200,
+  // A400: $primary_A400,
+  // A700: $primary_A700,
+  contrast:
+    (
+      50: #000000,
+      100: #000000,
+      200: #000000,
+      300: #000000,
+      400: #ffffff,
+      500: #ffffff,
+      600: #ffffff,
+      700: #ffffff,
+      800: #ffffff,
+      900: #ffffff,
+      // A100: #000000,
+      // A200: #000000,
+      // A400: #ffffff,
+      // A700: #ffffff,
+    ),
 );
 
 $safe-palette-accent: (
-  main: $secondary_main,
-  lighter: $secondary_lighter,
-  darker: $secondary_darker,
-  200: $secondary_200,
+  main: rgb($secondary_50),
+  lighter: rgb($secondary_100),
+  darker: rgb($secondary_150),
+  200: rgb($secondary_200),
   // For slide toggle,
   contrast:
     (
@@ -119,32 +120,12 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
     }
   }
 
-  .primary {
-    color: mat.get-color-from-palette($primary);
-  }
-
   .accent {
     color: mat.get-color-from-palette($accent);
   }
 
   .warn {
     color: mat.get-color-from-palette($warn);
-  }
-
-  .safe-add-application {
-    background-color: mat.get-color-from-palette($primary, 50);
-
-    span {
-      color: mat.get-color-from-palette($primary);
-    }
-  }
-
-  .safe-add-step {
-    background-color: mat.get-color-from-palette($primary, 50);
-
-    span {
-      color: mat.get-color-from-palette($primary);
-    }
   }
 }
 
@@ -368,10 +349,6 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   .mat-cell {
     border-bottom: 1px solid #f2f3f5 !important;
     color: #3f3c3c;
-  }
-  .mat-cell:first-child {
-    color: #000000;
-    font-weight: 500;
   }
 }
 
@@ -638,7 +615,7 @@ mat-tab-group[vertical] {
   font-family: Roboto, 'Helvetica Neue', sans-serif !important;
 }
 
-// === SCROLLBARS ===
+// === SCROLL BARS ===
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -708,9 +685,30 @@ mat-tab-group[vertical] {
 }
 
 /* === Tailwindcss === */
+// Allow to use @apply in not visible by default elements
 @layer components {
   .cdk-drag-preview {
     @apply box-border rounded shadow-xl;
     // previous shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12),
+  }
+}
+
+// Define new colors
+@layer base {
+  :root {
+    --primary-50: #{$primary_50};
+    --primary-100: #{$primary_100};
+    --primary-200: #{$primary_200};
+    --primary-300: #{$primary_300};
+    --primary-400: #{$primary_400};
+    --primary-500: #{$primary_500};
+    --primary-600: #{$primary_600};
+    --primary-700: #{$primary_700};
+    --primary-800: #{$primary_800};
+    --primary-900: #{$primary_900};
+    --secondary-50: #{$secondary_50};
+    --secondary-100: #{$secondary_100};
+    --secondary-150: #{$secondary_150};
+    --secondary-200: #{$secondary_200};
   }
 }

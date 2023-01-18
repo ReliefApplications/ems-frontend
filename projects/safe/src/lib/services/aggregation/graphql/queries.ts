@@ -31,7 +31,6 @@ export const GET_RESOURCE_AGGREGATIONS = gql`
 
 /** Interface for GET_RESOURCE_AGGREGATIONS query */
 export interface GetResourceByIdQueryResponse {
-  loading: boolean;
   resource: Resource;
 }
 

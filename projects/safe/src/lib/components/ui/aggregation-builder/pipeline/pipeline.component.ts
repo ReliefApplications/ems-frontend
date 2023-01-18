@@ -6,6 +6,8 @@ import { PipelineStage } from './pipeline-stage.enum';
 import { addStage } from '../aggregation-builder-forms';
 import { debounceTime } from 'rxjs/operators';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Aggregation pipeline component.
@@ -15,7 +17,10 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
   templateUrl: './pipeline.component.html',
   styleUrls: ['./pipeline.component.scss'],
 })
-export class SafePipelineComponent implements OnInit {
+export class SafePipelineComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public stageType = PipelineStage;
   public stageList: string[] = Object.values(PipelineStage);
 
@@ -34,7 +39,9 @@ export class SafePipelineComponent implements OnInit {
    *
    * @param aggregationBuilder Shared aggregation builder
    */
-  constructor(private aggregationBuilder: AggregationBuilderService) {}
+  constructor(private aggregationBuilder: AggregationBuilderService) {
+    super();
+  }
 
   ngOnInit(): void {
     this.fields$.subscribe((fields: any[]) => {
@@ -47,6 +54,7 @@ export class SafePipelineComponent implements OnInit {
     });
     this.pipelineForm.valueChanges
       .pipe(debounceTime(500))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((pipeline: any[]) => this.updateFieldsPerStage(pipeline));
   }
 

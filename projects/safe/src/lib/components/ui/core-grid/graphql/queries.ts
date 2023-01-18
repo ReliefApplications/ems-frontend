@@ -23,7 +23,6 @@ export const GET_FORM_BY_ID = gql`
 
 /** Model for GetFormByIdQueryResponse object */
 export interface GetFormByIdQueryResponse {
-  loading: boolean;
   form: Form;
 }
 

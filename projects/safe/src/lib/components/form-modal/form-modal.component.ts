@@ -37,7 +37,7 @@ import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeRestService } from '../../services/rest/rest.service';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
@@ -149,63 +149,58 @@ export class SafeFormModalComponent implements OnInit {
         ? this.data.recordId[0]
         : this.data.recordId;
       promises.push(
-        this.apollo
-          .query<GetRecordByIdQueryResponse>({
+        firstValueFrom(
+          this.apollo.query<GetRecordByIdQueryResponse>({
             query: GET_RECORD_BY_ID,
             variables: {
               id,
             },
           })
-          .toPromise()
-          .then((res) => {
-            this.record = res.data.record;
-            this.modifiedAt = this.isMultiEdition
-              ? null
-              : this.record.modifiedAt || null;
-            if (!this.data.template) {
-              this.form = this.record.form;
-            }
-          })
+        ).then(({ data }) => {
+          this.record = data.record;
+          this.modifiedAt = this.isMultiEdition
+            ? null
+            : this.record.modifiedAt || null;
+          if (!this.data.template) {
+            this.form = this.record.form;
+          }
+        })
       );
     }
 
     if (!this.data.recordId || this.data.template) {
       promises.push(
-        this.apollo
-          .query<GetFormByIdQueryResponse>({
+        firstValueFrom(
+          this.apollo.query<GetFormByIdQueryResponse>({
             query: GET_FORM_BY_ID,
             variables: {
               id: this.data.template,
             },
           })
-          .toPromise()
-          .then((res) => {
-            this.form = res.data.form;
-            if (this.data.prefillData) {
-              this.storedMergedData = this.data.prefillData;
-            }
-            if (
-              this.data.prefillRecords &&
-              this.data.prefillRecords.length > 0
-            ) {
-              this.storedMergedData = this.mergedData(this.data.prefillRecords);
-              const resId = this.data.prefillRecords[0].form?.resource?.id;
-              const resourcesField = this.form.fields?.find(
-                (x) => x.type === 'resources' && x.resource === resId
+        ).then(({ data }) => {
+          this.form = data.form;
+          if (this.data.prefillData) {
+            this.storedMergedData = this.data.prefillData;
+          }
+          if (this.data.prefillRecords && this.data.prefillRecords.length > 0) {
+            this.storedMergedData = this.mergedData(this.data.prefillRecords);
+            const resId = this.data.prefillRecords[0].form?.resource?.id;
+            const resourcesField = this.form.fields?.find(
+              (x) => x.type === 'resources' && x.resource === resId
+            );
+            if (resourcesField) {
+              this.storedMergedData[resourcesField.name] =
+                this.data.prefillRecords.map((x) => x.id);
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'models.record.notifications.conversionIncomplete'
+                ),
+                { error: true }
               );
-              if (resourcesField) {
-                this.storedMergedData[resourcesField.name] =
-                  this.data.prefillRecords.map((x) => x.id);
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'models.record.notifications.conversionIncomplete'
-                  ),
-                  { error: true }
-                );
-              }
             }
-          })
+          }
+        })
       );
     }
     await Promise.all(promises);
@@ -366,9 +361,9 @@ export class SafeFormModalComponent implements OnInit {
             data: survey.data,
           },
         })
-        .subscribe((res) => {
-          if (res.errors) {
-            this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, {
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
               error: true,
             });
             this.ngZone.run(() => {
@@ -378,7 +373,7 @@ export class SafeFormModalComponent implements OnInit {
             this.ngZone.run(() => {
               this.dialogRef.close({
                 template: this.data.template,
-                data: res.data?.addRecord,
+                data: data?.addRecord,
               });
             });
           }
@@ -403,11 +398,11 @@ export class SafeFormModalComponent implements OnInit {
           template: this.data.template,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ data }) => {
+        if (data) {
           this.dialogRef.close({
             template: this.form?.id,
-            data: res.data.editRecord,
+            data: data.editRecord,
           });
         }
       });
@@ -420,21 +415,21 @@ export class SafeFormModalComponent implements OnInit {
    * @param survey current survey.
    */
   public updateMultipleData(ids: any, survey: any): void {
-    const data = cleanRecord(survey.data);
+    const recordData = cleanRecord(survey.data);
     this.apollo
       .mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
-          data,
+          data: recordData,
           template: this.data.template,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ data }) => {
+        if (data) {
           this.dialogRef.close({
             template: this.form?.id,
-            data: res.data.editRecords,
+            data: data.editRecords,
           });
         }
       });
@@ -451,8 +446,8 @@ export class SafeFormModalComponent implements OnInit {
     for (const name of questionsToUpload) {
       const files = this.temporaryFilesStorage[name];
       for (const [index, file] of files.entries()) {
-        const res = await this.apollo
-          .mutate<UploadFileMutationResponse>({
+        const res = await firstValueFrom(
+          this.apollo.mutate<UploadFileMutationResponse>({
             mutation: UPLOAD_FILE,
             variables: {
               file,
@@ -462,7 +457,7 @@ export class SafeFormModalComponent implements OnInit {
               useMultipart: true,
             },
           })
-          .toPromise();
+        );
         if (res.errors) {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
           return;

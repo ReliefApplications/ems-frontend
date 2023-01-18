@@ -21,6 +21,7 @@ import {
 } from '../../summary-card-settings/card-modal/graphql/queries';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Single Item component of Summary card widget.
@@ -82,9 +83,12 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /** Get the aggregation data for the current card, if not dynamic. */
   private async getAggregationData() {
     if (!this.card.aggregation) return;
-    const res = await this.aggregationService
-      .aggregationDataQuery(this.card.resource, this.card.aggregation)
-      ?.toPromise();
+    const res = await firstValueFrom(
+      this.aggregationService.aggregationDataQuery(
+        this.card.resource,
+        this.card.aggregation
+      )
+    );
 
     // for static cards with aggregation, assume the response is an array with one element
     if (res?.data?.recordsAggregation)
@@ -116,15 +120,15 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /** Sets layout style */
   private async getStyles(): Promise<void> {
     if (typeof this.card.layout === 'string') {
-      const apolloRes = await this.apollo
-        .query<GetLayoutQueryResponse>({
+      const apolloRes = await firstValueFrom(
+        this.apollo.query<GetLayoutQueryResponse>({
           query: GET_LAYOUT,
           variables: {
             id: this.card.layout,
             resource: this.card.resource,
           },
         })
-        .toPromise();
+      );
       if (get(apolloRes, 'data')) {
         this.layout = apolloRes.data.resource.layouts?.edges[0].node;
         this.styles = this.layout?.query.style;
@@ -141,14 +145,14 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    */
   private async getCardData() {
     // gets metadata
-    const metaRes = await this.apollo
-      .query<GetResourceMetadataQueryResponse>({
+    const metaRes = await firstValueFrom(
+      this.apollo.query<GetResourceMetadataQueryResponse>({
         query: GET_RESOURCE_METADATA,
         variables: {
           id: this.card.resource,
         },
       })
-      .toPromise();
+    );
     const queryName = get(metaRes, 'data.resource.queryName');
 
     const builtQuery = this.queryBuilder.buildQuery({

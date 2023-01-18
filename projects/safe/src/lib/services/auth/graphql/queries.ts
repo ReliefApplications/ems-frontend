@@ -33,9 +33,6 @@ export const GET_PROFILE = gql`
           value
         }
         name
-        role {
-          title
-        }
       }
       oid
       favoriteApp
@@ -45,6 +42,5 @@ export const GET_PROFILE = gql`
 
 /** Model for GetProfileQueryResponse object */
 export interface GetProfileQueryResponse {
-  loading: boolean;
   me: User;
 }

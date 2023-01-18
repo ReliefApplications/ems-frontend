@@ -65,6 +65,5 @@ export const EDIT_REFERENCE_DATA = gql`
 
 /** Edit ref data gql mutation response interface */
 export interface EditReferenceDataMutationResponse {
-  loading: boolean;
   editReferenceData: ReferenceData;
 }

@@ -57,6 +57,5 @@ export const EDIT_API_CONFIGURATION = gql`
 
 /** Edit API configuration gql mutation response interface */
 export interface EditApiConfigurationMutationResponse {
-  loading: boolean;
   editApiConfiguration: ApiConfiguration;
 }

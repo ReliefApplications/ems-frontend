@@ -1,11 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
@@ -16,31 +10,12 @@ import {
   AddUsersMutationResponse,
   ADD_USERS,
 } from './graphql/mutations';
-import { MatSort } from '@angular/material/sort';
-import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
-import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeDownloadService } from '../../services/download/download.service';
-import { Application } from '../../models/application.model';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeApplicationService } from '../../services/application/application.service';
 import { Router, ActivatedRoute } from '@angular/router';
-
-/** User columns to display for the main user administration page */
-const ADMIN_COLUMNS = ['select', 'name', 'username', 'oid', 'roles', 'actions'];
-
-/** User columns to display for the user administration page in an application */
-const APPLICATION_COLUMNS = [
-  'select',
-  'name',
-  'username',
-  'oid',
-  'roles',
-  'attributes',
-  'actions',
-];
 
 /**
  * A component to display the list of users
@@ -50,19 +25,21 @@ const APPLICATION_COLUMNS = [
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-export class SafeUsersComponent implements OnInit, AfterViewInit {
+export class SafeUsersComponent implements OnInit {
   // === INPUT DATA ===
   @Input() users: MatTableDataSource<User> = new MatTableDataSource<User>([]);
   @Input() roles: Role[] = [];
-  @Input() positionAttributeCategories: PositionAttributeCategory[] = [];
-  @Input() applicationService?: SafeApplicationService;
   @Input() loading = true;
 
   // === DISPLAYED COLUMNS ===
-  public displayedColumns: string[] = [];
-
-  // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
+  public displayedColumns = [
+    'select',
+    'name',
+    'username',
+    'oid',
+    'roles',
+    'actions',
+  ];
 
   // === FILTERS ===
   public searchText = '';
@@ -76,7 +53,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
    *
    * @param apollo The apollo client
    * @param snackBar The snack bar service
-   * @param authService The authentification service
    * @param dialog The material dialog service
    * @param downloadService The download service
    * @param confirmService The confirm service
@@ -87,7 +63,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService,
     public dialog: MatDialog,
     private downloadService: SafeDownloadService,
     private confirmService: SafeConfirmService,
@@ -97,11 +72,6 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    if (this.applicationService) {
-      this.displayedColumns = APPLICATION_COLUMNS;
-    } else {
-      this.displayedColumns = ADMIN_COLUMNS;
-    }
     this.users.filterPredicate = (data: any) =>
       (this.searchText.trim().length === 0 ||
         (this.searchText.trim().length > 0 &&
@@ -124,15 +94,8 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
       data: {
         roles: this.roles,
         users: this.users.data,
-        downloadPath: this.applicationService
-          ? this.applicationService.usersDownloadPath
-          : 'download/invite',
-        uploadPath: this.applicationService
-          ? this.applicationService.usersUploadPath
-          : 'upload/invite',
-        ...(this.positionAttributeCategories && {
-          positionAttributeCategories: this.positionAttributeCategories,
-        }),
+        downloadPath: 'download/invite',
+        uploadPath: 'upload/invite',
       },
     });
     dialogRef.afterClosed().subscribe((value) => {
@@ -145,22 +108,20 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
               application: this.roles[0].application?.id,
             },
           })
-          .subscribe((res) => {
-            if (!res.errors) {
+          .subscribe(({ errors, data }) => {
+            if (!errors) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectInvited', {
                   name: this.translate
                     .instant(
-                      res.data?.addUsers.length
+                      data?.addUsers.length
                         ? 'common.user.few'
                         : 'common.user.one'
                     )
                     .toLowerCase(),
                 })
               );
-              this.users.data = this.users.data.concat(
-                res?.data?.addUsers || []
-              );
+              this.users.data = this.users.data.concat(data?.addUsers || []);
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant(
@@ -168,7 +129,7 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
                   {
                     name: this.translate
                       .instant(
-                        res.data?.addUsers.length
+                        data?.addUsers.length
                           ? 'common.user.few'
                           : 'common.user.one'
                       )
@@ -230,58 +191,48 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
         const ids = users.map((u) => u.id);
         this.loading = true;
         this.selection.clear();
-        if (this.applicationService) {
-          this.applicationService.deleteUsersFromApplication(
-            ids,
-            () => (this.loading = false)
-          );
-        } else {
-          this.apollo
-            .mutate<DeleteUsersMutationResponse>({
-              mutation: DELETE_USERS,
-              variables: { ids },
-            })
-            .subscribe((res) => {
-              this.loading = false;
-              if (res.data?.deleteUsers) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
+
+        this.apollo
+          .mutate<DeleteUsersMutationResponse>({
+            mutation: DELETE_USERS,
+            variables: { ids },
+          })
+          .subscribe(({ data }) => {
+            this.loading = false;
+            if (data?.deleteUsers) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate
+                    .instant(
+                      data.deleteUsers > 1
+                        ? 'common.user.few'
+                        : 'common.user.one'
+                    )
+                    .toLowerCase(),
+                })
+              );
+              this.users.data = this.users.data.filter(
+                (u) => !ids.includes(u.id)
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
                     value: this.translate
                       .instant(
-                        res.data.deleteUsers > 1
-                          ? 'common.user.few'
-                          : 'common.user.one'
+                        ids.length > 1 ? 'common.user.few' : 'common.user.one'
                       )
                       .toLowerCase(),
-                  })
-                );
-                this.users.data = this.users.data.filter(
-                  (u) => !ids.includes(u.id)
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotDeleted',
-                    {
-                      value: this.translate
-                        .instant(
-                          ids.length > 1 ? 'common.user.few' : 'common.user.one'
-                        )
-                        .toLowerCase(),
-                      error: '',
-                    }
-                  ),
-                  { error: true }
-                );
-              }
-            });
-        }
+                    error: '',
+                  }
+                ),
+                { error: true }
+              );
+            }
+          });
       }
     });
-  }
-
-  ngAfterViewInit(): void {
-    this.users.sort = this.sort || null;
   }
 
   /**
@@ -352,29 +303,13 @@ export class SafeUsersComponent implements OnInit, AfterViewInit {
    * @param type The type of file we want ('csv' or 'xslx')
    */
   onExport(type: string): void {
-    // if we are in the Users page of an application
-    if (this.applicationService) {
-      this.applicationService.application$.subscribe(
-        (value: Application | null) => {
-          const fileName = `users_${value?.name}.${type}`;
-          const path = `download/application/${value?.id}/users`;
-          const queryString = new URLSearchParams({ type }).toString();
-          this.downloadService.getFile(
-            `${path}?${queryString}`,
-            `text/${type};charset=utf-8;`,
-            fileName
-          );
-        }
-      );
-    } else {
-      const fileName = `users.${type}`;
-      const path = `download/users`;
-      const queryString = new URLSearchParams({ type }).toString();
-      this.downloadService.getFile(
-        `${path}?${queryString}`,
-        `text/${type};charset=utf-8;`,
-        fileName
-      );
-    }
+    const fileName = `users.${type}`;
+    const path = `download/users`;
+    const queryString = new URLSearchParams({ type }).toString();
+    this.downloadService.getFile(
+      `${path}?${queryString}`,
+      `text/${type};charset=utf-8;`,
+      fileName
+    );
   }
 }

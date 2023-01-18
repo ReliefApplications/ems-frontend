@@ -15,9 +15,13 @@
         [multiple]="false"
       >
       </kendo-upload>
-      <button mat-button (click)="onDownload()" color="primary">
+      <safe-button
+        (click)="onDownload()"
+        variant="primary"
+        icon="file_download"
+      >
         {{ 'common.downloadTemplate' | translate }}
-      </button>
+      </safe-button>
     </div>
     <kendo-grid
       [data]="gridData"

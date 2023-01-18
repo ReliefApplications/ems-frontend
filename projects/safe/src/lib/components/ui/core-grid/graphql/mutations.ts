@@ -16,7 +16,6 @@ export const CONVERT_RECORD = gql`
 
 /** Model for ConvertRecordMutationResponse object */
 export interface ConvertRecordMutationResponse {
-  loading: boolean;
   convertRecord: Record;
 }
 // === DELETE RECORD ===
@@ -30,7 +29,6 @@ export const DELETE_RECORDS = gql`
 
 /** Model for DeleteRecordsMutationResponse object */
 export interface DeleteRecordsMutationResponse {
-  loading: boolean;
   deleteRecords: number;
 }
 
@@ -71,6 +69,5 @@ export const EDIT_RECORD = gql`
 
 /** Model for EditRecordMutationResponse object */
 export interface EditRecordMutationResponse {
-  loading: boolean;
   editRecord: Record;
 }

@@ -12,6 +12,7 @@ import {
   GET_REFERENCE_DATA_BY_ID,
 } from './graphql/queries';
 import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
+import { firstValueFrom } from 'rxjs';
 
 /** Local storage key for last modified */
 const LAST_MODIFIED_KEY = '_last_modified';
@@ -48,15 +49,16 @@ export class SafeReferenceDataService {
    * @returns Promised ReferenceData.
    */
   public loadReferenceData(id: string): Promise<ReferenceData> {
-    return this.apollo
-      .query<GetReferenceDataByIdQueryResponse>({
-        query: GET_REFERENCE_DATA_BY_ID,
-        variables: {
-          id,
-        },
-      })
-      .pipe(map((res) => res.data.referenceData))
-      .toPromise();
+    return firstValueFrom(
+      this.apollo
+        .query<GetReferenceDataByIdQueryResponse>({
+          query: GET_REFERENCE_DATA_BY_ID,
+          variables: {
+            id,
+          },
+        })
+        .pipe(map(({ data }) => data.referenceData))
+    );
   }
 
   /**
@@ -91,7 +93,7 @@ export class SafeReferenceDataService {
 
   /**
    * Asynchronously fetch choices from ReferenceData and return them in the right format for a selectable questions.
-   * Include caching for requests to optimise number of requests.
+   * Include caching for requests to optimize number of requests.
    *
    * @param referenceDataID ReferenceData ID.
    * @param displayField Field used for display in the question.
@@ -173,7 +175,7 @@ export class SafeReferenceDataService {
    * @returns The item list and the value field
    */
   public async cacheItems(referenceDataID: string): Promise<void> {
-    // Initialisation
+    // Initialization
     let items: any;
     const referenceData = await this.loadReferenceData(referenceDataID);
     const cacheKey = referenceData.id || '';
@@ -245,7 +247,7 @@ export class SafeReferenceDataService {
    */
   private async fetchItems(referenceData: ReferenceData): Promise<any[]> {
     const cacheKey = referenceData.id || '';
-    // Initialisation
+    // Initialization
     let items: any;
     switch (referenceData.type) {
       case referenceDataType.graphql: {

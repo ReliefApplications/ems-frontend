@@ -47,7 +47,6 @@ export const GET_RESOURCE_RECORDS = gql`
 
 /** Model for GetResourceRecordsQueryResponse object */
 export interface GetResourceRecordsQueryResponse {
-  loading: boolean;
   resource: {
     records: {
       edges: {

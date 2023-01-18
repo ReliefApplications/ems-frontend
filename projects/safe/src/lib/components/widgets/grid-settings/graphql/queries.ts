@@ -21,7 +21,6 @@ export const GET_CHANNELS = gql`
 
 /** Model for GetChannelsQueryResponse object */
 export interface GetChannelsQueryResponse {
-  loading: boolean;
   channels: Channel[];
 }
 
@@ -122,13 +121,11 @@ export const GET_GRID_RESOURCE_META = gql`
 
 /** Model for GetFormByIdQueryResponse object */
 export interface GetFormByIdQueryResponse {
-  loading: boolean;
   form: Form;
 }
 
 /** Model for GetResourceByIdQueryResponse object */
 export interface GetResourceByIdQueryResponse {
-  loading: boolean;
   resource: Resource;
 }
 
@@ -289,7 +286,6 @@ export const GET_RESOURCES = gql`
 
 /** Model for GetResourcesQueryResponse object */
 export interface GetResourcesQueryResponse {
-  loading: boolean;
   resources: {
     edges: {
       node: Resource;

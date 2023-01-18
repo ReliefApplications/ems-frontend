@@ -10,6 +10,8 @@ import { Resource } from '../../../models/resource.model';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { scrollFactory } from '../../config-display-grid-fields-modal/config-display-grid-fields-modal.component';
 import { Overlay } from '@angular/cdk/overlay';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Main component of Aggregation builder.
@@ -27,7 +29,10 @@ import { Overlay } from '@angular/cdk/overlay';
     },
   ],
 })
-export class SafeAggregationBuilderComponent implements OnInit {
+export class SafeAggregationBuilderComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === REACTIVE FORM ===
   @Input() aggregationForm: FormGroup = new FormGroup({});
   @Input() resource!: Resource;
@@ -84,7 +89,9 @@ export class SafeAggregationBuilderComponent implements OnInit {
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService,
     private gridService: SafeGridService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.queryName = this.resource.queryName ?? '';
@@ -109,12 +116,12 @@ export class SafeAggregationBuilderComponent implements OnInit {
     //   variables,
     // });
     // this.forms$ = this.forms.asObservable();
-    // this.formsQuery.valueChanges.subscribe((res) => {
-    //   this.forms.next(res.data.forms.edges.map((x) => x.node));
-    //   this.pageInfo = res.data.forms.pageInfo;
-    //   this.loadingMore = res.loading;
+    // this.formsQuery.valueChanges.subscribe(({ data, loading }) => {
+    //   this.forms.next(data.forms.edges.map((x) => x.node));
+    //   this.pageInfo = data.forms.pageInfo;
+    //   this.loadingMore = loading;
     //   if (this.loading) {
-    //     this.loading = res.loading;
+    //     this.loading = loading;
     //     this.initFields();
     //   }
     // });
@@ -129,6 +136,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
     this.aggregationForm
       .get('sourceFields')
       ?.valueChanges.pipe(debounceTime(1000))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((fieldsNames: string[]) => {
         this.updateSelectedAndMetaFields(fieldsNames);
       });
@@ -138,6 +146,7 @@ export class SafeAggregationBuilderComponent implements OnInit {
     this.aggregationForm
       .get('pipeline')
       ?.valueChanges.pipe(debounceTime(1000))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((pipeline) => {
         this.mappingFields.next(
           this.aggregationBuilder.fieldsAfter(
@@ -207,10 +216,10 @@ export class SafeAggregationBuilderComponent implements OnInit {
       this.selectedFields.next(selectedFields);
       // this.queryBuilder
       //   .buildMetaQuery({ name: this.queryName, fields: formattedFields })
-      //   ?.subscribe((res) => {
-      //     for (const field in res.data) {
-      //       if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-      //         this.metaFields.next(res.data[field]);
+      //   ?.subscribe(({ data, loading }) => {
+      //     for (const field in data) {
+      //       if (Object.prototype.hasOwnProperty.call(data, field)) {
+      //         this.metaFields.next(data[field]);
       //       }
       //     }
       //   });

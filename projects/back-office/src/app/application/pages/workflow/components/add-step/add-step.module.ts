@@ -15,6 +15,7 @@ import {
   SafeDividerModule,
 } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
+import { AbilityModule } from '@casl/angular';
 
 /**
  * Add step module
@@ -36,6 +37,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     SafeFormsDropdownModule,
     SafeDividerModule,
+    AbilityModule,
   ],
 })
 export class AddStepModule {}

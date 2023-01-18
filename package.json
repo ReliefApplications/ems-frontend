@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "1.4.0-beta.5",
+  "version": "1.4.0-beta.6",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -37,6 +37,8 @@
     "@angular/platform-browser-dynamic": "~13.3.9",
     "@angular/router": "~13.3.9",
     "@apollo/client": "^3.0.0",
+    "@casl/ability": "^6.3.3",
+    "@casl/angular": "^7.1.0",
     "@esri/arcgis-rest-auth": "^3.4.3",
     "@esri/arcgis-rest-request": "^3.4.3",
     "@ngx-translate/core": "^13.0.0",
@@ -83,7 +85,7 @@
     "hammerjs": "^2.0.8",
     "leaflet.markercluster": "^1.4.1",
     "localforage": "^1.10.0",
-    "rxjs": "~6.6.7",
+    "rxjs": "^7.8.0",
     "subscriptions-transport-ws": "^0.9.18",
     "survey-angular": "^1.9.25",
     "survey-creator": "^1.9.25",
@@ -132,6 +134,7 @@
     "concat": "^1.0.3",
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-deprecation": "^1.3.3",
     "eslint-plugin-import": "latest",
     "eslint-plugin-jsdoc": "latest",
     "eslint-plugin-prefer-arrow": "latest",

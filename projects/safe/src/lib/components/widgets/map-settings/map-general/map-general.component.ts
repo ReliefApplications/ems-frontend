@@ -85,8 +85,8 @@ export class MapGeneralComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.resource = res.data.resource;
+      .subscribe(({ data }) => {
+        this.resource = data.resource;
       });
   }
 }

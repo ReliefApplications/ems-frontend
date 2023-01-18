@@ -28,7 +28,7 @@ import { EDIT_RECORD, EditRecordMutationResponse } from './graphql/mutations';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import isEqual from 'lodash/isEqual';
 
@@ -124,36 +124,34 @@ export class SafeRecordModalComponent implements AfterViewInit {
     // Fetch structure from template if needed
     if (this.data.template) {
       promises.push(
-        this.apollo
-          .query<GetFormByIdQueryResponse>({
+        firstValueFrom(
+          this.apollo.query<GetFormByIdQueryResponse>({
             query: GET_FORM_STRUCTURE,
             variables: {
               id: this.data.template,
             },
           })
-          .toPromise()
-          .then((res) => {
-            this.form = res.data.form;
-          })
+        ).then(({ data }) => {
+          this.form = data.form;
+        })
       );
     }
     // Fetch record data
     promises.push(
-      this.apollo
-        .query<GetRecordByIdQueryResponse>({
+      firstValueFrom(
+        this.apollo.query<GetRecordByIdQueryResponse>({
           query: GET_RECORD_BY_ID,
           variables: {
             id: this.data.recordId,
           },
         })
-        .toPromise()
-        .then((res) => {
-          this.record = res.data.record;
-          this.modifiedAt = this.record.modifiedAt || null;
-          if (!this.data.template) {
-            this.form = this.record.form;
-          }
-        })
+      ).then(({ data }) => {
+        this.record = data.record;
+        this.modifiedAt = this.record.modifiedAt || null;
+        if (!this.data.template) {
+          this.form = this.record.form;
+        }
+      })
     );
     await Promise.all(promises);
     // INIT SURVEY

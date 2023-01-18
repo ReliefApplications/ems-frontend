@@ -30,6 +30,5 @@ export const GET_SHORT_FORM_BY_ID = gql`
 
 /** Get form query response */
 export interface GetFormByIdQueryResponse {
-  loading: boolean;
   form: Form;
 }

@@ -18,6 +18,5 @@ export const ADD_STEP = gql`
 
 /** Model for AddStepMutationResponse object */
 export interface AddStepMutationResponse {
-  loading: boolean;
   addStep: Step;
 }

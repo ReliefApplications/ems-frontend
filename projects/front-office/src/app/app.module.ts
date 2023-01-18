@@ -27,12 +27,16 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import {
+  AppAbility,
   KendoTranslationService,
   SafeAuthInterceptorService,
 } from '@safe/builder';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
+
+/** CASL */
+import { PureAbility } from '@casl/ability';
 
 // Register local translations for dates
 registerLocaleData(localeFr);
@@ -141,6 +145,14 @@ export const httpTranslateLoader = (http: HttpClient) =>
       provide: HTTP_INTERCEPTORS,
       useClass: SafeAuthInterceptorService,
       multi: true,
+    },
+    {
+      provide: AppAbility,
+      useValue: new AppAbility(),
+    },
+    {
+      provide: PureAbility,
+      useExisting: AppAbility,
     },
     PopupService,
     ResizeBatchService,

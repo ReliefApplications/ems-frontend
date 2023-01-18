@@ -116,10 +116,10 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
             id: page.content,
           },
         })
-        .subscribe(
-          (res) => {
-            if (res.data) {
-              this.steps = get(res.data.workflow, 'steps', []);
+        .subscribe({
+          next: ({ data }) => {
+            if (data) {
+              this.steps = get(data.workflow, 'steps', []);
               this.filteredSteps = this.steps.filter((x) =>
                 x.name?.toLowerCase().includes(this.search)
               );
@@ -132,10 +132,10 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
                 .map((x) => x.id as string);
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
-          }
-        );
+          },
+        });
     }
   }
 
@@ -158,14 +158,14 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
           },
         },
       })
-      .subscribe(
-        (res) => {
-          if (res.data) {
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data) {
             const index = this.steps.findIndex(
-              (x) => x.id === res.data?.editStep.id
+              (x) => x.id === data?.editStep.id
             );
             const steps = [...this.steps];
-            steps[index] = res.data.editStep;
+            steps[index] = data.editStep;
             this.steps = steps;
             this.filteredSteps = this.steps.filter((x) =>
               x.name?.toLowerCase().includes(this.search)
@@ -178,12 +178,12 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
               )
               .map((x) => x.id as string);
           }
-          this.loading = res.loading;
+          this.loading = loading;
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
-        }
-      );
+        },
+      });
   }
   /**
    * Emits an event with the changes in permission for a given workflow page

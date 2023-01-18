@@ -35,7 +35,6 @@ export const GET_FORM_NAMES = gql`
 
 /** Model for GetFormsQueryResposne object */
 export interface GetFormsQueryResponse {
-  loading: boolean;
   forms: {
     edges: {
       node: Form;
@@ -78,7 +77,6 @@ export const GET_ROUTING_KEYS = gql`
 
 /** Model for GetRoutingKeysQueryResponse object */
 export interface GetRoutingKeysQueryResponse {
-  loading: boolean;
   applications: {
     edges: {
       node: Application;

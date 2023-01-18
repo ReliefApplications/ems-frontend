@@ -55,19 +55,18 @@ export class ShareComponent extends SafeUnsubscribeComponent implements OnInit {
               id: params.id,
             },
           })
-          .subscribe((res) => {
+          .subscribe(({ data }) => {
             let url = '';
-            const dashboard: Dashboard = res.data.dashboard;
+            const dashboard: Dashboard = data.dashboard;
             if (dashboard) {
               if (dashboard.step) {
                 url +=
-                  '/' +
-                  res.data.dashboard.step?.workflow?.page?.application?.id;
-                url += '/workflow/' + res.data.dashboard.step?.workflow?.id;
-                url += '/dashboard/' + res.data.dashboard.id;
+                  '/' + data.dashboard.step?.workflow?.page?.application?.id;
+                url += '/workflow/' + data.dashboard.step?.workflow?.id;
+                url += '/dashboard/' + data.dashboard.id;
               } else {
-                url += '/' + res.data.dashboard.page?.application?.id;
-                url += '/dashboard/' + res.data.dashboard.id;
+                url += '/' + data.dashboard.page?.application?.id;
+                url += '/dashboard/' + data.dashboard.id;
               }
             } else {
               // Error handling

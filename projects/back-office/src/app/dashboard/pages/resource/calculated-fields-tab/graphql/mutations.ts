@@ -13,6 +13,5 @@ export const Calculated_FIELD_UPDATE = gql`
 
 /** Interface for the response of the Calculated fields update mutation */
 export interface CalculatedFieldUpdateMutationResponse {
-  loading: boolean;
   editResource: Resource;
 }
