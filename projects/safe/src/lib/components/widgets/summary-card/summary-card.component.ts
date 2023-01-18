@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
+import { firstValueFrom } from 'rxjs';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -159,14 +160,14 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    */
   private async createDynamicQueryFromLayout(card: any) {
     // gets metadata
-    const metaRes = await this.apollo
-      .query<GetResourceMetadataQueryResponse>({
+    const metaRes = await firstValueFrom(
+      this.apollo.query<GetResourceMetadataQueryResponse>({
         query: GET_RESOURCE_METADATA,
         variables: {
           id: card.resource,
         },
       })
-      .toPromise();
+    );
 
     this.gridLayoutService
       .getLayouts(card.resource, { ids: [card.layout], first: 1 })

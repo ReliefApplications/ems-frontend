@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * The component is used on a card creation in the summary-card widget
@@ -60,13 +61,12 @@ export class SafeAddCardComponent implements OnInit {
     const params = {
       ...(search && { search }),
     };
-    this.http
-      .get(this.templatesUrl, { headers, params })
-      .toPromise()
-      .then((data: any) => {
+    firstValueFrom(this.http.get(this.templatesUrl, { headers, params })).then(
+      (data: any) => {
         this.templates = data.slice(-3).reverse();
         this.loading = false;
-      });
+      }
+    );
   }
 
   /**
