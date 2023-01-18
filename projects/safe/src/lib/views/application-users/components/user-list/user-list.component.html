@@ -23,6 +23,7 @@
       <ng-container *ngIf="!autoAssigned" matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef>
           <mat-checkbox
+            class="mr-2"
             (change)="$event ? masterToggle() : null"
             [checked]="selection.hasValue() && isAllSelected()"
             [indeterminate]="selection.hasValue() && !isAllSelected()"
@@ -32,6 +33,7 @@
         </th>
         <td mat-cell *matCellDef="let row">
           <mat-checkbox
+            class="mr-2"
             (click)="$event.stopPropagation()"
             (change)="$event ? selection.toggle(row) : null"
             [checked]="selection.isSelected(row)"
