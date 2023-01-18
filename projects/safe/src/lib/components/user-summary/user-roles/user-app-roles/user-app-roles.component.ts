@@ -100,12 +100,11 @@ export class UserAppRolesComponent
       });
     this.applicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        () => {},
-        (err) => {
+      .subscribe({
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -123,10 +122,10 @@ export class UserAppRolesComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            this.roles = res.data.roles;
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data) {
+            this.roles = data.roles;
           }
           this.selectedRoles.setValue(
             get(this.user, 'roles', [])
@@ -134,12 +133,12 @@ export class UserAppRolesComponent
               .map((x) => x.id),
             { emitEvent: false }
           );
-          this.loading = false;
+          this.loading = loading;
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
-        }
-      );
+        },
+      });
   }
 
   /**

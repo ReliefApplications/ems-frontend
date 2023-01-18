@@ -111,9 +111,9 @@ export class AddLayoutModalComponent implements OnInit {
       if (layout) {
         this.gridLayoutService
           .addLayout(layout, this.resource?.id, this.form?.id)
-          .subscribe((res) => {
-            if (res.data?.addLayout) {
-              this.dialogRef.close(res.data.addLayout);
+          .subscribe(({ data }) => {
+            if (data?.addLayout) {
+              this.dialogRef.close(data.addLayout);
             } else {
               this.dialogRef.close();
             }

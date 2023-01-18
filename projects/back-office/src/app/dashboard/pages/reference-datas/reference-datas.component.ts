@@ -103,17 +103,17 @@ export class ReferenceDatasComponent
 
     this.referenceDatasQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.cachedReferenceDatas = res.data.referenceDatas.edges.map(
+      .subscribe(({ data, loading }) => {
+        this.cachedReferenceDatas = data.referenceDatas.edges.map(
           (x) => x.node
         );
         this.dataSource.data = this.cachedReferenceDatas.slice(
           this.pageInfo.pageSize * this.pageInfo.pageIndex,
           this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         );
-        this.pageInfo.length = res.data.referenceDatas.totalCount;
-        this.pageInfo.endCursor = res.data.referenceDatas.pageInfo.endCursor;
-        this.loading = res.loading;
+        this.pageInfo.length = data.referenceDatas.totalCount;
+        this.pageInfo.endCursor = data.referenceDatas.pageInfo.endCursor;
+        this.loading = loading;
         this.filterPredicate();
       });
   }
@@ -215,32 +215,32 @@ export class ReferenceDatasComponent
               name: value.name,
             },
           })
-          .subscribe(
-            (res) => {
-              if (res.errors) {
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
                     {
                       type: this.translate.instant('common.referenceData.one'),
-                      error: res.errors[0].message,
+                      error: errors[0].message,
                     }
                   ),
                   { error: true }
                 );
               } else {
-                if (res.data) {
+                if (data) {
                   this.router.navigate([
                     '/referencedata',
-                    res.data.addReferenceData.id,
+                    data.addReferenceData.id,
                   ]);
                 }
               }
             },
-            (err) => {
+            error: (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
-            }
-          );
+            },
+          });
       }
     });
   }

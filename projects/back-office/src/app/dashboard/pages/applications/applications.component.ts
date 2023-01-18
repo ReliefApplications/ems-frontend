@@ -121,23 +121,21 @@ export class ApplicationsComponent
       });
     this.applicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.cachedApplications = res.data.applications.edges.map(
-          (x) => x.node
-        );
+      .subscribe(({ data, loading }) => {
+        this.cachedApplications = data.applications.edges.map((x) => x.node);
         this.applications.data = this.cachedApplications.slice(
           this.pageInfo.pageSize * this.pageInfo.pageIndex,
           this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         );
-        this.pageInfo.length = res.data.applications.totalCount;
-        this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
-        this.loading = res.loading;
+        this.pageInfo.length = data.applications.totalCount;
+        this.pageInfo.endCursor = data.applications.pageInfo.endCursor;
+        this.loading = loading;
         this.updating = false;
       });
     this.newApplicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.newApplications = res.data.applications.edges
+      .subscribe(({ data }) => {
+        this.newApplications = data.applications.edges
           .map((x) => x.node)
           .slice(0, 5);
       });
@@ -275,17 +273,17 @@ export class ApplicationsComponent
               id,
             },
           })
-          .subscribe((res) => {
+          .subscribe(({ data }) => {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectDeleted', {
                 value: this.translate.instant('common.application.one'),
               })
             );
             this.applications.data = this.applications.data.filter(
-              (x) => x.id !== res.data?.deleteApplication.id
+              (x) => x.id !== data?.deleteApplication.id
             );
             this.newApplications = this.newApplications.filter(
-              (x) => x.id !== res.data?.deleteApplication.id
+              (x) => x.id !== data?.deleteApplication.id
             );
           });
       }
@@ -301,28 +299,28 @@ export class ApplicationsComponent
       .mutate<AddApplicationMutationResponse>({
         mutation: ADD_APPLICATION,
       })
-      .subscribe((res) => {
-        if (res.errors?.length) {
+      .subscribe(({ errors, data }) => {
+        if (errors?.length) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotCreated', {
               type: this.translate
                 .instant('common.application.one')
                 .toLowerCase(),
-              error: res.errors[0].message,
+              error: errors[0].message,
             }),
             { error: true }
           );
         } else {
-          if (res.data) {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectCreated', {
                 type: this.translate
                   .instant('common.application.one')
                   .toLowerCase(),
-                value: res.data.addApplication.name,
+                value: data.addApplication.name,
               })
             );
-            const id = res.data.addApplication.id;
+            const id = data.addApplication.id;
             this.router.navigate(['/applications', id]);
           }
         }
@@ -344,8 +342,8 @@ export class ApplicationsComponent
           permissions: e,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ data }) => {
+        if (data) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectUpdated', {
               type: this.translate.instant('common.access').toLowerCase(),
@@ -355,7 +353,7 @@ export class ApplicationsComponent
           const index = this.applications.data.findIndex(
             (x) => x.id === element.id
           );
-          this.applications.data[index] = res.data.editApplication;
+          this.applications.data[index] = data.editApplication;
           this.applications.data = this.applications.data;
         }
       });

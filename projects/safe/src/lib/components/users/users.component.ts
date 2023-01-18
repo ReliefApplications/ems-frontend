@@ -108,22 +108,20 @@ export class SafeUsersComponent implements OnInit {
               application: this.roles[0].application?.id,
             },
           })
-          .subscribe((res) => {
-            if (!res.errors) {
+          .subscribe(({ errors, data }) => {
+            if (!errors) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectInvited', {
                   name: this.translate
                     .instant(
-                      res.data?.addUsers.length
+                      data?.addUsers.length
                         ? 'common.user.few'
                         : 'common.user.one'
                     )
                     .toLowerCase(),
                 })
               );
-              this.users.data = this.users.data.concat(
-                res?.data?.addUsers || []
-              );
+              this.users.data = this.users.data.concat(data?.addUsers || []);
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant(
@@ -131,7 +129,7 @@ export class SafeUsersComponent implements OnInit {
                   {
                     name: this.translate
                       .instant(
-                        res.data?.addUsers.length
+                        data?.addUsers.length
                           ? 'common.user.few'
                           : 'common.user.one'
                       )
@@ -199,14 +197,14 @@ export class SafeUsersComponent implements OnInit {
             mutation: DELETE_USERS,
             variables: { ids },
           })
-          .subscribe((res) => {
+          .subscribe(({ data }) => {
             this.loading = false;
-            if (res.data?.deleteUsers) {
+            if (data?.deleteUsers) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectDeleted', {
                   value: this.translate
                     .instant(
-                      res.data.deleteUsers > 1
+                      data.deleteUsers > 1
                         ? 'common.user.few'
                         : 'common.user.one'
                     )

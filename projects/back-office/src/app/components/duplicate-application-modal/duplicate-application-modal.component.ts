@@ -61,8 +61,8 @@ export class DuplicateApplicationModalComponent implements OnInit {
           application: this.currentApp.id,
         },
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ errors, data }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
             this.translateService.instant(
               'common.notifications.objectNotDuplicated',
@@ -70,7 +70,7 @@ export class DuplicateApplicationModalComponent implements OnInit {
                 type: this.translateService
                   .instant('common.application.one')
                   .toLowerCase(),
-                error: res.errors[0].message,
+                error: errors[0].message,
               }
             )
           );
@@ -86,7 +86,7 @@ export class DuplicateApplicationModalComponent implements OnInit {
               }
             )
           );
-          this.dialogRef.close(res.data?.duplicateApplication);
+          this.dialogRef.close(data?.duplicateApplication);
         }
       });
   }

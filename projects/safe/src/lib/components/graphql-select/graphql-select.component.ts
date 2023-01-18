@@ -282,14 +282,14 @@ export class SafeGraphQLSelectComponent
     this.elements$ = this.elements.asObservable();
     this.query.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res: any) => {
-        this.queryName = Object.keys(res.data)[0];
+      .subscribe(({ data, loading }) => {
+        this.queryName = Object.keys(data)[0];
         const path = this.path
           ? `${this.queryName}.${this.path}`
           : this.queryName;
-        const elements: any[] = get(res.data, path).edges
-          ? get(res.data, path).edges.map((x: any) => x.node)
-          : get(res.data, path);
+        const elements: any[] = get(data, path).edges
+          ? get(data, path).edges.map((x: any) => x.node)
+          : get(data, path);
         const selectedElements = this.selectedElements.filter(
           (selectedElement) =>
             selectedElement &&
@@ -300,8 +300,8 @@ export class SafeGraphQLSelectComponent
         );
         this.elements.next([...selectedElements, ...elements]);
         this.queryElements = elements;
-        this.pageInfo = get(res.data, path).pageInfo;
-        this.loading = res.loading;
+        this.pageInfo = get(data, path).pageInfo;
+        this.loading = loading;
       });
     this.ngControl.valueChanges
       ?.pipe(takeUntil(this.destroy$))
