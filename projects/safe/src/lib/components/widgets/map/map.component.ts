@@ -34,6 +34,15 @@ interface IMarkersLayerValue {
   [name: string]: any;
 }
 
+/** Declares an interface that will be used in the overlays */
+interface LayerTree {
+  label?: string;
+  children?: LayerTree[];
+  layer?: any;
+  type?: string;
+  selectAllCheckbox?: any;
+}
+
 /** Available baseMaps */
 const BASEMAP_LAYERS: any = {
   Streets: 'ArcGIS:Streets',
@@ -51,75 +60,94 @@ const BASEMAP_LAYERS: any = {
   'OSM:Streets': 'OSM:Streets',
 };
 
-const TEST_VALUE: any = {
+/** Test value used in setLayer (change the value of field named 'test' to use it) */
+const SET_LAYER_TEST_VALUE: any = {
   name: 'layer_group',
   type: 'Group',
+  test: false,
   layers: [
     {
       type: 'Markers',
       longitude: 10,
       latitude: 10,
       name: 'Ben',
-      color: '#ff7a7a',
     },
     {
       type: 'Markers',
       longitude: 4,
       latitude: 4,
       name: 'Jhin',
-      color: '#00ff00'
     },
-  ]
+  ],
 };
 
-const overlaysTreeTest = {
-  label: 'Points of Interest',
-  selectAllCheckbox: 'Un/select all',
-  children: [
-    {
-      label: 'Europe',
-      selectAllCheckbox: true,
-      children: [
-        {
-          label: 'France',
-          selectAllCheckbox: true,
-          children: [
-              { label: 'Tour Eiffel', layer: L.marker([48.8582441, 2.2944775]) },
-              { label: 'Notre Dame', layer: L.marker([48.8529540, 2.3498726]) },
+/** Another value to test overlay tree */
+const OVERLAY_TREE_TEST = {
+  test: false,
+  tree: {
+    label: 'Points of Interest',
+    selectAllCheckbox: 'Un/select all',
+    children: [
+      {
+        label: 'Europe',
+        selectAllCheckbox: true,
+        children: [
+          {
+            label: 'France',
+            selectAllCheckbox: true,
+            children: [
+              {
+                label: 'Tour Eiffel',
+                layer: L.marker([48.8582441, 2.2944775]),
+              },
+              { label: 'Notre Dame', layer: L.marker([48.852954, 2.3498726]) },
               { label: 'Louvre', layer: L.marker([48.8605847, 2.3376267]) },
-          ]
-        }, {
-          label: 'Germany',
-          selectAllCheckbox: true,
-          children: [
-              { label: 'Branderburger Tor', layer: L.marker([52.5162542, 13.3776805])},
-              { label: 'Kölner Dom', layer: L.marker([50.9413240, 6.9581201])},
-          ]
-        }, {
-          label: 'Spain',
-          selectAllCheckbox: 'De/seleccionar todo',
-          children: [
-              { label: 'Palacio Real', layer: L.marker([40.4184145, -3.7137051])},
-              { label: 'La Alhambra', layer: L.marker([37.1767829, -3.5892795])},
-          ]
-        }
-      ]
-    }, {
-      label: 'Asia',
-      selectAllCheckbox: true,
-      children: [
-        {
-          label: 'Jordan',
-          selectAllCheckbox: true,
-          children: [
-            { label: 'Petra', layer: L.marker([30.3292215, 35.4432464]) },
-            { label: 'Wadi Rum', layer: L.marker([29.6233486, 35.4390656]) }
-          ]
-        },
-      ]
-    }
-  ]
-}
+            ],
+          },
+          {
+            label: 'Germany',
+            selectAllCheckbox: true,
+            children: [
+              {
+                label: 'Branderburger Tor',
+                layer: L.marker([52.5162542, 13.3776805]),
+              },
+              { label: 'Kölner Dom', layer: L.marker([50.941324, 6.9581201]) },
+            ],
+          },
+          {
+            label: 'Spain',
+            selectAllCheckbox: 'De/seleccionar todo',
+            children: [
+              {
+                label: 'Palacio Real',
+                layer: L.marker([40.4184145, -3.7137051]),
+              },
+              {
+                label: 'La Alhambra',
+                layer: L.marker([37.1767829, -3.5892795]),
+              },
+            ],
+          },
+        ],
+      },
+      {
+        label: 'Asia',
+        selectAllCheckbox: true,
+        children: [
+          {
+            label: 'Jordan',
+            selectAllCheckbox: true,
+            children: [
+              { label: 'Petra', layer: L.marker([30.3292215, 35.4432464]) },
+              { label: 'Wadi Rum', layer: L.marker([29.6233486, 35.4390656]) },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+};
 
 /** Component for the map widget */
 @Component({
@@ -141,7 +169,7 @@ export class SafeMapComponent
   private markersLayer: any = null;
   private popupMarker: any;
   private markersCategories: IMarkersLayerValue = [];
-  private overlays: IMarkersLayerValue = {};
+  private overlays: LayerTree = {};
   private layerControl: any;
 
   // === LEGEND ===
@@ -316,25 +344,19 @@ export class SafeMapComponent
           ':' +
           ('0' + today.getMinutes()).slice(-2);
         // Empties all variables used in map
-        //this.setLayers(res);
-        let ctl = L.control
-        .layers.tree(null, null, {
-          collapsed: false,
-          namedToggle: true,
-          collapseAll: '',
-          expandAll: '',
-        });
-        ctl.addTo(this.map).collapseTree().expandSelected();
-        ctl.setOverlayTree(overlaysTreeTest).collapseTree(false).expandSelected(true);
-        /*
+        if (OVERLAY_TREE_TEST.test) {
+          this.layerControl = L.control.layers
+            .tree(undefined, OVERLAY_TREE_TEST.tree)
+            .addTo(this.map);
+        } else {
+          this.setLayers(res);
+        }
         this.legendControl.update(
           this.map,
           this.settings,
-          this.overlays,
+          this.overlays.children,
           Object.keys(this.markersCategories)
         );
-        this.map.layers
-        */
       });
   }
 
@@ -379,19 +401,23 @@ export class SafeMapComponent
       this.markersCategories['undefined'] = allLayers;
     }
 
-    this.overlays['label'] = 'layers';
-    this.overlays['children'] = [];
-    this.overlays['selectAllCheckbox'] = 'Un/select all';
+    this.overlays.label = 'layers';
+    this.overlays.children = [];
+    this.overlays.selectAllCheckbox = 'Un/select all';
 
-    /*
     // Renders all the markers
     Object.keys(this.markersCategories).map((name: string) => {
       if (name !== 'null') {
         const layerName = name !== 'undefined' ? name : 'Markers';
-        this.overlays[layerName] = L.featureGroup
+        const layer = L.featureGroup
           .subGroup(this.markersLayer, this.markersCategories[name])
           .addTo(this.map);
-        this.overlays[layerName].type = 'Marker';
+        const marker: LayerTree = {
+          label: layerName,
+          layer,
+          type: 'Marker',
+        };
+        this.overlays.children?.push(marker);
       }
     });
 
@@ -400,10 +426,13 @@ export class SafeMapComponent
       this.settings.clorophlets.map((value: any) => {
         if (value.divisions.length > 0) {
           // Renders the clorophlet
-          this.overlays[value.name] = this.setClorophlet(value, res.data).addTo(
-            this.map
-          );
-          this.overlays[value.name].type = 'Clorophlet';
+          const layer = this.setClorophlet(value, res.data).addTo(this.map);
+          const clorophlet: LayerTree = {
+            label: value.name,
+            layer,
+            type: 'Clorophlet',
+          };
+          this.overlays.children?.push(clorophlet);
         }
       });
     }
@@ -411,50 +440,54 @@ export class SafeMapComponent
     // Loops throught online layers and add them to the map
     if (this.settings.onlineLayers) {
       this.settings.onlineLayers.map((layer: any) => {
-        console.log(layer);
-        this.overlays[layer.title] = L.esri.featureLayer({
+        const onlineLayer: LayerTree = { label: layer.title };
+        onlineLayer.layer = L.esri.featureLayer({
           url: layer.url + '/0',
           simplifyFactor: 1,
           apikey: this.esriApiKey,
         });
-        this.overlays[layer.title].metadata((error: any) => {
+
+        this.overlays.children?.push(onlineLayer);
+        onlineLayer.layer.metadata((error: any) => {
           if (!error) {
-            this.overlays[layer.title].addTo(this.map);
+            onlineLayer.layer.addTo(this.map);
           } else {
             console.error(error);
           }
         });
       });
     }
-    */
 
-    if (TEST_VALUE.type === 'Group') {
+    if (SET_LAYER_TEST_VALUE.test) {
       const markers: any[] = [];
-      const groupOverlay: {label: string, selectAllCheckbox: boolean, children: any[]} = {
-        label: TEST_VALUE.name,
+      const groupOverlay: {
+        label: string;
+        selectAllCheckbox: boolean;
+        children: any[];
+      } = {
+        label: SET_LAYER_TEST_VALUE.name,
         children: [],
         selectAllCheckbox: true,
-      }
-      for (let layer of TEST_VALUE.layers) {
-        const options = MARKER_OPTIONS;
-        options.color = layer.color;
+      };
+      for (const layer of SET_LAYER_TEST_VALUE.layers) {
         const name = layer.name;
-        const marker = L.circleMarker([layer.latitude, layer.longitude], options);
-        markers.push(marker)
-        const overlayMarker = {label: name, layer: marker}
+        const marker = L.circleMarker(
+          [layer.latitude, layer.longitude],
+          MARKER_OPTIONS
+        );
+        markers.push(marker);
+        const overlayMarker = { label: name, layer: marker };
         groupOverlay.children.push(overlayMarker);
       }
       const layer_group = L.layerGroup(markers);
-      console.log('layer group', layer_group);
-      
-      this.overlays.children.push(groupOverlay)
+
+      this.overlays.children.push(groupOverlay);
       layer_group.addTo(this.map);
-      console.log('overlay', this.overlays);
     }
     // Set ups a layer control with the new layers.
     if (Object.keys(this.overlays).length > 0) {
-      this.layerControl = L.control
-        .layers.tree(undefined, this.overlays)
+      this.layerControl = L.control.layers
+        .tree(undefined, this.overlays)
         .addTo(this.map);
     }
   }
@@ -584,7 +617,7 @@ export class SafeMapComponent
     legendControl.update = function (
       map: any,
       data: any,
-      overlays: any,
+      overlays: any[],
       markersNames: string[]
     ) {
       const div = this.div;
@@ -599,7 +632,7 @@ export class SafeMapComponent
       });
       // Creates legend for clorophlets
       data.clorophlets?.map((clorophlet: any) => {
-        const layer = overlays[clorophlet.name];
+        const layer = overlays.find((x) => x.label === clorophlet.name);
 
         if (clorophlet.divisions.length > 0) {
           // Generates header of legend
@@ -644,7 +677,9 @@ export class SafeMapComponent
               'click',
               () => {
                 // eslint-disable-next-line no-underscore-dangle
-                const layers = overlays[clorophlet.name]._layers;
+                const layers = overlays.find(
+                  (x) => x.label === clorophlet.name
+                ).layer;
                 const isHidden = L.DomUtil.hasClass(
                   legendDivisionDiv,
                   'legend-division-hide'
@@ -687,8 +722,8 @@ export class SafeMapComponent
           'click',
           () => {
             markersNames.map((marker: string) => {
-              const layer =
-                marker === 'undefined' ? overlays.Markers : overlays[marker];
+              const markerName = marker === 'undefined' ? 'Markers' : marker;
+              const layer = overlays.find((x) => x.label === markerName);
               if (map.hasLayer(layer)) {
                 L.DomUtil.addClass(legendLayerDiv, 'map-legend-hide');
                 map.removeLayer(layer);
@@ -718,7 +753,7 @@ export class SafeMapComponent
             'click',
             () => {
               // eslint-disable-next-line no-underscore-dangle
-              const layers = overlays.Markers._layers;
+              const layers = overlays.find((x) => x.label === 'Markers').layer;
 
               // // array with all the clusters displayed and the markers in each of them
               // const clusteredLayers: { cluster: any; hiddenMarkers: any[] }[] =
