@@ -89,6 +89,11 @@ export class SafeAddCardComponent implements OnInit {
    * @param item The summary card template item chosen
    */
   onCreateFromTemplate(item: any): void {
+    // remove record when using static template to create a dynamic card.
+    if (this.data.isDynamic && !item.isDynamic) {
+      item.record = null;
+    }
+    item.isDynamic = this.data.isDynamic;
     this.dialogRef.close(item);
   }
 }

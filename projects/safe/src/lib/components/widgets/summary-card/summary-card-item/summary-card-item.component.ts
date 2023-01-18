@@ -72,6 +72,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /** Sets the content of the card */
   private async setContent() {
     this.fields = this.card.metadata;
+    if (!this.card.resource) return;
     if (this.card.isAggregation) {
       this.fieldsValue = this.card.cardAggregationData;
       if (!this.card.isDynamic) await this.getAggregationData();
@@ -81,6 +82,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
 
   /** Get the aggregation data for the current card, if not dynamic. */
   private async getAggregationData() {
+    if (!this.card.aggregation) return;
     const res = await firstValueFrom(
       this.aggregationService.aggregationDataQuery(
         this.card.resource,
@@ -96,8 +98,8 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /**
    * Set content of the card item, querying associated record.
    */
-  private setContentFromLayout(): void {
-    this.getStyles();
+  private async setContentFromLayout(): Promise<void> {
+    await this.getStyles();
     if (typeof this.card.record === 'string') {
       this.getCardData();
     } else if (typeof this.card.record === 'object') {
@@ -116,32 +118,26 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   }
 
   /** Sets layout style */
-  private getStyles() {
+  private async getStyles(): Promise<void> {
     if (typeof this.card.layout === 'string') {
-      this.apollo
-        .query<GetLayoutQueryResponse>({
+      const apolloRes = await firstValueFrom(
+        this.apollo.query<GetLayoutQueryResponse>({
           query: GET_LAYOUT,
           variables: {
             id: this.card.layout,
             resource: this.card.resource,
           },
         })
-        .subscribe((res2) => {
-          if (res2.data) {
-            this.layout = res2.data.resource.layouts?.edges[0]?.node;
-            this.styles = get(
-              res2.data.resource.layouts?.edges[0],
-              'node.query.style',
-              []
-            );
-          }
-          this.loading = false;
-        });
+      );
+      if (get(apolloRes, 'data')) {
+        this.layout = apolloRes.data.resource.layouts?.edges[0].node;
+        this.styles = this.layout?.query.style;
+      }
     } else if (typeof this.card.layout === 'object') {
       this.layout = this.card.layout;
       this.styles = get(this.card.layout, 'style', []);
-      this.loading = false;
     }
+    this.loading = false;
   }
 
   /**

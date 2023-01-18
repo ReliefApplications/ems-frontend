@@ -10,6 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
   SafeEditCalculatedFieldModalModule,
+  SafeEmptyModule,
 } from '@safe/builder';
 import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component';
 
@@ -29,6 +30,7 @@ import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component'
     TranslateModule,
     SafeEditCalculatedFieldModalModule,
     OverlayModule,
+    SafeEmptyModule,
   ],
 })
 export class CalculatedFieldsTabModule {}
