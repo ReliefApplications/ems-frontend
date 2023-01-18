@@ -20,7 +20,9 @@
         <th mat-header-cell *matHeaderCellDef>
           {{ 'common.name' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.resource.name }}</td>
+        <td mat-cell *matCellDef="let element" class="font-bold">
+          {{ element.resource.name }}
+        </td>
       </ng-container>
       <!-- Resource Actions & Permissions -->
       <ng-container matColumnDef="actions" [stickyEnd]="true">
