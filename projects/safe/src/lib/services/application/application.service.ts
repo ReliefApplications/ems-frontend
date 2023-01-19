@@ -177,17 +177,17 @@ export class SafeApplicationService {
           asRole,
         },
       })
-      .subscribe((res) => {
+      .subscribe(({ data }) => {
         // extend user abilities for application
-        if (res.data.application)
-          this.authService.extendAbilityForApplication(res.data.application);
-        this.application.next(res.data.application);
+        if (data.application)
+          this.authService.extendAbilityForApplication(data.application);
+        this.application.next(data.application);
         const application = this.application.getValue();
-        if (res.data.application.locked) {
+        if (data.application.locked) {
           if (!application?.lockedByUser) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectLocked', {
-                name: res.data.application.name,
+                name: data.application.name,
               })
             );
           }
@@ -217,13 +217,13 @@ export class SafeApplicationService {
           id,
         },
       })
-      .subscribe((res) => {
-        if (res.data?.applicationUnlocked) {
+      .subscribe(({ data }) => {
+        if (data?.applicationUnlocked) {
           const application = this.application.getValue();
           const newApplication = {
             ...application,
-            locked: res.data?.applicationUnlocked.locked,
-            lockedByUser: res.data?.applicationUnlocked.lockedByUser,
+            locked: data?.applicationUnlocked.locked,
+            lockedByUser: data?.applicationUnlocked.lockedByUser,
           };
           this.application.next(newApplication);
         }
@@ -263,13 +263,13 @@ export class SafeApplicationService {
           lock: true,
         },
       })
-      .subscribe((res) => {
-        if (res.data?.toggleApplicationLock) {
-          if (!res.data.toggleApplicationLock.lockedByUser) {
+      .subscribe(({ data }) => {
+        if (data?.toggleApplicationLock) {
+          if (!data.toggleApplicationLock.lockedByUser) {
             const newApplication = {
               ...application,
-              locked: res.data?.toggleApplicationLock.locked,
-              lockedByUser: res.data?.toggleApplicationLock.lockedByUser,
+              locked: data?.toggleApplicationLock.locked,
+              lockedByUser: data?.toggleApplicationLock.lockedByUser,
             };
             this.application.next(newApplication);
           }
@@ -295,12 +295,12 @@ export class SafeApplicationService {
             status: value.status,
           },
         })
-        .subscribe((res) => {
-          if (res.errors) {
+        .subscribe(({ errors, data }) => {
+          if (errors) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotUpdated', {
                 type: this.translate.instant('common.application.one'),
-                error: res.errors[0].message,
+                error: errors[0].message,
               })
             );
           } else {
@@ -312,12 +312,12 @@ export class SafeApplicationService {
                 value: value.name,
               })
             );
-            if (res.data?.editApplication) {
+            if (data?.editApplication) {
               const newApplication = {
                 ...application,
-                name: res.data.editApplication.name,
-                description: res.data.editApplication.description,
-                status: res.data.editApplication.status,
+                name: data.editApplication.name,
+                description: data.editApplication.description,
+                status: data.editApplication.status,
               };
               this.application.next(newApplication);
             }
@@ -342,18 +342,18 @@ export class SafeApplicationService {
             permissions: newPermissions,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate.instant('common.access').toLowerCase(),
                 value: application?.name,
               })
             );
-            if (res.data?.editApplication) {
+            if (data?.editApplication) {
               const newApplication = {
                 ...application,
-                permissions: res.data.editApplication.permissions,
+                permissions: data.editApplication.permissions,
               };
               this.application.next(newApplication);
             }
@@ -376,13 +376,13 @@ export class SafeApplicationService {
             status: 'active',
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant(
                 'models.application.notifications.published',
                 {
-                  value: res.data.editApplication.name,
+                  value: data.editApplication.name,
                 }
               )
             );
@@ -407,8 +407,8 @@ export class SafeApplicationService {
             id,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ errors, data }) => {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectDeleted', {
                 value: this.translate.instant('common.page.one'),
@@ -418,9 +418,7 @@ export class SafeApplicationService {
             if (app) {
               const newApplication = {
                 ...app,
-                pages: app.pages?.filter(
-                  (x) => x.id !== res.data?.deletePage.id
-                ),
+                pages: app.pages?.filter((x) => x.id !== data?.deletePage.id),
               };
               this.application.next(newApplication);
               this.router.navigate([`./applications/${app.id}`]);
@@ -429,7 +427,7 @@ export class SafeApplicationService {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotDeleted', {
                 value: this.translate.instant('common.page.one').toLowerCase(),
-                error: res.errors ? res.errors[0].message : '',
+                error: errors ? errors[0].message : '',
               }),
               { error: true }
             );
@@ -454,7 +452,7 @@ export class SafeApplicationService {
             pages,
           },
         })
-        .subscribe((res) => {
+        .subscribe(({ data }) => {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectReordered', {
               type: this.translate.instant('common.page.few').toLowerCase(),
@@ -462,7 +460,7 @@ export class SafeApplicationService {
           );
           this.application.next({
             ...application,
-            ...{ pages: res.data?.editApplication.pages },
+            ...{ pages: data?.editApplication.pages },
           });
         });
     }
@@ -506,30 +504,30 @@ export class SafeApplicationService {
             application: application.id,
           },
         })
-        .subscribe((res) => {
-          if (res.data?.addPage) {
+        .subscribe(({ errors, data }) => {
+          if (data?.addPage) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectCreated', {
                 type: this.translate.instant('common.page.one').toLowerCase(),
-                value: res.data.addPage.name,
+                value: data.addPage.name,
               })
             );
-            const content = res.data.addPage.content;
+            const content = data.addPage.content;
             const newApplication = {
               ...application,
-              pages: application.pages?.concat([res.data.addPage]),
+              pages: application.pages?.concat([data.addPage]),
             };
             this.application.next(newApplication);
             this.router.navigate([
               page.type === ContentType.form
-                ? `/applications/${application.id}/${page.type}/${res.data.addPage.id}`
+                ? `/applications/${application.id}/${page.type}/${data.addPage.id}`
                 : `/applications/${application.id}/${page.type}/${content}`,
             ]);
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotCreated', {
                 type: this.translate.instant('common.page.one').toLowerCase(),
-                error: res.errors ? res.errors[0].message : '',
+                error: errors ? errors[0].message : '',
               }),
               { error: true }
             );
@@ -553,18 +551,18 @@ export class SafeApplicationService {
           application: applicationId,
         },
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ errors, data }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotCreated', {
               type: this.translate.instant('common.page.one').toLowerCase(),
-              error: res.errors ? res.errors[0].message : '',
+              error: errors ? errors[0].message : '',
             }),
             { error: true }
           );
         } else {
-          if (res.data?.duplicatePage) {
-            const newPage = res.data.duplicatePage;
+          if (data?.duplicatePage) {
+            const newPage = data.duplicatePage;
             this.translate.instant('common.notifications.objectCreated', {
               type: this.translate.instant('common.page.one').toLowerCase(),
               value: newPage?.name,
@@ -601,8 +599,8 @@ export class SafeApplicationService {
             application: application.id,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectCreated', {
                 type: this.translate.instant('common.role.one').toLowerCase(),
@@ -611,7 +609,7 @@ export class SafeApplicationService {
             );
             const newApplication = {
               ...application,
-              roles: application.roles?.concat([res.data.addRole]),
+              roles: application.roles?.concat([data.addRole]),
             };
             this.application.next(newApplication);
           }
@@ -638,8 +636,8 @@ export class SafeApplicationService {
             title: value.title,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate.instant('common.role.one').toLowerCase(),
@@ -652,8 +650,8 @@ export class SafeApplicationService {
                 if (x.id === role.id) {
                   x = {
                     ...x,
-                    permissions: res.data?.editRole.permissions,
-                    channels: res.data?.editRole.channels,
+                    permissions: data?.editRole.permissions,
+                    channels: data?.editRole.channels,
                   };
                 }
                 return x;
@@ -730,9 +728,9 @@ export class SafeApplicationService {
             application: application.id,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
-            const deletedUsers = res.data.deleteUsersFromApplication.map(
+        .subscribe(({ data }) => {
+          if (data) {
+            const deletedUsers = data.deleteUsersFromApplication.map(
               (x) => x.id
             );
             this.snackBar.openSnackBar(
@@ -799,8 +797,8 @@ export class SafeApplicationService {
             application: application.id,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectCreated', {
                 type: this.translate
@@ -813,7 +811,7 @@ export class SafeApplicationService {
               ...application,
               positionAttributeCategories:
                 application.positionAttributeCategories?.concat([
-                  res.data.addPositionAttributeCategory,
+                  data.addPositionAttributeCategory,
                 ]),
             };
             this.application.next(newApplication);
@@ -838,8 +836,8 @@ export class SafeApplicationService {
             application: application.id,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectDeleted', {
                 value: category.title,
@@ -849,7 +847,7 @@ export class SafeApplicationService {
               ...application,
               positionAttributeCategories:
                 application.positionAttributeCategories?.filter(
-                  (x) => x.id !== res.data?.deletePositionAttributeCategory.id
+                  (x) => x.id !== data?.deletePositionAttributeCategory.id
                 ),
             };
             this.application.next(newApplication);
@@ -879,8 +877,8 @@ export class SafeApplicationService {
             title: value.title,
           },
         })
-        .subscribe((res) => {
-          if (res.errors) {
+        .subscribe(({ errors, data }) => {
+          if (errors) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.errors.objectDuplicated', {
                 type: this.translate
@@ -904,7 +902,7 @@ export class SafeApplicationService {
                   if (pos.title === category.title) {
                     pos = {
                       ...pos,
-                      title: res.data?.editPositionAttributeCategory.title,
+                      title: data?.editPositionAttributeCategory.title,
                     };
                   }
                   return pos;
@@ -933,8 +931,8 @@ export class SafeApplicationService {
             application: application.id,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectCreated', {
                 type: this.translate
@@ -945,7 +943,7 @@ export class SafeApplicationService {
             );
             const newApplication: Application = {
               ...application,
-              channels: application.channels?.concat([res.data.addChannel]),
+              channels: application.channels?.concat([data.addChannel]),
             };
             this.application.next(newApplication);
           }
@@ -969,8 +967,8 @@ export class SafeApplicationService {
           title,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ data }) => {
+        if (data) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectUpdated', {
               type: this.translate.instant('common.channel.one'),
@@ -981,7 +979,7 @@ export class SafeApplicationService {
             ...application,
             channels: application?.channels?.map((x) => {
               if (x.id === channel.id) {
-                x = { ...x, title: res.data?.editChannel.title };
+                x = { ...x, title: data?.editChannel.title };
               }
               return x;
             }),
@@ -1006,8 +1004,8 @@ export class SafeApplicationService {
             id: channel.id,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectDeleted', {
                 value: channel.title,
@@ -1016,7 +1014,7 @@ export class SafeApplicationService {
             const newApplication: Application = {
               ...application,
               channels: application.channels?.filter(
-                (x) => x.id !== res.data?.deleteChannel.id
+                (x) => x.id !== data?.deleteChannel.id
               ),
             };
             this.application.next(newApplication);
@@ -1053,8 +1051,8 @@ export class SafeApplicationService {
             channel: subscription.channel,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectCreated', {
                 type: this.translate
@@ -1066,7 +1064,7 @@ export class SafeApplicationService {
             const newApplication: Application = {
               ...application,
               subscriptions: application.subscriptions?.concat([
-                res.data.addSubscription,
+                data.addSubscription,
               ]),
             };
             this.application.next(newApplication);
@@ -1129,9 +1127,9 @@ export class SafeApplicationService {
             previousSubscription,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
-            const subscription = res.data.editSubscription;
+        .subscribe(({ data }) => {
+          if (data) {
+            const subscription = data.editSubscription;
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate
@@ -1199,18 +1197,15 @@ export class SafeApplicationService {
             },
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             const newApplication: Application = {
               ...application,
-              templates: [
-                ...(application.templates || []),
-                res.data.addTemplate,
-              ],
+              templates: [...(application.templates || []), data.addTemplate],
             };
 
             this.application.next(newApplication);
-            if (callback) callback(res.data.addTemplate);
+            if (callback) callback(data.addTemplate);
           }
         });
     }
@@ -1232,8 +1227,8 @@ export class SafeApplicationService {
             id,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             const newApplication: Application = {
               ...application,
               templates: this.templates.filter((t) => t.id !== id),
@@ -1265,9 +1260,9 @@ export class SafeApplicationService {
             },
           },
         })
-        .subscribe((res) => {
-          if (res.data?.editTemplate) {
-            const updatedTemplate = res.data.editTemplate;
+        .subscribe(({ data }) => {
+          if (data?.editTemplate) {
+            const updatedTemplate = data.editTemplate;
             const newApplication: Application = {
               ...application,
               templates: application.templates?.map((t) => {
@@ -1303,9 +1298,9 @@ export class SafeApplicationService {
             },
           },
         })
-        .subscribe((res) => {
-          if (res.data?.editDistributionList) {
-            const updatedDistributionList = res.data.editDistributionList;
+        .subscribe(({ data }) => {
+          if (data?.editDistributionList) {
+            const updatedDistributionList = data.editDistributionList;
             const newApplication: Application = {
               ...application,
               distributionLists: application.distributionLists?.map((dist) => {
@@ -1344,17 +1339,17 @@ export class SafeApplicationService {
             },
           },
         })
-        .subscribe((res) => {
-          if (res.data?.addDistributionList) {
+        .subscribe(({ data }) => {
+          if (data?.addDistributionList) {
             const newApplication: Application = {
               ...application,
               distributionLists: [
                 ...(application.distributionLists || []),
-                res.data.addDistributionList,
+                data.addDistributionList,
               ],
             };
             this.application.next(newApplication);
-            if (callback) callback(res.data.addDistributionList);
+            if (callback) callback(data.addDistributionList);
           }
         });
     }
@@ -1376,8 +1371,8 @@ export class SafeApplicationService {
             id,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             const newApplication: Application = {
               ...application,
               distributionLists: application.distributionLists?.filter(

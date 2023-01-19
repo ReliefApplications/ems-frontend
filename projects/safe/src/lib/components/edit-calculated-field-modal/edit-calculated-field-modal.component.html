@@ -9,7 +9,7 @@
   </h1>
   <mat-dialog-content>
     <form [formGroup]="form">
-      <div class="form-group">
+      <div class="flex flex-col">
         <mat-form-field appearance="outline">
           <mat-label>{{
             'components.aggregationBuilder.fieldName' | translate
@@ -23,9 +23,9 @@
             [matTooltip]="'components.calculatedFields.hint.name' | translate"
           ></safe-icon>
         </mat-form-field>
-        <div class="form-group-title">
+        <h2>
           {{ 'components.calculatedFields.expression' | translate }}
-        </div>
+        </h2>
         <editor [init]="editor" formControlName="expression"></editor>
       </div>
     </form>

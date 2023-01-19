@@ -119,17 +119,17 @@ export class QueryBuilderService {
       .query<GetQueryTypes>({
         query: GET_QUERY_TYPES,
       })
-      .subscribe((res) => {
+      .subscribe(({ data }) => {
         // eslint-disable-next-line no-underscore-dangle
-        this.availableTypes.next(res.data.__schema.types);
+        this.availableTypes.next(data.__schema.types);
         this.availableQueries.next(
           // eslint-disable-next-line no-underscore-dangle
-          res.data.__schema.queryType.fields.filter((x: any) =>
+          data.__schema.queryType.fields.filter((x: any) =>
             x.name.startsWith('all')
           )
         );
         // eslint-disable-next-line no-underscore-dangle
-        this.userFields = res.data.__schema.types
+        this.userFields = data.__schema.types
           .find((x: any) => x.name === 'User')
           .fields.filter((x: any) => USER_FIELDS.includes(x.name));
       });

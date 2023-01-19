@@ -131,9 +131,9 @@ export class SafeRoleListComponent
         query: GET_ROLES,
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.roles.data = res.data.roles;
-        this.loading = false;
+      .subscribe(({ data, loading }) => {
+        this.roles.data = data.roles;
+        this.loading = loading;
       });
   }
 
@@ -157,8 +157,8 @@ export class SafeRoleListComponent
               },
             })
             .pipe(takeUntil(this.destroy$))
-            .subscribe(
-              () => {
+            .subscribe({
+              next: () => {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectCreated', {
                     type: this.translate
@@ -169,10 +169,10 @@ export class SafeRoleListComponent
                 );
                 this.getRoles();
               },
-              (err) => {
+              error: (err) => {
                 console.log(err);
-              }
-            );
+              },
+            });
         }
       }
     });

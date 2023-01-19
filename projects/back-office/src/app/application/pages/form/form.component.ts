@@ -100,8 +100,8 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
             },
           })
           .pipe(
-            switchMap((res) => {
-              this.step = res.data.step;
+            switchMap(({ data }) => {
+              this.step = data.step;
               return this.apollo.query<GetFormByIdQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
@@ -110,14 +110,14 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
               });
             })
           )
-          .subscribe((res) => {
-            this.form = res.data.form;
+          .subscribe(({ data, loading }) => {
+            this.form = data.form;
             this.tabNameForm = new FormGroup({
               tabName: new FormControl(this.step?.name, Validators.required),
             });
             this.applicationId =
               this.step?.workflow?.page?.application?.id || '';
-            this.loading = res.loading;
+            this.loading = loading;
           });
       } else {
         this.querySubscription = this.apollo
@@ -128,8 +128,8 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
             },
           })
           .pipe(
-            switchMap((res) => {
-              this.page = res.data.page;
+            switchMap(({ data }) => {
+              this.page = data.page;
               return this.apollo.query<GetFormByIdQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
@@ -138,13 +138,13 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
               });
             })
           )
-          .subscribe((res2) => {
-            this.form = res2.data.form;
+          .subscribe(({ data, loading }) => {
+            this.form = data.form;
             this.tabNameForm = new FormGroup({
               tabName: new FormControl(this.page?.name, Validators.required),
             });
             this.applicationId = this.page?.application?.id || '';
-            this.loading = res2.loading;
+            this.loading = loading;
           });
       }
     });
@@ -172,25 +172,25 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
             name: tabName,
           },
         })
-        .subscribe((res) => {
-          if (res.errors) {
+        .subscribe(({ errors, data }) => {
+          if (errors) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotUpdated', {
                 type: this.translate.instant('common.step.one'),
-                error: res.errors[0].message,
+                error: errors[0].message,
               }),
               { error: true }
             );
           } else {
-            if (res.data) {
+            if (data) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectUpdated', {
                   type: this.translate.instant('common.step.one').toLowerCase(),
                   value: tabName,
                 })
               );
-              this.step = { ...this.step, name: res.data.editStep.name };
-              this.workflowService.updateStepName(res.data.editStep);
+              this.step = { ...this.step, name: data.editStep.name };
+              this.workflowService.updateStepName(data.editStep);
             }
           }
         });
@@ -203,26 +203,26 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
             name: tabName,
           },
         })
-        .subscribe((res) => {
-          if (res.errors) {
+        .subscribe(({ errors, data }) => {
+          if (errors) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotUpdated', {
                 type: this.translate.instant('common.page.one').toLowerCase(),
-                error: res.errors[0].message,
+                error: errors[0].message,
               }),
               { error: true }
             );
           } else {
-            if (res.data) {
+            if (data) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectUpdated', {
                   type: this.translate.instant('common.page.one').toLowerCase(),
                   value: tabName,
                 })
               );
-              const newPage = { ...this.page, name: res.data.editPage.name };
+              const newPage = { ...this.page, name: data.editPage.name };
               this.page = newPage;
-              this.applicationService.updatePageName(res.data.editPage);
+              this.applicationService.updatePageName(data.editPage);
             }
           }
         });
@@ -244,14 +244,14 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
             permissions: e,
           },
         })
-        .subscribe((res) => {
+        .subscribe(({ data }) => {
           this.form = {
             ...this.form,
-            permissions: res.data?.editStep.permissions,
+            permissions: data?.editStep.permissions,
           };
           this.step = {
             ...this.step,
-            permissions: res.data?.editStep.permissions,
+            permissions: data?.editStep.permissions,
           };
         });
     } else {
@@ -263,14 +263,14 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
             permissions: e,
           },
         })
-        .subscribe((res) => {
+        .subscribe(({ data }) => {
           this.form = {
             ...this.form,
-            permissions: res.data?.editPage.permissions,
+            permissions: data?.editPage.permissions,
           };
           this.page = {
             ...this.page,
-            permissions: res.data?.editPage.permissions,
+            permissions: data?.editPage.permissions,
           };
         });
     }

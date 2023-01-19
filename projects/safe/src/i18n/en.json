@@ -789,6 +789,7 @@
 			},
 			"empty": {
 				"aggregations": "No aggregation detected",
+				"calculatedFields": "No calculated fields detected",
 				"layouts": "No layout detected",
 				"records": "No record detected"
 			}

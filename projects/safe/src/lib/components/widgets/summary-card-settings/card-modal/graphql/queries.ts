@@ -37,7 +37,10 @@ export const GET_RESOURCE = gql`
         }
         totalCount
       }
-      metadata
+      metadata {
+        name
+        type
+      }
     }
   }
 `;
@@ -143,6 +146,10 @@ export const GET_LAYOUT = gql`
             display
           }
         }
+      }
+      metadata {
+        name
+        type
       }
     }
   }

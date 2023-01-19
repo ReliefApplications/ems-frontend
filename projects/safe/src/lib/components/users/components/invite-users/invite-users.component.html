@@ -15,7 +15,11 @@
         [multiple]="false"
       >
       </kendo-upload>
-      <safe-button (click)="onDownload()" variant="primary" icon="file_download">
+      <safe-button
+        (click)="onDownload()"
+        variant="primary"
+        icon="file_download"
+      >
         {{ 'common.downloadTemplate' | translate }}
       </safe-button>
     </div>

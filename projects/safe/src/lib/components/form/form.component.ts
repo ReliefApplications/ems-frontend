@@ -281,7 +281,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public onComplete = async () => {
     let mutation: any;
     this.surveyActive = false;
-    const data = this.survey.data;
+    const surveyData = this.survey.data;
     const questionsToUpload = Object.keys(this.temporaryFilesStorage);
     for (const name of questionsToUpload) {
       const files = this.temporaryFilesStorage[name];
@@ -302,7 +302,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
           return;
         } else {
-          data[name][index].content = res.data?.uploadFile;
+          surveyData[name][index].content = res.data?.uploadFile;
         }
       }
     }
@@ -310,17 +310,17 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();
-        if (!data[key]) {
+        if (!surveyData[key]) {
           if (questions[field].getType() !== 'boolean') {
-            data[key] = null;
+            surveyData[key] = null;
           }
           if (questions[field].readOnly || !questions[field].visible) {
-            delete data[key];
+            delete surveyData[key];
           }
         }
       }
     }
-    this.survey.data = data;
+    this.survey.data = surveyData;
     if (this.record || this.form.uniqueRecord) {
       const recordId = this.record
         ? this.record.id
@@ -343,21 +343,21 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         },
       });
     }
-    mutation.subscribe((res: any) => {
-      if (res.errors) {
+    mutation.subscribe(({ errors, data }: any) => {
+      if (errors) {
         this.save.emit({ completed: false });
         this.survey.clear(false, true);
         this.surveyActive = true;
-        this.snackBar.openSnackBar(res.errors[0].message, { error: true });
+        this.snackBar.openSnackBar(errors[0].message, { error: true });
       } else {
         localStorage.removeItem(this.storageId);
-        if (res.data.editRecord || res.data.addRecord.form.uniqueRecord) {
+        if (data.editRecord || data.addRecord.form.uniqueRecord) {
           this.survey.clear(false, false);
-          if (res.data.addRecord) {
-            this.record = res.data.addRecord;
+          if (data.addRecord) {
+            this.record = data.addRecord;
             this.modifiedAt = this.record?.modifiedAt || null;
           } else {
-            this.modifiedAt = res.data.editRecord.modifiedAt;
+            this.modifiedAt = data.editRecord.modifiedAt;
           }
           this.surveyActive = true;
         } else {
@@ -365,8 +365,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.save.emit({
           completed: true,
-          hideNewRecord:
-            res.data.addRecord && res.data.addRecord.form.uniqueRecord,
+          hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
         });
       }
     });

@@ -159,8 +159,8 @@ export class EditPullJobModalComponent implements OnInit {
         },
       });
     this.apiConfigurationsQuery.valueChanges.subscribe(
-      (res) =>
-        (this.apiConfigurations = res.data.apiConfigurations.edges.map(
+      ({ data }) =>
+        (this.apiConfigurations = data.apiConfigurations.edges.map(
           (x) => x.node
         ))
     );
@@ -185,8 +185,8 @@ export class EditPullJobModalComponent implements OnInit {
       });
 
     // this.applications$ = this.applications.asObservable();
-    this.applicationsQuery.valueChanges.subscribe((res) => {
-      const nodes = res.data.applications.edges
+    this.applicationsQuery.valueChanges.subscribe(({ data, loading }) => {
+      const nodes = data.applications.edges
         .map((x) => x.node)
         .filter((x) => (x.channels ? x.channels.length > 0 : false));
       if (this.defaultChannel) {
@@ -194,8 +194,8 @@ export class EditPullJobModalComponent implements OnInit {
       } else {
         this.applications.next(nodes);
       }
-      this.applicationsPageInfo = res.data.applications.pageInfo;
-      this.applicationsLoading = res.loading;
+      this.applicationsPageInfo = data.applications.pageInfo;
+      this.applicationsLoading = loading;
     });
 
     // Set boolean to allow additional fields if it's not isHardcoded

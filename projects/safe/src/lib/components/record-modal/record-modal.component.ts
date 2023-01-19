@@ -131,8 +131,8 @@ export class SafeRecordModalComponent implements AfterViewInit {
               id: this.data.template,
             },
           })
-        ).then((res) => {
-          this.form = res.data.form;
+        ).then(({ data }) => {
+          this.form = data.form;
         })
       );
     }
@@ -145,8 +145,8 @@ export class SafeRecordModalComponent implements AfterViewInit {
             id: this.data.recordId,
           },
         })
-      ).then((res) => {
-        this.record = res.data.record;
+      ).then(({ data }) => {
+        this.record = data.record;
         this.modifiedAt = this.record.modifiedAt || null;
         if (!this.data.template) {
           this.form = this.record.form;

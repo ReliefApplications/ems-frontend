@@ -64,8 +64,8 @@ export class SafeGridLayoutService {
           first: options.first,
         },
       })
-    ).then(async (res) => {
-      if (res.errors) {
+    ).then(async ({ errors, data }) => {
+      if (errors) {
         return await firstValueFrom(
           this.apollo.query<GetFormByIdQueryResponse>({
             query: GET_GRID_FORM_META,
@@ -83,7 +83,7 @@ export class SafeGridLayoutService {
           }
         });
       } else {
-        return res.data.resource.layouts || FALLBACK_LAYOUTS;
+        return data.resource.layouts || FALLBACK_LAYOUTS;
       }
     });
   }

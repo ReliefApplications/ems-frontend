@@ -93,15 +93,15 @@ export class RecordsTabComponent implements OnInit {
         },
       }
     );
-    this.recordsQuery.valueChanges.subscribe((res) => {
-      this.cachedRecords = res.data.resource.records.edges.map((x) => x.node);
+    this.recordsQuery.valueChanges.subscribe(({ data, loading }) => {
+      this.cachedRecords = data.resource.records.edges.map((x) => x.node);
       this.dataSource.data = this.cachedRecords.slice(
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
       );
-      this.pageInfo.length = res.data.resource.records.totalCount;
-      this.pageInfo.endCursor = res.data.resource.records.pageInfo.endCursor;
-      this.loading = res.loading;
+      this.pageInfo.length = data.resource.records.totalCount;
+      this.pageInfo.endCursor = data.resource.records.pageInfo.endCursor;
+      this.loading = loading;
     });
   }
 
@@ -268,18 +268,18 @@ export class RecordsTabComponent implements OnInit {
    */
   uploadFileData(file: any): void {
     const path = `upload/resource/records/${this.resource.id}`;
-    this.downloadService.uploadFile(path, file).subscribe(
-      (res) => {
+    this.downloadService.uploadFile(path, file).subscribe({
+      next: (res) => {
         if (res.status === 'OK') {
           this.fetchRecords(true);
           this.showUpload = false;
         }
       },
-      (error: any) => {
+      error: (error: any) => {
         this.snackBar.openSnackBar(error.error, { error: true });
         this.showUpload = false;
-      }
-    );
+      },
+    });
   }
 
   /**

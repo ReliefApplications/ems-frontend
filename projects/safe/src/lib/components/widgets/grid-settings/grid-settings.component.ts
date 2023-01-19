@@ -242,8 +242,8 @@ export class SafeGridSettingsComponent
                 },
               })
               .pipe(takeUntil(this.destroy$))
-              .subscribe((res) => {
-                this.channels = res.data.channels;
+              .subscribe(({ data }) => {
+                this.channels = data.channels;
               });
           } else {
             this.apollo
@@ -251,8 +251,8 @@ export class SafeGridSettingsComponent
                 query: GET_CHANNELS,
               })
               .pipe(takeUntil(this.destroy$))
-              .subscribe((res) => {
-                this.channels = res.data.channels;
+              .subscribe(({ data }) => {
+                this.channels = data.channels;
               });
           }
         });
@@ -279,11 +279,11 @@ export class SafeGridSettingsComponent
             firstAggregations: aggregationIds?.length || 10,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
-            this.resource = res.data.resource;
-            this.relatedForms = res.data.resource.relatedForms || [];
-            this.templates = res.data.resource.forms || [];
+        .subscribe(({ data }) => {
+          if (data) {
+            this.resource = data.resource;
+            this.relatedForms = data.resource.relatedForms || [];
+            this.templates = data.resource.forms || [];
             this.fields = this.queryBuilder.getFields(
               this.resource.queryName as string
             );

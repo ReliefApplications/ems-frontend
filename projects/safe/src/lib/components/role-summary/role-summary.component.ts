@@ -43,15 +43,15 @@ export class SafeRoleSummaryComponent implements OnInit {
           id: this.id,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.role = res.data.role;
+      .subscribe(({ data, loading }) => {
+        if (data) {
+          this.role = data.role;
           this.breadcrumbService.setBreadcrumb(
             '@role',
             this.role.title as string
           );
         }
-        this.loading = false;
+        this.loading = loading;
       });
   }
 
@@ -68,10 +68,10 @@ export class SafeRoleSummaryComponent implements OnInit {
         mutation: EDIT_ROLE,
         variables: { ...e, id: this.id },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.role = res.data.editRole;
-          this.loading = false;
+      .subscribe(({ data, loading }) => {
+        if (data) {
+          this.role = data.editRole;
+          this.loading = loading;
         }
       });
   }

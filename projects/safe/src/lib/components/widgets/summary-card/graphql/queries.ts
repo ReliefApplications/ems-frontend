@@ -60,7 +60,10 @@ export const GET_RESOURCE_METADATA = gql`
   query GetResourceMeta($id: ID!) {
     resource(id: $id) {
       queryName
-      metadata
+      metadata {
+        name
+        type
+      }
     }
   }
 `;

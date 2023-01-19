@@ -100,15 +100,15 @@ export class SafeAggregationGridComponent
       this.pageSize,
       this.skip
     );
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe(
-      (res) => {
+    this.dataSubscription = this.dataQuery.valueChanges.subscribe({
+      next: ({ data }) => {
         this.gridData = {
-          data: res.data.recordsAggregation.items,
-          total: res.data.recordsAggregation.totalCount,
+          data: data.recordsAggregation.items,
+          total: data.recordsAggregation.totalCount,
         };
         this.loading = false;
       },
-      (err: any) => {
+      error: (err: any) => {
         this.status = {
           error: true,
           message: this.translate.instant(
@@ -122,8 +122,8 @@ export class SafeAggregationGridComponent
           ),
         };
         this.loading = false;
-      }
-    );
+      },
+    });
   }
 
   /**
@@ -138,8 +138,8 @@ export class SafeAggregationGridComponent
           id: this.resourceId,
         },
       })
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           const resource = res.data.resource;
           const allGqlFields = this.queryBuilder.getFields(
             resource.queryName || ''
@@ -177,14 +177,14 @@ export class SafeAggregationGridComponent
             fields: queryFields,
           });
           if (metaQuery) {
-            metaQuery.subscribe(
-              async (res2: any) => {
+            metaQuery.subscribe({
+              next: async ({ data }) => {
                 this.status = {
                   error: false,
                 };
-                for (const key in res2.data) {
-                  if (Object.prototype.hasOwnProperty.call(res2.data, key)) {
-                    const metaFields = Object.assign({}, res2.data[key]);
+                for (const key in data) {
+                  if (Object.prototype.hasOwnProperty.call(data, key)) {
+                    const metaFields = Object.assign({}, data[key]);
                     try {
                       await this.gridService.populateMetaFields(metaFields);
                       // Remove ref data meta fields because it messes up with the display
@@ -217,7 +217,7 @@ export class SafeAggregationGridComponent
                   }
                 }
               },
-              (err: any) => {
+              error: (err: any) => {
                 this.loadingSettings = false;
                 this.status = {
                   error: true,
@@ -231,8 +231,8 @@ export class SafeAggregationGridComponent
                     }
                   ),
                 };
-              }
-            );
+              },
+            });
           } else {
             this.loadingSettings = false;
             this.status = {
@@ -243,7 +243,7 @@ export class SafeAggregationGridComponent
             };
           }
         },
-        (err: any) => {
+        error: (err: any) => {
           this.loadingSettings = false;
           this.status = {
             error: true,
@@ -257,8 +257,8 @@ export class SafeAggregationGridComponent
               }
             ),
           };
-        }
-      );
+        },
+      });
   }
 
   // === PAGINATION ===

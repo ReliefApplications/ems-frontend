@@ -66,11 +66,11 @@ export class SafeAggregationService {
           first: options.first,
         },
       })
-    ).then(async (res) => {
-      if (res.errors) {
+    ).then(async ({ errors, data }) => {
+      if (errors) {
         return FALLBACK_AGGREGATIONS;
       } else {
-        return res.data.resource.aggregations || FALLBACK_AGGREGATIONS;
+        return data.resource.aggregations || FALLBACK_AGGREGATIONS;
       }
     });
   }

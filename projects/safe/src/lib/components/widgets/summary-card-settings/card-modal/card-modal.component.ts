@@ -224,6 +224,15 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
       .subscribe((res) => {
         this.selectedLayout =
           res.data?.resource.layouts?.edges[0]?.node || null;
+        this.fields = [];
+        get(res, 'data.resource.metadata', []).map((metafield: any) => {
+          get(this.selectedLayout, 'query.fields', []).map((field: any) => {
+            if (field.name === metafield.name) {
+              const type = metafield.type;
+              this.fields.push({ ...field, type });
+            }
+          });
+        });
       });
   }
 
