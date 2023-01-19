@@ -198,6 +198,11 @@ export class SafeMapComponent
     // Creates a pane for markers so they are always shown in top, used in the marker options;
     this.map.createPane('markers');
     this.map.getPane('markers').style.zIndex = 650;
+
+    // Set event listener to log map bounds when zooming, moving and resizing screen.
+    this.map.on('moveend', () => {
+      console.log(this.map.getBounds());
+    });
   }
 
   /** Load the data, using widget parameters. */
