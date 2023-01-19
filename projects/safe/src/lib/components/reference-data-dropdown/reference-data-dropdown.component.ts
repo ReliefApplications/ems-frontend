@@ -80,12 +80,12 @@ export class SafeReferenceDataDropdownComponent
           },
         })
         .pipe(takeUntil(this.destroy$))
-        .subscribe((res) => {
+        .subscribe(({ data }) => {
           if (
-            res.data.referenceData &&
+            data.referenceData &&
             !this.referenceDatas.value.find((x) => x.id === this.referenceData)
           ) {
-            this.selectedReferenceData = res.data.referenceData;
+            this.selectedReferenceData = data.referenceData;
           }
         });
     }
@@ -101,14 +101,14 @@ export class SafeReferenceDataDropdownComponent
     this.referenceDatas$ = this.referenceDatas.asObservable();
     this.referenceDatasQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        const referenceDatas = res.data.referenceDatas.edges.map((x) => x.node);
+      .subscribe(({ data, loading }) => {
+        const referenceDatas = data.referenceDatas.edges.map((x) => x.node);
         this.referenceDatas.next(referenceDatas);
         if (referenceDatas.find((x) => x.id === this.referenceData)) {
           this.selectedReferenceData = null;
         }
-        this.pageInfo = res.data.referenceDatas.pageInfo;
-        this.loading = false;
+        this.pageInfo = data.referenceDatas.pageInfo;
+        this.loading = loading;
       });
   }
 

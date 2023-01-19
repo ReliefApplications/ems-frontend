@@ -79,15 +79,15 @@ export class DashboardComponent
             id: this.id,
           },
         })
-        .subscribe(
-          (res) => {
-            if (res.data.dashboard) {
-              this.dashboard = res.data.dashboard;
+        .subscribe({
+          next: ({ data, loading }) => {
+            if (data.dashboard) {
+              this.dashboard = data.dashboard;
               this.dashboardService.openDashboard(this.dashboard);
-              this.tiles = res.data.dashboard.structure
-                ? res.data.dashboard.structure
+              this.tiles = data.dashboard.structure
+                ? data.dashboard.structure
                 : [];
-              this.loading = res.loading;
+              this.loading = loading;
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant(
@@ -104,11 +104,11 @@ export class DashboardComponent
               this.router.navigate(['/dashboards']);
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             this.router.navigate(['/dashboards']);
-          }
-        );
+          },
+        });
     });
   }
 

@@ -59,8 +59,8 @@ export class SafeWorkflowService {
           id,
         },
       })
-      .subscribe((res) => {
-        this.workflow.next(res.data.workflow);
+      .subscribe(({ data }) => {
+        this.workflow.next(data.workflow);
       });
   }
 
@@ -82,23 +82,23 @@ export class SafeWorkflowService {
             workflow: workflow.id,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ errors, data }) => {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectCreated', {
                 type: this.translate.instant('common.step.one').toLowerCase(),
-                value: res.data.addStep.name,
+                value: data.addStep.name,
               })
             );
             this.loadWorkflow(workflow.id);
             if (step.type === ContentType.form) {
               this.router.navigate(
-                ['../' + step.type + '/' + res.data.addStep.id],
+                ['../' + step.type + '/' + data.addStep.id],
                 { relativeTo: route.parent }
               );
             } else {
               this.router.navigate(
-                ['../' + step.type + '/' + res.data.addStep.content],
+                ['../' + step.type + '/' + data.addStep.content],
                 { relativeTo: route.parent }
               );
             }
@@ -106,7 +106,7 @@ export class SafeWorkflowService {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotUpdated', {
                 type: this.translate.instant('common.workflow.one'),
-                error: res.errors ? res.errors[0].message : '',
+                error: errors ? errors[0].message : '',
               }),
               { error: true }
             );

@@ -89,16 +89,16 @@ export class ResourcesComponent implements OnInit {
       },
     });
 
-    this.resourcesQuery.valueChanges.subscribe((res) => {
-      this.cachedResources = res.data.resources.edges.map((x) => x.node);
+    this.resourcesQuery.valueChanges.subscribe(({ data, loading }) => {
+      this.cachedResources = data.resources.edges.map((x) => x.node);
       this.resources.data = this.cachedResources.slice(
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
       );
-      this.pageInfo.length = res.data.resources.totalCount;
-      this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
-      this.loading = res.loading;
-      this.updating = res.loading;
+      this.pageInfo.length = data.resources.totalCount;
+      this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
+      this.loading = loading;
+      this.updating = loading;
       this.filterLoading = false;
     });
   }
@@ -276,8 +276,8 @@ export class ResourcesComponent implements OnInit {
               id: resource.id,
             },
           })
-          .subscribe((res) => {
-            if (!res.errors) {
+          .subscribe(({ errors }) => {
+            if (!errors) {
               this.resources.data = this.resources.data.filter(
                 (x) => x.id !== resource.id
               );
@@ -296,7 +296,7 @@ export class ResourcesComponent implements OnInit {
                     value: this.translate
                       .instant('common.resource.one')
                       .toLowerCase(),
-                    error: res.errors[0].message,
+                    error: errors[0].message,
                   }
                 ),
                 { error: true }
@@ -315,15 +315,15 @@ export class ResourcesComponent implements OnInit {
     const dialogRef = this.dialog.open(AddResourceModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        const data = { name: value.name };
+        const variablesData = { name: value.name };
         this.apollo
           .mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,
-            variables: data,
+            variables: variablesData,
           })
-          .subscribe(
-            (res) => {
-              if (res.errors) {
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
@@ -331,22 +331,22 @@ export class ResourcesComponent implements OnInit {
                       type: this.translate
                         .instant('common.form.one')
                         .toLowerCase(),
-                      error: res.errors[0].message,
+                      error: errors[0].message,
                     }
                   ),
                   { error: true }
                 );
               } else {
-                if (res.data) {
-                  const { id } = res.data.addForm;
+                if (data) {
+                  const { id } = data.addForm;
                   this.router.navigate(['/forms/builder', id]);
                 }
               }
             },
-            (err) => {
+            error: (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
-            }
-          );
+            },
+          });
       }
     });
   }

@@ -58,9 +58,9 @@ export class SafeResourceDropdownComponent
             id: this.resource,
           },
         })
-        .subscribe((res) => {
-          if (res.data.resource) {
-            this.selectedResource = res.data.resource;
+        .subscribe(({ data }) => {
+          if (data.resource) {
+            this.selectedResource = data.resource;
           }
         });
     }

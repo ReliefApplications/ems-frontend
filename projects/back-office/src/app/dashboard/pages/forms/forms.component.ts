@@ -94,16 +94,16 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
       },
     });
 
-    this.formsQuery.valueChanges.subscribe((res) => {
-      this.cachedForms = res.data.forms.edges.map((x) => x.node);
+    this.formsQuery.valueChanges.subscribe(({ data, loading }) => {
+      this.cachedForms = data.forms.edges.map((x) => x.node);
       this.forms.data = this.cachedForms.slice(
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
       );
-      this.pageInfo.length = res.data.forms.totalCount;
-      this.pageInfo.endCursor = res.data.forms.pageInfo.endCursor;
-      this.loading = res.loading;
-      this.updating = res.loading;
+      this.pageInfo.length = data.forms.totalCount;
+      this.pageInfo.endCursor = data.forms.pageInfo.endCursor;
+      this.loading = loading;
+      this.updating = loading;
     });
   }
 
@@ -236,8 +236,8 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
               id,
             },
           })
-          .subscribe((res: any) => {
-            if (!res.errors) {
+          .subscribe(({ errors }: any) => {
+            if (!errors) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectDeleted', {
                   value: this.translate.instant('common.form.one'),
@@ -252,7 +252,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
                   'common.notifications.objectNotDeleted',
                   {
                     value: this.translate.instant('common.form.one'),
-                    error: res.errors[0].message,
+                    error: errors[0].message,
                   }
                 ),
                 { error: true }
@@ -271,20 +271,20 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
     const dialogRef = this.dialog.open(AddFormModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        const data = { name: value.name };
+        const variablesData = { name: value.name };
         Object.assign(
-          data,
+          variablesData,
           value.resource && { resource: value.resource },
           value.template && { template: value.template }
         );
         this.apollo
           .mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,
-            variables: data,
+            variables: variablesData,
           })
-          .subscribe(
-            (res) => {
-              if (res.errors) {
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
@@ -292,22 +292,22 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
                       type: this.translate
                         .instant('common.form.one')
                         .toLowerCase(),
-                      error: res.errors[0].message,
+                      error: errors[0].message,
                     }
                   ),
                   { error: true }
                 );
               } else {
-                if (res.data) {
-                  const { id } = res.data.addForm;
+                if (data) {
+                  const { id } = data.addForm;
                   this.router.navigate(['/forms/' + id + '/builder']);
                 }
               }
             },
-            (err) => {
+            error: (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
-            }
-          );
+            },
+          });
       }
     });
   }

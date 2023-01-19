@@ -72,9 +72,9 @@ export class RoleAutoAssignmentComponent implements OnInit {
       .query<GetGroupsQueryResponse>({
         query: GET_GROUPS,
       })
-      .subscribe((res) => {
-        if (res.data.groups) {
-          this.groups = res.data.groups;
+      .subscribe(({ data }) => {
+        if (data.groups) {
+          this.groups = data.groups;
           this.fields.push({
             text: 'User Groups',
             name: '{{groups}}',

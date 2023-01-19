@@ -57,7 +57,7 @@ export class SafeReferenceDataService {
             id,
           },
         })
-        .pipe(map((res) => res.data.referenceData))
+        .pipe(map(({ data }) => data.referenceData))
     );
   }
 

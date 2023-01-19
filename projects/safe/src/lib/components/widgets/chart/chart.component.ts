@@ -163,58 +163,60 @@ export class SafeChartComponent
 
   /** Load the data, using widget parameters. */
   private getData(): void {
-    this.dataQuery.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      if (res.errors) {
-        this.loading = false;
-        this.hasError = true;
-        this.series = [];
-      } else {
-        this.hasError = false;
-        const today = new Date();
-        this.lastUpdate =
-          ('0' + today.getHours()).slice(-2) +
-          ':' +
-          ('0' + today.getMinutes()).slice(-2);
-        if (
-          ['pie', 'donut', 'line', 'bar', 'column'].includes(
-            this.settings.chart.type
-          )
-        ) {
-          const aggregationData = JSON.parse(
-            JSON.stringify(res.data.recordsAggregation)
-          );
-          if (get(this.settings, 'chart.mapping.series', null)) {
-            const groups = groupBy(aggregationData, 'series');
-            const categories = uniq(
-              aggregationData.map((x: any) => x.category)
-            );
-            this.series = Object.keys(groups).map((key) => {
-              const rawData = groups[key];
-              const data = Array.from(
-                categories,
-                (category) =>
-                  rawData.find((x) => x.category === category) || {
-                    category,
-                    field: null,
-                  }
-              );
-              return {
-                name: key,
-                data,
-              };
-            });
-          } else {
-            this.series = [
-              {
-                data: aggregationData,
-              },
-            ];
-          }
+    this.dataQuery
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ errors, data, loading }: any) => {
+        if (errors) {
+          this.loading = false;
+          this.hasError = true;
+          this.series = [];
         } else {
-          this.series = res.data.recordsAggregation;
+          this.hasError = false;
+          const today = new Date();
+          this.lastUpdate =
+            ('0' + today.getHours()).slice(-2) +
+            ':' +
+            ('0' + today.getMinutes()).slice(-2);
+          if (
+            ['pie', 'donut', 'line', 'bar', 'column'].includes(
+              this.settings.chart.type
+            )
+          ) {
+            const aggregationData = JSON.parse(
+              JSON.stringify(data.recordsAggregation)
+            );
+            if (get(this.settings, 'chart.mapping.series', null)) {
+              const groups = groupBy(aggregationData, 'series');
+              const categories = uniq(
+                aggregationData.map((x: any) => x.category)
+              );
+              this.series = Object.keys(groups).map((key) => {
+                const rawData = groups[key];
+                const returnData = Array.from(
+                  categories,
+                  (category) =>
+                    rawData.find((x) => x.category === category) || {
+                      category,
+                      field: null,
+                    }
+                );
+                return {
+                  name: key,
+                  data: returnData,
+                };
+              });
+            } else {
+              this.series = [
+                {
+                  data: aggregationData,
+                },
+              ];
+            }
+          } else {
+            this.series = data.recordsAggregation;
+          }
+          this.loading = loading;
         }
-        this.loading = res.loading;
-      }
-    });
+      });
   }
 }

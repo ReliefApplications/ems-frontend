@@ -115,12 +115,12 @@ export class SafeAggregationBuilderComponent
     //   variables,
     // });
     // this.forms$ = this.forms.asObservable();
-    // this.formsQuery.valueChanges.subscribe((res) => {
-    //   this.forms.next(res.data.forms.edges.map((x) => x.node));
-    //   this.pageInfo = res.data.forms.pageInfo;
-    //   this.loadingMore = res.loading;
+    // this.formsQuery.valueChanges.subscribe(({ data, loading }) => {
+    //   this.forms.next(data.forms.edges.map((x) => x.node));
+    //   this.pageInfo = data.forms.pageInfo;
+    //   this.loadingMore = loading;
     //   if (this.loading) {
-    //     this.loading = res.loading;
+    //     this.loading = loading;
     //     this.initFields();
     //   }
     // });
@@ -215,10 +215,10 @@ export class SafeAggregationBuilderComponent
       this.selectedFields.next(selectedFields);
       // this.queryBuilder
       //   .buildMetaQuery({ name: this.queryName, fields: formattedFields })
-      //   ?.subscribe((res) => {
-      //     for (const field in res.data) {
-      //       if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-      //         this.metaFields.next(res.data[field]);
+      //   ?.subscribe(({ data, loading }) => {
+      //     for (const field in data) {
+      //       if (Object.prototype.hasOwnProperty.call(data, field)) {
+      //         this.metaFields.next(data[field]);
       //       }
       //     }
       //   });

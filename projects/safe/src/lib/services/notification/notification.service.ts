@@ -74,12 +74,10 @@ export class SafeNotificationService {
           },
         });
 
-      this.notificationsQuery.valueChanges.subscribe((res) => {
-        this.notifications.next(
-          res.data.notifications.edges.map((x) => x.node)
-        );
-        this.pageInfo.endCursor = res.data.notifications.pageInfo.endCursor;
-        this.hasNextPage.next(res.data.notifications.pageInfo.hasNextPage);
+      this.notificationsQuery.valueChanges.subscribe(({ data }) => {
+        this.notifications.next(data.notifications.edges.map((x) => x.node));
+        this.pageInfo.endCursor = data.notifications.pageInfo.endCursor;
+        this.hasNextPage.next(data.notifications.pageInfo.hasNextPage);
         this.firstLoad = false;
       });
 
@@ -87,21 +85,18 @@ export class SafeNotificationService {
         .subscribe<NotificationSubscriptionResponse>({
           query: NOTIFICATION_SUBSCRIPTION,
         })
-        .subscribe((res) => {
-          if (res.data && res.data.notification) {
+        .subscribe(({ data }) => {
+          if (data && data.notification) {
             // prevent new notification duplication
-            if (this.previousNotificationId !== res.data.notification.id) {
+            if (this.previousNotificationId !== data.notification.id) {
               const notifications = this.notifications.getValue();
               if (notifications) {
-                this.notifications.next([
-                  res.data.notification,
-                  ...notifications,
-                ]);
+                this.notifications.next([data.notification, ...notifications]);
               } else {
-                this.notifications.next([res.data.notification]);
+                this.notifications.next([data.notification]);
               }
             }
-            this.previousNotificationId = res.data.notification.id;
+            this.previousNotificationId = data.notification.id;
           }
         });
     }
@@ -121,9 +116,9 @@ export class SafeNotificationService {
           id: notification.id,
         },
       })
-      .subscribe((res) => {
-        if (res.data && res.data.seeNotification) {
-          const seeNotification = res.data.seeNotification;
+      .subscribe(({ data }) => {
+        if (data && data.seeNotification) {
+          const seeNotification = data.seeNotification;
           this.notifications.next(
             notifications.filter((x) => x.id !== seeNotification.id)
           );
