@@ -60,7 +60,7 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
   public mapID = `map-${Math.random().toString(36)}`;
 
   // output
-  private timeout: NodeJS.Timeout | null = null;
+  private timeout: ReturnType<typeof setTimeout> | null = null;
   @Output() mapChange = new EventEmitter<FeatureCollection>();
 
   /**

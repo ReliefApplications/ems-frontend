@@ -1142,6 +1142,7 @@
 						"longitude": "******"
 					},
 					"layers": {
+						"add": "******",
 						"clorophlet": {
 							"add": "******",
 							"division": {
@@ -1154,6 +1155,7 @@
 							"info": "******",
 							"title": "******"
 						},
+						"edit": "****** {{name}}",
 						"online": {
 							"info": "******",
 							"select": "******",
@@ -1169,7 +1171,8 @@
 							"rulesInfo": "******",
 							"size": "******",
 							"title": "******"
-						}
+						},
+						"remove": "******"
 					},
 					"popup": {
 						"label": "******"
