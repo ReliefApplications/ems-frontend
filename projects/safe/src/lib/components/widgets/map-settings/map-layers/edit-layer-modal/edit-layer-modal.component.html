@@ -1,0 +1,33 @@
+<safe-modal size="small">
+  <h1 mat-dialog-title>
+    {{
+      layer
+        ? ('components.widget.settings.map.layers.edit'
+          | translate
+            : {
+                name: layer.name
+              })
+        : ('components.widget.settings.map.layers.add' | translate)
+    }}
+  </h1>
+  <div mat-dialog-content>
+    <form [formGroup]="form" class="flex flex-col">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'common.name' | translate }}</mat-label>
+        <input matInput formControlName="name" type="text" />
+      </mat-form-field>
+    </form>
+  </div>
+  <div mat-dialog-actions align="end">
+    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      [mat-dialog-close]="form.value"
+      cdkFocusInitial
+      [disabled]="!form.valid"
+    >
+      {{ (!layer ? 'common.create' : 'common.update') | translate }}
+    </safe-button>
+  </div>
+</safe-modal>

@@ -1145,6 +1145,7 @@
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
 					},
 					"layers": {
+						"add": "Ajouter un nouveau calque",
 						"clorophlet": {
 							"add": "Ajouter un clorophlet",
 							"division": {
@@ -1157,6 +1158,7 @@
 							"info": "Configurer des clorophlets en tant que couches pour la carte",
 							"title": "Clorophlets"
 						},
+						"edit": "Mettre à jour le calque {{name}}",
 						"online": {
 							"info": "Charger des couches depuis arcGIS online",
 							"select": "Chercher des couches",
@@ -1172,7 +1174,8 @@
 							"rulesInfo": "Configurer la taille et la couleur des marqueurs",
 							"size": "Taille",
 							"title": "Marqueurs"
-						}
+						},
+						"remove": "Supprimer le calque"
 					},
 					"popup": {
 						"label": "Champs affichés dans le popup"
