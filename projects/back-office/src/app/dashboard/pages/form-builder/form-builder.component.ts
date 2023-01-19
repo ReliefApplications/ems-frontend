@@ -1,6 +1,5 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   EditFormMutationResponse,
@@ -62,8 +61,8 @@ export class FormBuilderComponent implements OnInit {
   ];
 
   // === FORM EDITION ===
+  public canEditName = false;
   public formActive = false;
-  public nameForm: FormGroup = new FormGroup({});
   public hasChanges = false;
 
   /**
@@ -143,9 +142,7 @@ export class FormBuilderComponent implements OnInit {
                 this.form.resource?.name as string
               );
               // this.breadcrumbService.setResourceName();
-              this.nameForm = new FormGroup({
-                formName: new FormControl(this.form.name, Validators.required),
-              });
+              this.canEditName = this.form?.canUpdate || false;
               const storedStructure = window.localStorage.getItem(
                 `form:${this.id}`
               );
@@ -332,8 +329,12 @@ export class FormBuilderComponent implements OnInit {
     // this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
   }
 
-  /** Edit the form name. */
-  public saveName(): void {
+  /**
+   * Edit the form name.
+   *
+   * @param {string} formName new form name
+   */
+  public saveName(formName: string): void {
     const statusModal = this.dialog.open(SafeStatusModalComponent, {
       disableClose: true,
       data: {
@@ -341,8 +342,6 @@ export class FormBuilderComponent implements OnInit {
         showSpinner: true,
       },
     });
-    const { formName } = this.nameForm.value;
-    this.toggleFormActive();
     this.apollo
       .mutate<EditFormMutationResponse>({
         mutation: EDIT_FORM_NAME,

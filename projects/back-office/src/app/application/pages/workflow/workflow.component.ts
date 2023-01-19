@@ -1,6 +1,5 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -49,8 +48,8 @@ export class WorkflowComponent
   public steps: Step[] = [];
 
   // === WORKFLOW EDITION ===
+  public canEditName = false;
   public formActive = false;
-  public workflowNameForm: FormGroup = new FormGroup({});
   public canUpdate = false;
 
   // === ACTIVE STEP ===
@@ -102,9 +101,6 @@ export class WorkflowComponent
       .subscribe((workflow: Workflow | null) => {
         if (workflow) {
           this.steps = workflow.steps || [];
-          this.workflowNameForm = new FormGroup({
-            workflowName: new FormControl(workflow.name, Validators.required),
-          });
           this.loading = false;
           if (!this.workflow || workflow.id !== this.workflow.id) {
             const firstStep = get(workflow, 'steps', [])[0];
@@ -134,6 +130,7 @@ export class WorkflowComponent
             }
           }
           this.workflow = workflow;
+          this.canEditName = this.workflow?.page?.canUpdate || false;
           this.applicationId = this.workflow.page?.application?.id;
           this.canUpdate = this.workflow.canUpdate || false;
         } else {
@@ -144,20 +141,11 @@ export class WorkflowComponent
   }
 
   /**
-   * Toggle workflow name form.
-   */
-  toggleFormActive(): void {
-    if (this.workflow?.page?.canUpdate) {
-      this.formActive = !this.formActive;
-    }
-  }
-
-  /**
    * Updates the name of the workflow and his linked page.
+   *
+   * @param workflowName new workflow name
    */
-  saveName(): void {
-    const { workflowName } = this.workflowNameForm.value;
-    this.toggleFormActive();
+  saveName(workflowName: string): void {
     this.apollo
       .mutate<EditPageMutationResponse>({
         mutation: EDIT_PAGE,

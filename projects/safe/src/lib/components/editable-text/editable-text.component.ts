@@ -12,7 +12,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./editable-text.component.scss'],
 })
 export class SafeEditableTextComponent implements OnInit {
+  // Full text to display
   @Input() text = '';
+  // Editable text, can be different from full text (available to be edited in the form)
+  @Input() editableText: any;
   @Input() canEdit = true;
 
   @Output() newText = new EventEmitter<string>();
@@ -27,7 +30,7 @@ export class SafeEditableTextComponent implements OnInit {
    * Sets the value of the textForm with the value received from the parent component
    */
   ngOnInit(): void {
-    this.textForm.controls.text.setValue(this.text);
+    this.textForm.controls.text.setValue(this.editableText ?? this.text);
   }
 
   /**

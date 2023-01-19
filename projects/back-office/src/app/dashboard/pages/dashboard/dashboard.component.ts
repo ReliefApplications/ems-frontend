@@ -115,7 +115,7 @@ export class DashboardComponent
               this.canEditName =
                 (this.dashboard?.page
                   ? this.dashboard?.page?.canUpdate
-                  : this.dashboard?.step?.canUpdate) ?? false;
+                  : this.dashboard?.step?.canUpdate) || false;
               this.dashboardService.openDashboard(this.dashboard);
               this.tiles = data.dashboard.structure
                 ? [...data.dashboard.structure]

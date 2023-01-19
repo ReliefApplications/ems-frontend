@@ -1,7 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import {
   Form,
@@ -52,8 +51,8 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
   public querySubscription?: Subscription;
 
   // === TAB NAME EDITION ===
+  public canEditName = false;
   public formActive = false;
-  public tabNameForm: FormGroup = new FormGroup({});
   public page?: Page;
   public step?: Step;
   public isStep = false;
@@ -112,9 +111,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           )
           .subscribe(({ data, loading }) => {
             this.form = data.form;
-            this.tabNameForm = new FormGroup({
-              tabName: new FormControl(this.step?.name, Validators.required),
-            });
+            this.canEditName = this.step?.canUpdate || false;
             this.applicationId =
               this.step?.workflow?.page?.application?.id || '';
             this.loading = loading;
@@ -140,9 +137,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           )
           .subscribe(({ data, loading }) => {
             this.form = data.form;
-            this.tabNameForm = new FormGroup({
-              tabName: new FormControl(this.page?.name, Validators.required),
-            });
+            this.canEditName = this.page?.canUpdate || false;
             this.applicationId = this.page?.application?.id || '';
             this.loading = loading;
           });
@@ -151,18 +146,11 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Toggle activation of form.
+   * Update the name of the tab.
+   *
+   * @param {string} tabName new tab name
    */
-  toggleFormActive(): void {
-    if (this.step?.canUpdate || this.page?.canUpdate) {
-      this.formActive = !this.formActive;
-    }
-  }
-
-  /** Update the name of the tab. */
-  saveName(): void {
-    const { tabName } = this.tabNameForm.value;
-    this.toggleFormActive();
+  saveName(tabName: string): void {
     if (this.isStep) {
       this.apollo
         .mutate<EditStepMutationResponse>({
