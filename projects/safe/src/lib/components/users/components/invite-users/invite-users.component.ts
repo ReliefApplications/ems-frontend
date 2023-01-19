@@ -122,11 +122,11 @@ export class SafeInviteUsersComponent implements OnInit {
     if (e.files.length > 0) {
       const file = e.files[0].rawFile;
       if (file && this.isValidFile(file)) {
-        this.downloadService.uploadFile(this.data.uploadPath, file).subscribe(
-          (res) => {
+        this.downloadService.uploadFile(this.data.uploadPath, file).subscribe({
+          next: (res) => {
             this.gridData.data = this.gridData.data.concat(res);
           },
-          (err) => {
+          error: (err) => {
             if (err.status === 400) {
               this.snackBar.openSnackBar(err.error, { error: true });
               this.resetFileInput();
@@ -141,8 +141,8 @@ export class SafeInviteUsersComponent implements OnInit {
               );
               this.resetFileInput();
             }
-          }
-        );
+          },
+        });
       } else {
         if (e.files.length > 1) {
           this.snackBar.openSnackBar(

@@ -104,9 +104,9 @@ export class AddAggregationModalComponent implements OnInit {
       if (aggregation) {
         this.aggregationService
           .addAggregation(aggregation, this.resource?.id, this.form?.id)
-          .subscribe((res) => {
-            if (res.data?.addAggregation) {
-              this.dialogRef.close(res.data.addAggregation);
+          .subscribe(({ data }) => {
+            if (data?.addAggregation) {
+              this.dialogRef.close(data.addAggregation);
             } else {
               this.dialogRef.close();
             }

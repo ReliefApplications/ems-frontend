@@ -105,8 +105,8 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe((response) => {
-              const serverRes = response.data.resource.fields;
+            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
+              const serverRes = data.resource.fields;
               const res = [];
               res.push({ value: null });
               for (const item of serverRes) {
@@ -152,9 +152,9 @@ export const init = (
           btn.onclick = () => {
             const currentQuestion = editor.object;
             getResourceById({ id: currentQuestion.resource }).subscribe(
-              (response) => {
-                if (response.data.resource && response.data.resource.name) {
-                  const nameTrimmed = response.data.resource.name
+              ({ data }) => {
+                if (data.resource && data.resource.name) {
+                  const nameTrimmed = data.resource.name
                     .replace(/\s/g, '')
                     .toLowerCase();
                   const dialogRef = dialog.open(
@@ -197,9 +197,9 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe((response) => {
+            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
               const serverRes =
-                response.data.resource.records?.edges?.map((x) => x.node) || [];
+                data.resource.records?.edges?.map((x) => x.node) || [];
               const res = [];
               res.push({ value: null });
               for (const item of serverRes) {
@@ -236,8 +236,8 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource && obj.addRecord) {
-            getResourceById({ id: obj.resource }).subscribe((response) => {
-              const serverRes = response.data.resource.forms || [];
+            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
+              const serverRes = data.resource.forms || [];
               const res: any[] = [];
               res.push({ value: null });
               for (const item of serverRes) {
@@ -303,8 +303,8 @@ export const init = (
           !!obj && !!obj.selectQuestion && !!obj.displayField,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe((response) => {
-              const serverRes = response.data.resource.fields;
+            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
+              const serverRes = data.resource.fields;
               const res = [];
               for (const item of serverRes) {
                 res.push({ value: item.name });
@@ -464,9 +464,9 @@ export const init = (
             );
           }
         }
-        getResourceById({ id: question.resource }).subscribe((response) => {
+        getResourceById({ id: question.resource }).subscribe(({ data }) => {
           const serverRes =
-            response.data.resource.records?.edges?.map((x) => x.node) || [];
+            data.resource.records?.edges?.map((x) => x.node) || [];
           const res = [];
           for (const item of serverRes) {
             res.push({
@@ -477,7 +477,7 @@ export const init = (
           question.contentQuestion.choices = res;
           if (!question.placeholder) {
             question.contentQuestion.optionsCaption =
-              'Select a record from ' + response.data.resource.name + '...';
+              'Select a record from ' + data.resource.name + '...';
           }
           if (!question.filterBy || question.filterBy.length < 1) {
             this.populateChoices(question);
@@ -556,9 +556,9 @@ export const init = (
     populateChoices: (question: QuestionResource): void => {
       if (question.resource) {
         getResourceById({ id: question.resource, filters }).subscribe(
-          (response) => {
+          ({ data }) => {
             const serverRes =
-              response.data.resource.records?.edges?.map((x) => x.node) || [];
+              data.resource.records?.edges?.map((x) => x.node) || [];
             const res: any[] = [];
             for (const item of serverRes) {
               res.push({

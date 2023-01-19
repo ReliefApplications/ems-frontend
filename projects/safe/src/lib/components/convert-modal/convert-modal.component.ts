@@ -68,8 +68,8 @@ export class SafeConvertModalComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        const record = res.data.record;
+      .subscribe(({ data }) => {
+        const record = data.record;
         this.form = record.form;
         this.loading = false;
         this.availableForms =

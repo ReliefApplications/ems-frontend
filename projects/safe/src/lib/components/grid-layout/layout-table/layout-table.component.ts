@@ -138,11 +138,11 @@ export class LayoutTableComponent
       if (value) {
         this.gridLayoutService
           .editLayout(layout, value, this.resource?.id, this.form?.id)
-          .subscribe((res: any) => {
-            if (res.data.editLayout) {
+          .subscribe(({ data }: any) => {
+            if (data.editLayout) {
               const layouts = [...this.allLayouts];
               const index = layouts.findIndex((x) => x.id === layout.id);
-              layouts[index] = res.data.editLayout;
+              layouts[index] = data.editLayout;
               this.allLayouts = layouts;
               this.setSelectedLayouts(this.selectedLayouts?.value);
             }

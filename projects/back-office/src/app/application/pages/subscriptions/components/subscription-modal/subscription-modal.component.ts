@@ -115,14 +115,14 @@ export class SubscriptionModalComponent implements OnInit {
       });
 
     // this.applications$ = this.applications.asObservable();
-    this.applicationsQuery.valueChanges.subscribe((res) => {
+    this.applicationsQuery.valueChanges.subscribe(({ data, loading }) => {
       this.applications.next(
-        res.data.applications.edges
+        data.applications.edges
           .map((x) => x.node)
           .filter((x) => (x.channels ? x.channels.length > 0 : false))
       );
-      this.applicationsPageInfo = res.data.applications.pageInfo;
-      this.applicationsLoading = res.loading;
+      this.applicationsPageInfo = data.applications.pageInfo;
+      this.applicationsLoading = loading;
       this.applications$ =
         this.subscriptionForm.controls.routingKey.valueChanges.pipe(
           startWith(''),

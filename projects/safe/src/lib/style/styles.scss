@@ -52,7 +52,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,
+      // A700: #ffffff,
     ),
 );
 
@@ -349,10 +349,6 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   .mat-cell {
     border-bottom: 1px solid #f2f3f5 !important;
     color: #3f3c3c;
-  }
-  .mat-cell:first-child {
-    color: #000000;
-    font-weight: 500;
   }
 }
 

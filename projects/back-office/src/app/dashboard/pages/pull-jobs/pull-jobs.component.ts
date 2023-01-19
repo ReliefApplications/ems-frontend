@@ -85,15 +85,15 @@ export class PullJobsComponent implements OnInit {
       },
     });
 
-    this.pullJobsQuery.valueChanges.subscribe((res) => {
-      this.cachedPullJobs = res.data.pullJobs.edges.map((x) => x.node);
+    this.pullJobsQuery.valueChanges.subscribe(({ data, loading }) => {
+      this.cachedPullJobs = data.pullJobs.edges.map((x) => x.node);
       this.pullJobs.data = this.cachedPullJobs.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex,
         ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
       );
-      this.pageInfo.length = res.data.pullJobs.totalCount;
-      this.pageInfo.endCursor = res.data.pullJobs.pageInfo.endCursor;
-      this.loading = res.loading;
+      this.pageInfo.length = data.pullJobs.totalCount;
+      this.pageInfo.endCursor = data.pullJobs.pageInfo.endCursor;
+      this.loading = loading;
     });
   }
 
@@ -188,8 +188,8 @@ export class PullJobsComponent implements OnInit {
                 mutation: ADD_PULL_JOB,
                 variables,
               })
-              .subscribe((res) => {
-                if (res.data?.addPullJob) {
+              .subscribe(({ data }) => {
+                if (data?.addPullJob) {
                   this.snackBar.openSnackBar(
                     this.translate.instant(
                       'common.notifications.objectCreated',
@@ -203,7 +203,7 @@ export class PullJobsComponent implements OnInit {
                   );
                   if (this.cachedPullJobs.length === this.pageInfo.length) {
                     this.cachedPullJobs = this.cachedPullJobs.concat([
-                      res.data?.addPullJob,
+                      data?.addPullJob,
                     ]);
                     this.pullJobs.data = this.cachedPullJobs.slice(
                       ITEMS_PER_PAGE * this.pageInfo.pageIndex,
@@ -245,15 +245,15 @@ export class PullJobsComponent implements OnInit {
                 id: element.id,
               },
             })
-            .subscribe((res) => {
-              if (res.data?.deletePullJob) {
+            .subscribe(({ data }) => {
+              if (data?.deletePullJob) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectDeleted', {
                     value: this.translate.instant('common.pullJob.one'),
                   })
                 );
                 this.cachedPullJobs = this.cachedPullJobs.filter(
-                  (x) => x.id !== res.data?.deletePullJob.id
+                  (x) => x.id !== data?.deletePullJob.id
                 );
                 this.pageInfo.length -= 1;
                 this.pullJobs.data = this.cachedPullJobs.slice(
@@ -321,8 +321,8 @@ export class PullJobsComponent implements OnInit {
                 mutation: EDIT_PULL_JOB,
                 variables,
               })
-              .subscribe((res) => {
-                if (res.data?.editPullJob) {
+              .subscribe(({ data }) => {
+                if (data?.editPullJob) {
                   this.snackBar.openSnackBar(
                     this.translate.instant(
                       'common.notifications.objectUpdated',
@@ -335,8 +335,8 @@ export class PullJobsComponent implements OnInit {
                   );
                   this.cachedPullJobs = this.cachedPullJobs.map(
                     (pullJob: PullJob) => {
-                      if (pullJob.id === res.data?.editPullJob.id) {
-                        pullJob = res.data?.editPullJob || pullJob;
+                      if (pullJob.id === data?.editPullJob.id) {
+                        pullJob = data?.editPullJob || pullJob;
                       }
                       return pullJob;
                     }

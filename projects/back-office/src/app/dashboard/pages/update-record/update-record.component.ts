@@ -51,13 +51,13 @@ export class UpdateRecordComponent implements OnInit {
             id: template,
           },
         })
-        .valueChanges.subscribe((res) => {
-          this.form = res.data.form;
+        .valueChanges.subscribe(({ data, loading }) => {
+          this.form = data.form;
           this.breadcrumbService.setBreadcrumb(
             '@resource',
             this.form.name as string
           );
-          this.loading = res.loading;
+          this.loading = loading;
         });
     }
     if (this.id !== null) {
@@ -68,8 +68,8 @@ export class UpdateRecordComponent implements OnInit {
             id: this.id,
           },
         })
-        .valueChanges.subscribe((res) => {
-          this.record = res.data.record;
+        .valueChanges.subscribe(({ data, loading }) => {
+          this.record = data.record;
           this.breadcrumbService.setBreadcrumb(
             '@record',
             this.record.incrementalId as string
@@ -84,7 +84,7 @@ export class UpdateRecordComponent implements OnInit {
           );
           if (!template) {
             this.form = this.record.form || {};
-            this.loading = res.loading;
+            this.loading = loading;
           }
         });
     }
