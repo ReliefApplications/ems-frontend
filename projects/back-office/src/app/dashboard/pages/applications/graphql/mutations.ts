@@ -59,7 +59,6 @@ export const EDIT_APPLICATION = gql`
 
 /** Edit application gql mutation response interface */
 export interface EditApplicationMutationResponse {
-  loading: boolean;
   editApplication: Application;
 }
 
@@ -84,7 +83,6 @@ export const ADD_APPLICATION = gql`
 
 /** Add application gql mutation response interface */
 export interface AddApplicationMutationResponse {
-  loading: boolean;
   addApplication: Application;
 }
 
@@ -101,6 +99,5 @@ export const DELETE_APPLICATION = gql`
 
 /** Delete application gql mutation response interface */
 export interface DeleteApplicationMutationResponse {
-  loading: boolean;
   deleteApplication: Application;
 }

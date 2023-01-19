@@ -29,7 +29,6 @@ export const GET_RECORD_BY_ID = gql`
 
 /** Model for GetRecordByIdQueryResponse object */
 export interface GetRecordByIdQueryResponse {
-  loading: boolean;
   record: Record;
 }
 
@@ -47,7 +46,6 @@ export const GET_RESOURCE_LAYOUTS = gql`
 
 /** Model for GetResourceByIdQueryResponse object */
 export interface GetResourceLayoutsByIdQueryResponse {
-  loading: boolean;
   resource: {
     layouts: {
       id: Layout['id'];

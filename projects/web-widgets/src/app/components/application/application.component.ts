@@ -57,13 +57,13 @@ export class ApplicationComponent implements OnInit, OnChanges {
           id: this.id,
         },
       })
-      .valueChanges.subscribe((res) => {
-        if (res.data.application) {
-          this.application = res.data.application;
+      .valueChanges.subscribe(({ data, loading }) => {
+        if (data.application) {
+          this.application = data.application;
           const pages = this.application.pages || [];
           this.pages.emit(pages);
           this.selectedPage = pages.length > 0 ? pages[0] : null;
-          this.loading = res.loading;
+          this.loading = loading;
         }
       });
   }
@@ -77,13 +77,13 @@ export class ApplicationComponent implements OnInit, OnChanges {
             id: this.id,
           },
         })
-        .valueChanges.subscribe((res) => {
-          if (res.data.application) {
-            this.application = res.data.application;
+        .valueChanges.subscribe(({ data, loading }) => {
+          if (data.application) {
+            this.application = data.application;
             const pages = this.application.pages || [];
             this.pages.emit(pages);
             this.selectedPage = pages.length > 0 ? pages[0] : null;
-            this.loading = res.loading;
+            this.loading = loading;
           }
         });
     }

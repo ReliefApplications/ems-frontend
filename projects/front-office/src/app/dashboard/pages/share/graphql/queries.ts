@@ -28,6 +28,5 @@ export const GET_SHARE_DASHBOARD_BY_ID = gql`
 
 /** Get dashboard by id query response */
 export interface GetShareDashboardByIdQueryResponse {
-  loading: boolean;
   dashboard: Dashboard;
 }

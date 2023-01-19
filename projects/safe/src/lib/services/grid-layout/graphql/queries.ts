@@ -47,7 +47,6 @@ export const GET_GRID_RESOURCE_META = gql`
 // === GET RESOURCE BY ID ===
 /** Model for GetResourceByIdQueryResponse object */
 export interface GetResourceByIdQueryResponse {
-  loading: boolean;
   resource: Resource;
 }
 
@@ -81,6 +80,5 @@ export const GET_GRID_FORM_META = gql`
 
 /** Model for GetFormByIdQueryResponse object */
 export interface GetFormByIdQueryResponse {
-  loading: boolean;
   form: Form;
 }

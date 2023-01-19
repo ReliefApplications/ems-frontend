@@ -18,6 +18,5 @@ export const GET_POSITION_ATTRIBUTES_FROM_CATEGORY = gql`
 
 /** Model for GetPositionAttributesFromCategoryQueryResponse object */
 export interface GetPositionAttributesFromCategoryQueryResponse {
-  loading: boolean;
   positionAttributes: PositionAttribute[];
 }

@@ -789,6 +789,7 @@
 			},
 			"empty": {
 				"aggregations": "Aucune agrégation détectée",
+				"calculatedFields": "Aucun champ dérivé détecté",
 				"layouts": "Aucune mise en page détectée",
 				"records": "Aucun enregistrement détecté"
 			}

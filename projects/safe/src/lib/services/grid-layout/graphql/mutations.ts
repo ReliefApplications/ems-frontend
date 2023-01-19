@@ -18,7 +18,6 @@ export const ADD_LAYOUT = gql`
 
 /** Model for AddLayoutMutationResponse object */
 export interface AddLayoutMutationResponse {
-  loading: boolean;
   addLayout: Layout;
 }
 
@@ -44,7 +43,6 @@ export const EDIT_LAYOUT = gql`
 
 /** Model for EditLayoutMutationResponse object */
 export interface EditLayoutMutationResponse {
-  loading: boolean;
   editLayout: Layout;
 }
 
@@ -63,6 +61,5 @@ export const DELETE_LAYOUT = gql`
 
 /** Model for deleteLayoutMutationResponse object */
 export interface deleteLayoutMutationResponse {
-  loading: boolean;
   deleteLayout: Layout;
 }

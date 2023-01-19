@@ -41,11 +41,11 @@ export class WorkflowComponent implements OnInit, OnChanges {
           id: this.id,
         },
       })
-      .subscribe((res) => {
-        if (res.data.workflow) {
-          this.workflow = res.data.workflow;
-          this.steps = res.data.workflow.steps || [];
-          this.loading = res.loading;
+      .subscribe(({ data, loading }) => {
+        if (data.workflow) {
+          this.workflow = data.workflow;
+          this.steps = data.workflow.steps || [];
+          this.loading = loading;
           if (this.steps.length > 0) {
             this.onOpenStep(0);
           }
@@ -61,11 +61,11 @@ export class WorkflowComponent implements OnInit, OnChanges {
           id: this.id,
         },
       })
-      .subscribe((res) => {
-        if (res.data.workflow) {
-          this.workflow = res.data.workflow;
-          this.steps = res.data.workflow.steps || [];
-          this.loading = res.loading;
+      .subscribe(({ data, loading }) => {
+        if (data.workflow) {
+          this.workflow = data.workflow;
+          this.steps = data.workflow.steps || [];
+          this.loading = loading;
           if (this.steps.length > 0) {
             this.onOpenStep(0);
           }

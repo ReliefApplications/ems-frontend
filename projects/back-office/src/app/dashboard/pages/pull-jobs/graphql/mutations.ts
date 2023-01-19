@@ -54,7 +54,6 @@ export const EDIT_PULL_JOB = gql`
 
 /** Edit pull job gql mutation response interface */
 export interface EditPullJobMutationResponse {
-  loading: boolean;
   editPullJob: PullJob;
 }
 
@@ -70,7 +69,6 @@ export const DELETE_PULL_JOB = gql`
 
 /** Delete pull job gql mutation response interface */
 export interface DeletePullJobMutationResponse {
-  loading: boolean;
   deletePullJob: PullJob;
 }
 
@@ -125,6 +123,5 @@ export const ADD_PULL_JOB = gql`
 
 /** Add pull job gql mutation response interface */
 export interface AddPullJobMutationResponse {
-  loading: boolean;
   addPullJob: PullJob;
 }

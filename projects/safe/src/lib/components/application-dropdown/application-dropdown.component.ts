@@ -97,8 +97,8 @@ export class SafeApplicationDropdownComponent
           },
         })
         .pipe(takeUntil(this.destroy$))
-        .subscribe((res) => {
-          this.selectedApplications = res.data.applications.edges.map(
+        .subscribe(({ data }) => {
+          this.selectedApplications = data.applications.edges.map(
             (x) => x.node
           );
         });
@@ -117,16 +117,16 @@ export class SafeApplicationDropdownComponent
     this.applications$ = this.applications.asObservable();
     this.applicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.applications.next(res.data.applications.edges.map((x) => x.node));
+      .subscribe(({ data, loading }) => {
+        this.applications.next(data.applications.edges.map((x) => x.node));
         if (this.selectedApplications.length > 0) {
           const applicationsIds = this.applications.getValue().map((x) => x.id);
           this.selectedApplications = this.selectedApplications.filter(
             (x) => applicationsIds.indexOf(x.id) < 0
           );
         }
-        this.pageInfo = res.data.applications.pageInfo;
-        this.loading = res.loading;
+        this.pageInfo = data.applications.pageInfo;
+        this.loading = loading;
       });
   }
 

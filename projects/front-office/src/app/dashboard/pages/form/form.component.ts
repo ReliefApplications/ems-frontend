@@ -104,9 +104,9 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
               });
             })
           )
-          .subscribe((res) => {
-            if (res.data) {
-              this.form = res.data.form;
+          .subscribe(({ data, loading }) => {
+            if (data) {
+              this.form = data.form;
             }
             if (
               !this.form ||
@@ -128,7 +128,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
             } else {
               this.canCreateRecords = true;
             }
-            this.loading = res.data.loading;
+            this.loading = loading;
           });
       } else {
         this.querySubscription = this.apollo
@@ -149,9 +149,9 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
               });
             })
           )
-          .subscribe((res) => {
-            if (res.data) {
-              this.form = res.data.form;
+          .subscribe(({ data, loading }) => {
+            if (data) {
+              this.form = data.form;
             }
             if (
               !this.form ||
@@ -173,7 +173,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
             } else {
               this.canCreateRecords = true;
             }
-            this.loading = res.data.loading;
+            this.loading = loading;
           });
       }
     });

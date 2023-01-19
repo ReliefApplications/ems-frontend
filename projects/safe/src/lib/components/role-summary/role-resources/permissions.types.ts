@@ -12,7 +12,7 @@ export interface Access {
     | {
         field: string;
         operator: string;
-        value: string;
+        value?: string;
       }
     | Access
   )[];

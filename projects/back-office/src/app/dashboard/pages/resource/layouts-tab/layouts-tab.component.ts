@@ -73,18 +73,18 @@ export class LayoutsTabComponent implements OnInit {
       },
     });
 
-    this.layoutsQuery.valueChanges.subscribe((res) => {
+    this.layoutsQuery.valueChanges.subscribe(({ data }) => {
       this.loading = false;
-      if (res.data.resource) {
+      if (data.resource) {
         this.cachedLayouts =
-          res.data.resource.layouts?.edges.map((e) => e.node) || [];
+          data.resource.layouts?.edges.map((e) => e.node) || [];
         this.layouts = this.cachedLayouts.slice(
           this.pageInfo.pageSize * this.pageInfo.pageIndex,
           this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         );
-        this.pageInfo.length = res.data.resource.layouts?.totalCount || 0;
+        this.pageInfo.length = data.resource.layouts?.totalCount || 0;
         this.pageInfo.endCursor =
-          res.data.resource.layouts?.pageInfo.endCursor || '';
+          data.resource.layouts?.pageInfo.endCursor || '';
       }
     });
   }
@@ -148,7 +148,6 @@ export class LayoutsTabComponent implements OnInit {
               totalCount: fetchMoreResult.resource.layouts.totalCount,
             },
           },
-          loading: fetchMoreResult.loading,
         };
       },
     });
@@ -168,9 +167,9 @@ export class LayoutsTabComponent implements OnInit {
       if (value) {
         this.gridLayoutService
           .addLayout(value, this.resource.id)
-          .subscribe((res: any) => {
-            if (res.data.addLayout) {
-              this.layouts = [...this.layouts, res.data?.addLayout];
+          .subscribe(({ data }: any) => {
+            if (data.addLayout) {
+              this.layouts = [...this.layouts, data?.addLayout];
             }
           });
       }
@@ -194,11 +193,11 @@ export class LayoutsTabComponent implements OnInit {
       if (value) {
         this.gridLayoutService
           .editLayout(layout, value, this.resource.id)
-          .subscribe((res: any) => {
-            if (res.data.editLayout) {
+          .subscribe(({ data }: any) => {
+            if (data.editLayout) {
               this.layouts = this.layouts.map((x: any) => {
                 if (x.id === layout.id) {
-                  return res.data.editLayout;
+                  return data.editLayout;
                 } else {
                   return x;
                 }
@@ -231,8 +230,8 @@ export class LayoutsTabComponent implements OnInit {
       if (value) {
         this.gridLayoutService
           .deleteLayout(layout, this.resource.id)
-          .subscribe((res: any) => {
-            if (res.data.deleteLayout) {
+          .subscribe(({ data }: any) => {
+            if (data.deleteLayout) {
               this.layouts = this.layouts.filter(
                 (x: any) => x.id !== layout.id
               );

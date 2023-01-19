@@ -78,18 +78,18 @@ export class AggregationsTabComponent implements OnInit {
         },
       });
 
-    this.aggregationsQuery.valueChanges.subscribe((res) => {
+    this.aggregationsQuery.valueChanges.subscribe(({ data }) => {
       this.loading = false;
-      if (res.data.resource) {
+      if (data.resource) {
         this.cachedAggregations =
-          res.data.resource.aggregations?.edges.map((e) => e.node) || [];
+          data.resource.aggregations?.edges.map((e) => e.node) || [];
         this.aggregations = this.cachedAggregations.slice(
           this.pageInfo.pageSize * this.pageInfo.pageIndex,
           this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         );
-        this.pageInfo.length = res.data.resource.aggregations?.totalCount || 0;
+        this.pageInfo.length = data.resource.aggregations?.totalCount || 0;
         this.pageInfo.endCursor =
-          res.data.resource.aggregations?.pageInfo.endCursor || '';
+          data.resource.aggregations?.pageInfo.endCursor || '';
       }
     });
   }
@@ -156,7 +156,6 @@ export class AggregationsTabComponent implements OnInit {
               totalCount: fetchMoreResult.resource.aggregations.totalCount,
             },
           },
-          loading: fetchMoreResult.loading,
         };
       },
     });
@@ -176,12 +175,9 @@ export class AggregationsTabComponent implements OnInit {
       if (value) {
         this.aggregationService
           .addAggregation(value, this.resource.id)
-          .subscribe((res: any) => {
-            if (res.data.addAggregation) {
-              this.aggregations = [
-                ...this.aggregations,
-                res.data?.addAggregation,
-              ];
+          .subscribe(({ data }: any) => {
+            if (data.addAggregation) {
+              this.aggregations = [...this.aggregations, data?.addAggregation];
             }
           });
       }
@@ -205,11 +201,11 @@ export class AggregationsTabComponent implements OnInit {
       if (value) {
         this.aggregationService
           .editAggregation(aggregation, value, this.resource.id)
-          .subscribe((res: any) => {
-            if (res.data.editAggregation) {
+          .subscribe(({ data }: any) => {
+            if (data.editAggregation) {
               this.aggregations = this.aggregations.map((x: any) => {
                 if (x.id === aggregation.id) {
-                  return res.data.editAggregation;
+                  return data.editAggregation;
                 } else {
                   return x;
                 }
@@ -242,8 +238,8 @@ export class AggregationsTabComponent implements OnInit {
       if (value) {
         this.aggregationService
           .deleteAggregation(aggregation, this.resource.id)
-          .subscribe((res: any) => {
-            if (res.data.deleteAggregation) {
+          .subscribe(({ data }: any) => {
+            if (data.deleteAggregation) {
               this.aggregations = this.aggregations.filter(
                 (x: any) => x.id !== aggregation.id
               );

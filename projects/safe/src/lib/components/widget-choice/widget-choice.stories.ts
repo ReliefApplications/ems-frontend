@@ -3,12 +3,17 @@ import { SafeWidgetChoiceComponent } from './widget-choice.component';
 import { SafeWidgetChoiceModule } from './widget-choice.module';
 import { IWidgetType, WIDGET_TYPES } from '../../models/dashboard.model';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { StorybookTranslateModule } from '../storybook-translate/storybook-translate-module';
 
 export default {
   component: SafeWidgetChoiceComponent,
   decorators: [
     moduleMetadata({
-      imports: [SafeWidgetChoiceModule, BrowserAnimationsModule],
+      imports: [
+        SafeWidgetChoiceModule,
+        BrowserAnimationsModule,
+        StorybookTranslateModule,
+      ],
       providers: [],
     }),
   ],

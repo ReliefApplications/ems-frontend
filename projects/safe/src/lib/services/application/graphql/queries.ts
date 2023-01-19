@@ -116,6 +116,5 @@ export const GET_APPLICATION_BY_ID = gql`
 
 /** Model for GetApplicationByIdQueryResponse object */
 export interface GetApplicationByIdQueryResponse {
-  loading: boolean;
   application: Application;
 }

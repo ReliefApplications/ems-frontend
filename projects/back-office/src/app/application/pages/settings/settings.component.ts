@@ -145,14 +145,14 @@ export class SettingsComponent
                 id,
               },
             })
-            .subscribe((res) => {
+            .subscribe(({ data }) => {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectDeleted', {
                   value: this.translate.instant('common.application.one'),
                 })
               );
               this.applications.data = this.applications.data.filter(
-                (x) => x.id !== res.data?.deleteApplication.id
+                (x) => x.id !== data?.deleteApplication.id
               );
             });
           this.router.navigate(['/applications']);

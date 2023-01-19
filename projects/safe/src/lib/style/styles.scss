@@ -37,22 +37,23 @@ $safe-palette: (
   // A200: $primary_A200,
   // A400: $primary_A400,
   // A700: $primary_A700,
-  contrast: (
-    50: #000000,
-    100: #000000,
-    200: #000000,
-    300: #000000,
-    400: #ffffff,
-    500: #ffffff,
-    600: #ffffff,
-    700: #ffffff,
-    800: #ffffff,
-    900: #ffffff,
-    // A100: #000000,
-    // A200: #000000,
-    // A400: #ffffff,
-    // A700: #ffffff,
-  ),
+  contrast:
+    (
+      50: #000000,
+      100: #000000,
+      200: #000000,
+      300: #000000,
+      400: #ffffff,
+      500: #ffffff,
+      600: #ffffff,
+      700: #ffffff,
+      800: #ffffff,
+      900: #ffffff,
+      // A100: #000000,
+      // A200: #000000,
+      // A400: #ffffff,
+      // A700: #ffffff,
+    ),
 );
 
 $safe-palette-accent: (
@@ -349,10 +350,6 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
     border-bottom: 1px solid #f2f3f5 !important;
     color: #3f3c3c;
   }
-  .mat-cell:first-child {
-    color: #000000;
-    font-weight: 500;
-  }
 }
 
 .mat-spinner {
@@ -618,7 +615,7 @@ mat-tab-group[vertical] {
   font-family: Roboto, 'Helvetica Neue', sans-serif !important;
 }
 
-// === SCROLLBARS ===
+// === SCROLL BARS ===
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

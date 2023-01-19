@@ -13,7 +13,6 @@ export const DELETE_REFERENCE_DATA = gql`
 
 /** Delete ref data gql mutation response interface */
 export interface DeleteReferenceDataMutationResponse {
-  loading: boolean;
   deleteReferenceData: ReferenceData;
 }
 
@@ -57,6 +56,5 @@ export const ADD_REFERENCE_DATA = gql`
 
 /** Add ref data gql mutation response interface */
 export interface AddReferenceDataMutationResponse {
-  loading: boolean;
   addReferenceData: ReferenceData;
 }

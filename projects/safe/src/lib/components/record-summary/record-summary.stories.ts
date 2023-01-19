@@ -2,12 +2,17 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeRecordSummaryModule } from './record-summary.module';
 import { SafeRecordSummaryComponent } from './record-summary.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { StorybookTranslateModule } from '../storybook-translate/storybook-translate-module';
 
 export default {
   component: SafeRecordSummaryComponent,
   decorators: [
     moduleMetadata({
-      imports: [BrowserAnimationsModule, SafeRecordSummaryModule],
+      imports: [
+        BrowserAnimationsModule,
+        SafeRecordSummaryModule,
+        StorybookTranslateModule,
+      ],
       providers: [],
     }),
   ],

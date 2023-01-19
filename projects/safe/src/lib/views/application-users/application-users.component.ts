@@ -89,13 +89,13 @@ export class SafeApplicationUsersComponent
               application: this.roles[0].application?.id,
             },
           })
-          .subscribe((res) => {
-            if (!res.errors) {
+          .subscribe(({ errors, data }) => {
+            if (!errors) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectInvited', {
                   name: this.translate
                     .instant(
-                      res.data?.addUsers.length
+                      data?.addUsers.length
                         ? 'common.user.few'
                         : 'common.user.one'
                     )
@@ -110,7 +110,7 @@ export class SafeApplicationUsersComponent
                   {
                     name: this.translate
                       .instant(
-                        res.data?.addUsers?.length
+                        data?.addUsers?.length
                           ? 'common.user.few'
                           : 'common.user.one'
                       )
@@ -128,7 +128,7 @@ export class SafeApplicationUsersComponent
   /**
    * Export the list of users
    *
-   * @param type The type of file we want ('csv' or 'xslx')
+   * @param type The type of file we want ('csv' or 'xlsx')
    */
   onExport(type: 'csv' | 'xlsx'): void {
     this.applicationService.downloadUsers(type);
