@@ -1,5 +1,17 @@
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { createLayerForm } from '../map-forms';
+import { SafeEditLayerModalComponent } from './edit-layer-modal/edit-layer-modal.component';
+
+/** Interface for a map layer */
+export interface MapLayerI {
+  name: string;
+}
 
 /**
  * Layers configuration component of Map Widget.
@@ -9,34 +21,85 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
   templateUrl: './map-layers.component.html',
   styleUrls: ['./map-layers.component.scss'],
 })
-export class MapLayersComponent implements OnInit {
-  @Input() selectedFields: any[] = [];
-  @Input() formattedSelectedFields: any[] = [];
-
-  /**
-   * Get Online Layers of map as Form Control.
-   *
-   * @returns Form control
-   */
-  get onlineLayers(): FormControl {
-    return this.form.get('onlineLayers') as FormControl;
-  }
-
-  /**
-   * Get clorophlets configuration of map as Form Array.
-   *
-   * @returns Form Array
-   */
-  get clorophlets(): FormArray {
-    return this.form.get('clorophlets') as FormArray;
-  }
-
+export class MapLayersComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() form!: FormGroup;
+
+  /** @returns the form array for the map layers */
+  get layers() {
+    return this.form.get('layers') as FormArray;
+  }
+
+  // Table
+  public mapLayers: MatTableDataSource<MapLayerI> = new MatTableDataSource();
+  public displayedColumns = ['name', 'actions'];
 
   /**
    * Layers configuration component of Map Widget.
+   *
+   * @param dialog service for opening modals
    */
-  constructor() {}
+  constructor(private dialog: MatDialog) {
+    super();
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.mapLayers.data = this.layers.value;
+    this.form
+      .get('layers')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.mapLayers.data = value;
+      });
+  }
+
+  /**
+   * Removes a layer from the form array
+   *
+   * @param index Index of the layer to remove
+   */
+  public onDeleteLayer(index: number) {
+    this.layers.removeAt(index);
+  }
+
+  /** Opens a modal to add a new layer */
+  public onAddLayer() {
+    const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
+      this.dialog.open(SafeEditLayerModalComponent);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) return;
+      this.layers.push(createLayerForm(result));
+    });
+  }
+
+  /**
+   * Opens a modal to edit a layer
+   *
+   * @param index Index of the layer to edit
+   */
+  public onEditLayer(index: number) {
+    const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
+      this.dialog.open(SafeEditLayerModalComponent, {
+        data: this.layers.at(index).value,
+      });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) return;
+      this.layers.at(index).patchValue(result);
+    });
+  }
+
+  /**
+   * Handles the event emitted when a layer is reordered
+   *
+   * @param e Event emitted when a layer is reordered
+   */
+  public onListDrop(e: CdkDragDrop<MapLayerI[]>) {
+    const movedElement = this.layers.at(e.previousIndex);
+    this.layers.removeAt(e.previousIndex);
+    this.layers.insert(e.currentIndex, movedElement);
+  }
 }

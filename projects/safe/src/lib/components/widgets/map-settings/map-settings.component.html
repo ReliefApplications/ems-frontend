@@ -21,8 +21,8 @@
       </ng-template>
     </mat-tab>
 
-    <!-- LAYERS CONFIGURATION (LEGACY) -->
-    <!-- <mat-tab>
+    <!-- LAYERS CONFIGURATION -->
+    <mat-tab>
       <ng-template mat-tab-label>
         <safe-icon
           icon="layers"
@@ -33,13 +33,9 @@
         <span>{{ 'common.layers' | translate }}</span>
       </ng-template>
       <ng-template matTabContent>
-        <safe-map-layers
-          [form]="tileForm"
-          [selectedFields]="selectedFields"
-          [formattedSelectedFields]="formattedSelectedFields"
-        ></safe-map-layers>
+        <safe-map-layers [form]="tileForm"></safe-map-layers>
       </ng-template>
-    </mat-tab> -->
+    </mat-tab>
 
     <!-- MAP PARAMETERS -->
     <mat-tab>
