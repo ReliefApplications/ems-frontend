@@ -151,69 +151,84 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
    * @param {string} tabName new tab name
    */
   saveName(tabName: string): void {
-    if (this.isStep) {
-      this.apollo
-        .mutate<EditStepMutationResponse>({
-          mutation: EDIT_STEP,
-          variables: {
-            id: this.id,
-            name: tabName,
-          },
-        })
-        .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.step.one'),
-                error: errors[0].message,
-              }),
-              { error: true }
-            );
-          } else {
-            if (data) {
+    const currentName = this.page ? this.page.name : this.step?.name;
+    if (tabName && tabName !== currentName) {
+      if (this.isStep) {
+        this.apollo
+          .mutate<EditStepMutationResponse>({
+            mutation: EDIT_STEP,
+            variables: {
+              id: this.id,
+              name: tabName,
+            },
+          })
+          .subscribe(({ errors, data }) => {
+            if (errors) {
               this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.step.one').toLowerCase(),
-                  value: tabName,
-                })
+                this.translate.instant(
+                  'common.notifications.objectNotUpdated',
+                  {
+                    type: this.translate.instant('common.step.one'),
+                    error: errors[0].message,
+                  }
+                ),
+                { error: true }
               );
-              this.step = { ...this.step, name: data.editStep.name };
-              this.workflowService.updateStepName(data.editStep);
+            } else {
+              if (data) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectUpdated', {
+                    type: this.translate
+                      .instant('common.step.one')
+                      .toLowerCase(),
+                    value: tabName,
+                  })
+                );
+                this.step = { ...this.step, name: data.editStep.name };
+                this.workflowService.updateStepName(data.editStep);
+              }
             }
-          }
-        });
-    } else {
-      this.apollo
-        .mutate<EditPageMutationResponse>({
-          mutation: EDIT_PAGE,
-          variables: {
-            id: this.id,
-            name: tabName,
-          },
-        })
-        .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.page.one').toLowerCase(),
-                error: errors[0].message,
-              }),
-              { error: true }
-            );
-          } else {
-            if (data) {
+          });
+      } else {
+        this.apollo
+          .mutate<EditPageMutationResponse>({
+            mutation: EDIT_PAGE,
+            variables: {
+              id: this.id,
+              name: tabName,
+            },
+          })
+          .subscribe(({ errors, data }) => {
+            if (errors) {
               this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.page.one').toLowerCase(),
-                  value: tabName,
-                })
+                this.translate.instant(
+                  'common.notifications.objectNotUpdated',
+                  {
+                    type: this.translate
+                      .instant('common.page.one')
+                      .toLowerCase(),
+                    error: errors[0].message,
+                  }
+                ),
+                { error: true }
               );
-              const newPage = { ...this.page, name: data.editPage.name };
-              this.page = newPage;
-              this.applicationService.updatePageName(data.editPage);
+            } else {
+              if (data) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectUpdated', {
+                    type: this.translate
+                      .instant('common.page.one')
+                      .toLowerCase(),
+                    value: tabName,
+                  })
+                );
+                const newPage = { ...this.page, name: data.editPage.name };
+                this.page = newPage;
+                this.applicationService.updatePageName(data.editPage);
+              }
             }
-          }
-        });
+          });
+      }
     }
   }
 

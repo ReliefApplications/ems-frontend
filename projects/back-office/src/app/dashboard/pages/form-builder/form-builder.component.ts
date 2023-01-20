@@ -335,46 +335,48 @@ export class FormBuilderComponent implements OnInit {
    * @param {string} formName new form name
    */
   public saveName(formName: string): void {
-    const statusModal = this.dialog.open(SafeStatusModalComponent, {
-      disableClose: true,
-      data: {
-        title: 'Saving survey',
-        showSpinner: true,
-      },
-    });
-    this.apollo
-      .mutate<EditFormMutationResponse>({
-        mutation: EDIT_FORM_NAME,
-        variables: {
-          id: this.id,
-          name: formName,
+    if (formName && formName !== this.form?.name) {
+      const statusModal = this.dialog.open(SafeStatusModalComponent, {
+        disableClose: true,
+        data: {
+          title: 'Saving survey',
+          showSpinner: true,
         },
-      })
-      .subscribe(({ errors, data }) => {
-        if (errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotUpdated', {
-              type: this.translate.instant('common.form.one'),
-              error: errors[0].message,
-            }),
-            { error: true }
-          );
-          statusModal.close();
-        } else {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectUpdated', {
-              type: this.translate.instant('common.form.one').toLowerCase(),
-              value: formName,
-            })
-          );
-          this.form = { ...this.form, name: data?.editForm.name };
-          this.breadcrumbService.setBreadcrumb(
-            '@form',
-            this.form.name as string
-          );
-          statusModal.close();
-        }
       });
+      this.apollo
+        .mutate<EditFormMutationResponse>({
+          mutation: EDIT_FORM_NAME,
+          variables: {
+            id: this.id,
+            name: formName,
+          },
+        })
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.form.one'),
+                error: errors[0].message,
+              }),
+              { error: true }
+            );
+            statusModal.close();
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.form.one').toLowerCase(),
+                value: formName,
+              })
+            );
+            this.form = { ...this.form, name: data?.editForm.name };
+            this.breadcrumbService.setBreadcrumb(
+              '@form',
+              this.form.name as string
+            );
+            statusModal.close();
+          }
+        });
+    }
   }
 
   /**

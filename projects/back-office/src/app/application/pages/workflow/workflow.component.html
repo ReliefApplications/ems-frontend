@@ -10,10 +10,13 @@
   <ng-container *ngIf="workflow">
     <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
       <safe-editable-text
-        [text]="workflow.name || ''"
+        [text]="workflow.name"
         [canEdit]="canEditName"
-        (newText)="saveName($event)"
+        (onChange)="saveName($event)"
         (formActiveEvent)="formActive = $event">
+        <h1 class="!m-0 overflow-hidden text-ellipsis">
+          {{ workflow.name }}
+        </h1>
       </safe-editable-text>
 
       <div class="flex items-center gap-1" *ngIf="!formActive">

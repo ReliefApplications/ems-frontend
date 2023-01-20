@@ -339,49 +339,51 @@ export class DashboardComponent
    * @param {string} dashboardName new dashboard name
    */
   saveName(dashboardName: string): void {
-    if (this.router.url.includes('/workflow/')) {
-      this.apollo
-        .mutate<EditStepMutationResponse>({
-          mutation: EDIT_STEP,
-          variables: {
-            id: this.dashboard?.step?.id,
-            name: dashboardName,
-          },
-        })
-        .subscribe(({ errors, data }) => {
-          if (data?.editStep) {
-            this.dashboard = {
-              ...this.dashboard,
-              name: data?.editStep.name,
-            };
-            this.workflowService.updateStepName(data.editStep);
-          } else {
-            this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService.instant('common.step.one'),
-                  error: errors ? errors[0].message : '',
-                }
-              )
-            );
-          }
-        });
-    } else {
-      this.apollo
-        .mutate<EditPageMutationResponse>({
-          mutation: EDIT_PAGE,
-          variables: {
-            id: this.dashboard?.page?.id,
-            name: dashboardName,
-          },
-        })
-        .subscribe(({ data }) => {
-          this.dashboard = { ...this.dashboard, name: data?.editPage.name };
-          if (data?.editPage) {
-            this.applicationService.updatePageName(data.editPage);
-          }
-        });
+    if (dashboardName && dashboardName !== this.dashboard?.name) {
+      if (this.router.url.includes('/workflow/')) {
+        this.apollo
+          .mutate<EditStepMutationResponse>({
+            mutation: EDIT_STEP,
+            variables: {
+              id: this.dashboard?.step?.id,
+              name: dashboardName,
+            },
+          })
+          .subscribe(({ errors, data }) => {
+            if (data?.editStep) {
+              this.dashboard = {
+                ...this.dashboard,
+                name: data?.editStep.name,
+              };
+              this.workflowService.updateStepName(data.editStep);
+            } else {
+              this.snackBar.openSnackBar(
+                this.translateService.instant(
+                  'common.notifications.objectNotUpdated',
+                  {
+                    type: this.translateService.instant('common.step.one'),
+                    error: errors ? errors[0].message : '',
+                  }
+                )
+              );
+            }
+          });
+      } else {
+        this.apollo
+          .mutate<EditPageMutationResponse>({
+            mutation: EDIT_PAGE,
+            variables: {
+              id: this.dashboard?.page?.id,
+              name: dashboardName,
+            },
+          })
+          .subscribe(({ data }) => {
+            this.dashboard = { ...this.dashboard, name: data?.editPage.name };
+            if (data?.editPage) {
+              this.applicationService.updatePageName(data.editPage);
+            }
+          });
+      }
     }
   }
 

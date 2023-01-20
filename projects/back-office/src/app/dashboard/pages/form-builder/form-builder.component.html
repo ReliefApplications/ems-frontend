@@ -2,11 +2,14 @@
   <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
     <div class="flex items-center overflow-hidden">
       <safe-editable-text
-        [text]="form.name + (activeVersion ? ' ' + activeVersion.id : '')"
-        [editableText]="form.name"
+        [text]="form.name"
         [canEdit]="canEditName"
-        (newText)="saveName($event)"
-        (formActiveEvent)="formActive = $event">
+        (onChange)="saveName($event)"
+        (formActiveEvent)="formActive = $event"
+      >
+        <h1 class="!m-0 overflow-hidden text-ellipsis">
+          {{ form.name }} {{ activeVersion ? activeVersion.id : '' }}
+        </h1>
       </safe-editable-text>
 
       <safe-access

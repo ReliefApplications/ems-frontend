@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 /**
  * Component to editable texts: display the text,
@@ -13,47 +13,49 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class SafeEditableTextComponent implements OnInit {
   // Full text to display
-  @Input() text = '';
-  // Editable text, can be different from full text (available to be edited in the form)
-  @Input() editableText: any;
+  @Input() text: string | undefined = '';
   @Input() canEdit = true;
 
-  @Output() newText = new EventEmitter<string>();
+  @Output() onChange = new EventEmitter<string>();
   @Output() formActiveEvent = new EventEmitter<boolean>();
+  public formControl!: FormControl;
 
-  public formActive = false;
-  public textForm: FormGroup = new FormGroup({
-    text: new FormControl('', Validators.required),
-  });
+  /**
+   *  Component to editable texts: display the text,
+   * when hovering the text shows a grey background and
+   * clicking on it creates a form control that allows edit the text.
+   *
+   * @param fb Angular form builder
+   */
+  constructor(private fb: FormBuilder) {}
 
   /**
    * Sets the value of the textForm with the value received from the parent component
    */
   ngOnInit(): void {
-    this.textForm.controls.text.setValue(this.editableText ?? this.text);
+    this.formControl = this.fb.control(
+      { value: this.text, disabled: true },
+      Validators.required
+    );
+    this.onChange.subscribe((value) => {
+      if (!value) {
+        this.formControl.setValue(this.text);
+      }
+      this.formControl.disable();
+    });
   }
 
   /**
-   * Toggle visibility of form.
+   * Toggle control disabled state.
    */
-  toggleFormActive(): void {
+  toggleControlState(): void {
     if (this.canEdit) {
-      this.formActive = !this.formActive;
-      this.formActiveEvent.next(this.formActive);
+      if (this.formControl.enabled) {
+        this.formControl.disable();
+      } else {
+        this.formControl.enable();
+      }
+      this.formActiveEvent.next(this.formControl.enabled);
     }
-  }
-
-  /**
-   * Apply the selected action:
-   * if click on check mark: close form and update the text
-   * if click on close: close form and previous value is applied
-   *
-   * @param {boolean} update update text action?
-   */
-  applyAction(update: boolean): void {
-    if (update) {
-      this.newText.next(this.textForm.controls.text.value);
-    }
-    this.toggleFormActive();
   }
 }

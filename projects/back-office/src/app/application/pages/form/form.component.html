@@ -7,8 +7,11 @@
       <safe-editable-text
         [text]="page ? (page.name || '') : step ? (step.name || '') : ''"
         [canEdit]="canEditName"
-        (newText)="saveName($event)"
+        (onChange)="saveName($event)"
         (formActiveEvent)="formActive = $event">
+        <h1 class="!m-0 overflow-hidden text-ellipsis">
+          {{ page ? (page.name || '') : step ? (step.name || '') : '' }}
+        </h1>
       </safe-editable-text>
       <!-- Page access -->
       <safe-access

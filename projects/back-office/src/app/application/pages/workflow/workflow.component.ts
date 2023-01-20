@@ -146,20 +146,22 @@ export class WorkflowComponent
    * @param workflowName new workflow name
    */
   saveName(workflowName: string): void {
-    this.apollo
-      .mutate<EditPageMutationResponse>({
-        mutation: EDIT_PAGE,
-        variables: {
-          id: this.workflow?.page?.id,
-          name: workflowName,
-        },
-      })
-      .subscribe(({ data }) => {
-        if (data) {
-          this.workflow = { ...this.workflow, name: data.editPage.name };
-          this.applicationService.updatePageName(data.editPage);
-        }
-      });
+    if (workflowName && workflowName !== this.workflow?.name) {
+      this.apollo
+        .mutate<EditPageMutationResponse>({
+          mutation: EDIT_PAGE,
+          variables: {
+            id: this.workflow?.page?.id,
+            name: workflowName,
+          },
+        })
+        .subscribe(({ data }) => {
+          if (data) {
+            this.workflow = { ...this.workflow, name: data.editPage.name };
+            this.applicationService.updatePageName(data.editPage);
+          }
+        });
+    }
   }
 
   /**
