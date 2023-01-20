@@ -187,6 +187,32 @@ const complexGeoJSON = {
   ],
 };
 
+/**
+ *
+ */
+const cornerGeoJSON = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        coordinates: [
+          [
+            [201.02489895637564, 85.05112877980659],
+            [149.4806218104489, 57.54444012030291],
+            [175.57192434274083, 34.173334189735414],
+            [225.70022802261695, 23.473301462277234],
+            [259.7876915326606, 51.33853487542737],
+            [201.02489895637564, 85.05112877980659],
+          ],
+        ],
+        type: 'Polygon',
+      },
+    },
+  ],
+};
+
 /** Component for the map widget */
 @Component({
   selector: 'safe-map',
@@ -363,19 +389,93 @@ export class SafeMapComponent
         children: [
           {
             label: 'Simple',
-            layer: L.geoJSON(pointGeoJSON).addTo(this.map),
+            layer: pointGeoJSON,
           },
           {
             label: 'Complex',
-            layer: L.geoJSON(complexGeoJSON).addTo(this.map),
+            layer: complexGeoJSON,
+          },
+          {
+            label: 'Corner',
+            layer: cornerGeoJSON,
           },
         ],
       },
     };
 
+    const layerTreeCloned = this.addTreeToMap(layerTree.tree);
+
     this.layerControl = L.control.layers
-      .tree(undefined, layerTree.tree)
+      .tree(undefined, layerTreeCloned)
       .addTo(this.map);
+  }
+
+  /**
+   * Create a new layer tree with duplicated layers
+   *
+   * @param layerTree The layers tree.
+   * @returns A tree wiht each layer duplicated to have a 'left' and 'right' clones
+   */
+  private addTreeToMap(layerTree: LayerTree): any {
+    if (layerTree.children) {
+      layerTree.children.map((child: any) => {
+        const newLayer = this.addTreeToMap(child);
+        child.layer = L.geoJSON(newLayer.layer).addTo(this.map);
+      });
+    } else {
+      let layerFeature: any[];
+      if (layerTree.layer.type === 'Feature') {
+        layerFeature = [layerTree.layer];
+      } else {
+        layerFeature = layerTree.layer.features;
+      }
+
+      const features: any[] = [];
+      for (const feature of layerFeature) {
+        features.push(feature);
+
+        const left = {
+          type: feature.type,
+          properties: feature.properties,
+          geometry: {
+            coordinates: [] as any[],
+            type: feature.geometry.type,
+          },
+        };
+        const right = {
+          type: feature.type,
+          properties: feature.properties,
+          geometry: {
+            coordinates: [] as any[],
+            type: feature.geometry.type,
+          },
+        };
+
+        if (feature.geometry.type === 'Point') {
+          const coordinate = feature.geometry.coordinates;
+          left.geometry.coordinates = [coordinate[0] - 360, coordinate[1]];
+          right.geometry.coordinates = [coordinate[0] + 360, coordinate[1]];
+        } else {
+          const leftCoordinates: any[] = [];
+          const rightCoordinates: any[] = [];
+          for (const coordinate of feature.geometry.coordinates[0]) {
+            leftCoordinates.push([coordinate[0] - 360, coordinate[1]]);
+            rightCoordinates.push([coordinate[0] + 360, coordinate[1]]);
+          }
+          left.geometry.coordinates.push(leftCoordinates);
+          right.geometry.coordinates.push(rightCoordinates);
+        }
+
+        features.push(left);
+        features.push(right);
+      }
+
+      layerTree.layer = {
+        type: 'FeatureCollection',
+        features,
+      };
+    }
+    return layerTree;
   }
 
   /** Load the data, using widget parameters. */
