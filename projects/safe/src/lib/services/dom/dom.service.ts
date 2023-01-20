@@ -1,10 +1,10 @@
 import {
   ApplicationRef,
-  ComponentFactoryResolver,
   ComponentRef,
   EmbeddedViewRef,
   Injectable,
   Injector,
+  ViewContainerRef,
 } from '@angular/core';
 
 /**
@@ -19,14 +19,14 @@ export class DomService {
    * Shared DOM service. Dom service is used to inject component on the go ( meaning without putting them in template directly ).
    * TODO: prefix
    *
-   * @param componentFactoryResolver Angular component factory resolver
    * @param applicationRef Angular application ref
    * @param injector Angular injector
+   * @param vcr view container ref
    */
   constructor(
-    private componentFactoryResolver: ComponentFactoryResolver,
     private applicationRef: ApplicationRef,
-    private injector: Injector
+    private injector: Injector,
+    private vcr: ViewContainerRef
   ) {}
 
   /**
@@ -38,9 +38,9 @@ export class DomService {
    */
   appendComponentToBody(component: any, parent: any): ComponentRef<any> {
     // create a component reference
-    const componentRef = this.componentFactoryResolver
-      .resolveComponentFactory(component)
-      .create(this.injector);
+    const componentRef = this.vcr.createComponent(component, {
+      injector: this.injector,
+    });
 
     // attach component to the appRef so that so that it will be dirty checked.
     this.applicationRef.attachView(componentRef.hostView);
