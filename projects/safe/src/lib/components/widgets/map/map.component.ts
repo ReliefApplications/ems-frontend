@@ -38,6 +38,7 @@ interface LayerTree {
   layer?: any;
   type?: string;
   selectAllCheckbox?: any;
+  options?: any;
 }
 
 /** Available baseMaps */
@@ -356,26 +357,68 @@ export class SafeMapComponent
       console.log(this.map.getBounds());
     });
 
-    const layerTree = {
-      tree: {
-        label: 'GeoJSON layers',
-        selectAllCheckbox: 'Un/select all',
-        children: [
-          {
-            label: 'Simple',
-            layer: L.geoJSON(pointGeoJSON).addTo(this.map),
-          },
-          {
-            label: 'Complex',
-            layer: L.geoJSON(complexGeoJSON).addTo(this.map),
-          },
-        ],
+    this.map.on('zoomend', () => {
+      this.visibilityRangeUpdate();
+    });
+
+    const options = {
+      style: {
+        color: '#ff0000',
+        fillOpacity: 0.5,
+      },
+      visible: false,
+      visibilityRange: {
+        min: 6,
+        max: 12,
       },
     };
 
+    this.overlays = {
+      label: 'GeoJSON layers',
+      selectAllCheckbox: 'Un/select all',
+      children: [
+        {
+          label: 'Simple',
+          layer: options.visible
+            ? L.geoJSON(pointGeoJSON).addTo(this.map)
+            : L.geoJSON(pointGeoJSON),
+        },
+        {
+          label: 'Complex',
+          layer: options.visible
+            ? L.geoJSON(complexGeoJSON, { style: options.style }).addTo(
+                this.map
+              )
+            : L.geoJSON(complexGeoJSON, { style: options.style }),
+          options,
+        },
+      ],
+    };
+
+    this.visibilityRangeUpdate();
+
     this.layerControl = L.control.layers
-      .tree(undefined, layerTree.tree)
+      .tree(undefined, this.overlays)
       .addTo(this.map);
+  }
+
+  /** Function used to show and hide layers with a visbility range option */
+  private visibilityRangeUpdate() {
+    const zoom = this.map.getZoom();
+    if (this.overlays.children) {
+      for (const layer of this.overlays.children) {
+        if (layer.options?.visibilityRange) {
+          if (
+            zoom > layer.options.visibilityRange.max ||
+            zoom < layer.options.visibilityRange.min
+          ) {
+            this.map.removeLayer(layer.layer);
+          } else {
+            layer.layer.addTo(this.map);
+          }
+        }
+      }
+    }
   }
 
   /** Load the data, using widget parameters. */
