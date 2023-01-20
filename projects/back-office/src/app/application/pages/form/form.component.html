@@ -3,39 +3,16 @@
   <!-- Page header -->
   <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
     <div class="flex items-center overflow-hidden">
-      <!-- Page name -->
-      <ng-container *ngIf="!formActive">
-        <h1
-          class="!m-0 overflow-hidden text-ellipsis hover:bg-neutral-200 rounded-lg"
-          (click)="toggleFormActive()"
-        >
-          {{ page ? page.name : step ? step.name : '' }}
+      <!-- Page name and name edition -->
+      <safe-editable-text
+        [text]="page ? (page.name || '') : step ? (step.name || '') : ''"
+        [canEdit]="canEditName"
+        (onChange)="saveName($event)"
+        (formActiveEvent)="formActive = $event">
+        <h1 class="!m-0 overflow-hidden text-ellipsis">
+          {{ page ? (page.name || '') : step ? (step.name || '') : '' }}
         </h1>
-      </ng-container>
-      <!-- Name edition -->
-      <ng-container *ngIf="formActive">
-        <form [formGroup]="tabNameForm" (ngSubmit)="saveName()">
-          <mat-form-field appearance="outline">
-            <mat-label>{{ 'common.name' | translate }}</mat-label>
-            <input matInput formControlName="tabName" type="string" />
-            <safe-button
-              matSuffix
-              type="submit"
-              [isIcon]="true"
-              icon="done"
-              variant="primary"
-              [disabled]="!tabNameForm.valid"
-            ></safe-button>
-            <safe-button
-              matSuffix
-              [isIcon]="true"
-              icon="close"
-              variant="danger"
-              (click)="toggleFormActive()"
-            ></safe-button>
-          </mat-form-field>
-        </form>
-      </ng-container>
+      </safe-editable-text>
       <!-- Page access -->
       <safe-access
         [access]="page ? page.permissions : step ? step.permissions : null"

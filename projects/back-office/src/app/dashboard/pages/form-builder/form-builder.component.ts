@@ -1,6 +1,5 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   EditFormMutationResponse,
@@ -62,8 +61,8 @@ export class FormBuilderComponent implements OnInit {
   ];
 
   // === FORM EDITION ===
+  public canEditName = false;
   public formActive = false;
-  public nameForm: FormGroup = new FormGroup({});
   public hasChanges = false;
 
   /**
@@ -143,9 +142,7 @@ export class FormBuilderComponent implements OnInit {
                 this.form.resource?.name as string
               );
               // this.breadcrumbService.setResourceName();
-              this.nameForm = new FormGroup({
-                formName: new FormControl(this.form.name, Validators.required),
-              });
+              this.canEditName = this.form?.canUpdate || false;
               const storedStructure = window.localStorage.getItem(
                 `form:${this.id}`
               );
@@ -332,50 +329,54 @@ export class FormBuilderComponent implements OnInit {
     // this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
   }
 
-  /** Edit the form name. */
-  public saveName(): void {
-    const statusModal = this.dialog.open(SafeStatusModalComponent, {
-      disableClose: true,
-      data: {
-        title: 'Saving survey',
-        showSpinner: true,
-      },
-    });
-    const { formName } = this.nameForm.value;
-    this.toggleFormActive();
-    this.apollo
-      .mutate<EditFormMutationResponse>({
-        mutation: EDIT_FORM_NAME,
-        variables: {
-          id: this.id,
-          name: formName,
+  /**
+   * Edit the form name.
+   *
+   * @param {string} formName new form name
+   */
+  public saveName(formName: string): void {
+    if (formName && formName !== this.form?.name) {
+      const statusModal = this.dialog.open(SafeStatusModalComponent, {
+        disableClose: true,
+        data: {
+          title: 'Saving survey',
+          showSpinner: true,
         },
-      })
-      .subscribe(({ errors, data }) => {
-        if (errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotUpdated', {
-              type: this.translate.instant('common.form.one'),
-              error: errors[0].message,
-            }),
-            { error: true }
-          );
-          statusModal.close();
-        } else {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectUpdated', {
-              type: this.translate.instant('common.form.one').toLowerCase(),
-              value: formName,
-            })
-          );
-          this.form = { ...this.form, name: data?.editForm.name };
-          this.breadcrumbService.setBreadcrumb(
-            '@form',
-            this.form.name as string
-          );
-          statusModal.close();
-        }
       });
+      this.apollo
+        .mutate<EditFormMutationResponse>({
+          mutation: EDIT_FORM_NAME,
+          variables: {
+            id: this.id,
+            name: formName,
+          },
+        })
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.form.one'),
+                error: errors[0].message,
+              }),
+              { error: true }
+            );
+            statusModal.close();
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.form.one').toLowerCase(),
+                value: formName,
+              })
+            );
+            this.form = { ...this.form, name: data?.editForm.name };
+            this.breadcrumbService.setBreadcrumb(
+              '@form',
+              this.form.name as string
+            );
+            statusModal.close();
+          }
+        });
+    }
   }
 
   /**

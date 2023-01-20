@@ -6,11 +6,9 @@ import {
   SafeFormModule,
   SafeAccessModule,
   SafeButtonModule,
+  SafeEditableTextModule,
 } from '@safe/builder';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -23,13 +21,10 @@ import { TranslateModule } from '@ngx-translate/core';
     FormRoutingModule,
     SafeFormModule,
     SafeAccessModule,
-    FormsModule,
-    ReactiveFormsModule,
     MatProgressSpinnerModule,
-    MatFormFieldModule,
-    MatInputModule,
     SafeButtonModule,
     TranslateModule,
+    SafeEditableTextModule,
   ],
   exports: [FormComponent],
 })

@@ -1,0 +1,38 @@
+<div class="flex items-center overflow-hidden">
+  <!-- Display text without editing it -->
+  <ng-container *ngIf="formControl.disabled">
+    <div
+      (click)="toggleControlState()"
+      class="hover:bg-neutral-200 rounded-lg py-1"
+    >
+      <ng-content></ng-content>
+    </div>
+  </ng-container>
+  <!-- Text edition -->
+  <ng-container *ngIf="!formControl.disabled">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.name' | translate }}</mat-label>
+      <input matInput [formControl]="formControl" type="string" />
+      <!-- Validate value -->
+      <safe-button
+        matSuffix
+        [isIcon]="true"
+        icon="done"
+        variant="primary"
+        [disabled]="!formControl.valid"
+        (click)="onChange.emit(formControl.value)"
+      >
+      </safe-button>
+      <!-- Undo change -->
+      <safe-button
+        matSuffix
+        mat-icon-button
+        [isIcon]="true"
+        icon="close"
+        variant="danger"
+        (click)="onChange.emit()"
+      >
+      </safe-button>
+    </mat-form-field>
+  </ng-container>
+</div>
