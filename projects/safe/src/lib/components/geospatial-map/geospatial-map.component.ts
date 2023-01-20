@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureCollection } from 'geojson';
+import { features } from 'process';
 
 // Leaflet
 declare let L: any;
@@ -59,6 +60,9 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
   public map: any;
   public mapID = `map-${Math.random().toString(36)}`;
 
+  // Layer to edit
+  public selectedLayer: any;
+
   // output
   private timeout: NodeJS.Timeout | null = null;
   @Output() mapChange = new EventEmitter<FeatureCollection>();
@@ -69,7 +73,7 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
    *
    * @param translate the translation service
    */
-  constructor(private translate: TranslateService) {}
+  constructor(public translate: TranslateService) {}
 
   ngAfterViewInit(): void {
     this.drawMap();
@@ -111,7 +115,7 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
 
     // init layers from question value
     if (this.data.features.length > 0) {
-      L.geoJSON(this.data, {
+      const newLayer = L.geoJSON(this.data, {
         // Circles are not supported by geojson
         // We abstract them as markers with a radius property
         pointToLayer: (feature: any, latlng: any) => {
@@ -124,8 +128,14 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
       })
         .addTo(this.map)
         .eachLayer((l: any) => {
+          l.setStyle(l.feature.options);
           l.on('pm:change', this.onMapChange.bind(this));
         });
+
+      let selectLayer = (layer: any) => this.selectedLayer = layer;
+      newLayer.on('click', function(e: any) {
+        selectLayer(e.layer);
+      });
     }
 
     // add geoman tools
@@ -140,7 +150,12 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
       this.onMapChange();
 
       // subscribe to changes on the created layers
-      l.layer.on('pm:change', this.onMapChange.bind(this));
+      l.layer.on('pm:change', this.onMapChange.bind(this));;
+
+      let selectLayer = (layer: any) => this.selectedLayer = layer;
+      l.layer.on('click', function(e: any) {
+        selectLayer(e.target);
+      });
     });
 
     // updates question value on removing shapes
@@ -157,6 +172,7 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
       type: 'FeatureCollection',
       features: this.map.pm.getGeomanLayers().map((l: any) => {
         const json = l.toGeoJSON();
+        json.options = l.options;
         // Adds radius property to circles,
         // as they are not supported by geojson
         if (l instanceof L.Circle) {
@@ -173,5 +189,10 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
     this.timeout = setTimeout(() => {
       this.mapChange.emit(this.getMapFeatures());
     }, 500);
+  }
+
+  public setColor(e: any) {
+    this.selectedLayer.setStyle({color: e.target.value});
+    this.mapChange.emit(this.getMapFeatures());
   }
 }
