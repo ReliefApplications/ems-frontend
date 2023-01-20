@@ -2,10 +2,14 @@
   <!-- Display text without editing it -->
   <ng-container *ngIf="formControl.disabled">
     <div
+      *ngIf="canEdit"
       (click)="toggleControlState()"
       class="hover:bg-neutral-200 rounded-lg py-1"
     >
-      <ng-content></ng-content>
+      <ng-container *ngTemplateOutlet="content"></ng-container>
+    </div>
+    <div *ngIf="!canEdit">
+      <ng-content *ngTemplateOutlet="content"></ng-content>
     </div>
   </ng-container>
   <!-- Text edition -->
@@ -36,3 +40,7 @@
     </mat-form-field>
   </ng-container>
 </div>
+
+<ng-template #content>
+  <ng-content></ng-content>
+</ng-template>

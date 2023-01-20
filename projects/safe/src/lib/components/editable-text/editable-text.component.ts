@@ -14,7 +14,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 export class SafeEditableTextComponent implements OnInit {
   // Full text to display
   @Input() text: string | undefined = '';
-  @Input() canEdit = true;
+  @Input() canEdit = false;
 
   @Output() onChange = new EventEmitter<string>();
   @Output() formActiveEvent = new EventEmitter<boolean>();
