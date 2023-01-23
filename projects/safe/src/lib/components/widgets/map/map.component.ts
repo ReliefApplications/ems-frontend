@@ -358,18 +358,23 @@ export class SafeMapComponent
     });
 
     this.map.on('zoomend', () => {
-      this.visibilityRangeUpdate();
+      this.applyOptions(this.map.getZoom(), this.overlays);
     });
 
-    const options = {
+    const options1 = {
       style: {
-        color: '#ff0000',
-        fillOpacity: 0.5,
+        opacity: 0.2,
       },
       visible: false,
       visibilityRange: {
         min: 6,
         max: 12,
+      },
+    };
+
+    const options2 = {
+      style: {
+        opacity: 0.5,
       },
     };
 
@@ -379,42 +384,66 @@ export class SafeMapComponent
       children: [
         {
           label: 'Simple',
-          layer: options.visible
-            ? L.geoJSON(pointGeoJSON).addTo(this.map)
-            : L.geoJSON(pointGeoJSON),
+          layer: L.geoJSON(pointGeoJSON).addTo(this.map),
+          options: options2,
         },
         {
           label: 'Complex',
-          layer: options.visible
-            ? L.geoJSON(complexGeoJSON, { style: options.style }).addTo(
-                this.map
-              )
-            : L.geoJSON(complexGeoJSON, { style: options.style }),
-          options,
+          layer: L.geoJSON(complexGeoJSON).addTo(this.map),
+          options: options1,
         },
       ],
     };
 
-    this.visibilityRangeUpdate();
+    this.applyOptions(this.map.getZoom(), this.overlays, true);
 
     this.layerControl = L.control.layers
       .tree(undefined, this.overlays)
       .addTo(this.map);
   }
 
-  /** Function used to show and hide layers with a visbility range option */
-  private visibilityRangeUpdate() {
-    const zoom = this.map.getZoom();
-    if (this.overlays.children) {
-      for (const layer of this.overlays.children) {
-        if (layer.options?.visibilityRange) {
+  /**
+   * Function used to apply options
+   *
+   * @param zoom The current zoom of the map
+   * @param layerTree The layer tree, used recursively.
+   * @param init Used to init the map or update layers, default false.
+   */
+  private applyOptions(zoom: number, layerTree: LayerTree, init = false) {
+    if (layerTree.children) {
+      for (const child of layerTree.children) {
+        this.applyOptions(zoom, child, init);
+      }
+    } else if (layerTree.options) {
+      if (init && layerTree.options.style) {
+        // eslint-disable-next-line no-underscore-dangle
+        for (const layer in layerTree.layer._layers) {
+          // eslint-disable-next-line no-underscore-dangle
+          if (layerTree.layer._layers[layer].options) {
+            // eslint-disable-next-line no-underscore-dangle
+            layerTree.layer._layers[layer].options.opacity =
+              layerTree.options.style.opacity;
+            // eslint-disable-next-line no-underscore-dangle
+            layerTree.layer._layers[layer].options.fillOpacity =
+              layerTree.options.style.opacity;
+          }
+        }
+        this.map.removeLayer(layerTree.layer);
+        this.map.addLayer(layerTree.layer);
+      }
+      if (init && layerTree.options.visible === false) {
+        // avoid undefined case matched with !layerTree.options.visible
+        // init with layer set at not visible by default.
+        this.map.removeLayer(layerTree.layer);
+      } else {
+        if (layerTree.options.visibilityRange) {
           if (
-            zoom > layer.options.visibilityRange.max ||
-            zoom < layer.options.visibilityRange.min
+            zoom > layerTree.options.visibilityRange.max ||
+            zoom < layerTree.options.visibilityRange.min
           ) {
-            this.map.removeLayer(layer.layer);
+            this.map.removeLayer(layerTree.layer);
           } else {
-            layer.layer.addTo(this.map);
+            layerTree.layer.addTo(this.map);
           }
         }
       }
