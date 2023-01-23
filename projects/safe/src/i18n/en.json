@@ -1183,14 +1183,15 @@
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
 						"title": "Map Parameters",
-						"zoom": "Default zoom"
+						"zoom": "Default zoom",
+						"setByMap": "Set By Map"
 					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
 						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
 						"default": {
-							"latitude": "Select a default latitude to center the map around",
-							"longitude": "Select a default longitude to center the map around",
+							"latitude": "Set the default latitude of the center of the map. You can use 'Set By Map' to use the latitude of the preview map.",
+							"longitude": "Set the default longitude of the center of the map. You can use 'Set By Map' to use the longitude of the preview map.",
 							"zoom": "Select a default zoom for the map display"
 						}
 					}

@@ -10,6 +10,7 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { SafeMapModule } from '../../map/map.module';
+import { SafeButtonModule } from '../../../ui/button/button.module';
 
 /**
  * Module of Map Properties of Map Widget.
@@ -28,6 +29,7 @@ import { SafeMapModule } from '../../map/map.module';
     MatSelectModule,
     SafeIconModule,
     SafeMapModule,
+    SafeButtonModule,
   ],
   exports: [MapPropertiesComponent],
 })

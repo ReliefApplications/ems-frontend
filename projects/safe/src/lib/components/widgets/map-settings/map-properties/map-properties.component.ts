@@ -44,6 +44,7 @@ export class MapPropertiesComponent
   @ViewChild(SafeMapComponent) previewMap!: SafeMapComponent;
 
   public basemaps = BASEMAPS;
+  public map: any;
 
   public mapSettings!: {
     basemap: string;
@@ -101,14 +102,18 @@ export class MapPropertiesComponent
    * Subscribe to map events to update settings
    */
   ngAfterViewInit(): void {
-    const map = this.previewMap.map;
-    map.on('zoomend', () => {
-      this.form.get('zoom')?.setValue(map.getZoom(), { emitEvent: false });
+    this.map = this.previewMap.map;
+    this.map.on('zoomend', () => {
+      this.form.get('zoom')?.setValue(this.map.getZoom(), { emitEvent: false });
     });
-    map.on('moveend', () => {
-      const center = map.getCenter();
-      this.form.get('centerLat')?.setValue(center.lat, { emitEvent: false });
-      this.form.get('centerLong')?.setValue(center.lng, { emitEvent: false });
-    });
+  }
+
+  /**
+   * Set the latitude and longitude of the center of the map using the one in the preview map.
+   */
+  onSetByMap(): void {
+    const center = this.map.getCenter();
+    this.form.get('centerLat')?.setValue(center.lat, { emitEvent: false });
+    this.form.get('centerLong')?.setValue(center.lng, { emitEvent: false });
   }
 }
