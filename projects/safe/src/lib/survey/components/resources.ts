@@ -669,10 +669,10 @@ export const init = (
             for (const objElement of obj) {
               const value = objElement.value;
               if (typeof value === 'string' && value.match(/^{*.*}$/)) {
-                const quest = value.substr(1, value.length - 2);
+                const name = value.slice(1, value.length - 1);
                 objElement.value = '';
                 question.survey.onValueChanged.add((_: any, options: any) => {
-                  if (options.question.name === quest) {
+                  if (options.question.name === name) {
                     if (!!options.value) {
                       setAdvanceFilter(options.value, objElement.field);
                       if (question.displayAsGrid) {

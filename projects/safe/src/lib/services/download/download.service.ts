@@ -192,8 +192,8 @@ export class SafeDownloadService {
     const formData = new FormData();
     formData.append('excelFile', file, file.name);
     return this.restService.post(path, formData, { headers }).pipe(
-      tap(
-        () => {
+      tap({
+        next: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant(
               'common.notifications.file.upload.ready'
@@ -202,7 +202,7 @@ export class SafeDownloadService {
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
         },
-        () => {
+        error: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant(
               'common.notifications.file.upload.error'
@@ -211,8 +211,8 @@ export class SafeDownloadService {
             error: true,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
-        }
-      )
+        },
+      })
     );
   }
 }
