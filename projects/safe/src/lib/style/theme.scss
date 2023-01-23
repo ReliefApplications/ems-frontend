@@ -33,7 +33,7 @@ $series-e: #2d73f5;
 $series-f: #aa46be;
 
 // Import of Kendo themes
-@import '~@progress/kendo-theme-default/dist/all.scss';
+@import '@progress/kendo-theme-default/dist/all.scss';
 
 // === WIDGETS ===
 .k-resize-handle,

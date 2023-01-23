@@ -115,7 +115,11 @@
               "zen-observable",
               "lodash",
               "cronstrue",
-              "cron-parser"
+              "cron-parser",
+              "cron-validator",
+              "localforage",
+              "survey-angular",
+              "fast-sha256"
             ]
           },
           "configurations": {
@@ -581,7 +585,11 @@
               "zen-observable",
               "lodash",
               "cronstrue",
-              "cron-parser"
+              "cron-parser",
+              "cron-validator",
+              "localforage",
+              "survey-angular",
+              "fast-sha256"
             ]
           },
           "configurations": {
@@ -1025,7 +1033,11 @@
               "zen-observable",
               "lodash",
               "cronstrue",
-              "cron-parser"
+              "cron-parser",
+              "cron-validator",
+              "localforage",
+              "survey-angular",
+              "fast-sha256"
             ]
           },
           "configurations": {
