@@ -42,24 +42,14 @@ import { PureAbility } from '@casl/ability';
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
 
-// Kendo datepicker for surveyjs
-import {
-  CalendarDOMService,
-  CenturyViewService,
-  DecadeViewService,
-  HoursService,
-  MinutesService,
-  MonthViewService,
-  TimePickerDOMService,
-  TOUCH_ENABLED,
-  YearViewService,
-} from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
-import { touchEnabled } from '@progress/kendo-common';
+import { IconsService } from '@progress/kendo-angular-icons';
+// import { touchEnabled } from '@progress/kendo-common';
 // Apollo / GraphQL
 import { GraphQLModule } from './graphql.module';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
+import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 
 /**
  * Initialize authentication in the platform.
@@ -109,6 +99,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     }),
     OAuthModule.forRoot(),
     GraphQLModule,
+    DateInputsModule,
   ],
   providers: [
     {
@@ -142,10 +133,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
       useValue: localStorage,
     },
     // TODO: check
-    {
-      provide: TOUCH_ENABLED,
-      useValue: [touchEnabled],
-    },
+    // {
+    //   provide: TOUCH_ENABLED,
+    //   useValue: [touchEnabled],
+    // },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: SafeAuthInterceptorService,
@@ -161,14 +152,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     },
     PopupService,
     ResizeBatchService,
-    CalendarDOMService,
-    TimePickerDOMService,
-    MonthViewService,
-    HoursService,
-    MinutesService,
-    YearViewService,
-    DecadeViewService,
-    CenturyViewService,
+    IconsService,
   ],
   bootstrap: [AppComponent],
 })
