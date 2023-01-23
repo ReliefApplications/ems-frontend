@@ -1,0 +1,28 @@
+<div style="position: relative; width: 140px">
+  <h2 style="position: absolute; right: 0; top: -5px;" (click)="close.emit()">x</h2>
+  <!-- <h2>Style</h2>
+  <h3>Fill color</h3>
+  <h3>Fill transparency</h3>
+  <h3>Outline color</h3>
+  <h3>Outline transparency</h3>
+  <h3>Outline width</h3>
+  <h3>Pattern</h3> -->
+  <form [formGroup]="styleForm">
+
+    <label>Outline color</label>
+    <input type="color" formControlName="color">
+
+    <label>Outline opacity</label>
+    <input type="number" step=".1" min="0" max="1" formControlName="opacity">
+
+    <label>Outline width</label>
+    <input type="number" min="0" formControlName="weight">
+
+    <label>Fill color</label>
+    <input type="color" formControlName="fillColor">
+
+    <label>Fill opacity</label>
+    <input type="number" step=".1" min="0" max="1" formControlName="fillOpacity">
+
+  </form>
+</div>

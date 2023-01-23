@@ -2,8 +2,12 @@
 <div class="flex gap-4">
   <div [id]="mapID" class="flex-1	h-96">
   </div>
-  <div class="w-20" *ngIf="selectedLayer">
-    <input type="color" value="this.selectedLayer?.options.color?" (input)="setColor($event)">
-  </div>
+  <safe-layer-styling
+    class="h-96"
+    *ngIf="selectedLayer"
+    [selectedLayer]="selectedLayer"
+    (close)="selectedLayer = undefined"
+    (edit)="updateLayer($event)"
+  ></safe-layer-styling>
 </div>
 

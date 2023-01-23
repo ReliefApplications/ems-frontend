@@ -73,7 +73,6 @@ import { SafeGeospatialMapModule } from './components/geospatial-map/geospatial-
     SafeSkeletonTableModule,
     SafeSkeletonModule,
     SafeUserSummaryModule,
-    SafeGeospatialMapModule,
     // === Pipes ===
     SafeDateModule,
     SafeReadableCronModule,

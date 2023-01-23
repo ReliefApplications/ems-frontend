@@ -73,7 +73,7 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
    *
    * @param translate the translation service
    */
-  constructor(public translate: TranslateService) {}
+  constructor(private translate: TranslateService) {}
 
   ngAfterViewInit(): void {
     this.drawMap();
@@ -128,13 +128,16 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
       })
         .addTo(this.map)
         .eachLayer((l: any) => {
-          l.setStyle(l.feature.options);
+          if (l.setStyle) {
+            l.setStyle(l.feature.options);
+          }
           l.on('pm:change', this.onMapChange.bind(this));
         });
 
       let selectLayer = (layer: any) => this.selectedLayer = layer;
       newLayer.on('click', function(e: any) {
         selectLayer(e.layer);
+        console.log(e.layer);
       });
     }
 
@@ -155,6 +158,7 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
       let selectLayer = (layer: any) => this.selectedLayer = layer;
       l.layer.on('click', function(e: any) {
         selectLayer(e.target);
+        console.log(e.target)
       });
     });
 
@@ -191,8 +195,9 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
     }, 500);
   }
 
-  public setColor(e: any) {
-    this.selectedLayer.setStyle({color: e.target.value});
+  public updateLayer(options: any) {
+    console.log(options);
+    this.selectedLayer.setStyle(options);
     this.mapChange.emit(this.getMapFeatures());
   }
 }
