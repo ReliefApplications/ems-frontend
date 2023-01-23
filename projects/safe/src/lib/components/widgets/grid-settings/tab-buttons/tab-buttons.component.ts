@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { createButtonFormGroup } from '../grid-settings.forms';
 import { Form } from '../../../../models/form.model';
 import { Channel } from '../../../../models/channel.model';
@@ -13,7 +13,7 @@ import { Channel } from '../../../../models/channel.model';
   styleUrls: ['./tab-buttons.component.scss'],
 })
 export class TabButtonsComponent {
-  @Input() formGroup!: FormGroup;
+  @Input() formGroup!: UntypedFormGroup;
   @Input() fields: any[] = [];
   @Input() relatedForms: Form[] = [];
   @Input() channels: Channel[] = [];
@@ -21,15 +21,15 @@ export class TabButtonsComponent {
   @Input() distributionLists: any[] = [];
 
   /** @returns List of the floating buttons */
-  get buttons(): FormArray {
-    return (this.formGroup?.controls.floatingButtons as FormArray) || null;
+  get buttons(): UntypedFormArray {
+    return (this.formGroup?.controls.floatingButtons as UntypedFormArray) || null;
   }
 
   /**
    * Adds a floating button configuration.
    */
   public addButton(): void {
-    const floatingButtons = this.formGroup?.get('floatingButtons') as FormArray;
+    const floatingButtons = this.formGroup?.get('floatingButtons') as UntypedFormArray;
     floatingButtons.push(createButtonFormGroup({ show: true }));
   }
 
@@ -39,7 +39,7 @@ export class TabButtonsComponent {
    * @param index index of button to remove
    */
   public deleteButton(index: number): void {
-    const floatingButtons = this.formGroup?.get('floatingButtons') as FormArray;
+    const floatingButtons = this.formGroup?.get('floatingButtons') as UntypedFormArray;
     floatingButtons.removeAt(index);
   }
 }

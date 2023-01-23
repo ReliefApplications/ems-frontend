@@ -12,7 +12,7 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { SafeCoreGridComponent } from './core-grid.component';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClientModule } from '@angular/common/http';
@@ -44,7 +44,7 @@ describe('SafeCoreGridComponent', () => {
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
-        FormBuilder,
+        UntypedFormBuilder,
         QueryBuilderService,
         TranslateService,
       ],

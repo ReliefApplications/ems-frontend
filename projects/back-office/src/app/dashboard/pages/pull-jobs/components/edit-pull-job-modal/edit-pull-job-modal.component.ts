@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import {
@@ -40,7 +40,7 @@ const DEFAULT_FIELDS = ['createdBy'];
 })
 export class EditPullJobModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public formGroup: FormGroup = new FormGroup({});
+  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   isHardcoded = true;
 
   // === FORMS ===
@@ -70,8 +70,8 @@ export class EditPullJobModalComponent implements OnInit {
   public openRawJSON = false;
 
   /** @returns pull job mapping as form array */
-  get mappingArray(): FormArray {
-    return this.formGroup.get('mapping') as FormArray;
+  get mappingArray(): UntypedFormArray {
+    return this.formGroup.get('mapping') as UntypedFormArray;
   }
 
   /** @returns default API configuration */
@@ -100,7 +100,7 @@ export class EditPullJobModalComponent implements OnInit {
    * @param data.pullJob pull job
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<EditPullJobModalComponent>,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA)

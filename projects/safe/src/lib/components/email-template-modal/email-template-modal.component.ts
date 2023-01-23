@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -16,7 +16,7 @@ interface DialogData {
 })
 export class EmailTemplateModalComponent implements OnInit {
   public templates: any[] = [];
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
   /**
    * Component for choosing an email template to send an email with
    *
@@ -29,7 +29,7 @@ export class EmailTemplateModalComponent implements OnInit {
     public dialogRef: MatDialogRef<EmailTemplateModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public translate: TranslateService,
-    public fb: FormBuilder
+    public fb: UntypedFormBuilder
   ) {
     this.templates = data.templates;
   }

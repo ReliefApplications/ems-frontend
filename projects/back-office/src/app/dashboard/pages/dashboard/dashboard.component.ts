@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -59,7 +59,7 @@ export class DashboardComponent
 
   // === DASHBOARD NAME EDITION ===
   public formActive = false;
-  public dashboardNameForm: FormGroup = new FormGroup({});
+  public dashboardNameForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -114,8 +114,8 @@ export class DashboardComponent
             if (data.dashboard) {
               this.dashboard = data.dashboard;
               this.dashboardService.openDashboard(this.dashboard);
-              this.dashboardNameForm = new FormGroup({
-                dashboardName: new FormControl(
+              this.dashboardNameForm = new UntypedFormGroup({
+                dashboardName: new UntypedFormControl(
                   this.dashboard.name,
                   Validators.required
                 ),

@@ -1,6 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import {
   GetResourcesQueryResponse,
@@ -23,7 +23,7 @@ const ITEMS_PER_PAGE = 10;
 })
 export class AddFormModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
 
   // === DATA ===
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
@@ -40,7 +40,7 @@ export class AddFormModalComponent implements OnInit {
    * @param apollo Apollo service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<AddFormModalComponent>,
     private apollo: Apollo
   ) {}

@@ -13,7 +13,7 @@ import {
   GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { SafeGraphQLSelectComponent } from '../../graphql-select/graphql-select.component';
 
 /**
@@ -42,7 +42,7 @@ export class AddAggregationModalComponent implements OnInit {
 
   public queryRef!: QueryRef<GetResourceAggregationsResponse>;
 
-  public selectedAggregationControl = new FormControl('');
+  public selectedAggregationControl = new UntypedFormControl('');
 
   /** Reference to graphql select for layout */
   @ViewChild(SafeGraphQLSelectComponent)

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { createFormGroup, Mapping } from '../mapping-forms';
 
@@ -19,7 +19,7 @@ interface MappingDialogData {
   styleUrls: ['./mapping-modal.component.scss'],
 })
 export class SafeMappingModalComponent implements OnInit {
-  public form: FormGroup = new FormGroup({});
+  public form: UntypedFormGroup = new UntypedFormGroup({});
   public isNew = false;
   /**
    * Constructor of the SafeMappingModalComponent.

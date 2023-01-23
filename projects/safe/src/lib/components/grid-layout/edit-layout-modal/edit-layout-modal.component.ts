@@ -1,5 +1,5 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Layout } from '../../../models/layout.model';
 import {
@@ -25,9 +25,9 @@ interface DialogData {
 })
 export class SafeEditLayoutModalComponent implements OnInit {
   @Input() layout: any;
-  public form?: FormGroup;
+  public form?: UntypedFormGroup;
   public templates: any[] = [];
-  public layoutPreviewData!: { form: FormGroup; defaultLayout: any };
+  public layoutPreviewData!: { form: UntypedFormGroup; defaultLayout: any };
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is created
@@ -37,7 +37,7 @@ export class SafeEditLayoutModalComponent implements OnInit {
    * @param data This is the data that is passed to the modal when it is opened.
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<SafeEditLayoutModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}

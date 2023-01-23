@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormArray } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
@@ -24,7 +24,7 @@ import { EditRoleAutoAssignmentModalComponent } from './edit-role-auto-assignmen
 })
 export class RoleAutoAssignmentComponent implements OnInit {
   @Input() role!: Role;
-  public formArray!: FormArray;
+  public formArray!: UntypedFormArray;
   @Output() edit = new EventEmitter();
   /** Setter for the loading state */
   @Input() set loading(loading: boolean) {
@@ -51,7 +51,7 @@ export class RoleAutoAssignmentComponent implements OnInit {
    * @param restService Safe REST service
    */
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private apollo: Apollo,
     private dialog: MatDialog,
     private translate: TranslateService,

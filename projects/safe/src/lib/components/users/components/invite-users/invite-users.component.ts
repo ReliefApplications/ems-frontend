@@ -7,7 +7,7 @@ import {
 import { GridComponent, GridDataResult } from '@progress/kendo-angular-grid';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { SafeAddUserComponent } from '../add-user/add-user.component';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
@@ -31,7 +31,7 @@ interface DialogData {
 })
 export class SafeInviteUsersComponent implements OnInit {
   public gridData: GridDataResult = { data: [], total: 0 };
-  public formGroup: FormGroup = new FormGroup({});
+  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   private editedRowIndex = 0;
   private editionActive = false;
 
@@ -42,8 +42,8 @@ export class SafeInviteUsersComponent implements OnInit {
   @ViewChild('fileReader') fileReader: any;
 
   /** @returns The position attributes available */
-  get positionAttributes(): FormArray | null {
-    return this.formGroup.get('positionAttributes') as FormArray;
+  get positionAttributes(): UntypedFormArray | null {
+    return this.formGroup.get('positionAttributes') as UntypedFormArray;
   }
 
   /**
@@ -62,7 +62,7 @@ export class SafeInviteUsersComponent implements OnInit {
     private renderer: Renderer2,
     private downloadService: SafeDownloadService,
     private snackBar: SafeSnackBarService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeInviteUsersComponent>,
     public translate: TranslateService,
@@ -211,7 +211,7 @@ export class SafeInviteUsersComponent implements OnInit {
    * @param dataItem Row data.
    * @returns Form group created from row data.
    */
-  public createFormGroup(dataItem: any): FormGroup {
+  public createFormGroup(dataItem: any): UntypedFormGroup {
     const formGroup: any = {
       email: [dataItem.email, Validators.required],
       role: [dataItem.role, Validators.required],
@@ -238,7 +238,7 @@ export class SafeInviteUsersComponent implements OnInit {
     this.gridData.data.splice(this.editedRowIndex, 1, this.formGroup.value);
     this.editedRowIndex = 0;
     this.editionActive = false;
-    this.formGroup = new FormGroup({});
+    this.formGroup = new UntypedFormGroup({});
   }
 
   /**

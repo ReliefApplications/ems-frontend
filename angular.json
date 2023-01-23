@@ -1189,7 +1189,6 @@
       }
     }
   },
-  "defaultProject": "back-office",
   "cli": {
     "analytics": false
   }

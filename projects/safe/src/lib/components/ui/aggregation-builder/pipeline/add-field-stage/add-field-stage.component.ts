@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 import { addFieldsForm } from '../../aggregation-builder-forms';
 
 /**
@@ -11,7 +11,7 @@ import { addFieldsForm } from '../../aggregation-builder-forms';
   styleUrls: ['./add-field-stage.component.scss'],
 })
 export class SafeAddFieldStageComponent implements OnInit {
-  @Input() form!: FormArray;
+  @Input() form!: UntypedFormArray;
   @Input() fields: any[] = [];
   @Input() operators: any;
   @Input() displayName = true;

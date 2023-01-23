@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 
 import { SafeQueryStyleListComponent } from './query-style-list.component';
 
@@ -16,7 +16,7 @@ describe('SafeQueryStyleListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeQueryStyleListComponent);
     component = fixture.componentInstance;
-    component.form = new FormArray([]);
+    component.form = new UntypedFormArray([]);
     fixture.detectChanges();
   });
 

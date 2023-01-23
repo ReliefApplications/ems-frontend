@@ -7,7 +7,7 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { FormGroup, FormArray, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormArray, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -49,7 +49,7 @@ export class SafeGridSettingsComponent
   implements OnInit, AfterViewInit
 {
   // === REACTIVE FORM ===
-  public formGroup!: FormGroup;
+  public formGroup!: UntypedFormGroup;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -124,16 +124,16 @@ export class SafeGridSettingsComponent
             this.formGroup?.get('template')?.enable();
             const floatingButtons = this.formGroup?.get(
               'floatingButtons'
-            ) as FormArray;
+            ) as UntypedFormArray;
             for (const floatingButton of floatingButtons.controls) {
               const modifications = floatingButton.get(
                 'modifications'
-              ) as FormArray;
+              ) as UntypedFormArray;
               modifications.clear();
               this.formGroup
                 ?.get('floatingButton.modifySelectedRows')
                 ?.setValue(false);
-              const bodyFields = floatingButton.get('bodyFields') as FormArray;
+              const bodyFields = floatingButton.get('bodyFields') as UntypedFormArray;
               bodyFields.clear();
             }
           }

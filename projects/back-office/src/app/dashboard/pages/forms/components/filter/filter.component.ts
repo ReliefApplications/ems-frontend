@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 /**
@@ -11,8 +11,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   styleUrls: ['./filter.component.scss'],
 })
 export class FilterComponent implements OnInit {
-  public form!: FormGroup;
-  public search = new FormControl('');
+  public form!: UntypedFormGroup;
+  public search = new UntypedFormControl('');
   public show = false;
   @Output() filter = new EventEmitter<any>();
   @Input() loading = false;
@@ -22,7 +22,7 @@ export class FilterComponent implements OnInit {
    *
    * @param formBuilder Shared form builder service.
    */
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private formBuilder: UntypedFormBuilder) {}
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { divisionForm } from '../../map-forms';
 
@@ -19,7 +19,7 @@ interface DialogData {
   styleUrls: ['./map-clorophlet-division.component.scss'],
 })
 export class MapClorophletDivisionComponent implements OnInit {
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
 
   public fields: any[] = [];
   public query: any;

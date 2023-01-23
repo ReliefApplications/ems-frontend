@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { markerRuleForm } from '../../map-forms';
 import { MapMarkerRuleComponent } from '../map-marker-rule/map-marker-rule.component';
@@ -13,7 +13,7 @@ import { MapMarkerRuleComponent } from '../map-marker-rule/map-marker-rule.compo
   styleUrls: ['./map-markers.component.scss'],
 })
 export class MapMarkersComponent implements OnInit {
-  @Input() form!: FormGroup;
+  @Input() form!: UntypedFormGroup;
 
   @Input() selectedFields: any[] = [];
   @Input() formattedSelectedFields: any[] = [];
@@ -24,8 +24,8 @@ export class MapMarkersComponent implements OnInit {
    *
    * @returns Form Array
    */
-  get rules(): FormArray {
-    return this.form.get('markerRules') as FormArray;
+  get rules(): UntypedFormArray {
+    return this.form.get('markerRules') as UntypedFormArray;
   }
 
   public tableColumns = ['label', 'color', 'actions'];

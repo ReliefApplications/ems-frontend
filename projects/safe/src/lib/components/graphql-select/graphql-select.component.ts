@@ -29,7 +29,7 @@ import {
   MatFormFieldControl,
   MAT_FORM_FIELD,
 } from '@angular/material/form-field';
-import { NgControl, ControlValueAccessor, FormControl } from '@angular/forms';
+import { NgControl, ControlValueAccessor, UntypedFormControl } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
@@ -72,7 +72,7 @@ export class SafeGraphQLSelectComponent
 
   @Input() filterable = false;
   @Output() searchChange = new EventEmitter<string>();
-  public searchControl = new FormControl('');
+  public searchControl = new UntypedFormControl('');
 
   /**
    * Gets the value

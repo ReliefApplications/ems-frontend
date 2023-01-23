@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 /**
  * Layers configuration component of Map Widget.
@@ -18,8 +18,8 @@ export class MapLayersComponent implements OnInit {
    *
    * @returns Form control
    */
-  get onlineLayers(): FormControl {
-    return this.form.get('onlineLayers') as FormControl;
+  get onlineLayers(): UntypedFormControl {
+    return this.form.get('onlineLayers') as UntypedFormControl;
   }
 
   /**
@@ -27,11 +27,11 @@ export class MapLayersComponent implements OnInit {
    *
    * @returns Form Array
    */
-  get clorophlets(): FormArray {
-    return this.form.get('clorophlets') as FormArray;
+  get clorophlets(): UntypedFormArray {
+    return this.form.get('clorophlets') as UntypedFormArray;
   }
 
-  @Input() form!: FormGroup;
+  @Input() form!: UntypedFormGroup;
 
   /**
    * Layers configuration component of Map Widget.

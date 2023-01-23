@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 /**
  * Fields dropdown component.
@@ -10,7 +10,7 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./field-dropdown.component.scss'],
 })
 export class SafeFieldDropdownComponent implements OnInit {
-  @Input() fieldControl!: FormControl;
+  @Input() fieldControl!: UntypedFormControl;
   @Input() fields: any[] = [];
   @Input() label = '';
   @Input() nullable = false;

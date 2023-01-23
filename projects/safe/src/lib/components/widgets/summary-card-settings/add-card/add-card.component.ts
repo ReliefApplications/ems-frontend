@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
 
@@ -18,7 +18,7 @@ export class SafeAddCardComponent implements OnInit {
   public loading = true;
   private templatesUrl = '';
   public templates: any = [];
-  public searchControl = new FormControl('');
+  public searchControl = new UntypedFormControl('');
 
   /**
    * Constructor for safe-add-card constructor

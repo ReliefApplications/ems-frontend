@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 /** Data for the dialog inputs */
@@ -16,7 +16,7 @@ interface DialogData {
   styleUrls: ['./expanded-comment.component.scss'],
 })
 export class SafeExpandedCommentComponent implements OnInit {
-  public formControl!: FormControl;
+  public formControl!: UntypedFormControl;
 
   /**
    * Constructor of this component
@@ -28,7 +28,7 @@ export class SafeExpandedCommentComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<SafeExpandedCommentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
   ) {}
 
   ngOnInit(): void {

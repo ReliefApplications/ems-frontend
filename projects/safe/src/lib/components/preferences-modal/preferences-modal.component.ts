@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
@@ -21,7 +21,7 @@ interface PreferencesDialogData {
 })
 export class SafePreferencesModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public preferencesForm: FormGroup = new FormGroup({});
+  public preferencesForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === DATA ===
   languages: { name: string; value: string }[] = [];
@@ -39,7 +39,7 @@ export class SafePreferencesModalComponent implements OnInit {
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: PreferencesDialogData,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private translate: TranslateService,
     private dateTranslate: SafeDateTranslateService
   ) {

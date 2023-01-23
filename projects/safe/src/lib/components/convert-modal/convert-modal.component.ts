@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
   GetRecordDetailsQueryResponse,
@@ -32,7 +32,7 @@ export class SafeConvertModalComponent
   implements OnInit
 {
   // === REACTIVE FORM ===
-  convertForm: FormGroup = new FormGroup({});
+  convertForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === DATA ===
   public form?: Form;
@@ -51,7 +51,7 @@ export class SafeConvertModalComponent
    * @param data This is the data that is passed into the modal when it is opened.
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeConvertModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData

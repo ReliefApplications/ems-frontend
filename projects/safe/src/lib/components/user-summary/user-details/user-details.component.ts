@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { User } from '../../../models/user.model';
 import { AppAbility } from '../../../services/auth/auth.service';
@@ -15,7 +15,7 @@ import { SafeRestService } from '../../../services/rest/rest.service';
 })
 export class UserDetailsComponent implements OnInit {
   @Input() user!: User;
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
 
   @Output() edit = new EventEmitter();
 
@@ -39,7 +39,7 @@ export class UserDetailsComponent implements OnInit {
    * @param ability user ability
    */
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private restService: SafeRestService,
     private ability: AppAbility
   ) {}

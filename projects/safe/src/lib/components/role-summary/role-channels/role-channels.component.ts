@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Application } from '../../../models/application.model';
@@ -26,7 +26,7 @@ export class RoleChannelsComponent
 
   public channels: Channel[] = [];
   public applications: any[] = [];
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
   @Output() edit = new EventEmitter();
 
   /** Setter for the loading state */
@@ -45,7 +45,7 @@ export class RoleChannelsComponent
    * @param fb Angular form builder
    * @param apollo Apollo client
    */
-  constructor(private fb: FormBuilder, private apollo: Apollo) {
+  constructor(private fb: UntypedFormBuilder, private apollo: Apollo) {
     super();
   }
 

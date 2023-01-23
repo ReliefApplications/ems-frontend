@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
@@ -56,7 +56,7 @@ interface DialogData {
   ],
 })
 export class ConfigDisplayGridFieldsModalComponent implements OnInit {
-  public form: FormGroup = new FormGroup({});
+  public form: UntypedFormGroup = new UntypedFormGroup({});
   public loading = true;
 
   @ViewChild('settingsContainer', { read: ViewContainerRef })

@@ -6,7 +6,7 @@ import {
   ViewChild,
   AfterViewInit,
 } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Apollo } from 'apollo-angular';
@@ -38,7 +38,7 @@ import { SafeAggregationService } from '../../../../services/aggregation/aggrega
 export class SafeCardModalComponent implements OnInit, AfterViewInit {
   @ViewChild('tabGroup') tabGroup: any;
 
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
   public fields: any[] = [];
 
   // === CURRENT TAB ===
@@ -71,7 +71,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<SafeCardModalComponent>,
-    public fb: FormBuilder,
+    public fb: UntypedFormBuilder,
     private cdRef: ChangeDetectorRef,
     private apollo: Apollo,
     private aggregationService: SafeAggregationService

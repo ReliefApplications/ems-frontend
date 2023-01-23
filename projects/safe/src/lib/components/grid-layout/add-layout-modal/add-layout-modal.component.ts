@@ -15,7 +15,7 @@ import {
   GetFormLayoutsResponse,
   GET_FORM_LAYOUTS,
 } from './graphql/queries';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { SafeGraphQLSelectComponent } from '../../graphql-select/graphql-select.component';
 
 /**
@@ -45,7 +45,7 @@ export class AddLayoutModalComponent implements OnInit {
     | QueryRef<GetResourceLayoutsResponse>
     | QueryRef<GetFormLayoutsResponse>
     | null;
-  public selectedLayoutControl = new FormControl('');
+  public selectedLayoutControl = new UntypedFormControl('');
 
   /** Reference to graphql select for layout */
   @ViewChild(SafeGraphQLSelectComponent)

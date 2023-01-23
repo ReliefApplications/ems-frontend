@@ -1,7 +1,7 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import {
   DuplicateApplicationMutationResponse,
   DUPLICATE_APPLICATION,
@@ -19,7 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class DuplicateApplicationModalComponent implements OnInit {
   public currentApp: Application;
-  public duplicateForm: FormGroup = new FormGroup({});
+  public duplicateForm: UntypedFormGroup = new UntypedFormGroup({});
 
   /**
    * Duplicate application component.
@@ -33,7 +33,7 @@ export class DuplicateApplicationModalComponent implements OnInit {
    */
   constructor(
     private snackBar: SafeSnackBarService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<DuplicateApplicationModalComponent>,
     private translateService: TranslateService,

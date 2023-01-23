@@ -42,7 +42,7 @@ import {
   WeekNamesService,
 } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { SafeGridService } from '../../../../services/grid/grid.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -136,7 +136,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() editable = false;
   @Input() hasChanges = false;
   @Output() edit: EventEmitter<any> = new EventEmitter();
-  public formGroup: FormGroup = new FormGroup({});
+  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   private currentEditedRow = 0;
   private currentEditedItem: any;
   public gradientSettings = GRADIENT_SETTINGS;
@@ -197,7 +197,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() filterChange = new EventEmitter();
   @Output() showFilterChange = new EventEmitter();
   @Input() searchable = true;
-  public search = new FormControl('');
+  public search = new UntypedFormControl('');
   @Output() searchChange = new EventEmitter();
 
   // === PAGINATION ===
@@ -601,7 +601,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     this.currentEditedRow = 0;
     this.currentEditedItem = null;
     this.editing = false;
-    this.formGroup = new FormGroup({});
+    this.formGroup = new UntypedFormGroup({});
   }
 
   /**

@@ -1,6 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
@@ -20,7 +20,7 @@ export class ChoseRoleComponent implements OnInit {
   public loading = true;
 
   // === REACTIVE FORM ===
-  roleForm: FormGroup = new FormGroup({});
+  roleForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === ROLES QUERY ===
   public rolesQuery!: QueryRef<GetRolesQueryResponse>;
@@ -34,7 +34,7 @@ export class ChoseRoleComponent implements OnInit {
    * @param data.application application id
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<ChoseRoleComponent>,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA)

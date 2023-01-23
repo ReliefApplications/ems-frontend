@@ -1,7 +1,7 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import {
   Form,
@@ -53,7 +53,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
 
   // === TAB NAME EDITION ===
   public formActive = false;
-  public tabNameForm: FormGroup = new FormGroup({});
+  public tabNameForm: UntypedFormGroup = new UntypedFormGroup({});
   public page?: Page;
   public step?: Step;
   public isStep = false;
@@ -112,8 +112,8 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           )
           .subscribe(({ data, loading }) => {
             this.form = data.form;
-            this.tabNameForm = new FormGroup({
-              tabName: new FormControl(this.step?.name, Validators.required),
+            this.tabNameForm = new UntypedFormGroup({
+              tabName: new UntypedFormControl(this.step?.name, Validators.required),
             });
             this.applicationId =
               this.step?.workflow?.page?.application?.id || '';
@@ -140,8 +140,8 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           )
           .subscribe(({ data, loading }) => {
             this.form = data.form;
-            this.tabNameForm = new FormGroup({
-              tabName: new FormControl(this.page?.name, Validators.required),
+            this.tabNameForm = new UntypedFormGroup({
+              tabName: new UntypedFormControl(this.page?.name, Validators.required),
             });
             this.applicationId = this.page?.application?.id || '';
             this.loading = loading;

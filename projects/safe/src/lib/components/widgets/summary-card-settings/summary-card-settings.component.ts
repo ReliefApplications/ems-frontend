@@ -7,7 +7,7 @@ import {
   AfterViewInit,
   HostListener,
 } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, UntypedFormArray, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
   TileLayoutReorderEvent,
@@ -37,7 +37,7 @@ const DEFAULT_CARD_WIDTH = 2;
 })
 export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
-  tileForm: FormGroup | undefined;
+  tileForm: UntypedFormGroup | undefined;
 
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
@@ -64,8 +64,8 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    *
    * @returns cards as Form Array
    */
-  get cards(): FormArray {
-    return this.tileForm?.get('cards') as FormArray;
+  get cards(): UntypedFormArray {
+    return this.tileForm?.get('cards') as UntypedFormArray;
   }
 
   // To prevent issues where dynamic would erase all cards
@@ -77,7 +77,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * @param fb Angular Form Builder.
    * @param dialog Material Dialog Service.
    */
-  constructor(private fb: FormBuilder, private dialog: MatDialog) {}
+  constructor(private fb: UntypedFormBuilder, private dialog: MatDialog) {}
 
   /**
    * Build the settings form, using the widget saved parameters.
@@ -173,7 +173,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * @param value card value, optional
    * @returns card as form group
    */
-  private cardForm(value?: any): FormGroup {
+  private cardForm(value?: any): UntypedFormGroup {
     return this.fb.group({
       title: get(value, 'title', 'New Card'),
       isDynamic: value.isDynamic,
