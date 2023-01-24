@@ -1144,6 +1144,27 @@
 						"latitude": "Latitude incorrecte, merci de sélectionner un nombre entre -90 et 90",
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
 					},
+					"geospatial": {
+						"layersStyles": {
+							"fill": {
+								"color": "La couleur de remplissage",
+								"opacity": "Opacité de remplissage",
+								"title": "Remplir"
+							},
+							"marker": {
+								"color": "Couleur du marqueur",
+								"opacity": "Opacité du marqueur",
+								"title": "Marqueur"
+							},
+							"outline": {
+								"color": "Couleur du contour",
+								"opacity": "Opacité du contour",
+								"title": "Contour",
+								"width": "Largeur du contour"
+							},
+							"title": "Styles de calque"
+						}
+					},
 					"layers": {
 						"add": "Ajouter un nouveau calque",
 						"clorophlet": {

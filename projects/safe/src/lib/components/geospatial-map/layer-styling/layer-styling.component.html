@@ -1,0 +1,130 @@
+<div class="flex flex-col w-full h-96 p-1.5">
+  <span class="flex justify-between items-center mb-3 h-10">
+    <h2 class="m-0">
+      {{
+        'components.widget.settings.map.geospatial.layersStyles.title'
+          | translate
+      }}
+    </h2>
+    <div
+      class="hover:cursor-pointer hover:bg-gray-200 rounded-full p-2"
+      (click)="close.emit()"
+    >
+      <mat-icon class="text-gray-600">close</mat-icon>
+    </div>
+  </span>
+  <form [formGroup]="styleForm">
+    <ng-container *ngIf="selectedLayerType === 'Polygon'">
+      <safe-divider
+        [text]="
+          'components.widget.settings.map.geospatial.layersStyles.fill.title'
+            | translate
+        "
+        class="mt-0"
+      ></safe-divider>
+      <!-- Fill color -->
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.widget.settings.map.geospatial.layersStyles.fill.color'
+            | translate
+        }}</mat-label>
+        <input matInput type="color" formControlName="fillColor" />
+      </mat-form-field>
+
+      <!-- Fill opacity -->
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.widget.settings.map.geospatial.layersStyles.fill.opacity'
+            | translate
+        }}</mat-label>
+        <input
+          matInput
+          type="number"
+          step=".1"
+          min="0"
+          max="1"
+          formControlName="fillOpacity"
+        />
+      </mat-form-field>
+    </ng-container>
+    <ng-container
+      *ngIf="
+        selectedLayerType === 'Polygon' || selectedLayerType === 'LineString'
+      "
+    >
+      <safe-divider
+        [text]="
+          'components.widget.settings.map.geospatial.layersStyles.outline.title'
+            | translate
+        "
+        [ngClass]="{ 'mt-0': selectedLayerType === 'LineString' }"
+      ></safe-divider>
+      <!-- Outline color -->
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.widget.settings.map.geospatial.layersStyles.outline.color'
+            | translate
+        }}</mat-label>
+        <input matInput type="color" formControlName="color" />
+      </mat-form-field>
+
+      <!-- Outline opacity -->
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.widget.settings.map.geospatial.layersStyles.outline.opacity'
+            | translate
+        }}</mat-label>
+        <input
+          matInput
+          type="number"
+          step=".1"
+          min="0"
+          max="1"
+          formControlName="opacity"
+        />
+      </mat-form-field>
+
+      <!-- Outline width -->
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.widget.settings.map.geospatial.layersStyles.outline.width'
+            | translate
+        }}</mat-label>
+        <input matInput type="number" min="0" formControlName="weight" />
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngIf="selectedLayerType === 'Point'">
+      <safe-divider
+        [text]="
+          'components.widget.settings.map.geospatial.layersStyles.marker.title'
+            | translate
+        "
+        class="mt-0"
+      ></safe-divider>
+      <!-- Marker color -->
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.widget.settings.map.geospatial.layersStyles.marker.color'
+            | translate
+        }}</mat-label>
+        <input matInput type="color" formControlName="color" />
+      </mat-form-field>
+
+      <!-- Marker opacity -->
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.widget.settings.map.geospatial.layersStyles.marker.opacity'
+            | translate
+        }}</mat-label>
+        <input
+          matInput
+          type="number"
+          step=".1"
+          min="0"
+          max="1"
+          formControlName="opacity"
+        />
+      </mat-form-field>
+    </ng-container>
+  </form>
+</div>

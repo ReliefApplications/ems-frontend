@@ -41,6 +41,43 @@ const GEOMAN_LANGUAGES = [
 ];
 
 /**
+ * Creates custom marker icon for the Leaflet map.
+ *
+ * @param color Color of the marker
+ * @param opacity Opacity of the marker
+ * @returns Custom marker icon
+ */
+const createCustomMarker = (color: string, opacity: number) => {
+  const markerHtmlStyles = `
+  background-color: ${color};
+  opacity: ${opacity};
+  width: 2em;
+  height: 2em;
+  display: block;
+  left: -0.5em;
+  top: -0.5em;
+  position: relative;
+  border-radius: 2em 2em 0;
+  transform: rotate(45deg);
+  border: 1px solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;`;
+
+  const icon = L.divIcon({
+    className: 'custom-marker',
+    iconAnchor: [0, 24],
+    labelAnchor: [-6, 0],
+    popupAnchor: [0, -36],
+    html: `<span data-attr="${color},${opacity}" style="${markerHtmlStyles}">
+      <div style="width: 0.7em; height: 0.7em; background-color: white; border-radius:100%"/>
+    </span>`,
+  });
+
+  return icon;
+};
+
+/**
  * Component for displaying the input map
  * of the geospatial type question.
  */
@@ -58,6 +95,9 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
   // Map
   public map: any;
   public mapID = `map-${Math.random().toString(36)}`;
+
+  // Layer to edit
+  public selectedLayer: any;
 
   // output
   private timeout: ReturnType<typeof setTimeout> | null = null;
@@ -111,21 +151,32 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
 
     // init layers from question value
     if (this.data.features.length > 0) {
-      L.geoJSON(this.data, {
+      const newLayer = L.geoJSON(this.data, {
         // Circles are not supported by geojson
         // We abstract them as markers with a radius property
         pointToLayer: (feature: any, latlng: any) => {
           if (feature.properties.radius) {
             return new L.Circle(latlng, feature.properties.radius);
           } else {
-            return new L.Marker(latlng);
+            const color = feature.properties.color || '#3388ff';
+            const opacity = feature.properties.opacity || 1;
+            const icon = createCustomMarker(color, opacity);
+            return new L.Marker(latlng).setIcon(icon);
           }
         },
       })
         .addTo(this.map)
         .eachLayer((l: any) => {
+          if (l.setStyle) {
+            l.setStyle(l.feature.options);
+          }
           l.on('pm:change', this.onMapChange.bind(this));
         });
+
+      const selectLayer = (l: any) => (this.selectedLayer = l);
+      newLayer.on('click', (e: any) => {
+        selectLayer(e.layer);
+      });
     }
 
     // add geoman tools
@@ -137,10 +188,18 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
 
     // updates question value on adding new shape
     this.map.on('pm:create', (l: any) => {
+      if (l.shape === 'Marker')
+        l.layer.setIcon(createCustomMarker('#3388ff', 1));
+
       this.onMapChange();
 
       // subscribe to changes on the created layers
       l.layer.on('pm:change', this.onMapChange.bind(this));
+
+      const selectLayer = (x: any) => (this.selectedLayer = x);
+      l.layer.on('click', (e: any) => {
+        selectLayer(e.target);
+      });
     });
 
     // updates question value on removing shapes
@@ -157,10 +216,20 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
       type: 'FeatureCollection',
       features: this.map.pm.getGeomanLayers().map((l: any) => {
         const json = l.toGeoJSON();
+        json.options = l.options;
         // Adds radius property to circles,
         // as they are not supported by geojson
         if (l instanceof L.Circle) {
           json.properties.radius = l.getRadius();
+        }
+        if (l instanceof L.Marker) {
+          const html = l.options.icon.options.html;
+          // save marker style info to geojson
+          if (html) {
+            const attributes = html.match(/data-attr="(.*\d)"/)[1];
+            const [color, opacity] = attributes.split(',');
+            json.properties = { color, opacity };
+          }
         }
         return json;
       }),
@@ -173,5 +242,20 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
     this.timeout = setTimeout(() => {
       this.mapChange.emit(this.getMapFeatures());
     }, 500);
+  }
+
+  /**
+   * Updates the selected layer with the given options.
+   *
+   * @param options the options to update the layer with
+   */
+  public updateLayer(options: any) {
+    if (this.selectedLayer instanceof L.Marker) {
+      const icon = createCustomMarker(options.color, options.opacity);
+      this.selectedLayer.setIcon(icon);
+    } else {
+      this.selectedLayer.setStyle(options);
+    }
+    this.mapChange.emit(this.getMapFeatures());
   }
 }
