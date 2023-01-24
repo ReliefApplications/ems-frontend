@@ -1,80 +1,116 @@
-<form [formGroup]="form" class="overflow-hidden">
-  <div class="flex flex-col last:mb-0">
-    <h2>
-      {{ 'components.widget.settings.map.properties.title' | translate }}
-    </h2>
-    <mat-form-field appearance="outline">
-      <mat-label>{{
-        'components.widget.settings.map.properties.basemap' | translate
-      }}</mat-label>
-      <mat-select formControlName="basemap" placeholder="OSM">
-        <mat-option *ngFor="let map of basemaps" [value]="map">
-          {{ map }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-label>
-      {{ 'components.widget.settings.map.properties.zoom' | translate }}
-      <safe-icon
-        icon="info_outline"
-        class="cursor-pointer"
-        [matTooltip]="
-          'components.widget.settings.map.properties.zoom' | translate
-        "
-        [inline]="true"
-        [size]="18"
-        variant="grey"
-      ></safe-icon>
-    </mat-label>
-    <mat-slider
-      thumbLabel
-      tickInterval="1"
-      formControlName="zoom"
-      [min]="2"
-      [max]="18"
-    ></mat-slider>
-    <div class="flex flex-wrap gap-2">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
-          {{ 'components.widget.settings.map.properties.latitude' | translate }}
-        </mat-label>
-        <input type="number" matInput formControlName="centerLat" />
-        <safe-icon
-          matSuffix
-          icon="info"
-          class="cursor-pointer"
-          variant="grey"
-          [matTooltip]="
-            'components.widget.settings.map.tooltip.default.latitude'
-              | translate
-          "
-        ></safe-icon>
-        <mat-error *ngIf="form.controls.centerLat.errors">
-          {{ 'components.widget.settings.map.errors.latitude' | translate }}
-        </mat-error>
+<form [formGroup]="form" class="overflow-hidden h-full">
+  <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+    <!-- Map properties -->
+    <div class="flex flex-col flex-1">
+      <h2>
+        {{ 'components.widget.settings.map.properties.title' | translate }}
+      </h2>
+      <!-- Widget ( map ) name -->
+      <mat-form-field appearance="outline" class="p-0">
+        <mat-label>{{ 'common.name' | translate }}</mat-label>
+        <input matInput formControlName="title" type="string" />
       </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
-          {{
-            'components.widget.settings.map.properties.longitude' | translate
-          }}
-        </mat-label>
-        <input type="number" matInput formControlName="centerLong" />
-        <safe-icon
-          matSuffix
-          icon="info"
-          class="cursor-pointer"
-          variant="grey"
-          [matTooltip]="
-            'components.widget.settings.map.tooltip.default.longitude'
-              | translate
-          "
-        ></safe-icon>
-        <mat-error *ngIf="form.controls.centerLat.errors">
-          {{ 'components.widget.settings.map.errors.longitude' | translate }}
-        </mat-error>
+      <safe-divider></safe-divider>
+      <!-- Basemap -->
+      <mat-form-field appearance="outline" class="p-0">
+        <mat-label>{{
+          'components.widget.settings.map.properties.basemap' | translate
+        }}</mat-label>
+        <mat-select formControlName="basemap" placeholder="OSM">
+          <mat-option *ngFor="let map of basemaps" [value]="map">
+            {{ map }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
+      <safe-divider></safe-divider>
+      <!-- Default view -->
+      <!-- Default zoom -->
+      <mat-label>
+        {{ 'components.widget.settings.map.properties.zoom' | translate }}
+        <safe-icon
+          icon="info_outline"
+          class="cursor-pointer"
+          [matTooltip]="
+            'components.widget.settings.map.properties.zoom' | translate
+          "
+          [inline]="true"
+          [size]="18"
+          variant="grey"
+        ></safe-icon>
+      </mat-label>
+      <mat-slider
+        thumbLabel
+        tickInterval="1"
+        formControlName="zoom"
+        [min]="2"
+        [max]="18"
+      ></mat-slider>
+      <div class="flex flex-wrap gap-2">
+        <!-- Default latitude -->
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>
+            {{
+              'components.widget.settings.map.properties.latitude' | translate
+            }}
+          </mat-label>
+          <input type="number" matInput formControlName="centerLat" />
+          <safe-icon
+            matSuffix
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            [matTooltip]="
+              'components.widget.settings.map.tooltip.default.latitude'
+                | translate
+            "
+          ></safe-icon>
+          <mat-error *ngIf="form.controls.centerLat.errors">
+            {{ 'components.widget.settings.map.errors.latitude' | translate }}
+          </mat-error>
+        </mat-form-field>
+        <!-- Default longitude -->
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>
+            {{
+              'components.widget.settings.map.properties.longitude'
+                | translate
+            }}
+          </mat-label>
+          <input type="number" matInput formControlName="centerLong" />
+          <safe-icon
+            matSuffix
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            [matTooltip]="
+              'components.widget.settings.map.tooltip.default.longitude'
+                | translate
+            "
+          ></safe-icon>
+          <mat-error *ngIf="form.controls.centerLat.errors">
+            {{
+              'components.widget.settings.map.errors.longitude' | translate
+            }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <!-- Use map to set properties -->
+      <safe-button
+        class="mb-4 self-end flex-1"
+        (click)="onSetByMap()"
+        category="secondary"
+        variant="primary"
+      >
+        {{ 'components.widget.settings.map.properties.setByMap' | translate }}
+      </safe-button>
     </div>
-    <safe-map [header]="false" [settings]="mapSettings"></safe-map>
+    <!-- Map preview -->
+    <div class="lg:flex-1 max-lg:min-w-full h-80 lg:min-h-full">
+      <safe-map
+        class="w-full h-full"
+        [header]="false"
+        [settings]="mapSettings"
+      ></safe-map>
+    </div>
   </div>
 </form>

@@ -4,6 +4,18 @@ import {
 } from '../../query-builder/query-builder-forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
+import { MapLayerI } from './map-layers/map-layers.component';
+
+type Nullable<T> = { [P in keyof T]: T[P] | null };
+/** Interface for the maps settings */
+export interface MapSettingsI {
+  title: string;
+  zoom: number;
+  basemap: string;
+  centerLong: number;
+  centerLat: number;
+  layers: MapLayerI[];
+}
 
 /** Angular Form Builder */
 const fb = new FormBuilder();
@@ -37,20 +49,21 @@ const DEFAULT_MARKER_RULE = {
   },
 };
 /** Default map value */
-const DEFAULT_MAP = {
+const DEFAULT_MAP: Nullable<MapSettingsI> = {
   title: null,
-  query: null,
-  latitude: 0,
-  longitude: 0,
+  // query: null,
+  // latitude: 0,
+  // longitude: 0,
   zoom: 2,
-  category: null,
+  // category: null,
   basemap: null,
   centerLong: null,
   centerLat: null,
-  popupFields: [],
-  onlineLayers: [],
-  markersRules: [],
-  clorophlets: [],
+  // popupFields: [],
+  // onlineLayers: [],
+  // markersRules: [],
+  // clorophlets: [],
+  layers: [],
 };
 
 // === CLOROPHLET ===
@@ -121,6 +134,26 @@ export const markerRuleForm = (value?: any): FormGroup =>
     filter: createFilterGroup(get(value, 'filter', DEFAULT_MARKER_RULE.filter)),
   });
 
+/**
+ * Create layer form from value
+ *
+ * @param value layer value ( optional )
+ * @returns new form group
+ */
+export const createLayerForm = (value?: MapLayerI): FormGroup =>
+  fb.group({
+    name: [get(value, 'name', null), [Validators.required]],
+    defaultVisibility: [
+      get(value, 'defaultVisibility', true),
+      [Validators.required],
+    ],
+    opacity: [get(value, 'opacity', 0.8), [Validators.required]],
+    visibilityRange: [
+      get(value, 'visibilityRange', [2, 18]),
+      [Validators.required],
+    ],
+  });
+
 // === MAP ===
 
 /**
@@ -170,4 +203,9 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup =>
     //     clorophletForm(x)
     //   )
     // ),
+    layers: fb.array(
+      get(value, 'layers', DEFAULT_MAP.layers).map((x: any) =>
+        createLayerForm(x)
+      )
+    ),
   });

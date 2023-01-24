@@ -1166,6 +1166,7 @@
 						}
 					},
 					"layers": {
+						"add": "Ajouter un nouveau calque",
 						"clorophlet": {
 							"add": "Ajouter un clorophlet",
 							"division": {
@@ -1178,6 +1179,7 @@
 							"info": "Configurer des clorophlets en tant que couches pour la carte",
 							"title": "Clorophlets"
 						},
+						"edit": "Mettre à jour le calque {{name}}",
 						"online": {
 							"info": "Charger des couches depuis arcGIS online",
 							"select": "Chercher des couches",
@@ -1193,7 +1195,8 @@
 							"rulesInfo": "Configurer la taille et la couleur des marqueurs",
 							"size": "Taille",
 							"title": "Marqueurs"
-						}
+						},
+						"remove": "Supprimer le calque"
 					},
 					"popup": {
 						"label": "Champs affichés dans le popup"
@@ -1202,6 +1205,7 @@
 						"basemap": "Fond de carte",
 						"latitude": "Latitude du centre de la carte",
 						"longitude": "Longitude du centre de la carte",
+						"setByMap": "Utiliser la vue actuelle",
 						"title": "Affichage par défaut",
 						"zoom": "Zoom par défaut"
 					},
@@ -1209,8 +1213,8 @@
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
 						"dataset": "Sélectionnez des champs ci-dessous et déplacez-les vers 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché en cliquant sur les marqueurs",
 						"default": {
-							"latitude": "Sélectionnez une latitude par défaut autour de laquelle vous souhaitez centrer la carte",
-							"longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte",
+							"latitude": "Définissez la latitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la latitude de la carte d'aperçu.",
+							"longitude": "Définissez la longitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la longitude de la carte d'aperçu.",
 							"zoom": "Sélectionnez un zoom par défaut"
 						}
 					}
