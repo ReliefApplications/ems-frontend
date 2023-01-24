@@ -100,7 +100,7 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
   public selectedLayer: any;
 
   // output
-  private timeout: NodeJS.Timeout | null = null;
+  private timeout: ReturnType<typeof setTimeout> | null = null;
   @Output() mapChange = new EventEmitter<FeatureCollection>();
 
   /**

@@ -47,6 +47,7 @@ export class SafeLayerStylingComponent
     return null;
   }
 
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter<void>();
   @Output() edit = new EventEmitter<any>();
 

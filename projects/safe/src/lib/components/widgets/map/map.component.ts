@@ -6,7 +6,10 @@ import {
   QueryResponse,
 } from '../../../services/query-builder/query-builder.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+// import { takeUntil } from 'rxjs/operators';
+
+import 'leaflet.control.layers.tree';
+import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
@@ -23,6 +26,21 @@ const MARKER_OPTIONS = {
   radius: 6,
   pane: 'markers',
 };
+
+/** Declares an interface that will be used in the cluster markers layers */
+interface IMarkersLayerValue {
+  [name: string]: any;
+}
+
+/** Declares an interface that will be used in the overlays */
+interface LayerTree {
+  label?: string;
+  children?: LayerTree[];
+  layer?: any;
+  type?: string;
+  selectAllCheckbox?: any;
+  options?: any;
+}
 
 /** Available baseMaps */
 const BASEMAP_LAYERS: any = {
@@ -59,6 +77,12 @@ export class SafeMapComponent
 
   // === MARKERS ===
   private popupMarker: any;
+  private markersCategories: IMarkersLayerValue = [];
+  private overlays: LayerTree = {};
+  private layerControl: any;
+
+  // === LEGEND ===
+  private legendControl: any;
 
   // === RECORDS ===
   private dataQuery!: QueryRef<QueryResponse>;
@@ -111,19 +135,19 @@ export class SafeMapComponent
     this.drawMap();
 
     // Gets the settings from the DB.
-    if (this.settings.query) {
-      const builtQuery = this.queryBuilder.buildQuery(this.settings);
-      if (!builtQuery) return;
-      this.dataQuery = this.apollo.watchQuery({
-        query: builtQuery,
-        variables: {
-          first: 100,
-          filter: this.settings.query.filter,
-        },
-      });
-      // Handles the settings data and changes the map accordingly.
-      this.getData();
-    }
+    // if (this.settings.query) {
+    //   const builtQuery = this.queryBuilder.buildQuery(this.settings);
+    //   if (!builtQuery) return;
+    //   this.dataQuery = this.apollo.watchQuery({
+    //     query: builtQuery,
+    //     variables: {
+    //       first: 100,
+    //       filter: this.settings.query.filter,
+    //     },
+    //   });
+    //   // Handles the settings data and changes the map accordingly.
+    //   this.getData();
+    // }
 
     setTimeout(() => this.map.invalidateSize(), 100);
   }
@@ -196,26 +220,188 @@ export class SafeMapComponent
     this.getSearchbarControl().addTo(this.map);
 
     // Creates a pane for markers so they are always shown in top, used in the marker options;
-    this.map.createPane('markers');
-    this.map.getPane('markers').style.zIndex = 650;
+    // this.map.createPane('markers');
+    // this.map.getPane('markers').style.zIndex = 650;
 
     // Set event listener to log map bounds when zooming, moving and resizing screen.
     this.map.on('moveend', () => {
       console.log(this.map.getBounds());
     });
+
+    this.map.on('zoomend', () => {
+      this.applyOptions(this.map.getZoom(), this.overlays);
+    });
+
+    const options1 = {
+      style: {
+        opacity: 0.2,
+      },
+      visible: false,
+      visibilityRange: {
+        min: 6,
+        max: 12,
+      },
+    };
+
+    const options2 = {
+      style: {
+        opacity: 0.5,
+      },
+    };
+
+    this.overlays = {
+      label: 'GeoJSON layers',
+      selectAllCheckbox: 'Un/select all',
+      children: [
+        {
+          label: 'Simple',
+          layer: pointGeoJSON,
+          options: options2,
+        },
+        {
+          label: 'Complex',
+          layer: complexGeoJSON,
+          options: options1,
+        },
+        {
+          label: 'Corner',
+          layer: cornerGeoJSON,
+          options: options2,
+        },
+      ],
+    };
+
+    const layerTreeCloned = this.addTreeToMap(this.overlays);
+    this.applyOptions(this.map.getZoom(), layerTreeCloned, true);
+
+    this.layerControl = L.control.layers
+      .tree(undefined, layerTreeCloned)
+      .addTo(this.map);
+  }
+
+  /**
+   * Function used to apply options
+   *
+   * @param zoom The current zoom of the map
+   * @param layerTree The layer tree, used recursively.
+   * @param init Used to init the map or update layers, default false.
+   */
+  private applyOptions(zoom: number, layerTree: LayerTree, init = false) {
+    if (layerTree.children) {
+      for (const child of layerTree.children) {
+        this.applyOptions(zoom, child, init);
+      }
+    } else if (layerTree.options) {
+      if (init && layerTree.options.style) {
+        const layers = get(layerTree, 'layer._layers', {});
+        for (const layer in layers) {
+          if (layers[layer].options) {
+            layers[layer].options.opacity = layerTree.options.style.opacity;
+            layers[layer].options.fillOpacity = layerTree.options.style.opacity;
+          }
+        }
+        this.map.removeLayer(layerTree.layer);
+        this.map.addLayer(layerTree.layer);
+      }
+      if (init && layerTree.options.visible === false) {
+        // avoid undefined case matched with !layerTree.options.visible
+        // init with layer set at not visible by default.
+        this.map.removeLayer(layerTree.layer);
+      } else {
+        if (layerTree.options.visibilityRange) {
+          if (
+            zoom > layerTree.options.visibilityRange.max ||
+            zoom < layerTree.options.visibilityRange.min
+          ) {
+            console.log('there ?');
+            this.map.removeLayer(layerTree.layer);
+          } else {
+            layerTree.layer.addTo(this.map);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Create a new layer tree with duplicated layers
+   *
+   * @param layerTree The layers tree.
+   * @returns A tree wiht each layer duplicated to have a 'left' and 'right' clones
+   */
+  private addTreeToMap(layerTree: LayerTree): any {
+    if (layerTree.children) {
+      layerTree.children.map((child: any) => {
+        const newLayer = this.addTreeToMap(child);
+        child.layer = L.geoJSON(newLayer.layer).addTo(this.map);
+      });
+    } else {
+      let layerFeature: any[];
+      if (layerTree.layer.type === 'Feature') {
+        layerFeature = [layerTree.layer];
+      } else {
+        layerFeature = layerTree.layer.features;
+      }
+
+      const features: any[] = [];
+      for (const feature of layerFeature) {
+        features.push(feature);
+
+        const left = {
+          type: feature.type,
+          properties: feature.properties,
+          geometry: {
+            coordinates: [] as any[],
+            type: feature.geometry.type,
+          },
+        };
+        const right = {
+          type: feature.type,
+          properties: feature.properties,
+          geometry: {
+            coordinates: [] as any[],
+            type: feature.geometry.type,
+          },
+        };
+
+        if (feature.geometry.type === 'Point') {
+          const coordinate = feature.geometry.coordinates;
+          left.geometry.coordinates = [coordinate[0] - 360, coordinate[1]];
+          right.geometry.coordinates = [coordinate[0] + 360, coordinate[1]];
+        } else {
+          const leftCoordinates: any[] = [];
+          const rightCoordinates: any[] = [];
+          for (const coordinate of feature.geometry.coordinates[0]) {
+            leftCoordinates.push([coordinate[0] - 360, coordinate[1]]);
+            rightCoordinates.push([coordinate[0] + 360, coordinate[1]]);
+          }
+          left.geometry.coordinates.push(leftCoordinates);
+          right.geometry.coordinates.push(rightCoordinates);
+        }
+
+        features.push(left);
+        features.push(right);
+      }
+
+      layerTree.layer = {
+        type: 'FeatureCollection',
+        features,
+      };
+    }
+    return layerTree;
   }
 
   /** Load the data, using widget parameters. */
   private getData(): void {
     this.map.closePopup(this.popupMarker);
 
-    this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      const today = new Date();
-      this.lastUpdate =
-        ('0' + today.getHours()).slice(-2) +
-        ':' +
-        ('0' + today.getMinutes()).slice(-2);
-    });
+    // this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    //   const today = new Date();
+    //   this.lastUpdate =
+    //     ('0' + today.getHours()).slice(-2) +
+    //     ':' +
+    //     ('0' + today.getMinutes()).slice(-2);
+    // });
   }
 
   /**

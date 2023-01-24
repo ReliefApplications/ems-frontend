@@ -1164,6 +1164,7 @@
 						}
 					},
 					"layers": {
+						"add": "Add new layer",
 						"clorophlet": {
 							"add": "Add new clorophlet",
 							"division": {
@@ -1176,6 +1177,7 @@
 							"info": "Set up different clorophlets which will be displayed as layers in the map",
 							"title": "Clorophlets"
 						},
+						"edit": "Update layer {{name}}",
 						"online": {
 							"info": "Search for online layers in arcGIS online",
 							"select": "Search layers",
@@ -1191,7 +1193,8 @@
 							"rulesInfo": "Customize the size and colors of your markers",
 							"size": "Size",
 							"title": "Marker layers"
-						}
+						},
+						"remove": "Remove layer"
 					},
 					"popup": {
 						"label": "Fields displayed in the popup"
@@ -1200,6 +1203,7 @@
 						"basemap": "Base map",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
+						"setByMap": "Set By Map",
 						"title": "Map Parameters",
 						"zoom": "Default zoom"
 					},
@@ -1207,8 +1211,8 @@
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
 						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
 						"default": {
-							"latitude": "Select a default latitude to center the map around",
-							"longitude": "Select a default longitude to center the map around",
+							"latitude": "Set the default latitude of the center of the map. You can use 'Set By Map' to use the latitude of the preview map.",
+							"longitude": "Set the default longitude of the center of the map. You can use 'Set By Map' to use the longitude of the preview map.",
 							"zoom": "Select a default zoom for the map display"
 						}
 					}
