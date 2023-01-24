@@ -244,6 +244,11 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
     }, 500);
   }
 
+  /**
+   * Updates the selected layer with the given options.
+   *
+   * @param options the options to update the layer with
+   */
   public updateLayer(options: any) {
     if (this.selectedLayer instanceof L.Marker) {
       const icon = createCustomMarker(options.color, options.opacity);

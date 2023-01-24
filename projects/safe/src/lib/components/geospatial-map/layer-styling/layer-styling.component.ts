@@ -8,6 +8,7 @@ type GeometryTypes = 'Point' | 'Polygon' | 'LineString';
 /** Leaflet */
 declare let L: any;
 
+/** Component for styling leaflet layers */
 @Component({
   selector: 'safe-layer-styling',
   templateUrl: './layer-styling.component.html',
@@ -51,6 +52,7 @@ export class SafeLayerStylingComponent
 
   public styleForm: any;
 
+  /** Component for styling leaflet layers */
   constructor() {
     super();
   }
@@ -70,7 +72,11 @@ export class SafeLayerStylingComponent
       });
   }
 
-  /** Returns the form for the selected layer */
+  /**
+   * Returns the form for the selected layer
+   *
+   * @returns the form for the selected layer
+   */
   private getStyleForm(): FormGroup {
     switch (this.selectedLayerType) {
       case 'Point':
