@@ -1182,6 +1182,7 @@
 						"basemap": "******",
 						"latitude": "******",
 						"longitude": "******",
+						"setByMap": "******",
 						"title": "******",
 						"zoom": "******"
 					},
