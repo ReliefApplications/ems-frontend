@@ -2,7 +2,11 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeContentChoiceComponent } from './content-choice.component';
 import { SafeContentChoiceModule } from './content-choice.module';
 import { CONTENT_TYPES } from '../../models/page.model';
-import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  UntypedFormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 export default {
   component: SafeContentChoiceComponent,

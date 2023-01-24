@@ -23,6 +23,7 @@ export class ResourceFieldsComponent implements OnInit {
   @Input() resource!: Resource;
   @Input() role!: Role;
   @Input() updating = false;
+  // eslint-disable-next-line @angular-eslint/no-output-on-prefix
   @Output() onToggle = new EventEmitter<{
     resource: Resource;
     field: ResourceField;

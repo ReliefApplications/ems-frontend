@@ -1,5 +1,10 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
 import { Form } from '../../../../models/form.model';
@@ -367,7 +372,9 @@ export class ButtonConfigComponent
    * Delete all the invalid modifications
    */
   private deleteInvalidModifications(): void {
-    const modifications = this.formGroup?.get('modifications') as UntypedFormArray;
+    const modifications = this.formGroup?.get(
+      'modifications'
+    ) as UntypedFormArray;
     for (let i = 0; i < modifications.value.length; i++) {
       const modification = modifications.at(i);
       if (modification.invalid) {

@@ -133,7 +133,9 @@ export class SafeGridSettingsComponent
               this.formGroup
                 ?.get('floatingButton.modifySelectedRows')
                 ?.setValue(false);
-              const bodyFields = floatingButton.get('bodyFields') as UntypedFormArray;
+              const bodyFields = floatingButton.get(
+                'bodyFields'
+              ) as UntypedFormArray;
               bodyFields.clear();
             }
           }

@@ -1,6 +1,10 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   EditFormMutationResponse,
@@ -144,7 +148,10 @@ export class FormBuilderComponent implements OnInit {
               );
               // this.breadcrumbService.setResourceName();
               this.nameForm = new UntypedFormGroup({
-                formName: new UntypedFormControl(this.form.name, Validators.required),
+                formName: new UntypedFormControl(
+                  this.form.name,
+                  Validators.required
+                ),
               });
               const storedStructure = window.localStorage.getItem(
                 `form:${this.id}`

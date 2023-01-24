@@ -3,7 +3,11 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeMappingComponent } from './mapping.component';
 import { SafeMappingModule } from './mapping.module';
 import { StorybookTranslateModule } from '../storybook-translate/storybook-translate-module';
-import { UntypedFormArray, UntypedFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 
 export default {

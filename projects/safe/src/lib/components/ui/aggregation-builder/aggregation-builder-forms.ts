@@ -1,4 +1,8 @@
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { PipelineStage } from './pipeline/pipeline-stage.enum';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
@@ -14,7 +18,10 @@ const formBuilder = new UntypedFormBuilder();
  * @param validators boolean to set validators or not (default true)
  * @returns Expression form group.
  */
-export const expressionForm = (value: any, validators = true): UntypedFormGroup =>
+export const expressionForm = (
+  value: any,
+  validators = true
+): UntypedFormGroup =>
   formBuilder.group({
     operator: [
       get(value, 'operator', ''),
@@ -30,7 +37,10 @@ export const expressionForm = (value: any, validators = true): UntypedFormGroup 
  * @param validators boolean to set validators or not (default true)
  * @returns Stage form group.
  */
-export const addFieldsForm = (value: any, validators = true): UntypedFormGroup =>
+export const addFieldsForm = (
+  value: any,
+  validators = true
+): UntypedFormGroup =>
   formBuilder.group({
     name: [get(value, 'name', ''), validators ? Validators.required : null],
     expression: expressionForm(get(value, 'expression', false)),
@@ -155,7 +165,10 @@ export const mappingFields = (
  * @param widgetType type of chart widget
  * @returns New mapping form
  */
-export const createMappingForm = (value: any, widgetType: string): UntypedFormGroup =>
+export const createMappingForm = (
+  value: any,
+  widgetType: string
+): UntypedFormGroup =>
   formBuilder.group(
     mappingFields(widgetType).reduce(
       (o, field) =>

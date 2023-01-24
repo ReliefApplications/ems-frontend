@@ -1,6 +1,10 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -103,7 +107,10 @@ export class WorkflowComponent
         if (workflow) {
           this.steps = workflow.steps || [];
           this.workflowNameForm = new UntypedFormGroup({
-            workflowName: new UntypedFormControl(workflow.name, Validators.required),
+            workflowName: new UntypedFormControl(
+              workflow.name,
+              Validators.required
+            ),
           });
           this.loading = false;
           if (!this.workflow || workflow.id !== this.workflow.id) {

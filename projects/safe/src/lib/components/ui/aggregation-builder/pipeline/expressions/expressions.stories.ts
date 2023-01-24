@@ -3,7 +3,11 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeExpressionsComponent } from './expressions.component';
 import { SafePipelineModule } from '../pipeline.module';
 import { StorybookTranslateModule } from '../../../../storybook-translate/storybook-translate-module';
-import { UntypedFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Accumulators } from './operators';
 
 export default {

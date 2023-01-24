@@ -22,14 +22,18 @@ export class TabButtonsComponent {
 
   /** @returns List of the floating buttons */
   get buttons(): UntypedFormArray {
-    return (this.formGroup?.controls.floatingButtons as UntypedFormArray) || null;
+    return (
+      (this.formGroup?.controls.floatingButtons as UntypedFormArray) || null
+    );
   }
 
   /**
    * Adds a floating button configuration.
    */
   public addButton(): void {
-    const floatingButtons = this.formGroup?.get('floatingButtons') as UntypedFormArray;
+    const floatingButtons = this.formGroup?.get(
+      'floatingButtons'
+    ) as UntypedFormArray;
     floatingButtons.push(createButtonFormGroup({ show: true }));
   }
 
@@ -39,7 +43,9 @@ export class TabButtonsComponent {
    * @param index index of button to remove
    */
   public deleteButton(index: number): void {
-    const floatingButtons = this.formGroup?.get('floatingButtons') as UntypedFormArray;
+    const floatingButtons = this.formGroup?.get(
+      'floatingButtons'
+    ) as UntypedFormArray;
     floatingButtons.removeAt(index);
   }
 }

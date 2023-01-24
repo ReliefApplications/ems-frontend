@@ -29,7 +29,11 @@ import {
   MatLegacyFormFieldControl as MatFormFieldControl,
   MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
 } from '@angular/material/legacy-form-field';
-import { NgControl, ControlValueAccessor, UntypedFormControl } from '@angular/forms';
+import {
+  NgControl,
+  ControlValueAccessor,
+  UntypedFormControl,
+} from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
@@ -187,6 +191,7 @@ export class SafeGraphQLSelectComponent
 
   public controlType = 'safe-graphql-select';
 
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
   /**
@@ -243,7 +248,7 @@ export class SafeGraphQLSelectComponent
   // public selected: FormControl;
 
   /** Query reference for getting the available contents */
-  @Input('query') query!: QueryRef<any>;
+  @Input() query!: QueryRef<any>;
 
   private queryName!: string;
   @Input() path = '';

@@ -108,7 +108,8 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
       if (this.selectedFields === event.previousContainer.data) {
         // Move from selected fields
         if (
-          this.fieldForm === (this.form.at(event.previousIndex) as UntypedFormGroup)
+          this.fieldForm ===
+          (this.form.at(event.previousIndex) as UntypedFormGroup)
         ) {
           this.fieldForm = new UntypedFormGroup({});
         }

@@ -630,7 +630,9 @@ export const init = (
         });
       }
     },
-    convertFromRawToFormGroup: (gridSettingsRaw: any): UntypedFormGroup | null => {
+    convertFromRawToFormGroup: (
+      gridSettingsRaw: any
+    ): UntypedFormGroup | null => {
       if (!gridSettingsRaw.fields) {
         return null;
       }

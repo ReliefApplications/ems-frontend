@@ -55,7 +55,10 @@ import { SafeTileDataComponent } from '../../../widget-grid/floating-options/men
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
-import { MatLegacySnackBarRef as MatSnackBarRef, LegacyTextOnlySnackBar as TextOnlySnackBar } from '@angular/material/legacy-snack-bar';
+import {
+  MatLegacySnackBarRef as MatSnackBarRef,
+  LegacyTextOnlySnackBar as TextOnlySnackBar,
+} from '@angular/material/legacy-snack-bar';
 
 /**
  * Factory for creating scroll strategy

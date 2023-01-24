@@ -2,7 +2,11 @@ import {
   createQueryForm,
   createFilterGroup,
 } from '../../query-builder/query-builder-forms';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import get from 'lodash/get';
 
 /** Angular Form Builder */
@@ -130,7 +134,10 @@ export const markerRuleForm = (value?: any): UntypedFormGroup =>
  * @param value map settings ( optional )
  * @returns map form
  */
-export const createMapWidgetFormGroup = (id: any, value?: any): UntypedFormGroup =>
+export const createMapWidgetFormGroup = (
+  id: any,
+  value?: any
+): UntypedFormGroup =>
   fb.group({
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],
