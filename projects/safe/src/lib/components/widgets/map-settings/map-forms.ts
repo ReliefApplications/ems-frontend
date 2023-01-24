@@ -143,6 +143,8 @@ export const markerRuleForm = (value?: any): FormGroup =>
 export const createLayerForm = (value?: MapLayerI): FormGroup =>
   fb.group({
     name: [get(value, 'name', null), [Validators.required]],
+    type: [get(value, 'type', 'layer')],
+    layers: [get(value, 'layers', null)],
   });
 
 // === MAP ===
