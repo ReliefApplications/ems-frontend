@@ -333,19 +333,7 @@ export class SafeCardModalComponent implements OnInit {
   }
 
   /**
-   * Checks if the user is in the editor tab before loading it.
-   *
-   * @returns Returns a boolean.
-   */
-  isEditorTab(): boolean {
-    return this.form.get('isDynamic')?.value ||
-      this.form.get('isAggregation')?.value
-      ? this.selectedTab === SummaryCardSettingsTabTypes.PREVIEW
-      : this.selectedTab === SummaryCardSettingsTabTypes.RECORD;
-  }
-
-  /**
-   *  Handles the a tab change event
+   *  Handles the tab change event
    *
    * @param event Event triggered on tab switch
    */
