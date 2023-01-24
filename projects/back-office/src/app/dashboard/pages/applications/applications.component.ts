@@ -215,30 +215,29 @@ export class ApplicationsComponent
           this.updating = false;
         });
     } else {
-      this.applicationsQuery
-        .fetchMore({
-          variables: {
-            first: this.pageInfo.pageSize,
-            afterCursor: this.pageInfo.endCursor,
-            filter: this.filter,
-            sortField: this.sort?.direction && this.sort.active,
-            sortOrder: this.sort?.direction,
-          },
-        })
-        .then((value) => {
-          this.applicationsQuery.updateQuery((prev) =>
-            Object.assign({}, prev, {
-              applications: {
-                edges: [
-                  ...prev.applications.edges,
-                  ...value.data.applications.edges,
-                ],
-                pageInfo: value.data.applications.pageInfo,
-                totalCount: value.data.applications.totalCount,
-              },
-            })
-          );
-        });
+      this.applicationsQuery.fetchMore({
+        variables: {
+          first: this.pageInfo.pageSize,
+          afterCursor: this.pageInfo.endCursor,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
+        },
+      });
+      // .then((value) => {
+      //   this.applicationsQuery.updateQuery((prev) =>
+      //     Object.assign({}, prev, {
+      //       applications: {
+      //         edges: [
+      //           ...prev.applications.edges,
+      //           ...value.data.applications.edges,
+      //         ],
+      //         pageInfo: value.data.applications.pageInfo,
+      //         totalCount: value.data.applications.totalCount,
+      //       },
+      //     })
+      //   );
+      // });
     }
   }
 
