@@ -6,7 +6,7 @@ import {
 import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
 import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { DomService } from '../../services/dom/dom.service';

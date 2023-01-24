@@ -13,7 +13,7 @@ import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
 } from './graphql/queries';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   SafeAuthService,
   SafeSnackBarService,

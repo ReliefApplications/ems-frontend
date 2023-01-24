@@ -12,7 +12,7 @@ import { Resource } from '../../../../models/resource.model';
 import { Access, Permission } from '../permissions.types';
 import { createFilterGroup } from '../../../query-builder/query-builder-forms';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { SafeRestService } from '../../../../services/rest/rest.service';
 import { firstValueFrom } from 'rxjs';
 

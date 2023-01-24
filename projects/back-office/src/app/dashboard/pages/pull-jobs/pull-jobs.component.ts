@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   Channel,
   PullJob,
@@ -17,7 +17,7 @@ import {
   EditPullJobMutationResponse,
   EDIT_PULL_JOB,
 } from './graphql/mutations';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { EditPullJobModalComponent } from './components/edit-pull-job-modal/edit-pull-job-modal.component';
 

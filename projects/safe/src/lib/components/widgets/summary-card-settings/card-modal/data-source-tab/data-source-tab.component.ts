@@ -5,7 +5,7 @@ import { GET_RESOURCES, GetResourcesQueryResponse } from '../graphql/queries';
 import { Resource } from '../../../../../models/resource.model';
 import { Layout } from '../../../../../models/layout.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { AddLayoutModalComponent } from '../../../../grid-layout/add-layout-modal/add-layout-modal.component';
 import { SafeEditLayoutModalComponent } from '../../../../grid-layout/edit-layout-modal/edit-layout-modal.component';
 import { SafeGridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { clorophletForm } from '../../map-forms';
 import { MapClorophletComponent } from '../map-clorophlet/map-clorophlet.component';
 

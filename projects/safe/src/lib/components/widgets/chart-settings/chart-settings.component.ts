@@ -1,9 +1,9 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
-import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
+import { MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/legacy-chips';
+import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
 import get from 'lodash/get';
 import { scrollFactory } from '../../../utils/scroll-factory';
 import { codesFactory } from '../../distribution-lists/components/edit-distribution-list-modal/edit-distribution-list-modal.component';

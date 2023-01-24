@@ -7,7 +7,7 @@ import {
   OAuthService,
   UrlHelperService,
 } from 'angular-oauth2-oidc';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { UntypedFormBuilder } from '@angular/forms';
 
 import { SafeFormService } from './form.service';

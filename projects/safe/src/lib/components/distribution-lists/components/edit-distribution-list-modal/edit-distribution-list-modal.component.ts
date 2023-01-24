@@ -7,10 +7,10 @@ import {
 } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import {
-  MatChipInputEvent,
-  MAT_CHIPS_DEFAULT_OPTIONS,
-} from '@angular/material/chips';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+  MatLegacyChipInputEvent as MatChipInputEvent,
+  MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS,
+} from '@angular/material/legacy-chips';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import get from 'lodash/get';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 

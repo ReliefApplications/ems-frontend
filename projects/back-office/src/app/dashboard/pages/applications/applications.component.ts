@@ -1,6 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
 import {
   Application,
@@ -22,7 +22,7 @@ import {
   EDIT_APPLICATION,
 } from './graphql/mutations';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Sort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationModalComponent } from '../../../components/duplicate-application-modal/duplicate-application-modal.component';

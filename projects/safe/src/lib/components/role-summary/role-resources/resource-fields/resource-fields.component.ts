@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { sortBy } from 'lodash';
 import { Resource } from '../../../../models/resource.model';
 import { Role } from '../../../../models/user.model';

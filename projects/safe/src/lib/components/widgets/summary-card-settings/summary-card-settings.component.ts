@@ -8,7 +8,7 @@ import {
   HostListener,
 } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, UntypedFormArray, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,

@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { GET_USERS, GetUsersQueryResponse } from '../../graphql/queries';

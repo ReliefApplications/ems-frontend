@@ -8,9 +8,9 @@ import {
   ViewChild,
 } from '@angular/core';
 import {
-  MAT_SELECT_SCROLL_STRATEGY,
-  MatSelect,
-} from '@angular/material/select';
+  MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
+  MatLegacySelect as MatSelect,
+} from '@angular/material/legacy-select';
 import { QueryRef, Apollo } from 'apollo-angular';
 import {
   GetRecordByIdQueryResponse,

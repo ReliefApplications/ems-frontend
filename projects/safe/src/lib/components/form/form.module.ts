@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeFormComponent } from './form.component';
 import { SafeFormModalModule } from '../form-modal/form-modal.module';

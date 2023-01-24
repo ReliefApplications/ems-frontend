@@ -23,7 +23,7 @@ import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
 import { WorkflowWidgetComponent } from './widgets/workflow-widget/workflow-widget.component';
 import { WorkflowWidgetModule } from './widgets/workflow-widget/workflow-widget.module';
 import { environment } from '../environments/environment';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { RouterModule } from '@angular/router';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import {
@@ -44,7 +44,7 @@ import { Platform } from '@angular/cdk/platform';
 import { AppOverlayContainer } from './utils/overlay-container';
 // Apollo / GraphQL
 import { GraphQLModule } from './graphql.module';
-import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
+import { MAT_LEGACY_TOOLTIP_DEFAULT_OPTIONS as MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/legacy-tooltip';
 
 /**
  * Initialize authentication in the platform.

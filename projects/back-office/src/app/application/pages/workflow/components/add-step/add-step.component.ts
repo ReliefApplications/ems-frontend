@@ -1,7 +1,7 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   ContentType,
   CONTENT_TYPES,
@@ -16,7 +16,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from '../../graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from '../../graphql/queries';
 import { AddFormModalComponent } from '../../../../../components/add-form-modal/add-form-modal.component';
-import { MatSelect } from '@angular/material/select';
+import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 
 /** Default items per query for pagination */
 const ITEMS_PER_PAGE = 10;

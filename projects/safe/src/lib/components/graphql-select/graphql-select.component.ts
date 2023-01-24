@@ -17,18 +17,18 @@ import {
 import { QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import {
-  MAT_SELECT_SCROLL_STRATEGY,
-  MatSelect,
-  MatSelectChange,
-} from '@angular/material/select';
+  MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
+  MatLegacySelect as MatSelect,
+  MatLegacySelectChange as MatSelectChange,
+} from '@angular/material/legacy-select';
 import { Overlay } from '@angular/cdk/overlay';
 import { scrollFactory } from '../../utils/scroll-factory';
 import { cloneDeep, get, set } from 'lodash';
 import {
-  MatFormField,
-  MatFormFieldControl,
-  MAT_FORM_FIELD,
-} from '@angular/material/form-field';
+  MatLegacyFormField as MatFormField,
+  MatLegacyFormFieldControl as MatFormFieldControl,
+  MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
+} from '@angular/material/legacy-form-field';
 import { NgControl, ControlValueAccessor, UntypedFormControl } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';

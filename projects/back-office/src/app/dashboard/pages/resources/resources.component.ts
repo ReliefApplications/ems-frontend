@@ -15,9 +15,9 @@ import {
   SafeConfirmService,
   SafeSnackBarService,
 } from '@safe/builder';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import { AddResourceModalComponent } from '../../../components/add-resource-modal/add-resource-modal.component';

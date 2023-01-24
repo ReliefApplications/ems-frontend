@@ -7,7 +7,7 @@ import { AggregationBuilderService } from '../../../services/aggregation-builder
 import { SafeGridService } from '../../../services/grid/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { Resource } from '../../../models/resource.model';
-import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
+import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
 import { scrollFactory } from '../../config-display-grid-fields-modal/config-display-grid-fields-modal.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';

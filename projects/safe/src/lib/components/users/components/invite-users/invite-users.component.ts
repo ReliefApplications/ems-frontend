@@ -1,9 +1,9 @@
 import { Component, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+  MatLegacyDialog as MatDialog,
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { GridComponent, GridDataResult } from '@progress/kendo-angular-grid';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';

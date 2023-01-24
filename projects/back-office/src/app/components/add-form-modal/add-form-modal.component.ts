@@ -1,14 +1,14 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import {
   GetResourcesQueryResponse,
   GET_RESOURCES,
   GetResourceByIdQueryResponse,
   GET_RESOURCE_BY_ID,
 } from './graphql/queries';
-import { MatSelect } from '@angular/material/select';
+import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;

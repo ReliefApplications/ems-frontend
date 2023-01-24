@@ -29,7 +29,7 @@ import {
   GET_REFERENCE_DATA,
 } from './graphql/queries';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 import { takeUntil } from 'rxjs/operators';
 
 /** Default pagination parameter. */

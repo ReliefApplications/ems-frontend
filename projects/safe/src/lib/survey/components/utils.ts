@@ -1,4 +1,4 @@
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeFormModalComponent } from '../../components/form-modal/form-modal.component';
 import { SafeResourceGridModalComponent } from '../../components/search-resource-grid-modal/search-resource-grid-modal.component';
 import { UntypedFormGroup } from '@angular/forms';
