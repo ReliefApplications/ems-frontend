@@ -10,6 +10,7 @@
 //    `@include mat.legacy-typography-hierarchy(mat.define-legacy-typography-config());`
 @include mat.all-legacy-component-typographies();
 @include mat.legacy-core();
+@include mat.core();
 
 @import "tailwindcss/base";
 @import "tailwindcss/components";
@@ -445,6 +446,7 @@ $safe-theme: mat.define-light-theme(
 }
 
 // === ADDITIONAL MATERIAL STYLING ===
+@include mat.all-component-themes($safe-theme);
 @include mat.all-legacy-component-themes($safe-theme);
 @include chip($safe-theme);
 @include button($safe-theme);
