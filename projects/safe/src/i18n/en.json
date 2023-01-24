@@ -1182,9 +1182,9 @@
 						"basemap": "Base map",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
+						"setByMap": "Set By Map",
 						"title": "Map Parameters",
-						"zoom": "Default zoom",
-						"setByMap": "Set By Map"
+						"zoom": "Default zoom"
 					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",

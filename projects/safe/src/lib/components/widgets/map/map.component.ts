@@ -39,6 +39,7 @@ interface LayerTree {
   layer?: any;
   type?: string;
   selectAllCheckbox?: any;
+  options?: any;
 }
 
 /** Available baseMaps */
@@ -227,32 +228,99 @@ export class SafeMapComponent
       console.log(this.map.getBounds());
     });
 
-    const layerTree = {
-      tree: {
-        label: 'GeoJSON layers',
-        selectAllCheckbox: 'Un/select all',
-        children: [
-          {
-            label: 'Simple',
-            layer: pointGeoJSON,
-          },
-          {
-            label: 'Complex',
-            layer: complexGeoJSON,
-          },
-          {
-            label: 'Corner',
-            layer: cornerGeoJSON,
-          },
-        ],
+    this.map.on('zoomend', () => {
+      this.applyOptions(this.map.getZoom(), this.overlays);
+    });
+
+    const options1 = {
+      style: {
+        opacity: 0.2,
+      },
+      visible: false,
+      visibilityRange: {
+        min: 6,
+        max: 12,
       },
     };
 
-    const layerTreeCloned = this.addTreeToMap(layerTree.tree);
+    const options2 = {
+      style: {
+        opacity: 0.5,
+      },
+    };
+
+    this.overlays = {
+      label: 'GeoJSON layers',
+      selectAllCheckbox: 'Un/select all',
+      children: [
+        {
+          label: 'Simple',
+          layer: pointGeoJSON,
+          options: options2,
+        },
+        {
+          label: 'Complex',
+          layer: complexGeoJSON,
+          options: options1,
+        },
+        {
+          label: 'Corner',
+          layer: cornerGeoJSON,
+          options: options2,
+        },
+      ],
+    };
+
+    const layerTreeCloned = this.addTreeToMap(this.overlays);
+    this.applyOptions(this.map.getZoom(), layerTreeCloned, true);
 
     this.layerControl = L.control.layers
       .tree(undefined, layerTreeCloned)
       .addTo(this.map);
+  }
+
+  /**
+   * Function used to apply options
+   *
+   * @param zoom The current zoom of the map
+   * @param layerTree The layer tree, used recursively.
+   * @param init Used to init the map or update layers, default false.
+   */
+  private applyOptions(zoom: number, layerTree: LayerTree, init = false) {
+    if (layerTree.children) {
+      for (const child of layerTree.children) {
+        this.applyOptions(zoom, child, init);
+      }
+    } else if (layerTree.options) {
+      if (init && layerTree.options.style) {
+        const layers = get(layerTree, 'layer._layers', {});
+        for (const layer in layers) {
+          if (layers[layer].options) {
+            layers[layer].options.opacity = layerTree.options.style.opacity;
+            layers[layer].options.fillOpacity = layerTree.options.style.opacity;
+          }
+        }
+        this.map.removeLayer(layerTree.layer);
+        this.map.addLayer(layerTree.layer);
+      }
+      if (init && layerTree.options.visible === false) {
+        // avoid undefined case matched with !layerTree.options.visible
+        // init with layer set at not visible by default.
+        this.map.removeLayer(layerTree.layer);
+      } else {
+        if (layerTree.options.visibilityRange) {
+          if (
+            zoom > layerTree.options.visibilityRange.max ||
+            zoom < layerTree.options.visibilityRange.min
+          ) {
+            console.log('there ?');
+            this.map.removeLayer(layerTree.layer);
+          } else {
+            layerTree.layer.addTo(this.map);
+          }
+        }
+      }
+    }
   }
 
   /**

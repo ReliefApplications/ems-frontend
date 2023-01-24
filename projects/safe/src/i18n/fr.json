@@ -1184,9 +1184,9 @@
 						"basemap": "Fond de carte",
 						"latitude": "Latitude du centre de la carte",
 						"longitude": "Longitude du centre de la carte",
+						"setByMap": "Définir par carte",
 						"title": "Affichage par défaut",
-						"zoom": "Zoom par défaut",
-						"setByMap": "Définir par carte"
+						"zoom": "Zoom par défaut"
 					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",

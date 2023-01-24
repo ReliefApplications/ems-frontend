@@ -1,33 +1,54 @@
-<safe-modal size="small">
-  <h1 mat-dialog-title>
-    {{
-      layer
-        ? ('components.widget.settings.map.layers.edit'
-          | translate
-            : {
-                name: layer.name
-              })
-        : ('components.widget.settings.map.layers.add' | translate)
-    }}
-  </h1>
-  <div mat-dialog-content>
-    <form [formGroup]="form" class="flex flex-col">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.name' | translate }}</mat-label>
-        <input matInput formControlName="name" type="text" />
-      </mat-form-field>
-    </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
-    <safe-button
-      category="secondary"
-      variant="primary"
-      [mat-dialog-close]="form.value"
-      cdkFocusInitial
-      [disabled]="!form.valid"
-    >
-      {{ (!layer ? 'common.create' : 'common.update') | translate }}
-    </safe-button>
+<safe-modal size="medium" [closable]="true">
+  <div class="flex flex-row space-x-4">
+    <!-- Map section -->
+    <div [id]="mapId" class="w-4/5 group flex-1">
+      <div
+        class="invisible group-hover:visible absolute bottom-0 px-1 z-[1000] text-gray-300 text-xs"
+      ></div>
+    </div>
+    <div class="flex flex-col space-y-12">
+      <!-- Options section -->
+      <form [formGroup]="form" class="flex flex-col space-y-8">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'common.name' | translate }}</mat-label>
+            <input matInput formControlName="name" type="text" />
+          </mat-form-field>
+        <mat-checkbox formControlName="defaultVisibility">Visible by default</mat-checkbox>
+        <div>
+          <div class="flex flex-row w-full justify-between">
+            <label>Opacity</label>
+            <label>{{form.controls.opacity.value}}</label>
+          </div>
+          <mat-slider
+            class="w-full"
+            formControlName="opacity"
+            min="0"
+            max="1"
+            step="0.1"
+            thumbLabel="true"
+          ></mat-slider>
+        </div>
+        <div>
+          <label>Visibility range</label>
+          <ngx-slider [options]="visibilityRangeOptions" formControlName="visibilityRange"></ngx-slider>
+        </div>
+        <div>
+          <label>Current zoom: {{currentZoom}}</label>
+        </div>
+      </form>
+      <!-- Dialog actions ( cancel / close ) -->
+      <div mat-dialog-actions align="end">
+        <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
+        <safe-button
+          category="secondary"
+          variant="primary"
+          [mat-dialog-close]="form.value"
+          cdkFocusInitial
+          [disabled]="!form.valid"
+        >
+          {{ (!layer ? 'common.create' : 'common.update') | translate }}
+        </safe-button>
+      </div>
+    </div>
   </div>
 </safe-modal>

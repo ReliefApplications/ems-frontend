@@ -24,6 +24,7 @@
   "private": true,
   "dependencies": {
     "@angular-devkit/schematics": "^13.3.6",
+    "@angular-slider/ngx-slider": "^2.0.4",
     "@angular/animations": "~13.3.9",
     "@angular/cdk": "^13.3.7",
     "@angular/common": "~13.3.9",

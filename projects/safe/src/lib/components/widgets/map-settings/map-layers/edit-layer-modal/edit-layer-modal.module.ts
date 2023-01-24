@@ -6,6 +6,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSliderModule } from '@angular/material/slider';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 /** Module for the SafeEditLayerModalComponent */
 @NgModule({
@@ -18,6 +21,9 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     TranslateModule,
     MatInputModule,
+    MatCheckboxModule,
+    MatSliderModule,
+    NgxSliderModule,
   ],
   exports: [SafeEditLayerModalComponent],
 })
