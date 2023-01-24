@@ -1142,6 +1142,27 @@
 						"latitude": "Invalid latitude, please select a number between -90 and 90",
 						"longitude": "Invalid longitude, please select a number between -180 and 180"
 					},
+					"geospatial": {
+						"layersStyles": {
+							"fill": {
+								"color": "Fill color",
+								"opacity": "Fill opacity",
+								"title": "Fill"
+							},
+							"marker": {
+								"color": "Marker color",
+								"opacity": "Marker opacity",
+								"title": "Marker"
+							},
+							"outline": {
+								"color": "Outline color",
+								"opacity": "Outline opacity",
+								"title": "Outline",
+								"width": "Outline width"
+							},
+							"title": "Layer styles"
+						}
+					},
 					"layers": {
 						"clorophlet": {
 							"add": "Add new clorophlet",

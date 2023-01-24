@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureCollection } from 'geojson';
-import { features } from 'process';
 
 // Leaflet
 declare let L: any;
@@ -40,6 +39,43 @@ const GEOMAN_LANGUAGES = [
   'zh',
   'zh_tw',
 ];
+
+/**
+ * Creates custom marker icon for the Leaflet map.
+ *
+ * @param color Color of the marker
+ * @param opacity Opacity of the marker
+ * @returns Custom marker icon
+ */
+const createCustomMarker = (color: string, opacity: number) => {
+  const markerHtmlStyles = `
+  background-color: ${color};
+  opacity: ${opacity};
+  width: 2em;
+  height: 2em;
+  display: block;
+  left: -0.5em;
+  top: -0.5em;
+  position: relative;
+  border-radius: 2em 2em 0;
+  transform: rotate(45deg);
+  border: 1px solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;`;
+
+  const icon = L.divIcon({
+    className: 'custom-marker',
+    iconAnchor: [0, 24],
+    labelAnchor: [-6, 0],
+    popupAnchor: [0, -36],
+    html: `<span data-attr="${color},${opacity}" style="${markerHtmlStyles}">
+      <div style="width: 0.7em; height: 0.7em; background-color: white; border-radius:100%"/>
+    </span>`,
+  });
+
+  return icon;
+};
 
 /**
  * Component for displaying the input map
@@ -122,7 +158,10 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
           if (feature.properties.radius) {
             return new L.Circle(latlng, feature.properties.radius);
           } else {
-            return new L.Marker(latlng);
+            const color = feature.properties.color || '#3388ff';
+            const opacity = feature.properties.opacity || 1;
+            const icon = createCustomMarker(color, opacity);
+            return new L.Marker(latlng).setIcon(icon);
           }
         },
       })
@@ -134,10 +173,9 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
           l.on('pm:change', this.onMapChange.bind(this));
         });
 
-      let selectLayer = (layer: any) => this.selectedLayer = layer;
-      newLayer.on('click', function(e: any) {
+      const selectLayer = (l: any) => (this.selectedLayer = l);
+      newLayer.on('click', (e: any) => {
         selectLayer(e.layer);
-        console.log(e.layer);
       });
     }
 
@@ -150,15 +188,17 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
 
     // updates question value on adding new shape
     this.map.on('pm:create', (l: any) => {
+      if (l.shape === 'Marker')
+        l.layer.setIcon(createCustomMarker('#3388ff', 1));
+
       this.onMapChange();
 
       // subscribe to changes on the created layers
-      l.layer.on('pm:change', this.onMapChange.bind(this));;
+      l.layer.on('pm:change', this.onMapChange.bind(this));
 
-      let selectLayer = (layer: any) => this.selectedLayer = layer;
-      l.layer.on('click', function(e: any) {
+      const selectLayer = (x: any) => (this.selectedLayer = x);
+      l.layer.on('click', (e: any) => {
         selectLayer(e.target);
-        console.log(e.target)
       });
     });
 
@@ -182,6 +222,15 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
         if (l instanceof L.Circle) {
           json.properties.radius = l.getRadius();
         }
+        if (l instanceof L.Marker) {
+          const html = l.options.icon.options.html;
+          // save marker style info to geojson
+          if (html) {
+            const attributes = html.match(/data-attr="(.*\d)"/)[1];
+            const [color, opacity] = attributes.split(',');
+            json.properties = { color, opacity };
+          }
+        }
         return json;
       }),
     };
@@ -196,8 +245,12 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
   }
 
   public updateLayer(options: any) {
-    console.log(options);
-    this.selectedLayer.setStyle(options);
+    if (this.selectedLayer instanceof L.Marker) {
+      const icon = createCustomMarker(options.color, options.opacity);
+      this.selectedLayer.setIcon(icon);
+    } else {
+      this.selectedLayer.setStyle(options);
+    }
     this.mapChange.emit(this.getMapFeatures());
   }
 }

@@ -40,7 +40,6 @@ import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.modu
 import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
 import { SafeUnsubscribeModule } from './components/utils/unsubscribe/unsubscribe.module';
 import { SafeViewsModule } from './views/views.module';
-import { SafeGeospatialMapModule } from './components/geospatial-map/geospatial-map.module';
 
 /** Main module for the safe project */
 @NgModule({

@@ -8,9 +8,8 @@ describe('LayerStylingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeLayerStylingComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeLayerStylingComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

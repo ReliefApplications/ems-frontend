@@ -1142,6 +1142,27 @@
 						"latitude": "******",
 						"longitude": "******"
 					},
+					"geospatial": {
+						"layersStyles": {
+							"fill": {
+								"color": "******",
+								"opacity": "******",
+								"title": "******"
+							},
+							"marker": {
+								"color": "******",
+								"opacity": "******",
+								"title": "******"
+							},
+							"outline": {
+								"color": "******",
+								"opacity": "******",
+								"title": "******",
+								"width": "******"
+							},
+							"title": "******"
+						}
+					},
 					"layers": {
 						"clorophlet": {
 							"add": "******",
