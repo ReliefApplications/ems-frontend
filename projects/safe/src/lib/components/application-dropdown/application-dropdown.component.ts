@@ -170,21 +170,21 @@ export class SafeApplicationDropdownComponent
             first: ITEMS_PER_PAGE,
             afterCursor: this.pageInfo.endCursor,
           },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            return Object.assign({}, prev, {
-              applications: {
-                edges: [
-                  ...prev.applications.edges,
-                  ...fetchMoreResult.applications.edges,
-                ],
-                pageInfo: fetchMoreResult.applications.pageInfo,
-                totalCount: fetchMoreResult.applications.totalCount,
-              },
-            });
-          },
+          // updateQuery: (prev, { fetchMoreResult }) => {
+          //   if (!fetchMoreResult) {
+          //     return prev;
+          //   }
+          //   return Object.assign({}, prev, {
+          //     applications: {
+          //       edges: [
+          //         ...prev.applications.edges,
+          //         ...fetchMoreResult.applications.edges,
+          //       ],
+          //       pageInfo: fetchMoreResult.applications.pageInfo,
+          //       totalCount: fetchMoreResult.applications.totalCount,
+          //     },
+          //   });
+          // },
         });
       }
     }

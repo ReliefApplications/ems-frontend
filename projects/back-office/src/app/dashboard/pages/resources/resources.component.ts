@@ -131,21 +131,21 @@ export class ResourcesComponent implements OnInit {
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter,
         },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            resources: {
-              edges: [
-                ...prev.resources.edges,
-                ...fetchMoreResult.resources.edges,
-              ],
-              pageInfo: fetchMoreResult.resources.pageInfo,
-              totalCount: fetchMoreResult.resources.totalCount,
-            },
-          });
-        },
+        // updateQuery: (prev, { fetchMoreResult }) => {
+        //   if (!fetchMoreResult) {
+        //     return prev;
+        //   }
+        //   return Object.assign({}, prev, {
+        //     resources: {
+        //       edges: [
+        //         ...prev.resources.edges,
+        //         ...fetchMoreResult.resources.edges,
+        //       ],
+        //       pageInfo: fetchMoreResult.resources.pageInfo,
+        //       totalCount: fetchMoreResult.resources.totalCount,
+        //     },
+        //   });
+        // },
       });
     } else {
       this.resources.data = this.cachedResources.slice(
@@ -171,18 +171,18 @@ export class ResourcesComponent implements OnInit {
         first: this.pageInfo.pageSize,
         filter: this.filter,
       },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          resources: {
-            edges: fetchMoreResult.resources.edges,
-            pageInfo: fetchMoreResult.resources.pageInfo,
-            totalCount: fetchMoreResult.resources.totalCount,
-          },
-        });
-      },
+      // updateQuery: (prev, { fetchMoreResult }) => {
+      //   if (!fetchMoreResult) {
+      //     return prev;
+      //   }
+      //   return Object.assign({}, prev, {
+      //     resources: {
+      //       edges: fetchMoreResult.resources.edges,
+      //       pageInfo: fetchMoreResult.resources.pageInfo,
+      //       totalCount: fetchMoreResult.resources.totalCount,
+      //     },
+      //   });
+      // },
     });
   }
 
@@ -228,21 +228,21 @@ export class ResourcesComponent implements OnInit {
           sortField: this.sort?.direction && this.sort.active,
           sortOrder: this.sort?.direction,
         },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            resources: {
-              edges: [
-                ...prev.resources.edges,
-                ...fetchMoreResult.resources.edges,
-              ],
-              pageInfo: fetchMoreResult.resources.pageInfo,
-              totalCount: fetchMoreResult.resources.totalCount,
-            },
-          });
-        },
+        // updateQuery: (prev, { fetchMoreResult }) => {
+        //   if (!fetchMoreResult) {
+        //     return prev;
+        //   }
+        //   return Object.assign({}, prev, {
+        //     resources: {
+        //       edges: [
+        //         ...prev.resources.edges,
+        //         ...fetchMoreResult.resources.edges,
+        //       ],
+        //       pageInfo: fetchMoreResult.resources.pageInfo,
+        //       totalCount: fetchMoreResult.resources.totalCount,
+        //     },
+        //   });
+        // },
       });
     }
   }

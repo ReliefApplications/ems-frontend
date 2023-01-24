@@ -260,25 +260,25 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
             ...this.dataQuery.variables,
             skip: this.cards.length,
           },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              this.loading = false;
-              return prev;
-            }
-            for (const field in fetchMoreResult) {
-              if (
-                Object.prototype.hasOwnProperty.call(fetchMoreResult, field)
-              ) {
-                this.loading = false;
-                return Object.assign({}, prev, {
-                  [field]: {
-                    edges: fetchMoreResult[field].edges,
-                    totalCount: fetchMoreResult[field].totalCount,
-                  },
-                });
-              }
-            }
-          },
+          // updateQuery: (prev, { fetchMoreResult }) => {
+          //   if (!fetchMoreResult) {
+          //     this.loading = false;
+          //     return prev;
+          //   }
+          //   for (const field in fetchMoreResult) {
+          //     if (
+          //       Object.prototype.hasOwnProperty.call(fetchMoreResult, field)
+          //     ) {
+          //       this.loading = false;
+          //       return Object.assign({}, prev, {
+          //         [field]: {
+          //           edges: fetchMoreResult[field].edges,
+          //           totalCount: fetchMoreResult[field].totalCount,
+          //         },
+          //       });
+          //     }
+          //   }
+          // },
         });
       }
     }

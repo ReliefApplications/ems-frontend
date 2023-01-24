@@ -171,31 +171,31 @@ export class SafeRecordDropdownComponent
             afterCursor: this.pageInfo.endCursor,
             filter: this.filter,
           },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            if (this.selectedRecord) {
-              if (
-                fetchMoreResult.resource.records.edges.find(
-                  (x) => x.node.id === this.selectedRecord?.id
-                )
-              ) {
-                this.selectedRecord = null;
-              }
-            }
-            return Object.assign({}, prev, {
-              resource: {
-                records: {
-                  edges: [
-                    ...prev.resource.records.edges,
-                    ...fetchMoreResult.resource.records.edges,
-                  ],
-                  pageInfo: fetchMoreResult.resource.records.pageInfo,
-                },
-              },
-            });
-          },
+          // updateQuery: (prev, { fetchMoreResult }) => {
+          //   if (!fetchMoreResult) {
+          //     return prev;
+          //   }
+          //   if (this.selectedRecord) {
+          //     if (
+          //       fetchMoreResult.resource.records.edges.find(
+          //         (x) => x.node.id === this.selectedRecord?.id
+          //       )
+          //     ) {
+          //       this.selectedRecord = null;
+          //     }
+          //   }
+          //   return Object.assign({}, prev, {
+          //     resource: {
+          //       records: {
+          //         edges: [
+          //           ...prev.resource.records.edges,
+          //           ...fetchMoreResult.resource.records.edges,
+          //         ],
+          //         pageInfo: fetchMoreResult.resource.records.pageInfo,
+          //       },
+          //     },
+          //   });
+          // },
         });
       }
     }

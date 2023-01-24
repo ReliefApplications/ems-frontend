@@ -1170,24 +1170,24 @@ export class SafeCoreGridComponent
         sortOrder: this.sortOrder,
         styles: this.style,
       },
-      updateQuery: (prev: any, { fetchMoreResult }: any) => {
-        // this.loading = false;
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        for (const field in fetchMoreResult) {
-          if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
-            this.loading = false;
-            return Object.assign({}, prev, {
-              [field]: {
-                edges: fetchMoreResult[field].edges,
-                totalCount: fetchMoreResult[field].totalCount,
-              },
-            });
-          }
-        }
-        return prev;
-      },
+      // updateQuery: (prev: any, { fetchMoreResult }: any) => {
+      //   // this.loading = false;
+      //   if (!fetchMoreResult) {
+      //     return prev;
+      //   }
+      //   for (const field in fetchMoreResult) {
+      //     if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
+      //       this.loading = false;
+      //       return Object.assign({}, prev, {
+      //         [field]: {
+      //           edges: fetchMoreResult[field].edges,
+      //           totalCount: fetchMoreResult[field].totalCount,
+      //         },
+      //       });
+      //     }
+      //   }
+      //   return prev;
+      // },
     });
   }
 

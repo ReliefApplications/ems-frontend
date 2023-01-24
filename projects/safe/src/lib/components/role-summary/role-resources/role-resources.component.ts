@@ -222,21 +222,21 @@ export class RoleResourcesComponent
           first: this.pageInfo.pageSize,
           afterCursor: this.pageInfo.endCursor,
         },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            resources: {
-              edges: [
-                ...prev.resources.edges,
-                ...fetchMoreResult.resources.edges,
-              ],
-              pageInfo: fetchMoreResult.resources.pageInfo,
-              totalCount: fetchMoreResult.resources.totalCount,
-            },
-          });
-        },
+        // updateQuery: (prev, { fetchMoreResult }) => {
+        //   if (!fetchMoreResult) {
+        //     return prev;
+        //   }
+        //   return Object.assign({}, prev, {
+        //     resources: {
+        //       edges: [
+        //         ...prev.resources.edges,
+        //         ...fetchMoreResult.resources.edges,
+        //       ],
+        //       pageInfo: fetchMoreResult.resources.pageInfo,
+        //       totalCount: fetchMoreResult.resources.totalCount,
+        //     },
+        //   });
+        // },
       });
     }
   }
@@ -284,18 +284,18 @@ export class RoleResourcesComponent
         first: this.pageInfo.pageSize,
         filter: this.filter,
       },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          resources: {
-            edges: fetchMoreResult.resources.edges,
-            pageInfo: fetchMoreResult.resources.pageInfo,
-            totalCount: fetchMoreResult.resources.totalCount,
-          },
-        });
-      },
+      // updateQuery: (prev, { fetchMoreResult }) => {
+      //   if (!fetchMoreResult) {
+      //     return prev;
+      //   }
+      //   return Object.assign({}, prev, {
+      //     resources: {
+      //       edges: fetchMoreResult.resources.edges,
+      //       pageInfo: fetchMoreResult.resources.pageInfo,
+      //       totalCount: fetchMoreResult.resources.totalCount,
+      //     },
+      //   });
+      // },
     });
   }
 

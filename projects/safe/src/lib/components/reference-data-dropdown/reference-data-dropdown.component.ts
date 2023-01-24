@@ -152,30 +152,30 @@ export class SafeReferenceDataDropdownComponent
             first: ITEMS_PER_PAGE,
             afterCursor: this.pageInfo.endCursor,
           },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            if (this.selectedReferenceData) {
-              if (
-                fetchMoreResult.referenceDatas.edges.find(
-                  (x) => x.node.id === this.selectedReferenceData?.id
-                )
-              ) {
-                this.selectedReferenceData = null;
-              }
-            }
-            return Object.assign({}, prev, {
-              referenceDatas: {
-                edges: [
-                  ...prev.referenceDatas.edges,
-                  ...fetchMoreResult.referenceDatas.edges,
-                ],
-                pageInfo: fetchMoreResult.referenceDatas.pageInfo,
-                totalCount: fetchMoreResult.referenceDatas.totalCount,
-              },
-            });
-          },
+          // updateQuery: (prev, { fetchMoreResult }) => {
+          //   if (!fetchMoreResult) {
+          //     return prev;
+          //   }
+          //   if (this.selectedReferenceData) {
+          //     if (
+          //       fetchMoreResult.referenceDatas.edges.find(
+          //         (x) => x.node.id === this.selectedReferenceData?.id
+          //       )
+          //     ) {
+          //       this.selectedReferenceData = null;
+          //     }
+          //   }
+          //   return Object.assign({}, prev, {
+          //     referenceDatas: {
+          //       edges: [
+          //         ...prev.referenceDatas.edges,
+          //         ...fetchMoreResult.referenceDatas.edges,
+          //       ],
+          //       pageInfo: fetchMoreResult.referenceDatas.pageInfo,
+          //       totalCount: fetchMoreResult.referenceDatas.totalCount,
+          //     },
+          //   });
+          // },
         });
       }
     }

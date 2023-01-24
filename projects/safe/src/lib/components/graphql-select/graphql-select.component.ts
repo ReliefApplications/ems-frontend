@@ -413,29 +413,29 @@ export class SafeGraphQLSelectComponent
             first: ITEMS_PER_RELOAD,
             afterCursor: this.pageInfo.endCursor,
           },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              this.loading = false;
-              return prev;
-            }
-            const prevCpy = cloneDeep(prev);
-            const path = this.path
-              ? `${this.queryName}.${this.path}`
-              : this.queryName;
-            set(prevCpy, path, {
-              edges: [
-                ...(get(prev, path).edges
-                  ? get(prev, path).edges
-                  : get(prev, path)),
-                ...(get(fetchMoreResult, path).edges
-                  ? get(fetchMoreResult, path).edges
-                  : get(fetchMoreResult, path)),
-              ],
-              pageInfo: get(fetchMoreResult, path).pageInfo,
-              totalCount: get(fetchMoreResult, path).totalCount,
-            });
-            return prevCpy;
-          },
+          // updateQuery: (prev, { fetchMoreResult }) => {
+          //   if (!fetchMoreResult) {
+          //     this.loading = false;
+          //     return prev;
+          //   }
+          //   const prevCpy = cloneDeep(prev);
+          //   const path = this.path
+          //     ? `${this.queryName}.${this.path}`
+          //     : this.queryName;
+          //   set(prevCpy, path, {
+          //     edges: [
+          //       ...(get(prev, path).edges
+          //         ? get(prev, path).edges
+          //         : get(prev, path)),
+          //       ...(get(fetchMoreResult, path).edges
+          //         ? get(fetchMoreResult, path).edges
+          //         : get(fetchMoreResult, path)),
+          //     ],
+          //     pageInfo: get(fetchMoreResult, path).pageInfo,
+          //     totalCount: get(fetchMoreResult, path).totalCount,
+          //   });
+          //   return prevCpy;
+          // },
         });
       }
     }

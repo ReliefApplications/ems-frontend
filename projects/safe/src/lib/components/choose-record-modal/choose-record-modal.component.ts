@@ -220,30 +220,30 @@ export class SafeChooseRecordModalComponent
                 : null,
             sortOrder: this.settings.query?.sort?.order || '',
           },
-          updateQuery: (prev: any, { fetchMoreResult }: any) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            for (const field in fetchMoreResult) {
-              if (
-                Object.prototype.hasOwnProperty.call(fetchMoreResult, field)
-              ) {
-                return Object.assign({}, prev, {
-                  [field]: {
-                    edges: [
-                      ...prev[field].edges,
-                      ...fetchMoreResult[field].edges,
-                    ],
-                    pageInfo: fetchMoreResult[field].pageInfo,
-                    totalCount: fetchMoreResult[field].totalCount,
-                  },
-                });
-              } else {
-                return prev;
-              }
-            }
-            return prev;
-          },
+          // updateQuery: (prev: any, { fetchMoreResult }: any) => {
+          //   if (!fetchMoreResult) {
+          //     return prev;
+          //   }
+          //   for (const field in fetchMoreResult) {
+          //     if (
+          //       Object.prototype.hasOwnProperty.call(fetchMoreResult, field)
+          //     ) {
+          //       return Object.assign({}, prev, {
+          //         [field]: {
+          //           edges: [
+          //             ...prev[field].edges,
+          //             ...fetchMoreResult[field].edges,
+          //           ],
+          //           pageInfo: fetchMoreResult[field].pageInfo,
+          //           totalCount: fetchMoreResult[field].totalCount,
+          //         },
+          //       });
+          //     } else {
+          //       return prev;
+          //     }
+          //   }
+          //   return prev;
+          // },
         });
       }
     }

@@ -278,18 +278,18 @@ export class SafeAggregationGridComponent
         first: this.pageSize,
         skip: this.skip,
       },
-      updateQuery: (prev: any, { fetchMoreResult }: any) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        this.loading = false;
-        return Object.assign({}, prev, {
-          recordsAggregation: {
-            items: fetchMoreResult.recordsAggregation.items,
-            totalCount: fetchMoreResult.recordsAggregation.totalCount,
-          },
-        });
-      },
+      // updateQuery: (prev: any, { fetchMoreResult }: any) => {
+      //   if (!fetchMoreResult) {
+      //     return prev;
+      //   }
+      //   this.loading = false;
+      //   return Object.assign({}, prev, {
+      //     recordsAggregation: {
+      //       items: fetchMoreResult.recordsAggregation.items,
+      //       totalCount: fetchMoreResult.recordsAggregation.totalCount,
+      //     },
+      //   });
+      // },
     });
   }
 }

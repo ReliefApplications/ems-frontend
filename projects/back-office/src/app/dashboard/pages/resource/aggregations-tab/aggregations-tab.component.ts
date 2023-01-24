@@ -137,27 +137,27 @@ export class AggregationsTabComponent implements OnInit {
         first: this.pageInfo.pageSize,
         afterCursor: this.pageInfo.endCursor,
       },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (
-          !fetchMoreResult?.resource.aggregations ||
-          !prev.resource?.aggregations
-        ) {
-          return prev;
-        }
-        return {
-          resource: {
-            ...fetchMoreResult.resource,
-            aggregations: {
-              edges: [
-                ...prev.resource.aggregations.edges,
-                ...fetchMoreResult.resource.aggregations.edges,
-              ],
-              pageInfo: fetchMoreResult.resource.aggregations.pageInfo,
-              totalCount: fetchMoreResult.resource.aggregations.totalCount,
-            },
-          },
-        };
-      },
+      // updateQuery: (prev, { fetchMoreResult }) => {
+      //   if (
+      //     !fetchMoreResult?.resource.aggregations ||
+      //     !prev.resource?.aggregations
+      //   ) {
+      //     return prev;
+      //   }
+      //   return {
+      //     resource: {
+      //       ...fetchMoreResult.resource,
+      //       aggregations: {
+      //         edges: [
+      //           ...prev.resource.aggregations.edges,
+      //           ...fetchMoreResult.resource.aggregations.edges,
+      //         ],
+      //         pageInfo: fetchMoreResult.resource.aggregations.pageInfo,
+      //         totalCount: fetchMoreResult.resource.aggregations.totalCount,
+      //       },
+      //     },
+      //   };
+      // },
     });
   }
 

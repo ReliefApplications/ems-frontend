@@ -152,21 +152,21 @@ export class SafeNotificationService {
         first: ITEMS_PER_PAGE,
         afterCursor: this.pageInfo.endCursor,
       },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          notifications: {
-            edges: [
-              ...prev.notifications.edges,
-              ...fetchMoreResult.notifications.edges,
-            ],
-            pageInfo: fetchMoreResult.notifications.pageInfo,
-            totalCount: fetchMoreResult.notifications.totalCount,
-          },
-        });
-      },
+      // updateQuery: (prev, { fetchMoreResult }) => {
+      //   if (!fetchMoreResult) {
+      //     return prev;
+      //   }
+      //   return Object.assign({}, prev, {
+      //     notifications: {
+      //       edges: [
+      //         ...prev.notifications.edges,
+      //         ...fetchMoreResult.notifications.edges,
+      //       ],
+      //       pageInfo: fetchMoreResult.notifications.pageInfo,
+      //       totalCount: fetchMoreResult.notifications.totalCount,
+      //     },
+      //   });
+      // },
     });
   }
 }

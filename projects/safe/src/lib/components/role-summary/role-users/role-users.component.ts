@@ -118,23 +118,23 @@ export class RoleUsersComponent
         first: this.pageInfo.pageSize,
         afterCursor: this.pageInfo.endCursor,
       },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          role: {
-            users: {
-              edges: [
-                ...prev.role.users.edges,
-                ...fetchMoreResult.role.users.edges,
-              ],
-              pageInfo: fetchMoreResult.role.users.pageInfo,
-              totalCount: fetchMoreResult.role.users.totalCount,
-            },
-          },
-        });
-      },
+      // updateQuery: (prev, { fetchMoreResult }) => {
+      //   if (!fetchMoreResult) {
+      //     return prev;
+      //   }
+      //   return Object.assign({}, prev, {
+      //     role: {
+      //       users: {
+      //         edges: [
+      //           ...prev.role.users.edges,
+      //           ...fetchMoreResult.role.users.edges,
+      //         ],
+      //         pageInfo: fetchMoreResult.role.users.pageInfo,
+      //         totalCount: fetchMoreResult.role.users.totalCount,
+      //       },
+      //     },
+      //   });
+      // },
     });
   }
 }
