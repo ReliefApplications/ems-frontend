@@ -6,7 +6,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatTabsModule } from '@angular/material/tabs';
 import { MatRadioModule } from '@angular/material/radio';
 import { SafeCardModalComponent } from './card-modal.component';
 import { SafeDataSourceTabModule } from './data-source-tab/data-source.module';
@@ -15,6 +14,7 @@ import { SafeDisplayTabModule } from './display-tab/display.module';
 import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
 import { SafePreviewTabModule } from './preview-tab/preview.module';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
+import { SafeTabSettingsOptionsModule } from '../../../ui/tab-settings-options/tab-settings-options.module';
 
 /** Card Modal Module */
 @NgModule({
@@ -28,7 +28,7 @@ import { SafeModalModule } from '../../../ui/modal/modal.module';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatTabsModule,
+    SafeTabSettingsOptionsModule,
     MatRadioModule,
     SafeDataSourceTabModule,
     SafeValueSelectorTabModule,

@@ -2,17 +2,8 @@
   <h1 mat-dialog-title>{{ 'components.preferences.title' | translate }}</h1>
   <mat-dialog-content>
     <form [formGroup]="preferencesForm">
-      <mat-tab-group vertical animationDuration="0ms">
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <safe-icon
-              icon="language"
-              [size]="18"
-              matTooltip="{{ 'components.preferences.language' | translate }}"
-              matTooltipPosition="right"
-            ></safe-icon>
-            <span>{{ 'components.preferences.language' | translate }}</span>
-          </ng-template>
+      <safe-tab-settings-options [tabOptionsConfig]="tabSettingsConfig">
+        <ng-container ngProjectAs="[selectedTabTemplate]">
           <div class="flex flex-col">
             <!-- LANGUAGE SELECTION -->
             <mat-form-field appearance="outline">
@@ -40,8 +31,8 @@
               </mat-select>
             </mat-form-field>
           </div>
-        </mat-tab>
-      </mat-tab-group>
+        </ng-container>
+      </safe-tab-settings-options>
     </form>
   </mat-dialog-content>
   <mat-dialog-actions align="end">

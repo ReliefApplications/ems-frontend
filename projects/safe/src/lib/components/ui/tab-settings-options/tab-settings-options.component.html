@@ -1,0 +1,29 @@
+<mat-drawer-container class="h-full w-full flex">
+  <mat-drawer class="h-full mb-3 border-none" mode="side" opened>
+    <div
+      *ngFor="let option of tabOptionsConfig"
+      role="button"
+      option
+      [ngClass]="{
+        'active-status': selectedTab === option.tab,
+        'disable-status': option.disabled
+      }"
+      class="flex items-center font-medium h-12 gap-1.5 px-6 w-full"
+      (click)="handleTabChange(option)"
+    >
+      <safe-icon
+        icon="{{ option.icon }}"
+        [size]="option.iconSize"
+        matTooltip="{{ option.translation | translate }}"
+        [matTooltipPosition]="option.tooltipPosition"
+      ></safe-icon>
+      <span>{{ option.translation | translate }}</span>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content
+    [@tabContentDisplay]="triggerAnimation"
+    class="flex-1 pl-8"
+  >
+    <ng-content select="[selectedTabTemplate]"></ng-content>
+  </mat-drawer-content>
+</mat-drawer-container>

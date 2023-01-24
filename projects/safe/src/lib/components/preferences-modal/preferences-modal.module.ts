@@ -4,8 +4,8 @@ import { SafePreferencesModalComponent } from './preferences-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTabsModule } from '@angular/material/tabs';
 import { SafeModalModule } from '../ui/modal/modal.module';
+import { SafeTabSettingsOptionsModule } from '../ui/tab-settings-options/tab-settings-options.module';
 
 /**
  * SafePreferencesModalModule is a class used to manage all the modules and components
@@ -19,7 +19,7 @@ import { SafeModalModule } from '../ui/modal/modal.module';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatTabsModule,
+    SafeTabSettingsOptionsModule,
     SafeModalModule,
   ],
   exports: [SafePreferencesModalComponent],

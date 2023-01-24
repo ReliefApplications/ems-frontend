@@ -23,11 +23,12 @@ import { Overlay } from '@angular/cdk/overlay';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { scrollFactory } from '../../../utils/scroll-factory';
 import { Resource } from '../../../models/resource.model';
-import { MatTabChangeEvent } from '@angular/material/tabs';
 import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { GridSettingsTabTypes } from './enums/tab-types';
+import { TabSettingsOptionConfig } from '../../ui/tab-settings-options/tab-settings-options.interface';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -70,9 +71,39 @@ export class SafeGridSettingsComponent
   private allQueries: any[] = [];
   public filteredQueries: any[] = [];
   public resource: Resource | null = null;
+  /**Config object to load the tabs in grid settings modal */
+  public tabSettingsConfig: TabSettingsOptionConfig<GridSettingsTabTypes>[] = [
+    {
+      tab: GridSettingsTabTypes.MAIN,
+      icon: 'preview',
+      iconSize: 24,
+      translation: 'common.general',
+      tooltipPosition: 'right',
+      disabled: false,
+    },
+    {
+      tab: GridSettingsTabTypes.ACTIONS,
+      icon: 'toggle_on',
+      iconSize: 24,
+      translation: 'components.widget.settings.grid.actions.title',
+      tooltipPosition: 'right',
+      disabled: true,
+    },
+    {
+      tab: GridSettingsTabTypes.BUTTONS,
+      icon: 'preview',
+      iconSize: 24,
+      translation: 'common.preview',
+      tooltipPosition: 'right',
+      disabled: false,
+    },
+  ];
 
   /** Stores the selected tab */
-  public selectedTab = 0;
+  public selectedTab!: GridSettingsTabTypes;
+  /** Grid tab types to use in the components html template */
+  public gridSettingsTabTypes = GridSettingsTabTypes;
+
   /** @returns application templates */
   get appTemplates(): any[] {
     return this.applicationService.templates || [];
@@ -224,6 +255,7 @@ export class SafeGridSettingsComponent
 
   ngAfterViewInit(): void {
     if (this.formGroup) {
+      this.updateGridSettingsTabsAvailability();
       this.formGroup.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe(() => {
@@ -318,7 +350,21 @@ export class SafeGridSettingsComponent
    *
    * @param event Event triggered on tab switch
    */
-  handleTabChange(event: MatTabChangeEvent): void {
-    this.selectedTab = event.index;
+  handleTabChange(event: GridSettingsTabTypes): void {
+    this.selectedTab = event;
+  }
+
+  /**
+   *  Updates the availability of each needed tab of the grid settings
+   *
+   */
+  private updateGridSettingsTabsAvailability(): void {
+    this.tabSettingsConfig.forEach(
+      (config: TabSettingsOptionConfig<GridSettingsTabTypes>) => {
+        if (config.tab !== GridSettingsTabTypes.MAIN) {
+          config.disabled = this.formGroup.value.aggregations.length > 0;
+        }
+      }
+    );
   }
 }

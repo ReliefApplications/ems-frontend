@@ -13,7 +13,6 @@ import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module
 import { SafeChartModule } from '../chart/chart.module';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTabsModule } from '@angular/material/tabs';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
@@ -26,6 +25,7 @@ import { TabMainModule } from './tab-main/tab-main.module';
 import { TabDisplayModule } from './tab-display/tab-display.module';
 import { TabPreviewModule } from './tab-preview/tab-preview.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SafeTabSettingsOptionsModule } from '../../ui/tab-settings-options/tab-settings-options.module';
 
 /** Module for the chart settings component */
 @NgModule({
@@ -45,7 +45,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     SafeChartModule,
     MatExpansionModule,
     MatSlideToggleModule,
-    MatTabsModule,
+    SafeTabSettingsOptionsModule,
     SafeButtonModule,
     TranslateModule,
     SafeAggregationBuilderModule,

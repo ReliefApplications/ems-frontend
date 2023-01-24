@@ -1,55 +1,25 @@
-<mat-tab-group
-  class="grow"
-  vertical
-  animationDuration="0ms"
-  (selectedTabChange)="handleTabChange($event)"
+<safe-tab-settings-options
+  class="w-full"
+  (selectedTabEvent)="handleTabChange($event)"
+  [tabOptionsConfig]="tabSettingsConfig"
 >
-  <!-- Main Parameters -->
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <safe-icon
-        icon="settings"
-        [size]="24"
-        matTooltip="{{ 'common.general' | translate }}"
-        matTooltipPosition="right"
-      ></safe-icon>
-      <span>{{ 'common.general' | translate }}</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <safe-tab-main [formGroup]="formGroup" [type]="type"></safe-tab-main>
-    </ng-template>
-  </mat-tab>
-  <!-- Display options -->
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <safe-icon
-        icon="tune"
-        [size]="24"
-        matTooltip="{{ 'common.display' | translate }}"
-        matTooltipPosition="right"
-      ></safe-icon>
-      <span>{{ 'common.display' | translate }}</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <safe-tab-display
-        [formGroup]="formGroup"
-        [type]="type"
-      ></safe-tab-display>
-    </ng-template>
-  </mat-tab>
-  <!-- Preview -->
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <safe-icon
-        icon="preview"
-        [size]="24"
-        matTooltip="{{ 'common.preview' | translate }}"
-        matTooltipPosition="right"
-      ></safe-icon>
-      <span>{{ 'common.preview' | translate }}</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <safe-tab-preview [formGroup]="formGroup"></safe-tab-preview>
-    </ng-template>
-  </mat-tab>
-</mat-tab-group>
+  <ng-container ngProjectAs="[selectedTabTemplate]">
+    <div [ngSwitch]="selectedTab">
+      <!-- Display options -->
+      <ng-container *ngSwitchCase="chartSettingsTabTypes.DISPLAY">
+        <safe-tab-display
+          [formGroup]="formGroup"
+          [type]="type"
+        ></safe-tab-display>
+      </ng-container>
+      <!-- Preview -->
+      <ng-container *ngSwitchCase="chartSettingsTabTypes.PREVIEW">
+        <safe-tab-preview [formGroup]="formGroup"></safe-tab-preview>
+      </ng-container>
+      <!-- Main Parameters -->
+      <ng-container *ngSwitchDefault>
+        <safe-tab-main [formGroup]="formGroup" [type]="type"></safe-tab-main>
+      </ng-container>
+    </div>
+  </ng-container>
+</safe-tab-settings-options>

@@ -3,12 +3,13 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/chips';
-import { MatTabChangeEvent } from '@angular/material/tabs';
 import get from 'lodash/get';
 import { scrollFactory } from '../../../utils/scroll-factory';
 import { codesFactory } from '../../distribution-lists/components/edit-distribution-list-modal/edit-distribution-list-modal.component';
+import { TabSettingsOptionConfig } from '../../ui/tab-settings-options/tab-settings-options.interface';
 import { Chart } from './charts/chart';
 import { CHART_TYPES } from './constants';
+import { ChartSettingsTabTypes } from './enums/tab-types';
 
 /**
  * Chart settings component
@@ -42,6 +43,30 @@ export class SafeChartSettingsComponent implements OnInit {
   public types = CHART_TYPES;
   public chart?: Chart;
   public type: any;
+  /**Config object to load the tabs in chart settings modal */
+  public tabSettingsConfig: TabSettingsOptionConfig<ChartSettingsTabTypes>[] = [
+    {
+      tab: ChartSettingsTabTypes.MAIN,
+      icon: 'settings',
+      iconSize: 24,
+      translation: 'common.general',
+      tooltipPosition: 'right',
+    },
+    {
+      tab: ChartSettingsTabTypes.DISPLAY,
+      icon: 'tune',
+      iconSize: 24,
+      translation: 'common.display',
+      tooltipPosition: 'right',
+    },
+    {
+      tab: ChartSettingsTabTypes.PREVIEW,
+      icon: 'preview',
+      iconSize: 24,
+      translation: 'common.preview',
+      tooltipPosition: 'right',
+    },
+  ];
 
   // === DISPLAY PREVIEW ===
   public settings: any;
@@ -53,7 +78,9 @@ export class SafeChartSettingsComponent implements OnInit {
   }
 
   /** Stores the selected tab */
-  public selectedTab = 0;
+  public selectedTab!: ChartSettingsTabTypes;
+  /** Chart tab types to use in the components html template */
+  public chartSettingsTabTypes = ChartSettingsTabTypes;
 
   /**
    * Constructor for the chart settings component
@@ -96,11 +123,11 @@ export class SafeChartSettingsComponent implements OnInit {
   }
 
   /**
-   *  Handles the a tab change event
+   *  Handles the tab change event
    *
    * @param event Event triggered on tab switch
    */
-  handleTabChange(event: MatTabChangeEvent): void {
-    this.selectedTab = event.index;
+  handleTabChange(event: ChartSettingsTabTypes): void {
+    this.selectedTab = event;
   }
 }

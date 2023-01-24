@@ -4,6 +4,8 @@ import { FormGroup, FormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { debounceTime } from 'rxjs/operators';
 import { cloneDeep } from 'lodash';
+import { TabSettingsOptionConfig } from '../../ui/tab-settings-options/tab-settings-options.interface';
+import { MapSettingsTabTypes } from './enums/tab-types';
 
 /**
  * Filters an array of fields to only include fields that match the given paths.
@@ -94,6 +96,35 @@ export class SafeMapSettingsComponent implements OnInit {
 
   public selectedFields: (string | undefined)[] = [];
   public formattedSelectedFields: any[] = [];
+  /**Config object to load the tabs in map settings modal */
+  public tabSettingsConfig: TabSettingsOptionConfig<MapSettingsTabTypes>[] = [
+    {
+      tab: MapSettingsTabTypes.GENERAL,
+      icon: 'preview',
+      iconSize: 24,
+      translation: 'common.general',
+      tooltipPosition: 'right',
+    },
+    {
+      tab: MapSettingsTabTypes.LAYERS,
+      icon: 'layers',
+      iconSize: 24,
+      translation: 'common.layers',
+      tooltipPosition: 'right',
+    },
+    {
+      tab: MapSettingsTabTypes.PROPERTIES,
+      icon: 'map',
+      iconSize: 24,
+      translation: 'components.widget.settings.map.properties.title',
+      tooltipPosition: 'right',
+    },
+  ];
+
+  /** Stores the selected tab */
+  public selectedTab!: MapSettingsTabTypes;
+  /** Map tab types to use in the components html template */
+  public mapSettingsTabTypes = MapSettingsTabTypes;
 
   /**
    * Get marker rules as form array
@@ -226,4 +257,13 @@ export class SafeMapSettingsComponent implements OnInit {
   //       };
   //     });
   // }
+
+  /**
+   *  Handles the a tab change event
+   *
+   * @param event Event triggered on tab switch
+   */
+  handleTabChange(event: MapSettingsTabTypes): void {
+    this.selectedTab = event;
+  }
 }

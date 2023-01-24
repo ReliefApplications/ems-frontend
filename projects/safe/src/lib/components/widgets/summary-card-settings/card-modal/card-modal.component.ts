@@ -1,14 +1,6 @@
-import {
-  Component,
-  OnInit,
-  Inject,
-  ChangeDetectorRef,
-  ViewChild,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Apollo } from 'apollo-angular';
 import {
   GET_RESOURCE,
@@ -25,6 +17,8 @@ import { Aggregation } from '../../../../models/aggregation.model';
 import { Resource } from '../../../../models/resource.model';
 import get from 'lodash/get';
 import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
+import { SummaryCardSettingsTabTypes } from './enums/tab-types';
+import { TabSettingsOptionConfig } from '../../../ui/tab-settings-options/tab-settings-options.interface';
 
 /**
  * Card modal component.
@@ -35,14 +29,57 @@ import { SafeAggregationService } from '../../../../services/aggregation/aggrega
   templateUrl: './card-modal.component.html',
   styleUrls: ['./card-modal.component.scss'],
 })
-export class SafeCardModalComponent implements OnInit, AfterViewInit {
-  @ViewChild('tabGroup') tabGroup: any;
-
+export class SafeCardModalComponent implements OnInit {
   public form!: FormGroup;
   public fields: any[] = [];
 
-  // === CURRENT TAB ===
-  private activeTabIndex: number | undefined;
+  /**Config object to load the tabs in summary card settings modal */
+  public tabSettingsConfig: TabSettingsOptionConfig<SummaryCardSettingsTabTypes>[] =
+    [
+      {
+        tab: SummaryCardSettingsTabTypes.DATA_SOURCE,
+        icon: 'settings',
+        iconSize: 24,
+        translation:
+          'components.widget.settings.summaryCard.card.dataSource.title',
+        tooltipPosition: 'right',
+      },
+      {
+        tab: SummaryCardSettingsTabTypes.RECORD,
+        icon: 'list',
+        iconSize: 24,
+        translation:
+          'components.widget.settings.summaryCard.card.valueSelector.title',
+        tooltipPosition: 'right',
+      },
+      {
+        tab: SummaryCardSettingsTabTypes.SETTINGS,
+        icon: 'display_settings',
+        iconSize: 24,
+        translation: 'common.display',
+        tooltipPosition: 'right',
+      },
+      {
+        tab: SummaryCardSettingsTabTypes.EDITOR,
+        icon: 'article',
+        iconSize: 24,
+        translation:
+          'components.widget.settings.summaryCard.card.textEditor.title',
+        tooltipPosition: 'right',
+      },
+      {
+        tab: SummaryCardSettingsTabTypes.PREVIEW,
+        icon: 'preview',
+        iconSize: 24,
+        translation: 'common.preview',
+        tooltipPosition: 'right',
+      },
+    ];
+
+  /** Stores the selected tab */
+  public selectedTab!: SummaryCardSettingsTabTypes;
+  /** Summary card tab types to use in the components html template */
+  public summaryCardSettingsTabTypes = SummaryCardSettingsTabTypes;
 
   // === RECORD DATA ===
   public selectedRecord: any;
@@ -72,7 +109,6 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<SafeCardModalComponent>,
     public fb: FormBuilder,
-    private cdRef: ChangeDetectorRef,
     private apollo: Apollo,
     private aggregationService: SafeAggregationService
   ) {}
@@ -304,17 +340,17 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   isEditorTab(): boolean {
     return this.form.get('isDynamic')?.value ||
       this.form.get('isAggregation')?.value
-      ? this.activeTabIndex === 2
-      : this.activeTabIndex === 3;
+      ? this.selectedTab === SummaryCardSettingsTabTypes.PREVIEW
+      : this.selectedTab === SummaryCardSettingsTabTypes.RECORD;
   }
 
   /**
-   * Sets an internal variable with the current tab.
+   *  Handles the a tab change event
    *
-   * @param e Change tab event.
+   * @param event Event triggered on tab switch
    */
-  handleTabChange(e: MatTabChangeEvent) {
-    this.activeTabIndex = e.index;
+  handleTabChange(event: SummaryCardSettingsTabTypes): void {
+    this.selectedTab = event;
   }
 
   /**
@@ -334,13 +370,5 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   handleAggregationChange(aggregation: Aggregation | null) {
     this.selectedAggregation = aggregation;
     this.getCustomAggregation();
-  }
-
-  /**
-   * Initializes the active tab variable.
-   */
-  ngAfterViewInit() {
-    this.activeTabIndex = this.tabGroup.selectedIndex;
-    this.cdRef.detectChanges();
   }
 }

@@ -3,97 +3,55 @@
     {{ 'components.widget.settings.summaryCard.card.title' | translate }}
   </h1>
   <mat-dialog-content>
-    <form [formGroup]="form">
-      <mat-tab-group
-        vertical
-        animationDuration="0ms"
-        #tabGroup
-        (selectedTabChange)="handleTabChange($event)"
-        [selectedIndex]="0"
+    <form class="h-full" [formGroup]="form">
+      <safe-tab-settings-options
+        class="w-full"
+        (selectedTabEvent)="handleTabChange($event)"
+        [tabOptionsConfig]="tabSettingsConfig"
       >
-        <!-- Selection of data source -->
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <safe-icon icon="settings" [size]="24"></safe-icon>
-            <span>{{
-              'components.widget.settings.summaryCard.card.dataSource.title'
-                | translate
-            }}</span>
-          </ng-template>
-          <ng-template matTabContent>
-            <safe-data-source-tab
-              [form]="form"
-              [selectedResource]="selectedResource"
-              [selectedLayout]="selectedLayout"
-              [selectedAggregation]="selectedAggregation"
-              (layoutChange)="handleLayoutChange($event)"
-              (aggregationChange)="handleAggregationChange($event)"
-            ></safe-data-source-tab>
-          </ng-template>
-        </mat-tab>
-        <!-- Selection of record -->
-        <mat-tab
-          *ngIf="
-            !form.get('isDynamic')?.value && !form.get('isAggregation')?.value
-          "
-        >
-          <ng-template mat-tab-label>
-            <safe-icon icon="list" [size]="24"></safe-icon>
-            <span>{{
-              'components.widget.settings.summaryCard.card.valueSelector.title'
-                | translate
-            }}</span>
-          </ng-template>
-          <ng-template matTabContent>
-            <safe-value-selector-tab
-              [form]="form"
-              [settings]="selectedLayout"
-            ></safe-value-selector-tab>
-          </ng-template>
-        </mat-tab>
-        <!-- Card display settings -->
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <safe-icon icon="display_settings" [size]="24"></safe-icon>
-            <span>{{ 'common.display' | translate }}</span>
-          </ng-template>
-          <ng-template matTabContent>
-            <safe-display-tab [form]="form"></safe-display-tab>
-          </ng-template>
-        </mat-tab>
-        <!-- Card text editor -->
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <safe-icon icon="article" [size]="24"></safe-icon>
-            <span>{{
-              'components.widget.settings.summaryCard.card.textEditor.title'
-                | translate
-            }}</span>
-          </ng-template>
-          <ng-template matTabContent>
-            <safe-text-editor-tab
-              *ngIf="isEditorTab()"
-              [form]="form"
-              [fields]="fields"
-            ></safe-text-editor-tab>
-          </ng-template>
-        </mat-tab>
-        <!-- Preview of card -->
-        <mat-tab [label]="'common.preview' | translate">
-          <ng-template mat-tab-label>
-            <safe-icon icon="preview" [size]="24"></safe-icon>
-            <span>{{ 'common.preview' | translate }}</span>
-          </ng-template>
-          <ng-template matTabContent>
-            <safe-preview-tab
-              [form]="form"
-              [record]="selectedRecord"
-              [fields]="fields"
-              [layout]="form.value.isAggregation ? null : selectedLayout"
-            ></safe-preview-tab>
-          </ng-template>
-        </mat-tab>
-      </mat-tab-group>
+        <ng-container ngProjectAs="[selectedTabTemplate]">
+          <div [ngSwitch]="selectedTab">
+            <!-- Selection of record -->
+            <ng-container *ngSwitchCase="summaryCardSettingsTabTypes.RECORD">
+              <safe-value-selector-tab
+                [form]="form"
+                [settings]="selectedLayout"
+              ></safe-value-selector-tab>
+            </ng-container>
+            <!-- Card display settings -->
+            <ng-container *ngSwitchCase="summaryCardSettingsTabTypes.SETTINGS">
+              <safe-display-tab [form]="form"></safe-display-tab>
+            </ng-container>
+            <!-- Card text editor -->
+            <ng-container *ngSwitchCase="summaryCardSettingsTabTypes.EDITOR">
+              <safe-text-editor-tab
+                [form]="form"
+                [fields]="fields"
+              ></safe-text-editor-tab>
+            </ng-container>
+            <!-- Preview of card -->
+            <ng-container *ngSwitchCase="summaryCardSettingsTabTypes.PREVIEW">
+              <safe-preview-tab
+                [form]="form"
+                [record]="selectedRecord"
+                [fields]="fields"
+                [layout]="form.value.isAggregation ? null : selectedLayout"
+              ></safe-preview-tab>
+            </ng-container>
+            <!-- Selection of data source -->
+            <ng-container *ngSwitchDefault>
+              <safe-data-source-tab
+                [form]="form"
+                [selectedResource]="selectedResource"
+                [selectedLayout]="selectedLayout"
+                [selectedAggregation]="selectedAggregation"
+                (layoutChange)="handleLayoutChange($event)"
+                (aggregationChange)="handleAggregationChange($event)"
+              ></safe-data-source-tab>
+            </ng-container>
+          </div>
+        </ng-container>
+      </safe-tab-settings-options>
     </form>
   </mat-dialog-content>
   <!-- Modal actions ( close / save ) -->

@@ -5,6 +5,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { getLanguageNativeName } from '../../utils/languages';
+import { TabSettingsOptionConfig } from '../ui/tab-settings-options/tab-settings-options.interface';
+import { PreferencesModalTabTypes } from './enums/tab-types';
 
 /** Preferences Dialog Data */
 interface PreferencesDialogData {
@@ -28,6 +30,17 @@ export class SafePreferencesModalComponent implements OnInit {
   currLang: string;
   dateFormats: { name: string | null; value: string }[] = [];
   currDateFormat: string;
+  /**Config object to load the tabs in preferences modal */
+  public tabSettingsConfig: TabSettingsOptionConfig<PreferencesModalTabTypes>[] =
+    [
+      {
+        tab: PreferencesModalTabTypes.LANGUAGE,
+        icon: 'language',
+        iconSize: 18,
+        translation: 'components.preferences.language',
+        tooltipPosition: 'right',
+      },
+    ];
 
   /**
    * Preferences Modal constructor
