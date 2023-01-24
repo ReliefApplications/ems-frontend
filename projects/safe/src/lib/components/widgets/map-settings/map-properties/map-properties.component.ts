@@ -103,9 +103,6 @@ export class MapPropertiesComponent
    */
   ngAfterViewInit(): void {
     this.map = this.previewMap.map;
-    this.map.on('zoomend', () => {
-      this.form.get('zoom')?.setValue(this.map.getZoom(), { emitEvent: false });
-    });
   }
 
   /**
@@ -115,5 +112,6 @@ export class MapPropertiesComponent
     const center = this.map.getCenter();
     this.form.get('centerLat')?.setValue(center.lat, { emitEvent: false });
     this.form.get('centerLong')?.setValue(center.lng, { emitEvent: false });
+    this.form.get('zoom')?.setValue(this.map.getZoom(), { emitEvent: false });
   }
 }

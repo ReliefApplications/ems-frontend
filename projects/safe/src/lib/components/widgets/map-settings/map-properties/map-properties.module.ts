@@ -11,6 +11,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { SafeMapModule } from '../../map/map.module';
 import { SafeButtonModule } from '../../../ui/button/button.module';
+import { SafeDividerModule } from '../../../ui/divider/divider.module';
 
 /**
  * Module of Map Properties of Map Widget.
@@ -30,6 +31,7 @@ import { SafeButtonModule } from '../../../ui/button/button.module';
     SafeIconModule,
     SafeMapModule,
     SafeButtonModule,
+    SafeDividerModule,
   ],
   exports: [MapPropertiesComponent],
 })
