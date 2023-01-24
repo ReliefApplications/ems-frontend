@@ -416,16 +416,11 @@ export class SafeMapComponent
       }
     } else if (layerTree.options) {
       if (init && layerTree.options.style) {
-        // eslint-disable-next-line no-underscore-dangle
-        for (const layer in layerTree.layer._layers) {
-          // eslint-disable-next-line no-underscore-dangle
-          if (layerTree.layer._layers[layer].options) {
-            // eslint-disable-next-line no-underscore-dangle
-            layerTree.layer._layers[layer].options.opacity =
-              layerTree.options.style.opacity;
-            // eslint-disable-next-line no-underscore-dangle
-            layerTree.layer._layers[layer].options.fillOpacity =
-              layerTree.options.style.opacity;
+        const layers = get(layerTree, 'layer._layers', {});
+        for (const layer in layers) {
+          if (layers[layer].options) {
+            layers[layer].options.opacity = layerTree.options.style.opacity;
+            layers[layer].options.fillOpacity = layerTree.options.style.opacity;
           }
         }
         this.map.removeLayer(layerTree.layer);

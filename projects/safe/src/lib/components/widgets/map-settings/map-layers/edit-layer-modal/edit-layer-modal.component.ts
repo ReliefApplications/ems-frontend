@@ -157,14 +157,11 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
     );
 
     this.form.controls.opacity.valueChanges.subscribe((value: number) => {
-      // eslint-disable-next-line no-underscore-dangle
-      for (const layer in this.currentLayer._layers) {
-        // eslint-disable-next-line no-underscore-dangle
-        if (this.currentLayer._layers[layer].options) {
-          // eslint-disable-next-line no-underscore-dangle
-          this.currentLayer._layers[layer].options.opacity = value;
-          // eslint-disable-next-line no-underscore-dangle
-          this.currentLayer._layers[layer].options.fillOpacity = value;
+      const layers = get(this.currentLayer, '_layers', []);
+      for (const layer in layers) {
+        if (layers[layer].options) {
+          layers[layer].options.opacity = value;
+          layers[layer].options.fillOpacity = value;
         }
       }
       this.map.removeLayer(this.currentLayer);

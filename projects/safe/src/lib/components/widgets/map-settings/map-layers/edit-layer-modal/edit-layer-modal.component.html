@@ -1,4 +1,4 @@
-<safe-modal size="medium">
+<safe-modal size="medium" [closable]="true">
   <div class="flex flex-row space-x-4">
     <!-- Map section -->
     <div [id]="mapId" class="w-4/5 group flex-1">
@@ -36,6 +36,7 @@
           <label>Current zoom: {{currentZoom}}</label>
         </div>
       </form>
+      <!-- Dialog actions ( cancel / close ) -->
       <div mat-dialog-actions align="end">
         <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
         <safe-button
