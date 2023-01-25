@@ -145,6 +145,8 @@ export const createLayerForm = (value?: MapLayerI): FormGroup =>
     name: [get(value, 'name', null), [Validators.required]],
     type: [get(value, 'type', 'layer')],
     layers: [get(value, 'layers', null)],
+    show: [get(value, 'show', false)],
+    id: [get(value, 'id', null)],
   });
 
 // === MAP ===

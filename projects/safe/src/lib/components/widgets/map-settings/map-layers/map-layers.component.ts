@@ -1,4 +1,4 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -13,6 +13,8 @@ export interface MapLayerI {
   name: string;
   type: string;
   layers: FormArray;
+  show: boolean;
+  id: string;
 }
 
 /**
@@ -34,9 +36,15 @@ export class MapLayersComponent
     return this.form.get('layers') as FormArray;
   }
 
+  get ids() {
+    return this.tablesId;
+  }
+
   // Table
   public mapLayers: MatTableDataSource<MapLayerI> = new MatTableDataSource();
+  public mapId: string;
   public displayedColumns = ['name', 'actions'];
+  public tablesId: string[] = [];
 
   /**
    * Layers configuration component of Map Widget.
@@ -45,6 +53,7 @@ export class MapLayersComponent
    */
   constructor(private dialog: MatDialog) {
     super();
+    this.mapId = this.generateUniqueId();
   }
 
   ngOnInit(): void {
@@ -55,6 +64,37 @@ export class MapLayersComponent
       .subscribe((value) => {
         this.mapLayers.data = value;
       });
+    this.tablesId = [this.mapId];
+    this.getTablesId(this.layers);
+  }
+
+  /**
+   * Generation of an unique id for the map (in case multiple widgets use map).
+   *
+   * @param parts Number of parts in the id (separated by dashes "-")
+   * @returns A random unique id
+   */
+  private generateUniqueId(parts: number = 4): string {
+    const stringArr: string[] = [];
+    for (let i = 0; i < parts; i++) {
+      // eslint-disable-next-line no-bitwise
+      const S4 = (((1 + Math.random()) * 0x10000) | 0)
+        .toString(16)
+        .substring(1);
+      stringArr.push(S4);
+    }
+    return stringArr.join('-');
+  }
+
+  private getTablesId(layers: FormArray): void {
+    for (const layer of layers.value) {
+      if (layer.type === 'group') {
+        if (layer.show) {
+          this.tablesId.push(layer.id);
+        }
+        this.getTablesId(layer.layers);
+      }
+    }
   }
 
   /**
@@ -83,6 +123,8 @@ export class MapLayersComponent
   public onDeleteLayer(deep: string, index: number) {
     const deepLayer = this.getLayersAtDeep(deep);
     deepLayer.removeAt(index);
+    this.tablesId = [this.mapId];
+    this.getTablesId(this.layers);
   }
 
   /** Opens a modal to add a new layer */
@@ -124,14 +166,17 @@ export class MapLayersComponent
   public onCreateGroup(deep: string, index: number) {
     const deepLayer = this.getLayersAtDeep(deep);
     const layer = deepLayer.at(index);
-    deepLayer.removeAt(index);
+    const id = this.generateUniqueId();
     const newGroup = {
       name: 'layer group', // TODO add translation.
       type: 'group',
       layers: new FormArray([layer]),
+      show: true,
+      id: id,
     };
+    this.tablesId.push(id);
+    deepLayer.removeAt(index);
     deepLayer.insert(index, createLayerForm(newGroup));
-    console.log(this.layers);
   }
 
   /**
@@ -141,13 +186,24 @@ export class MapLayersComponent
    * @param index Index of the layer to group
    */
   public onUngroup(deep: string, index: number) {
-    console.log('index group', index);
     const deepLayer = this.getLayersAtDeep(deep);
-    const layerGroup: FormArray = this.layers.at(index).get('layers')?.value;
-    deepLayer.removeAt(index);
+    const layerGroup: FormArray = deepLayer.at(index).get('layers')?.value;
     for (let i = 0; i < layerGroup.length; i++) {
-      deepLayer.insert(index + i, layerGroup.at(i));
+      deepLayer.insert(index + i + 1, layerGroup.at(i));
     }
+    deepLayer.removeAt(index);
+    this.tablesId = [this.mapId];
+    this.getTablesId(this.layers);
+  }
+
+  onToggleGroupLayer(element: MapLayerI) {
+    if (element.show) {
+      const index = this.tablesId.findIndex((x) => x === element.id);
+      this.tablesId.splice(index, 1);
+    } else {
+      this.tablesId.push(element.id);
+    }
+    element.show = !element.show;
   }
 
   /**
@@ -156,8 +212,51 @@ export class MapLayersComponent
    * @param e Event emitted when a layer is reordered
    */
   public onListDrop(e: CdkDragDrop<MapLayerI[]>) {
-    const movedElement = this.layers.at(e.previousIndex);
-    this.layers.removeAt(e.previousIndex);
-    this.layers.insert(e.currentIndex, movedElement);
+    console.log('table id', this.tablesId);
+    // Search and get container and previousContainer
+    console.log(e.container.id, e.previousContainer.id)
+    let previousContainer: FormArray | null;
+    if (e.previousContainer.id === this.mapId) {
+      previousContainer = this.layers;
+    } else {
+      previousContainer = this.findGroupFromId(this.layers, e.previousContainer.id);
+    }
+
+    const valueToChange = previousContainer?.at(e.previousIndex);
+
+    let container: FormArray | null;
+    if (e.previousContainer.id === e.container.id) {
+      container = previousContainer;
+    } else {
+      if (e.container.id === this.mapId) {
+        container = this.layers;
+      } else {
+        container = this.findGroupFromId(this.layers, e.container.id, valueToChange?.value.id);
+      }
+    }
+
+    // container can be null if it is equal to valueToChange.id or if it is a subgroup of valueToChange.
+    if (!container || !previousContainer || !valueToChange) {
+      return;
+    }
+
+    previousContainer.removeAt(e.previousIndex);
+    container.insert(e.currentIndex, valueToChange);
+  }
+
+  private findGroupFromId(layers: FormArray, id: string, parentId?: string): FormArray | null{
+    for (const layer of layers.value) {
+      if (layer.type === 'group'&& parentId !== layer.id) {
+        if (layer.id === id) {
+          return layer.layers;
+        } else {
+          const recursiveResearch = this.findGroupFromId(layer.layers, id);
+          if (recursiveResearch) {
+            return recursiveResearch;
+          }
+        }
+      }
+    }
+    return null;
   }
 }
