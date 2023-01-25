@@ -41,6 +41,7 @@ export const init = (
         id: data.id,
         filter: data.filters,
       },
+      fetchPolicy: 'no-cache',
     });
 
   let filters: { field: string; operator: string; value: string }[] = [
@@ -464,25 +465,9 @@ export const init = (
             );
           }
         }
-        getResourceById({ id: question.resource }).subscribe(({ data }) => {
-          const serverRes =
-            data.resource.records?.edges?.map((x) => x.node) || [];
-          const res = [];
-          for (const item of serverRes) {
-            res.push({
-              value: item?.id,
-              text: item?.data[question.displayField || 'id'],
-            });
-          }
-          question.contentQuestion.choices = res;
-          if (!question.placeholder) {
-            question.contentQuestion.optionsCaption =
-              'Select a record from ' + data.resource.name + '...';
-          }
-          if (!question.filterBy || question.filterBy.length < 1) {
-            this.populateChoices(question);
-          }
-        });
+        if (!question.filterBy || question.filterBy.length < 1) {
+          this.populateChoices(question);
+        }
 
         if (question.selectQuestion) {
           if (question.selectQuestion === '#staticValue') {
@@ -567,6 +552,10 @@ export const init = (
               });
             }
             question.contentQuestion.choices = res;
+            if (!question.placeholder) {
+              question.contentQuestion.optionsCaption =
+                'Select a record from ' + data.resource.name + '...';
+            }
           }
         );
       } else {

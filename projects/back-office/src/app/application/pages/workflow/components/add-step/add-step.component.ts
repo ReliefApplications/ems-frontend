@@ -250,22 +250,6 @@ export class AddStepComponent
     }
     this.formsQuery.fetchMore({
       variables,
-      // updateQuery: (prev, { fetchMoreResult }) => {
-      //   if (!fetchMoreResult) {
-      //     return prev;
-      //   }
-      //   return Object.assign({}, prev, {
-      //     forms: {
-      //       edges: prev.forms.edges.concat(
-      //         fetchMoreResult.forms.edges.filter(
-      //           (x) => !prev.forms.edges.some((y) => y.node.id === x.node.id)
-      //         )
-      //       ),
-      //       pageInfo: fetchMoreResult.forms.pageInfo,
-      //       totalCount: fetchMoreResult.forms.totalCount,
-      //     },
-      //   });
-      // },
     });
   }
 }

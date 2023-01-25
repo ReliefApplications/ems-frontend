@@ -271,25 +271,12 @@ export class SafeAggregationGridComponent
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
+    // TOCHECK
     this.dataQuery.fetchMore({
       variables: {
-        resource: this.resourceId,
-        aggregation: this.aggregation.id,
         first: this.pageSize,
         skip: this.skip,
       },
-      // updateQuery: (prev: any, { fetchMoreResult }: any) => {
-      //   if (!fetchMoreResult) {
-      //     return prev;
-      //   }
-      //   this.loading = false;
-      //   return Object.assign({}, prev, {
-      //     recordsAggregation: {
-      //       items: fetchMoreResult.recordsAggregation.items,
-      //       totalCount: fetchMoreResult.recordsAggregation.totalCount,
-      //     },
-      //   });
-      // },
     });
   }
 }

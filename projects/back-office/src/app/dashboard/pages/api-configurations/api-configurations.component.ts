@@ -140,21 +140,6 @@ export class ApiConfigurationsComponent
           first: neededSize,
           afterCursor: this.pageInfo.endCursor,
         },
-        // updateQuery: (prev, { fetchMoreResult }) => {
-        //   if (!fetchMoreResult) {
-        //     return prev;
-        //   }
-        //   return Object.assign({}, prev, {
-        //     apiConfigurations: {
-        //       edges: [
-        //         ...prev.apiConfigurations.edges,
-        //         ...fetchMoreResult.apiConfigurations.edges,
-        //       ],
-        //       pageInfo: fetchMoreResult.apiConfigurations.pageInfo,
-        //       totalCount: fetchMoreResult.apiConfigurations.totalCount,
-        //     },
-        //   });
-        // },
       });
     } else {
       this.dataSource.data = this.cachedApiConfigurations.slice(

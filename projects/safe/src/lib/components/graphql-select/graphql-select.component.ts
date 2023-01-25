@@ -23,7 +23,7 @@ import {
 } from '@angular/material/legacy-select';
 import { Overlay } from '@angular/cdk/overlay';
 import { scrollFactory } from '../../utils/scroll-factory';
-import { cloneDeep, get, set } from 'lodash';
+import { get } from 'lodash';
 import {
   MatLegacyFormField as MatFormField,
   MatLegacyFormFieldControl as MatFormFieldControl,
@@ -412,35 +412,12 @@ export class SafeGraphQLSelectComponent
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
+        // TOCHECK
         this.query.fetchMore({
           variables: {
-            ...this.query.variables,
             first: ITEMS_PER_RELOAD,
             afterCursor: this.pageInfo.endCursor,
           },
-          // updateQuery: (prev, { fetchMoreResult }) => {
-          //   if (!fetchMoreResult) {
-          //     this.loading = false;
-          //     return prev;
-          //   }
-          //   const prevCpy = cloneDeep(prev);
-          //   const path = this.path
-          //     ? `${this.queryName}.${this.path}`
-          //     : this.queryName;
-          //   set(prevCpy, path, {
-          //     edges: [
-          //       ...(get(prev, path).edges
-          //         ? get(prev, path).edges
-          //         : get(prev, path)),
-          //       ...(get(fetchMoreResult, path).edges
-          //         ? get(fetchMoreResult, path).edges
-          //         : get(fetchMoreResult, path)),
-          //     ],
-          //     pageInfo: get(fetchMoreResult, path).pageInfo,
-          //     totalCount: get(fetchMoreResult, path).totalCount,
-          //   });
-          //   return prevCpy;
-          // },
         });
       }
     }

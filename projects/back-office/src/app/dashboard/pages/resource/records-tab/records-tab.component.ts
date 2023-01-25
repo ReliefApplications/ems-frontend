@@ -350,26 +350,7 @@ export class RecordsTabComponent implements OnInit {
         variables: {
           first: this.pageInfo.pageSize,
           afterCursor: this.pageInfo.endCursor,
-          display: false,
-          showDeletedRecords: this.showDeletedRecords,
         },
-        // updateQuery: (prev, { fetchMoreResult }) => {
-        //   if (!fetchMoreResult) {
-        //     return prev;
-        //   }
-        //   return Object.assign({}, prev, {
-        //     resource: {
-        //       records: {
-        //         edges: [
-        //           ...prev.resource.records.edges,
-        //           ...fetchMoreResult.resource.records.edges,
-        //         ],
-        //         pageInfo: fetchMoreResult.resource.records.pageInfo,
-        //         totalCount: fetchMoreResult.resource.records.totalCount,
-        //       },
-        //     },
-        //   });
-        // },
       });
     }
   }

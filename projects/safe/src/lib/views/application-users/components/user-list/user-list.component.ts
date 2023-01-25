@@ -176,28 +176,12 @@ export class UserListComponent
           this.updating = false;
         });
     } else {
+      // TOCHECK
       this.usersQuery.fetchMore({
         variables: {
           first: this.pageInfo.pageSize,
           afterCursor: this.pageInfo.endCursor,
         },
-        // updateQuery: (prev, { fetchMoreResult }) => {
-        //   if (!fetchMoreResult) {
-        //     return prev;
-        //   }
-        //   return Object.assign({}, prev, {
-        //     role: {
-        //       users: {
-        //         edges: [
-        //           ...prev.application.users.edges,
-        //           ...fetchMoreResult.application.users.edges,
-        //         ],
-        //         pageInfo: fetchMoreResult.application.users.pageInfo,
-        //         totalCount: fetchMoreResult.application.users.totalCount,
-        //       },
-        //     },
-        //   });
-        // },
       });
     }
   }

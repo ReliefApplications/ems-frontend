@@ -144,21 +144,6 @@ export class ReferenceDatasComponent
           first: neededSize,
           afterCursor: this.pageInfo.endCursor,
         },
-        // updateQuery: (prev, { fetchMoreResult }) => {
-        //   if (!fetchMoreResult) {
-        //     return prev;
-        //   }
-        //   return Object.assign({}, prev, {
-        //     apiConfigurations: {
-        //       edges: [
-        //         ...prev.referenceDatas.edges,
-        //         ...fetchMoreResult.referenceDatas.edges,
-        //       ],
-        //       pageInfo: fetchMoreResult.referenceDatas.pageInfo,
-        //       totalCount: fetchMoreResult.referenceDatas.totalCount,
-        //     },
-        //   });
-        // },
       });
     } else {
       this.dataSource.data = this.cachedReferenceDatas.slice(

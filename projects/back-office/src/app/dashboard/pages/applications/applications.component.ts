@@ -4,7 +4,6 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
 import {
   Application,
-  SafeAuthService,
   SafeConfirmService,
   SafeSnackBarService,
   SafeUnsubscribeComponent,
@@ -47,7 +46,6 @@ export class ApplicationsComponent
   public loading = true;
   public updating = false;
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
-  private newApplicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   public applications = new MatTableDataSource<Application>([]);
   public cachedApplications: Application[] = [];
   public displayedColumns = [
@@ -79,7 +77,6 @@ export class ApplicationsComponent
    * @param dialog Material dialog service
    * @param router Angular router
    * @param snackBar Shared snackbar service
-   * @param authService Shared authentication service
    * @param previewService Shared preview service
    * @param confirmService Share confirm service
    * @param translate Angular translate service
@@ -89,7 +86,6 @@ export class ApplicationsComponent
     public dialog: MatDialog,
     private router: Router,
     private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService,
     private previewService: PreviewService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
@@ -108,20 +104,24 @@ export class ApplicationsComponent
           first: DEFAULT_PAGE_SIZE,
         },
       });
-    // new query for card
-
-    this.newApplicationsQuery =
-      this.apollo.watchQuery<GetApplicationsQueryResponse>({
+    this.apollo
+      .query<GetApplicationsQueryResponse>({
         query: GET_APPLICATIONS,
+        fetchPolicy: 'no-cache',
         variables: {
-          first: DEFAULT_PAGE_SIZE,
+          first: 5,
           sortField: 'modifiedAt',
           sortOrder: 'desc',
         },
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        this.newApplications = data.applications.edges.map((x) => x.node);
       });
     this.applicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data, loading }) => {
+        console.log(data.applications.edges.length);
         this.cachedApplications = data.applications.edges.map((x) => x.node);
         this.applications.data = this.cachedApplications.slice(
           this.pageInfo.pageSize * this.pageInfo.pageIndex,
@@ -131,13 +131,6 @@ export class ApplicationsComponent
         this.pageInfo.endCursor = data.applications.pageInfo.endCursor;
         this.loading = loading;
         this.updating = false;
-      });
-    this.newApplicationsQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
-        this.newApplications = data.applications.edges
-          .map((x) => x.node)
-          .slice(0, 5);
       });
   }
 
@@ -152,7 +145,8 @@ export class ApplicationsComponent
     if (
       (e.pageIndex > e.previousPageIndex ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedApplications.length
+      e.length > this.cachedApplications.length &&
+      this.cachedApplications.length < (e.pageIndex + 1) * e.pageSize
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -202,6 +196,7 @@ export class ApplicationsComponent
     if (refetch) {
       this.cachedApplications = [];
       this.pageInfo.pageIndex = 0;
+      // Rebuild the query
       this.applicationsQuery
         .refetch({
           first: this.pageInfo.pageSize,
@@ -215,29 +210,13 @@ export class ApplicationsComponent
           this.updating = false;
         });
     } else {
+      // Fetch more records
       this.applicationsQuery.fetchMore({
         variables: {
           first: this.pageInfo.pageSize,
           afterCursor: this.pageInfo.endCursor,
-          filter: this.filter,
-          sortField: this.sort?.direction && this.sort.active,
-          sortOrder: this.sort?.direction,
         },
       });
-      // .then((value) => {
-      //   this.applicationsQuery.updateQuery((prev) =>
-      //     Object.assign({}, prev, {
-      //       applications: {
-      //         edges: [
-      //           ...prev.applications.edges,
-      //           ...value.data.applications.edges,
-      //         ],
-      //         pageInfo: value.data.applications.pageInfo,
-      //         totalCount: value.data.applications.totalCount,
-      //       },
-      //     })
-      //   );
-      // });
     }
   }
 

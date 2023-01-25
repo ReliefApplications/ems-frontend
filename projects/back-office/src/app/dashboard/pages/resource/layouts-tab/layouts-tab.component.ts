@@ -128,28 +128,9 @@ export class LayoutsTabComponent implements OnInit {
     this.loading = true;
     this.layoutsQuery.fetchMore({
       variables: {
-        id: this.resource.id,
         first: this.pageInfo.pageSize,
         afterCursor: this.pageInfo.endCursor,
       },
-      // updateQuery: (prev, { fetchMoreResult }) => {
-      //   if (!fetchMoreResult?.resource.layouts || !prev.resource?.layouts) {
-      //     return prev;
-      //   }
-      //   return {
-      //     resource: {
-      //       ...fetchMoreResult.resource,
-      //       layouts: {
-      //         edges: [
-      //           ...prev.resource.layouts.edges,
-      //           ...fetchMoreResult.resource.layouts.edges,
-      //         ],
-      //         pageInfo: fetchMoreResult.resource.layouts.pageInfo,
-      //         totalCount: fetchMoreResult.resource.layouts.totalCount,
-      //       },
-      //     },
-      //   };
-      // },
     });
   }
 

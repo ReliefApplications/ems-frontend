@@ -70,35 +70,35 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
       this.isStep = this.router.url.includes('/workflow/');
       if (this.isStep) {
         this.apollo
-          .watchQuery<GetStepByIdQueryResponse>({
+          .query<GetStepByIdQueryResponse>({
             query: GET_STEP_BY_ID,
             variables: {
               id: this.id,
             },
           })
-          .valueChanges.subscribe((res) => {
+          .subscribe((res) => {
             this.step = res.data.step;
             this.apollo
-              .watchQuery<GetFormByIdQueryResponse>({
+              .query<GetFormByIdQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
                   id: this.step.content,
                 },
               })
-              .valueChanges.subscribe(({ data, loading }) => {
+              .subscribe(({ data, loading }) => {
                 this.form = data.form;
                 this.loading = loading;
               });
           });
       } else {
         this.apollo
-          .watchQuery<GetPageByIdQueryResponse>({
+          .query<GetPageByIdQueryResponse>({
             query: GET_PAGE_BY_ID,
             variables: {
               id: this.id,
             },
           })
-          .valueChanges.subscribe((res) => {
+          .subscribe((res) => {
             this.page = res.data.page;
             this.apollo
               .query<GetFormByIdQueryResponse>({

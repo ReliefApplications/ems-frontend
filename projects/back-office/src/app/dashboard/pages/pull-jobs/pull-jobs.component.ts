@@ -114,21 +114,6 @@ export class PullJobsComponent implements OnInit {
           first: ITEMS_PER_PAGE,
           afterCursor: this.pageInfo.endCursor,
         },
-        // updateQuery: (prev, { fetchMoreResult }) => {
-        //   if (!fetchMoreResult) {
-        //     return prev;
-        //   }
-        //   return Object.assign({}, prev, {
-        //     pullJobs: {
-        //       edges: [
-        //         ...prev.pullJobs.edges,
-        //         ...fetchMoreResult.pullJobs.edges,
-        //       ],
-        //       pageInfo: fetchMoreResult.pullJobs.pageInfo,
-        //       totalCount: fetchMoreResult.pullJobs.totalCount,
-        //     },
-        //   });
-        // },
       });
     } else {
       this.pullJobs.data = this.cachedPullJobs.slice(

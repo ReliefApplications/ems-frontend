@@ -185,22 +185,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
         variables: {
           first: this.pageInfo.pageSize,
           afterCursor: this.pageInfo.endCursor,
-          filter: this.filter,
-          sortField: this.sort?.direction && this.sort.active,
-          sortOrder: this.sort?.direction,
         },
-        // updateQuery: (prev, { fetchMoreResult }) => {
-        //   if (!fetchMoreResult) {
-        //     return prev;
-        //   }
-        //   return Object.assign({}, prev, {
-        //     forms: {
-        //       edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
-        //       pageInfo: fetchMoreResult.forms.pageInfo,
-        //       totalCount: fetchMoreResult.forms.totalCount,
-        //     },
-        //   });
-        // },
       });
     }
   }

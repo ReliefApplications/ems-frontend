@@ -116,6 +116,8 @@ export class SafeRecordDropdownComponent
             first: ITEMS_PER_PAGE,
             filter: this.filter,
           },
+          fetchPolicy: 'no-cache',
+          nextFetchPolicy: 'cache-first',
         });
 
       this.records$ = this.records.asObservable();
@@ -164,38 +166,12 @@ export class SafeRecordDropdownComponent
     ) {
       if (!this.loading && this.pageInfo.hasNextPage && this.resourceId) {
         this.loading = true;
+        // TOCHECK
         this.recordsQuery.fetchMore({
           variables: {
-            id: this.resourceId,
             first: ITEMS_PER_PAGE,
             afterCursor: this.pageInfo.endCursor,
-            filter: this.filter,
           },
-          // updateQuery: (prev, { fetchMoreResult }) => {
-          //   if (!fetchMoreResult) {
-          //     return prev;
-          //   }
-          //   if (this.selectedRecord) {
-          //     if (
-          //       fetchMoreResult.resource.records.edges.find(
-          //         (x) => x.node.id === this.selectedRecord?.id
-          //       )
-          //     ) {
-          //       this.selectedRecord = null;
-          //     }
-          //   }
-          //   return Object.assign({}, prev, {
-          //     resource: {
-          //       records: {
-          //         edges: [
-          //           ...prev.resource.records.edges,
-          //           ...fetchMoreResult.resource.records.edges,
-          //         ],
-          //         pageInfo: fetchMoreResult.resource.records.pageInfo,
-          //       },
-          //     },
-          //   });
-          // },
         });
       }
     }

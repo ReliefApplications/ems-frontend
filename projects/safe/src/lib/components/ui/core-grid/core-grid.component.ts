@@ -368,7 +368,7 @@ export class SafeCoreGridComponent
             sortOrder: this.sortOrder,
             styles: this.style,
           },
-          fetchPolicy: 'network-only',
+          fetchPolicy: 'no-cache',
           nextFetchPolicy: 'cache-first',
         });
       }
@@ -1161,33 +1161,13 @@ export class SafeCoreGridComponent
     this.skip = event.skip;
     this.pageSize = event.take;
     this.pageSizeChanged.emit(this.pageSize);
-    this.dataQuery.fetchMore({
-      variables: {
-        first: this.pageSize,
-        skip: this.skip,
-        filter: this.queryFilter,
-        sortField: this.sortField,
-        sortOrder: this.sortOrder,
-        styles: this.style,
-      },
-      // updateQuery: (prev: any, { fetchMoreResult }: any) => {
-      //   // this.loading = false;
-      //   if (!fetchMoreResult) {
-      //     return prev;
-      //   }
-      //   for (const field in fetchMoreResult) {
-      //     if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
-      //       this.loading = false;
-      //       return Object.assign({}, prev, {
-      //         [field]: {
-      //           edges: fetchMoreResult[field].edges,
-      //           totalCount: fetchMoreResult[field].totalCount,
-      //         },
-      //       });
-      //     }
-      //   }
-      //   return prev;
-      // },
+    this.dataQuery.refetch({
+      first: this.pageSize,
+      skip: this.skip,
+      filter: this.queryFilter,
+      sortField: this.sortField || undefined,
+      sortOrder: this.sortOrder,
+      styles: this.style,
     });
   }
 

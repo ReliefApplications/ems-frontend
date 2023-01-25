@@ -215,42 +215,13 @@ export class SafeChooseRecordModalComponent
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
+        // TOCHECK
         this.dataQuery.fetchMore({
           variables: {
             first: ITEMS_PER_PAGE,
             skip: this.records.getValue().length,
             afterCursor: this.pageInfo.endCursor,
-            filter: this.filter,
-            sortField:
-              this.settings.query?.sort && this.settings.query.sort.field
-                ? this.settings.query.sort.field
-                : null,
-            sortOrder: this.settings.query?.sort?.order || '',
           },
-          // updateQuery: (prev: any, { fetchMoreResult }: any) => {
-          //   if (!fetchMoreResult) {
-          //     return prev;
-          //   }
-          //   for (const field in fetchMoreResult) {
-          //     if (
-          //       Object.prototype.hasOwnProperty.call(fetchMoreResult, field)
-          //     ) {
-          //       return Object.assign({}, prev, {
-          //         [field]: {
-          //           edges: [
-          //             ...prev[field].edges,
-          //             ...fetchMoreResult[field].edges,
-          //           ],
-          //           pageInfo: fetchMoreResult[field].pageInfo,
-          //           totalCount: fetchMoreResult[field].totalCount,
-          //         },
-          //       });
-          //     } else {
-          //       return prev;
-          //     }
-          //   }
-          //   return prev;
-          // },
         });
       }
     }
