@@ -1,1 +1,10 @@
-<div [id]="mapID" class="h-96"></div>
+<div class="flex gap-4">
+  <div [id]="mapID" class="grow basis-full h-96"></div>
+  <safe-layer-styling
+    class="h-96 grow basis-72"
+    *ngIf="selectedLayer"
+    [selectedLayer]="selectedLayer"
+    (close)="selectedLayer = undefined"
+    (edit)="updateLayer($event)"
+  ></safe-layer-styling>
+</div>

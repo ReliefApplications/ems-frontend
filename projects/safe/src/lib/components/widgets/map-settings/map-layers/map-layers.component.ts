@@ -133,7 +133,7 @@ export class MapLayersComponent
   /** Opens a modal to add a new layer */
   public onAddLayer() {
     const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
-      this.dialog.open(SafeEditLayerModalComponent);
+      this.dialog.open(SafeEditLayerModalComponent, { disableClose: true });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) return;
@@ -153,6 +153,7 @@ export class MapLayersComponent
     const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
       this.dialog.open(SafeEditLayerModalComponent, {
         data: deepLayer.at(index).value,
+        disableClose: true,
       });
 
     dialogRef.afterClosed().subscribe((result) => {

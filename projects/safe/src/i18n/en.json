@@ -1142,6 +1142,27 @@
 						"latitude": "Invalid latitude, please select a number between -90 and 90",
 						"longitude": "Invalid longitude, please select a number between -180 and 180"
 					},
+					"geospatial": {
+						"layersStyles": {
+							"fill": {
+								"color": "Fill color",
+								"opacity": "Fill opacity",
+								"title": "Fill"
+							},
+							"marker": {
+								"color": "Marker color",
+								"opacity": "Marker opacity",
+								"title": "Marker"
+							},
+							"outline": {
+								"color": "Outline color",
+								"opacity": "Outline opacity",
+								"title": "Outline",
+								"width": "Outline width"
+							},
+							"title": "Layer styles"
+						}
+					},
 					"layers": {
 						"add": "Add new layer",
 						"clorophlet": {
@@ -1182,6 +1203,7 @@
 						"basemap": "Base map",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
+						"setByMap": "Set By Map",
 						"title": "Map Parameters",
 						"zoom": "Default zoom"
 					},
@@ -1189,8 +1211,8 @@
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
 						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
 						"default": {
-							"latitude": "Select a default latitude to center the map around",
-							"longitude": "Select a default longitude to center the map around",
+							"latitude": "Set the default latitude of the center of the map. You can use 'Set By Map' to use the latitude of the preview map.",
+							"longitude": "Set the default longitude of the center of the map. You can use 'Set By Map' to use the longitude of the preview map.",
 							"zoom": "Select a default zoom for the map display"
 						}
 					}

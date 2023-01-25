@@ -147,6 +147,15 @@ export const createLayerForm = (value?: MapLayerI): FormGroup =>
     layers: [get(value, 'layers', null)],
     show: [get(value, 'show', false)],
     id: [get(value, 'id', null)],
+    defaultVisibility: [
+      get(value, 'defaultVisibility', true),
+      [Validators.required],
+    ],
+    opacity: [get(value, 'opacity', 0.8), [Validators.required]],
+    visibilityRange: [
+      get(value, 'visibilityRange', [2, 18]),
+      [Validators.required],
+    ],
   });
 
 // === MAP ===
