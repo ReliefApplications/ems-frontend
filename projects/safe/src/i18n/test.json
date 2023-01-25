@@ -55,6 +55,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"datasource": "******",
 		"delete": "******",
 		"deleteObject": "****** {{name}}",
 		"deleted": "******",
@@ -1178,6 +1179,13 @@
 							"title": "******"
 						},
 						"edit": "****** {{name}}",
+						"layerProperties": {
+							"currentZoom": "******",
+							"opacity": "******",
+							"title": "******",
+							"visibilityRange": "******",
+							"visiblebyDefault": "******"
+						},
 						"online": {
 							"info": "******",
 							"select": "******",

@@ -1,54 +1,74 @@
-<safe-modal size="medium" [closable]="true">
-  <div class="flex flex-row space-x-4">
-    <!-- Map section -->
-    <div [id]="mapId" class="w-4/5 group flex-1">
+<safe-modal size="big" [closable]="true">
+  <h2 *ngIf="layer">{{layer.name}}</h2>
+
+  <mat-tab-group
+  (selectedTabChange)="drawMap()"
+  mat-align-tabs="start"
+  animationDuration="0ms"
+  vertical
+  class="grow">
+    <!-- LAYER PROPERTIES -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon
+          icon="edit"
+          [size]="24"
+          matTooltip="{{'components.widget.settings.map.layers.layerProperties.title' | translate }}"
+          matTooltipPosition="right">
+        </safe-icon>
+        <span>{{'components.widget.settings.map.layers.layerProperties.title' | translate}}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div  class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+          <safe-layer-properties
+            [form]="form"
+            [currentZoom]="currentZoom"
+            (formEvent)="form = $event">
+          </safe-layer-properties>
+          <ng-container *ngTemplateOutlet="mapContent"></ng-container>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <!-- DATASOURCE -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon
+          icon="file_copy"
+          [size]="24"
+          matTooltip="{{'common.datasource' | translate }}"
+          matTooltipPosition="right">
+        </safe-icon>
+        <span>{{'common.datasource' | translate}}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div  class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+          <safe-layer-datasource></safe-layer-datasource>
+          <ng-container *ngTemplateOutlet="mapContent"></ng-container>
+        </div>
+      </ng-template>
+    </mat-tab>
+
+  </mat-tab-group>
+
+  <!-- Dialog actions ( cancel / close ) -->
+  <div mat-dialog-actions align="end">
+    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      [mat-dialog-close]="form.value"
+      cdkFocusInitial
+      [disabled]="!form.valid"
+    >
+      {{ (!layer ? 'common.create' : 'common.update') | translate }}
+    </safe-button>
+  </div>
+  <!-- Map section -->
+  <ng-template #mapContent >
+    <div [id]="mapId" class="lg:flex-1 max-lg:min-w-full h-80 lg:min-h-full">
       <div
         class="invisible group-hover:visible absolute bottom-0 px-1 z-[1000] text-gray-300 text-xs"
       ></div>
     </div>
-    <div class="flex flex-col space-y-12">
-      <!-- Options section -->
-      <form [formGroup]="form" class="flex flex-col space-y-8">
-          <mat-form-field appearance="outline">
-            <mat-label>{{ 'common.name' | translate }}</mat-label>
-            <input matInput formControlName="name" type="text" />
-          </mat-form-field>
-        <mat-checkbox formControlName="defaultVisibility">Visible by default</mat-checkbox>
-        <div>
-          <div class="flex flex-row w-full justify-between">
-            <label>Opacity</label>
-            <label>{{form.controls.opacity.value}}</label>
-          </div>
-          <mat-slider
-            class="w-full"
-            formControlName="opacity"
-            min="0"
-            max="1"
-            step="0.1"
-            thumbLabel="true"
-          ></mat-slider>
-        </div>
-        <div>
-          <label>Visibility range</label>
-          <ngx-slider [options]="visibilityRangeOptions" formControlName="visibilityRange"></ngx-slider>
-        </div>
-        <div>
-          <label>Current zoom: {{currentZoom}}</label>
-        </div>
-      </form>
-      <!-- Dialog actions ( cancel / close ) -->
-      <div mat-dialog-actions align="end">
-        <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
-        <safe-button
-          category="secondary"
-          variant="primary"
-          [mat-dialog-close]="form.value"
-          cdkFocusInitial
-          [disabled]="!form.valid"
-        >
-          {{ (!layer ? 'common.create' : 'common.update') | translate }}
-        </safe-button>
-      </div>
-    </div>
-  </div>
+  </ng-template>
 </safe-modal>

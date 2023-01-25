@@ -55,6 +55,7 @@
 			"none": "No dashboard",
 			"one": "Dashboard"
 		},
+		"datasource": "Datasource",
 		"delete": "Delete",
 		"deleteObject": "Delete {{name}}",
 		"deleted": "Deleted",
@@ -1178,6 +1179,13 @@
 							"title": "Clorophlets"
 						},
 						"edit": "Update layer {{name}}",
+						"layerProperties": {
+							"currentZoom": "Current zoom",
+							"opacity": "Opacity",
+							"title": "Layer Properties",
+							"visibilityRange": "Visibility range",
+							"visiblebyDefault": "Visible by default"
+						},
 						"online": {
 							"info": "Search for online layers in arcGIS online",
 							"select": "Search layers",

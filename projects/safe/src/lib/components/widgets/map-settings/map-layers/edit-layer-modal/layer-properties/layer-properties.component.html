@@ -1,0 +1,30 @@
+<form [formGroup]="form" class="flex flex-col space-y-8 flex-1">
+    <h2>{{'components.widget.settings.map.layers.layerProperties.title' | translate}}</h2>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.name' | translate }}</mat-label>
+      <input matInput formControlName="name" type="text" />
+    </mat-form-field>
+  <mat-checkbox formControlName="defaultVisibility">{{ 'components.widget.settings.map.layers.layerProperties.visiblebyDefault' | translate }}</mat-checkbox>
+  <div>
+    <div class="flex flex-row w-full justify-between">
+      <label>{{ 'components.widget.settings.map.layers.layerProperties.opacity' | translate }}</label>
+      <label>{{form.controls.opacity.value}}</label>
+    </div>
+    <mat-slider
+      class="w-full"
+      formControlName="opacity"
+      min="0"
+      max="1"
+      step="0.1"
+      thumbLabel="true"
+    ></mat-slider>
+  </div>
+  <div>
+    <label>{{ 'components.widget.settings.map.layers.layerProperties.visibilityRange' | translate }}</label>
+    <ngx-slider [options]="visibilityRangeOptions" formControlName="visibilityRange"></ngx-slider>
+  </div>
+  <div>
+    <label>{{ 'components.widget.settings.map.layers.layerProperties.currentZoom' | translate }}: {{currentZoom}}</label>
+  </div>
+</form>

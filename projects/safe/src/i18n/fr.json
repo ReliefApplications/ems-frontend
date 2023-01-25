@@ -55,6 +55,7 @@
 			"none": "Aucun tableau de bord",
 			"one": "Tableau de bord"
 		},
+		"datasource": "Source de données",
 		"delete": "Supprimer",
 		"deleteObject": "Supprimer {{name}}",
 		"deleted": "Supprimé",
@@ -1180,6 +1181,13 @@
 							"title": "Clorophlets"
 						},
 						"edit": "Mettre à jour le calque {{name}}",
+						"layerProperties": {
+							"currentZoom": "Zoom actuel",
+							"opacity": "Opacité",
+							"title": "Propriétés de la couche",
+							"visibilityRange": "Plage de visibilité",
+							"visiblebyDefault": "Visible par défaut"
+						},
 						"online": {
 							"info": "Charger des couches depuis arcGIS online",
 							"select": "Chercher des couches",

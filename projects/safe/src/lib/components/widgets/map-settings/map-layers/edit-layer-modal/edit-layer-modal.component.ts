@@ -1,9 +1,8 @@
-import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { createLayerForm } from '../../map-forms';
 import { MapLayerI } from '../map-layers.component';
-import { Options } from '@angular-slider/ngx-slider';
 import get from 'lodash/get';
 
 declare let L: any;
@@ -50,18 +49,11 @@ const testGeojson = {
   templateUrl: './edit-layer-modal.component.html',
   styleUrls: ['./edit-layer-modal.component.scss'],
 })
-export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
+export class SafeEditLayerModalComponent implements AfterViewInit {
   public form: FormGroup;
 
   private currentLayer: any;
   public currentZoom = 2;
-
-  public visibilityRangeOptions: Options = {
-    floor: 2,
-    ceil: 18,
-    step: 1,
-    showSelectionBar: true,
-  };
 
   // === MAP ===
   public mapId: string;
@@ -83,8 +75,6 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
     this.esriApiKey = environment.esriApiKey;
     this.mapId = this.generateUniqueId();
   }
-
-  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
     this.drawMap();
@@ -110,7 +100,7 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
   }
 
   /** Creates the map and adds all the controls we use */
-  private drawMap(): void {
+  public drawMap(): void {
     // Set bounds
     const centerLong = 0;
     const centerLat = 0;
