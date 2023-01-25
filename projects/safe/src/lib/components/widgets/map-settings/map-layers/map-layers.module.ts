@@ -14,6 +14,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { SafeLayerTableModule } from './layer-table/layer-table.module';
 
 /**
  * Map Widget layers configuration module.
@@ -32,6 +33,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     SafeButtonModule,
     MatTableModule,
     SafeEditLayerModalModule,
+    SafeLayerTableModule,
     MatMenuModule,
     MatIconModule,
     SafeDividerModule,

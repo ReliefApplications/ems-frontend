@@ -9,94 +9,17 @@
     {{ 'components.widget.settings.map.layers.add' | translate }}
   </safe-button>
 
-  <ng-container 
-    *ngTemplateOutlet="layerTable;context: { layerList: mapLayers, deep: '', id: mapId }">
-  </ng-container>
+  <safe-layer-table
+    [layerList]="layers.value"
+    [deep]="''"
+    [id]="mapId"
+    [allGroupsIds]="tablesId"
+    (itemDrop)="onListDrop($event)"
+    (deleteLayer)="onDeleteLayer($event)"
+    (editLayer)="onEditLayer($event)"
+    (createGroup)="onCreateGroup($event)"
+    (ungroup)="onUngroup($event)"
+    (toggleGroup)="onToggleGroupLayer($event)"
+  ></safe-layer-table>
   
 </div>
-
-<!-- Layer table template -->
-<ng-template #layerTable let-layerList="layerList" let-deep="deep" let-id="id">
-  <table
-    mat-table
-    [dataSource]="layerList"
-    multiTemplateDataRows
-    cdkDropList
-    [id]="id"
-    [cdkDropListConnectedTo]="ids"
-    class="shadow-md"
-    (cdkDropListDropped)="onListDrop($event)"
-  >
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ 'common.name' | translate }}
-      </th>
-      <td mat-cell *matCellDef="let layer; let i = dataIndex" class="font-bold">
-        <span class="flex items-center gap-1">
-          <mat-icon class="hover:cursor-move"> drag_indicator </mat-icon>
-          <ng-container *ngIf="layer.type === 'group'">
-            <ng-container *ngIf="layer.show">
-              <mat-icon (click)="onToggleGroupLayer(layer)"> arrow_drop_down </mat-icon>
-            </ng-container>
-            <ng-container *ngIf="!layer.show">
-              <mat-icon (click)="onToggleGroupLayer(layer)"> arrow_right </mat-icon>
-            </ng-container>
-          </ng-container>
-          {{ layer.name }}
-        </span>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="actions" [stickyEnd]="true">
-      <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let layer; let i = dataIndex">
-        <safe-button
-          [isIcon]="true"
-          icon="more_vert"
-          [matMenuTriggerFor]="menu"
-          (click)="$event.stopPropagation()"
-        >
-        </safe-button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onEditLayer(deep, i)">
-            <mat-icon>edit</mat-icon>
-            {{ 'common.edit' | translate }}
-          </button>
-          <safe-divider class="m-0"></safe-divider>
-          <button mat-menu-item (click)="onDeleteLayer(deep, i)">
-            <mat-icon>delete</mat-icon>
-            {{ 'common.delete' | translate }}
-          </button>
-          <safe-divider class="m-0"></safe-divider>
-          <button mat-menu-item (click)="onCreateGroup(deep, i)">
-            <mat-icon>group</mat-icon>
-            {{ 'common.group.one' | translate }}
-          </button>
-          <ng-container *ngIf="layer.type === 'group'">
-            <safe-divider class="m-0"></safe-divider>
-            <button mat-menu-item (click)="onUngroup(deep, i)">
-              <mat-icon>edit</mat-icon>
-              {{ 'Ungroup' }}
-            </button>
-          </ng-container>
-        </mat-menu>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="group">
-      <td mat-cell *matCellDef="let layer; let i = dataIndex">
-        <ng-container *ngIf="layer.type === 'group' && layer.show">
-          <ng-container>
-            <ng-container
-              *ngTemplateOutlet="layerTable;context: { layerList: layer.layers.value, deep: deep + ';' + i, id: layer.id }">
-            </ng-container>
-          </ng-container>
-        </ng-container>
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr *matRowDef="let row; columns: displayedColumns" mat-row cdkDrag></tr>
-    <tr mat-row *matRowDef="let row; columns: ['group']"></tr>
-  </table>
-</ng-template>

@@ -1,4 +1,4 @@
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -34,10 +34,6 @@ export class MapLayersComponent
   /** @returns the form array for the map layers */
   get layers() {
     return this.form.get('layers') as FormArray;
-  }
-
-  get ids() {
-    return this.tablesId;
   }
 
   // Table
@@ -86,6 +82,12 @@ export class MapLayersComponent
     return stringArr.join('-');
   }
 
+  /**
+   * fill the tablesId with all group layer id that have
+   * the show property to true.
+   *
+   * @param layers An array of layer
+   */
   private getTablesId(layers: FormArray): void {
     for (const layer of layers.value) {
       if (layer.type === 'group') {
@@ -117,10 +119,11 @@ export class MapLayersComponent
   /**
    * Removes a layer from the form array
    *
-   * @param deep Current deep of the selected layer
-   * @param index Index of the layer to remove
+   * @param e Event received from the delete event
    */
-  public onDeleteLayer(deep: string, index: number) {
+  public onDeleteLayer(e: any) {
+    const deep = e.deep;
+    const index = e.index;
     const deepLayer = this.getLayersAtDeep(deep);
     deepLayer.removeAt(index);
     this.tablesId = [this.mapId];
@@ -141,10 +144,11 @@ export class MapLayersComponent
   /**
    * Opens a modal to edit a layer
    *
-   * @param deep Current deep of the selected layer
-   * @param index Index of the layer to edit
+   * @param e Event received from the edit event
    */
-  public onEditLayer(deep: string, index: number) {
+  public onEditLayer(e: any) {
+    const deep = e.deep;
+    const index = e.index;
     const deepLayer = this.getLayersAtDeep(deep);
     const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
       this.dialog.open(SafeEditLayerModalComponent, {
@@ -160,10 +164,11 @@ export class MapLayersComponent
   /**
    * Create a Group layer with a layer from the form array
    *
-   * @param deep Current deep of the selected layer
-   * @param index Index of the layer to group
+   * @param e Event received from the create group event
    */
-  public onCreateGroup(deep: string, index: number) {
+  public onCreateGroup(e: any) {
+    const deep = e.deep;
+    const index = e.index;
     const deepLayer = this.getLayersAtDeep(deep);
     const layer = deepLayer.at(index);
     const id = this.generateUniqueId();
@@ -172,7 +177,7 @@ export class MapLayersComponent
       type: 'group',
       layers: new FormArray([layer]),
       show: true,
-      id: id,
+      id,
     };
     this.tablesId.push(id);
     deepLayer.removeAt(index);
@@ -182,10 +187,11 @@ export class MapLayersComponent
   /**
    * Ungroup a layer group from the form array
    *
-   * @param deep Current deep of the selected layer
-   * @param index Index of the layer to group
+   * @param e Event received from the ungroup event
    */
-  public onUngroup(deep: string, index: number) {
+  public onUngroup(e: any) {
+    const deep = e.deep;
+    const index = e.index;
     const deepLayer = this.getLayersAtDeep(deep);
     const layerGroup: FormArray = deepLayer.at(index).get('layers')?.value;
     for (let i = 0; i < layerGroup.length; i++) {
@@ -196,6 +202,12 @@ export class MapLayersComponent
     this.getTablesId(this.layers);
   }
 
+  /**
+   * Display or hide the layers of a group layer.
+   * Also add and remove the id from tablesId.
+   *
+   * @param element Element toggled
+   */
   onToggleGroupLayer(element: MapLayerI) {
     if (element.show) {
       const index = this.tablesId.findIndex((x) => x === element.id);
@@ -214,12 +226,15 @@ export class MapLayersComponent
   public onListDrop(e: CdkDragDrop<MapLayerI[]>) {
     console.log('table id', this.tablesId);
     // Search and get container and previousContainer
-    console.log(e.container.id, e.previousContainer.id)
+    console.log(e.container.id, e.previousContainer.id);
     let previousContainer: FormArray | null;
     if (e.previousContainer.id === this.mapId) {
       previousContainer = this.layers;
     } else {
-      previousContainer = this.findGroupFromId(this.layers, e.previousContainer.id);
+      previousContainer = this.findGroupFromId(
+        this.layers,
+        e.previousContainer.id
+      );
     }
 
     const valueToChange = previousContainer?.at(e.previousIndex);
@@ -231,7 +246,11 @@ export class MapLayersComponent
       if (e.container.id === this.mapId) {
         container = this.layers;
       } else {
-        container = this.findGroupFromId(this.layers, e.container.id, valueToChange?.value.id);
+        container = this.findGroupFromId(
+          this.layers,
+          e.container.id,
+          valueToChange?.value.id
+        );
       }
     }
 
@@ -244,9 +263,22 @@ export class MapLayersComponent
     container.insert(e.currentIndex, valueToChange);
   }
 
-  private findGroupFromId(layers: FormArray, id: string, parentId?: string): FormArray | null{
+  /**
+   * Find a group layer from its id
+   * only used in onListDrop function
+   *
+   * @param layers An array of layer
+   * @param id Id we are looking for
+   * @param parentId Id of the original group
+   * @returns The layer group we are looking for
+   */
+  private findGroupFromId(
+    layers: FormArray,
+    id: string,
+    parentId?: string
+  ): FormArray | null {
     for (const layer of layers.value) {
-      if (layer.type === 'group'&& parentId !== layer.id) {
+      if (layer.type === 'group' && parentId !== layer.id) {
         if (layer.id === id) {
           return layer.layers;
         } else {
