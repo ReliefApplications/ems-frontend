@@ -22,7 +22,7 @@ type ResourceField = {
 export class ResourceFieldsComponent implements OnInit {
   @Input() resource!: Resource;
   @Input() role!: Role;
-  @Input() updating = false;
+  @Input() disabled = false;
   @Output() onToggle = new EventEmitter<{
     resource: Resource;
     field: ResourceField;
