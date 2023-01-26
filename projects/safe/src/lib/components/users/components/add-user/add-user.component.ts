@@ -84,9 +84,9 @@ export class SafeAddUserComponent
         query: GET_USERS,
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
+      .subscribe(({ data }) => {
         const flatInvitedUsers = this.data.users.map((x) => x.username);
-        this.users = res.data.users.filter(
+        this.users = data.users.filter(
           (x) => !flatInvitedUsers.includes(x.username)
         );
         this.filteredUsers = this.form.controls.email.valueChanges.pipe(

@@ -146,10 +146,9 @@ export class SafeDashboardService {
           structure: updatedDashboardStructure,
         },
       })
-      .subscribe(
-        () => {},
-        (error) => console.log(error)
-      );
+      .subscribe({
+        error: (error) => console.log(error),
+      });
   }
 
   /**

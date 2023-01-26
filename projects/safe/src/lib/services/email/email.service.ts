@@ -134,23 +134,23 @@ export class SafeEmailService {
         },
         { headers }
       )
-      .subscribe(
-        () => {
+      .subscribe({
+        next: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant('common.notifications.email.sent'),
             loading: false,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
         },
-        () => {
+        error: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant('common.notifications.email.error'),
             loading: false,
             error: true,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -212,8 +212,8 @@ export class SafeEmailService {
         },
         { headers }
       )
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           snackBarRef.instance.data = {
             message: this.translate.instant('common.notifications.email.ready'),
             loading: false,
@@ -241,15 +241,15 @@ export class SafeEmailService {
             }
           });
         },
-        () => {
+        error: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant('common.notifications.email.error'),
             loading: false,
             error: true,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
-        }
-      );
+        },
+      });
   }
 
   /**

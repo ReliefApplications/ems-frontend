@@ -99,17 +99,17 @@ export class ApiConfigurationsComponent
 
     this.apiConfigurationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.cachedApiConfigurations = res.data.apiConfigurations.edges.map(
+      .subscribe(({ data, loading }) => {
+        this.cachedApiConfigurations = data.apiConfigurations.edges.map(
           (x) => x.node
         );
         this.dataSource.data = this.cachedApiConfigurations.slice(
           this.pageInfo.pageSize * this.pageInfo.pageIndex,
           this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         );
-        this.pageInfo.length = res.data.apiConfigurations.totalCount;
-        this.pageInfo.endCursor = res.data.apiConfigurations.pageInfo.endCursor;
-        this.loading = res.loading;
+        this.pageInfo.length = data.apiConfigurations.totalCount;
+        this.pageInfo.endCursor = data.apiConfigurations.pageInfo.endCursor;
+        this.loading = loading;
         this.filterPredicate();
       });
   }
@@ -219,9 +219,9 @@ export class ApiConfigurationsComponent
               name: value.name,
             },
           })
-          .subscribe(
-            (res) => {
-              if (res.errors) {
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
@@ -229,24 +229,24 @@ export class ApiConfigurationsComponent
                       type: this.translate.instant(
                         'common.apiConfiguration.one'
                       ),
-                      error: res.errors[0].message,
+                      error: errors[0].message,
                     }
                   ),
                   { error: true }
                 );
               } else {
-                if (res.data) {
+                if (data) {
                   this.router.navigate([
                     '/settings/apiconfigurations',
-                    res.data.addApiConfiguration.id,
+                    data.addApiConfiguration.id,
                   ]);
                 }
               }
             },
-            (err) => {
+            error: (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
-            }
-          );
+            },
+          });
       }
     });
   }

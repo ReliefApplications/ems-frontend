@@ -118,23 +118,23 @@ export class SafeChooseRecordModalComponent
     });
     if (this.dataQuery) {
       this.records$ = this.records.asObservable();
-      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
-        (res: any) => {
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+        next: ({ data }: any) => {
+          for (const field in data) {
+            if (Object.prototype.hasOwnProperty.call(data, field)) {
               const nodes =
-                res.data[field].edges.map((x: any) => ({
+                data[field].edges.map((x: any) => ({
                   value: x.node.id,
                   label: x.node[this.data.targetFormField],
                 })) || [];
-              this.pageInfo = res.data[field].pageInfo;
+              this.pageInfo = data[field].pageInfo;
               this.records.next(nodes);
             }
           }
           this.loading = false;
         },
-        () => (this.loading = false)
-      );
+        complete: () => (this.loading = false),
+      });
     } else {
       this.loading = false;
     }

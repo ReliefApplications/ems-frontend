@@ -91,39 +91,39 @@ export const buildAddButton = (
         panelClass: 'full-screen-modal',
         autoFocus: false,
       });
-      dialogRef.afterClosed().subscribe((res: any) => {
-        if (res) {
+      dialogRef.afterClosed().subscribe(({ data }: any) => {
+        if (data) {
           // TODO: call reload method
           // if (question.displayAsGrid && gridComponent) {
           //   gridComponent.availableRecords.push({
-          //     value: res.data.id,
-          //     text: res.data.data[question.displayField]
+          //     value: data.id,
+          //     text: data.data[question.displayField]
           //   });
           // }
           if (multiselect) {
             const newItem = {
-              value: res.data.id,
-              text: res.data.data[question.displayField],
+              value: data.id,
+              text: data.data[question.displayField],
             };
             question.contentQuestion.choices = [
               newItem,
               ...question.contentQuestion.choices,
             ];
             question.newCreatedRecords = question.newCreatedRecords
-              ? question.newCreatedRecords.concat(res.data.id)
-              : [res.data.id];
-            question.value = question.value.concat(res.data.id);
+              ? question.newCreatedRecords.concat(data.id)
+              : [data.id];
+            question.value = question.value.concat(data.id);
           } else {
             const newItem = {
-              value: res.data.id,
-              text: res.data.data[question.displayField],
+              value: data.id,
+              text: data.data[question.displayField],
             };
             question.contentQuestion.choices = [
               newItem,
               ...question.contentQuestion.choices,
             ];
-            question.newCreatedRecords = res.data.id;
-            question.value = res.data.id;
+            question.newCreatedRecords = data.id;
+            question.value = data.id;
           }
         }
       });

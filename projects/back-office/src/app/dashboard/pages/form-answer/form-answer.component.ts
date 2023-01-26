@@ -49,9 +49,9 @@ export class FormAnswerComponent implements OnInit {
             id: this.id,
           },
         })
-        .valueChanges.subscribe((res) => {
-          this.loading = res.loading;
-          this.form = res.data.form;
+        .valueChanges.subscribe(({ data, loading }) => {
+          this.loading = loading;
+          this.form = data.form;
           this.breadcrumbService.setBreadcrumb(
             '@form',
             this.form.name as string

@@ -23,7 +23,6 @@ import {
   EDIT_RESOURCE_FIELD_PERMISSION,
   EDIT_RESOURCE_ACCESS,
   EditResourceFieldPermissionMutationResponse,
-  EDIT_FULL_RESOURCE_ACCESS,
 } from '../graphql/mutations';
 import { Permission } from './permissions.types';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -114,18 +113,18 @@ export class RoleResourcesComponent
 
     this.resourcesQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.cachedResources = res.data.resources.edges.map((x) => x.node);
+      .subscribe(({ data, loading }) => {
+        this.cachedResources = data.resources.edges.map((x) => x.node);
         this.resources.data = this.setTableElements(
           this.cachedResources.slice(
             this.pageInfo.pageSize * this.pageInfo.pageIndex,
             this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
           )
         );
-        this.pageInfo.length = res.data.resources.totalCount;
-        this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
-        this.loading = false;
-        this.updating = false;
+        this.pageInfo.length = data.resources.totalCount;
+        this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
+        this.loading = loading;
+        this.updating = loading;
         this.filterLoading = false;
       });
   }
@@ -260,9 +259,9 @@ export class RoleResourcesComponent
           },
         })
         .pipe(takeUntil(this.destroy$))
-        .subscribe((res) => {
-          if (res.data.resource) {
-            this.openedResource = res.data.resource;
+        .subscribe(({ data }) => {
+          if (data.resource) {
+            this.openedResource = data.resource;
           }
           this.updating = false;
         });
@@ -335,12 +334,9 @@ export class RoleResourcesComponent
         return;
       }
     }
-
     this.apollo
       .mutate<EditResourceAccessMutationResponse>({
-        mutation: isEqual(resource.id, this.openedResource?.id)
-          ? EDIT_RESOURCE_ACCESS
-          : EDIT_FULL_RESOURCE_ACCESS,
+        mutation: EDIT_RESOURCE_ACCESS,
         variables: {
           id: resource.id,
           permissions: {
@@ -350,34 +346,33 @@ export class RoleResourcesComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        (res) => {
-          if (res.data?.editResource) {
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (data?.editResource) {
             const index = this.resources.data.findIndex(
               (x) => x.resource.id === resource.id
             );
             const tableElements = [...this.resources.data];
-            tableElements[index].resource = isEqual(
-              resource.id,
-              this.openedResource?.id
-            )
-              ? { ...this.openedResource, ...res.data?.editResource }
-              : res.data?.editResource;
+            tableElements[index] = this.setTableElement(
+              isEqual(resource.id, this.openedResource?.id)
+                ? { ...this.openedResource, ...data?.editResource }
+                : data?.editResource
+            );
             this.resources.data = tableElements;
             if (isEqual(resource.id, this.openedResource?.id)) {
               this.openedResource = tableElements[index].resource;
             }
           }
-          if (res.errors) {
-            this.snackBar.openSnackBar(res.errors[0].message, { error: true });
+          if (errors) {
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
           }
           this.updating = false;
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
           this.updating = false;
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -387,11 +382,10 @@ export class RoleResourcesComponent
    * @param update update to perform
    */
   editResourceAccessFilter(resource: Resource, update: any): void {
+    this.updating = true;
     this.apollo
       .mutate<EditResourceAccessMutationResponse>({
-        mutation: isEqual(resource.id, this.openedResource?.id)
-          ? EDIT_RESOURCE_ACCESS
-          : EDIT_FULL_RESOURCE_ACCESS,
+        mutation: EDIT_RESOURCE_ACCESS,
         variables: {
           id: resource.id,
           permissions: update,
@@ -399,31 +393,33 @@ export class RoleResourcesComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        (res) => {
-          if (res.data?.editResource) {
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (data?.editResource) {
             const index = this.resources.data.findIndex(
               (x) => x.resource.id === resource.id
             );
             const tableElements = [...this.resources.data];
             tableElements[index] = this.setTableElement(
               isEqual(resource.id, this.openedResource?.id)
-                ? { ...this.openedResource, ...res.data?.editResource }
-                : res.data?.editResource
+                ? { ...this.openedResource, ...data?.editResource }
+                : data?.editResource
             );
             this.resources.data = tableElements;
-            this.openedResource = tableElements[index].resource;
+            if (isEqual(resource.id, this.openedResource?.id)) {
+              this.openedResource = tableElements[index].resource;
+            }
           }
-          if (res.errors) {
-            this.snackBar.openSnackBar(res.errors[0].message, { error: true });
+          if (errors) {
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
           }
           this.updating = false;
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
           this.updating = false;
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -470,27 +466,33 @@ export class RoleResourcesComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        (res) => {
-          if (res.data?.editResource) {
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (data?.editResource) {
             const index = this.resources.data.findIndex(
               (x) => x.resource.id === resource.id
             );
             const tableElements = [...this.resources.data];
-            tableElements[index] = this.setTableElement(res.data?.editResource);
+            tableElements[index] = this.setTableElement(
+              isEqual(resource.id, this.openedResource?.id)
+                ? { ...this.openedResource, ...data?.editResource }
+                : data?.editResource
+            );
             this.resources.data = tableElements;
-            this.openedResource = tableElements[index].resource;
+            if (isEqual(resource.id, this.openedResource?.id)) {
+              this.openedResource = tableElements[index].resource;
+            }
           }
-          if (res.errors) {
-            this.snackBar.openSnackBar(res.errors[0].message, { error: true });
+          if (errors) {
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
           }
           this.updating = false;
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
           this.updating = false;
-        }
-      );
+        },
+      });
   }
 
   /**

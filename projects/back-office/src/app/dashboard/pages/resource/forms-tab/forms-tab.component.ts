@@ -63,9 +63,9 @@ export class FormsTabComponent implements OnInit {
           id: this.resource.id,
         },
       })
-      .subscribe((res) => {
-        if (res.data.resource) {
-          this.forms = res.data.resource.forms || [];
+      .subscribe(({ data }) => {
+        if (data.resource) {
+          this.forms = data.resource.forms || [];
         }
         this.loading = false;
       });

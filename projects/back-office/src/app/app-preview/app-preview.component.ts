@@ -27,7 +27,6 @@ const getAbilityForAppPreview = (app: Application, role: string) => {
     app.roles?.find((x) => x.id === role)?.permissions?.map((p) => p.type) ||
     [];
 
-  console.log(permissions);
   // === Role ===
   if (permissions.includes('can_see_roles')) {
     can(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);

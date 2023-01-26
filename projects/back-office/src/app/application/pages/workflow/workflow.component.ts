@@ -1,6 +1,5 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -49,8 +48,8 @@ export class WorkflowComponent
   public steps: Step[] = [];
 
   // === WORKFLOW EDITION ===
+  public canEditName = false;
   public formActive = false;
-  public workflowNameForm: FormGroup = new FormGroup({});
   public canUpdate = false;
 
   // === ACTIVE STEP ===
@@ -102,9 +101,6 @@ export class WorkflowComponent
       .subscribe((workflow: Workflow | null) => {
         if (workflow) {
           this.steps = workflow.steps || [];
-          this.workflowNameForm = new FormGroup({
-            workflowName: new FormControl(workflow.name, Validators.required),
-          });
           this.loading = false;
           if (!this.workflow || workflow.id !== this.workflow.id) {
             const firstStep = get(workflow, 'steps', [])[0];
@@ -134,6 +130,7 @@ export class WorkflowComponent
             }
           }
           this.workflow = workflow;
+          this.canEditName = this.workflow?.page?.canUpdate || false;
           this.applicationId = this.workflow.page?.application?.id;
           this.canUpdate = this.workflow.canUpdate || false;
         } else {
@@ -144,34 +141,27 @@ export class WorkflowComponent
   }
 
   /**
-   * Toggle workflow name form.
-   */
-  toggleFormActive(): void {
-    if (this.workflow?.page?.canUpdate) {
-      this.formActive = !this.formActive;
-    }
-  }
-
-  /**
    * Updates the name of the workflow and his linked page.
+   *
+   * @param workflowName new workflow name
    */
-  saveName(): void {
-    const { workflowName } = this.workflowNameForm.value;
-    this.toggleFormActive();
-    this.apollo
-      .mutate<EditPageMutationResponse>({
-        mutation: EDIT_PAGE,
-        variables: {
-          id: this.workflow?.page?.id,
-          name: workflowName,
-        },
-      })
-      .subscribe((res) => {
-        if (res.data) {
-          this.workflow = { ...this.workflow, name: res.data.editPage.name };
-          this.applicationService.updatePageName(res.data.editPage);
-        }
-      });
+  saveName(workflowName: string): void {
+    if (workflowName && workflowName !== this.workflow?.name) {
+      this.apollo
+        .mutate<EditPageMutationResponse>({
+          mutation: EDIT_PAGE,
+          variables: {
+            id: this.workflow?.page?.id,
+            name: workflowName,
+          },
+        })
+        .subscribe(({ data }) => {
+          if (data) {
+            this.workflow = { ...this.workflow, name: data.editPage.name };
+            this.applicationService.updatePageName(data.editPage);
+          }
+        });
+    }
   }
 
   /**
@@ -188,10 +178,10 @@ export class WorkflowComponent
           permissions: e,
         },
       })
-      .subscribe((res) => {
+      .subscribe(({ data }) => {
         this.workflow = {
           ...this.workflow,
-          permissions: res.data?.editPage.permissions,
+          permissions: data?.editPage.permissions,
         };
       });
   }
@@ -253,15 +243,15 @@ export class WorkflowComponent
                 id: step.id,
               },
             })
-            .subscribe((res) => {
-              if (res.data) {
+            .subscribe(({ data }) => {
+              if (data) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectDeleted', {
                     value: this.translate.instant('common.step.one'),
                   })
                 );
                 this.steps = this.steps.filter(
-                  (x) => x.id !== res.data?.deleteStep.id
+                  (x) => x.id !== data?.deleteStep.id
                 );
                 if (index === this.activeStep) {
                   this.onOpenStep(-1);
@@ -317,8 +307,8 @@ export class WorkflowComponent
           steps: steps.map((step) => step.id),
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ errors, data }) => {
+        if (data) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectReordered', {
               type: this.translate.instant('common.step.one'),
@@ -333,7 +323,7 @@ export class WorkflowComponent
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotUpdated', {
               type: this.translate.instant('common.workflow.one'),
-              error: res.errors ? res.errors[0].message : '',
+              error: errors ? errors[0].message : '',
             })
           );
         }
