@@ -83,7 +83,60 @@
         </div>
       </ng-template>
     </mat-tab>
-
+    <!-- POPUP -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon
+          icon="open_in_new"
+          [size]="24"
+          matTooltip="{{'components.widget.settings.map.layers.popup.title' | translate }}"
+          matTooltipPosition="right">
+        </safe-icon>
+        <span>{{'components.widget.settings.map.layers.popup.title' | translate}}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div  class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+          <safe-layer-popup></safe-layer-popup>
+          <ng-container *ngTemplateOutlet="mapContent"></ng-container>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <!-- FIELDS -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon
+          icon="notes"
+          [size]="24"
+          matTooltip="{{'common.field.few' | translate }}"
+          matTooltipPosition="right">
+        </safe-icon>
+        <span>{{'common.field.few' | translate}}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div  class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+          <safe-layer-fields></safe-layer-fields>
+          <ng-container *ngTemplateOutlet="mapContent"></ng-container>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <!-- LABELS -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon
+          icon="label"
+          [size]="24"
+          matTooltip="{{'components.widget.settings.map.layers.labels.title' | translate }}"
+          matTooltipPosition="right">
+        </safe-icon>
+        <span>{{'components.widget.settings.map.layers.labels.title' | translate}}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div  class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+          <safe-layer-labels></safe-layer-labels>
+          <ng-container *ngTemplateOutlet="mapContent"></ng-container>
+        </div>
+      </ng-template>
+    </mat-tab>
   </mat-tab-group>
 
   <!-- Dialog actions ( cancel / close ) -->

@@ -9,6 +9,9 @@ import { SafeLayerPropertiesModule } from './layer-properties/layer-properties.m
 import { SafeLayerDatasourceModule } from './layer-datasource/layer-datasource.module';
 import { SafeLayerFilterModule } from './layer-filter/layer-filter.module';
 import { SafeLayerAggregationModule } from './layer-aggregation/layer-aggregation.module';
+import { SafeLayerPopupModule } from './layer-popup/layer-popup.module';
+import { SafeLayerFieldsModule } from './layer-fields/layer-fields.module';
+import { SafeLayerLabelsModule } from './layer-labels/layer-labels.module';
 
 /** Module for the SafeEditLayerModalComponent */
 @NgModule({
@@ -23,6 +26,9 @@ import { SafeLayerAggregationModule } from './layer-aggregation/layer-aggregatio
     SafeLayerDatasourceModule,
     SafeLayerFilterModule,
     SafeLayerAggregationModule,
+    SafeLayerPopupModule,
+    SafeLayerFieldsModule,
+    SafeLayerLabelsModule,
   ],
   exports: [SafeEditLayerModalComponent],
 })

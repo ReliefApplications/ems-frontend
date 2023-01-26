@@ -1179,6 +1179,9 @@
 							"title": "Clorophlets"
 						},
 						"edit": "Update layer {{name}}",
+						"labels": {
+							"title": "Labels"
+						},
 						"layerProperties": {
 							"currentZoom": "Current zoom",
 							"opacity": "Opacity",
@@ -1201,6 +1204,10 @@
 							"rulesInfo": "Customize the size and colors of your markers",
 							"size": "Size",
 							"title": "Marker layers"
+						},
+						"popup": {
+							"enable": "Enable",
+							"title": "Pop-up"
 						},
 						"remove": "Remove layer"
 					},

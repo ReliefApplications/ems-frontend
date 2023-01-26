@@ -1,0 +1,9 @@
+<form [formGroup]="form" class="flex flex-col space-y-4 flex-1">
+    <h2>{{'components.widget.settings.map.layers.popup.title' | translate}}</h2>
+
+    <mat-checkbox formControlName="enable">{{ 'components.widget.settings.map.layers.layerProperties.visiblebyDefault' | translate }}</mat-checkbox>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.title' | translate }}</mat-label>
+      <input matInput formControlName="title" type="text" />
+    </mat-form-field>
+</form>

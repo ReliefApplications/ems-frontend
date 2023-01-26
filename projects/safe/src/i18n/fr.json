@@ -1181,6 +1181,9 @@
 							"title": "Clorophlets"
 						},
 						"edit": "Mettre à jour le calque {{name}}",
+						"labels": {
+							"title": "Labels"
+						},
 						"layerProperties": {
 							"currentZoom": "Zoom actuel",
 							"opacity": "Opacité",
@@ -1203,6 +1206,10 @@
 							"rulesInfo": "Configurer la taille et la couleur des marqueurs",
 							"size": "Taille",
 							"title": "Marqueurs"
+						},
+						"popup": {
+							"enable": "Activer",
+							"title": "Pop-up"
 						},
 						"remove": "Supprimer le calque"
 					},
