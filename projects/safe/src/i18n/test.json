@@ -1163,6 +1163,38 @@
 							"title": "******"
 						}
 					},
+					"heatmap": {
+						"blur": {
+							"title": "******",
+							"tooltip": "******"
+						},
+						"enabled": "******",
+						"gradient": {
+							"color": "******",
+							"intensity": "******",
+							"legend": "******",
+							"title": "******",
+							"tooltip": "******"
+						},
+						"max": {
+							"title": "******",
+							"tooltip": "******"
+						},
+						"maxZoom": {
+							"title": "******",
+							"tooltip": "******"
+						},
+						"minOpacity": {
+							"title": "******",
+							"tooltip": "******"
+						},
+						"properties": "******",
+						"radius": {
+							"title": "******",
+							"tooltip": "******"
+						},
+						"title": "******"
+					},
 					"layers": {
 						"add": "******",
 						"clorophlet": {

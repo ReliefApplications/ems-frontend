@@ -1163,6 +1163,38 @@
 							"title": "Layer styles"
 						}
 					},
+					"heatmap": {
+						"blur": {
+							"title": "Blur",
+							"tooltip": "How blurred the heatmap edges are"
+						},
+						"enabled": "Enable heatmap",
+						"gradient": {
+							"color": "Color",
+							"intensity": "Intensity",
+							"legend": "Legend",
+							"title": "Gradient",
+							"tooltip": "The gradient used to display the heatmap."
+						},
+						"max": {
+							"title": "Maximum",
+							"tooltip": "The maximum value for the point intensity. All points above this value will be displayed with the same intensity"
+						},
+						"maxZoom": {
+							"title": "Maximum zoom",
+							"tooltip": "The maximum zoom level at which the heatmap's intensity is no longer clamped to minimum opacity, but instead follows the gradient"
+						},
+						"minOpacity": {
+							"title": "Minimum opacity",
+							"tooltip": "The minimum opacity for the heatmap points"
+						},
+						"properties": "Heatmap properties",
+						"radius": {
+							"title": "Radius",
+							"tooltip": "The radius of each “point” of the heatmap. Use a small radius for detailed maps, and a larger radius for less detailed maps"
+						},
+						"title": "Heatmap"
+					},
 					"layers": {
 						"add": "Add new layer",
 						"clorophlet": {

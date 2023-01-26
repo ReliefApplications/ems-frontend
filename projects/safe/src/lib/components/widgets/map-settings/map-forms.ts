@@ -66,6 +66,50 @@ const DEFAULT_MAP: Nullable<MapSettingsI> = {
   layers: [],
 };
 
+/** Default heatmap settings */
+const DEFAULT_HEATMAP = {
+  enabled: false,
+  showLegend: true,
+  minOpacity: 0.5,
+  maxZoom: 18,
+  max: 1,
+  radius: 25,
+  blur: 15,
+  gradient: [
+    {
+      intensity: 0.4,
+      color: '#0000FF',
+      legend: 'Very low',
+    },
+    {
+      intensity: 0.6,
+      color: '#00ffff',
+      legend: 'Low',
+    },
+    {
+      intensity: 0.7,
+      color: '#00FF00',
+      legend: 'Medium',
+    },
+    {
+      intensity: 0.8,
+      color: '#FFFF00',
+      legend: 'High',
+    },
+    {
+      intensity: 1,
+      color: '#FF0000',
+      legend: 'Very high',
+    },
+  ] as {
+    intensity: number;
+    color: string;
+    legend: string;
+  }[],
+};
+
+export type HeatmapSettingsI = typeof DEFAULT_HEATMAP;
+
 // === CLOROPHLET ===
 /**
  * Create new clorophlet form from value
@@ -208,4 +252,28 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup =>
         createLayerForm(x)
       )
     ),
+    heatmap: fb.group({
+      enabled: [get(value, 'heatmap.enabled', DEFAULT_HEATMAP.enabled)],
+      minOpacity: [
+        get(value, 'heatmap.minOpacity', DEFAULT_HEATMAP.minOpacity),
+        [Validators.min(0), Validators.max(1)],
+      ],
+      maxZoom: [
+        get(value, 'heatmap.maxZoom', DEFAULT_HEATMAP.maxZoom),
+        [Validators.min(0), Validators.max(18)],
+      ],
+      max: [
+        get(value, 'heatmap.max', DEFAULT_HEATMAP.max),
+        [Validators.min(1)],
+      ],
+      radius: [
+        get(value, 'heatmap.radius', DEFAULT_HEATMAP.radius),
+        [Validators.min(1)],
+      ],
+      blur: [
+        get(value, 'heatmap.blur', DEFAULT_HEATMAP.blur),
+        [Validators.min(1)],
+      ],
+      gradient: [get(value, 'heatmap.gradient', DEFAULT_HEATMAP.gradient)],
+    }),
   });

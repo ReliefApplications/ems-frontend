@@ -1,0 +1,210 @@
+<form [formGroup]="heatmapForm" class="h-full">
+  <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+    <!-- Heatmap properties -->
+    <div class="flex flex-col flex-1 max-h-full overflow-y-auto">
+      <h2>
+        {{ 'components.widget.settings.map.heatmap.properties' | translate }}
+      </h2>
+      <!-- Enabled -->
+      <mat-slide-toggle formControlName="enabled" class="mb-5">
+        {{ 'components.widget.settings.map.heatmap.enabled' | translate }}
+      </mat-slide-toggle>
+
+      <!-- Show parameters only if enabled -->
+      <ng-container *ngIf="heatmapForm.get('enabled')?.value">
+        <!-- Min opacity -->
+        <div class="flex flex-col">
+          <mat-label>
+            {{
+              'components.widget.settings.map.heatmap.minOpacity.title'
+                | translate
+            }}
+            <safe-icon
+              icon="info_outline"
+              class="cursor-pointer"
+              [matTooltip]="
+                'components.widget.settings.map.heatmap.minOpacity.tooltip'
+                  | translate
+              "
+              [inline]="true"
+              [size]="18"
+              variant="grey"
+            ></safe-icon>
+          </mat-label>
+          <mat-slider
+            thumbLabel
+            tickInterval="1"
+            formControlName="minOpacity"
+            [min]="0"
+            [max]="1"
+            [step]="0.1"
+          ></mat-slider>
+        </div>
+
+        <!-- Max zoom -->
+        <div class="flex flex-col">
+          <mat-label>
+            {{
+              'components.widget.settings.map.heatmap.maxZoom.title' | translate
+            }}
+            <safe-icon
+              icon="info_outline"
+              class="cursor-pointer"
+              [matTooltip]="
+                'components.widget.settings.map.heatmap.maxZoom.tooltip'
+                  | translate
+              "
+              [inline]="true"
+              [size]="18"
+              variant="grey"
+            ></safe-icon>
+          </mat-label>
+          <mat-slider
+            thumbLabel
+            tickInterval="1"
+            formControlName="maxZoom"
+            [min]="1"
+            [max]="18"
+            [step]="1"
+          ></mat-slider>
+        </div>
+
+        <!-- Max -->
+        <mat-form-field appearance="outline">
+          <mat-label>
+            {{ 'components.widget.settings.map.heatmap.max.title' | translate }}
+          </mat-label>
+          <safe-icon
+            matSuffix
+            icon="info_outline"
+            class="cursor-pointer"
+            [matTooltip]="
+              'components.widget.settings.map.heatmap.max.tooltip' | translate
+            "
+            [inline]="true"
+            [size]="18"
+            variant="grey"
+          ></safe-icon>
+          <input type="number" matInput formControlName="max" />
+        </mat-form-field>
+
+        <!-- Radius -->
+        <mat-form-field appearance="outline">
+          <mat-label>
+            {{
+              'components.widget.settings.map.heatmap.radius.title' | translate
+            }}
+          </mat-label>
+          <safe-icon
+            matSuffix
+            icon="info_outline"
+            class="cursor-pointer"
+            [matTooltip]="
+              'components.widget.settings.map.heatmap.radius.tooltip'
+                | translate
+            "
+            [inline]="true"
+            [size]="18"
+            variant="grey"
+          ></safe-icon>
+          <input type="number" matInput formControlName="radius" />
+        </mat-form-field>
+
+        <!-- Blur -->
+        <mat-form-field appearance="outline">
+          <mat-label>
+            {{
+              'components.widget.settings.map.heatmap.blur.title' | translate
+            }}
+          </mat-label>
+          <safe-icon
+            matSuffix
+            icon="info_outline"
+            class="cursor-pointer"
+            [matTooltip]="
+              'components.widget.settings.map.heatmap.blur.tooltip' | translate
+            "
+            [inline]="true"
+            [size]="18"
+            variant="grey"
+          ></safe-icon>
+          <input type="number" matInput formControlName="blur" />
+        </mat-form-field>
+
+        <!-- Gradient -->
+        <h2>
+          {{
+            'components.widget.settings.map.heatmap.gradient.title' | translate
+          }}
+          <safe-icon
+            icon="info_outline"
+            class="cursor-pointer"
+            [matTooltip]="
+              'components.widget.settings.map.heatmap.gradient.tooltip'
+                | translate
+            "
+            [inline]="true"
+            [size]="18"
+            variant="grey"
+          ></safe-icon>
+        </h2>
+        <div class="flex flex-col gap-4">
+          <div
+            class="flex flex-col gap-2"
+            *ngFor="let control of gradientSteps; let i = index"
+            [formGroup]="control"
+          >
+            <safe-divider *ngIf="i > 0"></safe-divider>
+            <!-- Color -->
+            <mat-form-field appearance="outline">
+              <mat-label>
+                {{
+                  'components.widget.settings.map.heatmap.gradient.color'
+                    | translate
+                }}
+              </mat-label>
+              <input type="color" matInput formControlName="color" />
+            </mat-form-field>
+
+            <!-- Intensity -->
+            <mat-form-field appearance="outline">
+              <mat-label>
+                {{
+                  'components.widget.settings.map.heatmap.gradient.intensity'
+                    | translate
+                }}
+              </mat-label>
+              <input
+                type="number"
+                matInput
+                formControlName="intensity"
+                [min]="0"
+                [max]="heatmapForm.get('max')?.value"
+                [step]="0.1"
+              />
+            </mat-form-field>
+
+            <!-- Legend -->
+            <mat-form-field appearance="outline">
+              <mat-label>
+                {{
+                  'components.widget.settings.map.heatmap.gradient.legend'
+                    | translate
+                }}
+              </mat-label>
+              <input type="text" matInput formControlName="legend" />
+            </mat-form-field>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <!-- Map preview -->
+    <div class="lg:flex-1 max-lg:min-w-full h-80 lg:min-h-full">
+      <safe-map
+        class="w-full h-full"
+        [header]="false"
+        [settings]="mapSettings"
+      ></safe-map>
+    </div>
+  </div>
+</form>

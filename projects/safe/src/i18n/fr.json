@@ -1165,6 +1165,38 @@
 							"title": "Styles de calque"
 						}
 					},
+					"heatmap": {
+						"blur": {
+							"title": "Flou",
+							"tooltip": "À quel point les bords de la carte thermique sont flous"
+						},
+						"enabled": "Activer la carte thermique",
+						"gradient": {
+							"color": "Couleur",
+							"intensity": "Intensité",
+							"legend": "Légende",
+							"title": "Dégradé",
+							"tooltip": "Le dégradé utilisé pour afficher la carte de chaleur."
+						},
+						"max": {
+							"title": "Maximum",
+							"tooltip": "La valeur maximale pour l'intensité du point. Tous les points au-dessus de cette valeur seront affichés avec la même intensité"
+						},
+						"maxZoom": {
+							"title": "Zoom maximal",
+							"tooltip": "Le niveau de zoom maximal auquel l'intensité de la carte thermique n'est plus limitée à l'opacité minimale, mais suit plutôt le dégradé"
+						},
+						"minOpacity": {
+							"title": "Opacité minimale",
+							"tooltip": "L'opacité minimale pour les points de la carte thermique"
+						},
+						"properties": "Propriétés de la carte de densité",
+						"radius": {
+							"title": "Rayon",
+							"tooltip": "Le rayon de chaque 'point' de la carte thermique. Utilisez un petit rayon pour les cartes détaillées et un rayon plus grand pour les cartes moins détaillées"
+						},
+						"title": "Carte thermique"
+					},
 					"layers": {
 						"add": "Ajouter un nouveau calque",
 						"clorophlet": {

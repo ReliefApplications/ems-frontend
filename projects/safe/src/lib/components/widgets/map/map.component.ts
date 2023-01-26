@@ -9,7 +9,14 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 // import { takeUntil } from 'rxjs/operators';
 
 import 'leaflet.control.layers.tree';
-import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
+import {
+  complexGeoJSON,
+  cornerGeoJSON,
+  heatMapGeoJSON,
+  pointGeoJSON,
+} from './geojson-test';
+import { Feature, Point } from 'geojson';
+import { HeatmapSettingsI } from '../map-settings/map-forms';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
@@ -31,6 +38,15 @@ const MARKER_OPTIONS = {
 interface IMarkersLayerValue {
   [name: string]: any;
 }
+
+// /** Interface for the properties of the geoJSON */
+// type PropertiesI = {
+//   heatmap?: {
+//     id: string;
+//     intensity: number;
+//   };
+//   [key: string]: any;
+// } | null;
 
 /** Declares an interface that will be used in the overlays */
 interface LayerTree {
@@ -59,6 +75,135 @@ const BASEMAP_LAYERS: any = {
   'OSM:Streets': 'OSM:Streets',
 };
 
+/**
+ * Creates custom marker icon for the Leaflet map.
+ *
+ * @param color Color of the marker
+ * @param opacity Opacity of the marker
+ * @returns Custom marker icon
+ */
+const createCustomMarker = (color: string, opacity: number) => {
+  const markerHtmlStyles = `
+  background-color: ${color};
+  opacity: ${opacity};
+  width: 2em;
+  height: 2em;
+  display: block;
+  left: -0.5em;
+  top: -0.5em;
+  position: relative;
+  border-radius: 2em 2em 0;
+  transform: rotate(45deg);
+  border: 1px solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;`;
+
+  const icon = L.divIcon({
+    className: 'custom-marker',
+    iconAnchor: [0, 24],
+    labelAnchor: [-6, 0],
+    popupAnchor: [0, -36],
+    html: `<span data-attr="${color},${opacity}" style="${markerHtmlStyles}">
+      <div style="width: 0.7em; height: 0.7em; background-color: white; border-radius:100%"/>
+    </span>`,
+  });
+
+  return icon;
+};
+
+/** Options when creating a heatmap */
+type HeatmapOptions = {
+  minOpacity: number;
+  maxZoom: number;
+  max: number;
+  radius: number;
+  blur: number;
+  gradient: {
+    intensity: number;
+    color: string;
+    legend: string;
+  }[];
+};
+
+/**
+ * Creates heatmap from the given data.
+ *
+ * @param data Points to create the heatmap from
+ * @param options Options for the heatmap
+ * @returns Heatmap layer
+ */
+const createHeatmap = (data: Feature[], options?: Partial<HeatmapOptions>) => {
+  // return if any of the features is not a point
+  if (data.some((f) => f.geometry.type !== 'Point')) return null;
+
+  // parses the gradient array into an object expected by the heatmap plugin
+  const gradient = options?.gradient?.reduce(
+    (acc, { intensity, color }) => ({ ...acc, [intensity]: color }),
+    {} as { [intensity: number]: string }
+  );
+
+  const heatmap = L.heatLayer(
+    data.map((f) => {
+      const intensity = f.properties?.heatmap?.intensity || 1;
+      const coordinates = [...(f.geometry as Point).coordinates];
+
+      // reverse and wrap coordinates
+      return [coordinates[1] % 90, coordinates[0] % 180].concat(intensity);
+    }),
+    {
+      minOpacity: options?.minOpacity || 0.5,
+      maxZoom: options?.maxZoom || 18,
+      max: options?.max || 1,
+      radius: options?.radius || 25,
+      blur: options?.blur || 15,
+      gradient: gradient || {
+        0.4: 'blue',
+        0.6: 'cyan',
+        0.7: 'lime',
+        0.8: 'yellow',
+        1: 'red',
+      },
+    }
+  );
+
+  return heatmap;
+};
+
+/**
+ * Creates a legend for the heatmap.
+ *
+ * @param steps Gradient steps for the heatmap
+ * @returns The legend control
+ */
+const createHeatmapLegend = (steps: HeatmapOptions['gradient']) => {
+  const legendControl = L.control({ position: 'bottomright' });
+
+  legendControl.onAdd = () => {
+    const div = L.DomUtil.create('div', 'info legend');
+    const html = steps
+      .map(
+        ({ color, legend }) =>
+          `<span style="display:flex;align-items: center;gap:1em"><div style="background-color:${color}; width:1em; height:1em"></div>${legend}</span>`
+      )
+      .join(' ');
+
+    div.innerHTML = html;
+    div.style.padding = '0.5em';
+    div.style.backgroundColor = 'white';
+    div.style.border = '1px solid #ccc';
+    return div;
+  };
+
+  // prevent click events from propagating to the map
+  if (legendControl.getContainer())
+    legendControl.getContainer().addEventListener('click', (e: any) => {
+      L.DomEvent.stopPropagation(e);
+    });
+
+  return legendControl;
+};
+
 /** Component for the map widget */
 @Component({
   selector: 'safe-map',
@@ -80,6 +225,13 @@ export class SafeMapComponent
   private markersCategories: IMarkersLayerValue = [];
   private overlays: LayerTree = {};
   private layerControl: any;
+
+  // === HEATMAP ===
+  private heatmap = {
+    points: [] as Feature[],
+    layer: null as any,
+    legend: null as any,
+  };
 
   // === LEGEND ===
   private legendControl: any;
@@ -134,6 +286,12 @@ export class SafeMapComponent
     // Creates the map and adds all the controls we use.
     this.drawMap();
 
+    // Timeout to ensure the map is fully loaded.
+    setTimeout(() => {
+      this.map.invalidateSize();
+      this.setupHeatmap();
+    }, 500);
+
     // Gets the settings from the DB.
     // if (this.settings.query) {
     //   const builtQuery = this.queryBuilder.buildQuery(this.settings);
@@ -148,8 +306,6 @@ export class SafeMapComponent
     //   // Handles the settings data and changes the map accordingly.
     //   this.getData();
     // }
-
-    setTimeout(() => this.map.invalidateSize(), 100);
   }
 
   /**
@@ -225,7 +381,7 @@ export class SafeMapComponent
 
     // Set event listener to log map bounds when zooming, moving and resizing screen.
     this.map.on('moveend', () => {
-      console.log(this.map.getBounds());
+      // console.log(this.map.getBounds());
     });
 
     this.map.on('zoomend', () => {
@@ -267,6 +423,13 @@ export class SafeMapComponent
           label: 'Corner',
           layer: cornerGeoJSON,
           options: options2,
+        },
+        {
+          label: 'Heatmap',
+          layer: {
+            type: 'FeatureCollection',
+            features: heatMapGeoJSON.features.slice(0, 1000),
+          },
         },
       ],
     };
@@ -313,10 +476,9 @@ export class SafeMapComponent
             zoom > layerTree.options.visibilityRange.max ||
             zoom < layerTree.options.visibilityRange.min
           ) {
-            console.log('there ?');
             this.map.removeLayer(layerTree.layer);
           } else {
-            layerTree.layer.addTo(this.map);
+            if (layerTree.layer) layerTree.layer.addTo(this.map);
           }
         }
       }
@@ -327,13 +489,50 @@ export class SafeMapComponent
    * Create a new layer tree with duplicated layers
    *
    * @param layerTree The layers tree.
-   * @returns A tree wiht each layer duplicated to have a 'left' and 'right' clones
+   * @returns A tree with each layer duplicated to have a 'left' and 'right' clones
    */
   private addTreeToMap(layerTree: LayerTree): any {
     if (layerTree.children) {
-      layerTree.children.map((child: any) => {
+      layerTree.children.map((child) => {
         const newLayer = this.addTreeToMap(child);
-        child.layer = L.geoJSON(newLayer.layer).addTo(this.map);
+        child.layer = L.geoJSON(newLayer.layer, {
+          pointToLayer: (feature: any, latlng: any) => {
+            // Each point can have a heatmap property
+            // If they do they are grouped together
+            if (feature.properties?.heatmap) {
+              this.heatmap.points.push(feature);
+              if (this.heatmap.points.length === 1) {
+                // we create a single hidden marker that will be used to show/hide the heatmap
+                const icon = createCustomMarker('', 0);
+                const marker = new L.Marker(latlng).setIcon(icon);
+
+                // when marked is hidden, we remove the heatmap
+                marker.on('remove', () => {
+                  if (this.heatmap.layer)
+                    this.map.removeLayer(this.heatmap.layer);
+                });
+
+                // when marker is shown, we add the heatmap to the map
+                marker.on('add', () => {
+                  if (this.heatmap.layer) this.map.addLayer(this.heatmap.layer);
+                });
+
+                return marker;
+              }
+              return null;
+            }
+            // Circles are not supported by geojson
+            // We abstract them as markers with a radius property
+            else if (feature.properties?.radius) {
+              return new L.Circle(latlng, feature.properties.radius);
+            } else {
+              const color = feature.properties.color || '#3388ff';
+              const opacity = feature.properties.opacity || 1;
+              const icon = createCustomMarker(color, opacity);
+              return new L.Marker(latlng).setIcon(icon);
+            }
+          },
+        }).addTo(this.map);
       });
     } else {
       let layerFeature: any[];
@@ -458,6 +657,36 @@ export class SafeMapComponent
     this.basemap = L.esri.Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
+  }
+
+  /**
+   * Sets up heatmap
+   *
+   * @param hmConfig Heatmap settings (optional)
+   */
+  public setupHeatmap(hmConfig?: HeatmapSettingsI): void {
+    if (!this.map) return;
+
+    // if heatmap layer exists, remove it
+    if (this.heatmap.layer) this.map.removeLayer(this.heatmap.layer);
+    if (this.heatmap.legend) this.map.removeControl(this.heatmap.legend);
+
+    const settings = hmConfig ?? get(this.settings, 'heatmap');
+
+    // check if heatmap is enabled
+    if (!settings?.enabled) return;
+
+    const heatmap = createHeatmap(this.heatmap.points, settings);
+    if (heatmap) {
+      heatmap.addTo(this.map);
+      this.heatmap.layer = heatmap;
+    }
+
+    const legend = createHeatmapLegend(settings.gradient);
+    if (legend) {
+      legend.addTo(this.map);
+      this.heatmap.legend = legend;
+    }
   }
 }
 
@@ -739,7 +968,7 @@ export class SafeMapComponent
 //       this.markersLayer.clearLayers();
 //     }
 
-//     // Loops throught fields to get all markers
+//     // Loops through fields to get all markers
 //     this.markersCategories = [];
 //     for (const field in res.data) {
 //       if (Object.prototype.hasOwnProperty.call(res.data, field)) {
@@ -784,7 +1013,7 @@ export class SafeMapComponent
 //       });
 //     }
 
-//     // Loops throught online layers and add them to the map
+//     // Loops through online layers and add them to the map
 //     if (this.settings.onlineLayers) {
 //       this.settings.onlineLayers.map((layer: any) => {
 //         this.overlays[layer.title] = L.esri.featureLayer({
@@ -810,7 +1039,7 @@ export class SafeMapComponent
 //   }
 
 //   /**
-//    * Creates a marker with the data passed and adds it to the correspondant category.
+//    * Creates a marker with the data passed and adds it to the corespondent category.
 //    *
 //    * @param item data of the marker
 //    */
@@ -865,7 +1094,7 @@ export class SafeMapComponent
 //    * Creates a clorophlet using the passed data.
 //    *
 //    * @param value Properties of the clorophlet.
-//    * @param data Query data feeded to the clorophlet.
+//    * @param data Query data fed to the clorophlet.
 //    * @returns a geoJSON layer
 //    */
 //   private setClorophlet(value: any, data: any) {

@@ -9,6 +9,7 @@ import { MapGeneralModule } from './map-general/map-general.module';
 import { MapLayersModule } from './map-layers/map-layers.module';
 import { MapPropertiesModule } from './map-properties/map-properties.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MapHeatmapModule } from './map-heatmap/map-heatmap.module';
 
 /** Module for map settings component */
 @NgModule({
@@ -24,6 +25,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MapLayersModule,
     MapPropertiesModule,
     MatTooltipModule,
+    MapHeatmapModule,
   ],
   exports: [SafeMapSettingsComponent],
 })

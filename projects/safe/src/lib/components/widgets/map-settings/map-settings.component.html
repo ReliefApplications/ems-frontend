@@ -40,5 +40,25 @@
         <safe-map-layers [form]="tileForm"></safe-map-layers>
       </ng-template>
     </mat-tab>
+
+    <!-- HEATMAP CONFIGURATION -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon
+          icon="terrain"
+          [size]="24"
+          matTooltip="{{
+            'components.widget.settings.map.heatmap.title' | translate
+          }}"
+          matTooltipPosition="right"
+        ></safe-icon>
+        <span>{{
+          'components.widget.settings.map.heatmap.title' | translate
+        }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <safe-map-heatmap [form]="tileForm"></safe-map-heatmap>
+      </ng-template>
+    </mat-tab>
   </mat-tab-group>
 </ng-container>
