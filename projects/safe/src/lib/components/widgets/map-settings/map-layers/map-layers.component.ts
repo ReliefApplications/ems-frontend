@@ -2,7 +2,6 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { createLayerForm } from '../map-forms';
@@ -37,7 +36,7 @@ export class MapLayersComponent
   }
 
   // Table
-  public mapLayers: MatTableDataSource<MapLayerI> = new MatTableDataSource();
+  public mapLayers: MapLayerI; //use to get id list
   public mapId: string;
   public displayedColumns = ['name', 'actions'];
   public tablesId: string[] = [];
@@ -50,18 +49,24 @@ export class MapLayersComponent
   constructor(private dialog: MatDialog) {
     super();
     this.mapId = this.generateUniqueId();
+    this.mapLayers = {
+      id: this.mapId,
+      name: 'Map layer',
+      type: 'group',
+      show: true,
+      layers: new FormArray([]),
+    };
   }
 
   ngOnInit(): void {
-    this.mapLayers.data = this.layers.value;
+    this.mapLayers.layers = this.layers;
     this.form
       .get('layers')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.mapLayers.data = value;
+      .subscribe(() => {
+        this.mapLayers.layers = this.layers;
       });
-    this.tablesId = [this.mapId];
-    this.getTablesId(this.layers);
+    this.tablesId = this.UpdateTablesId(this.mapLayers).reverse();
   }
 
   /**
@@ -86,17 +91,17 @@ export class MapLayersComponent
    * fill the tablesId with all group layer id that have
    * the show property to true.
    *
-   * @param layers An array of layer
+   * @param layer An map layer object
+   * @returns The list of ids (need to be reversed to work with nested tables)
    */
-  private getTablesId(layers: FormArray): void {
-    for (const layer of layers.value) {
-      if (layer.type === 'group') {
-        if (layer.show) {
-          this.tablesId.push(layer.id);
-        }
-        this.getTablesId(layer.layers);
-      }
+  private UpdateTablesId(layer: MapLayerI): string[] {
+    let ids = [layer.id];
+    if (layer.type === 'group') {
+      layer.layers.value.forEach((subLayer: MapLayerI) => {
+        ids = ids.concat(this.UpdateTablesId(subLayer));
+      });
     }
+    return ids;
   }
 
   /**
@@ -126,8 +131,7 @@ export class MapLayersComponent
     const index = e.index;
     const deepLayer = this.getLayersAtDeep(deep);
     deepLayer.removeAt(index);
-    this.tablesId = [this.mapId];
-    this.getTablesId(this.layers);
+    this.tablesId = this.UpdateTablesId(this.mapLayers).reverse();
   }
 
   /** Opens a modal to add a new layer */
@@ -180,9 +184,9 @@ export class MapLayersComponent
       show: true,
       id,
     };
-    this.tablesId.push(id);
     deepLayer.removeAt(index);
     deepLayer.insert(index, createLayerForm(newGroup));
+    this.tablesId = this.UpdateTablesId(this.mapLayers).reverse();
   }
 
   /**
@@ -199,8 +203,9 @@ export class MapLayersComponent
       deepLayer.insert(index + i + 1, layerGroup.at(i));
     }
     deepLayer.removeAt(index);
-    this.tablesId = [this.mapId];
-    this.getTablesId(this.layers);
+    this.tablesId = this.tablesId = this.UpdateTablesId(
+      this.mapLayers
+    ).reverse();
   }
 
   /**
@@ -210,13 +215,8 @@ export class MapLayersComponent
    * @param element Element toggled
    */
   onToggleGroupLayer(element: MapLayerI) {
-    if (element.show) {
-      const index = this.tablesId.findIndex((x) => x === element.id);
-      this.tablesId.splice(index, 1);
-    } else {
-      this.tablesId.push(element.id);
-    }
     element.show = !element.show;
+    this.tablesId = this.UpdateTablesId(this.mapLayers).reverse();
   }
 
   /**
