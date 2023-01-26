@@ -47,6 +47,42 @@
         </div>
       </ng-template>
     </mat-tab>
+    <!-- FILTER -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon
+          icon="filter_list"
+          [size]="24"
+          matTooltip="{{'common.filter.one' | translate }}"
+          matTooltipPosition="right">
+        </safe-icon>
+        <span>{{'common.filter.one' | translate}}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div  class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+          <safe-layer-filter></safe-layer-filter>
+          <ng-container *ngTemplateOutlet="mapContent"></ng-container>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <!-- AGGREGATION -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon
+          icon="filter_none"
+          [size]="24"
+          matTooltip="{{'common.aggregation.one' | translate }}"
+          matTooltipPosition="right">
+        </safe-icon>
+        <span>{{'common.aggregation.one' | translate}}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <div  class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+          <safe-layer-aggregation></safe-layer-aggregation>
+          <ng-container *ngTemplateOutlet="mapContent"></ng-container>
+        </div>
+      </ng-template>
+    </mat-tab>
 
   </mat-tab-group>
 

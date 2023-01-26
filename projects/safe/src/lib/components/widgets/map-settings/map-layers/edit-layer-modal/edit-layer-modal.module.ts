@@ -7,6 +7,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeLayerPropertiesModule } from './layer-properties/layer-properties.module';
 import { SafeLayerDatasourceModule } from './layer-datasource/layer-datasource.module';
+import { SafeLayerFilterModule } from './layer-filter/layer-filter.module';
+import { SafeLayerAggregationModule } from './layer-aggregation/layer-aggregation.module';
 
 /** Module for the SafeEditLayerModalComponent */
 @NgModule({
@@ -19,6 +21,8 @@ import { SafeLayerDatasourceModule } from './layer-datasource/layer-datasource.m
     SafeIconModule,
     SafeLayerPropertiesModule,
     SafeLayerDatasourceModule,
+    SafeLayerFilterModule,
+    SafeLayerAggregationModule,
   ],
   exports: [SafeEditLayerModalComponent],
 })

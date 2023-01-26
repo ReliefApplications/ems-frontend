@@ -1,0 +1,21 @@
+<div class="flex flex-col">
+    <h2 class="flex flex-row items-center">
+        {{'common.filter.one' | translate}}
+        <safe-icon
+            icon="help_outline"
+            [size]="24"
+            matTooltip="{{'components.queryBuilder.filter.new' | translate }}"
+            matTooltipPosition="right">
+        </safe-icon>
+    </h2>
+    
+    <!-- Filter Buttons -->
+    <div class="flex flex-row space-x-4">
+        <safe-button category="secondary" variant="primary">
+            {{'components.queryBuilder.filter.and' | translate}}
+        </safe-button>
+        <safe-button category="secondary" variant="primary">
+            {{'components.queryBuilder.filter.or' | translate}}
+        </safe-button>
+    </div>
+</div>
