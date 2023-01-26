@@ -335,12 +335,12 @@ export class RoleResourcesComponent
         return;
       }
     }
-
     this.apollo
       .mutate<EditResourceAccessMutationResponse>({
-        mutation: isEqual(resource.id, this.openedResource?.id)
-          ? EDIT_RESOURCE_ACCESS
-          : EDIT_FULL_RESOURCE_ACCESS,
+        mutation:
+          !this.openedResource || isEqual(resource.id, this.openedResource?.id)
+            ? EDIT_RESOURCE_ACCESS
+            : EDIT_FULL_RESOURCE_ACCESS,
         variables: {
           id: resource.id,
           permissions: {

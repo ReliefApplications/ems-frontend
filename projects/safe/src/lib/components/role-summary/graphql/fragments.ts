@@ -6,6 +6,7 @@ export const SHORT_RESOURCE_FIELDS = gql`
     id
     name
     rolePermissions(role: $role)
+    fields
   }
 `;
 
