@@ -541,14 +541,20 @@ export class SafeApplicationService {
    *
    * @param pageId page id which will be duplicated
    * @param applicationId id of the application where it should be duplicated
+   * @param baseApplicationId id of the application the page originally belongs to
    */
-  duplicatePage(pageId: string, applicationId: string): void {
+  duplicatePage(
+    pageId: string,
+    applicationId: string,
+    baseApplicationId?: string
+  ): void {
     this.apollo
       .mutate<duplicatePageMutationResponse>({
         mutation: DUPLICATE_PAGE,
         variables: {
           id: pageId,
           application: applicationId,
+          baseApplication: baseApplicationId,
         },
       })
       .subscribe(({ errors, data }) => {

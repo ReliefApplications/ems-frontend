@@ -399,13 +399,14 @@ export class DashboardComponent
   }
 
   /**
-   * Duplicate page, in a new ( or same ) application
+   * Duplicate page (or step), in a new ( or same ) application
    *
-   * @param event duplication event
+   * @param event duplication event, contains the chosen application id
    */
   public onDuplicate(event: any): void {
-    if (this.dashboard?.page?.id) {
-      this.applicationService.duplicatePage(this.dashboard?.page?.id, event.id);
+    const id = this.dashboard?.page?.id ?? this.dashboard?.step?.id;
+    if (id) {
+      this.applicationService.duplicatePage(id, event.id, this.applicationId);
     }
   }
 
