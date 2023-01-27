@@ -75,7 +75,7 @@
             (cdkDropListDropped)="itemDrop.emit($event)"
           >
             <safe-layer-table
-              [layerList]="layer.layers.value"
+              [layerList]="layer.layers"
               [deep]="deep + ';' + i"
               [id]="layer.id"
               [allGroupsIds]="allGroupsIds"

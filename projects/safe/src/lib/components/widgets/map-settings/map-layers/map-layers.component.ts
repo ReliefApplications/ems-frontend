@@ -11,7 +11,7 @@ import { SafeEditLayerModalComponent } from './edit-layer-modal/edit-layer-modal
 export interface MapLayerI {
   name: string;
   type: string;
-  layers: FormArray;
+  layers: MapLayerI[];
   show: boolean;
   id: string;
 }
@@ -54,17 +54,18 @@ export class MapLayersComponent
       name: 'Map layer',
       type: 'group',
       show: true,
-      layers: new FormArray([]),
+      layers: [],
     };
   }
 
   ngOnInit(): void {
-    this.mapLayers.layers = this.layers;
+    this.mapLayers.layers = this.layers.value;
     this.form
       .get('layers')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.mapLayers.layers = this.layers;
+      .subscribe((value) => {
+        this.mapLayers.layers = value;
+        console.log('layer changes', this.layers);
       });
     this.tablesId = this.UpdateTablesId(this.mapLayers).reverse();
   }
@@ -95,9 +96,10 @@ export class MapLayersComponent
    * @returns The list of ids (need to be reversed to work with nested tables)
    */
   private UpdateTablesId(layer: MapLayerI): string[] {
-    let ids = [layer.id];
+    let ids: string[] = [];
     if (layer.type === 'group') {
-      layer.layers.value.forEach((subLayer: MapLayerI) => {
+      ids.push(layer.id);
+      layer.layers.forEach((subLayer: MapLayerI) => {
         ids = ids.concat(this.UpdateTablesId(subLayer));
       });
     }
@@ -116,7 +118,7 @@ export class MapLayersComponent
     deepList.shift();
     let deepLayers = this.layers;
     for (const index of deepList) {
-      deepLayers = deepLayers.at(parseInt(index, 10)).value.layers;
+      deepLayers = deepLayers.at(parseInt(index, 10)).value.layers as FormArray;
     }
     return deepLayers;
   }
@@ -177,15 +179,17 @@ export class MapLayersComponent
     const deepLayer = this.getLayersAtDeep(deep);
     const layer = deepLayer.at(index);
     const id = this.generateUniqueId();
-    const newGroup = {
+    const newGroup: MapLayerI = {
       name: 'layer group', // TODO add translation.
       type: 'group',
-      layers: new FormArray([layer]),
+      layers: [],
       show: true,
       id,
     };
     deepLayer.removeAt(index);
     deepLayer.insert(index, createLayerForm(newGroup));
+    const layerGroup = deepLayer.at(index).value.layers as FormArray;
+    layerGroup.push(layer.value); // Should be layer and not layer.value but generates problems with layer-table component.
     this.tablesId = this.UpdateTablesId(this.mapLayers).reverse();
   }
 
@@ -203,9 +207,7 @@ export class MapLayersComponent
       deepLayer.insert(index + i + 1, layerGroup.at(i));
     }
     deepLayer.removeAt(index);
-    this.tablesId = this.tablesId = this.UpdateTablesId(
-      this.mapLayers
-    ).reverse();
+    this.tablesId = this.UpdateTablesId(this.mapLayers).reverse();
   }
 
   /**
@@ -225,9 +227,7 @@ export class MapLayersComponent
    * @param e Event emitted when a layer is reordered
    */
   public onListDrop(e: CdkDragDrop<MapLayerI[]>) {
-    console.log('table id', this.tablesId);
     // Search and get container and previousContainer
-    console.log(e.container.id, e.previousContainer.id);
     let previousContainer: FormArray | null;
     if (e.previousContainer.id === this.mapId) {
       previousContainer = this.layers;
@@ -260,8 +260,11 @@ export class MapLayersComponent
       return;
     }
 
+    console.log('previous container', previousContainer);
+    console.log('container', container); // Should be a FormArray but get simple array
     previousContainer.removeAt(e.previousIndex);
     container.insert(e.currentIndex, valueToChange);
+    this.tablesId = this.UpdateTablesId(this.mapLayers).reverse();
   }
 
   /**
@@ -281,9 +284,12 @@ export class MapLayersComponent
     for (const layer of layers.value) {
       if (layer.type === 'group' && parentId !== layer.id) {
         if (layer.id === id) {
-          return layer.layers;
+          return layer.layers as FormArray;
         } else {
-          const recursiveResearch = this.findGroupFromId(layer.layers, id);
+          const recursiveResearch = this.findGroupFromId(
+            layer.layers as FormArray,
+            id
+          );
           if (recursiveResearch) {
             return recursiveResearch;
           }

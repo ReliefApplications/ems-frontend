@@ -1,12 +1,11 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormArray } from '@angular/forms';
 
 /** Interface for a map layer */
 export interface MapLayerI {
   name: string;
   type: string;
-  layers: FormArray;
+  layers: MapLayerI[];
   show: boolean;
   id: string;
 }
@@ -49,6 +48,7 @@ export class SafeLayerTableComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    console.log('LayerList:', this.layerList, this.id);
     this.connectedIds = this.layerList.map((layer) =>
       layer.id
         ? this.allGroupsIds.filter((id: string) => id !== layer.id)

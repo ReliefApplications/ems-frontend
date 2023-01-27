@@ -144,7 +144,9 @@ export const createLayerForm = (value?: MapLayerI): FormGroup =>
   fb.group({
     name: [get(value, 'name', null), [Validators.required]],
     type: [get(value, 'type', 'layer')],
-    layers: [get(value, 'layers', null)],
+    layers: fb.array(
+      get(value, 'layers', []).map((x: any) => createLayerForm(x))
+    ),
     show: [get(value, 'show', false)],
     id: [get(value, 'id', null)],
     defaultVisibility: [
