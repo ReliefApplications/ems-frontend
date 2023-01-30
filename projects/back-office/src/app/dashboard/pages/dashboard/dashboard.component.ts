@@ -404,9 +404,10 @@ export class DashboardComponent
    * @param event duplication event
    */
   public onDuplicate(event: any): void {
-    if (this.dashboard?.page?.id) {
-      this.applicationService.duplicatePage(this.dashboard?.page?.id, event.id);
-    }
+    this.applicationService.duplicatePage(event.id, {
+      pageId: this.dashboard?.page?.id,
+      stepId: this.dashboard?.step?.id,
+    });
   }
 
   /**

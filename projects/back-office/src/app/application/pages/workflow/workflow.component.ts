@@ -193,7 +193,9 @@ export class WorkflowComponent
    */
   public onDuplicate(event: any): void {
     if (this.workflow?.page?.id) {
-      this.applicationService.duplicatePage(this.workflow?.page?.id, event.id);
+      this.applicationService.duplicatePage(event.id, {
+        pageId: this.workflow?.page?.id,
+      });
     }
   }
 
