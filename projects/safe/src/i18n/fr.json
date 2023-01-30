@@ -1,6 +1,7 @@
 {
 	"common": {
 		"access": "Accès",
+		"accessDenied": "Accès refusé",
 		"add": "Ajouter",
 		"aggregation": {
 			"few": "Agrégations",
