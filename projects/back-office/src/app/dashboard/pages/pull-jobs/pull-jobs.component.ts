@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   Channel,
@@ -6,8 +6,9 @@ import {
   status,
   SafeConfirmService,
   SafeSnackBarService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
 import { GetPullJobsQueryResponse, GET_PULL_JOBS } from './graphql/queries';
 import {
   AddPullJobMutationResponse,
@@ -20,6 +21,9 @@ import {
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { EditPullJobModalComponent } from './components/edit-pull-job-modal/edit-pull-job-modal.component';
+import { ApolloQueryResult } from '@apollo/client';
+import { updateGivenQuery } from '../../../utils/updateQueries';
+import { takeUntil } from 'rxjs';
 
 /**
  * Limit of pull jobs shown at once.
@@ -34,7 +38,10 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './pull-jobs.component.html',
   styleUrls: ['./pull-jobs.component.scss'],
 })
-export class PullJobsComponent implements OnInit {
+export class PullJobsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   private pullJobsQuery!: QueryRef<GetPullJobsQueryResponse>;
@@ -60,6 +67,8 @@ export class PullJobsComponent implements OnInit {
     endCursor: '',
   };
 
+  // Token used in the module for the apollo config
+  private apolloClient = inject(APOLLO_OPTIONS);
   /**
    * PullJobsComponent constructor.
    *
@@ -75,7 +84,9 @@ export class PullJobsComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.pullJobsQuery = this.apollo.watchQuery<GetPullJobsQueryResponse>({
@@ -85,16 +96,14 @@ export class PullJobsComponent implements OnInit {
       },
     });
 
-    this.pullJobsQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.cachedPullJobs = data.pullJobs.edges.map((x) => x.node);
-      this.pullJobs.data = this.cachedPullJobs.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex,
-        ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
-      );
-      this.pageInfo.length = data.pullJobs.totalCount;
-      this.pageInfo.endCursor = data.pullJobs.pageInfo.endCursor;
-      this.loading = loading;
-    });
+    this.pullJobsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((results) => {
+        /**Value changes are only triggered for refetch(filtered case) or when first loading the component
+         * So we set the incomingDataAsSource as true as is fresh new data not coming from pagination
+         */
+        this.updatePullJobsQueryCache(results, true);
+      });
   }
 
   /**
@@ -105,16 +114,22 @@ export class PullJobsComponent implements OnInit {
   onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
     if (
-      e.pageIndex > e.previousPageIndex &&
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >= this.cachedPullJobs.length) ||
+        e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedPullJobs.length
     ) {
       this.loading = true;
-      this.pullJobsQuery.fetchMore({
-        variables: {
-          first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor,
-        },
-      });
+      this.pullJobsQuery
+        .fetchMore({
+          variables: {
+            first: ITEMS_PER_PAGE,
+            afterCursor: this.pageInfo.endCursor,
+          },
+        })
+        .then((results: ApolloQueryResult<GetPullJobsQueryResponse>) => {
+          this.updatePullJobsQueryCache(results);
+        });
     } else {
       this.pullJobs.data = this.cachedPullJobs.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex,
@@ -221,7 +236,7 @@ export class PullJobsComponent implements OnInit {
         confirmText: this.translate.instant('components.confirmModal.delete'),
         confirmColor: 'warn',
       });
-      dialogRef.afterClosed().subscribe((value) => {
+      dialogRef.afterClosed().subscribe((value: any) => {
         if (value) {
           this.apollo
             .mutate<DeletePullJobMutationResponse>({
@@ -335,5 +350,51 @@ export class PullJobsComponent implements OnInit {
           }
         }
       );
+  }
+
+  /**
+   * Updates the apollo client cache for a query and updates the
+   * pulljobs list of the component with the new values stored in the apollo client cache
+   * @param {ApolloQueryResult<GetPullJobsQueryResponse>} newResults
+   * @param {boolean} incomingDataAsSource Set incoming data as source data too
+   */
+  private updatePullJobsQueryCache(
+    newResults: ApolloQueryResult<GetPullJobsQueryResponse>,
+    incomingDataAsSource: boolean = false
+  ): void {
+    const newPullJobsQuery = updateGivenQuery(
+      this.apolloClient,
+      this.pullJobsQuery,
+      GET_PULL_JOBS,
+      newResults,
+      'pullJobs',
+      'id',
+      incomingDataAsSource
+    );
+    this.updateCachedPullJobsValues(newPullJobsQuery, newResults.loading);
+    console.log(newPullJobsQuery.pullJobs);
+    this.apolloClient.cache.writeQuery({
+      query: GET_PULL_JOBS,
+      data: newPullJobsQuery,
+    });
+  }
+
+  /**
+   * Updates local list with given data
+   * @param data New values to update forms
+   * @param loading Loading state
+   */
+  private updateCachedPullJobsValues(
+    data: GetPullJobsQueryResponse,
+    loading: boolean
+  ): void {
+    this.cachedPullJobs = data.pullJobs.edges.map((x) => x.node);
+    this.pullJobs.data = this.cachedPullJobs.slice(
+      ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+      ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+    );
+    this.pageInfo.length = data.pullJobs.totalCount;
+    this.pageInfo.endCursor = data.pullJobs.pageInfo.endCursor;
+    this.loading = loading;
   }
 }

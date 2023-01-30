@@ -1,5 +1,5 @@
-import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
 import {
@@ -20,6 +20,9 @@ import { AddFormModalComponent } from '../../../components/add-form-modal/add-fo
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
+import { updateGivenQuery } from '../../../utils/updateQueries';
+import { ApolloQueryResult } from '@apollo/client';
+import { takeUntil } from 'rxjs';
 
 /** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -60,6 +63,9 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
     endCursor: '',
   };
 
+  // Token used in the module for the apollo config
+  private apolloClient = inject(APOLLO_OPTIONS);
+
   /**
    * Forms page component
    *
@@ -94,17 +100,14 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
       },
     });
 
-    this.formsQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.cachedForms = data.forms.edges.map((x) => x.node);
-      this.forms.data = this.cachedForms.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      );
-      this.pageInfo.length = data.forms.totalCount;
-      this.pageInfo.endCursor = data.forms.pageInfo.endCursor;
-      this.loading = loading;
-      this.updating = loading;
-    });
+    this.formsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((results) => {
+        /**Value changes are only triggered for refetch(filtered case) or when first loading the component
+         * So we set the incomingDataAsSource as true as is fresh new data not coming from pagination
+         */
+        this.updateFormsQueryCache(results, true);
+      });
   }
 
   /**
@@ -116,7 +119,8 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >= this.cachedForms.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedForms.length
     ) {
@@ -168,25 +172,27 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
     if (refetch) {
       this.cachedForms = [];
       this.pageInfo.pageIndex = 0;
-      this.formsQuery
-        .refetch({
-          first: this.pageInfo.pageSize,
-          afterCursor: null,
-          filter: this.filter,
-          sortField: this.sort?.direction && this.sort.active,
-          sortOrder: this.sort?.direction,
-        })
-        .then(() => {
-          this.loading = false;
-          this.updating = false;
-        });
-    } else {
-      this.formsQuery.fetchMore({
-        variables: {
-          first: this.pageInfo.pageSize,
-          afterCursor: this.pageInfo.endCursor,
-        },
+      this.formsQuery.refetch({
+        first: this.pageInfo.pageSize,
+        afterCursor: null,
+        filter: this.filter,
+        sortField: this.sort?.direction && this.sort.active,
+        sortOrder: this.sort?.direction,
       });
+    } else {
+      this.formsQuery
+        .fetchMore({
+          variables: {
+            first: this.pageInfo.pageSize,
+            afterCursor: this.pageInfo.endCursor,
+            filter: this.filter,
+            sortField: this.sort?.direction && this.sort.active,
+            sortOrder: this.sort?.direction,
+          },
+        })
+        .then((results: ApolloQueryResult<GetFormsQueryResponse>) => {
+          this.updateFormsQueryCache(results);
+        });
     }
   }
 
@@ -295,5 +301,53 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
           });
       }
     });
+  }
+
+  /**
+   * Updates the apollo client cache for a query and updates the
+   * form list of the component with the new values stored in the apollo client cache
+   * @param {ApolloQueryResult<GetFormsQueryResponse>} newResults
+   * @param {boolean} incomingDataAsSource Set incoming data as source data too
+   */
+  private updateFormsQueryCache(
+    newResults: ApolloQueryResult<GetFormsQueryResponse>,
+    incomingDataAsSource: boolean = false
+  ): void {
+    const newFormsQuery = updateGivenQuery<GetFormsQueryResponse>(
+      this.apolloClient,
+      this.formsQuery,
+      GET_SHORT_FORMS,
+      newResults,
+      'forms',
+      'id',
+      incomingDataAsSource
+    );
+    this.updateCachedFormsValues(newFormsQuery, newResults.loading);
+    console.log(newFormsQuery.forms);
+    this.apolloClient.cache.writeQuery({
+      query: GET_SHORT_FORMS,
+      data: newFormsQuery,
+    });
+  }
+
+  /**
+   * Updates local list with given data
+   * @param data New values to update forms
+   * @param loading Loading state
+   */
+  private updateCachedFormsValues(
+    data: GetFormsQueryResponse,
+    loading: boolean
+  ): void {
+    this.cachedForms = data.forms.edges.map((x) => x.node);
+    this.forms.data = this.cachedForms.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.pageInfo.length = data.forms.totalCount;
+    this.pageInfo.endCursor = data.forms.pageInfo.endCursor;
+
+    this.loading = loading;
+    this.updating = loading;
   }
 }

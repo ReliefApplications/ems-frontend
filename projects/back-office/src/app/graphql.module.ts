@@ -12,7 +12,6 @@ import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { environment } from '../environments/environment';
 import { extractFiles } from 'extract-files';
-import get from 'lodash/get';
 
 /**
  * Configuration of the Apollo client.
@@ -68,113 +67,8 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
     ),
   ]);
 
-  const connectionMerge = (existing: any, incoming: any, options?: any) => {
-    console.log('Merging ...');
-    console.log(get(existing, 'edges.length', 0));
-    console.log(get(incoming, 'edges.length', 0));
-    console.log(options);
-    return {
-      edges: [...get(existing, 'edges', []), ...get(incoming, 'edges', [])],
-      pageInfo: get(incoming, 'pageInfo'),
-      totalCount: get(incoming, 'totalCount', 0),
-    };
-  };
-
   // Cache is not currently used, due to fetchPolicy values
-  const cache = new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          applications: {
-            keyArgs: false,
-            merge: (existing: any, incoming: any, options) =>
-              connectionMerge(existing, incoming, options),
-          },
-          forms: {
-            keyArgs: false,
-            merge: (existing: any, incoming: any) =>
-              connectionMerge(existing, incoming),
-          },
-          resources: {
-            keyArgs: false,
-            merge: (existing: any, incoming: any) =>
-              connectionMerge(existing, incoming),
-          },
-          apiConfigurations: {
-            keyArgs: false,
-            merge: (existing: any, incoming: any) =>
-              connectionMerge(existing, incoming),
-          },
-          pullJobs: {
-            keyArgs: false,
-            merge: (existing: any, incoming: any) =>
-              connectionMerge(existing, incoming),
-          },
-          referenceDatas: {
-            keyArgs: false,
-            merge: (existing: any, incoming: any) =>
-              connectionMerge(existing, incoming),
-          },
-          notifications: {
-            keyArgs: false,
-            merge: (existing: any, incoming: any) =>
-              connectionMerge(existing, incoming),
-          },
-        },
-      },
-      Resource: {
-        fields: {
-          records: {
-            keyArgs: false,
-            merge: (existing: any, incoming: any, options) =>
-              connectionMerge(existing, incoming, options),
-          },
-          layouts: {
-            keyArgs: false,
-            merge: (existing: any, incoming: any) =>
-              connectionMerge(existing, incoming),
-          },
-          aggregations: {
-            keyArgs: false,
-            merge: (existing: any, incoming: any) =>
-              connectionMerge(existing, incoming),
-          },
-        },
-      },
-      Form: {
-        fields: {
-          records: {
-            keyArgs: false,
-            merge: (existing: any, incoming: any) =>
-              connectionMerge(existing, incoming),
-          },
-        },
-      },
-      Application: {
-        fields: {
-          users: {
-            keyArgs: false,
-            merge: (existing: any, incoming: any) =>
-              connectionMerge(existing, incoming),
-          },
-          customNotifications: {
-            keyArgs: false,
-            merge: (existing: any, incoming: any) =>
-              connectionMerge(existing, incoming),
-          },
-        },
-      },
-      Role: {
-        fields: {
-          users: {
-            keyArgs: false,
-            merge: (existing: any, incoming: any) =>
-              connectionMerge(existing, incoming),
-          },
-        },
-      },
-    },
-  });
+  const cache = new InMemoryCache({});
 
   return {
     link,

@@ -1,5 +1,5 @@
-import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
 import {
@@ -28,6 +28,8 @@ import { DuplicateApplicationModalComponent } from '../../../components/duplicat
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
+import { ApolloQueryResult } from '@apollo/client';
+import { updateGivenQuery } from '../../../utils/updateQueries';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -65,6 +67,9 @@ export class ApplicationsComponent
     length: 0,
     endCursor: '',
   };
+
+  // Token used in the module for the apollo config
+  private apolloClient = inject(APOLLO_OPTIONS);
 
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;
@@ -120,17 +125,11 @@ export class ApplicationsComponent
       });
     this.applicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
-        console.log(data.applications.edges.length);
-        this.cachedApplications = data.applications.edges.map((x) => x.node);
-        this.applications.data = this.cachedApplications.slice(
-          this.pageInfo.pageSize * this.pageInfo.pageIndex,
-          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-        );
-        this.pageInfo.length = data.applications.totalCount;
-        this.pageInfo.endCursor = data.applications.pageInfo.endCursor;
-        this.loading = loading;
-        this.updating = false;
+      .subscribe((results: ApolloQueryResult<GetApplicationsQueryResponse>) => {
+        /**Value changes are only triggered for refetch(filtered case) or when first loading the component
+         * So we set the incomingDataAsSource as true as is fresh new data not coming from pagination
+         */
+        this.updateApplicationsQueryCache(results, true);
       });
   }
 
@@ -143,10 +142,12 @@ export class ApplicationsComponent
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        // Condition added so if we have next pageIndex already loaded to not fetch it again
+        e.pageIndex * this.pageInfo.pageSize >=
+          this.cachedApplications.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedApplications.length &&
-      this.cachedApplications.length < (e.pageIndex + 1) * e.pageSize
+      e.length > this.cachedApplications.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -197,26 +198,28 @@ export class ApplicationsComponent
       this.cachedApplications = [];
       this.pageInfo.pageIndex = 0;
       // Rebuild the query
-      this.applicationsQuery
-        .refetch({
-          first: this.pageInfo.pageSize,
-          afterCursor: null,
-          filter: this.filter,
-          sortField: this.sort?.direction && this.sort.active,
-          sortOrder: this.sort?.direction,
-        })
-        .then(() => {
-          this.loading = false;
-          this.updating = false;
-        });
+      this.applicationsQuery.refetch({
+        first: this.pageInfo.pageSize,
+        afterCursor: null,
+        filter: this.filter,
+        sortField: this.sort?.direction && this.sort.active,
+        sortOrder: this.sort?.direction,
+      });
     } else {
       // Fetch more records
-      this.applicationsQuery.fetchMore({
-        variables: {
-          first: this.pageInfo.pageSize,
-          afterCursor: this.pageInfo.endCursor,
-        },
-      });
+      this.applicationsQuery
+        .fetchMore({
+          variables: {
+            first: this.pageInfo.pageSize,
+            afterCursor: this.pageInfo.endCursor,
+            filter: this.filter,
+            sortField: this.sort?.direction && this.sort.active,
+            sortOrder: this.sort?.direction,
+          },
+        })
+        .then((results: ApolloQueryResult<GetApplicationsQueryResponse>) => {
+          this.updateApplicationsQueryCache(results);
+        });
     }
   }
 
@@ -383,5 +386,54 @@ export class ApplicationsComponent
    */
   onOpenApplication(id: string): void {
     this.router.navigate(['/applications', id]);
+  }
+
+  /**
+   * Updates the forms list and writes down the new merged values in the cache
+   * @param {ApolloQueryResult<GetApplicationsQueryResponse>} newResults Query result data to add
+   * @param {boolean} incomingDataAsSource Set incoming data as source data too
+   */
+  private updateApplicationsQueryCache(
+    newResults: ApolloQueryResult<GetApplicationsQueryResponse>,
+    incomingDataAsSource: boolean = false
+  ) {
+    const newApplicationsQuery = updateGivenQuery<GetApplicationsQueryResponse>(
+      this.apolloClient,
+      this.applicationsQuery,
+      GET_APPLICATIONS,
+      newResults,
+      'applications',
+      'id',
+      incomingDataAsSource
+    );
+    this.updateCachedApplicationsValues(
+      newApplicationsQuery,
+      newResults.loading
+    );
+    console.log(newApplicationsQuery.applications);
+    this.apolloClient.cache.writeQuery({
+      query: GET_APPLICATIONS,
+      data: newApplicationsQuery,
+    });
+  }
+
+  /**
+   * Updates local list with given data
+   * @param data New values to update forms
+   * @param loading Loading state
+   */
+  private updateCachedApplicationsValues(
+    data: GetApplicationsQueryResponse,
+    loading: boolean
+  ): void {
+    this.cachedApplications = data.applications.edges.map((x) => x.node);
+    this.applications.data = this.cachedApplications.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.pageInfo.length = data.applications.totalCount;
+    this.pageInfo.endCursor = data.applications.pageInfo.endCursor;
+    this.loading = loading;
+    this.updating = false;
   }
 }

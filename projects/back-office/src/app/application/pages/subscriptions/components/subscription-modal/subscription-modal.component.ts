@@ -1,5 +1,5 @@
-import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
+import { Component, inject, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -9,7 +9,13 @@ import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
-import { Application, Channel, Form, Subscription } from '@safe/builder';
+import {
+  Application,
+  Channel,
+  Form,
+  Subscription,
+  SafeUnsubscribeComponent,
+} from '@safe/builder';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   GetRoutingKeysQueryResponse,
@@ -17,9 +23,11 @@ import {
   GET_FORM_NAMES,
   GetFormsQueryResponse,
 } from '../../graphql/queries';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, takeUntil } from 'rxjs/operators';
 import { MatLegacyAutocomplete as MatAutocomplete } from '@angular/material/legacy-autocomplete';
 import get from 'lodash/get';
+import { ApolloQueryResult } from '@apollo/client';
+import { updateGivenQuery } from 'projects/back-office/src/app/utils/updateQueries';
 
 /** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -32,7 +40,10 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './subscription-modal.component.html',
   styleUrls: ['./subscription-modal.component.scss'],
 })
-export class SubscriptionModalComponent implements OnInit {
+export class SubscriptionModalComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === REACTIVE FORM ===
   subscriptionForm: UntypedFormGroup = new UntypedFormGroup({});
 
@@ -49,6 +60,9 @@ export class SubscriptionModalComponent implements OnInit {
     hasNextPage: true,
   };
   private applicationsLoading = true;
+
+  // Token used in the module for the apollo config
+  private apolloClient = inject(APOLLO_OPTIONS);
 
   @ViewChild('applicationSelect') applicationSelect?: MatAutocomplete;
 
@@ -88,7 +102,9 @@ export class SubscriptionModalComponent implements OnInit {
       channels: Channel[];
       subscription?: Subscription;
     }
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.subscriptionForm = this.formBuilder.group({
@@ -122,21 +138,14 @@ export class SubscriptionModalComponent implements OnInit {
       });
 
     // this.applications$ = this.applications.asObservable();
-    this.applicationsQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.applications.next(
-        data.applications.edges
-          .map((x) => x.node)
-          .filter((x) => (x.channels ? x.channels.length > 0 : false))
-      );
-      this.applicationsPageInfo = data.applications.pageInfo;
-      this.applicationsLoading = loading;
-      this.applications$ =
-        this.subscriptionForm.controls.routingKey.valueChanges.pipe(
-          startWith(''),
-          map((value) => (typeof value === 'string' ? value : value.name)),
-          map((x) => this.filter(x))
-        );
-    });
+    this.applicationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((results) => {
+        /**Value changes are only triggered for refetch(filtered case) or when first loading the component
+         * So we set the incomingDataAsSource as true as is fresh new data not coming from pagination
+         */
+        this.updateApplicationsQueryCache(results, true);
+      });
 
     this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORM_NAMES,
@@ -192,12 +201,16 @@ export class SubscriptionModalComponent implements OnInit {
     ) {
       if (!this.applicationsLoading && this.applicationsPageInfo.hasNextPage) {
         this.applicationsLoading = true;
-        this.applicationsQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.applicationsPageInfo.endCursor,
-          },
-        });
+        this.applicationsQuery
+          .fetchMore({
+            variables: {
+              first: ITEMS_PER_PAGE,
+              afterCursor: this.applicationsPageInfo.endCursor,
+            },
+          })
+          .then((results: ApolloQueryResult<GetRoutingKeysQueryResponse>) => {
+            this.updateApplicationsQueryCache(results);
+          });
       }
     }
   }
@@ -222,5 +235,55 @@ export class SubscriptionModalComponent implements OnInit {
         ],
       },
     });
+  }
+
+  /**
+   * Updates the forms list and writes down the new merged values in the cache
+   * @param {ApolloQueryResult<GetRoutingKeysQueryResponse>} newResults Query result data to add
+   * @param {boolean} incomingDataAsSource Set incoming data as source data too
+   */
+  private updateApplicationsQueryCache(
+    newResults: ApolloQueryResult<GetRoutingKeysQueryResponse>,
+    incomingDataAsSource: boolean = false
+  ) {
+    const newApplicationsQuery = updateGivenQuery<GetRoutingKeysQueryResponse>(
+      this.apolloClient,
+      this.applicationsQuery,
+      GET_ROUTING_KEYS,
+      newResults,
+      'applications',
+      'id',
+      incomingDataAsSource
+    );
+    this.updateApplicationsValues(newApplicationsQuery, newResults.loading);
+    console.log(newApplicationsQuery.applications);
+    this.apolloClient.cache.writeQuery({
+      query: GET_ROUTING_KEYS,
+      data: newApplicationsQuery,
+    });
+  }
+
+  /**
+   * Updates local list with given data
+   * @param data New values to update forms
+   * @param loading Loading state
+   */
+  private updateApplicationsValues(
+    data: GetRoutingKeysQueryResponse,
+    loading: boolean
+  ) {
+    this.applications.next(
+      data.applications.edges
+        .map((x) => x.node)
+        .filter((x) => (x.channels ? x.channels.length > 0 : false))
+    );
+    this.applicationsPageInfo = data.applications.pageInfo;
+    this.applicationsLoading = loading;
+    this.applications$ =
+      this.subscriptionForm.controls.routingKey.valueChanges.pipe(
+        startWith(''),
+        map((value) => (typeof value === 'string' ? value : value.name)),
+        map((x) => this.filter(x))
+      );
   }
 }

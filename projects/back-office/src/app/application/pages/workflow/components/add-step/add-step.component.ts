@@ -1,5 +1,5 @@
-import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -16,11 +16,13 @@ import {
   SafeWorkflowService,
 } from '@safe/builder';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from '../../graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from '../../graphql/queries';
 import { AddFormModalComponent } from '../../../../../components/add-form-modal/add-form-modal.component';
 import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
+import { ApolloQueryResult } from '@apollo/client';
+import { updateGivenQuery } from 'projects/back-office/src/app/utils/updateQueries';
 
 /** Default items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -54,6 +56,9 @@ export class AddStepComponent
   // === REACTIVE FORM ===
   public stepForm: UntypedFormGroup = new UntypedFormGroup({});
   public stage = 1;
+
+  // Token used in the module for the apollo config
+  private apolloClient = inject(APOLLO_OPTIONS);
 
   /**
    * Add step page component
@@ -94,11 +99,14 @@ export class AddStepComponent
         });
 
         this.forms$ = this.forms.asObservable();
-        this.formsQuery.valueChanges.subscribe(({ data, loading }) => {
-          this.forms.next(data.forms.edges.map((x) => x.node));
-          this.pageInfo = data.forms.pageInfo;
-          this.loadingMore = loading;
-        });
+        this.formsQuery.valueChanges
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((results) => {
+            /**Value changes are only triggered for refetch(filtered case) or when first loading the component
+             * So we set the incomingDataAsSource as true as is fresh new data not coming from pagination
+             */
+            this.updateFormsQueryCache(results, true);
+          });
         contentControl.setValidators([Validators.required]);
         contentControl.updateValueAndValidity();
       } else {
@@ -248,8 +256,53 @@ export class AddStepComponent
     if (nextPage) {
       variables.afterCursor = this.pageInfo.endCursor;
     }
-    this.formsQuery.fetchMore({
-      variables,
+    console.log(variables);
+    if (filter) {
+      this.formsQuery.refetch(variables);
+    } else {
+      this.formsQuery
+        .fetchMore({
+          variables,
+        })
+        .then((results: ApolloQueryResult<GetFormsQueryResponse>) => {
+          this.updateFormsQueryCache(results);
+        });
+    }
+  }
+
+  /**
+   * Updates the forms list and writes down the new merged values in the cache
+   * @param {ApolloQueryResult<GetFormsQueryResponse>} newResults Query result data to add
+   * @param {boolean} incomingDataAsSource Set incoming data as source data too
+   */
+  private updateFormsQueryCache(
+    newResults: ApolloQueryResult<GetFormsQueryResponse>,
+    incomingDataAsSource: boolean = false
+  ) {
+    const newFormsQuery = updateGivenQuery<GetFormsQueryResponse>(
+      this.apolloClient,
+      this.formsQuery,
+      GET_FORMS,
+      newResults,
+      'forms',
+      'id',
+      incomingDataAsSource
+    );
+    this.updateFormsValues(newFormsQuery, newResults.loading);
+    console.log(newFormsQuery.forms);
+    this.apolloClient.cache.writeQuery({
+      query: GET_FORMS,
+      data: newFormsQuery,
     });
+  }
+  /**
+   * Updates local list with given data
+   * @param data New values to update forms
+   * @param loading Loading state
+   */
+  private updateFormsValues(data: GetFormsQueryResponse, loading: boolean) {
+    this.forms.next(data.forms.edges.map((x) => x.node));
+    this.pageInfo = data.forms.pageInfo;
+    this.loadingMore = loading;
   }
 }
