@@ -80,6 +80,7 @@ export class SafeMapComponent
   private markersCategories: IMarkersLayerValue = [];
   private overlays: LayerTree = {};
   private layerControl: any;
+  private addressMarker: any;
 
   // === LEGEND ===
   private legendControl: any;
@@ -220,11 +221,16 @@ export class SafeMapComponent
     this.getSearchbarControl().addTo(this.map);
 
     // Creates a pane for markers so they are always shown in top, used in the marker options;
-    // this.map.createPane('markers');
-    // this.map.getPane('markers').style.zIndex = 650;
+    this.map.createPane('markers');
+    this.map.getPane('markers').style.zIndex = 650;
 
     // Set event listener to log map bounds when zooming, moving and resizing screen.
     this.map.on('moveend', () => {
+      // If searched address marker exists, if we move, the item should disappear
+      if (this.addressMarker) {
+        this.map.removeLayer(this.addressMarker);
+        this.addressMarker = null;
+      }
       console.log(this.map.getBounds());
     });
 
@@ -439,6 +445,11 @@ export class SafeMapComponent
           <b>${'longitude: '}</b>${lng}</p>`);
         results.addLayer(marker);
         marker.openPopup();
+        // Use setTimeout to prevent the marker to be removed while
+        // the map moves to the searched address and is re-centred
+        setTimeout(() => {
+          this.addressMarker = marker;
+        }, 1000);
       }
     });
 
