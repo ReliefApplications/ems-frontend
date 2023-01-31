@@ -1,0 +1,101 @@
+<div
+  class="border-2 border-opacity-20 border-black rounded-md bg-white"
+  *ngIf="layers.length > 0"
+>
+  <!-- Button to open legend -->
+  <button class="bg-none p-2" *ngIf="!clicked" (click)="clicked = true">
+    <safe-icon icon="list"></safe-icon>
+  </button>
+
+  <!-- Legend container -->
+  <div class="flex flex-col w-48" *ngIf="clicked">
+    <header
+      class="flex px-2 py-1 justify-between items-center border-opacity-20 border-b-2"
+    >
+      <h2 class="m-0">Legend</h2>
+      <button class="bg-none p-0" (click)="clicked = false">
+        <safe-icon icon="close"></safe-icon>
+      </button>
+    </header>
+    <div class="max-h-80 overflow-y-auto p-2">
+      <div *ngFor="let layer of layers">
+        <h3 class="font-black mb-0">{{ layer.name }}</h3>
+        <div
+          *ngFor="let legend of layer.legends"
+          class="ml-2 [&>*]:m-2"
+          (click)="onLayerClick(legend.layer)"
+        >
+          <h3 class="mb-0">{{ legend.title }}</h3>
+          <!-- Markers -->
+          <div *ngIf="legend.type === 'marker'" class="flex flex-col gap-1">
+            <div
+              *ngFor="let item of legend.items"
+              class="flex gap-3 items-center"
+            >
+              <!-- @AntoineRelief not really sure how to handle different market icons,
+                will we store those or use some icon lib? -->
+              <safe-icon
+                [ngStyle]="{ color: item.color }"
+                class="safe-marker-icon"
+                [icon]="item.icon"
+              ></safe-icon>
+              <span>{{ item.label }}</span>
+            </div>
+          </div>
+          <!-- Polygon -->
+          <div *ngIf="legend.type === 'polygon'" class="flex flex-col gap-1">
+            <div
+              *ngFor="let item of legend.items"
+              class="flex gap-3 items-center"
+            >
+              <div
+                class="w-6 h-6 rounded-sm"
+                [ngStyle]="{ 'background-color': item.color }"
+              ></div>
+              {{ item.label }}
+            </div>
+          </div>
+          <!-- Clusters -->
+          <div *ngIf="legend.type === 'cluster'" class="flex flex-col gap-1">
+            <div class="grid grid-cols-2 w-fit gap-2">
+              <ng-container *ngFor="let item of legend.sizes">
+                <div class="w-full h-full flex items-center justify-center">
+                  <div
+                    class="rounded-full"
+                    [ngStyle]="{
+                      'background-color': legend.color,
+                      width: item.radius + 'px',
+                      height: item.radius + 'px'
+                    }"
+                  ></div>
+                </div>
+                <span>{{ item.label }}</span>
+              </ng-container>
+            </div>
+          </div>
+          <!-- Heatmap -->
+          <div *ngIf="legend.type === 'heatmap'" class="flex gap-1">
+            <div
+              class="heatmap-legend h-52 w-8 bg-slate-600"
+              [ngStyle]="{ background: getCssGradient(legend.gradient) }"
+            ></div>
+            <div class="h-52 relative flex-grow">
+              <span
+                *ngFor="let color of legend.gradient; let i = index"
+                [ngStyle]="{
+                  left: '10px',
+                  top:
+                    i === 0
+                      ? '0'
+                      : 208 * (color.value - legend.gradient[0].value) + 'px'
+                }"
+                class="absolute"
+                >{{ color.label }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,9 +2,9 @@ import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { createLayerForm } from '../../map-forms';
-import { MapLayerI } from '../map-layers.component';
 import { Options } from '@angular-slider/ngx-slider';
 import get from 'lodash/get';
+import { LayerFormI } from '../../../map/utils/layer';
 
 declare let L: any;
 
@@ -77,7 +77,7 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
    */
   constructor(
     @Inject('environment') environment: any,
-    @Inject(MAT_DIALOG_DATA) public layer?: MapLayerI
+    @Inject(MAT_DIALOG_DATA) public layer?: LayerFormI
   ) {
     this.form = createLayerForm(layer);
     this.esriApiKey = environment.esriApiKey;

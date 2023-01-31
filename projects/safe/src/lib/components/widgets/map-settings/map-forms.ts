@@ -4,7 +4,7 @@ import {
 } from '../../query-builder/query-builder-forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
-import { MapLayerI } from './map-layers/map-layers.component';
+import { LayerFormI } from '../map/utils/layer';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 /** Interface for the maps settings */
@@ -14,7 +14,7 @@ export interface MapSettingsI {
   basemap: string;
   centerLong: number;
   centerLat: number;
-  layers: MapLayerI[];
+  layers: LayerFormI[];
 }
 
 /** Angular Form Builder */
@@ -140,7 +140,7 @@ export const markerRuleForm = (value?: any): FormGroup =>
  * @param value layer value ( optional )
  * @returns new form group
  */
-export const createLayerForm = (value?: MapLayerI): FormGroup =>
+export const createLayerForm = (value?: LayerFormI): FormGroup =>
   fb.group({
     name: [get(value, 'name', null), [Validators.required]],
     defaultVisibility: [

@@ -5,13 +5,9 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { LayerFormI } from '../../map/utils/layer';
 import { createLayerForm } from '../map-forms';
 import { SafeEditLayerModalComponent } from './edit-layer-modal/edit-layer-modal.component';
-
-/** Interface for a map layer */
-export interface MapLayerI {
-  name: string;
-}
 
 /**
  * Layers configuration component of Map Widget.
@@ -33,7 +29,7 @@ export class MapLayersComponent
   }
 
   // Table
-  public mapLayers: MatTableDataSource<MapLayerI> = new MatTableDataSource();
+  public mapLayers: MatTableDataSource<LayerFormI> = new MatTableDataSource();
   public displayedColumns = ['name', 'actions'];
 
   /**
@@ -66,7 +62,7 @@ export class MapLayersComponent
 
   /** Opens a modal to add a new layer */
   public onAddLayer() {
-    const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
+    const dialogRef: MatDialogRef<SafeEditLayerModalComponent, LayerFormI> =
       this.dialog.open(SafeEditLayerModalComponent, { disableClose: true });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -81,7 +77,7 @@ export class MapLayersComponent
    * @param index Index of the layer to edit
    */
   public onEditLayer(index: number) {
-    const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
+    const dialogRef: MatDialogRef<SafeEditLayerModalComponent, LayerFormI> =
       this.dialog.open(SafeEditLayerModalComponent, {
         disableClose: true,
         data: this.layers.at(index).value,
@@ -98,7 +94,7 @@ export class MapLayersComponent
    *
    * @param e Event emitted when a layer is reordered
    */
-  public onListDrop(e: CdkDragDrop<MapLayerI[]>) {
+  public onListDrop(e: CdkDragDrop<LayerFormI[]>) {
     const movedElement = this.layers.at(e.previousIndex);
     this.layers.removeAt(e.previousIndex);
     this.layers.insert(e.currentIndex, movedElement);

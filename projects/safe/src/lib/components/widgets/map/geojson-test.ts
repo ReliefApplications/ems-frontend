@@ -153,3 +153,100 @@ export const cornerGeoJSON = {
     },
   ],
 };
+
+/** Mock for the map legend */
+export const testLegend = [
+  {
+    type: 'marker',
+    title: 'Marker',
+    items: [
+      {
+        label: 'Item 1',
+        color: '#177E89',
+        icon: 'ac_unit',
+      },
+      {
+        label: 'Item 2',
+        color: '#084C61',
+        icon: 'bubble_chart',
+      },
+      {
+        label: 'Item 3',
+        color: '#DB3A34',
+        icon: 'monetization_on',
+      },
+      {
+        label: 'Item 4',
+        color: '#FFC857',
+        icon: 'flare',
+      },
+    ],
+  },
+  {
+    type: 'polygon',
+    title: 'Polygon',
+    items: [
+      {
+        label: 'Item 1',
+        color: '#084C61',
+      },
+      {
+        label: 'Item 2',
+        color: '#DB3A34',
+      },
+      {
+        label: 'Item 3',
+        color: '#FFC857',
+      },
+      {
+        label: 'Item 4',
+        color: '#323031',
+      },
+    ],
+  },
+  {
+    type: 'cluster',
+    title: 'Cluster',
+    color: '#084C61',
+    sizes: [
+      {
+        label: 'Small',
+        radius: 10,
+      },
+      {
+        label: 'Medium',
+        radius: 20,
+      },
+      {
+        label: 'Big',
+        radius: 30,
+      },
+    ],
+  },
+  {
+    type: 'heatmap',
+    title: 'Heatmap',
+    gradient: [
+      {
+        value: 0.2,
+        color: '#177E89',
+        label: 'Item 1',
+      },
+      {
+        value: 0.4,
+        color: '#084C61',
+        label: 'Item 2',
+      },
+      {
+        value: 0.7,
+        color: '#FFC857',
+        label: 'Item 3',
+      },
+      {
+        value: 1,
+        color: '#DB3A34',
+        label: 'Item 4',
+      },
+    ],
+  },
+];

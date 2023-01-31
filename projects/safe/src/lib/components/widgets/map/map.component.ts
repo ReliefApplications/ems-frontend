@@ -10,11 +10,15 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 
 import 'leaflet.control.layers.tree';
 import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
+import { Layer, LayerLegendI } from './utils/layer';
+import { DomService } from '../../../services/dom/dom.service';
+import { MapLegendComponent } from './map-legend/map-legend.component';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
 //import 'leaflet.markercluster';
 declare let L: any;
+// import L from 'leaflet';
 
 /** Default options for the marker */
 const MARKER_OPTIONS = {
@@ -100,11 +104,13 @@ export class SafeMapComponent
    * @param environment platform environment
    * @param apollo Apollo client
    * @param queryBuilder The queryBuilder service
+   * @param domService Shared dom service
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private domService: DomService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -149,7 +155,9 @@ export class SafeMapComponent
     //   this.getData();
     // }
 
-    setTimeout(() => this.map.invalidateSize(), 100);
+    setTimeout(() => {
+      this.map.invalidateSize();
+    }, 100);
   }
 
   /**
@@ -211,6 +219,8 @@ export class SafeMapComponent
       worldCopyJump: true,
       zoom: get(this.settings, 'zoom', 3),
     }).setView([centerLat, centerLong], get(this.settings, 'zoom', 3));
+
+    this.getMapLegendControl(Layer.getLegends()).addTo(this.map);
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(this.settings.basemap);
@@ -458,6 +468,50 @@ export class SafeMapComponent
     this.basemap = L.esri.Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
+  }
+
+  /**
+   * Creates the map legend control
+   *
+   * @param legends legends to be displayed
+   * @returns the legend control
+   */
+  private getMapLegendControl(legends: LayerLegendI[]) {
+    const ctrl = new L.control({ position: 'bottomright' });
+    ctrl.onAdd = () => {
+      const div = L.DomUtil.create('div', 'info legend');
+      const legend = this.domService.appendComponentToBody(
+        MapLegendComponent,
+        div
+      );
+
+      const instance: MapLegendComponent = legend.instance;
+      instance.layers = [{ name: 'test', legends }];
+
+      // const instance: SafeMapLegendComponent = legend.instance;
+      // // inits the map with the value of the question
+      // if (question.value) instance.data = question.value;
+
+      // // updates the question value when the map changes
+      // instance.mapChange.subscribe((res) => {
+      //   question.value = res;
+      // });
+      return div;
+    };
+    const container = ctrl.getContainer();
+    if (container) {
+      // prevent click events from propagating to the map
+      container.addEventListener('click', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
+
+      // prevent mouse wheel events from propagating to the map
+      container.addEventListener('wheel', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
+    }
+
+    return ctrl;
   }
 }
 
