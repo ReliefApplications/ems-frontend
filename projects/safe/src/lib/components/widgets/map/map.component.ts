@@ -10,6 +10,7 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 
 import 'leaflet.control.layers.tree';
 import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
+import 'node_modules/leaflet-measure/dist/leaflet-measure.fr.js';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
@@ -63,7 +64,7 @@ const BASEMAP_LAYERS: any = {
 @Component({
   selector: 'safe-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss'],
+  styleUrls: ['../../../style/map.scss', './map.component.scss'],
 })
 export class SafeMapComponent
   extends SafeUnsubscribeComponent
@@ -219,17 +220,21 @@ export class SafeMapComponent
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(this.settings.basemap);
 
+    // Add zoom control
+    L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
+
+    // Add leaflet measure control
     const measureControl = new L.Control.Measure({
-      position: 'topleft',
+      position: 'bottomleft',
       primaryLengthUnit: 'kilometers',
       primaryAreaUnit: 'sqmeters',
       activeColor: this.primaryColor,
       completedColor: this.primaryColor,
+      localization: 'fr',
+      // strings: L.Measured.strings.fr,
     });
     measureControl.addTo(this.map);
 
-    // Adds all the controls we use to the map
-    L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
     this.getSearchbarControl().addTo(this.map);
 
     // Creates a pane for markers so they are always shown in top, used in the marker options;
