@@ -20,6 +20,7 @@ import {
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { updateQueryUniqueValues } from '../../utils/update-queries';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.
@@ -63,6 +64,7 @@ export class SafeApplicationDropdownComponent
   public selectedApplications: Application[] = [];
   private applications = new BehaviorSubject<Application[]>([]);
   public applications$!: Observable<Application[]>;
+  private cachedApplications: Application[] = [];
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   private pageInfo = {
     endCursor: '',
@@ -118,15 +120,7 @@ export class SafeApplicationDropdownComponent
     this.applicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data, loading }) => {
-        this.applications.next(data.applications.edges.map((x) => x.node));
-        if (this.selectedApplications.length > 0) {
-          const applicationsIds = this.applications.getValue().map((x) => x.id);
-          this.selectedApplications = this.selectedApplications.filter(
-            (x) => applicationsIds.indexOf(x.id) < 0
-          );
-        }
-        this.pageInfo = data.applications.pageInfo;
-        this.loading = loading;
+        this.updateValues(data, loading);
       });
   }
 
@@ -165,13 +159,31 @@ export class SafeApplicationDropdownComponent
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        this.applicationsQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor,
-          },
-        });
+        this.applicationsQuery
+          .fetchMore({
+            variables: {
+              first: ITEMS_PER_PAGE,
+              afterCursor: this.pageInfo.endCursor,
+            },
+          })
+          .then((results) => this.updateValues(results.data, results.loading));
       }
     }
+  }
+
+  private updateValues(data: GetApplicationsQueryResponse, loading: boolean) {
+    this.cachedApplications = updateQueryUniqueValues(
+      this.cachedApplications,
+      data.applications.edges.map((x) => x.node)
+    );
+    this.applications.next(this.cachedApplications);
+    if (this.selectedApplications.length > 0) {
+      const applicationsIds = this.applications.getValue().map((x) => x.id);
+      this.selectedApplications = this.selectedApplications.filter(
+        (x) => applicationsIds.indexOf(x.id) < 0
+      );
+    }
+    this.pageInfo = data.applications.pageInfo;
+    this.loading = loading;
   }
 }

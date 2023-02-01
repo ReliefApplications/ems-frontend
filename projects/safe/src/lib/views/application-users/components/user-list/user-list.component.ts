@@ -9,6 +9,7 @@ import {
   GetApplicationUsersQueryResponse,
   GET_APPLICATION_USERS,
 } from '../../graphql/queries';
+import { updateQueryUniqueValues } from '../../../../utils/update-queries';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TranslateService } from '@ngx-translate/core';
@@ -108,18 +109,7 @@ export class UserListComponent
           this.usersQuery.valueChanges
             .pipe(takeUntil(this.destroy$))
             .subscribe(({ data, loading }) => {
-              this.cachedUsers = data.application.users.edges.map(
-                (x) => x.node
-              );
-              this.users.data = this.cachedUsers.slice(
-                this.pageInfo.pageSize * this.pageInfo.pageIndex,
-                this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-              );
-              this.pageInfo.length = data.application.users.totalCount;
-              this.pageInfo.endCursor =
-                data.application.users.pageInfo.endCursor;
-              this.loading = loading;
-              this.updating = false;
+              this.updateValues(data, loading);
             });
         }
       });
@@ -134,7 +124,8 @@ export class UserListComponent
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >= this.cachedUsers.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedUsers.length
     ) {
@@ -166,23 +157,19 @@ export class UserListComponent
     if (refetch) {
       this.cachedUsers = [];
       this.pageInfo.pageIndex = 0;
-      this.usersQuery
-        .refetch({
-          first: this.pageInfo.pageSize,
-          afterCursor: null,
-        })
-        .then(() => {
-          this.loading = false;
-          this.updating = false;
-        });
-    } else {
-      // TOCHECK
-      this.usersQuery.fetchMore({
-        variables: {
-          first: this.pageInfo.pageSize,
-          afterCursor: this.pageInfo.endCursor,
-        },
+      this.usersQuery.refetch({
+        first: this.pageInfo.pageSize,
+        afterCursor: null,
       });
+    } else {
+      this.usersQuery
+        .fetchMore({
+          variables: {
+            first: this.pageInfo.pageSize,
+            afterCursor: this.pageInfo.endCursor,
+          },
+        })
+        .then((results) => this.updateValues(results.data, results.loading));
     }
   }
 
@@ -269,5 +256,24 @@ export class UserListComponent
    */
   onClick(user: User): void {
     this.router.navigate([`./${user.id}`], { relativeTo: this.route });
+  }
+
+  private updateValues(
+    data: GetApplicationUsersQueryResponse,
+    loading: boolean
+  ) {
+    this.cachedUsers = updateQueryUniqueValues(
+      this.cachedUsers,
+      data.application.users.edges.map((x) => x.node)
+    );
+
+    this.users.data = this.cachedUsers.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.pageInfo.length = data.application.users.totalCount;
+    this.pageInfo.endCursor = data.application.users.pageInfo.endCursor;
+    this.loading = loading;
+    this.updating = false;
   }
 }

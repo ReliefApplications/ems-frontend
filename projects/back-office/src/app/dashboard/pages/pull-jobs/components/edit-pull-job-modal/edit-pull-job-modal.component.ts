@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   UntypedFormArray,
   UntypedFormBuilder,
@@ -20,7 +20,7 @@ import {
   authType,
   cronValidator,
 } from '@safe/builder';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
 import {
   GetApiConfigurationsQueryResponse,
   GET_API_CONFIGURATIONS,
@@ -33,6 +33,10 @@ import {
 } from '../../graphql/queries';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import get from 'lodash/get';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../../../utils/update-queries';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -59,6 +63,7 @@ export class EditPullJobModalComponent implements OnInit {
   private applicationsLoading = true;
   public applications = new BehaviorSubject<Application[]>([]);
   public applications$!: Observable<Application[]>;
+  private cachedApplications: Application[] = [];
   private applicationsQuery!: QueryRef<GetRoutingKeysQueryResponse>;
   private applicationsPageInfo = {
     endCursor: '',
@@ -73,6 +78,9 @@ export class EditPullJobModalComponent implements OnInit {
   public statusChoices = Object.values(status);
   public fields: any[] = [];
   private fieldsSubscription?: Subscription;
+
+  // Token used in the module for the apollo config
+  private apolloClient = inject(APOLLO_OPTIONS);
 
   // === RAW JSON UTILITY ===
   public openRawJSON = false;
@@ -189,21 +197,13 @@ export class EditPullJobModalComponent implements OnInit {
         query: GET_ROUTING_KEYS,
         variables: {
           first: ITEMS_PER_PAGE,
+          afterCursor: this.applicationsPageInfo.endCursor,
         },
       });
 
     // this.applications$ = this.applications.asObservable();
     this.applicationsQuery.valueChanges.subscribe(({ data, loading }) => {
-      const nodes = data.applications.edges
-        .map((x) => x.node)
-        .filter((x) => (x.channels ? x.channels.length > 0 : false));
-      if (this.defaultChannel) {
-        this.applications.next(nodes);
-      } else {
-        this.applications.next(nodes);
-      }
-      this.applicationsPageInfo = data.applications.pageInfo;
-      this.applicationsLoading = loading;
+      this.updateValues(data, loading);
     });
 
     // Set boolean to allow additional fields if it's not isHardcoded
@@ -365,12 +365,26 @@ export class EditPullJobModalComponent implements OnInit {
     ) {
       if (!this.applicationsLoading && this.applicationsPageInfo.hasNextPage) {
         this.applicationsLoading = true;
-        this.applicationsQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.applicationsPageInfo.endCursor,
-          },
-        });
+        const variables = {
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.applicationsPageInfo.endCursor,
+        };
+        const cachedValues: GetRoutingKeysQueryResponse = getCachedValues(
+          this.apolloClient,
+          GET_ROUTING_KEYS,
+          variables
+        );
+        if (cachedValues) {
+          this.updateValues(cachedValues, false);
+        } else {
+          this.applicationsQuery
+            .fetchMore({
+              variables,
+            })
+            .then((results) =>
+              this.updateValues(results.data, results.loading)
+            );
+        }
       }
     }
   }
@@ -394,5 +408,18 @@ export class EditPullJobModalComponent implements OnInit {
         ],
       },
     });
+  }
+
+  private updateValues(data: GetRoutingKeysQueryResponse, loading: boolean) {
+    const nodes = data.applications.edges
+      .map((x) => x.node)
+      .filter((x) => (x.channels ? x.channels.length > 0 : false));
+    this.cachedApplications = updateQueryUniqueValues(
+      this.cachedApplications,
+      nodes
+    );
+    this.applications.next(this.cachedApplications);
+    this.applicationsPageInfo = data.applications.pageInfo;
+    this.applicationsLoading = loading;
   }
 }

@@ -126,19 +126,8 @@ export class SafeChooseRecordModalComponent
     if (this.dataQuery) {
       this.records$ = this.records.asObservable();
       this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
-        next: ({ data }: any) => {
-          for (const field in data) {
-            if (Object.prototype.hasOwnProperty.call(data, field)) {
-              const nodes =
-                data[field].edges.map((x: any) => ({
-                  value: x.node.id,
-                  label: x.node[this.data.targetFormField],
-                })) || [];
-              this.pageInfo = data[field].pageInfo;
-              this.records.next(nodes);
-            }
-          }
-          this.loading = false;
+        next: ({ data, loading }: any) => {
+          this.updateValues(data, loading);
         },
         complete: () => (this.loading = false),
       });
@@ -215,15 +204,33 @@ export class SafeChooseRecordModalComponent
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        // TOCHECK
-        this.dataQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            skip: this.records.getValue().length,
-            afterCursor: this.pageInfo.endCursor,
-          },
-        });
+        this.dataQuery
+          .fetchMore({
+            variables: {
+              first: ITEMS_PER_PAGE,
+              skip: this.records.getValue().length,
+              afterCursor: this.pageInfo.endCursor,
+            },
+          })
+          .then((results: any) =>
+            this.updateValues(results.data, results.loading)
+          );
       }
     }
+  }
+
+  private updateValues(data: any, loading: boolean) {
+    for (const field in data) {
+      if (Object.prototype.hasOwnProperty.call(data, field)) {
+        const nodes =
+          data[field].edges.map((x: any) => ({
+            value: x.node.id,
+            label: x.node[this.data.targetFormField],
+          })) || [];
+        this.pageInfo = data[field].pageInfo;
+        this.records.next(nodes);
+      }
+    }
+    this.loading = loading;
   }
 }

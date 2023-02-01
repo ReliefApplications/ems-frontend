@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -8,8 +8,12 @@ import {
   SafeConfirmService,
   Resource,
 } from '@safe/builder';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../../utils/update-queries';
 import {
   GetResourceByIdQueryResponse,
   GET_RESOURCE_LAYOUTS,
@@ -39,6 +43,9 @@ export class LayoutsTabComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
+
+  // Token used in the module for the apollo config
+  private apolloClient = inject(APOLLO_OPTIONS);
 
   /** @returns True if the layouts tab is empty */
   get empty(): boolean {
@@ -70,22 +77,13 @@ export class LayoutsTabComponent implements OnInit {
       query: GET_RESOURCE_LAYOUTS,
       variables: {
         id: this.resource.id,
+        first: this.pageInfo.pageSize,
+        afterCursor: this.pageInfo.endCursor,
       },
     });
 
-    this.layoutsQuery.valueChanges.subscribe(({ data }) => {
-      this.loading = false;
-      if (data.resource) {
-        this.cachedLayouts =
-          data.resource.layouts?.edges.map((e) => e.node) || [];
-        this.layouts = this.cachedLayouts.slice(
-          this.pageInfo.pageSize * this.pageInfo.pageIndex,
-          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-        );
-        this.pageInfo.length = data.resource.layouts?.totalCount || 0;
-        this.pageInfo.endCursor =
-          data.resource.layouts?.pageInfo.endCursor || '';
-      }
+    this.layoutsQuery.valueChanges.subscribe(({ data, loading }) => {
+      this.updateValues(data, loading);
     });
   }
 
@@ -98,7 +96,8 @@ export class LayoutsTabComponent implements OnInit {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >= this.cachedLayouts.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedLayouts.length
     ) {
@@ -126,12 +125,25 @@ export class LayoutsTabComponent implements OnInit {
    */
   private fetchLayouts(): void {
     this.loading = true;
-    this.layoutsQuery.fetchMore({
-      variables: {
-        first: this.pageInfo.pageSize,
-        afterCursor: this.pageInfo.endCursor,
-      },
-    });
+    const variables = {
+      id: this.resource.id,
+      first: this.pageInfo.pageSize,
+      afterCursor: this.pageInfo.endCursor,
+    };
+    const cachedValues: GetResourceByIdQueryResponse = getCachedValues(
+      this.apolloClient,
+      GET_RESOURCE_LAYOUTS,
+      variables
+    );
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
+    } else {
+      this.layoutsQuery
+        .fetchMore({
+          variables,
+        })
+        .then((results) => this.updateValues(results.data, results.loading));
+    }
   }
 
   /**
@@ -220,5 +232,21 @@ export class LayoutsTabComponent implements OnInit {
           });
       }
     });
+  }
+
+  private updateValues(data: GetResourceByIdQueryResponse, loading: boolean) {
+    if (data.resource) {
+      this.cachedLayouts = updateQueryUniqueValues(
+        this.cachedLayouts,
+        data.resource.layouts?.edges.map((x) => x.node) ?? []
+      );
+      this.layouts = this.cachedLayouts.slice(
+        this.pageInfo.pageSize * this.pageInfo.pageIndex,
+        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+      );
+      this.pageInfo.length = data.resource.layouts?.totalCount || 0;
+      this.pageInfo.endCursor = data.resource.layouts?.pageInfo.endCursor || '';
+    }
+    this.loading = loading;
   }
 }

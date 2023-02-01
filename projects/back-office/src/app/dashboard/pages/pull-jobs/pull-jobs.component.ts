@@ -22,7 +22,10 @@ import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/materia
 import { TranslateService } from '@ngx-translate/core';
 import { EditPullJobModalComponent } from './components/edit-pull-job-modal/edit-pull-job-modal.component';
 import { ApolloQueryResult } from '@apollo/client';
-import { updateGivenQuery } from '../../../utils/updateQueries';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../utils/update-queries';
 import { takeUntil } from 'rxjs';
 
 /**
@@ -93,16 +96,14 @@ export class PullJobsComponent
       query: GET_PULL_JOBS,
       variables: {
         first: ITEMS_PER_PAGE,
+        afterCursor: this.pageInfo.endCursor,
       },
     });
 
     this.pullJobsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((results) => {
-        /**Value changes are only triggered for refetch(filtered case) or when first loading the component
-         * So we set the incomingDataAsSource as true as is fresh new data not coming from pagination
-         */
-        this.updatePullJobsQueryCache(results, true);
+        this.updateValues(results.data, results.loading);
       });
   }
 
@@ -120,16 +121,24 @@ export class PullJobsComponent
       e.length > this.cachedPullJobs.length
     ) {
       this.loading = true;
-      this.pullJobsQuery
-        .fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor,
-          },
-        })
-        .then((results: ApolloQueryResult<GetPullJobsQueryResponse>) => {
-          this.updatePullJobsQueryCache(results);
-        });
+      const variables = {
+        first: ITEMS_PER_PAGE,
+        afterCursor: this.pageInfo.endCursor,
+      };
+      const cachedValues: GetPullJobsQueryResponse = getCachedValues(
+        this.apolloClient,
+        GET_PULL_JOBS,
+        variables
+      );
+      if (cachedValues) {
+        this.updateValues(cachedValues, false);
+      } else {
+        this.pullJobsQuery
+          .fetchMore({ variables })
+          .then((results: ApolloQueryResult<GetPullJobsQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
+          });
+      }
     } else {
       this.pullJobs.data = this.cachedPullJobs.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex,
@@ -353,42 +362,15 @@ export class PullJobsComponent
   }
 
   /**
-   * Updates the apollo client cache for a query and updates the
-   * pulljobs list of the component with the new values stored in the apollo client cache
-   * @param {ApolloQueryResult<GetPullJobsQueryResponse>} newResults
-   * @param {boolean} incomingDataAsSource Set incoming data as source data too
-   */
-  private updatePullJobsQueryCache(
-    newResults: ApolloQueryResult<GetPullJobsQueryResponse>,
-    incomingDataAsSource: boolean = false
-  ): void {
-    const newPullJobsQuery = updateGivenQuery(
-      this.apolloClient,
-      this.pullJobsQuery,
-      GET_PULL_JOBS,
-      newResults,
-      'pullJobs',
-      'id',
-      incomingDataAsSource
-    );
-    this.updateCachedPullJobsValues(newPullJobsQuery, newResults.loading);
-    console.log(newPullJobsQuery.pullJobs);
-    this.apolloClient.cache.writeQuery({
-      query: GET_PULL_JOBS,
-      data: newPullJobsQuery,
-    });
-  }
-
-  /**
    * Updates local list with given data
    * @param data New values to update forms
    * @param loading Loading state
    */
-  private updateCachedPullJobsValues(
-    data: GetPullJobsQueryResponse,
-    loading: boolean
-  ): void {
-    this.cachedPullJobs = data.pullJobs.edges.map((x) => x.node);
+  private updateValues(data: GetPullJobsQueryResponse, loading: boolean): void {
+    this.cachedPullJobs = updateQueryUniqueValues(
+      this.cachedPullJobs,
+      data.pullJobs.edges.map((x) => x.node)
+    );
     this.pullJobs.data = this.cachedPullJobs.slice(
       ITEMS_PER_PAGE * this.pageInfo.pageIndex,
       ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)

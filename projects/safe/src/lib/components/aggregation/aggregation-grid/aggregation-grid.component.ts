@@ -101,12 +101,8 @@ export class SafeAggregationGridComponent
       this.skip
     );
     this.dataSubscription = this.dataQuery.valueChanges.subscribe({
-      next: ({ data }) => {
-        this.gridData = {
-          data: data.recordsAggregation.items,
-          total: data.recordsAggregation.totalCount,
-        };
-        this.loading = false;
+      next: ({ data, loading }) => {
+        this.updateValues(data, loading);
       },
       error: (err: any) => {
         this.status = {
@@ -271,12 +267,25 @@ export class SafeAggregationGridComponent
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
-    // TOCHECK
-    this.dataQuery.fetchMore({
-      variables: {
-        first: this.pageSize,
-        skip: this.skip,
-      },
-    });
+
+    this.dataQuery
+      .fetchMore({
+        variables: {
+          first: this.pageSize,
+          skip: this.skip,
+        },
+      })
+      .then((results) => this.updateValues(results.data, results.loading));
+  }
+
+  private updateValues(
+    data: GetAggregationDataQueryResponse,
+    loading: boolean
+  ) {
+    this.gridData = {
+      data: data.recordsAggregation.items,
+      total: data.recordsAggregation.totalCount,
+    };
+    this.loading = loading;
   }
 }

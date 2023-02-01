@@ -23,6 +23,7 @@ import { Record } from '../../models/record.model';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { updateQueryUniqueValues } from '../../utils/update-queries';
 
 /** A constant that is used to set the number of items to be displayed on the page. */
 const ITEMS_PER_PAGE = 25;
@@ -70,6 +71,7 @@ export class SafeRecordDropdownComponent
   public selectedRecord: Record | null = null;
   private records = new BehaviorSubject<Record[]>([]);
   public records$!: Observable<Record[]>;
+  private cachedRecords: Record[] = [];
   private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
   private pageInfo = {
     endCursor: '',
@@ -124,9 +126,7 @@ export class SafeRecordDropdownComponent
       this.recordsQuery.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe(({ data, loading }) => {
-          this.records.next(data.resource.records.edges.map((x) => x.node));
-          this.pageInfo = data.resource.records.pageInfo;
-          this.loading = loading;
+          this.updateValues(data, loading);
         });
     }
   }
@@ -166,14 +166,28 @@ export class SafeRecordDropdownComponent
     ) {
       if (!this.loading && this.pageInfo.hasNextPage && this.resourceId) {
         this.loading = true;
-        // TOCHECK
-        this.recordsQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor,
-          },
-        });
+        this.recordsQuery
+          .fetchMore({
+            variables: {
+              first: ITEMS_PER_PAGE,
+              afterCursor: this.pageInfo.endCursor,
+            },
+          })
+          .then((results) => this.updateValues(results.data, results.loading));
       }
     }
+  }
+
+  private updateValues(
+    data: GetResourceRecordsQueryResponse,
+    loading: boolean
+  ) {
+    this.cachedRecords = updateQueryUniqueValues(
+      this.cachedRecords,
+      data.resource.records.edges.map((x) => x.node)
+    );
+    this.records.next(this.cachedRecords);
+    this.pageInfo = data.resource.records.pageInfo;
+    this.loading = loading;
   }
 }

@@ -1,8 +1,14 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
 import {
   ReferenceData,
   SafeAuthService,
@@ -24,6 +30,10 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
 import { takeUntil } from 'rxjs/operators';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../utils/update-queries';
 
 /** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
@@ -66,6 +76,8 @@ export class ReferenceDatasComponent
     endCursor: '',
   };
 
+  // Token used in the module for the apollo config
+  private apolloClient = inject(APOLLO_OPTIONS);
   /**
    * List of Reference data page.
    *
@@ -98,23 +110,14 @@ export class ReferenceDatasComponent
         query: GET_REFERENCE_DATAS,
         variables: {
           first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor,
         },
       });
 
     this.referenceDatasQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data, loading }) => {
-        this.cachedReferenceDatas = data.referenceDatas.edges.map(
-          (x) => x.node
-        );
-        this.dataSource.data = this.cachedReferenceDatas.slice(
-          this.pageInfo.pageSize * this.pageInfo.pageIndex,
-          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-        );
-        this.pageInfo.length = data.referenceDatas.totalCount;
-        this.pageInfo.endCursor = data.referenceDatas.pageInfo.endCursor;
-        this.loading = loading;
-        this.filterPredicate();
+        this.updateValues(data, loading);
       });
   }
 
@@ -127,7 +130,9 @@ export class ReferenceDatasComponent
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >=
+          this.cachedReferenceDatas.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedReferenceDatas.length
     ) {
@@ -139,12 +144,22 @@ export class ReferenceDatasComponent
         neededSize -= this.pageInfo.pageSize;
       }
       this.loading = true;
-      this.referenceDatasQuery.fetchMore({
-        variables: {
-          first: neededSize,
-          afterCursor: this.pageInfo.endCursor,
-        },
-      });
+      const variables = {
+        first: neededSize,
+        afterCursor: this.pageInfo.endCursor,
+      };
+      const cachedValues: GetReferenceDatasQueryResponse = getCachedValues(
+        this.apolloClient,
+        GET_REFERENCE_DATAS,
+        variables
+      );
+      if (cachedValues) {
+        this.updateValues(cachedValues, false);
+      } else {
+        this.referenceDatasQuery
+          .fetchMore({ variables })
+          .then((results) => this.updateValues(results.data, results.loading));
+      }
     } else {
       this.dataSource.data = this.cachedReferenceDatas.slice(
         e.pageSize * this.pageInfo.pageIndex,
@@ -279,5 +294,20 @@ export class ReferenceDatasComponent
    */
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort || null;
+  }
+
+  private updateValues(data: GetReferenceDatasQueryResponse, loading: boolean) {
+    this.cachedReferenceDatas = updateQueryUniqueValues(
+      this.cachedReferenceDatas,
+      data.referenceDatas.edges.map((x) => x.node)
+    );
+    this.dataSource.data = this.cachedReferenceDatas.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.pageInfo.length = data.referenceDatas.totalCount;
+    this.pageInfo.endCursor = data.referenceDatas.pageInfo.endCursor;
+    this.loading = loading;
+    this.filterPredicate();
   }
 }

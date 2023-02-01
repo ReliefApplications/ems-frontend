@@ -38,6 +38,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { updateQueryUniqueValues } from '../../utils/update-queries';
 
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
@@ -256,6 +257,7 @@ export class SafeGraphQLSelectComponent
   public elements = new BehaviorSubject<any[]>([]);
   public elements$!: Observable<any[]>;
   private queryElements: any[] = [];
+  private cachedElements: any[] = [];
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -289,24 +291,7 @@ export class SafeGraphQLSelectComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data, loading }) => {
         this.queryName = Object.keys(data)[0];
-        const path = this.path
-          ? `${this.queryName}.${this.path}`
-          : this.queryName;
-        const elements: any[] = get(data, path).edges
-          ? get(data, path).edges.map((x: any) => x.node)
-          : get(data, path);
-        const selectedElements = this.selectedElements.filter(
-          (selectedElement) =>
-            selectedElement &&
-            !elements.find(
-              (node) =>
-                node[this.valueField] === selectedElement[this.valueField]
-            )
-        );
-        this.elements.next([...selectedElements, ...elements]);
-        this.queryElements = elements;
-        this.pageInfo = get(data, path).pageInfo;
-        this.loading = loading;
+        this.updateValues(data, loading);
       });
     this.ngControl.valueChanges
       ?.pipe(takeUntil(this.destroy$))
@@ -329,6 +314,7 @@ export class SafeGraphQLSelectComponent
     this.searchControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
+        this.cachedElements = [];
         this.searchChange.emit(value);
       });
   }
@@ -412,13 +398,16 @@ export class SafeGraphQLSelectComponent
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        // TOCHECK
-        this.query.fetchMore({
-          variables: {
-            first: ITEMS_PER_RELOAD,
-            afterCursor: this.pageInfo.endCursor,
-          },
-        });
+        this.query
+          .fetchMore({
+            variables: {
+              first: ITEMS_PER_RELOAD,
+              afterCursor: this.pageInfo.endCursor,
+            },
+          })
+          .then((results) => {
+            this.updateValues(results.data, results.loading);
+          });
       }
     }
   }
@@ -451,5 +440,27 @@ export class SafeGraphQLSelectComponent
       );
 
     this.elements.next(elements);
+  }
+
+  private updateValues(data: any, loading: boolean) {
+    const path = this.path ? `${this.queryName}.${this.path}` : this.queryName;
+    const elements: any[] = get(data, path).edges
+      ? get(data, path).edges.map((x: any) => x.node)
+      : get(data, path);
+    const selectedElements = this.selectedElements.filter(
+      (selectedElement) =>
+        selectedElement &&
+        !elements.find(
+          (node) => node[this.valueField] === selectedElement[this.valueField]
+        )
+    );
+    this.cachedElements = updateQueryUniqueValues(this.cachedElements, [
+      ...selectedElements,
+      ...elements,
+    ]);
+    this.elements.next(this.cachedElements);
+    this.queryElements = this.cachedElements;
+    this.pageInfo = get(data, path).pageInfo;
+    this.loading = loading;
   }
 }

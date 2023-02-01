@@ -27,7 +27,10 @@ import { map, startWith, takeUntil } from 'rxjs/operators';
 import { MatLegacyAutocomplete as MatAutocomplete } from '@angular/material/legacy-autocomplete';
 import get from 'lodash/get';
 import { ApolloQueryResult } from '@apollo/client';
-import { updateGivenQuery } from 'projects/back-office/src/app/utils/updateQueries';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from 'projects/back-office/src/app/utils/update-queries';
 
 /** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -55,6 +58,7 @@ export class SubscriptionModalComponent
   public filteredApplications$!: Observable<Application[]>;
   public applications$!: Observable<Application[]>;
   private applicationsQuery!: QueryRef<GetRoutingKeysQueryResponse>;
+  private cachedApplications: Application[] = [];
   private applicationsPageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -134,6 +138,7 @@ export class SubscriptionModalComponent
         query: GET_ROUTING_KEYS,
         variables: {
           first: ITEMS_PER_PAGE,
+          afterCursor: this.applicationsPageInfo.endCursor,
         },
       });
 
@@ -141,10 +146,7 @@ export class SubscriptionModalComponent
     this.applicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((results) => {
-        /**Value changes are only triggered for refetch(filtered case) or when first loading the component
-         * So we set the incomingDataAsSource as true as is fresh new data not coming from pagination
-         */
-        this.updateApplicationsQueryCache(results, true);
+        this.updateValues(results.data, results.loading);
       });
 
     this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
@@ -182,10 +184,12 @@ export class SubscriptionModalComponent
    */
   onOpenApplicationSelect(): void {
     if (this.applicationSelect) {
-      const panel = this.applicationSelect.panel.nativeElement;
-      if (panel) {
-        panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
-      }
+      setTimeout(() => {
+        const panel = this.applicationSelect?.panel.nativeElement;
+        if (panel) {
+          panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
+        }
+      }, 0);
     }
   }
 
@@ -201,16 +205,24 @@ export class SubscriptionModalComponent
     ) {
       if (!this.applicationsLoading && this.applicationsPageInfo.hasNextPage) {
         this.applicationsLoading = true;
-        this.applicationsQuery
-          .fetchMore({
-            variables: {
-              first: ITEMS_PER_PAGE,
-              afterCursor: this.applicationsPageInfo.endCursor,
-            },
-          })
-          .then((results: ApolloQueryResult<GetRoutingKeysQueryResponse>) => {
-            this.updateApplicationsQueryCache(results);
-          });
+        const variables = {
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.applicationsPageInfo.endCursor,
+        };
+        const cachedValues: GetRoutingKeysQueryResponse = getCachedValues(
+          this.apolloClient,
+          GET_ROUTING_KEYS,
+          variables
+        );
+        if (cachedValues) {
+          this.updateValues(cachedValues, false);
+        } else {
+          this.applicationsQuery
+            .fetchMore({ variables })
+            .then((results: ApolloQueryResult<GetRoutingKeysQueryResponse>) => {
+              this.updateValues(results.data, results.loading);
+            });
+        }
       }
     }
   }
@@ -238,45 +250,18 @@ export class SubscriptionModalComponent
   }
 
   /**
-   * Updates the forms list and writes down the new merged values in the cache
-   * @param {ApolloQueryResult<GetRoutingKeysQueryResponse>} newResults Query result data to add
-   * @param {boolean} incomingDataAsSource Set incoming data as source data too
-   */
-  private updateApplicationsQueryCache(
-    newResults: ApolloQueryResult<GetRoutingKeysQueryResponse>,
-    incomingDataAsSource: boolean = false
-  ) {
-    const newApplicationsQuery = updateGivenQuery<GetRoutingKeysQueryResponse>(
-      this.apolloClient,
-      this.applicationsQuery,
-      GET_ROUTING_KEYS,
-      newResults,
-      'applications',
-      'id',
-      incomingDataAsSource
-    );
-    this.updateApplicationsValues(newApplicationsQuery, newResults.loading);
-    console.log(newApplicationsQuery.applications);
-    this.apolloClient.cache.writeQuery({
-      query: GET_ROUTING_KEYS,
-      data: newApplicationsQuery,
-    });
-  }
-
-  /**
    * Updates local list with given data
    * @param data New values to update forms
    * @param loading Loading state
    */
-  private updateApplicationsValues(
-    data: GetRoutingKeysQueryResponse,
-    loading: boolean
-  ) {
-    this.applications.next(
+  private updateValues(data: GetRoutingKeysQueryResponse, loading: boolean) {
+    this.cachedApplications = updateQueryUniqueValues(
+      this.cachedApplications,
       data.applications.edges
         .map((x) => x.node)
         .filter((x) => (x.channels ? x.channels.length > 0 : false))
     );
+    this.applications.next(this.cachedApplications);
     this.applicationsPageInfo = data.applications.pageInfo;
     this.applicationsLoading = loading;
     this.applications$ =

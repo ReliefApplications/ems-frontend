@@ -20,7 +20,10 @@ import { AddFormModalComponent } from '../../../components/add-form-modal/add-fo
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
-import { updateGivenQuery } from '../../../utils/updateQueries';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
 import { takeUntil } from 'rxjs';
 
@@ -52,7 +55,10 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
   public cachedForms: Form[] = [];
 
   // === FILTERING ===
-  public filter: any;
+  public filter: any = {
+    filters: [],
+    logic: 'and',
+  };
   private sort: Sort = { active: '', direction: '' };
 
   // === PAGINATION ===
@@ -97,16 +103,17 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
       query: GET_SHORT_FORMS,
       variables: {
         first: DEFAULT_PAGE_SIZE,
+        afterCursor: null,
+        filter: this.filter,
+        sortField: this.sort?.direction && this.sort.active,
+        sortOrder: this.sort?.direction,
       },
     });
 
     this.formsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((results) => {
-        /**Value changes are only triggered for refetch(filtered case) or when first loading the component
-         * So we set the incomingDataAsSource as true as is fresh new data not coming from pagination
-         */
-        this.updateFormsQueryCache(results, true);
+        this.updateValues(results.data, results.loading);
       });
   }
 
@@ -169,30 +176,37 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
    */
   private fetchForms(refetch?: boolean): void {
     this.updating = true;
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      filter: this.filter,
+      sortField: this.sort?.direction && this.sort.active,
+      sortOrder: this.sort?.direction,
+    };
+
+    const cachedValues: GetFormsQueryResponse = getCachedValues(
+      this.apolloClient,
+      GET_SHORT_FORMS,
+      variables
+    );
     if (refetch) {
       this.cachedForms = [];
       this.pageInfo.pageIndex = 0;
-      this.formsQuery.refetch({
-        first: this.pageInfo.pageSize,
-        afterCursor: null,
-        filter: this.filter,
-        sortField: this.sort?.direction && this.sort.active,
-        sortOrder: this.sort?.direction,
-      });
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
     } else {
-      this.formsQuery
-        .fetchMore({
-          variables: {
-            first: this.pageInfo.pageSize,
-            afterCursor: this.pageInfo.endCursor,
-            filter: this.filter,
-            sortField: this.sort?.direction && this.sort.active,
-            sortOrder: this.sort?.direction,
-          },
-        })
-        .then((results: ApolloQueryResult<GetFormsQueryResponse>) => {
-          this.updateFormsQueryCache(results);
-        });
+      if (refetch) {
+        this.formsQuery.refetch(variables);
+      } else {
+        this.formsQuery
+          .fetchMore({
+            variables,
+          })
+          .then((results: ApolloQueryResult<GetFormsQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
+          });
+      }
     }
   }
 
@@ -304,49 +318,21 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Updates the apollo client cache for a query and updates the
-   * form list of the component with the new values stored in the apollo client cache
-   * @param {ApolloQueryResult<GetFormsQueryResponse>} newResults
-   * @param {boolean} incomingDataAsSource Set incoming data as source data too
-   */
-  private updateFormsQueryCache(
-    newResults: ApolloQueryResult<GetFormsQueryResponse>,
-    incomingDataAsSource: boolean = false
-  ): void {
-    const newFormsQuery = updateGivenQuery<GetFormsQueryResponse>(
-      this.apolloClient,
-      this.formsQuery,
-      GET_SHORT_FORMS,
-      newResults,
-      'forms',
-      'id',
-      incomingDataAsSource
-    );
-    this.updateCachedFormsValues(newFormsQuery, newResults.loading);
-    console.log(newFormsQuery.forms);
-    this.apolloClient.cache.writeQuery({
-      query: GET_SHORT_FORMS,
-      data: newFormsQuery,
-    });
-  }
-
-  /**
    * Updates local list with given data
    * @param data New values to update forms
    * @param loading Loading state
    */
-  private updateCachedFormsValues(
-    data: GetFormsQueryResponse,
-    loading: boolean
-  ): void {
-    this.cachedForms = data.forms.edges.map((x) => x.node);
+  private updateValues(data: GetFormsQueryResponse, loading: boolean): void {
+    this.cachedForms = updateQueryUniqueValues(
+      this.cachedForms,
+      data.forms.edges.map((x) => x.node)
+    );
     this.forms.data = this.cachedForms.slice(
       this.pageInfo.pageSize * this.pageInfo.pageIndex,
       this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
     );
     this.pageInfo.length = data.forms.totalCount;
     this.pageInfo.endCursor = data.forms.pageInfo.endCursor;
-
     this.loading = loading;
     this.updating = loading;
   }

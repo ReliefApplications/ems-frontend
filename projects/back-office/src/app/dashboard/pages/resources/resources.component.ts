@@ -1,5 +1,5 @@
-import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   DeleteResourceMutationResponse,
   DELETE_RESOURCE,
@@ -21,6 +21,10 @@ import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/materia
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import { AddResourceModalComponent } from '../../../components/add-resource-modal/add-resource-modal.component';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../utils/update-queries';
 
 /**
  * Default number of resources that will be shown at once.
@@ -49,7 +53,10 @@ export class ResourcesComponent implements OnInit {
   private sort: Sort = { active: '', direction: '' };
 
   // === FILTERING ===
-  public filter: any;
+  public filter: any = {
+    filters: [],
+    logic: 'and',
+  };
 
   // === PAGINATION ===
   public pageInfo = {
@@ -58,6 +65,9 @@ export class ResourcesComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
+
+  // Token used in the module for the apollo config
+  private apolloClient = inject(APOLLO_OPTIONS);
 
   /**
    * ResourcesComponent constructor.
@@ -86,20 +96,13 @@ export class ResourcesComponent implements OnInit {
         first: DEFAULT_PAGE_SIZE,
         sortField: 'name',
         sortOrder: 'asc',
+        afterCursor: null,
+        filter: this.filter,
       },
     });
 
     this.resourcesQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.cachedResources = data.resources.edges.map((x) => x.node);
-      this.resources.data = this.cachedResources.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      );
-      this.pageInfo.length = data.resources.totalCount;
-      this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
-      this.loading = loading;
-      this.updating = loading;
-      this.filterLoading = false;
+      this.updateValues(data, loading);
     });
   }
 
@@ -112,7 +115,8 @@ export class ResourcesComponent implements OnInit {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >= this.cachedResources.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedResources.length
     ) {
@@ -125,12 +129,7 @@ export class ResourcesComponent implements OnInit {
       }
       this.pageInfo.pageSize = first;
       this.loading = true;
-      this.resourcesQuery.fetchMore({
-        variables: {
-          first: this.pageInfo.pageSize,
-          afterCursor: this.pageInfo.endCursor,
-        },
-      });
+      this.fetchResources();
     } else {
       this.resources.data = this.cachedResources.slice(
         e.pageSize * this.pageInfo.pageIndex,
@@ -148,13 +147,7 @@ export class ResourcesComponent implements OnInit {
   onFilter(filter: any): void {
     this.filterLoading = true;
     this.filter = filter;
-    this.cachedResources = [];
-    this.pageInfo.pageIndex = 0;
-    this.resourcesQuery.fetchMore({
-      variables: {
-        first: this.pageInfo.pageSize,
-      },
-    });
+    this.fetchResources(true, filter);
   }
 
   /**
@@ -172,31 +165,40 @@ export class ResourcesComponent implements OnInit {
    *
    * @param refetch erase previous query results
    */
-  private fetchResources(refetch?: boolean): void {
+  private fetchResources(refetch?: boolean, filter?: any): void {
     this.updating = true;
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      filter: filter ?? this.filter,
+      sortField:
+        (this.sort?.direction && this.sort.active) !== ''
+          ? this.sort?.direction && this.sort.active
+          : 'name',
+      sortOrder: this.sort?.direction !== '' ? this.sort?.direction : 'asc',
+    };
+    const cachedValues: GetResourcesQueryResponse = getCachedValues(
+      this.apolloClient,
+      GET_RESOURCES_EXTENDED,
+      variables
+    );
     if (refetch) {
       this.cachedResources = [];
       this.pageInfo.pageIndex = 0;
-      this.resourcesQuery
-        .refetch({
-          first: this.pageInfo.pageSize,
-          afterCursor: null,
-          filter: this.filter,
-          sortField: this.sort?.direction && this.sort.active,
-          sortOrder: this.sort?.direction,
-        })
-        .then(() => {
-          this.loading = false;
-          this.updating = false;
-        });
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
     } else {
-      this.loading = true;
-      this.resourcesQuery.fetchMore({
-        variables: {
-          first: this.pageInfo.pageSize,
-          afterCursor: this.pageInfo.endCursor,
-        },
-      });
+      if (refetch) {
+        this.resourcesQuery.refetch(variables);
+      } else {
+        this.loading = true;
+        this.resourcesQuery
+          .fetchMore({
+            variables,
+          })
+          .then((results) => this.updateValues(results.data, results.loading));
+      }
     }
   }
 
@@ -302,5 +304,21 @@ export class ResourcesComponent implements OnInit {
           });
       }
     });
+  }
+
+  updateValues(data: GetResourcesQueryResponse, loading: boolean) {
+    this.cachedResources = updateQueryUniqueValues(
+      this.cachedResources,
+      data.resources.edges.map((x) => x.node)
+    );
+    this.resources.data = this.cachedResources.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.pageInfo.length = data.resources.totalCount;
+    this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
+    this.loading = loading;
+    this.updating = loading;
+    this.filterLoading = false;
   }
 }

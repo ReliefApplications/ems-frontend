@@ -23,6 +23,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { scrollFactory } from '../../utils/scroll-factory';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { updateQueryUniqueValues } from '../../utils/update-queries';
 
 /** Pagination */
 const ITEMS_PER_PAGE = 10;
@@ -52,6 +53,7 @@ export class SafeReferenceDataDropdownComponent
   public selectedReferenceData: ReferenceData | null = null;
   private referenceDatas = new BehaviorSubject<ReferenceData[]>([]);
   public referenceDatas$!: Observable<ReferenceData[]>;
+  private cachedReferenceDatas: ReferenceData[] = [];
   private referenceDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
   private pageInfo = {
     endCursor: '',
@@ -102,13 +104,7 @@ export class SafeReferenceDataDropdownComponent
     this.referenceDatasQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data, loading }) => {
-        const referenceDatas = data.referenceDatas.edges.map((x) => x.node);
-        this.referenceDatas.next(referenceDatas);
-        if (referenceDatas.find((x) => x.id === this.referenceData)) {
-          this.selectedReferenceData = null;
-        }
-        this.pageInfo = data.referenceDatas.pageInfo;
-        this.loading = loading;
+        this.updateValues(data, loading);
       });
   }
 
@@ -147,14 +143,29 @@ export class SafeReferenceDataDropdownComponent
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        // TOCHECK
-        this.referenceDatasQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor,
-          },
-        });
+        this.referenceDatasQuery
+          .fetchMore({
+            variables: {
+              first: ITEMS_PER_PAGE,
+              afterCursor: this.pageInfo.endCursor,
+            },
+          })
+          .then((results) => this.updateValues(results.data, results.loading));
       }
     }
+  }
+
+  private updateValues(data: GetReferenceDatasQueryResponse, loading: boolean) {
+    const referenceDatas = data.referenceDatas.edges.map((x) => x.node);
+    this.cachedReferenceDatas = updateQueryUniqueValues(
+      this.cachedReferenceDatas,
+      referenceDatas
+    );
+    this.referenceDatas.next(this.cachedReferenceDatas);
+    if (this.cachedReferenceDatas.find((x) => x.id === this.referenceData)) {
+      this.selectedReferenceData = null;
+    }
+    this.pageInfo = data.referenceDatas.pageInfo;
+    this.loading = loading;
   }
 }

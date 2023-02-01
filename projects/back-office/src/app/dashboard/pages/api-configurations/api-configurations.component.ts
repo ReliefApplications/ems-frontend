@@ -30,7 +30,10 @@ import {
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
-import { updateGivenQuery } from '../../../utils/updateQueries';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
 
 /** Default items per page for pagination. */
@@ -105,16 +108,14 @@ export class ApiConfigurationsComponent
         query: GET_API_CONFIGURATIONS,
         variables: {
           first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor,
         },
       });
 
     this.apiConfigurationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((results) => {
-        /**Value changes are only triggered for refetch(filtered case) or when first loading the component
-         * So we set the incomingDataAsSource as true as is fresh new data not coming from pagination
-         */
-        this.updateApiConfigurationsQueryCache(results, true);
+        this.updateValues(results.data, results.loading);
       });
   }
 
@@ -141,18 +142,26 @@ export class ApiConfigurationsComponent
         neededSize -= this.pageInfo.pageSize;
       }
       this.loading = true;
-      this.apiConfigurationsQuery
-        .fetchMore({
-          variables: {
-            first: neededSize,
-            afterCursor: this.pageInfo.endCursor,
-          },
-        })
-        .then(
-          (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
-            this.updateApiConfigurationsQueryCache(results);
-          }
-        );
+      const variables = {
+        first: neededSize,
+        afterCursor: this.pageInfo.endCursor,
+      };
+      const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
+        this.apolloClient,
+        GET_API_CONFIGURATIONS,
+        variables
+      );
+      if (cachedValues) {
+        this.updateValues(cachedValues, false);
+      } else {
+        this.apiConfigurationsQuery
+          .fetchMore({ variables })
+          .then(
+            (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
+              this.updateValues(results.data, results.loading);
+            }
+          );
+      }
     } else {
       this.dataSource.data = this.cachedApiConfigurations.slice(
         e.pageSize * this.pageInfo.pageIndex,
@@ -293,46 +302,17 @@ export class ApiConfigurationsComponent
   }
 
   /**
-   * Updates the forms list and writes down the new merged values in the cache
-   * @param {ApolloQueryResult<GetApiConfigurationsQueryResponse>} newResults Query result data to add
-   * @param {boolean} incomingDataAsSource Set incoming data as source data too
-   */
-  private updateApiConfigurationsQueryCache(
-    newResults: ApolloQueryResult<GetApiConfigurationsQueryResponse>,
-    incomingDataAsSource: boolean = false
-  ) {
-    const newApplicationsQuery =
-      updateGivenQuery<GetApiConfigurationsQueryResponse>(
-        this.apolloClient,
-        this.apiConfigurationsQuery,
-        GET_API_CONFIGURATIONS,
-        newResults,
-        'apiConfigurations',
-        'id',
-        incomingDataAsSource
-      );
-    this.updateCachedApiConfigurationsValues(
-      newApplicationsQuery,
-      newResults.loading
-    );
-    console.log(newApplicationsQuery.apiConfigurations);
-    this.apolloClient.cache.writeQuery({
-      query: GET_API_CONFIGURATIONS,
-      data: newApplicationsQuery,
-    });
-  }
-
-  /**
    * Updates local list with given data
    * @param data New values to update forms
    * @param loading Loading state
    */
-  private updateCachedApiConfigurationsValues(
+  private updateValues(
     data: GetApiConfigurationsQueryResponse,
     loading: boolean
   ): void {
-    this.cachedApiConfigurations = data.apiConfigurations.edges.map(
-      (x) => x.node
+    this.cachedApiConfigurations = updateQueryUniqueValues(
+      this.cachedApiConfigurations,
+      data.apiConfigurations.edges.map((x) => x.node)
     );
     this.dataSource.data = this.cachedApiConfigurations.slice(
       this.pageInfo.pageSize * this.pageInfo.pageIndex,

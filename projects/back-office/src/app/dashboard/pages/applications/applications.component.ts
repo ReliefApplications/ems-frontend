@@ -29,7 +29,10 @@ import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { ApolloQueryResult } from '@apollo/client';
-import { updateGivenQuery } from '../../../utils/updateQueries';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../utils/update-queries';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -58,7 +61,10 @@ export class ApplicationsComponent
     'actions',
   ];
   public newApplications: Application[] = [];
-  public filter: any;
+  public filter: any = {
+    filters: [],
+    logic: 'and',
+  };
   private sort: Sort = { active: '', direction: '' };
 
   public pageInfo = {
@@ -107,6 +113,10 @@ export class ApplicationsComponent
         query: GET_APPLICATIONS,
         variables: {
           first: DEFAULT_PAGE_SIZE,
+          afterCursor: null,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
         },
       });
     this.apollo
@@ -126,10 +136,7 @@ export class ApplicationsComponent
     this.applicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((results: ApolloQueryResult<GetApplicationsQueryResponse>) => {
-        /**Value changes are only triggered for refetch(filtered case) or when first loading the component
-         * So we set the incomingDataAsSource as true as is fresh new data not coming from pagination
-         */
-        this.updateApplicationsQueryCache(results, true);
+        this.updateValues(results.data, results.loading);
       });
   }
 
@@ -143,7 +150,6 @@ export class ApplicationsComponent
     // Checks if with new page/size more data needs to be fetched
     if (
       ((e.pageIndex > e.previousPageIndex &&
-        // Condition added so if we have next pageIndex already loaded to not fetch it again
         e.pageIndex * this.pageInfo.pageSize >=
           this.cachedApplications.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
@@ -194,32 +200,38 @@ export class ApplicationsComponent
    */
   private fetchApplications(refetch?: boolean): void {
     this.updating = true;
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      filter: this.filter,
+      sortField: this.sort?.direction && this.sort.active,
+      sortOrder: this.sort?.direction,
+    };
+    const cachedValues: GetApplicationsQueryResponse = getCachedValues(
+      this.apolloClient,
+      GET_APPLICATIONS,
+      variables
+    );
     if (refetch) {
       this.cachedApplications = [];
       this.pageInfo.pageIndex = 0;
-      // Rebuild the query
-      this.applicationsQuery.refetch({
-        first: this.pageInfo.pageSize,
-        afterCursor: null,
-        filter: this.filter,
-        sortField: this.sort?.direction && this.sort.active,
-        sortOrder: this.sort?.direction,
-      });
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
     } else {
-      // Fetch more records
-      this.applicationsQuery
-        .fetchMore({
-          variables: {
-            first: this.pageInfo.pageSize,
-            afterCursor: this.pageInfo.endCursor,
-            filter: this.filter,
-            sortField: this.sort?.direction && this.sort.active,
-            sortOrder: this.sort?.direction,
-          },
-        })
-        .then((results: ApolloQueryResult<GetApplicationsQueryResponse>) => {
-          this.updateApplicationsQueryCache(results);
-        });
+      if (refetch) {
+        // Rebuild the query
+        this.applicationsQuery.refetch(variables);
+      } else {
+        // Fetch more records
+        this.applicationsQuery
+          .fetchMore({
+            variables,
+          })
+          .then((results: ApolloQueryResult<GetApplicationsQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
+          });
+      }
     }
   }
 
@@ -389,44 +401,18 @@ export class ApplicationsComponent
   }
 
   /**
-   * Updates the forms list and writes down the new merged values in the cache
-   * @param {ApolloQueryResult<GetApplicationsQueryResponse>} newResults Query result data to add
-   * @param {boolean} incomingDataAsSource Set incoming data as source data too
-   */
-  private updateApplicationsQueryCache(
-    newResults: ApolloQueryResult<GetApplicationsQueryResponse>,
-    incomingDataAsSource: boolean = false
-  ) {
-    const newApplicationsQuery = updateGivenQuery<GetApplicationsQueryResponse>(
-      this.apolloClient,
-      this.applicationsQuery,
-      GET_APPLICATIONS,
-      newResults,
-      'applications',
-      'id',
-      incomingDataAsSource
-    );
-    this.updateCachedApplicationsValues(
-      newApplicationsQuery,
-      newResults.loading
-    );
-    console.log(newApplicationsQuery.applications);
-    this.apolloClient.cache.writeQuery({
-      query: GET_APPLICATIONS,
-      data: newApplicationsQuery,
-    });
-  }
-
-  /**
    * Updates local list with given data
    * @param data New values to update forms
    * @param loading Loading state
    */
-  private updateCachedApplicationsValues(
+  private updateValues(
     data: GetApplicationsQueryResponse,
     loading: boolean
   ): void {
-    this.cachedApplications = data.applications.edges.map((x) => x.node);
+    this.cachedApplications = updateQueryUniqueValues(
+      this.cachedApplications,
+      data.applications.edges.map((x) => x.node)
+    );
     this.applications.data = this.cachedApplications.slice(
       this.pageInfo.pageSize * this.pageInfo.pageIndex,
       this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)

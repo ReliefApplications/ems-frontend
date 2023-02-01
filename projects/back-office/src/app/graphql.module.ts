@@ -68,7 +68,7 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
   ]);
 
   // Cache is not currently used, due to fetchPolicy values
-  const cache = new InMemoryCache({});
+  const cache = new InMemoryCache();
 
   return {
     link,

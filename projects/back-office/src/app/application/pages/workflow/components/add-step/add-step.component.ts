@@ -22,7 +22,10 @@ import { GET_FORMS, GetFormsQueryResponse } from '../../graphql/queries';
 import { AddFormModalComponent } from '../../../../../components/add-form-modal/add-form-modal.component';
 import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import { ApolloQueryResult } from '@apollo/client';
-import { updateGivenQuery } from 'projects/back-office/src/app/utils/updateQueries';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from 'projects/back-office/src/app/utils/update-queries';
 
 /** Default items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -43,6 +46,7 @@ export class AddStepComponent
   public contentTypes = CONTENT_TYPES.filter((x) => x.value !== 'workflow');
   private forms = new BehaviorSubject<Form[]>([]);
   public forms$!: Observable<Form[]>;
+  private cachedForms: Form[] = [];
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   private pageInfo = {
     endCursor: '',
@@ -95,6 +99,17 @@ export class AddStepComponent
           query: GET_FORMS,
           variables: {
             first: ITEMS_PER_PAGE,
+            afterCursor: null,
+            filter: {
+              logic: 'and',
+              filters: [
+                {
+                  field: 'name',
+                  operator: 'contains',
+                  value: '',
+                },
+              ],
+            },
           },
         });
 
@@ -102,10 +117,7 @@ export class AddStepComponent
         this.formsQuery.valueChanges
           .pipe(takeUntil(this.destroy$))
           .subscribe((results) => {
-            /**Value changes are only triggered for refetch(filtered case) or when first loading the component
-             * So we set the incomingDataAsSource as true as is fresh new data not coming from pagination
-             */
-            this.updateFormsQueryCache(results, true);
+            this.updateValues(results.data, results.loading);
           });
         contentControl.setValidators([Validators.required]);
         contentControl.updateValueAndValidity();
@@ -242,66 +254,54 @@ export class AddStepComponent
   public fetchMoreForms(nextPage: boolean = false, filter: string = '') {
     const variables: any = {
       first: ITEMS_PER_PAGE,
+      afterCursor: nextPage ? this.pageInfo.endCursor : null,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: filter,
+          },
+        ],
+      },
     };
-    variables.filter = {
-      logic: 'and',
-      filters: [
-        {
-          field: 'name',
-          operator: 'contains',
-          value: filter,
-        },
-      ],
-    };
-    if (nextPage) {
-      variables.afterCursor = this.pageInfo.endCursor;
+    const cachedValues: GetFormsQueryResponse = getCachedValues(
+      this.apolloClient,
+      GET_FORMS,
+      variables
+    );
+    if (filter || !nextPage) {
+      this.cachedForms = [];
     }
-    console.log(variables);
-    if (filter) {
-      this.formsQuery.refetch(variables);
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
     } else {
-      this.formsQuery
-        .fetchMore({
-          variables,
-        })
-        .then((results: ApolloQueryResult<GetFormsQueryResponse>) => {
-          this.updateFormsQueryCache(results);
-        });
+      if (filter) {
+        this.formsQuery.refetch(variables);
+      } else {
+        this.formsQuery
+          .fetchMore({
+            variables,
+          })
+          .then((results: ApolloQueryResult<GetFormsQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
+          });
+      }
     }
   }
 
-  /**
-   * Updates the forms list and writes down the new merged values in the cache
-   * @param {ApolloQueryResult<GetFormsQueryResponse>} newResults Query result data to add
-   * @param {boolean} incomingDataAsSource Set incoming data as source data too
-   */
-  private updateFormsQueryCache(
-    newResults: ApolloQueryResult<GetFormsQueryResponse>,
-    incomingDataAsSource: boolean = false
-  ) {
-    const newFormsQuery = updateGivenQuery<GetFormsQueryResponse>(
-      this.apolloClient,
-      this.formsQuery,
-      GET_FORMS,
-      newResults,
-      'forms',
-      'id',
-      incomingDataAsSource
-    );
-    this.updateFormsValues(newFormsQuery, newResults.loading);
-    console.log(newFormsQuery.forms);
-    this.apolloClient.cache.writeQuery({
-      query: GET_FORMS,
-      data: newFormsQuery,
-    });
-  }
   /**
    * Updates local list with given data
    * @param data New values to update forms
    * @param loading Loading state
    */
-  private updateFormsValues(data: GetFormsQueryResponse, loading: boolean) {
-    this.forms.next(data.forms.edges.map((x) => x.node));
+  private updateValues(data: GetFormsQueryResponse, loading: boolean) {
+    this.cachedForms = updateQueryUniqueValues(
+      this.cachedForms,
+      data.forms.edges.map((x) => x.node)
+    );
+    this.forms.next(this.cachedForms);
     this.pageInfo = data.forms.pageInfo;
     this.loadingMore = loading;
   }
