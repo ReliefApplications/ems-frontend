@@ -6,13 +6,12 @@ import {
   QueryResponse,
 } from '../../../services/query-builder/query-builder.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-// import { takeUntil } from 'rxjs/operators';
-
 import 'leaflet.control.layers.tree';
 import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
 import 'node_modules/leaflet-measure/dist/leaflet-measure.en.js';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
+import { AVAILABLE_MEASURE_LANGUAGES } from './measure.const';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
@@ -62,34 +61,6 @@ const BASEMAP_LAYERS: any = {
   'OSM:Streets': 'OSM:Streets',
 };
 
-/** Available leaflet-measure languages */
-const AVAILABLE_MEASURE_LANGUAGES = [
-  'ca',
-  'cn',
-  'cz',
-  'da',
-  'de_CH',
-  'de',
-  'en_UK',
-  'en',
-  'es',
-  'fa',
-  'fil_PH',
-  'fr',
-  'hu',
-  'it',
-  'nl',
-  'pl',
-  'pt_BR',
-  'pt_PT',
-  'ro',
-  'ru',
-  'sk',
-  'sl',
-  'sv',
-  'tr',
-];
-
 /** Component for the map widget */
 @Component({
   selector: 'safe-map',
@@ -111,6 +82,10 @@ export class SafeMapComponent
   private markersCategories: IMarkersLayerValue = [];
   private overlays: LayerTree = {};
   private layerControl: any;
+
+  // === Controls ===
+  private lang!: string;
+  private measureControls: any = {};
 
   // === LEGEND ===
   private legendControl: any;
@@ -146,6 +121,7 @@ export class SafeMapComponent
     this.esriApiKey = environment.esriApiKey;
     this.mapId = this.generateUniqueId();
     this.primaryColor = environment.theme.primary;
+    this.lang = this.translate.currentLang;
   }
 
   /**
@@ -256,7 +232,15 @@ export class SafeMapComponent
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
 
     // Add leaflet measure control
-    this.setMeasureControl();
+    this.getMeasureControl();
+    // listen for language change
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event) => {
+        if (event.lang !== this.lang) {
+          this.getMeasureControl();
+        }
+      });
 
     this.getSearchbarControl().addTo(this.map);
 
@@ -486,16 +470,18 @@ export class SafeMapComponent
     return searchControl;
   }
 
-  /** Creates a custom measure control with leaflet-measure and adds it to the map  */
-  private setMeasureControl(): any {
-    const currLang = AVAILABLE_MEASURE_LANGUAGES.includes(
+  /** Create a custom measure control with leaflet-measure and adds it to the map  */
+  private getMeasureControl(): any {
+    // Get lang from translate service, and use default one if no match provided by plugin
+    const lang = AVAILABLE_MEASURE_LANGUAGES.includes(
       this.translate.currentLang
     )
       ? this.translate.currentLang
       : 'en';
-    // Dynamically import from path
-    import('leaflet-measure/dist/leaflet-measure.' + currLang + '.js').then(
-      () => {
+    // Check if one control was already added for the lang
+    if (!this.measureControls[lang]) {
+      // import related file, and build control
+      import(`leaflet-measure/dist/leaflet-measure.${lang}.js`).then(() => {
         const control = new L.Control.Measure({
           position: 'bottomleft',
           primaryLengthUnit: 'kilometers',
@@ -503,20 +489,20 @@ export class SafeMapComponent
           activeColor: this.primaryColor,
           completedColor: this.primaryColor,
         });
+        this.measureControls[lang] = control;
+        // Remove previous control if exists
+        if (this.measureControls[this.lang]) {
+          this.map.removeControl(this.measureControls[this.lang]);
+        }
         control.addTo(this.map);
-
-        // listen for language change
-        const sub = this.translate.onLangChange
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((event) => {
-            if (event.lang !== currLang) {
-              sub.unsubscribe();
-              control.remove();
-              this.setMeasureControl();
-            }
-          });
-      }
-    );
+        this.lang = lang;
+      });
+    } else {
+      // Else, load control and remove previous one
+      this.map.removeControl(this.measureControls[this.lang]);
+      this.measureControls[lang].addTo(this.map);
+      this.lang = lang;
+    }
   }
 
   /**
