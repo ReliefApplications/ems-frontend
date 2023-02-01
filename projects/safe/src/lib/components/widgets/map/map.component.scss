@@ -5,7 +5,7 @@
   background-image: none;
 }
 
-::ng-deep .leaflet-layerstree-header input{
+::ng-deep .leaflet-layerstree-header input {
   margin-left: 0px;
 }
 
@@ -36,4 +36,37 @@
 
 ::ng-deep .leaflet-layerstree-expand-collapse {
   cursor: pointer;
+}
+
+#map-container {
+  ::ng-deep {
+    .leaflet-measure-resultpopup a.deletemarkup,
+    .leaflet-measure-resultpopup a.zoomto,
+    .leaflet-control-measure a.cancel,
+    .leaflet-control-measure a.finish,
+    .leaflet-control-measure a.start {
+      color: var(--theme);
+      background-image: none;
+    }
+
+    .leaflet-control-measure a.start::before {
+      content: '►⠀';
+    }
+
+    .leaflet-control-measure a.finish::before {
+      content: '✔⠀';
+    }
+
+    .leaflet-control-measure a.cancel::before {
+      content: '✖⠀';
+    }
+
+    .leaflet-measure-resultpopup a.zoomto::before {
+      content: '⇱⠀';
+    }
+
+    .leaflet-measure-resultpopup a.deletemarkup::before {
+      content: '♻⠀';
+    }
+  }
 }

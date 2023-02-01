@@ -1,4 +1,8 @@
-<div class="h-full flex flex-col">
+<div
+  class="h-full flex flex-col"
+  id="map-container"
+  [style.--theme]="primaryColor"
+>
   <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
     <span class="widget-title" [title]="settings ? settings.title : ''">{{
       settings.title

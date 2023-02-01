@@ -94,6 +94,9 @@ export class SafeMapComponent
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
 
+  // === THEME ===
+  public primaryColor = '';
+
   /**
    * Constructor of the map widget component
    *
@@ -109,6 +112,7 @@ export class SafeMapComponent
     super();
     this.esriApiKey = environment.esriApiKey;
     this.mapId = this.generateUniqueId();
+    this.primaryColor = environment.theme.primary;
   }
 
   /**
@@ -214,6 +218,15 @@ export class SafeMapComponent
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(this.settings.basemap);
+
+    const measureControl = new L.Control.Measure({
+      position: 'topleft',
+      primaryLengthUnit: 'kilometers',
+      primaryAreaUnit: 'sqmeters',
+      activeColor: this.primaryColor,
+      completedColor: this.primaryColor,
+    });
+    measureControl.addTo(this.map);
 
     // Adds all the controls we use to the map
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
