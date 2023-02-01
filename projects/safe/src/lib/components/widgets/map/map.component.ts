@@ -10,6 +10,7 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 
 import 'leaflet.control.layers.tree';
 import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
+import { generateHeatMap } from './heatmap-test';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
@@ -149,7 +150,10 @@ export class SafeMapComponent
     //   this.getData();
     // }
 
-    setTimeout(() => this.map.invalidateSize(), 100);
+    setTimeout(() => {
+      this.map.invalidateSize();
+      this.drawLayers();
+    }, 100);
   }
 
   /**
@@ -231,7 +235,12 @@ export class SafeMapComponent
     this.map.on('zoomend', () => {
       this.applyOptions(this.map.getZoom(), this.overlays);
     });
+  }
 
+  /**
+   * Draw layers on map.
+   */
+  private drawLayers(): void {
     const options1 = {
       style: {
         opacity: 0.2,
@@ -270,6 +279,9 @@ export class SafeMapComponent
         },
       ],
     };
+
+    // Heatmap
+    generateHeatMap(this.map);
 
     const layerTreeCloned = this.addTreeToMap(this.overlays);
     this.applyOptions(this.map.getZoom(), layerTreeCloned, true);
@@ -313,7 +325,6 @@ export class SafeMapComponent
             zoom > layerTree.options.visibilityRange.max ||
             zoom < layerTree.options.visibilityRange.min
           ) {
-            console.log('there ?');
             this.map.removeLayer(layerTree.layer);
           } else {
             layerTree.layer.addTo(this.map);
