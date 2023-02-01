@@ -91,6 +91,7 @@
                 "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
                 "inject": true
               },
+              "node_modules/leaflet-measure/dist/leaflet-measure.css",
               "projects/back-office/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
               "node_modules/survey-angular/survey.min.css",
@@ -557,6 +558,7 @@
                 "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
                 "inject": true
               },
+              "node_modules/leaflet-measure/dist/leaflet-measure.css",
               "projects/front-office/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
               "node_modules/survey-angular/survey.min.css",
@@ -1002,6 +1004,7 @@
               }
             ],
             "styles": [
+              "node_modules/leaflet-measure/dist/leaflet-measure.css",
               "projects/web-widgets/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
               "node_modules/survey-angular/survey.min.css",
@@ -1177,6 +1180,7 @@
                 "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
                 "inject": true
               },
+              "node_modules/leaflet-measure/dist/leaflet-measure.css",
               "projects/safe/src/lib/style/styles.scss",
               "node_modules/survey-creator/survey-creator.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
