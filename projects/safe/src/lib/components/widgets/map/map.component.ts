@@ -6,14 +6,12 @@ import {
   QueryResponse,
 } from '../../../services/query-builder/query-builder.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-// import { takeUntil } from 'rxjs/operators';
-
+import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
 import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
+import { generateGeoJSONPoints } from './util-test';
 
 // Declares L to be able to use Leaflet from CDN
-// Leaflet
-//import 'leaflet.markercluster';
 declare let L: any;
 
 /** Default options for the marker */
@@ -248,6 +246,30 @@ export class SafeMapComponent
         opacity: 0.5,
       },
     };
+
+    // Clusters
+    const clusterGroup = L.markerClusterGroup({
+      zoomToBoundsOnClick: false,
+    });
+    clusterGroup.on('clusterclick', (event: any) => {
+      const children = event.layer.getAllChildMarkers();
+      let popupContent = 'test popup';
+      children.forEach((child: any) => {
+        console.log(child);
+        popupContent += ' and new test';
+      });
+      L.popup()
+        .setLatLng(event.latlng)
+        .setContent(popupContent)
+        .openOn(this.map);
+    });
+    const clusterLayer = L.geoJSON(generateGeoJSONPoints(200), {
+      onEachFeature: (feature: any, layer: any) => {
+        layer.bindPopup('point popup');
+      },
+    });
+    clusterGroup.addLayer(clusterLayer);
+    this.map.addLayer(clusterGroup);
 
     this.overlays = {
       label: 'GeoJSON layers',
