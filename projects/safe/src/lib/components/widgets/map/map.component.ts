@@ -10,7 +10,9 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 
 import 'leaflet.control.layers.tree';
 import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
-import 'node_modules/leaflet-measure/dist/leaflet-measure.fr.js';
+import 'node_modules/leaflet-measure/dist/leaflet-measure.en.js';
+import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
@@ -60,6 +62,34 @@ const BASEMAP_LAYERS: any = {
   'OSM:Streets': 'OSM:Streets',
 };
 
+/** Available leaflet-measure languages */
+const AVAILABLE_MEASURE_LANGUAGES = [
+  'ca',
+  'cn',
+  'cz',
+  'da',
+  'de_CH',
+  'de',
+  'en_UK',
+  'en',
+  'es',
+  'fa',
+  'fil_PH',
+  'fr',
+  'hu',
+  'it',
+  'nl',
+  'pl',
+  'pt_BR',
+  'pt_PT',
+  'ro',
+  'ru',
+  'sk',
+  'sl',
+  'sv',
+  'tr',
+];
+
 /** Component for the map widget */
 @Component({
   selector: 'safe-map',
@@ -104,11 +134,13 @@ export class SafeMapComponent
    * @param environment platform environment
    * @param apollo Apollo client
    * @param queryBuilder The queryBuilder service
+   * @param translate The translate service
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private translate: TranslateService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -224,16 +256,7 @@ export class SafeMapComponent
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
 
     // Add leaflet measure control
-    const measureControl = new L.Control.Measure({
-      position: 'bottomleft',
-      primaryLengthUnit: 'kilometers',
-      primaryAreaUnit: 'sqmeters',
-      activeColor: this.primaryColor,
-      completedColor: this.primaryColor,
-      localization: 'fr',
-      // strings: L.Measured.strings.fr,
-    });
-    measureControl.addTo(this.map);
+    this.setMeasureControl();
 
     this.getSearchbarControl().addTo(this.map);
 
@@ -345,7 +368,7 @@ export class SafeMapComponent
    * Create a new layer tree with duplicated layers
    *
    * @param layerTree The layers tree.
-   * @returns A tree wiht each layer duplicated to have a 'left' and 'right' clones
+   * @returns A tree with each layer duplicated to have a 'left' and 'right' clones
    */
   private addTreeToMap(layerTree: LayerTree): any {
     if (layerTree.children) {
@@ -461,6 +484,39 @@ export class SafeMapComponent
     });
 
     return searchControl;
+  }
+
+  /** Creates a custom measure control with leaflet-measure and adds it to the map  */
+  private setMeasureControl(): any {
+    const currLang = AVAILABLE_MEASURE_LANGUAGES.includes(
+      this.translate.currentLang
+    )
+      ? this.translate.currentLang
+      : 'en';
+    // Dynamically import from path
+    import('leaflet-measure/dist/leaflet-measure.' + currLang + '.js').then(
+      () => {
+        const control = new L.Control.Measure({
+          position: 'bottomleft',
+          primaryLengthUnit: 'kilometers',
+          primaryAreaUnit: 'sqmeters',
+          activeColor: this.primaryColor,
+          completedColor: this.primaryColor,
+        });
+        control.addTo(this.map);
+
+        // listen for language change
+        const sub = this.translate.onLangChange
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((event) => {
+            if (event.lang !== currLang) {
+              sub.unsubscribe();
+              control.remove();
+              this.setMeasureControl();
+            }
+          });
+      }
+    );
   }
 
   /**
