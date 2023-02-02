@@ -88,6 +88,7 @@
     "leaflet": "^1.7.1",
     "leaflet-measure": "^3.1.0",
     "leaflet.control.layers.tree": "^1.1.0",
+    "leaflet.heat": "^0.2.0",
     "leaflet.markercluster": "^1.4.1",
     "localforage": "^1.10.0",
     "rxjs": "^7.8.0",

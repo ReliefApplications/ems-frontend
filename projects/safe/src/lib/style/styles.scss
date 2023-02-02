@@ -699,7 +699,7 @@ mat-tab-group[vertical] {
   .leaflet-control-measure a.finish,
   .leaflet-control-measure a.start {
     @apply text-primary-500;
-    background-image: none;
+    background-image: none !important;
   }
 }
 
