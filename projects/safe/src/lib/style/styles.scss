@@ -691,6 +691,16 @@ mat-tab-group[vertical] {
     @apply box-border rounded shadow-xl;
     // previous shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12),
   }
+
+  // === Measure plugin ===
+  .leaflet-measure-resultpopup a.deletemarkup,
+  .leaflet-measure-resultpopup a.zoomto,
+  .leaflet-control-measure a.cancel,
+  .leaflet-control-measure a.finish,
+  .leaflet-control-measure a.start {
+    @apply text-primary-500;
+    background-image: none;
+  }
 }
 
 // Define new colors

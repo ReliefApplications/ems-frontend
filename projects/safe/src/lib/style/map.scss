@@ -1,0 +1,20 @@
+// === Measure plugin ===
+::ng-deep .leaflet-control-measure a.start::before {
+  content: "► ";
+}
+
+::ng-deep .leaflet-control-measure a.finish::before {
+  content: "✔ ";
+}
+
+::ng-deep .leaflet-control-measure a.cancel::before {
+  content: "✖ ";
+}
+
+::ng-deep .leaflet-measure-resultpopup a.zoomto::before {
+  content: "⇱ ";
+}
+
+::ng-deep .leaflet-measure-resultpopup a.deletemarkup::before {
+  content: "♻ ";
+}

@@ -6,11 +6,12 @@ import {
   QueryResponse,
 } from '../../../services/query-builder/query-builder.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-// import { takeUntil } from 'rxjs/operators';
-
 import 'leaflet.control.layers.tree';
 import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
 import { generateHeatMap } from './heatmap-test';
+import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs';
+import { AVAILABLE_MEASURE_LANGUAGES } from './measure.const';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
@@ -64,7 +65,7 @@ const BASEMAP_LAYERS: any = {
 @Component({
   selector: 'safe-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss'],
+  styleUrls: ['../../../style/map.scss', './map.component.scss'],
 })
 export class SafeMapComponent
   extends SafeUnsubscribeComponent
@@ -81,6 +82,11 @@ export class SafeMapComponent
   private markersCategories: IMarkersLayerValue = [];
   private overlays: LayerTree = {};
   private layerControl: any;
+  private addressMarker: any;
+
+  // === Controls ===
+  private lang!: string;
+  private measureControls: any = {};
 
   // === LEGEND ===
   private legendControl: any;
@@ -95,21 +101,28 @@ export class SafeMapComponent
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
 
+  // === THEME ===
+  public primaryColor = '';
+
   /**
    * Constructor of the map widget component
    *
    * @param environment platform environment
    * @param apollo Apollo client
    * @param queryBuilder The queryBuilder service
+   * @param translate The translate service
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private translate: TranslateService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
     this.mapId = this.generateUniqueId();
+    this.primaryColor = environment.theme.primary;
+    this.lang = this.translate.currentLang;
   }
 
   /**
@@ -219,16 +232,33 @@ export class SafeMapComponent
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(this.settings.basemap);
 
-    // Adds all the controls we use to the map
+    // Add zoom control
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
+
+    // Add leaflet measure control
+    this.getMeasureControl();
+    // listen for language change
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event) => {
+        if (event.lang !== this.lang) {
+          this.getMeasureControl();
+        }
+      });
+
     this.getSearchbarControl().addTo(this.map);
 
     // Creates a pane for markers so they are always shown in top, used in the marker options;
-    // this.map.createPane('markers');
-    // this.map.getPane('markers').style.zIndex = 650;
+    this.map.createPane('markers');
+    this.map.getPane('markers').style.zIndex = 650;
 
     // Set event listener to log map bounds when zooming, moving and resizing screen.
     this.map.on('moveend', () => {
+      // If searched address marker exists, if we move, the item should disappear
+      if (this.addressMarker) {
+        this.map.removeLayer(this.addressMarker);
+        this.addressMarker = null;
+      }
       console.log(this.map.getBounds());
     });
 
@@ -338,7 +368,7 @@ export class SafeMapComponent
    * Create a new layer tree with duplicated layers
    *
    * @param layerTree The layers tree.
-   * @returns A tree wiht each layer duplicated to have a 'left' and 'right' clones
+   * @returns A tree with each layer duplicated to have a 'left' and 'right' clones
    */
   private addTreeToMap(layerTree: LayerTree): any {
     if (layerTree.children) {
@@ -450,10 +480,50 @@ export class SafeMapComponent
           <b>${'longitude: '}</b>${lng}</p>`);
         results.addLayer(marker);
         marker.openPopup();
+        // Use setTimeout to prevent the marker to be removed while
+        // the map moves to the searched address and is re-centred
+        setTimeout(() => {
+          this.addressMarker = marker;
+        }, 1000);
       }
     });
 
     return searchControl;
+  }
+
+  /** Create a custom measure control with leaflet-measure and adds it to the map  */
+  private getMeasureControl(): any {
+    // Get lang from translate service, and use default one if no match provided by plugin
+    const lang = AVAILABLE_MEASURE_LANGUAGES.includes(
+      this.translate.currentLang
+    )
+      ? this.translate.currentLang
+      : 'en';
+    // Check if one control was already added for the lang
+    if (!this.measureControls[lang]) {
+      // import related file, and build control
+      import(`leaflet-measure/dist/leaflet-measure.${lang}.js`).then(() => {
+        const control = new L.Control.Measure({
+          position: 'bottomleft',
+          primaryLengthUnit: 'kilometers',
+          primaryAreaUnit: 'sqmeters',
+          activeColor: this.primaryColor,
+          completedColor: this.primaryColor,
+        });
+        this.measureControls[lang] = control;
+        // Remove previous control if exists
+        if (this.measureControls[this.lang]) {
+          this.map.removeControl(this.measureControls[this.lang]);
+        }
+        control.addTo(this.map);
+        this.lang = lang;
+      });
+    } else {
+      // Else, load control and remove previous one
+      this.map.removeControl(this.measureControls[this.lang]);
+      this.measureControls[lang].addTo(this.map);
+      this.lang = lang;
+    }
   }
 
   /**
