@@ -1,6 +1,14 @@
+/** Bound for the latitude in a map */
 const latBounds = [-90, 90];
+/** Bound for the longitude in a map */
 const lngBounds = [-180, 180];
 
+/**
+ * Generates random GeoJSON points with a random latitude and longitude
+ *
+ * @param featuresCount The number of points to generate
+ * @returns A GeoJSON FeatureCollection with the generated points
+ */
 export const generateGeoJSONPoints = (featuresCount: number = 100) => {
   const features = [];
   for (let i = 0; i < featuresCount; i++) {
@@ -27,6 +35,7 @@ export const generateGeoJSONPoints = (featuresCount: number = 100) => {
   };
 };
 
+/** Heatmap mocked data */
 export const geoJSONHeatMap = {
   type: 'FeatureCollection',
   features: [
