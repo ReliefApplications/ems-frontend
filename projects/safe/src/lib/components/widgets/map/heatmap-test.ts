@@ -73,15 +73,6 @@ export const generateHeatMap = (
 
     const radius = 1000 / zoom;
 
-    // create a circle around the point (for debugging)
-    const circle = L.circle(coordinates, {
-      radius: radius * 1000, // haversineDistance returns km, circle radius is in meters
-      color: 'red',
-      fillColor: '#f03',
-      fillOpacity: 0.5,
-    });
-    circle.addTo(map);
-
     // checks if the point is within the calculate radius
     const heatMapPoints = heatArray.filter((heatMapPoint) => {
       const distance = haversineDistance(
@@ -95,13 +86,23 @@ export const generateHeatMap = (
     });
 
     if (heatMapPoints.length > 0) {
+      // create a circle around the point (for debugging)
+      const circle = L.circle(coordinates, {
+        radius: radius * 1000, // haversineDistance returns km, circle radius is in meters
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+      });
+      circle.addTo(map);
       // create a popup with the number of points in the area and the coordinates
       const popup = L.popup()
         .setLatLng(coordinates)
         .setContent(
           `Number of points in the area: ${heatMapPoints.length} <br> Coordinates: ${coordinates.lat}, ${coordinates.lng}`
         );
-      popup.openOn(map);
+      circle.bindPopup(popup);
+      popup.on('remove', () => map.removeLayer(circle));
+      circle.openPopup();
     }
   });
 
