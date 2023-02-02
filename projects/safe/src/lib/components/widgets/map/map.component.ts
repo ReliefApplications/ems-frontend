@@ -1,7 +1,9 @@
 import { Component, AfterViewInit, Input, Inject } from '@angular/core';
 import get from 'lodash/get';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
+import { generateClusterLayer } from './cluster-test';
 import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
 import { generateHeatMap } from './heatmap-test';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,8 +12,6 @@ import { AVAILABLE_MEASURE_LANGUAGES } from './measure.const';
 import { v4 as uuidv4 } from 'uuid';
 
 // Declares L to be able to use Leaflet from CDN
-// Leaflet
-//import 'leaflet.markercluster';
 declare let L: any;
 
 /** Default options for the marker */
@@ -238,6 +238,9 @@ export class SafeMapComponent
         opacity: 0.5,
       },
     };
+
+    const clusterGroup = generateClusterLayer(this.map, L);
+    this.map.addLayer(clusterGroup);
 
     this.overlays = {
       label: 'GeoJSON layers',
