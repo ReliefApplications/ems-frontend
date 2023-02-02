@@ -94,13 +94,15 @@ export const generateHeatMap = (
       return distance < radius;
     });
 
-    // create a popup with the number of points in the area and the coordinates
-    const popup = L.popup()
-      .setLatLng(coordinates)
-      .setContent(
-        `Number of points in the area: ${heatMapPoints.length} <br> Coordinates: ${coordinates.lat}, ${coordinates.lng}`
-      );
-    popup.openOn(map);
+    if (heatMapPoints.length > 0) {
+      // create a popup with the number of points in the area and the coordinates
+      const popup = L.popup()
+        .setLatLng(coordinates)
+        .setContent(
+          `Number of points in the area: ${heatMapPoints.length} <br> Coordinates: ${coordinates.lat}, ${coordinates.lng}`
+        );
+      popup.openOn(map);
+    }
   });
 
   const heatMapLayer = L.heatLayer(
