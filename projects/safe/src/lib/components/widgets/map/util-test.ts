@@ -20,7 +20,7 @@ export const generateGeoJSONPoints = (featuresCount: number = 100) => {
       type: 'Feature',
       geometry: {
         type: 'Point',
-        coordinates: [lat, lng],
+        coordinates: [lng, lat],
       },
       properties: {
         title: 'point_' + i,
