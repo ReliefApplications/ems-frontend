@@ -1,3 +1,10 @@
+## [1.3.9](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.8...v1.3.9) (2023-02-03)
+
+
+### Bug Fixes
+
+* step could not be duplicated ([9383527](https://github.com/ReliefApplications/oort-frontend/commit/9383527075be50fa18003c87bab352059164fefd))
+
 ## [1.3.8](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.7...v1.3.8) (2023-01-26)
 
 
