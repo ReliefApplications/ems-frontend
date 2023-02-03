@@ -1,20 +1,41 @@
 // === Measure plugin ===
 ::ng-deep .leaflet-control-measure a.start::before {
-  content: "► ";
+  content: '► ';
 }
 
 ::ng-deep .leaflet-control-measure a.finish::before {
-  content: "✔ ";
+  content: '✔ ';
 }
 
 ::ng-deep .leaflet-control-measure a.cancel::before {
-  content: "✖ ";
+  content: '✖ ';
 }
 
 ::ng-deep .leaflet-measure-resultpopup a.zoomto::before {
-  content: "⇱ ";
+  content: '⇱ ';
 }
 
 ::ng-deep .leaflet-measure-resultpopup a.deletemarkup::before {
-  content: "♻ ";
+  content: '♻ ';
+}
+
+// Clustering
+::ng-deep .leaflet-data-marker {
+  display: flex;
+  height: unset !important;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+// Custom svg marker
+::ng-deep .svg-marker {
+  svg {
+    path {
+      fill: var(--color, #000);
+    }
+  }
 }
