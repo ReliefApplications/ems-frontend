@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { AVAILABLE_MEASURE_LANGUAGES } from './measure.const';
 import { v4 as uuidv4 } from 'uuid';
+import { randomFeatureCollection } from './generateFeatureCollection';
 
 // Declares L to be able to use Leaflet from CDN
 declare let L: any;
@@ -261,6 +262,10 @@ export class SafeMapComponent
           layer: cornerGeoJSON,
           options: options2,
         },
+        {
+          label: 'Random',
+          layer: randomFeatureCollection,
+        },
       ],
     };
 
@@ -328,7 +333,30 @@ export class SafeMapComponent
     if (layerTree.children) {
       layerTree.children.map((child: any) => {
         const newLayer = this.addTreeToMap(child);
-        child.layer = L.geoJSON(newLayer.layer).addTo(this.map);
+        child.layer = L.geoJSON(newLayer.layer, {
+          // Check for icon property
+          pointToLayer: (feature: any, latlng: any) => {
+            const marker = L.marker(latlng);
+            if (feature.properties?.icon?.svg) {
+              const color = feature.properties.icon.color;
+              const width = feature.properties.icon.width;
+              const height = feature.properties.icon.height;
+              const svg = feature.properties.icon.svg;
+
+              const icon = L.divIcon({
+                className: 'svg-marker',
+                iconSize: [width, height],
+                iconAnchor: [0, 24],
+                labelAnchor: [-6, 0],
+                popupAnchor: [width / 2, -36],
+                html: `<span style="--color:${color}">${svg}</span>`,
+              });
+
+              return marker.setIcon(icon);
+            }
+            return marker;
+          },
+        }).addTo(this.map);
       });
     } else {
       let layerFeature: any[];
