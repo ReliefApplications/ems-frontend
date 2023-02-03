@@ -1197,7 +1197,8 @@
 						"remove": "******"
 					},
 					"popup": {
-						"label": "******"
+						"label": "******",
+						"of": "{{current}} ****** {{total}}"
 					},
 					"properties": {
 						"basemap": "******",

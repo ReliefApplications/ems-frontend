@@ -1,3 +1,5 @@
+import { FeatureCollection } from 'geojson';
+
 /** Represents the types of geometries that can be generated */
 type FeatureTypes = 'Point' | 'Polygon' | 'LineString';
 
@@ -30,7 +32,9 @@ const LOCATION_ICON_SVG =
  * @param options Options for generating random features
  * @returns Array of generated features
  */
-export const generateRandomFeatures = (options: CollectionGeneratorOptions) => {
+export const generateRandomFeatures = (
+  options: CollectionGeneratorOptions
+): FeatureCollection => {
   const featureTypes = Object.keys(options) as FeatureTypes[];
   const typeProbabilities = featureTypes.reduce((probabilities, type) => {
     const prob = options[type]?.probability;
@@ -98,7 +102,7 @@ export const generateRandomFeatures = (options: CollectionGeneratorOptions) => {
         coordinates: feature.coordinates,
       },
     })),
-  };
+  } as FeatureCollection;
 };
 
 /**

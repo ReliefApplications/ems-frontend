@@ -11,6 +11,7 @@ import { takeUntil } from 'rxjs';
 import { AVAILABLE_MEASURE_LANGUAGES } from './measure.const';
 import { v4 as uuidv4 } from 'uuid';
 import { randomFeatureCollection } from './generateFeatureCollection';
+import { DomService } from '../../../services/dom/dom.service';
 
 // Declares L to be able to use Leaflet from CDN
 declare let L: any;
@@ -102,10 +103,12 @@ export class SafeMapComponent
    *
    * @param environment platform environment
    * @param translate The translate service
+   * @param domService The dom service
    */
   constructor(
     @Inject('environment') environment: any,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private domService: DomService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -270,7 +273,7 @@ export class SafeMapComponent
     };
 
     // Heatmap
-    generateHeatMap(this.map);
+    generateHeatMap(this.map, this.domService);
 
     const layerTreeCloned = this.addTreeToMap(this.overlays);
     this.applyOptions(this.map.getZoom(), layerTreeCloned, true);

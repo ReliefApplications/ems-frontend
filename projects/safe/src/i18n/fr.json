@@ -1199,7 +1199,8 @@
 						"remove": "Supprimer le calque"
 					},
 					"popup": {
-						"label": "Champs affichés dans le popup"
+						"label": "Champs affichés dans le popup",
+						"of": "{{current}} sur {{total}}"
 					},
 					"properties": {
 						"basemap": "Fond de carte",

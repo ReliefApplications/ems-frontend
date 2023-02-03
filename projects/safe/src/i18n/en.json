@@ -1197,7 +1197,8 @@
 						"remove": "Remove layer"
 					},
 					"popup": {
-						"label": "Fields displayed in the popup"
+						"label": "Fields displayed in the popup",
+						"of": "{{current}} of {{total}}"
 					},
 					"properties": {
 						"basemap": "Base map",

@@ -1,7 +1,10 @@
-import { generateGeoJSONPoints } from './util-test';
 import 'leaflet.heat';
 import { merge, get } from 'lodash';
 import { haversineDistance } from './utils/haversine';
+import { DomService } from '../../../services/dom/dom.service';
+import { GroupedPointsPopupComponent } from './grouped-points-popup/grouped-points-popup.component';
+import { Feature, Point } from 'geojson';
+import { generateRandomFeatures } from './generateFeatureCollection';
 
 declare let L: any;
 
@@ -36,22 +39,39 @@ const defaultHeatMapOptions: HeatMapOptions = {
  * (from the heatmap)in a circle around the clicked point
  *
  * @param map The map to add the heatmap to
+ * @param domService The dom service
  * @param options Options for the heatmap
  */
 export const generateHeatMap = (
   map: any,
+  domService: DomService,
   options?: Partial<HeatMapOptions>
 ) => {
   const total = 10000;
-  const geoJSON = generateGeoJSONPoints(total);
-  const heatArray: any[] = [];
+  const geoJSON = generateRandomFeatures({
+    numFeatures: total,
+    Point: {
+      generateProperties: () => {
+        const weight = Math.random();
+        const id = Math.random().toString(36).substring(2, 15);
+        const title = `point_${id}`;
+        const random = Math.random() > 0.5;
+        return {
+          id,
+          weight,
+          title,
+          'marker-symbol': 'harbor',
+          imgSrc: random
+            ? 'https://media.npr.org/assets/img/2017/09/12/macaca_nigra_self-portrait-3e0070aa19a7fe36e802253048411a38f14a79f8-s800-c85.webp'
+            : 'https://i.pinimg.com/originals/4b/92/8b/4b928be7d4b2d54c72227350709adebd.jpg',
+        };
+      },
+    },
+  });
+  const heatArray: Feature<Point>[] = [];
   geoJSON.features.forEach((feature) => {
     if (feature.geometry.type === 'Point') {
-      heatArray.push([
-        feature.geometry.coordinates[1], // lat
-        feature.geometry.coordinates[0], // long
-        get(feature, 'properties.weight', 1), // weight -> should be in properties.weight of the feature
-      ]);
+      heatArray.push(feature as Feature<Point>);
     }
   });
 
@@ -75,7 +95,12 @@ export const generateHeatMap = (
     const radius = 1000 / zoom;
 
     // checks if the point is within the calculate radius
-    const heatMapPoints = heatArray.filter((heatMapPoint) => {
+    const heatMapPoints = heatArray.filter((point) => {
+      const heatMapPoint = [
+        point.geometry.coordinates[1],
+        point.geometry.coordinates[0],
+        get(point, 'properties.weight', 1),
+      ];
       const distance = haversineDistance(
         coordinates.lat,
         coordinates.lng,
@@ -95,12 +120,46 @@ export const generateHeatMap = (
         fillOpacity: 0.5,
       });
       circle.addTo(map);
-      // create a popup with the number of points in the area and the coordinates
-      const popup = L.popup()
+      // create a popup that renders the GroupedPointsPopupComponent
+      // create div element
+      const div = document.createElement('div');
+      // create component
+      // render the GroupedPointsPopupComponent
+      const groupedPopup = domService.appendComponentToBody(
+        GroupedPointsPopupComponent,
+        div
+      );
+      const instance: GroupedPointsPopupComponent = groupedPopup.instance;
+
+      // set the points
+      instance.points = heatMapPoints;
+      instance.template = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; padding: 4px">
+          <p style="color: gray">ID</p>
+          <p>{{id}}</p>
+          <p style="color: gray">Title</p>
+          <p>{{title}}</p>
+          <p style="color: gray">Marker</p>
+          <p>{{marker-symbol}}</p>
+          <p style="color: gray">Weight</p>
+          <p>{{weight}}</p>
+          <p style="color: gray">Title</p>
+          <p>{{title}}</p>
+          <p style="color: gray">Marker</p>
+          <p>{{marker-symbol}}</p>
+        </div>
+        <img src="{{imgSrc}}" width="100%" />
+        `;
+
+      const popup = L.popup({ closeButton: false })
         .setLatLng(coordinates)
-        .setContent(
-          `Number of points in the area: ${heatMapPoints.length} <br> Coordinates: ${coordinates.lat}, ${coordinates.lng}`
-        );
+        .setContent(div);
+
+      // listen to popup close event
+      instance.close.subscribe(() => {
+        popup.remove();
+      });
+
       circle.bindPopup(popup);
       popup.on('remove', () => map.removeLayer(circle));
       circle.openPopup();
@@ -108,12 +167,13 @@ export const generateHeatMap = (
   });
 
   const heatMapLayer = L.heatLayer(
-    heatArray,
+    heatArray.map((point) => [
+      point.geometry.coordinates[1],
+      point.geometry.coordinates[0],
+      get(point, 'properties.weight', 1),
+    ]),
     merge(defaultHeatMapOptions, options)
   );
-  heatMapLayer.on('click', (event: any) => {
-    console.log(event);
-  });
-  console.log(heatMapLayer);
+
   heatMapLayer.addTo(map);
 };
