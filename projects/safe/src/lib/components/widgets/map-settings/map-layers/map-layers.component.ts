@@ -1,7 +1,10 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MatLegacyDialog as MatDialog,
+} from '@angular/material/legacy-dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
