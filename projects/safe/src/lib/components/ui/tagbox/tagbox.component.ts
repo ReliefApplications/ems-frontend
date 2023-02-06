@@ -6,8 +6,9 @@ import {
   MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { BehaviorSubject, merge, Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, tap, takeUntil } from 'rxjs/operators';
 
 /**
  * Custom tagbox component to use in the app
@@ -17,7 +18,10 @@ import { startWith, map } from 'rxjs/operators';
   templateUrl: './tagbox.component.html',
   styleUrls: ['./tagbox.component.scss'],
 })
-export class SafeTagboxComponent implements OnInit {
+export class SafeTagboxComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === CHOICES ===
   @Input() public choices$!: Observable<any[]>;
   @Input() public displayKey = 'name';
@@ -25,7 +29,6 @@ export class SafeTagboxComponent implements OnInit {
   public availableChoices = new BehaviorSubject<any[]>([]);
   public selectedChoices: any[] = [];
   public filteredChoices?: Observable<any[]>;
-
   // === TAGBOX ===
   @Input() public label!: any;
   public separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -42,69 +45,63 @@ export class SafeTagboxComponent implements OnInit {
   /**
    * Constructor for safe-tagbox component
    */
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   ngOnInit(): void {
-    this.choices$.subscribe((choices: any[]) => {
-      this.choicesEmpty = choices.length === 0;
-      this.selectedChoices = this.choicesEmpty
-        ? []
-        : this.parentControl.value
-            .map((value: string) =>
-              choices.find((choice) => value === choice[this.valueKey])
-            )
-            .filter((x: any) => x);
-      this.availableChoices.next(
-        choices.filter(
-          (choice) =>
-            !this.selectedChoices.some(
-              (x) => x[this.valueKey] === choice[this.valueKey]
-            )
-        )
-      );
-      // Set up filtered choices for the autocomplete
-      this.filteredChoices = merge(
-        this.inputControl.valueChanges,
-        this.availableChoices.asObservable()
-      ).pipe(
-        startWith(null),
-        map((value: any) => {
-          if (value) {
-            if (typeof value === 'string') {
-              return this.filterChoices(this.currentChoices, value);
-            } else if (Array.isArray(value)) {
-              if (
-                this.inputControl.value &&
-                typeof this.inputControl.value === 'string'
-              ) {
-                return this.filterChoices(value, this.inputControl.value);
-              } else {
-                return [...value];
-              }
-            }
-          }
-          return [...this.currentChoices];
+    this.choices$
+      .pipe(
+        tap((choices: any[]) => {
+          // For each values emitted by the choices stream we first update the empty state
+          this.choicesEmpty = choices.length === 0;
+          // Then we update the selected choices
+          this.selectedChoices = this.choicesEmpty
+            ? []
+            : this.getSelectedChoices(choices);
+          // And then set the available choices
+          this.setAvailableChoices(choices);
         }),
-        map((value: any[]) =>
-          value.sort((a: any, b: any) =>
-            a[this.displayKey] > b[this.displayKey] ? 1 : -1
-          )
-        )
-      );
-      // Focus test input when it reappears after removing a selected choice.
-      this.availableChoices.subscribe((value) => {
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
+    this.setUpChoicesListeners();
+  }
+
+  /**
+   * Set up the listeners for the choices
+   */
+  private setUpChoicesListeners() {
+    // Focus test input when it reappears after removing a selected choice.
+    this.availableChoices
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((availableChoices: any[]) => {
         if (!this.choicesEmpty) {
-          if (!this.showInput && value.length > 0) {
+          if (!this.showInput && availableChoices.length > 0) {
             this.showInput = true;
-            window.requestAnimationFrame(() =>
-              this.textInput?.nativeElement.focus()
-            );
+            window.requestAnimationFrame(() => {
+              this.textInput?.nativeElement.focus();
+            });
           } else {
-            this.showInput = value.length > 0;
+            this.showInput = availableChoices.length > 0;
           }
+          this.filteredChoices = of(availableChoices);
         }
       });
-    });
+
+    // Update available choices when search value or tags value changes
+    this.inputControl.valueChanges
+      .pipe(
+        map((value: any) => {
+          if (typeof value === 'string') {
+            this.filteredChoices = of(
+              this.filterChoices(this.currentChoices, value)
+            );
+          }
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
   /**
@@ -117,6 +114,42 @@ export class SafeTagboxComponent implements OnInit {
   private filterChoices(choices: any, value: string): any[] {
     return choices.filter((choice: any) =>
       choice[this.displayKey].toLowerCase().includes(value.toLowerCase())
+    );
+  }
+
+  /**
+   * Get selected choices items from the selected ones in the parent control
+   * @param choices Array of choices from to get the selected ones
+   * @returns The selected choices
+   */
+  private getSelectedChoices(choices: any[]): any[] {
+    return this.parentControl.value.map((value: string) =>
+      choices.find((choice) => value === choice[this.valueKey])
+    );
+  }
+
+  /**
+   * Updates the available choices list stream from the given choices using the current selected ones
+   * @param choices Array of choices from whom to update the availability of choices to select
+   */
+  private setAvailableChoices(choices: any[]): void {
+    const notSelectedChoices = choices.filter(
+      (choice) =>
+        !this.selectedChoices.some(
+          (x) => x[this.valueKey] === choice[this.valueKey]
+        )
+    );
+    this.availableChoices.next(this.orderChoicesDesc(notSelectedChoices));
+  }
+
+  /**
+   * Sorts given choices in ascendant order by the value of they displayKey
+   * @param choices Choices to sort
+   * @returns Sorted choices
+   */
+  private orderChoicesDesc(choices: any[]): any[] {
+    return choices.sort((a: any, b: any) =>
+      a[this.displayKey] > b[this.displayKey] ? 1 : -1
     );
   }
 
@@ -172,7 +205,7 @@ export class SafeTagboxComponent implements OnInit {
     }
 
     event.chipInput?.clear();
-    this.inputControl.setValue('');
+    this.inputControl.setValue('', { emitEvent: false });
   }
 
   /**
@@ -186,10 +219,12 @@ export class SafeTagboxComponent implements OnInit {
     );
 
     if (index >= 0) {
-      this.availableChoices.next([
-        ...this.currentChoices,
-        this.selectedChoices[index],
-      ]);
+      this.availableChoices.next(
+        this.orderChoicesDesc([
+          ...this.currentChoices,
+          this.selectedChoices[index],
+        ])
+      );
       this.selectedChoices.splice(index, 1);
       this.parentControl.setValue(
         this.selectedChoices.map((x) => x[this.valueKey])
@@ -219,7 +254,7 @@ export class SafeTagboxComponent implements OnInit {
     );
     if (this.textInput) {
       this.textInput.nativeElement.value = '';
-      this.inputControl.setValue('');
+      this.inputControl.setValue('', { emitEvent: false });
     }
   }
 }

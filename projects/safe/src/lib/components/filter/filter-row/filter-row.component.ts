@@ -106,12 +106,10 @@ export class FilterRowComponent
         : name.split('.');
     let fields = clone(this.fields);
     let field = null;
-    // Loop over name fragments to find correct field
-    for (const fragment of nameFragments) {
-      field = fields.find((x) => x.name === fragment);
-      fields = clone(field.fields);
-    }
+    // Check name fragments to find correct field
+    field = fields.find((x) => nameFragments.includes(x.name));
     if (field) {
+      fields = clone(field.fields);
       this.field = field;
       const type = {
         ...FIELD_TYPES.find(
