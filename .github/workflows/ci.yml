@@ -40,11 +40,11 @@ jobs:
       - name: Install Dependencies
         run: npm i
       - name: Build Shared Library
-        run: npm run build -- --configuration=production safe
+        run: npm run build -- --configuration=production --project=safe
       - name: Build Back-office
-        run: npm run build -- --configuration=azure-uat back-office
+        run: npm run build -- --configuration=azure-uat --project=back-office
       - name: Build Front-office
-        run: npm run build -- --configuration=azure-uat front-office
+        run: npm run build -- --configuration=azure-uat --project=front-office
 
   # prettier:
   #   name: Prettier

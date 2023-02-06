@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { merge } from 'rxjs';
 import { startWith, delay } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -36,7 +36,9 @@ export class SafeSeriesMappingComponent
    * Sets the available fields.
    */
   ngOnInit(): void {
-    this.controlNames = Object.keys((this.formGroup as FormGroup).controls);
+    this.controlNames = Object.keys(
+      (this.formGroup as UntypedFormGroup).controls
+    );
     // this.fields$.subscribe((fields: any[]) => {
     //   this.availableFields = [...fields];
     // });

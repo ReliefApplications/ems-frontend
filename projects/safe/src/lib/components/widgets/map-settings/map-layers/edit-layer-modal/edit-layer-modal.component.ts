@@ -1,9 +1,8 @@
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormGroup } from '@angular/forms';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { createLayerForm } from '../../map-forms';
 import { MapLayerI } from '../map-layers.component';
-import { Options } from '@angular-slider/ngx-slider';
 import get from 'lodash/get';
 
 declare let L: any;
@@ -51,17 +50,10 @@ const testGeojson = {
   styleUrls: ['./edit-layer-modal.component.scss'],
 })
 export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   private currentLayer: any;
   public currentZoom = 2;
-
-  public visibilityRangeOptions: Options = {
-    floor: 2,
-    ceil: 18,
-    step: 1,
-    showSelectionBar: true,
-  };
 
   // === MAP ===
   public mapId: string;

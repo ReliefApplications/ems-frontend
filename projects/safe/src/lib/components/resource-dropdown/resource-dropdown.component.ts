@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Resource } from '../../models/resource.model';
 import {
@@ -29,7 +29,7 @@ export class SafeResourceDropdownComponent
   @Input() resource = '';
   public selectedResource?: Resource;
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
-  public resourceControl!: FormControl;
+  public resourceControl!: UntypedFormControl;
 
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
@@ -44,7 +44,7 @@ export class SafeResourceDropdownComponent
   }
 
   ngOnInit(): void {
-    this.resourceControl = new FormControl(this.resource);
+    this.resourceControl = new UntypedFormControl(this.resource);
     this.resourceControl.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {

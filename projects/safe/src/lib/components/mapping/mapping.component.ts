@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
+import { UntypedFormArray } from '@angular/forms';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { createFormGroup, Mapping, Mappings } from './mapping-forms';
@@ -20,7 +20,7 @@ export class SafeMappingComponent
   implements OnInit
 {
   // === DATA ===
-  @Input() mappingForm!: FormArray;
+  @Input() mappingForm!: UntypedFormArray;
   // === TABLE ===
   displayedColumns = ['field', 'path', 'value', 'text', 'actions'];
   dataSource = new MatTableDataSource<Mapping>([]);

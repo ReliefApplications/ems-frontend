@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeTileDataComponent } from './menu/tile-data/tile-data.component';
 import { SafeDashboardService } from '../../../services/dashboard/dashboard.service';
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';

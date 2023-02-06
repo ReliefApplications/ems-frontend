@@ -9,36 +9,57 @@
     <div class="flex flex-col space-y-12">
       <!-- Options section -->
       <form [formGroup]="form" class="flex flex-col space-y-8">
-          <mat-form-field appearance="outline">
-            <mat-label>{{ 'common.name' | translate }}</mat-label>
-            <input matInput formControlName="name" type="text" />
-          </mat-form-field>
-        <mat-checkbox formControlName="defaultVisibility">Visible by default</mat-checkbox>
+        <!-- Layer name -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'common.name' | translate }}</mat-label>
+          <input matInput formControlName="name" type="text" />
+        </mat-form-field>
+        <!-- Default visibility -->
+        <mat-checkbox formControlName="defaultVisibility"
+          >Visible by default</mat-checkbox
+        >
+        <!-- Opacity -->
         <div>
           <div class="flex flex-row w-full justify-between">
             <label>Opacity</label>
-            <label>{{form.controls.opacity.value}}</label>
+            <label>{{ form.controls.opacity.value }}</label>
           </div>
           <mat-slider
-            class="w-full"
-            formControlName="opacity"
+            class="w-full m-0"
             min="0"
             max="1"
             step="0.1"
-            thumbLabel="true"
-          ></mat-slider>
+            [discrete]="true"
+          >
+            <input matSliderThumb formControlName="opacity" />
+          </mat-slider>
         </div>
+        <!-- Visibility range -->
         <div>
-          <label>Visibility range</label>
-          <ngx-slider [options]="visibilityRangeOptions" formControlName="visibilityRange"></ngx-slider>
+          <div class="flex flex-row w-full justify-between">
+            <label>Visibility range</label>
+          </div>
+          <mat-slider
+            class="w-full m-0"
+            min="2"
+            max="18"
+            step="1"
+            [discrete]="true"
+          >
+            <input formControlName="visibilityRange" matSliderStartThumb>
+            <input formControlName="visibilityRange" matSliderEndThumb>
+          </mat-slider>
         </div>
+        <!-- Zoom level -->
         <div>
-          <label>Current zoom: {{currentZoom}}</label>
+          <label>Current zoom: {{ currentZoom }}</label>
         </div>
       </form>
       <!-- Dialog actions ( cancel / close ) -->
       <div mat-dialog-actions align="end">
-        <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
+        <safe-button mat-dialog-close>{{
+          'common.close' | translate
+        }}</safe-button>
         <safe-button
           category="secondary"
           variant="primary"

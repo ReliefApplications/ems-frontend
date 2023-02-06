@@ -101,12 +101,8 @@ export class SafeAggregationGridComponent
       this.skip
     );
     this.dataSubscription = this.dataQuery.valueChanges.subscribe({
-      next: ({ data }) => {
-        this.gridData = {
-          data: data.recordsAggregation.items,
-          total: data.recordsAggregation.totalCount,
-        };
-        this.loading = false;
+      next: ({ data, loading }) => {
+        this.updateValues(data, loading);
       },
       error: (err: any) => {
         this.status = {
@@ -271,25 +267,30 @@ export class SafeAggregationGridComponent
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
-    this.dataQuery.fetchMore({
-      variables: {
-        resource: this.resourceId,
-        aggregation: this.aggregation.id,
-        first: this.pageSize,
-        skip: this.skip,
-      },
-      updateQuery: (prev: any, { fetchMoreResult }: any) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        this.loading = false;
-        return Object.assign({}, prev, {
-          recordsAggregation: {
-            items: fetchMoreResult.recordsAggregation.items,
-            totalCount: fetchMoreResult.recordsAggregation.totalCount,
-          },
-        });
-      },
-    });
+
+    this.dataQuery
+      .fetchMore({
+        variables: {
+          first: this.pageSize,
+          skip: this.skip,
+        },
+      })
+      .then((results) => this.updateValues(results.data, results.loading));
+  }
+
+  /**
+   *
+   * @param data
+   * @param loading
+   */
+  private updateValues(
+    data: GetAggregationDataQueryResponse,
+    loading: boolean
+  ) {
+    this.gridData = {
+      data: data.recordsAggregation.items,
+      total: data.recordsAggregation.totalCount,
+    };
+    this.loading = loading;
   }
 }

@@ -23,17 +23,8 @@ import {
   styleUrls: ['./application.component.scss'],
 })
 export class ApplicationComponent implements OnInit, OnChanges {
-  @Input() id = '618274079eb6019bfc301540';
-
-  /**
-   * Set page id
-   */
-  @Input()
-  set pageId(id: string) {
-    const pages = this.application?.pages || [];
-    this.selectedPage = pages.find((x) => x.id === id) || null;
-  }
   @Output() pages = new EventEmitter<Page[]>();
+  @Input() id = '618274079eb6019bfc301540';
 
   // === DATA ===
   public loading = true;
@@ -48,6 +39,15 @@ export class ApplicationComponent implements OnInit, OnChanges {
    * @param apollo Apollo service
    */
   constructor(private apollo: Apollo) {}
+
+  /**
+   * Set page id
+   */
+  @Input()
+  set pageId(id: string) {
+    const pages = this.application?.pages || [];
+    this.selectedPage = pages.find((x) => x.id === id) || null;
+  }
 
   ngOnInit(): void {
     this.apollo

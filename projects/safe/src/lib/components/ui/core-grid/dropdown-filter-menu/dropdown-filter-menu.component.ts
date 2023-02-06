@@ -1,5 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  UntypedFormArray,
+  UntypedFormBuilder,
+} from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { FilterService } from '@progress/kendo-angular-grid';
 
@@ -18,7 +22,7 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
   @Input() public textField = '';
   @Input() public valueField = '';
   @Input() public filterService?: FilterService;
-  public form?: FormGroup;
+  public form?: UntypedFormGroup;
 
   /** @returns The default item */
   public get defaultItem(): any {
@@ -29,8 +33,8 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
   }
 
   /** @returns The filters */
-  public get filters(): FormArray {
-    return this.form?.get('filters') as FormArray;
+  public get filters(): UntypedFormArray {
+    return this.form?.get('filters') as UntypedFormArray;
   }
 
   public logics = [
@@ -61,7 +65,10 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
    * @param fb The form builder
    * @param translate The translation service
    */
-  constructor(private fb: FormBuilder, private translate: TranslateService) {}
+  constructor(
+    private fb: UntypedFormBuilder,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.choices1 = this.data.slice();

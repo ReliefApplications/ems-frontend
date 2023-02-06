@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Form } from '../../../../models/form.model';
 import { Resource } from '../../../../models/resource.model';
@@ -17,7 +17,7 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./tab-main.component.scss'],
 })
 export class TabMainComponent implements OnInit {
-  @Input() formGroup!: FormGroup;
+  @Input() formGroup!: UntypedFormGroup;
   @Input() form: Form | null = null;
   @Input() resource: Resource | null = null;
   @Input() queries: any[] = [];

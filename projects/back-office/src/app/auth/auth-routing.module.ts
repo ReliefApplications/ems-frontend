@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 /**
  * List of routes of authentication module.
  * Only contains 'login' page.
  * All routes starting with '/auth' should redirect to 'login' page.
  */
-export const routes = [
+export const routes: Routes = [
   {
     path: '',
     children: [
@@ -18,6 +18,7 @@ export const routes = [
       {
         path: 'login',
         redirectTo: '',
+        pathMatch: 'full',
       },
     ],
   },

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import {
   TranslateModule,
   TranslateService,
@@ -30,9 +30,9 @@ describe('SafeExpressionsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeExpressionsComponent);
     component = fixture.componentInstance;
-    component.form = new FormGroup({
-      operator: new FormControl(),
-      field: new FormControl(),
+    component.form = new UntypedFormGroup({
+      operator: new UntypedFormControl(),
+      field: new UntypedFormControl(),
     });
     fixture.detectChanges();
   });

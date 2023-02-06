@@ -1,7 +1,15 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSelect } from '@angular/material/select';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
+import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import {
   ApiConfiguration,
   Application,
@@ -25,6 +33,10 @@ import {
 } from '../../graphql/queries';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import get from 'lodash/get';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../../../utils/update-queries';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -40,7 +52,7 @@ const DEFAULT_FIELDS = ['createdBy'];
 })
 export class EditPullJobModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public formGroup: FormGroup = new FormGroup({});
+  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   isHardcoded = true;
 
   // === FORMS ===
@@ -51,6 +63,7 @@ export class EditPullJobModalComponent implements OnInit {
   private applicationsLoading = true;
   public applications = new BehaviorSubject<Application[]>([]);
   public applications$!: Observable<Application[]>;
+  private cachedApplications: Application[] = [];
   private applicationsQuery!: QueryRef<GetRoutingKeysQueryResponse>;
   private applicationsPageInfo = {
     endCursor: '',
@@ -70,8 +83,8 @@ export class EditPullJobModalComponent implements OnInit {
   public openRawJSON = false;
 
   /** @returns pull job mapping as form array */
-  get mappingArray(): FormArray {
-    return this.formGroup.get('mapping') as FormArray;
+  get mappingArray(): UntypedFormArray {
+    return this.formGroup.get('mapping') as UntypedFormArray;
   }
 
   /** @returns default API configuration */
@@ -100,7 +113,7 @@ export class EditPullJobModalComponent implements OnInit {
    * @param data.pullJob pull job
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<EditPullJobModalComponent>,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA)
@@ -181,21 +194,13 @@ export class EditPullJobModalComponent implements OnInit {
         query: GET_ROUTING_KEYS,
         variables: {
           first: ITEMS_PER_PAGE,
+          afterCursor: this.applicationsPageInfo.endCursor,
         },
       });
 
     // this.applications$ = this.applications.asObservable();
     this.applicationsQuery.valueChanges.subscribe(({ data, loading }) => {
-      const nodes = data.applications.edges
-        .map((x) => x.node)
-        .filter((x) => (x.channels ? x.channels.length > 0 : false));
-      if (this.defaultChannel) {
-        this.applications.next(nodes);
-      } else {
-        this.applications.next(nodes);
-      }
-      this.applicationsPageInfo = data.applications.pageInfo;
-      this.applicationsLoading = loading;
+      this.updateValues(data, loading);
     });
 
     // Set boolean to allow additional fields if it's not isHardcoded
@@ -357,27 +362,26 @@ export class EditPullJobModalComponent implements OnInit {
     ) {
       if (!this.applicationsLoading && this.applicationsPageInfo.hasNextPage) {
         this.applicationsLoading = true;
-        this.applicationsQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.applicationsPageInfo.endCursor,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            return Object.assign({}, prev, {
-              applications: {
-                edges: [
-                  ...prev.applications.edges,
-                  ...fetchMoreResult.applications.edges,
-                ],
-                pageInfo: fetchMoreResult.applications.pageInfo,
-                totalCount: fetchMoreResult.applications.totalCount,
-              },
-            });
-          },
-        });
+        const variables = {
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.applicationsPageInfo.endCursor,
+        };
+        const cachedValues: GetRoutingKeysQueryResponse = getCachedValues(
+          this.apollo.client,
+          GET_ROUTING_KEYS,
+          variables
+        );
+        if (cachedValues) {
+          this.updateValues(cachedValues, false);
+        } else {
+          this.applicationsQuery
+            .fetchMore({
+              variables,
+            })
+            .then((results) =>
+              this.updateValues(results.data, results.loading)
+            );
+        }
       }
     }
   }
@@ -401,5 +405,23 @@ export class EditPullJobModalComponent implements OnInit {
         ],
       },
     });
+  }
+
+  /**
+   *
+   * @param data
+   * @param loading
+   */
+  private updateValues(data: GetRoutingKeysQueryResponse, loading: boolean) {
+    const nodes = data.applications.edges
+      .map((x) => x.node)
+      .filter((x) => (x.channels ? x.channels.length > 0 : false));
+    this.cachedApplications = updateQueryUniqueValues(
+      this.cachedApplications,
+      nodes
+    );
+    this.applications.next(this.cachedApplications);
+    this.applicationsPageInfo = data.applications.pageInfo;
+    this.applicationsLoading = loading;
   }
 }

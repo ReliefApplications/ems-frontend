@@ -1,9 +1,9 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+  MatLegacyDialog as MatDialog,
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
@@ -15,7 +15,7 @@ import {
   GetFormLayoutsResponse,
   GET_FORM_LAYOUTS,
 } from './graphql/queries';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { SafeGraphQLSelectComponent } from '../../graphql-select/graphql-select.component';
 
 /**
@@ -45,7 +45,7 @@ export class AddLayoutModalComponent implements OnInit {
     | QueryRef<GetResourceLayoutsResponse>
     | QueryRef<GetFormLayoutsResponse>
     | null;
-  public selectedLayoutControl = new FormControl('');
+  public selectedLayoutControl = new UntypedFormControl('');
 
   /** Reference to graphql select for layout */
   @ViewChild(SafeGraphQLSelectComponent)

@@ -10,17 +10,17 @@ import {
 import { SafeLayoutComponent } from './layout.component';
 import { HttpClientModule } from '@angular/common/http';
 import {
-  MatDialogModule,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+  MatLegacyDialogModule as MatDialogModule,
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import {
   TranslateModule,
   TranslateService,
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import {
   ApolloTestingModule,
   ApolloTestingController,
