@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   Channel,
@@ -8,7 +8,7 @@ import {
   SafeSnackBarService,
   SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { GetPullJobsQueryResponse, GET_PULL_JOBS } from './graphql/queries';
 import {
   AddPullJobMutationResponse,
@@ -70,8 +70,6 @@ export class PullJobsComponent
     endCursor: '',
   };
 
-  // Token used in the module for the apollo config
-  private apolloClient = inject(APOLLO_OPTIONS);
   /**
    * PullJobsComponent constructor.
    *
@@ -126,7 +124,7 @@ export class PullJobsComponent
         afterCursor: this.pageInfo.endCursor,
       };
       const cachedValues: GetPullJobsQueryResponse = getCachedValues(
-        this.apolloClient,
+        this.apollo.client,
         GET_PULL_JOBS,
         variables
       );
@@ -363,6 +361,7 @@ export class PullJobsComponent
 
   /**
    * Updates local list with given data
+   *
    * @param data New values to update forms
    * @param loading Loading state
    */

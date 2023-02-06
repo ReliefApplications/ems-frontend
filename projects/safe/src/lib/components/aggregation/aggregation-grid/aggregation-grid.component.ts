@@ -278,6 +278,11 @@ export class SafeAggregationGridComponent
       .then((results) => this.updateValues(results.data, results.loading));
   }
 
+  /**
+   *
+   * @param data
+   * @param loading
+   */
   private updateValues(
     data: GetAggregationDataQueryResponse,
     loading: boolean

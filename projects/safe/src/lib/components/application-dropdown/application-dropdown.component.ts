@@ -171,6 +171,11 @@ export class SafeApplicationDropdownComponent
     }
   }
 
+  /**
+   *
+   * @param data
+   * @param loading
+   */
   private updateValues(data: GetApplicationsQueryResponse, loading: boolean) {
     this.cachedApplications = updateQueryUniqueValues(
       this.cachedApplications,

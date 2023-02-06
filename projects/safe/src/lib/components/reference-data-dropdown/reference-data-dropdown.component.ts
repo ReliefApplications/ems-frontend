@@ -155,6 +155,11 @@ export class SafeReferenceDataDropdownComponent
     }
   }
 
+  /**
+   *
+   * @param data
+   * @param loading
+   */
   private updateValues(data: GetReferenceDatasQueryResponse, loading: boolean) {
     const referenceDatas = data.referenceDatas.edges.map((x) => x.node);
     this.cachedReferenceDatas = updateQueryUniqueValues(

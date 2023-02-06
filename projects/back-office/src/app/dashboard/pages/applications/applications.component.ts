@@ -1,5 +1,5 @@
-import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
 import {
@@ -73,9 +73,6 @@ export class ApplicationsComponent
     length: 0,
     endCursor: '',
   };
-
-  // Token used in the module for the apollo config
-  private apolloClient = inject(APOLLO_OPTIONS);
 
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;
@@ -208,7 +205,7 @@ export class ApplicationsComponent
       sortOrder: this.sort?.direction,
     };
     const cachedValues: GetApplicationsQueryResponse = getCachedValues(
-      this.apolloClient,
+      this.apollo.client,
       GET_APPLICATIONS,
       variables
     );
@@ -402,6 +399,7 @@ export class ApplicationsComponent
 
   /**
    * Updates local list with given data
+   *
    * @param data New values to update forms
    * @param loading Loading state
    */

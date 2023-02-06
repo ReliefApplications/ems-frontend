@@ -1,5 +1,5 @@
-import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -60,9 +60,6 @@ export class AddStepComponent
   // === REACTIVE FORM ===
   public stepForm: UntypedFormGroup = new UntypedFormGroup({});
   public stage = 1;
-
-  // Token used in the module for the apollo config
-  private apolloClient = inject(APOLLO_OPTIONS);
 
   /**
    * Add step page component
@@ -267,7 +264,7 @@ export class AddStepComponent
       },
     };
     const cachedValues: GetFormsQueryResponse = getCachedValues(
-      this.apolloClient,
+      this.apollo.client,
       GET_FORMS,
       variables
     );
@@ -293,6 +290,7 @@ export class AddStepComponent
 
   /**
    * Updates local list with given data
+   *
    * @param data New values to update forms
    * @param loading Loading state
    */

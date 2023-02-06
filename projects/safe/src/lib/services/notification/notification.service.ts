@@ -156,6 +156,10 @@ export class SafeNotificationService {
       .then(({ data }) => this.updateValues(data));
   }
 
+  /**
+   *
+   * @param data
+   */
   private updateValues(data: GetNotificationsQueryResponse) {
     this.cachedNotifications = updateQueryUniqueValues(
       this.cachedNotifications,

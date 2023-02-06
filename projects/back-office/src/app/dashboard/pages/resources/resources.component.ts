@@ -1,5 +1,5 @@
-import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
-import { Component, inject, OnInit } from '@angular/core';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { Component, OnInit } from '@angular/core';
 import {
   DeleteResourceMutationResponse,
   DELETE_RESOURCE,
@@ -65,9 +65,6 @@ export class ResourcesComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
-
-  // Token used in the module for the apollo config
-  private apolloClient = inject(APOLLO_OPTIONS);
 
   /**
    * ResourcesComponent constructor.
@@ -164,6 +161,7 @@ export class ResourcesComponent implements OnInit {
    * Update resources query.
    *
    * @param refetch erase previous query results
+   * @param filter
    */
   private fetchResources(refetch?: boolean, filter?: any): void {
     this.updating = true;
@@ -178,7 +176,7 @@ export class ResourcesComponent implements OnInit {
       sortOrder: this.sort?.direction !== '' ? this.sort?.direction : 'asc',
     };
     const cachedValues: GetResourcesQueryResponse = getCachedValues(
-      this.apolloClient,
+      this.apollo.client,
       GET_RESOURCES_EXTENDED,
       variables
     );
@@ -306,6 +304,11 @@ export class ResourcesComponent implements OnInit {
     });
   }
 
+  /**
+   *
+   * @param data
+   * @param loading
+   */
   updateValues(data: GetResourcesQueryResponse, loading: boolean) {
     this.cachedResources = updateQueryUniqueValues(
       this.cachedResources,

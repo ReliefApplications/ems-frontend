@@ -1,5 +1,5 @@
-import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
-import { Component, inject, Inject, OnInit, ViewChild } from '@angular/core';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -64,9 +64,6 @@ export class SubscriptionModalComponent
     hasNextPage: true,
   };
   private applicationsLoading = true;
-
-  // Token used in the module for the apollo config
-  private apolloClient = inject(APOLLO_OPTIONS);
 
   @ViewChild('applicationSelect') applicationSelect?: MatAutocomplete;
 
@@ -210,7 +207,7 @@ export class SubscriptionModalComponent
           afterCursor: this.applicationsPageInfo.endCursor,
         };
         const cachedValues: GetRoutingKeysQueryResponse = getCachedValues(
-          this.apolloClient,
+          this.apollo.client,
           GET_ROUTING_KEYS,
           variables
         );
@@ -251,6 +248,7 @@ export class SubscriptionModalComponent
 
   /**
    * Updates local list with given data
+   *
    * @param data New values to update forms
    * @param loading Loading state
    */

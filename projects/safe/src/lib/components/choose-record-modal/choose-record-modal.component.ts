@@ -219,6 +219,11 @@ export class SafeChooseRecordModalComponent
     }
   }
 
+  /**
+   *
+   * @param data
+   * @param loading
+   */
   private updateValues(data: any, loading: boolean) {
     for (const field in data) {
       if (Object.prototype.hasOwnProperty.call(data, field)) {

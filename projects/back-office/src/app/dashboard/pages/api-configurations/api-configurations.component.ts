@@ -1,14 +1,8 @@
-import {
-  AfterViewInit,
-  Component,
-  inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ApiConfiguration,
   SafeAuthService,
@@ -72,9 +66,6 @@ export class ApiConfigurationsComponent
     length: 0,
     endCursor: '',
   };
-
-  // Token used in the module for the apollo config
-  private apolloClient = inject(APOLLO_OPTIONS);
 
   /**
    * API configurations page component
@@ -147,7 +138,7 @@ export class ApiConfigurationsComponent
         afterCursor: this.pageInfo.endCursor,
       };
       const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
-        this.apolloClient,
+        this.apollo.client,
         GET_API_CONFIGURATIONS,
         variables
       );
@@ -303,6 +294,7 @@ export class ApiConfigurationsComponent
 
   /**
    * Updates local list with given data
+   *
    * @param data New values to update forms
    * @param loading Loading state
    */

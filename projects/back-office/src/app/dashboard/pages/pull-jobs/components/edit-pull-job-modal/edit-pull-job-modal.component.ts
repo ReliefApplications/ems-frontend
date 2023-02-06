@@ -79,9 +79,6 @@ export class EditPullJobModalComponent implements OnInit {
   public fields: any[] = [];
   private fieldsSubscription?: Subscription;
 
-  // Token used in the module for the apollo config
-  private apolloClient = inject(APOLLO_OPTIONS);
-
   // === RAW JSON UTILITY ===
   public openRawJSON = false;
 
@@ -370,7 +367,7 @@ export class EditPullJobModalComponent implements OnInit {
           afterCursor: this.applicationsPageInfo.endCursor,
         };
         const cachedValues: GetRoutingKeysQueryResponse = getCachedValues(
-          this.apolloClient,
+          this.apollo.client,
           GET_ROUTING_KEYS,
           variables
         );
@@ -410,6 +407,11 @@ export class EditPullJobModalComponent implements OnInit {
     });
   }
 
+  /**
+   *
+   * @param data
+   * @param loading
+   */
   private updateValues(data: GetRoutingKeysQueryResponse, loading: boolean) {
     const nodes = data.applications.edges
       .map((x) => x.node)

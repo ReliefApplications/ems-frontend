@@ -258,6 +258,11 @@ export class UserListComponent
     this.router.navigate([`./${user.id}`], { relativeTo: this.route });
   }
 
+  /**
+   *
+   * @param data
+   * @param loading
+   */
   private updateValues(
     data: GetApplicationUsersQueryResponse,
     loading: boolean

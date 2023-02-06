@@ -1,5 +1,5 @@
-import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -11,7 +11,6 @@ import {
   CONTENT_TYPES,
   Form,
   SafeApplicationService,
-  SafeAuthService,
   SafeSnackBarService,
   SafeUnsubscribeComponent,
 } from '@safe/builder';
@@ -63,9 +62,6 @@ export class AddPageComponent
   public pageForm: UntypedFormGroup = new UntypedFormGroup({});
   public step = 1;
 
-  // Token used in the module for the apollo config
-  private apolloClient = inject(APOLLO_OPTIONS);
-
   /**
    * Add page component
    *
@@ -83,7 +79,6 @@ export class AddPageComponent
     private applicationService: SafeApplicationService,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService,
     private translate: TranslateService
   ) {
     super();
@@ -292,7 +287,7 @@ export class AddPageComponent
       },
     };
     const cachedValues: GetFormsQueryResponse = getCachedValues(
-      this.apolloClient,
+      this.apollo.client,
       GET_FORMS,
       variables
     );
@@ -318,6 +313,7 @@ export class AddPageComponent
 
   /**
    * Updates local list with given data
+   *
    * @param data New values to update forms
    * @param loading Loading state
    */

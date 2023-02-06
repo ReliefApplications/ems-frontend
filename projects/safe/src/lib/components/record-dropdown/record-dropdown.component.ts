@@ -178,6 +178,11 @@ export class SafeRecordDropdownComponent
     }
   }
 
+  /**
+   *
+   * @param data
+   * @param loading
+   */
   private updateValues(
     data: GetResourceRecordsQueryResponse,
     loading: boolean

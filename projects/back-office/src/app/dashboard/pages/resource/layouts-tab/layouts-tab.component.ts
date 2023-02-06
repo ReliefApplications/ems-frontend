@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -8,7 +8,7 @@ import {
   SafeConfirmService,
   Resource,
 } from '@safe/builder';
-import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
   getCachedValues,
@@ -43,9 +43,6 @@ export class LayoutsTabComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
-
-  // Token used in the module for the apollo config
-  private apolloClient = inject(APOLLO_OPTIONS);
 
   /** @returns True if the layouts tab is empty */
   get empty(): boolean {
@@ -131,7 +128,7 @@ export class LayoutsTabComponent implements OnInit {
       afterCursor: this.pageInfo.endCursor,
     };
     const cachedValues: GetResourceByIdQueryResponse = getCachedValues(
-      this.apolloClient,
+      this.apollo.client,
       GET_RESOURCE_LAYOUTS,
       variables
     );
@@ -234,6 +231,11 @@ export class LayoutsTabComponent implements OnInit {
     });
   }
 
+  /**
+   *
+   * @param data
+   * @param loading
+   */
   private updateValues(data: GetResourceByIdQueryResponse, loading: boolean) {
     if (data.resource) {
       this.cachedLayouts = updateQueryUniqueValues(

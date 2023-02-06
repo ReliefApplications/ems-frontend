@@ -1,14 +1,8 @@
-import {
-  AfterViewInit,
-  Component,
-  inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ReferenceData,
   SafeAuthService,
@@ -76,8 +70,6 @@ export class ReferenceDatasComponent
     endCursor: '',
   };
 
-  // Token used in the module for the apollo config
-  private apolloClient = inject(APOLLO_OPTIONS);
   /**
    * List of Reference data page.
    *
@@ -149,7 +141,7 @@ export class ReferenceDatasComponent
         afterCursor: this.pageInfo.endCursor,
       };
       const cachedValues: GetReferenceDatasQueryResponse = getCachedValues(
-        this.apolloClient,
+        this.apollo.client,
         GET_REFERENCE_DATAS,
         variables
       );
@@ -296,6 +288,11 @@ export class ReferenceDatasComponent
     this.dataSource.sort = this.sort || null;
   }
 
+  /**
+   *
+   * @param data
+   * @param loading
+   */
   private updateValues(data: GetReferenceDatasQueryResponse, loading: boolean) {
     this.cachedReferenceDatas = updateQueryUniqueValues(
       this.cachedReferenceDatas,

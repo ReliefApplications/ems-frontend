@@ -442,6 +442,11 @@ export class SafeGraphQLSelectComponent
     this.elements.next(elements);
   }
 
+  /**
+   *
+   * @param data
+   * @param loading
+   */
   private updateValues(data: any, loading: boolean) {
     const path = this.path ? `${this.queryName}.${this.path}` : this.queryName;
     const elements: any[] = get(data, path).edges

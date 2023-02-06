@@ -607,6 +607,11 @@ export class RoleResourcesComponent
     }
   }
 
+  /**
+   *
+   * @param data
+   * @param loading
+   */
   private updateValues(data: GetResourcesQueryResponse, loading: boolean) {
     this.cachedResources = updateQueryUniqueValues(
       this.cachedResources,

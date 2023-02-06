@@ -1,5 +1,5 @@
-import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
-import { Component, inject, OnInit } from '@angular/core';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { Component, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
 import {
@@ -68,9 +68,6 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
-
-  // Token used in the module for the apollo config
-  private apolloClient = inject(APOLLO_OPTIONS);
 
   /**
    * Forms page component
@@ -185,7 +182,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
     };
 
     const cachedValues: GetFormsQueryResponse = getCachedValues(
-      this.apolloClient,
+      this.apollo.client,
       GET_SHORT_FORMS,
       variables
     );
@@ -319,6 +316,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
 
   /**
    * Updates local list with given data
+   *
    * @param data New values to update forms
    * @param loading Loading state
    */

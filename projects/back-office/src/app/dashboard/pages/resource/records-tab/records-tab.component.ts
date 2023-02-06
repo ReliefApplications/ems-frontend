@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -9,7 +9,7 @@ import {
   Resource,
   SafeDownloadService,
 } from '@safe/builder';
-import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
   getCachedValues,
@@ -59,8 +59,6 @@ export class RecordsTabComponent implements OnInit {
   };
   public loading = true;
   public showUpload = false;
-  // Token used in the module for the apollo config
-  private apolloClient = inject(APOLLO_OPTIONS);
 
   /** @returns True if the records tab is empty */
   get empty(): boolean {
@@ -340,7 +338,7 @@ export class RecordsTabComponent implements OnInit {
       showDeletedRecords: this.showDeletedRecords,
     };
     const cachedValues: GetResourceRecordsQueryResponse = getCachedValues(
-      this.apolloClient,
+      this.apollo.client,
       GET_RESOURCE_RECORDS,
       variables
     );
@@ -363,6 +361,11 @@ export class RecordsTabComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   * @param data
+   * @param loading
+   */
   private updateValues(
     data: GetResourceRecordsQueryResponse,
     loading: boolean

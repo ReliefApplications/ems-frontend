@@ -2,6 +2,7 @@ import { unionBy } from 'lodash';
 
 /**
  * Returns the path to given property to find from the given item
+ *
  * @param item Item from which we extract the property path
  * @param propertyToFind Property that we want to find in the given item
  * @returns {string} The complete path to the property
@@ -38,6 +39,7 @@ const getRefPathPropertyFromItem = (
 
 /**
  * Merge given previousDataContent and currentDataContent into an array with no repeated items
+ *
  * @param previousDataContent Previous array of items to merge
  * @param currentDataContent Current array of items to merge
  * @param uniqueComparatorProperty Property used to discriminate repeated items on merging previousDataContent and currentDataContent

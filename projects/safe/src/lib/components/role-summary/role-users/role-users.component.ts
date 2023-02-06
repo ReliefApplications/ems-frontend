@@ -117,6 +117,11 @@ export class RoleUsersComponent
       .then((results) => this.updateValues(results.data, results.loading));
   }
 
+  /**
+   *
+   * @param data
+   * @param loading
+   */
   private updateValues(data: GetRoleQueryResponse, loading: boolean) {
     this.cachedUsers = updateQueryUniqueValues(
       this.cachedUsers,
