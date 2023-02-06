@@ -1,4 +1,4 @@
-import { QuestionText } from 'survey-angular';
+import { JsonMetadata } from 'survey-angular';
 import { SafeGeospatialMapComponent } from '../../components/geospatial-map/geospatial-map.component';
 import { DomService } from '../../services/dom/dom.service';
 
@@ -24,7 +24,7 @@ export const init = (Survey: any, domService: DomService): void => {
       type: 'text',
     },
     category: 'Custom Questions',
-    onAfterRender: (question: QuestionText, el: HTMLElement): void => {
+    onAfterRender: (question: any, el: HTMLElement): void => {
       // hides the input element
       const element = el.getElementsByTagName('input')[0].parentElement;
       if (element) element.style.display = 'none';
@@ -39,9 +39,27 @@ export const init = (Survey: any, domService: DomService): void => {
       // inits the map with the value of the question
       if (question.value) instance.data = question.value;
 
+      // inits and keep updated the useGeocoding boolean
+      // to get and store the address of points on the map
+      instance.useGeocoding = question.useGeocoding;
+      question.registerFunctionOnPropertyValueChanged('useGeocoding', () => {
+        instance.useGeocoding = question.useGeocoding;
+      });
+
       // updates the question value when the map changes
       instance.mapChange.subscribe((res) => {
         question.value = res;
+      });
+    },
+    /** Initiate the geospatial question component */
+    onInit: (): void => {
+      const serializer: JsonMetadata = Survey.Serializer;
+      serializer.addProperty('geospatial', {
+        name: 'useGeocoding',
+        category: 'Map Proprieties',
+        type: 'boolean',
+        visibleIndex: 3,
+        required: true,
       });
     },
   };

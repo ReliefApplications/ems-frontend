@@ -1143,6 +1143,7 @@
 						"longitude": "Invalid longitude, please select a number between -180 and 180"
 					},
 					"geospatial": {
+						"geocodingError": "Something went wrong while retrieving the address for the point.",
 						"layersStyles": {
 							"fill": {
 								"color": "Fill color",

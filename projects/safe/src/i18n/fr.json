@@ -1145,6 +1145,7 @@
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
 					},
 					"geospatial": {
+						"geocodingError": "Un problème est survenu lors de la récupération de l'adresse du point.",
 						"layersStyles": {
 							"fill": {
 								"color": "La couleur de remplissage",

@@ -2,11 +2,14 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
+  Inject,
   Input,
   Output,
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureCollection } from 'geojson';
+import { isEqual } from 'lodash';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 
 // Leaflet
 declare let L: any;
@@ -78,6 +81,22 @@ const createCustomMarker = (color: string, opacity: number) => {
 };
 
 /**
+ * The type for the object get from the reverseGeocode operation,
+ * used to save in the GeoJSON the address info
+ */
+interface ReverseGeocodeResult {
+  latlng: { lat: number; lng: number };
+  address: {
+    City: string;
+    CntryName: string;
+    District: string;
+    Region: string;
+    Address: string;
+    [key: string]: string;
+  };
+}
+
+/**
  * Component for displaying the input map
  * of the geospatial type question.
  */
@@ -96,6 +115,11 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
   public map: any;
   public mapID = `map-${Math.random().toString(36)}`;
 
+  // Geocoding
+  private esriApiKey: string;
+  private geocodingResults: ReverseGeocodeResult[] = [];
+  @Input() useGeocoding = false;
+
   // Layer to edit
   public selectedLayer: any;
 
@@ -107,9 +131,17 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
    * Component for displaying the input map
    * of the geospatial type question.
    *
+   * @param environment platform environment
+   * @param snackbarService Shared snackbar service
    * @param translate the translation service
    */
-  constructor(private translate: TranslateService) {}
+  constructor(
+    @Inject('environment') environment: any,
+    private snackbarService: SafeSnackBarService,
+    private translate: TranslateService
+  ) {
+    this.esriApiKey = environment.esriApiKey;
+  }
 
   ngAfterViewInit(): void {
     this.drawMap();
@@ -158,6 +190,13 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
           if (feature.properties.radius) {
             return new L.Circle(latlng, feature.properties.radius);
           } else {
+            if (feature.properties.geocoding) {
+              // If geocoding info exists in the geojson: add it in the geocodingResults
+              this.geocodingResults.push({
+                latlng,
+                address: feature.properties.geocoding,
+              });
+            }
             const color = feature.properties.color || '#3388ff';
             const opacity = feature.properties.opacity || 1;
             const icon = createCustomMarker(color, opacity);
@@ -187,9 +226,14 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
     });
 
     // updates question value on adding new shape
-    this.map.on('pm:create', (l: any) => {
-      if (l.shape === 'Marker')
+    this.map.on('pm:create', async (l: any) => {
+      if (l.shape === 'Marker') {
         l.layer.setIcon(createCustomMarker('#3388ff', 1));
+        if (this.useGeocoding) {
+          // eslint-disable-next-line no-underscore-dangle
+          await this.getAddressOnClick(l.marker._latlng);
+        }
+      }
 
       this.onMapChange();
 
@@ -215,7 +259,9 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
     return {
       type: 'FeatureCollection',
       features: this.map.pm.getGeomanLayers().map((l: any) => {
-        const json = l.toGeoJSON();
+        // The false param is used to skip the processing of rounding coordinates with X precision
+        // to avoid round-off errors when comparing coordinates
+        const json = l.toGeoJSON(false);
         json.options = l.options;
         // Adds radius property to circles,
         // as they are not supported by geojson
@@ -229,6 +275,15 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
             const attributes = html.match(/data-attr="(.*\d)"/)[1];
             const [color, opacity] = attributes.split(',');
             json.properties = { color, opacity };
+          }
+          if (this.useGeocoding) {
+            // If using geocoding retrieves the point address info
+            // (only markers added when useGeocoding = true have address info)
+            const geocodingResult = this.geocodingResults.find((result) =>
+              // eslint-disable-next-line no-underscore-dangle
+              isEqual(result.latlng, l._latlng)
+            );
+            json.properties.geocoding = geocodingResult?.address ?? {};
           }
         }
         return json;
@@ -257,5 +312,41 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
       this.selectedLayer.setStyle(options);
     }
     this.mapChange.emit(this.getMapFeatures());
+  }
+
+  /**
+   * Get the address of a given point on the map using the API
+   *
+   * @param {{lat: number, lng: number}} latlng coordinates of the point
+   * @param latlng.lat latitude
+   * @param latlng.lng longitude
+   * @returns A promise that resolves to void.
+   */
+  private getAddressOnClick(latlng: {
+    lat: number;
+    lng: number;
+  }): Promise<void> {
+    return new Promise((resolve) => {
+      L.esri.Geocoding.reverseGeocode({
+        apikey: this.esriApiKey,
+      })
+        .latlng(latlng)
+        .run((error: any, result: any) => {
+          if (error) {
+            this.snackbarService.openSnackBar(
+              this.translate.instant(
+                'components.widget.settings.map.geospatial.geocodingError'
+              ),
+              { error: true }
+            );
+            resolve();
+            return;
+          }
+          result.latlng.lat = latlng.lat;
+          result.latlng.lng = latlng.lng;
+          this.geocodingResults.push(result);
+          resolve();
+        });
+    });
   }
 }
