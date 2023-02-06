@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { User, Role } from '../models/user.model';
 import { Page, ContentType } from '../models/page.model';
+import { Form } from '../models/form.model';
 import { Application } from '../models/application.model';
 import { Channel } from '../models/channel.model';
 import { SafeSnackBarService } from './snackbar.service';
@@ -402,6 +403,27 @@ export class SafeApplicationService {
         pages: application.pages?.map((x) => {
           if (x.id === page.id) {
             x = { ...x, name: page.name };
+          }
+          return x;
+        }),
+      };
+      this.application.next(newApplication);
+    }
+  }
+
+  /**
+   * Updates a specific form name in the opened application.
+   *
+   * @param form updated form
+   */
+  updateFormName(form: Form): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      const newApplication = {
+        ...application,
+        pages: application.pages?.map((x) => {
+          if (x.content === form.id) {
+            x = { ...x, name: form.name };
           }
           return x;
         }),

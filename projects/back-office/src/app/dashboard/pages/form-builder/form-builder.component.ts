@@ -19,6 +19,7 @@ import {
   SafeSnackBarService,
   Form,
   SafeConfirmModalComponent,
+  SafeApplicationService,
 } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -75,6 +76,7 @@ export class FormBuilderComponent implements OnInit {
    * @param dialog Material dialog service
    * @param authService Shared authentication service
    * @param translate Angular translate service
+   * @param applicationService Shared application service
    */
   constructor(
     private apollo: Apollo,
@@ -83,7 +85,8 @@ export class FormBuilderComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     public dialog: MatDialog,
     private authService: SafeAuthService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private applicationService: SafeApplicationService
   ) {}
 
   /**
@@ -344,11 +347,14 @@ export class FormBuilderComponent implements OnInit {
           );
           statusModal.close();
         } else {
-          this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectEdited('form', formName)
-          );
-          this.form = { ...this.form, name: res.data?.editForm.name };
-          statusModal.close();
+          if (res.data) {
+            this.snackBar.openSnackBar(
+              NOTIFICATIONS.objectEdited('form', formName)
+            );
+            this.form = { ...this.form, name: res.data.editForm.name };
+            this.applicationService.updateFormName(res.data.editForm);
+            statusModal.close();
+          }
         }
       });
   }
