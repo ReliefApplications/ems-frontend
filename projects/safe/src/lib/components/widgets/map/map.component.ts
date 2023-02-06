@@ -177,6 +177,7 @@ export class SafeMapComponent
 
     // Create leaflet map
     this.map = L.map(this.mapId, {
+      fullscreenControl: true,
       zoomControl: false,
       maxBounds: bounds,
       minZoom: 2,
