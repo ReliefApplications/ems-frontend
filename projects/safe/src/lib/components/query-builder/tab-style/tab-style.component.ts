@@ -5,7 +5,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { FormArray, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
 import { createStyleForm } from '../query-builder-forms';
 
 /**
@@ -17,8 +17,8 @@ import { createStyleForm } from '../query-builder-forms';
   styleUrls: ['./tab-style.component.scss'],
 })
 export class SafeTabStyleComponent implements OnInit {
-  @Input() form!: FormArray;
-  @Input() editedStyleForm: FormGroup | null = null;
+  @Input() form!: UntypedFormArray;
+  @Input() editedStyleForm: UntypedFormGroup | null = null;
   @Input() scalarFields: any[] = [];
   @Input() metaFields: any = {};
   @Input() canDelete = false;
@@ -31,10 +31,10 @@ export class SafeTabStyleComponent implements OnInit {
    *
    * @returns The styles in an array
    */
-  get styles$(): FormArray {
-    return this.form.get('style') as FormArray;
+  get styles$(): UntypedFormArray {
+    return this.form.get('style') as UntypedFormArray;
   }
-  public fieldForm: FormGroup | null = null;
+  public fieldForm: UntypedFormGroup | null = null;
   public fields: any[] = [];
 
   /**
@@ -60,7 +60,7 @@ export class SafeTabStyleComponent implements OnInit {
    * @param index index of style to edit.
    */
   public onEdit(index: number): void {
-    this.editedStyleForm = this.form.at(index) as FormGroup;
+    this.editedStyleForm = this.form.at(index) as UntypedFormGroup;
   }
 
   /**

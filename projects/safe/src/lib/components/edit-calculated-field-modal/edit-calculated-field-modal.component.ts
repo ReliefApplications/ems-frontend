@@ -1,6 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { FIELD_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
@@ -22,7 +29,7 @@ interface DialogData {
   styleUrls: ['./edit-calculated-field-modal.component.scss'],
 })
 export class SafeEditCalculatedFieldModalComponent implements OnInit {
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
   public field!: any;
 
   public resourceFields: any[] = [];
@@ -42,7 +49,7 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
    */
   constructor(
     public dialogRef: MatDialogRef<SafeEditCalculatedFieldModalComponent>,
-    public formBuilder: FormBuilder,
+    public formBuilder: UntypedFormBuilder,
     private editorService: SafeEditorService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     @Inject('environment') environment: any,

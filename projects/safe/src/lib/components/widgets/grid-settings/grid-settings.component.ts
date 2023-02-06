@@ -7,7 +7,7 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { FormGroup, FormArray, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormArray, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -20,10 +20,10 @@ import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Form } from '../../../models/form.model';
 import { Overlay } from '@angular/cdk/overlay';
-import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
+import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
 import { scrollFactory } from '../../../utils/scroll-factory';
 import { Resource } from '../../../models/resource.model';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
 import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -49,7 +49,7 @@ export class SafeGridSettingsComponent
   implements OnInit, AfterViewInit
 {
   // === REACTIVE FORM ===
-  public formGroup!: FormGroup;
+  public formGroup!: UntypedFormGroup;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -124,16 +124,18 @@ export class SafeGridSettingsComponent
             this.formGroup?.get('template')?.enable();
             const floatingButtons = this.formGroup?.get(
               'floatingButtons'
-            ) as FormArray;
+            ) as UntypedFormArray;
             for (const floatingButton of floatingButtons.controls) {
               const modifications = floatingButton.get(
                 'modifications'
-              ) as FormArray;
+              ) as UntypedFormArray;
               modifications.clear();
               this.formGroup
                 ?.get('floatingButton.modifySelectedRows')
                 ?.setValue(false);
-              const bodyFields = floatingButton.get('bodyFields') as FormArray;
+              const bodyFields = floatingButton.get(
+                'bodyFields'
+              ) as UntypedFormArray;
               bodyFields.clear();
             }
           }

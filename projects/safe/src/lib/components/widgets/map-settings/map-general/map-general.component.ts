@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   GetResourceQueryResponse,
@@ -29,7 +29,7 @@ export class MapGeneralComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  @Input() form!: FormGroup;
+  @Input() form!: UntypedFormGroup;
   // === RESOURCE SELECTION ===
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public resource?: Resource;

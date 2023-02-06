@@ -81,8 +81,8 @@
     <ng-container *ngIf="admin">
       <span kendotooltip>
         <button
+          kendoButton
           title="This will erase current layout with default layout"
-          class="k-button"
           (click)="action.emit({ action: 'resetLayout' })"
         >
           {{ 'components.widget.grid.layout.reset' | translate }}

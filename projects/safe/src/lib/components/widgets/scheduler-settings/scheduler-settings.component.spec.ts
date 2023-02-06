@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import {
   TranslateModule,
   TranslateService,
@@ -15,7 +15,7 @@ describe('SafeSchedulerSettingsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [FormBuilder, TranslateService],
+      providers: [UntypedFormBuilder, TranslateService],
       declarations: [SafeSchedulerSettingsComponent],
       imports: [
         TranslateModule.forRoot({

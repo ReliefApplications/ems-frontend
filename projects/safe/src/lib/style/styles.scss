@@ -1,10 +1,20 @@
-@use '@angular/material' as mat;
-@import 'variables.scss';
+@use "@angular/material" as mat;
+@import "variables.scss";
+// TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
+//  The following line adds:
+//    1. Default typography styles for all components
+//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
+//  If you specify typography styles for the components you use elsewhere, you should delete this line.
+//  If you don't need the default component typographies but still want the hierarchy styles,
+//  you can delete this line and instead use:
+//    `@include mat.legacy-typography-hierarchy(mat.define-legacy-typography-config());`
+@include mat.all-legacy-component-typographies();
+@include mat.legacy-core();
 @include mat.core();
 
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 .sv_main {
   --primary-color: #{rgb($primary_500)};
@@ -52,7 +62,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,
+      // A700: #ffffff,,
     ),
 );
 
@@ -90,7 +100,19 @@ $safe-palette-warn: (
 $safe-primary: mat.define-palette($safe-palette);
 $safe-accent: mat.define-palette($safe-palette-accent, main, lighter, darker);
 $safe-warn: mat.define-palette($safe-palette-warn, main, lighter, darker);
-$safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
+// $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
+
+$safe-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $safe-primary,
+      accent: $safe-accent,
+      warn: $safe-warn,
+    ),
+    typography: mat.define-typography-config(),
+    density: 0,
+  )
+);
 
 // === CUSTOM THEME ===
 @mixin custom-theme($theme) {
@@ -283,8 +305,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
       padding: 0.42em 0px !important;
     }
 
-    &.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
-      .mat-form-field-label {
+    &.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
       transform: translateY(-1.1em) scale(0.75);
       width: 133.33333%;
     }
@@ -419,14 +440,14 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
     box-shadow: none !important;
   }
 
-  mat-expansion-panel:not(.mat-expanded)
-    + mat-expansion-panel:not(.mat-expanded) {
+  mat-expansion-panel:not(.mat-expanded) + mat-expansion-panel:not(.mat-expanded) {
     border-top: 0;
   }
 }
 
 // === ADDITIONAL MATERIAL STYLING ===
 @include mat.all-component-themes($safe-theme);
+@include mat.all-legacy-component-themes($safe-theme);
 @include chip($safe-theme);
 @include button($safe-theme);
 @include alert($safe-theme);
@@ -445,7 +466,7 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
   overflow: hidden;
 }
 
@@ -526,7 +547,7 @@ body {
 }
 
 // === KENDO THEME ===
-@import 'theme.scss';
+@import "theme.scss";
 
 // === VERTICAL TABS ===
 mat-tab-group[vertical] {
@@ -577,12 +598,10 @@ mat-tab-group[vertical] {
         transition: all ease 200ms;
         padding-left: 32px;
       }
-      &
-        > .mat-tab-body-content[style*='transform: translate3d(100%, 0px, 0px)'] {
+      & > .mat-tab-body-content[style*="transform: translate3d(100%, 0px, 0px)"] {
         transform: translate3d(0px, 100%, 0px) !important;
       }
-      &
-        > .mat-tab-body-content[style*='transform: translate3d(-100%, 0px, 0px)'] {
+      & > .mat-tab-body-content[style*="transform: translate3d(-100%, 0px, 0px)"] {
         transform: translate3d(0px, -100%, 0px) !important;
       }
     }
@@ -612,7 +631,7 @@ mat-tab-group[vertical] {
 // === TINYMCE ===
 .tox-editor-header *,
 .tox-tinymce-aux * {
-  font-family: Roboto, 'Helvetica Neue', sans-serif !important;
+  font-family: Roboto, "Helvetica Neue", sans-serif !important;
 }
 
 // === SCROLL BARS ===

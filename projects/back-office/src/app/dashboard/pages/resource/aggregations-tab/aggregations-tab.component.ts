@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
   SafeEditAggregationModalComponent,
@@ -10,6 +10,10 @@ import {
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../../utils/update-queries';
 import {
   GetResourceByIdQueryResponse,
   GET_RESOURCE_AGGREGATIONS,
@@ -74,23 +78,14 @@ export class AggregationsTabComponent implements OnInit {
       this.apollo.watchQuery<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_AGGREGATIONS,
         variables: {
+          first: this.pageInfo.pageSize,
           id: this.resource.id,
+          afterCursor: this.pageInfo.endCursor,
         },
       });
 
-    this.aggregationsQuery.valueChanges.subscribe(({ data }) => {
-      this.loading = false;
-      if (data.resource) {
-        this.cachedAggregations =
-          data.resource.aggregations?.edges.map((e) => e.node) || [];
-        this.aggregations = this.cachedAggregations.slice(
-          this.pageInfo.pageSize * this.pageInfo.pageIndex,
-          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-        );
-        this.pageInfo.length = data.resource.aggregations?.totalCount || 0;
-        this.pageInfo.endCursor =
-          data.resource.aggregations?.pageInfo.endCursor || '';
-      }
+    this.aggregationsQuery.valueChanges.subscribe(({ data, loading }) => {
+      this.updateValues(data, loading);
     });
   }
 
@@ -103,7 +98,9 @@ export class AggregationsTabComponent implements OnInit {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >=
+          this.cachedAggregations.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedAggregations.length
     ) {
@@ -131,34 +128,25 @@ export class AggregationsTabComponent implements OnInit {
    */
   private fetchAggregations(): void {
     this.loading = true;
-    this.aggregationsQuery.fetchMore({
-      variables: {
-        id: this.resource.id,
-        first: this.pageInfo.pageSize,
-        afterCursor: this.pageInfo.endCursor,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (
-          !fetchMoreResult?.resource.aggregations ||
-          !prev.resource?.aggregations
-        ) {
-          return prev;
-        }
-        return {
-          resource: {
-            ...fetchMoreResult.resource,
-            aggregations: {
-              edges: [
-                ...prev.resource.aggregations.edges,
-                ...fetchMoreResult.resource.aggregations.edges,
-              ],
-              pageInfo: fetchMoreResult.resource.aggregations.pageInfo,
-              totalCount: fetchMoreResult.resource.aggregations.totalCount,
-            },
-          },
-        };
-      },
-    });
+    const variables = {
+      id: this.resource.id,
+      first: this.pageInfo.pageSize,
+      afterCursor: this.pageInfo.endCursor,
+    };
+    const cachedValues: GetResourceByIdQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_RESOURCE_AGGREGATIONS,
+      variables
+    );
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
+    } else {
+      this.aggregationsQuery
+        .fetchMore({
+          variables,
+        })
+        .then((results) => this.updateValues(results.data, results.loading));
+    }
   }
 
   /**
@@ -247,5 +235,27 @@ export class AggregationsTabComponent implements OnInit {
           });
       }
     });
+  }
+
+  /**
+   *
+   * @param data
+   * @param loading
+   */
+  private updateValues(data: GetResourceByIdQueryResponse, loading: boolean) {
+    if (data.resource) {
+      this.cachedAggregations = updateQueryUniqueValues(
+        this.cachedAggregations,
+        data.resource.aggregations?.edges.map((x) => x.node) ?? []
+      );
+      this.aggregations = this.cachedAggregations.slice(
+        this.pageInfo.pageSize * this.pageInfo.pageIndex,
+        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+      );
+      this.pageInfo.length = data.resource.aggregations?.totalCount || 0;
+      this.pageInfo.endCursor =
+        data.resource.aggregations?.pageInfo.endCursor || '';
+    }
+    this.loading = loading;
   }
 }

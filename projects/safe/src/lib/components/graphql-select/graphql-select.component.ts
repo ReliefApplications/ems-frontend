@@ -17,23 +17,28 @@ import {
 import { QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import {
-  MAT_SELECT_SCROLL_STRATEGY,
-  MatSelect,
-  MatSelectChange,
-} from '@angular/material/select';
+  MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
+  MatLegacySelect as MatSelect,
+  MatLegacySelectChange as MatSelectChange,
+} from '@angular/material/legacy-select';
 import { Overlay } from '@angular/cdk/overlay';
 import { scrollFactory } from '../../utils/scroll-factory';
-import { cloneDeep, get, set } from 'lodash';
+import { get } from 'lodash';
 import {
-  MatFormField,
-  MatFormFieldControl,
-  MAT_FORM_FIELD,
-} from '@angular/material/form-field';
-import { NgControl, ControlValueAccessor, FormControl } from '@angular/forms';
+  MatLegacyFormField as MatFormField,
+  MatLegacyFormFieldControl as MatFormFieldControl,
+  MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
+} from '@angular/material/legacy-form-field';
+import {
+  NgControl,
+  ControlValueAccessor,
+  UntypedFormControl,
+} from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { updateQueryUniqueValues } from '../../utils/update-queries';
 
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
@@ -72,7 +77,7 @@ export class SafeGraphQLSelectComponent
 
   @Input() filterable = false;
   @Output() searchChange = new EventEmitter<string>();
-  public searchControl = new FormControl('');
+  public searchControl = new UntypedFormControl('');
 
   /**
    * Gets the value
@@ -187,6 +192,7 @@ export class SafeGraphQLSelectComponent
 
   public controlType = 'safe-graphql-select';
 
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
   /**
@@ -243,7 +249,7 @@ export class SafeGraphQLSelectComponent
   // public selected: FormControl;
 
   /** Query reference for getting the available contents */
-  @Input('query') query!: QueryRef<any>;
+  @Input() query!: QueryRef<any>;
 
   private queryName!: string;
   @Input() path = '';
@@ -251,6 +257,7 @@ export class SafeGraphQLSelectComponent
   public elements = new BehaviorSubject<any[]>([]);
   public elements$!: Observable<any[]>;
   private queryElements: any[] = [];
+  private cachedElements: any[] = [];
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -284,24 +291,7 @@ export class SafeGraphQLSelectComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data, loading }) => {
         this.queryName = Object.keys(data)[0];
-        const path = this.path
-          ? `${this.queryName}.${this.path}`
-          : this.queryName;
-        const elements: any[] = get(data, path).edges
-          ? get(data, path).edges.map((x: any) => x.node)
-          : get(data, path);
-        const selectedElements = this.selectedElements.filter(
-          (selectedElement) =>
-            selectedElement &&
-            !elements.find(
-              (node) =>
-                node[this.valueField] === selectedElement[this.valueField]
-            )
-        );
-        this.elements.next([...selectedElements, ...elements]);
-        this.queryElements = elements;
-        this.pageInfo = get(data, path).pageInfo;
-        this.loading = loading;
+        this.updateValues(data, loading);
       });
     this.ngControl.valueChanges
       ?.pipe(takeUntil(this.destroy$))
@@ -324,6 +314,7 @@ export class SafeGraphQLSelectComponent
     this.searchControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
+        this.cachedElements = [];
         this.searchChange.emit(value);
       });
   }
@@ -407,36 +398,16 @@ export class SafeGraphQLSelectComponent
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        this.query.fetchMore({
-          variables: {
-            ...this.query.variables,
-            first: ITEMS_PER_RELOAD,
-            afterCursor: this.pageInfo.endCursor,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              this.loading = false;
-              return prev;
-            }
-            const prevCpy = cloneDeep(prev);
-            const path = this.path
-              ? `${this.queryName}.${this.path}`
-              : this.queryName;
-            set(prevCpy, path, {
-              edges: [
-                ...(get(prev, path).edges
-                  ? get(prev, path).edges
-                  : get(prev, path)),
-                ...(get(fetchMoreResult, path).edges
-                  ? get(fetchMoreResult, path).edges
-                  : get(fetchMoreResult, path)),
-              ],
-              pageInfo: get(fetchMoreResult, path).pageInfo,
-              totalCount: get(fetchMoreResult, path).totalCount,
-            });
-            return prevCpy;
-          },
-        });
+        this.query
+          .fetchMore({
+            variables: {
+              first: ITEMS_PER_RELOAD,
+              afterCursor: this.pageInfo.endCursor,
+            },
+          })
+          .then((results) => {
+            this.updateValues(results.data, results.loading);
+          });
       }
     }
   }
@@ -469,5 +440,32 @@ export class SafeGraphQLSelectComponent
       );
 
     this.elements.next(elements);
+  }
+
+  /**
+   *
+   * @param data
+   * @param loading
+   */
+  private updateValues(data: any, loading: boolean) {
+    const path = this.path ? `${this.queryName}.${this.path}` : this.queryName;
+    const elements: any[] = get(data, path).edges
+      ? get(data, path).edges.map((x: any) => x.node)
+      : get(data, path);
+    const selectedElements = this.selectedElements.filter(
+      (selectedElement) =>
+        selectedElement &&
+        !elements.find(
+          (node) => node[this.valueField] === selectedElement[this.valueField]
+        )
+    );
+    this.cachedElements = updateQueryUniqueValues(this.cachedElements, [
+      ...selectedElements,
+      ...elements,
+    ]);
+    this.elements.next(this.cachedElements);
+    this.queryElements = this.cachedElements;
+    this.pageInfo = get(data, path).pageInfo;
+    this.loading = loading;
   }
 }

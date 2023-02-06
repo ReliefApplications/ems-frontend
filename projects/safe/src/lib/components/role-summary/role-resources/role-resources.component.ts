@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { get, isEqual } from 'lodash';
 import {
@@ -28,6 +28,7 @@ import {
 import { Permission } from './permissions.types';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { updateQueryUniqueValues } from '../../../utils/update-queries';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -115,18 +116,7 @@ export class RoleResourcesComponent
     this.resourcesQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data, loading }) => {
-        this.cachedResources = data.resources.edges.map((x) => x.node);
-        this.resources.data = this.setTableElements(
-          this.cachedResources.slice(
-            this.pageInfo.pageSize * this.pageInfo.pageIndex,
-            this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-          )
-        );
-        this.pageInfo.length = data.resources.totalCount;
-        this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
-        this.loading = loading;
-        this.updating = loading;
-        this.filterLoading = false;
+        this.updateValues(data, loading);
       });
   }
 
@@ -172,7 +162,8 @@ export class RoleResourcesComponent
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >= this.cachedResources.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedResources.length
     ) {
@@ -206,38 +197,22 @@ export class RoleResourcesComponent
     if (refetch) {
       this.cachedResources = [];
       this.pageInfo.pageIndex = 0;
-      this.resourcesQuery
-        .refetch({
-          first: this.pageInfo.pageSize,
-          afterCursor: null,
-        })
-        .then(() => {
-          this.loading = false;
-          this.updating = false;
-        });
+      this.resourcesQuery.refetch({
+        first: this.pageInfo.pageSize,
+        filter: this.filter,
+        afterCursor: null,
+      });
     } else {
       this.loading = true;
-      this.resourcesQuery.fetchMore({
-        variables: {
-          first: this.pageInfo.pageSize,
-          afterCursor: this.pageInfo.endCursor,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            resources: {
-              edges: [
-                ...prev.resources.edges,
-                ...fetchMoreResult.resources.edges,
-              ],
-              pageInfo: fetchMoreResult.resources.pageInfo,
-              totalCount: fetchMoreResult.resources.totalCount,
-            },
-          });
-        },
-      });
+      this.resourcesQuery
+        .fetchMore({
+          variables: {
+            first: this.pageInfo.pageSize,
+            filter: this.filter,
+            afterCursor: this.pageInfo.endCursor,
+          },
+        })
+        .then((results) => this.updateValues(results.data, results.loading));
     }
   }
 
@@ -277,26 +252,7 @@ export class RoleResourcesComponent
   onFilter(filter: any): void {
     this.filterLoading = true;
     this.filter = filter;
-    this.cachedResources = [];
-    this.pageInfo.pageIndex = 0;
-    this.resourcesQuery.fetchMore({
-      variables: {
-        first: this.pageInfo.pageSize,
-        filter: this.filter,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          resources: {
-            edges: fetchMoreResult.resources.edges,
-            pageInfo: fetchMoreResult.resources.pageInfo,
-            totalCount: fetchMoreResult.resources.totalCount,
-          },
-        });
-      },
-    });
+    this.fetchResources(true);
   }
 
   /**
@@ -649,5 +605,28 @@ export class RoleResourcesComponent
     } else {
       return false;
     }
+  }
+
+  /**
+   *
+   * @param data
+   * @param loading
+   */
+  private updateValues(data: GetResourcesQueryResponse, loading: boolean) {
+    this.cachedResources = updateQueryUniqueValues(
+      this.cachedResources,
+      data.resources.edges.map((x) => x.node)
+    );
+    this.resources.data = this.setTableElements(
+      this.cachedResources.slice(
+        this.pageInfo.pageSize * this.pageInfo.pageIndex,
+        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+      )
+    );
+    this.pageInfo.length = data.resources.totalCount;
+    this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
+    this.loading = loading;
+    this.updating = loading;
+    this.filterLoading = false;
   }
 }

@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormGroup } from '@angular/forms';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { markerRuleForm } from '../../map-forms';
 
 /** Interface of dialog data of the component */
@@ -20,7 +20,7 @@ interface DialogData {
   styleUrls: ['./map-marker-rule.component.scss'],
 })
 export class MapMarkerRuleComponent implements OnInit {
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
 
   public fields: any[] = [];
   public query: any;

@@ -6,8 +6,8 @@ import {
 import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
 import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
-import { MatDialog } from '@angular/material/dialog';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { DomService } from '../../services/dom/dom.service';
 import { buildSearchButton, buildAddButton } from './utils';
@@ -29,7 +29,7 @@ export const init = (
   domService: DomService,
   apollo: Apollo,
   dialog: MatDialog,
-  formBuilder: FormBuilder
+  formBuilder: UntypedFormBuilder
 ): void => {
   const getResourceById = (data: {
     id: string;
@@ -41,6 +41,7 @@ export const init = (
         id: data.id,
         filter: data.filters,
       },
+      fetchPolicy: 'no-cache',
     });
 
   let filters: { field: string; operator: string; value: string }[] = [
@@ -353,7 +354,7 @@ export const init = (
           if (obj) {
             obj.gridFieldsSettings = obj.resource
               ? obj.gridFieldsSettings
-              : new FormGroup({}).getRawValue();
+              : new UntypedFormGroup({}).getRawValue();
           }
           return false;
         },
@@ -464,25 +465,9 @@ export const init = (
             );
           }
         }
-        getResourceById({ id: question.resource }).subscribe(({ data }) => {
-          const serverRes =
-            data.resource.records?.edges?.map((x) => x.node) || [];
-          const res = [];
-          for (const item of serverRes) {
-            res.push({
-              value: item?.id,
-              text: item?.data[question.displayField || 'id'],
-            });
-          }
-          question.contentQuestion.choices = res;
-          if (!question.placeholder) {
-            question.contentQuestion.optionsCaption =
-              'Select a record from ' + data.resource.name + '...';
-          }
-          if (!question.filterBy || question.filterBy.length < 1) {
-            this.populateChoices(question);
-          }
-        });
+        if (!question.filterBy || question.filterBy.length < 1) {
+          this.populateChoices(question);
+        }
 
         if (question.selectQuestion) {
           if (question.selectQuestion === '#staticValue') {
@@ -567,6 +552,10 @@ export const init = (
               });
             }
             question.contentQuestion.choices = res;
+            if (!question.placeholder) {
+              question.contentQuestion.optionsCaption =
+                'Select a record from ' + data.resource.name + '...';
+            }
           }
         );
       } else {
@@ -630,7 +619,9 @@ export const init = (
         });
       }
     },
-    convertFromRawToFormGroup: (gridSettingsRaw: any): FormGroup | null => {
+    convertFromRawToFormGroup: (
+      gridSettingsRaw: any
+    ): UntypedFormGroup | null => {
       if (!gridSettingsRaw.fields) {
         return null;
       }

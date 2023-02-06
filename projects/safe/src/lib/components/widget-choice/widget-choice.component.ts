@@ -18,6 +18,7 @@ export class SafeWidgetChoiceComponent implements OnInit {
   @Input() widgetTypes?: IWidgetType[];
 
   @Output() add: EventEmitter<string> = new EventEmitter();
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter();
 
   /** Constructor for the component */

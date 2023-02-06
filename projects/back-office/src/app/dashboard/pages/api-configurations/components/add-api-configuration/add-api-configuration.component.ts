@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
-  FormBuilder,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { apiValidator } from '../../../../../utils/nameValidation';
 
 /**
@@ -18,7 +18,7 @@ import { apiValidator } from '../../../../../utils/nameValidation';
 })
 export class AddApiConfigurationComponent implements OnInit {
   // === REACTIVE FORM ===
-  apiForm: FormGroup = new FormGroup({});
+  apiForm: UntypedFormGroup = new UntypedFormGroup({});
 
   /** @returns name for the API configuration */
   get name(): AbstractControl | null {
@@ -32,7 +32,7 @@ export class AddApiConfigurationComponent implements OnInit {
    * @param dialogRef Material dialog ref
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<AddApiConfigurationComponent>
   ) {}
 

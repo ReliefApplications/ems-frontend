@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -7,7 +7,7 @@ import { AggregationBuilderService } from '../../../services/aggregation-builder
 import { SafeGridService } from '../../../services/grid/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { Resource } from '../../../models/resource.model';
-import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
+import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
 import { scrollFactory } from '../../config-display-grid-fields-modal/config-display-grid-fields-modal.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -34,7 +34,7 @@ export class SafeAggregationBuilderComponent
   implements OnInit
 {
   // === REACTIVE FORM ===
-  @Input() aggregationForm: FormGroup = new FormGroup({});
+  @Input() aggregationForm: UntypedFormGroup = new UntypedFormGroup({});
   @Input() resource!: Resource;
 
   @Input() reload$!: Observable<boolean>;
@@ -72,8 +72,8 @@ export class SafeAggregationBuilderComponent
    *
    * @returns the pipelines in a FormArray
    */
-  get pipelineForm(): FormArray {
-    return this.aggregationForm.get('pipeline') as FormArray;
+  get pipelineForm(): UntypedFormArray {
+    return this.aggregationForm.get('pipeline') as UntypedFormArray;
   }
 
   /**

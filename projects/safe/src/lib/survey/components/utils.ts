@@ -1,7 +1,7 @@
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeFormModalComponent } from '../../components/form-modal/form-modal.component';
 import { SafeResourceGridModalComponent } from '../../components/search-resource-grid-modal/search-resource-grid-modal.component';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { surveyLocalization } from 'survey-angular';
 
 /**
@@ -15,7 +15,7 @@ import { surveyLocalization } from 'survey-angular';
  */
 export const buildSearchButton = (
   question: any,
-  fieldsSettingsForm: FormGroup,
+  fieldsSettingsForm: UntypedFormGroup,
   multiselect: boolean,
   dialog: MatDialog
 ): any => {

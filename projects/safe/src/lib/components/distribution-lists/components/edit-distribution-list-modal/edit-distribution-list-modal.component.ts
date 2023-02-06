@@ -5,12 +5,19 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
-  MatChipInputEvent,
-  MAT_CHIPS_DEFAULT_OPTIONS,
-} from '@angular/material/chips';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import {
+  MatLegacyChipInputEvent as MatChipInputEvent,
+  MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS,
+} from '@angular/material/legacy-chips';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import get from 'lodash/get';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 
@@ -48,7 +55,7 @@ export function codesFactory(): () => any {
 })
 export class EditDistributionListModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public form: FormGroup = new FormGroup({});
+  public form: UntypedFormGroup = new UntypedFormGroup({});
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
 
   /** @returns list of emails */
@@ -66,7 +73,7 @@ export class EditDistributionListModalComponent implements OnInit {
    * @param data Data input of the modal
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<EditDistributionListModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}

@@ -8,8 +8,8 @@ import {
   DoCheck,
   ElementRef,
 } from '@angular/core';
-import { AbstractControl, FormControl } from '@angular/forms';
-import { MatAutocomplete } from '@angular/material/autocomplete';
+import { AbstractControl, UntypedFormControl } from '@angular/forms';
+import { MatLegacyAutocomplete as MatAutocomplete } from '@angular/material/legacy-autocomplete';
 import { isMongoId } from '../../../../utils/is-mongo-id';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -87,8 +87,8 @@ export class SafeFormsDropdownComponent
    *
    * @returns the source control
    */
-  get sourceFormControl(): FormControl {
-    return this.sourceControl as FormControl;
+  get sourceFormControl(): UntypedFormControl {
+    return this.sourceControl as UntypedFormControl;
   }
 
   /**
