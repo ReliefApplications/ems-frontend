@@ -1,9 +1,9 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddAggregationModalComponent } from '../add-aggregation-modal/add-aggregation-modal.component';
 import { Aggregation } from '../../../models/aggregation.model';
@@ -27,7 +27,7 @@ export class AggregationTableComponent
 {
   @Input() resource: Resource | null = null;
   @Input() form: Form | null = null;
-  @Input() selectedAggregations: FormControl | null = null;
+  @Input() selectedAggregations: UntypedFormControl | null = null;
 
   aggregations: Layout[] = [];
   allAggregations: Layout[] = [];

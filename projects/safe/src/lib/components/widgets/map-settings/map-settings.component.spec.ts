@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import {
   TranslateModule,
   TranslateService,
@@ -20,7 +20,7 @@ describe('SafeMapSettingsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [FormBuilder, TranslateService],
+      providers: [UntypedFormBuilder, TranslateService],
       declarations: [SafeMapSettingsComponent],
       imports: [
         TranslateModule.forRoot({

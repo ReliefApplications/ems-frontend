@@ -11,6 +11,7 @@ const routes: Routes = [
       {
         path: '',
         redirectTo: 'records',
+        pathMatch: 'full',
       },
       {
         path: 'records',

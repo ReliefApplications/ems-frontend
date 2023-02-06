@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { createMapWidgetFormGroup } from './map-forms';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 /** Component for the map widget settings */
 @Component({
@@ -10,7 +10,7 @@ import { FormGroup } from '@angular/forms';
 })
 export class SafeMapSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
-  tileForm: FormGroup | undefined;
+  tileForm: UntypedFormGroup | undefined;
 
   // === WIDGET ===
   @Input() tile: any;

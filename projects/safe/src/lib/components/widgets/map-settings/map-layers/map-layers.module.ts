@@ -2,11 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapLayersComponent } from './map-layers.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-// import { MatTabsModule } from '@angular/material/tabs';
 import { TranslateModule } from '@ngx-translate/core';
-// import { MapMarkersModule } from './map-markers/map-markers.module';
-// import { MapClorophletsModule } from './map-clorophlets/map-clorophlets.module';
-// import { MapOnlineLayersModule } from './map-online-layers/map-online-layers.module';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { MatTableModule } from '@angular/material/table';
 import { SafeEditLayerModalModule } from './edit-layer-modal/edit-layer-modal.module';
@@ -25,10 +21,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    // MatTabsModule,
-    // MapMarkersModule,
-    // MapClorophletsModule,
-    // MapOnlineLayersModule,
     SafeButtonModule,
     MatTableModule,
     SafeEditLayerModalModule,

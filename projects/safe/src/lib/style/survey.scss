@@ -54,6 +54,12 @@
 ::ng-deep .sv_main safe-core-grid {
   height: 410px;
 
+  .sv_row div {
+    min-width: unset;
+  }
+}
+
+::ng-deep .sv_main {
   .k-button {
     border-color: rgba(0, 0, 0, 0.08);
     min-width: unset;
@@ -84,9 +90,5 @@
     outline: none;
     -webkit-appearance: none;
     position: relative;
-  }
-
-  .sv_row div {
-    min-width: unset;
   }
 }

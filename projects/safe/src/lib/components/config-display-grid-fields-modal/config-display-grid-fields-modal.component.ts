@@ -5,13 +5,13 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { PopupService } from '@progress/kendo-angular-popup';
-import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
+import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
-import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
+import { MAT_LEGACY_TOOLTIP_SCROLL_STRATEGY as MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/legacy-tooltip';
 import { createQueryForm } from '../query-builder/query-builder-forms';
 
 /**
@@ -56,7 +56,7 @@ interface DialogData {
   ],
 })
 export class ConfigDisplayGridFieldsModalComponent implements OnInit {
-  public form: FormGroup = new FormGroup({});
+  public form: UntypedFormGroup = new UntypedFormGroup({});
   public loading = true;
 
   @ViewChild('settingsContainer', { read: ViewContainerRef })

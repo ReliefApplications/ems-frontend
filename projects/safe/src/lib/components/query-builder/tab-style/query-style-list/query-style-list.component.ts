@@ -1,6 +1,6 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 
@@ -16,7 +16,7 @@ export class SafeQueryStyleListComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  @Input() form!: FormArray;
+  @Input() form!: UntypedFormArray;
   public styles: any[] = [];
   columns: string[] = ['name', 'preview', '_actions'];
 

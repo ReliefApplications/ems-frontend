@@ -18,7 +18,7 @@ import {
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   EXPORT_SETTINGS,
   GRADIENT_SETTINGS,
@@ -32,17 +32,17 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
-import { MAT_MENU_SCROLL_STRATEGY } from '@angular/material/menu';
-import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
-import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
+import { MAT_LEGACY_MENU_SCROLL_STRATEGY as MAT_MENU_SCROLL_STRATEGY } from '@angular/material/legacy-menu';
+import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
+import { MAT_LEGACY_TOOLTIP_SCROLL_STRATEGY as MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/legacy-tooltip';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
-import {
-  CalendarDOMService,
-  MonthViewService,
-  WeekNamesService,
-} from '@progress/kendo-angular-dateinputs';
+// import {
+//   CalendarDOMService,
+//   MonthViewService,
+//   WeekNamesService,
+// } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { SafeGridService } from '../../../../services/grid/grid.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -55,7 +55,10 @@ import { SafeTileDataComponent } from '../../../widget-grid/floating-options/men
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
-import { MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
+import {
+  MatLegacySnackBarRef as MatSnackBarRef,
+  LegacyTextOnlySnackBar as TextOnlySnackBar,
+} from '@angular/material/legacy-snack-bar';
 
 /**
  * Factory for creating scroll strategy
@@ -87,9 +90,9 @@ const matches = (el: any, selector: any) =>
   providers: [
     PopupService,
     ResizeBatchService,
-    CalendarDOMService,
-    MonthViewService,
-    WeekNamesService,
+    // CalendarDOMService,
+    // MonthViewService,
+    // WeekNamesService,
     {
       provide: MAT_SELECT_SCROLL_STRATEGY,
       useFactory: scrollFactory,
@@ -136,7 +139,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() editable = false;
   @Input() hasChanges = false;
   @Output() edit: EventEmitter<any> = new EventEmitter();
-  public formGroup: FormGroup = new FormGroup({});
+  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   private currentEditedRow = 0;
   private currentEditedItem: any;
   public gradientSettings = GRADIENT_SETTINGS;
@@ -161,8 +164,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   get hasEnabledActions(): boolean {
     return (
       intersection(
-        Object.keys(this.actions).filter(
-          (key: string) => get(this.actions, key, false) === true
+        Object.keys(this.actions).filter((key: string) =>
+          get(this.actions, key, false)
         ),
         this.rowActions
       ).length > 0
@@ -197,7 +200,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() filterChange = new EventEmitter();
   @Output() showFilterChange = new EventEmitter();
   @Input() searchable = true;
-  public search = new FormControl('');
+  public search = new UntypedFormControl('');
   @Output() searchChange = new EventEmitter();
 
   // === PAGINATION ===
@@ -601,7 +604,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     this.currentEditedRow = 0;
     this.currentEditedItem = null;
     this.editing = false;
-    this.formGroup = new FormGroup({});
+    this.formGroup = new UntypedFormGroup({});
   }
 
   /**

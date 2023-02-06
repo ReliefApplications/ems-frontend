@@ -5,7 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { SafeMapComponent } from '../../map/map.component';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
@@ -39,7 +39,7 @@ export class MapPropertiesComponent
   extends SafeUnsubscribeComponent
   implements OnInit, AfterViewInit
 {
-  @Input() form!: FormGroup;
+  @Input() form!: UntypedFormGroup;
 
   @ViewChild(SafeMapComponent) previewMap!: SafeMapComponent;
 

@@ -11,8 +11,12 @@ import {
 import { Resource } from '../../../../models/resource.model';
 import { Access, Permission } from '../permissions.types';
 import { createFilterGroup } from '../../../query-builder/query-builder-forms';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+} from '@angular/forms';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { SafeRestService } from '../../../../services/rest/rest.service';
 import { firstValueFrom } from 'rxjs';
 
@@ -81,8 +85,8 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
   // === EDITION ===
   private initialValue!: AccessPermissions[];
   public openedFilterIndex: number | null = null;
-  public filtersFormArray!: FormArray;
-  public openedFilterFormGroup?: FormGroup;
+  public filtersFormArray!: UntypedFormArray;
+  public openedFilterFormGroup?: UntypedFormGroup;
   @Output() update = new EventEmitter();
 
   // === TABLE ELEMENTS ===
@@ -98,7 +102,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
    */
   constructor(
     public translate: TranslateService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private restService: SafeRestService
   ) {}
 
@@ -333,7 +337,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
       this.filters.data = this.setTableElements(this.filtersFormArray.value);
       const filterFormGroup = this.filtersFormArray.at(index).get('access');
       if (filterFormGroup) {
-        this.openedFilterFormGroup = filterFormGroup as FormGroup;
+        this.openedFilterFormGroup = filterFormGroup as UntypedFormGroup;
         this.openedFilterIndex = index;
       }
     } else {

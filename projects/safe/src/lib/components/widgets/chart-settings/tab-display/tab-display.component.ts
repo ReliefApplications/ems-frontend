@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import {
   LEGEND_POSITIONS,
   LEGEND_ORIENTATIONS,
@@ -20,7 +20,7 @@ export class TabDisplayComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  @Input() formGroup!: FormGroup;
+  @Input() formGroup!: UntypedFormGroup;
   @Input() type: any;
 
   public legendPositions = LEGEND_POSITIONS;
@@ -32,8 +32,8 @@ export class TabDisplayComponent
   ];
 
   /** @returns the form for the chart */
-  public get chartForm(): FormGroup {
-    return this.formGroup.get('chart') as FormGroup;
+  public get chartForm(): UntypedFormGroup {
+    return this.formGroup.get('chart') as UntypedFormGroup;
   }
 
   /**

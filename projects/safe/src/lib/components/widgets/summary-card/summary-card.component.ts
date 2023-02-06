@@ -179,7 +179,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
             query: layoutQuery,
           });
           const layoutFields = layoutQuery.fields;
-          const fields = get(metaRes, 'data.resource.metadata').map(
+          const fields = get(metaRes, 'data.resource.metadata', []).map(
             (f: any) => {
               const layoutField = layoutFields.find(
                 (lf: any) => lf.name === f.name
@@ -255,29 +255,10 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
+        // TOCHECK
         this.dataQuery?.fetchMore({
           variables: {
-            ...this.dataQuery.variables,
             skip: this.cards.length,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              this.loading = false;
-              return prev;
-            }
-            for (const field in fetchMoreResult) {
-              if (
-                Object.prototype.hasOwnProperty.call(fetchMoreResult, field)
-              ) {
-                this.loading = false;
-                return Object.assign({}, prev, {
-                  [field]: {
-                    edges: fetchMoreResult[field].edges,
-                    totalCount: fetchMoreResult[field].totalCount,
-                  },
-                });
-              }
-            }
           },
         });
       }

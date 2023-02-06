@@ -1,6 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder } from '@angular/forms';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { UntypedFormBuilder } from '@angular/forms';
+import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { environment } from 'projects/back-office/src/environments/environment';
 import {
   DateTimeProvider,
@@ -20,7 +20,7 @@ import {
 } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 
 import { SafeGridSettingsComponent } from './grid-settings.component';
 import { GET_CHANNELS, GET_QUERY_TYPES } from './graphql/queries';
@@ -33,7 +33,7 @@ describe('SafeGridSettingsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [
-        FormBuilder,
+        UntypedFormBuilder,
         { provide: 'environment', useValue: environment },
         OAuthService,
         UrlHelperService,
