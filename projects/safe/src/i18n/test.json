@@ -78,6 +78,7 @@
 		"errors": {
 			"objectDuplicated": "{{type}} ****** {{value}} ******"
 		},
+		"exitFullscreen": "******",
 		"export": "******",
 		"exportObject": "****** {{name}}",
 		"false": "******",
@@ -183,7 +184,6 @@
 			"statusUpdated": "****** {{value}} ******",
 			"unlocked": "{{name}} ******"
 		},
-		"openFullScreen": "******",
 		"or": "******",
 		"page": {
 			"few": "******",
@@ -291,6 +291,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"viewFullscreen": "******",
 		"viewObject": "****** {{name}}",
 		"workflow": {
 			"few": "******",
