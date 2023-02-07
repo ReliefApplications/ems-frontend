@@ -63,6 +63,7 @@ export interface QuestionResource
   filterBy: string;
   staticValue: string;
   customFilter: string;
+  displayAsGrid: boolean;
 }
 
 /** Type for any questions, which allows to use all properties of different question types */
