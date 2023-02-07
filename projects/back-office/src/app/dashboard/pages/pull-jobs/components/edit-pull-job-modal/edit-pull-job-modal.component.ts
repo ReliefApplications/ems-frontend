@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   UntypedFormArray,
   UntypedFormBuilder,
@@ -20,7 +20,7 @@ import {
   authType,
   cronValidator,
 } from '@safe/builder';
-import { Apollo, APOLLO_OPTIONS, QueryRef } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import {
   GetApiConfigurationsQueryResponse,
   GET_API_CONFIGURATIONS,
