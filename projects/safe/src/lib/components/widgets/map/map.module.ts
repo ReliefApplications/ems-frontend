@@ -4,7 +4,9 @@ import { SafeMapComponent } from './map.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeMapPopupComponent } from './map-popup/map-popup.component';
-import { GroupedPointsPopupModule } from './grouped-points-popup/grouped-points-popup.module';
+import { SafeMapService } from './map.service';
+import { SafeButtonModule } from '../../ui/button/public-api';
+import { SafeDividerModule } from '../../ui/divider/public-api';
 
 /** Module for the map widget component */
 @NgModule({
@@ -13,8 +15,10 @@ import { GroupedPointsPopupModule } from './grouped-points-popup/grouped-points-
     CommonModule,
     TranslateModule,
     LayoutModule,
-    GroupedPointsPopupModule,
+    SafeButtonModule,
+    SafeDividerModule,
   ],
   exports: [SafeMapComponent],
+  providers: [SafeMapService],
 })
 export class SafeMapModule {}

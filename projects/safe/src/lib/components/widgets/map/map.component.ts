@@ -3,15 +3,17 @@ import get from 'lodash/get';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
-import { generateClusterLayer } from './cluster-test';
-import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
-import { generateHeatMap } from './heatmap-test';
+import {
+  complexGeoJSON,
+  cornerGeoJSON,
+  pointGeoJSON,
+} from './tests/geojson/geojson-test';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { AVAILABLE_MEASURE_LANGUAGES } from './measure.const';
 import { v4 as uuidv4 } from 'uuid';
 import { randomFeatureCollection } from './generateFeatureCollection';
-import { DomService } from '../../../services/dom/dom.service';
+import { SafeMapService } from './map.service';
 
 // Declares L to be able to use Leaflet from CDN
 declare let L: any;
@@ -103,12 +105,11 @@ export class SafeMapComponent
    *
    * @param environment platform environment
    * @param translate The translate service
-   * @param domService The dom service
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
-    private domService: DomService
+    private safeMapService: SafeMapService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -243,8 +244,7 @@ export class SafeMapComponent
       },
     };
 
-    const clusterGroup = generateClusterLayer(this.map, L);
-    this.map.addLayer(clusterGroup);
+    this.safeMapService.generateClusterLayer(this.map);
 
     this.overlays = {
       label: 'GeoJSON layers',
@@ -273,7 +273,7 @@ export class SafeMapComponent
     };
 
     // Heatmap
-    generateHeatMap(this.map, this.domService);
+    this.safeMapService.generateHeatMap(this.map);
 
     const layerTreeCloned = this.addTreeToMap(this.overlays);
     this.applyOptions(this.map.getZoom(), layerTreeCloned, true);

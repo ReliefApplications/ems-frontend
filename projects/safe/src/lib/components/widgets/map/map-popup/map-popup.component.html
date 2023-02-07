@@ -1,6 +1,37 @@
-<div class="flex flex-col gap-0.5">
-  <span class="flex gap-y-0 gap-x-2" *ngFor="let row of popupRows">
-    <strong>{{ row.label }}:</strong>
-    {{ row.value }}
-  </span>
+<div class="w-52 flex flex-col">
+  <header class="w-full h-full flex justify-end items-center">
+    <safe-button
+      [isIcon]="true"
+      icon="arrow_left"
+      [disabled]="currValue === 0"
+      (click)="current.next(currValue - 1)"
+    >
+    </safe-button>
+    <p class="m-0">
+      {{
+        'components.widget.settings.map.popup.of'
+          | translate : { total: points.length, current: currValue + 1 }
+      }}
+    </p>
+    <safe-button
+      [isIcon]="true"
+      icon="arrow_right"
+      [disabled]="currValue === points.length - 1"
+      (click)="current.next(currValue + 1)"
+    >
+    </safe-button>
+  </header>
+  <safe-divider class="m-0"></safe-divider>
+  <div class="w-full flex justify-end">
+    <safe-button
+      [size]="buttonSize.SMALL"
+      [isIcon]="true"
+      icon="close"
+      (click)="closePopup.emit()"
+    >
+    </safe-button>
+  </div>
+  <div class="max-h-60 overflow-y-auto">
+    <div [innerHTML]="currentHtml"></div>
+  </div>
 </div>
