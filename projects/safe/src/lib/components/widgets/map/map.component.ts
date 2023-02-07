@@ -1,8 +1,10 @@
 import { Component, AfterViewInit, Input, Inject } from '@angular/core';
 import get from 'lodash/get';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+// Leaflet plugins
 import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
+import 'leaflet-fullscreen';
 import { generateClusterLayer } from './cluster-test';
 import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
 import { generateHeatMap } from './heatmap-test';
@@ -83,9 +85,8 @@ export class SafeMapComponent
   // === Controls ===
   private lang!: string;
   private measureControls: any = {};
-
-  // === LEGEND ===
-  private legendControl: any;
+  private fullscreenControl?: L.Control;
+  private legendControl?: L.Control;
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -177,7 +178,6 @@ export class SafeMapComponent
 
     // Create leaflet map
     this.map = L.map(this.mapId, {
-      fullscreenControl: true,
       zoomControl: false,
       maxBounds: bounds,
       minZoom: 2,
@@ -194,16 +194,12 @@ export class SafeMapComponent
 
     // Add leaflet measure control
     this.getMeasureControl();
-    // listen for language change
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((event) => {
-        if (event.lang !== this.lang) {
-          this.getMeasureControl();
-        }
-      });
 
+    // Add leaflet geosearch control
     this.getSearchbarControl().addTo(this.map);
+
+    // Add leaflet fullscreen control
+    this.getFullScreenControl();
 
     // Set event listener to log map bounds when zooming, moving and resizing screen.
     this.map.on('moveend', () => {
@@ -218,6 +214,16 @@ export class SafeMapComponent
     this.map.on('zoomend', () => {
       this.applyOptions(this.map.getZoom(), this.overlays);
     });
+
+    // Listen for language change
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event) => {
+        if (event.lang !== this.lang) {
+          this.getMeasureControl();
+          this.getFullScreenControl();
+        }
+      });
   }
 
   /**
@@ -476,6 +482,23 @@ export class SafeMapComponent
     });
 
     return searchControl;
+  }
+
+  /**
+   * Create a fullscreen control and add it to map.
+   * Support translation.
+   */
+  private getFullScreenControl(): void {
+    if (this.fullscreenControl) {
+      this.map.removeControl(this.fullscreenControl);
+    }
+    this.fullscreenControl = new L.Control.Fullscreen({
+      title: {
+        false: this.translate.instant('common.viewFullscreen'),
+        true: this.translate.instant('common.exitFullscreen'),
+      },
+    });
+    this.fullscreenControl?.addTo(this.map);
   }
 
   /** Create a custom measure control with leaflet-measure and adds it to the map  */
