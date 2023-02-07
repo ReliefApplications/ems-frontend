@@ -78,6 +78,7 @@
 		"errors": {
 			"objectDuplicated": "{{type}} {{value}} already exists."
 		},
+		"exitFullscreen": "Exit Fullscreen",
 		"export": "Export",
 		"exportObject": "Export {{name}}",
 		"false": "False",
@@ -183,7 +184,6 @@
 			"statusUpdated": "Status updated to {{value}}.",
 			"unlocked": "{{name}} edition has been unlocked by another user."
 		},
-		"openFullScreen": "Open in Full Screen",
 		"or": "Or",
 		"page": {
 			"few": "Pages",
@@ -291,6 +291,7 @@
 			"none": "No value",
 			"one": "Value"
 		},
+		"viewFullscreen": "View Fullscreen",
 		"viewObject": "View {{name}}",
 		"workflow": {
 			"few": "Workflows",

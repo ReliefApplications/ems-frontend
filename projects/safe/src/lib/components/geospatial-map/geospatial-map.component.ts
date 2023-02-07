@@ -143,6 +143,7 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
     // creates map, adds it to the container
     // and created layer to it
     this.map = L.map(this.mapID, {
+      // fullscreenControl: true,
       center: [0, 0],
       zoom: 2,
       pmIgnore: false,

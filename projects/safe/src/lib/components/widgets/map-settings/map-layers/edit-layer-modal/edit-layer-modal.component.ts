@@ -110,6 +110,7 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
 
     // Create leaflet map
     this.map = L.map(this.mapId, {
+      // fullscreenControl: true,
       zoomControl: false,
       maxBounds: bounds,
       minZoom: 2,
