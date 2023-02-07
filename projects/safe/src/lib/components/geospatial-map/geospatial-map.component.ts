@@ -181,6 +181,9 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
       worldCopyJump: true,
     }).addLayer(layer);
 
+    // Add search address control
+    this.getSearchbarControl().addTo(this.map);
+
     // init layers from question value
     if (this.data.features.length > 0) {
       const newLayer = L.geoJSON(this.data, {
@@ -348,5 +351,46 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
           resolve();
         });
     });
+  }
+
+  /**
+   * Creates a custom searchbar control with esri geocoding
+   *
+   * @returns Returns the custom control
+   */
+  private getSearchbarControl(): any {
+    const searchControl = L.esri.Geocoding.geosearch({
+      position: 'topleft',
+      placeholder: 'Enter an address or place e.g. 1 York St',
+      useMapBounds: false,
+      providers: [
+        L.esri.Geocoding.arcgisOnlineProvider({
+          apikey: this.esriApiKey,
+          nearby: {
+            lat: -33.8688,
+            lng: 151.2093,
+          },
+        }),
+      ],
+    });
+
+    searchControl.on('results', (data: any) => {
+      for (let i = data.results.length - 1; i >= 0; i--) {
+        const coordinates = L.latLng(data.results[i].latlng);
+        const marker = L.marker(coordinates).setIcon(
+          createCustomMarker('#3388ff', 1)
+        );
+        marker.addTo(this.map);
+
+        const geocodingResult = {
+          address: data.results[i].properties,
+          latlng: coordinates,
+        };
+        this.geocodingResults.push(geocodingResult);
+        this.onMapChange();
+      }
+    });
+
+    return searchControl;
   }
 }
