@@ -1147,6 +1147,15 @@
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
 					},
 					"geospatial": {
+						"geoFields": {
+							"addressFields": "Adresse",
+							"city": "Ville",
+							"coordinates": "Coordonnées",
+							"country": "Pays",
+							"district": "District",
+							"region": "Région",
+							"street": "Rue"
+						},
 						"geocodingError": "Un problème est survenu lors de la récupération de l'adresse du point.",
 						"layersStyles": {
 							"fill": {

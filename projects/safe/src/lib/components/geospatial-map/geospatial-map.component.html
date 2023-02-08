@@ -1,5 +1,16 @@
 <div class="flex gap-4">
+  <!-- Display geo fields -->
+  <safe-geo-fields
+    class="h-96 grow basis-72"
+    *ngIf="useGeocoding && geoFields.length && geocodingResults.length"
+    [geoFields]="geoFields"
+    [geocodingResults]="geocodingResults"
+  ></safe-geo-fields>
+
+  <!-- Map -->
   <div [id]="mapID" class="grow basis-full h-96"></div>
+
+  <!-- Edit layer style -->
   <safe-layer-styling
     class="h-96 grow basis-72"
     *ngIf="selectedLayer"

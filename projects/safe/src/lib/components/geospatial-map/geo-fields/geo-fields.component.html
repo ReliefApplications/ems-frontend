@@ -1,0 +1,45 @@
+<div class="flex flex-col w-full h-96 p-1.5">
+  <h2 class="m-0">
+    {{ 'components.widget.settings.map.geospatial.geoFields.addressFields' | translate }}
+  </h2>
+
+  <safe-divider></safe-divider>
+
+  <div *ngIf="geocodingResults[geocodingResults.length - 1] as result">
+    <!-- Street -->
+    <mat-form-field appearance="outline" *ngIf="geoFields.includes('Street')">
+      <mat-label>{{ 'components.widget.settings.map.geospatial.geoFields.street' | translate }}</mat-label>
+      <input matInput type="text" [value]="result.address.ShortLabel" [readonly]="true" />
+    </mat-form-field>
+  
+    <!-- City -->
+    <mat-form-field appearance="outline" *ngIf="geoFields.includes('City')">
+      <mat-label>{{ 'components.widget.settings.map.geospatial.geoFields.city' | translate }}</mat-label>
+      <input matInput type="text" [value]="result.address.City" [readonly]="true" />
+    </mat-form-field>
+  
+    <!-- Country -->
+    <mat-form-field appearance="outline" *ngIf="geoFields.includes('Country')">
+      <mat-label>{{ 'components.widget.settings.map.geospatial.geoFields.country' | translate }}</mat-label>
+      <input matInput type="text" [value]="result.address.CntryName" [readonly]="true" />
+    </mat-form-field>
+  
+    <!-- District -->
+    <mat-form-field appearance="outline" *ngIf="geoFields.includes('District')">
+      <mat-label>{{ 'components.widget.settings.map.geospatial.geoFields.district' | translate }}</mat-label>
+      <input matInput type="text" [value]="result.address.District" [readonly]="true" />
+    </mat-form-field>
+  
+    <!-- Region -->
+    <mat-form-field appearance="outline" *ngIf="geoFields.includes('Region')">
+      <mat-label>{{ 'components.widget.settings.map.geospatial.geoFields.region' | translate }}</mat-label>
+      <input matInput type="text" [value]="result.address.Region" [readonly]="true" />
+    </mat-form-field>
+  
+    <!-- Coordinates -->
+    <mat-form-field appearance="outline" *ngIf="geoFields.includes('Coordinates')">
+      <mat-label>{{ 'components.widget.settings.map.geospatial.geoFields.coordinates' | translate }}</mat-label>
+      <input matInput type="text" [value]="result.latlng.lat + ', ' + result.latlng.lng" [readonly]="true" />
+    </mat-form-field>
+  </div>
+</div>

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeGeospatialMapComponent } from './geospatial-map.component';
 import { SafeLayerStylingModule } from './layer-styling/layer-styling.module';
+import { SafeGeoFieldsModule } from './geo-fields/geo-fields.module';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 /**
@@ -10,7 +11,12 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
  */
 @NgModule({
   declarations: [SafeGeospatialMapComponent],
-  imports: [CommonModule, SafeLayerStylingModule, MatSnackBarModule],
+  imports: [
+    CommonModule,
+    SafeLayerStylingModule,
+    MatSnackBarModule,
+    SafeGeoFieldsModule,
+  ],
   exports: [SafeGeospatialMapComponent],
 })
 export class SafeGeospatialMapModule {}

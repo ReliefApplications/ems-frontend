@@ -81,17 +81,17 @@ const createCustomMarker = (color: string, opacity: number) => {
 };
 
 /**
- * The type for the object get from the reverseGeocode operation,
- * used to save in the GeoJSON the address info
+ * The type for the object get from the reverseGeocode and geosearch
+ * operation, used to save in the GeoJSON the address info
  */
-interface ReverseGeocodeResult {
+export interface ReverseGeocodeResult {
   latlng: { lat: number; lng: number };
   address: {
     City: string;
     CntryName: string;
     District: string;
     Region: string;
-    Address: string;
+    ShortLabel: string; // Street Info
     [key: string]: string;
   };
 }
@@ -117,8 +117,9 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
 
   // Geocoding
   private esriApiKey: string;
-  private geocodingResults: ReverseGeocodeResult[] = [];
-  @Input() useGeocoding = false;
+  public geocodingResults: ReverseGeocodeResult[] = [];
+  @Input() useGeocoding = true;
+  @Input() geoFields: string[] = [];
 
   // Layer to edit
   public selectedLayer: any;
@@ -251,7 +252,16 @@ export class SafeGeospatialMapComponent implements AfterViewInit {
     });
 
     // updates question value on removing shapes
-    this.map.on('pm:remove', this.onMapChange.bind(this));
+    this.map.on('pm:remove', (l: any) => {
+      if (l.shape === 'Marker' && this.useGeocoding) {
+        // If geocoding active remove address info from the deleted marker from geocodingResults
+        this.geocodingResults = this.geocodingResults.filter(
+          // eslint-disable-next-line no-underscore-dangle
+          (r) => !isEqual(r.latlng, l.layer._latlng)
+        );
+      }
+      this.onMapChange.bind(this);
+    });
   }
 
   /**

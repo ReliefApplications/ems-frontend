@@ -48,6 +48,13 @@ export const init = (Survey: any, domService: DomService): void => {
         instance.useGeocoding = question.useGeocoding;
       });
 
+      // inits and keep updated the geoFields array
+      // to know what address info to display
+      instance.geoFields = question.geoFields ?? [];
+      question.registerFunctionOnPropertyValueChanged('geoFields', () => {
+        instance.geoFields = question.geoFields;
+      });
+
       // updates the question value when the map changes
       instance.mapChange.subscribe((res) => {
         question.value = res;
@@ -68,128 +75,32 @@ export const init = (Survey: any, domService: DomService): void => {
         category: 'Map Proprieties',
         type: 'addressFieldsTagBox',
         visibleIndex: 2,
+        dependsOn: ['useGeocoding'],
+        visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
       });
 
-      // serializer.addProperty('geospatial', {
-      //   name: 'displayStreet',
-      //   category: 'Map Proprieties',
-      //   type: 'boolean',
-      //   visibleIndex: 3,
-      //   required: true,
-      //   dependsOn: ['useGeocoding'],
-      //   visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
-      // });
-
-      // serializer.addProperty('geospatial', {
-      //   name: 'displayCity',
-      //   category: 'Map Proprieties',
-      //   type: 'boolean',
-      //   visibleIndex: 3,
-      //   required: true,
-      //   dependsOn: ['useGeocoding'],
-      //   visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
-      // });
-
-      // serializer.addProperty('geospatial', {
-      //   name: 'displayCountry',
-      //   category: 'Map Proprieties',
-      //   type: 'boolean',
-      //   visibleIndex: 3,
-      //   required: true,
-      //   dependsOn: ['useGeocoding'],
-      //   visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
-      // });
-
-      // serializer.addProperty('geospatial', {
-      //   name: 'displayDistrict',
-      //   category: 'Map Proprieties',
-      //   type: 'boolean',
-      //   visibleIndex: 3,
-      //   required: true,
-      //   dependsOn: ['useGeocoding'],
-      //   visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
-      // });
-
-      // serializer.addProperty('geospatial', {
-      //   name: 'displayRegion',
-      //   category: 'Map Proprieties',
-      //   type: 'boolean',
-      //   visibleIndex: 3,
-      //   required: true,
-      //   dependsOn: ['useGeocoding'],
-      //   visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
-      // });
-
-      // serializer.addProperty('geospatial', {
-      //   name: 'displayCoordinates',
-      //   category: 'Map Proprieties',
-      //   type: 'boolean',
-      //   visibleIndex: 3,
-      //   required: true,
-      //   dependsOn: ['useGeocoding'],
-      //   visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
-      // });
-
-      // Dropdown/Tagbox
-      // serializer.addProperty('geospatial', {
-      //   name: 'address',
-      //   category: 'Map Proprieties',
-      //   type: 'addressChoices',
-      //   visibleIndex: 3,
-      //   required: true,
-      //   dependsOn: ['useGeocoding'],
-      //   visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
-      // });
-
-      // ----> Dropdown
-      // Need to create in component SafeFieldDropdownComponent the
-      // @Input() isMultiple = false; and add in the mat-select [multiple]="isMultiple"
-      // const applicationEditor = {
-      //   render: (editor: any, htmlElement: HTMLElement) => {
-      //     const question = editor.object;
-      //     const dropdown = domService.appendComponentToBody(
-      //       SafeFieldDropdownComponent,
-      //       htmlElement
-      //     );
-      //     const instance: SafeFieldDropdownComponent = dropdown.instance;
-      //     const form = new FormControl([]);
-      //     const fields = [{ name: 'Address', type: { kind: 'SCALAR' } }]
-      //     instance.isMultiple = true;
-      //     instance.fields = fields;
-      //     instance.fieldControl = form;
-      //     instance.label = 'Display Address Information';
-      //     form.valueChanges.subscribe((res) => {
-      //       editor.onChanged(res);
-      //     });
-      //   },
-      // };
-
-      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-      //   'addressChoices',
-      //   applicationEditor
-      // );
-
-      // ----> Tagbox
+      // Tagbox
       const addressEditor = {
         render: (editor: any, htmlElement: HTMLElement) => {
-          // const question = editor.object;
+          const question = editor.object;
           const tagbox = domService.appendComponentToBody(
             MultiSelectComponent,
             htmlElement
           );
           const instance: MultiSelectComponent = tagbox.instance;
-          // instance.choices$ = new BehaviorSubject([
-          //   {name: 'Address'},
-          //   {name: 'City'},
-          // ]).asObservable();
-          instance.data = ['test'];
-          instance.registerOnChange((event: any) => console.log(event));
-          // instance.label = 'Display Address Information';
-          // const form = new FormControl(question.addressChoices);
-          // instance.parentControl = form;
-          // form.valueChanges.subscribe((res) => {
-          //   editor.onChanged(res);
-          // });
+          instance.value = question.geoFields;
+          instance.data = [
+            'Street',
+            'City',
+            'Country',
+            'District',
+            'Region',
+            'Coordinates',
+          ];
+
+          instance.registerOnChange(
+            (event: any) => (question.geoFields = event)
+          );
         },
       };
 
