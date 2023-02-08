@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { sortBy } from 'lodash';
 import { Resource } from '../../../../models/resource.model';
 import { Role } from '../../../../models/user.model';
@@ -23,6 +23,7 @@ export class ResourceFieldsComponent implements OnInit {
   @Input() resource!: Resource;
   @Input() role!: Role;
   @Input() updating = false;
+  // eslint-disable-next-line @angular-eslint/no-output-on-prefix
   @Output() onToggle = new EventEmitter<{
     resource: Resource;
     field: ResourceField;

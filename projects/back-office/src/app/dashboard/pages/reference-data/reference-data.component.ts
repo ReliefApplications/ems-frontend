@@ -1,8 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
-  FormBuilder,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -29,7 +29,7 @@ import {
   GET_REFERENCE_DATA,
 } from './graphql/queries';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 import { takeUntil } from 'rxjs/operators';
 
 /** Default pagination parameter. */
@@ -55,7 +55,7 @@ export class ReferenceDataComponent
   public referenceData?: ReferenceData;
 
   // === FORM ===
-  public referenceForm: FormGroup = new FormGroup({});
+  public referenceForm: UntypedFormGroup = new UntypedFormGroup({});
   public referenceTypeChoices = Object.values(referenceDataType);
 
   public selectedApiConfiguration?: ApiConfiguration;
@@ -98,7 +98,7 @@ export class ReferenceDataComponent
     private route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService,
     private breadcrumbService: SafeBreadcrumbService
   ) {

@@ -78,6 +78,7 @@
 		"errors": {
 			"objectDuplicated": "{{type}} {{value}} existe déjà."
 		},
+		"exitFullscreen": "Quitter le mode plein écran",
 		"export": "Exporter",
 		"exportObject": "Exporter {{name}}",
 		"false": "Faux",
@@ -183,7 +184,6 @@
 			"statusUpdated": "Statut mis à jour par {{value}}.",
 			"unlocked": "L'édition de l'objet {{name}} a été débloquée par un autre utilisateur."
 		},
-		"openFullScreen": "Ouvrir en plein écran",
 		"or": "Ou",
 		"page": {
 			"few": "Pages",
@@ -291,6 +291,7 @@
 			"none": "Aucune valeur",
 			"one": "Valeur"
 		},
+		"viewFullscreen": "Ouvrir le mode plein écran",
 		"viewObject": "Voir {{name}}",
 		"workflow": {
 			"few": "Workflows",

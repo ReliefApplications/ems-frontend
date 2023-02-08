@@ -81,8 +81,8 @@
     <ng-container *ngIf="admin">
       <span kendotooltip>
         <button
+          kendoButton
           title="This will erase current layout with default layout"
-          class="k-button"
           (click)="action.emit({ action: 'resetLayout' })"
         >
           {{ 'components.widget.grid.layout.reset' | translate }}
@@ -193,7 +193,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                [matTooltip]="'common.openFullScreen' | translate"
+                [matTooltip]="'common.viewFullscreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -309,7 +309,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                [matTooltip]="'common.openFullScreen' | translate"
+                [matTooltip]="'common.viewFullscreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -356,7 +356,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                [matTooltip]="'common.openFullScreen' | translate"
+                [matTooltip]="'common.viewFullscreen' | translate"
               ></button>
             </div>
           </ng-template>

@@ -1,7 +1,11 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Workflow,
@@ -50,7 +54,7 @@ export class WorkflowComponent
 
   // === WORKFLOW EDITION ===
   public formActive = false;
-  public workflowNameForm: FormGroup = new FormGroup({});
+  public workflowNameForm: UntypedFormGroup = new UntypedFormGroup({});
   public canUpdate = false;
 
   // === ACTIVE STEP ===
@@ -102,8 +106,11 @@ export class WorkflowComponent
       .subscribe((workflow: Workflow | null) => {
         if (workflow) {
           this.steps = workflow.steps || [];
-          this.workflowNameForm = new FormGroup({
-            workflowName: new FormControl(workflow.name, Validators.required),
+          this.workflowNameForm = new UntypedFormGroup({
+            workflowName: new UntypedFormControl(
+              workflow.name,
+              Validators.required
+            ),
           });
           this.loading = false;
           if (!this.workflow || workflow.id !== this.workflow.id) {

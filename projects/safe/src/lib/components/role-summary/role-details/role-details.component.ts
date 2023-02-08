@@ -1,5 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { Permission, Role } from '../../../models/user.model';
 import {
@@ -21,7 +25,7 @@ import { SafeRestService } from '../../../services/rest/rest.service';
 export class RoleDetailsComponent implements OnInit {
   @Input() role!: Role;
   public permissions: Permission[] = [];
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
   @Output() edit = new EventEmitter();
 
   public roleStats = {
@@ -58,7 +62,7 @@ export class RoleDetailsComponent implements OnInit {
    * @param restService Shared rest service
    */
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private apollo: Apollo,
     private restService: SafeRestService
   ) {}

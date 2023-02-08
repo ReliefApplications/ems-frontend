@@ -1,7 +1,14 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSelect } from '@angular/material/select';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
+import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import { Apollo } from 'apollo-angular';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -44,7 +51,7 @@ export class SafeChooseRecordModalComponent
   implements OnInit
 {
   // === REACTIVE FORM ===
-  chooseRecordForm: FormGroup = new FormGroup({});
+  chooseRecordForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === GRID SETTINGS ===
   public settings: GridSettings = {};
@@ -82,7 +89,7 @@ export class SafeChooseRecordModalComponent
    */
   constructor(
     private queryBuilder: QueryBuilderService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeChooseRecordModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
@@ -119,19 +126,8 @@ export class SafeChooseRecordModalComponent
     if (this.dataQuery) {
       this.records$ = this.records.asObservable();
       this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
-        next: ({ data }: any) => {
-          for (const field in data) {
-            if (Object.prototype.hasOwnProperty.call(data, field)) {
-              const nodes =
-                data[field].edges.map((x: any) => ({
-                  value: x.node.id,
-                  label: x.node[this.data.targetFormField],
-                })) || [];
-              this.pageInfo = data[field].pageInfo;
-              this.records.next(nodes);
-            }
-          }
-          this.loading = false;
+        next: ({ data, loading }: any) => {
+          this.updateValues(data, loading);
         },
         complete: () => (this.loading = false),
       });
@@ -208,44 +204,38 @@ export class SafeChooseRecordModalComponent
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        this.dataQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            skip: this.records.getValue().length,
-            afterCursor: this.pageInfo.endCursor,
-            filter: this.filter,
-            sortField:
-              this.settings.query?.sort && this.settings.query.sort.field
-                ? this.settings.query.sort.field
-                : null,
-            sortOrder: this.settings.query?.sort?.order || '',
-          },
-          updateQuery: (prev: any, { fetchMoreResult }: any) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            for (const field in fetchMoreResult) {
-              if (
-                Object.prototype.hasOwnProperty.call(fetchMoreResult, field)
-              ) {
-                return Object.assign({}, prev, {
-                  [field]: {
-                    edges: [
-                      ...prev[field].edges,
-                      ...fetchMoreResult[field].edges,
-                    ],
-                    pageInfo: fetchMoreResult[field].pageInfo,
-                    totalCount: fetchMoreResult[field].totalCount,
-                  },
-                });
-              } else {
-                return prev;
-              }
-            }
-            return prev;
-          },
-        });
+        this.dataQuery
+          .fetchMore({
+            variables: {
+              first: ITEMS_PER_PAGE,
+              skip: this.records.getValue().length,
+              afterCursor: this.pageInfo.endCursor,
+            },
+          })
+          .then((results: any) =>
+            this.updateValues(results.data, results.loading)
+          );
       }
     }
+  }
+
+  /**
+   *
+   * @param data
+   * @param loading
+   */
+  private updateValues(data: any, loading: boolean) {
+    for (const field in data) {
+      if (Object.prototype.hasOwnProperty.call(data, field)) {
+        const nodes =
+          data[field].edges.map((x: any) => ({
+            value: x.node.id,
+            label: x.node[this.data.targetFormField],
+          })) || [];
+        this.pageInfo = data[field].pageInfo;
+        this.records.next(nodes);
+      }
+    }
+    this.loading = loading;
   }
 }

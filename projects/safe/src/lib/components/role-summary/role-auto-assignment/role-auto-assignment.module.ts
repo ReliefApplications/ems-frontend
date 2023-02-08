@@ -4,9 +4,9 @@ import { RoleAutoAssignmentComponent } from './role-auto-assignment.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '../../ui/button/button.module';
-import { MatTableModule } from '@angular/material/table';
+import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { EditRoleAutoAssignmentModalModule } from './edit-role-auto-assignment-modal/edit-role-auto-assignment-modal.module';
 
 /**

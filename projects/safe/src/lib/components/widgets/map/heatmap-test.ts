@@ -42,13 +42,14 @@ export const generateHeatMap = (
   map: any,
   options?: Partial<HeatMapOptions>
 ) => {
-  const geoJSON = generateGeoJSONPoints(10000);
+  const total = 10000;
+  const geoJSON = generateGeoJSONPoints(total);
   const heatArray: any[] = [];
   geoJSON.features.forEach((feature) => {
     if (feature.geometry.type === 'Point') {
       heatArray.push([
-        feature.geometry.coordinates[0], // lat
-        feature.geometry.coordinates[1], // long
+        feature.geometry.coordinates[1], // lat
+        feature.geometry.coordinates[0], // long
         get(feature, 'properties.weight', 1), // weight -> should be in properties.weight of the feature
       ]);
     }

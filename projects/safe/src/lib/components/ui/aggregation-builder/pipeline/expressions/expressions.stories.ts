@@ -3,7 +3,11 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { SafeExpressionsComponent } from './expressions.component';
 import { SafePipelineModule } from '../pipeline.module';
 import { StorybookTranslateModule } from '../../../../storybook-translate/storybook-translate-module';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Accumulators } from './operators';
 
 export default {
@@ -66,7 +70,7 @@ const DEFAULT_FIELDS = [
 /**
  * Form builder reference.
  */
-const fb = new FormBuilder();
+const fb = new UntypedFormBuilder();
 
 /**
  * Template used by storybook to display the component in stories.

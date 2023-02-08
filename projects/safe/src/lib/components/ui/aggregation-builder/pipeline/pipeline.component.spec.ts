@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormArray, FormBuilder } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { environment } from 'projects/back-office/src/environments/environment';
 import {
   DateTimeProvider,
@@ -15,7 +15,7 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { Observable } from 'rxjs';
 
 describe('SafePipelineComponent', () => {
@@ -25,7 +25,7 @@ describe('SafePipelineComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        FormBuilder,
+        UntypedFormBuilder,
         { provide: 'environment', useValue: environment },
         OAuthService,
         UrlHelperService,
@@ -53,7 +53,7 @@ describe('SafePipelineComponent', () => {
     component.fields$ = new Observable();
     component.metaFields$ = new Observable();
     component.metaFields$ = new Observable();
-    component.pipelineForm = new FormArray([]);
+    component.pipelineForm = new UntypedFormArray([]);
     fixture.detectChanges();
   });
 

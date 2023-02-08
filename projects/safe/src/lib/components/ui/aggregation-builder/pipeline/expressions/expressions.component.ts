@@ -5,7 +5,7 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import { FormGroup, Validators } from '@angular/forms';
+import { UntypedFormGroup, Validators } from '@angular/forms';
 import { DEFAULT_OPERATORS, NO_FIELD_OPERATORS } from './operators';
 import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
@@ -22,7 +22,7 @@ export class SafeExpressionsComponent
   extends SafeUnsubscribeComponent
   implements OnInit, OnChanges
 {
-  @Input() form!: FormGroup;
+  @Input() form!: UntypedFormGroup;
   @Input() fields: any[] = [];
   @Input() operators: any = DEFAULT_OPERATORS;
   @Input() displayField = true;

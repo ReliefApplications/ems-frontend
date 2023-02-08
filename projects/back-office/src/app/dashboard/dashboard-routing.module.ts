@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
 import { SafePermissionGuard } from '@safe/builder';
 
@@ -10,7 +10,7 @@ import { SafePermissionGuard } from '@safe/builder';
  * users
   Use lazy loading for performance.
  */
-export const routes = [
+export const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
@@ -18,6 +18,7 @@ export const routes = [
       {
         path: '',
         redirectTo: 'applications',
+        pathMatch: 'full',
       },
       {
         path: 'profile',
@@ -68,6 +69,7 @@ export const routes = [
               {
                 path: '',
                 redirectTo: 'answer',
+                pathMatch: 'full',
               },
               {
                 path: 'builder',
@@ -199,6 +201,7 @@ export const routes = [
                       {
                         path: '',
                         redirectTo: 'answer',
+                        pathMatch: 'full',
                       },
                       {
                         path: 'builder',

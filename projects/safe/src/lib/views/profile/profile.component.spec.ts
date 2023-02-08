@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder } from '@angular/forms';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { UntypedFormBuilder } from '@angular/forms';
+import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import {
   DateTimeProvider,
   OAuthLogger,
@@ -28,7 +28,7 @@ describe('SafeProfileComponent', () => {
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
-        FormBuilder,
+        UntypedFormBuilder,
         TranslateService,
       ],
       declarations: [SafeProfileComponent],

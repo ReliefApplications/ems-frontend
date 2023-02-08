@@ -1,7 +1,10 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MatLegacyDialog as MatDialog,
+} from '@angular/material/legacy-dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -25,11 +28,11 @@ export class MapLayersComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  @Input() form!: FormGroup;
+  @Input() form!: UntypedFormGroup;
 
   /** @returns the form array for the map layers */
   get layers() {
-    return this.form.get('layers') as FormArray;
+    return this.form.get('layers') as UntypedFormArray;
   }
 
   // Table

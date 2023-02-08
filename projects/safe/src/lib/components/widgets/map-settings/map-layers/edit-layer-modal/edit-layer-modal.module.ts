@@ -4,11 +4,10 @@ import { SafeModalModule } from '../../../../ui/modal/modal.module';
 import { SafeEditLayerModalComponent } from './edit-layer-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 import { MatSliderModule } from '@angular/material/slider';
-import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 /** Module for the SafeEditLayerModalComponent */
 @NgModule({
@@ -23,7 +22,6 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
     MatInputModule,
     MatCheckboxModule,
     MatSliderModule,
-    NgxSliderModule,
   ],
   exports: [SafeEditLayerModalComponent],
 })

@@ -1,17 +1,20 @@
 import { Component, AfterViewInit, Input, Inject } from '@angular/core';
 import get from 'lodash/get';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+// Leaflet plugins
+import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
+import 'leaflet-fullscreen';
+import { generateClusterLayer } from './cluster-test';
 import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
 import { generateHeatMap } from './heatmap-test';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { AVAILABLE_MEASURE_LANGUAGES } from './measure.const';
 import { v4 as uuidv4 } from 'uuid';
+import { randomFeatureCollection } from './generateFeatureCollection';
 
 // Declares L to be able to use Leaflet from CDN
-// Leaflet
-//import 'leaflet.markercluster';
 declare let L: any;
 
 /** Default options for the marker */
@@ -82,9 +85,8 @@ export class SafeMapComponent
   // === Controls ===
   private lang!: string;
   private measureControls: any = {};
-
-  // === LEGEND ===
-  private legendControl: any;
+  private fullscreenControl?: L.Control;
+  private legendControl?: L.Control;
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -192,16 +194,12 @@ export class SafeMapComponent
 
     // Add leaflet measure control
     this.getMeasureControl();
-    // listen for language change
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((event) => {
-        if (event.lang !== this.lang) {
-          this.getMeasureControl();
-        }
-      });
 
+    // Add leaflet geosearch control
     this.getSearchbarControl().addTo(this.map);
+
+    // Add leaflet fullscreen control
+    this.getFullScreenControl();
 
     // Set event listener to log map bounds when zooming, moving and resizing screen.
     this.map.on('moveend', () => {
@@ -216,6 +214,16 @@ export class SafeMapComponent
     this.map.on('zoomend', () => {
       this.applyOptions(this.map.getZoom(), this.overlays);
     });
+
+    // Listen for language change
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event) => {
+        if (event.lang !== this.lang) {
+          this.getMeasureControl();
+          this.getFullScreenControl();
+        }
+      });
   }
 
   /**
@@ -239,6 +247,9 @@ export class SafeMapComponent
       },
     };
 
+    const clusterGroup = generateClusterLayer(this.map, L);
+    this.map.addLayer(clusterGroup);
+
     this.overlays = {
       label: 'GeoJSON layers',
       selectAllCheckbox: 'Un/select all',
@@ -257,6 +268,10 @@ export class SafeMapComponent
           label: 'Corner',
           layer: cornerGeoJSON,
           options: options2,
+        },
+        {
+          label: 'Random',
+          layer: randomFeatureCollection,
         },
       ],
     };
@@ -325,7 +340,30 @@ export class SafeMapComponent
     if (layerTree.children) {
       layerTree.children.map((child: any) => {
         const newLayer = this.addTreeToMap(child);
-        child.layer = L.geoJSON(newLayer.layer).addTo(this.map);
+        child.layer = L.geoJSON(newLayer.layer, {
+          // Check for icon property
+          pointToLayer: (feature: any, latlng: any) => {
+            const marker = L.marker(latlng);
+            if (feature.properties?.icon?.svg) {
+              const color = feature.properties.icon.color;
+              const width = feature.properties.icon.width;
+              const height = feature.properties.icon.height;
+              const svg = feature.properties.icon.svg;
+
+              const icon = L.divIcon({
+                className: 'svg-marker',
+                iconSize: [width, height],
+                iconAnchor: [0, 24],
+                labelAnchor: [-6, 0],
+                popupAnchor: [width / 2, -36],
+                html: `<span style="--color:${color}">${svg}</span>`,
+              });
+
+              return marker.setIcon(icon);
+            }
+            return marker;
+          },
+        }).addTo(this.map);
       });
     } else {
       let layerFeature: any[];
@@ -444,6 +482,23 @@ export class SafeMapComponent
     });
 
     return searchControl;
+  }
+
+  /**
+   * Create a fullscreen control and add it to map.
+   * Support translation.
+   */
+  private getFullScreenControl(): void {
+    if (this.fullscreenControl) {
+      this.map.removeControl(this.fullscreenControl);
+    }
+    this.fullscreenControl = new L.Control.Fullscreen({
+      title: {
+        false: this.translate.instant('common.viewFullscreen'),
+        true: this.translate.instant('common.exitFullscreen'),
+      },
+    });
+    this.fullscreenControl?.addTo(this.map);
   }
 
   /** Create a custom measure control with leaflet-measure and adds it to the map  */

@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   Channel,
   PullJob,
   status,
   SafeConfirmService,
   SafeSnackBarService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GetPullJobsQueryResponse, GET_PULL_JOBS } from './graphql/queries';
@@ -17,9 +18,15 @@ import {
   EditPullJobMutationResponse,
   EDIT_PULL_JOB,
 } from './graphql/mutations';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { EditPullJobModalComponent } from './components/edit-pull-job-modal/edit-pull-job-modal.component';
+import { ApolloQueryResult } from '@apollo/client';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../utils/update-queries';
+import { takeUntil } from 'rxjs';
 
 /**
  * Limit of pull jobs shown at once.
@@ -34,7 +41,10 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './pull-jobs.component.html',
   styleUrls: ['./pull-jobs.component.scss'],
 })
-export class PullJobsComponent implements OnInit {
+export class PullJobsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   private pullJobsQuery!: QueryRef<GetPullJobsQueryResponse>;
@@ -75,26 +85,24 @@ export class PullJobsComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.pullJobsQuery = this.apollo.watchQuery<GetPullJobsQueryResponse>({
       query: GET_PULL_JOBS,
       variables: {
         first: ITEMS_PER_PAGE,
+        afterCursor: this.pageInfo.endCursor,
       },
     });
 
-    this.pullJobsQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.cachedPullJobs = data.pullJobs.edges.map((x) => x.node);
-      this.pullJobs.data = this.cachedPullJobs.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex,
-        ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
-      );
-      this.pageInfo.length = data.pullJobs.totalCount;
-      this.pageInfo.endCursor = data.pullJobs.pageInfo.endCursor;
-      this.loading = loading;
-    });
+    this.pullJobsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((results) => {
+        this.updateValues(results.data, results.loading);
+      });
   }
 
   /**
@@ -105,31 +113,30 @@ export class PullJobsComponent implements OnInit {
   onPage(e: any): void {
     this.pageInfo.pageIndex = e.pageIndex;
     if (
-      e.pageIndex > e.previousPageIndex &&
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >= this.cachedPullJobs.length) ||
+        e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedPullJobs.length
     ) {
       this.loading = true;
-      this.pullJobsQuery.fetchMore({
-        variables: {
-          first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            pullJobs: {
-              edges: [
-                ...prev.pullJobs.edges,
-                ...fetchMoreResult.pullJobs.edges,
-              ],
-              pageInfo: fetchMoreResult.pullJobs.pageInfo,
-              totalCount: fetchMoreResult.pullJobs.totalCount,
-            },
+      const variables = {
+        first: ITEMS_PER_PAGE,
+        afterCursor: this.pageInfo.endCursor,
+      };
+      const cachedValues: GetPullJobsQueryResponse = getCachedValues(
+        this.apollo.client,
+        GET_PULL_JOBS,
+        variables
+      );
+      if (cachedValues) {
+        this.updateValues(cachedValues, false);
+      } else {
+        this.pullJobsQuery
+          .fetchMore({ variables })
+          .then((results: ApolloQueryResult<GetPullJobsQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
           });
-        },
-      });
+      }
     } else {
       this.pullJobs.data = this.cachedPullJobs.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex,
@@ -236,7 +243,7 @@ export class PullJobsComponent implements OnInit {
         confirmText: this.translate.instant('components.confirmModal.delete'),
         confirmColor: 'warn',
       });
-      dialogRef.afterClosed().subscribe((value) => {
+      dialogRef.afterClosed().subscribe((value: any) => {
         if (value) {
           this.apollo
             .mutate<DeletePullJobMutationResponse>({
@@ -350,5 +357,25 @@ export class PullJobsComponent implements OnInit {
           }
         }
       );
+  }
+
+  /**
+   * Updates local list with given data
+   *
+   * @param data New values to update forms
+   * @param loading Loading state
+   */
+  private updateValues(data: GetPullJobsQueryResponse, loading: boolean): void {
+    this.cachedPullJobs = updateQueryUniqueValues(
+      this.cachedPullJobs,
+      data.pullJobs.edges.map((x) => x.node)
+    );
+    this.pullJobs.data = this.cachedPullJobs.slice(
+      ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+      ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+    );
+    this.pageInfo.length = data.pullJobs.totalCount;
+    this.pageInfo.endCursor = data.pullJobs.pageInfo.endCursor;
+    this.loading = loading;
   }
 }
