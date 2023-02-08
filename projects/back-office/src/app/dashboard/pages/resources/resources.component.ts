@@ -161,7 +161,7 @@ export class ResourcesComponent implements OnInit {
    * Update resources query.
    *
    * @param refetch erase previous query results
-   * @param filter
+   * @param filter filter value
    */
   private fetchResources(refetch?: boolean, filter?: any): void {
     this.updating = true;
@@ -305,9 +305,10 @@ export class ResourcesComponent implements OnInit {
   }
 
   /**
+   * Update resource data value
    *
-   * @param data
-   * @param loading
+   * @param data query response data
+   * @param loading loading status
    */
   updateValues(data: GetResourcesQueryResponse, loading: boolean) {
     this.cachedResources = updateQueryUniqueValues(
