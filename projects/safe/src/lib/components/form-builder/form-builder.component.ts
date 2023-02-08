@@ -1,7 +1,6 @@
 import {
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnChanges,
   OnInit,
@@ -26,6 +25,7 @@ const QUESTION_TYPES = [
   'checkbox',
   'radiogroup',
   'dropdown',
+  'tagbox',
   'comment',
   // 'rating',
   // 'ranking',
@@ -42,7 +42,6 @@ const QUESTION_TYPES = [
   'multipletext',
   'panel',
   'paneldynamic',
-  'tagbox',
 ];
 
 /**
@@ -95,26 +94,21 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   surveyCreator!: SurveyCreator.SurveyCreator;
   public json: any;
 
-  environment: any;
-
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param environment This is the environment in which we are running the application, it changes the theme of the form builder (color etc.)
    * @param dialog This is the Angular Material Dialog service used to display dialog modals
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate Angular translate service
    * @param referenceDataService Reference data service
    */
   constructor(
-    @Inject('environment') environment: any,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService,
     private referenceDataService: SafeReferenceDataService
   ) {
-    this.environment = environment;
     // translate the editor in the same language as the interface
     SurveyCreator.localization.currentLocale = this.translate.currentLang;
     this.translate.onLangChange.subscribe(() => {
@@ -291,21 +285,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * Set a theme for the form builder depending on the environment
    */
   setCustomTheme(): void {
-    const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
-    defaultThemeColorsSurvey['$main-hover-color'] =
-      this.environment.theme.primary;
-
-    const defaultThemeColorsEditor =
-      SurveyCreator.StylesManager.ThemeColors.default;
-    defaultThemeColorsEditor['$primary-color'] = this.environment.theme.primary;
-    defaultThemeColorsEditor['$secondary-color'] =
-      this.environment.theme.primary;
-    defaultThemeColorsEditor['$primary-hover-color'] =
-      this.environment.theme.primary;
-    defaultThemeColorsEditor['$selection-border-color'] =
-      this.environment.theme.primary;
-
     Survey.StylesManager.applyTheme();
     SurveyCreator.StylesManager.applyTheme();
   }

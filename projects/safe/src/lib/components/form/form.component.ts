@@ -4,7 +4,6 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  Inject,
   Input,
   OnDestroy,
   OnInit,
@@ -59,8 +58,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('formContainer') formContainer!: ElementRef;
 
-  environment: any;
-
   // === MODIFIED AT ===
   public modifiedAt: Date | null = null;
 
@@ -82,7 +79,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param environment This is the environment in which we run the application
    * @param dialog This is the Angular Material Dialog service.
    * @param apollo This is the Apollo client that is used to make GraphQL requests.
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
@@ -94,7 +90,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param translate This is the service used to translate text
    */
   constructor(
-    @Inject('environment') environment: any,
     public dialog: MatDialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
@@ -104,16 +99,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private formBuilderService: SafeFormBuilderService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {
-    this.environment = environment;
-  }
+  ) {}
 
   ngOnInit(): void {
-    const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
-    defaultThemeColorsSurvey['$main-hover-color'] =
-      this.environment.theme.primary;
-
     Survey.StylesManager.applyTheme();
 
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
