@@ -174,68 +174,29 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
     const { tabName } = this.tabNameForm.value;
     this.toggleFormActive();
     if (this.isStep) {
-      this.apollo
-        .mutate<EditStepMutationResponse>({
-          mutation: EDIT_STEP,
-          variables: {
-            id: this.id,
-            name: tabName,
-          },
-        })
-        .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.step.one'),
-                error: errors[0].message,
-              }),
-              { error: true }
-            );
-          } else {
-            if (data) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.step.one').toLowerCase(),
-                  value: tabName,
-                })
-              );
-              this.step = { ...this.step, name: data.editStep.name };
-              this.workflowService.updateStepName(data.editStep);
-            }
-          }
-        });
+      // If form is workflow step
+      const callback = () => {
+        this.step = { ...this.step, name: tabName };
+      };
+      this.workflowService.updateStepName(
+        {
+          id: this.id,
+          name: tabName,
+        },
+        callback
+      );
     } else {
-      this.apollo
-        .mutate<EditPageMutationResponse>({
-          mutation: EDIT_PAGE,
-          variables: {
-            id: this.id,
-            name: tabName,
-          },
-        })
-        .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.page.one').toLowerCase(),
-                error: errors[0].message,
-              }),
-              { error: true }
-            );
-          } else {
-            if (data) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.page.one').toLowerCase(),
-                  value: tabName,
-                })
-              );
-              const newPage = { ...this.page, name: data.editPage.name };
-              this.page = newPage;
-              this.applicationService.updatePageName(data.editPage);
-            }
-          }
-        });
+      // If form is page
+      const callback = () => {
+        this.page = { ...this.page, name: tabName };
+      };
+      this.applicationService.updatePageName(
+        {
+          id: this.id,
+          name: tabName,
+        },
+        callback
+      );
     }
   }
 

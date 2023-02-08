@@ -336,49 +336,25 @@ export class DashboardComponent
   saveName(): void {
     const { dashboardName } = this.dashboardNameForm.value;
     this.toggleFormActive();
+    const callback = () => {
+      this.dashboard = { ...this.dashboard, name: dashboardName };
+    };
     if (this.router.url.includes('/workflow/')) {
-      this.apollo
-        .mutate<EditStepMutationResponse>({
-          mutation: EDIT_STEP,
-          variables: {
-            id: this.dashboard?.step?.id,
-            name: dashboardName,
-          },
-        })
-        .subscribe(({ errors, data }) => {
-          if (data?.editStep) {
-            this.dashboard = {
-              ...this.dashboard,
-              name: data?.editStep.name,
-            };
-            this.workflowService.updateStepName(data.editStep);
-          } else {
-            this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService.instant('common.step.one'),
-                  error: errors ? errors[0].message : '',
-                }
-              )
-            );
-          }
-        });
+      this.workflowService.updateStepName(
+        {
+          id: this.dashboard?.step?.id,
+          name: dashboardName,
+        },
+        callback
+      );
     } else {
-      this.apollo
-        .mutate<EditPageMutationResponse>({
-          mutation: EDIT_PAGE,
-          variables: {
-            id: this.dashboard?.page?.id,
-            name: dashboardName,
-          },
-        })
-        .subscribe(({ data }) => {
-          this.dashboard = { ...this.dashboard, name: data?.editPage.name };
-          if (data?.editPage) {
-            this.applicationService.updatePageName(data.editPage);
-          }
-        });
+      this.applicationService.updatePageName(
+        {
+          id: this.dashboard?.page?.id,
+          name: dashboardName,
+        },
+        callback
+      );
     }
   }
 

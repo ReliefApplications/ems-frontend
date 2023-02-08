@@ -1,4 +1,6 @@
-import { JsonMetadata } from 'survey-angular';
+import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
+import { Question, JsonMetadata } from 'survey-angular';
+import { SurveyPropertyEditorFactory } from 'survey-creator';
 import { SafeGeospatialMapComponent } from '../../components/geospatial-map/geospatial-map.component';
 import { DomService } from '../../services/dom/dom.service';
 
@@ -24,7 +26,7 @@ export const init = (Survey: any, domService: DomService): void => {
       type: 'text',
     },
     category: 'Custom Questions',
-    onAfterRender: (question: any, el: HTMLElement): void => {
+    onAfterRender: (question: Question, el: HTMLElement): void => {
       // hides the input element
       const element = el.getElementsByTagName('input')[0].parentElement;
       if (element) element.style.display = 'none';
@@ -58,69 +60,75 @@ export const init = (Survey: any, domService: DomService): void => {
         name: 'useGeocoding',
         category: 'Map Proprieties',
         type: 'boolean',
-        visibleIndex: 3,
+        visibleIndex: 1,
         required: true,
+      });
+      serializer.addProperty('geospatial', {
+        name: 'geoFields',
+        category: 'Map Proprieties',
+        type: 'addressFieldsTagBox',
+        visibleIndex: 2,
       });
 
-      serializer.addProperty('geospatial', {
-        name: 'displayStreet',
-        category: 'Map Proprieties',
-        type: 'boolean',
-        visibleIndex: 3,
-        required: true,
-        dependsOn: ['useGeocoding'],
-        visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
-      });
+      // serializer.addProperty('geospatial', {
+      //   name: 'displayStreet',
+      //   category: 'Map Proprieties',
+      //   type: 'boolean',
+      //   visibleIndex: 3,
+      //   required: true,
+      //   dependsOn: ['useGeocoding'],
+      //   visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
+      // });
 
-      serializer.addProperty('geospatial', {
-        name: 'displayCity',
-        category: 'Map Proprieties',
-        type: 'boolean',
-        visibleIndex: 3,
-        required: true,
-        dependsOn: ['useGeocoding'],
-        visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
-      });
+      // serializer.addProperty('geospatial', {
+      //   name: 'displayCity',
+      //   category: 'Map Proprieties',
+      //   type: 'boolean',
+      //   visibleIndex: 3,
+      //   required: true,
+      //   dependsOn: ['useGeocoding'],
+      //   visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
+      // });
 
-      serializer.addProperty('geospatial', {
-        name: 'displayCountry',
-        category: 'Map Proprieties',
-        type: 'boolean',
-        visibleIndex: 3,
-        required: true,
-        dependsOn: ['useGeocoding'],
-        visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
-      });
+      // serializer.addProperty('geospatial', {
+      //   name: 'displayCountry',
+      //   category: 'Map Proprieties',
+      //   type: 'boolean',
+      //   visibleIndex: 3,
+      //   required: true,
+      //   dependsOn: ['useGeocoding'],
+      //   visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
+      // });
 
-      serializer.addProperty('geospatial', {
-        name: 'displayDistrict',
-        category: 'Map Proprieties',
-        type: 'boolean',
-        visibleIndex: 3,
-        required: true,
-        dependsOn: ['useGeocoding'],
-        visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
-      });
+      // serializer.addProperty('geospatial', {
+      //   name: 'displayDistrict',
+      //   category: 'Map Proprieties',
+      //   type: 'boolean',
+      //   visibleIndex: 3,
+      //   required: true,
+      //   dependsOn: ['useGeocoding'],
+      //   visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
+      // });
 
-      serializer.addProperty('geospatial', {
-        name: 'displayRegion',
-        category: 'Map Proprieties',
-        type: 'boolean',
-        visibleIndex: 3,
-        required: true,
-        dependsOn: ['useGeocoding'],
-        visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
-      });
+      // serializer.addProperty('geospatial', {
+      //   name: 'displayRegion',
+      //   category: 'Map Proprieties',
+      //   type: 'boolean',
+      //   visibleIndex: 3,
+      //   required: true,
+      //   dependsOn: ['useGeocoding'],
+      //   visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
+      // });
 
-      serializer.addProperty('geospatial', {
-        name: 'displayCoordinates',
-        category: 'Map Proprieties',
-        type: 'boolean',
-        visibleIndex: 3,
-        required: true,
-        dependsOn: ['useGeocoding'],
-        visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
-      });
+      // serializer.addProperty('geospatial', {
+      //   name: 'displayCoordinates',
+      //   category: 'Map Proprieties',
+      //   type: 'boolean',
+      //   visibleIndex: 3,
+      //   required: true,
+      //   dependsOn: ['useGeocoding'],
+      //   visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
+      // });
 
       // Dropdown/Tagbox
       // serializer.addProperty('geospatial', {
@@ -162,31 +170,33 @@ export const init = (Survey: any, domService: DomService): void => {
       // );
 
       // ----> Tagbox
-      // const addressEditor = {
-      //   render: (editor: any, htmlElement: HTMLElement) => {
-      //     const question = editor.object;
-      //     const tagbox = domService.appendComponentToBody(
-      //       SafeTagboxComponent,
-      //       htmlElement
-      //     );
-      //     const instance: SafeTagboxComponent = tagbox.instance;
-      //     instance.choices$ = new BehaviorSubject([
-      //       {name: 'Address'},
-      //       {name: 'City'},
-      //     ]).asObservable();
-      //     instance.label = 'Display Address Information';
-      //     const form = new FormControl(question.addressChoices);
-      //     instance.parentControl = form;
-      //     form.valueChanges.subscribe((res) => {
-      //       editor.onChanged(res);
-      //     });
-      //   },
-      // };
+      const addressEditor = {
+        render: (editor: any, htmlElement: HTMLElement) => {
+          // const question = editor.object;
+          const tagbox = domService.appendComponentToBody(
+            MultiSelectComponent,
+            htmlElement
+          );
+          const instance: MultiSelectComponent = tagbox.instance;
+          // instance.choices$ = new BehaviorSubject([
+          //   {name: 'Address'},
+          //   {name: 'City'},
+          // ]).asObservable();
+          instance.data = ['test'];
+          instance.registerOnChange((event: any) => console.log(event));
+          // instance.label = 'Display Address Information';
+          // const form = new FormControl(question.addressChoices);
+          // instance.parentControl = form;
+          // form.valueChanges.subscribe((res) => {
+          //   editor.onChanged(res);
+          // });
+        },
+      };
 
-      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-      //   'addressChoices',
-      //   addressEditor
-      // );
+      SurveyPropertyEditorFactory.registerCustomEditor(
+        'addressFieldsTagBox',
+        addressEditor
+      );
     },
   };
   Survey.ComponentCollection.Instance.add(component);
