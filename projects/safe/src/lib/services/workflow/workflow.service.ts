@@ -6,7 +6,12 @@ import {
   GetWorkflowByIdQueryResponse,
   GET_WORKFLOW_BY_ID,
 } from './graphql/queries';
-import { AddStepMutationResponse, ADD_STEP } from './graphql/mutations';
+import {
+  AddStepMutationResponse,
+  ADD_STEP,
+  EditStepMutationResponse,
+  EDIT_STEP,
+} from './graphql/mutations';
 import { Workflow } from '../../models/workflow.model';
 import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { ContentType } from '../../models/page.model';
@@ -127,26 +132,50 @@ export class SafeWorkflowService {
    * Updates a specific step name in the opened workflow.
    *
    * @param step step to edit.
+   * @param callback additional callback
    */
-  updateStepName(step: Step): void {
+  updateStepName(step: Step, callback?: any): void {
     const workflow = this.workflow.getValue();
     if (workflow) {
-      const newWorkflow: Workflow = {
-        ...workflow,
-        steps: workflow.steps?.map((x) => {
-          if (x.id === step.id) {
-            x = { ...x, name: step.name };
-          }
-          return x;
-        }),
-      };
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectUpdated', {
-          type: this.translate.instant('common.step.one'),
-          value: step.name,
+      this.apollo
+        .mutate<EditStepMutationResponse>({
+          mutation: EDIT_STEP,
+          variables: {
+            id: step.id,
+            name: step.name,
+          },
         })
-      );
-      this.workflow.next(newWorkflow);
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.step.one'),
+                error: errors[0].message,
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.step.one').toLowerCase(),
+                  value: step.name,
+                })
+              );
+              const newWorkflow: Workflow = {
+                ...workflow,
+                steps: workflow.steps?.map((x) => {
+                  if (x.id === step.id) {
+                    x = { ...x, name: step.name };
+                  }
+                  return x;
+                }),
+              };
+              this.workflow.next(newWorkflow);
+              if (callback) callback();
+            }
+          }
+        });
     }
   }
 

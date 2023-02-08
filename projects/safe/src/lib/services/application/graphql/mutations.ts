@@ -70,6 +70,36 @@ export interface DeletePageMutationResponse {
   deletePage: Page;
 }
 
+// === EDIT PAGE ===
+/** Edit page gql mutation definition */
+export const EDIT_PAGE = gql`
+  mutation editPage($id: ID!, $name: String, $permissions: JSON) {
+    editPage(id: $id, name: $name, permissions: $permissions) {
+      id
+      name
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+    }
+  }
+`;
+
+/** Edit page gql mutation response interface */
+export interface EditPageMutationResponse {
+  editPage: Page;
+}
+
 // === ADD ROLE ===
 
 /** Graphql request for adding a new role to an application */

@@ -6,12 +6,10 @@ import { Apollo } from 'apollo-angular';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { UntypedFormBuilder } from '@angular/forms';
 import * as SurveyJSWidgets from 'surveyjs-widgets';
-
 import { DomService } from '../services/dom/dom.service';
 import { SafeAuthService } from '../services/auth/auth.service';
 import { SafeReferenceDataService } from '../services/reference-data/reference-data.service';
 import addCustomFunctions from '../utils/custom-functions';
-
 import * as ResourceComponent from './components/resource';
 import * as ResourcesComponent from './components/resources';
 import * as OwnerComponent from './components/owner';

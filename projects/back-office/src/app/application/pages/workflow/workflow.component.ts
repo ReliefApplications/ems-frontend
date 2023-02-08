@@ -165,20 +165,16 @@ export class WorkflowComponent
   saveName(): void {
     const { workflowName } = this.workflowNameForm.value;
     this.toggleFormActive();
-    this.apollo
-      .mutate<EditPageMutationResponse>({
-        mutation: EDIT_PAGE,
-        variables: {
-          id: this.workflow?.page?.id,
-          name: workflowName,
-        },
-      })
-      .subscribe(({ data }) => {
-        if (data) {
-          this.workflow = { ...this.workflow, name: data.editPage.name };
-          this.applicationService.updatePageName(data.editPage);
-        }
-      });
+    const callback = () => {
+      this.workflow = { ...this.workflow, name: workflowName };
+    };
+    this.applicationService.updatePageName(
+      {
+        id: this.workflow?.page?.id,
+        name: workflowName,
+      },
+      callback
+    );
   }
 
   /**
