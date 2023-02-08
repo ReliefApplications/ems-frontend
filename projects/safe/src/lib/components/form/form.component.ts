@@ -51,7 +51,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }> = new EventEmitter();
 
   // === SURVEYJS ===
-  public survey!: Survey.Model;
+  public survey!: Survey.SurveyModel;
   public surveyActive = true;
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);

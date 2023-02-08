@@ -57,8 +57,8 @@ export class SafeRecordModalComponent implements AfterViewInit {
   public record: Record = {};
   public modifiedAt: Date | null = null;
   public selectedTabIndex = 0;
-  public survey!: Survey.Model;
-  public surveyNext: Survey.Model | null = null;
+  public survey!: Survey.SurveyModel;
+  public surveyNext?: Survey.SurveyModel;
   private pages = new BehaviorSubject<any[]>([]);
   public canEdit: boolean | undefined = false;
 
@@ -178,15 +178,14 @@ export class SafeRecordModalComponent implements AfterViewInit {
     this.survey.render(this.formContainer.nativeElement);
     setTimeout(() => {}, 100);
     this.setPages();
+    this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>
+      this.onDownloadFile(survey, options)
+    );
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
         this.form?.structure || '',
         this.form?.metadata,
         this.record
-      );
-      this.survey.onDownloadFile.add(
-        (survey: Survey.SurveyModel, options: any) =>
-          this.onDownloadFile(survey, options)
       );
       this.surveyNext.data = this.data.compareTo.data;
       this.surveyNext.mode = 'display';

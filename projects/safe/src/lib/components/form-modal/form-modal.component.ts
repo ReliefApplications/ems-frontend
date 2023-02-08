@@ -79,7 +79,7 @@ export class SafeFormModalComponent implements OnInit {
   private isMultiEdition = false;
   private storedMergedData: any;
 
-  public survey?: Survey.Model;
+  public survey!: Survey.SurveyModel;
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};

@@ -11,14 +11,16 @@ export interface GlobalProperties {
 export interface Question extends Survey.Question, GlobalProperties {}
 
 /** Type for text question */
-export interface QuestionText extends Survey.QuestionText, GlobalProperties {
+export interface QuestionText
+  extends Survey.QuestionTextModel,
+    GlobalProperties {
   dateMin?: Date;
   dateMax?: Date;
 }
 
 /** Type for comment question */
 export interface QuestionComment
-  extends Survey.QuestionComment,
+  extends Survey.QuestionCommentModel,
     GlobalProperties {
   allowEdition?: boolean;
 }
@@ -39,14 +41,16 @@ export interface QuestionSelectBase
 // TYPES FOR CUSTOM QUESTIONS
 
 /** Type for owner question */
-export interface QuestionOwner extends Survey.QuestionCustom, GlobalProperties {
+export interface QuestionOwner
+  extends Survey.QuestionCustomModel,
+    GlobalProperties {
   applications?: any;
   contentQuestion: QuestionSelectBase;
 }
 
 /** Type for resource question */
 export interface QuestionResource
-  extends Survey.QuestionCustom,
+  extends Survey.QuestionCustomModel,
     GlobalProperties {
   resource?: string;
   displayField: null | string;
@@ -57,7 +61,7 @@ export interface QuestionResource
   placeholder?: string;
   prefillWithCurrentRecord?: boolean;
   selectQuestion?: any;
-  contentQuestion: Survey.QuestionDropdown;
+  contentQuestion: Survey.QuestionDropdownModel;
   gridFieldsSettings?: any;
   filterCondition: string;
   filterBy: string;
@@ -65,18 +69,3 @@ export interface QuestionResource
   customFilter: string;
   displayAsGrid: boolean;
 }
-
-/** Type for any questions, which allows to use all properties of different question types */
-export type AnyQuestion = Survey.SurveyElement &
-  Partial<
-    Question &
-      QuestionText &
-      QuestionComment &
-      QuestionSelectBase &
-      QuestionOwner &
-      QuestionResource &
-      Survey.QuestionMultipleText &
-      Survey.QuestionMatrix &
-      Survey.QuestionMatrixDropdown &
-      Survey.QuestionPanelDynamic
-  >;
