@@ -1,5 +1,13 @@
 <div class="flex gap-4">
-  <div [id]="mapID" class="grow basis-full h-96"></div>
+  <!-- <safe-map
+    (mapEvent)="handleMapEvent($event)"
+    [header]="false"
+    [settings]="settings"
+    [deleteLayer]="layerToDelete$ | async"
+    [addLayer]="layerToAdd$ | async"
+    [updateLayerTree]="overlayValue$ | async"
+    class="grow basis-full h-96"
+  ></safe-map> -->
   <safe-layer-styling
     class="h-96 grow basis-72"
     *ngIf="selectedLayer"

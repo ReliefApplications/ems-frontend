@@ -1,11 +1,16 @@
 <safe-modal size="medium" [closable]="true">
   <div class="flex flex-row space-x-4">
     <!-- Map section -->
-    <div [id]="mapId" class="w-4/5 group flex-1">
-      <div
-        class="invisible group-hover:visible absolute bottom-0 px-1 z-[1000] text-gray-300 text-xs"
-      ></div>
-    </div>
+    <safe-map
+      (mapEvent)="handleMapEvent($event)"
+      [header]="false"
+      [settings]="settings"
+      [deleteLayer]="layerToDelete$ | async"
+      [addLayer]="layerToAdd$ | async"
+      [updateLayerTree]="overlaysValue$ | async"
+      class="w-4/5 group flex-1"
+    >
+    </safe-map>
     <div class="flex flex-col space-y-12">
       <!-- Options section -->
       <form [formGroup]="form" class="flex flex-col space-y-8">
@@ -46,8 +51,8 @@
             step="1"
             [discrete]="true"
           >
-            <input formControlName="visibilityRange" matSliderStartThumb>
-            <input formControlName="visibilityRange" matSliderEndThumb>
+            <input formControlName="visibilityRange" matSliderStartThumb />
+            <input formControlName="visibilityRange" matSliderEndThumb />
           </mat-slider>
         </div>
         <!-- Zoom level -->

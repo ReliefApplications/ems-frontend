@@ -1,28 +1,17 @@
-import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { createLayerForm } from '../../map-forms';
 import { MapLayerI } from '../map-layers.component';
 import get from 'lodash/get';
+import {
+  MapConstructorSettings,
+  MapEvent,
+} from '../../../../ui/map/interfaces/map.interface';
+import { BehaviorSubject, takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 
 declare let L: any;
-
-/** Available baseMaps */
-const BASEMAP_LAYERS: any = {
-  Streets: 'ArcGIS:Streets',
-  Navigation: 'ArcGIS:Navigation',
-  Topographic: 'ArcGIS:Topographic',
-  'Light Gray': 'ArcGIS:LightGray',
-  'Dark Gray': 'ArcGIS:DarkGray',
-  'Streets Relief': 'ArcGIS:StreetsRelief',
-  Imagery: 'ArcGIS:Imagery',
-  ChartedTerritory: 'ArcGIS:ChartedTerritory',
-  ColoredPencil: 'ArcGIS:ColoredPencil',
-  Nova: 'ArcGIS:Nova',
-  Midcentury: 'ArcGIS:Midcentury',
-  OSM: 'OSM:Standard',
-  'OSM:Streets': 'OSM:Streets',
-};
 
 /** Layer used to test the component */
 const testGeojson = {
@@ -49,103 +38,74 @@ const testGeojson = {
   templateUrl: './edit-layer-modal.component.html',
   styleUrls: ['./edit-layer-modal.component.scss'],
 })
-export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
+export class SafeEditLayerModalComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public form: UntypedFormGroup;
 
   private currentLayer: any;
   public currentZoom = 2;
 
   // === MAP ===
-  public mapId: string;
   public map: any;
-  public esriApiKey: string;
-  private basemap: any;
+  public settings!: MapConstructorSettings;
 
+  private deleteLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  public layerToAdd$ = this.deleteLayer.asObservable();
+  private addLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  public layerToDelete$ = this.addLayer.asObservable();
+  private overlaysValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  public overlaysValue$ = this.overlaysValue.asObservable();
   /**
    * Modal for adding and editing map layers
    *
    * @param environment platform environment
    * @param layer Injected map layer, if any
    */
-  constructor(
-    @Inject('environment') environment: any,
-    @Inject(MAT_DIALOG_DATA) public layer?: MapLayerI
-  ) {
+  constructor(@Inject(MAT_DIALOG_DATA) public layer?: MapLayerI) {
+    super();
     this.form = createLayerForm(layer);
-    this.esriApiKey = environment.esriApiKey;
-    this.mapId = this.generateUniqueId();
   }
 
-  ngOnInit(): void {}
-
-  ngAfterViewInit(): void {
-    this.drawMap();
-    setTimeout(() => this.map.invalidateSize(), 100);
-  }
-
-  /**
-   * Generation of an unique id for the map (in case multiple widgets use map).
-   *
-   * @param parts Number of parts in the id (separated by dashes "-")
-   * @returns A random unique id
-   */
-  private generateUniqueId(parts: number = 4): string {
-    const stringArr: string[] = [];
-    for (let i = 0; i < parts; i++) {
-      // eslint-disable-next-line no-bitwise
-      const S4 = (((1 + Math.random()) * 0x10000) | 0)
-        .toString(16)
-        .substring(1);
-      stringArr.push(S4);
-    }
-    return stringArr.join('-');
-  }
-
-  /** Creates the map and adds all the controls we use */
-  private drawMap(): void {
-    // Set bounds
-    const centerLong = 0;
-    const centerLat = 0;
-    const bounds = L.latLngBounds(L.latLng(-90, -1000), L.latLng(90, 1000));
-
-    // Create leaflet map
-    this.map = L.map(this.mapId, {
-      // fullscreenControl: true,
-      zoomControl: false,
-      maxBounds: bounds,
-      minZoom: 2,
-      maxZoom: 18,
-      worldCopyJump: true,
-      zoom: 2,
-    }).setView([centerLat, centerLong], 2);
-
-    // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
-    this.setBasemap('OSM');
-
-    // Adds all the controls we use to the map
-    L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
-
-    // Creates a pane for markers so they are always shown in top, used in the marker options;
-    // this.map.createPane('markers');
-    // this.map.getPane('markers').style.zIndex = 650;
-
-    // Set event listener to log map bounds when zooming, moving and resizing screen.
-    this.map.on('moveend', () => {
-      console.log(this.map.getBounds());
-    });
+  ngOnInit(): void {
+    this.configureMapSettings();
+    this.setUpEditLayerListeners();
 
     this.currentLayer = L.geoJSON(testGeojson);
+    const overlays = {
+      label: this.form.get('name')?.value,
+      layer: this.currentLayer,
+    };
+    this.overlaysValue.next(overlays);
+    // L.control.layers.tree(undefined, overlays).addTo(this.map);
+  }
 
-    this.map.on('zoomend', () => {
-      const zoom = this.map.getZoom();
-      this.currentZoom = zoom;
-      const visibilityRange = this.form.get('visibilityRange')?.value;
-      this.zoomUpdate(zoom, visibilityRange);
+  private configureMapSettings() {
+    this.settings.centerLong = 0;
+    this.settings.centerLat = 0;
+    this.settings.maxBounds = L.latLngBounds(
+      L.latLng(-90, -1000),
+      L.latLng(90, 1000)
+    );
+    this.settings.baseMap = 'OSM';
+    this.settings.zoomControl = true;
+    this.settings.minZoom = 2;
+    this.settings.maxZoom = 18;
+    this.settings.zoom = 2;
+    this.settings.worldCopyJump = true;
+  }
+
+  private setUpEditLayerListeners() {
+    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (formValues) => {
+        console.log(formValues);
+      },
     });
 
     this.form.controls.visibilityRange.valueChanges.subscribe(
       (value: number[]) => {
-        this.zoomUpdate(this.map.getZoom(), value);
+        this.updateLayerVisibilityOnZoom(this.map.getZoom(), value);
       }
     );
 
@@ -162,28 +122,6 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
     });
 
     this.applyOptions(this.map.getZoom());
-
-    const overlays = {
-      label: this.form.get('name')?.value,
-      layer: this.currentLayer,
-    };
-
-    L.control.layers.tree(undefined, overlays).addTo(this.map);
-  }
-
-  /**
-   * Set the basemap.
-   *
-   * @param basemap String containing the id (name) of the basemap
-   */
-  public setBasemap(basemap: string) {
-    if (this.basemap) {
-      this.basemap.remove();
-    }
-    const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
-    this.basemap = L.esri.Vector.vectorBasemapLayer(basemapName, {
-      apiKey: this.esriApiKey,
-    }).addTo(this.map);
   }
 
   /**
@@ -204,16 +142,12 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
           this.form.get('opacity')?.value;
       }
     }
-    this.map.addLayer(this.currentLayer);
+    this.addLayer.next(this.currentLayer);
     if (!this.form.get('defaultVisibility')?.value) {
-      this.map.removeLayer(this.currentLayer);
+      this.deleteLayer.next(this.currentLayer);
     } else {
       const visibilityRange = this.form.get('visibilityRange')?.value;
-      if (zoom > visibilityRange[1] || zoom < visibilityRange[0]) {
-        this.map.removeLayer(this.currentLayer);
-      } else {
-        this.currentLayer.addTo(this.map);
-      }
+      this.updateLayerVisibilityOnZoom(zoom, visibilityRange);
     }
   }
 
@@ -223,11 +157,32 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
    * @param zoom The current zoom of the map
    * @param visibilityRange The visibility range based on map zoom
    */
-  private zoomUpdate(zoom: number, visibilityRange: number[]): void {
+  private updateLayerVisibilityOnZoom(
+    zoom: number,
+    visibilityRange: number[]
+  ): void {
     if (zoom > visibilityRange[1] || zoom < visibilityRange[0]) {
-      this.map.removeLayer(this.currentLayer);
+      this.deleteLayer.next(this.currentLayer);
     } else {
-      this.currentLayer.addTo(this.map);
+      this.addLayer.next(this.currentLayer);
+    }
+  }
+
+  public handleMapEvent(mapEvent: MapEvent) {
+    if (mapEvent) {
+      switch (mapEvent.type) {
+        case 'moveend':
+          console.log(mapEvent.content);
+          break;
+        case 'zoomend':
+          const zoom = mapEvent.content;
+          this.currentZoom = zoom;
+          const visibilityRange = this.form.get('visibilityRange')?.value;
+          this.updateLayerVisibilityOnZoom(zoom, visibilityRange);
+          break;
+        default:
+          break;
+      }
     }
   }
 }

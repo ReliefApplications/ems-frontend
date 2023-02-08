@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeMapPopupComponent } from './map-popup/map-popup.component';
 
-/** Module for the map widget component */
+/** Module for the map UI component */
 @NgModule({
   declarations: [SafeMapComponent, SafeMapPopupComponent],
   imports: [CommonModule, TranslateModule, LayoutModule],

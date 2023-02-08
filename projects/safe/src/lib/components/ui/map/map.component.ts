@@ -1,62 +1,52 @@
-import { Component, AfterViewInit, Input, Inject } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  Input,
+  Inject,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import get from 'lodash/get';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
 import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
 import 'leaflet-fullscreen';
-import { generateClusterLayer } from './cluster-test';
-import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
-import { generateHeatMap } from './heatmap-test';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
-import { AVAILABLE_MEASURE_LANGUAGES } from './measure.const';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  IMarkersLayerValue,
+  LayerTree,
+} from './interfaces/map-layers.interface';
+import { flatDeep } from './utils/array-flatter';
+import { AVAILABLE_MEASURE_LANGUAGES } from './measure.const';
+import { MapConstructorSettings, MapEvent } from './interfaces/map.interface';
+import { BASEMAP_LAYERS } from './const/baseMaps';
+import { merge } from 'lodash';
+import { generateClusterLayer } from './cluster-test';
+import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
 import { randomFeatureCollection } from './generateFeatureCollection';
+import { generateHeatMap } from './heatmap-test';
+import { MARKER_OPTIONS } from './const/markerOptions';
 
 // Declares L to be able to use Leaflet from CDN
 declare let L: any;
 
-/** Default options for the marker */
-const MARKER_OPTIONS = {
-  color: '#0090d1',
-  opacity: 0.25,
-  weight: 12,
-  fillColor: '#0090d1',
-  fillOpacity: 1,
-  radius: 6,
-};
+/**
+ * Cleans the settings object from null values
+ * @param settings Settings needed to create/edit map
+ */
+const cleanSettingsFromNulls = (settings: MapConstructorSettings) => {
+  const mapSettingsKeys: (keyof MapConstructorSettings)[] = Object.keys(
+    settings
+  ) as (keyof MapConstructorSettings)[];
 
-/** Declares an interface that will be used in the cluster markers layers */
-interface IMarkersLayerValue {
-  [name: string]: any;
-}
-
-/** Declares an interface that will be used in the overlays */
-interface LayerTree {
-  label?: string;
-  children?: LayerTree[];
-  layer?: any;
-  type?: string;
-  selectAllCheckbox?: any;
-  options?: any;
-}
-
-/** Available baseMaps */
-const BASEMAP_LAYERS: any = {
-  Streets: 'ArcGIS:Streets',
-  Navigation: 'ArcGIS:Navigation',
-  Topographic: 'ArcGIS:Topographic',
-  'Light Gray': 'ArcGIS:LightGray',
-  'Dark Gray': 'ArcGIS:DarkGray',
-  'Streets Relief': 'ArcGIS:StreetsRelief',
-  Imagery: 'ArcGIS:Imagery',
-  ChartedTerritory: 'ArcGIS:ChartedTerritory',
-  ColoredPencil: 'ArcGIS:ColoredPencil',
-  Nova: 'ArcGIS:Nova',
-  Midcentury: 'ArcGIS:Midcentury',
-  OSM: 'OSM:Standard',
-  'OSM:Streets': 'OSM:Streets',
+  mapSettingsKeys.forEach((k) => {
+    if (settings[k] === null) {
+      delete settings[k];
+    }
+  });
 };
 
 /** Component for the map widget */
@@ -69,12 +59,42 @@ export class SafeMapComponent
   extends SafeUnsubscribeComponent
   implements AfterViewInit
 {
+  @Input() header = true;
+  @Input() set settings(settingsValue: MapConstructorSettings) {
+    if (settingsValue) {
+      cleanSettingsFromNulls(settingsValue);
+      console.log(settingsValue);
+      this.updateMapSettings(settingsValue);
+    }
+  }
+  @Input() set deleteLayer(layer: any) {
+    if (layer) {
+      this.map.removeLayer(layer);
+    }
+  }
+  @Input() set addLayer(layer: any) {
+    if (layer) {
+      this.map.addLayer(layer);
+    }
+  }
+  @Input() set updateLayerTree(overlays: any) {
+    if (overlays) {
+      this.updateLayerTreeOfMap(overlays);
+    }
+  }
+
+  @Output() mapEvent: EventEmitter<MapEvent> = new EventEmitter<MapEvent>();
+
   // === MAP ===
   public mapId: string;
   public map: any;
-  public esriApiKey: string;
-  private basemap: any;
-
+  private baseMap: any;
+  private esriApiKey!: string;
+  public settingsConfig: MapConstructorSettings = {
+    baseMap: 'OSM',
+    centerLat: 0,
+    centerLong: 0,
+  };
   // === MARKERS ===
   private popupMarker: any;
   private markersCategories: IMarkersLayerValue = [];
@@ -87,10 +107,6 @@ export class SafeMapComponent
   private measureControls: any = {};
   private fullscreenControl?: L.Control;
   private legendControl?: L.Control;
-
-  // === WIDGET CONFIGURATION ===
-  @Input() header = true;
-  @Input() settings: any = null;
 
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
@@ -119,24 +135,42 @@ export class SafeMapComponent
   ngAfterViewInit(): void {
     // Creates the map and adds all the controls we use.
     this.drawMap();
-
+    this.setUpMapListeners();
     setTimeout(() => {
       this.map.invalidateSize();
       this.drawLayers();
+      console.log(this.settingsConfig);
     }, 100);
   }
 
-  /**
-   * Flatten an array
-   *
-   * @param {any[]} arr - any[] - the array to be flattened
-   * @returns the array with all the nested arrays flattened.
-   */
-  private flatDeep(arr: any[]): any[] {
-    return arr.reduce(
-      (acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val),
-      []
-    );
+  private setUpMapListeners() {
+    // Set event listener to log map bounds when zooming, moving and resizing screen.
+    this.map.on('moveend', () => {
+      // If searched address marker exists, if we move, the item should disappear
+      if (this.addressMarker) {
+        this.map.removeLayer(this.addressMarker);
+        this.addressMarker = null;
+      }
+      this.mapEvent.emit({
+        type: 'moveend',
+        content: { bounds: this.map.getBounds(), center: this.map.getCenter() },
+      });
+    });
+
+    this.map.on('zoomend', () => {
+      this.mapEvent.emit({ type: 'zoomend', content: this.map.getZoom() });
+      // this.applyOptions(this.map.getZoom(), this.overlays);
+    });
+
+    // Listen for language change
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event) => {
+        if (event.lang !== this.lang) {
+          this.getMeasureControl();
+          this.getFullScreenControl();
+        }
+      });
   }
 
   /**
@@ -150,7 +184,7 @@ export class SafeMapComponent
     fields: any[],
     prefix?: string
   ): { name: string; label: string }[] {
-    return this.flatDeep(
+    return flatDeep(
       fields
         .filter((x) => x.kind !== 'LIST')
         .map((f) => {
@@ -169,25 +203,61 @@ export class SafeMapComponent
     );
   }
 
+  private extractSettings(): MapConstructorSettings {
+    // Settings initialization
+    const centerLong = Number(get(this.settingsConfig, 'centerLong', 0));
+    const centerLat = Number(get(this.settingsConfig, 'centerLat', 0));
+    const maxBounds = get(
+      this.settingsConfig,
+      'maxBounds',
+      L.latLngBounds(L.latLng(-90, -1000), L.latLng(90, 1000))
+    );
+    const baseMap = get(this.settingsConfig, 'baseMap', 'OSM');
+    const maxZoom = get(this.settingsConfig, 'maxZoom', 18);
+    const minZoom = get(this.settingsConfig, 'minZoom', 2);
+    const worldCopyJump = get(this.settingsConfig, 'worldCopyJump', true);
+    const zoomControl = get(this.settingsConfig, 'zoomControl', false);
+    const zoom = get(this.settingsConfig, 'zoom', 3);
+
+    return {
+      centerLong,
+      centerLat,
+      maxBounds,
+      baseMap,
+      maxZoom,
+      minZoom,
+      worldCopyJump,
+      zoomControl,
+      zoom,
+    };
+  }
+
   /** Creates the map and adds all the controls we use */
   private drawMap(): void {
-    // Set bounds
-    const centerLong = Number(get(this.settings, 'centerLong', 0));
-    const centerLat = Number(get(this.settings, 'centerLat', 0));
-    const bounds = L.latLngBounds(L.latLng(-90, -1000), L.latLng(90, 1000));
-
+    const {
+      centerLong,
+      centerLat,
+      maxBounds,
+      baseMap,
+      maxZoom,
+      minZoom,
+      worldCopyJump,
+      zoomControl,
+      zoom,
+    } = this.extractSettings();
     // Create leaflet map
+    console.log('zoom: ', zoom);
     this.map = L.map(this.mapId, {
-      zoomControl: false,
-      maxBounds: bounds,
-      minZoom: 2,
-      maxZoom: 18,
-      worldCopyJump: true,
-      zoom: get(this.settings, 'zoom', 3),
-    }).setView([centerLat, centerLong], get(this.settings, 'zoom', 3));
+      zoomControl,
+      maxBounds,
+      minZoom,
+      maxZoom,
+      worldCopyJump,
+      zoom,
+    }).setView(new L.latLng(centerLat, centerLong), zoom);
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
-    this.setBasemap(this.settings.basemap);
+    this.setBaseMap(baseMap);
 
     // Add zoom control
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
@@ -200,32 +270,28 @@ export class SafeMapComponent
 
     // Add leaflet fullscreen control
     this.getFullScreenControl();
-
-    // Set event listener to log map bounds when zooming, moving and resizing screen.
-    this.map.on('moveend', () => {
-      // If searched address marker exists, if we move, the item should disappear
-      if (this.addressMarker) {
-        this.map.removeLayer(this.addressMarker);
-        this.addressMarker = null;
-      }
-      console.log(this.map.getBounds());
-    });
-
-    this.map.on('zoomend', () => {
-      this.applyOptions(this.map.getZoom(), this.overlays);
-    });
-
-    // Listen for language change
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((event) => {
-        if (event.lang !== this.lang) {
-          this.getMeasureControl();
-          this.getFullScreenControl();
-        }
-      });
   }
 
+  private updateMapSettings(settingsValue: MapConstructorSettings) {
+    merge(this.settingsConfig, settingsValue);
+    if (this.map) {
+      const {
+        centerLong,
+        centerLat,
+        maxBounds,
+        baseMap,
+        maxZoom,
+        minZoom,
+        zoom,
+      } = this.extractSettings();
+      this.map.setMaxZoom(maxZoom);
+      this.map.setMinZoom(minZoom);
+      this.map.setMaxBounds(maxBounds);
+      this.map.setZoom(zoom);
+      this.setBaseMap(baseMap);
+      this.map.setView(new L.latLng(centerLat, centerLong), zoom);
+    }
+  }
   /**
    * Draw layers on map.
    */
@@ -240,16 +306,13 @@ export class SafeMapComponent
         max: 12,
       },
     };
-
     const options2 = {
       style: {
         opacity: 0.5,
       },
     };
-
     const clusterGroup = generateClusterLayer(this.map, L);
     this.map.addLayer(clusterGroup);
-
     this.overlays = {
       label: 'GeoJSON layers',
       selectAllCheckbox: 'Un/select all',
@@ -276,12 +339,14 @@ export class SafeMapComponent
       ],
     };
 
-    // Heatmap
+    //Heatmap
     generateHeatMap(this.map);
+    this.updateLayerTreeOfMap(this.overlays);
+  }
 
-    const layerTreeCloned = this.addTreeToMap(this.overlays);
+  private updateLayerTreeOfMap(overlays: any) {
+    const layerTreeCloned = this.addTreeToMap(overlays);
     this.applyOptions(this.map.getZoom(), layerTreeCloned, true);
-
     this.layerControl = L.control.layers
       .tree(undefined, layerTreeCloned)
       .addTo(this.map);
@@ -537,16 +602,16 @@ export class SafeMapComponent
   }
 
   /**
-   * Set the basemap.
+   * Set the baseMap.
    *
-   * @param basemap String containing the id (name) of the basemap
+   * @param baseMap String containing the id (name) of the baseMap
    */
-  public setBasemap(basemap: string) {
-    if (this.basemap) {
-      this.basemap.remove();
+  public setBaseMap(baseMap: string) {
+    if (this.baseMap) {
+      this.baseMap.remove();
     }
-    const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
-    this.basemap = L.esri.Vector.vectorBasemapLayer(basemapName, {
+    const baseMapName = get(BASEMAP_LAYERS, baseMap, BASEMAP_LAYERS.OSM);
+    this.baseMap = L.esri.Vector.vectorBasemapLayer(baseMapName, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
   }
