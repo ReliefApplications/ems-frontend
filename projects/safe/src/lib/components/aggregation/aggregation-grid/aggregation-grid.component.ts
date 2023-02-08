@@ -279,9 +279,10 @@ export class SafeAggregationGridComponent
   }
 
   /**
+   * Update aggregation data value
    *
-   * @param data
-   * @param loading
+   * @param data query response data
+   * @param loading loading status
    */
   private updateValues(
     data: GetAggregationDataQueryResponse,

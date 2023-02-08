@@ -289,9 +289,10 @@ export class ReferenceDatasComponent
   }
 
   /**
+   * Update ref data value
    *
-   * @param data
-   * @param loading
+   * @param data query response data
+   * @param loading loading status
    */
   private updateValues(data: GetReferenceDatasQueryResponse, loading: boolean) {
     this.cachedReferenceDatas = updateQueryUniqueValues(

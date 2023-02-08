@@ -220,9 +220,10 @@ export class SafeChooseRecordModalComponent
   }
 
   /**
+   * Update record data value
    *
-   * @param data
-   * @param loading
+   * @param data query response data
+   * @param loading loading status
    */
   private updateValues(data: any, loading: boolean) {
     for (const field in data) {

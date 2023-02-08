@@ -238,9 +238,10 @@ export class AggregationsTabComponent implements OnInit {
   }
 
   /**
+   * Update aggregation data value
    *
-   * @param data
-   * @param loading
+   * @param data query response data
+   * @param loading loading status
    */
   private updateValues(data: GetResourceByIdQueryResponse, loading: boolean) {
     if (data.resource) {
