@@ -91,7 +91,7 @@ export class SafeApplicationToolbarComponent
       confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.applicationService.lockApplication();
+      this.applicationService.toggleApplicationLock();
     });
   }
 
