@@ -5,15 +5,21 @@ import {
   OnChanges,
   Output,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
-import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
+import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
 import { Overlay } from '@angular/cdk/overlay';
 import { Form } from '../../models/form.model';
 import { createFilterGroup } from './query-builder-forms';
 import { scrollFactory } from '../../utils/scroll-factory';
 import { LayoutPreviewData } from './tab-layout-preview/tab-layout-preview.component';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Main query builder component.
@@ -31,7 +37,10 @@ import { LayoutPreviewData } from './tab-layout-preview/tab-layout-preview.compo
     },
   ],
 })
-export class SafeQueryBuilderComponent implements OnChanges {
+export class SafeQueryBuilderComponent
+  extends SafeUnsubscribeComponent
+  implements OnChanges
+{
   // === QUERY BUILDER ===
   public availableQueries?: Observable<any[]>;
   public availableFields: any[] = [];
@@ -50,7 +59,7 @@ export class SafeQueryBuilderComponent implements OnChanges {
     // return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
   }
 
-  @Input() form?: FormGroup;
+  @Input() form?: UntypedFormGroup;
   @Input() canExpand = true;
   @Input() canSelectDataSet = true;
   @Input() templates: Form[] = [];
@@ -75,9 +84,11 @@ export class SafeQueryBuilderComponent implements OnChanges {
    * @param queryBuilder This is the service that will be used to build the query.
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private queryBuilder: QueryBuilderService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Allows to inject the component without creating circular dependency.
@@ -125,43 +136,51 @@ export class SafeQueryBuilderComponent implements OnChanges {
           );
         }
       });
-      this.form?.controls.name.valueChanges.subscribe((value) => {
-        if (value !== this.form?.value.name) {
-          if (this.allQueries.find((x) => x === value)) {
-            this.availableFields = this.queryBuilder.getFields(value);
-            this.form?.setControl('filter', createFilterGroup(null));
-            this.form?.setControl(
-              'fields',
-              this.formBuilder.array([], Validators.required)
-            );
-            this.form?.setControl(
-              'sort',
-              this.formBuilder.group({
-                field: [''],
-                order: ['asc'],
-              })
-            );
-            if (this.form?.get('clorophlets')) {
-              this.form?.setControl('clorophlets', this.formBuilder.array([]));
+      this.form?.controls.name.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          if (value !== this.form?.value.name) {
+            if (this.allQueries.find((x) => x === value)) {
+              this.availableFields = this.queryBuilder.getFields(value);
+              this.form?.setControl('filter', createFilterGroup(null));
+              this.form?.setControl(
+                'fields',
+                this.formBuilder.array([], Validators.required)
+              );
+              this.form?.setControl(
+                'sort',
+                this.formBuilder.group({
+                  field: [''],
+                  order: ['asc'],
+                })
+              );
+              if (this.form?.get('clorophlets')) {
+                this.form?.setControl(
+                  'clorophlets',
+                  this.formBuilder.array([])
+                );
+              }
+            } else {
+              this.availableFields = [];
+              this.form?.setControl('filter', createFilterGroup(null));
+              this.form?.setControl('fields', this.formBuilder.array([]));
+              this.form?.setControl(
+                'sort',
+                this.formBuilder.group({
+                  field: [''],
+                  order: ['asc'],
+                })
+              );
+              if (this.form?.get('clorophlets')) {
+                this.form?.setControl(
+                  'clorophlets',
+                  this.formBuilder.array([])
+                );
+              }
             }
-          } else {
-            this.availableFields = [];
-            this.form?.setControl('filter', createFilterGroup(null));
-            this.form?.setControl('fields', this.formBuilder.array([]));
-            this.form?.setControl(
-              'sort',
-              this.formBuilder.group({
-                field: [''],
-                order: ['asc'],
-              })
-            );
-            if (this.form?.get('clorophlets')) {
-              this.form?.setControl('clorophlets', this.formBuilder.array([]));
-            }
+            this.filteredQueries = this.filterQueries(value);
           }
-          this.filteredQueries = this.filterQueries(value);
-        }
-      });
+        });
     }
   }
 
@@ -177,7 +196,7 @@ export class SafeQueryBuilderComponent implements OnChanges {
    *
    * @param newForm new form value.
    */
-  setForm(newForm: FormGroup): void {
+  setForm(newForm: UntypedFormGroup): void {
     this.form = newForm;
     this.buildSettings();
   }

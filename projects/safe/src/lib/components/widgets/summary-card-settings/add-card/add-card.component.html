@@ -1,0 +1,79 @@
+<safe-modal [closable]="true" size="medium">
+  <h1 mat-dialog-title>
+    {{ 'components.widget.settings.summaryCard.add' | translate }}
+  </h1>
+  <mat-dialog-content>
+    <!-- <mat-radio-group
+      aria-label="Select an option"
+      [value]="false"
+      (change)="radioChange($event)"
+    >
+      <mat-radio-button [value]="false">{{
+        'components.widget.settings.summaryCard.static' | translate
+      }}</mat-radio-button>
+      <mat-radio-button [value]="true">{{
+        'components.widget.settings.summaryCard.dynamic' | translate
+      }}</mat-radio-button>
+    </mat-radio-group> -->
+
+    <h2>
+      {{
+        'components.widget.settings.summaryCard.create.choice.template'
+          | translate
+      }}
+    </h2>
+    <safe-alert *ngIf="data.isDynamic">
+      <safe-icon icon="info"></safe-icon>
+      {{ 'components.widget.settings.summaryCard.hint.dynamic' | translate }}
+    </safe-alert>
+    <mat-form-field appearance="outline">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        id="custom-search"
+        matInput
+        [formControl]="searchControl"
+        type="search"
+        [placeholder]="'common.placeholder.search' | translate"
+      />
+      <safe-spinner *ngIf="loading" matSuffix></safe-spinner>
+    </mat-form-field>
+    <div class="card-templates">
+      <ng-container *ngIf="loading">
+        <ng-container *ngFor="let item of [].constructor(3); let i = index">
+          <kendo-skeleton
+            shape="rectangle"
+            animation="pulse"
+            width="200px"
+            height="150px"
+          ></kendo-skeleton>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="!loading">
+        <ng-container *ngFor="let item of templates">
+          <safe-card-template
+            (click)="onCreateFromTemplate(item)"
+            [isDynamic]="item.isDynamic"
+            [title]="item.title"
+            [dashboardName]="item.dashboardName"
+          ></safe-card-template>
+        </ng-container>
+      </ng-container>
+    </div>
+    <mat-divider></mat-divider>
+    <safe-button
+      class="!w-auto"
+      variant="primary"
+      category="secondary"
+      (click)="onCreate()"
+    >
+      {{
+        'components.widget.settings.summaryCard.create.choice.blank' | translate
+      }}</safe-button
+    >
+  </mat-dialog-content>
+  <div mat-dialog-actions class="mat-dialog-actions" align="end">
+    <safe-button mat-dialog-close>
+      {{ 'common.close' | translate }}
+    </safe-button>
+  </div>
+</safe-modal>

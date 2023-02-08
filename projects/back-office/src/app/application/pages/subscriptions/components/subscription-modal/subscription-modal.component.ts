@@ -1,8 +1,21 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Application, Channel, Form, Subscription } from '@safe/builder';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
+import {
+  Application,
+  Channel,
+  Form,
+  Subscription,
+  SafeUnsubscribeComponent,
+} from '@safe/builder';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   GetRoutingKeysQueryResponse,
@@ -10,9 +23,14 @@ import {
   GET_FORM_NAMES,
   GetFormsQueryResponse,
 } from '../../graphql/queries';
-import { map, startWith } from 'rxjs/operators';
-import { MatAutocomplete } from '@angular/material/autocomplete';
+import { map, startWith, takeUntil } from 'rxjs/operators';
+import { MatLegacyAutocomplete as MatAutocomplete } from '@angular/material/legacy-autocomplete';
 import get from 'lodash/get';
+import { ApolloQueryResult } from '@apollo/client';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from 'projects/back-office/src/app/utils/update-queries';
 
 /** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -25,9 +43,12 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './subscription-modal.component.html',
   styleUrls: ['./subscription-modal.component.scss'],
 })
-export class SubscriptionModalComponent implements OnInit {
+export class SubscriptionModalComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === REACTIVE FORM ===
-  subscriptionForm: FormGroup = new FormGroup({});
+  subscriptionForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === DATA ===
   public formsQuery!: QueryRef<GetFormsQueryResponse>;
@@ -37,6 +58,7 @@ export class SubscriptionModalComponent implements OnInit {
   public filteredApplications$!: Observable<Application[]>;
   public applications$!: Observable<Application[]>;
   private applicationsQuery!: QueryRef<GetRoutingKeysQueryResponse>;
+  private cachedApplications: Application[] = [];
   private applicationsPageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -73,7 +95,7 @@ export class SubscriptionModalComponent implements OnInit {
    * @param data.subscription subscription
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<SubscriptionModalComponent>,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA)
@@ -81,7 +103,9 @@ export class SubscriptionModalComponent implements OnInit {
       channels: Channel[];
       subscription?: Subscription;
     }
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.subscriptionForm = this.formBuilder.group({
@@ -111,25 +135,16 @@ export class SubscriptionModalComponent implements OnInit {
         query: GET_ROUTING_KEYS,
         variables: {
           first: ITEMS_PER_PAGE,
+          afterCursor: this.applicationsPageInfo.endCursor,
         },
       });
 
     // this.applications$ = this.applications.asObservable();
-    this.applicationsQuery.valueChanges.subscribe((res) => {
-      this.applications.next(
-        res.data.applications.edges
-          .map((x) => x.node)
-          .filter((x) => (x.channels ? x.channels.length > 0 : false))
-      );
-      this.applicationsPageInfo = res.data.applications.pageInfo;
-      this.applicationsLoading = res.loading;
-      this.applications$ =
-        this.subscriptionForm.controls.routingKey.valueChanges.pipe(
-          startWith(''),
-          map((value) => (typeof value === 'string' ? value : value.name)),
-          map((x) => this.filter(x))
-        );
-    });
+    this.applicationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((results) => {
+        this.updateValues(results.data, results.loading);
+      });
 
     this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORM_NAMES,
@@ -166,10 +181,12 @@ export class SubscriptionModalComponent implements OnInit {
    */
   onOpenApplicationSelect(): void {
     if (this.applicationSelect) {
-      const panel = this.applicationSelect.panel.nativeElement;
-      if (panel) {
-        panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
-      }
+      setTimeout(() => {
+        const panel = this.applicationSelect?.panel.nativeElement;
+        if (panel) {
+          panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
+        }
+      }, 0);
     }
   }
 
@@ -185,28 +202,71 @@ export class SubscriptionModalComponent implements OnInit {
     ) {
       if (!this.applicationsLoading && this.applicationsPageInfo.hasNextPage) {
         this.applicationsLoading = true;
-        this.applicationsQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.applicationsPageInfo.endCursor,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            return Object.assign({}, prev, {
-              applications: {
-                edges: [
-                  ...prev.applications.edges,
-                  ...fetchMoreResult.applications.edges,
-                ],
-                pageInfo: fetchMoreResult.applications.pageInfo,
-                totalCount: fetchMoreResult.applications.totalCount,
-              },
+        const variables = {
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.applicationsPageInfo.endCursor,
+        };
+        const cachedValues: GetRoutingKeysQueryResponse = getCachedValues(
+          this.apollo.client,
+          GET_ROUTING_KEYS,
+          variables
+        );
+        if (cachedValues) {
+          this.updateValues(cachedValues, false);
+        } else {
+          this.applicationsQuery
+            .fetchMore({ variables })
+            .then((results: ApolloQueryResult<GetRoutingKeysQueryResponse>) => {
+              this.updateValues(results.data, results.loading);
             });
-          },
-        });
+        }
       }
     }
+  }
+
+  /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  onSearchChange(search: string): void {
+    const variables = this.formsQuery.variables;
+    this.formsQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
+    });
+  }
+
+  /**
+   * Updates local list with given data
+   *
+   * @param data New values to update forms
+   * @param loading Loading state
+   */
+  private updateValues(data: GetRoutingKeysQueryResponse, loading: boolean) {
+    this.cachedApplications = updateQueryUniqueValues(
+      this.cachedApplications,
+      data.applications.edges
+        .map((x) => x.node)
+        .filter((x) => (x.channels ? x.channels.length > 0 : false))
+    );
+    this.applications.next(this.cachedApplications);
+    this.applicationsPageInfo = data.applications.pageInfo;
+    this.applicationsLoading = loading;
+    this.applications$ =
+      this.subscriptionForm.controls.routingKey.valueChanges.pipe(
+        startWith(''),
+        map((value) => (typeof value === 'string' ? value : value.name)),
+        map((x) => this.filter(x))
+      );
   }
 }

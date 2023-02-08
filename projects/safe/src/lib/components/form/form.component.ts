@@ -4,14 +4,13 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  Inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import * as Survey from 'survey-angular';
 import {
   AddRecordMutationResponse,
@@ -24,7 +23,7 @@ import {
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { SafeRestService } from '../../services/rest/rest.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
@@ -51,15 +50,13 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }> = new EventEmitter();
 
   // === SURVEYJS ===
-  public survey!: Survey.Model;
+  public survey!: Survey.SurveyModel;
   public surveyActive = true;
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
 
   @ViewChild('formContainer') formContainer!: ElementRef;
-
-  environment: any;
 
   // === MODIFIED AT ===
   public modifiedAt: Date | null = null;
@@ -82,7 +79,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param environment This is the environment in which we run the application
    * @param dialog This is the Angular Material Dialog service.
    * @param apollo This is the Apollo client that is used to make GraphQL requests.
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
@@ -94,7 +90,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param translate This is the service used to translate text
    */
   constructor(
-    @Inject('environment') environment: any,
     public dialog: MatDialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
@@ -104,16 +99,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private formBuilderService: SafeFormBuilderService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {
-    this.environment = environment;
-  }
+  ) {}
 
   ngOnInit(): void {
-    const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
-    defaultThemeColorsSurvey['$main-hover-color'] =
-      this.environment.theme.primary;
-
     Survey.StylesManager.applyTheme();
 
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
@@ -281,13 +269,13 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public onComplete = async () => {
     let mutation: any;
     this.surveyActive = false;
-    const data = this.survey.data;
+    const surveyData = this.survey.data;
     const questionsToUpload = Object.keys(this.temporaryFilesStorage);
     for (const name of questionsToUpload) {
       const files = this.temporaryFilesStorage[name];
       for (const [index, file] of files.entries()) {
-        const res = await this.apollo
-          .mutate<UploadFileMutationResponse>({
+        const res = await firstValueFrom(
+          this.apollo.mutate<UploadFileMutationResponse>({
             mutation: UPLOAD_FILE,
             variables: {
               file,
@@ -297,12 +285,12 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
               useMultipart: true,
             },
           })
-          .toPromise();
+        );
         if (res.errors) {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
           return;
         } else {
-          data[name][index].content = res.data?.uploadFile;
+          surveyData[name][index].content = res.data?.uploadFile;
         }
       }
     }
@@ -310,17 +298,17 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();
-        if (!data[key]) {
+        if (!surveyData[key]) {
           if (questions[field].getType() !== 'boolean') {
-            data[key] = null;
+            surveyData[key] = null;
           }
           if (questions[field].readOnly || !questions[field].visible) {
-            delete data[key];
+            delete surveyData[key];
           }
         }
       }
     }
-    this.survey.data = data;
+    this.survey.data = surveyData;
     if (this.record || this.form.uniqueRecord) {
       const recordId = this.record
         ? this.record.id
@@ -343,21 +331,21 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         },
       });
     }
-    mutation.subscribe((res: any) => {
-      if (res.errors) {
+    mutation.subscribe(({ errors, data }: any) => {
+      if (errors) {
         this.save.emit({ completed: false });
         this.survey.clear(false, true);
         this.surveyActive = true;
-        this.snackBar.openSnackBar(res.errors[0].message, { error: true });
+        this.snackBar.openSnackBar(errors[0].message, { error: true });
       } else {
         localStorage.removeItem(this.storageId);
-        if (res.data.editRecord || res.data.addRecord.form.uniqueRecord) {
+        if (data.editRecord || data.addRecord.form.uniqueRecord) {
           this.survey.clear(false, false);
-          if (res.data.addRecord) {
-            this.record = res.data.addRecord;
+          if (data.addRecord) {
+            this.record = data.addRecord;
             this.modifiedAt = this.record?.modifiedAt || null;
           } else {
-            this.modifiedAt = res.data.editRecord.modifiedAt;
+            this.modifiedAt = data.editRecord.modifiedAt;
           }
           this.surveyActive = true;
         } else {
@@ -365,8 +353,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.save.emit({
           completed: true,
-          hideNewRecord:
-            res.data.addRecord && res.data.addRecord.form.uniqueRecord,
+          hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
         });
       }
     });

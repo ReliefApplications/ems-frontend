@@ -18,13 +18,17 @@ export const GET_SHORT_FORM_BY_ID = gql`
         data
       }
       canUpdate
-      metadata
+      metadata {
+        name
+        automated
+        canSee
+        canUpdate
+      }
     }
   }
 `;
 
 /** Get form query response */
 export interface GetFormByIdQueryResponse {
-  loading: boolean;
   form: Form;
 }

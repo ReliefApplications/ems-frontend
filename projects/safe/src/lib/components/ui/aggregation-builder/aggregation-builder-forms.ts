@@ -1,11 +1,15 @@
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { PipelineStage } from './pipeline/pipeline-stage.enum';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import get from 'lodash/get';
 
 /** Creating a new instance of the FormBuilder class. */
-const formBuilder = new FormBuilder();
+const formBuilder = new UntypedFormBuilder();
 
 /**
  * Creates an expression form.
@@ -14,7 +18,10 @@ const formBuilder = new FormBuilder();
  * @param validators boolean to set validators or not (default true)
  * @returns Expression form group.
  */
-export const expressionForm = (value: any, validators = true): FormGroup =>
+export const expressionForm = (
+  value: any,
+  validators = true
+): UntypedFormGroup =>
   formBuilder.group({
     operator: [
       get(value, 'operator', ''),
@@ -30,7 +37,10 @@ export const expressionForm = (value: any, validators = true): FormGroup =>
  * @param validators boolean to set validators or not (default true)
  * @returns Stage form group.
  */
-export const addFieldsForm = (value: any, validators = true): FormGroup =>
+export const addFieldsForm = (
+  value: any,
+  validators = true
+): UntypedFormGroup =>
   formBuilder.group({
     name: [get(value, 'name', ''), validators ? Validators.required : null],
     expression: expressionForm(get(value, 'expression', false)),
@@ -42,9 +52,9 @@ export const addFieldsForm = (value: any, validators = true): FormGroup =>
  * @param value initial value
  * @returns GroupBy rule form group.
  */
-export const groupByRuleForm = (value: any): FormGroup =>
+export const groupByRuleForm = (value: any): UntypedFormGroup =>
   formBuilder.group({
-    field: [get(value, 'field', ''), Validators.required],
+    field: get(value, 'field', ''),
     expression: expressionForm(get(value, 'expression', false), false),
   });
 
@@ -54,7 +64,7 @@ export const groupByRuleForm = (value: any): FormGroup =>
  * @param value Initial value of the form.
  * @returns Stage form group.
  */
-export const addStage = (value: any): FormGroup => {
+export const addStage = (value: any): UntypedFormGroup => {
   switch (value.type) {
     case PipelineStage.FILTER: {
       return formBuilder.group({
@@ -155,7 +165,10 @@ export const mappingFields = (
  * @param widgetType type of chart widget
  * @returns New mapping form
  */
-export const createMappingForm = (value: any, widgetType: string): FormGroup =>
+export const createMappingForm = (
+  value: any,
+  widgetType: string
+): UntypedFormGroup =>
   formBuilder.group(
     mappingFields(widgetType).reduce(
       (o, field) =>
@@ -175,7 +188,7 @@ export const createMappingForm = (value: any, widgetType: string): FormGroup =>
  * @param value initial value
  * @returns New aggregation form
  */
-export const createAggregationForm = (value: any): FormGroup =>
+export const createAggregationForm = (value: any): UntypedFormGroup =>
   formBuilder.group({
     name: [get(value, 'name', null), Validators.required],
     sourceFields: [get(value, 'sourceFields', []), Validators.required],

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { get, isEqual } from 'lodash';
 import {
@@ -26,6 +26,9 @@ import {
   EDIT_FULL_RESOURCE_ACCESS,
 } from '../graphql/mutations';
 import { Permission } from './permissions.types';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
+import { updateQueryUniqueValues } from '../../../utils/update-queries';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -59,7 +62,10 @@ interface TableResourceElement {
     ]),
   ],
 })
-export class RoleResourcesComponent implements OnInit {
+export class RoleResourcesComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() role!: Role; // Opened role
 
   // === TABLE ELEMENTS ===
@@ -91,7 +97,9 @@ export class RoleResourcesComponent implements OnInit {
    * @param apollo Apollo client service
    * @param snackBar shared snackbar service
    */
-  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {}
+  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {
+    super();
+  }
 
   /** Load the resources. */
   ngOnInit(): void {
@@ -105,20 +113,11 @@ export class RoleResourcesComponent implements OnInit {
       },
     });
 
-    this.resourcesQuery.valueChanges.subscribe((res) => {
-      this.cachedResources = res.data.resources.edges.map((x) => x.node);
-      this.resources.data = this.setTableElements(
-        this.cachedResources.slice(
-          this.pageInfo.pageSize * this.pageInfo.pageIndex,
-          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-        )
-      );
-      this.pageInfo.length = res.data.resources.totalCount;
-      this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
-      this.loading = res.loading;
-      this.updating = res.loading;
-      this.filterLoading = false;
-    });
+    this.resourcesQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.updateValues(data, loading);
+      });
   }
 
   /**
@@ -163,7 +162,8 @@ export class RoleResourcesComponent implements OnInit {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >= this.cachedResources.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedResources.length
     ) {
@@ -197,38 +197,22 @@ export class RoleResourcesComponent implements OnInit {
     if (refetch) {
       this.cachedResources = [];
       this.pageInfo.pageIndex = 0;
-      this.resourcesQuery
-        .refetch({
-          first: this.pageInfo.pageSize,
-          afterCursor: null,
-        })
-        .then(() => {
-          this.loading = false;
-          this.updating = false;
-        });
+      this.resourcesQuery.refetch({
+        first: this.pageInfo.pageSize,
+        filter: this.filter,
+        afterCursor: null,
+      });
     } else {
       this.loading = true;
-      this.resourcesQuery.fetchMore({
-        variables: {
-          first: this.pageInfo.pageSize,
-          afterCursor: this.pageInfo.endCursor,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            resources: {
-              edges: [
-                ...prev.resources.edges,
-                ...fetchMoreResult.resources.edges,
-              ],
-              pageInfo: fetchMoreResult.resources.pageInfo,
-              totalCount: fetchMoreResult.resources.totalCount,
-            },
-          });
-        },
-      });
+      this.resourcesQuery
+        .fetchMore({
+          variables: {
+            first: this.pageInfo.pageSize,
+            filter: this.filter,
+            afterCursor: this.pageInfo.endCursor,
+          },
+        })
+        .then((results) => this.updateValues(results.data, results.loading));
     }
   }
 
@@ -250,9 +234,10 @@ export class RoleResourcesComponent implements OnInit {
             role: this.role.id,
           },
         })
-        .subscribe((res) => {
-          if (res.data.resource) {
-            this.openedResource = res.data.resource;
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data.resource) {
+            this.openedResource = data.resource;
           }
           this.updating = false;
         });
@@ -267,26 +252,7 @@ export class RoleResourcesComponent implements OnInit {
   onFilter(filter: any): void {
     this.filterLoading = true;
     this.filter = filter;
-    this.cachedResources = [];
-    this.pageInfo.pageIndex = 0;
-    this.resourcesQuery.fetchMore({
-      variables: {
-        first: this.pageInfo.pageSize,
-        filter: this.filter,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          resources: {
-            edges: fetchMoreResult.resources.edges,
-            pageInfo: fetchMoreResult.resources.pageInfo,
-            totalCount: fetchMoreResult.resources.totalCount,
-          },
-        });
-      },
-    });
+    this.fetchResources(true);
   }
 
   /**
@@ -329,8 +295,8 @@ export class RoleResourcesComponent implements OnInit {
     this.apollo
       .mutate<EditResourceAccessMutationResponse>({
         mutation: isEqual(resource.id, this.openedResource?.id)
-          ? EDIT_FULL_RESOURCE_ACCESS
-          : EDIT_RESOURCE_ACCESS,
+          ? EDIT_RESOURCE_ACCESS
+          : EDIT_FULL_RESOURCE_ACCESS,
         variables: {
           id: resource.id,
           permissions: {
@@ -339,26 +305,35 @@ export class RoleResourcesComponent implements OnInit {
           role: this.role.id as string,
         },
       })
-      .subscribe(
-        (res) => {
-          if (res.data?.editResource) {
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (data?.editResource) {
             const index = this.resources.data.findIndex(
               (x) => x.resource.id === resource.id
             );
             const tableElements = [...this.resources.data];
-            tableElements[index].resource = res.data?.editResource;
+            tableElements[index].resource = isEqual(
+              resource.id,
+              this.openedResource?.id
+            )
+              ? { ...this.openedResource, ...data?.editResource }
+              : data?.editResource;
             this.resources.data = tableElements;
             if (isEqual(resource.id, this.openedResource?.id)) {
               this.openedResource = tableElements[index].resource;
             }
           }
+          if (errors) {
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
+          }
           this.updating = false;
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
           this.updating = false;
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -371,32 +346,40 @@ export class RoleResourcesComponent implements OnInit {
     this.apollo
       .mutate<EditResourceAccessMutationResponse>({
         mutation: isEqual(resource.id, this.openedResource?.id)
-          ? EDIT_FULL_RESOURCE_ACCESS
-          : EDIT_RESOURCE_ACCESS,
+          ? EDIT_RESOURCE_ACCESS
+          : EDIT_FULL_RESOURCE_ACCESS,
         variables: {
           id: resource.id,
           permissions: update,
           role: this.role.id as string,
         },
       })
-      .subscribe(
-        (res) => {
-          if (res.data?.editResource) {
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (data?.editResource) {
             const index = this.resources.data.findIndex(
               (x) => x.resource.id === resource.id
             );
             const tableElements = [...this.resources.data];
-            tableElements[index] = this.setTableElement(res.data?.editResource);
+            tableElements[index] = this.setTableElement(
+              isEqual(resource.id, this.openedResource?.id)
+                ? { ...this.openedResource, ...data?.editResource }
+                : data?.editResource
+            );
             this.resources.data = tableElements;
             this.openedResource = tableElements[index].resource;
           }
+          if (errors) {
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
+          }
           this.updating = false;
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
           this.updating = false;
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -442,24 +425,28 @@ export class RoleResourcesComponent implements OnInit {
           },
         },
       })
-      .subscribe(
-        (res) => {
-          if (res.data?.editResource) {
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (data?.editResource) {
             const index = this.resources.data.findIndex(
               (x) => x.resource.id === resource.id
             );
             const tableElements = [...this.resources.data];
-            tableElements[index] = this.setTableElement(res.data?.editResource);
+            tableElements[index] = this.setTableElement(data?.editResource);
             this.resources.data = tableElements;
             this.openedResource = tableElements[index].resource;
           }
+          if (errors) {
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
+          }
           this.updating = false;
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
           this.updating = false;
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -618,5 +605,29 @@ export class RoleResourcesComponent implements OnInit {
     } else {
       return false;
     }
+  }
+
+  /**
+   *  Update resource data value
+   *
+   * @param data query response data
+   * @param loading loading status
+   */
+  private updateValues(data: GetResourcesQueryResponse, loading: boolean) {
+    this.cachedResources = updateQueryUniqueValues(
+      this.cachedResources,
+      data.resources.edges.map((x) => x.node)
+    );
+    this.resources.data = this.setTableElements(
+      this.cachedResources.slice(
+        this.pageInfo.pageSize * this.pageInfo.pageIndex,
+        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+      )
+    );
+    this.pageInfo.length = data.resources.totalCount;
+    this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
+    this.loading = loading;
+    this.updating = loading;
+    this.filterLoading = false;
   }
 }

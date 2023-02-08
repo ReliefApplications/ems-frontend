@@ -1,14 +1,18 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import {
+  UntypedFormGroup,
+  UntypedFormBuilder,
+  Validators,
+} from '@angular/forms';
+import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import {
   GetResourcesQueryResponse,
   GET_RESOURCES,
   GetResourceByIdQueryResponse,
   GET_RESOURCE_BY_ID,
 } from './graphql/queries';
-import { MatSelect } from '@angular/material/select';
+import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -23,7 +27,7 @@ const ITEMS_PER_PAGE = 10;
 })
 export class AddFormModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
 
   // === DATA ===
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
@@ -40,7 +44,7 @@ export class AddFormModalComponent implements OnInit {
    * @param apollo Apollo service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<AddFormModalComponent>,
     private apollo: Apollo
   ) {}
@@ -104,6 +108,28 @@ export class AddFormModalComponent implements OnInit {
   }
 
   /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  public onResourceSearchChange(search: string): void {
+    const variables = this.resourcesQuery.variables;
+    this.resourcesQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
+    });
+  }
+
+  /**
    * Called on resource input change.
    * Load the templates linked to that resource.
    *
@@ -117,8 +143,8 @@ export class AddFormModalComponent implements OnInit {
           id,
         },
       })
-      .subscribe((res) => {
-        this.templates = res.data.resource.forms || [];
+      .subscribe(({ data }) => {
+        this.templates = data.resource.forms || [];
       });
   }
 

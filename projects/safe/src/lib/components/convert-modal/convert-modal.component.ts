@@ -1,12 +1,21 @@
 import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import {
   GetRecordDetailsQueryResponse,
   GET_RECORD_DETAILS,
 } from './graphql/queries';
 import { Form } from '../../models/form.model';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * An interface to define the structure of the data displayed in the modal
@@ -25,9 +34,12 @@ interface DialogData {
   templateUrl: './convert-modal.component.html',
   styleUrls: ['./convert-modal.component.scss'],
 })
-export class SafeConvertModalComponent implements OnInit {
+export class SafeConvertModalComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === REACTIVE FORM ===
-  convertForm: FormGroup = new FormGroup({});
+  convertForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === DATA ===
   public form?: Form;
@@ -46,22 +58,25 @@ export class SafeConvertModalComponent implements OnInit {
    * @param data This is the data that is passed into the modal when it is opened.
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeConvertModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.apollo
-      .watchQuery<GetRecordDetailsQueryResponse>({
+      .query<GetRecordDetailsQueryResponse>({
         query: GET_RECORD_DETAILS,
         variables: {
           id: this.data.record,
         },
       })
-      .valueChanges.subscribe((res) => {
-        const record = res.data.record;
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        const record = data.record;
         this.form = record.form;
         this.loading = false;
         this.availableForms =
@@ -74,7 +89,8 @@ export class SafeConvertModalComponent implements OnInit {
     });
     this.convertForm
       .get('targetForm')
-      ?.valueChanges.subscribe((targetForm: Form) => {
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((targetForm: Form) => {
         if (targetForm) {
           this.ignoredFields =
             this.form?.fields?.filter(

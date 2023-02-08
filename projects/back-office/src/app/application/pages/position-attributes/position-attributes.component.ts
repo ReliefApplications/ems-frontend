@@ -43,19 +43,19 @@ export class PositionAttributesComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     this.backPath = this.router.url.replace(`/${this.id}`, '');
     this.apollo
-      .watchQuery<GetPositionAttributesFromCategoryQueryResponse>({
+      .query<GetPositionAttributesFromCategoryQueryResponse>({
         query: GET_POSITION_ATTRIBUTES_FROM_CATEGORY,
         variables: {
           id: this.id,
         },
       })
-      .valueChanges.subscribe((res) => {
-        this.positionAttributes = res.data.positionAttributes;
+      .subscribe(({ data, loading }) => {
+        this.positionAttributes = data.positionAttributes;
         if (this.positionAttributes.length > 0) {
           this.categoryName = this.positionAttributes[0].category?.title || '';
           this.breadcrumbService.setBreadcrumb('@attribute', this.categoryName);
         }
-        this.loading = res.loading;
+        this.loading = loading;
       });
   }
 }

@@ -1,15 +1,13 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import {
   SafeSnackBarService,
   SafeAuthService,
-  PermissionsManagement,
-  PermissionType,
   SafeConfirmService,
   Form,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import { GET_SHORT_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import {
@@ -19,9 +17,15 @@ import {
   ADD_FORM,
 } from './graphql/mutations';
 import { AddFormModalComponent } from '../../../components/add-form-modal/add-form-modal.component';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../utils/update-queries';
+import { ApolloQueryResult } from '@apollo/client';
+import { takeUntil } from 'rxjs';
 
 /** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -32,7 +36,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './forms.component.html',
   styleUrls: ['./forms.component.scss'],
 })
-export class FormsComponent implements OnInit, OnDestroy {
+export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public updating = false;
@@ -50,12 +54,11 @@ export class FormsComponent implements OnInit, OnDestroy {
   public forms = new MatTableDataSource<Form>([]);
   public cachedForms: Form[] = [];
 
-  // === PERMISSIONS ===
-  canAdd = false;
-  private authSubscription?: Subscription;
-
   // === FILTERING ===
-  public filter: any;
+  public filter: any = {
+    filters: [],
+    logic: 'and',
+  };
   private sort: Sort = { active: '', direction: '' };
 
   // === PAGINATION ===
@@ -85,7 +88,9 @@ export class FormsComponent implements OnInit, OnDestroy {
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Creates the form query, and subscribes to the query changes.
@@ -95,38 +100,18 @@ export class FormsComponent implements OnInit, OnDestroy {
       query: GET_SHORT_FORMS,
       variables: {
         first: DEFAULT_PAGE_SIZE,
+        afterCursor: null,
+        filter: this.filter,
+        sortField: this.sort?.direction && this.sort.active,
+        sortOrder: this.sort?.direction,
       },
     });
 
-    this.formsQuery.valueChanges.subscribe((res) => {
-      this.cachedForms = res.data.forms.edges.map((x) => x.node);
-      this.forms.data = this.cachedForms.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      );
-      this.pageInfo.length = res.data.forms.totalCount;
-      this.pageInfo.endCursor = res.data.forms.pageInfo.endCursor;
-      this.loading = res.loading;
-      this.updating = res.loading;
-    });
-
-    this.authSubscription = this.authService.user$.subscribe(() => {
-      this.canAdd = this.authService.userHasClaim(
-        PermissionsManagement.getRightFromPath(
-          this.router.url,
-          PermissionType.create
-        )
-      );
-    });
-  }
-
-  /**
-   * Removes all the subscriptions.
-   */
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
+    this.formsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((results) => {
+        this.updateValues(results.data, results.loading);
+      });
   }
 
   /**
@@ -138,7 +123,8 @@ export class FormsComponent implements OnInit, OnDestroy {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >= this.cachedForms.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedForms.length
     ) {
@@ -187,43 +173,37 @@ export class FormsComponent implements OnInit, OnDestroy {
    */
   private fetchForms(refetch?: boolean): void {
     this.updating = true;
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      filter: this.filter,
+      sortField: this.sort?.direction && this.sort.active,
+      sortOrder: this.sort?.direction,
+    };
+
+    const cachedValues: GetFormsQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_SHORT_FORMS,
+      variables
+    );
     if (refetch) {
       this.cachedForms = [];
       this.pageInfo.pageIndex = 0;
-      this.formsQuery
-        .refetch({
-          first: this.pageInfo.pageSize,
-          afterCursor: null,
-          filter: this.filter,
-          sortField: this.sort?.direction && this.sort.active,
-          sortOrder: this.sort?.direction,
-        })
-        .then(() => {
-          this.loading = false;
-          this.updating = false;
-        });
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
     } else {
-      this.formsQuery.fetchMore({
-        variables: {
-          first: this.pageInfo.pageSize,
-          afterCursor: this.pageInfo.endCursor,
-          filter: this.filter,
-          sortField: this.sort?.direction && this.sort.active,
-          sortOrder: this.sort?.direction,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            forms: {
-              edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
-              pageInfo: fetchMoreResult.forms.pageInfo,
-              totalCount: fetchMoreResult.forms.totalCount,
-            },
+      if (refetch) {
+        this.formsQuery.refetch(variables);
+      } else {
+        this.formsQuery
+          .fetchMore({
+            variables,
+          })
+          .then((results: ApolloQueryResult<GetFormsQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
           });
-        },
-      });
+      }
     }
   }
 
@@ -258,8 +238,8 @@ export class FormsComponent implements OnInit, OnDestroy {
               id,
             },
           })
-          .subscribe((res: any) => {
-            if (!res.errors) {
+          .subscribe(({ errors }: any) => {
+            if (!errors) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectDeleted', {
                   value: this.translate.instant('common.form.one'),
@@ -274,7 +254,7 @@ export class FormsComponent implements OnInit, OnDestroy {
                   'common.notifications.objectNotDeleted',
                   {
                     value: this.translate.instant('common.form.one'),
-                    error: res.errors[0].message,
+                    error: errors[0].message,
                   }
                 ),
                 { error: true }
@@ -293,20 +273,20 @@ export class FormsComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddFormModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        const data = { name: value.name };
+        const variablesData = { name: value.name };
         Object.assign(
-          data,
+          variablesData,
           value.resource && { resource: value.resource },
           value.template && { template: value.template }
         );
         this.apollo
           .mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,
-            variables: data,
+            variables: variablesData,
           })
-          .subscribe(
-            (res) => {
-              if (res.errors) {
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
@@ -314,23 +294,44 @@ export class FormsComponent implements OnInit, OnDestroy {
                       type: this.translate
                         .instant('common.form.one')
                         .toLowerCase(),
-                      error: res.errors[0].message,
+                      error: errors[0].message,
                     }
                   ),
                   { error: true }
                 );
               } else {
-                if (res.data) {
-                  const { id } = res.data.addForm;
+                if (data) {
+                  const { id } = data.addForm;
                   this.router.navigate(['/forms/' + id + '/builder']);
                 }
               }
             },
-            (err) => {
+            error: (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
-            }
-          );
+            },
+          });
       }
     });
+  }
+
+  /**
+   * Updates local list with given data
+   *
+   * @param data New values to update forms
+   * @param loading Loading state
+   */
+  private updateValues(data: GetFormsQueryResponse, loading: boolean): void {
+    this.cachedForms = updateQueryUniqueValues(
+      this.cachedForms,
+      data.forms.edges.map((x) => x.node)
+    );
+    this.forms.data = this.cachedForms.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.pageInfo.length = data.forms.totalCount;
+    this.pageInfo.endCursor = data.forms.pageInfo.endCursor;
+    this.loading = loading;
+    this.updating = loading;
   }
 }

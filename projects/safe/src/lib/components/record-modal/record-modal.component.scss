@@ -1,16 +1,5 @@
 @import '../../style/survey.scss';
 
-mat-dialog-content {
-  flex: 1;
-  max-height: unset !important;
-  display: flex;
-  flex-direction: row;
-
-  .form-container {
-    flex: 1;
-  }
-}
-
 .versions-info {
   display: flex;
   justify-content: space-between;
@@ -37,13 +26,4 @@ mat-dialog-content {
 .sv_body {
   border: none;
   padding: 0;
-}
-
-.form-infos {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
 }

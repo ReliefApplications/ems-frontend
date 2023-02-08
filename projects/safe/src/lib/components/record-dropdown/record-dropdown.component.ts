@@ -8,9 +8,9 @@ import {
   ViewChild,
 } from '@angular/core';
 import {
-  MAT_SELECT_SCROLL_STRATEGY,
-  MatSelect,
-} from '@angular/material/select';
+  MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
+  MatLegacySelect as MatSelect,
+} from '@angular/material/legacy-select';
 import { QueryRef, Apollo } from 'apollo-angular';
 import {
   GetRecordByIdQueryResponse,
@@ -21,6 +21,9 @@ import {
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Record } from '../../models/record.model';
 import { TranslateService } from '@ngx-translate/core';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
+import { updateQueryUniqueValues } from '../../utils/update-queries';
 
 /** A constant that is used to set the number of items to be displayed on the page. */
 const ITEMS_PER_PAGE = 25;
@@ -52,7 +55,10 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     },
   ],
 })
-export class SafeRecordDropdownComponent implements OnInit {
+export class SafeRecordDropdownComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() record = '';
   @Input() resourceId = '';
   @Input() field = '';
@@ -65,6 +71,7 @@ export class SafeRecordDropdownComponent implements OnInit {
   public selectedRecord: Record | null = null;
   private records = new BehaviorSubject<Record[]>([]);
   public records$!: Observable<Record[]>;
+  private cachedRecords: Record[] = [];
   private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
   private pageInfo = {
     endCursor: '',
@@ -81,7 +88,9 @@ export class SafeRecordDropdownComponent implements OnInit {
    * @param apollo This is the Apollo service use to generate GraphQL queries
    * @param translate This is the service that we will use to translate the text in the platform
    */
-  constructor(private apollo: Apollo, private translate: TranslateService) {}
+  constructor(private apollo: Apollo, private translate: TranslateService) {
+    super();
+  }
 
   ngOnInit(): void {
     if (this.record) {
@@ -92,9 +101,10 @@ export class SafeRecordDropdownComponent implements OnInit {
             id: this.record,
           },
         })
-        .subscribe((res) => {
-          if (res.data.record) {
-            this.selectedRecord = res.data.record;
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data.record) {
+            this.selectedRecord = data.record;
           }
         });
     }
@@ -108,14 +118,16 @@ export class SafeRecordDropdownComponent implements OnInit {
             first: ITEMS_PER_PAGE,
             filter: this.filter,
           },
+          fetchPolicy: 'no-cache',
+          nextFetchPolicy: 'cache-first',
         });
 
       this.records$ = this.records.asObservable();
-      this.recordsQuery.valueChanges.subscribe((res) => {
-        this.records.next(res.data.resource.records.edges.map((x) => x.node));
-        this.pageInfo = res.data.resource.records.pageInfo;
-        this.loading = res.loading;
-      });
+      this.recordsQuery.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data, loading }) => {
+          this.updateValues(data, loading);
+        });
     }
   }
 
@@ -154,40 +166,34 @@ export class SafeRecordDropdownComponent implements OnInit {
     ) {
       if (!this.loading && this.pageInfo.hasNextPage && this.resourceId) {
         this.loading = true;
-        this.recordsQuery.fetchMore({
-          variables: {
-            id: this.resourceId,
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor,
-            filter: this.filter,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            if (this.selectedRecord) {
-              if (
-                fetchMoreResult.resource.records.edges.find(
-                  (x) => x.node.id === this.selectedRecord?.id
-                )
-              ) {
-                this.selectedRecord = null;
-              }
-            }
-            return Object.assign({}, prev, {
-              resource: {
-                records: {
-                  edges: [
-                    ...prev.resource.records.edges,
-                    ...fetchMoreResult.resource.records.edges,
-                  ],
-                  pageInfo: fetchMoreResult.resource.records.pageInfo,
-                },
-              },
-            });
-          },
-        });
+        this.recordsQuery
+          .fetchMore({
+            variables: {
+              first: ITEMS_PER_PAGE,
+              afterCursor: this.pageInfo.endCursor,
+            },
+          })
+          .then((results) => this.updateValues(results.data, results.loading));
       }
     }
+  }
+
+  /**
+   * Update record data value
+   *
+   * @param data query response data
+   * @param loading loading status
+   */
+  private updateValues(
+    data: GetResourceRecordsQueryResponse,
+    loading: boolean
+  ) {
+    this.cachedRecords = updateQueryUniqueValues(
+      this.cachedRecords,
+      data.resource.records.edges.map((x) => x.node)
+    );
+    this.records.next(this.cachedRecords);
+    this.pageInfo = data.resource.records.pageInfo;
+    this.loading = loading;
   }
 }

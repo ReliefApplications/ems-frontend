@@ -18,7 +18,7 @@ import {
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   EXPORT_SETTINGS,
   GRADIENT_SETTINGS,
@@ -32,29 +32,33 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
-import { MAT_MENU_SCROLL_STRATEGY } from '@angular/material/menu';
-import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
-import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
+import { MAT_LEGACY_MENU_SCROLL_STRATEGY as MAT_MENU_SCROLL_STRATEGY } from '@angular/material/legacy-menu';
+import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
+import { MAT_LEGACY_TOOLTIP_SCROLL_STRATEGY as MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/legacy-tooltip';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
-import {
-  CalendarDOMService,
-  MonthViewService,
-  WeekNamesService,
-} from '@progress/kendo-angular-dateinputs';
+// import {
+//   CalendarDOMService,
+//   MonthViewService,
+//   WeekNamesService,
+// } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { SafeGridService } from '../../../../services/grid/grid.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
 import { SafeErrorsModalComponent } from '../errors-modal/errors-modal.component';
-import { get } from 'lodash';
+import { get, intersection } from 'lodash';
+import { applyLayoutFormat } from '../../../widgets/summary-card/parser/utils';
 import { SafeTileDataComponent } from '../../../widget-grid/floating-options/menu/tile-data/tile-data.component';
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
-import { MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
+import {
+  MatLegacySnackBarRef as MatSnackBarRef,
+  LegacyTextOnlySnackBar as TextOnlySnackBar,
+} from '@angular/material/legacy-snack-bar';
 
 /**
  * Factory for creating scroll strategy
@@ -86,9 +90,9 @@ const matches = (el: any, selector: any) =>
   providers: [
     PopupService,
     ResizeBatchService,
-    CalendarDOMService,
-    MonthViewService,
-    WeekNamesService,
+    // CalendarDOMService,
+    // MonthViewService,
+    // WeekNamesService,
     {
       provide: MAT_SELECT_SCROLL_STRATEGY,
       useFactory: scrollFactory,
@@ -135,11 +139,13 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() editable = false;
   @Input() hasChanges = false;
   @Output() edit: EventEmitter<any> = new EventEmitter();
-  public formGroup: FormGroup = new FormGroup({});
+  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   private currentEditedRow = 0;
   private currentEditedItem: any;
   public gradientSettings = GRADIENT_SETTINGS;
   public editing = false;
+
+  private readonly rowActions = ['update', 'delete', 'history', 'convert'];
 
   // === ACTIONS ===
   @Input() actions = {
@@ -156,12 +162,20 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
 
   /** @returns A boolean indicating if actions are enabled */
   get hasEnabledActions(): boolean {
-    return Object.values(this.actions).includes(true);
+    return (
+      intersection(
+        Object.keys(this.actions).filter(
+          (key: string) => get(this.actions, key, false) === true
+        ),
+        this.rowActions
+      ).length > 0
+    );
   }
 
   // === DISPLAY ===
   @Input() resizable = true;
   @Input() reorderable = true;
+  @Input() canAdd = false;
 
   /** @returns The column menu */
   get columnMenu(): { columnChooser: boolean; filter: boolean } {
@@ -186,7 +200,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() filterChange = new EventEmitter();
   @Output() showFilterChange = new EventEmitter();
   @Input() searchable = true;
-  public search = new FormControl('');
+  public search = new UntypedFormControl('');
   @Output() searchChange = new EventEmitter();
 
   // === PAGINATION ===
@@ -246,6 +260,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       .subscribe((value) => {
         this.searchChange.emit(value);
       });
+    this.selectableSettings = {
+      ...this.selectableSettings,
+      mode: this.multiSelect ? 'multiple' : 'single',
+    };
   }
 
   ngOnChanges(): void {
@@ -273,13 +291,18 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     const value = get(item, path);
     if (meta.choices) {
       if (Array.isArray(value)) {
-        return meta.choices.reduce(
+        const text = meta.choices.reduce(
           (acc: string[], x: any) =>
             value.includes(x.value) ? acc.concat([x.text]) : acc,
           []
         );
+        if (text.length < value.length) {
+          return value;
+        } else {
+          return text;
+        }
       } else {
-        return meta.choices.find((x: any) => x.value === value)?.text || '';
+        return meta.choices.find((x: any) => x.value === value)?.text || value;
       }
     } else {
       return value;
@@ -581,7 +604,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     this.currentEditedRow = 0;
     this.currentEditedItem = null;
     this.editing = false;
-    this.formGroup = new FormGroup({});
+    this.formGroup = new UntypedFormGroup({});
   }
 
   /**
@@ -743,6 +766,17 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     return fileExt && ICON_EXTENSIONS[fileExt]
       ? name.slice(0, name.lastIndexOf(fileExt) - 1)
       : name;
+  }
+
+  /**
+   * Calls layout format from utils.ts to get the formated fields
+   *
+   * @param name Content of the field as a string
+   * @param field Field data
+   * @returns Formatted field content as a string
+   */
+  public applyFieldFormat(name: string | null, field: any): string | null {
+    return applyLayoutFormat(name, field);
   }
 
   /**

@@ -22,7 +22,12 @@ export const GET_RECORD_BY_ID = gql`
         name
         structure
         fields
-        metadata
+        metadata {
+          name
+          automated
+          canSee
+          canUpdate
+        }
       }
     }
   }
@@ -30,7 +35,6 @@ export const GET_RECORD_BY_ID = gql`
 
 /** Model for GetRecordByIdQueryResponse object */
 export interface GetRecordByIdQueryResponse {
-  loading: boolean;
   record: Record;
 }
 
@@ -44,13 +48,17 @@ export const GET_FORM_STRUCTURE = gql`
       name
       structure
       fields
-      metadata
+      metadata {
+        name
+        automated
+        canSee
+        canUpdate
+      }
     }
   }
 `;
 
 /** Model for getFormByIdQueryResponse object */
 export interface GetFormByIdQueryResponse {
-  loading: boolean;
   form: Form;
 }

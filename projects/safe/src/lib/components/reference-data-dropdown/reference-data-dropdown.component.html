@@ -1,4 +1,4 @@
-<mat-form-field appearance="outline">
+<mat-form-field class="grow" appearance="outline">
   <mat-label>{{
     'components.referenceData.dropdown.select' | translate
   }}</mat-label>
@@ -9,7 +9,7 @@
     (openedChange)="onOpenSelect($event)"
     (selectionChange)="onSelect($event)"
   >
-    <mat-option>{{'common.input.none' | translate}}</mat-option>
+    <mat-option>{{ 'common.input.none' | translate }}</mat-option>
     <mat-option
       *ngIf="selectedReferenceData"
       [value]="selectedReferenceData.id"

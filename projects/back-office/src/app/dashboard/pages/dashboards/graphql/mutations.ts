@@ -16,7 +16,6 @@ export const ADD_DASHBOARD = gql`
 
 /** Add dashboard gql mutation response interface */
 export interface AddDashboardMutationResponse {
-  loading: boolean;
   addDashboard: Dashboard;
 }
 
@@ -33,6 +32,5 @@ export const DELETE_DASHBOARD = gql`
 
 /** Delete dashboard gql mutation response interface */
 export interface DeleteDashboardMutationResponse {
-  loading: boolean;
   deleteDashboard: Dashboard;
 }

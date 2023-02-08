@@ -1,15 +1,12 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import {
   Application,
-  PermissionsManagement,
-  PermissionType,
-  SafeAuthService,
   SafeConfirmService,
   SafeSnackBarService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import {
   GetApplicationsQueryResponse,
@@ -24,12 +21,18 @@ import {
   EDIT_APPLICATION,
 } from './graphql/mutations';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Sort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { DuplicateApplicationModalComponent } from '../../../components/duplicate-application-modal/duplicate-application-modal.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
+import { ApolloQueryResult } from '@apollo/client';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../utils/update-queries';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -40,12 +43,14 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './applications.component.html',
   styleUrls: ['./applications.component.scss'],
 })
-export class ApplicationsComponent implements OnInit, OnDestroy {
+export class ApplicationsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public updating = false;
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
-  private newApplicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   public applications = new MatTableDataSource<Application>([]);
   public cachedApplications: Application[] = [];
   public displayedColumns = [
@@ -56,7 +61,10 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     'actions',
   ];
   public newApplications: Application[] = [];
-  public filter: any;
+  public filter: any = {
+    filters: [],
+    logic: 'and',
+  };
   private sort: Sort = { active: '', direction: '' };
 
   public pageInfo = {
@@ -70,10 +78,6 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
   startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
 
-  // === PERMISSIONS ===
-  canAdd = false;
-  private authSubscription?: Subscription;
-
   /**
    * Applications page component
    *
@@ -81,7 +85,6 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
    * @param dialog Material dialog service
    * @param router Angular router
    * @param snackBar Shared snackbar service
-   * @param authService Shared authentication service
    * @param previewService Shared preview service
    * @param confirmService Share confirm service
    * @param translate Angular translate service
@@ -91,11 +94,12 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private router: Router,
     private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService,
     private previewService: PreviewService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Creates the application query and subscribes to the query changes.
@@ -106,59 +110,31 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
         query: GET_APPLICATIONS,
         variables: {
           first: DEFAULT_PAGE_SIZE,
+          afterCursor: null,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
         },
       });
-    // new query for card
-
-    this.newApplicationsQuery =
-      this.apollo.watchQuery<GetApplicationsQueryResponse>({
+    this.apollo
+      .query<GetApplicationsQueryResponse>({
         query: GET_APPLICATIONS,
+        fetchPolicy: 'no-cache',
         variables: {
-          first: DEFAULT_PAGE_SIZE,
+          first: 5,
           sortField: 'modifiedAt',
           sortOrder: 'desc',
         },
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        this.newApplications = data.applications.edges.map((x) => x.node);
       });
-    this.applicationsQuery.valueChanges.subscribe((res) => {
-      this.cachedApplications = res.data.applications.edges.map((x) => x.node);
-      this.applications.data = this.cachedApplications.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      );
-      this.pageInfo.length = res.data.applications.totalCount;
-      this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
-      this.loading = res.loading;
-      this.updating = false;
-    });
-    this.newApplicationsQuery.valueChanges.subscribe((res) => {
-      this.newApplications = res.data.applications.edges
-        .map((x) => x.node)
-        .slice(0, 5);
-    });
-    this.authSubscription = this.authService.user$.subscribe(() => {
-      this.canAdd =
-        this.authService.userHasClaim(
-          PermissionsManagement.getRightFromPath(
-            this.router.url,
-            PermissionType.create
-          )
-        ) ||
-        this.authService.userHasClaim(
-          PermissionsManagement.getRightFromPath(
-            this.router.url,
-            PermissionType.manage
-          )
-        );
-    });
-  }
-
-  /**
-   * Removes all subscriptions.
-   */
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
+    this.applicationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((results: ApolloQueryResult<GetApplicationsQueryResponse>) => {
+        this.updateValues(results.data, results.loading);
+      });
   }
 
   /**
@@ -170,7 +146,9 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >=
+          this.cachedApplications.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedApplications.length
     ) {
@@ -219,46 +197,38 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
    */
   private fetchApplications(refetch?: boolean): void {
     this.updating = true;
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      filter: this.filter,
+      sortField: this.sort?.direction && this.sort.active,
+      sortOrder: this.sort?.direction,
+    };
+    const cachedValues: GetApplicationsQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_APPLICATIONS,
+      variables
+    );
     if (refetch) {
       this.cachedApplications = [];
       this.pageInfo.pageIndex = 0;
-      this.applicationsQuery
-        .refetch({
-          first: this.pageInfo.pageSize,
-          afterCursor: null,
-          filter: this.filter,
-          sortField: this.sort?.direction && this.sort.active,
-          sortOrder: this.sort?.direction,
-        })
-        .then(() => {
-          this.loading = false;
-          this.updating = false;
-        });
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
     } else {
-      this.applicationsQuery.fetchMore({
-        variables: {
-          first: this.pageInfo.pageSize,
-          afterCursor: this.pageInfo.endCursor,
-          filter: this.filter,
-          sortField: this.sort?.direction && this.sort.active,
-          sortOrder: this.sort?.direction,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            applications: {
-              edges: [
-                ...prev.applications.edges,
-                ...fetchMoreResult.applications.edges,
-              ],
-              pageInfo: fetchMoreResult.applications.pageInfo,
-              totalCount: fetchMoreResult.applications.totalCount,
-            },
+      if (refetch) {
+        // Rebuild the query
+        this.applicationsQuery.refetch(variables);
+      } else {
+        // Fetch more records
+        this.applicationsQuery
+          .fetchMore({
+            variables,
+          })
+          .then((results: ApolloQueryResult<GetApplicationsQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
           });
-        },
-      });
+      }
     }
   }
 
@@ -293,17 +263,17 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
               id,
             },
           })
-          .subscribe((res) => {
+          .subscribe(({ data }) => {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectDeleted', {
                 value: this.translate.instant('common.application.one'),
               })
             );
             this.applications.data = this.applications.data.filter(
-              (x) => x.id !== res.data?.deleteApplication.id
+              (x) => x.id !== data?.deleteApplication.id
             );
             this.newApplications = this.newApplications.filter(
-              (x) => x.id !== res.data?.deleteApplication.id
+              (x) => x.id !== data?.deleteApplication.id
             );
           });
       }
@@ -319,28 +289,28 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
       .mutate<AddApplicationMutationResponse>({
         mutation: ADD_APPLICATION,
       })
-      .subscribe((res) => {
-        if (res.errors?.length) {
+      .subscribe(({ errors, data }) => {
+        if (errors?.length) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotCreated', {
               type: this.translate
                 .instant('common.application.one')
                 .toLowerCase(),
-              error: res.errors[0].message,
+              error: errors[0].message,
             }),
             { error: true }
           );
         } else {
-          if (res.data) {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectCreated', {
                 type: this.translate
                   .instant('common.application.one')
                   .toLowerCase(),
-                value: res.data.addApplication.name,
+                value: data.addApplication.name,
               })
             );
-            const id = res.data.addApplication.id;
+            const id = data.addApplication.id;
             this.router.navigate(['/applications', id]);
           }
         }
@@ -362,8 +332,8 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
           permissions: e,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ data }) => {
+        if (data) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectUpdated', {
               type: this.translate.instant('common.access').toLowerCase(),
@@ -373,7 +343,7 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
           const index = this.applications.data.findIndex(
             (x) => x.id === element.id
           );
-          this.applications.data[index] = res.data.editApplication;
+          this.applications.data[index] = data.editApplication;
           this.applications.data = this.applications.data;
         }
       });
@@ -425,5 +395,29 @@ export class ApplicationsComponent implements OnInit, OnDestroy {
    */
   onOpenApplication(id: string): void {
     this.router.navigate(['/applications', id]);
+  }
+
+  /**
+   * Updates local list with given data
+   *
+   * @param data New values to update forms
+   * @param loading Loading state
+   */
+  private updateValues(
+    data: GetApplicationsQueryResponse,
+    loading: boolean
+  ): void {
+    this.cachedApplications = updateQueryUniqueValues(
+      this.cachedApplications,
+      data.applications.edges.map((x) => x.node)
+    );
+    this.applications.data = this.cachedApplications.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.pageInfo.length = data.applications.totalCount;
+    this.pageInfo.endCursor = data.applications.pageInfo.endCursor;
+    this.loading = loading;
+    this.updating = false;
   }
 }

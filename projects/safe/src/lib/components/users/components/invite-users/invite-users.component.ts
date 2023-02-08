@@ -1,13 +1,18 @@
 import { Component, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+  MatLegacyDialog as MatDialog,
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { GridComponent, GridDataResult } from '@progress/kendo-angular-grid';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { SafeAddUserComponent } from '../add-user/add-user.component';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
@@ -31,7 +36,7 @@ interface DialogData {
 })
 export class SafeInviteUsersComponent implements OnInit {
   public gridData: GridDataResult = { data: [], total: 0 };
-  public formGroup: FormGroup = new FormGroup({});
+  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   private editedRowIndex = 0;
   private editionActive = false;
 
@@ -42,8 +47,8 @@ export class SafeInviteUsersComponent implements OnInit {
   @ViewChild('fileReader') fileReader: any;
 
   /** @returns The position attributes available */
-  get positionAttributes(): FormArray | null {
-    return this.formGroup.get('positionAttributes') as FormArray;
+  get positionAttributes(): UntypedFormArray | null {
+    return this.formGroup.get('positionAttributes') as UntypedFormArray;
   }
 
   /**
@@ -62,7 +67,7 @@ export class SafeInviteUsersComponent implements OnInit {
     private renderer: Renderer2,
     private downloadService: SafeDownloadService,
     private snackBar: SafeSnackBarService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeInviteUsersComponent>,
     public translate: TranslateService,
@@ -122,11 +127,11 @@ export class SafeInviteUsersComponent implements OnInit {
     if (e.files.length > 0) {
       const file = e.files[0].rawFile;
       if (file && this.isValidFile(file)) {
-        this.downloadService.uploadFile(this.data.uploadPath, file).subscribe(
-          (res) => {
+        this.downloadService.uploadFile(this.data.uploadPath, file).subscribe({
+          next: (res) => {
             this.gridData.data = this.gridData.data.concat(res);
           },
-          (err) => {
+          error: (err) => {
             if (err.status === 400) {
               this.snackBar.openSnackBar(err.error, { error: true });
               this.resetFileInput();
@@ -141,8 +146,8 @@ export class SafeInviteUsersComponent implements OnInit {
               );
               this.resetFileInput();
             }
-          }
-        );
+          },
+        });
       } else {
         if (e.files.length > 1) {
           this.snackBar.openSnackBar(
@@ -211,7 +216,7 @@ export class SafeInviteUsersComponent implements OnInit {
    * @param dataItem Row data.
    * @returns Form group created from row data.
    */
-  public createFormGroup(dataItem: any): FormGroup {
+  public createFormGroup(dataItem: any): UntypedFormGroup {
     const formGroup: any = {
       email: [dataItem.email, Validators.required],
       role: [dataItem.role, Validators.required],
@@ -238,7 +243,7 @@ export class SafeInviteUsersComponent implements OnInit {
     this.gridData.data.splice(this.editedRowIndex, 1, this.formGroup.value);
     this.editedRowIndex = 0;
     this.editionActive = false;
-    this.formGroup = new FormGroup({});
+    this.formGroup = new UntypedFormGroup({});
   }
 
   /**

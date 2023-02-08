@@ -13,7 +13,6 @@ export const DELETE_API_CONFIGURATION = gql`
 
 /** Delete api config gql mutation response interface */
 export interface DeleteApiConfigurationMutationResponse {
-  loading: boolean;
   deleteApiConfiguration: ApiConfiguration;
 }
 
@@ -53,6 +52,5 @@ export const ADD_API_CONFIGURATIION = gql`
 
 /** Add api config gql mutation response interface */
 export interface AddApiConfigurationMutationResponse {
-  loading: boolean;
   addApiConfiguration: ApiConfiguration;
 }

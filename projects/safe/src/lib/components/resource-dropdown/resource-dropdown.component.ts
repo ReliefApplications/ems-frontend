@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Resource } from '../../models/resource.model';
 import {
@@ -8,6 +8,8 @@ import {
   GET_RESOURCES,
   GET_SHORT_RESOURCE_BY_ID,
 } from './graphql/queries';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** A constant that is used to determine how many items should be on one page. */
 const ITEMS_PER_PAGE = 10;
@@ -20,11 +22,14 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './resource-dropdown.component.html',
   styleUrls: ['./resource-dropdown.component.scss'],
 })
-export class SafeResourceDropdownComponent implements OnInit {
+export class SafeResourceDropdownComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() resource = '';
   public selectedResource?: Resource;
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
-  public resourceControl!: FormControl;
+  public resourceControl!: UntypedFormControl;
 
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
@@ -34,13 +39,17 @@ export class SafeResourceDropdownComponent implements OnInit {
    *
    * @param {Apollo} apollo - Apollo - This is the Apollo service that is used to create GraphQL queries.
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.resourceControl = new FormControl(this.resource);
-    this.resourceControl.valueChanges.subscribe((value) => {
-      this.choice.emit(value);
-    });
+    this.resourceControl = new UntypedFormControl(this.resource);
+    this.resourceControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.choice.emit(value);
+      });
     if (this.resource) {
       this.apollo
         .query<GetResourceByIdQueryResponse>({
@@ -49,9 +58,9 @@ export class SafeResourceDropdownComponent implements OnInit {
             id: this.resource,
           },
         })
-        .subscribe((res) => {
-          if (res.data.resource) {
-            this.selectedResource = res.data.resource;
+        .subscribe(({ data }) => {
+          if (data.resource) {
+            this.selectedResource = data.resource;
           }
         });
     }
@@ -60,6 +69,37 @@ export class SafeResourceDropdownComponent implements OnInit {
       variables: {
         first: ITEMS_PER_PAGE,
         sortField: 'name',
+      },
+    });
+  }
+
+  /**
+   * Emits the selected resource id.
+   *
+   * @param e select event.
+   */
+  onSelect(e?: any): void {
+    this.choice.emit(e);
+  }
+
+  /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  public onResourceSearchChange(search: string): void {
+    const variables = this.resourcesQuery.variables;
+    this.resourcesQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
       },
     });
   }

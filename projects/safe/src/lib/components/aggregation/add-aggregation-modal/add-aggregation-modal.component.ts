@@ -1,27 +1,26 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+  MatLegacyDialog as MatDialog,
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
 import { SafeEditAggregationModalComponent } from '../edit-aggregation-modal/edit-aggregation-modal.component';
-import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import {
   GetResourceAggregationsResponse,
   GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { SafeGraphQLSelectComponent } from '../../graphql-select/graphql-select.component';
 
 /**
  * Data needed for the dialog, should contain an aggregations array, a form and a resource
  */
 interface DialogData {
-  aggregations: Aggregation[];
+  hasAggregations: boolean;
   form?: Form;
   resource?: Resource;
 }
@@ -38,12 +37,12 @@ interface DialogData {
 export class AddAggregationModalComponent implements OnInit {
   private form?: Form;
   private resource?: Resource;
-  public aggregations: Aggregation[] = [];
+  public hasAggregations = false;
   public nextStep = false;
 
   public queryRef!: QueryRef<GetResourceAggregationsResponse>;
 
-  public selectedAggregationControl = new FormControl('');
+  public selectedAggregationControl = new UntypedFormControl('');
 
   /** Reference to graphql select for layout */
   @ViewChild(SafeGraphQLSelectComponent)
@@ -66,7 +65,7 @@ export class AddAggregationModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private aggregationService: SafeAggregationService
   ) {
-    this.aggregations = data.aggregations;
+    this.hasAggregations = data.hasAggregations;
     this.form = data.form;
     this.resource = data.resource;
   }
@@ -105,9 +104,9 @@ export class AddAggregationModalComponent implements OnInit {
       if (aggregation) {
         this.aggregationService
           .addAggregation(aggregation, this.resource?.id, this.form?.id)
-          .subscribe((res) => {
-            if (res.data?.addAggregation) {
-              this.dialogRef.close(res.data.addAggregation);
+          .subscribe(({ data }) => {
+            if (data?.addAggregation) {
+              this.dialogRef.close(data.addAggregation);
             } else {
               this.dialogRef.close();
             }

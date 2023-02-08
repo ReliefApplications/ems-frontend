@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeEditLayoutModalComponent } from './edit-layout-modal.component';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { SafeModalModule } from '../../ui/modal/modal.module';
 

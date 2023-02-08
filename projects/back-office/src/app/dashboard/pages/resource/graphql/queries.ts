@@ -10,7 +10,10 @@ export const GET_RESOURCE_BY_ID = gql`
       queryName
       createdAt
       fields
-      metadata
+      metadata {
+        name
+        canSee
+      }
       forms {
         id
         name
@@ -43,6 +46,5 @@ export const GET_RESOURCE_BY_ID = gql`
 
 /** Model for GetResourceByIdQueryResponse object */
 export interface GetResourceByIdQueryResponse {
-  loading: boolean;
   resource: Resource;
 }

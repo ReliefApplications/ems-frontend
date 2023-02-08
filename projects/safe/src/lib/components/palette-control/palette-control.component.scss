@@ -1,12 +1,6 @@
 :host {
   display: block;
 
-  .palette-control {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
   .cdk-drag-placeholder {
     opacity: 0;
   }

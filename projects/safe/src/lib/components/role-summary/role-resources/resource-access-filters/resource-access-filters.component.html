@@ -1,7 +1,7 @@
 <!-- Header -->
 <h2>{{ 'common.filter.few' | translate }}</h2>
 <!-- Content -->
-<div *ngIf="filters.data.length === 0" class="empty-indicator">
+<div *ngIf="filters.data.length === 0" class="flex flex-col p-4 items-center">
   <safe-icon icon="folder_open"></safe-icon>
   <h3>{{ 'components.role.summary.noFilters' | translate }}</h3>
 </div>
@@ -38,6 +38,7 @@
                 [icon]="permission.icon"
                 [variant]="permission.variant"
                 [matTooltip]="permission.tooltip | translate"
+                matTooltipPosition="left"
                 (click)="
                   $event.stopPropagation();
                   toggleFilterAccess(i, permission.name)

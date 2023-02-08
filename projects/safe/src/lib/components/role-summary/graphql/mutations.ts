@@ -3,6 +3,7 @@ import { Page } from '../../../models/page.model';
 import { Step } from '../../../models/step.model';
 import { Role } from '../../../models/user.model';
 import { Resource } from '../../../models/resource.model';
+import { RESOURCE_FIELDS, SHORT_RESOURCE_FIELDS } from './fragments';
 
 /** Edit role mutation of role summary component */
 export const EDIT_ROLE = gql`
@@ -47,7 +48,6 @@ export const EDIT_ROLE = gql`
 
 /** Interface of edit role mutation response */
 export interface EditRoleMutationResponse {
-  loading: boolean;
   editRole: Role;
 }
 
@@ -99,24 +99,20 @@ export interface EditStepAccessMutationResponse {
 export const EDIT_RESOURCE_ACCESS = gql`
   mutation editResource($id: ID!, $permissions: JSON, $role: ID!) {
     editResource(id: $id, permissions: $permissions) {
-      id
-      name
-      rolePermissions(role: $role)
+      ...ShortResourceFields
     }
   }
+  ${SHORT_RESOURCE_FIELDS}
 `;
 
 /** Edit Resource access mutation extended */
 export const EDIT_FULL_RESOURCE_ACCESS = gql`
   mutation editResource($id: ID!, $permissions: JSON, $role: ID!) {
     editResource(id: $id, permissions: $permissions) {
-      id
-      name
-      rolePermissions(role: $role)
-      metadata
-      fields
+      ...ResourceFields
     }
   }
+  ${RESOURCE_FIELDS}
 `;
 
 /** Interface of Edit Resource Access mutation response */
@@ -128,13 +124,10 @@ export interface EditResourceAccessMutationResponse {
 export const EDIT_RESOURCE_FIELD_PERMISSION = gql`
   mutation editResourceFields($id: ID!, $fieldsPermissions: JSON, $role: ID!) {
     editResource(id: $id, fieldsPermissions: $fieldsPermissions) {
-      id
-      name
-      rolePermissions(role: $role)
-      metadata
-      fields
+      ...ResourceFields
     }
   }
+  ${RESOURCE_FIELDS}
 `;
 
 /** Interface of edit resource field permission mutation response */

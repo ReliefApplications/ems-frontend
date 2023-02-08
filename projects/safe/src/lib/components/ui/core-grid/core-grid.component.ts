@@ -4,14 +4,13 @@ import {
   Inject,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { UntypedFormGroup } from '@angular/forms';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   GridDataResult,
   PageChangeEvent,
@@ -22,7 +21,6 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Subscription } from 'rxjs';
 import { SafeAuthService } from '../../../services/auth/auth.service';
 import { SafeDownloadService } from '../../../services/download/download.service';
 import { SafeLayoutService } from '../../../services/layout/layout.service';
@@ -57,6 +55,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeDatePipe } from '../../../pipes/date/date.pipe';
 import { SafeDateTranslateService } from '../../../services/date-translate/date-translate.service';
 import { SafeApplicationService } from '../../../services/application/application.service';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
+import { firstValueFrom, Subject } from 'rxjs';
 
 /**
  * Default file name when exporting grid data.
@@ -80,7 +81,10 @@ const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
   templateUrl: './core-grid.component.html',
   styleUrls: ['./core-grid.component.scss'],
 })
-export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
+export class SafeCoreGridComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges
+{
   // === INPUTS ===
   @Input() settings: GridSettings | any = {};
   /** Default grid layout */
@@ -113,8 +117,9 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
 
   // === FEATURES INPUTS ===
   @Input() showDetails = true;
-  @Input() showExport = false;
+  @Input() showExport = true;
   @Input() admin = false;
+  @Input() canCreateRecords = false;
 
   // === OUTPUTS ===
   @Output() layoutChanged: EventEmitter<any> = new EventEmitter();
@@ -140,7 +145,6 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   public detailsField?: any;
   private dataQuery!: QueryRef<QueryResponse>;
   private metaQuery: any;
-  private dataSubscription?: Subscription;
 
   // === PAGINATION ===
   public pageSize = 10;
@@ -150,7 +154,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
   // === INLINE EDITION ===
   private originalItems: any[] = this.gridData.data;
   public updatedItems: any[] = [];
-  public formGroup: FormGroup = new FormGroup({});
+  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   public loading = false;
   @Input() status: {
     message?: string;
@@ -159,6 +163,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     error: false,
   };
   private templateStructure = '';
+  // Refresh content of the history
+  private refresh$: Subject<boolean> = new Subject<boolean>();
 
   // === SORTING ===
   public sort: SortDescriptor[] = [];
@@ -251,7 +257,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     delete: false,
     history: false,
     convert: false,
-    export: true,
+    export: this.showExport,
     showDetails: true,
   };
 
@@ -290,6 +296,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     private dateTranslate: SafeDateTranslateService,
     private applicationService: SafeApplicationService
   ) {
+    super();
     this.isAdmin =
       this.authService.userIsAdmin && environment.module === 'backoffice';
   }
@@ -323,7 +330,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
       update: get(this.settings, 'actions.update', false),
       delete: get(this.settings, 'actions.delete', false),
       convert: get(this.settings, 'actions.convert', false),
-      export: get(this.settings, 'actions.export', true),
+      export: get(this.settings, 'actions.export', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
     };
     this.editable = this.settings.actions?.inlineEdition;
@@ -341,93 +348,86 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     if (this.settings.query?.pageSize) {
       this.pageSize = this.settings.query.pageSize;
     }
-    // Builds custom query.
-    const builtQuery = this.queryBuilder.buildQuery(this.settings);
-    if (!builtQuery) {
-      this.status = {
-        error: !this.loadingSettings,
-        message: this.translate.instant(
-          'components.widget.grid.errors.queryBuildFailed'
-        ),
-      };
-    } else {
-      this.dataQuery = this.apollo.watchQuery({
-        query: builtQuery,
-        variables: {
-          first: this.pageSize,
-          filter: this.queryFilter,
-          sortField: this.sortField || undefined,
-          sortOrder: this.sortOrder,
-          styles: this.style,
-        },
-        fetchPolicy: 'network-only',
-        nextFetchPolicy: 'cache-first',
-      });
-    }
+    if (get(this.settings, 'query')) {
+      // Builds custom query.
+      const builtQuery = this.queryBuilder.buildQuery(this.settings);
+      if (!builtQuery) {
+        this.status = {
+          error: !this.loadingSettings,
+          message: this.translate.instant(
+            'components.widget.grid.errors.queryBuildFailed'
+          ),
+        };
+      } else {
+        this.dataQuery = this.apollo.watchQuery({
+          query: builtQuery,
+          variables: {
+            first: this.pageSize,
+            filter: this.queryFilter,
+            sortField: this.sortField || undefined,
+            sortOrder: this.sortOrder,
+            styles: this.style,
+          },
+          fetchPolicy: 'no-cache',
+          nextFetchPolicy: 'cache-first',
+        });
+      }
 
-    // Build meta query
-    this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
-    if (this.metaQuery) {
-      this.loading = true;
-      this.metaQuery.subscribe(
-        async (res: any) => {
-          this.status = {
-            error: false,
-          };
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              this.metaFields = Object.assign({}, res.data[field]);
-              try {
-                await this.gridService.populateMetaFields(this.metaFields);
-              } catch (err) {
-                console.error(err);
+      // Build meta query
+      this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
+      if (this.metaQuery) {
+        this.loading = true;
+        this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
+          next: async ({ data }: any) => {
+            this.status = {
+              error: false,
+            };
+            for (const field in data) {
+              if (Object.prototype.hasOwnProperty.call(data, field)) {
+                this.metaFields = Object.assign({}, data[field]);
+                try {
+                  await this.gridService.populateMetaFields(this.metaFields);
+                } catch (err) {
+                  console.error(err);
+                }
+                const fields = this.settings?.query?.fields || [];
+                const defaultLayoutFields = this.defaultLayout.fields || {};
+                this.fields = this.gridService.getFields(
+                  fields,
+                  this.metaFields,
+                  defaultLayoutFields,
+                  ''
+                );
               }
-              const fields = this.settings?.query?.fields || [];
-              const defaultLayoutFields = this.defaultLayout.fields || {};
-              this.fields = this.gridService.getFields(
-                fields,
-                this.metaFields,
-                defaultLayoutFields,
-                ''
-              );
             }
-          }
-          this.getRecords();
-        },
-        (err: any) => {
-          this.loading = false;
-          this.status = {
-            error: true,
-            message: this.translate.instant(
-              'components.widget.grid.errors.metaQueryFetchFailed',
-              {
-                error:
-                  err.networkError?.error?.errors
-                    ?.map((x: any) => x.message)
-                    .join(', ') || err,
-              }
-            ),
-          };
-        }
-      );
-    } else {
-      this.loading = false;
-      this.status = {
-        error: !this.loadingSettings,
-        message: this.translate.instant(
-          'components.widget.grid.errors.metaQueryBuildFailed'
-        ),
-      };
-    }
-    this.loadTemplate();
-  }
-
-  /**
-   * Removes subscriptions when component is destroyed, to avoid duplication.
-   */
-  ngOnDestroy(): void {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
+            this.getRecords();
+          },
+          error: (err: any) => {
+            this.loading = false;
+            this.status = {
+              error: true,
+              message: this.translate.instant(
+                'components.widget.grid.errors.metaQueryFetchFailed',
+                {
+                  error:
+                    err.networkError?.error?.errors
+                      ?.map((x: any) => x.message)
+                      .join(', ') || err,
+                }
+              ),
+            };
+          },
+        });
+      } else {
+        this.loading = false;
+        this.status = {
+          error: !this.loadingSettings,
+          message: this.translate.instant(
+            'components.widget.grid.errors.metaQueryBuildFailed'
+          ),
+        };
+      }
+      this.loadTemplate();
     }
   }
 
@@ -443,9 +443,10 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             id: this.settings.template,
           },
         })
-        .subscribe((res) => {
-          if (res.data.form.structure) {
-            this.templateStructure = res.data.form.structure;
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data.form.structure) {
+            this.templateStructure = data.form.structure;
           }
         });
   }
@@ -597,8 +598,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
       promises.push(
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
+        firstValueFrom(
+          this.apollo.mutate<EditRecordMutationResponse>({
             mutation: EDIT_RECORD,
             variables: {
               id: item.id,
@@ -607,7 +608,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               lang: this.translate.currentLang,
             },
           })
-          .toPromise()
+        )
       );
     }
     return promises;
@@ -622,22 +623,22 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = true;
     this.updatedItems = [];
     if (this.dataQuery) {
-      this.dataSubscription = this.dataQuery.valueChanges.subscribe(
-        (res) => {
+      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+        next: ({ data }) => {
           this.loading = false;
           this.status = {
             error: false,
           };
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+          for (const field in data) {
+            if (Object.prototype.hasOwnProperty.call(data, field)) {
               const nodes =
-                res.data[field].edges.map((x: any) => ({
+                data[field].edges.map((x: any) => ({
                   ...x.node,
                   _meta: {
                     style: x.meta.style,
                   },
                 })) || [];
-              this.totalCount = res.data[field].totalCount;
+              this.totalCount = data[field].totalCount;
               this.items = cloneData(nodes);
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
@@ -657,7 +658,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             }
           }
         },
-        (err: any) => {
+        error: (err: any) => {
           this.status = {
             error: true,
             message: this.translate.instant(
@@ -671,8 +672,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
             ),
           };
           this.loading = false;
-        }
-      );
+        },
+      });
     } else {
       this.loading = false;
     }
@@ -696,6 +697,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.onPageChange({ skip: 0, take: this.pageSize });
     this.selectedRows = [];
     // this.updatedItems = [];
+    this.refresh$.next(true);
   }
 
   // === SELECTION ===
@@ -873,11 +875,14 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         },
         autoFocus: false,
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.onUpdate(isArray ? items : [items]);
-        }
-      });
+      dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          if (value) {
+            this.onUpdate(isArray ? items : [items]);
+          }
+        });
     }
   }
 
@@ -950,6 +955,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               ids,
             },
           })
+          .pipe(takeUntil(this.destroy$))
           .subscribe(() => {
             this.reloadData();
             this.layoutService.setRightSidenav(null);
@@ -978,8 +984,8 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
           const promises: Promise<any>[] = [];
           for (const item of items) {
             promises.push(
-              this.apollo
-                .mutate<ConvertRecordMutationResponse>({
+              firstValueFrom(
+                this.apollo.mutate<ConvertRecordMutationResponse>({
                   mutation: CONVERT_RECORD,
                   variables: {
                     id: item.id ? item.id : item,
@@ -987,7 +993,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
                     copyRecord: value.copyRecord,
                   },
                 })
-                .toPromise()
+              )
             );
           }
           Promise.all(promises).then(() => {
@@ -1011,6 +1017,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
         id: item.id,
         revert: (version: any) => this.confirmRevertDialog(item, version),
         template: this.settings.template || null,
+        refresh$: this.refresh$,
       },
     });
   }
@@ -1047,6 +1054,7 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
               version: version.id,
             },
           })
+          .pipe(takeUntil(this.destroy$))
           .subscribe(() => {
             this.reloadData();
             this.layoutService.setRightSidenav(null);
@@ -1153,33 +1161,13 @@ export class SafeCoreGridComponent implements OnInit, OnChanges, OnDestroy {
     this.skip = event.skip;
     this.pageSize = event.take;
     this.pageSizeChanged.emit(this.pageSize);
-    this.dataQuery.fetchMore({
-      variables: {
-        first: this.pageSize,
-        skip: this.skip,
-        filter: this.queryFilter,
-        sortField: this.sortField,
-        sortOrder: this.sortOrder,
-        styles: this.style,
-      },
-      updateQuery: (prev: any, { fetchMoreResult }: any) => {
-        // this.loading = false;
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        for (const field in fetchMoreResult) {
-          if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
-            this.loading = false;
-            return Object.assign({}, prev, {
-              [field]: {
-                edges: fetchMoreResult[field].edges,
-                totalCount: fetchMoreResult[field].totalCount,
-              },
-            });
-          }
-        }
-        return prev;
-      },
+    this.dataQuery.refetch({
+      first: this.pageSize,
+      skip: this.skip,
+      filter: this.queryFilter,
+      sortField: this.sortField || undefined,
+      sortOrder: this.sortOrder,
+      styles: this.style,
     });
   }
 

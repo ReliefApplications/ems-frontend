@@ -10,14 +10,17 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Application } from '../../models/application.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
-  MAT_SELECT_SCROLL_STRATEGY,
-  MatSelect,
-} from '@angular/material/select';
+  MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
+  MatLegacySelect as MatSelect,
+} from '@angular/material/legacy-select';
 import {
   GetApplicationsQueryResponse,
   GET_APPLICATIONS,
 } from './graphql/queries';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
+import { updateQueryUniqueValues } from '../../utils/update-queries';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.
@@ -51,13 +54,17 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     },
   ],
 })
-export class SafeApplicationDropdownComponent implements OnInit {
+export class SafeApplicationDropdownComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() value = [];
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 
   public selectedApplications: Application[] = [];
   private applications = new BehaviorSubject<Application[]>([]);
   public applications$!: Observable<Application[]>;
+  private cachedApplications: Application[] = [];
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   private pageInfo = {
     endCursor: '',
@@ -74,7 +81,9 @@ export class SafeApplicationDropdownComponent implements OnInit {
    * @param apollo This is the Apollo service that we'll use to make our GraphQL
    * queries.
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo) {
+    super();
+  }
 
   ngOnInit(): void {
     if (Array.isArray(this.value) && this.value.length > 0) {
@@ -89,8 +98,9 @@ export class SafeApplicationDropdownComponent implements OnInit {
             },
           },
         })
-        .subscribe((res) => {
-          this.selectedApplications = res.data.applications.edges.map(
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          this.selectedApplications = data.applications.edges.map(
             (x) => x.node
           );
         });
@@ -107,17 +117,11 @@ export class SafeApplicationDropdownComponent implements OnInit {
       });
 
     this.applications$ = this.applications.asObservable();
-    this.applicationsQuery.valueChanges.subscribe((res) => {
-      this.applications.next(res.data.applications.edges.map((x) => x.node));
-      if (this.selectedApplications.length > 0) {
-        const applicationsIds = this.applications.getValue().map((x) => x.id);
-        this.selectedApplications = this.selectedApplications.filter(
-          (x) => applicationsIds.indexOf(x.id) < 0
-        );
-      }
-      this.pageInfo = res.data.applications.pageInfo;
-      this.loading = res.loading;
-    });
+    this.applicationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.updateValues(data, loading);
+      });
   }
 
   /**
@@ -155,28 +159,37 @@ export class SafeApplicationDropdownComponent implements OnInit {
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        this.applicationsQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            return Object.assign({}, prev, {
-              applications: {
-                edges: [
-                  ...prev.applications.edges,
-                  ...fetchMoreResult.applications.edges,
-                ],
-                pageInfo: fetchMoreResult.applications.pageInfo,
-                totalCount: fetchMoreResult.applications.totalCount,
-              },
-            });
-          },
-        });
+        this.applicationsQuery
+          .fetchMore({
+            variables: {
+              first: ITEMS_PER_PAGE,
+              afterCursor: this.pageInfo.endCursor,
+            },
+          })
+          .then((results) => this.updateValues(results.data, results.loading));
       }
     }
+  }
+
+  /**
+   * Update application data value
+   *
+   * @param data query response data
+   * @param loading loading status
+   */
+  private updateValues(data: GetApplicationsQueryResponse, loading: boolean) {
+    this.cachedApplications = updateQueryUniqueValues(
+      this.cachedApplications,
+      data.applications.edges.map((x) => x.node)
+    );
+    this.applications.next(this.cachedApplications);
+    if (this.selectedApplications.length > 0) {
+      const applicationsIds = this.applications.getValue().map((x) => x.id);
+      this.selectedApplications = this.selectedApplications.filter(
+        (x) => applicationsIds.indexOf(x.id) < 0
+      );
+    }
+    this.pageInfo = data.applications.pageInfo;
+    this.loading = loading;
   }
 }

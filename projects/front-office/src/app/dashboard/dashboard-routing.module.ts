@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { SafePermissionGuard } from '@safe/builder';
 import { AccessGuard } from '../guards/access.guard';
 import { DashboardComponent } from './dashboard.component';
 
@@ -7,7 +8,7 @@ import { DashboardComponent } from './dashboard.component';
  * List of routes of the dashboard.
  * Uses lazy loading for performance.
  */
-export const routes = [
+export const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
@@ -53,9 +54,7 @@ export const routes = [
           {
             path: 'profile',
             loadChildren: () =>
-              import('./pages/profile/profile.module').then(
-                (m) => m.ProfileModule
-              ),
+              import('@safe/builder').then((m) => m.SafeProfileViewModule),
           },
           {
             path: 'settings',
@@ -64,15 +63,35 @@ export const routes = [
                 path: 'templates',
                 loadChildren: () =>
                   import('@safe/builder').then(
-                    (m) => m.SafeApplicationTemplatesModule
+                    (m) => m.SafeApplicationTemplatesViewModule
                   ),
-                // canActivate: [WhoPermissionGuard]
+                canActivate: [SafePermissionGuard],
+                data: {
+                  permission: {
+                    action: 'manage',
+                    subject: 'Template',
+                  },
+                },
               },
               {
                 path: 'distribution-lists',
                 loadChildren: () =>
                   import('@safe/builder').then(
-                    (m) => m.SafeApplicationDistributionListsModule
+                    (m) => m.SafeApplicationDistributionListsViewModule
+                  ),
+                canActivate: [SafePermissionGuard],
+                data: {
+                  permission: {
+                    action: 'manage',
+                    subject: 'DistributionList',
+                  },
+                },
+              },
+              {
+                path: 'notifications',
+                loadChildren: () =>
+                  import('@safe/builder').then(
+                    (m) => m.SafeApplicationNotificationsViewModule
                   ),
                 // canActivate: [SafePermissionGuard]
               },
@@ -101,9 +120,14 @@ export const routes = [
                     // canActivate: [SafePermissionGuard]
                   },
                 ],
+                canActivate: [SafePermissionGuard],
                 data: {
                   breadcrumb: {
                     key: 'common.role.few',
+                  },
+                  permission: {
+                    action: 'read',
+                    subject: 'Role',
                   },
                 },
               },
@@ -113,8 +137,8 @@ export const routes = [
                   {
                     path: '',
                     loadChildren: () =>
-                      import('./pages/users/users.module').then(
-                        (m) => m.UsersModule
+                      import('@safe/builder').then(
+                        (m) => m.SafeApplicationUsersViewModule
                       ),
                     // canActivate: [SafePermissionGuard]
                   },
@@ -132,14 +156,16 @@ export const routes = [
                     // canActivate: [SafePermissionGuard]
                   },
                 ],
+                canActivate: [SafePermissionGuard],
                 data: {
                   breadcrumb: {
                     key: 'common.user.few',
                   },
+                  permission: {
+                    action: 'read',
+                    subject: 'User',
+                  },
                 },
-              },
-              {
-                path: '**',
               },
             ],
           },

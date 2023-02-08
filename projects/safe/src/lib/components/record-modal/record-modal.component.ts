@@ -7,10 +7,10 @@ import {
   ViewChild,
 } from '@angular/core';
 import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-  MatDialog,
-} from '@angular/material/dialog';
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+  MatLegacyDialog as MatDialog,
+} from '@angular/material/legacy-dialog';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import * as Survey from 'survey-angular';
@@ -28,7 +28,7 @@ import { EDIT_RECORD, EditRecordMutationResponse } from './graphql/mutations';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import isEqual from 'lodash/isEqual';
 
@@ -57,8 +57,8 @@ export class SafeRecordModalComponent implements AfterViewInit {
   public record: Record = {};
   public modifiedAt: Date | null = null;
   public selectedTabIndex = 0;
-  public survey!: Survey.Model;
-  public surveyNext: Survey.Model | null = null;
+  public survey!: Survey.SurveyModel;
+  public surveyNext?: Survey.SurveyModel;
   private pages = new BehaviorSubject<any[]>([]);
   public canEdit: boolean | undefined = false;
 
@@ -84,7 +84,6 @@ export class SafeRecordModalComponent implements AfterViewInit {
    *
    * @param dialogRef This is the reference to the dialog that is being opened.
    * @param data This is the data that is passed to the modal when it is opened.
-   * @param environment This is the environment in which we run the application.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
    * @param dialog This is the Material dialog service
    * @param restService This is the service that is used to make http requests.
@@ -97,7 +96,6 @@ export class SafeRecordModalComponent implements AfterViewInit {
   constructor(
     public dialogRef: MatDialogRef<SafeRecordModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: MatDialog,
     private restService: SafeRestService,
@@ -106,16 +104,10 @@ export class SafeRecordModalComponent implements AfterViewInit {
     private formBuilderService: SafeFormBuilderService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {
-    this.environment = environment;
-  }
+  ) {}
 
   async ngAfterViewInit(): Promise<void> {
     this.canEdit = this.data.canUpdate;
-    const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
-    defaultThemeColorsSurvey['$main-hover-color'] =
-      this.environment.theme.primary;
 
     Survey.StylesManager.applyTheme();
     const promises: Promise<
@@ -124,36 +116,34 @@ export class SafeRecordModalComponent implements AfterViewInit {
     // Fetch structure from template if needed
     if (this.data.template) {
       promises.push(
-        this.apollo
-          .query<GetFormByIdQueryResponse>({
+        firstValueFrom(
+          this.apollo.query<GetFormByIdQueryResponse>({
             query: GET_FORM_STRUCTURE,
             variables: {
               id: this.data.template,
             },
           })
-          .toPromise()
-          .then((res) => {
-            this.form = res.data.form;
-          })
+        ).then(({ data }) => {
+          this.form = data.form;
+        })
       );
     }
     // Fetch record data
     promises.push(
-      this.apollo
-        .query<GetRecordByIdQueryResponse>({
+      firstValueFrom(
+        this.apollo.query<GetRecordByIdQueryResponse>({
           query: GET_RECORD_BY_ID,
           variables: {
             id: this.data.recordId,
           },
         })
-        .toPromise()
-        .then((res) => {
-          this.record = res.data.record;
-          this.modifiedAt = this.record.modifiedAt || null;
-          if (!this.data.template) {
-            this.form = this.record.form;
-          }
-        })
+      ).then(({ data }) => {
+        this.record = data.record;
+        this.modifiedAt = this.record.modifiedAt || null;
+        if (!this.data.template) {
+          this.form = this.record.form;
+        }
+      })
     );
     await Promise.all(promises);
     // INIT SURVEY
@@ -180,15 +170,14 @@ export class SafeRecordModalComponent implements AfterViewInit {
     this.survey.render(this.formContainer.nativeElement);
     setTimeout(() => {}, 100);
     this.setPages();
+    this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>
+      this.onDownloadFile(survey, options)
+    );
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
         this.form?.structure || '',
         this.form?.metadata,
         this.record
-      );
-      this.survey.onDownloadFile.add(
-        (survey: Survey.SurveyModel, options: any) =>
-          this.onDownloadFile(survey, options)
       );
       this.surveyNext.data = this.data.compareTo.data;
       this.surveyNext.mode = 'display';

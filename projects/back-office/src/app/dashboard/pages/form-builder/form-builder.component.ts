@@ -1,6 +1,10 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   EditFormMutationResponse,
@@ -13,7 +17,7 @@ import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
 } from './graphql/queries';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   SafeAuthService,
   SafeSnackBarService,
@@ -63,8 +67,9 @@ export class FormBuilderComponent implements OnInit {
 
   // === FORM EDITION ===
   public formActive = false;
-  public nameForm: FormGroup = new FormGroup({});
+  public nameForm: UntypedFormGroup = new UntypedFormGroup({});
   public hasChanges = false;
+  private isStep = false;
 
   /**
    * Form builder page
@@ -129,11 +134,11 @@ export class FormBuilderComponent implements OnInit {
             id: this.id,
           },
         })
-        .valueChanges.subscribe(
-          (res) => {
-            if (res.data.form) {
-              this.loading = res.loading;
-              this.form = res.data.form;
+        .valueChanges.subscribe({
+          next: ({ data, loading }) => {
+            if (data.form) {
+              this.loading = loading;
+              this.form = data.form;
               this.breadcrumbService.setBreadcrumb(
                 '@form',
                 this.form.name as string
@@ -143,8 +148,11 @@ export class FormBuilderComponent implements OnInit {
                 this.form.resource?.name as string
               );
               // this.breadcrumbService.setResourceName();
-              this.nameForm = new FormGroup({
-                formName: new FormControl(this.form.name, Validators.required),
+              this.nameForm = new UntypedFormGroup({
+                formName: new UntypedFormControl(
+                  this.form.name,
+                  Validators.required
+                ),
               });
               const storedStructure = window.localStorage.getItem(
                 `form:${this.id}`
@@ -173,12 +181,12 @@ export class FormBuilderComponent implements OnInit {
               this.router.navigate(['/forms']);
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             // redirect to default screen if error
             this.router.navigate(['/forms']);
-          }
-        );
+          },
+        });
     } else {
       this.loading = false;
       // redirect to default screen if error
@@ -219,10 +227,10 @@ export class FormBuilderComponent implements OnInit {
             structure,
           },
         })
-        .subscribe(
-          (res) => {
-            if (res.errors) {
-              this.snackBar.openSnackBar(res.errors[0].message, {
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(errors[0].message, {
                 error: true,
               });
               statusModal.close();
@@ -233,7 +241,7 @@ export class FormBuilderComponent implements OnInit {
                   value: this.form?.name,
                 })
               );
-              this.form = { ...res.data?.editForm, structure };
+              this.form = { ...data?.editForm, structure };
               this.structure = structure;
               localStorage.removeItem(`form:${this.id}`);
               this.hasChanges = false;
@@ -241,11 +249,11 @@ export class FormBuilderComponent implements OnInit {
               statusModal.close();
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             statusModal.close();
-          }
-        );
+          },
+        });
     }
   }
 
@@ -270,12 +278,12 @@ export class FormBuilderComponent implements OnInit {
           status: e.value,
         },
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ errors, data }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotUpdated', {
               type: this.translate.instant('common.status'),
-              error: res.errors[0].message,
+              error: errors[0].message,
             }),
             { error: true }
           );
@@ -286,7 +294,7 @@ export class FormBuilderComponent implements OnInit {
               value: e.value,
             })
           );
-          this.form = { ...this.form, status: res.data?.editForm.status };
+          this.form = { ...this.form, status: data?.editForm.status };
           statusModal.close();
         }
       });
@@ -305,8 +313,8 @@ export class FormBuilderComponent implements OnInit {
           id,
         },
       })
-      .valueChanges.subscribe((res) => {
-        this.structure = res.data.form.structure;
+      .valueChanges.subscribe(({ data }) => {
+        this.structure = data.form.structure;
       });
   }
 
@@ -351,12 +359,12 @@ export class FormBuilderComponent implements OnInit {
           name: formName,
         },
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ errors, data }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotUpdated', {
               type: this.translate.instant('common.form.one'),
-              error: res.errors[0].message,
+              error: errors[0].message,
             }),
             { error: true }
           );
@@ -368,7 +376,7 @@ export class FormBuilderComponent implements OnInit {
               value: formName,
             })
           );
-          this.form = { ...this.form, name: res.data?.editForm.name };
+          this.form = { ...this.form, name: data?.editForm.name };
           this.breadcrumbService.setBreadcrumb(
             '@form',
             this.form.name as string
@@ -399,12 +407,12 @@ export class FormBuilderComponent implements OnInit {
           permissions: e,
         },
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ errors, data }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotUpdated', {
               type: this.translate.instant('common.access'),
-              error: res.errors[0].message,
+              error: errors[0].message,
             }),
             { error: true }
           );
@@ -416,7 +424,7 @@ export class FormBuilderComponent implements OnInit {
               value: '',
             })
           );
-          this.form = { ...res.data?.editForm, structure: this.structure };
+          this.form = { ...data?.editForm, structure: this.structure };
           statusModal.close();
         }
       });

@@ -7,6 +7,7 @@ import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
 import { Record } from '../../models/record.model';
 import { EditRecordMutationResponse, EDIT_RECORD } from './graphql/mutations';
+import { Metadata } from '../../models/metadata.model';
 
 /**
  * Shared form builder service.
@@ -39,9 +40,9 @@ export class SafeFormBuilderService {
    */
   createSurvey(
     structure: string,
-    fields: any[] = [],
+    fields: Metadata[] = [],
     record?: Record
-  ): Survey.Survey {
+  ): Survey.SurveyModel {
     const survey = new Survey.Model(structure);
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)

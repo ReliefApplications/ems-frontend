@@ -57,10 +57,10 @@ export class SafeSchedulerComponent implements OnInit {
             display: true,
           },
         })
-        .valueChanges.subscribe((res) => {
+        .valueChanges.subscribe(({ data }) => {
           this.loading = false;
           this.events =
-            res.data.resource?.records?.edges?.map(
+            data.resource?.records?.edges?.map(
               (item) =>
                 ({
                   id: item.node?.id,
@@ -92,10 +92,10 @@ export class SafeSchedulerComponent implements OnInit {
             display: true,
           },
         })
-        .valueChanges.subscribe((res) => {
+        .valueChanges.subscribe(({ data }) => {
           this.loading = false;
           this.events =
-            res.data.form?.records?.map(
+            data.form?.records?.map(
               (item) =>
                 ({
                   id: item.id,

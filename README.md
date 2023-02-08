@@ -103,8 +103,6 @@ ng serve <project-name>
 ```
 Navigate to [http://localhost:4200/](http://localhost:4200/). The app will automatically reload if you change any of the source files.
 
-By default, if you omit the `<project-name>`, it will run the `back-office` project.
-
 ### Running both front-office and back-office
 If you want to run the dev server of the back-office and front-office at the same time:
 * in the `back-office` project:

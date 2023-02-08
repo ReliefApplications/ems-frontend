@@ -1,9 +1,18 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSelect } from '@angular/material/select';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
+import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import { Apollo } from 'apollo-angular';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 
@@ -37,9 +46,12 @@ interface IRecord {
   templateUrl: './choose-record-modal.component.html',
   styleUrls: ['./choose-record-modal.component.scss'],
 })
-export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
+export class SafeChooseRecordModalComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === REACTIVE FORM ===
-  chooseRecordForm: FormGroup = new FormGroup({});
+  chooseRecordForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === GRID SETTINGS ===
   public settings: GridSettings = {};
@@ -49,7 +61,6 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
   public records$!: Observable<IRecord[]>;
   private filter: any;
   private dataQuery: any;
-  private dataSubscription?: Subscription;
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -78,11 +89,13 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
    */
   constructor(
     private queryBuilder: QueryBuilderService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeChooseRecordModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.settings = { query: this.data.targetFormQuery };
@@ -112,23 +125,12 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
     });
     if (this.dataQuery) {
       this.records$ = this.records.asObservable();
-      this.dataSubscription = this.dataQuery.valueChanges.subscribe(
-        (res: any) => {
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-              const nodes =
-                res.data[field].edges.map((x: any) => ({
-                  value: x.node.id,
-                  label: x.node[this.data.targetFormField],
-                })) || [];
-              this.pageInfo = res.data[field].pageInfo;
-              this.records.next(nodes);
-            }
-          }
-          this.loading = false;
+      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+        next: ({ data, loading }: any) => {
+          this.updateValues(data, loading);
         },
-        () => (this.loading = false)
-      );
+        complete: () => (this.loading = false),
+      });
     } else {
       this.loading = false;
     }
@@ -176,12 +178,6 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  ngOnDestroy(): void {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
-    }
-  }
-
   /**
    * Adds scroll listener to select.
    *
@@ -208,44 +204,39 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        this.dataQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            skip: this.records.getValue().length,
-            afterCursor: this.pageInfo.endCursor,
-            filter: this.filter,
-            sortField:
-              this.settings.query?.sort && this.settings.query.sort.field
-                ? this.settings.query.sort.field
-                : null,
-            sortOrder: this.settings.query?.sort?.order || '',
-          },
-          updateQuery: (prev: any, { fetchMoreResult }: any) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            for (const field in fetchMoreResult) {
-              if (
-                Object.prototype.hasOwnProperty.call(fetchMoreResult, field)
-              ) {
-                return Object.assign({}, prev, {
-                  [field]: {
-                    edges: [
-                      ...prev[field].edges,
-                      ...fetchMoreResult[field].edges,
-                    ],
-                    pageInfo: fetchMoreResult[field].pageInfo,
-                    totalCount: fetchMoreResult[field].totalCount,
-                  },
-                });
-              } else {
-                return prev;
-              }
-            }
-            return prev;
-          },
-        });
+        this.dataQuery
+          .fetchMore({
+            variables: {
+              first: ITEMS_PER_PAGE,
+              skip: this.records.getValue().length,
+              afterCursor: this.pageInfo.endCursor,
+            },
+          })
+          .then((results: any) =>
+            this.updateValues(results.data, results.loading)
+          );
       }
     }
+  }
+
+  /**
+   * Update record data value
+   *
+   * @param data query response data
+   * @param loading loading status
+   */
+  private updateValues(data: any, loading: boolean) {
+    for (const field in data) {
+      if (Object.prototype.hasOwnProperty.call(data, field)) {
+        const nodes =
+          data[field].edges.map((x: any) => ({
+            value: x.node.id,
+            label: x.node[this.data.targetFormField],
+          })) || [];
+        this.pageInfo = data[field].pageInfo;
+        this.records.next(nodes);
+      }
+    }
+    this.loading = loading;
   }
 }

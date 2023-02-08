@@ -1,6 +1,7 @@
 import { gql } from 'apollo-angular';
 import { Record } from '../../../../models/record.model';
 import { Form } from '../../../../models/form.model';
+import { Resource } from '../../../../models/resource.model';
 
 // === GET RECORD BY ID ===
 /** Graphql request for getting a record by its id */
@@ -30,7 +31,6 @@ export const GET_RECORD_BY_ID = gql`
 
 /** Model for GetRecordByIdQueryResponse object */
 export interface GetRecordByIdQueryResponse {
-  loading: boolean;
   record: Record;
 }
 
@@ -79,7 +79,6 @@ export const GET_RECORD_DETAILS = gql`
 
 /** Model for GetRecordDetailsQueryResponse object */
 export interface GetRecordDetailsQueryResponse {
-  loading: boolean;
   record: Record;
 }
 
@@ -217,4 +216,18 @@ export const GET_FORM_BY_ID = gql`
 /** Interface for getFormByIdQueryResponse object */
 export interface GetFormByIdQueryResponse {
   form: Form;
+}
+
+/** Graphql request for getting the user permissions on a resource */
+export const GET_USER_ROLES_PERMISSIONS = gql`
+  query GetUserRolesPermissions($resource: ID!) {
+    resource(id: $resource) {
+      canCreateRecords
+    }
+  }
+`;
+
+/** Model for GetUserRolePermissionsQueryResponse object */
+export interface GetUserRolesPermissionsQueryResponse {
+  resource: Resource;
 }

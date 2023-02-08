@@ -1,7 +1,11 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { Subscription } from 'rxjs';
 import {
   Form,
@@ -11,6 +15,7 @@ import {
   SafeApplicationService,
   SafeSnackBarService,
   SafeWorkflowService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import {
   GetFormByIdQueryResponse,
@@ -26,7 +31,7 @@ import {
   EditPageMutationResponse,
   EDIT_PAGE,
 } from './graphql/mutations';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
@@ -37,7 +42,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent implements OnInit, OnDestroy {
+export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
   @ViewChild(SafeFormComponent)
   private formComponent?: SafeFormComponent;
 
@@ -52,12 +57,9 @@ export class FormComponent implements OnInit, OnDestroy {
 
   // === TAB NAME EDITION ===
   public formActive = false;
-  public tabNameForm: FormGroup = new FormGroup({});
+  public tabNameForm: UntypedFormGroup = new UntypedFormGroup({});
   public page?: Page;
   public step?: Step;
-
-  // === ROUTE ===
-  private routeSubscription?: Subscription;
   public isStep = false;
 
   /**
@@ -79,10 +81,12 @@ export class FormComponent implements OnInit, OnDestroy {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.formActive = false;
       this.loading = true;
       this.id = params.id;
@@ -100,8 +104,8 @@ export class FormComponent implements OnInit, OnDestroy {
             },
           })
           .pipe(
-            switchMap((res) => {
-              this.step = res.data.step;
+            switchMap(({ data }) => {
+              this.step = data.step;
               return this.apollo.query<GetFormByIdQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
@@ -110,14 +114,17 @@ export class FormComponent implements OnInit, OnDestroy {
               });
             })
           )
-          .subscribe((res) => {
-            this.form = res.data.form;
-            this.tabNameForm = new FormGroup({
-              tabName: new FormControl(this.step?.name, Validators.required),
+          .subscribe(({ data, loading }) => {
+            this.form = data.form;
+            this.tabNameForm = new UntypedFormGroup({
+              tabName: new UntypedFormControl(
+                this.step?.name,
+                Validators.required
+              ),
             });
             this.applicationId =
               this.step?.workflow?.page?.application?.id || '';
-            this.loading = res.data.loading;
+            this.loading = loading;
           });
       } else {
         this.querySubscription = this.apollo
@@ -128,8 +135,8 @@ export class FormComponent implements OnInit, OnDestroy {
             },
           })
           .pipe(
-            switchMap((res) => {
-              this.page = res.data.page;
+            switchMap(({ data }) => {
+              this.page = data.page;
               return this.apollo.query<GetFormByIdQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
@@ -138,13 +145,16 @@ export class FormComponent implements OnInit, OnDestroy {
               });
             })
           )
-          .subscribe((res2) => {
-            this.form = res2.data.form;
-            this.tabNameForm = new FormGroup({
-              tabName: new FormControl(this.page?.name, Validators.required),
+          .subscribe(({ data, loading }) => {
+            this.form = data.form;
+            this.tabNameForm = new UntypedFormGroup({
+              tabName: new UntypedFormControl(
+                this.page?.name,
+                Validators.required
+              ),
             });
             this.applicationId = this.page?.application?.id || '';
-            this.loading = res2.data.loading;
+            this.loading = loading;
           });
       }
     });
@@ -164,68 +174,29 @@ export class FormComponent implements OnInit, OnDestroy {
     const { tabName } = this.tabNameForm.value;
     this.toggleFormActive();
     if (this.isStep) {
-      this.apollo
-        .mutate<EditStepMutationResponse>({
-          mutation: EDIT_STEP,
-          variables: {
-            id: this.id,
-            name: tabName,
-          },
-        })
-        .subscribe((res) => {
-          if (res.errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.step.one'),
-                error: res.errors[0].message,
-              }),
-              { error: true }
-            );
-          } else {
-            if (res.data) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.step.one').toLowerCase(),
-                  value: tabName,
-                })
-              );
-              this.step = { ...this.step, name: res.data.editStep.name };
-              this.workflowService.updateStepName(res.data.editStep);
-            }
-          }
-        });
+      // If form is workflow step
+      const callback = () => {
+        this.step = { ...this.step, name: tabName };
+      };
+      this.workflowService.updateStepName(
+        {
+          id: this.id,
+          name: tabName,
+        },
+        callback
+      );
     } else {
-      this.apollo
-        .mutate<EditPageMutationResponse>({
-          mutation: EDIT_PAGE,
-          variables: {
-            id: this.id,
-            name: tabName,
-          },
-        })
-        .subscribe((res) => {
-          if (res.errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.page.one').toLowerCase(),
-                error: res.errors[0].message,
-              }),
-              { error: true }
-            );
-          } else {
-            if (res.data) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.page.one').toLowerCase(),
-                  value: tabName,
-                })
-              );
-              const newPage = { ...this.page, name: res.data.editPage.name };
-              this.page = newPage;
-              this.applicationService.updatePageName(res.data.editPage);
-            }
-          }
-        });
+      // If form is page
+      const callback = () => {
+        this.page = { ...this.page, name: tabName };
+      };
+      this.applicationService.updatePageName(
+        {
+          id: this.id,
+          name: tabName,
+        },
+        callback
+      );
     }
   }
 
@@ -244,14 +215,14 @@ export class FormComponent implements OnInit, OnDestroy {
             permissions: e,
           },
         })
-        .subscribe((res) => {
+        .subscribe(({ data }) => {
           this.form = {
             ...this.form,
-            permissions: res.data?.editStep.permissions,
+            permissions: data?.editStep.permissions,
           };
           this.step = {
             ...this.step,
-            permissions: res.data?.editStep.permissions,
+            permissions: data?.editStep.permissions,
           };
         });
     } else {
@@ -263,14 +234,14 @@ export class FormComponent implements OnInit, OnDestroy {
             permissions: e,
           },
         })
-        .subscribe((res) => {
+        .subscribe(({ data }) => {
           this.form = {
             ...this.form,
-            permissions: res.data?.editPage.permissions,
+            permissions: data?.editPage.permissions,
           };
           this.page = {
             ...this.page,
-            permissions: res.data?.editPage.permissions,
+            permissions: data?.editPage.permissions,
           };
         });
     }
@@ -309,12 +280,6 @@ export class FormComponent implements OnInit, OnDestroy {
           relativeTo: this.route,
         });
       }
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
     }
   }
 }

@@ -1,6 +1,6 @@
 <safe-modal size="big" [closable]="true">
   <ng-container *ngIf="!loading">
-    <div class="form-infos">
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
       <safe-record-summary
         *ngIf="record"
         [record]="record"
@@ -32,7 +32,10 @@
       </mat-tab-group>
     </div>
   </ng-container>
-  <mat-dialog-content #formContainer></mat-dialog-content>
+  <mat-dialog-content
+    class="grow max-h-full"
+    #formContainer
+  ></mat-dialog-content>
   <mat-dialog-actions align="end">
     <safe-button (click)="onClose()" variant="danger">{{
       'common.cancel' | translate

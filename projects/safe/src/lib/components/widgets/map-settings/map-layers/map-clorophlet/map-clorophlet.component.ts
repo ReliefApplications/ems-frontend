@@ -1,6 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import {
+  MatLegacyDialog as MatDialog,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { clorophletForm, divisionForm } from '../../map-forms';
 import { MapClorophletDivisionComponent } from '../map-clorophlet-division/map-clorophlet-division.component';
 
@@ -21,7 +24,7 @@ interface DialogData {
   styleUrls: ['./map-clorophlet.component.scss'],
 })
 export class MapClorophletComponent implements OnInit {
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
 
   public tableColumns = ['label', 'color', 'actions'];
 
@@ -35,8 +38,8 @@ export class MapClorophletComponent implements OnInit {
    *
    * @returns Divisions as form array.
    */
-  get divisions(): FormArray {
-    return this.form.get('divisions') as FormArray;
+  get divisions(): UntypedFormArray {
+    return this.form.get('divisions') as UntypedFormArray;
   }
 
   /**

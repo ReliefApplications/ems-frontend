@@ -1,12 +1,13 @@
 <safe-modal size="medium">
   <h1 mat-dialog-title>{{ 'components.users.invite.confirm' | translate }}</h1>
   <div mat-dialog-content>
-    <div class="invite-label">
+    <div class="mb-6">
       {{ 'components.users.invite.description' | translate }}
     </div>
     <!-- DOWNLOAD TEMPLATE / UPLOAD -->
-    <div class="file-row">
+    <div class="flex justify-between gap-2 mb-4 flex-wrap items-center">
       <kendo-upload
+        class="grow"
         #fileReader
         name="Upload XLSX"
         (upload)="onUpload($event)"
@@ -14,9 +15,13 @@
         [multiple]="false"
       >
       </kendo-upload>
-      <button mat-button (click)="onDownload()" color="primary">
+      <safe-button
+        (click)="onDownload()"
+        variant="primary"
+        icon="file_download"
+      >
         {{ 'common.downloadTemplate' | translate }}
-      </button>
+      </safe-button>
     </div>
     <kendo-grid
       [data]="gridData"

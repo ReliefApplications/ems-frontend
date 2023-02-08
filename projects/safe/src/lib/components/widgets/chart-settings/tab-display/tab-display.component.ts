@@ -1,10 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import {
   LEGEND_POSITIONS,
   LEGEND_ORIENTATIONS,
   TITLE_POSITIONS,
 } from '../constants';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Display tab of the chart settings modal.
@@ -14,8 +16,11 @@ import {
   templateUrl: './tab-display.component.html',
   styleUrls: ['./tab-display.component.scss'],
 })
-export class TabDisplayComponent implements OnInit {
-  @Input() formGroup!: FormGroup;
+export class TabDisplayComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
+  @Input() formGroup!: UntypedFormGroup;
   @Input() type: any;
 
   public legendPositions = LEGEND_POSITIONS;
@@ -27,14 +32,23 @@ export class TabDisplayComponent implements OnInit {
   ];
 
   /** @returns the form for the chart */
-  public get chartForm(): FormGroup {
-    return this.formGroup.get('chart') as FormGroup;
+  public get chartForm(): UntypedFormGroup {
+    return this.formGroup.get('chart') as UntypedFormGroup;
+  }
+
+  /**
+   * Constructor of the display tab of the chart settings modal.
+   */
+  constructor() {
+    super();
   }
 
   ngOnInit(): void {
     const sizeControl = this.chartForm.get('title.size');
     sizeControl?.setValue(sizeControl.value);
-    sizeControl?.valueChanges.subscribe(() => this.onToggleStyle(''));
+    sizeControl?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.onToggleStyle(''));
   }
 
   /**

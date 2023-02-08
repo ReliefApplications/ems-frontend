@@ -1,6 +1,6 @@
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
 <ng-container *ngIf="!loading">
-  <div class="actions">
+  <div class="mb-4 flex flex-row justify-end">
     <safe-button
       icon="add"
       category="secondary"
@@ -19,7 +19,9 @@
           <th mat-header-cell *matHeaderCellDef>
             {{ 'common.title' | translate }}
           </th>
-          <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+          <td mat-cell *matCellDef="let element" class="font-bold">
+            {{ element.title }}
+          </td>
         </ng-container>
         <ng-container matColumnDef="subscribedRoles">
           <th mat-header-cell *matHeaderCellDef>

@@ -57,8 +57,8 @@ export class SafeDownloadService {
     });
     this.restService
       .get(path, { ...options, responseType: 'blob', headers })
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           const blob = new Blob([res], { type });
           this.saveFile(fileName, blob);
           snackBarRef.instance.data = {
@@ -69,7 +69,7 @@ export class SafeDownloadService {
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
         },
-        () => {
+        error: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant(
               'common.notifications.file.download.error'
@@ -78,8 +78,8 @@ export class SafeDownloadService {
             error: true,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -115,8 +115,8 @@ export class SafeDownloadService {
     });
     this.restService
       .post(path, body, { responseType: 'blob', headers })
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           if (body?.email) {
             snackBarRef.instance.data = {
               message: this.translate.instant(
@@ -137,7 +137,7 @@ export class SafeDownloadService {
             setTimeout(() => snackBarRef.dismiss(), 1000);
           }
         },
-        () => {
+        error: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant(
               'common.notifications.file.download.error'
@@ -146,8 +146,8 @@ export class SafeDownloadService {
             error: true,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
-        }
-      );
+        },
+      });
   }
 
   /**

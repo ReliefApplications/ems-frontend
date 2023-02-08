@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { prettifyLabel } from '../../utils/prettify';
 import get from 'lodash/get';
 import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
@@ -7,6 +7,11 @@ import { MULTISELECT_TYPES } from '../../components/ui/core-grid/grid/grid.const
 import { TranslateService } from '@ngx-translate/core';
 import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
 import { isNil } from 'lodash';
+import {
+  getListOfKeys,
+  getWithExpiry,
+  setWithExpiry,
+} from '../../utils/cache-with-expiry';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -45,7 +50,7 @@ export class SafeGridService {
    * @param translate Translate service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apiProxyService: SafeApiProxyService,
     private translate: TranslateService
   ) {}
@@ -78,7 +83,7 @@ export class SafeGridService {
       fields.map((f) => {
         const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
         let metaData = get(metaFields, fullName);
-        const canSee = get(metaData, 'permissions.canSee');
+        const canSee = get(metaData, 'permissions.canSee', true);
         const canUpdate = get(metaData, 'permissions.canUpdate', false);
         const hidden: boolean =
           (!isNil(canSee) && !canSee) || options.hidden || false;
@@ -146,14 +151,16 @@ export class SafeGridService {
               name: fullName,
               title,
               type: f.type,
+              layoutFormat: f.format,
               format: this.getFieldFormat(f.type),
               editor: this.getFieldEditor(f.type),
               filter: !options.filter ? '' : this.getFieldFilter(f.type),
-              meta: metaData,
+              meta: metaData ? metaData : { type: 'text' },
               disabled:
                 disabled ||
                 DISABLED_FIELDS.includes(f.name) ||
-                metaData?.readOnly,
+                metaData?.readOnly ||
+                metaData?.isCalculated,
               hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
@@ -263,33 +270,53 @@ export class SafeGridService {
    */
   public async populateMetaFields(metaFields: any): Promise<void> {
     const promises: Promise<any>[] = [];
+    const cachedKeys = await getListOfKeys();
+    /**
+     * Fetches choices from URL, cache them and set meta.
+     *
+     * @param url URL to target.
+     * @param fieldName Field name to update meta.
+     * @param meta Meta to expand. Coressponding to fieldName.
+     * @returns A promise to execute everyhting.
+     */
+    const fetchChoicesAndSetMeta = (
+      url: string,
+      fieldName: string,
+      meta: any
+    ): Promise<void> =>
+      this.apiProxyService
+        .promisedRequestWithHeaders(url)
+        .then((value: any) => {
+          const choices = this.extractChoices(value, meta.choicesByUrl);
+          setWithExpiry(url, choices);
+          metaFields[fieldName] = {
+            ...meta,
+            choices,
+          };
+        });
+
     for (const fieldName of Object.keys(metaFields)) {
       const meta = metaFields[fieldName];
       if (meta.choicesByUrl) {
         const url: string = meta.choicesByUrl.url;
-        const localRes = localStorage.getItem(url);
-        if (localRes) {
-          metaFields[fieldName] = {
-            ...meta,
-            choices: this.extractChoices(
-              JSON.parse(localRes),
-              meta.choicesByUrl
-            ),
-            // choicesByUrl: null,
-          };
-        } else {
+        if (cachedKeys.includes(url)) {
           promises.push(
-            this.apiProxyService
-              .promisedRequestWithHeaders(url)
-              .then((value: any) => {
-                localStorage.setItem(url, JSON.stringify(value));
-                metaFields[fieldName] = {
-                  ...meta,
-                  choices: this.extractChoices(value, meta.choicesByUrl),
-                  // choicesByUrl: null,
-                };
-              })
+            getWithExpiry(url).then(
+              (choices: { value: string; text: string }[] | null) => {
+                if (choices === null) {
+                  return fetchChoicesAndSetMeta(url, fieldName, meta);
+                } else {
+                  metaFields[fieldName] = {
+                    ...meta,
+                    choices,
+                  };
+                  return;
+                }
+              }
+            )
           );
+        } else {
+          promises.push(fetchChoicesAndSetMeta(url, fieldName, meta));
         }
       }
       if (meta.choices) {
@@ -358,7 +385,7 @@ export class SafeGridService {
    * @param fields List of grid fields.
    * @returns Form group of the item.
    */
-  public createFormGroup(dataItem: any, fields: any[]): FormGroup {
+  public createFormGroup(dataItem: any, fields: any[]): UntypedFormGroup {
     const formGroup: any = {};
     fields
       .filter((x) => !x.disabled)

@@ -7,7 +7,7 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { FormGroup, FormArray, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormArray, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -20,12 +20,14 @@ import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Form } from '../../../models/form.model';
 import { Overlay } from '@angular/cdk/overlay';
-import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
+import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
 import { scrollFactory } from '../../../utils/scroll-factory';
 import { Resource } from '../../../models/resource.model';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
 import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -42,9 +44,12 @@ import { DistributionList } from '../../../models/distribution-list.model';
     },
   ],
 })
-export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
+export class SafeGridSettingsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit
+{
   // === REACTIVE FORM ===
-  public formGroup!: FormGroup;
+  public formGroup!: UntypedFormGroup;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -88,7 +93,9 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
     private queryBuilder: QueryBuilderService
-  ) {}
+  ) {
+    super();
+  }
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
@@ -102,88 +109,116 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
     // this.queryName = this.formGroup.get('query')?.value.name;
     this.getQueryMetaData();
 
-    this.formGroup.get('resource')?.valueChanges.subscribe((value) => {
-      if (value) {
-        // Check if the query changed to clean modifications and fields for email in floating button
-        if (value !== this.resource?.id) {
-          // this.queryName = name;
-          this.formGroup?.get('layouts')?.setValue([]);
-          this.formGroup?.get('aggregations')?.setValue([]);
-          this.formGroup?.get('template')?.setValue(null);
-          this.formGroup?.get('template')?.enable();
-          const floatingButtons = this.formGroup?.get(
-            'floatingButtons'
-          ) as FormArray;
-          for (const floatingButton of floatingButtons.controls) {
-            const modifications = floatingButton.get(
-              'modifications'
-            ) as FormArray;
-            modifications.clear();
-            this.formGroup
-              ?.get('floatingButton.modifySelectedRows')
-              ?.setValue(false);
-            const bodyFields = floatingButton.get('bodyFields') as FormArray;
-            bodyFields.clear();
+    // Subscribe to form resource changes
+    this.formGroup
+      .get('resource')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          // Check if the query changed to clean modifications and fields for email in floating button
+          if (value !== this.resource?.id) {
+            // this.queryName = name;
+            this.formGroup?.get('layouts')?.setValue([]);
+            this.formGroup?.get('aggregations')?.setValue([]);
+            this.formGroup?.get('template')?.setValue(null);
+            this.formGroup?.get('template')?.enable();
+            const floatingButtons = this.formGroup?.get(
+              'floatingButtons'
+            ) as UntypedFormArray;
+            for (const floatingButton of floatingButtons.controls) {
+              const modifications = floatingButton.get(
+                'modifications'
+              ) as UntypedFormArray;
+              modifications.clear();
+              this.formGroup
+                ?.get('floatingButton.modifySelectedRows')
+                ?.setValue(false);
+              const bodyFields = floatingButton.get(
+                'bodyFields'
+              ) as UntypedFormArray;
+              bodyFields.clear();
+            }
           }
-        }
-        this.getQueryMetaData();
-      } else {
-        this.fields = [];
-      }
-    });
-
-    this.formGroup.get('aggregations')?.valueChanges.subscribe((value) => {
-      if (value) {
-        if (value.length > 0) {
-          this.formGroup.controls.layouts.clearValidators();
+          this.getQueryMetaData();
         } else {
-          if (this.formGroup.controls.layouts.value.length > 0) {
-            this.formGroup.controls.aggregations.clearValidators();
+          this.fields = [];
+        }
+      });
+
+    // Subscribe to form aggregations changes
+    this.formGroup
+      .get('aggregations')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          // Some aggregations are selected
+          if (value.length > 0) {
+            // Remove validators on layouts fields
+            this.formGroup.controls.layouts.clearValidators();
           } else {
-            this.formGroup.controls.aggregations.setValidators([
-              Validators.required,
-            ]);
-            this.formGroup.controls.layouts.setValidators([
-              Validators.required,
-            ]);
+            // No aggregation selected
+            if (this.formGroup.controls.layouts.value.length > 0) {
+              // Remove validators on aggregations field if layouts are selected
+              this.formGroup.controls.aggregations.clearValidators();
+            } else {
+              // Else, reset all validators
+              this.formGroup.controls.aggregations.setValidators([
+                Validators.required,
+              ]);
+              this.formGroup.controls.layouts.setValidators([
+                Validators.required,
+              ]);
+            }
           }
         }
-      }
-      this.formGroup.controls.aggregations.updateValueAndValidity({
-        emitEvent: false,
+        // Update fields without sending update events to prevent infinite loops
+        this.formGroup.controls.aggregations.updateValueAndValidity({
+          emitEvent: false,
+        });
+        this.formGroup.controls.layouts.updateValueAndValidity({
+          emitEvent: false,
+        });
       });
-      this.formGroup.controls.layouts.updateValueAndValidity({
-        emitEvent: false,
-      });
-    });
+    // If some aggregations are selected, remove validators on layouts field
     if (this.formGroup.get('aggregations')?.value.length > 0) {
       this.formGroup.controls.layouts.clearValidators();
     }
 
-    this.formGroup.get('layouts')?.valueChanges.subscribe((value) => {
-      if (value) {
-        if (value.length > 0) {
-          this.formGroup.controls.aggregations.clearValidators();
-        } else {
-          if (this.formGroup.controls.aggregations.value.length > 0) {
-            this.formGroup.controls.layouts.clearValidators();
+    // Subscribe to form layouts changes
+    this.formGroup
+      .get('layouts')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          // Some layouts are selected
+          if (value.length > 0) {
+            // Remove validators on aggregations field
+            this.formGroup.controls.aggregations.clearValidators();
           } else {
-            this.formGroup.controls.layouts.setValidators([
-              Validators.required,
-            ]);
-            this.formGroup.controls.aggregations.setValidators([
-              Validators.required,
-            ]);
+            // No layout selected
+            if (this.formGroup.controls.aggregations.value.length > 0) {
+              // Remove validators on layouts field if aggregations are selected
+              this.formGroup.controls.layouts.clearValidators();
+            } else {
+              // Else, reset all validators
+              this.formGroup.controls.layouts.setValidators([
+                Validators.required,
+              ]);
+              this.formGroup.controls.aggregations.setValidators([
+                Validators.required,
+              ]);
+            }
           }
         }
-      }
-      this.formGroup.controls.aggregations.updateValueAndValidity({
-        emitEvent: false,
+        // Update fields without sending update events to prevent infinite loops
+        this.formGroup.controls.aggregations.updateValueAndValidity({
+          emitEvent: false,
+        });
+        this.formGroup.controls.layouts.updateValueAndValidity({
+          emitEvent: false,
+        });
       });
-      this.formGroup.controls.layouts.updateValueAndValidity({
-        emitEvent: false,
-      });
-    });
+    // If some layouts are selected, remove validators on aggregations field
     if (this.formGroup.get('layouts')?.value.length > 0) {
       this.formGroup.controls.aggregations.clearValidators();
     }
@@ -191,34 +226,38 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.formGroup) {
-      this.formGroup.valueChanges.subscribe(() => {
-        this.change.emit(this.formGroup);
-      });
+      this.formGroup.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.change.emit(this.formGroup);
+        });
 
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
+      this.applicationService.application$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((application: Application | null) => {
           if (application) {
             this.apollo
-              .watchQuery<GetChannelsQueryResponse>({
+              .query<GetChannelsQueryResponse>({
                 query: GET_CHANNELS,
                 variables: {
                   application: application.id,
                 },
               })
-              .valueChanges.subscribe((res) => {
-                this.channels = res.data.channels;
+              .pipe(takeUntil(this.destroy$))
+              .subscribe(({ data }) => {
+                this.channels = data.channels;
               });
           } else {
             this.apollo
-              .watchQuery<GetChannelsQueryResponse>({
+              .query<GetChannelsQueryResponse>({
                 query: GET_CHANNELS,
               })
-              .valueChanges.subscribe((res) => {
-                this.channels = res.data.channels;
+              .pipe(takeUntil(this.destroy$))
+              .subscribe(({ data }) => {
+                this.channels = data.channels;
               });
           }
-        }
-      );
+        });
     }
   }
 
@@ -242,11 +281,11 @@ export class SafeGridSettingsComponent implements OnInit, AfterViewInit {
             firstAggregations: aggregationIds?.length || 10,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
-            this.resource = res.data.resource;
-            this.relatedForms = res.data.resource.relatedForms || [];
-            this.templates = res.data.resource.forms || [];
+        .subscribe(({ data }) => {
+          if (data) {
+            this.resource = data.resource;
+            this.relatedForms = data.resource.relatedForms || [];
+            this.templates = data.resource.forms || [];
             this.fields = this.queryBuilder.getFields(
               this.resource.queryName as string
             );

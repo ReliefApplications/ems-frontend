@@ -45,7 +45,7 @@
           </form>
         </ng-container>
       </div>
-      <div class="flex items-center gap-2" *ngIf="!formActive">
+      <div class="flex items-center gap-1" *ngIf="!formActive">
         <safe-access
           [access]="dashboard.permissions"
           [application]="applicationId"
@@ -61,9 +61,9 @@
         >
         </safe-access>
         <safe-button
+          variant="grey"
           [isIcon]="true"
           icon="more_vert"
-          class="share-button"
           [matMenuTriggerFor]="menu"
           cdkOverlayOrigin
           #appMenuTrigger="cdkOverlayOrigin"

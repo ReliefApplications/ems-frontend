@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RoleDetailsComponent } from './role-details.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { SafeButtonModule } from '../../ui/button/button.module';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { RoleUsersModule } from '../role-users/role-users.module';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 
 /**
  * General tab of Role Summary.
@@ -25,6 +26,7 @@ import { RoleUsersModule } from '../role-users/role-users.module';
     SafeButtonModule,
     MatSelectModule,
     RoleUsersModule,
+    MatTabsModule,
   ],
   exports: [RoleDetailsComponent],
 })

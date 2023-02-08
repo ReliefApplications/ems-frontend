@@ -1,12 +1,11 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+  MatLegacyDialog as MatDialog,
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { Form } from '../../../models/form.model';
-import { Layout } from '../../../models/layout.model';
 import { Resource } from '../../../models/resource.model';
 import { SafeEditLayoutModalComponent } from '../edit-layout-modal/edit-layout-modal.component';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -16,14 +15,14 @@ import {
   GetFormLayoutsResponse,
   GET_FORM_LAYOUTS,
 } from './graphql/queries';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { SafeGraphQLSelectComponent } from '../../graphql-select/graphql-select.component';
 
 /**
  * Data needed for the dialog, should contain a layouts array, a form and a resource
  */
 interface DialogData {
-  layouts: Layout[];
+  hasLayouts: boolean;
   form?: Form;
   resource?: Resource;
 }
@@ -40,13 +39,13 @@ interface DialogData {
 export class AddLayoutModalComponent implements OnInit {
   private form?: Form;
   public resource?: Resource;
-  public layouts: Layout[] = [];
+  public hasLayouts = false;
   public nextStep = false;
   public queryRef!:
     | QueryRef<GetResourceLayoutsResponse>
     | QueryRef<GetFormLayoutsResponse>
     | null;
-  public selectedLayoutControl = new FormControl('');
+  public selectedLayoutControl = new UntypedFormControl('');
 
   /** Reference to graphql select for layout */
   @ViewChild(SafeGraphQLSelectComponent)
@@ -68,7 +67,7 @@ export class AddLayoutModalComponent implements OnInit {
     private gridLayoutService: SafeGridLayoutService,
     private apollo: Apollo
   ) {
-    this.layouts = data.layouts;
+    this.hasLayouts = data.hasLayouts;
     this.form = data.form;
     this.resource = data.resource;
   }
@@ -112,9 +111,9 @@ export class AddLayoutModalComponent implements OnInit {
       if (layout) {
         this.gridLayoutService
           .addLayout(layout, this.resource?.id, this.form?.id)
-          .subscribe((res) => {
-            if (res.data?.addLayout) {
-              this.dialogRef.close(res.data.addLayout);
+          .subscribe(({ data }) => {
+            if (data?.addLayout) {
+              this.dialogRef.close(data.addLayout);
             } else {
               this.dialogRef.close();
             }

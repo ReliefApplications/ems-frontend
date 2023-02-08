@@ -1,6 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  UntypedFormGroup,
+  UntypedFormBuilder,
+  Validators,
+} from '@angular/forms';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 
 /**
  * Add new application position component (modal)
@@ -12,7 +19,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class PositionModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  positionForm: FormGroup = new FormGroup({});
+  positionForm: UntypedFormGroup = new UntypedFormGroup({});
 
   /**
    * Add new application position component
@@ -25,7 +32,7 @@ export class PositionModalComponent implements OnInit {
    * @param data.title title of the position
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<PositionModalComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {

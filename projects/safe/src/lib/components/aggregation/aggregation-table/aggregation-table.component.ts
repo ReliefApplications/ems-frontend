@@ -1,14 +1,17 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddAggregationModalComponent } from '../add-aggregation-modal/add-aggregation-modal.component';
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeEditAggregationModalComponent } from '../edit-aggregation-modal/edit-aggregation-modal.component';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
+import { get } from 'lodash';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Aggregation table component.
@@ -18,10 +21,13 @@ import { SafeAggregationService } from '../../../services/aggregation/aggregatio
   templateUrl: './aggregation-table.component.html',
   styleUrls: ['./aggregation-table.component.scss'],
 })
-export class AggregationTableComponent implements OnInit, OnChanges {
+export class AggregationTableComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges
+{
   @Input() resource: Resource | null = null;
   @Input() form: Form | null = null;
-  @Input() selectedAggregations: FormControl | null = null;
+  @Input() selectedAggregations: UntypedFormControl | null = null;
 
   aggregations: Layout[] = [];
   allAggregations: Layout[] = [];
@@ -36,15 +42,19 @@ export class AggregationTableComponent implements OnInit, OnChanges {
   constructor(
     private dialog: MatDialog,
     private aggregationService: SafeAggregationService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     const defaultValue = this.selectedAggregations?.value;
     this.setAllAggregations();
     this.setSelectedAggregations(defaultValue);
-    this.selectedAggregations?.valueChanges.subscribe((value) => {
-      this.setSelectedAggregations(value);
-    });
+    this.selectedAggregations?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.setSelectedAggregations(value);
+      });
   }
 
   ngOnChanges(): void {
@@ -92,7 +102,12 @@ export class AggregationTableComponent implements OnInit, OnChanges {
   public onAdd(): void {
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        aggregations: this.allAggregations,
+        hasAggregations:
+          get(
+            this.form ? this.form : this.resource,
+            'aggregations.totalCount',
+            0
+          ) > 0, // check if at least one existing aggregation
         form: this.form,
         resource: this.resource,
       },
@@ -126,11 +141,11 @@ export class AggregationTableComponent implements OnInit, OnChanges {
       if (value) {
         this.aggregationService
           .editAggregation(aggregation, value, this.resource?.id, this.form?.id)
-          .subscribe((res: any) => {
-            if (res.data.editAggregation) {
+          .subscribe(({ data }: any) => {
+            if (data.editAggregation) {
               const layouts = [...this.allAggregations];
               const index = layouts.findIndex((x) => x.id === aggregation.id);
-              layouts[index] = res.data.editAggregation;
+              layouts[index] = data.editAggregation;
               this.allAggregations = layouts;
               this.setSelectedAggregations(this.selectedAggregations?.value);
             }

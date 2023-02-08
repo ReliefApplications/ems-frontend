@@ -1,13 +1,13 @@
 import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import {
   GetQueryMetaDataQueryResponse,
   GetQueryTypes,
   GET_QUERY_META_DATA,
   GET_QUERY_TYPES,
 } from './graphql/queries';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client';
 import get from 'lodash/get';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
@@ -47,21 +47,25 @@ export interface Field {
     | 'date'
     | 'time';
   label?: string;
-  automated: boolean;
+  automated?: boolean;
   filter: any;
   fields?: Field[];
+  options?: { value: any; text: string }[];
+}
+
+/** Stored query field interface definition */
+export interface QueryField {
+  name: string;
+  kind: 'OBJECT' | 'SCALAR' | 'LIST';
+  label?: string;
+  type?: string;
+  ofType?: any;
 }
 
 /** Query interface definition */
 interface Query {
   name: string;
-  fields: {
-    name: string;
-    kind: 'OBJECT' | 'SCALAR' | 'LIST';
-    label?: string;
-    ofType?: any;
-    type?: string;
-  }[];
+  fields: QueryField[];
   filter?: CompositeFilterDescriptor;
   sort?: {
     field?: string;
@@ -110,22 +114,22 @@ export class QueryBuilderService {
    * @param apollo Apollo client
    * @param formBuilder Angular form builder
    */
-  constructor(private apollo: Apollo, private formBuilder: FormBuilder) {
+  constructor(private apollo: Apollo, private formBuilder: UntypedFormBuilder) {
     this.apollo
       .query<GetQueryTypes>({
         query: GET_QUERY_TYPES,
       })
-      .subscribe((res) => {
+      .subscribe(({ data }) => {
         // eslint-disable-next-line no-underscore-dangle
-        this.availableTypes.next(res.data.__schema.types);
+        this.availableTypes.next(data.__schema.types);
         this.availableQueries.next(
           // eslint-disable-next-line no-underscore-dangle
-          res.data.__schema.queryType.fields.filter((x: any) =>
+          data.__schema.queryType.fields.filter((x: any) =>
             x.name.startsWith('all')
           )
         );
         // eslint-disable-next-line no-underscore-dangle
-        this.userFields = res.data.__schema.types
+        this.userFields = data.__schema.types
           .find((x: any) => x.name === 'User')
           .fields.filter((x: any) => USER_FIELDS.includes(x.name));
       });
@@ -329,7 +333,11 @@ export class QueryBuilderService {
    */
   public buildQuery(settings: { query: Query; [key: string]: any }) {
     const builtQuery = settings.query;
-    if (builtQuery.name && builtQuery?.fields && builtQuery.fields.length > 0) {
+    if (
+      builtQuery?.name &&
+      builtQuery?.fields &&
+      builtQuery.fields.length > 0
+    ) {
       const fields = ['canUpdate\ncanDelete\n'].concat(
         this.buildFields(builtQuery.fields)
       );
@@ -492,17 +500,17 @@ export class QueryBuilderService {
    *
    * @param query custom query.
    */
-  // TO DO: Create an interface for this type of field (+ for the one retrieved from graphQL if possible)
   public async getFilterFields(query: any): Promise<Field[]> {
     if (query) {
-      const sourceQuery = this.getQuerySource(query)?.toPromise();
+      const querySource$ = this.getQuerySource(query);
+      const sourceQuery = querySource$ && firstValueFrom(querySource$);
       if (sourceQuery) {
         const res = await sourceQuery;
         for (const field in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, field)) {
             const source = get(res.data[field], '_source', null);
             if (source) {
-              const metaQuery = this.getQueryMetaData(source).toPromise();
+              const metaQuery = firstValueFrom(this.getQueryMetaData(source));
               const res2 = await metaQuery;
               const dataset = res2.data.form
                 ? res2.data.form

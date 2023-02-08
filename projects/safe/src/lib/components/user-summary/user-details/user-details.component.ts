@@ -1,8 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import get from 'lodash/get';
-import { Permissions, User } from '../../../models/user.model';
-import { SafeAuthService } from '../../../services/auth/auth.service';
+import { User } from '../../../models/user.model';
+import { AppAbility } from '../../../services/auth/auth.service';
 import { SafeRestService } from '../../../services/rest/rest.service';
 
 /**
@@ -15,8 +19,7 @@ import { SafeRestService } from '../../../services/rest/rest.service';
 })
 export class UserDetailsComponent implements OnInit {
   @Input() user!: User;
-  public form!: FormGroup;
-  public editable = false;
+  public form!: UntypedFormGroup;
 
   @Output() edit = new EventEmitter();
 
@@ -36,13 +39,13 @@ export class UserDetailsComponent implements OnInit {
    * User summary details component
    *
    * @param fb Angular form builder
-   * @param authService Shared authentication service
    * @param restService Shared rest service
+   * @param ability user ability
    */
   constructor(
-    private fb: FormBuilder,
-    private authService: SafeAuthService,
-    private restService: SafeRestService
+    private fb: UntypedFormBuilder,
+    private restService: SafeRestService,
+    private ability: AppAbility
   ) {}
 
   ngOnInit(): void {
@@ -52,11 +55,8 @@ export class UserDetailsComponent implements OnInit {
       email: [{ value: this.user.username, disabled: true }],
     });
     this.getAttributes();
-    this.editable = this.authService.userHasClaim(
-      Permissions.canSeeUsers,
-      true
-    );
-    if (!this.editable) {
+    // Disable edition if cannot see user
+    if (this.ability.cannot('update', 'User')) {
       this.form.disable();
     }
   }

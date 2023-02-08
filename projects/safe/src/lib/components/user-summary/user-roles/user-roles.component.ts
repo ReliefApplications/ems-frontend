@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Application } from '../../../models/application.model';
 import { User } from '../../../models/user.model';
+import { SafeAuthService } from '../../../services/auth/auth.service';
 
 /** Component for the roles tab of the user summary */
 @Component({
@@ -15,6 +16,24 @@ export class UserRolesComponent implements OnInit {
   @Output() edit = new EventEmitter();
 
   @Input() loading = false;
+  public canSeeGroups = false;
 
-  ngOnInit(): void {}
+  /**
+   * Component for the roles tab of the user summary
+   *
+   * @param authService Shared auth service
+   */
+  constructor(private authService: SafeAuthService) {}
+
+  async ngOnInit(): Promise<void> {
+    this.canSeeGroups = await new Promise<boolean>((resolve) => {
+      this.authService.user$.subscribe((user) => {
+        // can_see_groups is a permission that is only available globally
+        // therefore no need to check against the current application
+        resolve(
+          user?.permissions?.some((p) => p.type === 'can_see_groups') ?? false
+        );
+      });
+    });
+  }
 }

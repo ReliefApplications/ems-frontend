@@ -38,6 +38,5 @@ export const GET_API_CONFIGURATION = gql`
 
 /** Modelf for GetApiConfigurationQueryResponse object */
 export interface GetApiConfigurationQueryResponse {
-  loading: boolean;
   apiConfiguration: ApiConfiguration;
 }

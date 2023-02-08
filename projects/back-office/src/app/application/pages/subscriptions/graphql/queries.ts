@@ -5,8 +5,18 @@ import { Form, Application } from '@safe/builder';
 
 /** Graphql query for getting form names */
 export const GET_FORM_NAMES = gql`
-  query GetFormNames($first: Int, $afterCursor: ID, $sortField: String) {
-    forms(first: $first, afterCursor: $afterCursor, sortField: $sortField) {
+  query GetFormNames(
+    $first: Int
+    $afterCursor: ID
+    $sortField: String
+    $filter: JSON
+  ) {
+    forms(
+      first: $first
+      afterCursor: $afterCursor
+      sortField: $sortField
+      filter: $filter
+    ) {
       edges {
         node {
           id
@@ -25,7 +35,6 @@ export const GET_FORM_NAMES = gql`
 
 /** Model for GetFormsQueryResposne object */
 export interface GetFormsQueryResponse {
-  loading: boolean;
   forms: {
     edges: {
       node: Form;
@@ -68,7 +77,6 @@ export const GET_ROUTING_KEYS = gql`
 
 /** Model for GetRoutingKeysQueryResponse object */
 export interface GetRoutingKeysQueryResponse {
-  loading: boolean;
   applications: {
     edges: {
       node: Application;

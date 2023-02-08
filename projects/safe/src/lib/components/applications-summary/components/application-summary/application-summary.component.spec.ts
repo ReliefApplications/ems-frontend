@@ -6,7 +6,7 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 
 describe('SafeApplicationSummaryComponent', () => {
   let component: SafeApplicationSummaryComponent;
@@ -35,7 +35,6 @@ describe('SafeApplicationSummaryComponent', () => {
     component.application = {
       name: 'Dummy Application',
       createdAt: new Date(),
-      usersCount: 250,
       status: undefined,
     };
     fixture.detectChanges();

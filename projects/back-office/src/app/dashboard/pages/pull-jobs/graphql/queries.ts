@@ -44,7 +44,6 @@ export const GET_PULL_JOBS = gql`
 
 /** Model for GetPullJobsQueryResponse object */
 export interface GetPullJobsQueryResponse {
-  loading: boolean;
   pullJobs: {
     edges: {
       node: PullJob;
@@ -87,7 +86,6 @@ export const GET_ROUTING_KEYS = gql`
 
 /** Model for GetRoutingKeysQueryResponse object */
 export interface GetRoutingKeysQueryResponse {
-  loading: boolean;
   applications: {
     edges: {
       node: Application;
@@ -104,8 +102,18 @@ export interface GetRoutingKeysQueryResponse {
 // === GET FORMS ===
 /** Graphql query for getting form names */
 export const GET_FORM_NAMES = gql`
-  query GetFormNames($first: Int, $afterCursor: ID, $sortField: String) {
-    forms(first: $first, afterCursor: $afterCursor, sortField: $sortField) {
+  query GetFormNames(
+    $first: Int
+    $afterCursor: ID
+    $sortField: String
+    $filter: JSON
+  ) {
+    forms(
+      first: $first
+      afterCursor: $afterCursor
+      sortField: $sortField
+      filter: $filter
+    ) {
       edges {
         node {
           id
@@ -124,7 +132,6 @@ export const GET_FORM_NAMES = gql`
 
 /** Model for GetFormsQueryResposne object */
 export interface GetFormsQueryResponse {
-  loading: boolean;
   forms: {
     edges: {
       node: Form;
@@ -176,7 +183,6 @@ export const GET_SHORT_FORM_BY_ID = gql`
 
 /** Model for getFormByIdQueryResponse object */
 export interface GetFormByIdQueryResponse {
-  loading: boolean;
   form: Form;
 }
 
@@ -226,7 +232,6 @@ export const GET_API_CONFIGURATIONS = gql`
 
 /** Model for GetApiConfigurationQueryResponse object */
 export interface GetApiConfigurationsQueryResponse {
-  loading: boolean;
   apiConfigurations: {
     edges: {
       node: ApiConfiguration;
