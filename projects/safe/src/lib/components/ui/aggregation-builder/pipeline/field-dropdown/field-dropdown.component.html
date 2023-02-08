@@ -12,8 +12,8 @@
         <mat-option
           *ngFor="let subField of field.fields"
           [value]="field.name + '.' + subField.name"
-          >{{ subField.name }}</mat-option
-        >
+          >{{ subField.name }}
+        </mat-option>
       </mat-optgroup>
     </ng-container>
   </mat-select>

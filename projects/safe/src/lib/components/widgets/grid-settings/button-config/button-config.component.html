@@ -1,6 +1,6 @@
-<form [formGroup]="formGroup" class="form-container">
+<form [formGroup]="formGroup" class="flex">
   <div class="flex flex-col w-full">
-    <div style="display: flex; justify-content: space-between">
+    <div class="flex justify-between">
       <mat-slide-toggle formControlName="show">{{
         'components.widget.settings.grid.buttons.enable' | translate
       }}</mat-slide-toggle>
@@ -81,13 +81,13 @@
       }}</mat-checkbox>
 
       <!-- Auto edition of selected records -->
-      <div class="update-form">
+      <div class="flex flex-col">
         <mat-checkbox formControlName="modifySelectedRows">{{
           'components.widget.settings.grid.buttons.callback.modify' | translate
         }}</mat-checkbox>
         <div
           *ngIf="formGroup.value.modifySelectedRows"
-          class="update-list sub-parameters"
+          class="sub-parameters flex flex-col"
         >
           <form
             [formGroup]="$any(modification)"

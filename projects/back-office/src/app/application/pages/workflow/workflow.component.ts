@@ -1,7 +1,11 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Workflow,
@@ -13,8 +17,8 @@ import {
   SafeWorkflowService,
   SafeAuthService,
   Application,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
 import {
   EditPageMutationResponse,
   EDIT_PAGE,
@@ -25,6 +29,7 @@ import {
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Application workflow page component.
@@ -34,7 +39,10 @@ import get from 'lodash/get';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent implements OnInit, OnDestroy {
+export class WorkflowComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
 
@@ -42,19 +50,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   public id = '';
   public applicationId?: string;
   public workflow?: Workflow;
-  private workflowSubscription?: Subscription;
   public steps: Step[] = [];
 
   // === WORKFLOW EDITION ===
   public formActive = false;
-  public workflowNameForm: FormGroup = new FormGroup({});
+  public workflowNameForm: UntypedFormGroup = new UntypedFormGroup({});
   public canUpdate = false;
 
   // === ACTIVE STEP ===
   public activeStep = 0;
-
-  // === ROUTE ===
-  private routeSubscription?: Subscription;
 
   // === DUP APP SELECTION ===
   public showAppMenu = false;
@@ -85,22 +89,28 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.formActive = false;
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.loading = true;
       this.id = params.id;
       this.workflowService.loadWorkflow(this.id);
     });
 
-    this.workflowSubscription = this.workflowService.workflow$.subscribe(
-      (workflow: Workflow | null) => {
+    this.workflowService.workflow$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((workflow: Workflow | null) => {
         if (workflow) {
           this.steps = workflow.steps || [];
-          this.workflowNameForm = new FormGroup({
-            workflowName: new FormControl(workflow.name, Validators.required),
+          this.workflowNameForm = new UntypedFormGroup({
+            workflowName: new UntypedFormControl(
+              workflow.name,
+              Validators.required
+            ),
           });
           this.loading = false;
           if (!this.workflow || workflow.id !== this.workflow.id) {
@@ -137,8 +147,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.loading = true;
           this.steps = [];
         }
-      }
-    );
+      });
   }
 
   /**
@@ -156,20 +165,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   saveName(): void {
     const { workflowName } = this.workflowNameForm.value;
     this.toggleFormActive();
-    this.apollo
-      .mutate<EditPageMutationResponse>({
-        mutation: EDIT_PAGE,
-        variables: {
-          id: this.workflow?.page?.id,
-          name: workflowName,
-        },
-      })
-      .subscribe((res) => {
-        if (res.data) {
-          this.workflow = { ...this.workflow, name: res.data.editPage.name };
-          this.applicationService.updatePageName(res.data.editPage);
-        }
-      });
+    const callback = () => {
+      this.workflow = { ...this.workflow, name: workflowName };
+    };
+    this.applicationService.updatePageName(
+      {
+        id: this.workflow?.page?.id,
+        name: workflowName,
+      },
+      callback
+    );
   }
 
   /**
@@ -186,10 +191,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           permissions: e,
         },
       })
-      .subscribe((res) => {
+      .subscribe(({ data }) => {
         this.workflow = {
           ...this.workflow,
-          permissions: res.data?.editPage.permissions,
+          permissions: data?.editPage.permissions,
         };
       });
   }
@@ -251,15 +256,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                 id: step.id,
               },
             })
-            .subscribe((res) => {
-              if (res.data) {
+            .subscribe(({ data }) => {
+              if (data) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectDeleted', {
                     value: this.translate.instant('common.step.one'),
                   })
                 );
                 this.steps = this.steps.filter(
-                  (x) => x.id !== res.data?.deleteStep.id
+                  (x) => x.id !== data?.deleteStep.id
                 );
                 if (index === this.activeStep) {
                   this.onOpenStep(-1);
@@ -315,8 +320,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           steps: steps.map((step) => step.id),
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ errors, data }) => {
+        if (data) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectReordered', {
               type: this.translate.instant('common.step.one'),
@@ -331,7 +336,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotUpdated', {
               type: this.translate.instant('common.workflow.one'),
-              error: res.errors ? res.errors[0].message : '',
+              error: errors ? errors[0].message : '',
             })
           );
         }
@@ -381,15 +386,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     } else {
       this.router.navigate(['./'], { relativeTo: this.route });
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
-    if (this.workflowSubscription) {
-      this.workflowSubscription.unsubscribe();
     }
   }
 }

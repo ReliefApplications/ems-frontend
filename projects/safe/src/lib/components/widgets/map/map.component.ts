@@ -1,17 +1,15 @@
-import { Apollo } from 'apollo-angular';
-import {
-  Component,
-  AfterViewInit,
-  Input,
-  OnDestroy,
-  Inject,
-} from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { Component, AfterViewInit, Input, Inject } from '@angular/core';
 import { applyFilters } from './filter';
 import { DomService } from '../../../services/dom/dom.service';
 import get from 'lodash/get';
 import { SafeMapPopupComponent } from './map-popup/map-popup.component';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import {
+  QueryBuilderService,
+  QueryResponse,
+} from '../../../services/query-builder/query-builder.service';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
@@ -34,7 +32,7 @@ interface IMarkersLayerValue {
   [name: string]: any;
 }
 
-/** Available basemaps */
+/** Available baseMaps */
 const BASEMAP_LAYERS: any = {
   Streets: 'ArcGIS:Streets',
   Navigation: 'ArcGIS:Navigation',
@@ -57,7 +55,10 @@ const BASEMAP_LAYERS: any = {
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
 })
-export class SafeMapComponent implements AfterViewInit, OnDestroy {
+export class SafeMapComponent
+  extends SafeUnsubscribeComponent
+  implements AfterViewInit
+{
   // === MAP ===
   public mapId: string;
   public map: any;
@@ -75,8 +76,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private legendControl: any;
 
   // === RECORDS ===
-  private dataQuery: any;
-  private dataSubscription?: Subscription;
+  private dataQuery!: QueryRef<QueryResponse>;
   private fields: any[] = [];
 
   // === WIDGET CONFIGURATION ===
@@ -91,7 +91,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
    *
    * @param environment platform environment
    * @param apollo Apollo client
-   * @param queryBuilder The querybuilder service
+   * @param queryBuilder The queryBuilder service
    * @param domService Shared dom service
    */
   constructor(
@@ -100,6 +100,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     private queryBuilder: QueryBuilderService,
     private domService: DomService
   ) {
+    super();
     this.esriApiKey = environment.esriApiKey;
     this.mapId = this.generateUniqueId();
   }
@@ -107,7 +108,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   /**
    * Generation of an unique id for the map (in case multiple widgets use map).
    *
-   * @param parts Number of parts in the id (seperated by dashes "-")
+   * @param parts Number of parts in the id (separated by dashes "-")
    * @returns A random unique id
    */
   private generateUniqueId(parts: number = 4): string {
@@ -130,7 +131,8 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     // Gets the settings from the DB.
     if (this.settings.query) {
       const builtQuery = this.queryBuilder.buildQuery(this.settings);
-      this.dataQuery = this.apollo.watchQuery<any>({
+      if (!builtQuery) return;
+      this.dataQuery = this.apollo.watchQuery({
         query: builtQuery,
         variables: {
           first: 100,
@@ -233,8 +235,9 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
   private getData(): void {
     this.map.closePopup(this.popupMarker);
 
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe(
-      (res: any) => {
+    this.dataQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
         const today = new Date();
         this.lastUpdate =
           ('0' + today.getHours()).slice(-2) +
@@ -248,8 +251,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
           this.overlays,
           Object.keys(this.markersCategories)
         );
-      }
-    );
+      });
   }
 
   /**
@@ -305,7 +307,7 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    // Loops throught clorophlets and adds them to the map
+    // Loops through clorophlets and adds them to the map
     if (this.settings.clorophlets) {
       this.settings.clorophlets.map((value: any) => {
         if (value.divisions.length > 0) {
@@ -475,6 +477,10 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
       div.innerHTML = '';
       // Prevent double click on legend panel to zoom
       L.DomEvent.on(div, 'dblclick', (e: any) => {
+        e.stopPropagation();
+      });
+      // Prevent scroll on legend panel to zoom
+      L.DomEvent.on(div, 'mousewheel', (e: any) => {
         e.stopPropagation();
       });
       // Creates legend for clorophlets
@@ -710,14 +716,5 @@ export class SafeMapComponent implements AfterViewInit, OnDestroy {
     this.basemap = L.esri.Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
-  }
-
-  /**
-   * Removes subscriptions of the component.
-   */
-  public ngOnDestroy(): void {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
-    }
   }
 }

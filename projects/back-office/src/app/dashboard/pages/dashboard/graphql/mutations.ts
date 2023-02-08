@@ -43,7 +43,6 @@ export const EDIT_STEP = gql`
 
 /** Edit step gql mutation response interface */
 export interface EditStepMutationResponse {
-  loading: boolean;
   editStep: Step;
 }
 
@@ -74,7 +73,6 @@ export const EDIT_PAGE = gql`
 
 /** Edit page gql mutation response interface */
 export interface EditPageMutationResponse {
-  loading: boolean;
   editPage: Page;
 }
 
@@ -116,6 +114,5 @@ export const EDIT_DASHBOARD = gql`
 
 /** Edit dashboard gql mutation response interface */
 export interface EditDashboardMutationResponse {
-  loading: boolean;
   editDashboard: Dashboard;
 }

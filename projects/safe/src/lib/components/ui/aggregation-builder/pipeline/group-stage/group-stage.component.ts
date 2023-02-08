@@ -1,9 +1,15 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  UntypedFormArray,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { isEmpty } from 'lodash';
 import { AggregationBuilderService } from '../../../../../services/aggregation-builder/aggregation-builder.service';
 import { groupByRuleForm } from '../../aggregation-builder-forms';
 import { Accumulators, DateOperators } from '../expressions/operators';
+import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Group Stage pipeline component.
@@ -13,7 +19,10 @@ import { Accumulators, DateOperators } from '../expressions/operators';
   templateUrl: './group-stage.component.html',
   styleUrls: ['./group-stage.component.scss'],
 })
-export class SafeGroupStageComponent implements OnInit {
+export class SafeGroupStageComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() form!: AbstractControl;
   @Input() fields: any[] = [];
   public operators = Accumulators;
@@ -22,12 +31,12 @@ export class SafeGroupStageComponent implements OnInit {
 
   /** @returns this for as form group */
   get formGroup() {
-    return this.form as FormGroup;
+    return this.form as UntypedFormGroup;
   }
 
   /** @returns list of addFields of the stage as Form array */
   get addFields() {
-    return this.formGroup.controls.addFields as FormArray;
+    return this.formGroup.controls.addFields as UntypedFormArray;
   }
 
   /**
@@ -35,8 +44,8 @@ export class SafeGroupStageComponent implements OnInit {
    *
    * @returns form array
    */
-  get groupBy(): FormArray {
-    return this.formGroup.controls.groupBy as FormArray;
+  get groupBy(): UntypedFormArray {
+    return this.formGroup.controls.groupBy as UntypedFormArray;
   }
 
   /**
@@ -44,13 +53,17 @@ export class SafeGroupStageComponent implements OnInit {
    *
    * @param aggregationBuilder Shared aggregation builder service
    */
-  constructor(private aggregationBuilder: AggregationBuilderService) {}
+  constructor(private aggregationBuilder: AggregationBuilderService) {
+    super();
+  }
 
   ngOnInit(): void {
     this.getDateFields(this.groupBy.value);
-    this.groupBy.valueChanges.subscribe((value) => {
-      this.getDateFields(value);
-    });
+    this.groupBy.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.getDateFields(value);
+      });
   }
 
   /**

@@ -51,6 +51,8 @@
               textField="name"
               [query]="resourcesQuery"
               formControlName="resource"
+              (searchChange)="onResourceSearchChange($event)"
+              [filterable]="true"
             >
             </safe-graphql-select>
           </mat-form-field>
@@ -85,7 +87,7 @@
                     {{ template.name }}
                     <mat-chip-list
                       *ngIf="template.core"
-                      class="core-form rounded-lg"
+                      class="float-right py-1.5 px-0 rounded-lg"
                     >
                       <mat-chip class="primary-chip !rounded-lg" disabled>{{
                         'models.form.core' | translate

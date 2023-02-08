@@ -23,7 +23,7 @@
       category="secondary"
       variant="primary"
       (click)="onAdd()"
-      *ngIf="canAdd"
+      *ngIf="'create' | able: 'ReferenceData'"
     >
       {{ 'models.referenceData.add' | translate }}
     </safe-button>
@@ -31,7 +31,7 @@
 </div>
 
 <!-- Table container -->
-<div class="overflow-x-hidden shadow-light">
+<div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table *ngIf="!loading" mat-table [dataSource]="dataSource" matSort>
@@ -41,7 +41,9 @@
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        <td mat-cell *matCellDef="let element" class="font-bold">
+          {{ element.name }}
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="type">

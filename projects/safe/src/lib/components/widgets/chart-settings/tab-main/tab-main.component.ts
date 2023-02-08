@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Resource } from '../../../../models/resource.model';
 import { Subject } from 'rxjs';
@@ -11,12 +11,15 @@ import {
   GET_RESOURCES,
 } from '../graphql/queries';
 import { AddAggregationModalComponent } from '../../../aggregation/add-aggregation-modal/add-aggregation-modal.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { SafeEditAggregationModalComponent } from '../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
+import { get } from 'lodash';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -29,8 +32,11 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './tab-main.component.html',
   styleUrls: ['./tab-main.component.scss'],
 })
-export class TabMainComponent implements OnInit {
-  @Input() formGroup!: FormGroup;
+export class TabMainComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
+  @Input() formGroup!: UntypedFormGroup;
   @Input() type: any;
   public types = CHART_TYPES;
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
@@ -56,16 +62,24 @@ export class TabMainComponent implements OnInit {
     private aggregationBuilder: AggregationBuilderService,
     private queryBuilder: QueryBuilderService,
     private aggregationService: SafeAggregationService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.formGroup.get('chart.type')?.valueChanges.subscribe(() => {
-      this.reload.next(true);
-    });
-    this.formGroup.get('resource')?.valueChanges.subscribe((value) => {
-      this.getResource(value);
-      this.formGroup.get('chart.aggregationId')?.setValue(null);
-    });
+    this.formGroup
+      .get('chart.type')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.reload.next(true);
+      });
+    this.formGroup
+      .get('resource')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.getResource(value);
+        this.formGroup.get('chart.aggregationId')?.setValue(null);
+      });
     if (this.formGroup.value.resource) {
       this.getResource(this.formGroup.value.resource);
     }
@@ -93,8 +107,9 @@ export class TabMainComponent implements OnInit {
           aggregationIds: aggregationId ? [aggregationId] : null,
         },
       })
-      .subscribe((res) => {
-        this.resource = res.data.resource;
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        this.resource = data.resource;
         if (aggregationId && this.resource.aggregations?.edges[0]) {
           this.aggregation = this.resource.aggregations.edges[0].node;
           this.setAvailableSeriesFields();
@@ -117,19 +132,26 @@ export class TabMainComponent implements OnInit {
                 (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
             )
         );
-      const selectedFields = this.aggregation.sourceFields.map((x: string) => {
-        const field = { ...fields.find((y) => x === y.name) };
-        if (field.type.kind !== 'SCALAR') {
-          field.fields = this.queryBuilder
-            .getFieldsFromType(
-              field.type.kind === 'OBJECT'
-                ? field.type.name
-                : field.type.ofType.name
-            )
-            .filter((y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR');
-        }
-        return field;
-      });
+      const selectedFields = this.aggregation.sourceFields
+        .map((x: string) => {
+          const field = fields.find((y) => x === y.name);
+          if (!field) return null;
+          if (field.type.kind !== 'SCALAR') {
+            Object.assign(field, {
+              fields: this.queryBuilder
+                .getFieldsFromType(
+                  field.type.kind === 'OBJECT'
+                    ? field.type.name
+                    : field.type.ofType.name
+                )
+                .filter(
+                  (y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR'
+                ),
+            });
+          }
+          return field;
+        })
+        .filter((x: any) => x !== null);
       this.availableSeriesFields = this.aggregationBuilder.fieldsAfter(
         selectedFields,
         this.aggregation?.pipeline
@@ -145,8 +167,7 @@ export class TabMainComponent implements OnInit {
   public addAggregation(): void {
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        aggregations:
-          this.resource?.aggregations?.edges.map((x) => x.node) || [],
+        hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
         resource: this.resource,
       },
     });
@@ -175,12 +196,35 @@ export class TabMainComponent implements OnInit {
       if (value && this.aggregation) {
         this.aggregationService
           .editAggregation(this.aggregation, value, this.resource?.id)
-          .subscribe((res) => {
-            if (res.data?.editAggregation) {
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(({ data }) => {
+            if (data?.editAggregation) {
               this.getResource(this.resource?.id as string);
             }
           });
       }
+    });
+  }
+
+  /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  public onResourceSearchChange(search: string): void {
+    const variables = this.resourcesQuery.variables;
+    this.resourcesQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
     });
   }
 }

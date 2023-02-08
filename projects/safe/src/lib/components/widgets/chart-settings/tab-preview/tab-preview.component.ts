@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 
 /**
@@ -11,7 +11,7 @@ import { AggregationBuilderService } from '../../../../services/aggregation-buil
   styleUrls: ['./tab-preview.component.scss'],
 })
 export class TabPreviewComponent implements OnInit {
-  @Input() formGroup!: FormGroup;
+  @Input() formGroup!: UntypedFormGroup;
   public settings: any;
   public grid: any;
 

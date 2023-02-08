@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   EDIT_RECORD,
   EditRecordMutationResponse,
@@ -18,6 +18,8 @@ import {
   GET_RECORD_BY_ID,
   GetFormByIdQueryResponse,
   GET_FORM_BY_ID,
+  GetUserRolesPermissionsQueryResponse,
+  GET_USER_ROLES_PERMISSIONS,
 } from './graphql/queries';
 import {
   Component,
@@ -45,11 +47,7 @@ import { EmailTemplateModalComponent } from '../../email-template-modal/email-te
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
-
-/** Regex for the pattern "today()+[number of days to add]" */
-const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
-/** Regex for the pattern "today()-[number of days to substract]" */
-const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
+import { firstValueFrom } from 'rxjs';
 
 /** Component for the grid widget */
 @Component({
@@ -66,6 +64,9 @@ export class SafeGridWidgetComponent implements OnInit {
   // === DATA ===
   @Input() widget: any;
   public loading = true;
+
+  // === PERMISSIONS ===
+  public canCreateRecords = false;
 
   // === CACHED CONFIGURATION ===
   public layout: Layout | null = null;
@@ -133,12 +134,30 @@ export class SafeGridWidgetComponent implements OnInit {
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.gridSettings = { ...this.settings };
     delete this.gridSettings.query;
     if (this.settings.resource) {
       const layouts = get(this.settings, 'layouts', []);
       const aggregations = get(this.settings, 'aggregations', []);
+
+      // Get user permission on resource
+      this.apollo
+        .query<GetUserRolesPermissionsQueryResponse>({
+          query: GET_USER_ROLES_PERMISSIONS,
+          variables: {
+            resource: this.settings.resource,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            this.canCreateRecords = get(
+              res,
+              'data.resource.canCreateRecords',
+              false
+            );
+          }
+        });
 
       if (layouts.length > 0) {
         this.gridLayoutService
@@ -152,7 +171,6 @@ export class SafeGridWidgetComponent implements OnInit {
               .sort((a, b) => layouts.indexOf(a.id) - layouts.indexOf(b.id));
             this.layout = this.layouts[0] || null;
             if (!this.layout) {
-              console.log('làa');
               this.status = {
                 error: true,
               };
@@ -203,8 +221,8 @@ export class SafeGridWidgetComponent implements OnInit {
       const data = Object.assign({}, item);
       delete data.id;
       promises.push(
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
+        firstValueFrom(
+          this.apollo.mutate<EditRecordMutationResponse>({
             mutation: EDIT_RECORD,
             variables: {
               id: item.id,
@@ -212,7 +230,7 @@ export class SafeGridWidgetComponent implements OnInit {
               template: get(this.settings, 'template', null),
             },
           })
-          .toPromise()
+        )
       );
     }
     return promises;
@@ -231,15 +249,15 @@ export class SafeGridWidgetComponent implements OnInit {
         this.grid.settings.query.name,
         'id\n'
       );
-      const records = await this.apollo
-        .query<any>({
+      const records = await firstValueFrom(
+        this.apollo.query<any>({
           query,
           variables: {
             first: this.grid.gridData.total,
             filter: this.grid.queryFilter,
           },
         })
-        .toPromise();
+      );
       this.grid.selectedRows = records.data[
         this.grid.settings.query.name
       ].edges.map((x: any) => x.node.id);
@@ -274,8 +292,8 @@ export class SafeGridWidgetComponent implements OnInit {
     // Notifies on a channel.
     if (options.notify && this.grid.selectedRows.length > 0) {
       promises.push(
-        this.apollo
-          .mutate<PublishNotificationMutationResponse>({
+        firstValueFrom(
+          this.apollo.mutate<PublishNotificationMutationResponse>({
             mutation: PUBLISH_NOTIFICATION,
             variables: {
               action: options.notificationMessage
@@ -285,21 +303,21 @@ export class SafeGridWidgetComponent implements OnInit {
               channel: options.notificationChannel,
             },
           })
-          .toPromise()
+        )
       );
     }
     // Publishes on a channel.
     if (options.publish && this.grid.selectedRows.length > 0) {
       promises.push(
-        this.apollo
-          .mutate<PublishMutationResponse>({
+        firstValueFrom(
+          this.apollo.mutate<PublishMutationResponse>({
             mutation: PUBLISH,
             variables: {
               ids: this.grid.selectedRows,
               channel: options.publicationChannel,
             },
           })
-          .toPromise()
+        )
       );
     }
     if (promises.length > 0) {
@@ -341,7 +359,7 @@ export class SafeGridWidgetComponent implements OnInit {
             },
           });
 
-          const value = await dialogRef.afterClosed().toPromise();
+          const value = await firstValueFrom(dialogRef.afterClosed());
           const template = value?.template;
 
           if (template) {
@@ -378,14 +396,14 @@ export class SafeGridWidgetComponent implements OnInit {
       // Fetches the record object for each selected record.
       for (const record of this.grid.selectedItems) {
         promisedRecords.push(
-          this.apollo
-            .query<GetRecordDetailsQueryResponse>({
+          firstValueFrom(
+            this.apollo.query<GetRecordDetailsQueryResponse>({
               query: GET_RECORD_DETAILS,
               variables: {
                 id: record.id,
               },
             })
-            .toPromise()
+          )
         );
       }
       const records = (await Promise.all(promisedRecords)).map(
@@ -443,21 +461,11 @@ export class SafeGridWidgetComponent implements OnInit {
   ): Promise<any> {
     const update: any = {};
     for (const modification of modifications) {
-      if (['Date', 'DateTime'].includes(modification.field.type.name)) {
-        update[modification.field.name] = this.getDateForFilter(
-          modification.value
-        );
-      } else if (['Time'].includes(modification.field.type.name)) {
-        update[modification.field.name] = this.getTimeForFilter(
-          modification.value
-        );
-      } else {
-        update[modification.field.name] = modification.value;
-      }
+      update[modification.field.name] = modification.value;
     }
     const data = cleanRecord(update);
-    return this.apollo
-      .mutate<EditRecordsMutationResponse>({
+    return firstValueFrom(
+      this.apollo.mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
@@ -465,58 +473,7 @@ export class SafeGridWidgetComponent implements OnInit {
           template: get(this.settings, 'template', null),
         },
       })
-      .toPromise();
-  }
-
-  /**
-   * Gets from input date value the three dates used for filtering.
-   *
-   * @param value input date value
-   * @returns calculated day, beginning of day, and ending of day
-   */
-  private getDateForFilter(value: any): Date {
-    // today's date
-    let date: Date;
-    if (value === 'today()') {
-      date = new Date();
-      // today + number of days
-    } else if (REGEX_PLUS.test(value)) {
-      const difference = parseInt(value.split('+')[1], 10);
-      date = new Date();
-      date.setDate(date.getDate() + difference);
-      // today - number of days
-    } else if (REGEX_MINUS.test(value)) {
-      const difference = -parseInt(value.split('-')[1], 10);
-      date = new Date();
-      date.setDate(date.getDate() + difference);
-      // classic date
-    } else {
-      date = new Date(value);
-    }
-    return date;
-  }
-
-  /**
-   * Gets from input time value a time value display.
-   *
-   * @param value record value
-   * @returns calculated time
-   */
-  private getTimeForFilter(value: any): string {
-    if (value === 'now()') {
-      const time = new Date()
-        .toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-        .split(/:| /);
-      if (
-        (time[2] === 'PM' && time[0] !== '12') ||
-        (time[2] === 'AM' && time[0] === '12')
-      ) {
-        time[0] = (parseInt(time[0], 10) + 12).toString();
-      }
-      return time[0] + ':' + time[1];
-    } else {
-      return value;
-    }
+    );
   }
 
   /**
@@ -553,7 +510,7 @@ export class SafeGridWidgetComponent implements OnInit {
             },
           });
           const value = await Promise.resolve(
-            dialogRef.afterClosed().toPromise()
+            firstValueFrom(dialogRef.afterClosed())
           );
           if (value && value.record) {
             this.apollo

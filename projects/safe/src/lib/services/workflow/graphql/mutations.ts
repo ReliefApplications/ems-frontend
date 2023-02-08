@@ -18,6 +18,50 @@ export const ADD_STEP = gql`
 
 /** Model for AddStepMutationResponse object */
 export interface AddStepMutationResponse {
-  loading: boolean;
   addStep: Step;
+}
+
+// === EDIT STEP ===
+/** Edit step gql mutation definition */
+export const EDIT_STEP = gql`
+  mutation editStep(
+    $id: ID!
+    $name: String
+    $type: String
+    $content: ID
+    $permissions: JSON
+  ) {
+    editStep(
+      id: $id
+      name: $name
+      type: $type
+      content: $content
+      permissions: $permissions
+    ) {
+      id
+      name
+      type
+      content
+      createdAt
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+    }
+  }
+`;
+
+/** Edit step gql mutation response interface */
+export interface EditStepMutationResponse {
+  editStep: Step;
 }

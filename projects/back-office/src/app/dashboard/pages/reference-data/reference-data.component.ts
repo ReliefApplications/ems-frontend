@@ -1,14 +1,8 @@
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
-  FormBuilder,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,9 +13,9 @@ import {
   referenceDataType,
   ApiConfiguration,
   SafeBreadcrumbService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Subscription } from 'rxjs';
 import {
   EditReferenceDataMutationResponse,
   EDIT_REFERENCE_DATA,
@@ -35,7 +29,8 @@ import {
   GET_REFERENCE_DATA,
 } from './graphql/queries';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
+import { takeUntil } from 'rxjs/operators';
 
 /** Default pagination parameter. */
 const ITEMS_PER_PAGE = 10;
@@ -50,15 +45,17 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
   templateUrl: './reference-data.component.html',
   styleUrls: ['./reference-data.component.scss'],
 })
-export class ReferenceDataComponent implements OnInit, OnDestroy {
+export class ReferenceDataComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public id = '';
   public referenceData?: ReferenceData;
-  private apolloSubscription?: Subscription;
 
   // === FORM ===
-  public referenceForm: FormGroup = new FormGroup({});
+  public referenceForm: UntypedFormGroup = new UntypedFormGroup({});
   public referenceTypeChoices = Object.values(referenceDataType);
 
   public selectedApiConfiguration?: ApiConfiguration;
@@ -101,10 +98,12 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService,
     private breadcrumbService: SafeBreadcrumbService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Create the Reference data query, and subscribe to the query changes.
@@ -112,17 +111,18 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id) {
-      this.apolloSubscription = this.apollo
+      this.apollo
         .watchQuery<GetReferenceDataQueryResponse>({
           query: GET_REFERENCE_DATA,
           variables: {
             id: this.id,
           },
         })
-        .valueChanges.subscribe(
-          (res) => {
-            if (res.data.referenceData) {
-              this.referenceData = res.data.referenceData;
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: ({ data, loading }) => {
+            if (data.referenceData) {
+              this.referenceData = data.referenceData;
               this.breadcrumbService.setBreadcrumb(
                 '@referenceData',
                 this.referenceData.name as string
@@ -157,7 +157,7 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
               this.referenceForm.get('type')?.valueChanges.subscribe((type) => {
                 this.loadApiConfigurations(type);
               });
-              this.loading = res.data.loading;
+              this.loading = loading;
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
@@ -174,20 +174,11 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
               this.router.navigate(['/referencedata']);
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             this.router.navigate(['/referencedata']);
-          }
-        );
-    }
-  }
-
-  /**
-   * Unsubscribe from the apollo subscription if needed.
-   */
-  ngOnDestroy(): void {
-    if (this.apolloSubscription) {
-      this.apolloSubscription.unsubscribe();
+          },
+        });
     }
   }
 
@@ -211,9 +202,9 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
               id: this.referenceForm.value.apiConfiguration,
             },
           })
-          .subscribe((res) => {
-            if (res.data.apiConfiguration) {
-              this.selectedApiConfiguration = res.data.apiConfiguration;
+          .subscribe(({ data }) => {
+            if (data.apiConfiguration) {
+              this.selectedApiConfiguration = data.apiConfiguration;
             }
           });
       }
@@ -225,8 +216,8 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
             first: ITEMS_PER_PAGE,
           },
         });
-      // this.apiConfigurationsQuery.valueChanges.subscribe((res) => {
-      //   this.loading = res.loading;
+      // this.apiConfigurationsQuery.valueChanges.subscribe(({ loading }) => {
+      //   this.loading = loading;
       // });
     } else {
       this.referenceForm.get('apiConfiguration')?.clearValidators();
@@ -244,9 +235,6 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
    * @param e permission event
    */
   saveAccess(e: any): void {
-    if (this.apolloSubscription) {
-      this.apolloSubscription.unsubscribe();
-    }
     this.loading = true;
     this.apollo
       .mutate<EditReferenceDataMutationResponse>({
@@ -256,10 +244,10 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
           permissions: e,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.referenceData = res.data.editReferenceData;
-          this.loading = res.data.loading;
+      .subscribe(({ data, loading }) => {
+        if (data) {
+          this.referenceData = data.editReferenceData;
+          this.loading = loading;
         }
       });
   }
@@ -268,9 +256,6 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
    * Edit the Reference data using referenceForm changes.
    */
   onSave(): void {
-    if (this.apolloSubscription) {
-      this.apolloSubscription.unsubscribe();
-    }
     this.loading = true;
     const variables = { id: this.id };
     Object.assign(
@@ -320,23 +305,23 @@ export class ReferenceDataComponent implements OnInit, OnDestroy {
         mutation: EDIT_REFERENCE_DATA,
         variables,
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ errors, data, loading }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
             this.translateService.instant(
               'common.notifications.objectNotUpdated',
               {
                 type: this.translateService.instant('common.referenceData.one'),
-                error: res.errors[0].message,
+                error: errors[0].message,
               }
             ),
             { error: true }
           );
           this.loading = false;
         } else {
-          this.referenceData = res.data?.editReferenceData;
+          this.referenceData = data?.editReferenceData;
           this.referenceForm.markAsPristine();
-          this.loading = res.data?.loading || false;
+          this.loading = loading || false;
         }
       });
   }

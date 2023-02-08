@@ -58,8 +58,8 @@ export class SafeDownloadService {
     });
     this.restService
       .get(path, { ...options, responseType: 'blob', headers })
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           const blob = new Blob([res], { type });
           this.saveFile(fileName, blob);
           snackBarRef.instance.data = {
@@ -70,7 +70,7 @@ export class SafeDownloadService {
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
         },
-        () => {
+        error: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant(
               'common.notifications.file.download.error'
@@ -79,8 +79,8 @@ export class SafeDownloadService {
             error: true,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -116,8 +116,8 @@ export class SafeDownloadService {
     });
     this.restService
       .post(path, body, { responseType: 'blob', headers })
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           if (body?.email) {
             snackBarRef.instance.data = {
               message: this.translate.instant(
@@ -138,7 +138,7 @@ export class SafeDownloadService {
             setTimeout(() => snackBarRef.dismiss(), 1000);
           }
         },
-        () => {
+        error: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant(
               'common.notifications.file.download.error'
@@ -147,8 +147,8 @@ export class SafeDownloadService {
             error: true,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -159,7 +159,7 @@ export class SafeDownloadService {
    * @param application application get export users from, if any
    */
   getUsersExport(
-    type: string,
+    type: 'csv' | 'xlsx',
     users: string[],
     application?: Application
   ): void {
@@ -172,7 +172,6 @@ export class SafeDownloadService {
       ? `download/application/${application.id}/users?${queryString}`
       : `download/users?${queryString}`;
 
-    console.log('path', path);
     // Opens a loader in a snackbar
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SafeSnackbarSpinnerComponent,

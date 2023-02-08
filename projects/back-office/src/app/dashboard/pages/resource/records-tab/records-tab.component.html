@@ -63,7 +63,7 @@
   </div>
 </div>
 <!-- Table container -->
-<div class="overflow-x-hidden shadow-light">
+<div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <!-- Records table -->
@@ -166,7 +166,9 @@
     >
     </safe-skeleton-table>
   </div>
+  <!-- Pagination -->
   <mat-paginator
+    *ngIf="!empty"
     [disabled]="loading"
     [pageIndex]="pageInfo.pageIndex"
     [pageSize]="pageInfo.pageSize"
@@ -174,4 +176,10 @@
     aria-label="Select page of records"
     (page)="onPage($event)"
   ></mat-paginator>
+  <!-- Empty indicator -->
+  <safe-empty
+    class="m-auto py-6 px-0 bg-white"
+    *ngIf="empty"
+    [title]="'components.resource.empty.records' | translate"
+  ></safe-empty>
 </div>

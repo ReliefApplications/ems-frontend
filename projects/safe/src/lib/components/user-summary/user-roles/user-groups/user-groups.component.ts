@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Group, User } from '../../../../models/user.model';
@@ -15,11 +15,13 @@ import { GET_GROUPS, GetGroupsQueryResponse } from '../../graphql/queries';
 export class UserGroupsComponent implements OnInit {
   public groups: Group[] = [];
   @Input() user!: User;
-  selectedGroups!: FormControl;
+  selectedGroups!: UntypedFormControl;
   @Output() edit = new EventEmitter();
+  @Input() canEdit = false;
 
   /** Setter for the loading state */
   @Input() set loading(loading: boolean) {
+    if (!this.canEdit) return;
     if (loading) {
       this.selectedGroups?.disable({ emitEvent: false });
     } else {
@@ -35,15 +37,16 @@ export class UserGroupsComponent implements OnInit {
    * @param snackBar Shared snackbar service
    */
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService
   ) {}
 
   ngOnInit(): void {
-    this.selectedGroups = this.fb.control(
-      get(this.user, 'groups', []).map((x) => x.id)
-    );
+    this.selectedGroups = this.fb.control({
+      value: get(this.user, 'groups', []).map((x) => x.id),
+      disabled: !this.canEdit,
+    });
     this.selectedGroups.valueChanges.subscribe((value) => {
       this.edit.emit({ groups: value });
     });
@@ -53,16 +56,16 @@ export class UserGroupsComponent implements OnInit {
       .query<GetGroupsQueryResponse>({
         query: GET_GROUPS,
       })
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            this.groups = res.data.groups;
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data) {
+            this.groups = data.groups;
           }
-          this.loading = res.loading;
+          this.loading = loading;
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
-        }
-      );
+        },
+      });
   }
 }

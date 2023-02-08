@@ -4,9 +4,12 @@
   [size]="48"
 ></safe-icon>
 <img *ngIf="image && !icon" [src]="image" />
-<div class="empty-content" *ngIf="title || subtitle">
-  <h3 *ngIf="title">{{ title }}</h3>
-  <span *ngIf="subtitle">{{ subtitle }}</span>
+<div
+  class="text-gray-500 flex flex-col items-center gap-1"
+  *ngIf="title || subtitle"
+>
+  <h3 class="m-0" *ngIf="title">{{ title }}</h3>
+  <span class="opacity-60 m-0" *ngIf="subtitle">{{ subtitle }}</span>
 </div>
 <ng-container *ngIf="footerTemplate">
   <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>

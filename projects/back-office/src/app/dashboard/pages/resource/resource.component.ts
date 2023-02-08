@@ -15,7 +15,13 @@ import { TranslateService } from '@ngx-translate/core';
 /**
  * Array of tab names sorted by position index.
  */
-const ROUTE_TABS: string[] = ['records', 'forms', 'layouts', 'aggregations'];
+const ROUTE_TABS: string[] = [
+  'records',
+  'forms',
+  'layouts',
+  'aggregations',
+  'calculated-fields',
+];
 
 /**
  * Component used to display resource in a table.
@@ -76,16 +82,16 @@ export class ResourceComponent implements OnInit {
           id: this.id,
         },
       })
-      .subscribe(
-        (res) => {
-          if (res.data.resource) {
-            this.resource = res.data.resource;
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data.resource) {
+            this.resource = data.resource;
             this.breadcrumbService.setBreadcrumb(
               '@resource',
               this.resource.name as string
             );
             history.pushState({ resource: this.resource }, '');
-            this.loading = res.loading;
+            this.loading = loading;
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.accessNotProvided', {
@@ -99,11 +105,11 @@ export class ResourceComponent implements OnInit {
             this.router.navigate(['/resources']);
           }
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
           this.router.navigate(['/resources']);
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -120,9 +126,9 @@ export class ResourceComponent implements OnInit {
           permissions: e,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.resource = res.data.editResource;
+      .subscribe(({ data }) => {
+        if (data) {
+          this.resource = data.editResource;
         }
       });
   }

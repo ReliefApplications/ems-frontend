@@ -5,7 +5,7 @@
 <div class="flex flex-col mt-0 mb-12" [formGroup]="form">
   <!-- Latitude and longitude -->
   <div class="flex gap-2">
-    <mat-form-field appearance="outline" style="width: 100%">
+    <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'models.widget.map.latitude' | translate }}</mat-label>
       <mat-select formControlName="latitude">
         <mat-option *ngFor="let field of numberFields" [value]="field">
@@ -13,7 +13,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" style="width: 100%">
+    <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'models.widget.map.longitude' | translate }}</mat-label>
       <mat-select formControlName="longitude">
         <mat-option *ngFor="let field of numberFields" [value]="field">
@@ -23,7 +23,7 @@
     </mat-form-field>
   </div>
   <!-- Quick layer -->
-  <mat-form-field appearance="outline" style="width: 100%">
+  <mat-form-field appearance="outline" class="w-full">
     <mat-label>{{
       'components.widget.settings.map.layers.point.category' | translate
     }}</mat-label>
@@ -44,7 +44,7 @@
     ></safe-icon>
   </mat-form-field>
   <!-- Popup details selector -->
-  <mat-form-field appearance="outline" style="width: 100%">
+  <mat-form-field appearance="outline" class="w-full">
     <mat-label>
       {{ 'components.widget.settings.map.popup.label' | translate }}
     </mat-label>
@@ -63,10 +63,10 @@
   <safe-icon icon="info"></safe-icon>
   {{ 'components.widget.settings.map.layers.point.rulesInfo' | translate }}
 </safe-alert>
-  <!-- Table container -->
-  <div class="overflow-x-hidden shadow-light">
-    <!-- Table scroll container -->
-    <div class="overflow-x-auto">
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
     <table mat-table [dataSource]="rules.value">
       <ng-container matColumnDef="color">
         <th mat-header-cell *matHeaderCellDef>

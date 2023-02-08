@@ -9,8 +9,10 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { clone, get } from 'lodash';
+import { takeUntil } from 'rxjs/operators';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 
 /**
@@ -21,8 +23,11 @@ import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
   templateUrl: './filter-row.component.html',
   styleUrls: ['./filter-row.component.scss'],
 })
-export class FilterRowComponent implements OnInit, OnChanges, AfterViewInit {
-  @Input() form!: FormGroup;
+export class FilterRowComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges, AfterViewInit
+{
+  @Input() form!: UntypedFormGroup;
   @Output() delete = new EventEmitter();
   @Input() fields: any[] = [];
 
@@ -30,8 +35,8 @@ export class FilterRowComponent implements OnInit, OnChanges, AfterViewInit {
   public editor?: TemplateRef<any>;
 
   /** @returns value form field as form control. */
-  get valueControl(): FormControl {
-    return this.form.get('value') as FormControl;
+  get valueControl(): UntypedFormControl {
+    return this.form.get('value') as UntypedFormControl;
   }
 
   @ViewChild('textEditor', { static: false }) textEditor!: TemplateRef<any>;
@@ -44,20 +49,33 @@ export class FilterRowComponent implements OnInit, OnChanges, AfterViewInit {
 
   public operators: any[] = [];
 
+  /**
+   * Constructor of filter row
+   */
+  constructor() {
+    super();
+  }
+
   ngOnInit(): void {
-    this.form.get('field')?.valueChanges.subscribe((value) => {
-      // remove value
-      this.form.get('value')?.setValue(null);
-      this.setField(value, true);
-    });
-    this.form.get('operator')?.valueChanges.subscribe((value) => {
-      const operator = this.operators.find((x) => x.value === value);
-      if (operator?.disableValue) {
-        this.form.get('value')?.disable();
-      } else {
-        this.form.get('value')?.enable();
-      }
-    });
+    this.form
+      .get('field')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        // remove value
+        this.form.get('value')?.setValue(null);
+        this.setField(value, true);
+      });
+    this.form
+      .get('operator')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        const operator = this.operators.find((x) => x.value === value);
+        if (operator?.disableValue) {
+          this.form.get('value')?.disable();
+        } else {
+          this.form.get('value')?.enable();
+        }
+      });
   }
 
   ngAfterViewInit(): void {
@@ -96,7 +114,11 @@ export class FilterRowComponent implements OnInit, OnChanges, AfterViewInit {
     if (field) {
       this.field = field;
       const type = {
-        ...FIELD_TYPES.find((x) => x.editor === this.field.editor),
+        ...FIELD_TYPES.find(
+          (x) =>
+            x.editor === this.field.editor &&
+            !!this.field.multiSelect === !!x.multiSelect
+        ),
         ...this.field.filter,
       };
       this.operators = FILTER_OPERATORS.filter((x) =>

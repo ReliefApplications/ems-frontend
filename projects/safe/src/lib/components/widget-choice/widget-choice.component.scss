@@ -1,3 +1,6 @@
+:host {
+  display: flex;
+}
 
 .safe-widget-choice {
   display: flex;
@@ -22,12 +25,6 @@
       width: 90px;
       margin-top: 38px;
       margin-bottom: 33px;
-    }
-
-    span {
-      font-size: 20px;
-      color: #6e7478;
-      margin-bottom: 16px;
     }
   }
 }
@@ -90,10 +87,4 @@
       opacity: 1;
     }
   }
-}
-
-.safe-floating-widget-collapsed {
-  border-radius: 50%;
-  margin-left: auto;
-  margin-right: 24px;
 }

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 import {
   TranslateModule,
   TranslateService,
@@ -30,7 +30,7 @@ describe('SafeAddFieldStageComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeAddFieldStageComponent);
     component = fixture.componentInstance;
-    component.form = new FormArray([]);
+    component.form = new UntypedFormArray([]);
     fixture.detectChanges();
   });
 

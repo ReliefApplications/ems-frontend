@@ -111,6 +111,5 @@ export const EDIT_FORM_NAME = gql`
 
 /** Edit form gql mutation response interface */
 export interface EditFormMutationResponse {
-  loading: boolean;
   editForm: Form;
 }

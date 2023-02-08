@@ -37,7 +37,6 @@ export const GET_APPLICATIONS = gql`
 
 /** Model for GetApplicationsQueryResponse object */
 export interface GetApplicationsQueryResponse {
-  loading: boolean;
   applications: {
     edges: {
       node: Application;

@@ -31,22 +31,29 @@ export const GET_RESOURCE_AGGREGATIONS = gql`
 
 /** Interface for GET_RESOURCE_AGGREGATIONS query */
 export interface GetResourceByIdQueryResponse {
-  loading: boolean;
   resource: Resource;
 }
 
 /** Query definition to get aggregation data */
 export const GET_AGGREGATION_DATA = gql`
-  query GetAggregationData($resource: ID!, $aggregation: ID!, $mapping: JSON) {
+  query GetAggregationData(
+    $resource: ID!
+    $aggregation: ID!
+    $mapping: JSON
+    $first: Int
+    $skip: Int
+  ) {
     recordsAggregation(
       resource: $resource
       aggregation: $aggregation
       mapping: $mapping
+      first: $first
+      skip: $skip
     )
   }
 `;
 
 /** Interface for get aggregation data query */
 export interface GetAggregationDataQueryResponse {
-  recordsAggregation: any[];
+  recordsAggregation: any | { items: any[]; totalCount: number };
 }

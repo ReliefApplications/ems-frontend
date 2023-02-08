@@ -22,6 +22,5 @@ export const EDIT_RECORDS = gql`
 
 /** Model for EditRecordsMutationResponse object */
 export interface EditRecordsMutationResponse {
-  loading: boolean;
   editRecords: Record[];
 }

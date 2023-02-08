@@ -12,13 +12,22 @@ import {
   GET_REFERENCE_DATA_BY_ID,
 } from './graphql/queries';
 import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
+import { firstValueFrom } from 'rxjs';
 
 /** Local storage key for last modified */
 const LAST_MODIFIED_KEY = '_last_modified';
 /** Local storage key for last request */
 const LAST_REQUEST_KEY = '_last_request';
 /** Property for filtering in requests */
-const LAST_UPDATE_CODE = '$$LAST_UPDATE';
+const LAST_UPDATE_CODE = '{{lastUpdate}}';
+
+/**
+ *  Interface for items stored in localForage cache.
+ */
+interface CachedItems {
+  items: any[];
+  valueField: string;
+}
 
 /** Service for reference data */
 @Injectable({
@@ -40,15 +49,16 @@ export class SafeReferenceDataService {
    * @returns Promised ReferenceData.
    */
   public loadReferenceData(id: string): Promise<ReferenceData> {
-    return this.apollo
-      .query<GetReferenceDataByIdQueryResponse>({
-        query: GET_REFERENCE_DATA_BY_ID,
-        variables: {
-          id,
-        },
-      })
-      .pipe(map((res) => res.data.referenceData))
-      .toPromise();
+    return firstValueFrom(
+      this.apollo
+        .query<GetReferenceDataByIdQueryResponse>({
+          query: GET_REFERENCE_DATA_BY_ID,
+          variables: {
+            id,
+          },
+        })
+        .pipe(map(({ data }) => data.referenceData))
+    );
   }
 
   /**
@@ -83,7 +93,7 @@ export class SafeReferenceDataService {
 
   /**
    * Asynchronously fetch choices from ReferenceData and return them in the right format for a selectable questions.
-   * Include caching for requests to optimise number of requests.
+   * Include caching for requests to optimize number of requests.
    *
    * @param referenceDataID ReferenceData ID.
    * @param displayField Field used for display in the question.
@@ -110,25 +120,42 @@ export class SafeReferenceDataService {
       a[displayField] > b[displayField] ? 1 : -1;
 
     // get items
-    const { items: items_, valueField } = await this.getItems(referenceDataID);
+    const { items: items_, valueField } = (await localForage.getItem(
+      referenceDataID
+    )) as CachedItems;
     // sort items by displayField
     const items = items_.sort(sortByDisplayField);
-    // if we ask to filter
-    if (filter) {
+    const foreignIsMultiselect = Array.isArray(filter?.foreignValue);
+    // if we ask to filter and there is a value in foreign field
+    if (
+      filter &&
+      ((foreignIsMultiselect && filter.foreignValue.length) ||
+        (!foreignIsMultiselect && !!filter.foreignValue))
+    ) {
       const { items: foreignItems, valueField: foreignValueField } =
-        await this.getItems(filter.foreignReferenceData);
-      const selectedForeignItem = foreignItems.find(
-        (item) => item[foreignValueField] === filter.foreignValue
-      );
+        (await localForage.getItem(filter.foreignReferenceData)) as CachedItems;
+      let selectedForeignValue: any | any[];
+      // Retrieve foreign field items for multiselect or single select
+      if (foreignIsMultiselect) {
+        selectedForeignValue = filter.foreignValue.map(
+          (value: any) =>
+            foreignItems.find((item) => item[foreignValueField] === value)[
+              filter.foreignField
+            ]
+        );
+      } else {
+        selectedForeignValue = foreignItems.find(
+          (item) => item[foreignValueField] === filter.foreignValue
+        )[filter.foreignField];
+      }
       return items
         .filter((item) =>
           this.operate(
-            selectedForeignItem[filter.foreignField],
+            selectedForeignValue,
             filter.operator,
             item[filter.localField]
           )
         )
-        .sort(sortByDisplayField)
         .map((item) => ({
           value: item[valueField],
           text: item[displayField],
@@ -147,11 +174,8 @@ export class SafeReferenceDataService {
    * @param referenceDataID The reference data id
    * @returns The item list and the value field
    */
-  private async getItems(referenceDataID: string): Promise<{
-    items: any[];
-    valueField: string;
-  }> {
-    // Initialisation
+  public async cacheItems(referenceDataID: string): Promise<void> {
+    // Initialization
     let items: any;
     const referenceData = await this.loadReferenceData(referenceDataID);
     const cacheKey = referenceData.id || '';
@@ -162,6 +186,9 @@ export class SafeReferenceDataService {
     // Check if referenceData has changed. In this case, refresh choices instead of using cached ones.
     if (!cacheTimestamp || cacheTimestamp < modifiedAt) {
       items = await this.fetchItems(referenceData);
+      // Cache items and timestamp
+      localForage.setItem(cacheKey, { items, valueField });
+      localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
     } else {
       // If referenceData has not changed, use cached value and check for updates for graphQL.
       if (referenceData.type === referenceDataType.graphql) {
@@ -177,7 +204,9 @@ export class SafeReferenceDataService {
         items = referenceData.query ? items[referenceData.query] : items;
         // Cache items
         if (isCached) {
-          const cache: any[] | null = await localForage.getItem(cacheKey);
+          const { items: cache } = (await localForage.getItem(
+            cacheKey
+          )) as CachedItems;
           if (cache && items && items.length) {
             for (const newItem of items) {
               const cachedItemIndex = cache.findIndex(
@@ -192,20 +221,22 @@ export class SafeReferenceDataService {
           }
           items = cache || [];
         }
-        localForage.setItem(cacheKey, items);
+        localForage.setItem(cacheKey, { items, valueField });
         localStorage.setItem(
           cacheKey + LAST_REQUEST_KEY,
           this.formatDateSQL(new Date())
         );
       } else {
         // If referenceData has not changed, use cached value for non graphQL.
-        items = await localForage.getItem(cacheKey);
+        items = ((await localForage.getItem(cacheKey)) as CachedItems)?.items;
         if (!items) {
           items = await this.fetchItems(referenceData);
+          // Cache items and timestamp
+          localForage.setItem(cacheKey, { items, valueField });
+          localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
         }
       }
     }
-    return { items, valueField };
   }
 
   /**
@@ -214,10 +245,9 @@ export class SafeReferenceDataService {
    * @param referenceData reference data to query items of
    * @returns list of items
    */
-  private async fetchItems(referenceData: ReferenceData): Promise<any> {
+  private async fetchItems(referenceData: ReferenceData): Promise<any[]> {
     const cacheKey = referenceData.id || '';
-    const modifiedAt = referenceData.modifiedAt || '';
-    // Initialisation
+    // Initialization
     let items: any;
     switch (referenceData.type) {
       case referenceDataType.graphql: {
@@ -253,9 +283,6 @@ export class SafeReferenceDataService {
         break;
       }
     }
-    // Cache items and timestamp
-    localForage.setItem(cacheKey, items);
-    localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
     return items;
   }
 

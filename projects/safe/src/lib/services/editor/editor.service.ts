@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { EDITOR_LANGUAGE_PAIRS } from '../../const/tinymce.const';
 import { TranslateService } from '@ngx-translate/core';
+import { Editor, RawEditorSettings } from 'tinymce';
 
 /**
  * Shared editor service
@@ -62,5 +63,29 @@ export class SafeEditorService {
     private translate: TranslateService
   ) {
     this.environment = environment;
+  }
+
+  /**
+   * Add auto completer with {{ }} for data and calc keys
+   *
+   * @param editor current editor
+   * @param keys list of keys
+   */
+  addCalcAndKeysAutoCompleter(editor: RawEditorSettings, keys: string[]) {
+    editor.setup = (e: Editor) => {
+      e.ui.registry.addAutocompleter('keys_data_and_calc', {
+        ch: '{',
+        minChars: 0,
+        onAction: (autocompleteApi, rng, value) => {
+          e.selection.setRng(rng);
+          e.insertContent(value);
+          autocompleteApi.hide();
+        },
+        fetch: async (pattern: string) =>
+          keys
+            .filter((key) => key.includes(pattern))
+            .map((key) => ({ value: key, text: key })),
+      });
+    };
   }
 }

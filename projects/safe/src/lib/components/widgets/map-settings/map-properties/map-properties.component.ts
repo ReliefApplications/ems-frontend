@@ -5,8 +5,10 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { SafeMapComponent } from '../../map/map.component';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** List of basemap that can be used by the widget */
 const BASEMAPS: string[] = [
@@ -33,8 +35,11 @@ const BASEMAPS: string[] = [
   templateUrl: './map-properties.component.html',
   styleUrls: ['./map-properties.component.scss'],
 })
-export class MapPropertiesComponent implements OnInit, AfterViewInit {
-  @Input() form!: FormGroup;
+export class MapPropertiesComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit
+{
+  @Input() form!: UntypedFormGroup;
 
   @ViewChild(SafeMapComponent) previewMap!: SafeMapComponent;
 
@@ -50,7 +55,9 @@ export class MapPropertiesComponent implements OnInit, AfterViewInit {
   /**
    * Map Properties of Map widget.
    */
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   /**
    * Subscribe to settings changes to update map.
@@ -62,20 +69,32 @@ export class MapPropertiesComponent implements OnInit, AfterViewInit {
       centerLat: this.form.value.centerLat,
       centerLong: this.form.value.centerLong,
     };
-    this.form.get('zoom')?.valueChanges.subscribe((value) => {
-      this.previewMap.map.setZoom(value);
-    });
-    this.form.get('centerLat')?.valueChanges.subscribe((value) => {
-      const map = this.previewMap.map;
-      map.setView([value, map.getCenter().lng], map.getZoom());
-    });
-    this.form.get('centerLong')?.valueChanges.subscribe((value) => {
-      const map = this.previewMap.map;
-      map.setView([map.getCenter().lat, value], map.getZoom());
-    });
-    this.form.get('basemap')?.valueChanges.subscribe((value) => {
-      this.previewMap.setBasemap(value);
-    });
+    this.form
+      .get('zoom')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.previewMap.map.setZoom(value);
+      });
+    this.form
+      .get('centerLat')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        const map = this.previewMap.map;
+        map.setView([value, map.getCenter().lng], map.getZoom());
+      });
+    this.form
+      .get('centerLong')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        const map = this.previewMap.map;
+        map.setView([map.getCenter().lat, value], map.getZoom());
+      });
+    this.form
+      .get('basemap')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.previewMap.setBasemap(value);
+      });
   }
 
   /**

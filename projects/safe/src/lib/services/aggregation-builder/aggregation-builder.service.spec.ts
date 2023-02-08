@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { environment } from 'projects/back-office/src/environments/environment';
 
 import { AggregationBuilderService } from './aggregation-builder.service';
@@ -11,7 +11,7 @@ describe('AggregationBuilderService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        FormBuilder,
+        UntypedFormBuilder,
         { provide: 'environment', useValue: environment },
       ],
       imports: [HttpClientModule],

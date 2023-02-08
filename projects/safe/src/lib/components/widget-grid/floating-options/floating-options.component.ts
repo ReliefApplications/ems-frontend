@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeTileDataComponent } from './menu/tile-data/tile-data.component';
 import { SafeDashboardService } from '../../../services/dashboard/dashboard.service';
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
@@ -27,7 +27,8 @@ export class SafeFloatingOptionsComponent implements OnInit {
   public items: any[] = [];
 
   /**
-   * Constructor of floating options component
+   * Button on top left of each widget, if user can see it, with menu of possible
+   * actions for that widget.
    *
    * @param dialog Material dialog service
    * @param dashboardService Dashboard service

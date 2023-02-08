@@ -29,6 +29,5 @@ export const GET_RESOURCE_LAYOUTS = gql`
 
 /** Model for GetResourceByIdQueryResponse object */
 export interface GetResourceByIdQueryResponse {
-  loading: boolean;
   resource: Resource;
 }

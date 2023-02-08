@@ -1,8 +1,9 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArray } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
-import { Subscription } from 'rxjs';
+import { Component, Input, OnInit } from '@angular/core';
+import { UntypedFormArray } from '@angular/forms';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 import { createFormGroup, Mapping, Mappings } from './mapping-forms';
 import { SafeMappingModalComponent } from './mapping-modal/mapping-modal.component';
 
@@ -14,10 +15,12 @@ import { SafeMappingModalComponent } from './mapping-modal/mapping-modal.compone
   templateUrl: './mapping.component.html',
   styleUrls: ['./mapping.component.scss'],
 })
-export class SafeMappingComponent implements OnInit, OnDestroy {
+export class SafeMappingComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
-  @Input() mappingForm!: FormArray;
-  private mappingSubscription?: Subscription;
+  @Input() mappingForm!: UntypedFormArray;
   // === TABLE ===
   displayedColumns = ['field', 'path', 'value', 'text', 'actions'];
   dataSource = new MatTableDataSource<Mapping>([]);
@@ -27,15 +30,17 @@ export class SafeMappingComponent implements OnInit, OnDestroy {
    *
    * @param dialog Angular Material dialog service.
    */
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog) {
+    super();
+  }
 
   ngOnInit(): void {
     this.dataSource.data = [...this.mappingForm.value];
-    this.mappingSubscription = this.mappingForm.valueChanges.subscribe(
-      (mappings: Mappings) => {
+    this.mappingForm.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((mappings: Mappings) => {
         this.dataSource.data = [...mappings];
-      }
-    );
+      });
   }
 
   /**
@@ -83,9 +88,5 @@ export class SafeMappingComponent implements OnInit, OnDestroy {
         this.mappingForm.markAsDirty();
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    if (this.mappingSubscription) this.mappingSubscription.unsubscribe();
   }
 }

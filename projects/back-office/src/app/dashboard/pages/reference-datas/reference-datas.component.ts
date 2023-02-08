@@ -1,23 +1,15 @@
-import {
-  AfterViewInit,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
-  PermissionsManagement,
-  PermissionType,
   ReferenceData,
   SafeAuthService,
   SafeConfirmService,
   SafeSnackBarService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
 import {
   GetReferenceDatasQueryResponse,
   GET_REFERENCE_DATAS,
@@ -31,6 +23,11 @@ import {
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
+import { takeUntil } from 'rxjs/operators';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../utils/update-queries';
 
 /** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
@@ -44,7 +41,8 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./reference-datas.component.scss'],
 })
 export class ReferenceDatasComponent
-  implements OnInit, OnDestroy, AfterViewInit
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit
 {
   // === DATA ===
   public loading = true;
@@ -58,10 +56,6 @@ export class ReferenceDatasComponent
   ];
   dataSource = new MatTableDataSource<ReferenceData>([]);
   public cachedReferenceDatas: ReferenceData[] = [];
-
-  // === PERMISSIONS ===
-  canAdd = false;
-  private authSubscription?: Subscription;
 
   // === SORTING ===
   @ViewChild(MatSort) sort?: MatSort;
@@ -95,7 +89,9 @@ export class ReferenceDatasComponent
     private confirmService: SafeConfirmService,
     private router: Router,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Creates the Reference data query, and subscribes to the query changes.
@@ -106,31 +102,15 @@ export class ReferenceDatasComponent
         query: GET_REFERENCE_DATAS,
         variables: {
           first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor,
         },
       });
 
-    this.referenceDatasQuery.valueChanges.subscribe((res) => {
-      this.cachedReferenceDatas = res.data.referenceDatas.edges.map(
-        (x) => x.node
-      );
-      this.dataSource.data = this.cachedReferenceDatas.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      );
-      this.pageInfo.length = res.data.referenceDatas.totalCount;
-      this.pageInfo.endCursor = res.data.referenceDatas.pageInfo.endCursor;
-      this.loading = res.loading;
-      this.filterPredicate();
-    });
-
-    this.authSubscription = this.authService.user$.subscribe(() => {
-      this.canAdd = this.authService.userHasClaim(
-        PermissionsManagement.getRightFromPath(
-          this.router.url,
-          PermissionType.create
-        )
-      );
-    });
+    this.referenceDatasQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.updateValues(data, loading);
+      });
   }
 
   /**
@@ -142,7 +122,9 @@ export class ReferenceDatasComponent
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >=
+          this.cachedReferenceDatas.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedReferenceDatas.length
     ) {
@@ -154,27 +136,22 @@ export class ReferenceDatasComponent
         neededSize -= this.pageInfo.pageSize;
       }
       this.loading = true;
-      this.referenceDatasQuery.fetchMore({
-        variables: {
-          first: neededSize,
-          afterCursor: this.pageInfo.endCursor,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            apiConfigurations: {
-              edges: [
-                ...prev.referenceDatas.edges,
-                ...fetchMoreResult.referenceDatas.edges,
-              ],
-              pageInfo: fetchMoreResult.referenceDatas.pageInfo,
-              totalCount: fetchMoreResult.referenceDatas.totalCount,
-            },
-          });
-        },
-      });
+      const variables = {
+        first: neededSize,
+        afterCursor: this.pageInfo.endCursor,
+      };
+      const cachedValues: GetReferenceDatasQueryResponse = getCachedValues(
+        this.apollo.client,
+        GET_REFERENCE_DATAS,
+        variables
+      );
+      if (cachedValues) {
+        this.updateValues(cachedValues, false);
+      } else {
+        this.referenceDatasQuery
+          .fetchMore({ variables })
+          .then((results) => this.updateValues(results.data, results.loading));
+      }
     } else {
       this.dataSource.data = this.cachedReferenceDatas.slice(
         e.pageSize * this.pageInfo.pageIndex,
@@ -230,32 +207,32 @@ export class ReferenceDatasComponent
               name: value.name,
             },
           })
-          .subscribe(
-            (res) => {
-              if (res.errors) {
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
                     {
                       type: this.translate.instant('common.referenceData.one'),
-                      error: res.errors[0].message,
+                      error: errors[0].message,
                     }
                   ),
                   { error: true }
                 );
               } else {
-                if (res.data) {
+                if (data) {
                   this.router.navigate([
                     '/referencedata',
-                    res.data.addReferenceData.id,
+                    data.addReferenceData.id,
                   ]);
                 }
               }
             },
-            (err) => {
+            error: (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
-            }
-          );
+            },
+          });
       }
     });
   }
@@ -312,11 +289,23 @@ export class ReferenceDatasComponent
   }
 
   /**
-   * Removes all subscriptions.
+   * Update ref data value
+   *
+   * @param data query response data
+   * @param loading loading status
    */
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
+  private updateValues(data: GetReferenceDatasQueryResponse, loading: boolean) {
+    this.cachedReferenceDatas = updateQueryUniqueValues(
+      this.cachedReferenceDatas,
+      data.referenceDatas.edges.map((x) => x.node)
+    );
+    this.dataSource.data = this.cachedReferenceDatas.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.pageInfo.length = data.referenceDatas.totalCount;
+    this.pageInfo.endCursor = data.referenceDatas.pageInfo.endCursor;
+    this.loading = loading;
+    this.filterPredicate();
   }
 }

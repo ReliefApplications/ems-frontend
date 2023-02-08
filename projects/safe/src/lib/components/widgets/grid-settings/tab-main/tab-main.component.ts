@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Form } from '../../../../models/form.model';
 import { Resource } from '../../../../models/resource.model';
@@ -17,7 +17,7 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./tab-main.component.scss'],
 })
 export class TabMainComponent implements OnInit {
-  @Input() formGroup!: FormGroup;
+  @Input() formGroup!: UntypedFormGroup;
   @Input() form: Form | null = null;
   @Input() resource: Resource | null = null;
   @Input() queries: any[] = [];
@@ -38,6 +38,28 @@ export class TabMainComponent implements OnInit {
       variables: {
         first: ITEMS_PER_PAGE,
         sortField: 'name',
+      },
+    });
+  }
+
+  /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  onResourceSearchChange(search: string): void {
+    this.resourcesQuery.refetch({
+      first: ITEMS_PER_PAGE,
+      sortField: 'name',
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
       },
     });
   }

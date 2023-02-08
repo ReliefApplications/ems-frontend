@@ -4,6 +4,7 @@ import { Resource } from '../../../models/resource.model';
 import { Channel } from '../../../models/channel.model';
 import { Group, Permission, Role } from '../../../models/user.model';
 import { Workflow } from '../../../models/workflow.model';
+import { RESOURCE_FIELDS, SHORT_RESOURCE_FIELDS } from './fragments';
 
 /** Get role by id GraphQL query */
 export const GET_ROLE = gql`
@@ -26,7 +27,6 @@ export const GET_ROLE = gql`
 
 /** Interface of Get role query */
 export interface GetRoleQueryResponse {
-  loading: boolean;
   role: Role;
 }
 
@@ -43,7 +43,6 @@ export const GET_PERMISSIONS = gql`
 
 /** Model for GetPermissionsQueryResponse object */
 export interface GetPermissionsQueryResponse {
-  loading: boolean;
   permissions: Permission[];
 }
 
@@ -63,7 +62,6 @@ export const GET_CHANNELS = gql`
 
 /** Model for GetChannelsQueryResponse object */
 export interface GetChannelsQueryResponse {
-  loading: boolean;
   channels: Channel[];
 }
 
@@ -136,11 +134,7 @@ export const GET_RESOURCES = gql`
     ) {
       edges {
         node {
-          id
-          queryName
-          name
-          rolePermissions(role: $role)
-          fields
+          ...ShortResourceFields
         }
         cursor
       }
@@ -151,11 +145,11 @@ export const GET_RESOURCES = gql`
       }
     }
   }
+  ${SHORT_RESOURCE_FIELDS}
 `;
 
 /** Interface of Get Resources Query response */
 export interface GetResourcesQueryResponse {
-  loading: boolean;
   resources: {
     edges: {
       node: Resource;
@@ -173,14 +167,10 @@ export interface GetResourcesQueryResponse {
 export const GET_RESOURCE = gql`
   query GetResources($id: ID!, $role: ID!) {
     resource(id: $id) {
-      id
-      queryName
-      name
-      rolePermissions(role: $role)
-      metadata
-      fields
+      ...ResourceFields
     }
   }
+  ${RESOURCE_FIELDS}
 `;
 
 /** Interface of Get Resource Query response */

@@ -2,26 +2,12 @@
   margin-bottom: 10px;
 }
 
-.update-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.update-list {
-  display: flex;
-  flex-direction: column;
-}
-
 .update-row {
   align-items: center;
   margin-top: 24px;
   .mat-form-field {
     margin-left: 16px;
   }
-}
-
-.form-container {
-  display: flex;
 }
 
 .radio-row {
@@ -38,8 +24,4 @@
   padding-left: 24px;
   display: flex;
   flex-direction: column;
-}
-
-editor {
-  margin-bottom: 16px;
 }

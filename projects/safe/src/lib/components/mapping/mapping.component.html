@@ -1,7 +1,7 @@
-  <!-- Table container -->
-  <div class="overflow-x-hidden shadow-light">
-    <!-- Table scroll container -->
-    <div class="overflow-x-auto">
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
     <table mat-table [dataSource]="dataSource" matSort>
       <ng-container matColumnDef="field">
         <th mat-header-cell *matHeaderCellDef>
@@ -67,7 +67,7 @@
     </table>
   </div>
 </div>
-<div class="actions">
+<div class="actions flex justify-center mt-4">
   <safe-button
     class="w-auto"
     category="tertiary"

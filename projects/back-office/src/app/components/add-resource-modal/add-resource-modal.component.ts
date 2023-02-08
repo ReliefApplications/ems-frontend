@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import {
+  UntypedFormGroup,
+  UntypedFormBuilder,
+  Validators,
+} from '@angular/forms';
+import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 
 /**
  * Modal to add a new resource.
@@ -11,7 +15,7 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./add-resource-modal.component.scss'],
 })
 export class AddResourceModalComponent implements OnInit {
-  public addForm: FormGroup = new FormGroup({});
+  public addForm: UntypedFormGroup = new UntypedFormGroup({});
 
   /**
    * Modal to add a new resource.
@@ -20,7 +24,7 @@ export class AddResourceModalComponent implements OnInit {
    * @param dialogRef Dialog reference
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<AddResourceModalComponent>
   ) {}
 

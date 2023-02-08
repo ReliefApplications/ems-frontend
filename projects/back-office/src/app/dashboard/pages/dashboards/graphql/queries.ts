@@ -17,6 +17,5 @@ export const GET_DASHBOARDS = gql`
 
 /** Model for GetDashboardsQueryResponse object */
 export interface GetDashboardsQueryResponse {
-  loading: boolean;
   dashboards: Dashboard[];
 }

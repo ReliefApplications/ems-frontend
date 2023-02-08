@@ -1,11 +1,18 @@
-<div matRipple class="safe-application">
-  <div class="header">
-    <div class="users">
+<!-- Main application block -->
+<div
+  matRipple
+  class="w-48 h-48 bg-white flex flex-col justify-between items-center cursor-pointer rounded-lg box-border border"
+>
+  <!-- Top line -->
+  <div
+    class="flex flex-row justify-between items-center text-sm text-gray-600 w-full box-border pt-2 pb-2 px-2"
+  >
+    <div class="flex items-center gap-1">
       <safe-icon icon="person"></safe-icon>
-      <span>{{ application.usersCount }}</span>
+      <span>{{ application.users?.totalCount }}</span>
     </div>
     <div
-      class="status"
+      class="w-8 h-8 rounded-full flex flex-col justify-center items-center text-lg"
       *ngIf="status"
       [style.color]="status.focusColor"
       [style.background]="status.color"
@@ -13,14 +20,24 @@
       {{ status.short }}
     </div>
   </div>
-  <div class="title">{{ application.name }}</div>
-  <div class="bottom">
+  <!-- Application name -->
+  <div
+    class="text-ellipsis box-border w-full py-1 px-2 overflow-hidden text-center text-lg font-medium text-gray-600"
+  >
+    {{ application.name }}
+  </div>
+  <!-- Bottom line -->
+  <div
+    class="flex flex-row justify-between items-center text-sm text-gray-600 w-full box-border pt-0 pr-0 pb-2 pl-2"
+  >
+    <!-- Edition date -->
     <span
       >{{ 'common.modifiedOn' | translate }}:
       {{
         application.modifiedAt ?? application.createdAt | safeDate: 'mediumDate'
       }}</span
     >
+    <!-- Actions -->
     <safe-button
       [isIcon]="true"
       icon="more_vert"
@@ -29,10 +46,12 @@
     >
     </safe-button>
     <mat-menu #menu="matMenu">
+      <!-- Preview -->
       <button mat-menu-item (click)="preview.emit()">
         <mat-icon>preview</mat-icon>
         {{ 'common.preview' | translate }}
       </button>
+      <!-- Duplication -->
       <button
         mat-menu-item
         (click)="clone.emit()"
@@ -41,8 +60,9 @@
         <mat-icon>file_copy</mat-icon>
         {{ 'common.duplicate' | translate }}
       </button>
+      <!-- Delete -->
       <ng-container *ngIf="application.canDelete">
-        <safe-divider style="margin: unset"></safe-divider>
+        <safe-divider class="m-0"></safe-divider>
         <button mat-menu-item (click)="delete.emit()">
           <mat-icon>delete</mat-icon>
           {{ 'common.delete' | translate }}

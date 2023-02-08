@@ -1,12 +1,5 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnDestroy,
-  ViewChild,
-} from '@angular/core';
+import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import { saveAs } from '@progress/kendo-file-saver';
-import { Subscription } from 'rxjs';
 import { SafeLineChartComponent } from '../../ui/line-chart/line-chart.component';
 import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
 import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.component';
@@ -14,6 +7,8 @@ import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.com
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 import { uniq, get, groupBy } from 'lodash';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Default file name for chart exports
@@ -28,13 +23,15 @@ const DEFAULT_FILE_NAME = 'chart';
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-export class SafeChartComponent implements OnChanges, OnDestroy {
+export class SafeChartComponent
+  extends SafeUnsubscribeComponent
+  implements OnChanges
+{
   // === DATA ===
   public loading = true;
   public series: any[] = [];
   public options: any = null;
   private dataQuery: any;
-  private dataSubscription?: Subscription;
 
   public lastUpdate = '';
   public hasError = false;
@@ -74,7 +71,9 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
    *
    * @param aggregationService Shared aggregation service
    */
-  constructor(private aggregationService: SafeAggregationService) {}
+  constructor(private aggregationService: SafeAggregationService) {
+    super();
+  }
 
   /** Detect changes of the settings to reload the data. */
   ngOnChanges(): void {
@@ -164,66 +163,60 @@ export class SafeChartComponent implements OnChanges, OnDestroy {
 
   /** Load the data, using widget parameters. */
   private getData(): void {
-    this.dataSubscription = this.dataQuery.subscribe((res: any) => {
-      if (res.errors) {
-        this.loading = false;
-        this.hasError = true;
-        this.series = [];
-      } else {
-        this.hasError = false;
-        const today = new Date();
-        this.lastUpdate =
-          ('0' + today.getHours()).slice(-2) +
-          ':' +
-          ('0' + today.getMinutes()).slice(-2);
-        if (
-          ['pie', 'donut', 'line', 'bar', 'column'].includes(
-            this.settings.chart.type
-          )
-        ) {
-          const aggregationData = JSON.parse(
-            JSON.stringify(res.data.recordsAggregation)
-          );
-          if (get(this.settings, 'chart.mapping.series', null)) {
-            const groups = groupBy(aggregationData, 'series');
-            const categories = uniq(
-              aggregationData.map((x: any) => x.category)
-            );
-            this.series = Object.keys(groups).map((key) => {
-              const rawData = groups[key];
-              const data = Array.from(
-                categories,
-                (category) =>
-                  rawData.find((x) => x.category === category) || {
-                    category,
-                    field: null,
-                  }
-              );
-              return {
-                name: key,
-                data,
-              };
-            });
-          } else {
-            this.series = [
-              {
-                data: aggregationData,
-              },
-            ];
-          }
+    this.dataQuery
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ errors, data, loading }: any) => {
+        if (errors) {
+          this.loading = false;
+          this.hasError = true;
+          this.series = [];
         } else {
-          this.series = res.data.recordsAggregation;
+          this.hasError = false;
+          const today = new Date();
+          this.lastUpdate =
+            ('0' + today.getHours()).slice(-2) +
+            ':' +
+            ('0' + today.getMinutes()).slice(-2);
+          if (
+            ['pie', 'donut', 'line', 'bar', 'column'].includes(
+              this.settings.chart.type
+            )
+          ) {
+            const aggregationData = JSON.parse(
+              JSON.stringify(data.recordsAggregation)
+            );
+            if (get(this.settings, 'chart.mapping.series', null)) {
+              const groups = groupBy(aggregationData, 'series');
+              const categories = uniq(
+                aggregationData.map((x: any) => x.category)
+              );
+              this.series = Object.keys(groups).map((key) => {
+                const rawData = groups[key];
+                const returnData = Array.from(
+                  categories,
+                  (category) =>
+                    rawData.find((x) => x.category === category) || {
+                      category,
+                      field: null,
+                    }
+                );
+                return {
+                  name: key,
+                  data: returnData,
+                };
+              });
+            } else {
+              this.series = [
+                {
+                  data: aggregationData,
+                },
+              ];
+            }
+          } else {
+            this.series = data.recordsAggregation;
+          }
+          this.loading = loading;
         }
-        this.loading = res.loading;
-        this.dataSubscription?.unsubscribe();
-      }
-    });
-  }
-
-  /** Remove subscriptions */
-  ngOnDestroy(): void {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
-    }
+      });
   }
 }

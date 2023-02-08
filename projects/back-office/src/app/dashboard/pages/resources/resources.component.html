@@ -18,7 +18,7 @@
 </div>
 
 <!-- Table container -->
-<div class="overflow-x-hidden shadow-light">
+<div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table
@@ -34,7 +34,9 @@
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        <td mat-cell *matCellDef="let element" class="font-bold">
+          {{ element.name }}
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="createdAt">

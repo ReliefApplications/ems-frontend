@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import {
-  MatDialogModule,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+  MatLegacyDialogModule as MatDialogModule,
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { SafeEditAggregationModalComponent } from './edit-aggregation-modal.component';
 import {
   TranslateModule,
@@ -20,7 +20,7 @@ describe('SafeEditAggregationModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        FormBuilder,
+        UntypedFormBuilder,
         TranslateService,
         { provide: MatDialogRef, useValue: {} },
         {

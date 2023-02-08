@@ -53,13 +53,6 @@
   }
 }
 
-.cdk-drag-preview {
-  box-sizing: border-box;
-  border-radius: 4px;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
-}
-
 .cdk-drag-placeholder {
   opacity: 0;
 }
@@ -88,25 +81,25 @@
 }
 
 .app-sidenav-add-page {
-  // Substracts topbar, sub-topbar, header and add-page height
+  // Subtracts topbar, sub-topbar, header and add-page height
   max-height: calc(100vh - 64px - 60px - 48px - 84px);
   overflow: auto;
 }
 
 .app-sidenav-phone-add-page {
-  // Substracts header and add-page height
+  // Subtracts header and add-page height
   max-height: calc(100vh - 48px - 84px);
   overflow: auto;
 }
 
 .app-sidenav {
-  // Substracts topbar, sub-topbar, header height
+  // Subtracts topbar, sub-topbar, header height
   max-height: calc(100vh - 64px - 60px - 48px);
   overflow: auto;
 }
 
 .app-sidenav-phone {
-  // Substracts header height
+  // Subtracts header height
   max-height: calc(100vh - 48px);
   overflow: auto;
 }

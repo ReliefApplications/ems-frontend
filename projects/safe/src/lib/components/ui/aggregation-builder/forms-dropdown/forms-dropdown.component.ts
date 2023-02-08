@@ -8,12 +8,14 @@ import {
   DoCheck,
   ElementRef,
 } from '@angular/core';
-import { AbstractControl, FormControl } from '@angular/forms';
-import { MatAutocomplete } from '@angular/material/autocomplete';
+import { AbstractControl, UntypedFormControl } from '@angular/forms';
+import { MatLegacyAutocomplete as MatAutocomplete } from '@angular/material/legacy-autocomplete';
 import { isMongoId } from '../../../../utils/is-mongo-id';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Form } from '../../../../models/form.model';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * This component is used to display a dropdown where the user chan choose a form
@@ -23,7 +25,10 @@ import { Form } from '../../../../models/form.model';
   templateUrl: './forms-dropdown.component.html',
   styleUrls: ['./forms-dropdown.component.scss'],
 })
-export class SafeFormsDropdownComponent implements OnInit, DoCheck {
+export class SafeFormsDropdownComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, DoCheck
+{
   // === DATA ===
   @Input() public forms$!: Observable<Form[]>;
   @Input() public loadingMore = true;
@@ -50,7 +55,9 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   /**
    * Constructor for the dropdown of forms
    */
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   ngOnInit(): void {
     this.sourceFilter =
@@ -64,6 +71,7 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
     });
     this.sourceControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged())
+      .pipe(takeUntil(this.destroy$))
       .subscribe((value: string) => {
         // If not an ID
         if (!isMongoId(value)) {
@@ -79,8 +87,8 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
    *
    * @returns the source control
    */
-  get sourceFormControl(): FormControl {
-    return this.sourceControl as FormControl;
+  get sourceFormControl(): UntypedFormControl {
+    return this.sourceControl as UntypedFormControl;
   }
 
   /**

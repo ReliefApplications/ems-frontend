@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Record,
@@ -11,6 +11,10 @@ import {
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../../utils/update-queries';
 import {
   DeleteRecordMutationResponse,
   DELETE_RECORD,
@@ -56,6 +60,11 @@ export class RecordsTabComponent implements OnInit {
   public loading = true;
   public showUpload = false;
 
+  /** @returns True if the records tab is empty */
+  get empty(): boolean {
+    return !this.loading && this.dataSource.filteredData.length === 0;
+  }
+
   /**
    * Records tab of resource page
    *
@@ -81,22 +90,16 @@ export class RecordsTabComponent implements OnInit {
       {
         query: GET_RESOURCE_RECORDS,
         variables: {
-          first: ITEMS_PER_PAGE,
           id: this.resource.id,
+          first: ITEMS_PER_PAGE,
+          afterCursor: null,
           display: false,
           showDeletedRecords: this.showDeletedRecords,
         },
       }
     );
-    this.recordsQuery.valueChanges.subscribe((res) => {
-      this.cachedRecords = res.data.resource.records.edges.map((x) => x.node);
-      this.dataSource.data = this.cachedRecords.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      );
-      this.pageInfo.length = res.data.resource.records.totalCount;
-      this.pageInfo.endCursor = res.data.resource.records.pageInfo.endCursor;
-      this.loading = res.loading;
+    this.recordsQuery.valueChanges.subscribe(({ data, loading }) => {
+      this.updateValues(data, loading);
     });
   }
 
@@ -263,18 +266,18 @@ export class RecordsTabComponent implements OnInit {
    */
   uploadFileData(file: any): void {
     const path = `upload/resource/records/${this.resource.id}`;
-    this.downloadService.uploadFile(path, file).subscribe(
-      (res) => {
+    this.downloadService.uploadFile(path, file).subscribe({
+      next: (res) => {
         if (res.status === 'OK') {
           this.fetchRecords(true);
           this.showUpload = false;
         }
       },
-      (error: any) => {
+      error: (error: any) => {
         this.snackBar.openSnackBar(error.error, { error: true });
         this.showUpload = false;
-      }
-    );
+      },
+    });
   }
 
   /**
@@ -297,7 +300,8 @@ export class RecordsTabComponent implements OnInit {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >= this.cachedRecords.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedRecords.length
     ) {
@@ -326,46 +330,57 @@ export class RecordsTabComponent implements OnInit {
    */
   private fetchRecords(refetch?: boolean): void {
     this.loading = true;
+    const variables = {
+      id: this.resource.id,
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      display: false,
+      showDeletedRecords: this.showDeletedRecords,
+    };
+    const cachedValues: GetResourceRecordsQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_RESOURCE_RECORDS,
+      variables
+    );
     if (refetch) {
       this.cachedRecords = [];
       this.pageInfo.pageIndex = 0;
-      this.pageInfo.endCursor = '';
-      this.recordsQuery
-        .refetch({
-          first: this.pageInfo.pageSize,
-          afterCursor: null,
-          display: false,
-          showDeletedRecords: this.showDeletedRecords,
-        })
-        .then(() => {
-          this.loading = false;
-        });
-    } else {
-      this.recordsQuery.fetchMore({
-        variables: {
-          first: this.pageInfo.pageSize,
-          afterCursor: this.pageInfo.endCursor,
-          display: false,
-          showDeletedRecords: this.showDeletedRecords,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            resource: {
-              records: {
-                edges: [
-                  ...prev.resource.records.edges,
-                  ...fetchMoreResult.resource.records.edges,
-                ],
-                pageInfo: fetchMoreResult.resource.records.pageInfo,
-                totalCount: fetchMoreResult.resource.records.totalCount,
-              },
-            },
-          });
-        },
-      });
     }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
+    } else {
+      if (refetch) {
+        this.recordsQuery.refetch(variables);
+      } else {
+        this.recordsQuery
+          .fetchMore({
+            variables,
+          })
+          .then((results) => this.updateValues(results.data, results.loading));
+      }
+    }
+  }
+
+  /**
+   * Update record data value
+   *
+   * @param data query response data
+   * @param loading loading status
+   */
+  private updateValues(
+    data: GetResourceRecordsQueryResponse,
+    loading: boolean
+  ) {
+    this.cachedRecords = updateQueryUniqueValues(
+      this.cachedRecords,
+      data.resource.records.edges.map((x) => x.node)
+    );
+    this.dataSource.data = this.cachedRecords.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.pageInfo.length = data.resource.records.totalCount;
+    this.pageInfo.endCursor = data.resource.records.pageInfo.endCursor;
+    this.loading = loading;
   }
 }

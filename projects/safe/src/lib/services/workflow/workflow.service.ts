@@ -6,7 +6,12 @@ import {
   GetWorkflowByIdQueryResponse,
   GET_WORKFLOW_BY_ID,
 } from './graphql/queries';
-import { AddStepMutationResponse, ADD_STEP } from './graphql/mutations';
+import {
+  AddStepMutationResponse,
+  ADD_STEP,
+  EditStepMutationResponse,
+  EDIT_STEP,
+} from './graphql/mutations';
 import { Workflow } from '../../models/workflow.model';
 import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { ContentType } from '../../models/page.model';
@@ -59,8 +64,8 @@ export class SafeWorkflowService {
           id,
         },
       })
-      .subscribe((res) => {
-        this.workflow.next(res.data.workflow);
+      .subscribe(({ data }) => {
+        this.workflow.next(data.workflow);
       });
   }
 
@@ -82,23 +87,23 @@ export class SafeWorkflowService {
             workflow: workflow.id,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ errors, data }) => {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectCreated', {
                 type: this.translate.instant('common.step.one').toLowerCase(),
-                value: res.data.addStep.name,
+                value: data.addStep.name,
               })
             );
             this.loadWorkflow(workflow.id);
             if (step.type === ContentType.form) {
               this.router.navigate(
-                ['../' + step.type + '/' + res.data.addStep.id],
+                ['../' + step.type + '/' + data.addStep.id],
                 { relativeTo: route.parent }
               );
             } else {
               this.router.navigate(
-                ['../' + step.type + '/' + res.data.addStep.content],
+                ['../' + step.type + '/' + data.addStep.content],
                 { relativeTo: route.parent }
               );
             }
@@ -106,7 +111,7 @@ export class SafeWorkflowService {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotUpdated', {
                 type: this.translate.instant('common.workflow.one'),
-                error: res.errors ? res.errors[0].message : '',
+                error: errors ? errors[0].message : '',
               }),
               { error: true }
             );
@@ -127,26 +132,50 @@ export class SafeWorkflowService {
    * Updates a specific step name in the opened workflow.
    *
    * @param step step to edit.
+   * @param callback additional callback
    */
-  updateStepName(step: Step): void {
+  updateStepName(step: Step, callback?: any): void {
     const workflow = this.workflow.getValue();
     if (workflow) {
-      const newWorkflow: Workflow = {
-        ...workflow,
-        steps: workflow.steps?.map((x) => {
-          if (x.id === step.id) {
-            x = { ...x, name: step.name };
-          }
-          return x;
-        }),
-      };
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectUpdated', {
-          type: this.translate.instant('common.step.one'),
-          value: step.name,
+      this.apollo
+        .mutate<EditStepMutationResponse>({
+          mutation: EDIT_STEP,
+          variables: {
+            id: step.id,
+            name: step.name,
+          },
         })
-      );
-      this.workflow.next(newWorkflow);
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.step.one'),
+                error: errors[0].message,
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.step.one').toLowerCase(),
+                  value: step.name,
+                })
+              );
+              const newWorkflow: Workflow = {
+                ...workflow,
+                steps: workflow.steps?.map((x) => {
+                  if (x.id === step.id) {
+                    x = { ...x, name: step.name };
+                  }
+                  return x;
+                }),
+              };
+              this.workflow.next(newWorkflow);
+              if (callback) callback();
+            }
+          }
+        });
     }
   }
 

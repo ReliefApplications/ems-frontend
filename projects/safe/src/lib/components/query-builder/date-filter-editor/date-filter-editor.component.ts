@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { isDate } from 'lodash';
 
 /**
@@ -11,7 +11,7 @@ import { isDate } from 'lodash';
   styleUrls: ['./date-filter-editor.component.scss'],
 })
 export class DateFilterEditorComponent implements OnInit {
-  @Input() control!: FormControl;
+  @Input() control!: UntypedFormControl;
   public useExpression = false;
 
   /** @returns Is the first input a date or not. */

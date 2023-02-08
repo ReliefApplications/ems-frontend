@@ -60,21 +60,21 @@ export class SafeUserSummaryComponent implements OnInit {
           id: this.id,
         },
       })
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            this.user = res.data.user;
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data) {
+            this.user = data.user;
             this.breadcrumbService.setBreadcrumb(
               '@user',
               this.user.name as string
             );
           }
-          this.loading = res.data.loading;
+          this.loading = loading;
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -92,17 +92,17 @@ export class SafeUserSummaryComponent implements OnInit {
           id: this.id,
         },
       })
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            this.user = res.data.editUserProfile;
-            this.loading = res.loading;
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data) {
+            this.user = data.editUserProfile;
+            this.loading = loading;
           }
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -129,16 +129,16 @@ export class SafeUserSummaryComponent implements OnInit {
           application: event.application,
         },
       })
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            this.user = res.data.editUser;
-            this.loading = res.loading;
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data) {
+            this.user = data.editUser;
+            this.loading = loading;
           }
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
-        }
-      );
+        },
+      });
   }
 }

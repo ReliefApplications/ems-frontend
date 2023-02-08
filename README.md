@@ -1,8 +1,15 @@
 OORT Front-end
 =======
-[![GitHub version](https://img.shields.io/github/v/release/ReliefApplications/oort-frontend)](https://img.shields.io/github/v/release/ReliefApplications/oort-frontend)
 [![Github Pages](https://github.com/ReliefApplications/oort-frontend/actions/workflows/github-pages.yml/badge.svg)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/github-pages.yml)
 [![Storybook](https://github.com/ReliefApplications/oort-frontend/actions/workflows/storybook.yml/badge.svg)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/storybook.yml)
+
+# Versions
+
+Branch | Version | CI
+--- | --- | ---
+main | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/oort-frontend/main) | [![Version](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml)
+next | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/oort-frontend/next?color=6ded5a) | [![Version](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=next)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml)
+beta | ![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/ReliefApplications/oort-frontend/beta?color=ecf495) | [![Version](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml/badge.svg?branch=beta)](https://github.com/ReliefApplications/oort-frontend/actions/workflows/ci.yml)
 
 # Introduction
 
@@ -95,8 +102,6 @@ To launch the dev server of a project, run:
 ng serve <project-name>
 ```
 Navigate to [http://localhost:4200/](http://localhost:4200/). The app will automatically reload if you change any of the source files.
-
-By default, if you omit the `<project-name>`, it will run the `back-office` project.
 
 ### Running both front-office and back-office
 If you want to run the dev server of the back-office and front-office at the same time:

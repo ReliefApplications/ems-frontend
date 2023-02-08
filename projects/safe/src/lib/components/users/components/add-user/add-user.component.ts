@@ -1,13 +1,23 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { GET_USERS, GetUsersQueryResponse } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** Model for the input  */
 interface DialogData {
@@ -22,15 +32,18 @@ interface DialogData {
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.scss'],
 })
-export class SafeAddUserComponent implements OnInit {
-  form: FormGroup = new FormGroup({});
+export class SafeAddUserComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
+  form: UntypedFormGroup = new UntypedFormGroup({});
   public filteredUsers?: Observable<User[]>;
   private users: User[] = [];
 
   /** @returns The position attributes available */
-  get positionAttributes(): FormArray | null {
+  get positionAttributes(): UntypedFormArray | null {
     return this.form.get('positionAttributes')
-      ? (this.form.get('positionAttributes') as FormArray)
+      ? (this.form.get('positionAttributes') as UntypedFormArray)
       : null;
   }
 
@@ -44,12 +57,14 @@ export class SafeAddUserComponent implements OnInit {
    * @param translate The translation service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<SafeAddUserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,
     public translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
@@ -73,12 +88,13 @@ export class SafeAddUserComponent implements OnInit {
     );
 
     this.apollo
-      .watchQuery<GetUsersQueryResponse>({
+      .query<GetUsersQueryResponse>({
         query: GET_USERS,
       })
-      .valueChanges.subscribe((res) => {
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
         const flatInvitedUsers = this.data.users.map((x) => x.username);
-        this.users = res.data.users.filter(
+        this.users = data.users.filter(
           (x) => !flatInvitedUsers.includes(x.username)
         );
         this.filteredUsers = this.form.controls.email.valueChanges.pipe(

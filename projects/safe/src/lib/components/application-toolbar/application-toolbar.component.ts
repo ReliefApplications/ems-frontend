@@ -1,12 +1,13 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Application } from '../../models/application.model';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
+import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Toolbar component visible when editing application.
@@ -17,15 +18,17 @@ import { SafeConfirmService } from '../../services/confirm/confirm.service';
   templateUrl: './application-toolbar.component.html',
   styleUrls: ['./application-toolbar.component.scss'],
 })
-export class SafeApplicationToolbarComponent implements OnInit, OnDestroy {
+export class SafeApplicationToolbarComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() title = '';
   @Input() settings: any[] = [];
   @Input() canUpdate = false;
-  @Input() showPublish = false;
+  @Input() showActions = false;
 
   // === APPLICATION ===
   public application: Application | null = null;
-  private applicationSubscription?: Subscription;
   public locked: boolean | undefined = undefined;
   public lockedByUser: boolean | undefined = undefined;
   public canPublish = false;
@@ -48,21 +51,22 @@ export class SafeApplicationToolbarComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          this.application = application;
-          this.locked = this.application?.locked;
-          this.lockedByUser = this.application?.lockedByUser;
-          this.canPublish =
-            !!this.application && this.application.pages
-              ? this.application.pages.length > 0
-              : false;
-        }
-      );
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        this.application = application;
+        this.locked = this.application?.locked;
+        this.lockedByUser = this.application?.lockedByUser;
+        this.canPublish =
+          !!this.application && this.application.pages
+            ? this.application.pages.length > 0
+            : false;
+      });
   }
 
   /**
@@ -87,7 +91,7 @@ export class SafeApplicationToolbarComponent implements OnInit, OnDestroy {
       confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.applicationService.lockApplication();
+      this.applicationService.toggleApplicationLock();
     });
   }
 
@@ -127,14 +131,5 @@ export class SafeApplicationToolbarComponent implements OnInit, OnDestroy {
    */
   saveAccess(e: any): void {
     this.applicationService.editPermissions(e);
-  }
-
-  /**
-   * Removes all the subscriptions.
-   */
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
   }
 }

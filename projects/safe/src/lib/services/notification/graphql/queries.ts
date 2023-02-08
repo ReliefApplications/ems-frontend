@@ -37,7 +37,6 @@ export const GET_NOTIFICATIONS = gql`
 
 /** Model for GetNotificationsQueryResponse object */
 export interface GetNotificationsQueryResponse {
-  loading: boolean;
   notifications: {
     edges: {
       node: Notification;

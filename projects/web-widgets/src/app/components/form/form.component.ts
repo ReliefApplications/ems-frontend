@@ -39,10 +39,10 @@ export class FormComponent implements OnInit, OnChanges {
           id: this.id,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.form = res.data.form;
-          this.loading = res.loading;
+      .subscribe(({ data, loading }) => {
+        if (data) {
+          this.form = data.form;
+          this.loading = loading;
         }
       });
   }
@@ -55,10 +55,10 @@ export class FormComponent implements OnInit, OnChanges {
           id: this.id,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.form = res.data.form;
-          this.loading = res.loading;
+      .subscribe(({ data, loading }) => {
+        if (data) {
+          this.form = data.form;
+          this.loading = loading;
         }
       });
   }

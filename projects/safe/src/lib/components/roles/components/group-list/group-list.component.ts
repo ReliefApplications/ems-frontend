@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import {
@@ -18,6 +18,8 @@ import { SafeAddRoleComponent } from '../add-role/add-role.component';
 import { SafeSnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 import get from 'lodash/get';
 import { SafeRestService } from '../../../../services/rest/rest.service';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * This component is used to display the groups tab in the platform
@@ -27,7 +29,10 @@ import { SafeRestService } from '../../../../services/rest/rest.service';
   templateUrl: './group-list.component.html',
   styleUrls: ['./group-list.component.scss'],
 })
-export class SafeGroupListComponent implements OnInit {
+export class SafeGroupListComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public loadingFetch = false;
@@ -54,7 +59,9 @@ export class SafeGroupListComponent implements OnInit {
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private restService: SafeRestService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.getGroups();
@@ -86,13 +93,14 @@ export class SafeGroupListComponent implements OnInit {
    */
   private getGroups(): void {
     this.apollo
-      .watchQuery<GetGroupsQueryResponse>({
+      .query<GetGroupsQueryResponse>({
         query: GET_GROUPS,
       })
-      .valueChanges.subscribe((res) => {
-        this.groups.data = res.data.groups;
-        // this.manualCreation = res.data.groups.manualCreation;
-        this.loading = res.loading;
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.groups.data = data.groups;
+        // this.manualCreation = data.groups.manualCreation;
+        this.loading = loading;
       });
   }
 
@@ -101,9 +109,12 @@ export class SafeGroupListComponent implements OnInit {
    */
   private getPermissionsConfiguration(): void {
     const url = '/permissions/configuration';
-    this.restService.get(url).subscribe((res) => {
-      this.manualCreation = get(res, 'manualCreation', true);
-    });
+    this.restService
+      .get(url)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.manualCreation = get(res, 'groups.local', true);
+      });
   }
 
   /**
@@ -113,31 +124,37 @@ export class SafeGroupListComponent implements OnInit {
     const dialogRef = this.dialog.open(SafeAddRoleComponent, {
       data: { title: 'components.group.add.title' },
     });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value) {
-        this.apollo
-          .mutate<AddGroupMutationResponse>({
-            mutation: ADD_GROUP,
-            variables: {
-              title: value.title,
-            },
-          })
-          .subscribe(
-            () => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectCreated', {
-                  type: this.translate.instant('common.role.one').toLowerCase(),
-                  value: value.title,
-                })
-              );
-              this.getGroups();
-            },
-            (err) => {
-              console.log(err);
-            }
-          );
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.apollo
+            .mutate<AddGroupMutationResponse>({
+              mutation: ADD_GROUP,
+              variables: {
+                title: value.title,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: () => {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.role.one')
+                      .toLowerCase(),
+                    value: value.title,
+                  })
+                );
+                this.getGroups();
+              },
+              error: (err) => {
+                console.log(err);
+              },
+            });
+        }
+      });
   }
 
   /** Fetches groups from service */
@@ -157,10 +174,11 @@ export class SafeGroupListComponent implements OnInit {
     );
     this.apollo
       .mutate<FetchGroupsMutationResponse>({ mutation: FETCH_GROUPS })
-      .subscribe(
-        (res) => {
-          if (res.data) this.groups.data = res.data.fetchGroups || [];
-          this.loadingFetch = res.loading;
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data) this.groups.data = data.fetchGroups || [];
+          this.loadingFetch = loading;
           snackBarRef.instance.data = {
             message: this.translate.instant(
               'common.notifications.groups.ready'
@@ -169,7 +187,7 @@ export class SafeGroupListComponent implements OnInit {
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
         },
-        () => {
+        error: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant(
               'common.notifications.groups.error'
@@ -178,8 +196,8 @@ export class SafeGroupListComponent implements OnInit {
             error: true,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -209,6 +227,7 @@ export class SafeGroupListComponent implements OnInit {
               id: item.id,
             },
           })
+          .pipe(takeUntil(this.destroy$))
           .subscribe(() => {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectDeleted', {

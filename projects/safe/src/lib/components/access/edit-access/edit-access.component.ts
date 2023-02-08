@@ -1,9 +1,14 @@
 import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { GetRolesQueryResponse, GET_ROLES } from './graphql/queries';
 import { Role } from '../../../models/user.model';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Interface defining the structure of the data
@@ -22,13 +27,15 @@ interface DialogData {
   templateUrl: './edit-access.component.html',
   styleUrls: ['./edit-access.component.scss'],
 })
-export class SafeEditAccessComponent implements OnInit {
+export class SafeEditAccessComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
-  public loading = true;
   public roles: Role[] = [];
 
   // === REACTIVE FORM ===
-  accessForm: FormGroup = new FormGroup({});
+  accessForm: UntypedFormGroup = new UntypedFormGroup({});
 
   /**
    * The constructor function is used to create a new instance of the SafeEditAccessComponent class
@@ -40,26 +47,28 @@ export class SafeEditAccessComponent implements OnInit {
    * @param {DialogData} data This is the data that is passed to the dialog when it is opened.
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeEditAccessComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Gets list of roles, and builds the form
    */
   ngOnInit(): void {
     this.apollo
-      .watchQuery<GetRolesQueryResponse>({
+      .query<GetRolesQueryResponse>({
         query: GET_ROLES,
         variables: {
           application: this.data.application,
         },
       })
-      .valueChanges.subscribe((res) => {
-        this.roles = res.data.roles;
-        this.loading = res.loading;
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        this.roles = data.roles;
       });
     this.accessForm = this.formBuilder.group({
       canSee: [

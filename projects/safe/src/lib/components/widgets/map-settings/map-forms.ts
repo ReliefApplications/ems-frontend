@@ -2,11 +2,15 @@ import {
   createQueryForm,
   createFilterGroup,
 } from '../../query-builder/query-builder-forms';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import get from 'lodash/get';
 
 /** Angular Form Builder */
-const fb = new FormBuilder();
+const fb = new UntypedFormBuilder();
 /** Default clorophlet value */
 const DEFAULT_CLOROPHLET = {
   name: 'New clorophlet',
@@ -60,7 +64,7 @@ const DEFAULT_MAP = {
  * @param value value of clorophlet, optional
  * @returns new form group
  */
-export const clorophletForm = (value?: any): FormGroup =>
+export const clorophletForm = (value?: any): UntypedFormGroup =>
   fb.group({
     name: [get(value, 'name', DEFAULT_CLOROPHLET.name), [Validators.required]],
     geoJSON: [
@@ -93,7 +97,7 @@ export const clorophletForm = (value?: any): FormGroup =>
  * @param value value of division, optional
  * @returns new division group
  */
-export const divisionForm = (value?: any): FormGroup =>
+export const divisionForm = (value?: any): UntypedFormGroup =>
   fb.group({
     label: [get(value, 'label', DEFAULT_DIVISION.label)],
     color: [get(value, 'color', DEFAULT_DIVISION.color)],
@@ -107,7 +111,7 @@ export const divisionForm = (value?: any): FormGroup =>
  * @param value marker rule value ( optional )
  * @returns new form group
  */
-export const markerRuleForm = (value?: any): FormGroup =>
+export const markerRuleForm = (value?: any): UntypedFormGroup =>
   fb.group({
     label: [
       get(value, 'label', DEFAULT_MARKER_RULE.label),
@@ -130,10 +134,14 @@ export const markerRuleForm = (value?: any): FormGroup =>
  * @param value map settings ( optional )
  * @returns map form
  */
-export const mapform = (id: any, value?: any): FormGroup =>
+export const createMapWidgetFormGroup = (
+  id: any,
+  value?: any
+): UntypedFormGroup =>
   fb.group({
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],
+    resource: [get(value, 'resource', null), Validators.required],
     query: createQueryForm(get(value, 'query', DEFAULT_MAP.query), true),
     latitude: [
       get(value, 'latitude', DEFAULT_MAP.latitude),

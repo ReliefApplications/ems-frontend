@@ -1,11 +1,11 @@
-<safe-divider style="margin: unset"></safe-divider>
+<safe-divider class="m-0"></safe-divider>
 <div class="safe-steps" *ngIf="loading">
   <kendo-skeleton
     shape="rectangle"
     animation="pulse"
     width="100px"
     height="100px"
-    style="border-radius: 8px"
+    class="rounded-lg"
     *ngFor="let number of [0, 1, 2]"
   ></kendo-skeleton>
 </div>
@@ -32,4 +32,4 @@
   ></safe-step>
   <safe-add-step *ngIf="canUpdate" (click)="add.emit()"></safe-add-step>
 </div>
-<safe-divider style="margin: unset"></safe-divider>
+<safe-divider class="m-0"></safe-divider>

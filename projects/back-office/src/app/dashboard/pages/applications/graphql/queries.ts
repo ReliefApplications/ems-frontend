@@ -42,7 +42,9 @@ export const GET_APPLICATIONS = gql`
           canSee
           canUpdate
           canDelete
-          usersCount
+          users {
+            totalCount
+          }
         }
         cursor
       }
@@ -57,7 +59,6 @@ export const GET_APPLICATIONS = gql`
 
 /** Model for GetApplicationsQueryResponse object */
 export interface GetApplicationsQueryResponse {
-  loading: boolean;
   applications: {
     edges: {
       node: Application;
@@ -92,6 +93,5 @@ export const GET_ROLES = gql`
 
 /** Model for GetRolesQueryResponse object */
 export interface GetRolesQueryResponse {
-  loading: boolean;
   roles: Role[];
 }

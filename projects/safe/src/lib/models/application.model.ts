@@ -1,6 +1,6 @@
 import { Page } from './page.model';
 import { Channel } from './channel.model';
-import { Role, User } from './user.model';
+import { Role, User, UserConnection } from './user.model';
 import { Subscription } from './subscription.model';
 import { PositionAttributeCategory } from './position-attribute-category.model';
 import { status } from './form.model';
@@ -16,9 +16,9 @@ export interface Application {
   modifiedAt?: Date;
   pages?: Page[];
   roles?: Role[];
-  users?: User[];
+  userRoles?: Role[];
+  users?: UserConnection;
   status?: status;
-  usersCount?: number;
   settings?: any;
   permissions?: any;
   channels?: Channel[];
