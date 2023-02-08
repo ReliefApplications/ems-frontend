@@ -16,13 +16,16 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-.sv_main {
+.sv_main, .svd_container {
+  --main-color: #{rgb($primary_500)};
+  --main-hover-color: #{rgb($primary_600)};
   --primary-color: #{rgb($primary_500)};
   --secondary-color: #{rgb($primary_500)};
+  --progress-buttons-color: #{rgb($primary_500)};
   // --primary-text-color: #676a6c;
   // --secondary-text-color: #a7a7a7;
   // --inverted-text-color: #ffffff;
-  --primary-hover-color: #{rgb($primary_500)};
+  --primary-hover-color: #{rgb($primary_600)};
   --selection-border-color: #{rgb($primary_500)};
   // --primary-icon-color: #3d4d5d;
   // --primary-bg-color: #fff;
