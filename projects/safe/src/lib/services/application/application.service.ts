@@ -800,18 +800,12 @@ export class SafeApplicationService {
    * Download application users
    *
    * @param type export type
+   * @param users list of users ids
    */
-  downloadUsers(type: 'csv' | 'xlsx'): void {
+  downloadUsers(type: 'csv' | 'xlsx', users: string[] = []): void {
     const application = this.application.getValue();
     if (application) {
-      const fileName = `users_${application?.name}.${type}`;
-      const path = `download/application/${application?.id}/users`;
-      const queryString = new URLSearchParams({ type }).toString();
-      this.downloadService.getFile(
-        `${path}?${queryString}`,
-        `text/${type};charset=utf-8;`,
-        fileName
-      );
+      this.downloadService.getUsersExport(type, users, application);
     }
   }
 
