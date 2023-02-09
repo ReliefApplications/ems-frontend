@@ -215,7 +215,7 @@ export class FormBuilderComponent implements OnInit {
       const statusModal = this.dialog.open(SafeStatusModalComponent, {
         disableClose: true,
         data: {
-          title: 'Saving survey',
+          title: this.translate.instant('components.formBuilder.saveSurvey'),
           showSpinner: true,
         },
       });
