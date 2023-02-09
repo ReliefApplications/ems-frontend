@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { FormGroup } from '@angular/forms';
 import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
 
 /**
