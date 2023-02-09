@@ -173,7 +173,7 @@
     [pageIndex]="pageInfo.pageIndex"
     [pageSize]="pageInfo.pageSize"
     [length]="pageInfo.length"
-    aria-label="Select page of records"
+    [ariaLabel]="'components.records.ariaLabel' | translate"
     (page)="onPage($event)"
   ></mat-paginator>
   <!-- Empty indicator -->

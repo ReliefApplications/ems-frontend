@@ -8,7 +8,7 @@
       [isIcon]="true"
       [icon]="'close'"
       *ngIf="search"
-      aria-label="Clear"
+      [ariaLabel]="'components.role.ariaLabel' | translate"
       (click)="search = ''"
     ></safe-button>
   </mat-form-field>

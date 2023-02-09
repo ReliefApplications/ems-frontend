@@ -370,6 +370,7 @@
 			}
 		},
 		"apiConfiguration": {
+			"ariaLabel": "******",
 			"create": {
 				"errors": {
 					"name": "******"
@@ -406,6 +407,7 @@
 			},
 			"subscription": {
 				"modal": {
+					"ariaLabel": "******",
 					"hint": {
 						"listenTo": "******"
 					},
@@ -431,6 +433,7 @@
 			}
 		},
 		"applications": {
+			"ariaLabel": "******",
 			"dropdown": {
 				"select": "******"
 			}
@@ -491,6 +494,9 @@
 			"fields": "******",
 			"subject": "******",
 			"withoutRecords": "******"
+		},
+		"floating": {
+			"ariaLabel": "******"
 		},
 		"form": {
 			"aggregation": {
@@ -561,6 +567,7 @@
 			}
 		},
 		"forms": {
+			"ariaLabel": "******",
 			"isCore": "******",
 			"parent": "******"
 		},
@@ -610,6 +617,7 @@
 			"value": "******"
 		},
 		"notifications": {
+			"ariaLabel": "******",
 			"readAll": "******"
 		},
 		"preferences": {
@@ -618,6 +626,7 @@
 			"title": "******"
 		},
 		"pullJob": {
+			"ariaLabel": "******",
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
@@ -763,6 +772,7 @@
 		"records": {
 			"active": "******",
 			"archived": "******",
+			"ariaLabel": "******",
 			"showActive": "******",
 			"showArchived": "******",
 			"upload": {
@@ -770,6 +780,8 @@
 			}
 		},
 		"referenceData": {
+			"ariaLabelData": "******",
+			"ariaLabelDatas": "******",
 			"create": {
 				"title": "******"
 			},
@@ -782,6 +794,7 @@
 			}
 		},
 		"resource": {
+			"ariaLabel": "******",
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
 			},
@@ -799,6 +812,9 @@
 			"add": {
 				"title": "******"
 			},
+			"ariaLabel": "******",
+			"ariaLabelResources": "******",
+			"ariaLabelUsers": "******",
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
@@ -1195,6 +1211,7 @@
 				},
 				"summaryCard": {
 					"add": "******",
+					"ariaLabel": "******",
 					"card": {
 						"dataSource": {
 							"layoutStyles": {

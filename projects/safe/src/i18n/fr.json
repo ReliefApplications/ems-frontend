@@ -370,6 +370,7 @@
 			}
 		},
 		"apiConfiguration": {
+			"ariaLabel": "***",
 			"create": {
 				"errors": {
 					"name": "Nom invalide: utilisez seulement des lettres, des chiffres et des tirets bas."
@@ -406,6 +407,7 @@
 			},
 			"subscription": {
 				"modal": {
+					"ariaLabel": "***",
 					"hint": {
 						"listenTo": "Clé de routage de l'agent de messages"
 					},
@@ -431,6 +433,7 @@
 			}
 		},
 		"applications": {
+			"ariaLabel": "***",
 			"dropdown": {
 				"select": "Depuis les applications"
 			}
@@ -491,6 +494,9 @@
 			"fields": "Sélectionner les champs à écrire dans le corps du texte",
 			"subject": "Objet",
 			"withoutRecords": "Sans enregistrements"
+		},
+		"floating": {
+			"ariaLabel": "***"
 		},
 		"form": {
 			"aggregation": {
@@ -561,6 +567,7 @@
 			}
 		},
 		"forms": {
+			"ariaLabel": "***",
 			"isCore": "Est un formulaire source",
 			"parent": "Formulaire parent"
 		},
@@ -610,6 +617,7 @@
 			"value": "Valeur"
 		},
 		"notifications": {
+			"ariaLabel": "***",
 			"readAll": "Tout marquer comme lu"
 		},
 		"preferences": {
@@ -618,6 +626,7 @@
 			"title": "Préférences"
 		},
 		"pullJob": {
+			"ariaLabel": "***",
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer la tâche {{name}} ?",
 				"title": "Supprimer la tâche"
@@ -763,6 +772,7 @@
 		"records": {
 			"active": "Enregistrements actifs",
 			"archived": "Enregistrements archivés",
+			"ariaLabel": "***",
 			"showActive": "Voir les enregistrements actifs",
 			"showArchived": "Voir les enregistrements archivés",
 			"upload": {
@@ -770,6 +780,8 @@
 			}
 		},
 		"referenceData": {
+			"ariaLabelData": "***",
+			"ariaLabelDatas": "***",
 			"create": {
 				"title": "Nouvelle référence de données"
 			},
@@ -782,6 +794,7 @@
 			}
 		},
 		"resource": {
+			"ariaLabel": "***",
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer la ressource {{name}} ?"
 			},
@@ -799,6 +812,9 @@
 			"add": {
 				"title": "Ajouter un nouveau rôle"
 			},
+			"ariaLabel": "***",
+			"ariaLabelResources": "***",
+			"ariaLabelUsers": "***",
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer le rôle {{name}} ?",
 				"title": "Supprimer le rôle"
@@ -1197,6 +1213,7 @@
 				},
 				"summaryCard": {
 					"add": "Ajouter un carte",
+					"ariaLabel": "***",
 					"card": {
 						"dataSource": {
 							"layoutStyles": {

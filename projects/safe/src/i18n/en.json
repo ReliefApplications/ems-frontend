@@ -370,6 +370,7 @@
 			}
 		},
 		"apiConfiguration": {
+			"ariaLabel": "Select page of forms",
 			"create": {
 				"errors": {
 					"name": "Invalid name: please only use letters, digits and underscores."
@@ -406,6 +407,7 @@
 			},
 			"subscription": {
 				"modal": {
+					"ariaLabel": "Clear",
 					"hint": {
 						"listenTo": "Message broker routing key"
 					},
@@ -431,6 +433,7 @@
 			}
 		},
 		"applications": {
+			"ariaLabel": "Select page of applications",
 			"dropdown": {
 				"select": "From applications"
 			}
@@ -491,6 +494,9 @@
 			"fields": "Select fields to write in body",
 			"subject": "Subject",
 			"withoutRecords": "Without records"
+		},
+		"floating": {
+			"ariaLabel": "Example icon-button with a menu"
 		},
 		"form": {
 			"aggregation": {
@@ -561,6 +567,7 @@
 			}
 		},
 		"forms": {
+			"ariaLabel": "Select page of forms",
 			"isCore": "Is core",
 			"parent": "Parent form"
 		},
@@ -610,6 +617,7 @@
 			"value": "Value"
 		},
 		"notifications": {
+			"ariaLabel": "Select page of notifications",
 			"readAll": "Mark all as read"
 		},
 		"preferences": {
@@ -618,6 +626,7 @@
 			"title": "Preferences"
 		},
 		"pullJob": {
+			"ariaLabel": "Select page of pull jobs",
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the pull job {{name}}?",
 				"title": "Delete pull job"
@@ -763,6 +772,7 @@
 		"records": {
 			"active": "Active records",
 			"archived": "Archived records",
+			"ariaLabel": "Select page of records",
 			"showActive": "Show active records",
 			"showArchived": "Show archived records",
 			"upload": {
@@ -770,6 +780,8 @@
 			}
 		},
 		"referenceData": {
+			"ariaLabelData": "Fields chip list",
+			"ariaLabelDatas": "Select page of forms",
 			"create": {
 				"title": "New Reference Data"
 			},
@@ -782,6 +794,7 @@
 			}
 		},
 		"resource": {
+			"ariaLabel": "Select page of resources",
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the resource {{name}}?"
 			},
@@ -799,6 +812,9 @@
 			"add": {
 				"title": "Add new role"
 			},
+			"ariaLabel": "Clear",
+			"ariaLabelResources": "Select page of resources",
+			"ariaLabelUsers": "Select page of users",
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the role {{name}}?",
 				"title": "Delete role"
@@ -1195,6 +1211,7 @@
 				},
 				"summaryCard": {
 					"add": "Add new card",
+					"ariaLabel": "Select an option",
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
