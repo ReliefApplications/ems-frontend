@@ -1,3 +1,15 @@
+<!-- test -->
+<div class="box" cdkDrag>test</div>
+<mat-tab-group #tabGroup animationDuration="0">
+  <mat-tab *ngFor="let menu of menus; let index = index">
+    <ng-template mat-tab-label>
+      <div cdkDrag cdkDragRootElement=".mat-tab-label">Menu {{ menu }}</div>
+    </ng-template>
+    <div class="menu-content">Menu content {{ menu }}</div>
+  </mat-tab>
+</mat-tab-group>
+<!-- end test -->
+
 <div [formGroup]="formGroup" class="flex flex-col">
   <h2>
     {{ 'components.widget.settings.grid.buttons.title' | translate }}
@@ -10,7 +22,7 @@
     style.align-self="flex-end"
     icon="add"
     variant="primary"
-    (click)="addButton()"
+    (click)="addButton($event)"
   >
     {{ 'components.widget.settings.grid.buttons.create' | translate }}
   </safe-button>
@@ -19,23 +31,52 @@
     animationDuration="0ms"
     dynamicHeight
     *ngIf="buttons.length > 0"
+    #tabGroup
   >
-    <ng-container *ngFor="let button of buttons.controls; let i = index">
+    <ng-container
+      *ngFor="
+        let button of buttons.controls;
+        let i = index;
+        trackBy: trackByIndex
+      "
+    >
       <mat-tab>
         <ng-template mat-tab-label>
-          {{
-            button.value.name.length > 0
-              ? button.value.name
-              : ('components.widget.settings.grid.buttons.defaultName'
-                | translate)
-          }}
-          <safe-icon
-            *ngIf="button.invalid"
-            icon="error_outline"
-            variant="danger"
-            [inline]="true"
-            [size]="18"
-          ></safe-icon>
+          <div
+            (cdkDropListDropped)="onDropTab($event)"
+            [cdkDropListConnectedTo]="(childMenuIds$ | async)!"
+            [id]="CHILD_ID_NAME + i"
+            cdkDropListOrientation="horizontal"
+            class="w-100 child-menu-drop-list"
+            cdkDropList
+          >
+            <div
+              (cdkDragEntered)="onDragEntered($event)"
+              (cdkDragExited)="onDragExited($event)"
+              class="d-flex align-items-center"
+              cdkDrag
+            >
+              <div *cdkDragPlaceholder class="drag-custom-placeholder"></div>
+              <mat-icon cdkDragHandle class="draggable"
+                >drag_indicator</mat-icon
+              >
+              <span
+                >{{
+                  button.value.name.length > 0
+                    ? button.value.name
+                    : ('components.widget.settings.grid.buttons.defaultName'
+                      | translate)
+                }}
+                <safe-icon
+                  *ngIf="button.invalid"
+                  icon="error_outline"
+                  variant="danger"
+                  [inline]="true"
+                  [size]="18"
+                ></safe-icon
+              ></span>
+            </div>
+          </div>
         </ng-template>
         <ng-template matTabContent>
           <safe-button-config
