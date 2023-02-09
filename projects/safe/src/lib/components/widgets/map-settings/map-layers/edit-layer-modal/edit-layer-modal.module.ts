@@ -8,10 +8,18 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 import { MatSliderModule } from '@angular/material/slider';
+import { LayerPropertiesComponent } from './layer-properties/layer-properties.component';
+import { LayerStylingComponent } from './layer-styling/layer-styling.component';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 
 /** Module for the SafeEditLayerModalComponent */
 @NgModule({
-  declarations: [SafeEditLayerModalComponent],
+  declarations: [
+    SafeEditLayerModalComponent,
+    LayerPropertiesComponent,
+    LayerStylingComponent,
+  ],
   imports: [
     CommonModule,
     SafeModalModule,
@@ -22,6 +30,8 @@ import { MatSliderModule } from '@angular/material/slider';
     MatInputModule,
     MatCheckboxModule,
     MatSliderModule,
+    MatTabsModule,
+    MatSelectModule,
   ],
   exports: [SafeEditLayerModalComponent],
 })

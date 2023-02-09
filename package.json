@@ -3,7 +3,7 @@
   "version": "1.4.0-beta.6",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng serve",
     "build": "ng build",
     "bundle:widgets": "ng build --configuration=oort-dev --project=web-widgets && node .scripts/build-widgets.js",
     "compodoc:front": "npx compodoc -p tsconfig.json projects/front-office/src -d documentation/front-office",
@@ -42,6 +42,7 @@
     "@casl/angular": "^8.2.0",
     "@esri/arcgis-rest-auth": "^3.4.3",
     "@esri/arcgis-rest-request": "^3.4.3",
+    "@fortawesome/fontawesome-free": "^6.3.0",
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
     "@progress/kendo-angular-buttons": "^11.0.0",

@@ -11,9 +11,12 @@ import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe
 import { createLayerForm } from '../map-forms';
 import { SafeEditLayerModalComponent } from './edit-layer-modal/edit-layer-modal.component';
 
+/** List of available layer types */
+export const LAYER_TYPES = ['polygon', 'point', 'heatmap', 'cluster'] as const;
 /** Interface for a map layer */
 export interface MapLayerI {
   name: string;
+  type: typeof LAYER_TYPES[number];
 }
 
 /**

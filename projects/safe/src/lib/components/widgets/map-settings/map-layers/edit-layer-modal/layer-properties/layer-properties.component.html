@@ -1,0 +1,59 @@
+<div class="flex flex-col space-y-12" *ngIf="form">
+  <!-- Options section -->
+  <form [formGroup]="form" class="flex flex-col space-y-8">
+    <!-- Layer name -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.name' | translate }}</mat-label>
+      <input matInput formControlName="name" type="text" />
+    </mat-form-field>
+    <!-- Layer type -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.type.one' | translate }}</mat-label>
+      <mat-select formControlName="type">
+        <mat-option *ngFor="let type of layerTypes" [value]="type">
+          {{ type }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- Default visibility -->
+    <mat-checkbox formControlName="defaultVisibility"
+      >Visible by default</mat-checkbox
+    >
+    <!-- Opacity -->
+    <div>
+      <div class="flex flex-row w-full justify-between">
+        <label>Opacity</label>
+        <label>{{ form.controls.opacity.value }}</label>
+      </div>
+      <mat-slider
+        class="w-full m-0"
+        min="0"
+        max="1"
+        step="0.1"
+        [discrete]="true"
+      >
+        <input matSliderThumb formControlName="opacity" />
+      </mat-slider>
+    </div>
+    <!-- Visibility range -->
+    <div>
+      <div class="flex flex-row w-full justify-between">
+        <label>Visibility range</label>
+      </div>
+      <mat-slider
+        class="w-full m-0"
+        min="2"
+        max="18"
+        step="1"
+        [discrete]="true"
+      >
+        <input formControlName="visibilityRangeStart" matSliderStartThumb />
+        <input formControlName="visibilityRangeEnd" matSliderEndThumb />
+      </mat-slider>
+    </div>
+    <!-- Zoom level -->
+    <div>
+      <label>Current zoom: {{ currentZoom }}</label>
+    </div>
+  </form>
+</div>

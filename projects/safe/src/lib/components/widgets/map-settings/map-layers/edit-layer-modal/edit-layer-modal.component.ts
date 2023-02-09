@@ -4,6 +4,7 @@ import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/leg
 import { createLayerForm } from '../../map-forms';
 import { MapLayerI } from '../map-layers.component';
 import get from 'lodash/get';
+import { generateIconHTML } from '../../../map/utils/generateIcon';
 
 declare let L: any;
 
@@ -25,21 +26,31 @@ const BASEMAP_LAYERS: any = {
 };
 
 /** Layer used to test the component */
-const testGeojson = {
-  type: 'Feature',
-  properties: {},
-  geometry: {
-    coordinates: [
-      [
-        [40.11348234228487, 23.758349944054757],
-        [48.178129828595445, 24.533783435928683],
-        [48.95401786039133, 45.045564528935415],
-        [13.062267296081501, 36.89381558821758],
-        [2.6529027332038595, 20.097026832317425],
-        [40.11348234228487, 23.758349944054757],
+const TEST_LAYER = {
+  polygon: {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      coordinates: [
+        [
+          [40.11348234228487, 23.758349944054757],
+          [48.178129828595445, 24.533783435928683],
+          [48.95401786039133, 45.045564528935415],
+          [13.062267296081501, 36.89381558821758],
+          [2.6529027332038595, 20.097026832317425],
+          [40.11348234228487, 23.758349944054757],
+        ],
       ],
-    ],
-    type: 'Polygon',
+      type: 'Polygon',
+    },
+  },
+  point: {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      coordinates: [40.11348234228487, 23.758349944054757],
+      type: 'Point',
+    },
   },
 };
 
@@ -54,6 +65,11 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
 
   private currentLayer: any;
   public currentZoom = 2;
+
+  /** @returns the selected layer type */
+  public get layerType(): keyof typeof TEST_LAYER | null {
+    return this.form.get('type')?.value;
+  }
 
   // === MAP ===
   public mapId: string;
@@ -74,6 +90,10 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
     this.form = createLayerForm(layer);
     this.esriApiKey = environment.esriApiKey;
     this.mapId = this.generateUniqueId();
+    this.form.get('type')?.valueChanges.subscribe(() => {
+      if (!this.layerType) return;
+      this.updateLayer();
+    });
   }
 
   ngOnInit(): void {}
@@ -129,25 +149,19 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
     // this.map.createPane('markers');
     // this.map.getPane('markers').style.zIndex = 650;
 
-    // Set event listener to log map bounds when zooming, moving and resizing screen.
-    this.map.on('moveend', () => {
-      console.log(this.map.getBounds());
-    });
-
-    this.currentLayer = L.geoJSON(testGeojson);
-
     this.map.on('zoomend', () => {
       const zoom = this.map.getZoom();
       this.currentZoom = zoom;
-      const visibilityRange = this.form.get('visibilityRange')?.value;
-      this.zoomUpdate(zoom, visibilityRange);
+      this.zoomUpdate(zoom);
     });
 
-    this.form.controls.visibilityRange.valueChanges.subscribe(
-      (value: number[]) => {
-        this.zoomUpdate(this.map.getZoom(), value);
-      }
-    );
+    this.form.controls.visibilityRangeStart.valueChanges.subscribe(() => {
+      this.zoomUpdate(this.map.getZoom());
+    });
+
+    this.form.controls.visibilityRangeEnd.valueChanges.subscribe(() => {
+      this.zoomUpdate(this.map.getZoom());
+    });
 
     this.form.controls.opacity.valueChanges.subscribe((value: number) => {
       const layers = get(this.currentLayer, '_layers', []);
@@ -161,14 +175,21 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
       this.map.addLayer(this.currentLayer);
     });
 
-    this.applyOptions(this.map.getZoom());
+    // apply marker style changes
+    this.form.get('style')?.valueChanges.subscribe(() => {
+      if (this.layerType === 'point') this.updateMarkerIcon();
+    });
 
-    const overlays = {
-      label: this.form.get('name')?.value,
-      layer: this.currentLayer,
-    };
+    if (this.currentLayer) {
+      this.applyOptions(this.map.getZoom());
 
-    L.control.layers.tree(undefined, overlays).addTo(this.map);
+      const overlays = {
+        label: this.form.get('name')?.value,
+        layer: this.currentLayer,
+      };
+
+      L.control.layers.tree(undefined, overlays).addTo(this.map);
+    }
   }
 
   /**
@@ -208,8 +229,10 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
     if (!this.form.get('defaultVisibility')?.value) {
       this.map.removeLayer(this.currentLayer);
     } else {
-      const visibilityRange = this.form.get('visibilityRange')?.value;
-      if (zoom > visibilityRange[1] || zoom < visibilityRange[0]) {
+      if (
+        zoom > this.form.get('visibilityRangeEnd')?.value ||
+        zoom < this.form.get('visibilityRangeStart')?.value
+      ) {
         this.map.removeLayer(this.currentLayer);
       } else {
         this.currentLayer.addTo(this.map);
@@ -221,13 +244,57 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
    * Function used to update layer visibility regarding the zoom.
    *
    * @param zoom The current zoom of the map
-   * @param visibilityRange The visibility range based on map zoom
    */
-  private zoomUpdate(zoom: number, visibilityRange: number[]): void {
+  private zoomUpdate(zoom: number): void {
+    const visibilityRange = [
+      this.form.get('visibilityRangeStart')?.value || 0,
+      this.form.get('visibilityRangeEnd')?.value || 18,
+    ];
     if (zoom > visibilityRange[1] || zoom < visibilityRange[0]) {
       this.map.removeLayer(this.currentLayer);
     } else {
       this.currentLayer.addTo(this.map);
     }
+  }
+
+  /** Updates map layer */
+  private updateLayer(): void {
+    if (!this.layerType) return;
+    if (this.currentLayer) this.map.removeLayer(this.currentLayer);
+    this.currentLayer = L.geoJSON(TEST_LAYER[this.layerType]);
+    this.applyOptions(this.map.getZoom());
+  }
+
+  /** Updates the marker icons from style form */
+  private updateMarkerIcon(): void {
+    const isDefault = this.form.get('style.icon')?.value === 'leaflet_default';
+
+    // reset to default leaflet marker
+    if (isDefault) {
+      if (this.layerType && this.currentLayer) {
+        this.map.removeLayer(this.currentLayer);
+        this.currentLayer = L.geoJSON(TEST_LAYER[this.layerType]);
+        this.applyOptions(this.map.getZoom());
+      }
+      return;
+    }
+    // loop through all the markers on the map
+    this.currentLayer.eachLayer((marker: any) => {
+      if (!(marker instanceof L.Marker)) return;
+
+      const { size: sizeP } = this.form.get('style.size')?.value;
+      const size = sizeP || 24;
+
+      const icon = L.divIcon({
+        className: 'custom-marker',
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2],
+        labelAnchor: [-6, 0],
+        popupAnchor: [size / 2, -36],
+        html: generateIconHTML(this.form.get('style')?.value),
+      });
+
+      marker.setIcon(icon);
+    });
   }
 }

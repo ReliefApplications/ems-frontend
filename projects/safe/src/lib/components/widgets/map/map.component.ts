@@ -13,6 +13,7 @@ import { takeUntil } from 'rxjs';
 import { AVAILABLE_MEASURE_LANGUAGES } from './measure.const';
 import { v4 as uuidv4 } from 'uuid';
 import { randomFeatureCollection } from './generateFeatureCollection';
+import { generateIconHTML } from './utils/generateIcon';
 
 // Declares L to be able to use Leaflet from CDN
 declare let L: any;
@@ -344,19 +345,17 @@ export class SafeMapComponent
           // Check for icon property
           pointToLayer: (feature: any, latlng: any) => {
             const marker = L.marker(latlng);
-            if (feature.properties?.icon?.svg) {
-              const color = feature.properties.icon.color;
-              const width = feature.properties.icon.width;
-              const height = feature.properties.icon.height;
-              const svg = feature.properties.icon.svg;
+            if (feature.properties?.icon) {
+              const { size: iSize } = feature.properties.icon;
+              const size = iSize || 24;
 
               const icon = L.divIcon({
-                className: 'svg-marker',
-                iconSize: [width, height],
+                className: 'custom-marker',
+                iconSize: [size, size],
                 iconAnchor: [0, 24],
                 labelAnchor: [-6, 0],
-                popupAnchor: [width / 2, -36],
-                html: `<span style="--color:${color}">${svg}</span>`,
+                popupAnchor: [size / 2, -36],
+                html: generateIconHTML(feature.properties.icon),
               });
 
               return marker.setIcon(icon);

@@ -1,0 +1,42 @@
+<form class="w-full flex flex-col gap-2" *ngIf="form" [formGroup]="styleForm">
+  <!-- Polygon styling -->
+  <ng-container *ngIf="layerType === 'polygon'">POLYGON STYLING</ng-container>
+  <!-- Point styling -->
+  <ng-container *ngIf="layerType === 'point'">
+    <mat-form-field appearance="outline">
+      <mat-label>Icon</mat-label>
+      <mat-select formControlName="icon">
+        <mat-option *ngFor="let icon of availableIcons" [value]="icon">
+          <span
+            [style.color]="primaryColor"
+            class="mr-2"
+            *ngIf="icon !== 'leaflet_default'"
+          >
+            <i class="fa fa-{{ icon }}"></i>
+          </span>
+          {{ icon === 'leaflet_default' ? 'Default' : icon }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Color</mat-label>
+      <input matInput formControlName="color" type="color" />
+    </mat-form-field>
+    <div>
+      <mat-label>Size</mat-label>
+      <mat-slider
+        class="w-full m-0"
+        min="8"
+        max="50"
+        step="1"
+        [discrete]="true"
+      >
+        <input matSliderThumb formControlName="size" />
+      </mat-slider>
+    </div>
+  </ng-container>
+  <!-- Heatmap styling -->
+  <ng-container *ngIf="layerType === 'heatmap'">HEATMAP STYLING</ng-container>
+  <!-- Cluster styling -->
+  <ng-container *ngIf="layerType === 'cluster'">CLUSTER STYLING</ng-container>
+</form>
