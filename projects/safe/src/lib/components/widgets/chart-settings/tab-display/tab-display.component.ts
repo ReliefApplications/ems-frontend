@@ -1,12 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import {
-  LEGEND_POSITIONS,
-  LEGEND_ORIENTATIONS,
-  TITLE_POSITIONS,
-} from '../constants';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { FormGroup } from '@angular/forms';
+import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
 
 /**
  * Display tab of the chart settings modal.
@@ -24,7 +21,6 @@ export class TabDisplayComponent
   @Input() type: any;
 
   public legendPositions = LEGEND_POSITIONS;
-  public legendOrientations = LEGEND_ORIENTATIONS;
   public titlePositions = TITLE_POSITIONS;
   public sizes = [
     4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26,
