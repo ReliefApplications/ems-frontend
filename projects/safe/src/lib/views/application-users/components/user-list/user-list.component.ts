@@ -64,7 +64,7 @@ export class UserListComponent
     return !this.loading && this.users.data.length === 0;
   }
 
-  selection = new SelectionModel<User>(true, []);
+  public selection = new SelectionModel<User>(true, []);
 
   /**
    * Users list component

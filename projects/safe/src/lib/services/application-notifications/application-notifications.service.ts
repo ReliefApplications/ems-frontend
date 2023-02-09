@@ -56,7 +56,6 @@ export class SafeApplicationNotificationsService {
       })
       .subscribe((res) => {
         if (res.data) {
-          console.log(res.data);
         }
       });
   }
@@ -77,7 +76,6 @@ export class SafeApplicationNotificationsService {
       })
       .subscribe((res) => {
         if (res.data) {
-          console.log(res.data);
         }
       });
   }
@@ -99,7 +97,6 @@ export class SafeApplicationNotificationsService {
       })
       .subscribe((res) => {
         if (res.data) {
-          console.log(res.data);
         }
       });
   }

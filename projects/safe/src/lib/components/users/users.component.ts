@@ -300,16 +300,12 @@ export class SafeUsersComponent implements OnInit {
   /**
    * Export the list of users
    *
-   * @param type The type of file we want ('csv' or 'xslx')
+   * @param type The type of file we want ('csv' or 'xlsx')
    */
-  onExport(type: string): void {
-    const fileName = `users.${type}`;
-    const path = `download/users`;
-    const queryString = new URLSearchParams({ type }).toString();
-    this.downloadService.getFile(
-      `${path}?${queryString}`,
-      `text/${type};charset=utf-8;`,
-      fileName
+  async onExport(type: 'csv' | 'xlsx') {
+    this.downloadService.getUsersExport(
+      type,
+      this.selection.selected.map((x) => x.id || '').filter((x) => x !== '')
     );
   }
 }
