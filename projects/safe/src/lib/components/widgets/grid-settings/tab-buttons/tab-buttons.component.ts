@@ -3,7 +3,7 @@ import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { createButtonFormGroup } from '../grid-settings.forms';
 import { Form } from '../../../../models/form.model';
 import { Channel } from '../../../../models/channel.model';
-import { CdkDragDrop, CdkDragEnter, CdkDragExit } from '@angular/cdk/drag-drop';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { MatLegacyTabGroup as MatTabGroup } from '@angular/material/legacy-tabs';
 import { BehaviorSubject } from 'rxjs';
 
@@ -23,7 +23,7 @@ export class TabButtonsComponent implements OnInit {
   @Input() templates: any[] = [];
   @Input() distributionLists: any[] = [];
 
-  @ViewChild('tabGroup', { static: false }) childTabGroup!: MatTabGroup;
+  @ViewChild(MatTabGroup, { static: false }) tabGroup!: MatTabGroup;
 
   TAB_ID_NAME = 'button-';
   tabIds$ = new BehaviorSubject<string[]>([]);
@@ -67,22 +67,21 @@ export class TabButtonsComponent implements OnInit {
   }
 
   /**
-   *tgs
+   * Track containers by index
    *
-   * @param index dfg
-   * @returns rst
+   * @param index container index
+   * @returns index
    */
   trackByIndex(index: number): number {
     return index;
   }
 
   /**
-   * d
+   * Handle reorder event
    *
-   * @param event d
+   * @param event cdk drag and drop event.
    */
-  onDropTab(event: CdkDragDrop<string[]>): void {
-    console.log(event);
+  onReorder(event: CdkDragDrop<string[]>): void {
     const previous = parseInt(
       event.previousContainer.id.replace(this.TAB_ID_NAME, ''),
       10
@@ -91,74 +90,28 @@ export class TabButtonsComponent implements OnInit {
       event.container.id.replace(this.TAB_ID_NAME, ''),
       10
     );
-    console.log(previous);
-    console.log(current);
     if (previous === current) {
       return;
     }
     const previousControl = this.buttons.at(previous);
-    const currentControl = this.buttons.at(current);
-    this.buttons.setControl(current, previousControl);
-    this.buttons.setControl(previous, currentControl);
-    this.showDragWrapper(event);
-  }
-
-  /**
-   * c
-   *
-   * @param event d
-   */
-  onDragEntered(event: CdkDragEnter): void {
-    this.hideDragWrapper(event);
-  }
-
-  /**
-   * d
-   *
-   * @param event d
-   */
-  onDragExited(event: CdkDragExit): void {
-    this.showDragWrapper(event);
-  }
-
-  /**
-   * d
-   *
-   * @param event d
-   */
-  private showDragWrapper(event: CdkDragExit | CdkDragDrop<string[]>): void {
-    const element = this.getDragWrappedElement(event);
-    if (element) {
-      element.classList.remove('d-none');
+    this.buttons.removeAt(previous);
+    this.buttons.insert(current, previousControl);
+    const previousTabIndex = this.tabGroup.selectedIndex || 0;
+    if (previous === previousTabIndex) {
+      this.tabGroup.selectedIndex = current;
+    } else {
+      if (previous > current && current <= previousTabIndex) {
+        this.tabGroup.selectedIndex = previousTabIndex + 1;
+      }
+      if (previous < current && current >= previousTabIndex) {
+        this.tabGroup.selectedIndex = previousTabIndex - 1;
+      }
     }
+    this.recalculateUniqIdsForDragDrop();
   }
 
   /**
-   * d
-   *
-   * @param event d
-   */
-  private hideDragWrapper(event: CdkDragEnter): void {
-    const element = this.getDragWrappedElement(event);
-    if (element) {
-      element.classList.add('d-none');
-    }
-  }
-
-  /**
-   * berth
-   *
-   * @param event d
-   * @returns dreg
-   */
-  private getDragWrappedElement(
-    event: CdkDragEnter | CdkDragExit
-  ): HTMLElement | null {
-    return event.container.element.nativeElement.querySelector(`.drag-wrapper`);
-  }
-
-  /**
-   * berth
+   * Calculate unique ids for identification of cdk drop lists
    */
   private recalculateUniqIdsForDragDrop(): void {
     const uniqIds: string[] = [];

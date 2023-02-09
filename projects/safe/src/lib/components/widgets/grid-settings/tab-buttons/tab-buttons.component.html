@@ -35,18 +35,13 @@
         <!-- Button label - tab header -->
         <ng-template mat-tab-label>
           <div
-            (cdkDropListDropped)="onDropTab($event)"
+            (cdkDropListDropped)="onReorder($event)"
             [cdkDropListConnectedTo]="(tabIds$ | async)!"
             [id]="TAB_ID_NAME + i"
             cdkDropListOrientation="horizontal"
             cdkDropList
           >
-            <div
-              (cdkDragEntered)="onDragEntered($event)"
-              (cdkDragExited)="onDragExited($event)"
-              class="flex items-center"
-              cdkDrag
-            >
+            <div class="flex items-center" cdkDrag>
               <!-- Drag placeholder-->
               <div *cdkDragPlaceholder></div>
               <!-- Drag indicator -->
