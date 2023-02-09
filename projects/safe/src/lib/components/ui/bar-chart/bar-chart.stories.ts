@@ -45,7 +45,7 @@ const TEMPLATE: Story<SafeBarChartComponent> = (args) => ({
 export const DEFAULT = TEMPLATE.bind({});
 DEFAULT.storyName = 'Default';
 DEFAULT.args = {
-  legend: { visible: true, orientation: 'horizontal', position: 'bottom' },
+  legend: { visible: true, position: 'bottom' },
   title: {
     visible: true,
     text: 'title',
