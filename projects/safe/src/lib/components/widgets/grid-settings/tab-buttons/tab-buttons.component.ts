@@ -3,13 +3,8 @@ import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { createButtonFormGroup } from '../grid-settings.forms';
 import { Form } from '../../../../models/form.model';
 import { Channel } from '../../../../models/channel.model';
-import {
-  CdkDragDrop,
-  CdkDragEnter,
-  CdkDragExit,
-  moveItemInArray,
-} from '@angular/cdk/drag-drop';
-import { MatTabGroup } from '@angular/material/tabs';
+import { CdkDragDrop, CdkDragEnter, CdkDragExit } from '@angular/cdk/drag-drop';
+import { MatLegacyTabGroup as MatTabGroup } from '@angular/material/legacy-tabs';
 import { BehaviorSubject } from 'rxjs';
 
 /**
@@ -30,15 +25,10 @@ export class TabButtonsComponent implements OnInit {
 
   @ViewChild('tabGroup', { static: false }) childTabGroup!: MatTabGroup;
 
-  CHILD_ID_NAME = 'menu-name';
-  childMenuIds$ = new BehaviorSubject<string[]>([]);
-  menus: number[] = [];
+  TAB_ID_NAME = 'button-';
+  tabIds$ = new BehaviorSubject<string[]>([]);
 
   ngOnInit(): void {
-    const floatingButtons = this.formGroup?.get(
-      'floatingButtons'
-    ) as UntypedFormArray;
-    this.menus = [...Array(floatingButtons.length).keys()];
     this.recalculateUniqIdsForDragDrop();
   }
 
@@ -60,7 +50,6 @@ export class TabButtonsComponent implements OnInit {
     ) as UntypedFormArray;
     floatingButtons.push(createButtonFormGroup({ show: true }));
     event.stopPropagation();
-    this.menus.push(this.menus.length + 1);
     this.recalculateUniqIdsForDragDrop();
   }
 
@@ -74,7 +63,6 @@ export class TabButtonsComponent implements OnInit {
       'floatingButtons'
     ) as UntypedFormArray;
     floatingButtons.removeAt(index);
-    this.menus.splice(index, 1);
     this.recalculateUniqIdsForDragDrop();
   }
 
@@ -94,15 +82,24 @@ export class TabButtonsComponent implements OnInit {
    * @param event d
    */
   onDropTab(event: CdkDragDrop<string[]>): void {
-    const previousIndex = parseInt(
-      event.previousContainer.id.replace(this.CHILD_ID_NAME, ''),
+    console.log(event);
+    const previous = parseInt(
+      event.previousContainer.id.replace(this.TAB_ID_NAME, ''),
       10
     );
-    const newIndex = parseInt(
-      event.container.id.replace(this.CHILD_ID_NAME, ''),
+    const current = parseInt(
+      event.container.id.replace(this.TAB_ID_NAME, ''),
       10
     );
-    moveItemInArray(this.menus, previousIndex, newIndex);
+    console.log(previous);
+    console.log(current);
+    if (previous === current) {
+      return;
+    }
+    const previousControl = this.buttons.at(previous);
+    const currentControl = this.buttons.at(current);
+    this.buttons.setControl(current, previousControl);
+    this.buttons.setControl(previous, currentControl);
     this.showDragWrapper(event);
   }
 
@@ -165,11 +162,10 @@ export class TabButtonsComponent implements OnInit {
    */
   private recalculateUniqIdsForDragDrop(): void {
     const uniqIds: string[] = [];
-    this.menus.reduce((accumulator: string[], _, index) => {
-      accumulator.push(`${this.CHILD_ID_NAME}${index}`);
-      return accumulator;
-    }, uniqIds);
-    this.childMenuIds$.next(uniqIds);
-    console.log('reordered ids: ', this.childMenuIds$);
+    const buttonLength = this.buttons.length;
+    for (let i = 0; i < buttonLength; i++) {
+      uniqIds.push(`${this.TAB_ID_NAME}${i}`);
+    }
+    this.tabIds$.next(uniqIds);
   }
 }
