@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeGeospatialMapComponent } from './geospatial-map.component';
 import { SafeLayerStylingModule } from './layer-styling/layer-styling.module';
 import { SafeGeoFieldsModule } from './geo-fields/geo-fields.module';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 
 /**
  * SafeGeospatialMapModule is a class used to manage all the modules and components

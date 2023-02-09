@@ -1,18 +1,19 @@
-<div class="flex gap-4">
+<div class="flex flex-wrap gap-2 flex-col lg:flex-row lg:h-full">
   <!-- Display geo fields -->
   <safe-geo-fields
-    class="h-96 grow basis-72"
-    *ngIf="useGeocoding && geoFields.length && geocodingResults.length"
+    class="flex flex-col flex-1"
     [geoFields]="geoFields"
     [geocodingResults]="geocodingResults"
   ></safe-geo-fields>
 
   <!-- Map -->
-  <div [id]="mapID" class="grow basis-full h-96"></div>
+  <div class="lg:flex-1 max-lg:min-w-full h-96 lg:min-h-full">
+    <div [id]="mapID" class="w-full h-full"></div>
+  </div>
 
   <!-- Edit layer style -->
   <safe-layer-styling
-    class="h-96 grow basis-72"
+    class="flex flex-col flex-1"
     *ngIf="selectedLayer"
     [selectedLayer]="selectedLayer"
     (close)="selectedLayer = undefined"
