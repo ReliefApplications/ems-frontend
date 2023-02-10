@@ -370,7 +370,6 @@
 			}
 		},
 		"apiConfiguration": {
-			"ariaLabel": "******",
 			"create": {
 				"errors": {
 					"name": "******"
@@ -379,6 +378,9 @@
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"application": {
@@ -407,7 +409,9 @@
 			},
 			"subscription": {
 				"modal": {
-					"ariaLabel": "******",
+					"clearButton": {
+						"ariaLabel": "******"
+					},
 					"hint": {
 						"listenTo": "******"
 					},
@@ -433,9 +437,11 @@
 			}
 		},
 		"applications": {
-			"ariaLabel": "******",
 			"dropdown": {
 				"select": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"calculatedFields": {
@@ -496,7 +502,9 @@
 			"withoutRecords": "******"
 		},
 		"floating": {
-			"ariaLabel": "******"
+			"menuButton": {
+				"ariaLabel": "******"
+			}
 		},
 		"form": {
 			"aggregation": {
@@ -567,8 +575,10 @@
 			}
 		},
 		"forms": {
-			"ariaLabel": "******",
 			"isCore": "******",
+			"paginator": {
+				"ariaLabel": "******"
+			},
 			"parent": "******"
 		},
 		"group": {
@@ -617,7 +627,9 @@
 			"value": "******"
 		},
 		"notifications": {
-			"ariaLabel": "******",
+			"paginator": {
+				"ariaLabel": "******"
+			},
 			"readAll": "******"
 		},
 		"preferences": {
@@ -626,7 +638,6 @@
 			"title": "******"
 		},
 		"pullJob": {
-			"ariaLabel": "******",
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
@@ -648,6 +659,9 @@
 					"url": "******"
 				},
 				"switch": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"queryBuilder": {
@@ -772,7 +786,9 @@
 		"records": {
 			"active": "******",
 			"archived": "******",
-			"ariaLabel": "******",
+			"paginator": {
+				"ariaLabel": "******"
+			},
 			"showActive": "******",
 			"showArchived": "******",
 			"upload": {
@@ -780,8 +796,6 @@
 			}
 		},
 		"referenceData": {
-			"ariaLabelData": "******",
-			"ariaLabelDatas": "******",
 			"create": {
 				"title": "******"
 			},
@@ -791,10 +805,15 @@
 			},
 			"dropdown": {
 				"select": "******"
+			},
+			"fieldsLabel": {
+				"ariaLabel": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"resource": {
-			"ariaLabel": "******",
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
 			},
@@ -806,21 +825,30 @@
 				"calculatedFields": "******",
 				"layouts": "******",
 				"records": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"role": {
 			"add": {
 				"title": "******"
 			},
-			"ariaLabel": "******",
-			"ariaLabelResources": "******",
-			"ariaLabelUsers": "******",
+			"clearButton": {
+				"ariaLabel": "******"
+			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			},
 			"impersonate": {
 				"title": "******"
+			},
+			"paginatorResources": {
+				"ariaLabel": "******"
+			},
+			"paginatorUsers": {
+				"ariaLabel": "******"
 			},
 			"summary": {
 				"addFilter": "******",
@@ -1211,7 +1239,6 @@
 				},
 				"summaryCard": {
 					"add": "******",
-					"ariaLabel": "******",
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
@@ -1247,6 +1274,9 @@
 					"dynamic": "******",
 					"hint": {
 						"dynamic": "******"
+					},
+					"options": {
+						"ariaLabel": "******"
 					},
 					"static": "******"
 				}

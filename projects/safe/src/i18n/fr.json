@@ -370,7 +370,6 @@
 			}
 		},
 		"apiConfiguration": {
-			"ariaLabel": "***",
 			"create": {
 				"errors": {
 					"name": "Nom invalide: utilisez seulement des lettres, des chiffres et des tirets bas."
@@ -379,6 +378,9 @@
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer la configuration d'API {{name}} ?",
 				"title": "Supprimer la configuration d'API"
+			},
+			"paginator": {
+				"ariaLabel": "***"
 			}
 		},
 		"application": {
@@ -407,7 +409,9 @@
 			},
 			"subscription": {
 				"modal": {
-					"ariaLabel": "***",
+					"clearButton": {
+						"ariaLabel": "***"
+					},
 					"hint": {
 						"listenTo": "Clé de routage de l'agent de messages"
 					},
@@ -433,9 +437,11 @@
 			}
 		},
 		"applications": {
-			"ariaLabel": "***",
 			"dropdown": {
 				"select": "Depuis les applications"
+			},
+			"paginator": {
+				"ariaLabel": "***"
 			}
 		},
 		"calculatedFields": {
@@ -496,7 +502,9 @@
 			"withoutRecords": "Sans enregistrements"
 		},
 		"floating": {
-			"ariaLabel": "***"
+			"menuButton": {
+				"ariaLabel": "***"
+			}
 		},
 		"form": {
 			"aggregation": {
@@ -567,8 +575,10 @@
 			}
 		},
 		"forms": {
-			"ariaLabel": "***",
 			"isCore": "Est un formulaire source",
+			"paginator": {
+				"ariaLabel": "***"
+			},
 			"parent": "Formulaire parent"
 		},
 		"group": {
@@ -617,7 +627,9 @@
 			"value": "Valeur"
 		},
 		"notifications": {
-			"ariaLabel": "***",
+			"paginator": {
+				"ariaLabel": "***"
+			},
 			"readAll": "Tout marquer comme lu"
 		},
 		"preferences": {
@@ -626,7 +638,6 @@
 			"title": "Préférences"
 		},
 		"pullJob": {
-			"ariaLabel": "***",
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer la tâche {{name}} ?",
 				"title": "Supprimer la tâche"
@@ -648,6 +659,9 @@
 					"url": "Entrer l'URL..."
 				},
 				"switch": "Changer de mode"
+			},
+			"paginator": {
+				"ariaLabel": "***"
 			}
 		},
 		"queryBuilder": {
@@ -772,7 +786,9 @@
 		"records": {
 			"active": "Enregistrements actifs",
 			"archived": "Enregistrements archivés",
-			"ariaLabel": "***",
+			"paginator": {
+				"ariaLabel": "***"
+			},
 			"showActive": "Voir les enregistrements actifs",
 			"showArchived": "Voir les enregistrements archivés",
 			"upload": {
@@ -780,8 +796,6 @@
 			}
 		},
 		"referenceData": {
-			"ariaLabelData": "***",
-			"ariaLabelDatas": "***",
 			"create": {
 				"title": "Nouvelle référence de données"
 			},
@@ -791,10 +805,15 @@
 			},
 			"dropdown": {
 				"select": "Depuis la référence de données"
+			},
+			"fieldsLabel": {
+				"ariaLabel": "***"
+			},
+			"paginator": {
+				"ariaLabel": "***"
 			}
 		},
 		"resource": {
-			"ariaLabel": "***",
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer la ressource {{name}} ?"
 			},
@@ -806,21 +825,30 @@
 				"calculatedFields": "Aucun champ dérivé détecté",
 				"layouts": "Aucune mise en page détectée",
 				"records": "Aucun enregistrement détecté"
+			},
+			"paginator": {
+				"ariaLabel": "***"
 			}
 		},
 		"role": {
 			"add": {
 				"title": "Ajouter un nouveau rôle"
 			},
-			"ariaLabel": "***",
-			"ariaLabelResources": "***",
-			"ariaLabelUsers": "***",
+			"clearButton": {
+				"ariaLabel": "***"
+			},
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer le rôle {{name}} ?",
 				"title": "Supprimer le rôle"
 			},
 			"impersonate": {
 				"title": "Choix du rôle à simuler"
+			},
+			"paginatorResources": {
+				"ariaLabel": "***"
+			},
+			"paginatorUsers": {
+				"ariaLabel": "***"
 			},
 			"summary": {
 				"addFilter": "Ajouter un filtre",
@@ -1213,7 +1241,6 @@
 				},
 				"summaryCard": {
 					"add": "Ajouter un carte",
-					"ariaLabel": "***",
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
@@ -1250,6 +1277,9 @@
 					"dynamic": "Dynamique",
 					"hint": {
 						"dynamic": "Les cartes dynamiques adaptent leur affichage en fonction du nombre d'éléments dans la source de données. Vous devez définir une unique carte qui sera répétée pour chaque élément."
+					},
+					"options": {
+						"ariaLabel": "***"
 					},
 					"static": "Statique"
 				}

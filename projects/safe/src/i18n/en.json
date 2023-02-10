@@ -370,7 +370,6 @@
 			}
 		},
 		"apiConfiguration": {
-			"ariaLabel": "Select page of forms",
 			"create": {
 				"errors": {
 					"name": "Invalid name: please only use letters, digits and underscores."
@@ -379,6 +378,9 @@
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the API Configuration {{name}}?",
 				"title": "Delete API configuration"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of forms"
 			}
 		},
 		"application": {
@@ -407,7 +409,9 @@
 			},
 			"subscription": {
 				"modal": {
-					"ariaLabel": "Clear",
+					"clearButton": {
+						"ariaLabel": "Clear"
+					},
 					"hint": {
 						"listenTo": "Message broker routing key"
 					},
@@ -433,9 +437,11 @@
 			}
 		},
 		"applications": {
-			"ariaLabel": "Select page of applications",
 			"dropdown": {
 				"select": "From applications"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of applications"
 			}
 		},
 		"calculatedFields": {
@@ -496,7 +502,9 @@
 			"withoutRecords": "Without records"
 		},
 		"floating": {
-			"ariaLabel": "Example icon-button with a menu"
+			"menuButton": {
+				"ariaLabel": "Example icon-button with a menu"
+			}
 		},
 		"form": {
 			"aggregation": {
@@ -567,8 +575,10 @@
 			}
 		},
 		"forms": {
-			"ariaLabel": "Select page of forms",
 			"isCore": "Is core",
+			"paginator": {
+				"ariaLabel": "Select page of forms"
+			},
 			"parent": "Parent form"
 		},
 		"group": {
@@ -617,7 +627,9 @@
 			"value": "Value"
 		},
 		"notifications": {
-			"ariaLabel": "Select page of notifications",
+			"paginator": {
+				"ariaLabel": "Select page of notifications"
+			},
 			"readAll": "Mark all as read"
 		},
 		"preferences": {
@@ -626,7 +638,6 @@
 			"title": "Preferences"
 		},
 		"pullJob": {
-			"ariaLabel": "Select page of pull jobs",
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the pull job {{name}}?",
 				"title": "Delete pull job"
@@ -648,6 +659,9 @@
 					"url": "Enter URL..."
 				},
 				"switch": "Switch mode"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of pull jobs"
 			}
 		},
 		"queryBuilder": {
@@ -772,7 +786,9 @@
 		"records": {
 			"active": "Active records",
 			"archived": "Archived records",
-			"ariaLabel": "Select page of records",
+			"paginator": {
+				"ariaLabel": "Select page of records"
+			},
 			"showActive": "Show active records",
 			"showArchived": "Show archived records",
 			"upload": {
@@ -780,8 +796,6 @@
 			}
 		},
 		"referenceData": {
-			"ariaLabelData": "Fields chip list",
-			"ariaLabelDatas": "Select page of forms",
 			"create": {
 				"title": "New Reference Data"
 			},
@@ -791,10 +805,15 @@
 			},
 			"dropdown": {
 				"select": "From Reference data"
+			},
+			"fieldsLabel": {
+				"ariaLabel": "Fields chip list"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of forms"
 			}
 		},
 		"resource": {
-			"ariaLabel": "Select page of resources",
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the resource {{name}}?"
 			},
@@ -806,21 +825,30 @@
 				"calculatedFields": "No calculated fields detected",
 				"layouts": "No layout detected",
 				"records": "No record detected"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of resources"
 			}
 		},
 		"role": {
 			"add": {
 				"title": "Add new role"
 			},
-			"ariaLabel": "Clear",
-			"ariaLabelResources": "Select page of resources",
-			"ariaLabelUsers": "Select page of users",
+			"clearButton": {
+				"ariaLabel": "Clear"
+			},
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the role {{name}}?",
 				"title": "Delete role"
 			},
 			"impersonate": {
 				"title": "Choose role to simulate"
+			},
+			"paginatorResources": {
+				"ariaLabel": "Select page of resources"
+			},
+			"paginatorUsers": {
+				"ariaLabel": "Select page of users"
 			},
 			"summary": {
 				"addFilter": "Add filter",
@@ -1211,7 +1239,6 @@
 				},
 				"summaryCard": {
 					"add": "Add new card",
-					"ariaLabel": "Select an option",
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
@@ -1247,6 +1274,9 @@
 					"dynamic": "Dynamic",
 					"hint": {
 						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
+					},
+					"options": {
+						"ariaLabel": "Select an option"
 					},
 					"static": "Static"
 				}
