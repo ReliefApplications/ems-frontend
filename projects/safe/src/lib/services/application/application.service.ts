@@ -56,6 +56,8 @@ import {
   ADD_DISTRIBUTION_LIST,
   DeleteDistributionListMutationResponse,
   DELETE_DISTRIBUTION_LIST,
+  EditPageMutationResponse,
+  EDIT_PAGE,
 } from './graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
@@ -470,20 +472,50 @@ export class SafeApplicationService {
    * Updates a specific page name in the opened application.
    *
    * @param page updated page
+   * @param callback additional callback
    */
-  updatePageName(page: Page): void {
+  updatePageName(page: Page, callback?: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
-      const newApplication = {
-        ...application,
-        pages: application.pages?.map((x) => {
-          if (x.id === page.id) {
-            x = { ...x, name: page.name };
+      this.apollo
+        .mutate<EditPageMutationResponse>({
+          mutation: EDIT_PAGE,
+          variables: {
+            id: page.id,
+            name: page.name,
+          },
+        })
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.page.one').toLowerCase(),
+                error: errors[0].message,
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.page.one').toLowerCase(),
+                  value: page.name,
+                })
+              );
+              const newApplication = {
+                ...application,
+                pages: application.pages?.map((x) => {
+                  if (x.id === page.id) {
+                    x = { ...x, name: page.name };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+              if (callback) callback();
+            }
           }
-          return x;
-        }),
-      };
-      this.application.next(newApplication);
+        });
     }
   }
 

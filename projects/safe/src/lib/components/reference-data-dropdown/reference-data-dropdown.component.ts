@@ -156,9 +156,10 @@ export class SafeReferenceDataDropdownComponent
   }
 
   /**
+   * Update ref data value
    *
-   * @param data
-   * @param loading
+   * @param data query response data
+   * @param loading loading status
    */
   private updateValues(data: GetReferenceDatasQueryResponse, loading: boolean) {
     const referenceDatas = data.referenceDatas.edges.map((x) => x.node);

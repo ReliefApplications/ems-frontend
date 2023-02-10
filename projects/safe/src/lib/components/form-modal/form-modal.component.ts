@@ -79,14 +79,12 @@ export class SafeFormModalComponent implements OnInit {
   private isMultiEdition = false;
   private storedMergedData: any;
 
-  public survey?: Survey.Model;
+  public survey!: Survey.SurveyModel;
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
 
   @ViewChild('formContainer') formContainer!: ElementRef;
-
-  environment: any;
 
   /**
    * Getter for the pages property
@@ -102,7 +100,6 @@ export class SafeFormModalComponent implements OnInit {
    * created.
    *
    * @param data This is the data that is passed to the modal when it is opened.
-   * @param environment This is the environment in which we run the application
    * @param dialog This is the Angular Material Dialog service.
    * @param dialogRef This is the reference to the dialog.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
@@ -116,7 +113,6 @@ export class SafeFormModalComponent implements OnInit {
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    @Inject('environment') environment: any,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
     private apollo: Apollo,
@@ -127,16 +123,10 @@ export class SafeFormModalComponent implements OnInit {
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private ngZone: NgZone
-  ) {
-    this.environment = environment;
-  }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.data = { ...DEFAULT_DIALOG_DATA, ...this.data };
-    const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
-    defaultThemeColorsSurvey['$main-hover-color'] =
-      this.environment.theme.primary;
 
     Survey.StylesManager.applyTheme();
 

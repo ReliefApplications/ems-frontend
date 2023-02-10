@@ -69,6 +69,7 @@ export class FormBuilderComponent implements OnInit {
   public formActive = false;
   public nameForm: UntypedFormGroup = new UntypedFormGroup({});
   public hasChanges = false;
+  private isStep = false;
 
   /**
    * Form builder page

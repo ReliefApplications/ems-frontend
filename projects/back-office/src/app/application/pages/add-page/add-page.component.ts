@@ -70,7 +70,6 @@ export class AddPageComponent
    * @param applicationService Shared application service
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
-   * @param authService Shared authentication service
    * @param translate Angular translate service
    */
   constructor(
