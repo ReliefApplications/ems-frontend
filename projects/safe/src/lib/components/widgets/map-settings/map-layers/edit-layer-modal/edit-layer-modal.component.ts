@@ -1,29 +1,18 @@
-import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { createLayerForm } from '../../map-forms';
 import { MapLayerI } from '../map-layers.component';
-import get from 'lodash/get';
-import { generateIconHTML } from '../../../map/utils/generateIcon';
+import {
+  MapConstructorSettings,
+  MapEvent,
+  MapEventType,
+} from '../../../../ui/map/interfaces/map.interface';
+import { BehaviorSubject, takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
+import { generateIconHTML } from '../../../../ui/map/utils/generateIcon';
 
 declare let L: any;
-
-/** Available baseMaps */
-const BASEMAP_LAYERS: any = {
-  Streets: 'ArcGIS:Streets',
-  Navigation: 'ArcGIS:Navigation',
-  Topographic: 'ArcGIS:Topographic',
-  'Light Gray': 'ArcGIS:LightGray',
-  'Dark Gray': 'ArcGIS:DarkGray',
-  'Streets Relief': 'ArcGIS:StreetsRelief',
-  Imagery: 'ArcGIS:Imagery',
-  ChartedTerritory: 'ArcGIS:ChartedTerritory',
-  ColoredPencil: 'ArcGIS:ColoredPencil',
-  Nova: 'ArcGIS:Nova',
-  Midcentury: 'ArcGIS:Midcentury',
-  OSM: 'OSM:Standard',
-  'OSM:Streets': 'OSM:Streets',
-};
 
 /** Layer used to test the component */
 const TEST_LAYER = {
@@ -60,11 +49,14 @@ const TEST_LAYER = {
   templateUrl: './edit-layer-modal.component.html',
   styleUrls: ['./edit-layer-modal.component.scss'],
 })
-export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
+export class SafeEditLayerModalComponent
+  extends SafeUnsubscribeComponent
+  implements AfterViewInit
+{
   public form: UntypedFormGroup;
 
   private currentLayer: any;
-  public currentZoom = 2;
+  private layerOptions: any = {};
 
   /** @returns the selected layer type */
   public get layerType(): keyof typeof TEST_LAYER | null {
@@ -72,197 +64,176 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
   }
 
   // === MAP ===
-  public mapId: string;
-  public map: any;
-  public esriApiKey: string;
-  private basemap: any;
+  public mapSettings!: MapConstructorSettings;
+  private deleteLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  public layerToDelete$ = this.deleteLayer.asObservable();
+  private addLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  public layerToAdd$ = this.addLayer.asObservable();
+  private updateLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  public updateLayer$ = this.updateLayer.asObservable();
 
   /**
    * Modal for adding and editing map layers
    *
-   * @param environment platform environment
    * @param layer Injected map layer, if any
    */
-  constructor(
-    @Inject('environment') environment: any,
-    @Inject(MAT_DIALOG_DATA) public layer?: MapLayerI
-  ) {
+  constructor(@Inject(MAT_DIALOG_DATA) public layer?: MapLayerI) {
+    super();
     this.form = createLayerForm(layer);
-    this.esriApiKey = environment.esriApiKey;
-    this.mapId = this.generateUniqueId();
-    this.form.get('type')?.valueChanges.subscribe(() => {
-      if (!this.layerType) return;
-      this.updateLayer();
-    });
   }
 
-  ngOnInit(): void {}
-
   ngAfterViewInit(): void {
-    this.drawMap();
-    setTimeout(() => this.map.invalidateSize(), 100);
+    console.log(this.form);
+    this.configureMapSettings();
+    if (this.layerType) {
+      this.setUpLayer();
+    }
+    this.setUpEditLayerListeners();
   }
 
   /**
-   * Generation of an unique id for the map (in case multiple widgets use map).
-   *
-   * @param parts Number of parts in the id (separated by dashes "-")
-   * @returns A random unique id
+   * Configure map settings
    */
-  private generateUniqueId(parts: number = 4): string {
-    const stringArr: string[] = [];
-    for (let i = 0; i < parts; i++) {
-      // eslint-disable-next-line no-bitwise
-      const S4 = (((1 + Math.random()) * 0x10000) | 0)
-        .toString(16)
-        .substring(1);
-      stringArr.push(S4);
-    }
-    return stringArr.join('-');
-  }
-
-  /** Creates the map and adds all the controls we use */
-  private drawMap(): void {
-    // Set bounds
-    const centerLong = 0;
-    const centerLat = 0;
-    const bounds = L.latLngBounds(L.latLng(-90, -1000), L.latLng(90, 1000));
-
-    // Create leaflet map
-    this.map = L.map(this.mapId, {
-      // fullscreenControl: true,
+  private configureMapSettings() {
+    this.mapSettings = {
+      centerLong: 0,
+      centerLat: 0,
+      maxBounds: L.latLngBounds(L.latLng(-90, -1000), L.latLng(90, 1000)),
+      basemap: 'OSM',
       zoomControl: false,
-      maxBounds: bounds,
       minZoom: 2,
       maxZoom: 18,
-      worldCopyJump: true,
       zoom: 2,
-    }).setView([centerLat, centerLong], 2);
+      worldCopyJump: true,
+    };
+  }
 
-    // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
-    this.setBasemap('OSM');
-
-    // Adds all the controls we use to the map
-    L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
-
-    // Creates a pane for markers so they are always shown in top, used in the marker options;
-    // this.map.createPane('markers');
-    // this.map.getPane('markers').style.zIndex = 650;
-
-    this.map.on('zoomend', () => {
-      const zoom = this.map.getZoom();
-      this.currentZoom = zoom;
-      this.zoomUpdate(zoom);
+  /**
+   * Update layer options
+   *
+   * @param options new options
+   */
+  private updateLayerOptions(options: { [key: string]: any }) {
+    this.layerOptions = {
+      ...this.layerOptions,
+      ...options,
+    };
+    this.updateLayer.next({
+      layer: this.currentLayer,
+      options: this.layerOptions,
     });
+  }
 
-    this.form.controls.visibilityRangeStart.valueChanges.subscribe(() => {
-      this.zoomUpdate(this.map.getZoom());
-    });
+  /**
+   * Set edit layers listeners.
+   */
+  private setUpEditLayerListeners() {
+    this.form.controls.visibilityRangeStart.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: number) => {
+        this.updateLayerOptions({
+          visibilityRange: [value, this.form.controls.visibilityRangeEnd.value],
+        });
+      });
+    this.form.controls.visibilityRangeEnd.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: number) => {
+        this.updateLayerOptions({
+          visibilityRange: [
+            this.form.controls.visibilityRangeStart.value,
+            value,
+          ],
+        });
+      });
 
-    this.form.controls.visibilityRangeEnd.valueChanges.subscribe(() => {
-      this.zoomUpdate(this.map.getZoom());
-    });
+    this.form.controls.opacity.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: number) => {
+        this.updateLayerOptions({ opacity: value, fillOpacity: value });
+      });
 
-    this.form.controls.opacity.valueChanges.subscribe((value: number) => {
-      const layers = get(this.currentLayer, '_layers', []);
-      for (const layer in layers) {
-        if (layers[layer].options) {
-          layers[layer].options.opacity = value;
-          layers[layer].options.fillOpacity = value;
-        }
-      }
-      this.map.removeLayer(this.currentLayer);
-      this.map.addLayer(this.currentLayer);
-    });
+    this.form.controls.name.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: string) => {
+        this.updateLayerOptions({ name: value });
+      });
+
+    this.form.controls.defaultVisibility.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: string) => {
+        this.updateLayerOptions({ visible: value });
+      });
 
     // apply marker style changes
-    this.form.get('style')?.valueChanges.subscribe(() => {
-      if (this.layerType === 'point') this.updateMarkerIcon();
-    });
+    this.form
+      .get('style')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.layerType === 'point') {
+          this.updateMarkerIcon();
+        }
+      });
+    this.form
+      .get('type')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setUpLayer();
+      });
+  }
 
+  private setUpLayer() {
     if (this.currentLayer) {
-      this.applyOptions(this.map.getZoom());
-
+      this.deleteLayer.next(this.currentLayer);
+    }
+    if (this.layerType) {
+      this.currentLayer = L.geoJSON(TEST_LAYER[this.layerType]);
       const overlays = {
         label: this.form.get('name')?.value,
         layer: this.currentLayer,
       };
-
-      L.control.layers.tree(undefined, overlays).addTo(this.map);
+      this.addLayer.next(overlays);
+      const defaultLayerOptions = {
+        visibilityRange: [
+          this.form?.get('visibilityRangeStart')?.value,
+          this.form?.get('visibilityRangeEnd')?.value,
+        ],
+        opacity: this.form?.get('opacity')?.value,
+        fillOpacity: this.form?.get('opacity')?.value,
+        visible: this.form?.get('defaultVisibility')?.value,
+        style: this.form?.get('style').value,
+      };
+      this.updateLayerOptions(defaultLayerOptions);
     }
   }
-
   /**
-   * Set the basemap.
+   * Handle leaflet map events
    *
-   * @param basemap String containing the id (name) of the basemap
+   * @param event leaflet map event
    */
-  public setBasemap(basemap: string) {
-    if (this.basemap) {
-      this.basemap.remove();
-    }
-    const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
-    this.basemap = L.esri.Vector.vectorBasemapLayer(basemapName, {
-      apiKey: this.esriApiKey,
-    }).addTo(this.map);
-  }
-
-  /**
-   * Function used to init the layer with saved options
-   *
-   * @param zoom The current zoom of the map
-   */
-  private applyOptions(zoom: number) {
-    // eslint-disable-next-line no-underscore-dangle
-    for (const layer in this.currentLayer._layers) {
-      // eslint-disable-next-line no-underscore-dangle
-      if (this.currentLayer._layers[layer].options) {
-        // eslint-disable-next-line no-underscore-dangle
-        this.currentLayer._layers[layer].options.opacity =
-          this.form.get('opacity')?.value;
-        // eslint-disable-next-line no-underscore-dangle
-        this.currentLayer._layers[layer].options.fillOpacity =
-          this.form.get('opacity')?.value;
-      }
-    }
-    this.map.addLayer(this.currentLayer);
-    if (!this.form.get('defaultVisibility')?.value) {
-      this.map.removeLayer(this.currentLayer);
-    } else {
-      if (
-        zoom > this.form.get('visibilityRangeEnd')?.value ||
-        zoom < this.form.get('visibilityRangeStart')?.value
-      ) {
-        this.map.removeLayer(this.currentLayer);
-      } else {
-        this.currentLayer.addTo(this.map);
+  public handleMapEvent(event: MapEvent) {
+    if (event) {
+      switch (event.type) {
+        case MapEventType.ZOOM_END:
+          this.mapSettings.zoom = event.content.zoom;
+          const visibilityRange = [
+            this.form.get('visibilityRangeStart')?.value,
+            this.form.get('visibilityRangeEnd')?.value,
+          ];
+          if (this.currentLayer) {
+            this.updateLayerOptions({ visibilityRange });
+          }
+          break;
+        default:
+          break;
       }
     }
   }
 
-  /**
-   * Function used to update layer visibility regarding the zoom.
-   *
-   * @param zoom The current zoom of the map
-   */
-  private zoomUpdate(zoom: number): void {
-    const visibilityRange = [
-      this.form.get('visibilityRangeStart')?.value || 0,
-      this.form.get('visibilityRangeEnd')?.value || 18,
-    ];
-    if (zoom > visibilityRange[1] || zoom < visibilityRange[0]) {
-      this.map.removeLayer(this.currentLayer);
-    } else {
-      this.currentLayer.addTo(this.map);
+  private updateLayerByLayerType() {
+    if (this.layerType && this.currentLayer) {
+      this.currentLayer = L.geoJSON(TEST_LAYER[this.layerType]);
+      this.updateLayer.next({ layer: this.currentLayer });
     }
-  }
-
-  /** Updates map layer */
-  private updateLayer(): void {
-    if (!this.layerType) return;
-    if (this.currentLayer) this.map.removeLayer(this.currentLayer);
-    this.currentLayer = L.geoJSON(TEST_LAYER[this.layerType]);
-    this.applyOptions(this.map.getZoom());
   }
 
   /** Updates the marker icons from style form */
@@ -271,18 +242,14 @@ export class SafeEditLayerModalComponent implements OnInit, AfterViewInit {
 
     // reset to default leaflet marker
     if (isDefault) {
-      if (this.layerType && this.currentLayer) {
-        this.map.removeLayer(this.currentLayer);
-        this.currentLayer = L.geoJSON(TEST_LAYER[this.layerType]);
-        this.applyOptions(this.map.getZoom());
-      }
+      this.updateLayerByLayerType();
       return;
     }
     // loop through all the markers on the map
     this.currentLayer.eachLayer((marker: any) => {
       if (!(marker instanceof L.Marker)) return;
 
-      const { size: sizeP } = this.form.get('style.size')?.value;
+      const { size: sizeP } = this.form.get('style')?.value;
       const size = sizeP || 24;
 
       const icon = L.divIcon({

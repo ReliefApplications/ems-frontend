@@ -2,7 +2,7 @@ import { FA_ICONS } from '../const/fa-icons';
 
 /** Properties of an icon */
 export type IconPropertiesI = {
-  icon: typeof FA_ICONS[number];
+  icon: (typeof FA_ICONS)[number];
   size?: number;
   color?: string;
 };

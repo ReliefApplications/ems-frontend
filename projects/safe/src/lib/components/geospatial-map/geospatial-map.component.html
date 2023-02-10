@@ -1,10 +1,20 @@
 <div class="flex gap-4">
-  <div [id]="mapID" class="grow basis-full h-96"></div>
+  <safe-map
+    (mapEvent)="handleMapEvent($event)"
+    [useGeomanTools]="true"
+    [displayMockedLayers]="false"
+    [header]="false"
+    [mapSettings]="mapSettings"
+    [addLayer]="layerToAdd$ | async"
+    [updateLayerOptions]="updateLayer$ | async"
+    [controls]="controls"
+    class="grow basis-full h-96"
+  ></safe-map>
   <safe-layer-styling
     class="h-96 grow basis-72"
     *ngIf="selectedLayer"
     [selectedLayer]="selectedLayer"
     (close)="selectedLayer = undefined"
-    (edit)="updateLayer($event)"
+    (edit)="updateLayerOptions($event)"
   ></safe-layer-styling>
 </div>
