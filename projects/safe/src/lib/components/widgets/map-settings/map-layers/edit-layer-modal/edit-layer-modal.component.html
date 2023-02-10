@@ -4,10 +4,10 @@
     <safe-map
       (mapEvent)="handleMapEvent($event)"
       [header]="false"
-      [settings]="settings"
-      [deleteLayer]="layerToDelete$ | async"
+      [displayMockedLayers]="false"
+      [mapSettings]="mapSettings"
+      [updateLayerOptions]="updateLayer$ | async"
       [addLayer]="layerToAdd$ | async"
-      [updateLayerTree]="overlaysValue$ | async"
       class="w-4/5 group flex-1"
     >
     </safe-map>
@@ -57,7 +57,7 @@
         </div>
         <!-- Zoom level -->
         <div>
-          <label>Current zoom: {{ currentZoom }}</label>
+          <label>Current zoom: {{ mapSettings?.zoom }}</label>
         </div>
       </form>
       <!-- Dialog actions ( cancel / close ) -->

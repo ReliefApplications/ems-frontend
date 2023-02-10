@@ -20,15 +20,20 @@ import {
   LayerTree,
 } from './interfaces/map-layers.interface';
 import { flatDeep } from './utils/array-flatter';
-import { AVAILABLE_MEASURE_LANGUAGES } from './measure.const';
-import { MapConstructorSettings, MapEvent } from './interfaces/map.interface';
-import { BASEMAP_LAYERS } from './const/baseMaps';
+import {
+  MapConstructorSettings,
+  MapEvent,
+  MapEventType,
+} from './interfaces/map.interface';
+import { BASEMAPS, BASEMAP_LAYERS } from './const/baseMaps';
 import { merge } from 'lodash';
 import { generateClusterLayer } from './cluster-test';
 import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
 import { randomFeatureCollection } from './generateFeatureCollection';
 import { generateHeatMap } from './heatmap-test';
-import { MARKER_OPTIONS } from './const/markerOptions';
+import { SafeMapLayersService } from '../../../services/maps/map-layers.service';
+import { SafeMapControlsService } from '../../../services/maps/map-controls.service';
+import { AVAILABLE_GEOMAN_LANGUAGES } from './const/languages';
 
 // Declares L to be able to use Leaflet from CDN
 declare let L: any;
@@ -54,17 +59,21 @@ const cleanSettingsFromNulls = (settings: MapConstructorSettings) => {
   selector: 'safe-map',
   templateUrl: './map.component.html',
   styleUrls: ['../../../style/map.scss', './map.component.scss'],
+  providers: [SafeMapControlsService],
 })
 export class SafeMapComponent
   extends SafeUnsubscribeComponent
   implements AfterViewInit
 {
   @Input() header = true;
-  @Input() set settings(settingsValue: MapConstructorSettings) {
-    if (settingsValue) {
-      cleanSettingsFromNulls(settingsValue);
-      console.log(settingsValue);
-      this.updateMapSettings(settingsValue);
+  @Input() controls!: any;
+  @Input() useGeomanTools = false;
+  // Temporary input in order to display the mocked layers as we want
+  @Input() displayMockedLayers = true;
+  @Input() set mapSettings(settings: MapConstructorSettings) {
+    if (settings) {
+      cleanSettingsFromNulls(settings);
+      this.updateMapSettings(settings);
     }
   }
   @Input() set deleteLayer(layer: any) {
@@ -72,14 +81,34 @@ export class SafeMapComponent
       this.map.removeLayer(layer);
     }
   }
-  @Input() set addLayer(layer: any) {
-    if (layer) {
-      this.map.addLayer(layer);
+  @Input() set addLayer(layerData: any) {
+    if (layerData) {
+      // When using geoman tools no layer control is shown
+      if (!this.useGeomanTools) {
+        L.control.layers.tree(undefined, layerData).addTo(this.map);
+      }
+      this.map.addLayer(layerData.layer);
     }
   }
-  @Input() set updateLayerTree(overlays: any) {
-    if (overlays) {
-      this.updateLayerTreeOfMap(overlays);
+  @Input() set updateLayerOptions(layerWithOptions: {
+    layer: any;
+    options: any;
+    icon?: any;
+  }) {
+    if (layerWithOptions) {
+      this.safeMapLayersService.applyOptionsToLayer(
+        this.map,
+        layerWithOptions.layer,
+        layerWithOptions.options,
+        layerWithOptions.icon
+      );
+      // When using geoman tools we update the map status and it's layers always for each change
+      if (this.useGeomanTools) {
+        this.mapEvent.emit({
+          type: MapEventType.MAP_CHANGE,
+          content: this.safeMapLayersService.getMapFeatures(this.map),
+        });
+      }
     }
   }
 
@@ -88,89 +117,166 @@ export class SafeMapComponent
   // === MAP ===
   public mapId: string;
   public map: any;
-  private baseMap: any;
+  private basemap: any;
   private esriApiKey!: string;
   public settingsConfig: MapConstructorSettings = {
-    baseMap: 'OSM',
+    basemap: 'OSM',
     centerLat: 0,
     centerLong: 0,
   };
+
   // === MARKERS ===
   private popupMarker: any;
   private markersCategories: IMarkersLayerValue = [];
   private overlays: LayerTree = {};
   private layerControl: any;
-  private addressMarker: any;
 
   // === Controls ===
-  private lang!: string;
-  private measureControls: any = {};
-  private fullscreenControl?: L.Control;
   private legendControl?: L.Control;
+  private layerTreeCloned!: any;
 
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
-
-  // === THEME ===
-  public primaryColor = '';
 
   /**
    * Constructor of the map widget component
    *
    * @param environment platform environment
    * @param translate The translate service
+   * @param safeMapLayersService The map layer handler service
+   * @param safeMapControlsService The map controls handler service
    */
   constructor(
     @Inject('environment') environment: any,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private safeMapLayersService: SafeMapLayersService,
+    private safeMapControlsService: SafeMapControlsService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
     this.mapId = uuidv4();
-    this.primaryColor = environment.theme.primary;
-    this.lang = this.translate.currentLang;
-  }
-
-  /** Once template is ready, build the map. */
-  ngAfterViewInit(): void {
-    // Creates the map and adds all the controls we use.
-    this.drawMap();
-    this.setUpMapListeners();
-    setTimeout(() => {
-      this.map.invalidateSize();
-      this.drawLayers();
-      console.log(this.settingsConfig);
-    }, 100);
   }
 
   private setUpMapListeners() {
     // Set event listener to log map bounds when zooming, moving and resizing screen.
     this.map.on('moveend', () => {
       // If searched address marker exists, if we move, the item should disappear
-      if (this.addressMarker) {
-        this.map.removeLayer(this.addressMarker);
-        this.addressMarker = null;
+      if (this.safeMapControlsService.addressMarker) {
+        this.map.removeLayer(this.safeMapControlsService.addressMarker);
+        this.safeMapControlsService.addressMarker = null;
       }
       this.mapEvent.emit({
-        type: 'moveend',
+        type: MapEventType.MOVE_END,
         content: { bounds: this.map.getBounds(), center: this.map.getCenter() },
       });
     });
 
     this.map.on('zoomend', () => {
-      this.mapEvent.emit({ type: 'zoomend', content: this.map.getZoom() });
-      // this.applyOptions(this.map.getZoom(), this.overlays);
+      this.mapEvent.emit({
+        type: MapEventType.ZOOM_END,
+        content: { zoom: this.map.getZoom() },
+      });
     });
 
     // Listen for language change
     this.translate.onLangChange
       .pipe(takeUntil(this.destroy$))
       .subscribe((event) => {
-        if (event.lang !== this.lang) {
-          this.getMeasureControl();
-          this.getFullScreenControl();
+        if (event.lang !== this.safeMapControlsService.lang) {
+          this.safeMapControlsService.getMeasureControl(this.map);
+          this.safeMapControlsService.getFullScreenControl(this.map);
         }
       });
+  }
+
+  private setUpPmListeners() {
+    // updates question value on adding new shape
+    this.map.on('pm:create', (l: any) => {
+      if (l.shape === 'Marker')
+        l.layer.setIcon(
+          this.safeMapLayersService.createCustomMarker('#3388ff', 1)
+        );
+
+      // subscribe to changes on the created layers
+      l.layer.on(
+        'pm:change',
+        this.mapEvent.emit({
+          type: MapEventType.MAP_CHANGE,
+          content: this.safeMapLayersService.getMapFeatures(this.map),
+        })
+      );
+
+      l.layer.on('click', (e: any) => {
+        console.log(e);
+        this.mapEvent.emit({
+          type: MapEventType.SELECTED_LAYER,
+          content: { layer: e.target },
+        });
+      });
+    });
+
+    // updates question value on removing shapes
+    this.map.on(
+      'pm:remove',
+      this.mapEvent.emit({
+        type: MapEventType.MAP_CHANGE,
+        content: this.safeMapLayersService.getMapFeatures(this.map),
+      })
+    );
+
+    // set language
+    const setLang = (lang: string) => {
+      if (AVAILABLE_GEOMAN_LANGUAGES.includes(lang)) {
+        this.map.pm.setLang(lang);
+      } else {
+        console.warn(`Language "${lang}" not supported by geoman`);
+        this.map.pm.setLang('en');
+      }
+    };
+
+    setLang(this.translate.currentLang || 'en');
+
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event) => {
+        setLang(event.lang);
+      });
+  }
+  /** Once template is ready, build the map. */
+  ngAfterViewInit(): void {
+    // Creates the map and adds all the controls we use.
+    this.drawMap();
+    /**
+     * If Geoman tools are going to be used we will set up related listeners
+     * Otherwise the map listeners for the user interaction with it
+     * */
+    if (this.useGeomanTools) {
+      this.setUpPmListeners();
+    } else {
+      this.setUpMapListeners();
+    }
+
+    setTimeout(() => {
+      this.map.invalidateSize();
+      if (this.displayMockedLayers) {
+        this.drawLayers();
+      }
+      if (this.useGeomanTools) {
+        this.mapEvent.emit({
+          type: MapEventType.MAP_CHANGE,
+          content: this.safeMapLayersService.getMapFeatures(this.map),
+        });
+      } else {
+        this.mapEvent.emit({
+          type: MapEventType.FIRST_LOAD,
+          content: {
+            bounds: this.map.getBounds(),
+            center: this.map.getCenter(),
+            zoom: this.map.getZoom(),
+          },
+        });
+      }
+    }, 100);
   }
 
   /**
@@ -212,23 +318,37 @@ export class SafeMapComponent
       'maxBounds',
       L.latLngBounds(L.latLng(-90, -1000), L.latLng(90, 1000))
     );
-    const baseMap = get(this.settingsConfig, 'baseMap', 'OSM');
+    const basemap = get(this.settingsConfig, 'basemap', 'OSM');
     const maxZoom = get(this.settingsConfig, 'maxZoom', 18);
     const minZoom = get(this.settingsConfig, 'minZoom', 2);
     const worldCopyJump = get(this.settingsConfig, 'worldCopyJump', true);
     const zoomControl = get(this.settingsConfig, 'zoomControl', false);
     const zoom = get(this.settingsConfig, 'zoom', 3);
+    /**
+     * @TODO implement layer loading for the layers returned from the settings
+     * For now the following structure returned from a layer added to a map widget is
+     *
+     * {
+     *    defaultVisibility: boolean,
+     *    name: string,
+     *    opacity: number,
+     *    visibilityRange: number (this would be fixed after we fix the visibilityRange  control)
+     * }
+     *
+     *  */
+    const layers = get(this.settingsConfig, 'layers', []);
 
     return {
       centerLong,
       centerLat,
       maxBounds,
-      baseMap,
+      basemap,
       maxZoom,
       minZoom,
       worldCopyJump,
       zoomControl,
       zoom,
+      layers,
     };
   }
 
@@ -238,12 +358,13 @@ export class SafeMapComponent
       centerLong,
       centerLat,
       maxBounds,
-      baseMap,
+      basemap,
       maxZoom,
       minZoom,
       worldCopyJump,
       zoomControl,
       zoom,
+      // layers,
     } = this.extractSettings();
     // Create leaflet map
     console.log('zoom: ', zoom);
@@ -257,19 +378,31 @@ export class SafeMapComponent
     }).setView(new L.latLng(centerLat, centerLong), zoom);
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
-    this.setBaseMap(baseMap);
+    this.setBasemap(basemap);
 
     // Add zoom control
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
 
-    // Add leaflet measure control
-    this.getMeasureControl();
+    if (this.controls) {
+      if (this.useGeomanTools) {
+        this.map.pm.addControls(this.controls);
+      } else {
+        this.controls.forEach((control: any) => this.map.addControl(control));
+      }
+    }
+    if (!this.useGeomanTools) {
+      // Add leaflet measure control
+      this.safeMapControlsService.getMeasureControl(this.map);
 
-    // Add leaflet geosearch control
-    this.getSearchbarControl().addTo(this.map);
+      // Add leaflet geosearch control
+      this.safeMapControlsService.getSearchbarControl(
+        this.map,
+        this.esriApiKey
+      );
 
-    // Add leaflet fullscreen control
-    this.getFullScreenControl();
+      // Add leaflet fullscreen control
+      this.safeMapControlsService.getFullScreenControl(this.map);
+    }
   }
 
   private updateMapSettings(settingsValue: MapConstructorSettings) {
@@ -279,7 +412,7 @@ export class SafeMapComponent
         centerLong,
         centerLat,
         maxBounds,
-        baseMap,
+        basemap,
         maxZoom,
         minZoom,
         zoom,
@@ -288,7 +421,7 @@ export class SafeMapComponent
       this.map.setMinZoom(minZoom);
       this.map.setMaxBounds(maxBounds);
       this.map.setZoom(zoom);
-      this.setBaseMap(baseMap);
+      this.setBasemap(basemap);
       this.map.setView(new L.latLng(centerLat, centerLong), zoom);
     }
   }
@@ -345,10 +478,10 @@ export class SafeMapComponent
   }
 
   private updateLayerTreeOfMap(overlays: any) {
-    const layerTreeCloned = this.addTreeToMap(overlays);
-    this.applyOptions(this.map.getZoom(), layerTreeCloned, true);
+    this.layerTreeCloned = this.addTreeToMap(overlays);
+    this.applyOptions(this.map.getZoom(), this.layerTreeCloned, true);
     this.layerControl = L.control.layers
-      .tree(undefined, layerTreeCloned)
+      .tree(undefined, this.layerTreeCloned)
       .addTo(this.map);
   }
 
@@ -500,118 +633,16 @@ export class SafeMapComponent
   }
 
   /**
-   * Creates a custom searchbar control with esri geocoding
+   * Set the basemap.
    *
-   * @returns Returns the custom control
+   * @param basemap String containing the id (name) of the basemap
    */
-  private getSearchbarControl(): any {
-    const searchControl = L.esri.Geocoding.geosearch({
-      position: 'topleft',
-      placeholder: 'Enter an address or place e.g. 1 York St',
-      useMapBounds: false,
-      providers: [
-        L.esri.Geocoding.arcgisOnlineProvider({
-          apikey: this.esriApiKey,
-          nearby: {
-            lat: -33.8688,
-            lng: 151.2093,
-          },
-        }),
-      ],
-    });
-
-    searchControl.on('results', (data: any) => {
-      // results.clearLayers();
-      for (let i = data.results.length - 1; i >= 0; i--) {
-        const coordinates = L.latLng(data.results[i].latlng);
-        console.log(coordinates);
-        const circle = L.circleMarker(coordinates, MARKER_OPTIONS);
-        circle.addTo(this.map);
-        const popup = L.popup()
-          .setLatLng(coordinates)
-          .setContent(
-            `
-          <p>${data.results[i].properties.ShortLabel}</br>
-          <b>${'latitude: '}</b>${coordinates.lat}</br>
-          <b>${'longitude: '}</b>${coordinates.lng}</p>`
-          );
-        circle.bindPopup(popup);
-        popup.on('remove', () => this.map.removeLayer(circle));
-        circle.openPopup();
-        // Use setTimeout to prevent the marker to be removed while
-        // the map moves to the searched address and is re-centred
-        setTimeout(() => {
-          this.addressMarker = circle;
-        }, 1000);
-      }
-    });
-
-    return searchControl;
-  }
-
-  /**
-   * Create a fullscreen control and add it to map.
-   * Support translation.
-   */
-  private getFullScreenControl(): void {
-    if (this.fullscreenControl) {
-      this.map.removeControl(this.fullscreenControl);
+  public setBasemap(basemap: any = BASEMAPS[BASEMAP_LAYERS.OSM]) {
+    if (this.basemap) {
+      this.basemap.remove();
     }
-    this.fullscreenControl = new L.Control.Fullscreen({
-      title: {
-        false: this.translate.instant('common.viewFullscreen'),
-        true: this.translate.instant('common.exitFullscreen'),
-      },
-    });
-    this.fullscreenControl?.addTo(this.map);
-  }
-
-  /** Create a custom measure control with leaflet-measure and adds it to the map  */
-  private getMeasureControl(): any {
-    // Get lang from translate service, and use default one if no match provided by plugin
-    const lang = AVAILABLE_MEASURE_LANGUAGES.includes(
-      this.translate.currentLang
-    )
-      ? this.translate.currentLang
-      : 'en';
-    // Check if one control was already added for the lang
-    if (!this.measureControls[lang]) {
-      // import related file, and build control
-      import(`leaflet-measure/dist/leaflet-measure.${lang}.js`).then(() => {
-        const control = new L.Control.Measure({
-          position: 'bottomleft',
-          primaryLengthUnit: 'kilometers',
-          primaryAreaUnit: 'sqmeters',
-          activeColor: this.primaryColor,
-          completedColor: this.primaryColor,
-        });
-        this.measureControls[lang] = control;
-        // Remove previous control if exists
-        if (this.measureControls[this.lang]) {
-          this.map.removeControl(this.measureControls[this.lang]);
-        }
-        control.addTo(this.map);
-        this.lang = lang;
-      });
-    } else {
-      // Else, load control and remove previous one
-      this.map.removeControl(this.measureControls[this.lang]);
-      this.measureControls[lang].addTo(this.map);
-      this.lang = lang;
-    }
-  }
-
-  /**
-   * Set the baseMap.
-   *
-   * @param baseMap String containing the id (name) of the baseMap
-   */
-  public setBaseMap(baseMap: string) {
-    if (this.baseMap) {
-      this.baseMap.remove();
-    }
-    const baseMapName = get(BASEMAP_LAYERS, baseMap, BASEMAP_LAYERS.OSM);
-    this.baseMap = L.esri.Vector.vectorBasemapLayer(baseMapName, {
+    const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
+    this.basemap = L.esri.Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
   }

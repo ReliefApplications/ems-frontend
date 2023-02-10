@@ -1,12 +1,12 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { createLayerForm } from '../../map-forms';
 import { MapLayerI } from '../map-layers.component';
-import get from 'lodash/get';
 import {
   MapConstructorSettings,
   MapEvent,
+  MapEventType,
 } from '../../../../ui/map/interfaces/map.interface';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
@@ -40,23 +40,20 @@ const testGeojson = {
 })
 export class SafeEditLayerModalComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements AfterViewInit
 {
   public form: UntypedFormGroup;
 
   private currentLayer: any;
-  public currentZoom = 2;
+  private layerOptions: any = {};
 
   // === MAP ===
-  public map: any;
-  public settings!: MapConstructorSettings;
-
-  private deleteLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  public layerToAdd$ = this.deleteLayer.asObservable();
+  public mapSettings!: MapConstructorSettings;
   private addLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  public layerToDelete$ = this.addLayer.asObservable();
-  private overlaysValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  public overlaysValue$ = this.overlaysValue.asObservable();
+  public layerToAdd$ = this.addLayer.asObservable();
+  private updateLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  public updateLayer$ = this.updateLayer.asObservable();
+
   /**
    * Modal for adding and editing map layers
    *
@@ -68,117 +65,84 @@ export class SafeEditLayerModalComponent
     this.form = createLayerForm(layer);
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.configureMapSettings();
-    this.setUpEditLayerListeners();
-
     this.currentLayer = L.geoJSON(testGeojson);
     const overlays = {
       label: this.form.get('name')?.value,
       layer: this.currentLayer,
     };
-    this.overlaysValue.next(overlays);
-    // L.control.layers.tree(undefined, overlays).addTo(this.map);
+    this.addLayer.next(overlays);
+    const defaultLayerOptions = {
+      visibilityRange: this.form?.get('visibilityRange')?.value ?? true,
+      opacity: this.form?.get('opacity')?.value ?? true,
+      fillOpacity: this.form?.get('opacity')?.value ?? true,
+      visible: this.form?.get('defaultVisibility')?.value ?? true,
+    };
+    this.updateLayerOptions(defaultLayerOptions);
+    this.setUpEditLayerListeners();
   }
 
   private configureMapSettings() {
-    this.settings.centerLong = 0;
-    this.settings.centerLat = 0;
-    this.settings.maxBounds = L.latLngBounds(
-      L.latLng(-90, -1000),
-      L.latLng(90, 1000)
-    );
-    this.settings.baseMap = 'OSM';
-    this.settings.zoomControl = true;
-    this.settings.minZoom = 2;
-    this.settings.maxZoom = 18;
-    this.settings.zoom = 2;
-    this.settings.worldCopyJump = true;
+    this.mapSettings = {
+      centerLong: 0,
+      centerLat: 0,
+      maxBounds: L.latLngBounds(L.latLng(-90, -1000), L.latLng(90, 1000)),
+      basemap: 'OSM',
+      zoomControl: false,
+      minZoom: 2,
+      maxZoom: 18,
+      zoom: 2,
+      worldCopyJump: true,
+    };
+  }
+
+  private updateLayerOptions(options: { [key: string]: any }) {
+    this.layerOptions = {
+      ...this.layerOptions,
+      ...options,
+    };
+    this.updateLayer.next({
+      layer: this.currentLayer,
+      options: this.layerOptions,
+    });
   }
 
   private setUpEditLayerListeners() {
-    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
-      next: (formValues) => {
-        console.log(formValues);
-      },
-    });
+    this.form.controls.visibilityRange.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: number[]) => {
+        // @TODO visibilityRange control only gives the value that we change in the  slider, not both(a plain number, not an array)
+        // We have to fix this
+        this.updateLayerOptions({ visibilityRange: value });
+      });
 
-    this.form.controls.visibilityRange.valueChanges.subscribe(
-      (value: number[]) => {
-        this.updateLayerVisibilityOnZoom(this.map.getZoom(), value);
-      }
-    );
+    this.form.controls.opacity.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: number) => {
+        this.updateLayerOptions({ opacity: value, fillOpacity: value });
+      });
 
-    this.form.controls.opacity.valueChanges.subscribe((value: number) => {
-      const layers = get(this.currentLayer, '_layers', []);
-      for (const layer in layers) {
-        if (layers[layer].options) {
-          layers[layer].options.opacity = value;
-          layers[layer].options.fillOpacity = value;
-        }
-      }
-      this.map.removeLayer(this.currentLayer);
-      this.map.addLayer(this.currentLayer);
-    });
+    this.form.controls.name.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: string) => {
+        this.updateLayerOptions({ name: value });
+      });
 
-    this.applyOptions(this.map.getZoom());
-  }
-
-  /**
-   * Function used to init the layer with saved options
-   *
-   * @param zoom The current zoom of the map
-   */
-  private applyOptions(zoom: number) {
-    // eslint-disable-next-line no-underscore-dangle
-    for (const layer in this.currentLayer._layers) {
-      // eslint-disable-next-line no-underscore-dangle
-      if (this.currentLayer._layers[layer].options) {
-        // eslint-disable-next-line no-underscore-dangle
-        this.currentLayer._layers[layer].options.opacity =
-          this.form.get('opacity')?.value;
-        // eslint-disable-next-line no-underscore-dangle
-        this.currentLayer._layers[layer].options.fillOpacity =
-          this.form.get('opacity')?.value;
-      }
-    }
-    this.addLayer.next(this.currentLayer);
-    if (!this.form.get('defaultVisibility')?.value) {
-      this.deleteLayer.next(this.currentLayer);
-    } else {
-      const visibilityRange = this.form.get('visibilityRange')?.value;
-      this.updateLayerVisibilityOnZoom(zoom, visibilityRange);
-    }
-  }
-
-  /**
-   * Function used to update layer visibility regarding the zoom.
-   *
-   * @param zoom The current zoom of the map
-   * @param visibilityRange The visibility range based on map zoom
-   */
-  private updateLayerVisibilityOnZoom(
-    zoom: number,
-    visibilityRange: number[]
-  ): void {
-    if (zoom > visibilityRange[1] || zoom < visibilityRange[0]) {
-      this.deleteLayer.next(this.currentLayer);
-    } else {
-      this.addLayer.next(this.currentLayer);
-    }
+    this.form.controls.defaultVisibility.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: string) => {
+        this.updateLayerOptions({ visible: value });
+      });
   }
 
   public handleMapEvent(mapEvent: MapEvent) {
     if (mapEvent) {
       switch (mapEvent.type) {
-        case 'moveend':
-          console.log(mapEvent.content);
-          break;
-        case 'zoomend':
-          const zoom = mapEvent.content;
-          this.currentZoom = zoom;
+        case MapEventType.ZOOM_END:
+          this.mapSettings.zoom = mapEvent.content.zoom;
           const visibilityRange = this.form.get('visibilityRange')?.value;
-          this.updateLayerVisibilityOnZoom(zoom, visibilityRange);
+          this.updateLayerOptions({ visibilityRange });
           break;
         default:
           break;

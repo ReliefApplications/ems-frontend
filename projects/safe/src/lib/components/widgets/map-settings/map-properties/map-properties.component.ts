@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import {
   MapConstructorSettings,
   MapEvent,
+  MapEventType,
 } from '../../../ui/map/interfaces/map.interface';
 import { BASEMAPS } from '../../../ui/map/const/baseMaps';
 
@@ -30,7 +31,6 @@ export class MapPropertiesComponent
   private overlaysValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   public overlaysValue$ = this.overlaysValue.asObservable();
 
-  private centerOfMap: any;
   public mapSettings!: MapConstructorSettings;
   public baseMaps = BASEMAPS;
 
@@ -46,36 +46,52 @@ export class MapPropertiesComponent
    */
   ngOnInit(): void {
     console.log(this.form);
-    this.mapSettings = {
-      baseMap: this.form.value.basemap,
+    const defaultMapSettings = {
+      basemap: this.form.value.basemap,
       zoom: this.form.value.zoom,
       centerLat: this.form.value.centerLat,
       centerLong: this.form.value.centerLong,
     };
+    this.updateMapSettings(defaultMapSettings);
+    this.setUpFormListeners();
+  }
+
+  private setUpFormListeners() {
     this.form
       .get('zoom')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.mapSettings = { zoom: value } as MapConstructorSettings;
-      });
+      .subscribe((value) =>
+        this.updateMapSettings({ zoom: value } as MapConstructorSettings)
+      );
     this.form
       .get('centerLat')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.mapSettings = { centerLat: value } as MapConstructorSettings;
-      });
+      .subscribe((value) =>
+        this.updateMapSettings({ centerLat: value } as MapConstructorSettings)
+      );
     this.form
       .get('centerLong')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.mapSettings = { centerLong: value } as MapConstructorSettings;
-      });
+      .subscribe((value) =>
+        this.updateMapSettings({ centerLong: value } as MapConstructorSettings)
+      );
     this.form
       .get('basemap')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.mapSettings = { baseMap: value } as MapConstructorSettings;
-      });
+      .subscribe((value) =>
+        this.updateMapSettings({ basemap: value } as MapConstructorSettings)
+      );
+  }
+
+  private updateMapSettings(settings: MapConstructorSettings) {
+    if (this.mapSettings) {
+      this.mapSettings = {
+        ...this.mapSettings,
+        ...settings,
+      };
+    } else {
+      this.mapSettings = settings;
+    }
   }
 
   /**
@@ -84,20 +100,26 @@ export class MapPropertiesComponent
   onSetByMap(): void {
     this.form
       .get('centerLat')
-      ?.setValue(this.centerOfMap.lat, { emitEvent: false });
+      ?.setValue(this.mapSettings.centerLat, { emitEvent: false });
     this.form
       .get('centerLong')
-      ?.setValue(this.centerOfMap.lng, { emitEvent: false });
+      ?.setValue(this.mapSettings.centerLong, { emitEvent: false });
     this.form
       .get('zoom')
       ?.setValue(this.mapSettings.zoom, { emitEvent: false });
   }
 
   handleMapEvent(mapEvent: MapEvent) {
-    console.log(mapEvent);
     switch (mapEvent.type) {
-      case 'moveend':
-        this.centerOfMap = mapEvent.content.center;
+      case MapEventType.MOVE_END:
+        this.mapSettings.centerLat = mapEvent.content.center.lat;
+        this.mapSettings.centerLong = mapEvent.content.center.lng;
+        break;
+      case MapEventType.ZOOM_END:
+        this.mapSettings.zoom = mapEvent.content.zoom;
+        this.form
+          .get('zoom')
+          ?.setValue(this.mapSettings.zoom, { emitEvent: false });
         break;
       default:
         break;
