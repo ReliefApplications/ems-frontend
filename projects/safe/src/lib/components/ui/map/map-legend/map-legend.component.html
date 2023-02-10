@@ -1,0 +1,22 @@
+<div class="border-2 border-opacity-20 border-black rounded-md bg-white">
+  <!-- Small control ( not showing legend) -->
+  <button class="bg-none p2" (click)="toggleVisibility()" *ngIf="!expanded">
+    <safe-icon icon="list" />
+  </button>
+  <!-- Expanded control ( showing legend ) -->
+  <div class="flex flex-col w-48" *ngIf="expanded">
+    <!-- Header -->
+    <div class="flex px-2 py-1 justify-between items-center border-opacity-20 border-b-2">
+      <h2 class="m-0">LEGEND</h2>
+      <safe-button icon="close" [isIcon]="true" (click)="toggleVisibility()" />
+    </div>
+    <!-- Layers -->
+    <div class="max-h-80 overflow-y-auto p-2">
+      <h3>LAYER 1</h3>
+      <!-- 
+        There, we can certainly consider a layer has a class, and have each class generating its own legend control.
+        That would enable us to display templates instead of building all logic there.
+      -->
+    </div>
+  </div>
+</div>

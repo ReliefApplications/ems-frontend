@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/languages';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
+import { SafeMapLegendComponent } from '../../components/ui/map/map-legend/map-legend.component';
+import { DomService } from '../dom/dom.service';
 
 // Declares L to be able to use Leaflet from CDN
 declare let L: any;
@@ -25,10 +27,12 @@ export class SafeMapControlsService {
    *
    * @param environment environment
    * @param translate Angular translate service
+   * @param domService Shared dom service
    */
   constructor(
     @Inject('environment') environment: any,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private domService: DomService
   ) {
     this.lang = this.translate.currentLang;
     this.primaryColor = environment.theme.primary;
@@ -60,7 +64,6 @@ export class SafeMapControlsService {
       // results.clearLayers();
       for (let i = data.results.length - 1; i >= 0; i--) {
         const coordinates = L.latLng(data.results[i].latlng);
-        console.log(coordinates);
         const circle = L.circleMarker(coordinates, MARKER_OPTIONS);
         circle.addTo(map);
         const popup = L.popup()
@@ -139,6 +142,32 @@ export class SafeMapControlsService {
       map.removeControl(this.measureControls[this.lang]);
       this.measureControls[lang].addTo(map);
       this.lang = lang;
+    }
+  }
+
+  public getLegendControl(map: any): any {
+    const control = L.control({ position: 'bottomright' });
+    control.onAdd = () => {
+      const div = L.DomUtil.create('div', 'info legend');
+      const legend = this.domService.appendComponentToBody(
+        SafeMapLegendComponent,
+        div
+      );
+      const intance: SafeMapLegendComponent = legend.instance;
+      return div;
+    };
+    control.addTo(map);
+    const container = control.getContainer();
+    if (container) {
+      // prevent click events from propagating to the map
+      container.addEventListener('click', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
+
+      // prevent mouse wheel events from propagating to the map
+      container.addEventListener('wheel', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
     }
   }
 }
