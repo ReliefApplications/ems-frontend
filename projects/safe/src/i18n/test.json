@@ -1202,6 +1202,7 @@
 						"label": "******"
 					},
 					"properties": {
+						"TimeSlider": "******",
 						"basemap": "******",
 						"latitude": "******",
 						"longitude": "******",

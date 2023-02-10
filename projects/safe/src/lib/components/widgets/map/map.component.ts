@@ -5,14 +5,16 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
 import 'leaflet-fullscreen';
-import { generateClusterLayer } from './cluster-test';
-import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
-import { generateHeatMap } from './heatmap-test';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { AVAILABLE_MEASURE_LANGUAGES } from './measure.const';
 import { v4 as uuidv4 } from 'uuid';
 import { randomFeatureCollection } from './generateFeatureCollection';
+// Dataset tests
+import { generateClusterLayer } from './cluster-test';
+import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
+import { generateHeatMap } from './heatmap-test';
+import { timeDimensionGeoJSON } from './timedimension-test';
 
 // Declares L to be able to use Leaflet from CDN
 declare let L: any;
@@ -87,6 +89,10 @@ export class SafeMapComponent
   private measureControls: any = {};
   private fullscreenControl?: L.Control;
   private legendControl?: L.Control;
+
+  // === Time Dimension ===
+  private timeDimensionLayer?: any;
+  private timeDimensionControl?: L.Control;
 
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
@@ -184,7 +190,11 @@ export class SafeMapComponent
       maxZoom: 18,
       worldCopyJump: true,
       zoom: get(this.settings, 'zoom', 3),
+      timeDimension: true,
     }).setView([centerLat, centerLong], get(this.settings, 'zoom', 3));
+
+    // Add TimeDimension
+    this.setTimeDimension(true);
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(this.settings.basemap);
@@ -534,6 +544,59 @@ export class SafeMapComponent
       this.measureControls[lang].addTo(this.map);
       this.lang = lang;
     }
+  }
+
+  /**
+   * Add or remove the TimeDimension in the map
+   *
+   * @param {boolean} value boolean to indicates if should add or remove TimeDimension control
+   */
+  public setTimeDimension(value: boolean): void {
+    if (value) {
+      if (!this.timeDimensionControl) {
+        this.createTimeDimensionControl();
+      }
+
+      const geoJSON = L.geoJson(timeDimensionGeoJSON);
+      this.timeDimensionLayer = L.timeDimension.layer
+        .geoJson(geoJSON)
+        .addTo(this.map);
+    } else {
+      if (this.timeDimensionControl) {
+        this.timeDimensionControl.remove();
+        this.timeDimensionLayer.remove();
+        this.timeDimensionControl = undefined;
+        this.timeDimensionLayer = undefined;
+      }
+    }
+  }
+
+  /** Creates the TimeDimension Control */
+  private createTimeDimensionControl(): void {
+    const timeDimension = this.map.timeDimension;
+    timeDimension.options = {
+      period: 'PT1H',
+      timeInterval: '2017-06-01/2017-09-01',
+      currentTime: '2017-06-01',
+    };
+
+    const player = new L.TimeDimension.Player(
+      { transitionTime: 1000, startOver: true },
+      timeDimension
+    );
+
+    const timeDimensionControlOptions = {
+      player,
+      timeDimension,
+      position: 'bottomleft',
+      autoPlay: false,
+      timeSliderDragUpdate: true,
+    };
+
+    this.timeDimensionControl = new L.Control.TimeDimension(
+      timeDimensionControlOptions
+    );
+    this.map.addControl(this.timeDimensionControl);
   }
 
   /**

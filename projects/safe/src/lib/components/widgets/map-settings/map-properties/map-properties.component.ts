@@ -51,6 +51,7 @@ export class MapPropertiesComponent
     zoom: number;
     centerLat: number;
     centerLong: number;
+    timeDimension: boolean;
   };
 
   /**
@@ -69,6 +70,7 @@ export class MapPropertiesComponent
       zoom: this.form.value.zoom,
       centerLat: this.form.value.centerLat,
       centerLong: this.form.value.centerLong,
+      timeDimension: this.form.value.timeDimension,
     };
     this.form
       .get('zoom')
@@ -95,6 +97,12 @@ export class MapPropertiesComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.previewMap.setBasemap(value);
+      });
+    this.form
+      .get('timeDimension')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.previewMap.setTimeDimension(value);
       });
   }
 

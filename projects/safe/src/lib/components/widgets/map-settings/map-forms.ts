@@ -19,6 +19,7 @@ export interface MapSettingsI {
   centerLong: number;
   centerLat: number;
   layers: MapLayerI[];
+  timeDimension: boolean;
 }
 
 /** Angular Form Builder */
@@ -68,6 +69,7 @@ const DEFAULT_MAP: Nullable<MapSettingsI> = {
   // markersRules: [],
   // clorophlets: [],
   layers: [],
+  timeDimension: true,
 };
 
 // === CLOROPHLET ===
@@ -190,6 +192,7 @@ export const createMapWidgetFormGroup = (
     ],
     // category: [get(value, 'category', DEFAULT_MAP.category)],
     basemap: [get(value, 'basemap', DEFAULT_MAP.basemap)],
+    timeDimension: [get(value, 'timeDimension', DEFAULT_MAP.timeDimension)],
     centerLong: [
       get(value, 'centerLong', DEFAULT_MAP.centerLong),
       [Validators.min(-180), Validators.max(180)],

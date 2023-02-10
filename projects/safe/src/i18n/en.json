@@ -1202,6 +1202,7 @@
 						"label": "Fields displayed in the popup"
 					},
 					"properties": {
+						"TimeSlider": "Time Slider",
 						"basemap": "Base map",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
