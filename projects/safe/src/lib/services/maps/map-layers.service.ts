@@ -5,12 +5,13 @@ import { get } from 'lodash';
 // Declares L to be able to use Leaflet from CDN
 declare let L: any;
 
+/**
+ * Shared map layer service
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class SafeMapLayersService {
-  constructor() {}
-
   /**
    * Creates custom marker icon for the Leaflet map.
    *
@@ -48,6 +49,14 @@ export class SafeMapLayersService {
     return icon;
   }
 
+  /**
+   * Apply options to a layer
+   *
+   * @param map current map
+   * @param layer layer to edit
+   * @param options options to apply
+   * @param icon custom icon
+   */
   public applyOptionsToLayer(map: any, layer: any, options: any, icon?: any) {
     if (layer.children) {
       this.applyOptionsToLayer(map, layer.children, options);
@@ -80,6 +89,7 @@ export class SafeMapLayersService {
   /**
    * Gets the map features as a GeoJSON FeatureCollection.
    *
+   * @param map current map
    * @returns GeoJSON FeatureCollection
    */
   public getMapFeatures(map: any): FeatureCollection {

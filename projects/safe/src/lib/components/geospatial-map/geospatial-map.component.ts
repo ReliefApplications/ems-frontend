@@ -58,7 +58,7 @@ export class SafeGeospatialMapComponent
    * Component for displaying the input map
    * of the geospatial type question.
    *
-   * @param translate the translation service
+   * @param safeMapLayersService Shared map layer service
    */
   constructor(private safeMapLayersService: SafeMapLayersService) {
     super();
@@ -108,7 +108,11 @@ export class SafeGeospatialMapComponent
     }
   }
 
-  /** Emits event with new map geoJSON value */
+  /**
+   * Handle map change events
+   *
+   * @param mapChangeData map change event
+   */
   private onMapChange(mapChangeData: any): void {
     if (this.timeout) clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
@@ -136,13 +140,18 @@ export class SafeGeospatialMapComponent
     }
   }
 
-  public handleMapEvent(mapEvent: MapEvent) {
-    switch (mapEvent.type) {
+  /**
+   * Handle leaflet map event
+   *
+   * @param event leaflet map event
+   */
+  public handleMapEvent(event: MapEvent) {
+    switch (event.type) {
       case MapEventType.SELECTED_LAYER:
-        this.selectedLayer = mapEvent.content.layer;
+        this.selectedLayer = event.content.layer;
         break;
       case MapEventType.MAP_CHANGE:
-        this.onMapChange(mapEvent.content);
+        this.onMapChange(event.content);
         break;
       default:
         break;

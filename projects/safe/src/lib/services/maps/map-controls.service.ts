@@ -6,7 +6,12 @@ import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
 // Declares L to be able to use Leaflet from CDN
 declare let L: any;
 
-@Injectable()
+/**
+ * Shared map control service.
+ */
+@Injectable({
+  providedIn: 'root',
+})
 export class SafeMapControlsService {
   public addressMarker: any;
   public measureControls: any = {};
@@ -15,6 +20,12 @@ export class SafeMapControlsService {
   // === THEME ===
   private primaryColor = '';
 
+  /**
+   * Shared map control service
+   *
+   * @param environment environment
+   * @param translate Angular translate service
+   */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService
@@ -26,7 +37,8 @@ export class SafeMapControlsService {
   /**
    * Creates a custom searchbar control with esri geocoding
    *
-   * @returns Returns the custom control
+   * @param map current map
+   * @param apikey arcgis api key
    */
   public getSearchbarControl(map: any, apikey: string): void {
     const searchControl = L.esri.Geocoding.geosearch({
@@ -75,6 +87,8 @@ export class SafeMapControlsService {
   /**
    * Create a fullscreen control and add it to map.
    * Support translation.
+   *
+   * @param map current map
    */
   public getFullScreenControl(map: any): void {
     if (this.fullscreenControl) {
@@ -89,7 +103,11 @@ export class SafeMapControlsService {
     this.fullscreenControl?.addTo(map);
   }
 
-  /** Create a custom measure control with leaflet-measure and adds it to the map  */
+  /**
+   * Create a custom measure control with leaflet-measure and adds it to the map
+   *
+   * @param map current map
+   */
   public getMeasureControl(map: any): any {
     // Get lang from translate service, and use default one if no match provided by plugin
     const lang = AVAILABLE_MEASURE_LANGUAGES.includes(

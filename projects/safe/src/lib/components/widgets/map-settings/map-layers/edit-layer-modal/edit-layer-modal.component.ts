@@ -57,7 +57,6 @@ export class SafeEditLayerModalComponent
   /**
    * Modal for adding and editing map layers
    *
-   * @param environment platform environment
    * @param layer Injected map layer, if any
    */
   constructor(@Inject(MAT_DIALOG_DATA) public layer?: MapLayerI) {
@@ -83,6 +82,9 @@ export class SafeEditLayerModalComponent
     this.setUpEditLayerListeners();
   }
 
+  /**
+   * Configure map settings
+   */
   private configureMapSettings() {
     this.mapSettings = {
       centerLong: 0,
@@ -97,6 +99,11 @@ export class SafeEditLayerModalComponent
     };
   }
 
+  /**
+   * Update layer options
+   *
+   * @param options new options
+   */
   private updateLayerOptions(options: { [key: string]: any }) {
     this.layerOptions = {
       ...this.layerOptions,
@@ -108,6 +115,9 @@ export class SafeEditLayerModalComponent
     });
   }
 
+  /**
+   * Set edit layers listeners.
+   */
   private setUpEditLayerListeners() {
     this.form.controls.visibilityRange.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -136,11 +146,16 @@ export class SafeEditLayerModalComponent
       });
   }
 
-  public handleMapEvent(mapEvent: MapEvent) {
-    if (mapEvent) {
-      switch (mapEvent.type) {
+  /**
+   * Handle leaflet map events
+   *
+   * @param event leaflet map event
+   */
+  public handleMapEvent(event: MapEvent) {
+    if (event) {
+      switch (event.type) {
         case MapEventType.ZOOM_END:
-          this.mapSettings.zoom = mapEvent.content.zoom;
+          this.mapSettings.zoom = event.content.zoom;
           const visibilityRange = this.form.get('visibilityRange')?.value;
           this.updateLayerOptions({ visibilityRange });
           break;

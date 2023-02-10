@@ -40,6 +40,7 @@ declare let L: any;
 
 /**
  * Cleans the settings object from null values
+ *
  * @param settings Settings needed to create/edit map
  */
 const cleanSettingsFromNulls = (settings: MapConstructorSettings) => {
@@ -70,17 +71,20 @@ export class SafeMapComponent
   @Input() useGeomanTools = false;
   // Temporary input in order to display the mocked layers as we want
   @Input() displayMockedLayers = true;
+  /** Map settings setter */
   @Input() set mapSettings(settings: MapConstructorSettings) {
     if (settings) {
       cleanSettingsFromNulls(settings);
       this.updateMapSettings(settings);
     }
   }
+  /** Delete layer setter */
   @Input() set deleteLayer(layer: any) {
     if (layer) {
       this.map.removeLayer(layer);
     }
   }
+  /** Add layer setter */
   @Input() set addLayer(layerData: any) {
     if (layerData) {
       // When using geoman tools no layer control is shown
@@ -90,6 +94,7 @@ export class SafeMapComponent
       this.map.addLayer(layerData.layer);
     }
   }
+  /** Update layer options setters */
   @Input() set updateLayerOptions(layerWithOptions: {
     layer: any;
     options: any;
@@ -157,6 +162,7 @@ export class SafeMapComponent
     this.mapId = uuidv4();
   }
 
+  /** Set map listeners */
   private setUpMapListeners() {
     // Set event listener to log map bounds when zooming, moving and resizing screen.
     this.map.on('moveend', () => {
@@ -189,6 +195,7 @@ export class SafeMapComponent
       });
   }
 
+  /** Set geoman listeners */
   private setUpPmListeners() {
     // updates question value on adding new shape
     this.map.on('pm:create', (l: any) => {
@@ -249,7 +256,7 @@ export class SafeMapComponent
     /**
      * If Geoman tools are going to be used we will set up related listeners
      * Otherwise the map listeners for the user interaction with it
-     * */
+     */
     if (this.useGeomanTools) {
       this.setUpPmListeners();
     } else {
@@ -309,6 +316,11 @@ export class SafeMapComponent
     );
   }
 
+  /**
+   * Extract settings
+   *
+   * @returns cleaned settings
+   */
   private extractSettings(): MapConstructorSettings {
     // Settings initialization
     const centerLong = Number(get(this.settingsConfig, 'centerLong', 0));
@@ -325,7 +337,8 @@ export class SafeMapComponent
     const zoomControl = get(this.settingsConfig, 'zoomControl', false);
     const zoom = get(this.settingsConfig, 'zoom', 3);
     /**
-     * @TODO implement layer loading for the layers returned from the settings
+     * TODO implement layer loading for the layers returned from the settings
+     *
      * For now the following structure returned from a layer added to a map widget is
      *
      * {
@@ -335,7 +348,7 @@ export class SafeMapComponent
      *    visibilityRange: number (this would be fixed after we fix the visibilityRange  control)
      * }
      *
-     *  */
+     */
     const layers = get(this.settingsConfig, 'layers', []);
 
     return {
@@ -405,6 +418,11 @@ export class SafeMapComponent
     }
   }
 
+  /**
+   * Update map settings
+   *
+   * @param settingsValue new settings
+   */
   private updateMapSettings(settingsValue: MapConstructorSettings) {
     merge(this.settingsConfig, settingsValue);
     if (this.map) {
@@ -477,6 +495,11 @@ export class SafeMapComponent
     this.updateLayerTreeOfMap(this.overlays);
   }
 
+  /**
+   * Update layer control
+   *
+   * @param overlays overlays
+   */
   private updateLayerTreeOfMap(overlays: any) {
     this.layerTreeCloned = this.addTreeToMap(overlays);
     this.applyOptions(this.map.getZoom(), this.layerTreeCloned, true);

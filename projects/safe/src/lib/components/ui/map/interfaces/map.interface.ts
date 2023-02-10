@@ -1,3 +1,6 @@
+/**
+ * Map settings for leaflet.
+ */
 export interface MapConstructorSettings {
   title?: string;
   centerLong: number;
@@ -14,14 +17,16 @@ export interface MapConstructorSettings {
   pmIgnore?: boolean;
 }
 
-export enum MapEventType{
+/** Available leaflet event types. */
+export enum MapEventType {
   FIRST_LOAD,
   MAP_CHANGE,
   MOVE_END,
   ZOOM_END,
-  SELECTED_LAYER
+  SELECTED_LAYER,
 }
 
+/** Map event interface */
 export interface MapEvent {
   type: MapEventType;
   content: any;

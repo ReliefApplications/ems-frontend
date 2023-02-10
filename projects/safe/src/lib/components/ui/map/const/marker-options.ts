@@ -1,3 +1,6 @@
+/**
+ * Marker option
+ */
 export const MARKER_OPTIONS = {
   color: '#0090d1',
   opacity: 0.25,

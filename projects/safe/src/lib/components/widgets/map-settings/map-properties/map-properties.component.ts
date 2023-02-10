@@ -56,6 +56,9 @@ export class MapPropertiesComponent
     this.setUpFormListeners();
   }
 
+  /**
+   * Set form listeners
+   */
   private setUpFormListeners() {
     this.form
       .get('zoom')
@@ -83,6 +86,11 @@ export class MapPropertiesComponent
       );
   }
 
+  /**
+   * Update map settings
+   *
+   * @param settings new settings
+   */
   private updateMapSettings(settings: MapConstructorSettings) {
     if (this.mapSettings) {
       this.mapSettings = {
@@ -109,14 +117,19 @@ export class MapPropertiesComponent
       ?.setValue(this.mapSettings.zoom, { emitEvent: false });
   }
 
-  handleMapEvent(mapEvent: MapEvent) {
-    switch (mapEvent.type) {
+  /**
+   * Handle leaflet map events
+   *
+   * @param event leaflet map event
+   */
+  handleMapEvent(event: MapEvent) {
+    switch (event.type) {
       case MapEventType.MOVE_END:
-        this.mapSettings.centerLat = mapEvent.content.center.lat;
-        this.mapSettings.centerLong = mapEvent.content.center.lng;
+        this.mapSettings.centerLat = event.content.center.lat;
+        this.mapSettings.centerLong = event.content.center.lng;
         break;
       case MapEventType.ZOOM_END:
-        this.mapSettings.zoom = mapEvent.content.zoom;
+        this.mapSettings.zoom = event.content.zoom;
         this.form
           .get('zoom')
           ?.setValue(this.mapSettings.zoom, { emitEvent: false });
