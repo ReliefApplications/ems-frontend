@@ -27,10 +27,14 @@ import {
 } from './interfaces/map.interface';
 import { BASEMAPS, BASEMAP_LAYERS } from './const/baseMaps';
 import { merge } from 'lodash';
-import { generateClusterLayer } from './cluster-test';
-import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
-import { randomFeatureCollection } from './generateFeatureCollection';
-import { generateHeatMap } from './heatmap-test';
+import { generateClusterLayer } from './test/cluster-test';
+import {
+  complexGeoJSON,
+  cornerGeoJSON,
+  pointGeoJSON,
+} from './test/geojson-test';
+import { randomFeatureCollection } from './test/feature-collection-test';
+import { generateHeatMap } from './test/heatmap-test';
 import { SafeMapLayersService } from '../../../services/maps/map-layers.service';
 import { SafeMapControlsService } from '../../../services/maps/map-controls.service';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/languages';
@@ -380,7 +384,6 @@ export class SafeMapComponent
       // layers,
     } = this.extractSettings();
     // Create leaflet map
-    console.log('zoom: ', zoom);
     this.map = L.map(this.mapId, {
       zoomControl,
       maxBounds,
@@ -415,6 +418,9 @@ export class SafeMapComponent
 
       // Add leaflet fullscreen control
       this.safeMapControlsService.getFullScreenControl(this.map);
+
+      // Add legend control
+      this.safeMapControlsService.getLegendControl(this.map);
     }
   }
 
