@@ -28,11 +28,11 @@
 </ng-container>
 <!-- MAP -->
 <ng-container *ngIf="widget.component === 'map'">
-  <safe-map
+  <safe-map-widget
     class="flex-1 h-full w-full"
     [header]="header"
-    [mapSettings]="widget.settings"
-  ></safe-map>
+    [settings]="widget.settings"
+  ></safe-map-widget>
 </ng-container>
 <!-- TEXT EDITOR -->
 <ng-container *ngIf="widget.component === 'editor'">

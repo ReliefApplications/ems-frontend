@@ -1,0 +1,10 @@
+<div class="h-full flex flex-col">
+  <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
+    <span
+      class="widget-title"
+      [title]="settings ? settings.title : ''"
+      >{{ settings.title }}</span
+    >
+  </kendo-tilelayout-item-header>
+  <safe-map [mapSettings]="settings"/>
+</div>

@@ -19,7 +19,6 @@ import {
   IMarkersLayerValue,
   LayerTree,
 } from './interfaces/map-layers.interface';
-import { flatDeep } from './utils/array-flatter';
 import {
   MapConstructorSettings,
   MapEvent,
@@ -70,7 +69,6 @@ export class SafeMapComponent
   extends SafeUnsubscribeComponent
   implements AfterViewInit
 {
-  @Input() header = true;
   @Input() controls!: any;
   @Input() useGeomanTools = false;
   // Temporary input in order to display the mocked layers as we want
@@ -139,9 +137,6 @@ export class SafeMapComponent
   private markersCategories: IMarkersLayerValue = [];
   private overlays: LayerTree = {};
   private layerControl: any;
-
-  // === Controls ===
-  private legendControl?: L.Control;
   private layerTreeCloned!: any;
 
   // === QUERY UPDATE INFO ===
@@ -291,36 +286,6 @@ export class SafeMapComponent
   }
 
   /**
-   * Get list of query fields from settings
-   *
-   * @param fields list of fields
-   * @param prefix prefix to add to field name
-   * @returns flat list of fields
-   */
-  private getFields(
-    fields: any[],
-    prefix?: string
-  ): { name: string; label: string }[] {
-    return flatDeep(
-      fields
-        .filter((x) => x.kind !== 'LIST')
-        .map((f) => {
-          switch (f.kind) {
-            case 'OBJECT': {
-              return this.getFields(f.fields, f.name);
-            }
-            default: {
-              return {
-                name: prefix ? `${prefix}.${f.name}` : f.name,
-                label: f.label,
-              };
-            }
-          }
-        })
-    );
-  }
-
-  /**
    * Extract settings
    *
    * @returns cleaned settings
@@ -354,6 +319,8 @@ export class SafeMapComponent
      *
      */
     const layers = get(this.settingsConfig, 'layers', []);
+
+    console.log(layers);
 
     return {
       centerLong,
@@ -646,19 +613,6 @@ export class SafeMapComponent
       };
     }
     return layerTree;
-  }
-
-  /** Load the data, using widget parameters. */
-  private getData(): void {
-    this.map.closePopup(this.popupMarker);
-
-    // this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-    //   const today = new Date();
-    //   this.lastUpdate =
-    //     ('0' + today.getHours()).slice(-2) +
-    //     ':' +
-    //     ('0' + today.getMinutes()).slice(-2);
-    // });
   }
 
   /**
