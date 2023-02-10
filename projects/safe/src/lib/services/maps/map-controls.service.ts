@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/languages';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
+import { MapLayerTreeComponent } from '../../components/ui/map/map-layer-tree/map-layer-tree.component';
 import { SafeMapLegendComponent } from '../../components/ui/map/map-legend/map-legend.component';
 import { DomService } from '../dom/dom.service';
 
@@ -142,6 +143,52 @@ export class SafeMapControlsService {
       map.removeControl(this.measureControls[this.lang]);
       this.measureControls[lang].addTo(map);
       this.lang = lang;
+    }
+  }
+
+  public layerTreeControl(map: any): void {
+    const control = L.control({ position: 'topright' });
+    control.onAdd = () => {
+      const div = L.DomUtil.create('div', 'info legend');
+      const layerTree = this.domService.appendComponentToBody(
+        MapLayerTreeComponent,
+        div
+      );
+      const instance: MapLayerTreeComponent = layerTree.instance;
+      instance.layers = [
+        {
+          name: 'test',
+          visible: true,
+          children: [
+            {
+              name: 'test 1',
+              visible: false,
+            },
+            {
+              name: 'test 2',
+              visible: true,
+            },
+            {
+              name: 'test 3',
+              visible: true,
+            },
+          ],
+        },
+      ];
+      return div;
+    };
+    control.addTo(map);
+    const container = control.getContainer();
+    if (container) {
+      // prevent click events from propagating to the map
+      container.addEventListener('click', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
+
+      // prevent mouse wheel events from propagating to the map
+      container.addEventListener('wheel', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
     }
   }
 

@@ -10,6 +10,5 @@ export interface LayerTree {
   children?: LayerTree[];
   layer?: any;
   type?: string;
-  selectAllCheckbox?: any;
   options?: any;
 }

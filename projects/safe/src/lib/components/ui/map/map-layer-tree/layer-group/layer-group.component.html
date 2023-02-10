@@ -1,0 +1,6 @@
+<mat-checkbox [checked]="layer.visible" [indeterminate]="indeterminate">
+  {{ layer.name }}
+</mat-checkbox>
+<ul>
+  <li *ngFor="let child of layer.children"><safe-layer [layer]="child"/></li>
+</ul>

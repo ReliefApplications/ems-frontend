@@ -388,6 +388,9 @@ export class SafeMapComponent
 
       // Add legend control
       this.safeMapControlsService.getLegendControl(this.map);
+
+      // Add layer tree control
+      this.safeMapControlsService.layerTreeControl(this.map);
     }
   }
 
@@ -437,35 +440,35 @@ export class SafeMapComponent
     };
     const clusterGroup = generateClusterLayer(this.map, L);
     this.map.addLayer(clusterGroup);
-    this.overlays = {
-      label: 'GeoJSON layers',
-      selectAllCheckbox: 'Un/select all',
-      children: [
-        {
-          label: 'Simple',
-          layer: pointGeoJSON,
-          options: options2,
-        },
-        {
-          label: 'Complex',
-          layer: complexGeoJSON,
-          options: options1,
-        },
-        {
-          label: 'Corner',
-          layer: cornerGeoJSON,
-          options: options2,
-        },
-        {
-          label: 'Random',
-          layer: randomFeatureCollection,
-        },
-      ],
-    };
+    // this.overlays = {
+    //   label: 'GeoJSON layers',
+    //   selectAllCheckbox: 'Un/select all',
+    //   children: [
+    //     {
+    //       label: 'Simple',
+    //       layer: pointGeoJSON,
+    //       options: options2,
+    //     },
+    //     {
+    //       label: 'Complex',
+    //       layer: complexGeoJSON,
+    //       options: options1,
+    //     },
+    //     {
+    //       label: 'Corner',
+    //       layer: cornerGeoJSON,
+    //       options: options2,
+    //     },
+    //     {
+    //       label: 'Random',
+    //       layer: randomFeatureCollection,
+    //     },
+    //   ],
+    // };
 
     //Heatmap
     generateHeatMap(this.map);
-    this.updateLayerTreeOfMap(this.overlays);
+    // this.updateLayerTreeOfMap(this.overlays);
   }
 
   /**

@@ -1,0 +1,6 @@
+<ul>
+  <li *ngFor="let layer of layers">
+    <safe-layer *ngIf="!layer.children" [layer]="layer" />
+    <safe-layer-group *ngIf="layer.children" [layer]="layer" />
+  </li>
+</ul>
