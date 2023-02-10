@@ -1,6 +1,16 @@
-<ul>
-  <li *ngFor="let layer of layers">
-    <safe-layer *ngIf="!layer.children" [layer]="layer" />
-    <safe-layer-group *ngIf="layer.children" [layer]="layer" />
-  </li>
-</ul>
+<div class="border-2 border-opacity-20 border-black rounded-md bg-white">
+  <!-- Small control ( not showing layers ) -->
+  <button class="bg-none p2" (click)="toggleVisibility()" *ngIf="!expanded">
+    <safe-icon icon="list" />
+  </button>
+    <!-- Expanded control ( showing layers ) -->
+    <div class="flex flex-col w-48" *ngIf="expanded">
+      <ul>
+        <li *ngFor="let layer of layers">
+          <safe-layer *ngIf="!layer.children" [layer]="layer" />
+          <safe-layer-group *ngIf="layer.children" [layer]="layer" />
+        </li>
+      </ul>
+    </div>
+
+</div>

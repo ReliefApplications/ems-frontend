@@ -171,6 +171,16 @@ export class SafeMapControlsService {
             {
               name: 'test 3',
               visible: true,
+              children: [
+                {
+                  name: 'test 1',
+                  visible: false,
+                },
+                {
+                  name: 'test 2',
+                  visible: true,
+                },
+              ],
             },
           ],
         },

@@ -1,6 +1,15 @@
-<mat-checkbox [checked]="layer.visible" [indeterminate]="indeterminate">
-  {{ layer.name }}
-</mat-checkbox>
-<ul>
-  <li *ngFor="let child of layer.children"><safe-layer [layer]="child"/></li>
-</ul>
+<div class="flex">
+  <safe-button [isIcon]="true" [icon]="expanded ? 'expand_less' : 'expand_more'" size="small" (click)="toggleVisibility()"></safe-button>
+  <div>
+    <mat-checkbox [checked]="layer.visible" [indeterminate]="indeterminate">
+      {{ layer.name }}
+    </mat-checkbox>
+    <ul *ngIf="expanded" class="pl-2">
+      <li *ngFor="let child of layer.children">
+        <safe-layer [layer]="child" *ngIf="!child.children"/>
+        <safe-layer-group [layer]="child" *ngIf="child.children"/>
+      </li>
+    </ul>
+  </div>
+
+</div>
