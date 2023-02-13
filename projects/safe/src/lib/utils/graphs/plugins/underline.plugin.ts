@@ -1,5 +1,6 @@
 import { ChartComponentLike } from 'chart.js';
 import { DEFAULT_FONT_SIZE } from '../parseFontString';
+
 type DrawUnderlinePluginType = {
   display: boolean;
   fontSize: number;
