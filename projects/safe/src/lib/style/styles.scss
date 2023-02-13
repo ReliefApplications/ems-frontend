@@ -568,8 +568,8 @@ body {
 // === UTILS ===
 // Correct a bug of angular, see https://github.com/angular/components/issues/14311
 /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-.mat-form-field-suffix,
-.mat-form-field-prefix {
+.mat-mdc--form-field-icon-suffix,
+.mat-mdc-form-field-icon-prefix {
   display: inline-flex;
   align-items: center;
 }
@@ -750,8 +750,4 @@ mat-tab-group[vertical] {
   .legend-division-hide {
     opacity: 0.4;
   }
-}
-
-.mat-mdc-form-field-infix {
-  padding-left: 25px;
 }

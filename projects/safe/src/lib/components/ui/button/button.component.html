@@ -1,4 +1,5 @@
 <button
+  mat-button
   [class.mdc-button--unelevated]="category === 'secondary'"
   [class.mat-mdc-unelevated-button]="category === 'secondary'"
   [class.mdc-button--outlined]="category === 'tertiary'"
@@ -6,6 +7,9 @@
   [class.safe-btn-small]="size === 'small'"
   [class.safe-btn-success]="variant === 'success'"
   [class.safe-btn-grey]="variant === 'grey'"
+  [color]="color"
+  [class.mdc-icon-button]="isIcon"
+  [class.mat-mdc-icon-button]="isIcon"
   [disabled]="disabled"
   (click)="emittedEventSubject.next('click')"
 >
