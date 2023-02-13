@@ -383,6 +383,9 @@ export class SafeMapComponent
 
       // Add legend control
       this.mapControlsService.getLegendControl(this.map);
+
+      // Add download button and download menu
+      this.mapControlsService.getDownloadControl(this.map);
     }
   }
 

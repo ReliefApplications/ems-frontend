@@ -1,0 +1,68 @@
+<div class="downloadMenu">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+  />
+  <safe-button
+    class="downloadButton"
+    name="downloadButton"
+    (click)="displayDownloadOptions()"
+  >
+    <i class="fa fa-download"></i></safe-button
+  >`;
+
+  <div class="popupText" id="popup" *ngIf="expanded">
+    <mat-radio-group
+      aria-labelledby="view-radio-group"
+      class="view-radio-group"
+    >
+      <mat-radio-button
+        class="radio-button"
+        *ngFor="let view of views"
+        [value]="view"
+      >
+        {{ view }}
+      </mat-radio-button>
+    </mat-radio-group>
+    <mat-divider></mat-divider>
+    <mat-radio-group
+      aria-labelledby="layer-radio-group"
+      class="layer-radio-group"
+      [(ngModel)]="layersToSelect"
+    >
+      <mat-radio-button
+        class="radio-button"
+        *ngFor="let layer of layers"
+        [value]="layer"
+      >
+        {{ layer }}
+      </mat-radio-button>
+    </mat-radio-group>
+
+    <ng-container *ngIf="layersToSelect === 'Selected layers'">
+      <mat-form-field appearance="outline">
+        <mat-label>Select layers</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let layer of availableLayers" [value]="layer">
+            {{ layer }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+
+    <mat-divider></mat-divider>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Select output format</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let output of downloadOutputs" [value]="output">
+          {{ output }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-divider></mat-divider>
+
+    <safe-button class="downloadMenuButton">Back</safe-button>
+    <safe-button class="downloadMenuButton">Download</safe-button>
+  </div>
+</div>

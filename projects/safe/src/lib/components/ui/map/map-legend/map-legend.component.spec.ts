@@ -8,9 +8,8 @@ describe('SafeMapLegendComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SafeMapLegendComponent ]
-    })
-    .compileComponents();
+      declarations: [SafeMapLegendComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SafeMapLegendComponent);
     component = fixture.componentInstance;

@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/languages';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
+import { SafeMapDownloadComponent } from '../../components/ui/map/map-download/map-download.component';
 import { SafeMapLegendComponent } from '../../components/ui/map/map-legend/map-legend.component';
 import { DomService } from '../dom/dom.service';
 
@@ -160,14 +161,29 @@ export class SafeMapControlsService {
     const container = control.getContainer();
     if (container) {
       // prevent click events from propagating to the map
-      container.addEventListener('click', (e: any) => {
-        L.DomEvent.stopPropagation(e);
-      });
+      L.DomEvent.disableClickPropagation(container);
 
       // prevent mouse wheel events from propagating to the map
-      container.addEventListener('wheel', (e: any) => {
-        L.DomEvent.stopPropagation(e);
-      });
+      L.DomEvent.disableScrollPropagation(container);
+    }
+  }
+
+  public getDownloadControl(map: any): any {
+    const control = L.control({ position: 'bottomleft' });
+    control.onAdd = () => {
+      const div = L.DomUtil.create('div', 'info legend');
+      const legend = this.domService.appendComponentToBody(
+        SafeMapDownloadComponent,
+        div
+      );
+      const instance: SafeMapDownloadComponent = legend.instance;
+      return div;
+    };
+    control.addTo(map);
+    const container = control.getContainer();
+    if (container) {
+      L.DomEvent.disableClickPropagation(container);
+      L.DomEvent.disableScrollPropagation(container);
     }
   }
 }
