@@ -1,4 +1,8 @@
 @use "@angular/material" as mat;
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 @import "variables.scss";
 // TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
 //  The following line adds:
@@ -13,10 +17,6 @@
 // @include mat.core();
 // @include mat.all-component-typographies();
 @include mat.core();
-
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
 
 /* === Tailwindcss === */
 // Allow to use @apply in not visible by default elements
@@ -347,6 +347,11 @@ $safe-theme: mat.define-light-theme(
       transform: translateY(-1.1em) scale(0.75);
       width: 133.33333%;
     }
+  }
+
+  // Fix one issue from tailwind incompatibility
+  .mat-mdc-form-field * {
+    border-style: none;
   }
 }
 
