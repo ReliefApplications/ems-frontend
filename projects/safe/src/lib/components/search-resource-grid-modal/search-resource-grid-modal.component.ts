@@ -1,8 +1,5 @@
 import { ApplicationRef, Component, Inject, OnInit } from '@angular/core';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 
 /**

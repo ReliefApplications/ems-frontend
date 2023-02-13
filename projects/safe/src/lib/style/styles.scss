@@ -198,7 +198,7 @@ $safe-theme: mat.define-light-theme(
 
   .success-chip {
     background-color: #e9fae1 !important;
-    color: #67dd2d;
+    color: #67dd2d !important;
   }
   
   .accent-chip {
@@ -755,4 +755,10 @@ mat-tab-group[vertical] {
   .legend-division-hide {
     opacity: 0.4;
   }
+}
+
+
+.profile-title{
+  font-size: 20px;
+  margin-bottom: 20px;
 }

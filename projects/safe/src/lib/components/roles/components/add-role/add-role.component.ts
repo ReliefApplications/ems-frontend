@@ -4,10 +4,7 @@ import {
   UntypedFormBuilder,
   Validators,
 } from '@angular/forms';
-import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 /**
  * This component allows the user to add a role to the platform or to an application.

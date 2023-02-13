@@ -14,10 +14,7 @@ import {
   MatChipInputEvent,
   MAT_CHIPS_DEFAULT_OPTIONS,
 } from '@angular/material/chips';
-import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import get from 'lodash/get';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 

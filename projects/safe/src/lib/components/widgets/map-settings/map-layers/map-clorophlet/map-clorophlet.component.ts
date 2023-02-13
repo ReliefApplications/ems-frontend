@@ -1,9 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
-import {
-  MatDialog,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { clorophletForm, divisionForm } from '../../map-forms';
 import { MapClorophletDivisionComponent } from '../map-clorophlet-division/map-clorophlet-division.component';
 

@@ -1,9 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Aggregation } from '../../../models/aggregation.model';
 import { Resource } from '../../../models/resource.model';
 import { createAggregationForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
