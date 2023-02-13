@@ -1,11 +1,6 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import get from 'lodash/get';
-import {
-  ChartComponentLike,
-  ChartConfiguration,
-  ChartData,
-  ChartType,
-} from 'chart.js';
+import { ChartConfiguration, ChartData, ChartType, Plugin } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import drawUnderlinePlugin from '../../../utils/graphs/plugins/underline.plugin';
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
@@ -41,7 +36,7 @@ interface ChartLegend {
   styleUrls: ['./bar-chart.component.scss'],
 })
 export class SafeBarChartComponent implements OnChanges {
-  public plugins: ChartComponentLike[] = [
+  public plugins: Plugin[] = [
     drawUnderlinePlugin,
     DataLabelsPlugin,
     whiteBackgroundPlugin,
@@ -84,14 +79,15 @@ export class SafeBarChartComponent implements OnChanges {
       this.showValueLabels = get(this.options, 'labels.valueType', false);
     if (this.usePercentage) this.normalizeDataset();
 
-    this.chartData.datasets = this.series.map((x, i) => ({
-      ...x,
-      borderRadius: 8,
-      backgroundColor: this.options.palette?.[i] || undefined,
-      hoverBackgroundColor: this.options.palette?.[i]
-        ? addTransparency(this.options.palette?.[i])
-        : undefined,
-    }));
+    this.chartData.datasets = this.series.map((x, i) => {
+      const color = get(this.options, `palette[${i}]`, undefined);
+      return {
+        ...x,
+        borderRadius: 8,
+        backgroundColor: color,
+        hoverBackgroundColor: color ? addTransparency(color) : undefined,
+      };
+    });
 
     this.setOptions();
     this.chart?.update();

@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core';
-import { ChartComponentLike, ChartConfiguration, ChartData } from 'chart.js';
+import { Plugin, ChartConfiguration, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { get, flatten } from 'lodash';
 import { parseFontOptions } from '../../../utils/graphs/parseFontString';
@@ -42,7 +42,7 @@ export class SafePieDonutChartComponent implements OnChanges {
   private fieldSum = 0;
   private showValueLabels: false | 'percentage' | 'value' = false;
   private showCategoryLabel = false;
-  public plugins: ChartComponentLike[] = [
+  public plugins: Plugin[] = [
     drawUnderlinePlugin,
     DataLabelsPlugin,
     whiteBackgroundPlugin,
@@ -74,7 +74,6 @@ export class SafePieDonutChartComponent implements OnChanges {
   };
 
   ngOnChanges(): void {
-    console.log(this.options.palette);
     this.showCategoryLabel = get(this.options, 'labels.showCategory', false);
     if (get(this.options, 'labels.showValue', false))
       this.showValueLabels = get(this.options, 'labels.valueType', false);
@@ -86,11 +85,13 @@ export class SafePieDonutChartComponent implements OnChanges {
 
     this.chartData.datasets = this.series.map((x) => ({
       ...x,
-      backgroundColor: this.options.palette || undefined,
-      hoverBorderColor: this.options.palette || undefined,
-      hoverBackgroundColor: this.options.palette
-        ? this.options.palette?.map((color: any) => addTransparency(color))
-        : undefined,
+      ...(this.options.palette && {
+        backgroundColor: this.options.palette,
+        hoverBorderColor: this.options.palette,
+        hoverBackgroundColor: this.options.palette?.map((color: any) =>
+          addTransparency(color)
+        ),
+      }),
       hoverOffset: 4,
     }));
     this.chartData.labels = flatten(

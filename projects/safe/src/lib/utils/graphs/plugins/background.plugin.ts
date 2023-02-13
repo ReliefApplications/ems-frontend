@@ -1,7 +1,9 @@
+import { Plugin } from 'chart.js';
+
 /**
  * Custom plugin for having a white background on the charts
  */
-const whiteBackgroundPlugin = {
+const whiteBackgroundPlugin: Plugin = {
   id: 'customCanvasBackgroundColor',
   beforeDraw: (chart: any) => {
     const { ctx } = chart;

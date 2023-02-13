@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import get from 'lodash/get';
 import {
-  ChartComponentLike,
+  Plugin,
   ChartConfiguration,
   ChartData,
   ChartOptions,
@@ -42,7 +42,7 @@ interface ChartLegend {
   styleUrls: ['./line-chart.component.scss'],
 })
 export class SafeLineChartComponent implements OnChanges {
-  public plugins: ChartComponentLike[] = [
+  public plugins: Plugin[] = [
     drawUnderlinePlugin,
     DataLabelsPlugin,
     whiteBackgroundPlugin,
@@ -86,7 +86,7 @@ export class SafeLineChartComponent implements OnChanges {
   ngOnChanges(): void {
     this.showValueLabels = get(this.options, 'labels.valueType', false);
     this.chartData.datasets = this.series.map((x, i) => {
-      const color = this.options.palette?.[i];
+      const color = get(this.options, `palette[${i}]`, undefined);
 
       // finds min and max values from x.data
       const min = Math.min(...x.data.map((y: any) => y.field ?? Infinity));
@@ -95,16 +95,16 @@ export class SafeLineChartComponent implements OnChanges {
       if (max > this.max) this.max = max;
       return {
         ...x,
-        color: color || undefined,
-        backgroundColor: color || undefined,
-        borderColor: color || undefined,
+        color,
+        backgroundColor: color,
+        borderColor: color,
         pointRadius: 5,
         pointHoverRadius: 8,
-        pointBackgroundColor: color || undefined,
+        pointBackgroundColor: color,
         pointHoverBackgroundColor: color ? addTransparency(color) : undefined,
-        pointBorderColor: color || undefined,
+        pointBorderColor: color,
         pointBorderWidth: 2,
-        pointHoverBorderColor: color || undefined,
+        pointHoverBorderColor: color,
         pointHoverBorderWidth: 2,
         tension: 0.4,
       };

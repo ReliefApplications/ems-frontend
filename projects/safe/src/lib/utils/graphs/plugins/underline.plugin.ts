@@ -1,4 +1,4 @@
-import { ChartComponentLike } from 'chart.js';
+import { Plugin } from 'chart.js';
 import { DEFAULT_FONT_SIZE } from '../parseFontString';
 
 type DrawUnderlinePluginType = {
@@ -10,7 +10,7 @@ type DrawUnderlinePluginType = {
 };
 
 /** Plugin for underling chart title */
-const drawUnderlinePlugin: ChartComponentLike = {
+const drawUnderlinePlugin: Plugin = {
   id: 'underline',
   afterDatasetsDraw: (chart: any, _: any, opt: DrawUnderlinePluginType) => {
     if (!opt.display || !chart?.titleBlock) return;
