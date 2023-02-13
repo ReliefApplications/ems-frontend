@@ -1,3 +1,6 @@
+// Declares L to be able to use Leaflet from CDN
+declare let L: any;
+
 /** Represents the types of geometries that can be generated */
 type FeatureTypes = 'Point' | 'Polygon' | 'LineString';
 
@@ -160,3 +163,29 @@ export const randomFeatureCollection = generateRandomFeatures({
   // },
   numFeatures: 20,
 });
+
+export const geoJsonLayer = (geojson: any) =>
+  L.geoJSON(geojson, {
+    // Check for icon property
+    pointToLayer: (feature: any, latlng: any) => {
+      const marker = L.marker(latlng);
+      if (feature.properties?.icon?.svg) {
+        const color = feature.properties.icon.color;
+        const width = feature.properties.icon.width;
+        const height = feature.properties.icon.height;
+        const svg = feature.properties.icon.svg;
+
+        const icon = L.divIcon({
+          className: 'svg-marker',
+          iconSize: [width, height],
+          iconAnchor: [0, 24],
+          labelAnchor: [-6, 0],
+          popupAnchor: [width / 2, -36],
+          html: `<span style="--color:${color}">${svg}</span>`,
+        });
+
+        return marker.setIcon(icon);
+      }
+      return marker;
+    },
+  });

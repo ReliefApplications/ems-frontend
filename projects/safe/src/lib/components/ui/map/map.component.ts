@@ -15,10 +15,7 @@ import 'leaflet-fullscreen';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  IMarkersLayerValue,
-  LayerTree,
-} from './interfaces/map-layers.interface';
+import { LayerTree } from './interfaces/map-layers.interface';
 import {
   MapConstructorSettings,
   MapEvent,
@@ -32,7 +29,10 @@ import {
   cornerGeoJSON,
   pointGeoJSON,
 } from './test/geojson-test';
-import { randomFeatureCollection } from './test/feature-collection-test';
+import {
+  geoJsonLayer,
+  randomFeatureCollection,
+} from './test/feature-collection-test';
 import { generateHeatMap } from './test/heatmap-test';
 import { SafeMapLayersService } from '../../../services/maps/map-layers.service';
 import { SafeMapControlsService } from '../../../services/maps/map-controls.service';
@@ -134,8 +134,7 @@ export class SafeMapComponent
 
   // === MARKERS ===
   private popupMarker: any;
-  private markersCategories: IMarkersLayerValue = [];
-  private overlays: LayerTree = {};
+  private layers: LayerTree[] = [];
   private layerControl: any;
   private layerTreeCloned!: any;
 
@@ -431,36 +430,58 @@ export class SafeMapComponent
       },
     };
     const clusterGroup = generateClusterLayer(this.map, L);
-    this.map.addLayer(clusterGroup);
-    this.overlays = {
-      label: 'GeoJSON layers',
-      selectAllCheckbox: 'Un/select all',
-      children: [
-        {
-          label: 'Simple',
-          layer: pointGeoJSON,
-          options: options2,
-        },
-        {
-          label: 'Complex',
-          layer: complexGeoJSON,
-          options: options1,
-        },
-        {
-          label: 'Corner',
-          layer: cornerGeoJSON,
-          options: options2,
-        },
-        {
-          label: 'Random',
-          layer: randomFeatureCollection,
-        },
-      ],
+    // this.map.addLayer(clusterGroup);
+    this.layers = [
+      {
+        label: 'GeoJSON layers',
+        selectAllCheckbox: 'Un/select all',
+        children: [
+          {
+            label: 'Simple',
+            layer: geoJsonLayer(pointGeoJSON),
+            options: options2,
+          },
+          {
+            label: 'Complex',
+            layer: geoJsonLayer(complexGeoJSON),
+            options: options1,
+          },
+          {
+            label: 'Corner',
+            layer: geoJsonLayer(cornerGeoJSON),
+            options: options2,
+          },
+          {
+            label: 'Random',
+            layer: geoJsonLayer(randomFeatureCollection),
+          },
+        ],
+      },
+      {
+        label: 'Clusters',
+        layer: clusterGroup,
+      },
+      {
+        label: 'Heatmap',
+        layer: generateHeatMap(this.map),
+      },
+    ];
+    // this.updateLayerTreeOfMap(this.layers);
+    const drawLayer = (layer: any) => {
+      if (layer.children) {
+        for (const child of layer.children) {
+          drawLayer(child);
+        }
+      } else {
+        layer.layer.addTo(this.map);
+      }
     };
-
-    //Heatmap
-    generateHeatMap(this.map);
-    this.updateLayerTreeOfMap(this.overlays);
+    for (const layer of this.layers) {
+      drawLayer(layer);
+    }
+    this.layerControl = L.control.layers
+      .tree(undefined, this.layers)
+      .addTo(this.map);
   }
 
   /**
@@ -468,13 +489,14 @@ export class SafeMapComponent
    *
    * @param overlays overlays
    */
-  private updateLayerTreeOfMap(overlays: any) {
-    this.layerTreeCloned = this.addTreeToMap(overlays);
-    this.applyOptions(this.map.getZoom(), this.layerTreeCloned, true);
-    this.layerControl = L.control.layers
-      .tree(undefined, this.layerTreeCloned)
-      .addTo(this.map);
-  }
+  // private updateLayerTreeOfMap(overlays: any) {
+  //   // this.layerTreeCloned = this.addTreeToMap(overlays);
+  //   this.addTreeToMap(this.layers);
+  //   // this.applyOptions(this.map.getZoom(), this.layerTreeCloned, true);
+  //   this.layerControl = L.control.layers
+  //     .tree(undefined, this.layers)
+  //     .addTo(this.map);
+  // }
 
   /**
    * Function used to apply options
@@ -483,132 +505,132 @@ export class SafeMapComponent
    * @param layerTree The layer tree, used recursively.
    * @param init Used to init the map or update layers, default false.
    */
-  private applyOptions(zoom: number, layerTree: LayerTree, init = false) {
-    if (layerTree.children) {
-      for (const child of layerTree.children) {
-        this.applyOptions(zoom, child, init);
-      }
-    } else if (layerTree.options) {
-      if (init && layerTree.options.style) {
-        const layers = get(layerTree, 'layer._layers', {});
-        for (const layer in layers) {
-          if (layers[layer].options) {
-            layers[layer].options.opacity = layerTree.options.style.opacity;
-            layers[layer].options.fillOpacity = layerTree.options.style.opacity;
-          }
-        }
-        this.map.removeLayer(layerTree.layer);
-        this.map.addLayer(layerTree.layer);
-      }
-      if (init && layerTree.options.visible === false) {
-        // avoid undefined case matched with !layerTree.options.visible
-        // init with layer set at not visible by default.
-        this.map.removeLayer(layerTree.layer);
-      } else {
-        if (layerTree.options.visibilityRange) {
-          if (
-            zoom > layerTree.options.visibilityRange.max ||
-            zoom < layerTree.options.visibilityRange.min
-          ) {
-            this.map.removeLayer(layerTree.layer);
-          } else {
-            layerTree.layer.addTo(this.map);
-          }
-        }
-      }
-    }
-  }
+  // private applyOptions(zoom: number, layerTree: LayerTree, init = false) {
+  //   if (layerTree.children) {
+  //     for (const child of layerTree.children) {
+  //       this.applyOptions(zoom, child, init);
+  //     }
+  //   } else if (layerTree.options) {
+  //     if (init && layerTree.options.style) {
+  //       const layers = get(layerTree, 'layer._layers', {});
+  //       for (const layer in layers) {
+  //         if (layers[layer].options) {
+  //           layers[layer].options.opacity = layerTree.options.style.opacity;
+  //           layers[layer].options.fillOpacity = layerTree.options.style.opacity;
+  //         }
+  //       }
+  //       this.map.removeLayer(layerTree.layer);
+  //       this.map.addLayer(layerTree.layer);
+  //     }
+  //     if (init && layerTree.options.visible === false) {
+  //       // avoid undefined case matched with !layerTree.options.visible
+  //       // init with layer set at not visible by default.
+  //       this.map.removeLayer(layerTree.layer);
+  //     } else {
+  //       if (layerTree.options.visibilityRange) {
+  //         if (
+  //           zoom > layerTree.options.visibilityRange.max ||
+  //           zoom < layerTree.options.visibilityRange.min
+  //         ) {
+  //           this.map.removeLayer(layerTree.layer);
+  //         } else {
+  //           layerTree.layer.addTo(this.map);
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
-  /**
-   * Create a new layer tree with duplicated layers
-   *
-   * @param layerTree The layers tree.
-   * @returns A tree with each layer duplicated to have a 'left' and 'right' clones
-   */
-  private addTreeToMap(layerTree: LayerTree): any {
-    if (layerTree.children) {
-      layerTree.children.map((child: any) => {
-        const newLayer = this.addTreeToMap(child);
-        child.layer = L.geoJSON(newLayer.layer, {
-          // Check for icon property
-          pointToLayer: (feature: any, latlng: any) => {
-            const marker = L.marker(latlng);
-            if (feature.properties?.icon?.svg) {
-              const color = feature.properties.icon.color;
-              const width = feature.properties.icon.width;
-              const height = feature.properties.icon.height;
-              const svg = feature.properties.icon.svg;
+  // /**
+  //  * Create a new layer tree with duplicated layers
+  //  *
+  //  * @param layerTree The layers tree.
+  //  * @returns A tree with each layer duplicated to have a 'left' and 'right' clones
+  //  */
+  // private addTreeToMap(layerTree: LayerTree): any {
+  //   if (layerTree.children) {
+  //     layerTree.children.map((child: any) => {
+  //       const newLayer = this.addTreeToMap(child);
+  //       child.layer = L.geoJSON(newLayer.layer, {
+  //         // Check for icon property
+  //         pointToLayer: (feature: any, latlng: any) => {
+  //           const marker = L.marker(latlng);
+  //           if (feature.properties?.icon?.svg) {
+  //             const color = feature.properties.icon.color;
+  //             const width = feature.properties.icon.width;
+  //             const height = feature.properties.icon.height;
+  //             const svg = feature.properties.icon.svg;
 
-              const icon = L.divIcon({
-                className: 'svg-marker',
-                iconSize: [width, height],
-                iconAnchor: [0, 24],
-                labelAnchor: [-6, 0],
-                popupAnchor: [width / 2, -36],
-                html: `<span style="--color:${color}">${svg}</span>`,
-              });
+  //             const icon = L.divIcon({
+  //               className: 'svg-marker',
+  //               iconSize: [width, height],
+  //               iconAnchor: [0, 24],
+  //               labelAnchor: [-6, 0],
+  //               popupAnchor: [width / 2, -36],
+  //               html: `<span style="--color:${color}">${svg}</span>`,
+  //             });
 
-              return marker.setIcon(icon);
-            }
-            return marker;
-          },
-        }).addTo(this.map);
-      });
-    } else {
-      let layerFeature: any[];
-      if (layerTree.layer.type === 'Feature') {
-        layerFeature = [layerTree.layer];
-      } else {
-        layerFeature = layerTree.layer.features;
-      }
+  //             return marker.setIcon(icon);
+  //           }
+  //           return marker;
+  //         },
+  //       }).addTo(this.map);
+  //     });
+  //   } else {
+  //     let layerFeature: any[];
+  //     if (layerTree.layer.type === 'Feature') {
+  //       layerFeature = [layerTree.layer];
+  //     } else {
+  //       layerFeature = layerTree.layer.features;
+  //     }
 
-      const features: any[] = [];
-      for (const feature of layerFeature) {
-        features.push(feature);
+  //     const features: any[] = [];
+  //     for (const feature of layerFeature) {
+  //       features.push(feature);
 
-        const left = {
-          type: feature.type,
-          properties: feature.properties,
-          geometry: {
-            coordinates: [] as any[],
-            type: feature.geometry.type,
-          },
-        };
-        const right = {
-          type: feature.type,
-          properties: feature.properties,
-          geometry: {
-            coordinates: [] as any[],
-            type: feature.geometry.type,
-          },
-        };
+  //       const left = {
+  //         type: feature.type,
+  //         properties: feature.properties,
+  //         geometry: {
+  //           coordinates: [] as any[],
+  //           type: feature.geometry.type,
+  //         },
+  //       };
+  //       const right = {
+  //         type: feature.type,
+  //         properties: feature.properties,
+  //         geometry: {
+  //           coordinates: [] as any[],
+  //           type: feature.geometry.type,
+  //         },
+  //       };
 
-        if (feature.geometry.type === 'Point') {
-          const coordinate = feature.geometry.coordinates;
-          left.geometry.coordinates = [coordinate[0] - 360, coordinate[1]];
-          right.geometry.coordinates = [coordinate[0] + 360, coordinate[1]];
-        } else {
-          const leftCoordinates: any[] = [];
-          const rightCoordinates: any[] = [];
-          for (const coordinate of feature.geometry.coordinates[0]) {
-            leftCoordinates.push([coordinate[0] - 360, coordinate[1]]);
-            rightCoordinates.push([coordinate[0] + 360, coordinate[1]]);
-          }
-          left.geometry.coordinates.push(leftCoordinates);
-          right.geometry.coordinates.push(rightCoordinates);
-        }
+  //       if (feature.geometry.type === 'Point') {
+  //         const coordinate = feature.geometry.coordinates;
+  //         left.geometry.coordinates = [coordinate[0] - 360, coordinate[1]];
+  //         right.geometry.coordinates = [coordinate[0] + 360, coordinate[1]];
+  //       } else {
+  //         const leftCoordinates: any[] = [];
+  //         const rightCoordinates: any[] = [];
+  //         for (const coordinate of feature.geometry.coordinates[0]) {
+  //           leftCoordinates.push([coordinate[0] - 360, coordinate[1]]);
+  //           rightCoordinates.push([coordinate[0] + 360, coordinate[1]]);
+  //         }
+  //         left.geometry.coordinates.push(leftCoordinates);
+  //         right.geometry.coordinates.push(rightCoordinates);
+  //       }
 
-        features.push(left);
-        features.push(right);
-      }
+  //       features.push(left);
+  //       features.push(right);
+  //     }
 
-      layerTree.layer = {
-        type: 'FeatureCollection',
-        features,
-      };
-    }
-    return layerTree;
-  }
+  //     layerTree.layer = {
+  //       type: 'FeatureCollection',
+  //       features,
+  //     };
+  //   }
+  //   return layerTree;
+  // }
 
   /**
    * Set the basemap.
