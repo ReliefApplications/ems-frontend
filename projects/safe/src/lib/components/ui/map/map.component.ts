@@ -103,7 +103,7 @@ export class SafeMapComponent
     icon?: any;
   }) {
     if (layerWithOptions) {
-      this.safeMapLayersService.applyOptionsToLayer(
+      this.mapLayersService.applyOptionsToLayer(
         this.map,
         layerWithOptions.layer,
         layerWithOptions.options,
@@ -113,7 +113,7 @@ export class SafeMapComponent
       if (this.useGeomanTools) {
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: this.safeMapLayersService.getMapFeatures(this.map),
+          content: this.mapLayersService.getMapFeatures(this.map),
         });
       }
     }
@@ -147,14 +147,14 @@ export class SafeMapComponent
    *
    * @param environment platform environment
    * @param translate The translate service
-   * @param safeMapLayersService The map layer handler service
-   * @param safeMapControlsService The map controls handler service
+   * @param mapLayersService The map layer handler service
+   * @param mapControlsService The map controls handler service
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
-    private safeMapLayersService: SafeMapLayersService,
-    private safeMapControlsService: SafeMapControlsService
+    private mapLayersService: SafeMapLayersService,
+    private mapControlsService: SafeMapControlsService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -166,9 +166,9 @@ export class SafeMapComponent
     // Set event listener to log map bounds when zooming, moving and resizing screen.
     this.map.on('moveend', () => {
       // If searched address marker exists, if we move, the item should disappear
-      if (this.safeMapControlsService.addressMarker) {
-        this.map.removeLayer(this.safeMapControlsService.addressMarker);
-        this.safeMapControlsService.addressMarker = null;
+      if (this.mapControlsService.addressMarker) {
+        this.map.removeLayer(this.mapControlsService.addressMarker);
+        this.mapControlsService.addressMarker = null;
       }
       this.mapEvent.emit({
         type: MapEventType.MOVE_END,
@@ -187,9 +187,9 @@ export class SafeMapComponent
     this.translate.onLangChange
       .pipe(takeUntil(this.destroy$))
       .subscribe((event) => {
-        if (event.lang !== this.safeMapControlsService.lang) {
-          this.safeMapControlsService.getMeasureControl(this.map);
-          this.safeMapControlsService.getFullScreenControl(this.map);
+        if (event.lang !== this.mapControlsService.lang) {
+          this.mapControlsService.getMeasureControl(this.map);
+          this.mapControlsService.getFullScreenControl(this.map);
         }
       });
   }
@@ -199,16 +199,14 @@ export class SafeMapComponent
     // updates question value on adding new shape
     this.map.on('pm:create', (l: any) => {
       if (l.shape === 'Marker')
-        l.layer.setIcon(
-          this.safeMapLayersService.createCustomMarker('#3388ff', 1)
-        );
+        l.layer.setIcon(this.mapLayersService.createCustomMarker('#3388ff', 1));
 
       // subscribe to changes on the created layers
       l.layer.on(
         'pm:change',
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: this.safeMapLayersService.getMapFeatures(this.map),
+          content: this.mapLayersService.getMapFeatures(this.map),
         })
       );
 
@@ -226,7 +224,7 @@ export class SafeMapComponent
       'pm:remove',
       this.mapEvent.emit({
         type: MapEventType.MAP_CHANGE,
-        content: this.safeMapLayersService.getMapFeatures(this.map),
+        content: this.mapLayersService.getMapFeatures(this.map),
       })
     );
 
@@ -270,7 +268,7 @@ export class SafeMapComponent
       if (this.useGeomanTools) {
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: this.safeMapLayersService.getMapFeatures(this.map),
+          content: this.mapLayersService.getMapFeatures(this.map),
         });
       } else {
         this.mapEvent.emit({
@@ -375,19 +373,16 @@ export class SafeMapComponent
     }
     if (!this.useGeomanTools) {
       // Add leaflet measure control
-      this.safeMapControlsService.getMeasureControl(this.map);
+      this.mapControlsService.getMeasureControl(this.map);
 
       // Add leaflet geosearch control
-      this.safeMapControlsService.getSearchbarControl(
-        this.map,
-        this.esriApiKey
-      );
+      this.mapControlsService.getSearchbarControl(this.map, this.esriApiKey);
 
       // Add leaflet fullscreen control
-      this.safeMapControlsService.getFullScreenControl(this.map);
+      this.mapControlsService.getFullScreenControl(this.map);
 
       // Add legend control
-      this.safeMapControlsService.getLegendControl(this.map);
+      this.mapControlsService.getLegendControl(this.map);
     }
   }
 
