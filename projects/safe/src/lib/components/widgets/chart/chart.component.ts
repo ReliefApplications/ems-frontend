@@ -1,9 +1,6 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core';
-import { saveAs } from '@progress/kendo-file-saver';
 import { SafeLineChartComponent } from '../../ui/line-chart/line-chart.component';
-import { SafePieChartComponent } from '../../ui/pie-chart/pie-chart.component';
-import { SafeDonutChartComponent } from '../../ui/donut-chart/donut-chart.component';
-import { SafeColumnChartComponent } from '../../ui/column-chart/column-chart.component';
+import { SafePieDonutChartComponent } from '../../ui/pie-donut-chart/pie-donut-chart.component';
 import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
 import { uniq, get, groupBy } from 'lodash';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
@@ -61,10 +58,8 @@ export class SafeChartComponent
   @ViewChild('chartWrapper')
   private chartWrapper?:
     | SafeLineChartComponent
-    | SafePieChartComponent
-    | SafeDonutChartComponent
-    | SafeBarChartComponent
-    | SafeColumnChartComponent;
+    | SafePieDonutChartComponent
+    | SafeBarChartComponent;
 
   /**
    * Chart widget using KendoUI.
@@ -112,14 +107,18 @@ export class SafeChartComponent
    * Exports the chart as a png ticket
    */
   public onExport(): void {
-    this.chartWrapper?.chart
-      ?.exportImage({
-        width: 1200,
-        height: 800,
-      })
-      .then((dataURI: string) => {
-        saveAs(dataURI, this.fileName);
-      });
+    // {
+    //   width: 1200,
+    //   height: 800,
+    // }
+    // this.chartWrapper?.exportImage();
+    // .then((dataURI: string) => {
+    //   saveAs(dataURI, this.fileName);
+    // });
+    const downloadLink = document.createElement('a');
+    downloadLink.href = this.chartWrapper?.chart?.toBase64Image() as string;
+    downloadLink.download = this.fileName;
+    downloadLink.click();
   }
 
   /**
@@ -201,6 +200,7 @@ export class SafeChartComponent
                     }
                 );
                 return {
+                  label: key,
                   name: key,
                   data: returnData,
                 };

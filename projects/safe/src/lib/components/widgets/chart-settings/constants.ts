@@ -49,18 +49,6 @@ export const LEGEND_POSITIONS = [
   },
 ];
 
-/** List of available text oritentations for legends */
-export const LEGEND_ORIENTATIONS = [
-  {
-    value: 'vertical',
-    icon: 'vertical_distribute',
-  },
-  {
-    value: 'horizontal',
-    icon: 'horizontal_distribute',
-  },
-];
-
 /** List of available title positions */
 export const TITLE_POSITIONS = [
   {
