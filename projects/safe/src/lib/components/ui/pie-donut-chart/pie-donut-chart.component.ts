@@ -27,6 +27,21 @@ interface ChartLegend {
 }
 
 /**
+ * Custom plugin for having a white background on the charts
+ */
+const whiteBackgroundPlugin = {
+  id: 'customCanvasBackgroundColor',
+  beforeDraw: (chart: any) => {
+    const {ctx} = chart;
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, chart.width, chart.height);
+    ctx.restore();
+  }
+};
+
+/**
  * Uses chart.js to render the data as a pie chart
  */
 @Component({
@@ -44,6 +59,7 @@ export class SafePieDonutChartComponent implements OnChanges {
   public plugins: ChartComponentLike[] = [
     drawUnderlinePlugin,
     DataLabelsPlugin,
+    whiteBackgroundPlugin
   ];
   @Input() chartType: 'pie' | 'doughnut' = 'doughnut';
 
@@ -80,6 +96,7 @@ export class SafePieDonutChartComponent implements OnChanges {
         (acc: number, curr: any) => acc + curr.field,
         0
       ) || 0;
+    
     this.chartData.datasets = this.series.map((x) => ({
       ...x,
       backgroundColor: this.options.palette || undefined,

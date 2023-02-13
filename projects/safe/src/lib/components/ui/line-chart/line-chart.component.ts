@@ -4,6 +4,7 @@ import {
   ChartComponentLike,
   ChartConfiguration,
   ChartData,
+  ChartOptions,
   ChartType,
 } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -32,6 +33,21 @@ interface ChartLegend {
 }
 
 /**
+ * Custom plugin for having a white background on the charts
+ */
+const whiteBackgroundPlugin = {
+  id: 'customCanvasBackgroundColor',
+  beforeDraw: (chart: any) => {
+    const {ctx} = chart;
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, chart.width, chart.height);
+    ctx.restore();
+  }
+};
+
+/**
  * Uses chart.js to render the data as a line chart
  */
 @Component({
@@ -43,6 +59,7 @@ export class SafeLineChartComponent implements OnChanges {
   public plugins: ChartComponentLike[] = [
     drawUnderlinePlugin,
     DataLabelsPlugin,
+    whiteBackgroundPlugin
   ];
   private showValueLabels = false;
   private min = Infinity;
@@ -68,6 +85,11 @@ export class SafeLineChartComponent implements OnChanges {
       xAxisKey: 'category',
       yAxisKey: 'field',
     },
+    elements: {
+      line: {
+        spanGaps: true
+      }
+    }
   };
 
   public chartType: ChartType = 'line';
@@ -149,9 +171,9 @@ export class SafeLineChartComponent implements OnChanges {
           position: get(this.title, 'position', 'top'),
           color: titleColor,
           font: fontOptions,
-        },
+        }
       },
-    };
+    } as ChartOptions;
 
     // adds underline plugin if needed
     if (titleVisible && underlineTitle && this.chartOptions?.plugins)

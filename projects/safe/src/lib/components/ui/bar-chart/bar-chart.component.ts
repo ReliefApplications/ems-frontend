@@ -32,6 +32,21 @@ interface ChartLegend {
 }
 
 /**
+ * Custom plugin for having a white background on the charts
+ */
+const whiteBackgroundPlugin = {
+  id: 'customCanvasBackgroundColor',
+  beforeDraw: (chart: any) => {
+    const {ctx} = chart;
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, chart.width, chart.height);
+    ctx.restore();
+  }
+};
+
+/**
  * Bar/Column chart component, based on chart.js component.
  */
 @Component({
@@ -43,6 +58,7 @@ export class SafeBarChartComponent implements OnChanges {
   public plugins: ChartComponentLike[] = [
     drawUnderlinePlugin,
     DataLabelsPlugin,
+    whiteBackgroundPlugin
   ];
   private usePercentage = false;
   private showValueLabels: false | 'percentage' | 'value' = false;
