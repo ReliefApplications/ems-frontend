@@ -117,7 +117,7 @@ export class SafeMapComponent
 
   /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
-    // Creates the map and adds all the controls we use.
+    // Creates the map and adds all the coIntrols we use.
     this.drawMap();
 
     setTimeout(() => {
@@ -200,6 +200,8 @@ export class SafeMapComponent
 
     // Add leaflet fullscreen control
     this.getFullScreenControl();
+
+    this.getDownloadControl();
 
     // Set event listener to log map bounds when zooming, moving and resizing screen.
     this.map.on('moveend', () => {
@@ -499,6 +501,108 @@ export class SafeMapComponent
       },
     });
     this.fullscreenControl?.addTo(this.map);
+  }
+
+  /**
+   * Creates a control for downloading map data.
+   * The control contains a button to toggle the display of a download menu.
+   * The download menu contains options to select the map view, layers, and output format.
+   */
+  private getDownloadControl(): void {
+    const downloadButton = L.control({ position: 'bottomright' });
+    const downloadMenu = L.control({ position: 'bottomright' });
+    let isExpanded = false;
+
+    downloadButton.onAdd = () => {
+      const downloadButtonDiv = L.DomUtil.create('div', 'downloadButtonDiv');
+      L.DomEvent.disableClickPropagation(downloadButtonDiv);
+      L.DomEvent.disableScrollPropagation(downloadButtonDiv);
+      L.DomEvent.on(
+        downloadButtonDiv,
+        'click',
+        () => {
+          isExpanded = !isExpanded;
+          downloadMenu[isExpanded ? 'addTo' : 'remove'](this.map);
+        },
+        this
+      );
+      const downloadButtonHtml = `<link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <button class="downloadButton" name="downloadButton" (click)="displayDownloadOptions()">
+      <i class="fa fa-download"></i>
+    </button>`;
+      downloadButtonDiv.innerHTML = downloadButtonHtml;
+      return downloadButtonDiv;
+    };
+
+    downloadButton.addTo(this.map);
+
+    downloadMenu.onAdd = () => {
+      const popupDiv = L.DomUtil.create('div', 'popup');
+      L.DomEvent.disableClickPropagation(popupDiv);
+      L.DomEvent.disableScrollPropagation(popupDiv);
+
+      const popupDivHtml = `
+        <div class="popupText" id="popup">
+            ${this.createFieldSet(['Current view', 'All maps'], 'mapsView')}
+            ${this.createFieldSet(
+              ['All layers', 'Visible layers', 'Selected layers'],
+              'layers'
+            )}
+            ${this.createSelect('layersToSelect', ['Layers selection'])}
+            <br><br>
+            ${this.createSelect('downloadOutputs', [
+              'CSV',
+              'Excel',
+              'GEOJson',
+              'PNG',
+            ])}
+            <br><br>
+            <button class='downloadMenuButton'>Back</button>
+            <button class='downloadMenuButton'>Download</button>
+        </div>
+    `;
+      popupDiv.innerHTML = popupDivHtml;
+      return popupDiv;
+    };
+  }
+
+  /**
+   * Creates a fieldset element with the specified inputs.
+   *
+   * @param {string[]} inputs - An array of strings, where each string represents a radio input in the fieldset.
+   * @param {string} fieldName - The name attribute for the radio inputs in the fieldset.
+   * @returns {string} The fieldset element as a string.
+   */
+  private createFieldSet(inputs: string[], fieldName: string): string {
+    let fieldSet = '<fieldset>';
+    for (const input of inputs) {
+      fieldSet += `
+      <div>
+        <input type="radio" id="${input}" value="${input}" name="${fieldName}"/>
+        <label for="${input}">${input}</label>
+      </div>`;
+    }
+    fieldSet += '</fieldset>';
+    return fieldSet;
+  }
+
+  /**
+   * Creates a select element with the specified options.
+   *
+   * @param {string} name - The name attribute for the select element.
+   * @param {string[]} selectOptions - An array of strings, where each string represents an option in the select element.
+   * @returns {string} The select element as a string.
+   */
+  private createSelect(name: string, selectOptions: string[]): string {
+    let select = `<select name="${name}" id="${name}">`;
+    for (const option of selectOptions) {
+      select += `<option value="${option.toLowerCase()}">${option}</option>`;
+    }
+    select += '</select>';
+    return select;
   }
 
   /** Create a custom measure control with leaflet-measure and adds it to the map  */

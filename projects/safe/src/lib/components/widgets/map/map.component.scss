@@ -37,3 +37,70 @@
 ::ng-deep .leaflet-layerstree-expand-collapse {
   cursor: pointer;
 }
+
+::ng-deep .popup {
+  position: relative;
+  display: inline-block;
+
+  .popupText {
+    visibility: visible;
+    width: 140px;
+    background-color: #fff;
+    color: #555;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    right: 10px;
+    margin-left: -80px;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 45%;
+      margin-left: 60px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #fff transparent transparent transparent;
+    }
+  }
+
+  fieldset {
+    margin-bottom: 1em;
+    border: 1px solid #888;
+    border-right: 1px solid #666;
+    border-bottom: 1px solid #666;
+  }
+}
+
+::ng-deep .downloadButton {
+  background-color: white;
+  border: 2px solid grey;
+  border-radius: 4px;
+  width: 30px;
+  height: 30px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  padding: 10px;
+
+  & i.fa {
+    color: black;
+    font-size: 15px;
+  }
+}
+
+::ng-deep .downloadMenuButton {
+  padding: 4px 8px;
+  display: inline-block;
+  border-radius: 3px;
+  background: #ccc;
+  font-size: 12px;
+  color: #333;
+}
