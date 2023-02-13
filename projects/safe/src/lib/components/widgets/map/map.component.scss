@@ -48,6 +48,7 @@
     background-color: #fff;
     color: #555;
     text-align: center;
+    border: 2px solid grey;
     border-radius: 6px;
     padding: 8px 0;
     position: absolute;
@@ -65,15 +66,15 @@
       border-width: 5px;
       border-style: solid;
       border-color: #fff transparent transparent transparent;
+      border-right: 1px solid #555;
+      border-left: 1px solid #555;
     }
   }
 
-  fieldset {
-    margin-bottom: 1em;
-    border: 1px solid #888;
-    border-right: 1px solid #666;
-    border-bottom: 1px solid #666;
-  }
+  br {
+    display: block;
+    margin: 5px 0;
+ }
 }
 
 ::ng-deep .downloadButton {

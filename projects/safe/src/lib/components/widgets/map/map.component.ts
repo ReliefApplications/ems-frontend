@@ -544,22 +544,28 @@ export class SafeMapComponent
       L.DomEvent.disableClickPropagation(popupDiv);
       L.DomEvent.disableScrollPropagation(popupDiv);
 
+      const separationLine = `
+      <br />
+      <hr style="height: 1px; border: none; color: grey; background-color: grey" />
+      <br />`;
+
       const popupDivHtml = `
         <div class="popupText" id="popup">
             ${this.createFieldSet(['Current view', 'All maps'], 'mapsView')}
+            ${separationLine}
             ${this.createFieldSet(
               ['All layers', 'Visible layers', 'Selected layers'],
               'layers'
             )}
             ${this.createSelect('layersToSelect', ['Layers selection'])}
-            <br><br>
+            ${separationLine}
             ${this.createSelect('downloadOutputs', [
               'CSV',
               'Excel',
               'GEOJson',
               'PNG',
             ])}
-            <br><br>
+            ${separationLine}
             <button class='downloadMenuButton'>Back</button>
             <button class='downloadMenuButton'>Download</button>
         </div>
