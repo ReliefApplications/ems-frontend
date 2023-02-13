@@ -57,13 +57,13 @@
       </mat-form-field>
     </div>
     <mat-label>Opacity</mat-label>
+    <!-- TODO: The 'tickInterval' property no longer exists -->
     <mat-slider
       thumbLabel
-      tickInterval="1"
       formControlName="opacity"
       [min]="0"
       [max]="100"
-    ></mat-slider>
+    ><input matSliderThumb /></mat-slider>
     <!-- LIST of Divisions -->
     <h2 class="mt-6">
       {{

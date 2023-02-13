@@ -25,7 +25,7 @@ import {
   SafeBreadcrumbService,
   SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { SafeDownloadService, Record } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';

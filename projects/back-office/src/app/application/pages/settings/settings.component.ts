@@ -13,13 +13,13 @@ import {
   SafeAuthService,
   SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import {
   DeleteApplicationMutationResponse,
   DELETE_APPLICATION,
 } from './graphql/mutations';
 import { DuplicateApplicationModalComponent } from '../../../components/duplicate-application-modal/duplicate-application-modal.component';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';

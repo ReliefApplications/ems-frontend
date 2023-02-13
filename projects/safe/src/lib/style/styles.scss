@@ -128,7 +128,7 @@ $safe-theme: mat.define-light-theme(
     color: white;
     white-space: pre-wrap;
 
-    .mat-simple-snackbar-action {
+    .mat-mdc-snack-bar-action {
       color: white;
     }
   }
@@ -139,7 +139,7 @@ $safe-theme: mat.define-light-theme(
     }
   }
 
-  .mat-list-item {
+  .mat-mdc-list-item {
     a:not(.active-link) {
       color: mat.get-color-from-palette(mat.$grey-palette, 500);
     }
@@ -167,9 +167,9 @@ $safe-theme: mat.define-light-theme(
 
   .success-chip {
     background-color: #e9fae1 !important;
-    color: #67dd2d !important;
+    color: #67dd2d;
   }
-
+  
   .accent-chip {
     background-color: rgba(255, 159, 0, 0.14) !important;
     color: #ff9f00 !important;
@@ -186,8 +186,8 @@ $safe-theme: mat.define-light-theme(
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
-
-  .mat-stroked-button:not(.mat-button-disabled) {
+  /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+  .mat-mdc-outlined-button:not(.mat-button-disabled) {
     &.mat-primary {
       border-color: mat.get-color-from-palette($primary);
     }
@@ -199,12 +199,12 @@ $safe-theme: mat.define-light-theme(
     }
   }
 
-  .mat-button:disabled,
-  .mat-stroked-button:disabled {
+  .mat-mdc-button:disabled,
+  .mat-mdc-outlined-button:disabled {
     color: #adadad !important;
   }
 
-  .mat-flat-button:disabled {
+  .mat-mdc-unelevated-button:disabled {
     color: #adadad !important;
     background-color: #d8d8d8 !important;
   }
@@ -247,6 +247,7 @@ $safe-theme: mat.define-light-theme(
 
 // === RADIO ===
 @mixin radio($theme) {
+  /* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
   .mat-radio-label-content {
     safe-icon {
       vertical-align: text-bottom;
@@ -256,6 +257,7 @@ $safe-theme: mat.define-light-theme(
 
 // === SLIDE TOGGLE ===
 @mixin slide-toggle($theme) {
+  /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
   .mat-slide-toggle-content {
     safe-icon {
       vertical-align: text-bottom;
@@ -272,6 +274,7 @@ $safe-theme: mat.define-light-theme(
 
 // === CHECKBOX ===
 @mixin checkbox($theme) {
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
   .mat-checkbox-label {
     safe-icon {
       vertical-align: text-bottom;
@@ -289,7 +292,8 @@ $safe-theme: mat.define-light-theme(
 
   .p-0 {
     // no padding fields
-    &.mat-form-field {
+    &.mat-mdc-form-field {
+      /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
       .mat-form-field-wrapper {
         padding: 0 !important;
       }
@@ -298,16 +302,17 @@ $safe-theme: mat.define-light-theme(
 
   .mat-form-field-sm {
     // small form-field
-    &.mat-form-field {
+    &.mat-mdc-form-field {
+      /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
       .mat-form-field-label-wrapper {
         top: -1.4em;
       }
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-form-field-flex > .mat-form-field-infix {
       padding: 0.42em 0px !important;
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     &.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
       transform: translateY(-1.1em) scale(0.75);
       width: 133.33333%;
@@ -317,20 +322,20 @@ $safe-theme: mat.define-light-theme(
 
 // === MODAL ===
 @mixin modal($theme) {
-  .mat-dialog-actions {
+  .mat-mdc-dialog-actions {
     gap: 8px;
   }
 }
 
 // === TOOLTIP ===
 @mixin tooltip($theme) {
-  .mat-tooltip-panel {
+  .mat-mdc-tooltip-panel {
     pointer-events: none !important;
   }
 }
 
 // === GLOBAL STYLES ==
-.mat-table {
+.mat-mdc-table {
   font-size: 14px;
   opacity: 0.87;
   border-radius: 4px;
@@ -364,19 +369,19 @@ $safe-theme: mat.define-light-theme(
   background: mat.get-color-from-palette($safe-warn) !important;
 }
 
-.mat-header-cell {
+.mat-mdc-header-cell {
   border-bottom: 1px solid #d8d8d8 !important;
   color: #767373;
 }
 
-.mat-row {
-  .mat-cell {
+.mat-mdc-row {
+  .mat-mdc-cell {
     border-bottom: 1px solid #f2f3f5 !important;
     color: #3f3c3c;
   }
 }
 
-.mat-spinner {
+.mat-mdc-progress-spinner {
   margin: auto;
 }
 
@@ -413,11 +418,11 @@ $safe-theme: mat.define-light-theme(
   width: 64px;
 }
 
-.mat-chip {
+.mat-mdc-chip {
   min-width: 75px;
   justify-content: center;
   font-weight: 500 !important;
-
+  /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version.*/
   &.mat-chip-disabled {
     opacity: 1 !important;
     pointer-events: none;
@@ -432,8 +437,8 @@ $safe-theme: mat.define-light-theme(
   margin: 32px;
 }
 
-.mat-tab-group .mat-tab-header,
-.mat-tab-nav-bar {
+.mat-mdc-tab-group .mat-mdc-tab-header,
+.mat-mdc-tab-nav-bar {
   margin-bottom: 12px;
 }
 
@@ -506,6 +511,7 @@ body {
 }
 
 .no-padding-dialog {
+  /* TODO(mdc-migration): The following rule targets internal classes of dialog that may no longer apply for the MDC version.*/
   mat-dialog-container {
     padding: unset;
   }
@@ -515,7 +521,7 @@ body {
   max-width: unset !important;
   width: 90%;
   height: calc(100% - 72px);
-
+  /* TODO(mdc-migration): The following rule targets internal classes of dialog that may no longer apply for the MDC version.*/
   mat-dialog-container {
     position: relative;
     border-radius: 4px 4px 0 0;
@@ -523,7 +529,7 @@ body {
     background-color: #fafafa;
   }
 
-  .mat-dialog-content {
+  .mat-mdc-dialog-content {
     max-height: calc(100% - 68px - 32px);
     height: 100%;
   }
@@ -531,6 +537,7 @@ body {
 
 // === UTILS ===
 // Correct a bug of angular, see https://github.com/angular/components/issues/14311
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
 .mat-form-field-suffix,
 .mat-form-field-prefix {
   display: inline-flex;
@@ -546,30 +553,37 @@ body {
 @import "theme.scss";
 
 // === VERTICAL TABS ===
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
 mat-tab-group[vertical] {
   display: flex;
   flex-direction: row !important;
 
-  & > .mat-tab-header {
+  & > .mat-mdc-tab-header {
     border-bottom: none;
     width: 240px;
     z-index: 1;
-
+    /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+    /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+    /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
     .mat-tab-labels {
       display: flex;
       flex-direction: column !important;
       position: relative;
-
+      /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+      /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
       .mat-tab-label {
         justify-content: left;
         border-radius: 7px;
         transition: all 0.1s ease;
-
+        /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
         &.mat-tab-label-active:not(.cdk-keyboard-focused) {
           opacity: 1;
           background-color: #f5f5f5;
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
         .mat-tab-label-content {
           gap: 6px;
 
@@ -585,18 +599,22 @@ mat-tab-group[vertical] {
       display: none;
     }
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
   & > .mat-tab-body-wrapper {
     width: 100%;
 
-    & > .mat-tab-body {
+    & > .mat-mdc-tab-body {
+      /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
       & > .mat-tab-body-content {
         transition: all ease 200ms;
         padding-left: 32px;
       }
+      /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
       & > .mat-tab-body-content[style*="transform: translate3d(100%, 0px, 0px)"] {
         transform: translate3d(0px, 100%, 0px) !important;
       }
+      /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
       & > .mat-tab-body-content[style*="transform: translate3d(-100%, 0px, 0px)"] {
         transform: translate3d(0px, -100%, 0px) !important;
       }
@@ -605,11 +623,16 @@ mat-tab-group[vertical] {
 }
 
 @media (max-width: 598px) {
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
   mat-tab-group[vertical] {
-    & > .mat-tab-header {
+    & > .mat-mdc-tab-header {
       width: unset;
-
+      /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+      /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
       .mat-tab-label {
+        /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
         .mat-tab-label-content {
           span {
             display: none;
@@ -726,4 +749,12 @@ mat-tab-group[vertical] {
     --secondary-150: #{$secondary_150};
     --secondary-200: #{$secondary_200};
   }
+}
+
+.mat-mdc-form-field-infix {
+  padding-left: 25px;
+}
+
+.mdc-button__label{
+  color: black;
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {
-  MatLegacyDialog as MatDialog,
-  MatLegacyDialogRef as MatDialogRef,
-} from '@angular/material/legacy-dialog';
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { SafeConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
 
 /** Interface of confirm dialog data */

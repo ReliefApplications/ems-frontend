@@ -6,11 +6,11 @@
   }
 }
 
-:host ::ng-deep .mat-button {
-  &:not(.mat-icon-button) {
+:host ::ng-deep .mat-mdc-button {
+  &:not(.mat-mdc-icon-button) {
     width: 100%;
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
   .mat-button-wrapper {
     display: block;
     text-overflow: ellipsis;
@@ -47,11 +47,11 @@ safe-icon {
 .safe-btn-success {
   &:not(:disabled) {
     color: #63d168;
-    &.mat-flat-button {
+    &.mat-mdc-unelevated-button {
       background-color: #63d168;
       color: white;
     }
-    &.mat-stroked-button {
+    &.mat-mdc-outlined-button {
       border-color: #63d168;
     }
   }
@@ -60,12 +60,13 @@ safe-icon {
 .safe-btn-grey {
   &:not(:disabled) {
     color: #a9a9a9;
-    &.mat-flat-button {
+    &.mat-mdc-unelevated-button {
       background-color: #a9a9a9;
       color: white;
     }
-    &.mat-stroked-button {
+    &.mat-mdc-outlined-button {
       border-color: #a9a9a9;
     }
   }
 }
+

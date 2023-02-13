@@ -6,9 +6,9 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import {
   Application,
   Channel,
@@ -24,7 +24,7 @@ import {
   GetFormsQueryResponse,
 } from '../../graphql/queries';
 import { map, startWith, takeUntil } from 'rxjs/operators';
-import { MatLegacyAutocomplete as MatAutocomplete } from '@angular/material/legacy-autocomplete';
+import { MatAutocomplete } from '@angular/material/autocomplete';
 import get from 'lodash/get';
 import { ApolloQueryResult } from '@apollo/client';
 import {

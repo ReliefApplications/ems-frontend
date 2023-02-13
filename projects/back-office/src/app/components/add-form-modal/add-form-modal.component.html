@@ -85,14 +85,14 @@
                     [value]="template.id"
                   >
                     {{ template.name }}
-                    <mat-chip-list
+                    <mat-chip-listbox
                       *ngIf="template.core"
                       class="float-right py-1.5 px-0 rounded-lg"
                     >
-                      <mat-chip class="primary-chip !rounded-lg" disabled>{{
+                      <mat-chip-option class="primary-chip !rounded-lg" disabled>{{
                         'models.form.core' | translate
-                      }}</mat-chip>
-                    </mat-chip-list>
+                      }}</mat-chip-option>
+                    </mat-chip-listbox>
                   </mat-option>
                 </mat-select>
               </mat-form-field>

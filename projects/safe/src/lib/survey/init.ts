@@ -3,7 +3,7 @@
 /// <reference path="../../typings/surveyjs-widgets/index.d.ts" />
 
 import { Apollo } from 'apollo-angular';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { UntypedFormBuilder } from '@angular/forms';
 import * as SurveyJSWidgets from 'surveyjs-widgets';
 import { DomService } from '../services/dom/dom.service';

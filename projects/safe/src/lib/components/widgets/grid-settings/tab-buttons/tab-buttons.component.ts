@@ -4,7 +4,7 @@ import { createButtonFormGroup } from '../grid-settings.forms';
 import { Form } from '../../../../models/form.model';
 import { Channel } from '../../../../models/channel.model';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { MatLegacyTabGroup as MatTabGroup } from '@angular/material/legacy-tabs';
+import { MatTabGroup } from '@angular/material/tabs';
 import { BehaviorSubject } from 'rxjs';
 
 /**

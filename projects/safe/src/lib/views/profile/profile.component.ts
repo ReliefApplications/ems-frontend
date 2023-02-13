@@ -4,7 +4,7 @@ import {
   UntypedFormBuilder,
   Validators,
 } from '@angular/forms';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatTableDataSource } from '@angular/material/table';
 import { Apollo } from 'apollo-angular';
 import {
   EditUserProfileMutationResponse,

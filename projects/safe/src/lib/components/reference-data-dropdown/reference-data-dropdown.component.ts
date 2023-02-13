@@ -10,9 +10,9 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { ReferenceData } from '../../models/reference-data.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
-  MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
-  MatLegacySelect as MatSelect,
-} from '@angular/material/legacy-select';
+  MAT_SELECT_SCROLL_STRATEGY,
+  MatSelect,
+} from '@angular/material/select';
 import {
   GetReferenceDataByIdQueryResponse,
   GetReferenceDatasQueryResponse,

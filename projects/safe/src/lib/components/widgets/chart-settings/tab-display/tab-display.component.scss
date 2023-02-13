@@ -1,7 +1,7 @@
 .axis-container {
   display: flex;
   gap: 8px;
-
+  /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version. */
   mat-slide-toggle {
     margin-top: 15px;
   }

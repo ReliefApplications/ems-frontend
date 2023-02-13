@@ -26,13 +26,13 @@
         variant="grey"
       ></safe-icon>
     </mat-label>
+    <!-- TODO: The 'tickInterval' property no longer exists -->
     <mat-slider
       thumbLabel
-      tickInterval="1"
       formControlName="zoom"
       [min]="2"
       [max]="18"
-    ></mat-slider>
+    ><input matSliderThumb /></mat-slider>
     <div class="flex flex-wrap gap-2">
       <mat-form-field appearance="outline" class="flex-1">
         <mat-label>

@@ -19,16 +19,16 @@
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>{{ 'common.email.few' | translate }}</mat-label>
-          <mat-chip-list #chipList formControlName="emails">
-            <mat-chip
+          <mat-chip-grid #chipList formControlName="emails">
+            <mat-chip-row
               *ngFor="let email of emails"
-              [selectable]="true"
               [removable]="true"
               (removed)="removeEmail(email)"
             >
               {{ email }}
               <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
-            </mat-chip>
+            </mat-chip-row>
+            <!--Removed selectable-->
             <input
               #emailsInput
               [matChipInputFor]="chipList"
@@ -36,7 +36,7 @@
               (focusout)="addEmail($event)"
               (matChipInputTokenEnd)="addEmail($event)"
             />
-          </mat-chip-list>
+          </mat-chip-grid>
           <mat-error>{{ errorMessage('emails') | translate }}</mat-error>
         </mat-form-field>
       </div>

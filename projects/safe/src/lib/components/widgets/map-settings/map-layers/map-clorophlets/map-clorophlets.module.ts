@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeAlertModule } from '../../../../ui/alert/alert.module';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
+import { MatTableModule } from '@angular/material/table';
 import { MapClorophletModule } from '../map-clorophlet/map-clorophlet.module';
 
 /**

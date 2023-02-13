@@ -62,31 +62,31 @@
             </span>
           </th>
           <td mat-cell *matCellDef="let element">
-            <mat-chip-list>
-              <mat-chip
+            <mat-chip-listbox>
+              <mat-chip-option
                 class="success-chip !rounded-lg"
                 disabled
                 *ngIf="element.status === 'active'"
               >
                 {{ 'common.status_active' | translate | titlecase }}
-              </mat-chip>
-              <mat-chip
+              </mat-chip-option>
+              <mat-chip-option
                 class="accent-chip !rounded-lg"
                 disabled
                 color="accent"
                 *ngIf="element.status === 'pending'"
               >
                 {{ 'common.status_pending' | translate | titlecase }}
-              </mat-chip>
-              <mat-chip
+              </mat-chip-option>
+              <mat-chip-option
                 class="warn-chip !rounded-lg"
                 disabled
                 color="warn"
                 *ngIf="element.status === 'archived'"
               >
                 {{ 'common.status_archived' | translate | titlecase }}
-              </mat-chip>
-            </mat-chip-list>
+              </mat-chip-option>
+            </mat-chip-listbox>
           </td>
         </ng-container>
 

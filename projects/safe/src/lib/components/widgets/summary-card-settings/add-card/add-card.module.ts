@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeAddCardComponent } from './add-card.component';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
@@ -13,8 +13,8 @@ import { SafeSkeletonModule } from '../../../../directives/skeleton/skeleton.mod
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeAlertModule } from '../../../ui/alert/alert.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { SafeSpinnerModule } from '../../../ui/spinner/spinner.module';
 import { MatIconModule } from '@angular/material/icon';
 

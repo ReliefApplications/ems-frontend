@@ -6,10 +6,10 @@ import {
 import { environment } from 'projects/back-office/src/environments/environment';
 import { SafePreferencesModalComponent } from './preferences-modal.component';
 import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { UntypedFormBuilder } from '@angular/forms';
 import {
   TranslateModule,

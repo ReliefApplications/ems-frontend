@@ -18,7 +18,7 @@ import {
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import {
   EXPORT_SETTINGS,
   GRADIENT_SETTINGS,
@@ -32,9 +32,9 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
-import { MAT_LEGACY_MENU_SCROLL_STRATEGY as MAT_MENU_SCROLL_STRATEGY } from '@angular/material/legacy-menu';
-import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
-import { MAT_LEGACY_TOOLTIP_SCROLL_STRATEGY as MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/legacy-tooltip';
+import { MAT_MENU_SCROLL_STRATEGY } from '@angular/material/menu';
+import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';
+import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 // import {
 //   CalendarDOMService,
@@ -56,9 +56,9 @@ import { SafeDashboardService } from '../../../../services/dashboard/dashboard.s
 import { TranslateService } from '@ngx-translate/core';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import {
-  MatLegacySnackBarRef as MatSnackBarRef,
-  LegacyTextOnlySnackBar as TextOnlySnackBar,
-} from '@angular/material/legacy-snack-bar';
+  MatSnackBarRef,
+  TextOnlySnackBar,
+} from '@angular/material/snack-bar';
 
 /**
  * Factory for creating scroll strategy

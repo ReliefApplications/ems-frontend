@@ -17,18 +17,18 @@ import {
 import { QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import {
-  MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
-  MatLegacySelect as MatSelect,
-  MatLegacySelectChange as MatSelectChange,
-} from '@angular/material/legacy-select';
+  MAT_SELECT_SCROLL_STRATEGY,
+  MatSelect,
+  MatSelectChange,
+} from '@angular/material/select';
 import { Overlay } from '@angular/cdk/overlay';
 import { scrollFactory } from '../../utils/scroll-factory';
 import { get } from 'lodash';
 import {
-  MatLegacyFormField as MatFormField,
-  MatLegacyFormFieldControl as MatFormFieldControl,
-  MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
-} from '@angular/material/legacy-form-field';
+  MatFormField,
+  MatFormFieldControl,
+  MAT_FORM_FIELD,
+} from '@angular/material/form-field';
 import {
   NgControl,
   ControlValueAccessor,

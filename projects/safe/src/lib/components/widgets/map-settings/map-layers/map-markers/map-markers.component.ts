@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { markerRuleForm } from '../../map-forms';
 import { MapMarkerRuleComponent } from '../map-marker-rule/map-marker-rule.component';
 

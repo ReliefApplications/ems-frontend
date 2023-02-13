@@ -16,7 +16,7 @@ import {
   UntypedFormBuilder,
   UntypedFormGroup,
 } from '@angular/forms';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatTableDataSource } from '@angular/material/table';
 import { SafeRestService } from '../../../../services/rest/rest.service';
 import { firstValueFrom } from 'rxjs';
 

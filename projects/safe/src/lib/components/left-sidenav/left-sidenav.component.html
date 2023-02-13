@@ -38,7 +38,7 @@
               (click)="largeDevice ? null : nav.toggle()"
               [class]="item.class ? item.class : ''"
             >
-              <mat-icon mat-list-icon class="nav-icon">
+              <mat-icon matListItemIcon class="nav-icon">
                 {{ item.icon }}
               </mat-icon>
               <div
@@ -80,7 +80,7 @@
               class="nav-item"
               [class]="item.class ? item.class : ''"
             >
-              <mat-icon mat-list-icon class="nav-icon">
+              <mat-icon matListItemIcon class="nav-icon">
                 {{ item.icon }}
               </mat-icon>
               <div mat-line>{{ item.name }}</div>

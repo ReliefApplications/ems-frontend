@@ -5,9 +5,9 @@ import { SafeMappingModule } from '../mapping.module';
 import { StorybookTranslateModule } from '../../storybook-translate/storybook-translate-module';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 
 export default {
   component: SafeMappingModalComponent,

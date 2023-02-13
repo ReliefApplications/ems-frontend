@@ -13,7 +13,7 @@ import { ContentType } from '../../../../models/page.model';
 import { SafeWorkflowService } from '../../../../services/workflow/workflow.service';
 import { Template, TemplateTypeEnum } from '../../../../models/template.model';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
 import { DistributionList } from '../../../../models/distribution-list.model';
 import { EditDistributionListModalComponent } from '../../../distribution-lists/components/edit-distribution-list-modal/edit-distribution-list-modal.component';

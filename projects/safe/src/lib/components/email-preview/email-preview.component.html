@@ -12,11 +12,11 @@
       </mat-form-field>
       <mat-form-field id="previewEmailTo">
         <mat-label>To</mat-label>
-        <mat-chip-list formControlName="to">
-          <mat-chip *ngFor="let email of form.controls.to.value">
+        <mat-chip-listbox formControlName="to">
+          <mat-chip-option *ngFor="let email of form.controls.to.value">
             {{ email }}
-          </mat-chip>
-        </mat-chip-list>
+          </mat-chip-option>
+        </mat-chip-listbox>
       </mat-form-field>
       <kendo-fileselect
         class="mb-4"

@@ -4,8 +4,8 @@ import { FormAnswerRoutingModule } from './form-answer-routing.module';
 import { FormAnswerComponent } from './form-answer.component';
 import { SafeFormModule, SafeButtonModule } from '@safe/builder';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**

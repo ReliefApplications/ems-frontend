@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import {
   EDIT_RECORD,
   EditRecordMutationResponse,

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeSnackbarSpinnerComponent } from './snackbar-spinner.component';
 import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SafeIconModule } from '../ui/icon/icon.module';
 
 /**

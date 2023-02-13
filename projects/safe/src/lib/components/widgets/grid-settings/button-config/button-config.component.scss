@@ -1,19 +1,19 @@
-.mat-checkbox {
+.mat-mdc-checkbox {
   margin-bottom: 10px;
 }
 
 .update-row {
   align-items: center;
   margin-top: 24px;
-  .mat-form-field {
-    margin-left: 16px;
+  .mat-mdc-form-field {
+    margin-left: 160px;
   }
 }
 
 .radio-row {
   display: flex;
   flex-direction: row;
-  .mat-radio-button {
+  .mat-mdc-radio-button {
     margin-left: 12px;
   }
 }

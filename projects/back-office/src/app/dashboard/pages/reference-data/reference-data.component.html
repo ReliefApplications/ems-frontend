@@ -68,16 +68,16 @@
       <!-- Fields -->
       <mat-form-field class="chip-list" appearance="outline">
         <mat-label>{{ 'pages.referenceData.fields' | translate }}</mat-label>
-        <mat-chip-list #chipList aria-label="Fields chip list">
-          <mat-chip
+        <mat-chip-grid #chipList aria-label="Fields chip list">
+          <mat-chip-row
             *ngFor="let field of valueFields"
-            [selectable]="true"
             [removable]="true"
             (removed)="remove(field)"
           >
             {{ field }}
             <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
-          </mat-chip>
+          </mat-chip-row>
+          <!--Removed selectable-->
           <input
             #fieldInput
             [matChipInputFor]="chipList"
@@ -85,7 +85,7 @@
             (focusout)="add($event)"
             (matChipInputTokenEnd)="add($event)"
           />
-        </mat-chip-list>
+        </mat-chip-grid>
       </mat-form-field>
     </div>
     <!-- CSV Input for static type -->

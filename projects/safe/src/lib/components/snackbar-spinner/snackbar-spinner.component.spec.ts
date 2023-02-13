@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
-  MatLegacySnackBarModule as MatSnackBarModule,
-  MAT_LEGACY_SNACK_BAR_DATA as MAT_SNACK_BAR_DATA,
-} from '@angular/material/legacy-snack-bar';
+  MatSnackBarModule,
+  MAT_SNACK_BAR_DATA,
+} from '@angular/material/snack-bar';
 
 import { SafeSnackbarSpinnerComponent } from './snackbar-spinner.component';
 

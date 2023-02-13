@@ -6,7 +6,7 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MatMenuModule } from '@angular/material/menu';
 
 describe('SafeApplicationSummaryComponent', () => {
   let component: SafeApplicationSummaryComponent;
