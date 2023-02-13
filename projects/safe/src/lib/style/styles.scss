@@ -8,13 +8,44 @@
 //  If you don't need the default component typographies but still want the hierarchy styles,
 //  you can delete this line and instead use:
 //    `@include mat.legacy-typography-hierarchy(mat.define-legacy-typography-config());`
-@include mat.all-legacy-component-typographies();
-@include mat.legacy-core();
+// @include mat.all-legacy-component-typographies();
+// @include mat.legacy-core();
+// @include mat.core();
+// @include mat.all-component-typographies();
 @include mat.core();
 
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+/* === Tailwindcss === */
+// Allow to use @apply in not visible by default elements
+@layer components {
+  .cdk-drag-preview {
+    @apply box-border rounded shadow-xl;
+    // previous shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12),
+  }
+}
+
+// Define new colors
+@layer base {
+  :root {
+    --primary-50: #{$primary_50};
+    --primary-100: #{$primary_100};
+    --primary-200: #{$primary_200};
+    --primary-300: #{$primary_300};
+    --primary-400: #{$primary_400};
+    --primary-500: #{$primary_500};
+    --primary-600: #{$primary_600};
+    --primary-700: #{$primary_700};
+    --primary-800: #{$primary_800};
+    --primary-900: #{$primary_900};
+    --secondary-50: #{$secondary_50};
+    --secondary-100: #{$secondary_100};
+    --secondary-150: #{$secondary_150};
+    --secondary-200: #{$secondary_200};
+  }
+}
 
 .sv_main, .svd_container {
   --main-color: #{rgb($primary_500)};
@@ -112,8 +143,8 @@ $safe-theme: mat.define-light-theme(
       accent: $safe-accent,
       warn: $safe-warn,
     ),
-    typography: mat.define-typography-config(),
-    density: 0,
+    // typography: mat.define-typography-config(),
+    // density: 0,
   )
 );
 
@@ -293,9 +324,8 @@ $safe-theme: mat.define-light-theme(
   .p-0 {
     // no padding fields
     &.mat-mdc-form-field {
-      /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-      .mat-form-field-wrapper {
-        padding: 0 !important;
+      .mat-mdc-form-field-subscript-wrapper {
+        display: none;
       }
     }
   }
@@ -454,8 +484,8 @@ $safe-theme: mat.define-light-theme(
 }
 
 // === ADDITIONAL MATERIAL STYLING ===
+@include mat.all-component-typographies();
 @include mat.all-component-themes($safe-theme);
-@include mat.all-legacy-component-themes($safe-theme);
 @include chip($safe-theme);
 @include button($safe-theme);
 @include alert($safe-theme);
@@ -722,39 +752,6 @@ mat-tab-group[vertical] {
   }
 }
 
-/* === Tailwindcss === */
-// Allow to use @apply in not visible by default elements
-@layer components {
-  .cdk-drag-preview {
-    @apply box-border rounded shadow-xl;
-    // previous shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12),
-  }
-}
-
-// Define new colors
-@layer base {
-  :root {
-    --primary-50: #{$primary_50};
-    --primary-100: #{$primary_100};
-    --primary-200: #{$primary_200};
-    --primary-300: #{$primary_300};
-    --primary-400: #{$primary_400};
-    --primary-500: #{$primary_500};
-    --primary-600: #{$primary_600};
-    --primary-700: #{$primary_700};
-    --primary-800: #{$primary_800};
-    --primary-900: #{$primary_900};
-    --secondary-50: #{$secondary_50};
-    --secondary-100: #{$secondary_100};
-    --secondary-150: #{$secondary_150};
-    --secondary-200: #{$secondary_200};
-  }
-}
-
 .mat-mdc-form-field-infix {
   padding-left: 25px;
-}
-
-.mdc-button__label{
-  color: black;
 }

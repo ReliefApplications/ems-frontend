@@ -26,6 +26,10 @@ export class SafeButtonComponent implements OnInit {
   @Input()
   disabled = false;
 
+  @HostBinding('mat-button') get matButton() {
+    return this.isIcon;
+  }
+
   @Input() loading = false;
 
   @Input() icon = '';
