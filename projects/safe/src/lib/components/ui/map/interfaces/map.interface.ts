@@ -5,7 +5,9 @@ export interface MapConstructorSettings {
   title?: string;
   centerLong: number;
   centerLat: number;
-  maxBounds?: number[];
+  // maxBounds array of two points [[southWest], [northEast]]
+  // e.g. [[-90, -180], [90, 180]]
+  maxBounds?: number[][];
   basemap?: string;
   zoomControl?: boolean;
   minZoom?: number;

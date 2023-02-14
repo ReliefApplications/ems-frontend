@@ -11,7 +11,8 @@ import {
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 
-declare let L: any;
+import * as L from 'leaflet';
+import { GeoJsonObject } from 'geojson';
 
 /** Layer used to test the component */
 const testGeojson = {
@@ -66,7 +67,7 @@ export class SafeEditLayerModalComponent
 
   ngAfterViewInit(): void {
     this.configureMapSettings();
-    this.currentLayer = L.geoJSON(testGeojson);
+    this.currentLayer = L.geoJSON(testGeojson as GeoJsonObject);
     const overlays = {
       label: this.form.get('name')?.value,
       layer: this.currentLayer,
@@ -89,7 +90,10 @@ export class SafeEditLayerModalComponent
     this.mapSettings = {
       centerLong: 0,
       centerLat: 0,
-      maxBounds: L.latLngBounds(L.latLng(-90, -1000), L.latLng(90, 1000)),
+      maxBounds: [
+        [-90, -1000],
+        [90, 1000],
+      ],
       basemap: 'OSM',
       zoomControl: false,
       minZoom: 2,

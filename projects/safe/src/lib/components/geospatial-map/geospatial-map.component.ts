@@ -16,7 +16,8 @@ import {
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/public-api';
 
 // Leaflet
-declare let L: any;
+import '@geoman-io/leaflet-geoman-free';
+import * as L from 'leaflet';
 
 /**
  * Component for displaying the input map

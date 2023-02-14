@@ -5,8 +5,12 @@ import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
 import { SafeMapLegendComponent } from '../../components/ui/map/map-legend/map-legend.component';
 import { DomService } from '../dom/dom.service';
 
-// Declares L to be able to use Leaflet from CDN
-declare let L: any;
+/// <reference path="../../../../typings/leaflet/index.d.ts" />
+import * as L from 'leaflet';
+import 'esri-leaflet';
+import 'leaflet-fullscreen';
+import 'leaflet-measure';
+import * as Geocoding from 'esri-leaflet-geocoder';
 
 /**
  * Shared map control service.
@@ -45,12 +49,12 @@ export class SafeMapControlsService {
    * @param apikey arcgis api key
    */
   public getSearchbarControl(map: any, apikey: string): void {
-    const searchControl = L.esri.Geocoding.geosearch({
+    const searchControl = Geocoding.geosearch({
       position: 'topleft',
       placeholder: 'Enter an address or place e.g. 1 York St',
       useMapBounds: false,
       providers: [
-        L.esri.Geocoding.arcgisOnlineProvider({
+        Geocoding.arcgisOnlineProvider({
           apikey,
           nearby: {
             lat: -33.8688,
@@ -97,7 +101,7 @@ export class SafeMapControlsService {
     if (this.fullscreenControl) {
       map.removeControl(this.fullscreenControl);
     }
-    this.fullscreenControl = new L.Control.Fullscreen({
+    this.fullscreenControl = new (L.Control as any).Fullscreen({
       title: {
         false: this.translate.instant('common.viewFullscreen'),
         true: this.translate.instant('common.exitFullscreen'),
@@ -122,7 +126,7 @@ export class SafeMapControlsService {
     if (!this.measureControls[lang]) {
       // import related file, and build control
       import(`leaflet-measure/dist/leaflet-measure.${lang}.js`).then(() => {
-        const control = new L.Control.Measure({
+        const control = new (L.Control as any).Measure({
           position: 'bottomleft',
           primaryLengthUnit: 'kilometers',
           primaryAreaUnit: 'sqmeters',
@@ -145,15 +149,20 @@ export class SafeMapControlsService {
     }
   }
 
+  /**
+   * Gets a legend control and adds it to the map
+   *
+   * @param map map to get legend control for
+   */
   public getLegendControl(map: any): any {
-    const control = L.control({ position: 'bottomright' });
+    const control = new L.Control({ position: 'bottomright' });
     control.onAdd = () => {
       const div = L.DomUtil.create('div', 'info legend');
-      const legend = this.domService.appendComponentToBody(
+      /*const legend = */ this.domService.appendComponentToBody(
         SafeMapLegendComponent,
         div
       );
-      const intance: SafeMapLegendComponent = legend.instance;
+      // const instance: SafeMapLegendComponent = legend.instance;
       return div;
     };
     control.addTo(map);

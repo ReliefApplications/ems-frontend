@@ -1,5 +1,4 @@
-// Declares L to be able to use Leaflet from CDN
-declare let L: any;
+import * as L from 'leaflet';
 
 /** Represents the types of geometries that can be generated */
 type FeatureTypes = 'Point' | 'Polygon' | 'LineString';
@@ -164,6 +163,12 @@ export const randomFeatureCollection = generateRandomFeatures({
   numFeatures: 20,
 });
 
+/**
+ * Generat a geojson layer from geojson definition
+ *
+ * @param geojson geojson to use as layer
+ * @returns geojson layer
+ */
 export const geoJsonLayer = (geojson: any) =>
   L.geoJSON(geojson, {
     // Check for icon property
@@ -179,7 +184,6 @@ export const geoJsonLayer = (geojson: any) =>
           className: 'svg-marker',
           iconSize: [width, height],
           iconAnchor: [0, 24],
-          labelAnchor: [-6, 0],
           popupAnchor: [width / 2, -36],
           html: `<span style="--color:${color}">${svg}</span>`,
         });

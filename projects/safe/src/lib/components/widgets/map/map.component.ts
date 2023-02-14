@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 
+/** Component for the map widget */
 @Component({
   selector: 'safe-map-widget',
   templateUrl: './map.component.html',
