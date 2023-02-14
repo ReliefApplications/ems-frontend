@@ -146,6 +146,11 @@ export class SafeMapControlsService {
     }
   }
 
+  /**
+   * Add the legend control
+   *
+   * @param map leaflet map
+   */
   public getLegendControl(map: any): any {
     const control = L.control({ position: 'bottomright' });
     control.onAdd = () => {
