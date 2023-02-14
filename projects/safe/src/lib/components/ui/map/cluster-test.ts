@@ -1,6 +1,6 @@
 import { generateGeoJSONPoints } from './util-test';
-import { generateIconHTML } from './utils/generateIcon';
 import { getRandomIcon } from './const/fa-icons';
+import { SafeMapLayersService } from '../../../services/maps/map-layers.service';
 
 /** Minimum cluster size in pixel */
 const minClusterSize = 20;
@@ -13,9 +13,14 @@ const maxClusterSize = 100;
  *
  * @param map map to be used
  * @param L to be able to use Leaflet from CDN
+ * @param safeMapLayersService to create needed div icons
  * @returns the cluster group
  */
-export const generateClusterLayer = (map: any, L: any) => {
+export const generateClusterLayer = (
+  map: any,
+  L: any,
+  safeMapLayersService: SafeMapLayersService
+) => {
   const total = 200;
   const clusterGroup = L.markerClusterGroup({
     zoomToBoundsOnClick: false,
@@ -24,18 +29,18 @@ export const generateClusterLayer = (map: any, L: any) => {
         ((total * cluster.getChildCount()) / 100 / 100) *
           (maxClusterSize - minClusterSize) +
         minClusterSize;
-      const clusterIcon = generateIconHTML({
+      const iconProperties = {
         icon: getRandomIcon(),
         color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
         size: iconSize,
-      });
-
-      return L.divIcon({
-        html: `<p>${cluster.getChildCount()}</p>` + clusterIcon.outerHTML,
-        className: 'leaflet-data-marker',
-        iconAnchor: [12, 32],
-        // popupAnchor: [0, -28],
-      });
+      };
+      const htmlTemplate = `<p>${cluster.getChildCount()}</p>`;
+      return safeMapLayersService.createCustomDivIcon(
+        iconProperties,
+        undefined,
+        htmlTemplate,
+        'leaflet-data-marker'
+      );
     },
   });
 

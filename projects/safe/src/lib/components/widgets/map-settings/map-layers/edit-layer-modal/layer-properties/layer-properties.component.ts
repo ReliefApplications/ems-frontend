@@ -10,7 +10,7 @@ import { LAYER_TYPES } from '../../map-layers.component';
 })
 export class LayerPropertiesComponent {
   @Input() form!: UntypedFormGroup;
-  @Input() currentZoom!: number;
+  @Input() currentZoom!: number | undefined;
 
   public layerTypes = LAYER_TYPES;
 }

@@ -1,6 +1,6 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { FA_ICONS } from '../../../../map/const/fa-icons';
+import { FA_ICONS } from '../../../../../ui/map/const/fa-icons';
 import { LAYER_TYPES } from '../../map-layers.component';
 
 /** Component for the layer styling */
@@ -21,7 +21,7 @@ export class LayerStylingComponent implements OnInit {
   public primaryColor: string;
 
   /** @returns the layer type */
-  get layerType(): typeof LAYER_TYPES[number] {
+  get layerType(): (typeof LAYER_TYPES)[number] {
     return this.form.get('type')?.value;
   }
 

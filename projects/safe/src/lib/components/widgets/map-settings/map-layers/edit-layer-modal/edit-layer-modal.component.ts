@@ -10,7 +10,11 @@ import {
 } from '../../../../ui/map/interfaces/map.interface';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
-import { generateIconHTML } from '../../../../ui/map/utils/generateIcon';
+import { SafeMapLayersService } from '../../../../../services/maps/map-layers.service';
+import {
+  BaseLayerTree,
+  OverlayLayerTree,
+} from '../../../../ui/map/interfaces/map-layers.interface';
 
 declare let L: any;
 
@@ -62,12 +66,21 @@ export class SafeEditLayerModalComponent
   public get layerType(): keyof typeof TEST_LAYER | null {
     return this.form.get('type')?.value;
   }
+  /** @returns the selected icon with the given style config */
+  private get icon(): any | null {
+    return this.safeMapLayerService.createCustomDivIcon(
+      this.form.get('style')?.value
+    );
+  }
 
   // === MAP ===
   public mapSettings!: MapConstructorSettings;
-  private deleteLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private deleteLayer: BehaviorSubject<
+    BaseLayerTree | OverlayLayerTree | null
+  > = new BehaviorSubject<BaseLayerTree | OverlayLayerTree | null>(null);
   public layerToDelete$ = this.deleteLayer.asObservable();
-  private addLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private addLayer: BehaviorSubject<BaseLayerTree | OverlayLayerTree | null> =
+    new BehaviorSubject<BaseLayerTree | OverlayLayerTree | null>(null);
   public layerToAdd$ = this.addLayer.asObservable();
   private updateLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   public updateLayer$ = this.updateLayer.asObservable();
@@ -75,9 +88,13 @@ export class SafeEditLayerModalComponent
   /**
    * Modal for adding and editing map layers
    *
+   * @param safeMapLayerService Service needed to create the icon for point type layer
    * @param layer Injected map layer, if any
    */
-  constructor(@Inject(MAT_DIALOG_DATA) public layer?: MapLayerI) {
+  constructor(
+    private safeMapLayerService: SafeMapLayersService,
+    @Inject(MAT_DIALOG_DATA) public layer?: MapLayerI
+  ) {
     super();
     this.form = createLayerForm(layer);
   }
@@ -113,14 +130,15 @@ export class SafeEditLayerModalComponent
    *
    * @param options new options
    */
-  private updateLayerOptions(options: { [key: string]: any }) {
+  private updateLayerOptions(options?: { [key: string]: any }) {
     this.layerOptions = {
       ...this.layerOptions,
-      ...options,
+      ...(options && options),
     };
     this.updateLayer.next({
       layer: this.currentLayer,
       options: this.layerOptions,
+      ...(this.layerType === 'point' && { icon: this.icon }),
     });
   }
 
@@ -170,28 +188,28 @@ export class SafeEditLayerModalComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         if (this.layerType === 'point') {
-          this.updateMarkerIcon();
+          this.updateLayerOptions();
         }
       });
     this.form
       .get('type')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        this.setUpLayer();
+        if (this.layerType === 'point' || this.layerType === 'polygon')
+          this.setUpLayer();
       });
   }
 
+  /**
+   * Set ups the new selected layer and also removes the previous one
+   */
   private setUpLayer() {
     if (this.currentLayer) {
       this.deleteLayer.next(this.currentLayer);
     }
     if (this.layerType) {
       this.currentLayer = L.geoJSON(TEST_LAYER[this.layerType]);
-      const overlays = {
-        label: this.form.get('name')?.value,
-        layer: this.currentLayer,
-      };
-      this.addLayer.next(overlays);
+
       const defaultLayerOptions = {
         visibilityRange: [
           this.form?.get('visibilityRangeStart')?.value,
@@ -200,8 +218,16 @@ export class SafeEditLayerModalComponent
         opacity: this.form?.get('opacity')?.value,
         fillOpacity: this.form?.get('opacity')?.value,
         visible: this.form?.get('defaultVisibility')?.value,
-        style: this.form?.get('style').value,
+        style: this.form?.get('style')?.value,
       };
+      const overlays: OverlayLayerTree = {
+        layer: this.currentLayer,
+        label: this.form.get('name')?.value,
+        options: defaultLayerOptions,
+      };
+
+      this.addLayer.next(overlays);
+
       this.updateLayerOptions(defaultLayerOptions);
     }
   }
@@ -227,41 +253,5 @@ export class SafeEditLayerModalComponent
           break;
       }
     }
-  }
-
-  private updateLayerByLayerType() {
-    if (this.layerType && this.currentLayer) {
-      this.currentLayer = L.geoJSON(TEST_LAYER[this.layerType]);
-      this.updateLayer.next({ layer: this.currentLayer });
-    }
-  }
-
-  /** Updates the marker icons from style form */
-  private updateMarkerIcon(): void {
-    const isDefault = this.form.get('style.icon')?.value === 'leaflet_default';
-
-    // reset to default leaflet marker
-    if (isDefault) {
-      this.updateLayerByLayerType();
-      return;
-    }
-    // loop through all the markers on the map
-    this.currentLayer.eachLayer((marker: any) => {
-      if (!(marker instanceof L.Marker)) return;
-
-      const { size: sizeP } = this.form.get('style')?.value;
-      const size = sizeP || 24;
-
-      const icon = L.divIcon({
-        className: 'custom-marker',
-        iconSize: [size, size],
-        iconAnchor: [size / 2, size / 2],
-        labelAnchor: [-6, 0],
-        popupAnchor: [size / 2, -36],
-        html: generateIconHTML(this.form.get('style')?.value),
-      });
-
-      marker.setIcon(icon);
-    });
   }
 }

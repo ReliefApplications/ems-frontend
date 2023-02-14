@@ -9,6 +9,10 @@ import { FeatureCollection } from 'geojson';
 import { BehaviorSubject } from 'rxjs';
 import { SafeMapLayersService } from '../../services/maps/map-layers.service';
 import {
+  BaseLayerTree,
+  OverlayLayerTree,
+} from '../ui/map/interfaces/map-layers.interface';
+import {
   MapConstructorSettings,
   MapEvent,
   MapEventType,
@@ -37,7 +41,8 @@ export class SafeGeospatialMapComponent
   };
   // === MAP ===
   public mapSettings!: MapConstructorSettings;
-  private addLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private addLayer: BehaviorSubject<BaseLayerTree | OverlayLayerTree | null> =
+    new BehaviorSubject<BaseLayerTree | OverlayLayerTree | null>(null);
   public layerToAdd$ = this.addLayer.asObservable();
   private updateLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   public updateLayer$ = this.updateLayer.asObservable();
@@ -79,7 +84,11 @@ export class SafeGeospatialMapComponent
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }
     );
-    this.addLayer.next({ layer });
+    const baseLayer: BaseLayerTree = {
+      label: '',
+      layer,
+    };
+    this.addLayer.next(baseLayer);
     this.setDataLayers();
   }
 
@@ -96,15 +105,22 @@ export class SafeGeospatialMapComponent
           } else {
             const color = feature.properties.color || '#3388ff';
             const opacity = feature.properties.opacity || 1;
-            const icon = this.safeMapLayersService.createCustomMarker(
-              color,
-              opacity
+            const icon = this.safeMapLayersService.createCustomDivIcon(
+              undefined,
+              {
+                color,
+                opacity,
+              }
             );
             return new L.Marker(latlng).setIcon(icon);
           }
         },
       });
-      this.addLayer.next({ layer: newLayer });
+      const baseLayer: BaseLayerTree = {
+        label: '',
+        layer: newLayer,
+      };
+      this.addLayer.next(baseLayer);
     }
   }
 
@@ -130,10 +146,10 @@ export class SafeGeospatialMapComponent
     // We make sure to add that option by default in each update
     options = { ...options, visible: true };
     if (this.selectedLayer instanceof L.Marker) {
-      const icon = this.safeMapLayersService.createCustomMarker(
-        options.color,
-        options.opacity
-      );
+      const icon = this.safeMapLayersService.createCustomDivIcon(undefined, {
+        color: options.color,
+        opacity: options.opacity,
+      });
       this.updateLayer.next({ layer: this.selectedLayer, options, icon });
     } else {
       this.updateLayer.next({ layer: this.selectedLayer, options });
