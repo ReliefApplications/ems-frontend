@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ApiConfiguration,
@@ -24,6 +24,11 @@ import {
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../utils/update-queries';
+import { ApolloQueryResult } from '@apollo/client';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -94,23 +99,14 @@ export class ApiConfigurationsComponent
         query: GET_API_CONFIGURATIONS,
         variables: {
           first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor,
         },
       });
 
     this.apiConfigurationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.cachedApiConfigurations = res.data.apiConfigurations.edges.map(
-          (x) => x.node
-        );
-        this.dataSource.data = this.cachedApiConfigurations.slice(
-          this.pageInfo.pageSize * this.pageInfo.pageIndex,
-          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-        );
-        this.pageInfo.length = res.data.apiConfigurations.totalCount;
-        this.pageInfo.endCursor = res.data.apiConfigurations.pageInfo.endCursor;
-        this.loading = res.loading;
-        this.filterPredicate();
+      .subscribe((results) => {
+        this.updateValues(results.data, results.loading);
       });
   }
 
@@ -123,7 +119,9 @@ export class ApiConfigurationsComponent
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >=
+          this.cachedApiConfigurations.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedApiConfigurations.length
     ) {
@@ -135,27 +133,26 @@ export class ApiConfigurationsComponent
         neededSize -= this.pageInfo.pageSize;
       }
       this.loading = true;
-      this.apiConfigurationsQuery.fetchMore({
-        variables: {
-          first: neededSize,
-          afterCursor: this.pageInfo.endCursor,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            apiConfigurations: {
-              edges: [
-                ...prev.apiConfigurations.edges,
-                ...fetchMoreResult.apiConfigurations.edges,
-              ],
-              pageInfo: fetchMoreResult.apiConfigurations.pageInfo,
-              totalCount: fetchMoreResult.apiConfigurations.totalCount,
-            },
-          });
-        },
-      });
+      const variables = {
+        first: neededSize,
+        afterCursor: this.pageInfo.endCursor,
+      };
+      const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
+        this.apollo.client,
+        GET_API_CONFIGURATIONS,
+        variables
+      );
+      if (cachedValues) {
+        this.updateValues(cachedValues, false);
+      } else {
+        this.apiConfigurationsQuery
+          .fetchMore({ variables })
+          .then(
+            (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
+              this.updateValues(results.data, results.loading);
+            }
+          );
+      }
     } else {
       this.dataSource.data = this.cachedApiConfigurations.slice(
         e.pageSize * this.pageInfo.pageIndex,
@@ -219,9 +216,9 @@ export class ApiConfigurationsComponent
               name: value.name,
             },
           })
-          .subscribe(
-            (res) => {
-              if (res.errors) {
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
@@ -229,24 +226,24 @@ export class ApiConfigurationsComponent
                       type: this.translate.instant(
                         'common.apiConfiguration.one'
                       ),
-                      error: res.errors[0].message,
+                      error: errors[0].message,
                     }
                   ),
                   { error: true }
                 );
               } else {
-                if (res.data) {
+                if (data) {
                   this.router.navigate([
                     '/settings/apiconfigurations',
-                    res.data.addApiConfiguration.id,
+                    data.addApiConfiguration.id,
                   ]);
                 }
               }
             },
-            (err) => {
+            error: (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
-            }
-          );
+            },
+          });
       }
     });
   }
@@ -270,7 +267,7 @@ export class ApiConfigurationsComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.afterClosed().subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteApiConfigurationMutationResponse>({
@@ -295,6 +292,29 @@ export class ApiConfigurationsComponent
     });
   }
 
+  /**
+   * Updates local list with given data
+   *
+   * @param data New values to update forms
+   * @param loading Loading state
+   */
+  private updateValues(
+    data: GetApiConfigurationsQueryResponse,
+    loading: boolean
+  ): void {
+    this.cachedApiConfigurations = updateQueryUniqueValues(
+      this.cachedApiConfigurations,
+      data.apiConfigurations.edges.map((x) => x.node)
+    );
+    this.dataSource.data = this.cachedApiConfigurations.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.pageInfo.length = data.apiConfigurations.totalCount;
+    this.pageInfo.endCursor = data.apiConfigurations.pageInfo.endCursor;
+    this.loading = loading;
+    this.filterPredicate();
+  }
   /**
    * Sets the sort in the view.
    */

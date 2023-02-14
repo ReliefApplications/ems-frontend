@@ -11,27 +11,34 @@ import {
   Optional,
   Output,
   Self,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import {
-  MAT_SELECT_SCROLL_STRATEGY,
-  MatSelect,
-  MatSelectChange,
-} from '@angular/material/select';
+  MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
+  MatLegacySelect as MatSelect,
+  MatLegacySelectChange as MatSelectChange,
+} from '@angular/material/legacy-select';
 import { Overlay } from '@angular/cdk/overlay';
 import { scrollFactory } from '../../utils/scroll-factory';
-import { cloneDeep, get, set } from 'lodash';
+import { get } from 'lodash';
 import {
-  MatFormField,
-  MatFormFieldControl,
-  MAT_FORM_FIELD,
-} from '@angular/material/form-field';
-import { NgControl, ControlValueAccessor } from '@angular/forms';
+  MatLegacyFormField as MatFormField,
+  MatLegacyFormFieldControl as MatFormFieldControl,
+  MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
+} from '@angular/material/legacy-form-field';
+import {
+  NgControl,
+  ControlValueAccessor,
+  UntypedFormControl,
+} from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { updateQueryUniqueValues } from '../../utils/update-queries';
 
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
@@ -66,9 +73,12 @@ export class SafeGraphQLSelectComponent
 
   @Input() valueField = '';
   @Input() textField = '';
-  @Input()
-  @Output()
-  selectionChange = new EventEmitter<string | string[] | null>();
+  @Output() selectionChange = new EventEmitter<string | string[] | null>();
+
+  @Input() filterable = false;
+  @Output() searchChange = new EventEmitter<string>();
+  public searchControl = new UntypedFormControl('');
+
   /**
    * Gets the value
    *
@@ -94,8 +104,7 @@ export class SafeGraphQLSelectComponent
    *
    * @returns the placeholder
    */
-  @Input()
-  get placeholder() {
+  @Input() get placeholder() {
     return this.ePlaceholder;
   }
 
@@ -183,6 +192,7 @@ export class SafeGraphQLSelectComponent
 
   public controlType = 'safe-graphql-select';
 
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
   /**
@@ -239,13 +249,15 @@ export class SafeGraphQLSelectComponent
   // public selected: FormControl;
 
   /** Query reference for getting the available contents */
-  @Input('query') query!: QueryRef<any>;
+  @Input() query!: QueryRef<any>;
 
   private queryName!: string;
   @Input() path = '';
   @Input() selectedElements: any[] = [];
   public elements = new BehaviorSubject<any[]>([]);
   public elements$!: Observable<any[]>;
+  private queryElements: any[] = [];
+  private cachedElements: any[] = [];
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -277,43 +289,56 @@ export class SafeGraphQLSelectComponent
     this.elements$ = this.elements.asObservable();
     this.query.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res: any) => {
-        this.queryName = Object.keys(res.data)[0];
-        const path = this.path
-          ? `${this.queryName}.${this.path}`
-          : this.queryName;
-        const elements: any[] = get(res.data, path).edges
-          ? get(res.data, path).edges.map((x: any) => x.node)
-          : get(res.data, path);
-        this.selectedElements = this.selectedElements.filter(
-          (selectedElement) =>
-            selectedElement &&
-            !elements.find(
-              (node) =>
-                node[this.valueField] === selectedElement[this.valueField]
-            )
-        );
-        this.elements.next([...this.selectedElements, ...elements]);
-        this.pageInfo = get(res.data, path).pageInfo;
-        this.loading = res.loading;
+      .subscribe(({ data, loading }) => {
+        this.queryName = Object.keys(data)[0];
+        this.updateValues(data, loading);
       });
     this.ngControl.valueChanges
       ?.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
+        const elements = this.elements.getValue();
+        if (Array.isArray(value)) {
+          this.selectedElements = [
+            ...elements.filter((element) => {
+              value.find((x) => x === element[this.valueField]);
+            }),
+          ];
+        } else {
+          this.selectedElements = [
+            elements.find((element) => value === element[this.valueField]),
+          ];
+        }
         this.selectionChange.emit(value);
+      });
+    // this way we can wait for 0.5s before sending an update
+    this.searchControl.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value) => {
+        this.cachedElements = [];
+        this.searchChange.emit(value);
       });
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
+    // check if the query has changed
+    // if so, reset the loading and pageInfo states
+    if (changes.query) {
+      this.loading = true;
+      this.pageInfo = {
+        endCursor: '',
+        hasNextPage: true,
+      };
+    }
+
     const elements = this.elements.getValue();
-    this.selectedElements = this.selectedElements.filter(
+    const selectedElements = this.selectedElements.filter(
       (selectedElement) =>
         selectedElement &&
         !elements.find(
           (node) => node[this.valueField] === selectedElement[this.valueField]
         )
     );
-    this.elements.next([...this.selectedElements, ...elements]);
+    this.elements.next([...selectedElements, ...elements]);
   }
 
   ngOnDestroy(): void {
@@ -373,46 +398,75 @@ export class SafeGraphQLSelectComponent
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        this.query.fetchMore({
-          variables: {
-            ...this.query.variables,
-            first: ITEMS_PER_RELOAD,
-            afterCursor: this.pageInfo.endCursor,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              this.loading = false;
-              return prev;
-            }
-            const prevCpy = cloneDeep(prev);
-            const path = this.path
-              ? `${this.queryName}.${this.path}`
-              : this.queryName;
-            set(prevCpy, path, {
-              edges: [
-                ...(get(prev, path).edges
-                  ? get(prev, path).edges
-                  : get(prev, path)),
-                ...(get(fetchMoreResult, path).edges
-                  ? get(fetchMoreResult, path).edges
-                  : get(fetchMoreResult, path)),
-              ],
-              pageInfo: get(fetchMoreResult, path).pageInfo,
-              totalCount: get(fetchMoreResult, path).totalCount,
-            });
-            return prevCpy;
-          },
-        });
+        this.query
+          .fetchMore({
+            variables: {
+              first: ITEMS_PER_RELOAD,
+              afterCursor: this.pageInfo.endCursor,
+            },
+          })
+          .then((results) => {
+            this.updateValues(results.data, results.loading);
+          });
       }
     }
   }
 
   /**
-   * Triggers on selection change
+   * Triggers on selection change for select
    *
    * @param event the selection change event
    */
   public onSelectionChange(event: MatSelectChange) {
     this.value = event.value;
+  }
+
+  /** Triggers on close of select */
+  onCloseSelect() {
+    // filter out from the elements the ones that are
+    // not in the queryElements array or the selectedElements array
+    const elements = this.elements
+      .getValue()
+      .filter(
+        (element) =>
+          this.queryElements.find(
+            (queryElement) =>
+              queryElement[this.valueField] === element[this.valueField]
+          ) ||
+          this.selectedElements.find(
+            (selectedElement) =>
+              selectedElement[this.valueField] === element[this.valueField]
+          )
+      );
+
+    this.elements.next(elements);
+  }
+
+  /**
+   * Update data value
+   *
+   * @param data query response data
+   * @param loading loading status
+   */
+  private updateValues(data: any, loading: boolean) {
+    const path = this.path ? `${this.queryName}.${this.path}` : this.queryName;
+    const elements: any[] = get(data, path).edges
+      ? get(data, path).edges.map((x: any) => x.node)
+      : get(data, path);
+    const selectedElements = this.selectedElements.filter(
+      (selectedElement) =>
+        selectedElement &&
+        !elements.find(
+          (node) => node[this.valueField] === selectedElement[this.valueField]
+        )
+    );
+    this.cachedElements = updateQueryUniqueValues(this.cachedElements, [
+      ...selectedElements,
+      ...elements,
+    ]);
+    this.elements.next(this.cachedElements);
+    this.queryElements = this.cachedElements;
+    this.pageInfo = get(data, path).pageInfo;
+    this.loading = loading;
   }
 }

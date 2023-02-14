@@ -1,8 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { GET_USERS, GetUsersQueryResponse } from '../../graphql/queries';
@@ -28,14 +36,14 @@ export class SafeAddUserComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  form: FormGroup = new FormGroup({});
+  form: UntypedFormGroup = new UntypedFormGroup({});
   public filteredUsers?: Observable<User[]>;
   private users: User[] = [];
 
   /** @returns The position attributes available */
-  get positionAttributes(): FormArray | null {
+  get positionAttributes(): UntypedFormArray | null {
     return this.form.get('positionAttributes')
-      ? (this.form.get('positionAttributes') as FormArray)
+      ? (this.form.get('positionAttributes') as UntypedFormArray)
       : null;
   }
 
@@ -49,7 +57,7 @@ export class SafeAddUserComponent
    * @param translate The translation service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<SafeAddUserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,
@@ -84,9 +92,9 @@ export class SafeAddUserComponent
         query: GET_USERS,
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
+      .subscribe(({ data }) => {
         const flatInvitedUsers = this.data.users.map((x) => x.username);
-        this.users = res.data.users.filter(
+        this.users = data.users.filter(
           (x) => !flatInvitedUsers.includes(x.username)
         );
         this.filteredUsers = this.form.controls.email.valueChanges.pipe(

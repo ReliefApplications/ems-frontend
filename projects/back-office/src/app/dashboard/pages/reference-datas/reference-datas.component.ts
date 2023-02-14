@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ReferenceData,
@@ -24,6 +24,10 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
 import { takeUntil } from 'rxjs/operators';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../utils/update-queries';
 
 /** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
@@ -98,23 +102,14 @@ export class ReferenceDatasComponent
         query: GET_REFERENCE_DATAS,
         variables: {
           first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor,
         },
       });
 
     this.referenceDatasQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.cachedReferenceDatas = res.data.referenceDatas.edges.map(
-          (x) => x.node
-        );
-        this.dataSource.data = this.cachedReferenceDatas.slice(
-          this.pageInfo.pageSize * this.pageInfo.pageIndex,
-          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-        );
-        this.pageInfo.length = res.data.referenceDatas.totalCount;
-        this.pageInfo.endCursor = res.data.referenceDatas.pageInfo.endCursor;
-        this.loading = res.loading;
-        this.filterPredicate();
+      .subscribe(({ data, loading }) => {
+        this.updateValues(data, loading);
       });
   }
 
@@ -127,7 +122,9 @@ export class ReferenceDatasComponent
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >=
+          this.cachedReferenceDatas.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedReferenceDatas.length
     ) {
@@ -139,27 +136,22 @@ export class ReferenceDatasComponent
         neededSize -= this.pageInfo.pageSize;
       }
       this.loading = true;
-      this.referenceDatasQuery.fetchMore({
-        variables: {
-          first: neededSize,
-          afterCursor: this.pageInfo.endCursor,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            apiConfigurations: {
-              edges: [
-                ...prev.referenceDatas.edges,
-                ...fetchMoreResult.referenceDatas.edges,
-              ],
-              pageInfo: fetchMoreResult.referenceDatas.pageInfo,
-              totalCount: fetchMoreResult.referenceDatas.totalCount,
-            },
-          });
-        },
-      });
+      const variables = {
+        first: neededSize,
+        afterCursor: this.pageInfo.endCursor,
+      };
+      const cachedValues: GetReferenceDatasQueryResponse = getCachedValues(
+        this.apollo.client,
+        GET_REFERENCE_DATAS,
+        variables
+      );
+      if (cachedValues) {
+        this.updateValues(cachedValues, false);
+      } else {
+        this.referenceDatasQuery
+          .fetchMore({ variables })
+          .then((results) => this.updateValues(results.data, results.loading));
+      }
     } else {
       this.dataSource.data = this.cachedReferenceDatas.slice(
         e.pageSize * this.pageInfo.pageIndex,
@@ -215,32 +207,32 @@ export class ReferenceDatasComponent
               name: value.name,
             },
           })
-          .subscribe(
-            (res) => {
-              if (res.errors) {
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
                     {
                       type: this.translate.instant('common.referenceData.one'),
-                      error: res.errors[0].message,
+                      error: errors[0].message,
                     }
                   ),
                   { error: true }
                 );
               } else {
-                if (res.data) {
+                if (data) {
                   this.router.navigate([
                     '/referencedata',
-                    res.data.addReferenceData.id,
+                    data.addReferenceData.id,
                   ]);
                 }
               }
             },
-            (err) => {
+            error: (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
-            }
-          );
+            },
+          });
       }
     });
   }
@@ -294,5 +286,26 @@ export class ReferenceDatasComponent
    */
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort || null;
+  }
+
+  /**
+   * Update ref data value
+   *
+   * @param data query response data
+   * @param loading loading status
+   */
+  private updateValues(data: GetReferenceDatasQueryResponse, loading: boolean) {
+    this.cachedReferenceDatas = updateQueryUniqueValues(
+      this.cachedReferenceDatas,
+      data.referenceDatas.edges.map((x) => x.node)
+    );
+    this.dataSource.data = this.cachedReferenceDatas.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.pageInfo.length = data.referenceDatas.totalCount;
+    this.pageInfo.endCursor = data.referenceDatas.pageInfo.endCursor;
+    this.loading = loading;
+    this.filterPredicate();
   }
 }

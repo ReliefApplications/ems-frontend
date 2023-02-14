@@ -71,12 +71,12 @@ export class WorkflowComponent
             id: this.id,
           },
         })
-        .valueChanges.subscribe(
-          (res) => {
-            if (res.data.workflow) {
-              this.workflow = res.data.workflow;
-              this.steps = res.data.workflow.steps || [];
-              this.loading = res.loading;
+        .valueChanges.subscribe({
+          next: ({ data, loading }) => {
+            if (data.workflow) {
+              this.workflow = data.workflow;
+              this.steps = data.workflow.steps || [];
+              this.loading = loading;
               if (this.steps.length > 0) {
                 this.onOpenStep(0);
               }
@@ -95,10 +95,10 @@ export class WorkflowComponent
               );
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
-          }
-        );
+          },
+        });
     });
   }
 

@@ -42,12 +42,12 @@ Every change made to the shared library will require a new build of the library,
 
 If you want to deploy on Azure, start building the shared library:
 ```
-ng build safe
+ng build --project=safe
 ```
 
 Then, build the back-office with Azure environment file:
 ```
-ng build --configuration azure
+ng build --configuration=azure
 ```
 
 The compiled code can be found there in ./dist/back-office folder.
@@ -98,12 +98,10 @@ You can drag and drop the index.html file of this subfolder directly in a browse
 ## Development server
 
 To launch the dev server of a project, run:
-```bash
-ng serve <project-name>
+```
+ng serve --project=<project-name>
 ```
 Navigate to [http://localhost:4200/](http://localhost:4200/). The app will automatically reload if you change any of the source files.
-
-By default, if you omit the `<project-name>`, it will run the `back-office` project.
 
 ### Running both front-office and back-office
 If you want to run the dev server of the back-office and front-office at the same time:
@@ -117,9 +115,9 @@ If you want to run the dev server of the back-office and front-office at the sam
     * in the `protractor.conf.js` file, update the `baseUrl` property to `http://localhost:4201/`
 * in the `backend` local repository, add `http://localhost:4201` to the list of `ALLOWED_ORIGINS` in your `.env` file
 * finally run:
-    ```bash
-    ng serve back-office
-    ng serve front-office --port 4201
+    ```
+    ng serve --project=back-office
+    ng serve --project=front-office --port 4201
     ```
 
 ## Code scaffolding
@@ -150,7 +148,7 @@ Deployment of the npm @safe/builder package is a 3-steps process:
 
 - Build the package:
 ```
-ng build --prod safe
+ng build --configuration=production --project=safe
 ```
 
 - Deploy the package ( subsequent command can be executed if you're at the root of the project. Otherwise, change the path ):
@@ -188,7 +186,12 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 Error can appear when executing the front-end due to a memory limit.
 
-You can use this command to serve the front-end if the error occurs:
+You can use one of these commands to serve the front-end if the error occurs:
+```
+node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng serve
+```
+
+And if previous command raises the same issue:
 ```
 node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng serve
 ```

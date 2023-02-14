@@ -1,39 +1,36 @@
 @import 'variables.scss';
 
 // Declaration of Kendo variables
-$border-radius: 2px;
-$primary: rgb($primary_500);
-$secondary: #f6f6f6;
-$info: rgb($primary_300);
-$success: #67dd2d;
-$warning: rgb($secondary_50);
-$error: #d34444;
-$body-text: #424242;
-$body-bg: #ffffff;
-$headings-text: #272727;
-$subtle-text: #666666;
-$disabled-text: #8f8f8f;
-$component-text: #424242;
-$component-bg: #ffffff;
-$base-text: #424242;
-$base-bg: #fafafa;
-$hovered-text: #424242;
-$hovered-bg: #ececec;
-$selected-text: #ffffff;
-$selected-bg: rgb($primary_500);
-$button-text: #424242;
-$button-bg: #f5f5f5;
-$link-text: rgb($primary_500);
-$link-hover-text: rgb($primary_300);
-$series-a: #ff6358;
-$series-b: #ffd246;
-$series-c: #78d237;
-$series-d: #28b4c8;
-$series-e: #2d73f5;
-$series-f: #aa46be;
+$kendo-border-radius: 2px;
+$kendo-color-primary: rgb($primary_500);
+$kendo-color-secondary: #f6f6f6;
+$kendo-color-info: rgb($primary_300);
+$kendo-color-success: #67dd2d;
+$kendo-color-warning: rgb($secondary_50);
+$kendo-color-error: #d34444;
+$kendo-body-text: #424242;
+$kendo-body-bg: #ffffff;
+$kendo-subtle-text: #666666;
+$kendo-disabled-text: #8f8f8f;
+$kendo-component-text: #424242;
+$kendo-component-bg: #ffffff;
+$kendo-base-text: #424242;
+$kendo-base-bg: #fafafa;
+$kendo-selected-text: #ffffff;
+$kendo-selected-bg: rgb($primary_500);
+$kendo-button-text: #424242;
+$kendo-button-bg: #f5f5f5;
+$kendo-link-text: rgb($primary_500);
+$kendo-link-hover-text: rgb($primary_300);
+$kendo-series-a: #ff6358;
+$kendo-series-b: #ffd246;
+$kendo-series-c: #78d237;
+$kendo-series-d: #28b4c8;
+$kendo-series-e: #2d73f5;
+$kendo-series-f: #aa46be;
 
 // Import of Kendo themes
-@import '~@progress/kendo-theme-default/dist/all.scss';
+@import '@progress/kendo-theme-default/dist/all.scss';
 
 // === WIDGETS ===
 .k-resize-handle,

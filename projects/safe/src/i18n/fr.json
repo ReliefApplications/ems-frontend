@@ -24,6 +24,11 @@
 		},
 		"auto": "Automatique",
 		"back": "Retour",
+		"calculatedField": {
+			"few": "Champs dérivés",
+			"none": "Aucun champ dérivé",
+			"one": "Champ dérivé"
+		},
 		"cancel": "Annuler",
 		"channel": {
 			"few": "Canaux de diffusion",
@@ -33,8 +38,18 @@
 		"child": "Enfant",
 		"clear": "Annuler",
 		"close": "Fermer",
+		"column": {
+			"few": "Colonnes",
+			"none": "Aucune colonne",
+			"one": "Colonne"
+		},
 		"create": "Créer",
 		"createdOn": "Date de création",
+		"customNotification": {
+			"few": "Notifications",
+			"none": "Aucune notification",
+			"one": "Notification"
+		},
 		"dashboard": {
 			"few": "Tableaux de bord",
 			"none": "Aucun tableau de bord",
@@ -420,6 +435,17 @@
 				"select": "Depuis les applications"
 			}
 		},
+		"calculatedFields": {
+			"add": "Créer un nouveau champ dérivé",
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression du champ dérivé {{name}} ?"
+			},
+			"edit": "Modifier le champ dérivé",
+			"expression": "Expression",
+			"hint": {
+				"name": "Entrez un nom composé uniquement delettres, dechiffres et de tirets bas. Ce nom ne doit pas dupliquer le nom d'un autre champ de la resource éditée."
+			}
+		},
 		"channel": {
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer le canal {{name}} ?"
@@ -433,6 +459,11 @@
 			"confirm": "Confirmer",
 			"delete": "Supprimer",
 			"title": "Confirmer"
+		},
+		"customNotifications": {
+			"edit": {
+				"new": "Nouvelle notification"
+			}
 		},
 		"distributionLists": {
 			"delete": {
@@ -524,9 +555,11 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"missingGridField": "Champs disponible de table de données manquant pour la question {{question}} à la page {{page}}. Veuillez en sélectionner au moins un dans la propriété Custom Question pour sauvegarder le formulaire.",
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
-			}
+			},
+			"saveSurvey": "Sauvegarde du questionnaire"
 		},
 		"forms": {
 			"isCore": "Est un formulaire source",
@@ -620,6 +653,10 @@
 			},
 			"fields": {
 				"available": "Champs disponibles",
+				"format": {
+					"info": "Laissez vide pour utiliser le mode classique",
+					"title": "Mode d'affichage"
+				},
 				"search": "Rechercher des champs...",
 				"selected": "Champs sélectionnés",
 				"title": "Champs"
@@ -754,6 +791,7 @@
 			},
 			"empty": {
 				"aggregations": "Aucune agrégation détectée",
+				"calculatedFields": "Aucun champ dérivé détecté",
 				"layouts": "Aucune mise en page détectée",
 				"records": "Aucun enregistrement détecté"
 			}
@@ -1157,6 +1195,53 @@
 							"zoom": "Sélectionnez un zoom par défaut"
 						}
 					}
+				},
+				"summaryCard": {
+					"add": "Ajouter un carte",
+					"card": {
+						"dataSource": {
+							"layoutStyles": {
+								"title": "Styles de mise en page",
+								"use": "Utiliser les styles de mise en page",
+								"wholeRow": {
+									"option1": "Appliquer à tous les champs",
+									"option2": "Appliquer sur toute la carte",
+									"title": "Styles de lignes entières :"
+								}
+							},
+							"title": "Source de données"
+						},
+						"display": {
+							"dataSource": "Afficher le lien vers la source de données",
+							"header": "Titre",
+							"title": "Affichage"
+						},
+						"preview": {},
+						"textEditor": {
+							"title": "Éditeur de texte"
+						},
+						"title": "Paramètres de carte",
+						"valueSelector": {
+							"title": "Selection de valeur"
+						}
+					},
+					"create": {
+						"choice": {
+							"blank": "Créer une nouvelle carte",
+							"template": "Utiliser un modèle"
+						}
+					},
+					"dynamic": "Dynamique",
+					"hint": {
+						"dynamic": "Les cartes dynamiques adaptent leur affichage en fonction du nombre d'éléments dans la source de données. Vous devez définir une unique carte qui sera répétée pour chaque élément."
+					},
+					"static": "Statique"
+				}
+			},
+			"summaryCard": {
+				"dataSource": "Source",
+				"errors": {
+					"invalidSource": "La source de données est invalide : veuillez modifier les paramètres."
 				}
 			}
 		}
@@ -1345,6 +1430,9 @@
 			"create": "Créer un canal de diffusion",
 			"new": "Nouveau canal de diffusion"
 		},
+		"customNotification": {
+			"lastExecution": "Dernière exécution"
+		},
 		"dashboard": {
 			"share": "Partager le tableau de bord"
 		},
@@ -1402,7 +1490,8 @@
 			"add": "Ajouter une référence de données"
 		},
 		"resource": {
-			"create": "Créer une ressource"
+			"create": "Créer une ressource",
+			"select": "Sélectionnez une ressource"
 		},
 		"role": {
 			"create": "Créer un rôle",
@@ -1564,7 +1653,7 @@
 			},
 			"queryName": "Nom de la requête",
 			"tooltip": {
-				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés. Vous pouvez utiliser le code $$LAST_UPDATE pour insérer dynamiquement la date de la dernière mise à jour des choix dans un format compatible SQL."
+				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés. Vous pouvez utiliser le code {{lastUpdate}} pour insérer dynamiquement la date de la dernière mise à jour des choix dans un format compatible SQL."
 			},
 			"type": "Type",
 			"validateCsv": "Valider le CSV",

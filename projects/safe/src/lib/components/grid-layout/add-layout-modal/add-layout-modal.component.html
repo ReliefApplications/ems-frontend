@@ -10,7 +10,7 @@
         category="secondary"
         class="!w-auto"
         (click)="nextStep = true"
-        [disabled]="layouts.length < 1"
+        [disabled]="!hasLayouts"
         >{{
           'components.widget.settings.grid.layouts.add.choice.load' | translate
         }}</safe-button

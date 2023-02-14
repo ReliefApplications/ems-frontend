@@ -1,4 +1,8 @@
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import get from 'lodash/get';
 
 /** Interface for Mapping element. */
@@ -13,7 +17,7 @@ export interface Mapping {
 export type Mappings = Array<Mapping>;
 
 /** Creating a new instance of the FormBuilder class. */
-const formBuilder = new FormBuilder();
+const formBuilder = new UntypedFormBuilder();
 
 /**
  * Create a form group out of a mapping object.
@@ -21,7 +25,7 @@ const formBuilder = new FormBuilder();
  * @param mapping Mapping object to transform.
  * @returns Form group.
  */
-export const createFormGroup = (mapping: Mapping | null): FormGroup =>
+export const createFormGroup = (mapping: Mapping | null): UntypedFormGroup =>
   formBuilder.group({
     field: [get(mapping, 'field', ''), Validators.required],
     path: [get(mapping, 'path', ''), Validators.required],

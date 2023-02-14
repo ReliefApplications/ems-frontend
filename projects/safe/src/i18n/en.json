@@ -24,6 +24,11 @@
 		},
 		"auto": "Auto",
 		"back": "Back",
+		"calculatedField": {
+			"few": "Calculated Fields",
+			"none": "No Calculated field",
+			"one": "calculated Field"
+		},
 		"cancel": "Cancel",
 		"channel": {
 			"few": "Channels",
@@ -33,8 +38,18 @@
 		"child": "Child",
 		"clear": "Clear",
 		"close": "Close",
+		"column": {
+			"few": "Columns",
+			"none": "No column",
+			"one": "Column"
+		},
 		"create": "Create",
 		"createdOn": "Created on",
+		"customNotification": {
+			"few": "Custom notifications",
+			"none": "No Custom notification",
+			"one": "Custom notification"
+		},
 		"dashboard": {
 			"few": "Dashboards",
 			"none": "No dashboard",
@@ -420,6 +435,17 @@
 				"select": "From applications"
 			}
 		},
+		"calculatedFields": {
+			"add": "Create a new Calculated field",
+			"delete": {
+				"confirmationMessage": "Do you confirm the deletion of the Calculated field {{name}}?"
+			},
+			"edit": "Edit Calculated field",
+			"expression": "Expression",
+			"hint": {
+				"name": "Enter an unique name only composed of letters, digits and underscores. This name should not override any field name of current resource."
+			}
+		},
 		"channel": {
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the channel {{name}}?"
@@ -433,6 +459,11 @@
 			"confirm": "Confirm",
 			"delete": "Delete",
 			"title": "Confirm"
+		},
+		"customNotifications": {
+			"edit": {
+				"new": "New Custom Notification"
+			}
 		},
 		"distributionLists": {
 			"delete": {
@@ -524,9 +555,11 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
-			}
+			},
+			"saveSurvey": "SavingSurvey"
 		},
 		"forms": {
 			"isCore": "Is core",
@@ -620,6 +653,10 @@
 			},
 			"fields": {
 				"available": "Available fields",
+				"format": {
+					"info": "Left empty to ignore formatting",
+					"title": "Display format"
+				},
 				"search": "Search fields...",
 				"selected": "Selected fields",
 				"title": "Fields"
@@ -754,6 +791,7 @@
 			},
 			"empty": {
 				"aggregations": "No aggregation detected",
+				"calculatedFields": "No calculated fields detected",
 				"layouts": "No layout detected",
 				"records": "No record detected"
 			}
@@ -1155,6 +1193,52 @@
 							"zoom": "Select a default zoom for the map display"
 						}
 					}
+				},
+				"summaryCard": {
+					"add": "Add new card",
+					"card": {
+						"dataSource": {
+							"layoutStyles": {
+								"title": "Layout styles",
+								"use": "Use layout styles",
+								"wholeRow": {
+									"option1": "Apply to all fields",
+									"option2": "Apply to the whole card",
+									"title": "Whole row styles:"
+								}
+							},
+							"title": "Data source"
+						},
+						"display": {
+							"dataSource": "Show link to data source",
+							"header": "Header",
+							"title": "Display"
+						},
+						"textEditor": {
+							"title": "Text editor"
+						},
+						"title": "Card settings",
+						"valueSelector": {
+							"title": "Value selector"
+						}
+					},
+					"create": {
+						"choice": {
+							"blank": "Start from blank",
+							"template": "Start from template"
+						}
+					},
+					"dynamic": "Dynamic",
+					"hint": {
+						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
+					},
+					"static": "Static"
+				}
+			},
+			"summaryCard": {
+				"dataSource": "Data Source",
+				"errors": {
+					"invalidSource": "The data source is invalid: please edit the settings."
 				}
 			}
 		}
@@ -1343,6 +1427,9 @@
 			"create": "Create a channel",
 			"new": "New channel"
 		},
+		"customNotification": {
+			"lastExecution": "Last execution"
+		},
 		"dashboard": {
 			"share": "Share Dashboard"
 		},
@@ -1400,7 +1487,8 @@
 			"add": "Add new reference data"
 		},
 		"resource": {
-			"create": "Create a Resource"
+			"create": "Create a Resource",
+			"select": "Select a Resource"
 		},
 		"role": {
 			"create": "Create a role",
@@ -1562,7 +1650,7 @@
 			},
 			"queryName": "Query Name",
 			"tooltip": {
-				"graphQLFilter": "Enter a query parameter to be used as a filter once choices are already cached. You can use $$LAST_UPDATE to insert dynamically the last fetch date in SQL format."
+				"graphQLFilter": "Enter a query parameter to be used as a filter once choices are already cached. You can use {{lastUpdate}} to insert dynamically the last fetch date in SQL format."
 			},
 			"type": "Type",
 			"validateCsv": "Validate CSV",

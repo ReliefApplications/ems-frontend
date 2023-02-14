@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { Subject, takeUntil } from 'rxjs';
@@ -89,13 +89,13 @@ export class SafeApplicationUsersComponent
               application: this.roles[0].application?.id,
             },
           })
-          .subscribe((res) => {
-            if (!res.errors) {
+          .subscribe(({ errors, data }) => {
+            if (!errors) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectInvited', {
                   name: this.translate
                     .instant(
-                      res.data?.addUsers.length
+                      data?.addUsers.length
                         ? 'common.user.few'
                         : 'common.user.one'
                     )
@@ -110,7 +110,7 @@ export class SafeApplicationUsersComponent
                   {
                     name: this.translate
                       .instant(
-                        res.data?.addUsers?.length
+                        data?.addUsers?.length
                           ? 'common.user.few'
                           : 'common.user.one'
                       )
@@ -131,6 +131,11 @@ export class SafeApplicationUsersComponent
    * @param type The type of file we want ('csv' or 'xlsx')
    */
   onExport(type: 'csv' | 'xlsx'): void {
-    this.applicationService.downloadUsers(type);
+    this.applicationService.downloadUsers(
+      type,
+      this.userList?.selection.selected
+        .map((x) => x.id || '')
+        .filter((x) => x !== '') || []
+    );
   }
 }

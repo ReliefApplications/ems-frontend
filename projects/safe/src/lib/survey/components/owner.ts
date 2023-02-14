@@ -67,10 +67,10 @@ export const init = (
             applications: question.applications,
           },
         })
-        .subscribe((res) => {
-          if (res.data.rolesFromApplications) {
+        .subscribe(({ data }) => {
+          if (data.rolesFromApplications) {
             const roles = [];
-            for (const role of res.data.rolesFromApplications) {
+            for (const role of data.rolesFromApplications) {
               roles.push({ value: role.id, text: role.title });
             }
             question.contentQuestion.choices = roles;

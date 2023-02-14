@@ -100,15 +100,11 @@ export class SafeAggregationGridComponent
       this.pageSize,
       this.skip
     );
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe(
-      (res) => {
-        this.gridData = {
-          data: res.data.recordsAggregation.items,
-          total: res.data.recordsAggregation.totalCount,
-        };
-        this.loading = false;
+    this.dataSubscription = this.dataQuery.valueChanges.subscribe({
+      next: ({ data, loading }) => {
+        this.updateValues(data, loading);
       },
-      (err: any) => {
+      error: (err: any) => {
         this.status = {
           error: true,
           message: this.translate.instant(
@@ -122,8 +118,8 @@ export class SafeAggregationGridComponent
           ),
         };
         this.loading = false;
-      }
-    );
+      },
+    });
   }
 
   /**
@@ -138,8 +134,8 @@ export class SafeAggregationGridComponent
           id: this.resourceId,
         },
       })
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           const resource = res.data.resource;
           const allGqlFields = this.queryBuilder.getFields(
             resource.queryName || ''
@@ -177,14 +173,14 @@ export class SafeAggregationGridComponent
             fields: queryFields,
           });
           if (metaQuery) {
-            metaQuery.subscribe(
-              async (res2: any) => {
+            metaQuery.subscribe({
+              next: async ({ data }) => {
                 this.status = {
                   error: false,
                 };
-                for (const key in res2.data) {
-                  if (Object.prototype.hasOwnProperty.call(res2.data, key)) {
-                    const metaFields = Object.assign({}, res2.data[key]);
+                for (const key in data) {
+                  if (Object.prototype.hasOwnProperty.call(data, key)) {
+                    const metaFields = Object.assign({}, data[key]);
                     try {
                       await this.gridService.populateMetaFields(metaFields);
                       // Remove ref data meta fields because it messes up with the display
@@ -217,7 +213,7 @@ export class SafeAggregationGridComponent
                   }
                 }
               },
-              (err: any) => {
+              error: (err: any) => {
                 this.loadingSettings = false;
                 this.status = {
                   error: true,
@@ -231,8 +227,8 @@ export class SafeAggregationGridComponent
                     }
                   ),
                 };
-              }
-            );
+              },
+            });
           } else {
             this.loadingSettings = false;
             this.status = {
@@ -243,7 +239,7 @@ export class SafeAggregationGridComponent
             };
           }
         },
-        (err: any) => {
+        error: (err: any) => {
           this.loadingSettings = false;
           this.status = {
             error: true,
@@ -257,8 +253,8 @@ export class SafeAggregationGridComponent
               }
             ),
           };
-        }
-      );
+        },
+      });
   }
 
   // === PAGINATION ===
@@ -271,25 +267,31 @@ export class SafeAggregationGridComponent
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
-    this.dataQuery.fetchMore({
-      variables: {
-        resource: this.resourceId,
-        aggregation: this.aggregation.id,
-        first: this.pageSize,
-        skip: this.skip,
-      },
-      updateQuery: (prev: any, { fetchMoreResult }: any) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        this.loading = false;
-        return Object.assign({}, prev, {
-          recordsAggregation: {
-            items: fetchMoreResult.recordsAggregation.items,
-            totalCount: fetchMoreResult.recordsAggregation.totalCount,
-          },
-        });
-      },
-    });
+
+    this.dataQuery
+      .fetchMore({
+        variables: {
+          first: this.pageSize,
+          skip: this.skip,
+        },
+      })
+      .then((results) => this.updateValues(results.data, results.loading));
+  }
+
+  /**
+   * Update aggregation data value
+   *
+   * @param data query response data
+   * @param loading loading status
+   */
+  private updateValues(
+    data: GetAggregationDataQueryResponse,
+    loading: boolean
+  ) {
+    this.gridData = {
+      data: data.recordsAggregation.items,
+      total: data.recordsAggregation.totalCount,
+    };
+    this.loading = loading;
   }
 }

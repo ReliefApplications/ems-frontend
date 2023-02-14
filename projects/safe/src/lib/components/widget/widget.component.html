@@ -1,3 +1,4 @@
+<!-- CHART -->
 <ng-container *ngIf="widget.component === 'chart'">
   <safe-chart
     class="flex-1 h-full w-full"
@@ -5,13 +6,15 @@
     [settings]="widget.settings"
   ></safe-chart>
 </ng-container>
-<ng-container *ngIf="widget.component === 'scheduler'">
+<!-- SCHEDULER -->
+<!-- <ng-container *ngIf="widget.component === 'scheduler'">
   <safe-scheduler
     class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
   ></safe-scheduler>
-</ng-container>
+</ng-container> -->
+<!-- GRID -->
 <ng-container *ngIf="widget.component === 'grid'">
   <safe-grid-widget
     class="flex-1 h-full w-full"
@@ -23,6 +26,7 @@
     [canUpdate]="canUpdate"
   ></safe-grid-widget>
 </ng-container>
+<!-- MAP -->
 <ng-container *ngIf="widget.component === 'map'">
   <safe-map
     class="flex-1 h-full w-full"
@@ -30,6 +34,7 @@
     [settings]="widget.settings"
   ></safe-map>
 </ng-container>
+<!-- TEXT EDITOR -->
 <ng-container *ngIf="widget.component === 'editor'">
   <safe-editor
     class="flex-1 h-full w-full"
@@ -38,4 +43,13 @@
     [text]="widget.settings.text"
   >
   </safe-editor>
+</ng-container>
+<!-- SUMMARY CARD -->
+<ng-container *ngIf="widget.component === 'summaryCard'">
+  <safe-summary-card
+    class="flex-1 h-full w-full"
+    [header]="header"
+    [settings]="widget.settings"
+  >
+  </safe-summary-card>
 </ng-container>

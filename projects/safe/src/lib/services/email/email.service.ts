@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { SafeSnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { HttpHeaders } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeEmailPreviewComponent } from '../../components/email-preview/email-preview.component';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { prettifyLabel } from '../../utils/prettify';
@@ -83,7 +83,7 @@ export class SafeEmailService {
   public async sendMail(
     recipient: string[],
     subject: string,
-    body: string = '{dataset}',
+    body: string,
     filter: CompositeFilterDescriptor,
     query: {
       name: string;
@@ -134,23 +134,23 @@ export class SafeEmailService {
         },
         { headers }
       )
-      .subscribe(
-        () => {
+      .subscribe({
+        next: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant('common.notifications.email.sent'),
             loading: false,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
         },
-        () => {
+        error: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant('common.notifications.email.error'),
             loading: false,
             error: true,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -171,7 +171,7 @@ export class SafeEmailService {
   public async previewMail(
     recipient: string[],
     subject: string,
-    body: string = '{dataset}',
+    body: string,
     filter: CompositeFilterDescriptor,
     query: {
       name: string;
@@ -212,8 +212,8 @@ export class SafeEmailService {
         },
         { headers }
       )
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           snackBarRef.instance.data = {
             message: this.translate.instant('common.notifications.email.ready'),
             loading: false,
@@ -241,15 +241,15 @@ export class SafeEmailService {
             }
           });
         },
-        () => {
+        error: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant('common.notifications.email.error'),
             loading: false,
             error: true,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
-        }
-      );
+        },
+      });
   }
 
   /**

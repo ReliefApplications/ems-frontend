@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
+import {
+  UntypedFormGroup,
+  UntypedFormBuilder,
+  Validators,
+} from '@angular/forms';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo } from 'apollo-angular';
 import {
   EditUserProfileMutationResponse,
@@ -31,7 +35,7 @@ export class SafeProfileComponent
   /** Current user */
   public user: any;
   /** Form to edit the user */
-  public userForm?: FormGroup;
+  public userForm?: UntypedFormGroup;
   /** Displayed columns of table */
   public displayedColumnsApps = [
     'name',
@@ -54,7 +58,7 @@ export class SafeProfileComponent
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public translate: TranslateService
   ) {
     super();
@@ -95,12 +99,12 @@ export class SafeProfileComponent
           },
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ data }) => {
+        if (data) {
           this.snackBar.openSnackBar(
             this.translate.instant('pages.profile.notifications.updated')
           );
-          this.user.name = res.data.editUserProfile.name;
+          this.user.name = data.editUserProfile.name;
         }
       });
   }
@@ -125,12 +129,12 @@ export class SafeProfileComponent
             },
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('pages.profile.notifications.updated')
             );
-            this.user.favoriteApp = res.data.editUserProfile.favoriteApp;
+            this.user.favoriteApp = data.editUserProfile.favoriteApp;
           }
         });
     }

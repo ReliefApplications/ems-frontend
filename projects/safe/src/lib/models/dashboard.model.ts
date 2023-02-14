@@ -4,7 +4,7 @@ import { SafeChartSettingsComponent } from '../components/widgets/chart-settings
 import { SafeGridSettingsComponent } from '../components/widgets/grid-settings/grid-settings.component';
 import { SafeMapSettingsComponent } from '../components/widgets/map-settings/map-settings.component';
 import { SafeEditorSettingsComponent } from '../components/widgets/editor-settings/editor-settings.component';
-
+import { SafeSummaryCardSettingsComponent } from '../components/widgets/summary-card-settings/summary-card-settings.component';
 /** Model for IWidgetType object */
 export interface IWidgetType {
   id: string;
@@ -13,7 +13,7 @@ export interface IWidgetType {
   color: string;
 }
 
-/** List of Widget types with their proeprties */
+/** List of Widget types with their properties */
 export const WIDGET_TYPES = [
   {
     id: 'donut-chart',
@@ -149,6 +149,18 @@ export const WIDGET_TYPES = [
     minRow: 1,
     component: 'editor',
     settingsTemplate: SafeEditorSettingsComponent,
+  },
+  {
+    id: 'summaryCard',
+    name: 'Summary card',
+    icon: '/assets/summary-card.svg',
+    color: '#99CBEF',
+    settings: { title: 'Summary Card' },
+    defaultCols: 3,
+    defaultRows: 3,
+    minRow: 1,
+    component: 'summaryCard',
+    settingsTemplate: SafeSummaryCardSettingsComponent,
   },
 ];
 

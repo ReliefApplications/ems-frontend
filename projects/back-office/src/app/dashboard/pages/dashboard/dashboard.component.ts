@@ -6,8 +6,12 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Dashboard,
@@ -59,7 +63,7 @@ export class DashboardComponent
 
   // === DASHBOARD NAME EDITION ===
   public formActive = false;
-  public dashboardNameForm: FormGroup = new FormGroup({});
+  public dashboardNameForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -109,19 +113,19 @@ export class DashboardComponent
             id: this.id,
           },
         })
-        .subscribe(
-          (res) => {
-            if (res.data.dashboard) {
-              this.dashboard = res.data.dashboard;
+        .subscribe({
+          next: ({ data, loading }) => {
+            if (data.dashboard) {
+              this.dashboard = data.dashboard;
               this.dashboardService.openDashboard(this.dashboard);
-              this.dashboardNameForm = new FormGroup({
-                dashboardName: new FormControl(
+              this.dashboardNameForm = new UntypedFormGroup({
+                dashboardName: new UntypedFormControl(
                   this.dashboard.name,
                   Validators.required
                 ),
               });
-              this.tiles = res.data.dashboard.structure
-                ? [...res.data.dashboard.structure]
+              this.tiles = data.dashboard.structure
+                ? [...data.dashboard.structure]
                 : [];
               this.generatedTiles =
                 this.tiles.length === 0
@@ -132,7 +136,7 @@ export class DashboardComponent
                 : this.dashboard.step
                 ? this.dashboard.step.workflow?.page?.application?.id
                 : '';
-              this.loading = res.loading;
+              this.loading = loading;
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
@@ -149,11 +153,11 @@ export class DashboardComponent
               this.router.navigate(['/applications']);
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             this.router.navigate(['/applications']);
-          }
-        );
+          },
+        });
     });
   }
 
@@ -180,27 +184,6 @@ export class DashboardComponent
     setTimeout(() => {
       const el = document.getElementById(`widget-${tile.id}`);
       el?.scrollIntoView({ behavior: 'smooth' });
-      // automatically open the settings panel after scrolling
-      // setTimeout(() => {
-      //   const dialogRef = this.dialog.open(SafeTileDataComponent, {
-      //     disableClose: true,
-      //     data: {
-      //       tile,
-      //       template: this.dashboardService.findSettingsTemplate(tile),
-      //     },
-      //     // hasBackdrop: false,
-      //     position: {
-      //       bottom: '0',
-      //       right: '0',
-      //     },
-      //     panelClass: 'tile-settings-dialog',
-      //   });
-      //   dialogRef.afterClosed().subscribe((res) => {
-      //     if (res) {
-      //       this.onEditTile({ type: 'data', id: tile.id, options: res });
-      //     }
-      //   });
-      // }, 500);
     });
   }
 
@@ -286,15 +269,15 @@ export class DashboardComponent
           structure: this.tiles,
         },
       })
-      .subscribe(
-        () => {
+      .subscribe({
+        next: () => {
           this.dashboardService.openDashboard({
             ...this.dashboard,
             structure: this.tiles,
           });
         },
-        () => (this.loading = false)
-      );
+        complete: () => (this.loading = false),
+      });
   }
 
   /**
@@ -312,10 +295,10 @@ export class DashboardComponent
             permissions: e,
           },
         })
-        .subscribe((res) => {
+        .subscribe(({ data }) => {
           this.dashboard = {
             ...this.dashboard,
-            permissions: res.data?.editStep.permissions,
+            permissions: data?.editStep.permissions,
           };
         });
     } else {
@@ -327,10 +310,10 @@ export class DashboardComponent
             permissions: e,
           },
         })
-        .subscribe((res) => {
+        .subscribe(({ data }) => {
           this.dashboard = {
             ...this.dashboard,
-            permissions: res.data?.editPage.permissions,
+            permissions: data?.editPage.permissions,
           };
         });
     }
@@ -353,49 +336,25 @@ export class DashboardComponent
   saveName(): void {
     const { dashboardName } = this.dashboardNameForm.value;
     this.toggleFormActive();
+    const callback = () => {
+      this.dashboard = { ...this.dashboard, name: dashboardName };
+    };
     if (this.router.url.includes('/workflow/')) {
-      this.apollo
-        .mutate<EditStepMutationResponse>({
-          mutation: EDIT_STEP,
-          variables: {
-            id: this.dashboard?.step?.id,
-            name: dashboardName,
-          },
-        })
-        .subscribe((res) => {
-          if (res.data?.editStep) {
-            this.dashboard = {
-              ...this.dashboard,
-              name: res.data?.editStep.name,
-            };
-            this.workflowService.updateStepName(res.data.editStep);
-          } else {
-            this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService.instant('common.step.one'),
-                  error: res.errors ? res.errors[0].message : '',
-                }
-              )
-            );
-          }
-        });
+      this.workflowService.updateStepName(
+        {
+          id: this.dashboard?.step?.id,
+          name: dashboardName,
+        },
+        callback
+      );
     } else {
-      this.apollo
-        .mutate<EditPageMutationResponse>({
-          mutation: EDIT_PAGE,
-          variables: {
-            id: this.dashboard?.page?.id,
-            name: dashboardName,
-          },
-        })
-        .subscribe((res) => {
-          this.dashboard = { ...this.dashboard, name: res.data?.editPage.name };
-          if (res.data?.editPage) {
-            this.applicationService.updatePageName(res.data.editPage);
-          }
-        });
+      this.applicationService.updatePageName(
+        {
+          id: this.dashboard?.page?.id,
+          name: dashboardName,
+        },
+        callback
+      );
     }
   }
 

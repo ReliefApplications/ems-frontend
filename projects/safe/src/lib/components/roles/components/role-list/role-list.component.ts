@@ -6,7 +6,7 @@ import {
   AfterViewInit,
   ViewChild,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Application } from '../../../../models/application.model';
 import { Role } from '../../../../models/user.model';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
@@ -20,7 +20,7 @@ import {
   DELETE_ROLE,
 } from '../../graphql/mutations';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { MatSort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -131,9 +131,9 @@ export class SafeRoleListComponent
         query: GET_ROLES,
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.roles.data = res.data.roles;
-        this.loading = false;
+      .subscribe(({ data, loading }) => {
+        this.roles.data = data.roles;
+        this.loading = loading;
       });
   }
 
@@ -157,8 +157,8 @@ export class SafeRoleListComponent
               },
             })
             .pipe(takeUntil(this.destroy$))
-            .subscribe(
-              () => {
+            .subscribe({
+              next: () => {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectCreated', {
                     type: this.translate
@@ -169,10 +169,10 @@ export class SafeRoleListComponent
                 );
                 this.getRoles();
               },
-              (err) => {
+              error: (err) => {
                 console.log(err);
-              }
-            );
+              },
+            });
         }
       }
     });

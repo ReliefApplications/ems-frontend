@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Resource } from '../../../../models/resource.model';
 import { Subject } from 'rxjs';
@@ -11,12 +11,13 @@ import {
   GET_RESOURCES,
 } from '../graphql/queries';
 import { AddAggregationModalComponent } from '../../../aggregation/add-aggregation-modal/add-aggregation-modal.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { SafeEditAggregationModalComponent } from '../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
+import { get } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 
@@ -35,7 +36,7 @@ export class TabMainComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  @Input() formGroup!: FormGroup;
+  @Input() formGroup!: UntypedFormGroup;
   @Input() type: any;
   public types = CHART_TYPES;
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
@@ -107,8 +108,8 @@ export class TabMainComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.resource = res.data.resource;
+      .subscribe(({ data }) => {
+        this.resource = data.resource;
         if (aggregationId && this.resource.aggregations?.edges[0]) {
           this.aggregation = this.resource.aggregations.edges[0].node;
           this.setAvailableSeriesFields();
@@ -166,8 +167,7 @@ export class TabMainComponent
   public addAggregation(): void {
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        aggregations:
-          this.resource?.aggregations?.edges.map((x) => x.node) || [],
+        hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
         resource: this.resource,
       },
     });
@@ -197,12 +197,34 @@ export class TabMainComponent
         this.aggregationService
           .editAggregation(this.aggregation, value, this.resource?.id)
           .pipe(takeUntil(this.destroy$))
-          .subscribe((res) => {
-            if (res.data?.editAggregation) {
+          .subscribe(({ data }) => {
+            if (data?.editAggregation) {
               this.getResource(this.resource?.id as string);
             }
           });
       }
+    });
+  }
+
+  /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  public onResourceSearchChange(search: string): void {
+    const variables = this.resourcesQuery.variables;
+    this.resourcesQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
     });
   }
 }

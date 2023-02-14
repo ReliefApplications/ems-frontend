@@ -11,6 +11,7 @@ const routes: Routes = [
       {
         path: '',
         redirectTo: 'records',
+        pathMatch: 'full',
       },
       {
         path: 'records',
@@ -68,7 +69,19 @@ const routes: Routes = [
         // canActivate: [SafePermissionGuard]
         data: {
           breadcrumb: {
-            key: 'common.layout.few',
+            key: 'common.aggregation.few',
+          },
+        },
+      },
+      {
+        path: 'calculated-fields',
+        loadChildren: () =>
+          import('./calculated-fields-tab/calculated-fields-tab.module').then(
+            (m) => m.CalculatedFieldsTabModule
+          ),
+        data: {
+          breadcrumb: {
+            key: 'common.calculatedField.few',
           },
         },
       },

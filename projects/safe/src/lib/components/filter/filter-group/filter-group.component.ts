@@ -1,5 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+} from '@angular/forms';
 
 /**
  * Composite filter group.
@@ -10,7 +14,7 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
   styleUrls: ['./filter-group.component.scss'],
 })
 export class FilterGroupComponent implements OnInit {
-  @Input() form!: FormGroup;
+  @Input() form!: UntypedFormGroup;
   @Input() fields: any[] = [];
   @Output() delete = new EventEmitter();
 
@@ -19,8 +23,8 @@ export class FilterGroupComponent implements OnInit {
    *
    * @returns The filters in an array
    */
-  get filters(): FormArray {
-    return this.form.get('filters') as FormArray;
+  get filters(): UntypedFormArray {
+    return this.form.get('filters') as UntypedFormArray;
   }
 
   /**
@@ -28,7 +32,7 @@ export class FilterGroupComponent implements OnInit {
    *
    * @param fb Angular form builder
    */
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: UntypedFormBuilder) {}
 
   ngOnInit(): void {}
 

@@ -24,6 +24,11 @@
 		},
 		"auto": "******",
 		"back": "******",
+		"calculatedField": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"cancel": "******",
 		"channel": {
 			"few": "******",
@@ -33,8 +38,18 @@
 		"child": "******",
 		"clear": "******",
 		"close": "******",
+		"column": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"create": "******",
 		"createdOn": "******",
+		"customNotification": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"dashboard": {
 			"few": "******",
 			"none": "******",
@@ -420,6 +435,17 @@
 				"select": "******"
 			}
 		},
+		"calculatedFields": {
+			"add": "******",
+			"delete": {
+				"confirmationMessage": "****** {{name}} ******"
+			},
+			"edit": "******",
+			"expression": "******",
+			"hint": {
+				"name": "******"
+			}
+		},
 		"channel": {
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
@@ -433,6 +459,11 @@
 			"confirm": "******",
 			"delete": "******",
 			"title": "******"
+		},
+		"customNotifications": {
+			"edit": {
+				"new": "******"
+			}
 		},
 		"distributionLists": {
 			"delete": {
@@ -524,9 +555,11 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
-			}
+			},
+			"saveSurvey": "******"
 		},
 		"forms": {
 			"isCore": "******",
@@ -620,6 +653,10 @@
 			},
 			"fields": {
 				"available": "******",
+				"format": {
+					"info": "******",
+					"title": "******"
+				},
 				"search": "******",
 				"selected": "******",
 				"title": "******"
@@ -754,6 +791,7 @@
 			},
 			"empty": {
 				"aggregations": "******",
+				"calculatedFields": "******",
 				"layouts": "******",
 				"records": "******"
 			}
@@ -1155,6 +1193,52 @@
 							"zoom": "******"
 						}
 					}
+				},
+				"summaryCard": {
+					"add": "******",
+					"card": {
+						"dataSource": {
+							"layoutStyles": {
+								"title": "******",
+								"use": "******",
+								"wholeRow": {
+									"option1": "******",
+									"option2": "******",
+									"title": "******"
+								}
+							},
+							"title": "******"
+						},
+						"display": {
+							"dataSource": "******",
+							"header": "******",
+							"title": "******"
+						},
+						"textEditor": {
+							"title": "******"
+						},
+						"title": "******",
+						"valueSelector": {
+							"title": "******"
+						}
+					},
+					"create": {
+						"choice": {
+							"blank": "******",
+							"template": "******"
+						}
+					},
+					"dynamic": "******",
+					"hint": {
+						"dynamic": "******"
+					},
+					"static": "******"
+				}
+			},
+			"summaryCard": {
+				"dataSource": "******",
+				"errors": {
+					"invalidSource": "******"
 				}
 			}
 		}
@@ -1343,6 +1427,9 @@
 			"create": "******",
 			"new": "******"
 		},
+		"customNotification": {
+			"lastExecution": "******"
+		},
 		"dashboard": {
 			"share": "******"
 		},
@@ -1400,7 +1487,8 @@
 			"add": "******"
 		},
 		"resource": {
-			"create": "******"
+			"create": "******",
+			"select": "******"
 		},
 		"role": {
 			"create": "******",
@@ -1562,7 +1650,7 @@
 			},
 			"queryName": "******",
 			"tooltip": {
-				"graphQLFilter": "******"
+				"graphQLFilter": "****** {{lastUpdate}} ******"
 			},
 			"type": "******",
 			"validateCsv": "******",

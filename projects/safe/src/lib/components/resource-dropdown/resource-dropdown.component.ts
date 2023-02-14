@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Resource } from '../../models/resource.model';
 import {
@@ -29,7 +29,7 @@ export class SafeResourceDropdownComponent
   @Input() resource = '';
   public selectedResource?: Resource;
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
-  public resourceControl!: FormControl;
+  public resourceControl!: UntypedFormControl;
 
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
@@ -44,7 +44,7 @@ export class SafeResourceDropdownComponent
   }
 
   ngOnInit(): void {
-    this.resourceControl = new FormControl(this.resource);
+    this.resourceControl = new UntypedFormControl(this.resource);
     this.resourceControl.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -58,9 +58,9 @@ export class SafeResourceDropdownComponent
             id: this.resource,
           },
         })
-        .subscribe((res) => {
-          if (res.data.resource) {
-            this.selectedResource = res.data.resource;
+        .subscribe(({ data }) => {
+          if (data.resource) {
+            this.selectedResource = data.resource;
           }
         });
     }
@@ -69,6 +69,37 @@ export class SafeResourceDropdownComponent
       variables: {
         first: ITEMS_PER_PAGE,
         sortField: 'name',
+      },
+    });
+  }
+
+  /**
+   * Emits the selected resource id.
+   *
+   * @param e select event.
+   */
+  onSelect(e?: any): void {
+    this.choice.emit(e);
+  }
+
+  /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  public onResourceSearchChange(search: string): void {
+    const variables = this.resourcesQuery.variables;
+    this.resourcesQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
       },
     });
   }

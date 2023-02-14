@@ -46,6 +46,7 @@ type Subjects =
   | 'Role'
   | 'PullJob'
   | 'Group'
+  | 'CustomNotification'
   | 'Form';
 
 export type AppAbility = Ability<
@@ -428,6 +429,20 @@ export class SafeAuthService {
       can(
         ['create', 'read', 'update', 'delete', 'manage'],
         'DistributionList',
+        {
+          application: app.id,
+        }
+      );
+    }
+
+    // === Custom Notification ===
+    if (
+      appPermissions.has('can_manage_custom_notifications') ||
+      this.ability.can('manage', 'Application')
+    ) {
+      can(
+        ['create', 'read', 'update', 'delete', 'manage'],
+        'CustomNotification',
         {
           application: app.id,
         }

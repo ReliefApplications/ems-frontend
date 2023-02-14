@@ -1,5 +1,10 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Channel } from '../../../../models/channel.model';
 import { Form } from '../../../../models/form.model';
@@ -8,7 +13,7 @@ import { ContentType } from '../../../../models/page.model';
 import { SafeWorkflowService } from '../../../../services/workflow/workflow.service';
 import { Template, TemplateTypeEnum } from '../../../../models/template.model';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
 import { DistributionList } from '../../../../models/distribution-list.model';
 import { EditDistributionListModalComponent } from '../../../distribution-lists/components/edit-distribution-list-modal/edit-distribution-list-modal.component';
@@ -32,7 +37,7 @@ export class ButtonConfigComponent
   implements OnInit
 {
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
-  @Input() formGroup!: FormGroup;
+  @Input() formGroup!: UntypedFormGroup;
   @Input() fields: any[] = [];
   @Input() channels: Channel[] = [];
   @Input() relatedForms: Form[] = [];
@@ -71,7 +76,7 @@ export class ButtonConfigComponent
    * @param applicationService Shared application service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private router: Router,
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
@@ -338,8 +343,8 @@ export class ButtonConfigComponent
   }
 
   /** @returns An array of the modifications on button form */
-  get modificationsArray(): FormArray {
-    return this.formGroup?.get('modifications') as FormArray;
+  get modificationsArray(): UntypedFormArray {
+    return this.formGroup?.get('modifications') as UntypedFormArray;
   }
 
   /**
@@ -367,7 +372,9 @@ export class ButtonConfigComponent
    * Delete all the invalid modifications
    */
   private deleteInvalidModifications(): void {
-    const modifications = this.formGroup?.get('modifications') as FormArray;
+    const modifications = this.formGroup?.get(
+      'modifications'
+    ) as UntypedFormArray;
     for (let i = 0; i < modifications.value.length; i++) {
       const modification = modifications.at(i);
       if (modification.invalid) {

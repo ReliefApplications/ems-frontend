@@ -8,10 +8,10 @@ import {
   ViewChild,
 } from '@angular/core';
 import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-  MatDialog,
-} from '@angular/material/dialog';
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+  MatLegacyDialog as MatDialog,
+} from '@angular/material/legacy-dialog';
 import {
   GetFormByIdQueryResponse,
   GetRecordByIdQueryResponse,
@@ -79,14 +79,12 @@ export class SafeFormModalComponent implements OnInit {
   private isMultiEdition = false;
   private storedMergedData: any;
 
-  public survey?: Survey.Model;
+  public survey!: Survey.SurveyModel;
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
 
   @ViewChild('formContainer') formContainer!: ElementRef;
-
-  environment: any;
 
   /**
    * Getter for the pages property
@@ -102,7 +100,6 @@ export class SafeFormModalComponent implements OnInit {
    * created.
    *
    * @param data This is the data that is passed to the modal when it is opened.
-   * @param environment This is the environment in which we run the application
    * @param dialog This is the Angular Material Dialog service.
    * @param dialogRef This is the reference to the dialog.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
@@ -112,11 +109,10 @@ export class SafeFormModalComponent implements OnInit {
    * @param formBuilderService This is the service that will be used to build forms.
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
-   * @param ngZone Angular ng zone
+   * @param ngZone Angular Service to execute code inside Angular environment
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    @Inject('environment') environment: any,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
     private apollo: Apollo,
@@ -127,16 +123,10 @@ export class SafeFormModalComponent implements OnInit {
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private ngZone: NgZone
-  ) {
-    this.environment = environment;
-  }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.data = { ...DEFAULT_DIALOG_DATA, ...this.data };
-    const defaultThemeColorsSurvey = Survey.StylesManager.ThemeColors.default;
-    defaultThemeColorsSurvey['$main-color'] = this.environment.theme.primary;
-    defaultThemeColorsSurvey['$main-hover-color'] =
-      this.environment.theme.primary;
 
     Survey.StylesManager.applyTheme();
 
@@ -156,8 +146,8 @@ export class SafeFormModalComponent implements OnInit {
               id,
             },
           })
-        ).then((res) => {
-          this.record = res.data.record;
+        ).then(({ data }) => {
+          this.record = data.record;
           this.modifiedAt = this.isMultiEdition
             ? null
             : this.record.modifiedAt || null;
@@ -177,8 +167,8 @@ export class SafeFormModalComponent implements OnInit {
               id: this.data.template,
             },
           })
-        ).then((res) => {
-          this.form = res.data.form;
+        ).then(({ data }) => {
+          this.form = data.form;
           if (this.data.prefillData) {
             this.storedMergedData = this.data.prefillData;
           }
@@ -361,9 +351,9 @@ export class SafeFormModalComponent implements OnInit {
             data: survey.data,
           },
         })
-        .subscribe((res) => {
-          if (res.errors) {
-            this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, {
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
               error: true,
             });
             this.ngZone.run(() => {
@@ -373,7 +363,7 @@ export class SafeFormModalComponent implements OnInit {
             this.ngZone.run(() => {
               this.dialogRef.close({
                 template: this.data.template,
-                data: res.data?.addRecord,
+                data: data?.addRecord,
               });
             });
           }
@@ -398,11 +388,11 @@ export class SafeFormModalComponent implements OnInit {
           template: this.data.template,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ data }) => {
+        if (data) {
           this.dialogRef.close({
             template: this.form?.id,
-            data: res.data.editRecord,
+            data: data.editRecord,
           });
         }
       });
@@ -415,21 +405,21 @@ export class SafeFormModalComponent implements OnInit {
    * @param survey current survey.
    */
   public updateMultipleData(ids: any, survey: any): void {
-    const data = cleanRecord(survey.data);
+    const recordData = cleanRecord(survey.data);
     this.apollo
       .mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
-          data,
+          data: recordData,
           template: this.data.template,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ data }) => {
+        if (data) {
           this.dialogRef.close({
             template: this.form?.id,
-            data: res.data.editRecords,
+            data: data.editRecords,
           });
         }
       });

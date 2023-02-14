@@ -3,17 +3,10 @@ import { SafeFormModule } from './components/form/form.module';
 import { SafeAccessModule } from './components/access/access.module';
 import { SafeLayoutModule } from './components/layout/layout.module';
 import { SafeFormBuilderModule } from './components/form-builder/form-builder.module';
-import { SafeChartModule } from './components/widgets/chart/chart.module';
 import { SafeChartSettingsModule } from './components/widgets/chart-settings/chart-settings.module';
-import { SafeEditorModule } from './components/widgets/editor/editor.module';
 import { SafeEditorSettingsModule } from './components/widgets/editor-settings/editor-settings.module';
-import { SafeGridWidgetModule } from './components/widgets/grid/grid.module';
 import { SafeGridSettingsModule } from './components/widgets/grid-settings/grid-settings.module';
-import { SafeMapModule } from './components/widgets/map/map.module';
 import { SafeMapSettingsModule } from './components/widgets/map-settings/map-settings.module';
-import { SafeSchedulerModule } from './components/widgets/scheduler/scheduler.module';
-import { SafeSchedulerSettingsModule } from './components/widgets/scheduler-settings/scheduler-settings.module';
-import { SafeWidgetModule } from './components/widget/widget.module';
 import { SafeWidgetGridModule } from './components/widget-grid/widget-grid.module';
 import { SafeUsersModule } from './components/users/users.module';
 import { SafeRolesModule } from './components/roles/roles.module';
@@ -36,6 +29,7 @@ import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
 import { SafeUserSummaryModule } from './components/user-summary/user-summary.module';
 import { SafeDateModule } from './pipes/date/date.module';
 import { SafeIconModule } from './components/ui/icon/icon.module';
+import { SafeSummaryCardSettingsModule } from './components/widgets/summary-card-settings/summary-card-settings.module';
 import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
 import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-select.module';
 import { SafeModalModule } from './components/ui/modal/modal.module';
@@ -54,17 +48,10 @@ import { SafeViewsModule } from './views/views.module';
     SafeAccessModule,
     SafeFormModule,
     SafeFormBuilderModule,
-    SafeChartModule,
     SafeChartSettingsModule,
-    SafeEditorModule,
     SafeEditorSettingsModule,
-    SafeGridWidgetModule,
     SafeGridSettingsModule,
-    SafeMapModule,
     SafeMapSettingsModule,
-    SafeSchedulerModule,
-    SafeSchedulerSettingsModule,
-    SafeWidgetModule,
     SafeWidgetGridModule,
     SafeStatusModalModule,
     SafeUsersModule,
@@ -90,6 +77,7 @@ import { SafeViewsModule } from './views/views.module';
     SafeReadableCronModule,
     SafeCronParserModule,
     SafeIconModule,
+    SafeSummaryCardSettingsModule,
     SafeRoleSummaryModule,
     SafeGraphQLSelectModule,
     SafeModalModule,

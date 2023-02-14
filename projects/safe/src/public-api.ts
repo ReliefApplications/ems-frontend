@@ -58,17 +58,11 @@ export * from './lib/components/application-toolbar/public-api';
 export * from './lib/components/access/public-api';
 export * from './lib/components/form/public-api';
 export * from './lib/components/form-builder/public-api';
-export * from './lib/components/widgets/chart/public-api';
 export * from './lib/components/widgets/chart-settings/public-api';
-export * from './lib/components/widgets/editor/public-api';
 export * from './lib/components/widgets/editor-settings/public-api';
-export * from './lib/components/widgets/grid/public-api';
 export * from './lib/components/widgets/grid-settings/public-api';
-export * from './lib/components/widgets/map/public-api';
 export * from './lib/components/widgets/map-settings/public-api';
-export * from './lib/components/widgets/scheduler/public-api';
-export * from './lib/components/widgets/scheduler-settings/public-api';
-export * from './lib/components/widget/public-api';
+export * from './lib/components/widgets/summary-card-settings/public-api';
 export * from './lib/components/widget-grid/public-api';
 export * from './lib/components/confirm-modal/public-api';
 export * from './lib/components/user-summary/public-api';
@@ -94,6 +88,7 @@ export * from './lib/components/graphql-select/public-api';
 export * from './lib/components/ui/modal/public-api';
 export * from './lib/components/ui/empty/public-api';
 export * from './lib/components/ui/divider/public-api';
+export * from './lib/components/edit-calculated-field-modal/public-api';
 export * from './lib/components/utils/unsubscribe/public-api';
 
 /** Grid Layouts */

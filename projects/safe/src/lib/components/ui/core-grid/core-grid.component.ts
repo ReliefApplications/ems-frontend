@@ -9,8 +9,8 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { UntypedFormGroup } from '@angular/forms';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   GridDataResult,
   PageChangeEvent,
@@ -117,7 +117,7 @@ export class SafeCoreGridComponent
 
   // === FEATURES INPUTS ===
   @Input() showDetails = true;
-  @Input() showExport = false;
+  @Input() showExport = true;
   @Input() admin = false;
   @Input() canCreateRecords = false;
 
@@ -154,7 +154,7 @@ export class SafeCoreGridComponent
   // === INLINE EDITION ===
   private originalItems: any[] = this.gridData.data;
   public updatedItems: any[] = [];
-  public formGroup: FormGroup = new FormGroup({});
+  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   public loading = false;
   @Input() status: {
     message?: string;
@@ -257,7 +257,7 @@ export class SafeCoreGridComponent
     delete: false,
     history: false,
     convert: false,
-    export: true,
+    export: this.showExport,
     showDetails: true,
   };
 
@@ -330,7 +330,7 @@ export class SafeCoreGridComponent
       update: get(this.settings, 'actions.update', false),
       delete: get(this.settings, 'actions.delete', false),
       convert: get(this.settings, 'actions.convert', false),
-      export: get(this.settings, 'actions.export', true),
+      export: get(this.settings, 'actions.export', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
     };
     this.editable = this.settings.actions?.inlineEdition;
@@ -368,7 +368,7 @@ export class SafeCoreGridComponent
             sortOrder: this.sortOrder,
             styles: this.style,
           },
-          fetchPolicy: 'network-only',
+          fetchPolicy: 'no-cache',
           nextFetchPolicy: 'cache-first',
         });
       }
@@ -377,14 +377,14 @@ export class SafeCoreGridComponent
       this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
       if (this.metaQuery) {
         this.loading = true;
-        this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe(
-          async (res: any) => {
+        this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
+          next: async ({ data }: any) => {
             this.status = {
               error: false,
             };
-            for (const field in res.data) {
-              if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-                this.metaFields = Object.assign({}, res.data[field]);
+            for (const field in data) {
+              if (Object.prototype.hasOwnProperty.call(data, field)) {
+                this.metaFields = Object.assign({}, data[field]);
                 try {
                   await this.gridService.populateMetaFields(this.metaFields);
                 } catch (err) {
@@ -402,7 +402,7 @@ export class SafeCoreGridComponent
             }
             this.getRecords();
           },
-          (err: any) => {
+          error: (err: any) => {
             this.loading = false;
             this.status = {
               error: true,
@@ -416,8 +416,8 @@ export class SafeCoreGridComponent
                 }
               ),
             };
-          }
-        );
+          },
+        });
       } else {
         this.loading = false;
         this.status = {
@@ -444,9 +444,9 @@ export class SafeCoreGridComponent
           },
         })
         .pipe(takeUntil(this.destroy$))
-        .subscribe((res) => {
-          if (res.data.form.structure) {
-            this.templateStructure = res.data.form.structure;
+        .subscribe(({ data }) => {
+          if (data.form.structure) {
+            this.templateStructure = data.form.structure;
           }
         });
   }
@@ -623,22 +623,22 @@ export class SafeCoreGridComponent
     this.loading = true;
     this.updatedItems = [];
     if (this.dataQuery) {
-      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(
-        (res) => {
+      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+        next: ({ data }) => {
           this.loading = false;
           this.status = {
             error: false,
           };
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+          for (const field in data) {
+            if (Object.prototype.hasOwnProperty.call(data, field)) {
               const nodes =
-                res.data[field].edges.map((x: any) => ({
+                data[field].edges.map((x: any) => ({
                   ...x.node,
                   _meta: {
                     style: x.meta.style,
                   },
                 })) || [];
-              this.totalCount = res.data[field].totalCount;
+              this.totalCount = data[field].totalCount;
               this.items = cloneData(nodes);
               this.convertDateFields(this.items);
               this.originalItems = cloneData(this.items);
@@ -658,7 +658,7 @@ export class SafeCoreGridComponent
             }
           }
         },
-        (err: any) => {
+        error: (err: any) => {
           this.status = {
             error: true,
             message: this.translate.instant(
@@ -672,8 +672,8 @@ export class SafeCoreGridComponent
             ),
           };
           this.loading = false;
-        }
-      );
+        },
+      });
     } else {
       this.loading = false;
     }
@@ -1161,33 +1161,13 @@ export class SafeCoreGridComponent
     this.skip = event.skip;
     this.pageSize = event.take;
     this.pageSizeChanged.emit(this.pageSize);
-    this.dataQuery.fetchMore({
-      variables: {
-        first: this.pageSize,
-        skip: this.skip,
-        filter: this.queryFilter,
-        sortField: this.sortField,
-        sortOrder: this.sortOrder,
-        styles: this.style,
-      },
-      updateQuery: (prev: any, { fetchMoreResult }: any) => {
-        // this.loading = false;
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        for (const field in fetchMoreResult) {
-          if (Object.prototype.hasOwnProperty.call(fetchMoreResult, field)) {
-            this.loading = false;
-            return Object.assign({}, prev, {
-              [field]: {
-                edges: fetchMoreResult[field].edges,
-                totalCount: fetchMoreResult[field].totalCount,
-              },
-            });
-          }
-        }
-        return prev;
-      },
+    this.dataQuery.refetch({
+      first: this.pageSize,
+      skip: this.skip,
+      filter: this.queryFilter,
+      sortField: this.sortField || undefined,
+      sortOrder: this.sortOrder,
+      styles: this.style,
     });
   }
 

@@ -9,7 +9,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { DeleteFormMutationResponse, DELETE_FORM } from './graphql/mutations';
 import get from 'lodash/get';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { GetResourceByIdQueryResponse } from '../graphql/queries';
 import { GET_RESOURCE_FORMS } from './graphql/queries';
 
@@ -63,9 +63,9 @@ export class FormsTabComponent implements OnInit {
           id: this.resource.id,
         },
       })
-      .subscribe((res) => {
-        if (res.data.resource) {
-          this.forms = res.data.resource.forms || [];
+      .subscribe(({ data }) => {
+        if (data.resource) {
+          this.forms = data.resource.forms || [];
         }
         this.loading = false;
       });

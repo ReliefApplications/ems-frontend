@@ -26,8 +26,6 @@ const getAbilityForAppPreview = (app: Application, role: string) => {
   const permissions =
     app.roles?.find((x) => x.id === role)?.permissions?.map((p) => p.type) ||
     [];
-
-  console.log(permissions);
   // === Role ===
   if (permissions.includes('can_see_roles')) {
     can(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);
@@ -46,6 +44,11 @@ const getAbilityForAppPreview = (app: Application, role: string) => {
   // === Distribution list ===
   if (permissions.includes('can_manage_distribution_lists')) {
     can(['create', 'read', 'update', 'delete', 'manage'], 'DistributionList');
+  }
+
+  // === Custom notifications===
+  if (permissions.includes('can_manage_custom_notifications')) {
+    can(['create', 'read', 'update', 'delete', 'manage'], 'CustomNotification');
   }
 
   return new AppAbility(rules);
@@ -144,6 +147,13 @@ export class AppPreviewComponent
               name: this.translate.instant('common.distributionList.few'),
               path: './settings/distribution-lists',
               icon: 'mail',
+            });
+          }
+          if (ability.can('manage', 'CustomNotification')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.customNotification.few'),
+              path: './settings/notifications',
+              icon: 'schedule_send',
             });
           }
           this.navGroups = [

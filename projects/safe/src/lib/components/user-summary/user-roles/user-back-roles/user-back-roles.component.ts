@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Role, User } from '../../../../models/user.model';
@@ -15,7 +15,7 @@ import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.serv
 export class UserBackRolesComponent implements OnInit {
   public roles: Role[] = [];
   @Input() user!: User;
-  selectedRoles!: FormControl;
+  selectedRoles!: UntypedFormControl;
   @Output() edit = new EventEmitter();
 
   /** Setter for the loading state */
@@ -35,7 +35,7 @@ export class UserBackRolesComponent implements OnInit {
    * @param snackBar Shared snackbar service
    */
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService
   ) {}
@@ -55,16 +55,16 @@ export class UserBackRolesComponent implements OnInit {
       .query<GetRolesQueryResponse>({
         query: GET_ROLES,
       })
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            this.roles = res.data.roles;
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data) {
+            this.roles = data.roles;
           }
-          this.loading = false;
+          this.loading = loading;
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
-        }
-      );
+        },
+      });
   }
 }

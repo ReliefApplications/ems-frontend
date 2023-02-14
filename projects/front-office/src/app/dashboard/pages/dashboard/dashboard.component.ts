@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   GetDashboardByIdQueryResponse,
@@ -82,15 +82,15 @@ export class DashboardComponent
             id: this.id,
           },
         })
-        .valueChanges.subscribe(
-          (res) => {
-            if (res.data.dashboard) {
-              this.dashboard = res.data.dashboard;
+        .valueChanges.subscribe({
+          next: ({ data, loading }) => {
+            if (data.dashboard) {
+              this.dashboard = data.dashboard;
               this.dashboardService.openDashboard(this.dashboard);
-              this.widgets = res.data.dashboard.structure
-                ? res.data.dashboard.structure
+              this.widgets = data.dashboard.structure
+                ? data.dashboard.structure
                 : [];
-              this.loading = res.loading;
+              this.loading = loading;
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant(
@@ -107,11 +107,11 @@ export class DashboardComponent
               this.router.navigate(['/applications']);
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             this.router.navigate(['/applications']);
-          }
-        );
+          },
+        });
     });
   }
 

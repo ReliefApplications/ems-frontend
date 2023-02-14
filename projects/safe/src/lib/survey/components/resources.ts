@@ -6,8 +6,8 @@ import {
 import { BehaviorSubject } from 'rxjs';
 import * as SurveyCreator from 'survey-creator';
 import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { DomService } from '../../services/dom/dom.service';
@@ -43,7 +43,7 @@ export const init = (
   domService: DomService,
   apollo: Apollo,
   dialog: MatDialog,
-  formBuilder: FormBuilder
+  formBuilder: UntypedFormBuilder
 ): void => {
   const getResourceById = (data: {
     id: string;
@@ -123,8 +123,8 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe((response) => {
-              const serverRes = response.data.resource.fields;
+            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
+              const serverRes = data.resource.fields;
               const res = [];
               res.push({ value: null });
               for (const item of serverRes) {
@@ -176,9 +176,9 @@ export const init = (
           btn.onclick = () => {
             const currentQuestion = editor.object;
             getResourceById({ id: currentQuestion.resource }).subscribe(
-              (response) => {
-                if (response.data.resource && response.data.resource.name) {
-                  const nameTrimmed = response.data.resource.name
+              ({ data }) => {
+                if (data.resource && data.resource.name) {
+                  const nameTrimmed = data.resource.name
                     .replace(/\s/g, '')
                     .toLowerCase();
                   const dialogRef = dialog.open(
@@ -206,7 +206,7 @@ export const init = (
 
           const convertFromRawToFormGroup = (
             gridSettingsRaw: any
-          ): FormGroup | null => {
+          ): UntypedFormGroup | null => {
             if (!gridSettingsRaw.fields) {
               return null;
             }
@@ -237,9 +237,9 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe((response) => {
+            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
               const serverRes =
-                response.data.resource.records?.edges?.map((x) => x.node) || [];
+                data.resource.records?.edges?.map((x) => x.node) || [];
               const res = [];
               res.push({ value: null });
               for (const item of serverRes) {
@@ -399,8 +399,8 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource && obj.addRecord) {
-            getResourceById({ id: obj.resource }).subscribe((response) => {
-              const serverRes = response.data.resource.forms || [];
+            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
+              const serverRes = data.resource.forms || [];
               const res = [];
               res.push({ value: null });
               for (const item of serverRes) {
@@ -459,7 +459,7 @@ export const init = (
         visibleIf: (obj: any) => {
           obj.gridFieldsSettings = obj.resource
             ? obj.gridFieldsSettings
-            : new FormGroup({}).getRawValue();
+            : new UntypedFormGroup({}).getRawValue();
           return false;
         },
       });
@@ -480,8 +480,8 @@ export const init = (
         visibleIf: (obj: any) => obj.selectQuestion && obj.displayField,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe((response) => {
-              const serverRes = response.data.resource.fields;
+            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
+              const serverRes = data.resource.fields;
               const res = [];
               for (const item of serverRes) {
                 res.push({ value: item.name });
@@ -615,9 +615,9 @@ export const init = (
             );
           }
         }
-        getResourceById({ id: question.resource }).subscribe((response) => {
+        getResourceById({ id: question.resource }).subscribe(({ data }) => {
           const serverRes =
-            response.data.resource.records?.edges?.map((x) => x.node) || [];
+            data.resource.records?.edges?.map((x) => x.node) || [];
           const res = [];
           for (const item of serverRes) {
             res.push({
@@ -628,7 +628,7 @@ export const init = (
           question.contentQuestion.choices = res;
           if (!question.placeholder) {
             question.contentQuestion.optionsCaption =
-              'Select a record from ' + response.data.resource.name + '...';
+              'Select a record from ' + data.resource.name + '...';
           }
           if (!question.filterBy || question.filterBy.length < 1) {
             this.populateChoices(question);
@@ -697,9 +697,9 @@ export const init = (
         }
       } else {
         getResourceById({ id: question.resource, filters }).subscribe(
-          (response) => {
+          ({ data }) => {
             const serverRes =
-              response.data.resource.records?.edges?.map((x) => x.node) || [];
+              data.resource.records?.edges?.map((x) => x.node) || [];
             const res: any[] = [];
             for (const item of serverRes) {
               res.push({

@@ -1,7 +1,10 @@
 import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { GetRolesQueryResponse, GET_ROLES } from './graphql/queries';
 import { Role } from '../../../models/user.model';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -32,7 +35,7 @@ export class SafeEditAccessComponent
   public roles: Role[] = [];
 
   // === REACTIVE FORM ===
-  accessForm: FormGroup = new FormGroup({});
+  accessForm: UntypedFormGroup = new UntypedFormGroup({});
 
   /**
    * The constructor function is used to create a new instance of the SafeEditAccessComponent class
@@ -44,7 +47,7 @@ export class SafeEditAccessComponent
    * @param {DialogData} data This is the data that is passed to the dialog when it is opened.
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeEditAccessComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
@@ -64,8 +67,8 @@ export class SafeEditAccessComponent
         },
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.roles = res.data.roles;
+      .subscribe(({ data }) => {
+        this.roles = data.roles;
       });
     this.accessForm = this.formBuilder.group({
       canSee: [

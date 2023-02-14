@@ -61,11 +61,7 @@ const routes: Routes = [
  * Use lazy loading for performance.
  */
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {
-      relativeLinkResolution: 'legacy',
-    }),
-  ],
+  imports: [RouterModule.forRoot(routes, {})],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

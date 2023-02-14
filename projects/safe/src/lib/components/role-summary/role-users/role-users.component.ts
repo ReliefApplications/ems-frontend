@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Role, User } from '../../../models/user.model';
 import { GetRoleQueryResponse, GET_ROLE_USERS } from './graphql/queries';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { updateQueryUniqueValues } from '../../../utils/update-queries';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -59,21 +60,13 @@ export class RoleUsersComponent
       variables: {
         id: this.role.id,
         first: DEFAULT_PAGE_SIZE,
-        automated: this.autoAssigned,
+        automated: true,
       },
     });
     this.usersQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        this.cachedUsers = res.data.role.users.edges.map((x) => x.node);
-        this.users.data = this.cachedUsers.slice(
-          this.pageInfo.pageSize * this.pageInfo.pageIndex,
-          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-        );
-        this.pageInfo.length = res.data.role.users.totalCount;
-        this.pageInfo.endCursor = res.data.role.users.pageInfo.endCursor;
-        this.loading = false;
-        this.updating = false;
+      .subscribe(({ data, loading }) => {
+        this.updateValues(data, loading);
       });
   }
 
@@ -86,7 +79,8 @@ export class RoleUsersComponent
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
-      (e.pageIndex > e.previousPageIndex ||
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >= this.cachedUsers.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.length > this.cachedUsers.length
     ) {
@@ -113,28 +107,34 @@ export class RoleUsersComponent
    */
   private fetchUsers(): void {
     this.updating = true;
-    this.usersQuery.fetchMore({
-      variables: {
-        first: this.pageInfo.pageSize,
-        afterCursor: this.pageInfo.endCursor,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          role: {
-            users: {
-              edges: [
-                ...prev.role.users.edges,
-                ...fetchMoreResult.role.users.edges,
-              ],
-              pageInfo: fetchMoreResult.role.users.pageInfo,
-              totalCount: fetchMoreResult.role.users.totalCount,
-            },
-          },
-        });
-      },
-    });
+    this.usersQuery
+      .fetchMore({
+        variables: {
+          first: this.pageInfo.pageSize,
+          afterCursor: this.pageInfo.endCursor,
+        },
+      })
+      .then((results) => this.updateValues(results.data, results.loading));
+  }
+
+  /**
+   *  Update users data value
+   *
+   * @param data query response data
+   * @param loading loading status
+   */
+  private updateValues(data: GetRoleQueryResponse, loading: boolean) {
+    this.cachedUsers = updateQueryUniqueValues(
+      this.cachedUsers,
+      data.role.users?.edges.map((x) => x.node) ?? []
+    );
+    this.users.data = this.cachedUsers.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.pageInfo.length = data.role.users.totalCount;
+    this.pageInfo.endCursor = data.role.users.pageInfo.endCursor;
+    this.loading = loading;
+    this.updating = false;
   }
 }

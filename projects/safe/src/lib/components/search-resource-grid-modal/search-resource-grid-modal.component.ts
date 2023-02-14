@@ -1,5 +1,8 @@
 import { ApplicationRef, Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+  MatLegacyDialogRef as MatDialogRef,
+} from '@angular/material/legacy-dialog';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 
 /**
@@ -7,8 +10,8 @@ import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
  */
 interface DialogData {
   gridSettings: any;
-  multiselect: boolean;
-  selectedRows: string[];
+  multiselect?: boolean;
+  selectedRows?: string[];
   selectable?: boolean;
 }
 
@@ -22,8 +25,7 @@ interface DialogData {
 })
 export class SafeResourceGridModalComponent implements OnInit {
   public multiSelect = false;
-  public gridSettings: GridSettings = {};
-
+  public gridSettings: GridSettings;
   public selectedRows: any[] = [];
 
   /**
@@ -47,7 +49,11 @@ export class SafeResourceGridModalComponent implements OnInit {
     public dialogRef: MatDialogRef<SafeResourceGridModalComponent>,
     private ref: ApplicationRef
   ) {
-    this.multiSelect = this.data.multiselect;
+    if (this.data.multiselect !== undefined)
+      this.multiSelect = this.data.multiselect;
+    if (this.data.selectedRows !== undefined)
+      this.selectedRows = [...this.data.selectedRows];
+
     if (this.data.gridSettings.sort && !this.data.gridSettings.sort.field) {
       delete this.data.gridSettings.sort;
     }
@@ -55,15 +61,12 @@ export class SafeResourceGridModalComponent implements OnInit {
       query: this.data.gridSettings,
       actions: {
         delete: false,
-        history: true,
+        history: false,
         convert: false,
         update: false,
         inlineEdition: false,
       },
     };
-    if (this.data.selectedRows) {
-      this.selectedRows = [...this.data.selectedRows];
-    }
     this.ref.tick();
   }
 

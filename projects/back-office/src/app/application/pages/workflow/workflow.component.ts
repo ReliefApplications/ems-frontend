@@ -1,7 +1,11 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Workflow,
@@ -50,7 +54,7 @@ export class WorkflowComponent
 
   // === WORKFLOW EDITION ===
   public formActive = false;
-  public workflowNameForm: FormGroup = new FormGroup({});
+  public workflowNameForm: UntypedFormGroup = new UntypedFormGroup({});
   public canUpdate = false;
 
   // === ACTIVE STEP ===
@@ -102,8 +106,11 @@ export class WorkflowComponent
       .subscribe((workflow: Workflow | null) => {
         if (workflow) {
           this.steps = workflow.steps || [];
-          this.workflowNameForm = new FormGroup({
-            workflowName: new FormControl(workflow.name, Validators.required),
+          this.workflowNameForm = new UntypedFormGroup({
+            workflowName: new UntypedFormControl(
+              workflow.name,
+              Validators.required
+            ),
           });
           this.loading = false;
           if (!this.workflow || workflow.id !== this.workflow.id) {
@@ -158,20 +165,16 @@ export class WorkflowComponent
   saveName(): void {
     const { workflowName } = this.workflowNameForm.value;
     this.toggleFormActive();
-    this.apollo
-      .mutate<EditPageMutationResponse>({
-        mutation: EDIT_PAGE,
-        variables: {
-          id: this.workflow?.page?.id,
-          name: workflowName,
-        },
-      })
-      .subscribe((res) => {
-        if (res.data) {
-          this.workflow = { ...this.workflow, name: res.data.editPage.name };
-          this.applicationService.updatePageName(res.data.editPage);
-        }
-      });
+    const callback = () => {
+      this.workflow = { ...this.workflow, name: workflowName };
+    };
+    this.applicationService.updatePageName(
+      {
+        id: this.workflow?.page?.id,
+        name: workflowName,
+      },
+      callback
+    );
   }
 
   /**
@@ -188,10 +191,10 @@ export class WorkflowComponent
           permissions: e,
         },
       })
-      .subscribe((res) => {
+      .subscribe(({ data }) => {
         this.workflow = {
           ...this.workflow,
-          permissions: res.data?.editPage.permissions,
+          permissions: data?.editPage.permissions,
         };
       });
   }
@@ -253,15 +256,15 @@ export class WorkflowComponent
                 id: step.id,
               },
             })
-            .subscribe((res) => {
-              if (res.data) {
+            .subscribe(({ data }) => {
+              if (data) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectDeleted', {
                     value: this.translate.instant('common.step.one'),
                   })
                 );
                 this.steps = this.steps.filter(
-                  (x) => x.id !== res.data?.deleteStep.id
+                  (x) => x.id !== data?.deleteStep.id
                 );
                 if (index === this.activeStep) {
                   this.onOpenStep(-1);
@@ -317,8 +320,8 @@ export class WorkflowComponent
           steps: steps.map((step) => step.id),
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ errors, data }) => {
+        if (data) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectReordered', {
               type: this.translate.instant('common.step.one'),
@@ -333,7 +336,7 @@ export class WorkflowComponent
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotUpdated', {
               type: this.translate.instant('common.workflow.one'),
-              error: res.errors ? res.errors[0].message : '',
+              error: errors ? errors[0].message : '',
             })
           );
         }

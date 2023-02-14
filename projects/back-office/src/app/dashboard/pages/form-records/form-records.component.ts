@@ -25,7 +25,7 @@ import {
   SafeBreadcrumbService,
   SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeDownloadService, Record } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
@@ -130,16 +130,16 @@ export class FormRecordsComponent
 
     this.recordsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
+      .subscribe(({ data }) => {
         this.cachedRecords.push(
-          ...res.data.form.records.edges.map((x: any) => x.node)
+          ...data.form.records.edges.map((x: any) => x.node)
         );
         this.dataSource = this.cachedRecords.slice(
           ITEMS_PER_PAGE * this.pageInfo.pageIndex,
           ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
         );
-        this.pageInfo.length = res.data.form.records.totalCount;
-        this.pageInfo.endCursor = res.data.form.records.pageInfo.endCursor;
+        this.pageInfo.length = data.form.records.totalCount;
+        this.pageInfo.endCursor = data.form.records.pageInfo.endCursor;
         this.loadingMore = false;
       });
 
@@ -154,22 +154,22 @@ export class FormRecordsComponent
         },
       })
       .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        if (res.data.form) {
-          this.form = res.data.form;
+      .subscribe(({ errors, data, loading }) => {
+        if (data.form) {
+          this.form = data.form;
           this.breadcrumbService.setBreadcrumb(
             '@form',
             this.form.name as string
           );
           this.setDisplayedColumns();
-          this.loading = res.loading;
+          this.loading = loading;
         }
-        if (res.errors) {
+        if (errors) {
           // TO-DO: Check why it's not working as intended.
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate.instant('common.record.one').toLowerCase(),
-              error: res.errors[0].message,
+              error: errors[0].message,
             }),
             { error: true }
           );
@@ -329,14 +329,14 @@ export class FormRecordsComponent
           id,
         },
       })
-      .subscribe((res) => {
+      .subscribe(({ data }) => {
         this.historyId = id;
         this.layoutService.setRightSidenav({
           component: SafeRecordHistoryComponent,
           inputs: {
-            id: res.data.record.id,
+            id: data.record.id,
             revert: (version: any) =>
-              this.confirmRevertDialog(res.data.record, version),
+              this.confirmRevertDialog(data.record, version),
           },
         });
       });
@@ -391,8 +391,8 @@ export class FormRecordsComponent
    */
   uploadFileData(file: any): void {
     const path = `upload/form/records/${this.id}`;
-    this.downloadService.uploadFile(path, file).subscribe(
-      (res) => {
+    this.downloadService.uploadFile(path, file).subscribe({
+      next: (res) => {
         if (res.status === 'OK') {
           this.snackBar.openSnackBar(
             this.translate.instant(
@@ -403,11 +403,11 @@ export class FormRecordsComponent
           this.showUpload = false;
         }
       },
-      (error: any) => {
+      error: (error: any) => {
         this.snackBar.openSnackBar(error.error, { error: true });
         this.showUpload = false;
-      }
-    );
+      },
+    });
   }
 
   /**

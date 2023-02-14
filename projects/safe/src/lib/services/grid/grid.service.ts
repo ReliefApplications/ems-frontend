@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { prettifyLabel } from '../../utils/prettify';
 import get from 'lodash/get';
 import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
@@ -50,7 +50,7 @@ export class SafeGridService {
    * @param translate Translate service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apiProxyService: SafeApiProxyService,
     private translate: TranslateService
   ) {}
@@ -151,6 +151,7 @@ export class SafeGridService {
               name: fullName,
               title,
               type: f.type,
+              layoutFormat: f.format,
               format: this.getFieldFormat(f.type),
               editor: this.getFieldEditor(f.type),
               filter: !options.filter ? '' : this.getFieldFilter(f.type),
@@ -158,7 +159,8 @@ export class SafeGridService {
               disabled:
                 disabled ||
                 DISABLED_FIELDS.includes(f.name) ||
-                metaData?.readOnly,
+                metaData?.readOnly ||
+                metaData?.isCalculated,
               hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
@@ -383,7 +385,7 @@ export class SafeGridService {
    * @param fields List of grid fields.
    * @returns Form group of the item.
    */
-  public createFormGroup(dataItem: any, fields: any[]): FormGroup {
+  public createFormGroup(dataItem: any, fields: any[]): UntypedFormGroup {
     const formGroup: any = {};
     fields
       .filter((x) => !x.disabled)

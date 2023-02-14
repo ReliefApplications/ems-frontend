@@ -3,7 +3,7 @@ import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Http
@@ -19,7 +19,7 @@ import { environment } from '../environments/environment';
 // Config
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 
 // TRANSLATOR
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -42,24 +42,14 @@ import { PureAbility } from '@casl/ability';
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
 
-// Kendo datepicker for surveyjs
-import {
-  CalendarDOMService,
-  CenturyViewService,
-  DecadeViewService,
-  HoursService,
-  MinutesService,
-  MonthViewService,
-  TimePickerDOMService,
-  TOUCH_ENABLED,
-  YearViewService,
-} from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
-import { touchEnabled } from '@progress/kendo-common';
+import { IconsService } from '@progress/kendo-angular-icons';
+// import { touchEnabled } from '@progress/kendo-common';
 // Apollo / GraphQL
 import { GraphQLModule } from './graphql.module';
-import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
+import { MAT_LEGACY_TOOLTIP_DEFAULT_OPTIONS as MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/legacy-tooltip';
+import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 
 /**
  * Initialize authentication in the platform.
@@ -109,6 +99,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     }),
     OAuthModule.forRoot(),
     GraphQLModule,
+    DateInputsModule,
   ],
   providers: [
     {
@@ -142,10 +133,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
       useValue: localStorage,
     },
     // TODO: check
-    {
-      provide: TOUCH_ENABLED,
-      useValue: [touchEnabled],
-    },
+    // {
+    //   provide: TOUCH_ENABLED,
+    //   useValue: [touchEnabled],
+    // },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: SafeAuthInterceptorService,
@@ -161,14 +152,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     },
     PopupService,
     ResizeBatchService,
-    CalendarDOMService,
-    TimePickerDOMService,
-    MonthViewService,
-    HoursService,
-    MinutesService,
-    YearViewService,
-    DecadeViewService,
-    CenturyViewService,
+    IconsService,
   ],
   bootstrap: [AppComponent],
 })

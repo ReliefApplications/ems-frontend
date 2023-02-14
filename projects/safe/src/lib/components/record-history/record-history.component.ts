@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { Record } from '../../models/record.model';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeRecordModalComponent } from '../record-modal/record-modal.component';
 import { SafeDownloadService } from '../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -123,8 +123,8 @@ export class SafeRecordHistoryComponent
             id: this.id,
           },
         })
-        .subscribe((res) => {
-          this.record = res.data.record;
+        .subscribe(({ data }) => {
+          this.record = data.record;
           this.sortedFields = this.sortFields(this.getFields());
         });
 
@@ -136,17 +136,17 @@ export class SafeRecordHistoryComponent
             lang: this.translate.currentLang,
           },
         })
-        .subscribe((res) => {
-          if (res.errors) {
+        .subscribe(({ errors, data }) => {
+          if (errors) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.history.error', {
-                error: res.errors[0].message,
+                error: errors[0].message,
               }),
               { error: true }
             );
             this.cancel.emit(true);
           } else {
-            this.history = res.data.recordHistory.filter(
+            this.history = data.recordHistory.filter(
               (item) => item.changes.length
             );
             this.filterHistory = this.history;

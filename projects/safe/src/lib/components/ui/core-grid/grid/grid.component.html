@@ -81,8 +81,8 @@
     <ng-container *ngIf="admin">
       <span kendotooltip>
         <button
+          kendoButton
           title="This will erase current layout with default layout"
-          class="k-button"
           (click)="action.emit({ action: 'resetLayout' })"
         >
           {{ 'components.widget.grid.layout.reset' | translate }}
@@ -180,7 +180,12 @@
               [style]="getStyle(dataItem, field.name)"
             >
               <div #refSpan class="textbox">
-                {{ getPropertyValue(dataItem, field.name) }}
+                {{
+                  applyFieldFormat(
+                    getPropertyValue(dataItem, field.name),
+                    field
+                  )
+                }}
               </div>
               <button
                 kendoButton
@@ -209,7 +214,11 @@
             >
               <div #refSpan class="textbox" *ngIf="field.meta.type === 'time'">
                 {{
-                  getPropertyValue(dataItem, field.name) | safeDate: 'shortTime'
+                  applyFieldFormat(
+                    getPropertyValue(dataItem, field.name)
+                      | safeDate: 'shortTime',
+                    field
+                  )
                 }}
               </div>
               <div
@@ -217,11 +226,20 @@
                 class="textbox"
                 *ngIf="['datetime', 'datetime-local'].includes(field.meta.type)"
               >
-                {{ getPropertyValue(dataItem, field.name) | safeDate: 'short' }}
+                {{
+                  applyFieldFormat(
+                    getPropertyValue(dataItem, field.name) | safeDate: 'short',
+                    field
+                  )
+                }}
               </div>
               <div #refSpan class="textbox" *ngIf="field.meta.type === 'date'">
                 {{
-                  getPropertyValue(dataItem, field.name) | safeDate: 'shortDate'
+                  applyFieldFormat(
+                    getPropertyValue(dataItem, field.name)
+                      | safeDate: 'shortDate',
+                    field
+                  )
                 }}
               </div>
             </div>
@@ -245,7 +263,12 @@
                 rel="noopener noreferrer"
               >
                 <div #refSpan>
-                  {{ getPropertyValue(dataItem, field.name) }}
+                  {{
+                    applyFieldFormat(
+                      getPropertyValue(dataItem, field.name),
+                      field
+                    )
+                  }}
                 </div>
               </a>
               <a
@@ -256,7 +279,12 @@
                 rel="noopener noreferrer"
               >
                 <div #refSpan>
-                  {{ getPropertyValue(dataItem, field.name) }}
+                  {{
+                    applyFieldFormat(
+                      getPropertyValue(dataItem, field.name),
+                      field
+                    )
+                  }}
                 </div>
               </a>
               <a
@@ -267,7 +295,12 @@
                 rel="noopener noreferrer"
               >
                 <div #refSpan>
-                  {{ getPropertyValue(dataItem, field.name) }}
+                  {{
+                    applyFieldFormat(
+                      getPropertyValue(dataItem, field.name),
+                      field
+                    )
+                  }}
                 </div>
               </a>
               <button
@@ -310,7 +343,12 @@
               [style]="getStyle(dataItem, field.name)"
             >
               <div #refSpan class="textbox">
-                {{ getPropertyValue(dataItem, field.name) }}
+                {{
+                  applyFieldFormat(
+                    getPropertyValue(dataItem, field.name),
+                    field
+                  )
+                }}
               </div>
               <button
                 kendoButton
@@ -376,7 +414,9 @@
               class="textbox-container"
               [style]="getStyle(dataItem, field.name)"
             >
-              {{ getPropertyValue(dataItem, field.name) }}
+              {{
+                applyFieldFormat(getPropertyValue(dataItem, field.name), field)
+              }}
             </div>
           </ng-template>
         </ng-container>
@@ -525,10 +565,13 @@
                 [style]="getStyle(dataItem, field.name)"
               >
                 {{
-                  getReferenceDataPropertyValue(
-                    dataItem,
-                    field.name,
-                    subField.meta.name
+                  applyFieldFormat(
+                    getReferenceDataPropertyValue(
+                      dataItem,
+                      field.name,
+                      subField.meta.name
+                    ),
+                    field
                   )
                 }}
               </div>
@@ -586,7 +629,9 @@
             class="textbox-container"
             [style]="getStyle(dataItem, field.name)"
           >
-            {{ getPropertyValue(dataItem, field.name) }}
+            {{
+              applyFieldFormat(getPropertyValue(dataItem, field.name), field)
+            }}
           </div>
         </ng-template>
         <ng-template
@@ -630,7 +675,9 @@
               class="w-full justify-start overflow-hidden text-overflow-ellipsis"
             >
               <span [class]="'k-icon ' + getFileIcon(file.name)"></span>
-              <span class="textbox">{{ removeFileExtension(file.name) }}</span>
+              <span class="textbox">{{
+                applyFieldFormat(removeFileExtension(file.name), field)
+              }}</span>
             </button>
           </div>
         </ng-template>

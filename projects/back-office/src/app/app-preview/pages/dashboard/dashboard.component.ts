@@ -6,7 +6,6 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   GetDashboardByIdQueryResponse,
@@ -48,7 +47,6 @@ export class DashboardComponent
    * @param apollo Apollo service
    * @param route Angular activated route
    * @param router Angular router
-   * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
    * @param translate Angular translate service
@@ -57,7 +55,6 @@ export class DashboardComponent
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService,
     private translate: TranslateService
@@ -79,15 +76,15 @@ export class DashboardComponent
             id: this.id,
           },
         })
-        .subscribe(
-          (res) => {
-            if (res.data.dashboard) {
-              this.dashboard = res.data.dashboard;
+        .subscribe({
+          next: ({ data, loading }) => {
+            if (data.dashboard) {
+              this.dashboard = data.dashboard;
               this.dashboardService.openDashboard(this.dashboard);
-              this.tiles = res.data.dashboard.structure
-                ? res.data.dashboard.structure
+              this.tiles = data.dashboard.structure
+                ? data.dashboard.structure
                 : [];
-              this.loading = res.loading;
+              this.loading = loading;
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant(
@@ -104,11 +101,11 @@ export class DashboardComponent
               this.router.navigate(['/dashboards']);
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             this.router.navigate(['/dashboards']);
-          }
-        );
+          },
+        });
     });
   }
 

@@ -19,7 +19,7 @@ const LAST_MODIFIED_KEY = '_last_modified';
 /** Local storage key for last request */
 const LAST_REQUEST_KEY = '_last_request';
 /** Property for filtering in requests */
-const LAST_UPDATE_CODE = '$$LAST_UPDATE';
+const LAST_UPDATE_CODE = '{{lastUpdate}}';
 
 /**
  *  Interface for items stored in localForage cache.
@@ -57,7 +57,7 @@ export class SafeReferenceDataService {
             id,
           },
         })
-        .pipe(map((res) => res.data.referenceData))
+        .pipe(map(({ data }) => data.referenceData))
     );
   }
 

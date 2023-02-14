@@ -1,11 +1,11 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormControl } from '@angular/forms';
+import { AbstractControl, UntypedFormControl } from '@angular/forms';
 import {
-  MatAutocompleteSelectedEvent,
-  MatAutocompleteTrigger,
-} from '@angular/material/autocomplete';
-import { MatChipInputEvent } from '@angular/material/chips';
+  MatLegacyAutocompleteSelectedEvent as MatAutocompleteSelectedEvent,
+  MatLegacyAutocompleteTrigger as MatAutocompleteTrigger,
+} from '@angular/material/legacy-autocomplete';
+import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 
@@ -32,7 +32,7 @@ export class SafeTagboxComponent implements OnInit {
   @ViewChild('textInput') private textInput?: ElementRef<HTMLInputElement>;
   @ViewChild(MatAutocompleteTrigger)
   private autoTrigger?: MatAutocompleteTrigger;
-  public inputControl: AbstractControl = new FormControl();
+  public inputControl: AbstractControl = new UntypedFormControl();
   public showInput = true;
   public choicesEmpty = false;
 
@@ -125,8 +125,8 @@ export class SafeTagboxComponent implements OnInit {
    *
    * @returns Returns the inputControls as a FormControl
    */
-  get inputFormControl(): FormControl {
-    return this.inputControl as FormControl;
+  get inputFormControl(): UntypedFormControl {
+    return this.inputControl as UntypedFormControl;
   }
 
   /**

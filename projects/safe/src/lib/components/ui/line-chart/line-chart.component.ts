@@ -1,6 +1,18 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
-import { ChartComponent } from '@progress/kendo-angular-charts';
+import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import get from 'lodash/get';
+import {
+  Plugin,
+  ChartConfiguration,
+  ChartData,
+  ChartOptions,
+  ChartType,
+} from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+import DataLabelsPlugin from 'chartjs-plugin-datalabels';
+import drawUnderlinePlugin from '../../../utils/graphs/plugins/underline.plugin';
+import { parseFontOptions } from '../../../utils/graphs/parseFontString';
+import { addTransparency } from '../../../utils/graphs/addTransparency';
+import whiteBackgroundPlugin from '../../../utils/graphs/plugins/background.plugin';
 
 /**
  * Interface containing the settings of the chart title
@@ -18,82 +30,169 @@ interface ChartTitle {
  */
 interface ChartLegend {
   visible: boolean;
-  orientation: 'horizontal' | 'vertical';
   position: 'top' | 'bottom' | 'left' | 'right';
 }
 
 /**
- * Interface containing the settings of the chart series
- */
-interface ChartSeries {
-  name?: string;
-  color?: string;
-  data: {
-    category: any;
-    field: any;
-    color?: string;
-  }[];
-}
-
-/** Interface of chart labels */
-interface ChartLabels {
-  showValue: boolean;
-}
-
-/** Interface of chart options */
-interface ChartOptions {
-  palette: string[];
-  axes: any;
-  labels?: ChartLabels;
-}
-
-/**
- * Uses kendo chart to render the data as a line chart
+ * Uses chart.js to render the data as a line chart
  */
 @Component({
   selector: 'safe-line-chart',
   templateUrl: './line-chart.component.html',
   styleUrls: ['./line-chart.component.scss'],
 })
-export class SafeLineChartComponent implements OnInit, OnChanges {
+export class SafeLineChartComponent implements OnChanges {
+  public plugins: Plugin[] = [
+    drawUnderlinePlugin,
+    DataLabelsPlugin,
+    whiteBackgroundPlugin,
+  ];
+  private showValueLabels = false;
+  private min = Infinity;
+  private max = -Infinity;
+
   @Input() title: ChartTitle | undefined;
 
   @Input() legend: ChartLegend | undefined;
 
-  @Input() series: ChartSeries[] = [];
+  @Input() series: any[] = [];
 
-  @Input() options: ChartOptions = {
+  @Input() options: any = {
     palette: [],
     axes: null,
   };
 
-  public min: number | undefined;
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 
-  public max: number | undefined;
+  public chartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    parsing: {
+      xAxisKey: 'category',
+      yAxisKey: 'field',
+    },
+    elements: {
+      line: {
+        spanGaps: true,
+      },
+    },
+  };
 
-  @ViewChild('chart')
-  public chart?: ChartComponent;
-
-  public labels: any;
-
-  /**
-   * Constructor for safe-line-chart component
-   */
-  constructor() {}
-
-  ngOnInit(): void {
-    this.min = get(this.options, 'axes.x.min');
-    this.max = get(this.options, 'axes.x.max');
-    this.labels = {
-      visible: get(this.options, 'labels.showValue'),
-    };
-  }
+  public chartType: ChartType = 'line';
+  public chartData: ChartData<'line'> = {
+    datasets: [],
+  };
 
   ngOnChanges(): void {
-    this.min = get(this.options, 'axes.x.min');
-    this.max = get(this.options, 'axes.x.max');
-    this.labels = {
-      visible: get(this.options, 'labels.showValue'),
-    };
+    this.showValueLabels = get(this.options, 'labels.valueType', false);
+    this.chartData.datasets = this.series.map((x, i) => {
+      const color = get(this.options, `palette[${i}]`, undefined);
+
+      // finds min and max values from x.data
+      const min = Math.min(...x.data.map((y: any) => y.field ?? Infinity));
+      const max = Math.max(...x.data.map((y: any) => y.field ?? -Infinity));
+      if (min < this.min) this.min = min;
+      if (max > this.max) this.max = max;
+      return {
+        ...x,
+        color,
+        backgroundColor: color,
+        borderColor: color,
+        pointRadius: 5,
+        pointHoverRadius: 8,
+        pointBackgroundColor: color,
+        pointHoverBackgroundColor: color ? addTransparency(color) : undefined,
+        pointBorderColor: color,
+        pointBorderWidth: 2,
+        pointHoverBorderColor: color,
+        pointHoverBorderWidth: 2,
+        tension: 0.4,
+      };
+    });
+    this.setOptions();
+    this.chart?.update();
+  }
+
+  /** Initializes chart options */
+  setOptions(): void {
+    const [fontOptions, underlineTitle] = parseFontOptions(
+      get(this.title, 'font', '')
+    );
+
+    const titleText = get(this.title, 'text', '');
+    const titleColor = get(this.title, 'color', undefined);
+    const titleVisible = get(this.title, 'visible', false);
+    // log min an max
+    this.chartOptions = {
+      ...this.chartOptions,
+      scales: {
+        x: {
+          ticks: {
+            autoSkip: false,
+            maxRotation: 90,
+            minRotation: 0,
+          },
+        },
+        y: {
+          min: this.min - 0.1 * this.min,
+          max: this.max + 0.1 * this.max,
+        },
+      },
+      plugins: {
+        legend: {
+          display:
+            get(this.legend, 'visible', false) && !!this.series[0]?.label,
+          labels: {
+            // borderRadius: 4,
+            // useBorderRadius: true,
+            color: '#000',
+            usePointStyle: true,
+            pointStyle: 'rectRounded',
+          },
+          position: get(this.legend, 'position', 'bottom'),
+        },
+        title: {
+          display: titleVisible && !!titleText,
+          text: titleText,
+          position: get(this.title, 'position', 'top'),
+          color: titleColor,
+          font: fontOptions,
+        },
+      },
+    } as ChartOptions;
+
+    // adds underline plugin if needed
+    if (titleVisible && underlineTitle && this.chartOptions?.plugins)
+      Object.assign(this.chartOptions.plugins, {
+        underline: {
+          display: true,
+          fontSize: fontOptions.size,
+          fontWeight: fontOptions.weight,
+          fontStyle: fontOptions.style,
+          color: titleColor,
+        },
+      });
+
+    // adds datalabels plugin options
+    if (this.chartOptions?.plugins) {
+      Object.assign(this.chartOptions.plugins, {
+        datalabels: {
+          display: this.showValueLabels,
+          color: 'black',
+          font: {
+            weight: 'bold',
+          },
+          anchor: 'end',
+          align: 'end',
+          offset: 4,
+          formatter: (val: any) => val?.field ?? '',
+        },
+      });
+    }
+  }
+
+  /** Exports chart as an image */
+  public exportImage(): void {
+    this.chart?.toBase64Image();
   }
 }

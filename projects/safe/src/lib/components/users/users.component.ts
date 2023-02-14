@@ -1,7 +1,7 @@
 import { Apollo } from 'apollo-angular';
 import { Component, Input, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { User, Role } from '../../models/user.model';
 import {
@@ -108,22 +108,20 @@ export class SafeUsersComponent implements OnInit {
               application: this.roles[0].application?.id,
             },
           })
-          .subscribe((res) => {
-            if (!res.errors) {
+          .subscribe(({ errors, data }) => {
+            if (!errors) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectInvited', {
                   name: this.translate
                     .instant(
-                      res.data?.addUsers.length
+                      data?.addUsers.length
                         ? 'common.user.few'
                         : 'common.user.one'
                     )
                     .toLowerCase(),
                 })
               );
-              this.users.data = this.users.data.concat(
-                res?.data?.addUsers || []
-              );
+              this.users.data = this.users.data.concat(data?.addUsers || []);
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant(
@@ -131,7 +129,7 @@ export class SafeUsersComponent implements OnInit {
                   {
                     name: this.translate
                       .instant(
-                        res.data?.addUsers.length
+                        data?.addUsers.length
                           ? 'common.user.few'
                           : 'common.user.one'
                       )
@@ -199,14 +197,14 @@ export class SafeUsersComponent implements OnInit {
             mutation: DELETE_USERS,
             variables: { ids },
           })
-          .subscribe((res) => {
+          .subscribe(({ data }) => {
             this.loading = false;
-            if (res.data?.deleteUsers) {
+            if (data?.deleteUsers) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectDeleted', {
                   value: this.translate
                     .instant(
-                      res.data.deleteUsers > 1
+                      data.deleteUsers > 1
                         ? 'common.user.few'
                         : 'common.user.one'
                     )
@@ -302,16 +300,12 @@ export class SafeUsersComponent implements OnInit {
   /**
    * Export the list of users
    *
-   * @param type The type of file we want ('csv' or 'xslx')
+   * @param type The type of file we want ('csv' or 'xlsx')
    */
-  onExport(type: string): void {
-    const fileName = `users.${type}`;
-    const path = `download/users`;
-    const queryString = new URLSearchParams({ type }).toString();
-    this.downloadService.getFile(
-      `${path}?${queryString}`,
-      `text/${type};charset=utf-8;`,
-      fileName
+  async onExport(type: 'csv' | 'xlsx') {
+    this.downloadService.getUsersExport(
+      type,
+      this.selection.selected.map((x) => x.id || '').filter((x) => x !== '')
     );
   }
 }

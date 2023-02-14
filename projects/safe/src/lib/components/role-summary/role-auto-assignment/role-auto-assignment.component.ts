@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormArray } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
+import { UntypedFormBuilder, UntypedFormArray } from '@angular/forms';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { Apollo } from 'apollo-angular';
@@ -24,7 +24,7 @@ import { EditRoleAutoAssignmentModalComponent } from './edit-role-auto-assignmen
 })
 export class RoleAutoAssignmentComponent implements OnInit {
   @Input() role!: Role;
-  public formArray!: FormArray;
+  public formArray!: UntypedFormArray;
   @Output() edit = new EventEmitter();
   /** Setter for the loading state */
   @Input() set loading(loading: boolean) {
@@ -51,7 +51,7 @@ export class RoleAutoAssignmentComponent implements OnInit {
    * @param restService Safe REST service
    */
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private apollo: Apollo,
     private dialog: MatDialog,
     private translate: TranslateService,
@@ -72,9 +72,9 @@ export class RoleAutoAssignmentComponent implements OnInit {
       .query<GetGroupsQueryResponse>({
         query: GET_GROUPS,
       })
-      .subscribe((res) => {
-        if (res.data.groups) {
-          this.groups = res.data.groups;
+      .subscribe(({ data }) => {
+        if (data.groups) {
+          this.groups = data.groups;
           this.fields.push({
             text: 'User Groups',
             name: '{{groups}}',

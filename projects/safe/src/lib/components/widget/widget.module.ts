@@ -5,10 +5,15 @@ import { SafeChartModule } from '../widgets/chart/chart.module';
 import { SafeEditorModule } from '../widgets/editor/editor.module';
 import { SafeGridWidgetModule } from '../widgets/grid/grid.module';
 import { SafeMapModule } from '../widgets/map/map.module';
-import { SafeSchedulerModule } from '../widgets/scheduler/scheduler.module';
+// import { SafeSchedulerModule } from '../widgets/scheduler/scheduler.module';
+import { SafeSummaryCardModule } from '../widgets/summary-card/summary-card.module';
 import 'hammerjs';
 
-/** Module for the widget component */
+/**
+ * Main Widget Module.
+ * Appear in Dashboard Module.
+ * Depending on the type of widget, a different component is loaded.
+ */
 @NgModule({
   declarations: [SafeWidgetComponent],
   imports: [
@@ -17,7 +22,8 @@ import 'hammerjs';
     SafeEditorModule,
     SafeGridWidgetModule,
     SafeMapModule,
-    SafeSchedulerModule,
+    // SafeSchedulerModule,
+    SafeSummaryCardModule,
   ],
   exports: [SafeWidgetComponent],
 })
