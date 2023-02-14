@@ -1,3 +1,4 @@
+/// <reference path="../../../../typings/leaflet/index.d.ts" />
 import {
   Component,
   AfterViewInit,
@@ -9,9 +10,12 @@ import {
 import get from 'lodash/get';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
+import 'leaflet';
 import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
 import 'leaflet-fullscreen';
+import 'esri-leaflet';
+import * as Vector from 'esri-leaflet-vector';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
@@ -38,8 +42,8 @@ import { SafeMapLayersService } from '../../../services/maps/map-layers.service'
 import { SafeMapControlsService } from '../../../services/maps/map-controls.service';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/languages';
 
-// Declares L to be able to use Leaflet from CDN
-declare let L: any;
+// import 'leaflet';
+import * as L from 'leaflet';
 
 /**
  * Cleans the settings object from null values
@@ -91,7 +95,8 @@ export class SafeMapComponent
     if (layerData) {
       // When using geoman tools no layer control is shown
       if (!this.useGeomanTools) {
-        L.control.layers.tree(undefined, layerData).addTo(this.map);
+        const control: any = L.control.layers.tree(undefined, layerData);
+        control.addTo(this.map);
       }
       this.map.addLayer(layerData.layer);
     }
@@ -292,11 +297,10 @@ export class SafeMapComponent
     // Settings initialization
     const centerLong = Number(get(this.settingsConfig, 'centerLong', 0));
     const centerLat = Number(get(this.settingsConfig, 'centerLat', 0));
-    const maxBounds = get(
-      this.settingsConfig,
-      'maxBounds',
-      L.latLngBounds(L.latLng(-90, -1000), L.latLng(90, 1000))
-    );
+    const maxBounds = get(this.settingsConfig, 'maxBounds', [
+      [-90, -180],
+      [90, 180],
+    ]);
     const basemap = get(this.settingsConfig, 'basemap', 'OSM');
     const maxZoom = get(this.settingsConfig, 'maxZoom', 18);
     const minZoom = get(this.settingsConfig, 'minZoom', 2);
@@ -339,7 +343,7 @@ export class SafeMapComponent
     const {
       centerLong,
       centerLat,
-      maxBounds,
+      maxBounds: maxBoundArray,
       basemap,
       maxZoom,
       minZoom,
@@ -348,15 +352,21 @@ export class SafeMapComponent
       zoom,
       // layers,
     } = this.extractSettings();
+
     // Create leaflet map
     this.map = L.map(this.mapId, {
       zoomControl,
-      maxBounds,
+      maxBounds: maxBoundArray
+        ? L.latLngBounds(
+            L.latLng(maxBoundArray[0][0], maxBoundArray[0][1]),
+            L.latLng(maxBoundArray[1][0], maxBoundArray[1][1])
+          )
+        : undefined,
       minZoom,
       maxZoom,
       worldCopyJump,
       zoom,
-    }).setView(new L.latLng(centerLat, centerLong), zoom);
+    }).setView(L.latLng(centerLat, centerLong), zoom);
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(basemap);
@@ -408,7 +418,7 @@ export class SafeMapComponent
       this.map.setMaxBounds(maxBounds);
       this.map.setZoom(zoom);
       this.setBasemap(basemap);
-      this.map.setView(new L.latLng(centerLat, centerLong), zoom);
+      this.map.setView(L.latLng(centerLat, centerLong), zoom);
     }
   }
   /**
@@ -471,9 +481,8 @@ export class SafeMapComponent
   private updateLayerTreeOfMap(overlays: any) {
     this.layerTreeCloned = this.addTreeToMap(overlays);
     this.applyOptions(this.map.getZoom(), this.layerTreeCloned, true);
-    this.layerControl = L.control.layers
-      .tree(undefined, this.layerTreeCloned)
-      .addTo(this.map);
+    this.layerControl = L.control.layers.tree(undefined, this.layerTreeCloned);
+    (this.layerControl as any).addTo(this.map);
   }
 
   /**
@@ -543,7 +552,7 @@ export class SafeMapComponent
                 className: 'svg-marker',
                 iconSize: [width, height],
                 iconAnchor: [0, 24],
-                labelAnchor: [-6, 0],
+                // labelAnchor: [-6, 0],
                 popupAnchor: [width / 2, -36],
                 html: `<span style="--color:${color}">${svg}</span>`,
               });
@@ -620,7 +629,7 @@ export class SafeMapComponent
       this.basemap.remove();
     }
     const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
-    this.basemap = L.esri.Vector.vectorBasemapLayer(basemapName, {
+    this.basemap = Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
   }

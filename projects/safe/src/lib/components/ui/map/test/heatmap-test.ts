@@ -3,7 +3,8 @@ import 'leaflet.heat';
 import { merge, get } from 'lodash';
 import { haversineDistance } from '../utils/haversine';
 
-declare let L: any;
+import 'leaflet.heat';
+import * as L from 'leaflet';
 
 type HeatMapOptions = {
   minOpacity: number;

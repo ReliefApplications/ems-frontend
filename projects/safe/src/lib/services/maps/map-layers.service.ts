@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { FeatureCollection } from 'geojson';
 import { get } from 'lodash';
 
-// Declares L to be able to use Leaflet from CDN
-declare let L: any;
+import * as L from 'leaflet';
 
 /**
  * Shared map layer service
@@ -39,7 +38,7 @@ export class SafeMapLayersService {
     const icon = L.divIcon({
       className: 'custom-marker',
       iconAnchor: [0, 24],
-      labelAnchor: [-6, 0],
+      // labelAnchor: [-6, 0],
       popupAnchor: [0, -36],
       html: `<span data-attr="${color},${opacity}" style="${markerHtmlStyles}">
        <div style="width: 0.7em; height: 0.7em; background-color: white; border-radius:100%"/>
@@ -104,12 +103,19 @@ export class SafeMapLayersService {
           json.properties.radius = l.getRadius();
         }
         if (l instanceof L.Marker) {
-          const html = l.options.icon.options.html;
+          const html =
+            l.options.icon?.options && 'html' in l.options.icon?.options
+              ? l.options.icon?.options.html
+              : undefined;
           // save marker style info to geojson
           if (html) {
-            const attributes = html.match(/data-attr="(.*\d)"/)[1];
-            const [color, opacity] = attributes.split(',');
-            json.properties = { color, opacity };
+            const innerHtml = typeof html === 'string' ? html : html.innerHTML;
+            const matches = innerHtml.match(/data-attr="(.*\d)"/);
+            if (matches && matches.length > 1) {
+              const attributes = matches[1];
+              const [color, opacity] = attributes.split(',');
+              json.properties = { color, opacity };
+            }
           }
         }
         return json;
