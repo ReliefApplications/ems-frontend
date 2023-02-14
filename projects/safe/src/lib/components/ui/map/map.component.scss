@@ -37,3 +37,7 @@
 ::ng-deep .leaflet-layerstree-expand-collapse {
   cursor: pointer;
 }
+
+::ng-deep .leaflet-layerstree-children {
+  padding-left: 20px;
+}
