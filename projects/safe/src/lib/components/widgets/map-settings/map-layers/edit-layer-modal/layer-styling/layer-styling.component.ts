@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { FA_ICONS } from '../../../../../ui/map/const/fa-icons';
 import { LAYER_TYPES } from '../../map-layers.component';
@@ -9,7 +9,7 @@ import { LAYER_TYPES } from '../../map-layers.component';
   templateUrl: './layer-styling.component.html',
   styleUrls: ['./layer-styling.component.scss'],
 })
-export class LayerStylingComponent implements OnInit {
+export class LayerStylingComponent {
   @Input() form!: UntypedFormGroup;
 
   /** @returns Style from group */
@@ -19,9 +19,12 @@ export class LayerStylingComponent implements OnInit {
 
   public availableIcons = ['leaflet_default', ...FA_ICONS];
   public primaryColor: string;
+  private layerTypeTranslation = 'components.widget.settings.map.layers.types';
+  public selectedLayerTypeTranslation!: string;
 
   /** @returns the layer type */
   get layerType(): (typeof LAYER_TYPES)[number] {
+    this.updateLayerTypeTranslations(this.form.get('type')?.value);
     return this.form.get('type')?.value;
   }
 
@@ -34,17 +37,12 @@ export class LayerStylingComponent implements OnInit {
     this.primaryColor = environment.theme.primary;
   }
 
-  ngOnInit(): void {
-    const disableIfDefault = (value: string) => {
-      if (value === 'leaflet_default') {
-        this.styleForm.get('color').disable();
-        this.styleForm.get('size').disable();
-      } else {
-        this.styleForm.get('color').enable();
-        this.styleForm.get('size').enable();
-      }
-    };
-    disableIfDefault(this.styleForm.get('icon')?.value);
-    this.styleForm.get('icon')?.valueChanges.subscribe(disableIfDefault);
+  /**
+   * Updates layer type translations with the given layer type
+   *
+   * @param layerType Layer type value to update translations
+   */
+  private updateLayerTypeTranslations(layerType: string) {
+    this.selectedLayerTypeTranslation = `${this.layerTypeTranslation}.${layerType}`;
   }
 }

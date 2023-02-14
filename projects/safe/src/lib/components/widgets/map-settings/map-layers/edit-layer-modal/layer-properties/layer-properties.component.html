@@ -16,13 +16,16 @@
       </mat-select>
     </mat-form-field>
     <!-- Default visibility -->
-    <mat-checkbox formControlName="defaultVisibility"
-      >Visible by default</mat-checkbox
-    >
+    <mat-checkbox formControlName="defaultVisibility">{{
+      'components.widget.settings.map.edit.properties.defaultVisibility'
+        | translate
+    }}</mat-checkbox>
     <!-- Opacity -->
     <div>
       <div class="flex flex-row w-full justify-between">
-        <label>Opacity</label>
+        <label>{{
+          'components.widget.settings.map.edit.properties.opacity' | translate
+        }}</label>
         <label>{{ form.controls.opacity.value }}</label>
       </div>
       <mat-slider
@@ -38,7 +41,10 @@
     <!-- Visibility range -->
     <div>
       <div class="flex flex-row w-full justify-between">
-        <label>Visibility range</label>
+        <label>{{
+          'components.widget.settings.map.edit.properties.visibilityRange'
+            | translate
+        }}</label>
       </div>
       <mat-slider
         class="w-full m-0"
@@ -53,7 +59,10 @@
     </div>
     <!-- Zoom level -->
     <div>
-      <label>Current zoom: {{ currentZoom }}</label>
+      <label>
+        {{ 'components.widget.settings.map.edit.properties.zoom' | translate }}:
+        {{ currentZoom }}</label
+      >
     </div>
   </form>
 </div>

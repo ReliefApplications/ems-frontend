@@ -15,7 +15,9 @@
             matTooltip="Layer properties"
             matTooltipPosition="right"
           ></safe-icon>
-          <span>Layer properties</span>
+          <span>{{
+            'components.widget.settings.map.edit.layerProperties' | translate
+          }}</span>
         </ng-template>
         <ng-template matTabContent>
           <safe-layer-properties
@@ -34,7 +36,9 @@
             matTooltip="Layer styling"
             matTooltipPosition="right"
           ></safe-icon>
-          <span>Layer styling</span>
+          <span>{{
+            'components.widget.settings.map.edit.layerStyling' | translate
+          }}</span>
         </ng-template>
         <ng-template matTabContent>
           <safe-layer-styling [form]="form" class="w-full"></safe-layer-styling>

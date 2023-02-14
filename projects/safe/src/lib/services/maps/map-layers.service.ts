@@ -12,9 +12,10 @@ declare let L: any;
  *
  * @param color Color set in the marker
  * @param opacity Opacity set in the marker(0>opacity<1)
+ * @param size Font size in the marker(px)
  * @returns HTML template where to place the new marker
  */
-const markerHtmlStyles = (color: string, opacity: number) => {
+const markerHtmlStyles = (color: string, opacity: number, size: number) => {
   const styles = `
   background-color: ${color};
   opacity: ${opacity};
@@ -29,7 +30,8 @@ const markerHtmlStyles = (color: string, opacity: number) => {
   border: 1px solid #FFFFFF;
   display: flex;
   align-items: center;
-  justify-content: center;`;
+  justify-content: center;
+  font-size: ${size}px`;
 
   return `<span data-attr="${color},${opacity}" style="${styles}">
   <div style="width: 0.7em; height: 0.7em; background-color: white; border-radius:100%"/>
@@ -85,7 +87,7 @@ export class SafeMapLayersService {
         }
       } else {
         // The default icon(leaflet-default) uses the markerHtmlStyles
-        htmlTemplate = markerHtmlStyles(iconProperties.color, 1);
+        htmlTemplate = markerHtmlStyles(iconProperties.color, 1, size / 2);
       }
     }
 
@@ -95,7 +97,7 @@ export class SafeMapLayersService {
      */
     if (customMakerStylesProperties) {
       const { color, opacity } = customMakerStylesProperties;
-      htmlTemplate = markerHtmlStyles(color, opacity);
+      htmlTemplate = markerHtmlStyles(color, opacity, size / 2);
     }
 
     const divIcon = L.divIcon({

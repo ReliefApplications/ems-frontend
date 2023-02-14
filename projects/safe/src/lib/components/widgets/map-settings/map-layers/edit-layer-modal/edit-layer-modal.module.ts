@@ -13,6 +13,7 @@ import { LayerPropertiesComponent } from './layer-properties/layer-properties.co
 import { LayerStylingComponent } from './layer-styling/layer-styling.component';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { SafeIconPickerModule } from '../../../../ui/icon-picker/icon-picker.module';
 
 /** Module for the SafeEditLayerModalComponent */
 @NgModule({
@@ -34,6 +35,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
     MatTabsModule,
     MatSelectModule,
     SafeMapModule,
+    SafeIconPickerModule,
   ],
   exports: [SafeEditLayerModalComponent],
 })

@@ -1136,10 +1136,30 @@
 						"template": "Select a template for addition and edition of records"
 					}
 				},
+				"iconPicker": {
+					"default": "Default",
+					"placeholder": "Search an icon"
+				},
 				"map": {
 					"basemap": "Base map",
 					"category": "Map quick layers",
 					"dataset": "Data set selection",
+					"edit": {
+						"layerProperties": "Layer properties",
+						"layerStyling": "Layer styling",
+						"properties": {
+							"defaultVisibility": "Visible by default",
+							"opacity": "Opacity",
+							"visibilityRange": "Visibility range",
+							"zoom": "Current zoom"
+						},
+						"style": {
+							"color": "Color",
+							"icon": "Icon",
+							"size": "Size",
+							"stylingType": "{{layerType}} styling"
+						}
+					},
 					"errors": {
 						"latitude": "Invalid latitude, please select a number between -90 and 90",
 						"longitude": "Invalid longitude, please select a number between -180 and 180"
@@ -1196,7 +1216,13 @@
 							"size": "Size",
 							"title": "Marker layers"
 						},
-						"remove": "Remove layer"
+						"remove": "Remove layer",
+						"types": {
+							"cluster": "cluster",
+							"heatmap": "heatmap",
+							"point": "point",
+							"polygon": "polygon"
+						}
 					},
 					"popup": {
 						"label": "Fields displayed in the popup"

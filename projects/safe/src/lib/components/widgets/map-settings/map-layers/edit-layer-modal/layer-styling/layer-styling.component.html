@@ -1,29 +1,35 @@
 <form class="w-full flex flex-col gap-2" *ngIf="form" [formGroup]="styleForm">
+  <ng-container *ngIf="layerType">
+    <p>
+      {{
+        'components.widget.settings.map.edit.style.stylingType'
+          | translate
+            : { layerType: (selectedLayerTypeTranslation | translate) }
+          | uppercase
+      }}
+    </p>
+  </ng-container>
   <!-- Polygon styling -->
-  <ng-container *ngIf="layerType === 'polygon'">POLYGON STYLING</ng-container>
+  <ng-container *ngIf="layerType === 'polygon'"></ng-container>
   <!-- Point styling -->
   <ng-container *ngIf="layerType === 'point'">
+    <mat-label>{{
+      'components.widget.settings.map.edit.style.icon' | translate
+    }}</mat-label>
+    <safe-icon-picker
+      formControlName="icon"
+      [iconList]="availableIcons"
+    ></safe-icon-picker>
     <mat-form-field appearance="outline">
-      <mat-label>Icon</mat-label>
-      <mat-select formControlName="icon">
-        <mat-option *ngFor="let icon of availableIcons" [value]="icon">
-          <span
-            [style.color]="primaryColor"
-            class="mr-2"
-            *ngIf="icon !== 'leaflet_default'"
-          >
-            <i class="fa fa-{{ icon }}"></i>
-          </span>
-          {{ icon === 'leaflet_default' ? 'Default' : icon }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Color</mat-label>
+      <mat-label>{{
+        'components.widget.settings.map.edit.style.color' | translate
+      }}</mat-label>
       <input matInput formControlName="color" type="color" />
     </mat-form-field>
     <div>
-      <mat-label>Size</mat-label>
+      <mat-label>{{
+        'components.widget.settings.map.edit.style.size' | translate
+      }}</mat-label>
       <mat-slider
         class="w-full m-0"
         min="8"
@@ -36,7 +42,7 @@
     </div>
   </ng-container>
   <!-- Heatmap styling -->
-  <ng-container *ngIf="layerType === 'heatmap'">HEATMAP STYLING</ng-container>
+  <ng-container *ngIf="layerType === 'heatmap'"></ng-container>
   <!-- Cluster styling -->
-  <ng-container *ngIf="layerType === 'cluster'">CLUSTER STYLING</ng-container>
+  <ng-container *ngIf="layerType === 'cluster'"></ng-container>
 </form>
