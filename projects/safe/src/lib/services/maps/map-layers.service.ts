@@ -38,7 +38,6 @@ export class SafeMapLayersService {
     const icon = L.divIcon({
       className: 'custom-marker',
       iconAnchor: [0, 24],
-      // labelAnchor: [-6, 0],
       popupAnchor: [0, -36],
       html: `<span data-attr="${color},${opacity}" style="${markerHtmlStyles}">
        <div style="width: 0.7em; height: 0.7em; background-color: white; border-radius:100%"/>

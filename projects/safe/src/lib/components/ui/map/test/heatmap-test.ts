@@ -115,5 +115,5 @@ export const generateHeatMap = (
   heatMapLayer.on('click', (event: any) => {
     console.log(event);
   });
-  heatMapLayer.addTo(map);
+  return heatMapLayer;
 };
