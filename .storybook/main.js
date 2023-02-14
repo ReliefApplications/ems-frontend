@@ -6,9 +6,14 @@ module.exports = {
     '../stories/**/*.stories.@(js|jsx|ts|tsx)',
     '../projects/**/*.stories.ts',
   ],
-  addons: ['@storybook/addon-links', '@storybook/addon-essentials'],
+  addons: [
+    '@storybook/addon-links',
+    '@storybook/addon-essentials',
+    '@storybook/addon-interactions',
+  ],
+  framework: '@storybook/angular',
   core: {
-    builder: 'webpack5',
+    builder: '@storybook/builder-webpack5',
   },
   webpackFinal: async (config, { configType }) => {
     // `configType` has a value of 'DEVELOPMENT' or 'PRODUCTION'
@@ -23,7 +28,10 @@ module.exports = {
       },
     });
 
-    config.resolve.alias['variables.scss'] = path.resolve(__dirname, '../stories/variables.scss');
+    config.resolve.alias['variables.scss'] = path.resolve(
+      __dirname,
+      '../stories/variables.scss'
+    );
     // Return the altered config
     return config;
   },

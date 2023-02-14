@@ -147,7 +147,7 @@
               <span data-bind="text:completedStateText"></span>
               <input
                 type="button"
-                data-bind="visible: completedState == 'error', value: getLocString('saveAgainButton'), click: doComplete, css: css.saveData.saveAgainButton"
+                data-bind="visible: completedState === 'error', value: getLocString('saveAgainButton'), click: doComplete, css: css.saveData.saveAgainButton"
               />
             </div>
           </div>
