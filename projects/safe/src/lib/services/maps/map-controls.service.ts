@@ -198,7 +198,6 @@ export class SafeMapControlsService {
     control.addTo(map);
     const container = control.getContainer();
     if (container) {
-      L.DomEvent.stopPropagation(container);
       L.DomEvent.disableClickPropagation(container);
       L.DomEvent.disableScrollPropagation(container);
     }
