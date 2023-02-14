@@ -5,7 +5,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeMapModule } from '../../ui/map/map.module';
 
 /**
- * Map modules
+ * Map widget module
  */
 @NgModule({
   declarations: [SafeMapWidgetComponent],

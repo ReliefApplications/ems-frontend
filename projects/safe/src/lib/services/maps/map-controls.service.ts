@@ -6,8 +6,12 @@ import { SafeMapDownloadComponent } from '../../components/ui/map/map-download/m
 import { SafeMapLegendComponent } from '../../components/ui/map/map-legend/map-legend.component';
 import { DomService } from '../dom/dom.service';
 
-// Declares L to be able to use Leaflet from CDN
-declare let L: any;
+/// <reference path="../../../../typings/leaflet/index.d.ts" />
+import * as L from 'leaflet';
+import 'esri-leaflet';
+import 'leaflet-fullscreen';
+import 'leaflet-measure';
+import * as Geocoding from 'esri-leaflet-geocoder';
 
 /**
  * Shared map control service.
@@ -46,12 +50,12 @@ export class SafeMapControlsService {
    * @param apikey arcgis api key
    */
   public getSearchbarControl(map: any, apikey: string): void {
-    const searchControl = L.esri.Geocoding.geosearch({
+    const searchControl = Geocoding.geosearch({
       position: 'topleft',
       placeholder: 'Enter an address or place e.g. 1 York St',
       useMapBounds: false,
       providers: [
-        L.esri.Geocoding.arcgisOnlineProvider({
+        Geocoding.arcgisOnlineProvider({
           apikey,
           nearby: {
             lat: -33.8688,
@@ -98,7 +102,7 @@ export class SafeMapControlsService {
     if (this.fullscreenControl) {
       map.removeControl(this.fullscreenControl);
     }
-    this.fullscreenControl = new L.Control.Fullscreen({
+    this.fullscreenControl = new (L.Control as any).Fullscreen({
       title: {
         false: this.translate.instant('common.viewFullscreen'),
         true: this.translate.instant('common.exitFullscreen'),
@@ -123,7 +127,7 @@ export class SafeMapControlsService {
     if (!this.measureControls[lang]) {
       // import related file, and build control
       import(`leaflet-measure/dist/leaflet-measure.${lang}.js`).then(() => {
-        const control = new L.Control.Measure({
+        const control = new (L.Control as any).Measure({
           position: 'bottomleft',
           primaryLengthUnit: 'kilometers',
           primaryAreaUnit: 'sqmeters',
@@ -147,20 +151,20 @@ export class SafeMapControlsService {
   }
 
   /**
-   * Add the legend control
+   * Add legend control to the map
    *
    * @param map leaflet map
    */
   public getLegendControl(map: any): any {
-    const control = L.control({ position: 'bottomright' });
+    const control = new L.Control({ position: 'bottomright' });
     control.onAdd = () => {
       const div = L.DomUtil.create('div', 'info legend');
-      const legend = this.domService.appendComponentToBody(
+      const component = this.domService.appendComponentToBody(
         SafeMapLegendComponent,
         div
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const instance: SafeMapLegendComponent = legend.instance;
+      const instance: SafeMapLegendComponent = component.instance;
       return div;
     };
     control.addTo(map);
@@ -180,15 +184,15 @@ export class SafeMapControlsService {
    * @param map map widget
    */
   public getDownloadControl(map: any): any {
-    const control = L.control({ position: 'bottomleft' });
+    const control = new L.Control({ position: 'bottomleft' });
     control.onAdd = () => {
       const div = L.DomUtil.create('div', 'info legend');
-      const legend = this.domService.appendComponentToBody(
+      const component = this.domService.appendComponentToBody(
         SafeMapDownloadComponent,
         div
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const instance: SafeMapDownloadComponent = legend.instance;
+      const instance: SafeMapDownloadComponent = component.instance;
       return div;
     };
     control.addTo(map);
