@@ -168,6 +168,11 @@ export class SafeMapControlsService {
     }
   }
 
+  /**
+   * Add a download control on the bottom left of the map. Click propagation and scroll propagation are disabled so they do not propagate to the map when clicking or scrolling on the button
+   *
+   * @param map map widget
+   */
   public getDownloadControl(map: any): any {
     const control = L.control({ position: 'bottomleft' });
     control.onAdd = () => {
