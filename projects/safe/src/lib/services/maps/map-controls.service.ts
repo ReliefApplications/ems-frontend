@@ -154,7 +154,8 @@ export class SafeMapControlsService {
         SafeMapLegendComponent,
         div
       );
-      const intance: SafeMapLegendComponent = legend.instance;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const instance: SafeMapLegendComponent = legend.instance;
       return div;
     };
     control.addTo(map);
@@ -181,6 +182,7 @@ export class SafeMapControlsService {
         SafeMapDownloadComponent,
         div
       );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const instance: SafeMapDownloadComponent = legend.instance;
       return div;
     };
