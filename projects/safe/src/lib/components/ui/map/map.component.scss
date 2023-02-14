@@ -19,11 +19,9 @@
 }
 
 ::ng-deep .leaflet-layerstree-children {
-  padding-left: 10px;
-}
-
-::ng-deep .leaflet-layerstree-children-nopad {
-  padding-left: 0px;
+  &:not(.leaflet-layerstree-children-nopad) {
+    padding-left: 20px;
+  }
 }
 
 ::ng-deep .leaflet-layerstree-hide {
@@ -36,8 +34,4 @@
 
 ::ng-deep .leaflet-layerstree-expand-collapse {
   cursor: pointer;
-}
-
-::ng-deep .leaflet-layerstree-children {
-  padding-left: 20px;
 }
