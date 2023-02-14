@@ -91,7 +91,7 @@ export class SafeMapComponent
     if (layerData) {
       // When using geoman tools no layer control is shown
       if (!this.useGeomanTools) {
-        L.control.layers.tree(undefined, layerData).addTo(this.map);
+        L.control.layers.tree(this.baseTree, layerData).addTo(this.map);
       }
       this.map.addLayer(layerData.layer);
     }
@@ -134,6 +134,7 @@ export class SafeMapComponent
 
   // === MARKERS ===
   private popupMarker: any;
+  private baseTree: any;
   private layers: LayerTree[] = [];
   private layerControl: any;
   private layerTreeCloned!: any;
@@ -411,9 +412,13 @@ export class SafeMapComponent
     }
   }
   /**
-   * Draw layers on map.
+   * Draw layers on map and sets the baseTree.
    */
   private drawLayers(): void {
+    this.baseTree = {
+      label: this.basemap.options.key,
+      layer: this.basemap,
+    };
     const options1 = {
       style: {
         opacity: 0.2,
@@ -480,7 +485,7 @@ export class SafeMapComponent
       drawLayer(layer);
     }
     this.layerControl = L.control.layers
-      .tree(undefined, this.layers)
+      .tree(this.baseTree, this.layers)
       .addTo(this.map);
   }
 
