@@ -163,6 +163,12 @@ export const randomFeatureCollection = generateRandomFeatures({
   numFeatures: 20,
 });
 
+/**
+ * Generat a geojson layer from geojson definition
+ *
+ * @param geojson geojson to use as layer
+ * @returns geojson layer
+ */
 export const geoJsonLayer = (geojson: any) =>
   L.geoJSON(geojson, {
     // Check for icon property

@@ -1,8 +1,6 @@
 import { generateGeoJSONPoints } from './util-test';
-import 'leaflet.heat';
 import { merge, get } from 'lodash';
 import { haversineDistance } from '../utils/haversine';
-
 import 'leaflet.heat';
 import * as L from 'leaflet';
 
@@ -38,6 +36,7 @@ const defaultHeatMapOptions: HeatMapOptions = {
  *
  * @param map The map to add the heatmap to
  * @param options Options for the heatmap
+ * @returns heatmap layer
  */
 export const generateHeatMap = (
   map: any,
