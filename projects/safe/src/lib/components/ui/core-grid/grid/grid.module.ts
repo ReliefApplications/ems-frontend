@@ -7,6 +7,7 @@ import { SafeArrayFilterModule } from '../array-filter/array-filter.module';
 import { SafeArrayFilterMenuModule } from '../array-filter-menu/array-filter-menu.module';
 import { SafeDropdownFilterModule } from '../dropdown-filter/dropdown-filter.module';
 import { SafeDropdownFilterMenuModule } from '../dropdown-filter-menu/dropdown-filter-menu.module';
+import { SafeDateFilterModule } from '../date-filter/date-filter.module';
 import { SafeExpandedCommentModule } from '../expanded-comment/expanded-comment.module';
 import { SafeErrorsModalModule } from '../errors-modal/errors-modal.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -50,6 +51,7 @@ import { SafeButtonModule } from '../../button/button.module';
     SafeArrayFilterMenuModule,
     SafeDropdownFilterModule,
     SafeDropdownFilterMenuModule,
+    SafeDateFilterModule,
     // === ROW ===
     SafeGridRowActionsModule,
     // === TOOLBAR ===

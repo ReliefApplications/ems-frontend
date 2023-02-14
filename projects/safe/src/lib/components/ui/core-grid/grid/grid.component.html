@@ -130,6 +130,25 @@
       >
         <!-- FILTER -->
         <ng-container *ngIf="field.meta">
+          <!-- FILTER ( datetime / date ) -->
+          <ng-container
+            *ngIf="['datetime', 'date'].includes(field.meta.type)"
+          >
+            <ng-template
+              kendoGridFilterMenuTemplate
+              let-filter
+              let-column="column"
+              let-filterService="filterService"
+              >
+              <safe-date-filter
+                [filter]="filter"
+                [field]="field.name"
+                [filterService]="filterService"
+                valueField="value"
+              >
+              </safe-date-filter>
+            </ng-template>
+          </ng-container>
           <!-- FILTER ( dropdown / radiogroup ) -->
           <ng-container
             *ngIf="['dropdown', 'radiogroup'].includes(field.meta.type)"
