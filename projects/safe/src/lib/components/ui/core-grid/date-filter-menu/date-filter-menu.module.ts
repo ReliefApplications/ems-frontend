@@ -8,6 +8,9 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 
+/**
+ * Custom date filter menu for core grids.
+ */
 @NgModule({
   declarations: [SafeDateFilterMenuComponent],
   imports: [
