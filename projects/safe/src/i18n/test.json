@@ -17,6 +17,11 @@
 			"none": "******",
 			"one": "******"
 		},
+		"ariaLabel": {
+			"search": {
+				"clear": "******"
+			}
+		},
 		"attribute": {
 			"few": "******",
 			"none": "******",
@@ -409,15 +414,17 @@
 			},
 			"subscription": {
 				"modal": {
-					"clearButton": {
-						"ariaLabel": "******"
-					},
 					"hint": {
 						"listenTo": "******"
 					},
 					"listenTo": "******",
 					"placeholder": {
 						"listenTo": "******"
+					},
+					"routingKey": {
+						"clear": {
+							"ariaLabel": "******"
+						}
 					}
 				}
 			},
@@ -500,11 +507,6 @@
 			"fields": "******",
 			"subject": "******",
 			"withoutRecords": "******"
-		},
-		"floating": {
-			"menuButton": {
-				"ariaLabel": "******"
-			}
 		},
 		"form": {
 			"aggregation": {
@@ -807,7 +809,7 @@
 			"dropdown": {
 				"select": "******"
 			},
-			"fieldsLabel": {
+			"fields": {
 				"ariaLabel": "******"
 			},
 			"paginator": {
@@ -835,21 +837,12 @@
 			"add": {
 				"title": "******"
 			},
-			"clearButton": {
-				"ariaLabel": "******"
-			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
 			},
 			"impersonate": {
 				"title": "******"
-			},
-			"paginatorResources": {
-				"ariaLabel": "******"
-			},
-			"paginatorUsers": {
-				"ariaLabel": "******"
 			},
 			"summary": {
 				"addFilter": "******",
@@ -982,6 +975,9 @@
 				"add": "******",
 				"confirm": "******",
 				"description": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"widget": {

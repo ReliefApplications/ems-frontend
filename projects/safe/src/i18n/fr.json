@@ -17,6 +17,11 @@
 			"none": "Aucune application",
 			"one": "Application"
 		},
+		"ariaLabel": {
+			"search": {
+				"clear": "Supprimer la recherche"
+			}
+		},
 		"attribute": {
 			"few": "Attributs",
 			"none": "Aucun attribut",
@@ -380,7 +385,7 @@
 				"title": "Supprimer la configuration d'API"
 			},
 			"paginator": {
-				"ariaLabel": "***"
+				"ariaLabel": "Sélectionnez la page de configurations d'API"
 			}
 		},
 		"application": {
@@ -409,15 +414,17 @@
 			},
 			"subscription": {
 				"modal": {
-					"clearButton": {
-						"ariaLabel": "***"
-					},
 					"hint": {
 						"listenTo": "Clé de routage de l'agent de messages"
 					},
 					"listenTo": "Écouter",
 					"placeholder": {
 						"listenTo": "Sélectionner une clé de routage"
+					},
+					"routingKey": {
+						"clear": {
+							"ariaLabel": "Supprimer la clé de routage"
+						}
 					}
 				}
 			},
@@ -441,7 +448,7 @@
 				"select": "Depuis les applications"
 			},
 			"paginator": {
-				"ariaLabel": "***"
+				"ariaLabel": "Sélectionnez la page d'applications"
 			}
 		},
 		"calculatedFields": {
@@ -578,7 +585,7 @@
 		"forms": {
 			"isCore": "Est un formulaire source",
 			"paginator": {
-				"ariaLabel": "***"
+				"ariaLabel": "Sélectionnez la page de formulaires"
 			},
 			"parent": "Formulaire parent"
 		},
@@ -629,7 +636,7 @@
 		},
 		"notifications": {
 			"paginator": {
-				"ariaLabel": "***"
+				"ariaLabel": "Sélectionnez la page de notifications"
 			},
 			"readAll": "Tout marquer comme lu"
 		},
@@ -662,7 +669,7 @@
 				"switch": "Changer de mode"
 			},
 			"paginator": {
-				"ariaLabel": "***"
+				"ariaLabel": "Sélectionez la page de tâches programmées"
 			}
 		},
 		"queryBuilder": {
@@ -788,7 +795,7 @@
 			"active": "Enregistrements actifs",
 			"archived": "Enregistrements archivés",
 			"paginator": {
-				"ariaLabel": "***"
+				"ariaLabel": "Sélectionnez la page d'enregistrements"
 			},
 			"showActive": "Voir les enregistrements actifs",
 			"showArchived": "Voir les enregistrements archivés",
@@ -807,11 +814,11 @@
 			"dropdown": {
 				"select": "Depuis la référence de données"
 			},
-			"fieldsLabel": {
-				"ariaLabel": "***"
+			"fields": {
+				"ariaLabel": "Indiquez les champs de la référence de données"
 			},
 			"paginator": {
-				"ariaLabel": "***"
+				"ariaLabel": "Sélectionnez la page de références de données"
 			}
 		},
 		"resource": {
@@ -828,15 +835,12 @@
 				"records": "Aucun enregistrement détecté"
 			},
 			"paginator": {
-				"ariaLabel": "***"
+				"ariaLabel": "Sélectionnez la page de ressources"
 			}
 		},
 		"role": {
 			"add": {
 				"title": "Ajouter un nouveau rôle"
-			},
-			"clearButton": {
-				"ariaLabel": "***"
 			},
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer le rôle {{name}} ?",
@@ -844,12 +848,6 @@
 			},
 			"impersonate": {
 				"title": "Choix du rôle à simuler"
-			},
-			"paginatorResources": {
-				"ariaLabel": "***"
-			},
-			"paginatorUsers": {
-				"ariaLabel": "***"
 			},
 			"summary": {
 				"addFilter": "Ajouter un filtre",
@@ -983,6 +981,9 @@
 				"add": "Ajouter un nouvel utilisateur",
 				"confirm": "Inviter des utilisateurs",
 				"description": "Sélectionner des utilisateurs existants, inviter de nouveaux utilisateurs ou en importer depuis un fichier Excel"
+			},
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page d'utilisateurs"
 			}
 		},
 		"widget": {

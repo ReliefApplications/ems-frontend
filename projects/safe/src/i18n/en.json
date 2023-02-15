@@ -17,6 +17,11 @@
 			"none": "No application",
 			"one": "Application"
 		},
+		"ariaLabel": {
+			"search": {
+				"clear": "Clear search"
+			}
+		},
 		"attribute": {
 			"few": "Attributes",
 			"none": "No attribute",
@@ -380,7 +385,7 @@
 				"title": "Delete API configuration"
 			},
 			"paginator": {
-				"ariaLabel": "Select page of forms"
+				"ariaLabel": "Select page of API configurations"
 			}
 		},
 		"application": {
@@ -409,15 +414,17 @@
 			},
 			"subscription": {
 				"modal": {
-					"clearButton": {
-						"ariaLabel": "Clear"
-					},
 					"hint": {
 						"listenTo": "Message broker routing key"
 					},
 					"listenTo": "Listen to",
 					"placeholder": {
 						"listenTo": "Select a routing key"
+					},
+					"routingKey": {
+						"clear": {
+							"ariaLabel": "Clear routing key"
+						}
 					}
 				}
 			},
@@ -500,11 +507,6 @@
 			"fields": "Select fields to write in body",
 			"subject": "Subject",
 			"withoutRecords": "Without records"
-		},
-		"floating": {
-			"menuButton": {
-				"ariaLabel": "Example icon-button with a menu"
-			}
 		},
 		"form": {
 			"aggregation": {
@@ -807,11 +809,11 @@
 			"dropdown": {
 				"select": "From Reference data"
 			},
-			"fieldsLabel": {
-				"ariaLabel": "Fields chip list"
+			"fields": {
+				"ariaLabel": "Input available fields of reference data"
 			},
 			"paginator": {
-				"ariaLabel": "Select page of forms"
+				"ariaLabel": "Select page of reference data"
 			}
 		},
 		"resource": {
@@ -835,21 +837,12 @@
 			"add": {
 				"title": "Add new role"
 			},
-			"clearButton": {
-				"ariaLabel": "Clear"
-			},
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the role {{name}}?",
 				"title": "Delete role"
 			},
 			"impersonate": {
 				"title": "Choose role to simulate"
-			},
-			"paginatorResources": {
-				"ariaLabel": "Select page of resources"
-			},
-			"paginatorUsers": {
-				"ariaLabel": "Select page of users"
 			},
 			"summary": {
 				"addFilter": "Add filter",
@@ -982,6 +975,9 @@
 				"add": "Add new user",
 				"confirm": "Invite users",
 				"description": "Select existing users, invite new users or import from Excel file"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of users"
 			}
 		},
 		"widget": {
