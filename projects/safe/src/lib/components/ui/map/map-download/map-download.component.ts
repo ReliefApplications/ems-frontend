@@ -4,7 +4,13 @@ import { SafeButtonModule } from '../../button/button.module';
 import { SafeIconModule } from '../../icon/icon.module';
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { FormsModule } from '@angular/forms';
+import {
+  FormGroup,
+  FormsModule,
+  FormControl,
+  FormBuilder,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { SafeDividerModule } from '../../divider/divider.module';
 
 /**
@@ -22,6 +28,7 @@ import { SafeDividerModule } from '../../divider/divider.module';
     MatRadioModule,
     MatSelectModule,
     FormsModule,
+    ReactiveFormsModule,
   ],
   styleUrls: ['./map-download.component.scss'],
 })
@@ -32,9 +39,21 @@ export class SafeMapDownloadComponent {
   public layersToSelect = ''; // Corresponds to the current 'layers' option selected
   public availableLayers: string[] = [];
   public downloadOutputs = ['CSV', 'Excel', 'GeoJSON', 'PNG'];
+  public form: FormGroup;
+
   /**
-   * Toggles the display of the popup download menu
+   * Creates the form to handle the layers selection
    *
+   * @param fb form builder
+   */
+  constructor(private fb: FormBuilder) {
+    this.form = fb.group({
+      layersToSelect: new FormControl('All layers'),
+    });
+  }
+
+  /**
+   * Toggles the display of the popup download menu.
    * If the element is hidden, it will be shown. If the element is shown, it will be hidden when clicking.
    */
   public toggleVisibility(): void {

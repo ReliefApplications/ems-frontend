@@ -18,11 +18,11 @@
     </div>
     <safe-divider class="m-0"></safe-divider>
     <!-- Selection of layers to export -->
-    <div class="p-1 flex flex-col gap-1">
+    <div [formGroup]="form" class="p-1 flex flex-col gap-1">
       <mat-radio-group
         aria-labelledby="layer-radio-group"
         class="flex flex-col gap-1"
-        [(ngModel)]="layersToSelect"
+        formControlName="layersToSelect"
       >
         <mat-radio-button
           class="radio-button"
@@ -32,7 +32,7 @@
           {{ layer }}
         </mat-radio-button>
       </mat-radio-group>
-      <ng-container *ngIf="layersToSelect === 'Selected layers'">
+      <ng-container *ngIf="form.controls.layersToSelect.value === 'Selected layers'">
         <mat-form-field appearance="outline" class="p-0">
           <mat-label>Select layers</mat-label>
           <mat-select>

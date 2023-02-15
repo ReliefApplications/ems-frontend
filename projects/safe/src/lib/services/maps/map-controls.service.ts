@@ -187,6 +187,8 @@ export class SafeMapControlsService {
     const control = new L.Control({ position: 'bottomright' });
     control.onAdd = () => {
       const div = L.DomUtil.create('div', 'info legend');
+      L.DomEvent.disableClickPropagation(div);
+      L.DomEvent.disableScrollPropagation(div);
       const component = this.domService.appendComponentToBody(
         SafeMapDownloadComponent,
         div
@@ -196,10 +198,5 @@ export class SafeMapControlsService {
       return div;
     };
     control.addTo(map);
-    const container = control.getContainer();
-    if (container) {
-      L.DomEvent.disableClickPropagation(container);
-      L.DomEvent.disableScrollPropagation(container);
-    }
   }
 }
