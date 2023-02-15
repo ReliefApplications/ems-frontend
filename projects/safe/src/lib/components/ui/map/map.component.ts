@@ -45,6 +45,8 @@ import { AVAILABLE_GEOMAN_LANGUAGES } from './const/languages';
 
 // import 'leaflet';
 import * as L from 'leaflet';
+import { Layer } from './layer';
+import { MOCK_LAYER_SETTINGS } from './test/layer-settings-test';
 
 /**
  * Cleans the settings object from null values
@@ -252,8 +254,18 @@ export class SafeMapComponent
         setLang(event.lang);
       });
   }
+
+  /** Method for testing the layer class, TO BE REMOVED */
+  private testLayerClass() {
+    const testLayer = new Layer(MOCK_LAYER_SETTINGS);
+    console.log(testLayer);
+  }
+
   /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
+    // FOR TESTING PURPOSES ONLY
+    this.testLayerClass();
+
     // Creates the map and adds all the controls we use.
     this.drawMap();
     /**
