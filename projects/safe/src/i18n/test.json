@@ -572,7 +572,8 @@
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
-			}
+			},
+			"saveSurvey": "******"
 		},
 		"forms": {
 			"isCore": "******",

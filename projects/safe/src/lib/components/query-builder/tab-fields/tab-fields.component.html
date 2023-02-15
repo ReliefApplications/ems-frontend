@@ -91,7 +91,8 @@
             "
             cdkDrag
           >
-            <div>
+            <!-- Field name and errors -->
+            <div class="flex items-center">
               <span>{{ field.name }}</span>
               <safe-button
                 [isIcon]="true"
@@ -113,6 +114,7 @@
               >
               </safe-button>
             </div>
+            <!-- Field type -->
             <div *ngIf="field.type" class="flex items-center">
               <span
                 class="text-gray-500"

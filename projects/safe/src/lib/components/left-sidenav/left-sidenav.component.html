@@ -74,18 +74,15 @@
               </button>
             </div>
           </mat-list-item>
-          <mat-list *cdkDragPreview>
-            <a
-              mat-list-item
-              class="nav-item"
-              [class]="item.class ? item.class : ''"
-            >
+          <!-- Preview when dragging element -->
+          <mat-list-item *cdkDragPreview class="nav-item">
+            <a [class]="item.class ? item.class : ''">
               <mat-icon mat-list-icon class="nav-icon">
                 {{ item.icon }}
               </mat-icon>
               <div mat-line>{{ item.name }}</div>
             </a>
-          </mat-list>
+          </mat-list-item>
         </div>
       </ng-container>
     </div>
