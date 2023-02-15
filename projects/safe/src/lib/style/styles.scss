@@ -364,6 +364,11 @@ $safe-theme: mat.define-light-theme(
   background: mat.get-color-from-palette($safe-warn) !important;
 }
 
+// Mat table
+mat-header-row {
+  border-bottom: none !important;
+}
+
 .mat-header-cell {
   border-bottom: 1px solid #d8d8d8 !important;
   color: #767373;
@@ -410,7 +415,7 @@ $safe-theme: mat.define-light-theme(
 
 .mat-column-_actions,
 .mat-column-actions {
-  width: 64px;
+  max-width: 64px;
 }
 
 .mat-chip {
@@ -702,9 +707,23 @@ mat-tab-group[vertical] {
 /* === Tailwindcss === */
 // Allow to use @apply in not visible by default elements
 @layer components {
+  // Drag & Drop
   .cdk-drag-preview {
-    @apply box-border rounded shadow-xl;
-    // previous shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12),
+    @apply box-border rounded shadow-xl flex items-center justify-between bg-white;
+  }
+
+  .cdk-drag-animating {
+    @apply transition-transform;
+  }
+
+  .cdk-drag-placeholder {
+    @apply opacity-0;
+  }
+
+  .cdk-drop-list-dragging {
+    .cdk-drag:not(.cdk-drag-placeholder) {
+      @apply transition-transform;
+    }
   }
 }
 
