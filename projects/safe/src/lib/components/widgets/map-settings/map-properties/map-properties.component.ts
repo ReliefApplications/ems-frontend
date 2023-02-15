@@ -2,17 +2,12 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
 import {
   MapConstructorSettings,
   MapEvent,
   MapEventType,
 } from '../../../ui/map/interfaces/map.interface';
 import { BASEMAPS } from '../../../ui/map/const/baseMaps';
-import {
-  BaseLayerTree,
-  OverlayLayerTree,
-} from '../../../ui/map/interfaces/map-layers.interface';
 
 /**
  * Map Properties of Map widget.
@@ -27,16 +22,6 @@ export class MapPropertiesComponent
   implements OnInit
 {
   @Input() form!: UntypedFormGroup;
-
-  private deleteLayer: BehaviorSubject<
-    BaseLayerTree | OverlayLayerTree | null
-  > = new BehaviorSubject<BaseLayerTree | OverlayLayerTree | null>(null);
-  public layerToDelete$ = this.deleteLayer.asObservable();
-  private addLayer: BehaviorSubject<BaseLayerTree | OverlayLayerTree | null> =
-    new BehaviorSubject<BaseLayerTree | OverlayLayerTree | null>(null);
-  public layerToAdd$ = this.addLayer.asObservable();
-  private overlaysValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  public overlaysValue$ = this.overlaysValue.asObservable();
 
   public mapSettings!: MapConstructorSettings;
   public baseMaps = BASEMAPS;

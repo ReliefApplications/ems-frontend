@@ -12,7 +12,7 @@ import { BehaviorSubject, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 import { SafeMapLayersService } from '../../../../../services/maps/map-layers.service';
 import {
-  BaseLayerTree,
+  LayerActionOnMap,
   OverlayLayerTree,
 } from '../../../../ui/map/interfaces/map-layers.interface';
 
@@ -75,13 +75,9 @@ export class SafeEditLayerModalComponent
 
   // === MAP ===
   public mapSettings!: MapConstructorSettings;
-  private deleteLayer: BehaviorSubject<
-    BaseLayerTree | OverlayLayerTree | null
-  > = new BehaviorSubject<BaseLayerTree | OverlayLayerTree | null>(null);
-  public layerToDelete$ = this.deleteLayer.asObservable();
-  private addLayer: BehaviorSubject<BaseLayerTree | OverlayLayerTree | null> =
-    new BehaviorSubject<BaseLayerTree | OverlayLayerTree | null>(null);
-  public layerToAdd$ = this.addLayer.asObservable();
+  private addOrDeleteLayer: BehaviorSubject<LayerActionOnMap | null> =
+    new BehaviorSubject<LayerActionOnMap | null>(null);
+  public layerToAddOrDelete$ = this.addOrDeleteLayer.asObservable();
   private updateLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   public updateLayer$ = this.updateLayer.asObservable();
 
@@ -204,8 +200,12 @@ export class SafeEditLayerModalComponent
    * Set ups the new selected layer and also removes the previous one
    */
   private setUpLayer() {
+    // If a layer is already applied to the map we first delete it
     if (this.currentLayer) {
-      this.deleteLayer.next(this.currentLayer);
+      this.addOrDeleteLayer.next({
+        layerData: this.currentLayer,
+        isDelete: true,
+      });
     }
     if (this.layerType) {
       this.currentLayer = L.geoJSON(TEST_LAYER[this.layerType]);
@@ -226,7 +226,10 @@ export class SafeEditLayerModalComponent
         options: defaultLayerOptions,
       };
 
-      this.addLayer.next(overlays);
+      // Then we use a timeout to add the new layer in order to delete the previous layer if so
+      setTimeout(() => {
+        this.addOrDeleteLayer.next({ layerData: overlays, isDelete: false });
+      }, 0);
 
       this.updateLayerOptions(defaultLayerOptions);
     }

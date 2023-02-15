@@ -20,3 +20,11 @@ export interface OverlayLayerTree extends BaseLayerTree {
   children?: OverlayLayerTree[];
   selectAllCheckbox?: string | boolean;
 }
+
+/**
+ * Declares an interface that will be used on what action has to perform the layer sent to the map component *
+ */
+export interface LayerActionOnMap {
+  layerData: BaseLayerTree | OverlayLayerTree | null;
+  isDelete: boolean;
+}

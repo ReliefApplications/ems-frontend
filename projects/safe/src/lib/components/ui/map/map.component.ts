@@ -19,6 +19,7 @@ import {
   IMarkersLayerValue,
   OverlayLayerTree,
   BaseLayerTree,
+  LayerActionOnMap,
 } from './interfaces/map-layers.interface';
 import { flatDeep } from './utils/array-flatter';
 import {
@@ -79,16 +80,14 @@ export class SafeMapComponent
       this.updateMapSettings(settings);
     }
   }
-  /** Delete layer setter */
-  @Input() set deleteLayer(layerData: BaseLayerTree | OverlayLayerTree | null) {
-    if (layerData) {
-      this.updateLayerTreeOfMap(layerData, false, true);
-    }
-  }
-  /** Add layer setter */
-  @Input() set addLayer(layerData: BaseLayerTree | OverlayLayerTree | null) {
-    if (layerData) {
-      this.updateLayerTreeOfMap(layerData, false);
+  /** Add or delete layer setter */
+  @Input() set addOrDeleteLayer(layerAction: LayerActionOnMap | null) {
+    if (layerAction?.layerData) {
+      this.updateLayerTreeOfMap(
+        layerAction.layerData,
+        layerAction.isDelete,
+        false
+      );
     }
   }
   /** Update layer options setters */
@@ -511,8 +510,8 @@ export class SafeMapComponent
    */
   private updateLayerTreeOfMap(
     overlaysTree: OverlayLayerTree,
-    mockedData: boolean = true,
-    isDelete: boolean = false
+    isDelete: boolean = false,
+    mockedData: boolean = true
   ): void {
     if (isDelete) {
       this.layerTreeCloned = overlaysTree;

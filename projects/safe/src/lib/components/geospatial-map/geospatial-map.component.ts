@@ -10,7 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 import { SafeMapLayersService } from '../../services/maps/map-layers.service';
 import {
   BaseLayerTree,
-  OverlayLayerTree,
+  LayerActionOnMap,
 } from '../ui/map/interfaces/map-layers.interface';
 import {
   MapConstructorSettings,
@@ -41,9 +41,9 @@ export class SafeGeospatialMapComponent
   };
   // === MAP ===
   public mapSettings!: MapConstructorSettings;
-  private addLayer: BehaviorSubject<BaseLayerTree | OverlayLayerTree | null> =
-    new BehaviorSubject<BaseLayerTree | OverlayLayerTree | null>(null);
-  public layerToAdd$ = this.addLayer.asObservable();
+  private addOrDeleteLayer: BehaviorSubject<LayerActionOnMap | null> =
+    new BehaviorSubject<LayerActionOnMap | null>(null);
+  public layerToAddOrDelete$ = this.addOrDeleteLayer.asObservable();
   private updateLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   public updateLayer$ = this.updateLayer.asObservable();
 
@@ -88,7 +88,7 @@ export class SafeGeospatialMapComponent
       label: '',
       layer,
     };
-    this.addLayer.next(baseLayer);
+    this.addOrDeleteLayer.next({ layerData: baseLayer, isDelete: false });
     this.setDataLayers();
   }
 
@@ -120,7 +120,7 @@ export class SafeGeospatialMapComponent
         label: '',
         layer: newLayer,
       };
-      this.addLayer.next(baseLayer);
+      this.addOrDeleteLayer.next({ layerData: baseLayer, isDelete: false });
     }
   }
 
