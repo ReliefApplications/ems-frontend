@@ -82,6 +82,5 @@ export const getCachedValues = <T>(
     query,
     variables,
   }) as T;
-  console.log('cachedValues: ', cachedValues);
   return cachedValues as T;
 };

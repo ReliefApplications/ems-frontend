@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeMapWidgetComponent } from './map.component';
+import { SafeMapLegendComponent } from './map-legend.component';
 
-describe('SafeMapWidgetComponent', () => {
-  let component: SafeMapWidgetComponent;
-  let fixture: ComponentFixture<SafeMapWidgetComponent>;
+describe('SafeMapLegendComponent', () => {
+  let component: SafeMapLegendComponent;
+  let fixture: ComponentFixture<SafeMapLegendComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SafeMapWidgetComponent],
+      declarations: [SafeMapLegendComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SafeMapWidgetComponent);
+    fixture = TestBed.createComponent(SafeMapLegendComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

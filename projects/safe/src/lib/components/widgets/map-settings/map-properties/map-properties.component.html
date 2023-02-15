@@ -17,7 +17,7 @@
           'components.widget.settings.map.properties.basemap' | translate
         }}</mat-label>
         <mat-select formControlName="basemap" placeholder="OSM">
-          <mat-option *ngFor="let map of basemaps" [value]="map">
+          <mat-option *ngFor="let map of baseMaps" [value]="map">
             {{ map }}
           </mat-option>
         </mat-select>
@@ -72,8 +72,7 @@
         <mat-form-field appearance="outline" class="flex-1">
           <mat-label>
             {{
-              'components.widget.settings.map.properties.longitude'
-                | translate
+              'components.widget.settings.map.properties.longitude' | translate
             }}
           </mat-label>
           <input type="number" matInput formControlName="centerLong" />
@@ -88,9 +87,7 @@
             "
           ></safe-icon>
           <mat-error *ngIf="form.controls.centerLat.errors">
-            {{
-              'components.widget.settings.map.errors.longitude' | translate
-            }}
+            {{ 'components.widget.settings.map.errors.longitude' | translate }}
           </mat-error>
         </mat-form-field>
       </div>
@@ -110,8 +107,8 @@
     <div class="lg:flex-1 max-lg:min-w-full h-80 lg:min-h-full">
       <safe-map
         class="w-full h-full"
-        [header]="false"
-        [settings]="mapSettings"
+        (mapEvent)="handleMapEvent($event)"
+        [mapSettings]="mapSettings"
       ></safe-map>
     </div>
   </div>

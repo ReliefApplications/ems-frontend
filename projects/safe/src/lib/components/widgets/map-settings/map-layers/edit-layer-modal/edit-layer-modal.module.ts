@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeModalModule } from '../../../../ui/modal/modal.module';
+import { SafeMapModule } from '../../../../ui/map/map.module';
 import { SafeEditLayerModalComponent } from './edit-layer-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -22,6 +23,7 @@ import { MatSliderModule } from '@angular/material/slider';
     MatInputModule,
     MatCheckboxModule,
     MatSliderModule,
+    SafeMapModule,
   ],
   exports: [SafeEditLayerModalComponent],
 })
