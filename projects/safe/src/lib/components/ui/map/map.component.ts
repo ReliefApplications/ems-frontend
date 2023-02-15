@@ -430,6 +430,7 @@ export class SafeMapComponent
     this.baseTree = {
       label: 'Base Maps',
       children: baseMaps,
+      collapsed: true,
     };
     const options1 = {
       style: {
