@@ -1,50 +1,20 @@
 import { Injectable } from '@angular/core';
-import { get, merge } from 'lodash';
-import { DomService } from '../../../services/dom/dom.service';
-import { generateHeatLayerPoints } from './tests/heat-map/heatmap-test';
-import { HeatMapOptions } from './tests/heat-map/heat-map.interface';
-import { SafeMapPopupComponent } from './map-popup/map-popup.component';
-import { haversineDistance } from './utils/haversine';
-import { defaultHeatMapOptions } from './tests/heat-map/heat-map.config';
-import { generateClusterGroup } from './tests/cluster/cluster-test';
 
-declare let L: any;
+/// <reference path="../../../../typings/leaflet/index.d.ts" />
+import * as L from 'leaflet';
+import { get } from 'lodash';
+import { DomService } from '../../../../services/dom/dom.service';
+import { haversineDistance } from '../utils/haversine';
+import { SafeMapPopupComponent } from './map-popup.component';
 
-@Injectable()
-export class SafeMapService {
+/**
+ * Shared map control service.
+ */
+@Injectable({
+  providedIn: 'root',
+})
+export class SafeMapPopupService {
   constructor(private domService: DomService) {}
-
-  /**
-   * Create a new heat map layer for the given map and updates the click event to display popups with heat map feature points
-   * @param map Map in where we want to add the heat map layer
-   * @param options Options for the new heat map layer
-   */
-  public generateHeatMap(map: any, options?: Partial<HeatMapOptions>) {
-    // Generate test heat layer points
-    const heatMapPoints = generateHeatLayerPoints();
-    // Generate new heat layer with the created test points and given options if so
-    const heatMapLayer = L.heatLayer(
-      heatMapPoints.map((point: any) => [
-        point.geometry.coordinates[1],
-        point.geometry.coordinates[0],
-        get(point, 'properties.weight', 1),
-      ]),
-      merge(defaultHeatMapOptions, options)
-    );
-    heatMapLayer.addTo(map);
-    this.addPopupToClickEvent(map, heatMapPoints);
-  }
-
-  /**
-   * Create a new cluster layer for the given map and updates the click event to display popups with cluster feature points
-   * @param map Map in where we want to add the cluster layer
-   */
-  public generateClusterLayer(map: any) {
-    const clusterGroup = generateClusterGroup(L);
-    map.addLayer(clusterGroup);
-    this.addPopupToClusterClickEvent(map, clusterGroup);
-  }
-
   /**
    * Set popup event and content for click event in cluster groups
    * @param map Map in where we want to open the popup
@@ -64,7 +34,7 @@ export class SafeMapService {
    * @param map Map in where we want to open the popup
    * @param featurePoints Feature points to group in the popupF
    */
-  private addPopupToClickEvent(map: any, featurePoints: any[]) {
+  public addPopupToClickEvent(map: any, featurePoints: any[]) {
     // Leaflet.heat doesn't support click events, so we have to do it ourselves
     map.on('click', (event: any) => {
       // there is a problem here, the radius should be different
@@ -149,7 +119,7 @@ export class SafeMapService {
    * @param containerElement
    * @returns SafeMapPopupComponent instance
    */
-  private initializeSafeMapPopupComponent(
+  public initializeSafeMapPopupComponent(
     featurePoints: any[],
     containerElement: HTMLElement
   ): SafeMapPopupComponent {

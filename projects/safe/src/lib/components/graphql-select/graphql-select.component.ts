@@ -443,9 +443,10 @@ export class SafeGraphQLSelectComponent
   }
 
   /**
+   * Update data value
    *
-   * @param data
-   * @param loading
+   * @param data query response data
+   * @param loading loading status
    */
   private updateValues(data: any, loading: boolean) {
     const path = this.path ? `${this.queryName}.${this.path}` : this.queryName;

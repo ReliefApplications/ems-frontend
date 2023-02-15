@@ -1,4 +1,4 @@
-import { generateGeoJSONPoints } from '../util/util-test';
+import { generateGeoJSONPoints } from './util-test';
 
 /** Minimum cluster size in pixel */
 const minClusterSize = 20;
@@ -13,10 +13,11 @@ const clusterIconSvg =
 /**
  * Creation of the cluster group
  *
+ * @param map map to be used
  * @param L to be able to use Leaflet from CDN
  * @returns the cluster group
  */
-export const generateClusterGroup = (L: any) => {
+export const generateClusterLayer = (map: any, L: any) => {
   const total = 200;
   const clusterGroup = L.markerClusterGroup({
     zoomToBoundsOnClick: false,
@@ -34,6 +35,15 @@ export const generateClusterGroup = (L: any) => {
       }),
   });
 
+  clusterGroup.on('clusterclick', (event: any) => {
+    const children = event.layer.getAllChildMarkers();
+    let popupContent = 'test popup';
+    children.forEach((child: any) => {
+      popupContent +=
+        ' and new test child ' + child.feature.properties.title + '.';
+    });
+    L.popup().setLatLng(event.latlng).setContent(popupContent).openOn(map);
+  });
   const clusterLayer = L.geoJSON(generateGeoJSONPoints(total), {
     onEachFeature: (feature: any, layer: any) => {
       layer.bindPopup('point popup ' + feature.properties.title);

@@ -1,24 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeMapComponent } from './map.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { SafeMapWidgetComponent } from './map.component';
 import { LayoutModule } from '@progress/kendo-angular-layout';
-import { SafeMapPopupComponent } from './map-popup/map-popup.component';
-import { SafeMapService } from './map.service';
-import { SafeButtonModule } from '../../ui/button/public-api';
-import { SafeDividerModule } from '../../ui/divider/public-api';
+import { SafeMapModule } from '../../ui/map/map.module';
 
-/** Module for the map widget component */
+/** Module for the SafeMapWidgetComponent */
 @NgModule({
-  declarations: [SafeMapComponent, SafeMapPopupComponent],
-  imports: [
-    CommonModule,
-    TranslateModule,
-    LayoutModule,
-    SafeButtonModule,
-    SafeDividerModule,
-  ],
-  exports: [SafeMapComponent],
-  providers: [SafeMapService],
+  declarations: [SafeMapWidgetComponent],
+  imports: [CommonModule, LayoutModule, SafeMapModule],
+  exports: [SafeMapWidgetComponent],
 })
-export class SafeMapModule {}
+export class SafeMapWidgetModule {}

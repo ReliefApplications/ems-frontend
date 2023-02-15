@@ -118,9 +118,10 @@ export class RoleUsersComponent
   }
 
   /**
+   *  Update users data value
    *
-   * @param data
-   * @param loading
+   * @param data query response data
+   * @param loading loading status
    */
   private updateValues(data: GetRoleQueryResponse, loading: boolean) {
     this.cachedUsers = updateQueryUniqueValues(

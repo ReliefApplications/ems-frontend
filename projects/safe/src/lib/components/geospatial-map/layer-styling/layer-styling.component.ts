@@ -6,7 +6,7 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 type GeometryTypes = 'Point' | 'Polygon' | 'LineString';
 
 /** Leaflet */
-declare let L: any;
+import * as L from 'leaflet';
 
 /** Component for styling leaflet layers */
 @Component({

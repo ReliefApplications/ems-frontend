@@ -16,6 +16,8 @@ export const generateGeoJSONPoints = (featuresCount: number = 100) => {
       Math.random() * (latBounds[1] - latBounds[0] + 1) + latBounds[0];
     const lng =
       Math.random() * (lngBounds[1] - lngBounds[0] + 1) + lngBounds[0];
+    const random = Math.random() > 0.5;
+    const id = Math.random().toString(36).substring(2, 15);
     features.push({
       type: 'Feature',
       geometry: {
@@ -26,6 +28,10 @@ export const generateGeoJSONPoints = (featuresCount: number = 100) => {
         title: 'point_' + i,
         'marker-symbol': 'harbor',
         weight: 1, // for heatmap -> if there is no other field, that should just be one
+        id,
+        imgSrc: random
+          ? 'https://upload.wikimedia.org/wikipedia/commons/e/e1/FullMoon2010.jpg'
+          : 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/560px-Saturn_during_Equinox.jpg',
       },
     });
   }

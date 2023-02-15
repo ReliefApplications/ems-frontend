@@ -1,4 +1,4 @@
-import { QuestionText } from 'survey-angular';
+import { Question } from 'survey-angular';
 import { SafeGeospatialMapComponent } from '../../components/geospatial-map/geospatial-map.component';
 import { DomService } from '../../services/dom/dom.service';
 
@@ -24,7 +24,7 @@ export const init = (Survey: any, domService: DomService): void => {
       type: 'text',
     },
     category: 'Custom Questions',
-    onAfterRender: (question: QuestionText, el: HTMLElement): void => {
+    onAfterRender: (question: Question, el: HTMLElement): void => {
       // hides the input element
       const element = el.getElementsByTagName('input')[0].parentElement;
       if (element) element.style.display = 'none';
