@@ -28,6 +28,7 @@ import { SafeSkeletonTableModule } from './components/skeleton/skeleton-table/sk
 import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
 import { SafeUserSummaryModule } from './components/user-summary/user-summary.module';
 import { SafeDateModule } from './pipes/date/date.module';
+import { SafeIconDisplayModule } from './pipes/icon-display/icon-display.module';
 import { SafeIconModule } from './components/ui/icon/icon.module';
 import { SafeSummaryCardSettingsModule } from './components/widgets/summary-card-settings/summary-card-settings.module';
 import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
@@ -41,6 +42,7 @@ import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
 import { SafeUnsubscribeModule } from './components/utils/unsubscribe/unsubscribe.module';
 import { SafeViewsModule } from './views/views.module';
 import { SafeGeospatialMapModule } from './components/geospatial-map/geospatial-map.module';
+import { SafeIconPickerModule } from './components/ui/icon-picker/icon-picker.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -74,6 +76,7 @@ import { SafeGeospatialMapModule } from './components/geospatial-map/geospatial-
     SafeSkeletonModule,
     SafeUserSummaryModule,
     SafeGeospatialMapModule,
+    SafeIconPickerModule,
     // === Pipes ===
     SafeDateModule,
     SafeReadableCronModule,
@@ -86,6 +89,7 @@ import { SafeGeospatialMapModule } from './components/geospatial-map/geospatial-
     SafeEmptyModule,
     SafeDividerModule,
     SafeLeftSidenavModule,
+    SafeIconDisplayModule,
     // === UTILS COMPONENTS ===
     SafeUnsubscribeModule,
     // === VIEWS ===

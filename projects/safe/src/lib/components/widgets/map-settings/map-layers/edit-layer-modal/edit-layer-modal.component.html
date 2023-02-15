@@ -1,79 +1,72 @@
-<safe-modal size="medium" [closable]="true">
-  <div class="flex flex-row space-x-4">
+<safe-modal size="fullscreen">
+  <div class="flex flex-row gap-4 grow">
+    <mat-tab-group
+      mat-align-tabs="start"
+      animationDuration="0ms"
+      vertical
+      class="grow basis-2/3"
+    >
+      <!-- LAYER PROPERTIES -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <safe-icon
+            icon="settings"
+            [size]="24"
+            matTooltip="Layer properties"
+            matTooltipPosition="right"
+          ></safe-icon>
+          <span>{{
+            'components.widget.settings.map.edit.layerProperties' | translate
+          }}</span>
+        </ng-template>
+        <ng-template matTabContent>
+          <safe-layer-properties
+            [form]="form"
+            [currentZoom]="mapSettings?.zoom"
+          ></safe-layer-properties>
+        </ng-template>
+      </mat-tab>
+
+      <!-- LAYER STYLING -->
+      <mat-tab [disabled]="!form.get('type')?.value">
+        <ng-template mat-tab-label>
+          <safe-icon
+            icon="layers"
+            [size]="24"
+            matTooltip="Layer styling"
+            matTooltipPosition="right"
+          ></safe-icon>
+          <span>{{
+            'components.widget.settings.map.edit.layerStyling' | translate
+          }}</span>
+        </ng-template>
+        <ng-template matTabContent>
+          <safe-layer-styling [form]="form" class="w-full"></safe-layer-styling>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
     <!-- Map section -->
     <safe-map
       (mapEvent)="handleMapEvent($event)"
       [displayMockedLayers]="false"
       [mapSettings]="mapSettings"
       [updateLayerOptions]="updateLayer$ | async"
-      [addLayer]="layerToAdd$ | async"
-      class="w-4/5 group flex-1"
+      [addOrDeleteLayer]="layerToAddOrDelete$ | async"
+      class="grow basis-1/3"
     >
     </safe-map>
-    <div class="flex flex-col space-y-12">
-      <!-- Options section -->
-      <form [formGroup]="form" class="flex flex-col space-y-8">
-        <!-- Layer name -->
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.name' | translate }}</mat-label>
-          <input matInput formControlName="name" type="text" />
-        </mat-form-field>
-        <!-- Default visibility -->
-        <mat-checkbox formControlName="defaultVisibility"
-          >Visible by default</mat-checkbox
-        >
-        <!-- Opacity -->
-        <div>
-          <div class="flex flex-row w-full justify-between">
-            <label>Opacity</label>
-            <label>{{ form.controls.opacity.value }}</label>
-          </div>
-          <mat-slider
-            class="w-full m-0"
-            min="0"
-            max="1"
-            step="0.1"
-            [discrete]="true"
-          >
-            <input matSliderThumb formControlName="opacity" />
-          </mat-slider>
-        </div>
-        <!-- Visibility range -->
-        <div>
-          <div class="flex flex-row w-full justify-between">
-            <label>Visibility range</label>
-          </div>
-          <mat-slider
-            class="w-full m-0"
-            min="2"
-            max="18"
-            step="1"
-            [discrete]="true"
-          >
-            <input formControlName="visibilityRange" matSliderStartThumb />
-            <input formControlName="visibilityRange" matSliderEndThumb />
-          </mat-slider>
-        </div>
-        <!-- Zoom level -->
-        <div>
-          <label>Current zoom: {{ mapSettings?.zoom }}</label>
-        </div>
-      </form>
-      <!-- Dialog actions ( cancel / close ) -->
-      <div mat-dialog-actions align="end">
-        <safe-button mat-dialog-close>{{
-          'common.close' | translate
-        }}</safe-button>
-        <safe-button
-          category="secondary"
-          variant="primary"
-          [mat-dialog-close]="form.value"
-          cdkFocusInitial
-          [disabled]="!form.valid"
-        >
-          {{ (!layer ? 'common.create' : 'common.update') | translate }}
-        </safe-button>
-      </div>
-    </div>
+  </div>
+  <!-- Dialog actions ( cancel / close ) -->
+  <div mat-dialog-actions align="end">
+    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      [mat-dialog-close]="form.value"
+      cdkFocusInitial
+      [disabled]="!form.valid"
+    >
+      {{ (!layer ? 'common.create' : 'common.update') | translate }}
+    </safe-button>
   </div>
 </safe-modal>

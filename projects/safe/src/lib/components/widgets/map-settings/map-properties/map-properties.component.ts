@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
 import {
   MapConstructorSettings,
   MapEvent,
@@ -23,13 +22,6 @@ export class MapPropertiesComponent
   implements OnInit
 {
   @Input() form!: UntypedFormGroup;
-
-  private deleteLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  public layerToAdd$ = this.deleteLayer.asObservable();
-  private addLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  public layerToDelete$ = this.addLayer.asObservable();
-  private overlaysValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  public overlaysValue$ = this.overlaysValue.asObservable();
 
   public mapSettings!: MapConstructorSettings;
   public baseMaps = BASEMAPS;

@@ -1136,10 +1136,30 @@
 						"template": "******"
 					}
 				},
+				"iconPicker": {
+					"default": "******",
+					"placeholder": "******"
+				},
 				"map": {
 					"basemap": "******",
 					"category": "******",
 					"dataset": "******",
+					"edit": {
+						"layerProperties": "******",
+						"layerStyling": "******",
+						"properties": {
+							"defaultVisibility": "******",
+							"opacity": "******",
+							"visibilityRange": "******",
+							"zoom": "******"
+						},
+						"style": {
+							"color": "******",
+							"icon": "******",
+							"size": "******",
+							"stylingType": "{{layerType}} ******"
+						}
+					},
 					"errors": {
 						"latitude": "******",
 						"longitude": "******"
@@ -1196,7 +1216,13 @@
 							"size": "******",
 							"title": "******"
 						},
-						"remove": "******"
+						"remove": "******",
+						"types": {
+							"cluster": "******",
+							"heatmap": "******",
+							"point": "******",
+							"polygon": "******"
+						}
 					},
 					"popup": {
 						"label": "******"
