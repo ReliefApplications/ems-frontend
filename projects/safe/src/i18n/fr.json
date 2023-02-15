@@ -1147,7 +1147,7 @@
 						"selectedLayers": "Couches sélectionnées",
 						"visibleLayers": "Couches visibles"
 					},
-					"downloadOutput": "Sélectionnez un format des sortie",
+					"downloadOutput": "Sélectionnez un format de sortie",
 					"downloadViews": {
 						"allViews": "Toutes les vues",
 						"currentViews": "Vues actuelles"
