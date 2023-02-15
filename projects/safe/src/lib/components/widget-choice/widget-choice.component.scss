@@ -17,8 +17,7 @@
     width: 196px;
     cursor: pointer;
     border-radius: 8px;
-    background-color: white;
-    border: 1px solid #2f383e33;
+    border: 1px solid;
 
     img {
       height: 90px;
@@ -32,7 +31,6 @@
 .safe-floating-widget-choice,
 .safe-floating-widget-collapsed {
   display: flex;
-  background: white;
   // box-shadow: 0px 4px 4px rgba(47, 56, 62, 0.15);
   pointer-events: auto;
   cursor: move;

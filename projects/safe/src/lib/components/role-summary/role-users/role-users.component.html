@@ -4,23 +4,23 @@
   <div class="overflow-x-auto">
     <table *ngIf="!loading" mat-table [dataSource]="users">
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
           <span class="headerTitle" mat-sort-header="name">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element" class="font-black bold">
+        <td mat-cell *matCellDef="let element" class="font-black bold border-white">
           {{ element.name }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="username">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
           <span mat-sort-header="username">
             {{ 'models.user.username' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.username }}</td>
+        <td mat-cell *matCellDef="let element" class="text-gray-700 border-white">{{ element.username }}</td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

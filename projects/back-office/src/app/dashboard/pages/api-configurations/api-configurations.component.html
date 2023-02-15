@@ -82,43 +82,41 @@
   <div class="overflow-x-auto">
     <table *ngIf="!loading" mat-table [dataSource]="dataSource" matSort>
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
           <span class="headerTitle" mat-sort-header>
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element" class="font-bold">
+        <td mat-cell *matCellDef="let element" class="font-bold text-gray-700 border-white">
           {{ element.name }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
           <span class="headerTitle" mat-sort-header>
             {{ 'common.status' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" class="text-gray-700 border-white">
           <mat-chip-list>
             <mat-chip
-              class="success-chip !rounded-lg"
+              class="bg-green-600 !rounded-lg text-white"
               disabled
               *ngIf="element.status === 'active'"
             >
               {{ 'common.status_active' | translate | titlecase }}
             </mat-chip>
             <mat-chip
-              class="accent-chip !rounded-lg"
+              class="bg-orange-100 !rounded-lg text-orange-400"
               disabled
-              color="accent"
               *ngIf="element.status === 'pending'"
             >
               {{ 'common.status_pending' | translate | titlecase }}
             </mat-chip>
             <mat-chip
-              class="warn-chip !rounded-lg"
+              class="bg-red-300 text-red-500 !rounded-lg"
               disabled
-              color="warn"
               *ngIf="element.status === 'archived'"
             >
               {{ 'common.status_archived' | translate | titlecase }}
@@ -128,7 +126,7 @@
       </ng-container>
 
       <ng-container matColumnDef="authType">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
           <span class="headerTitle" mat-sort-header>
             {{ 'models.apiConfiguration.authType' | translate }}
           </span>
@@ -137,8 +135,8 @@
       </ng-container>
 
       <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let element">
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200"></th>
+        <td mat-cell *matCellDef="let element" class="text-gray-700 border-white">
           <safe-button
             [isIcon]="true"
             icon="more_vert"

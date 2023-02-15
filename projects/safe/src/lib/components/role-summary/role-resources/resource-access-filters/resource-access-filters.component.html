@@ -16,20 +16,20 @@
       multiTemplateDataRows
     >
       <ng-container matColumnDef="filter">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
           {{ 'components.queryBuilder.filter.title' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" class="text-gray-700 border-white">
           {{ getAccessString(element.access) }}
         </td>
       </ng-container>
       <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef class="text-end">
+        <th mat-header-cell *matHeaderCellDef class="text-end text-gray-500 border-gray-200">
           <safe-button variant="primary" category="tertiary" (click)="save()">{{
             'common.save' | translate
           }}</safe-button>
         </th>
-        <td mat-cell *matCellDef="let element; let i = dataIndex">
+        <td mat-cell *matCellDef="let element; let i = dataIndex" class="text-gray-700 border-white">
           <div class="flex">
             <ng-container *ngFor="let permission of element.permissions">
               <safe-button
@@ -54,6 +54,7 @@
           mat-cell
           *matCellDef="let element; let i = dataIndex"
           [attr.colspan]="displayedColumns.length"
+          class="text-gray-700 border-white"
         >
           <div
             [ngClass]="{

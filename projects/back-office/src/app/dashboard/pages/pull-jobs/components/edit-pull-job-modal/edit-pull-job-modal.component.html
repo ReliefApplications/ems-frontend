@@ -297,24 +297,22 @@
 <ng-template #statusTemplate let-status>
   <mat-chip-list>
     <mat-chip
-      class="success-chip !rounded-lg"
+      class="bg-green-600 !rounded-lg text-white"
       disabled
       *ngIf="status === 'active'"
     >
       {{ 'common.status_active' | translate | titlecase }}
     </mat-chip>
     <mat-chip
-      class="accent-chip !rounded-lg"
+      class="bg-orange-100 !rounded-lg text-orange-400"
       disabled
-      color="accent"
       *ngIf="status === 'pending'"
     >
       {{ 'common.status_pending' | translate | titlecase }}
     </mat-chip>
     <mat-chip
-      class="warn-chip !rounded-lg"
+      class="bg-red-300 text-red-500 !rounded-lg"
       disabled
-      color="warn"
       *ngIf="status === 'archived'"
     >
       {{ 'common.status_archived' | translate | titlecase }}

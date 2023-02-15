@@ -4,7 +4,7 @@
   [style.background-color]="active ? type?.color : ''"
   [ngClass]="{ active: active }"
 >
-  <div class="step-actions">
+  <div class="step-actions bg-white">
     <safe-button
       *ngIf="canUpdate"
       [isIcon]="true"
@@ -29,7 +29,7 @@
     </safe-button>
   </div>
   <img class="h-9 mt-5" [src]="type?.img" />
-  <span>{{ step.name | titlecase }}</span>
+  <span class="text-slate-500	">{{ step.name | titlecase }}</span>
   <div
     *ngIf="active"
     [style.background]="type?.focusColor"

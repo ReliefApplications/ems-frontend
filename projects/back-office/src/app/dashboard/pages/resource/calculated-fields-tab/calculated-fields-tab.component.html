@@ -13,24 +13,24 @@
     <div class="overflow-x-auto">
       <table mat-table [dataSource]="fields">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>
+          <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
             {{ 'models.form.field.name' | translate }}
           </th>
-          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          <td mat-cell *matCellDef="let element" class="text-gray-700 border-white">{{ element.name }}</td>
         </ng-container>
 
         <ng-container matColumnDef="createdAt">
-          <th mat-header-cell *matHeaderCellDef>
+          <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
             {{ 'components.calculatedFields.expression' | translate }}
           </th>
-          <td mat-cell *matCellDef="let element">
+          <td mat-cell *matCellDef="let element" class="text-gray-700 border-white">
             {{ element.expression }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="_actions">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let element">
+          <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200"></th>
+          <td mat-cell *matCellDef="let element" class="text-gray-700 border-white">
             <safe-button
               [isIcon]="true"
               icon="more_vert"

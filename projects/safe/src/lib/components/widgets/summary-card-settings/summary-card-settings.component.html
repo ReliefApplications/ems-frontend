@@ -49,7 +49,7 @@
           [headerTemplate]="cardItemHeader"
         ></safe-summary-card-item>
         <ng-template #cardItemHeader>
-          <kendo-tilelayout-item-header class="widget-header">
+          <kendo-tilelayout-item-header class="widget-header bg-white text-black border-white">
             <span class="widget-title" [title]="card.value.title">{{
               card.value.title
             }}</span>
@@ -67,7 +67,7 @@
         <safe-button
           icon="more_vert"
           [isIcon]="true"
-          class="widget-options"
+          class="widget-options text-gray-500"
           [matMenuTriggerFor]="menu"
         ></safe-button>
         <mat-menu #menu="matMenu">
@@ -84,7 +84,7 @@
         <safe-icon
           *ngIf="!tileForm.value.isDynamic"
           icon="drag_indicator"
-          class="widget-handle"
+          class="widget-handle text-gray-500"
         >
         </safe-icon>
       </kendo-tilelayout-item>

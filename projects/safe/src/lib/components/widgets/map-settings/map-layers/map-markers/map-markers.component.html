@@ -69,10 +69,10 @@
   <div class="overflow-x-auto">
     <table mat-table [dataSource]="rules.value">
       <ng-container matColumnDef="color">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
           {{ 'common.preview' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" class="text-gray-700 border-white">
           <span
             [style]="'background-color:' + element.color"
             class="color-indicator"
@@ -80,14 +80,14 @@
         </td>
       </ng-container>
       <ng-container matColumnDef="label">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
           {{ 'common.label' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.label }}</td>
+        <td mat-cell *matCellDef="let element" class="text-gray-700 border-white">{{ element.label }}</td>
       </ng-container>
       <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let element; let i = index">
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200"></th>
+        <td mat-cell *matCellDef="let element; let i = index" class="text-gray-700 border-white">
           <div>
             <safe-button
               [isIcon]="true"

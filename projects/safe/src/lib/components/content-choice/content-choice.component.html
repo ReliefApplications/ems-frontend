@@ -7,7 +7,7 @@
     [style.background]="type.color"
   >
     <img [src]="type.img" />
-    <span>{{ type.name | titlecase }}</span>
+    <span class="text-gray-500">{{ type.name | titlecase }}</span>
     <div
       *ngIf="type.value === selected"
       [style.background]="type.focusColor"

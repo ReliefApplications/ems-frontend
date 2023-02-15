@@ -54,7 +54,7 @@
             <div class="nav-actions" *ngIf="item.action || item.orderable">
               <button
                 mat-icon-button
-                class="nav-action"
+                class="nav-action text-transparent"
                 *ngIf="item.action"
                 (click)="onClick(item.action.callback, $event)"
               >
@@ -67,7 +67,7 @@
               <button
                 mat-icon-button
                 cdkDragHandle
-                class="nav-item-handle"
+                class="nav-item-handle text-transparent"
                 *ngIf="item.orderable"
               >
                 <mat-icon>drag_indicator</mat-icon>

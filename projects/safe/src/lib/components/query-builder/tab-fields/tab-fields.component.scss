@@ -1,5 +1,5 @@
 .field-list {
-  border: solid 1px #ccc;
+  border: solid 1px;
   min-height: 400px;
   background: #ccc;
   border-radius: 4px;
@@ -11,8 +11,7 @@
 
 .field-box {
   padding: 20px 10px;
-  border-bottom: solid 1px #ccc;
-  color: rgba(0, 0, 0, 0.87);
+  border-bottom: solid 1px;
   display: flex;
   flex-direction: row;
   align-items: center;

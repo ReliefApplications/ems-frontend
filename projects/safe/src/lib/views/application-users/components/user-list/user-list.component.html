@@ -21,7 +21,7 @@
     <table *ngIf="!loading" mat-table [dataSource]="users" matSort>
       <!-- Checkbox Column -->
       <ng-container *ngIf="!autoAssigned" matColumnDef="select">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
           <mat-checkbox
             class="mr-2"
             (change)="$event ? masterToggle() : null"
@@ -31,7 +31,7 @@
           >
           </mat-checkbox>
         </th>
-        <td mat-cell *matCellDef="let row">
+        <td mat-cell *matCellDef="let row" class="text-gray-700 border-white">
           <mat-checkbox
             class="mr-2"
             (click)="$event.stopPropagation()"
@@ -43,43 +43,43 @@
         </td>
       </ng-container>
       <ng-container matColumnDef="username">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
           <span class="headerTitle" mat-sort-header>
             {{ 'models.user.username' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.username }}</td>
+        <td mat-cell *matCellDef="let element" class="text-gray-700 border-white">{{ element.username }}</td>
       </ng-container>
 
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
           <span class="headerTitle" mat-sort-header>
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element" class="font-bold">
+        <td mat-cell *matCellDef="let element" class="font-bold border-white">
           {{ element.name }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="roles">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
           <span class="headerTitle" mat-sort-header>
             {{ 'common.role.few' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" class="text-gray-700 border-white">
           <span *ngFor="let role of element.roles"> {{ role.title }}</span>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="attributes">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
           <span class="headerTitle" mat-sort-header>
             {{ 'common.positionAttribute.few' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" class="text-gray-700 border-white">
           <span *ngFor="let attribute of element.positionAttributes">
             {{ attribute.value }},
           </span>
@@ -87,17 +87,17 @@
       </ng-container>
 
       <ng-container matColumnDef="oid">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef class="text-gray-500 border-gray-200">
           <span class="headerTitle" mat-sort-header>
             {{ 'common.id' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.oid }}</td>
+        <td mat-cell *matCellDef="let element" class="text-gray-700 border-white">{{ element.oid }}</td>
       </ng-container>
 
       <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
-        <td mat-cell *matCellDef="let element">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-gray-500 border-gray-200"></th>
+        <td mat-cell *matCellDef="let element" class="text-gray-700 border-white">
           <safe-button
             [isIcon]="true"
             icon="more_vert"

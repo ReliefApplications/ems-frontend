@@ -5,7 +5,7 @@
 <ng-template #listTemplate>
   <div class="safe-widget-choice">
     <div
-      class="safe-widget-type"
+      class="safe-widget-type bg-white border-green-700"
       *ngFor="let type of widgetTypes"
       (click)="onSelect(type)"
       matRipple
@@ -28,10 +28,10 @@
 </ng-template>
 
 <ng-template #barTemplate>
-  <div class="safe-floating-widget-choice shadow-lg" cdkDrag>
+  <div class="safe-floating-widget-choice shadow-lg bg-white" cdkDrag>
     <div class="safe-widget-type-list">
       <div
-        class="safe-widget-type"
+        class="safe-widget-type bg-white"
         *ngFor="let type of widgetTypes"
         (click)="onSelect(type)"
         [matTooltip]="type.name"

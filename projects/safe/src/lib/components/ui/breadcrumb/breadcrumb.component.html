@@ -1,9 +1,10 @@
-<ol *ngIf="breadcrumbs.length > 1">
+<ol *ngIf="breadcrumbs.length > 1" class="text-violet-700">
   <li *ngFor="let breadcrumb of breadcrumbs; let i = index">
     <!-- Breadcrumb link -->
     <a
       *ngIf="breadcrumb.key || breadcrumb.text"
       [routerLink]="[breadcrumb.uri]"
+      class="text-violet-700"
     >
       <span>{{
         breadcrumb.key ? (breadcrumb.key | translate) : breadcrumb.text

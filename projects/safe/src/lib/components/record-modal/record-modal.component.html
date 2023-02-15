@@ -26,7 +26,7 @@
       <div class="versions-info" *ngIf="data.compareTo">
         <div class="version-info">
           <div>{{ 'components.record.history.version.old' | translate }}</div>
-          <span>{{ data.compareTo.createdAt | safeDate: 'short' }}</span>
+          <span class="text-gray-500">{{ data.compareTo.createdAt | safeDate: 'short' }}</span>
         </div>
         <div class="version-info">
           <div>

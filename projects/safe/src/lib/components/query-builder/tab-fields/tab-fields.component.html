@@ -32,13 +32,13 @@
       <div
         cdkDropList
         [cdkDropListData]="availableFields"
-        class="field-list"
+        class="field-list border-gray-400"
         cdkDropListSortingDisabled
         (cdkDropListDropped)="drop($event)"
       >
         <ng-container *ngFor="let field of availableFields">
           <div
-            class="field-box"
+            class="field-box text-black bg-gray-400"
             cdkDrag
             *ngIf="
               searchAvailable.length < 1 ||
@@ -79,12 +79,12 @@
         cdkDropList
         [cdkDropListData]="selectedFields"
         [cdkDropListSortingDisabled]="searchSelected.length > 0"
-        class="field-list"
+        class="field-list border-gray-400"
         (cdkDropListDropped)="drop($event)"
       >
         <ng-container *ngFor="let field of selectedFields; let index = index">
           <div
-            class="field-box"
+            class="field-box bg-gray-400"
             *ngIf="
               searchSelected.length < 1 ||
               field.name.toLowerCase().includes(searchSelected.toLowerCase())

@@ -86,12 +86,12 @@
 <!-- LOADING -->
 <div class="grow overflow-y-auto" *ngIf="loading">
   <ng-container *ngFor="let _ of [].constructor(4)">
-    <mat-expansion-panel closed>
+    <mat-expansion-panel closed class="border-black">
       <mat-expansion-panel-header>
         <mat-panel-title>
           <kendo-skeleton width="50%"></kendo-skeleton>
           <kendo-skeleton
-            class="history-user"
+            class="history-user bg-blue-400"
             width="30%"
             height="2em"
           ></kendo-skeleton>
