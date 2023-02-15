@@ -1140,6 +1140,16 @@
 					"basemap": "******",
 					"category": "******",
 					"dataset": "******",
+					"downloadLayers": {
+						"allLayers": "******",
+						"selectedLayers": "******",
+						"visibleLayers": "******"
+					},
+					"downloadOutput": "******",
+					"downloadViews": {
+						"allViews": "******",
+						"currentViews": "******"
+					},
 					"errors": {
 						"latitude": "******",
 						"longitude": "******"
@@ -1209,6 +1219,7 @@
 						"title": "******",
 						"zoom": "******"
 					},
+					"selectLayers": "******",
 					"tooltip": {
 						"category": "******",
 						"dataset": "******",

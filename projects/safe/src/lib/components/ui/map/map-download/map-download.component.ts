@@ -12,6 +12,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { SafeDividerModule } from '../../divider/divider.module';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 /**
  * map download component
@@ -28,14 +29,32 @@ import { SafeDividerModule } from '../../divider/divider.module';
     MatRadioModule,
     MatSelectModule,
     FormsModule,
+    TranslateModule,
     ReactiveFormsModule,
   ],
   styleUrls: ['./map-download.component.scss'],
 })
 export class SafeMapDownloadComponent {
   public expanded = false;
-  public views = ['Current view', 'All views'];
-  public layers = ['All layers', 'Visible layers', 'Selected layers'];
+  public views = [
+    this.translate.instant(
+      'components.widget.settings.map.downloadViews.currentViews'
+    ),
+    this.translate.instant(
+      'components.widget.settings.map.downloadViews.allViews'
+    ),
+  ];
+  public layers = [
+    this.translate.instant(
+      'components.widget.settings.map.downloadLayers.allLayers'
+    ),
+    this.translate.instant(
+      'components.widget.settings.map.downloadLayers.visibleLayers'
+    ),
+    this.translate.instant(
+      'components.widget.settings.map.downloadLayers.selectedLayers'
+    ),
+  ];
   public layersToSelect = ''; // Corresponds to the current 'layers' option selected
   public availableLayers: string[] = [];
   public downloadOutputs = ['CSV', 'Excel', 'GeoJSON', 'PNG'];
@@ -45,8 +64,9 @@ export class SafeMapDownloadComponent {
    * Creates the form to handle the layers selection
    *
    * @param fb form builder
+   * @param translate common translate service
    */
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private translate: TranslateService) {
     this.form = fb.group({
       layersToSelect: new FormControl('All layers'),
     });

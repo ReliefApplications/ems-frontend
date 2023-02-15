@@ -32,9 +32,11 @@
           {{ layer }}
         </mat-radio-button>
       </mat-radio-group>
-      <ng-container *ngIf="form.controls.layersToSelect.value === 'Selected layers'">
+      <ng-container
+        *ngIf="form.controls.layersToSelect.value === 'Selected layers'"
+      >
         <mat-form-field appearance="outline" class="p-0">
-          <mat-label>Select layers</mat-label>
+          <mat-label>{{'components.widget.settings.map.selectLayers' | translate}}</mat-label>
           <mat-select>
             <mat-option *ngFor="let layer of availableLayers" [value]="layer">
               {{ layer }}
@@ -47,7 +49,7 @@
     <!-- Export format -->
     <div class="p-1">
       <mat-form-field appearance="outline" class="p-0">
-        <mat-label>Select output format</mat-label>
+        <mat-label>{{ 'components.widget.settings.map.downloadOutput' | translate }}</mat-label>
         <mat-select>
           <mat-option *ngFor="let output of downloadOutputs" [value]="output">
             {{ output }}
