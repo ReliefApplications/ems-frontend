@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, ElementRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/languages';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
@@ -33,11 +33,13 @@ export class SafeMapControlsService {
    * @param environment environment
    * @param translate Angular translate service
    * @param domService Shared dom service
+   * @param elementRef Reference to a DOM element in the doc
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
-    private domService: DomService
+    private domService: DomService,
+    private elementRef: ElementRef
   ) {
     this.lang = this.translate.currentLang;
     this.primaryColor = environment.theme.primary;
@@ -168,13 +170,18 @@ export class SafeMapControlsService {
       return div;
     };
     control.addTo(map);
+
     const container = control.getContainer();
     if (container) {
       // prevent click events from propagating to the map
-      L.DomEvent.disableClickPropagation(container);
+      container.addEventListener('click', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
 
       // prevent mouse wheel events from propagating to the map
-      L.DomEvent.disableScrollPropagation(container);
+      container.addEventListener('wheel', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
     }
   }
 
@@ -187,8 +194,6 @@ export class SafeMapControlsService {
     const control = new L.Control({ position: 'bottomright' });
     control.onAdd = () => {
       const div = L.DomUtil.create('div', 'info legend');
-      L.DomEvent.disableClickPropagation(div);
-      L.DomEvent.disableScrollPropagation(div);
       const component = this.domService.appendComponentToBody(
         SafeMapDownloadComponent,
         div
@@ -198,5 +203,18 @@ export class SafeMapControlsService {
       return div;
     };
     control.addTo(map);
+
+    const container = control.getContainer();
+    if (container) {
+      // prevent click events from propagating to the map
+      container.addEventListener('click', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
+
+      // prevent mouse wheel events from propagating to the map
+      container.addEventListener('wheel', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
+    }
   }
 }
