@@ -37,7 +37,6 @@ export class MapPropertiesComponent
    * Subscribe to settings changes to update map.
    */
   ngOnInit(): void {
-    console.log(this.form);
     const defaultMapSettings = {
       basemap: this.form.value.basemap,
       zoom: this.form.value.zoom,

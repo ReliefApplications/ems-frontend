@@ -104,7 +104,9 @@
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
-              "node_modules/select2/dist/css/select2.min.css"
+              "node_modules/select2/dist/css/select2.min.css",
+              "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
+              "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
@@ -157,9 +159,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "azure-dev": {
@@ -191,9 +191,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "azure-uat": {
@@ -225,9 +223,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "azure-prod": {
@@ -259,9 +255,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "oort-dev": {
@@ -293,9 +287,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "oort-guyane": {
@@ -327,9 +319,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "oort-prod": {
@@ -361,9 +351,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "oort-demo": {
@@ -395,9 +383,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "oort-local": {
@@ -414,9 +400,7 @@
               "sourceMap": true,
               "namedChunks": true,
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "oort-aws": {
@@ -448,9 +432,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "development": {
@@ -461,9 +443,7 @@
               "sourceMap": true,
               "namedChunks": true,
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             }
           },
@@ -603,7 +583,9 @@
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
-              "node_modules/select2/dist/css/select2.min.css"
+              "node_modules/select2/dist/css/select2.min.css",
+              "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
+              "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
@@ -656,9 +638,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "azure-dev": {
@@ -688,9 +668,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "azure-uat": {
@@ -720,9 +698,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "azure-prod": {
@@ -752,9 +728,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "oort-dev": {
@@ -784,9 +758,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "oort-guyane": {
@@ -816,9 +788,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "oort-prod": {
@@ -848,9 +818,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "oort-demo": {
@@ -880,9 +848,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "oort-local": {
@@ -899,9 +865,7 @@
               "sourceMap": true,
               "namedChunks": true,
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             },
             "oort-aws": {
@@ -933,9 +897,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/oort"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
             "development": {
@@ -946,9 +908,7 @@
               "sourceMap": true,
               "namedChunks": true,
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             }
           },
@@ -1080,7 +1040,9 @@
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
-              "node_modules/select2/dist/css/select2.min.css"
+              "node_modules/select2/dist/css/select2.min.css",
+              "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
+              "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
@@ -1120,9 +1082,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               },
               "fileReplacements": [
                 {
@@ -1152,9 +1112,7 @@
                 }
               ],
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               },
               "fileReplacements": [
                 {
@@ -1172,9 +1130,7 @@
               "sourceMap": true,
               "namedChunks": true,
               "stylePreprocessorOptions": {
-                "includePaths": [
-                  "projects/safe/src/lib/style/themes/default"
-                ]
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
               }
             }
           },
@@ -1209,9 +1165,7 @@
               "projects/web-widgets/src/favicon.ico",
               "projects/web-widgets/src/assets"
             ],
-            "styles": [
-              "projects/web-widgets/src/styles.scss"
-            ],
+            "styles": ["projects/web-widgets/src/styles.scss"],
             "scripts": []
           }
         },
@@ -1273,7 +1227,9 @@
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
-              "node_modules/select2/dist/css/select2.min.css"
+              "node_modules/select2/dist/css/select2.min.css",
+              "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
+              "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
             ],
             "scripts": []
           }

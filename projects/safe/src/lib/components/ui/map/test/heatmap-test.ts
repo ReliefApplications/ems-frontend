@@ -1,9 +1,8 @@
 import { generateGeoJSONPoints } from './util-test';
-import 'leaflet.heat';
 import { merge, get } from 'lodash';
-import { haversineDistance } from './utils/haversine';
-
-declare let L: any;
+import { haversineDistance } from '../utils/haversine';
+import 'leaflet.heat';
+import * as L from 'leaflet';
 
 type HeatMapOptions = {
   minOpacity: number;
@@ -37,6 +36,7 @@ const defaultHeatMapOptions: HeatMapOptions = {
  *
  * @param map The map to add the heatmap to
  * @param options Options for the heatmap
+ * @returns heatmap layer
  */
 export const generateHeatMap = (
   map: any,
@@ -45,7 +45,7 @@ export const generateHeatMap = (
   const total = 10000;
   const geoJSON = generateGeoJSONPoints(total);
   const heatArray: any[] = [];
-  geoJSON.features.forEach((feature) => {
+  geoJSON.features.forEach((feature: any) => {
     if (feature.geometry.type === 'Point') {
       heatArray.push([
         feature.geometry.coordinates[1], // lat
@@ -114,6 +114,5 @@ export const generateHeatMap = (
   heatMapLayer.on('click', (event: any) => {
     console.log(event);
   });
-  console.log(heatMapLayer);
-  heatMapLayer.addTo(map);
+  return heatMapLayer;
 };

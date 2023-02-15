@@ -1,3 +1,4 @@
+/// <reference path="../../../../typings/leaflet/index.d.ts" />
 import {
   Component,
   AfterViewInit,
@@ -9,19 +10,20 @@ import {
 import get from 'lodash/get';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
+import 'leaflet';
 import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
 import 'leaflet-fullscreen';
+import 'esri-leaflet';
+import * as Vector from 'esri-leaflet-vector';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  IMarkersLayerValue,
   OverlayLayerTree,
   BaseLayerTree,
   LayerActionOnMap,
 } from './interfaces/map-layers.interface';
-import { flatDeep } from './utils/array-flatter';
 import {
   MapConstructorSettings,
   MapEvent,
@@ -29,16 +31,23 @@ import {
 } from './interfaces/map.interface';
 import { BASEMAPS, BASEMAP_LAYERS } from './const/baseMaps';
 import { merge } from 'lodash';
-import { generateClusterLayer } from './cluster-test';
-import { complexGeoJSON, cornerGeoJSON, pointGeoJSON } from './geojson-test';
-import { randomFeatureCollection } from './generateFeatureCollection';
-import { generateHeatMap } from './heatmap-test';
+import { generateClusterLayer } from './test/cluster-test';
+import {
+  complexGeoJSON,
+  cornerGeoJSON,
+  pointGeoJSON,
+} from './test/geojson-test';
+import {
+  geoJsonLayer,
+  randomFeatureCollection,
+} from './test/feature-collection-test';
+import { generateHeatMap } from './test/heatmap-test';
 import { SafeMapLayersService } from '../../../services/maps/map-layers.service';
 import { SafeMapControlsService } from '../../../services/maps/map-controls.service';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/languages';
 
-// Declares L to be able to use Leaflet from CDN
-declare let L: any;
+// import 'leaflet';
+import * as L from 'leaflet';
 
 /**
  * Cleans the settings object from null values
@@ -68,7 +77,6 @@ export class SafeMapComponent
   extends SafeUnsubscribeComponent
   implements AfterViewInit
 {
-  @Input() header = true;
   @Input() controls!: any;
   @Input() useGeomanTools = false;
   // Temporary input in order to display the mocked layers as we want
@@ -83,11 +91,11 @@ export class SafeMapComponent
   /** Add or delete layer setter */
   @Input() set addOrDeleteLayer(layerAction: LayerActionOnMap | null) {
     if (layerAction?.layerData) {
-      this.updateLayerTreeOfMap(
-        layerAction.layerData,
-        layerAction.isDelete,
-        false
-      );
+      if (!layerAction.isDelete) {
+        this.drawLayers(layerAction.layerData);
+      } else {
+        this.deleteLayers(layerAction.layerData);
+      }
     }
   }
   /** Update layer options setters */
@@ -97,7 +105,7 @@ export class SafeMapComponent
     icon?: any;
   }) {
     if (layerWithOptions) {
-      this.safeMapLayersService.applyOptionsToLayer(
+      this.mapLayersService.applyOptionsToLayer(
         this.map,
         layerWithOptions.layer,
         layerWithOptions.options,
@@ -107,7 +115,7 @@ export class SafeMapComponent
       if (this.useGeomanTools) {
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: this.safeMapLayersService.getMapFeatures(this.map),
+          content: this.mapLayersService.getMapFeatures(this.map),
         });
       }
     }
@@ -128,12 +136,9 @@ export class SafeMapComponent
 
   // === MARKERS ===
   private popupMarker: any;
-  private markersCategories: IMarkersLayerValue = [];
-  private overlaysTree: OverlayLayerTree = {} as OverlayLayerTree;
+  private baseTree: any;
+  private layers: (OverlayLayerTree | BaseLayerTree)[] = [];
   private layerControl: any;
-
-  // === Controls ===
-  private legendControl?: L.Control;
   private layerTreeCloned!: any;
 
   // === QUERY UPDATE INFO ===
@@ -144,14 +149,14 @@ export class SafeMapComponent
    *
    * @param environment platform environment
    * @param translate The translate service
-   * @param safeMapLayersService The map layer handler service
-   * @param safeMapControlsService The map controls handler service
+   * @param mapLayersService The map layer handler service
+   * @param mapControlsService The map controls handler service
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
-    private safeMapLayersService: SafeMapLayersService,
-    private safeMapControlsService: SafeMapControlsService
+    private mapLayersService: SafeMapLayersService,
+    private mapControlsService: SafeMapControlsService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -163,9 +168,9 @@ export class SafeMapComponent
     // Set event listener to log map bounds when zooming, moving and resizing screen.
     this.map.on('moveend', () => {
       // If searched address marker exists, if we move, the item should disappear
-      if (this.safeMapControlsService.addressMarker) {
-        this.map.removeLayer(this.safeMapControlsService.addressMarker);
-        this.safeMapControlsService.addressMarker = null;
+      if (this.mapControlsService.addressMarker) {
+        this.map.removeLayer(this.mapControlsService.addressMarker);
+        this.mapControlsService.addressMarker = null;
       }
       this.mapEvent.emit({
         type: MapEventType.MOVE_END,
@@ -184,9 +189,9 @@ export class SafeMapComponent
     this.translate.onLangChange
       .pipe(takeUntil(this.destroy$))
       .subscribe((event) => {
-        if (event.lang !== this.safeMapControlsService.lang) {
-          this.safeMapControlsService.getMeasureControl(this.map);
-          this.safeMapControlsService.getFullScreenControl(this.map);
+        if (event.lang !== this.mapControlsService.lang) {
+          this.mapControlsService.getMeasureControl(this.map);
+          this.mapControlsService.getFullScreenControl(this.map);
         }
       });
   }
@@ -196,13 +201,10 @@ export class SafeMapComponent
     // updates question value on adding new shape
     this.map.on('pm:create', (l: any) => {
       if (l.shape === 'Marker') {
-        const divIcon = this.safeMapLayersService.createCustomDivIcon(
-          undefined,
-          {
-            color: '#3388ff',
-            opacity: 1,
-          }
-        );
+        const divIcon = this.mapLayersService.createCustomDivIcon(undefined, {
+          color: '#3388ff',
+          opacity: 1,
+        });
         l.layer.setIcon(divIcon);
       }
 
@@ -211,7 +213,7 @@ export class SafeMapComponent
         'pm:change',
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: this.safeMapLayersService.getMapFeatures(this.map),
+          content: this.mapLayersService.getMapFeatures(this.map),
         })
       );
 
@@ -229,7 +231,7 @@ export class SafeMapComponent
       'pm:remove',
       this.mapEvent.emit({
         type: MapEventType.MAP_CHANGE,
-        content: this.safeMapLayersService.getMapFeatures(this.map),
+        content: this.mapLayersService.getMapFeatures(this.map),
       })
     );
 
@@ -268,12 +270,12 @@ export class SafeMapComponent
     setTimeout(() => {
       this.map.invalidateSize();
       if (this.displayMockedLayers) {
-        this.drawLayers();
+        this.setUpLayers();
       }
       if (this.useGeomanTools) {
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: this.safeMapLayersService.getMapFeatures(this.map),
+          content: this.mapLayersService.getMapFeatures(this.map),
         });
       } else {
         this.mapEvent.emit({
@@ -289,36 +291,6 @@ export class SafeMapComponent
   }
 
   /**
-   * Get list of query fields from settings
-   *
-   * @param fields list of fields
-   * @param prefix prefix to add to field name
-   * @returns flat list of fields
-   */
-  private getFields(
-    fields: any[],
-    prefix?: string
-  ): { name: string; label: string }[] {
-    return flatDeep(
-      fields
-        .filter((x) => x.kind !== 'LIST')
-        .map((f) => {
-          switch (f.kind) {
-            case 'OBJECT': {
-              return this.getFields(f.fields, f.name);
-            }
-            default: {
-              return {
-                name: prefix ? `${prefix}.${f.name}` : f.name,
-                label: f.label,
-              };
-            }
-          }
-        })
-    );
-  }
-
-  /**
    * Extract settings
    *
    * @returns cleaned settings
@@ -327,11 +299,10 @@ export class SafeMapComponent
     // Settings initialization
     const centerLong = Number(get(this.settingsConfig, 'centerLong', 0));
     const centerLat = Number(get(this.settingsConfig, 'centerLat', 0));
-    const maxBounds = get(
-      this.settingsConfig,
-      'maxBounds',
-      L.latLngBounds(L.latLng(-90, -1000), L.latLng(90, 1000))
-    );
+    const maxBounds = get(this.settingsConfig, 'maxBounds', [
+      [-90, -180],
+      [90, 180],
+    ]);
     const basemap = get(this.settingsConfig, 'basemap', 'OSM');
     const maxZoom = get(this.settingsConfig, 'maxZoom', 18);
     const minZoom = get(this.settingsConfig, 'minZoom', 2);
@@ -353,6 +324,8 @@ export class SafeMapComponent
      */
     const layers = get(this.settingsConfig, 'layers', []);
 
+    console.log(layers);
+
     return {
       centerLong,
       centerLat,
@@ -372,7 +345,7 @@ export class SafeMapComponent
     const {
       centerLong,
       centerLat,
-      maxBounds,
+      maxBounds: maxBoundArray,
       basemap,
       maxZoom,
       minZoom,
@@ -381,16 +354,21 @@ export class SafeMapComponent
       zoom,
       // layers,
     } = this.extractSettings();
+
     // Create leaflet map
-    console.log('zoom: ', zoom);
     this.map = L.map(this.mapId, {
       zoomControl,
-      maxBounds,
+      maxBounds: maxBoundArray
+        ? L.latLngBounds(
+            L.latLng(maxBoundArray[0][0], maxBoundArray[0][1]),
+            L.latLng(maxBoundArray[1][0], maxBoundArray[1][1])
+          )
+        : undefined,
       minZoom,
       maxZoom,
       worldCopyJump,
       zoom,
-    }).setView(new L.latLng(centerLat, centerLong), zoom);
+    }).setView(L.latLng(centerLat, centerLong), zoom);
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(basemap);
@@ -407,16 +385,16 @@ export class SafeMapComponent
     }
     if (!this.useGeomanTools) {
       // Add leaflet measure control
-      this.safeMapControlsService.getMeasureControl(this.map);
+      this.mapControlsService.getMeasureControl(this.map);
 
       // Add leaflet geosearch control
-      this.safeMapControlsService.getSearchbarControl(
-        this.map,
-        this.esriApiKey
-      );
+      this.mapControlsService.getSearchbarControl(this.map, this.esriApiKey);
 
       // Add leaflet fullscreen control
-      this.safeMapControlsService.getFullScreenControl(this.map);
+      this.mapControlsService.getFullScreenControl(this.map);
+
+      // Add legend control
+      this.mapControlsService.getLegendControl(this.map);
     }
   }
 
@@ -442,13 +420,17 @@ export class SafeMapComponent
       this.map.setMaxBounds(maxBounds);
       this.map.setZoom(zoom);
       this.setBasemap(basemap);
-      this.map.setView(new L.latLng(centerLat, centerLong), zoom);
+      this.map.setView(L.latLng(centerLat, centerLong), zoom);
     }
   }
   /**
-   * Draw layers on map.
+   * Setup and draw layers on map and sets the baseTree.
    */
-  private drawLayers(): void {
+  private setUpLayers(): void {
+    this.baseTree = {
+      label: this.basemap.options.key,
+      layer: this.basemap,
+    };
     const options1 = {
       style: {
         opacity: 0.2,
@@ -467,39 +449,127 @@ export class SafeMapComponent
     const clusterGroup = generateClusterLayer(
       this.map,
       L,
-      this.safeMapLayersService
+      this.mapLayersService
     );
-    this.map.addLayer(clusterGroup);
-    this.overlaysTree = {
-      label: 'GeoJSON layers',
-      selectAllCheckbox: 'Un/select all',
-      children: [
-        {
-          label: 'Simple',
-          layer: pointGeoJSON,
-          options: options2,
-        },
-        {
-          label: 'Complex',
-          layer: complexGeoJSON,
-          options: options1,
-        },
-        {
-          label: 'Corner',
-          layer: cornerGeoJSON,
-          options: options2,
-        },
-        {
-          label: 'Random',
-          layer: randomFeatureCollection,
-        },
-      ],
+    // this.map.addLayer(clusterGroup);
+    this.layers = [
+      {
+        label: 'GeoJSON layers',
+        selectAllCheckbox: 'Un/select all',
+        children: [
+          {
+            label: 'Simple',
+            layer: geoJsonLayer(pointGeoJSON),
+            options: options2,
+          },
+          {
+            label: 'Complex',
+            layer: geoJsonLayer(complexGeoJSON),
+            options: options1,
+          },
+          {
+            label: 'Corner',
+            layer: geoJsonLayer(cornerGeoJSON),
+            options: options2,
+          },
+          {
+            label: 'Random',
+            layer: geoJsonLayer(randomFeatureCollection),
+          },
+        ],
+      },
+      {
+        label: 'Clusters',
+        layer: clusterGroup,
+      },
+      {
+        label: 'Heatmap',
+        layer: generateHeatMap(this.map),
+      },
+    ];
+    // this.updateLayerTreeOfMap(this.layers);
+    this.drawLayers(this.layers);
+  }
+
+  /**
+   * Draw given layers and adds the related controls
+   * @param layers Layers to draw
+   */
+  private drawLayers(layers: any) {
+    const drawLayer = (layer: any) => {
+      if (layer.children) {
+        for (const child of layer.children) {
+          drawLayer(child);
+        }
+      } else {
+        layer.layer.addTo(this.map);
+      }
     };
 
-    //Heatmap
-    generateHeatMap(this.map);
-    this.updateLayerTreeOfMap(this.overlaysTree);
+    if (layers instanceof Array) {
+      for (const layer of layers) {
+        drawLayer(layer);
+      }
+    } else {
+      drawLayer(layers);
+    }
+
+    this.layerControl = L.control.layers
+      .tree(this.baseTree, layers as any)
+      .addTo(this.map);
   }
+
+  /**
+   * Delete given layers and deletes the related controls
+   * @param layers Layers to delete
+   */
+  private deleteLayers(layers: any) {
+    const deleteLayer = (layer: any) => {
+      if (layer.children) {
+        for (const child of layer.children) {
+          deleteLayer(child);
+        }
+      } else {
+        this.map.removeLayer(layer.layer);
+      }
+    };
+
+    if (layers instanceof Array) {
+      for (const layer of layers) {
+        deleteLayer(layer);
+      }
+    } else {
+      deleteLayer(layers);
+    }
+
+    this.map.removeControl(this.layerControl);
+  }
+  //   /**
+  //  * Function used to apply options
+  //  *
+  //  * @param zoom The current zoom of the map
+  //  * @param layerTree The layer tree, used recursively.
+  //  */
+  //   private applyOptions(
+  //     zoom: number,
+  //     layerTree: BaseLayerTree | OverlayLayerTree
+  //   ) {
+  //     if (layerTree.children) {
+  //       for (const child of layerTree.children) {
+  //         this.applyOptions(zoom, child);
+  //       }
+  //     } else if (layerTree.options) {
+  //       const options = {
+  //         ...layerTree.options,
+  //         ...(layerTree.options.style && layerTree.options.style),
+  //       };
+  //       this.mapLayersService.applyOptionsToLayer(
+  //         this.map,
+  //         layerTree.layer,
+  //         options
+  //       );
+  //     }
+  //   }
 
   /**
    * Update layer control tree and layer display in the map
@@ -508,37 +578,55 @@ export class SafeMapComponent
    * @param mockedData If mocked data has to be displayed,
    * @param isDelete If is a delete operation
    */
-  private updateLayerTreeOfMap(
-    overlaysTree: OverlayLayerTree,
-    isDelete: boolean = false,
-    mockedData: boolean = true
-  ): void {
-    if (isDelete) {
-      this.layerTreeCloned = overlaysTree;
-      if (!this.useGeomanTools && this.layerControl) {
-        this.map.removeControl(this.layerControl);
-      }
-      const layers = get(this.layerTreeCloned, '_layers', []);
-      for (const layerKey in layers) {
-        if (layers[layerKey]) {
-          this.map.removeLayer(layers[layerKey]);
-        }
-      }
-      this.layerControl = null;
-    } else {
-      if (mockedData) {
-        this.layerTreeCloned = this.addTreeToMap(overlaysTree);
-      } else {
-        this.layerTreeCloned = overlaysTree;
-      }
-      this.applyOptions(this.map.getZoom(), this.layerTreeCloned);
-      if (!this.useGeomanTools) {
-        this.layerControl = L.control.layers
-          .tree(undefined, this.layerTreeCloned)
-          .addTo(this.map);
-      }
-    }
-  }
+  // private updateLayerTreeOfMap(overlays: any) {
+  //   this.layerTreeCloned = this.addTreeToMap(overlays);
+  //   this.applyOptions(this.map.getZoom(), this.layerTreeCloned, true);
+  //   this.layerControl = L.control.layers.tree(undefined, this.layerTreeCloned);
+  //   (this.layerControl as any).addTo(this.map);
+  // }
+
+  /**
+   * Function used to apply options
+   *
+   * @param zoom The current zoom of the map
+   * @param layerTree The layer tree, used recursively.
+   * @param init Used to init the map or update layers, default false.
+   */
+  // private applyOptions(zoom: number, layerTree: LayerTree, init = false) {
+  //   if (layerTree.children) {
+  //     for (const child of layerTree.children) {
+  //       this.applyOptions(zoom, child, init);
+  //     }
+  //   } else if (layerTree.options) {
+  //     if (init && layerTree.options.style) {
+  //       const layers = get(layerTree, 'layer._layers', {});
+  //       for (const layer in layers) {
+  //         if (layers[layer].options) {
+  //           layers[layer].options.opacity = layerTree.options.style.opacity;
+  //           layers[layer].options.fillOpacity = layerTree.options.style.opacity;
+  //         }
+  //       }
+  //       this.map.removeLayer(layerTree.layer);
+  //       this.map.addLayer(layerTree.layer);
+  //     }
+  //     if (init && layerTree.options.visible === false) {
+  //       // avoid undefined case matched with !layerTree.options.visible
+  //       // init with layer set at not visible by default.
+  //       this.map.removeLayer(layerTree.layer);
+  //     } else {
+  //       if (layerTree.options.visibilityRange) {
+  //         if (
+  //           zoom > layerTree.options.visibilityRange.max ||
+  //           zoom < layerTree.options.visibilityRange.min
+  //         ) {
+  //           this.map.removeLayer(layerTree.layer);
+  //         } else {
+  //           layerTree.layer.addTo(this.map);
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   /**
    * Create a new layer tree with duplicated layers
@@ -546,119 +634,89 @@ export class SafeMapComponent
    * @param layerTree The layers tree.
    * @returns A tree with each layer duplicated to have a 'left' and 'right' clones
    */
-  private addTreeToMap(layerTree: OverlayLayerTree): any {
-    if (layerTree.children) {
-      layerTree.children.map((child: any) => {
-        const newLayer = this.addTreeToMap(child);
-        child.layer = L.geoJSON(newLayer.layer, {
-          // Check for icon property
-          pointToLayer: (feature: any, latlng: any) => {
-            const marker = L.marker(latlng);
-            if (feature.properties?.icon) {
-              const icon = this.safeMapLayersService.createCustomDivIcon(
-                feature.properties.icon
-              );
-              return marker.setIcon(icon);
-            }
-            return marker;
-          },
-        }).addTo(this.map);
-      });
-    } else {
-      let layerFeature: any[];
-      if (layerTree.layer.type === 'Feature') {
-        layerFeature = [layerTree.layer];
-      } else {
-        layerFeature = layerTree.layer.features;
-      }
+  // private addTreeToMap(layerTree: LayerTree): any {
+  //   if (layerTree.children) {
+  //     layerTree.children.map((child: any) => {
+  //       const newLayer = this.addTreeToMap(child);
+  //       child.layer = L.geoJSON(newLayer.layer, {
+  //         // Check for icon property
+  //         pointToLayer: (feature: any, latlng: any) => {
+  //           const marker = L.marker(latlng);
+  //           if (feature.properties?.icon?.svg) {
+  //             const color = feature.properties.icon.color;
+  //             const width = feature.properties.icon.width;
+  //             const height = feature.properties.icon.height;
+  //             const svg = feature.properties.icon.svg;
 
-      const features: any[] = [];
-      for (const feature of layerFeature) {
-        features.push(feature);
+  //             const icon = L.divIcon({
+  //               className: 'svg-marker',
+  //               iconSize: [width, height],
+  //               iconAnchor: [0, 24],
+  //               popupAnchor: [width / 2, -36],
+  //               html: `<span style="--color:${color}">${svg}</span>`,
+  //             });
 
-        const left = {
-          type: feature.type,
-          properties: feature.properties,
-          geometry: {
-            coordinates: [] as any[],
-            type: feature.geometry.type,
-          },
-        };
-        const right = {
-          type: feature.type,
-          properties: feature.properties,
-          geometry: {
-            coordinates: [] as any[],
-            type: feature.geometry.type,
-          },
-        };
+  //             return marker.setIcon(icon);
+  //           }
+  //           return marker;
+  //         },
+  //       }).addTo(this.map);
+  //     });
+  //   } else {
+  //     let layerFeature: any[];
+  //     if (layerTree.layer.type === 'Feature') {
+  //       layerFeature = [layerTree.layer];
+  //     } else {
+  //       layerFeature = layerTree.layer.features;
+  //     }
 
-        if (feature.geometry.type === 'Point') {
-          const coordinate = feature.geometry.coordinates;
-          left.geometry.coordinates = [coordinate[0] - 360, coordinate[1]];
-          right.geometry.coordinates = [coordinate[0] + 360, coordinate[1]];
-        } else {
-          const leftCoordinates: any[] = [];
-          const rightCoordinates: any[] = [];
-          for (const coordinate of feature.geometry.coordinates[0]) {
-            leftCoordinates.push([coordinate[0] - 360, coordinate[1]]);
-            rightCoordinates.push([coordinate[0] + 360, coordinate[1]]);
-          }
-          left.geometry.coordinates.push(leftCoordinates);
-          right.geometry.coordinates.push(rightCoordinates);
-        }
+  //     const features: any[] = [];
+  //     for (const feature of layerFeature) {
+  //       features.push(feature);
 
-        features.push(left);
-        features.push(right);
-      }
+  //       const left = {
+  //         type: feature.type,
+  //         properties: feature.properties,
+  //         geometry: {
+  //           coordinates: [] as any[],
+  //           type: feature.geometry.type,
+  //         },
+  //       };
+  //       const right = {
+  //         type: feature.type,
+  //         properties: feature.properties,
+  //         geometry: {
+  //           coordinates: [] as any[],
+  //           type: feature.geometry.type,
+  //         },
+  //       };
 
-      layerTree.layer = {
-        type: 'FeatureCollection',
-        features,
-      };
-    }
-    return layerTree;
-  }
+  //       if (feature.geometry.type === 'Point') {
+  //         const coordinate = feature.geometry.coordinates;
+  //         left.geometry.coordinates = [coordinate[0] - 360, coordinate[1]];
+  //         right.geometry.coordinates = [coordinate[0] + 360, coordinate[1]];
+  //       } else {
+  //         const leftCoordinates: any[] = [];
+  //         const rightCoordinates: any[] = [];
+  //         for (const coordinate of feature.geometry.coordinates[0]) {
+  //           leftCoordinates.push([coordinate[0] - 360, coordinate[1]]);
+  //           rightCoordinates.push([coordinate[0] + 360, coordinate[1]]);
+  //         }
+  //         left.geometry.coordinates.push(leftCoordinates);
+  //         right.geometry.coordinates.push(rightCoordinates);
+  //       }
 
-  /**
-   * Function used to apply options
-   *
-   * @param zoom The current zoom of the map
-   * @param layerTree The layer tree, used recursively.
-   */
-  private applyOptions(
-    zoom: number,
-    layerTree: BaseLayerTree | OverlayLayerTree
-  ) {
-    if (layerTree.children) {
-      for (const child of layerTree.children) {
-        this.applyOptions(zoom, child);
-      }
-    } else if (layerTree.options) {
-      const options = {
-        ...layerTree.options,
-        ...(layerTree.options.style && layerTree.options.style),
-      };
-      this.safeMapLayersService.applyOptionsToLayer(
-        this.map,
-        layerTree.layer,
-        options
-      );
-    }
-  }
+  //       features.push(left);
+  //       features.push(right);
+  //     }
 
-  /** Load the data, using widget parameters. */
-  private getData(): void {
-    this.map.closePopup(this.popupMarker);
-
-    // this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-    //   const today = new Date();
-    //   this.lastUpdate =
-    //     ('0' + today.getHours()).slice(-2) +
-    //     ':' +
-    //     ('0' + today.getMinutes()).slice(-2);
-    // });
-  }
+  //     layerTree.layer = {
+  //       type: 'FeatureCollection',
+  //       features,
+  //     };
+  //   }
+  //   return layerTree;
+  // }
 
   /**
    * Set the basemap.
@@ -670,7 +728,7 @@ export class SafeMapComponent
       this.basemap.remove();
     }
     const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
-    this.basemap = L.esri.Vector.vectorBasemapLayer(basemapName, {
+    this.basemap = Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
   }

@@ -2,9 +2,15 @@ import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/languages';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
+import { SafeMapLegendComponent } from '../../components/ui/map/map-legend/map-legend.component';
+import { DomService } from '../dom/dom.service';
 
-// Declares L to be able to use Leaflet from CDN
-declare let L: any;
+/// <reference path="../../../../typings/leaflet/index.d.ts" />
+import * as L from 'leaflet';
+import 'esri-leaflet';
+import 'leaflet-fullscreen';
+import 'leaflet-measure';
+import * as Geocoding from 'esri-leaflet-geocoder';
 
 /**
  * Shared map control service.
@@ -25,10 +31,12 @@ export class SafeMapControlsService {
    *
    * @param environment environment
    * @param translate Angular translate service
+   * @param domService Shared dom service
    */
   constructor(
     @Inject('environment') environment: any,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private domService: DomService
   ) {
     this.lang = this.translate.currentLang;
     this.primaryColor = environment.theme.primary;
@@ -41,12 +49,12 @@ export class SafeMapControlsService {
    * @param apikey arcgis api key
    */
   public getSearchbarControl(map: any, apikey: string): void {
-    const searchControl = L.esri.Geocoding.geosearch({
+    const searchControl = Geocoding.geosearch({
       position: 'topleft',
       placeholder: 'Enter an address or place e.g. 1 York St',
       useMapBounds: false,
       providers: [
-        L.esri.Geocoding.arcgisOnlineProvider({
+        Geocoding.arcgisOnlineProvider({
           apikey,
           nearby: {
             lat: -33.8688,
@@ -60,7 +68,6 @@ export class SafeMapControlsService {
       // results.clearLayers();
       for (let i = data.results.length - 1; i >= 0; i--) {
         const coordinates = L.latLng(data.results[i].latlng);
-        console.log(coordinates);
         const circle = L.circleMarker(coordinates, MARKER_OPTIONS);
         circle.addTo(map);
         const popup = L.popup()
@@ -94,7 +101,7 @@ export class SafeMapControlsService {
     if (this.fullscreenControl) {
       map.removeControl(this.fullscreenControl);
     }
-    this.fullscreenControl = new L.Control.Fullscreen({
+    this.fullscreenControl = new (L.Control as any).Fullscreen({
       title: {
         false: this.translate.instant('common.viewFullscreen'),
         true: this.translate.instant('common.exitFullscreen'),
@@ -119,7 +126,7 @@ export class SafeMapControlsService {
     if (!this.measureControls[lang]) {
       // import related file, and build control
       import(`leaflet-measure/dist/leaflet-measure.${lang}.js`).then(() => {
-        const control = new L.Control.Measure({
+        const control = new (L.Control as any).Measure({
           position: 'bottomleft',
           primaryLengthUnit: 'kilometers',
           primaryAreaUnit: 'sqmeters',
@@ -139,6 +146,37 @@ export class SafeMapControlsService {
       map.removeControl(this.measureControls[this.lang]);
       this.measureControls[lang].addTo(map);
       this.lang = lang;
+    }
+  }
+
+  /**
+   * Gets a legend control and adds it to the map
+   *
+   * @param map map to get legend control for
+   */
+  public getLegendControl(map: any): any {
+    const control = new L.Control({ position: 'bottomright' });
+    control.onAdd = () => {
+      const div = L.DomUtil.create('div', 'info legend');
+      /*const legend = */ this.domService.appendComponentToBody(
+        SafeMapLegendComponent,
+        div
+      );
+      // const instance: SafeMapLegendComponent = legend.instance;
+      return div;
+    };
+    control.addTo(map);
+    const container = control.getContainer();
+    if (container) {
+      // prevent click events from propagating to the map
+      container.addEventListener('click', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
+
+      // prevent mouse wheel events from propagating to the map
+      container.addEventListener('wheel', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
     }
   }
 }

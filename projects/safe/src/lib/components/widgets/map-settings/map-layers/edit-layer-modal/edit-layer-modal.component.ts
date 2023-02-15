@@ -16,10 +16,37 @@ import {
   OverlayLayerTree,
 } from '../../../../ui/map/interfaces/map-layers.interface';
 
-declare let L: any;
+import * as L from 'leaflet';
 
 /** Layer used to test the component */
-const TEST_LAYER = {
+const TEST_LAYER: {
+  [key: string]: {
+    type:
+      | 'FeatureCollection'
+      | 'Feature'
+      | 'Polygon'
+      | 'Point'
+      | 'MultiPoint'
+      | 'LineString'
+      | 'MultiLineString'
+      | 'MultiPolygon'
+      | 'GeometryCollection';
+    properties: any;
+    geometry: {
+      coordinates: Array<number> | Array<Array<number[]>>;
+      type:
+        | 'FeatureCollection'
+        | 'Feature'
+        | 'Polygon'
+        | 'Point'
+        | 'MultiPoint'
+        | 'LineString'
+        | 'MultiLineString'
+        | 'MultiPolygon'
+        | 'GeometryCollection';
+    };
+  };
+} = {
   polygon: {
     type: 'Feature',
     properties: {},
@@ -111,7 +138,10 @@ export class SafeEditLayerModalComponent
     this.mapSettings = {
       centerLong: 0,
       centerLat: 0,
-      maxBounds: L.latLngBounds(L.latLng(-90, -1000), L.latLng(90, 1000)),
+      maxBounds: [
+        [-90, -1000],
+        [90, 1000],
+      ],
       basemap: 'OSM',
       zoomControl: false,
       minZoom: 2,
@@ -203,7 +233,10 @@ export class SafeEditLayerModalComponent
     // If a layer is already applied to the map we first delete it
     if (this.currentLayer) {
       this.addOrDeleteLayer.next({
-        layerData: this.currentLayer,
+        layerData: {
+          layer: this.currentLayer,
+          label: this.form.get('name')?.value,
+        },
         isDelete: true,
       });
     }

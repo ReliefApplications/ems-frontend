@@ -4,8 +4,7 @@ import { get } from 'lodash';
 import { generateIconHTML } from '../../components/ui/map/utils/generateIcon';
 import { FA_ICONS } from '../../components/ui/map/const/fa-icons';
 
-// Declares L to be able to use Leaflet from CDN
-declare let L: any;
+import * as L from 'leaflet';
 
 /**
  * Creates a new custom leaflet marker
@@ -87,6 +86,7 @@ export class SafeMapLayersService {
         }
       } else {
         // The default icon(leaflet-default) uses the markerHtmlStyles
+        // size set for marker is half that the one for the icon to keep same visibility
         htmlTemplate = markerHtmlStyles(iconProperties.color, 1, size / 2);
       }
     }
@@ -97,6 +97,7 @@ export class SafeMapLayersService {
      */
     if (customMakerStylesProperties) {
       const { color, opacity } = customMakerStylesProperties;
+      // size set for marker is half that the one for the icon to keep same visibility
       htmlTemplate = markerHtmlStyles(color, opacity, size / 2);
     }
 
@@ -104,7 +105,6 @@ export class SafeMapLayersService {
       className,
       iconSize: [size, size],
       iconAnchor: [size / 2, size / 2],
-      labelAnchor: [-6, 0],
       popupAnchor: [size / 2, -36],
       html: htmlTemplate,
     });
@@ -173,12 +173,19 @@ export class SafeMapLayersService {
           json.properties.radius = l.getRadius();
         }
         if (l instanceof L.Marker) {
-          const html = l.options.icon.options.html;
+          const html =
+            l.options.icon?.options && 'html' in l.options.icon?.options
+              ? l.options.icon?.options.html
+              : undefined;
           // save marker style info to geojson
           if (html) {
-            const attributes = html.match(/data-attr="(.*\d)"/)[1];
-            const [color, opacity] = attributes.split(',');
-            json.properties = { color, opacity };
+            const innerHtml = typeof html === 'string' ? html : html.innerHTML;
+            const matches = innerHtml.match(/data-attr="(.*\d)"/);
+            if (matches && matches.length > 1) {
+              const attributes = matches[1];
+              const [color, opacity] = attributes.split(',');
+              json.properties = { color, opacity };
+            }
           }
         }
         return json;

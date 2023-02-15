@@ -1,6 +1,6 @@
 import { generateGeoJSONPoints } from './util-test';
-import { getRandomIcon } from './const/fa-icons';
-import { SafeMapLayersService } from '../../../services/maps/map-layers.service';
+import { getRandomIcon } from '../const/fa-icons';
+import { SafeMapLayersService } from '../../../../services/maps/map-layers.service';
 
 /** Minimum cluster size in pixel */
 const minClusterSize = 20;

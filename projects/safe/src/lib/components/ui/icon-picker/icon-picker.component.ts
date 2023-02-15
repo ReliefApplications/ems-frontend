@@ -44,6 +44,8 @@ export class SafeIconPickerComponent implements ControlValueAccessor {
   @HostListener('document:keydown.escape')
   onEsc() {
     this.displayIconList = false;
+    // Reset icon shown in list after exit
+    this.filteredIconList = this.iconListData;
   }
 
   private iconListData!: string[];
