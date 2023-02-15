@@ -68,7 +68,7 @@
       <!-- Fields -->
       <mat-form-field class="chip-list" appearance="outline">
         <mat-label>{{ 'pages.referenceData.fields' | translate }}</mat-label>
-        <mat-chip-list #chipList aria-label="Fields chip list">
+        <mat-chip-list #chipList [ariaLabel]="'components.referenceData.fields.ariaLabel' | translate">
           <mat-chip
             *ngFor="let field of valueFields"
             [selectable]="true"

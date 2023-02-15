@@ -126,7 +126,7 @@
     [pageSize]="pageInfo.pageSize"
     [pageSizeOptions]="[10, 25, 50]"
     [length]="pageInfo.length"
-    aria-label="Select page of forms"
+    [ariaLabel]="'components.referenceData.paginator.ariaLabel' | translate"
     (page)="onPage($event)"
   >
   </mat-paginator>

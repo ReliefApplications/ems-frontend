@@ -56,7 +56,7 @@
             matSuffix
             [isIcon]="true"
             icon="close"
-            aria-label="Clear"
+            [ariaLabel]="'components.application.subscription.modal.routingKey.clear.ariaLabel' | translate"
             (click)="routingKey = ''"
           ></safe-button>
           <safe-icon

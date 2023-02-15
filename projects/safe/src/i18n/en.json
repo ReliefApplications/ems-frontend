@@ -17,6 +17,11 @@
 			"none": "No application",
 			"one": "Application"
 		},
+		"ariaLabel": {
+			"search": {
+				"clear": "Clear search"
+			}
+		},
 		"attribute": {
 			"few": "Attributes",
 			"none": "No attribute",
@@ -378,6 +383,9 @@
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the API Configuration {{name}}?",
 				"title": "Delete API configuration"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of API configurations"
 			}
 		},
 		"application": {
@@ -412,6 +420,11 @@
 					"listenTo": "Listen to",
 					"placeholder": {
 						"listenTo": "Select a routing key"
+					},
+					"routingKey": {
+						"clear": {
+							"ariaLabel": "Clear routing key"
+						}
 					}
 				}
 			},
@@ -433,6 +446,9 @@
 		"applications": {
 			"dropdown": {
 				"select": "From applications"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of applications"
 			}
 		},
 		"calculatedFields": {
@@ -563,6 +579,9 @@
 		},
 		"forms": {
 			"isCore": "Is core",
+			"paginator": {
+				"ariaLabel": "Select page of forms"
+			},
 			"parent": "Parent form"
 		},
 		"group": {
@@ -611,6 +630,9 @@
 			"value": "Value"
 		},
 		"notifications": {
+			"paginator": {
+				"ariaLabel": "Select page of notifications"
+			},
 			"readAll": "Mark all as read"
 		},
 		"preferences": {
@@ -640,6 +662,9 @@
 					"url": "Enter URL..."
 				},
 				"switch": "Switch mode"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of pull jobs"
 			}
 		},
 		"queryBuilder": {
@@ -764,6 +789,9 @@
 		"records": {
 			"active": "Active records",
 			"archived": "Archived records",
+			"paginator": {
+				"ariaLabel": "Select page of records"
+			},
 			"showActive": "Show active records",
 			"showArchived": "Show archived records",
 			"upload": {
@@ -780,6 +808,12 @@
 			},
 			"dropdown": {
 				"select": "From Reference data"
+			},
+			"fields": {
+				"ariaLabel": "Input available fields of reference data"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of reference data"
 			}
 		},
 		"resource": {
@@ -794,6 +828,9 @@
 				"calculatedFields": "No calculated fields detected",
 				"layouts": "No layout detected",
 				"records": "No record detected"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of resources"
 			}
 		},
 		"role": {
@@ -938,6 +975,9 @@
 				"add": "Add new user",
 				"confirm": "Invite users",
 				"description": "Select existing users, invite new users or import from Excel file"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of users"
 			}
 		},
 		"widget": {
@@ -1231,6 +1271,9 @@
 					"dynamic": "Dynamic",
 					"hint": {
 						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
+					},
+					"options": {
+						"ariaLabel": "Select an option"
 					},
 					"static": "Static"
 				}

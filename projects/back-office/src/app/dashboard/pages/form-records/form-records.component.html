@@ -157,14 +157,14 @@
       *ngIf="loading"
       [columns]="displayedColumns"
       [actions]="true"
-    >
+    > 
     </safe-skeleton-table>
   </div>
   <mat-paginator
     [disabled]="loadingMore"
     [pageSize]="pageInfo.pageSize"
     [length]="pageInfo.length"
-    aria-label="Select page of records"
+    [ariaLabel]="'components.records.paginator.ariaLabel' | translate"
     (page)="onPage($event)"
   >
   </mat-paginator>

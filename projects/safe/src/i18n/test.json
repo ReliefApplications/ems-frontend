@@ -17,6 +17,11 @@
 			"none": "******",
 			"one": "******"
 		},
+		"ariaLabel": {
+			"search": {
+				"clear": "******"
+			}
+		},
 		"attribute": {
 			"few": "******",
 			"none": "******",
@@ -378,6 +383,9 @@
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"application": {
@@ -412,6 +420,11 @@
 					"listenTo": "******",
 					"placeholder": {
 						"listenTo": "******"
+					},
+					"routingKey": {
+						"clear": {
+							"ariaLabel": "******"
+						}
 					}
 				}
 			},
@@ -433,6 +446,9 @@
 		"applications": {
 			"dropdown": {
 				"select": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"calculatedFields": {
@@ -563,6 +579,9 @@
 		},
 		"forms": {
 			"isCore": "******",
+			"paginator": {
+				"ariaLabel": "******"
+			},
 			"parent": "******"
 		},
 		"group": {
@@ -611,6 +630,9 @@
 			"value": "******"
 		},
 		"notifications": {
+			"paginator": {
+				"ariaLabel": "******"
+			},
 			"readAll": "******"
 		},
 		"preferences": {
@@ -640,6 +662,9 @@
 					"url": "******"
 				},
 				"switch": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"queryBuilder": {
@@ -764,6 +789,9 @@
 		"records": {
 			"active": "******",
 			"archived": "******",
+			"paginator": {
+				"ariaLabel": "******"
+			},
 			"showActive": "******",
 			"showArchived": "******",
 			"upload": {
@@ -780,6 +808,12 @@
 			},
 			"dropdown": {
 				"select": "******"
+			},
+			"fields": {
+				"ariaLabel": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"resource": {
@@ -794,6 +828,9 @@
 				"calculatedFields": "******",
 				"layouts": "******",
 				"records": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"role": {
@@ -938,6 +975,9 @@
 				"add": "******",
 				"confirm": "******",
 				"description": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"widget": {
@@ -1231,6 +1271,9 @@
 					"dynamic": "******",
 					"hint": {
 						"dynamic": "******"
+					},
+					"options": {
+						"ariaLabel": "******"
 					},
 					"static": "******"
 				}
