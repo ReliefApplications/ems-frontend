@@ -36,7 +36,7 @@ const defaultHeatMapOptions: HeatMapOptions = {
  * (from the heatmap)in a circle around the clicked point
  *
  * @param map The map to add the heatmap to
- * @param mapPopupService
+ * @param mapPopupService popup service to instantiate new popup component
  * @param options Options for the heatmap
  * @returns heatmap layer
  */

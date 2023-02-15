@@ -14,9 +14,15 @@ import { SafeMapPopupComponent } from './map-popup.component';
   providedIn: 'root',
 })
 export class SafeMapPopupService {
+  /**
+   * Injects DomService instance to the service
+   *
+   * @param domService DomService
+   */
   constructor(private domService: DomService) {}
   /**
    * Set popup event and content for click event in cluster groups
+   *
    * @param map Map in where we want to open the popup
    * @param clusterGroup Cluster that groups the feature points for the popup
    */
@@ -31,6 +37,7 @@ export class SafeMapPopupService {
 
   /**
    * Set popup event and content for click event in heat maps
+   *
    * @param map Map in where we want to open the popup
    * @param featurePoints Feature points to group in the popupF
    */
@@ -57,6 +64,7 @@ export class SafeMapPopupService {
 
   /**
    * Set popup content for the given map and feature points
+   *
    * @param map Map in where we want to open the popup
    * @param featurePoints Feature points to group in the popup
    * @param clickEvent Click event in the given map
@@ -115,8 +123,9 @@ export class SafeMapPopupService {
 
   /**
    * Initialize content and returns an instance of SafeMapPopupComponent
-   * @param featurePoints
-   * @param containerElement
+   *
+   * @param featurePoints featurePoints
+   * @param containerElement containerElement
    * @returns SafeMapPopupComponent instance
    */
   public initializeSafeMapPopupComponent(
@@ -134,10 +143,9 @@ export class SafeMapPopupService {
     // set the points
     instance.points = featurePoints;
 
-    /**
-     * @TODO: In order to normalize or set each template for layer type we should map the point properties
-     * Or create custom template for each type of feature points data
-     */
+    // @TODO: In order to normalize or set each template for layer type we should map the point properties
+    // Or create custom template for each type of feature points data
+
     instance.template = `
           <div style="display: grid; grid-template-columns: 1fr 1fr; padding: 4px">
             <p style="color: gray">ID</p>
