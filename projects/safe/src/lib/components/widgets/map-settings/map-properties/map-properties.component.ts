@@ -84,12 +84,13 @@ export class MapPropertiesComponent
       .subscribe((value) =>
         this.updateMapSettings({ basemap: value } as MapConstructorSettings)
       );
-      this.form
+    this.form
       .get('timeDimension')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        console.log(value)
-        this.updateMapSettings({ timeDimension: value } as MapConstructorSettings)
+        this.updateMapSettings({
+          timeDimension: value,
+        } as MapConstructorSettings);
       });
   }
 

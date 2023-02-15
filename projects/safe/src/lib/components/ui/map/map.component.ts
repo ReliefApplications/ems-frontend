@@ -25,7 +25,7 @@ import {
   MapEvent,
   MapEventType,
 } from './interfaces/map.interface';
-import { BASEMAPS, BASEMAP_LAYERS } from './const/baseMaps';
+import { BASEMAP_LAYERS } from './const/baseMaps';
 import { merge } from 'lodash';
 import { generateClusterLayer } from './test/cluster-test';
 import {
@@ -38,12 +38,14 @@ import {
   randomFeatureCollection,
 } from './test/feature-collection-test';
 import { generateHeatMap } from './test/heatmap-test';
+import { timeDimensionGeoJSON } from './test/timedimension-test';
 import { SafeMapLayersService } from '../../../services/maps/map-layers.service';
 import { SafeMapControlsService } from '../../../services/maps/map-controls.service';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/languages';
 
 // import 'leaflet';
 import * as L from 'leaflet';
+import { GeoJsonObject } from 'geojson';
 
 /**
  * Cleans the settings object from null values
@@ -307,6 +309,7 @@ export class SafeMapComponent
     const worldCopyJump = get(this.settingsConfig, 'worldCopyJump', true);
     const zoomControl = get(this.settingsConfig, 'zoomControl', false);
     const zoom = get(this.settingsConfig, 'zoom', 3);
+    const timeDimension = get(this.settingsConfig, 'timeDimension', false);
     /**
      * TODO implement layer loading for the layers returned from the settings
      *
@@ -335,6 +338,7 @@ export class SafeMapComponent
       zoomControl,
       zoom,
       layers,
+      timeDimension,
     };
   }
 
@@ -350,6 +354,7 @@ export class SafeMapComponent
       worldCopyJump,
       zoomControl,
       zoom,
+      timeDimension,
       // layers,
     } = this.extractSettings();
 
@@ -366,7 +371,8 @@ export class SafeMapComponent
       maxZoom,
       worldCopyJump,
       zoom,
-    }).setView(L.latLng(centerLat, centerLong), zoom);
+      timeDimension,
+    } as any).setView(L.latLng(centerLat, centerLong), zoom);
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(basemap);
@@ -393,6 +399,13 @@ export class SafeMapComponent
 
       // Add legend control
       this.mapControlsService.getLegendControl(this.map);
+
+      // Add TimeDimension control
+      this.mapControlsService.setTimeDimension(
+        this.map,
+        timeDimension ?? false,
+        timeDimensionGeoJSON as GeoJsonObject
+      );
     }
   }
 
@@ -412,13 +425,41 @@ export class SafeMapComponent
         maxZoom,
         minZoom,
         zoom,
+        timeDimension,
       } = this.extractSettings();
-      this.map.setMaxZoom(maxZoom);
-      this.map.setMinZoom(minZoom);
+
+      // If value changes for the map we would change in order to not trigger map events unnecessarily
+      if (this.map.getMaxZoom() !== maxZoom) {
+        this.map.setMaxZoom(maxZoom);
+      }
+      if (this.map.getMinZoom() !== minZoom) {
+        this.map.setMinZoom(minZoom);
+      }
+
       this.map.setMaxBounds(maxBounds);
-      this.map.setZoom(zoom);
-      this.setBasemap(basemap);
-      this.map.setView(L.latLng(centerLat, centerLong), zoom);
+
+      if (this.map.getZoom() !== zoom) {
+        this.map.setZoom(zoom);
+      }
+
+      if (basemap) {
+        const currentBasemap = this.basemap?.options?.key;
+        const newBaseMap = get(BASEMAP_LAYERS, basemap);
+        if (newBaseMap !== currentBasemap) {
+          this.setBasemap(basemap);
+        }
+      }
+
+      const center = this.map.getCenter();
+      if (centerLat !== center.lat || centerLong !== center.lng) {
+        this.map.setView(L.latLng(centerLat, centerLong), zoom);
+      }
+
+      this.mapControlsService.setTimeDimension(
+        this.map,
+        timeDimension ?? false,
+        timeDimensionGeoJSON as GeoJsonObject
+      );
     }
   }
   /**
@@ -649,7 +690,8 @@ export class SafeMapComponent
    *
    * @param basemap String containing the id (name) of the basemap
    */
-  public setBasemap(basemap: any = BASEMAPS[BASEMAP_LAYERS.OSM]) {
+  public setBasemap(basemap: any) {
+    // @TODO when switching between basemaps the related layers and controls to the previous map are there
     if (this.basemap) {
       this.basemap.remove();
     }
