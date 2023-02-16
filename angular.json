@@ -130,7 +130,11 @@
               "cron-validator",
               "localforage",
               "survey-angular",
-              "fast-sha256"
+              "fast-sha256",
+              "leaflet",
+              "esri-leaflet-geocoder",
+              "esri-leaflet-vector",
+              "leaflet.markercluster"
             ]
           },
           "configurations": {
@@ -611,7 +615,11 @@
               "cron-validator",
               "localforage",
               "survey-angular",
-              "fast-sha256"
+              "fast-sha256",
+              "leaflet",
+              "esri-leaflet-geocoder",
+              "esri-leaflet-vector",
+              "leaflet.markercluster"
             ]
           },
           "configurations": {
@@ -1070,7 +1078,11 @@
               "cron-validator",
               "localforage",
               "survey-angular",
-              "fast-sha256"
+              "fast-sha256",
+              "leaflet",
+              "esri-leaflet-geocoder",
+              "esri-leaflet-vector",
+              "leaflet.markercluster"
             ]
           },
           "configurations": {
