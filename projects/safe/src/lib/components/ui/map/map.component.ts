@@ -28,6 +28,7 @@ import {
 import { BASEMAP_LAYERS } from './const/baseMaps';
 import { merge } from 'lodash';
 import { generateClusterLayer } from './test/cluster-test';
+import { generateBaseMaps } from './test/basemaps-test';
 import {
   complexGeoJSON,
   cornerGeoJSON,
@@ -406,6 +407,8 @@ export class SafeMapComponent
         timeDimension ?? false,
         timeDimensionGeoJSON as GeoJsonObject
       );
+      // Add download button and download menu
+      this.mapControlsService.getDownloadControl(this.map);
     }
   }
 
@@ -466,9 +469,11 @@ export class SafeMapComponent
    * Draw layers on map and sets the baseTree.
    */
   private drawLayers(): void {
+    const baseMaps = generateBaseMaps(this.esriApiKey, this.basemap);
     this.baseTree = {
-      label: this.basemap.options.key,
-      layer: this.basemap,
+      label: 'Base Maps',
+      children: baseMaps,
+      collapsed: true,
     };
     const options1 = {
       style: {
