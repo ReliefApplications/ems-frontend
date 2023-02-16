@@ -1003,6 +1003,8 @@ export const FA_ICONS = [
   'yin-yang',
 ] as const;
 
+export type IconName = (typeof FA_ICONS)[number];
+
 /**
  * Gets a random icon name from the FA_ICONS array
  *

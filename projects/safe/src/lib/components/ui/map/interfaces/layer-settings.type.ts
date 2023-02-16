@@ -78,7 +78,7 @@ export type LayerStyling = {
 }[];
 
 // The style object is defined as follows:
-type LayerStyle = {
+export type LayerStyle = {
   borderColor?: string;
   borderWidth?: number;
   borderOpacity?: number;

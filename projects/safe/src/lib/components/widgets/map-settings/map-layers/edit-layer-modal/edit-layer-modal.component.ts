@@ -17,6 +17,7 @@ import {
 } from '../../../../ui/map/interfaces/map-layers.interface';
 
 import * as L from 'leaflet';
+import { createCustomDivIcon } from '../../../../ui/map/utils/create-div-icon';
 
 /** Layer used to test the component */
 const TEST_LAYER: {
@@ -86,7 +87,7 @@ export class SafeEditLayerModalComponent
 {
   public form: UntypedFormGroup;
 
-  private currentLayer: any;
+  private currentLayer: L.Layer | null = null;
   private layerOptions: any = {};
 
   /** @returns the selected layer type */
@@ -95,9 +96,7 @@ export class SafeEditLayerModalComponent
   }
   /** @returns the selected icon with the given style config */
   private get icon(): any | null {
-    return this.safeMapLayerService.createCustomDivIcon(
-      this.form.get('style')?.value
-    );
+    return createCustomDivIcon(this.form.get('style')?.value);
   }
 
   // === MAP ===

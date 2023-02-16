@@ -39,7 +39,7 @@ const defaultHeatMapOptions: HeatMapOptions = {
  * @returns heatmap layer
  */
 export const generateHeatMap = (
-  map: any,
+  map: L.Map,
   options?: Partial<HeatMapOptions>
 ) => {
   const total = 10000;

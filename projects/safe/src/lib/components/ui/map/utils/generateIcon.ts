@@ -1,8 +1,8 @@
-import { FA_ICONS } from '../const/fa-icons';
+import { IconName } from '../const/fa-icons';
 
 /** Properties of an icon */
 export type IconPropertiesI = {
-  icon: (typeof FA_ICONS)[number];
+  icon: IconName;
   size?: number;
   color?: string;
 };

@@ -48,6 +48,11 @@ import { AVAILABLE_GEOMAN_LANGUAGES } from './const/languages';
 
 // import 'leaflet';
 import * as L from 'leaflet';
+import { Layer } from './layer';
+import { MOCK_LAYER_SETTINGS } from './test/layer-settings-test';
+import { getMapFeatures } from './utils/get-map-features';
+import { createCustomMarker } from './utils/create-marker';
+import { LayerProperties } from './interfaces/layer-settings.type';
 
 /**
  * Cleans the settings object from null values
@@ -101,11 +106,11 @@ export class SafeMapComponent
   /** Update layer options setters */
   @Input() set updateLayerOptions(layerWithOptions: {
     layer: any;
-    options: any;
-    icon?: any;
+    options: LayerProperties;
+    icon?: L.DivIcon;
   }) {
     if (layerWithOptions) {
-      this.mapLayersService.applyOptionsToLayer(
+      Layer.applyOptionsToLayer(
         this.map,
         layerWithOptions.layer,
         layerWithOptions.options,
@@ -115,7 +120,7 @@ export class SafeMapComponent
       if (this.useGeomanTools) {
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: this.mapLayersService.getMapFeatures(this.map),
+          content: getMapFeatures(this.map),
         });
       }
     }
@@ -200,25 +205,19 @@ export class SafeMapComponent
   private setUpPmListeners() {
     // updates question value on adding new shape
     this.map.on('pm:create', (l: any) => {
-      if (l.shape === 'Marker') {
-        const divIcon = this.mapLayersService.createCustomDivIcon(undefined, {
-          color: '#3388ff',
-          opacity: 1,
-        });
-        l.layer.setIcon(divIcon);
-      }
+      if (l.shape === 'Marker')
+        l.layer.setIcon(createCustomMarker('#3388ff', 1));
 
       // subscribe to changes on the created layers
       l.layer.on(
         'pm:change',
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: this.mapLayersService.getMapFeatures(this.map),
+          content: getMapFeatures(this.map),
         })
       );
 
       l.layer.on('click', (e: any) => {
-        console.log(e);
         this.mapEvent.emit({
           type: MapEventType.SELECTED_LAYER,
           content: { layer: e.target },
@@ -231,7 +230,7 @@ export class SafeMapComponent
       'pm:remove',
       this.mapEvent.emit({
         type: MapEventType.MAP_CHANGE,
-        content: this.mapLayersService.getMapFeatures(this.map),
+        content: getMapFeatures(this.map),
       })
     );
 
@@ -257,14 +256,16 @@ export class SafeMapComponent
   /** Method for testing the layer class, TO BE REMOVED */
   private testLayerClass() {
     const testLayer = new Layer(MOCK_LAYER_SETTINGS);
-    console.log(testLayer);
+    if (testLayer) {
+      const layer = testLayer.getLayer();
+      if (layer) {
+        layer.addTo(this.map);
+      }
+    }
   }
 
   /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
-    // FOR TESTING PURPOSES ONLY
-    this.testLayerClass();
-
     // Creates the map and adds all the controls we use.
     this.drawMap();
     /**
@@ -280,12 +281,15 @@ export class SafeMapComponent
     setTimeout(() => {
       this.map.invalidateSize();
       if (this.displayMockedLayers) {
+        // FOR TESTING PURPOSES ONLY
+        this.testLayerClass();
+        return;
         this.setUpLayers();
       }
       if (this.useGeomanTools) {
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: this.mapLayersService.getMapFeatures(this.map),
+          content: getMapFeatures(this.map),
         });
       } else {
         this.mapEvent.emit({
@@ -333,8 +337,6 @@ export class SafeMapComponent
      *
      */
     const layers = get(this.settingsConfig, 'layers', []);
-
-    console.log(layers);
 
     return {
       centerLong,
@@ -456,11 +458,7 @@ export class SafeMapComponent
         opacity: 0.5,
       },
     };
-    const clusterGroup = generateClusterLayer(
-      this.map,
-      L,
-      this.mapLayersService
-    );
+    const clusterGroup = generateClusterLayer(this.map, L);
     // this.map.addLayer(clusterGroup);
     this.layers = [
       {
@@ -503,6 +501,7 @@ export class SafeMapComponent
 
   /**
    * Draw given layers and adds the related controls
+   *
    * @param layers Layers to draw
    */
   private drawLayers(layers: any) {
@@ -531,6 +530,7 @@ export class SafeMapComponent
 
   /**
    * Delete given layers and deletes the related controls
+   *
    * @param layers Layers to delete
    */
   private deleteLayers(layers: any) {

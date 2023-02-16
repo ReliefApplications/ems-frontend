@@ -51,7 +51,7 @@ export const generateRandomFeatures = (options: CollectionGeneratorOptions) => {
     let coordinates;
     switch (type) {
       case 'Point':
-        coordinates = [Math.random() * 180 - 90, Math.random() * 360 - 180];
+        coordinates = [Math.random() * 360 - 180, Math.random() * 180 - 90];
         break;
       case 'Polygon':
       case 'LineString':
@@ -161,7 +161,7 @@ export const randomFeatureCollection = generateRandomFeatures({
 });
 
 /**
- * Generat a geojson layer from geojson definition
+ * Generate a geojson layer from geojson definition
  *
  * @param geojson geojson to use as layer
  * @returns geojson layer

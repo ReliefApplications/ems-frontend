@@ -22,6 +22,7 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/public-api';
 // Leaflet
 import '@geoman-io/leaflet-geoman-free';
 import * as L from 'leaflet';
+import { createCustomMarker } from '../ui/map/utils/create-marker';
 
 /**
  * Component for displaying the input map
@@ -106,13 +107,7 @@ export class SafeGeospatialMapComponent
           } else {
             const color = feature.properties.color || '#3388ff';
             const opacity = feature.properties.opacity || 1;
-            const icon = this.safeMapLayersService.createCustomDivIcon(
-              undefined,
-              {
-                color,
-                opacity,
-              }
-            );
+            const icon = createCustomMarker(color, opacity);
             return new L.Marker(latlng).setIcon(icon);
           }
         },
@@ -147,10 +142,7 @@ export class SafeGeospatialMapComponent
     // We make sure to add that option by default in each update
     options = { ...options, visible: true };
     if (this.selectedLayer instanceof L.Marker) {
-      const icon = this.safeMapLayersService.createCustomDivIcon(undefined, {
-        color: options.color,
-        opacity: options.opacity,
-      });
+      const icon = createCustomMarker(options.color, options.opacity);
       this.updateLayer.next({ layer: this.selectedLayer, options, icon });
     } else {
       this.updateLayer.next({ layer: this.selectedLayer, options });
