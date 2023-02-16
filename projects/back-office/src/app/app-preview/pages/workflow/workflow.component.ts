@@ -139,7 +139,7 @@ export class WorkflowComponent
       this.onOpenStep(0);
       this.snackBar.openSnackBar(
         this.translate.instant('models.workflow.notifications.goToStep', {
-          step: this.steps[0].name,
+          step: this.steps[0].name?.toLowerCase(),
         })
       );
     } else {

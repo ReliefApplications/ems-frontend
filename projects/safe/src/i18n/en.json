@@ -1580,7 +1580,7 @@
 		},
 		"workflow": {
 			"notifications": {
-				"cannotGoToNextStep": "Cannot go to next step.",
+				"cannotGoToNextStep": "Cannot go to the next step.",
 				"goToStep": "Back to {{step}} step."
 			}
 		}
