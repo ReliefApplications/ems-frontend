@@ -340,6 +340,13 @@ export class Layer {
       },
       style: (feature: Feature<Geometry, FeatureProperties> | undefined) => {
         if (!feature) return {};
+        const { style: featureStyle } = feature.properties;
+
+        // Priority: feature style > layer style > default style
+        style = featureStyle
+          ? { ...DEFAULT_LAYER_STYLE, ...featureStyle }
+          : this.getFeatureStyle(feature);
+
         return {
           fillColor: style.fillColor,
           fillOpacity: style.fillOpacity,

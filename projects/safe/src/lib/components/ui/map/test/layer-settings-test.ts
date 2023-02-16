@@ -49,6 +49,8 @@ export const MOCK_LAYER_SETTINGS: LayerSettingsI = {
             filters: [],
           },
           style: {
+            borderColor: 'black',
+            borderWidth: 4,
             fillOpacity: 0.5,
             borderOpacity: 0.5,
             fillColor: 'red',
