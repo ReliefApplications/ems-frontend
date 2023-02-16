@@ -1,37 +1,48 @@
-<div class="w-52 flex flex-col">
-  <header class="w-full h-full flex justify-end items-center">
-    <safe-button
-      [isIcon]="true"
-      icon="arrow_left"
-      [disabled]="currValue === 0"
-      (click)="current.next(currValue - 1)"
-    >
-    </safe-button>
+<div class="w-52 safe-border-radius-inherit flex flex-col">
+  <header
+    class="w-full pl-2 safe-popup-header h-full flex justify-between items-center"
+  >
     <p class="m-0">
-      {{
+      ({{
         'components.widget.settings.map.popup.of'
-          | translate : { total: points.length, current: currValue + 1 }
-      }}
+          | translate: { total: points.length, current: currValue + 1 }
+      }})
     </p>
-    <safe-button
-      [isIcon]="true"
-      icon="arrow_right"
-      [disabled]="currValue === points.length - 1"
-      (click)="current.next(currValue + 1)"
-    >
-    </safe-button>
+    <div class="flex">
+      <ng-container *ngIf="points.length > 1">
+        <safe-button
+          [isIcon]="true"
+          icon="arrow_left"
+          [disabled]="currValue === 0"
+          (click)="current.next(currValue - 1)"
+        >
+        </safe-button>
+        <safe-button
+          [isIcon]="true"
+          icon="arrow_right"
+          [disabled]="currValue === points.length - 1"
+          (click)="current.next(currValue + 1)"
+        >
+        </safe-button>
+      </ng-container>
+      <safe-button
+        [size]="buttonSize.SMALL"
+        [isIcon]="true"
+        icon="close"
+        (click)="closePopup.emit()"
+      >
+      </safe-button>
+    </div>
   </header>
-  <safe-divider class="m-0"></safe-divider>
-  <div class="w-full flex justify-end">
-    <safe-button
-      [size]="buttonSize.SMALL"
-      [isIcon]="true"
-      icon="close"
-      (click)="closePopup.emit()"
-    >
-    </safe-button>
-  </div>
-  <div class="max-h-60 overflow-y-auto">
+  <div class="max-h-60 p-2 overflow-y-auto">
     <div [innerHTML]="currentHtml"></div>
+  </div>
+  <div class="pl-2 my-1">
+    <p
+      (click)="zoomToCurrentFeature()"
+      class="underline inline text-base text-primary-500 cursor-pointer"
+    >
+      {{ 'components.widget.settings.map.popup.zoomTo' | translate }}
+    </p>
   </div>
 </div>

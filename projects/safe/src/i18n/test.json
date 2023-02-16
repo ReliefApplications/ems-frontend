@@ -1200,7 +1200,9 @@
 					},
 					"popup": {
 						"label": "******",
-						"of": "{{current}} ****** {{total}}"
+						"location": "******",
+						"of": "{{current}} ****** {{total}}",
+						"zoomTo": "******"
 					},
 					"properties": {
 						"basemap": "******",

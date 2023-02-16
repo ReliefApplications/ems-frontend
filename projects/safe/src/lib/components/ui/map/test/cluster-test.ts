@@ -1,3 +1,6 @@
+import { Feature } from 'geojson';
+import { Layer } from 'leaflet';
+import { SafeMapPopupService } from '../map-popup/map-popup.service';
 import { generateGeoJSONPoints } from './util-test';
 
 /** Minimum cluster size in pixel */
@@ -15,9 +18,14 @@ const clusterIconSvg =
  *
  * @param map map to be used
  * @param L to be able to use Leaflet from CDN
+ * @param mapPopupService map popup service
  * @returns the cluster group
  */
-export const generateClusterLayer = (map: any, L: any) => {
+export const generateClusterLayer = (
+  map: any,
+  L: any,
+  mapPopupService: SafeMapPopupService
+) => {
   const total = 200;
   const clusterGroup = L.markerClusterGroup({
     zoomToBoundsOnClick: false,
@@ -34,19 +42,24 @@ export const generateClusterLayer = (map: any, L: any) => {
         // popupAnchor: [0, -28],
       }),
   });
-
-  clusterGroup.on('clusterclick', (event: any) => {
-    const children = event.layer.getAllChildMarkers();
-    let popupContent = 'test popup';
-    children.forEach((child: any) => {
-      popupContent +=
-        ' and new test child ' + child.feature.properties.title + '.';
-    });
-    L.popup().setLatLng(event.latlng).setContent(popupContent).openOn(map);
-  });
+  mapPopupService.addPopupToClusterClickEvent(map, clusterGroup);
   const clusterLayer = L.geoJSON(generateGeoJSONPoints(total), {
-    onEachFeature: (feature: any, layer: any) => {
-      layer.bindPopup('point popup ' + feature.properties.title);
+    onEachFeature: (feature: Feature<any>, layer: Layer) => {
+      // Add popup on click because we destroy popup component each time we remove it
+      // In order to destroy all event subscriptions an avoid memory leak
+      layer.addEventListener('click', () => {
+        const coordinates = {
+          lat: feature.geometry.coordinates[0],
+          lng: feature.geometry.coordinates[0],
+        };
+        // Initialize and get a SafeMapPopupComponent instance popup
+        const popup = mapPopupService.setPopupComponentAndContent(
+          map,
+          [feature],
+          coordinates
+        );
+        layer.bindPopup(popup);
+      });
     },
   });
   clusterGroup.addLayer(clusterLayer);

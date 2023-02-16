@@ -1,6 +1,5 @@
 import { generateGeoJSONPoints } from './util-test';
 import { merge, get } from 'lodash';
-import { haversineDistance } from '../utils/haversine';
 import 'leaflet.heat';
 import * as L from 'leaflet';
 import { SafeMapPopupService } from '../map-popup/map-popup.service';
@@ -46,8 +45,10 @@ export const generateHeatMap = (
   options?: Partial<HeatMapOptions>
 ) => {
   const total = 10000;
-  const geoJSON = generateGeoJSONPoints(total);
+  const geoJSON = generateGeoJSONPoints(total, true);
   const heatArray: any[] = [];
+
+  mapPopupService.addPopupToClickEvent(map, geoJSON.features);
   geoJSON.features.forEach((feature: any) => {
     if (feature.geometry.type === 'Point') {
       heatArray.push([
@@ -57,74 +58,16 @@ export const generateHeatMap = (
       ]);
     }
   });
-
   // Leaflet.heat doesn't support click events, so we have to do it ourselves
-  map.on('click', (event: any) => {
-    const zoom = map.getZoom();
-    const coordinates = event.latlng;
-
-    // there is a problem here, the radius should be different
-    // depending on the latitude, because of the distortion of the Mercator projection
-    // I couldn't get it to work, so I just used a fixed radius, based on the zoom level alone
-    // https://en.wikipedia.org/wiki/Mercator_projection#Scale_factor
-    // const mercatorScaleFactor = (latitude: number) => {
-    //   const lat = (Math.PI / 180) * latitude;
-    //   return (
-    //     Math.cos(lat) /
-    //     Math.sqrt(1 - Math.pow(Math.sin(lat), 2) * Math.pow(Math.E, 2))
-    //   );
-    // };
-
-    const radius = 1000 / zoom;
-
-    // checks if the point is within the calculate radius
-    const heatMapPoints = heatArray.filter((heatMapPoint) => {
-      const distance = haversineDistance(
-        coordinates.lat,
-        coordinates.lng,
-        heatMapPoint[0],
-        heatMapPoint[1]
-      );
-
-      return distance < radius;
-    });
-
-    if (heatMapPoints.length > 0) {
-      // create a circle around the point (for debugging)
-      const circle = L.circle(coordinates, {
-        radius: radius * 1000, // haversineDistance returns km, circle radius is in meters
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-      });
-      circle.addTo(map);
-      // create div element to render the SafeMapPopupComponent content
-      const div = document.createElement('div');
-      // Initialize and get a SafeMapPopupComponent instance
-      const instance = mapPopupService.initializeSafeMapPopupComponent(
-        heatMapPoints,
-        div
-      );
-      // create a popup that renders the SafeMapPopupComponent
-      const popup = L.popup({ closeButton: false })
-        .setLatLng(coordinates)
-        .setContent(div);
-      // listen to popup close event
-      instance.closePopup.subscribe(() => {
-        popup.remove();
-      });
-      circle.bindPopup(popup);
-      popup.on('remove', () => map.removeLayer(circle));
-      circle.openPopup();
-    }
-  });
 
   const heatMapLayer = L.heatLayer(
     heatArray,
     merge(defaultHeatMapOptions, options)
   );
+
   heatMapLayer.on('click', (event: any) => {
     console.log(event);
   });
+
   return heatMapLayer;
 };

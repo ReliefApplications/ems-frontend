@@ -39,3 +39,13 @@
     }
   }
 }
+
+// To inherit leaflet popup properties for injected template in popup component
+::ng-deep .safe-border-radius-inherit {
+  border-radius: inherit;
+}
+
+::ng-deep .leaflet-popup-content {
+  margin: 0;
+  @extend .safe-border-radius-inherit;
+}

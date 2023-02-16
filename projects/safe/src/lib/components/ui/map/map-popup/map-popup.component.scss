@@ -1,0 +1,19 @@
+@import '../../../../style/map.scss';
+
+:host {
+  @extend .safe-border-radius-inherit;
+}
+
+::ng-deep .safe-popup-content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 3px;
+  row-gap: 6px;
+}
+
+.safe-popup-header {
+  background: #008dc9;
+  color: white;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+}

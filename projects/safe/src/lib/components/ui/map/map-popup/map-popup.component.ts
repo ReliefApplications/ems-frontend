@@ -25,6 +25,9 @@ export class SafeMapPopupComponent
   @Input() template = '';
 
   @Output() closePopup: EventEmitter<void> = new EventEmitter<void>();
+  @Output() zoomTo: EventEmitter<{ coordinates: number[] }> = new EventEmitter<{
+    coordinates: number[];
+  }>();
   public currentHtml: SafeHtml = '';
   public current = new BehaviorSubject<number>(0);
   public buttonSize = ButtonSize;
@@ -58,13 +61,25 @@ export class SafeMapPopupComponent
   /** Updates the html for the current point */
   public setInnerHtml() {
     const properties = this.points[this.currValue].properties;
+    const coordinates = this.points[this.currValue].geometry.coordinates;
     const regex = /{{(.*?)}}/g;
     // if no properties, return the template replacing all matches with empty string
     // if there are properties, replace the matches with the corresponding property
     const html = properties
       ? this.template.replace(regex, (match) => {
           const key = match.replace(/{{|}}/g, '');
-          const value = properties[key];
+          let value;
+          if (!key.includes('coordinates')) {
+            value = properties[key];
+          } else {
+            // Popup service sets the coordinates as coordinates${index}
+            // This regex extracts the ${index} to set the related value from coordinates
+            const coordinateIndex = Number(
+              key.match(/[^(?<=coordinates)]*$/gi)?.[0]
+            );
+            value = coordinates[coordinateIndex ?? 0];
+          }
+
           return value ? value : '';
         })
       : this.template.replace(regex, '');
@@ -72,5 +87,14 @@ export class SafeMapPopupComponent
     // remove all script tags
     const sanitizedHtml = html.replace(scriptRegex, '');
     this.currentHtml = this.sanitizer.bypassSecurityTrustHtml(sanitizedHtml);
+  }
+
+  /**
+   * Emit event with current point coordinates
+   */
+  public zoomToCurrentFeature() {
+    this.zoomTo.emit({
+      coordinates: this.points[this.currValue].geometry.coordinates,
+    });
   }
 }

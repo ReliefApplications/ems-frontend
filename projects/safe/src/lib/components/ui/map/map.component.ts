@@ -41,10 +41,10 @@ import { generateHeatMap } from './test/heatmap-test';
 import { SafeMapLayersService } from '../../../services/maps/map-layers.service';
 import { SafeMapControlsService } from '../../../services/maps/map-controls.service';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/languages';
+import { SafeMapPopupService } from './map-popup/map-popup.service';
 
 // import 'leaflet';
 import * as L from 'leaflet';
-import { SafeMapPopupService } from './map-popup/map-popup.service';
 
 /**
  * Cleans the settings object from null values
@@ -155,6 +155,7 @@ export class SafeMapComponent
    * @param translate The translate service
    * @param mapLayersService The map layer handler service
    * @param mapControlsService The map controls handler service
+   * @param mapPopupService The map popup handler service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -446,8 +447,11 @@ export class SafeMapComponent
         opacity: 0.5,
       },
     };
-    const clusterGroup = generateClusterLayer(this.map, L);
-    this.mapPopupService.addPopupToClusterClickEvent(this.map, clusterGroup);
+    const clusterGroup = generateClusterLayer(
+      this.map,
+      L,
+      this.mapPopupService
+    );
     // this.map.addLayer(clusterGroup);
     this.layers = [
       {

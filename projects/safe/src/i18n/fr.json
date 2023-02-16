@@ -1202,7 +1202,9 @@
 					},
 					"popup": {
 						"label": "Champs affichés dans le popup",
-						"of": "{{current}} sur {{total}}"
+						"location": "@TODO",
+						"of": "{{current}} sur {{total}}",
+						"zoomTo": "@TODO"
 					},
 					"properties": {
 						"basemap": "Fond de carte",

@@ -1,8 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ComponentRef } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { Feature } from 'geojson';
 
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
 import * as L from 'leaflet';
 import { get } from 'lodash';
+import { takeUntil } from 'rxjs';
 import { DomService } from '../../../../services/dom/dom.service';
 import { haversineDistance } from '../utils/haversine';
 import { SafeMapPopupComponent } from './map-popup.component';
@@ -14,12 +17,25 @@ import { SafeMapPopupComponent } from './map-popup.component';
   providedIn: 'root',
 })
 export class SafeMapPopupService {
+  private latitudeTag = this.translateService.instant(
+    'models.widget.map.latitude'
+  );
+  private longitudeTag = this.translateService.instant(
+    'models.widget.map.longitude'
+  );
+  private locationTag = this.translateService.instant(
+    'components.widget.settings.map.popup.location'
+  );
   /**
-   * Injects DomService instance to the service
+   * Injects DomService and TranslateService instances to the service
    *
    * @param domService DomService
+   * @param translateService TranslateService
    */
-  constructor(private domService: DomService) {}
+  constructor(
+    private domService: DomService,
+    private translateService: TranslateService
+  ) {}
   /**
    * Set popup event and content for click event in cluster groups
    *
@@ -41,7 +57,7 @@ export class SafeMapPopupService {
    * @param map Map in where we want to open the popup
    * @param featurePoints Feature points to group in the popupF
    */
-  public addPopupToClickEvent(map: any, featurePoints: any[]) {
+  public addPopupToClickEvent(map: any, featurePoints: Feature<any>[]) {
     // Leaflet.heat doesn't support click events, so we have to do it ourselves
     map.on('click', (event: any) => {
       // there is a problem here, the radius should be different
@@ -69,7 +85,11 @@ export class SafeMapPopupService {
    * @param featurePoints Feature points to group in the popup
    * @param clickEvent Click event in the given map
    */
-  private setPopUpContent(map: any, featurePoints: any[], clickEvent: any) {
+  private setPopUpContent(
+    map: any,
+    featurePoints: Feature<any>[],
+    clickEvent: any
+  ) {
     const coordinates = clickEvent.latlng;
     const zoom = map.getZoom();
     const radius = 1000 / zoom;
@@ -103,24 +123,85 @@ export class SafeMapPopupService {
         fillOpacity: 0.5,
       });
       circle.addTo(map);
-      // create div element to render the SafeMapPopupComponent content
-      const div = document.createElement('div');
-      // Initialize and get a SafeMapPopupComponent instance
-      const instance = this.initializeSafeMapPopupComponent(matchedPoints, div);
-      // create a popup that renders the SafeMapPopupComponent
-      const popup = L.popup({ closeButton: false })
-        .setLatLng(coordinates)
-        .setContent(div);
-      // listen to popup close event
-      instance.closePopup.subscribe(() => {
-        popup.remove();
-      });
+
+      // Initialize and get a SafeMapPopupComponent instance popup
+      const popup = this.setPopupComponentAndContent(
+        map,
+        matchedPoints,
+        coordinates
+      );
+
       circle.bindPopup(popup);
       popup.on('remove', () => map.removeLayer(circle));
       circle.openPopup();
     }
   }
 
+  /**
+   * Initialize and sets SafeMapPopupComponent popup component
+   *
+   * @param map Map where to execute setView with given coordinates when zoom event is emitted from popup
+   * @param featurePoints Array of feature points
+   * @param coordinates Coordinates where to set the popup
+   * @param coordinates.lat Coordinates latitude
+   * @param coordinates.lng Coordinates longitude
+   * @returns {L.Popup} Generated SafeMapPopupComponent popup
+   */
+  public setPopupComponentAndContent(
+    map: L.Map,
+    featurePoints: Feature<any>[],
+    coordinates: { lat: number; lng: number }
+  ): L.Popup {
+    // create div element to render the SafeMapPopupComponent content
+    const div = document.createElement('div');
+    div.setAttribute('class', 'safe-border-radius-inherit');
+
+    const popupComponent = this.initializeSafeMapPopupComponent(
+      featurePoints,
+      div
+    );
+    // create a popup that renders the SafeMapPopupComponent
+    const popup = L.popup({ closeButton: false })
+      .setLatLng(coordinates)
+      .setContent(div);
+    // Set the event listeners for the popup component
+    this.setPopupComponentListeners(map, popupComponent, popup);
+    return popup;
+  }
+
+  /**
+   * Set event listeners for the given popup component at the given map and leaflet popup
+   *
+   * @param map Leaflet map
+   * @param popupComponent Safe popup component
+   * @param popup Leaflet popup
+   */
+  private setPopupComponentListeners(
+    map: L.Map,
+    popupComponent: ComponentRef<SafeMapPopupComponent>,
+    popup: L.Popup
+  ) {
+    // listen to popup close event
+    popupComponent.instance.closePopup
+      .pipe(takeUntil(popupComponent.instance.destroy$))
+      .subscribe(() => {
+        setTimeout(() => {
+          popupComponent.destroy();
+          popup.remove();
+        }, 0);
+      });
+
+    // listen to popup zoom to event
+    popupComponent.instance.zoomTo
+      .pipe(takeUntil(popupComponent.instance.destroy$))
+      .subscribe((event: { coordinates: number[] }) => {
+        setTimeout(() => {
+          popupComponent.destroy();
+          popup.remove();
+        }, 0);
+        map.setView(L.latLng(event.coordinates[1], event.coordinates[0]), 10);
+      });
+  }
   /**
    * Initialize content and returns an instance of SafeMapPopupComponent
    *
@@ -131,34 +212,67 @@ export class SafeMapPopupService {
   public initializeSafeMapPopupComponent(
     featurePoints: any[],
     containerElement: HTMLElement
-  ): SafeMapPopupComponent {
-    // create component
-    // render the SafeMapPopupComponent
-    const groupedPopup = this.domService.appendComponentToBody(
+  ): ComponentRef<SafeMapPopupComponent> {
+    // create component to render the SafeMapPopupComponent
+    const popupComponent = this.domService.appendComponentToBody(
       SafeMapPopupComponent,
       containerElement
     );
-    const instance: SafeMapPopupComponent = groupedPopup.instance;
+    const instance: SafeMapPopupComponent = popupComponent.instance;
 
     // set the points
     instance.points = featurePoints;
 
-    // @TODO: In order to normalize or set each template for layer type we should map the point properties
-    // Or create custom template for each type of feature points data
+    //Use the first feature point as model to generate the popup template for the rest of features
+    instance.template = this.generatePopupContentTemplate(featurePoints[0]);
+    return popupComponent;
+  }
 
-    instance.template = `
-          <div style="display: grid; grid-template-columns: 1fr 1fr; padding: 4px">
-            <p style="color: gray">ID</p>
-            <p>{{id}}</p>
-            <p style="color: gray">Title</p>
-            <p>{{title}}</p>
-            <p style="color: gray">Marker</p>
-            <p>{{marker-symbol}}</p>
-            <p style="color: gray">Weight</p>
-            <p>{{weight}}</p>
-          </div>
-          <img src="{{imgSrc}}" width="100%" />
-          `;
-    return instance;
+  /**
+   * Generates de content inside the popup with the properties of the given feature
+   *
+   * @param {Feature<any>} feature feature containing properties and coordinates
+   * @returns Popup content template
+   */
+  public generatePopupContentTemplate(feature: Feature<any>): string {
+    // Templates use for the property name and the property value to be displayed
+    const propertyNameTemplate = (propertyName: string) =>
+      `<p class="m-0 capitalize text-gray-400">${propertyName}</p>`;
+    const propertyValueTemplate = (property: any) =>
+      `<p class="m-0">{{${property}}}</p>`;
+    // Template for the image
+    const imageTemplate = (img: string) =>
+      `<img src="{{${img}}}" class="flex-1" />`;
+
+    const containerStartTemplate = '<div class="safe-popup-content">';
+    const containerEndTemplate = '</div>';
+    let contentGridTemplate = '';
+    let imageElement = '';
+
+    // Extract all the properties and set the name and value binding for the feature points of the popup with the given feature example in this method
+    for (const property in feature.properties) {
+      if (property) {
+        if (!property.toLowerCase().includes('img')) {
+          contentGridTemplate = `${contentGridTemplate} ${propertyNameTemplate(
+            property
+          )} ${propertyValueTemplate(property)}`;
+        } else {
+          imageElement = imageTemplate(property);
+        }
+      }
+    }
+
+    // Create the template extract for the feature coordinates using their index as a suffix
+    const templateCoord = `
+    ${propertyNameTemplate(this.latitudeTag)}
+    ${propertyValueTemplate('coordinates1')}
+    ${propertyNameTemplate(this.longitudeTag)}
+    ${propertyValueTemplate('coordinates0')}
+    ${propertyNameTemplate(this.locationTag)}
+    <p class="m-0">({{coordinates1}}, {{coordinates0}})</p>
+    `;
+
+    contentGridTemplate = `${contentGridTemplate}${templateCoord}`;
+    return `${containerStartTemplate}${contentGridTemplate}${containerEndTemplate}${imageElement}`;
   }
 }
