@@ -17,6 +17,7 @@ export interface MapConstructorSettings {
   layers?: any[];
   pm?: any;
   pmIgnore?: boolean;
+  timeDimension?: boolean;
 }
 
 /** Available leaflet event types. */

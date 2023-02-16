@@ -92,6 +92,7 @@
     "leaflet": "^1.9.3",
     "leaflet-fullscreen": "^1.0.2",
     "leaflet-measure": "^3.1.0",
+    "leaflet-timedimension": "^1.1.1",
     "leaflet.control.layers.tree": "^1.1.0",
     "leaflet.heat": "^0.2.0",
     "leaflet.markercluster": "^1.5.3",
