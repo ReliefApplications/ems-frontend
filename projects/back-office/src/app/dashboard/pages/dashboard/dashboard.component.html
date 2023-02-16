@@ -8,7 +8,7 @@
   "
 >
   <ng-container *ngIf="dashboard">
-    <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+    <div class="flex flex-wrap items-center justify-between mb-6 gap-4" id="component">
       <div class="flex items-center overflow-hidden">
         <ng-container *ngIf="!formActive">
           <h1
@@ -60,6 +60,13 @@
           "
         >
         </safe-access>
+        <safe-button
+          variant="grey"
+          [isIcon]="true"
+          icon="fullscreen"
+          (click)="onFullScreen()"
+        >
+        </safe-button>
         <safe-button
           variant="grey"
           [isIcon]="true"

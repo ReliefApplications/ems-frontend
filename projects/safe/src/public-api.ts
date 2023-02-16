@@ -14,6 +14,7 @@ export * from './lib/services/form/form.service';
 export * from './lib/services/layout/layout.service';
 export * from './lib/services/api-proxy/api-proxy.service';
 export * from './lib/services/dashboard/dashboard.service';
+export * from './lib/services/full-screen/full-screen.service';
 export * from './lib/services/grid-layout/grid-layout.service';
 export * from './lib/services/reference-data/reference-data.service';
 export * from './lib/services/kendo-translation/kendo-translation.service';

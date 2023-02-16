@@ -22,6 +22,7 @@ import {
   SafeAuthService,
   Application,
   SafeUnsubscribeComponent,
+  SafeFullScreenService,
 } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
@@ -84,6 +85,7 @@ export class DashboardComponent
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
    * @param translateService Angular translate service
+   * @param fullScreenService Shared fullscreen service
    * @param authService Shared authentication service
    */
   constructor(
@@ -96,6 +98,7 @@ export class DashboardComponent
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService,
     private translateService: TranslateService,
+    private fullScreenService: SafeFullScreenService,
     private authService: SafeAuthService
   ) {
     super();
@@ -394,5 +397,12 @@ export class DashboardComponent
       }
     );
     authSubscription.unsubscribe();
+  }
+
+  /** Go to fullscreen mode with the SafeFullScreenService */
+  public onFullScreen(): void {
+    const component = document.getElementById('component') as HTMLElement;
+    const dashboardComponent = component.parentElement as HTMLElement;
+    this.fullScreenService.goFullScreen(dashboardComponent);
   }
 }
