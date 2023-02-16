@@ -603,6 +603,23 @@
 			"confirmationMessage": "There are unsaved changes on your form. Are you sure you want to logout?",
 			"title": "Exit without saving changes"
 		},
+		"map": {
+			"controls": {
+				"download": {
+					"layers": {
+						"all": "All layers",
+						"selected": "Selected Layers",
+						"visible": "Visible layers"
+					},
+					"output": "Select an output format",
+					"selectLayers": "Select layers",
+					"view": {
+						"all": "Map",
+						"current": "Current view"
+					}
+				}
+			}
+		},
 		"mapping": {
 			"field": "User field",
 			"path": "Path",
@@ -1140,16 +1157,6 @@
 					"basemap": "Base map",
 					"category": "Map quick layers",
 					"dataset": "Data set selection",
-					"downloadLayers": {
-						"allLayers": "All layers",
-						"selectedLayers": "Selected Layers",
-						"visibleLayers": "Visible layers"
-					},
-					"downloadOutput": "Select an output format",
-					"downloadViews": {
-						"allViews": "All views",
-						"currentViews": "Current views"
-					},
 					"errors": {
 						"latitude": "Invalid latitude, please select a number between -90 and 90",
 						"longitude": "Invalid longitude, please select a number between -180 and 180"
@@ -1219,7 +1226,6 @@
 						"title": "Map Parameters",
 						"zoom": "Default zoom"
 					},
-					"selectLayers": "Select layers",
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
 						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",

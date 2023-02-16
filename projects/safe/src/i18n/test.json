@@ -603,6 +603,23 @@
 			"confirmationMessage": "******",
 			"title": "******"
 		},
+		"map": {
+			"controls": {
+				"download": {
+					"layers": {
+						"all": "******",
+						"selected": "******",
+						"visible": "******"
+					},
+					"output": "******",
+					"selectLayers": "******",
+					"view": {
+						"all": "******",
+						"current": "******"
+					}
+				}
+			}
+		},
 		"mapping": {
 			"field": "******",
 			"path": "******",
@@ -1140,16 +1157,6 @@
 					"basemap": "******",
 					"category": "******",
 					"dataset": "******",
-					"downloadLayers": {
-						"allLayers": "******",
-						"selectedLayers": "******",
-						"visibleLayers": "******"
-					},
-					"downloadOutput": "******",
-					"downloadViews": {
-						"allViews": "******",
-						"currentViews": "******"
-					},
 					"errors": {
 						"latitude": "******",
 						"longitude": "******"
@@ -1219,7 +1226,6 @@
 						"title": "******",
 						"zoom": "******"
 					},
-					"selectLayers": "******",
 					"tooltip": {
 						"category": "******",
 						"dataset": "******",

@@ -4,42 +4,43 @@
     <safe-icon icon="download"></safe-icon>
   </button>
   <!-- Expanded control ( showing download ) -->
-  <div class="flex flex-col" *ngIf="expanded">
+  <div class="flex flex-col" *ngIf="expanded" [formGroup]="formGroup">
     <!-- Selection of view -->
     <div class="p-1">
       <mat-radio-group
+        formControlName="view"
         aria-labelledby="view-radio-group"
         class="flex flex-col gap-1"
       >
-        <mat-radio-button *ngFor="let view of views" [value]="view">
-          {{ view }}
+        <mat-radio-button *ngFor="let view of viewOptions" [value]="view.value">
+          {{ view.label }}
         </mat-radio-button>
       </mat-radio-group>
     </div>
     <safe-divider class="m-0"></safe-divider>
     <!-- Selection of layers to export -->
-    <div [formGroup]="form" class="p-1 flex flex-col gap-1">
+    <div class="p-1 flex flex-col gap-1">
       <mat-radio-group
+        formControlName="layers"
         aria-labelledby="layer-radio-group"
         class="flex flex-col gap-1"
-        formControlName="layersToSelect"
       >
         <mat-radio-button
           class="radio-button"
-          *ngFor="let layer of layers"
-          [value]="layer"
+          *ngFor="let layer of layersOptions"
+          [value]="layer.value"
         >
-          {{ layer }}
+          {{ layer.label }}
         </mat-radio-button>
       </mat-radio-group>
-      <ng-container
-        *ngIf="form.controls.layersToSelect.value === 'Selected layers'"
-      >
+      <ng-container *ngIf="formGroup.value.layers === 'selected'">
         <mat-form-field appearance="outline" class="p-0">
-          <mat-label>{{'components.widget.settings.map.selectLayers' | translate}}</mat-label>
-          <mat-select>
-            <mat-option *ngFor="let layer of availableLayers" [value]="layer">
-              {{ layer }}
+          <mat-label>{{
+            'components.map.controls.download.selectLayers' | translate
+          }}</mat-label>
+          <mat-select formControlName="selectedLayers" multiple>
+            <mat-option *ngFor="let layer of layers" [value]="layer.label">
+              {{ layer.label }}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -49,9 +50,11 @@
     <!-- Export format -->
     <div class="p-1">
       <mat-form-field appearance="outline" class="p-0">
-        <mat-label>{{ 'components.widget.settings.map.downloadOutput' | translate }}</mat-label>
-        <mat-select>
-          <mat-option *ngFor="let output of downloadOutputs" [value]="output">
+        <mat-label>{{
+          'components.map.controls.download.output' | translate
+        }}</mat-label>
+        <mat-select formControlName="output">
+          <mat-option *ngFor="let output of outputOptions" [value]="output">
             {{ output }}
           </mat-option>
         </mat-select>

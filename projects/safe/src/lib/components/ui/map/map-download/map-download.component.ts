@@ -7,15 +7,15 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import {
   FormGroup,
   FormsModule,
-  FormControl,
   FormBuilder,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { SafeDividerModule } from '../../divider/divider.module';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 /**
- * map download component
+ * Map download component
  */
 @Component({
   standalone: true,
@@ -36,29 +36,50 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 })
 export class SafeMapDownloadComponent {
   public expanded = false;
-  public views = [
-    this.translate.instant(
-      'components.widget.settings.map.downloadViews.currentViews'
-    ),
-    this.translate.instant(
-      'components.widget.settings.map.downloadViews.allViews'
-    ),
+  public viewOptions = [
+    {
+      label: this.translate.instant(
+        'components.map.controls.download.view.all'
+      ),
+      value: 'map',
+    },
+    {
+      label: this.translate.instant(
+        'components.map.controls.download.view.current'
+      ),
+      value: 'current',
+    },
   ];
-  public layers = [
-    this.translate.instant(
-      'components.widget.settings.map.downloadLayers.allLayers'
-    ),
-    this.translate.instant(
-      'components.widget.settings.map.downloadLayers.visibleLayers'
-    ),
-    this.translate.instant(
-      'components.widget.settings.map.downloadLayers.selectedLayers'
-    ),
+  public layersOptions = [
+    {
+      label: this.translate.instant(
+        'components.map.controls.download.layers.all'
+      ),
+      value: 'all',
+    },
+    {
+      label: this.translate.instant(
+        'components.map.controls.download.layers.visible'
+      ),
+      value: 'visible',
+    },
+    {
+      label: this.translate.instant(
+        'components.map.controls.download.layers.selected'
+      ),
+      value: 'selected',
+    },
   ];
-  public layersToSelect = ''; // Corresponds to the current 'layers' option selected
-  public availableLayers: string[] = [];
-  public downloadOutputs = ['CSV', 'Excel', 'GeoJSON', 'PNG'];
-  public form: FormGroup;
+  public layers: { label: string }[] = [
+    {
+      label: 'layer 1',
+    },
+    {
+      label: 'layer 2',
+    },
+  ];
+  public outputOptions = ['csv', 'xlsx', 'geojson', 'png'];
+  public formGroup: FormGroup;
 
   /**
    * Creates the form to handle the layers selection
@@ -67,8 +88,11 @@ export class SafeMapDownloadComponent {
    * @param translate common translate service
    */
   constructor(private fb: FormBuilder, private translate: TranslateService) {
-    this.form = fb.group({
-      layersToSelect: new FormControl('All layers'),
+    this.formGroup = fb.group({
+      view: ['map', Validators.required],
+      layers: ['all', Validators.required],
+      selectedLayers: [{ value: [] as string[] }],
+      output: ['xlsx', Validators.required],
     });
   }
 

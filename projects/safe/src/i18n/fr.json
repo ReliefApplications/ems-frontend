@@ -603,6 +603,23 @@
 			"confirmationMessage": "Le formulaire contient des éléments non sauvegardés. Voulez-vous vous vraiment déconnecter ?",
 			"title": "Quitter la plateforme sans sauvegarder"
 		},
+		"map": {
+			"controls": {
+				"download": {
+					"layers": {
+						"all": "Toutes les couches",
+						"selected": "Couches sélectionnées",
+						"visible": "Couches visibles"
+					},
+					"output": "Format d'export",
+					"selectLayers": "Sélectionnez les couches",
+					"view": {
+						"all": "Toute la carte",
+						"current": "Vue actuelle"
+					}
+				}
+			}
+		},
 		"mapping": {
 			"field": "Champ de l'utilisateur",
 			"path": "Chemin",
@@ -1142,16 +1159,6 @@
 					"basemap": "Fond de carte",
 					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
-					"downloadLayers": {
-						"allLayers": "Toutes les couches",
-						"selectedLayers": "Couches sélectionnées",
-						"visibleLayers": "Couches visibles"
-					},
-					"downloadOutput": "Sélectionnez un format de sortie",
-					"downloadViews": {
-						"allViews": "Toutes les vues",
-						"currentViews": "Vues actuelles"
-					},
 					"errors": {
 						"latitude": "Latitude incorrecte, merci de sélectionner un nombre entre -90 et 90",
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
@@ -1221,7 +1228,6 @@
 						"title": "Affichage par défaut",
 						"zoom": "Zoom par défaut"
 					},
-					"selectLayers": "Sélectionnez les couches",
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
 						"dataset": "Sélectionnez des champs ci-dessous et déplacez-les vers 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché en cliquant sur les marqueurs",
