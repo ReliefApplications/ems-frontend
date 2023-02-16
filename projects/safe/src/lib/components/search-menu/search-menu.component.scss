@@ -1,5 +1,15 @@
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer components {
+  :host{
+    @apply bg-white;
+  }
+}
+
 :host {
-  background-color: white;
   padding: 0 4px 8px;
   border-radius: 4px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;

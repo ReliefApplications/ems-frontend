@@ -1,15 +1,21 @@
-.safe-icon-success {
-  color: #63d168;
-}
-
-.safe-icon-light {
-  color: white;
-}
-
-.safe-icon-grey {
-  color: #a9a9a9;
-}
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 .material-icons-outlined {
   overflow: hidden;
+}
+
+@layer components {
+  .safe-icon-success {
+    @apply text-green-500;
+  }
+  
+  .safe-icon-light {
+    @apply text-white;
+  }
+  
+  .safe-icon-grey {
+    @apply text-gray-400;
+  }
 }

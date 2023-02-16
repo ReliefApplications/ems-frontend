@@ -1,14 +1,33 @@
-::ng-deep .sv-boolean:not(.sv-boolean--checked) {
-  .sv-boolean__switch {
-    background-color: rgba(64, 64, 64, 0.5) !important;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer components {
+  ::ng-deep {
+    .sv-boolean:not(.sv-boolean--checked) {
+      .sv-boolean__switch {
+        @apply bg-opacity-50;
+      }
+    }
   }
+  ::ng-deep .sv_q_required_text {
+    @apply text-red;
+  }
+
+  ::ng-deep .sv_main {
+    @apply border-gray-200 text-gray-600 bg-gray-100 h-64 bg-gradient-to-b from-transparent to-gray-100;
+  }
+
+  ::ng-deep .safe-qst-content {
+    .sv_q_erbox:not([style*='display: none']):not([style*='display:none']) {
+      @apply bg-transparent;
+    }
+  }
+
+
 }
 ::ng-deep .sv_q {
   padding-bottom: 0.5em !important;
-}
-
-::ng-deep .sv_q_required_text {
-  color: red;
 }
 
 // === QUESTION CONTENT ===
@@ -17,7 +36,6 @@
   flex-direction: column;
 
   .sv_q_erbox:not([style*='display: none']):not([style*='display:none']) {
-    background-color: transparent;
     border: none;
     order: 2;
     padding: 0 0 0 8px !important;
@@ -61,11 +79,7 @@
 
 ::ng-deep .sv_main {
   .k-button {
-    border-color: rgba(0, 0, 0, 0.08);
     min-width: unset;
-    color: #424242;
-    background-color: #f5f5f5;
-    background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.02));
     border-radius: 2px;
     padding: 4px 8px;
     box-sizing: border-box;

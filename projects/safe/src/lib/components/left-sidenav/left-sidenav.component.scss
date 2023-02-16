@@ -1,3 +1,21 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer components {
+  .nav-item {
+    &:hover {
+      nav-action,
+      .nav-item-handle {
+        @apply text-gray-400;
+      }
+    }
+  }
+  .add-page-container {
+    @apply border-t-black;
+  }
+}
+
 .sidenav {
   width: 240px;
 }
@@ -41,10 +59,6 @@
     .nav-actions {
       display: block;
     }
-    .nav-action,
-    .nav-item-handle {
-      color: #aeaeaf;
-    }
   }
 
   .nav-text {
@@ -69,7 +83,7 @@
 }
 
 .add-page-container {
-  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-top: 1px solid;
   display: flex;
   justify-content: space-around;
 

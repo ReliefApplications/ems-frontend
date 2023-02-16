@@ -1,3 +1,19 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer components {
+  .filter-group-item {
+    &::before {
+      @apply bg-black;
+    }
+
+    &::after {
+      @apply bg-black;
+    }
+  }
+}
+
 .filter-group-header {
   display: flex;
   align-items: center;
@@ -22,7 +38,6 @@
   padding-left: 8px;
 
   &::before {
-    background-color: rgba(0, 0, 0, 0.08);
     content: '';
     position: absolute;
     width: 16px;
@@ -32,7 +47,6 @@
   }
 
   &::after {
-    background-color: rgba(0, 0, 0, 0.08);
     content: '';
     position: absolute;
     width: 1px;

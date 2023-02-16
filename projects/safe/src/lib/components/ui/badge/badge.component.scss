@@ -1,3 +1,33 @@
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer components {
+  .safe-badge-default {
+    @apply bg-white;
+  }
+
+  .safe-badge-primary {
+    @apply bg-blue-500 text-blue-300;
+  }
+  
+  .safe-badge-danger {
+    @apply bg-red-500 text-red-300;
+  }
+  .safe-badge-success {
+    @apply bg-green-500 text-green-300;
+  }
+  .safe-badge-warning {
+    @apply bg-orange-500 text-orange-300;
+  }
+
+  .safe-badge-icon {
+    @apply bg-white;
+  }
+
+}
+
 div {
   display: inline-block;
   font-size: 0.75em;
@@ -17,31 +47,10 @@ div {
 }
 
 .safe-badge-default {
-  background-color: #f1f1f1;
   font-weight: lighter;
 }
-
-.safe-badge-primary {
-  background-color: rgba(0, 141, 201, 0.1);
-  color: rgb(0, 141, 201);
-}
-
-.safe-badge-danger {
-  background-color: rgba(241, 67, 67, 0.19);
-  color: rgb(241, 67, 67);
-}
-.safe-badge-success {
-  background-color: rgba(149, 221, 101, 0.2);
-  color: rgb(149, 221, 101);
-}
-.safe-badge-warning {
-  background-color: rgba(244, 174, 82, 0.2);
-  color: rgb(244, 174, 82);
-}
-
 .safe-badge-icon {
   width: 2em;
-  background-color: white;
   line-height: initial;
 
   safe-icon {

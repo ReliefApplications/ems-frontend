@@ -1,3 +1,29 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer components {
+  :host {
+    &.safe-divider-vertical {
+      @apply border-l-black;
+    }
+    &.safe-divider-horizontal{
+      @apply border-t-black;
+    }
+    &.safe-divider-with-text {
+      @apply border-t-black;
+
+      &::before {
+        @apply border-t-inherit;
+      }
+
+      &::after {
+        @apply border-t-inherit;
+      }
+    }
+  }
+} 
+
 :host {
   &.safe-divider-vertical {
     position: relative;
@@ -7,7 +33,7 @@
     margin: 0 8px;
     // vertical-align: middle;
     border-top: 0;
-    border-left: 1px solid rgba(0, 0, 0, 0.12);
+    border-left: 1px solid;
   }
 
   &.safe-divider-horizontal {
@@ -16,7 +42,7 @@
     width: 100%;
     min-width: 100%;
     margin: 24px 0;
-    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    border-top: 1px solid;
     font-size: 14px;
   }
 
@@ -24,7 +50,6 @@
     white-space: nowrap;
     text-align: center;
     border-top: 0;
-    border-top-color: rgba(0, 0, 0, 0.12);
 
     &::before {
       position: relative;

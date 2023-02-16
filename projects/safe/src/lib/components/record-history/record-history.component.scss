@@ -1,3 +1,7 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
 :host {
   display: flex;
   flex-direction: column;
@@ -24,16 +28,18 @@
   margin-right: 0.5em;
 }
 
-::ng-deep .modify-field {
-  background-color: #e8ddb8;
-}
-
-::ng-deep .add-field {
-  background-color: #b2ebbf;
-}
-
-::ng-deep .remove-field {
-  background-color: #ebb2b2;
+@layer components {
+  ::ng-deep .modify-field {
+    @apply bg-yellow-100;
+  }
+  
+  ::ng-deep .add-field {
+    @apply bg-green-200;
+  }
+  
+  ::ng-deep .remove-field {
+    @apply bg-red-200;
+  }
 }
 
 .changes-content {
