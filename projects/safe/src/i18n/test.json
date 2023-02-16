@@ -603,6 +603,23 @@
 			"confirmationMessage": "******",
 			"title": "******"
 		},
+		"map": {
+			"controls": {
+				"download": {
+					"layers": {
+						"all": "******",
+						"selected": "******",
+						"visible": "******"
+					},
+					"output": "******",
+					"selectLayers": "******",
+					"view": {
+						"all": "******",
+						"current": "******"
+					}
+				}
+			}
+		},
 		"mapping": {
 			"field": "******",
 			"path": "******",

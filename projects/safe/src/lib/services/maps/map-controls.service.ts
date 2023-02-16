@@ -1,7 +1,8 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, ElementRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/languages';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
+import { SafeMapDownloadComponent } from '../../components/ui/map/map-download/map-download.component';
 import { SafeMapLegendComponent } from '../../components/ui/map/map-legend/map-legend.component';
 import { DomService } from '../dom/dom.service';
 
@@ -32,11 +33,13 @@ export class SafeMapControlsService {
    * @param environment environment
    * @param translate Angular translate service
    * @param domService Shared dom service
+   * @param elementRef Reference to a DOM element in the doc
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
-    private domService: DomService
+    private domService: DomService,
+    private elementRef: ElementRef
   ) {
     this.lang = this.translate.currentLang;
     this.primaryColor = environment.theme.primary;
@@ -150,22 +153,57 @@ export class SafeMapControlsService {
   }
 
   /**
-   * Gets a legend control and adds it to the map
+   * Add legend control to the map
    *
-   * @param map map to get legend control for
+   * @param map leaflet map
    */
   public getLegendControl(map: any): any {
     const control = new L.Control({ position: 'bottomright' });
     control.onAdd = () => {
       const div = L.DomUtil.create('div', 'info legend');
-      /*const legend = */ this.domService.appendComponentToBody(
+      const component = this.domService.appendComponentToBody(
         SafeMapLegendComponent,
         div
       );
-      // const instance: SafeMapLegendComponent = legend.instance;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const instance: SafeMapLegendComponent = component.instance;
       return div;
     };
     control.addTo(map);
+
+    const container = control.getContainer();
+    if (container) {
+      // prevent click events from propagating to the map
+      container.addEventListener('click', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
+
+      // prevent mouse wheel events from propagating to the map
+      container.addEventListener('wheel', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
+    }
+  }
+
+  /**
+   * Add a download control on the bottom right of the map. Click propagation and scroll propagation are disabled so they do not propagate to the map when clicking or scrolling on the button
+   *
+   * @param map map widget
+   */
+  public getDownloadControl(map: any): any {
+    const control = new L.Control({ position: 'bottomright' });
+    control.onAdd = () => {
+      const div = L.DomUtil.create('div', 'info legend');
+      const component = this.domService.appendComponentToBody(
+        SafeMapDownloadComponent,
+        div
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const instance: SafeMapDownloadComponent = component.instance;
+      return div;
+    };
+    control.addTo(map);
+
     const container = control.getContainer();
     if (container) {
       // prevent click events from propagating to the map

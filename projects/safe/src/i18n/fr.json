@@ -603,6 +603,23 @@
 			"confirmationMessage": "Le formulaire contient des éléments non sauvegardés. Voulez-vous vous vraiment déconnecter ?",
 			"title": "Quitter la plateforme sans sauvegarder"
 		},
+		"map": {
+			"controls": {
+				"download": {
+					"layers": {
+						"all": "Toutes les couches",
+						"selected": "Couches sélectionnées",
+						"visible": "Couches visibles"
+					},
+					"output": "Format d'export",
+					"selectLayers": "Sélectionnez les couches",
+					"view": {
+						"all": "Toute la carte",
+						"current": "Vue actuelle"
+					}
+				}
+			}
+		},
 		"mapping": {
 			"field": "Champ de l'utilisateur",
 			"path": "Chemin",
