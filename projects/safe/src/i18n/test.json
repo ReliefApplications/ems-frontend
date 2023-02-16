@@ -1219,11 +1219,11 @@
 						"label": "******"
 					},
 					"properties": {
-						"TimeSlider": "******",
 						"basemap": "******",
 						"latitude": "******",
 						"longitude": "******",
 						"setByMap": "******",
+						"timeSlider": "******",
 						"title": "******",
 						"zoom": "******"
 					},

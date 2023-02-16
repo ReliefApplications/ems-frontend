@@ -1221,11 +1221,11 @@
 						"label": "Champs affichés dans le popup"
 					},
 					"properties": {
-						"TimeSlider": "Temp Glissière",
 						"basemap": "Fond de carte",
 						"latitude": "Latitude du centre de la carte",
 						"longitude": "Longitude du centre de la carte",
 						"setByMap": "Utiliser la vue actuelle",
+						"timeSlider": "Suivi du temps",
 						"title": "Affichage par défaut",
 						"zoom": "Zoom par défaut"
 					},

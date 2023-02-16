@@ -225,6 +225,7 @@ export class SafeMapControlsService {
 
   /**
    * Add or remove the TimeDimension in the map
+   * todo(gis): only for mockups
    *
    * @param {L.Map} map map where to add or remove the timeDimension feature
    * @param {boolean} addTimeDimension boolean to indicates if should add or remove TimeDimension control
@@ -261,9 +262,9 @@ export class SafeMapControlsService {
   private createTimeDimensionControl(map: L.Map): void {
     const timeDimension = (map as any).timeDimension;
     timeDimension.options = {
-      period: 'PT1H',
-      timeInterval: '2017-06-01/2017-09-01',
-      currentTime: '2017-06-01',
+      period: 'PT1H', // todo(gis): should be part of time settings
+      timeInterval: '2017-06-01/2017-09-01', // todo(gis): should be part of time settings
+      currentTime: '2017-06-01', // todo(gis): should be part of time settings
     };
 
     const player = new (L as any).TimeDimension.Player(

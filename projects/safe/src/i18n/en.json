@@ -1219,11 +1219,11 @@
 						"label": "Fields displayed in the popup"
 					},
 					"properties": {
-						"TimeSlider": "Time Slider",
 						"basemap": "Base map",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
 						"setByMap": "Set By Map",
+						"timeSlider": "Time Slider",
 						"title": "Map Parameters",
 						"zoom": "Default zoom"
 					},
