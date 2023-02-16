@@ -1,6 +1,6 @@
 @import '../../../../style/map.scss';
 
-:host {
+:host ::ng-deep {
   @extend .safe-border-radius-inherit;
 }
 
