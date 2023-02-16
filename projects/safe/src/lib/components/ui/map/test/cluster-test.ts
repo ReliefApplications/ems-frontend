@@ -49,7 +49,7 @@ export const generateClusterLayer = (
       // In order to destroy all event subscriptions an avoid memory leak
       layer.addEventListener('click', () => {
         const coordinates = {
-          lat: feature.geometry.coordinates[0],
+          lat: feature.geometry.coordinates[1],
           lng: feature.geometry.coordinates[0],
         };
         // Initialize and get a SafeMapPopupComponent instance popup
