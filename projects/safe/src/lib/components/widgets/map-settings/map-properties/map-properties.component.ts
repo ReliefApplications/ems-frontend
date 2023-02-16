@@ -42,6 +42,7 @@ export class MapPropertiesComponent
       zoom: this.form.value.zoom,
       centerLat: this.form.value.centerLat,
       centerLong: this.form.value.centerLong,
+      timeDimension: this.form.value.timeDimension,
     };
     this.updateMapSettings(defaultMapSettings);
     this.setUpFormListeners();
@@ -75,6 +76,14 @@ export class MapPropertiesComponent
       .subscribe((value) =>
         this.updateMapSettings({ basemap: value } as MapConstructorSettings)
       );
+    this.form
+      .get('timeDimension')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.updateMapSettings({
+          timeDimension: value,
+        } as MapConstructorSettings);
+      });
   }
 
   /**

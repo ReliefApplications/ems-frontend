@@ -12,6 +12,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { SafeMapModule } from '../../../ui/map/map.module';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
+import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 
 /**
  * Module of Map Properties of Map Widget.
@@ -32,6 +33,7 @@ import { SafeDividerModule } from '../../../ui/divider/divider.module';
     SafeMapModule,
     SafeButtonModule,
     SafeDividerModule,
+    MatCheckboxModule,
   ],
   exports: [MapPropertiesComponent],
 })

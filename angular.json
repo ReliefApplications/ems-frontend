@@ -89,6 +89,11 @@
                 "glob": "**/*",
                 "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
                 "output": "/assets/webfonts/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/leaflet/dist/images/",
+                "output": "/"
               }
             ],
             "styles": [
@@ -101,12 +106,14 @@
               "projects/safe/src/lib/style/styles.scss",
               "node_modules/survey-angular/survey.min.css",
               "node_modules/survey-creator/survey-creator.min.css",
-              "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-              "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+              "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+              "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
               "node_modules/select2/dist/css/select2.min.css",
               "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
-              "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
+              "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css",
+              "node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.min.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
@@ -128,7 +135,11 @@
               "cron-validator",
               "localforage",
               "survey-angular",
-              "fast-sha256"
+              "fast-sha256",
+              "leaflet",
+              "esri-leaflet-geocoder",
+              "esri-leaflet-vector",
+              "leaflet.markercluster"
             ]
           },
           "configurations": {
@@ -568,6 +579,11 @@
                 "glob": "**/*",
                 "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
                 "output": "/assets/webfonts/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/leaflet/dist/images/",
+                "output": "/"
               }
             ],
             "styles": [
@@ -580,12 +596,14 @@
               "projects/safe/src/lib/style/styles.scss",
               "node_modules/survey-angular/survey.min.css",
               "node_modules/survey-creator/survey-creator.min.css",
-              "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-              "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+              "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+              "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
               "node_modules/select2/dist/css/select2.min.css",
               "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
-              "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
+              "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css",
+              "node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.min.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
@@ -607,7 +625,11 @@
               "cron-validator",
               "localforage",
               "survey-angular",
-              "fast-sha256"
+              "fast-sha256",
+              "leaflet",
+              "esri-leaflet-geocoder",
+              "esri-leaflet-vector",
+              "leaflet.markercluster"
             ]
           },
           "configurations": {
@@ -1030,6 +1052,11 @@
                 "glob": "**/*",
                 "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
                 "output": "/assets/webfonts/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/leaflet/dist/images/",
+                "output": "/"
               }
             ],
             "styles": [
@@ -1037,12 +1064,14 @@
               "projects/web-widgets/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
               "node_modules/survey-angular/survey.min.css",
-              "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-              "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+              "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+              "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
               "node_modules/select2/dist/css/select2.min.css",
               "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
-              "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
+              "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css",
+              "node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.min.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
@@ -1064,7 +1093,11 @@
               "cron-validator",
               "localforage",
               "survey-angular",
-              "fast-sha256"
+              "fast-sha256",
+              "leaflet",
+              "esri-leaflet-geocoder",
+              "esri-leaflet-vector",
+              "leaflet.markercluster"
             ]
           },
           "configurations": {
@@ -1209,6 +1242,11 @@
                 "glob": "**/*",
                 "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
                 "output": "/assets/webfonts/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/leaflet/dist/images/",
+                "output": "/"
               }
             ],
             "styles": [
@@ -1224,12 +1262,14 @@
               "node_modules/leaflet-measure/dist/leaflet-measure.css",
               "projects/safe/src/lib/style/styles.scss",
               "node_modules/survey-creator/survey-creator.min.css",
-              "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-              "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+              "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+              "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
               "node_modules/select2/dist/css/select2.min.css",
               "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
-              "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
+              "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css",
+              "node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.min.css"
             ],
             "scripts": []
           }

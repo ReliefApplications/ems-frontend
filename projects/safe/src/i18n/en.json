@@ -603,6 +603,23 @@
 			"confirmationMessage": "There are unsaved changes on your form. Are you sure you want to logout?",
 			"title": "Exit without saving changes"
 		},
+		"map": {
+			"controls": {
+				"download": {
+					"layers": {
+						"all": "All layers",
+						"selected": "Selected Layers",
+						"visible": "Visible layers"
+					},
+					"output": "Select an output format",
+					"selectLayers": "Select layers",
+					"view": {
+						"all": "Map",
+						"current": "Current view"
+					}
+				}
+			}
+		},
 		"mapping": {
 			"field": "User field",
 			"path": "Path",
@@ -1232,6 +1249,7 @@
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
 						"setByMap": "Set By Map",
+						"timeSlider": "Time Slider",
 						"title": "Map Parameters",
 						"zoom": "Default zoom"
 					},
