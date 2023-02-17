@@ -76,12 +76,13 @@ export class SafeMapPopupService {
       );
 
       popup.on('remove', () => {
-        if (layerToBind) {
+        if (layerToBind instanceof L.Circle) {
           map.removeLayer(layerToBind);
         }
+        // We will bind and unbind each time we set the popup for dynamic purposes
+        layerToBind?.unbindPopup();
         instance.destroy();
       });
-
       layerToBind.bindPopup(popup);
       layerToBind.openPopup();
     }
