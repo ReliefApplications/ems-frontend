@@ -2,6 +2,7 @@ import { setCompodocJson } from '@storybook/addon-docs/angular';
 import docJson from '../documentation.json';
 setCompodocJson(docJson);
 import '@angular/localize/init';
+import { MockedProvider } from '@apollo/client/testing';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -12,4 +13,7 @@ export const parameters = {
     },
   },
   docs: { inlineStories: true },
+  apolloClient: {
+    MockedProvider,
+  },
 };
