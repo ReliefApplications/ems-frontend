@@ -42,7 +42,19 @@ export const generateClusterLayer = (
         // popupAnchor: [0, -28],
       }),
   });
-  mapPopupService.addPopupToClusterClickEvent(map, clusterGroup);
+
+  // Set popup for all the cluster markers
+  clusterGroup.on('clusterclick', (event: any) => {
+    const coordinates = {
+      lat: event.latlng.lat,
+      lng: event.latlng.lng,
+    };
+    const children = event.layer
+      .getAllChildMarkers()
+      .map((child: any) => child.feature);
+    mapPopupService.setPopUp(map, children, coordinates, event.layer);
+  });
+
   const clusterLayer = L.geoJSON(generateGeoJSONPoints(total), {
     onEachFeature: (feature: Feature<any>, layer: Layer) => {
       // Add popup on click because we destroy popup component each time we remove it
@@ -52,13 +64,7 @@ export const generateClusterLayer = (
           lat: feature.geometry.coordinates[1],
           lng: feature.geometry.coordinates[0],
         };
-        // Initialize and get a SafeMapPopupComponent instance popup
-        const popup = mapPopupService.setPopupComponentAndContent(
-          map,
-          [feature],
-          coordinates
-        );
-        layer.bindPopup(popup);
+        mapPopupService.setPopUp(map, [feature], coordinates, layer);
       });
     },
   });

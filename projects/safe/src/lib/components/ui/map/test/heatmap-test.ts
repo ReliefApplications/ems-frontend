@@ -3,6 +3,7 @@ import { merge, get } from 'lodash';
 import 'leaflet.heat';
 import * as L from 'leaflet';
 import { SafeMapPopupService } from '../map-popup/map-popup.service';
+import { haversineDistance } from '../utils/haversine';
 
 type HeatMapOptions = {
   minOpacity: number;
@@ -48,7 +49,37 @@ export const generateHeatMap = (
   const geoJSON = generateGeoJSONPoints(total, true);
   const heatArray: any[] = [];
 
-  mapPopupService.addPopupToClickEvent(map, geoJSON.features);
+  // Leaflet.heat doesn't support click events, so we have to do it ourselves
+  map.on('click', (event: any) => {
+    const layerClass = event.originalEvent.target?.className;
+    // We are setting the click event in the whole map, so in order to trigger the popup for heatmap we filter the target from the heatmap
+    if (typeof layerClass === 'string' && layerClass?.includes('heatmap')) {
+      const zoom = map.getZoom();
+      const radius = 1000 / zoom;
+      const coordinates = {
+        lat: event.latlng.lat,
+        lng: event.latlng.lng,
+      };
+      // checks if the point is within the calculate radius
+      const matchedPoints = geoJSON.features.filter((point) => {
+        const pointData = [
+          point.geometry.coordinates[1],
+          point.geometry.coordinates[0],
+          get(point, 'properties.weight', 1),
+        ];
+        const distance = haversineDistance(
+          event.latlng.lat,
+          event.latlng.lng,
+          pointData[0],
+          pointData[1]
+        );
+        return distance < radius;
+      });
+
+      mapPopupService.setPopUp(map, matchedPoints, coordinates);
+    }
+  });
+
   geoJSON.features.forEach((feature: any) => {
     if (feature.geometry.type === 'Point') {
       heatArray.push([
@@ -58,16 +89,16 @@ export const generateHeatMap = (
       ]);
     }
   });
-  // Leaflet.heat doesn't support click events, so we have to do it ourselves
 
   const heatMapLayer = L.heatLayer(
     heatArray,
     merge(defaultHeatMapOptions, options)
   );
 
-  heatMapLayer.on('click', (event: any) => {
-    console.log(event);
-  });
+  // Leaflet.heat doesn't support click events, so we have to do it ourselves
+  // heatMapLayer.on('click', (event: any) => {
+  //   console.log(event);
+  // });
 
   return heatMapLayer;
 };

@@ -4,10 +4,8 @@ import { Feature } from 'geojson';
 
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
 import * as L from 'leaflet';
-import { get } from 'lodash';
 import { takeUntil } from 'rxjs';
 import { DomService } from '../../../../services/dom/dom.service';
-import { haversineDistance } from '../utils/haversine';
 import { SafeMapPopupComponent } from './map-popup.component';
 
 /**
@@ -26,6 +24,7 @@ export class SafeMapPopupService {
   private locationTag = this.translateService.instant(
     'components.widget.settings.map.popup.location'
   );
+
   /**
    * Injects DomService and TranslateService instances to the service
    *
@@ -36,104 +35,55 @@ export class SafeMapPopupService {
     private domService: DomService,
     private translateService: TranslateService
   ) {}
-  /**
-   * Set popup event and content for click event in cluster groups
-   *
-   * @param map Map in where we want to open the popup
-   * @param clusterGroup Cluster that groups the feature points for the popup
-   */
-  public addPopupToClusterClickEvent(map: any, clusterGroup: any) {
-    clusterGroup.on('clusterclick', (event: any) => {
-      const children = event.layer
-        .getAllChildMarkers()
-        .map((child: any) => child.feature);
-      this.setPopUpContent(map, children, event);
-    });
-  }
-
-  /**
-   * Set popup event and content for click event in heat maps
-   *
-   * @param map Map in where we want to open the popup
-   * @param featurePoints Feature points to group in the popupF
-   */
-  public addPopupToClickEvent(map: any, featurePoints: Feature<any>[]) {
-    // Leaflet.heat doesn't support click events, so we have to do it ourselves
-    map.on('click', (event: any) => {
-      // there is a problem here, the radius should be different
-      // depending on the latitude, because of the distortion of the Mercator projection
-      // I couldn't get it to work, so I just used a fixed radius, based on the zoom level alone
-      // https://en.wikipedia.org/wiki/Mercator_projection#Scale_factor
-      // const mercatorScaleFactor = (latitude: number) => {
-      //   const lat = (Math.PI / 180) * latitude;
-      //   return (
-      //     Math.cos(lat) /
-      //     Math.sqrt(1 - Math.pow(Math.sin(lat), 2) * Math.pow(Math.E, 2))
-      //   );
-      // };
-
-      // checks if the point is within the calculate radius
-
-      this.setPopUpContent(map, featurePoints, event);
-    });
-  }
 
   /**
    * Set popup content for the given map and feature points
    *
    * @param map Map in where we want to open the popup
    * @param featurePoints Feature points to group in the popup
-   * @param clickEvent Click event in the given map
+   * @param coordinates Coordinates
+   * @param coordinates.lat Coordinates latitude
+   * @param coordinates.lng Coordinates longitude
+   * @param layerToBind Layer where to bind the popup, if not a default one would be created
    */
-  private setPopUpContent(
-    map: any,
+  public setPopUp(
+    map: L.Map,
     featurePoints: Feature<any>[],
-    clickEvent: any
+    coordinates: { lat: number; lng: number },
+    layerToBind?: L.Layer
   ) {
-    const coordinates = clickEvent.latlng;
-    const zoom = map.getZoom();
-    const radius = 1000 / zoom;
-    const matchedPoints = featurePoints.filter((point) => {
-      // Filter check for current mocked implementation of grouped points popup for heatmap
-      // We only want to filter the points from heat map for now
-      if (clickEvent.type === 'clusterclick') {
-        return true;
-      } else {
-        const pointData = [
-          point.geometry.coordinates[1],
-          point.geometry.coordinates[0],
-          get(point, 'properties.weight', 1),
-        ];
-        const distance = haversineDistance(
-          coordinates.lat,
-          coordinates.lng,
-          pointData[0],
-          pointData[1]
-        );
-        return distance < radius;
-      }
-    });
+    if (featurePoints.length > 0) {
+      const zoom = map.getZoom();
+      const radius = 1000 / zoom;
 
-    if (matchedPoints.length > 0) {
-      // create a circle around the point (for debugging)
-      const circle = L.circle(coordinates, {
-        radius: radius * 1000, // haversineDistance returns km, circle radius is in meters
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-      });
-      circle.addTo(map);
+      if (!layerToBind) {
+        // create a circle around the point (for debugging)
+        const circle = L.circle(coordinates, {
+          radius: radius * 1000, // haversineDistance returns km, circle radius is in meters
+          color: 'red',
+          fillColor: '#f03',
+          fillOpacity: 0.5,
+        });
+        circle.addTo(map);
+        layerToBind = circle;
+      }
 
       // Initialize and get a SafeMapPopupComponent instance popup
-      const popup = this.setPopupComponentAndContent(
+      const { instance, popup } = this.setPopupComponentAndContent(
         map,
-        matchedPoints,
+        featurePoints,
         coordinates
       );
 
-      circle.bindPopup(popup);
-      popup.on('remove', () => map.removeLayer(circle));
-      circle.openPopup();
+      popup.on('remove', () => {
+        if (layerToBind) {
+          map.removeLayer(layerToBind);
+        }
+        instance.destroy();
+      });
+
+      layerToBind.bindPopup(popup);
+      layerToBind.openPopup();
     }
   }
 
@@ -145,13 +95,13 @@ export class SafeMapPopupService {
    * @param coordinates Coordinates where to set the popup
    * @param coordinates.lat Coordinates latitude
    * @param coordinates.lng Coordinates longitude
-   * @returns {L.Popup} Generated SafeMapPopupComponent popup
+   * @returns Generated SafeMapPopupComponent component instance and popup
    */
-  public setPopupComponentAndContent(
+  private setPopupComponentAndContent(
     map: L.Map,
     featurePoints: Feature<any>[],
     coordinates: { lat: number; lng: number }
-  ): L.Popup {
+  ): { instance: ComponentRef<SafeMapPopupComponent>; popup: L.Popup } {
     // create div element to render the SafeMapPopupComponent content
     const div = document.createElement('div');
     div.setAttribute('class', 'safe-border-radius-inherit');
@@ -166,7 +116,7 @@ export class SafeMapPopupService {
       .setContent(div);
     // Set the event listeners for the popup component
     this.setPopupComponentListeners(map, popupComponent, popup);
-    return popup;
+    return { instance: popupComponent, popup };
   }
 
   /**
@@ -185,23 +135,18 @@ export class SafeMapPopupService {
     popupComponent.instance.closePopup
       .pipe(takeUntil(popupComponent.instance.destroy$))
       .subscribe(() => {
-        setTimeout(() => {
-          popupComponent.destroy();
-          popup.remove();
-        }, 0);
+        popup.remove();
       });
 
     // listen to popup zoom to event
     popupComponent.instance.zoomTo
       .pipe(takeUntil(popupComponent.instance.destroy$))
       .subscribe((event: { coordinates: number[] }) => {
-        setTimeout(() => {
-          popupComponent.destroy();
-          popup.remove();
-        }, 0);
+        popup.remove();
         map.setView(L.latLng(event.coordinates[1], event.coordinates[0]), 10);
       });
   }
+
   /**
    * Initialize content and returns an instance of SafeMapPopupComponent
    *
