@@ -134,6 +134,7 @@
 			"accessNotProvided": "****** {{type}} ****** {{error}}",
 			"alreadyExists": "****** {{type}} ****** {{value}} ******",
 			"copiedToClipboard": "******",
+			"dataNotRecovered": "******",
 			"dataRecovered": "******",
 			"email": {
 				"error": "******",

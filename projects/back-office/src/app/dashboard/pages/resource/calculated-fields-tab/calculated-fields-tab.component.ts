@@ -83,20 +83,25 @@ export class CalculatedFieldsTabComponent implements OnInit {
               },
             },
           })
-          .subscribe((res) => {
-            if (res.data?.editResource) {
-              // Needed to update the field as table data source
-              this.fields = this.fields.concat(
-                res.data.editResource.fields.find(
-                  (f: any) => f.name === value.name
-                )
-              );
-            }
-            if (res.errors) {
-              this.snackBar.openSnackBar(res.errors[0].message, {
-                error: true,
-              });
-            }
+          .subscribe({
+            next: (res) => {
+              if (res.data?.editResource) {
+                // Needed to update the field as table data source
+                this.fields = this.fields.concat(
+                  res.data.editResource.fields.find(
+                    (f: any) => f.name === value.name
+                  )
+                );
+              }
+              if (res.errors) {
+                this.snackBar.openSnackBar(res.errors[0].message, {
+                  error: true,
+                });
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       }
     });
@@ -140,18 +145,23 @@ export class CalculatedFieldsTabComponent implements OnInit {
             },
           },
         })
-        .subscribe((res) => {
-          if (res.data?.editResource) {
-            // Needed to update the field as table data source
-            this.fields = res.data.editResource.fields.filter(
-              (f: any) => f.isCalculated
-            );
-          }
-          if (res.errors) {
-            this.snackBar.openSnackBar(res.errors[0].message, {
-              error: true,
-            });
-          }
+        .subscribe({
+          next: (res) => {
+            if (res.data?.editResource) {
+              // Needed to update the field as table data source
+              this.fields = res.data.editResource.fields.filter(
+                (f: any) => f.isCalculated
+              );
+            }
+            if (res.errors) {
+              this.snackBar.openSnackBar(res.errors[0].message, {
+                error: true,
+              });
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, {error: true});
+          },
         });
     });
   }
@@ -192,17 +202,22 @@ export class CalculatedFieldsTabComponent implements OnInit {
               },
             },
           })
-          .subscribe((res) => {
-            if (res.data?.editResource) {
-              this.fields = this.fields.filter(
-                (f: any) => f.name !== field.name
-              );
-            }
-            if (res.errors) {
-              this.snackBar.openSnackBar(res.errors[0].message, {
-                error: true,
-              });
-            }
+          .subscribe({
+            next: (res) =>{
+              if (res.data?.editResource) {
+                this.fields = this.fields.filter(
+                  (f: any) => f.name !== field.name
+                );
+              }
+              if (res.errors) {
+                this.snackBar.openSnackBar(res.errors[0].message, {
+                  error: true,
+                });
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, {error: true});
+            },
           });
       }
     });

@@ -228,14 +228,28 @@ export class SafeGroupListComponent
             },
           })
           .pipe(takeUntil(this.destroy$))
-          .subscribe(() => {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: item.title,
-              })
-            );
-            this.getGroups();
-          });
+          .subscribe({
+            next: ({errors}) =>{
+              if(errors){
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectNotDeleted', {
+                    value: item.title,
+                    error: errors ? errors[0].message : '',
+                  })
+                );
+              }else{
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: item.title,
+                  })
+                );
+              }
+              this.getGroups();
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
+          }); 
       }
     });
   }

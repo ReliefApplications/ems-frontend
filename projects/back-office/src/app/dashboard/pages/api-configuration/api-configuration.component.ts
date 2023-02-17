@@ -265,7 +265,7 @@ export class ApiConfigurationComponent
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotUpdated', {
               type: this.translate.instant('common.apiConfiguration.one'),
-              error: errors[0].message,
+              error: errors ? errors[0].message : '',
             }),
             { error: true }
           );

@@ -169,7 +169,7 @@ export class FormRecordsComponent
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate.instant('common.record.one').toLowerCase(),
-              error: errors[0].message,
+              error: errors ? errors[0].message : '',
             }),
             { error: true }
           );
@@ -306,11 +306,22 @@ export class FormRecordsComponent
               version: version.id,
             },
           })
-          .subscribe(() => {
-            this.layoutService.setRightSidenav(null);
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.dataRecovered')
-            );
+          .subscribe({
+            next: ({errors}) =>{
+              if(errors){
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.dataNotRecovered')
+                );
+              }else{
+                this.layoutService.setRightSidenav(null);
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.dataRecovered')
+                );
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, {error: true});
+            },
           });
       }
     });

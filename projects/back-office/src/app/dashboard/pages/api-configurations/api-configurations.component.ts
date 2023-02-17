@@ -226,7 +226,7 @@ export class ApiConfigurationsComponent
                       type: this.translate.instant(
                         'common.apiConfiguration.one'
                       ),
-                      error: errors[0].message,
+                      error: errors ? errors[0].message : '',
                     }
                   ),
                   { error: true }
@@ -276,17 +276,28 @@ export class ApiConfigurationsComponent
               id: element.id,
             },
           })
-          .subscribe((res) => {
-            if (res && !res.errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate.instant('common.apiConfiguration.one'),
-                })
-              );
-              this.dataSource.data = this.dataSource.data.filter(
-                (x) => x.id !== element.id
-              );
-            }
+          .subscribe({
+            next: (res) => { 
+              if (res && !res.errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant('common.apiConfiguration.one'),
+                  })
+                );
+                this.dataSource.data = this.dataSource.data.filter(
+                  (x) => x.id !== element.id
+                );
+              }else{
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectNotDeleted', {
+                    value: this.translate.instant('common.apiConfiguration.one'),
+                  })
+                );
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       }
     });

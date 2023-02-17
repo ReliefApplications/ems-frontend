@@ -149,15 +149,31 @@ export class SettingsComponent
                 id,
               },
             })
-            .subscribe(({ data }) => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate.instant('common.application.one'),
-                })
-              );
-              this.applications.data = this.applications.data.filter(
-                (x) => x.id !== data?.deleteApplication.id
-              );
+            .subscribe({
+              next: ({errors,data}) => {
+                if(errors){
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('common.notifications.objectNotDeleted', {
+                      value: this.translate.instant('common.application.one'),
+                      error: errors[0].message,
+                    }),
+                    { error: true }
+                  );
+                
+                }else{
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('common.notifications.objectDeleted', {
+                      value: this.translate.instant('common.application.one'),
+                    })
+                  );
+                  this.applications.data = this.applications.data.filter(
+                    (x) => x.id !== data?.deleteApplication.id
+                  );
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
             });
           this.router.navigate(['/applications']);
         }

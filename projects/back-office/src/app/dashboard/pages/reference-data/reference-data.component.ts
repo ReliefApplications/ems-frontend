@@ -305,24 +305,29 @@ export class ReferenceDataComponent
         mutation: EDIT_REFERENCE_DATA,
         variables,
       })
-      .subscribe(({ errors, data, loading }) => {
-        if (errors) {
-          this.snackBar.openSnackBar(
-            this.translateService.instant(
-              'common.notifications.objectNotUpdated',
-              {
-                type: this.translateService.instant('common.referenceData.one'),
-                error: errors[0].message,
-              }
-            ),
-            { error: true }
-          );
-          this.loading = false;
-        } else {
-          this.referenceData = data?.editReferenceData;
-          this.referenceForm.markAsPristine();
-          this.loading = loading || false;
-        }
+      .subscribe({
+        next: ({errors, data, loading}) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translateService.instant(
+                'common.notifications.objectNotUpdated',
+                {
+                  type: this.translateService.instant('common.referenceData.one'),
+                  error: errors ? errors[0].message : '',
+                }
+              ),
+              { error: true }
+            );
+            this.loading = false;
+          } else {
+            this.referenceData = data?.editReferenceData;
+            this.referenceForm.markAsPristine();
+            this.loading = loading || false;
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, {error: true});
+        },
       });
   }
 

@@ -263,18 +263,35 @@ export class ApplicationsComponent
               id,
             },
           })
-          .subscribe(({ data }) => {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: this.translate.instant('common.application.one'),
-              })
-            );
-            this.applications.data = this.applications.data.filter(
-              (x) => x.id !== data?.deleteApplication.id
-            );
-            this.newApplications = this.newApplications.filter(
-              (x) => x.id !== data?.deleteApplication.id
-            );
+          .subscribe({
+            next: ({errors, data}) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotDeleted',
+                    {
+                      value: this.translate.instant('common.application.one'),
+                      error: errors ? errors[0].message : '',
+                    }
+                  )
+                );
+              }else{
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant('common.application.one'),
+                  })
+                );
+                this.applications.data = this.applications.data.filter(
+                  (x) => x.id !== data?.deleteApplication.id
+                );
+                this.newApplications = this.newApplications.filter(
+                  (x) => x.id !== data?.deleteApplication.id
+                );
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       }
     });
@@ -289,31 +306,36 @@ export class ApplicationsComponent
       .mutate<AddApplicationMutationResponse>({
         mutation: ADD_APPLICATION,
       })
-      .subscribe(({ errors, data }) => {
-        if (errors?.length) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotCreated', {
-              type: this.translate
-                .instant('common.application.one')
-                .toLowerCase(),
-              error: errors[0].message,
-            }),
-            { error: true }
-          );
-        } else {
-          if (data) {
+      .subscribe({
+        next: ({errors, data}) => {
+          if (errors?.length) {
             this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectCreated', {
+              this.translate.instant('common.notifications.objectNotCreated', {
                 type: this.translate
                   .instant('common.application.one')
                   .toLowerCase(),
-                value: data.addApplication.name,
-              })
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
             );
-            const id = data.addApplication.id;
-            this.router.navigate(['/applications', id]);
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectCreated', {
+                  type: this.translate
+                    .instant('common.application.one')
+                    .toLowerCase(),
+                  value: data.addApplication.name,
+                })
+              );
+              const id = data.addApplication.id;
+              this.router.navigate(['/applications', id]);
+            }
           }
-        }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 

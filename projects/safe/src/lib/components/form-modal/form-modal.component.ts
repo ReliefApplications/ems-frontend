@@ -351,22 +351,27 @@ export class SafeFormModalComponent implements OnInit {
             data: survey.data,
           },
         })
-        .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
-              error: true,
-            });
-            this.ngZone.run(() => {
-              this.dialogRef.close();
-            });
-          } else {
-            this.ngZone.run(() => {
-              this.dialogRef.close({
-                template: this.data.template,
-                data: data?.addRecord,
+        .subscribe({
+          next: ({errors, data}) => {
+            if (errors) {
+              this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
+                error: true,
               });
-            });
-          }
+              this.ngZone.run(() => {
+                this.dialogRef.close();
+              });
+            } else {
+              this.ngZone.run(() => {
+                this.dialogRef.close({
+                  template: this.data.template,
+                  data: data?.addRecord,
+                });
+              });
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
     survey.showCompletedPage = true;
@@ -728,11 +733,22 @@ export class SafeFormModalComponent implements OnInit {
               version: version.id,
             },
           })
-          .subscribe(() => {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.dataRecovered')
-            );
-            this.dialog.closeAll();
+          .subscribe({
+            next: (errors){
+              if(errors){
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.dataNotRecovered')
+                );
+              }else{
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.dataRecovered')
+                );
+              }
+              this.dialog.closeAll();
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       }
     });
