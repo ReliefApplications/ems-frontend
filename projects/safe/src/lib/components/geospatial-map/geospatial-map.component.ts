@@ -22,7 +22,15 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/public-api';
 // Leaflet
 import '@geoman-io/leaflet-geoman-free';
 import * as L from 'leaflet';
-import { createCustomMarker } from '../ui/map/utils/create-marker';
+import { FeatureProperties } from '../ui/map/interfaces/layer-settings.type';
+import { IconName } from '../ui/map/const/fa-icons';
+import { SafeLayerStylingComponent } from './layer-styling/layer-styling.component';
+import { createCustomDivIcon } from '../ui/map/utils/create-div-icon';
+
+type StyleChange =
+  typeof SafeLayerStylingComponent.prototype.edit extends EventEmitter<infer T>
+    ? T
+    : never;
 
 /**
  * Component for displaying the input map
@@ -101,17 +109,22 @@ export class SafeGeospatialMapComponent
       const newLayer = L.geoJSON(this.data, {
         // Circles are not supported by geojson
         // We abstract them as markers with a radius property
-        pointToLayer: (feature: any, latlng: any) => {
+        pointToLayer: (feature, latlng) => {
           if (feature.properties.radius) {
             return new L.Circle(latlng, feature.properties.radius);
           } else {
-            const color = feature.properties.color || '#3388ff';
-            const opacity = feature.properties.opacity || 1;
-            const icon = createCustomMarker(color, opacity);
+            const icon = createCustomDivIcon({
+              color: feature.properties.style?.fillColor || '#3388ff',
+              opacity: feature.properties.style?.fillOpacity || 1,
+              icon:
+                (feature.properties.style?.icon as IconName) ||
+                'leaflet_default',
+              size: feature.properties.style?.iconSize || 12,
+            });
             return new L.Marker(latlng).setIcon(icon);
           }
         },
-      });
+      } as L.GeoJSONOptions<FeatureProperties>);
       const baseLayer: BaseLayerTree = {
         label: '',
         layer: newLayer,
@@ -137,15 +150,23 @@ export class SafeGeospatialMapComponent
    *
    * @param options the options to update the layer with
    */
-  public updateLayerOptions(options: any) {
-    // Layers with geoman tools are visible by default
-    // We make sure to add that option by default in each update
+  public updateLayerOptions(options: StyleChange) {
     options = { ...options, visible: true };
-    if (this.selectedLayer instanceof L.Marker) {
-      const icon = createCustomMarker(options.color, options.opacity);
-      this.updateLayer.next({ layer: this.selectedLayer, options, icon });
-    } else {
-      this.updateLayer.next({ layer: this.selectedLayer, options });
+    if ('color' in options && 'opacity' in options) {
+      // Layers with geoman tools are visible by default
+      // We make sure to add that option by default in each update
+      if (this.selectedLayer instanceof L.Marker) {
+        const icon = createCustomDivIcon({
+          color: options.color as string,
+          opacity: options.opacity as number,
+          icon: 'leaflet_default',
+          size: 24,
+        });
+
+        this.updateLayer.next({ layer: this.selectedLayer, options, icon });
+      } else {
+        this.updateLayer.next({ layer: this.selectedLayer, options });
+      }
     }
   }
 

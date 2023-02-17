@@ -1,6 +1,6 @@
 import { getRandomIcon } from '../const/fa-icons';
-import { IconPropertiesI } from '../utils/generateIcon';
 import * as L from 'leaflet';
+import { MarkerIconOptions } from '../utils/create-div-icon';
 
 /** Represents the types of geometries that can be generated */
 type FeatureTypes = 'Point' | 'Polygon' | 'LineString';
@@ -132,7 +132,7 @@ const weightedRandom = (
 /** Random feature collection */
 export const randomFeatureCollection = generateRandomFeatures({
   Point: {
-    generateProperties: (): { icon?: IconPropertiesI } => {
+    generateProperties: (): { icon?: MarkerIconOptions } => {
       if (Math.random() < 0.3) return {};
       // get random color
       const color = Math.floor(Math.random() * 16777215).toString(16);
@@ -142,6 +142,7 @@ export const randomFeatureCollection = generateRandomFeatures({
           icon: getRandomIcon(),
           color: `#${color}`,
           size,
+          opacity: Math.max(Math.random(), 0.5),
         },
       };
     },

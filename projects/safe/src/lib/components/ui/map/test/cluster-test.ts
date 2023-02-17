@@ -28,11 +28,11 @@ export const generateClusterLayer = (map: any, L: any) => {
         icon: getRandomIcon(),
         color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
         size: iconSize,
+        opacity: Math.max(Math.random(), 0.5),
       };
       const htmlTemplate = `<p>${cluster.getChildCount()}</p>`;
       return createCustomDivIcon(
         iconProperties,
-        undefined,
         htmlTemplate,
         'leaflet-data-marker'
       );

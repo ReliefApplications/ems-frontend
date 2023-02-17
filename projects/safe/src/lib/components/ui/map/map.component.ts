@@ -52,9 +52,10 @@ import * as L from 'leaflet';
 import { Layer } from './layer';
 import { MOCK_LAYER_SETTINGS } from './test/layer-settings-test';
 import { getMapFeatures } from './utils/get-map-features';
-import { createCustomMarker } from './utils/create-marker';
 import { LayerProperties } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
+import { createCustomDivIcon } from './utils/create-div-icon';
+import { generateBaseMaps } from './test/basemaps-test';
 
 /**
  * Cleans the settings object from null values
@@ -143,8 +144,8 @@ export class SafeMapComponent
 
   // === MARKERS ===
   private popupMarker: any;
-  private baseTree: any;
-  private layers: (OverlayLayerTree | BaseLayerTree)[] = [];
+  private baseTree!: L.Control.Layers.TreeObject;
+  private layersTree: (OverlayLayerTree | BaseLayerTree)[] = [];
   private layerControl: any;
   private layerTreeCloned!: any;
 
@@ -208,7 +209,14 @@ export class SafeMapComponent
     // updates question value on adding new shape
     this.map.on('pm:create', (l: any) => {
       if (l.shape === 'Marker')
-        l.layer.setIcon(createCustomMarker('#3388ff', 1));
+        l.layer.setIcon(
+          createCustomDivIcon({
+            icon: 'leaflet_default',
+            color: '#3388ff',
+            opacity: 1,
+            size: 24,
+          })
+        );
 
       // subscribe to changes on the created layers
       l.layer.on(
@@ -257,13 +265,33 @@ export class SafeMapComponent
 
   /** Method for testing the layer class, TO BE REMOVED */
   private testLayerClass() {
-    const testLayer = new Layer(MOCK_LAYER_SETTINGS);
-    if (testLayer) {
-      const layer = testLayer.getLayer();
-      if (layer) {
-        layer.addTo(this.map);
+    const layers = [new Layer(MOCK_LAYER_SETTINGS)];
+    this.layersTree = [];
+
+    for (const layer of layers) {
+      // get the leaflet layer from the layer class
+      const featureLayer = layer.getLayer();
+
+      if (featureLayer) {
+        // add the layer to the map
+        featureLayer.addTo(this.map);
+
+        // add the layer to the layer control
+        this.layersTree.push({
+          label: layer.name,
+          layer: featureLayer,
+          children: layer.getChildren().map((l) => ({
+            label: l.object.name,
+            layer: l.layer,
+          })),
+        });
       }
     }
+
+    // Add control to the map layers
+    this.layerControl = L.control.layers
+      .tree(this.baseTree, this.layersTree as any)
+      .addTo(this.map);
   }
 
   /** Once template is ready, build the map. */
@@ -358,6 +386,12 @@ export class SafeMapComponent
 
   /** Creates the map and adds all the controls we use */
   private drawMap(): void {
+    const baseMaps = generateBaseMaps(this.esriApiKey, this.basemap);
+    this.baseTree = {
+      label: 'Base Maps',
+      children: baseMaps,
+      collapsed: true,
+    };
     const {
       centerLong,
       centerLat,
@@ -482,10 +516,10 @@ export class SafeMapComponent
    * Setup and draw layers on map and sets the baseTree.
    */
   private setUpLayers(): void {
-    this.baseTree = {
-      label: this.basemap.options.key,
-      layer: this.basemap,
-    };
+    // this.baseTree = {
+    //   label: this.basemap.options.key,
+    //   layer: this.basemap,
+    // };
     const options1 = {
       style: {
         opacity: 0.2,
@@ -503,7 +537,7 @@ export class SafeMapComponent
     };
     const clusterGroup = generateClusterLayer(this.map, L);
     // this.map.addLayer(clusterGroup);
-    this.layers = [
+    this.layersTree = [
       {
         label: 'GeoJSON layers',
         selectAllCheckbox: 'Un/select all',
@@ -539,7 +573,7 @@ export class SafeMapComponent
       },
     ];
     // this.updateLayerTreeOfMap(this.layers);
-    this.drawLayers(this.layers);
+    this.drawLayers(this.layersTree);
   }
 
   /**
@@ -548,7 +582,7 @@ export class SafeMapComponent
    * @param layers Layers to draw
    */
   private drawLayers(layers: any) {
-    const drawLayer = (layer: any) => {
+    const drawLayer = (layer: any): any => {
       if (layer.children) {
         for (const child of layer.children) {
           drawLayer(child);

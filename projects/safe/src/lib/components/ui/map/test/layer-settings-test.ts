@@ -10,23 +10,30 @@ export const MOCK_LAYER_SETTINGS: LayerSettingsI = {
     {
       name: 'test simple',
       type: 'feature',
-      geojson: generateRandomFeatures({
-        numFeatures: 10,
-        Point: {
-          generateProperties: () => {
-            let count = 0;
-            return {
-              name: `Point ${count++}`,
-            };
+      geojson: {
+        type: 'FeatureCollection',
+        features: generateRandomFeatures({
+          numFeatures: 10,
+          Point: {
+            generateProperties: () => {
+              let count = 0;
+              return {
+                name: `Point ${count++}`,
+              };
+            },
+            probability: 1,
           },
-          probability: 0.8,
-        },
-        Polygon: {
-          generateProperties: () => ({}),
-          probability: 0.2,
-          numCoordinates: 4,
-        },
-      }) as GeoJSON,
+        }).features.concat(
+          generateRandomFeatures({
+            numFeatures: 10,
+            Polygon: {
+              generateProperties: () => ({}),
+              probability: 1,
+              numCoordinates: 4,
+            },
+          }).features
+        ),
+      } as GeoJSON,
       properties: {
         visibilityRange: [1, 18],
         opacity: 1,
@@ -119,7 +126,7 @@ export const MOCK_LAYER_SETTINGS: LayerSettingsI = {
       name: 'test cluster',
       type: 'cluster',
       geojson: generateRandomFeatures({
-        numFeatures: 50,
+        numFeatures: 100,
         Point: {
           generateProperties: () => {
             let count = 0;
@@ -142,7 +149,7 @@ export const MOCK_LAYER_SETTINGS: LayerSettingsI = {
             filters: [],
           },
           style: {
-            fillColor: 'orange',
+            fillColor: 'purple',
             fillOpacity: 1,
             icon: 'mug-hot',
             iconSize: 20,

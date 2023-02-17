@@ -1,16 +1,50 @@
 import { IconName } from '../const/fa-icons';
-import { generateIconHTML } from './generateIcon';
 import * as L from 'leaflet';
 
+export type MarkerIconOptions = {
+  icon: IconName | 'leaflet_default';
+  color: string;
+  size: number;
+  opacity: number;
+};
+
+/**
+ * Generates an HTML element for an icon
+ *
+ * @param properties Properties of an icon
+ * @returns The HTML element for the icon
+ */
+const createFontAwesomeIcon = (properties: MarkerIconOptions) => {
+  const { icon, size, color, opacity } = properties;
+
+  // create a span element to set color, opacity and size
+  const span = document.createElement('span');
+  span.style.color = color;
+  span.style.fontSize = `${size}px`;
+  span.style.opacity = opacity.toString();
+
+  // create an i element for the icon
+  const i = document.createElement('i');
+  i.className = `fa fa-${icon}`;
+
+  // append the i element to the span element
+  span.appendChild(i);
+
+  return span;
+};
 /**
  * Creates a new custom leaflet marker
  *
- * @param color Color set in the marker
- * @param opacity Opacity set in the marker(0>opacity<1)
- * @param size Font size in the marker(px)
+ * @param options Options for the marker icon
+ * @param options.color Color set in the marker
+ * @param options.opacity Opacity set in the marker(0>opacity<1)
+ * @param options.size Font size in the marker(px)
  * @returns HTML template where to place the new marker
  */
-const markerHtmlStyles = (color: string, opacity: number, size: number) => {
+const markerHtmlStyles = (
+  options: Pick<MarkerIconOptions, 'color' | 'opacity' | 'size'>
+) => {
+  const { color, opacity, size } = options;
   const styles = `
   background-color: ${color};
   opacity: ${opacity};
@@ -40,54 +74,30 @@ const markerHtmlStyles = (color: string, opacity: number, size: number) => {
  * @param iconProperties.size Size for the icon element
  * @param iconProperties.icon Icon identifier
  * @param iconProperties.color Color for the icon element
- * @param customMakerStylesProperties Properties related to the custom marker styles properties
- * @param customMakerStylesProperties.color Color for the custom marker
- * @param customMakerStylesProperties.opacity Opacity for the custom marker
+ * @param iconProperties.opacity Opacity for the icon element
  * @param htmlTemplate Html template for the div container
  * @param className Class name for the icon div container
  * @returns Div element with the icon
  */
 export const createCustomDivIcon = (
-  iconProperties?: {
-    size: number;
-    icon: IconName | 'leaflet_default';
-    color: string;
-  },
-  customMakerStylesProperties?: {
-    color: string;
-    opacity: number;
-  },
+  iconProperties: MarkerIconOptions,
   htmlTemplate: any = '',
   className: string = 'custom-marker'
 ) => {
-  const size = iconProperties?.size || 24;
+  const { icon, color, opacity, size } = iconProperties;
 
-  // If we receive an icon we use that to create the div template
-  if (iconProperties) {
-    // fa-icons use the generateIconHtml
-    if (iconProperties.icon !== 'leaflet_default') {
-      const { icon, color } = iconProperties;
-      const htmlIcon = generateIconHTML({ size, color, icon });
-      if (!htmlTemplate) {
-        htmlTemplate = htmlIcon;
-      } else {
-        htmlTemplate = htmlTemplate + htmlIcon.outerHTML;
-      }
+  // fa-icons use the createFontAwesomeIcon
+  if (iconProperties.icon !== 'leaflet_default') {
+    const htmlIcon = createFontAwesomeIcon({ size, color, icon, opacity });
+    if (!htmlTemplate) {
+      htmlTemplate = htmlIcon;
     } else {
-      // The default icon(leaflet-default) uses the markerHtmlStyles
-      // size set for marker is half that the one for the icon to keep same visibility
-      htmlTemplate = markerHtmlStyles(iconProperties.color, 1, size / 2);
+      htmlTemplate = htmlTemplate + htmlIcon.outerHTML;
     }
-  }
-
-  /**
-   * If we receive custom marker styling properties we use them
-   * to create the div template
-   */
-  if (customMakerStylesProperties) {
-    const { color, opacity } = customMakerStylesProperties;
+  } else {
+    // The default icon(leaflet-default) uses the markerHtmlStyles
     // size set for marker is half that the one for the icon to keep same visibility
-    htmlTemplate = markerHtmlStyles(color, opacity, size / 2);
+    htmlTemplate = markerHtmlStyles({ color, opacity, size: size / 2 });
   }
 
   const divIcon = L.divIcon({

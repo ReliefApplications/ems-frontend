@@ -1,4 +1,6 @@
 import * as L from 'leaflet';
+import { Feature, FeatureCollection, Geometry } from 'geojson';
+import { get } from 'lodash';
 import {
   LayerSettingsI,
   LayerType,
@@ -11,14 +13,11 @@ import {
   FeatureProperties,
   LayerStyle,
 } from './interfaces/layer-settings.type';
-import { Feature, FeatureCollection, Geometry } from 'geojson';
-import { createCustomMarker } from './utils/create-marker';
-import { get } from 'lodash';
-import { generateIconHTML } from './utils/generateIcon';
 import { IconName } from './const/fa-icons';
 import { createCustomDivIcon } from './utils/create-div-icon';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
+type ChildLayer = { object: Layer; layer?: L.Layer };
 
 /** GeoJSON with no features */
 export const EMPTY_FEATURE_COLLECTION: GeoJSON = {
@@ -63,12 +62,7 @@ export const DEFAULT_LAYER_STYLE = {
     maxZoom: 18,
   },
   icon: 'leaflet_default',
-
-  // icon?: string;
-  // iconSize?: number;
-
-  // };
-};
+} as Required<LayerStyle>;
 
 /** Minimum cluster size in pixel */
 const MIN_CLUSTER_SIZE = 20;
@@ -136,11 +130,16 @@ export class Layer {
   private layer: L.Layer | null = null;
 
   // Global properties for the layer
-  private name: string;
-  private type: LayerType;
+  public readonly name: string;
+  public readonly type: LayerType;
 
   // Properties for the layer, if layer type is 'group'
-  private children: Layer[] | null = null;
+  private children: ChildLayer[] = [];
+
+  /** @returns the children of the current layer */
+  public getChildren() {
+    return this.children;
+  }
 
   // Properties for the layer, if layer type is not 'group'
   private datasource: any | null = null; // TODO: define datasource
@@ -206,7 +205,9 @@ export class Layer {
       this.setFields();
     } else if (settings.children) {
       // Group layer, add children
-      this.children = settings.children?.map((child) => new Layer(child));
+      this.children = settings.children?.map((child) => ({
+        object: new Layer(child),
+      }));
     }
   }
 
@@ -268,28 +269,27 @@ export class Layer {
     const style = this.styling?.find(
       (s) => featureSatisfiesFilter(feature, s.filter) && s.style
     );
-
     return style?.style
       ? { ...DEFAULT_LAYER_STYLE, ...style?.style }
       : DEFAULT_LAYER_STYLE;
   }
 
   /** @returns the leaflet layer from layer definition */
-  public getLayer(): L.Layer | null {
+  public getLayer(): L.Layer {
+    // data is the filtered geojson
     const data = this.data;
+
     let style: Required<LayerStyle> = DEFAULT_LAYER_STYLE;
 
+    // first style is the style of the first styling object
+    // for now, it's being used for the cluster and heatmap layers
     const firstStyle = this.styling?.[0]?.style
       ? { ...DEFAULT_LAYER_STYLE, ...this.styling[0].style }
       : DEFAULT_LAYER_STYLE;
 
-    const geoJSONopts = {
-      // Circles are not supported by geojson
-      // We abstract them as markers with a radius property
-      pointToLayer: (
-        feature: Feature<Geometry, FeatureProperties>,
-        latlng: L.LatLng
-      ) => {
+    // options used for parsing geojson to leaflet layer
+    const geoJSONopts: L.GeoJSONOptions<FeatureProperties> = {
+      pointToLayer: (feature, latlng) => {
         const { style: featureStyle } = feature.properties;
 
         // Priority: feature style > layer style > default style
@@ -297,6 +297,8 @@ export class Layer {
           ? { ...DEFAULT_LAYER_STYLE, ...featureStyle }
           : this.getFeatureStyle(feature);
 
+        // circles are not supported by geojson
+        // we abstract them as markers with a radius property
         if (feature.properties.radius) {
           const circle = L.circle(latlng, feature.properties.radius);
 
@@ -310,33 +312,17 @@ export class Layer {
           });
 
           return circle;
-        } else {
-          const marker = new L.Marker(latlng);
-          if (style.icon !== 'leaflet_default') {
-            const size = style.iconSize;
-
-            // Custom fontawesome icon
-            const icon = L.divIcon({
-              className: 'custom-marker',
-              iconSize: [size, size],
-              iconAnchor: [size / 2, size / 2],
-              popupAnchor: [size / 2, -36],
-              html: generateIconHTML({
-                icon: style.icon as IconName,
-                color: style.fillColor,
-                size,
-              }),
-            });
-
-            marker.setIcon(icon);
-          } else {
-            // If no icon is specified, use the default marker
-            const icon = createCustomMarker(style.fillColor, style.fillOpacity);
-            marker.setIcon(icon);
-          }
-
-          return marker;
         }
+
+        // If not a circle, create a marker
+        return new L.Marker(latlng).setIcon(
+          createCustomDivIcon({
+            icon: style.icon,
+            color: style.fillColor,
+            size: style.iconSize,
+            opacity: style.fillOpacity,
+          })
+        );
       },
       style: (feature: Feature<Geometry, FeatureProperties> | undefined) => {
         if (!feature) return {};
@@ -359,12 +345,14 @@ export class Layer {
 
     switch (this.type) {
       case 'group':
-        if (!this.children) return null;
+        this.children.forEach(
+          (child) => (child.layer = child.object.getLayer())
+        );
         const layers = this.children
-          .map((child) => child.getLayer())
-          .filter((layer) => layer !== null);
+          .map((child) => child.layer)
+          .filter((layer) => layer !== undefined) as L.Layer[];
 
-        return new L.LayerGroup(layers as L.Layer[]);
+        return new L.LayerGroup(layers);
 
       case 'sketch':
       case 'feature':
@@ -386,11 +374,11 @@ export class Layer {
                 (cluster.getChildCount() / 50) *
                   (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
                 MIN_CLUSTER_SIZE,
+              opacity: firstStyle.fillOpacity,
             };
             const htmlTemplate = `<p>${cluster.getChildCount()}</p>`;
             return createCustomDivIcon(
               iconProperties,
-              undefined,
               htmlTemplate,
               'leaflet-data-marker'
             );

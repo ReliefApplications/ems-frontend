@@ -1,4 +1,5 @@
 import { Geometry, FeatureCollection, Feature } from 'geojson';
+import { IconName } from '../const/fa-icons';
 
 export type FeatureProperties = {
   // For circles
@@ -85,7 +86,7 @@ export type LayerStyle = {
   // for markers, the fillColor represents marker color
   fillColor?: string;
   fillOpacity?: number;
-  icon?: string;
+  icon?: IconName | 'leaflet_default';
   iconSize?: number;
 
   heatmap?: {
