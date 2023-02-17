@@ -10,7 +10,13 @@ export default {
   component: SafeGridComponent,
   decorators: [
     moduleMetadata({
-      imports: [SafeGridModule, HttpClientModule, BrowserAnimationsModule, StorybookTranslateModule, MatSnackBarModule],
+      imports: [
+        SafeGridModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        StorybookTranslateModule,
+        MatSnackBarModule,
+      ],
       providers: [
         {
           provide: 'environment',
