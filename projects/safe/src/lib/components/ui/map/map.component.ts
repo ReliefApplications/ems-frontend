@@ -68,7 +68,7 @@ const cleanSettingsFromNulls = (settings: MapConstructorSettings) => {
   selector: 'safe-map',
   templateUrl: './map.component.html',
   styleUrls: ['../../../style/map.scss', './map.component.scss'],
-  providers: [SafeMapControlsService],
+  providers: [SafeMapControlsService, SafeMapPopupService],
 })
 export class SafeMapComponent
   extends SafeUnsubscribeComponent
@@ -370,7 +370,8 @@ export class SafeMapComponent
       worldCopyJump,
       zoom,
     }).setView(L.latLng(centerLat, centerLong), zoom);
-
+    // Set the needed map instance for it's popup service instance
+    this.mapPopupService.setMap = this.map;
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(basemap);
 
@@ -447,11 +448,7 @@ export class SafeMapComponent
         opacity: 0.5,
       },
     };
-    const clusterGroup = generateClusterLayer(
-      this.map,
-      L,
-      this.mapPopupService
-    );
+    const clusterGroup = generateClusterLayer(L, this.mapPopupService);
     // this.map.addLayer(clusterGroup);
     this.layers = [
       {

@@ -16,13 +16,11 @@ const clusterIconSvg =
 /**
  * Creation of the cluster group
  *
- * @param map map to be used
  * @param L to be able to use Leaflet from CDN
  * @param mapPopupService map popup service
  * @returns the cluster group
  */
 export const generateClusterLayer = (
-  map: any,
   L: any,
   mapPopupService: SafeMapPopupService
 ) => {
@@ -52,7 +50,7 @@ export const generateClusterLayer = (
     const children = event.layer
       .getAllChildMarkers()
       .map((child: any) => child.feature);
-    mapPopupService.setPopUp(map, children, coordinates, event.layer);
+    mapPopupService.setPopUp(children, coordinates, event.layer);
   });
 
   const clusterLayer = L.geoJSON(generateGeoJSONPoints(total), {
@@ -64,7 +62,7 @@ export const generateClusterLayer = (
           lat: feature.geometry.coordinates[1],
           lng: feature.geometry.coordinates[0],
         };
-        mapPopupService.setPopUp(map, [feature], coordinates, layer);
+        mapPopupService.setPopUp([feature], coordinates, layer);
       });
     },
   });

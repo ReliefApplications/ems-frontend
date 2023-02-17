@@ -11,9 +11,7 @@ import { SafeMapPopupComponent } from './map-popup.component';
 /**
  * Shared map control service.
  */
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SafeMapPopupService {
   private latitudeTag = this.translateService.instant(
     'models.widget.map.latitude'
@@ -24,6 +22,15 @@ export class SafeMapPopupService {
   private locationTag = this.translateService.instant(
     'components.widget.settings.map.popup.location'
   );
+
+  // There would be an instance of map popup service for each map
+  private map!: L.Map;
+  /**
+   * Set the map that loaded this popup service instance
+   */
+  public set setMap(_map: L.Map) {
+    this.map = _map;
+  }
 
   /**
    * Injects DomService and TranslateService instances to the service
@@ -39,7 +46,6 @@ export class SafeMapPopupService {
   /**
    * Set popup content for the given map and feature points
    *
-   * @param map Map in where we want to open the popup
    * @param featurePoints Feature points to group in the popup
    * @param coordinates Coordinates
    * @param coordinates.lat Coordinates latitude
@@ -47,13 +53,12 @@ export class SafeMapPopupService {
    * @param layerToBind Layer where to bind the popup, if not a default one would be created
    */
   public setPopUp(
-    map: L.Map,
     featurePoints: Feature<any>[],
     coordinates: { lat: number; lng: number },
     layerToBind?: L.Layer
   ) {
     if (featurePoints.length > 0) {
-      const zoom = map.getZoom();
+      const zoom = this.map.getZoom();
       const radius = 1000 / zoom;
 
       if (!layerToBind) {
@@ -64,20 +69,19 @@ export class SafeMapPopupService {
           fillColor: '#f03',
           fillOpacity: 0.5,
         });
-        circle.addTo(map);
+        circle.addTo(this.map);
         layerToBind = circle;
       }
 
       // Initialize and get a SafeMapPopupComponent instance popup
       const { instance, popup } = this.setPopupComponentAndContent(
-        map,
         featurePoints,
         coordinates
       );
 
       popup.on('remove', () => {
         if (layerToBind instanceof L.Circle) {
-          map.removeLayer(layerToBind);
+          this.map.removeLayer(layerToBind);
         }
         // We will bind and unbind each time we set the popup for dynamic purposes
         layerToBind?.unbindPopup();
@@ -91,7 +95,6 @@ export class SafeMapPopupService {
   /**
    * Initialize and sets SafeMapPopupComponent popup component
    *
-   * @param map Map where to execute setView with given coordinates when zoom event is emitted from popup
    * @param featurePoints Array of feature points
    * @param coordinates Coordinates where to set the popup
    * @param coordinates.lat Coordinates latitude
@@ -99,7 +102,6 @@ export class SafeMapPopupService {
    * @returns Generated SafeMapPopupComponent component instance and popup
    */
   private setPopupComponentAndContent(
-    map: L.Map,
     featurePoints: Feature<any>[],
     coordinates: { lat: number; lng: number }
   ): { instance: ComponentRef<SafeMapPopupComponent>; popup: L.Popup } {
@@ -116,19 +118,17 @@ export class SafeMapPopupService {
       .setLatLng(coordinates)
       .setContent(div);
     // Set the event listeners for the popup component
-    this.setPopupComponentListeners(map, popupComponent, popup);
+    this.setPopupComponentListeners(popupComponent, popup);
     return { instance: popupComponent, popup };
   }
 
   /**
    * Set event listeners for the given popup component at the given map and leaflet popup
    *
-   * @param map Leaflet map
    * @param popupComponent Safe popup component
    * @param popup Leaflet popup
    */
   private setPopupComponentListeners(
-    map: L.Map,
     popupComponent: ComponentRef<SafeMapPopupComponent>,
     popup: L.Popup
   ) {
@@ -144,7 +144,10 @@ export class SafeMapPopupService {
       .pipe(takeUntil(popupComponent.instance.destroy$))
       .subscribe((event: { coordinates: number[] }) => {
         popup.remove();
-        map.setView(L.latLng(event.coordinates[1], event.coordinates[0]), 10);
+        this.map.setView(
+          L.latLng(event.coordinates[1], event.coordinates[0]),
+          10
+        );
       });
   }
 

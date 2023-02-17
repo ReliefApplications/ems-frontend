@@ -76,7 +76,7 @@ export const generateHeatMap = (
         return distance < radius;
       });
 
-      mapPopupService.setPopUp(map, matchedPoints, coordinates);
+      mapPopupService.setPopUp(matchedPoints, coordinates);
     }
   });
 
