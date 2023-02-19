@@ -1,4 +1,8 @@
+// Leaflet imports
 import * as L from 'leaflet';
+import 'leaflet.heat';
+import 'leaflet.markercluster';
+
 import { Feature, FeatureCollection, Geometry } from 'geojson';
 import { get } from 'lodash';
 import {

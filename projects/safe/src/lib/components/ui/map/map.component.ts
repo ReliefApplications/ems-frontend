@@ -20,7 +20,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  OverlayLayerTree,
   BaseLayerTree,
   LayerActionOnMap,
 } from './interfaces/map-layers.interface';
@@ -31,17 +30,6 @@ import {
 } from './interfaces/map.interface';
 import { BASEMAP_LAYERS } from './const/baseMaps';
 import { merge } from 'lodash';
-import { generateClusterLayer } from './test/cluster-test';
-import {
-  complexGeoJSON,
-  cornerGeoJSON,
-  pointGeoJSON,
-} from './test/geojson-test';
-import {
-  geoJsonLayer,
-  randomFeatureCollection,
-} from './test/feature-collection-test';
-import { generateHeatMap } from './test/heatmap-test';
 import { timeDimensionGeoJSON } from './test/timedimension-test';
 import { SafeMapLayersService } from '../../../services/maps/map-layers.service';
 import { SafeMapControlsService } from '../../../services/maps/map-controls.service';
@@ -145,7 +133,7 @@ export class SafeMapComponent
   // === MARKERS ===
   private popupMarker: any;
   private baseTree!: L.Control.Layers.TreeObject;
-  private layersTree: (OverlayLayerTree | BaseLayerTree)[] = [];
+  private layersTree: L.Control.Layers.TreeObject[] = [];
   private layerControl: any;
   private layerTreeCloned!: any;
 
@@ -263,37 +251,6 @@ export class SafeMapComponent
       });
   }
 
-  /** Method for testing the layer class, TO BE REMOVED */
-  private testLayerClass() {
-    const layers = [new Layer(MOCK_LAYER_SETTINGS)];
-    this.layersTree = [];
-
-    for (const layer of layers) {
-      // get the leaflet layer from the layer class
-      const featureLayer = layer.getLayer();
-
-      if (featureLayer) {
-        // add the layer to the map
-        featureLayer.addTo(this.map);
-
-        // add the layer to the layer control
-        this.layersTree.push({
-          label: layer.name,
-          layer: featureLayer,
-          children: layer.getChildren().map((l) => ({
-            label: l.object.name,
-            layer: l.layer,
-          })),
-        });
-      }
-    }
-
-    // Add control to the map layers
-    this.layerControl = L.control.layers
-      .tree(this.baseTree, this.layersTree as any)
-      .addTo(this.map);
-  }
-
   /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
     // Creates the map and adds all the controls we use.
@@ -311,9 +268,6 @@ export class SafeMapComponent
     setTimeout(() => {
       this.map.invalidateSize();
       if (this.displayMockedLayers) {
-        // FOR TESTING PURPOSES ONLY
-        this.testLayerClass();
-        return;
         this.setUpLayers();
       }
       if (this.useGeomanTools) {
@@ -386,12 +340,6 @@ export class SafeMapComponent
 
   /** Creates the map and adds all the controls we use */
   private drawMap(): void {
-    const baseMaps = generateBaseMaps(this.esriApiKey, this.basemap);
-    this.baseTree = {
-      label: 'Base Maps',
-      children: baseMaps,
-      collapsed: true,
-    };
     const {
       centerLong,
       centerLat,
@@ -516,64 +464,58 @@ export class SafeMapComponent
    * Setup and draw layers on map and sets the baseTree.
    */
   private setUpLayers(): void {
-    // this.baseTree = {
-    //   label: this.basemap.options.key,
-    //   layer: this.basemap,
-    // };
-    const options1 = {
-      style: {
-        opacity: 0.2,
-      },
-      visible: false,
-      visibilityRange: {
-        min: 6,
-        max: 12,
-      },
+    this.layersTree = [];
+
+    // Sets the basemaps
+    const baseMaps = generateBaseMaps(this.esriApiKey, this.basemap);
+    this.baseTree = {
+      label: 'Base Maps',
+      children: baseMaps,
+      collapsed: true,
     };
-    const options2 = {
-      style: {
-        opacity: 0.5,
-      },
+
+    /**
+     * Parses a layer into a tree node
+     *
+     * @param layer The layer to create the tree node from
+     * @param leafletLayer The leaflet layer previously created by the parent layer, if any
+     * @returns The tree node
+     */
+    const parseTreeNode = (
+      layer: Layer,
+      leafletLayer?: L.Layer
+    ): BaseLayerTree => {
+      // Gets the leaflet layer. Either the one passed as parameter
+      // (from parent) or the one created by the layer itself (if no parent)
+      const featureLayer = leafletLayer ?? layer.getLayer();
+
+      // Adds the layer to the map if not already added
+      // note: group layers are of type L.LayerGroup
+      // so we should check if the layer is not already added
+      if (!this.map.hasLayer(featureLayer)) this.map.addLayer(featureLayer);
+
+      const children = layer.getChildren();
+      return {
+        label: layer.name,
+        layer: featureLayer,
+        children:
+          children.length > 0
+            ? children.map((c) => parseTreeNode(c.object, c.layer))
+            : undefined,
+      };
     };
-    const clusterGroup = generateClusterLayer(this.map, L);
-    // this.map.addLayer(clusterGroup);
-    this.layersTree = [
-      {
-        label: 'GeoJSON layers',
-        selectAllCheckbox: 'Un/select all',
-        children: [
-          {
-            label: 'Simple',
-            layer: geoJsonLayer(pointGeoJSON),
-            options: options2,
-          },
-          {
-            label: 'Complex',
-            layer: geoJsonLayer(complexGeoJSON),
-            options: options1,
-          },
-          {
-            label: 'Corner',
-            layer: geoJsonLayer(cornerGeoJSON),
-            options: options2,
-          },
-          {
-            label: 'Random',
-            layer: geoJsonLayer(randomFeatureCollection),
-          },
-        ],
-      },
-      {
-        label: 'Clusters',
-        layer: clusterGroup,
-      },
-      {
-        label: 'Heatmap',
-        layer: generateHeatMap(this.map),
-      },
-    ];
-    // this.updateLayerTreeOfMap(this.layers);
-    this.drawLayers(this.layersTree);
+
+    const layers = [new Layer(MOCK_LAYER_SETTINGS)];
+
+    // Add each layer to the tree
+    layers.forEach((layer) => {
+      this.layersTree.push(parseTreeNode(layer));
+    });
+
+    // Add control to the map layers
+    this.layerControl = L.control.layers
+      .tree(this.baseTree, this.layersTree as any)
+      .addTo(this.map);
   }
 
   /**
