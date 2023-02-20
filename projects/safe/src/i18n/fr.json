@@ -1155,10 +1155,30 @@
 						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements"
 					}
 				},
+				"iconPicker": {
+					"default": "@TODO",
+					"placeholder": "@TODO"
+				},
 				"map": {
 					"basemap": "Fond de carte",
 					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
+					"edit": {
+						"layerProperties": "@TODO",
+						"layerStyling": "@TODO",
+						"properties": {
+							"defaultVisibility": "@TODO",
+							"opacity": "@TODO",
+							"visibilityRange": "@TODO",
+							"zoom": "@TODO"
+						},
+						"style": {
+							"color": "@TODO",
+							"icon": "@TODO",
+							"size": "@TODO",
+							"stylingType": "@TODO"
+						}
+					},
 					"errors": {
 						"latitude": "Latitude incorrecte, merci de sélectionner un nombre entre -90 et 90",
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
@@ -1215,7 +1235,13 @@
 							"size": "Taille",
 							"title": "Marqueurs"
 						},
-						"remove": "Supprimer le calque"
+						"remove": "Supprimer le calque",
+						"types": {
+							"cluster": "@TODO",
+							"heatmap": "@TODO",
+							"point": "@TODO",
+							"polygon": "@TODO"
+						}
 					},
 					"popup": {
 						"label": "Champs affichés dans le popup"

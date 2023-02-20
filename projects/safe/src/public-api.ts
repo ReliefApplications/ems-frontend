@@ -102,6 +102,7 @@ export * from './lib/components/ui/alert/public-api';
 export * from './lib/components/ui/aggregation-builder/public-api';
 export * from './lib/components/ui/tagbox/public-api';
 export * from './lib/components/ui/icon/public-api';
+export * from './lib/components/ui/icon-picker/public-api';
 
 // === VIEWS ===
 export * from './lib/views/public-api';
@@ -113,6 +114,7 @@ export * from './lib/safe.module';
 export * from './lib/pipes/date/public-api';
 export * from './lib/pipes/readable-cron/public-api';
 export * from './lib/pipes/cron-parser/public-api';
+export * from './lib/pipes/icon-display/public-api';
 
 // === UTILS ===
 export * from './lib/utils/public-api';

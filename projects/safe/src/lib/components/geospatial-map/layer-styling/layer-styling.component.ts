@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { takeUntil } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 type GeometryTypes = 'Point' | 'Polygon' | 'LineString';
@@ -49,9 +49,9 @@ export class SafeLayerStylingComponent
 
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter<void>();
-  @Output() edit = new EventEmitter<any>();
+  @Output() edit = new EventEmitter<typeof this.styleForm.value>();
 
-  public styleForm: any;
+  public styleForm!: ReturnType<typeof this.getStyleForm>;
 
   /** Component for styling leaflet layers */
   constructor() {
@@ -65,12 +65,17 @@ export class SafeLayerStylingComponent
   /** Updates the form */
   private updateForm() {
     this.styleForm = this.getStyleForm();
+    if (!this.styleForm) return;
+
     this.styleForm.patchValue(this.selectedLayer.options);
-    this.styleForm.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        this.edit.emit(value);
-      });
+
+    const formValueChanges$ = this.styleForm.valueChanges as Observable<
+      typeof this.styleForm.value
+    >;
+
+    formValueChanges$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      this.edit.emit(value);
+    });
   }
 
   /**
@@ -78,7 +83,7 @@ export class SafeLayerStylingComponent
    *
    * @returns the form for the selected layer
    */
-  private getStyleForm(): FormGroup {
+  private getStyleForm() {
     switch (this.selectedLayerType) {
       case 'Point':
         return new FormGroup({

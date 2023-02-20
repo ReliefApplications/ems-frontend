@@ -87,6 +87,11 @@
               },
               {
                 "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+                "output": "/assets/webfonts/"
+              },
+              {
+                "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images/",
                 "output": "/"
               }
@@ -572,6 +577,11 @@
               },
               {
                 "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+                "output": "/assets/webfonts/"
+              },
+              {
+                "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images/",
                 "output": "/"
               }
@@ -1040,6 +1050,11 @@
               },
               {
                 "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+                "output": "/assets/webfonts/"
+              },
+              {
+                "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images/",
                 "output": "/"
               }
@@ -1222,6 +1237,11 @@
                 "glob": "**/*",
                 "input": "node_modules/tinymce",
                 "output": "/tinymce/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+                "output": "/assets/webfonts/"
               },
               {
                 "glob": "**/*",

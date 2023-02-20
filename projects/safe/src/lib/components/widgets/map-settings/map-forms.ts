@@ -149,15 +149,25 @@ export const markerRuleForm = (value?: any): UntypedFormGroup =>
 export const createLayerForm = (value?: MapLayerI): UntypedFormGroup =>
   fb.group({
     name: [get(value, 'name', null), [Validators.required]],
+    type: [get(value, 'type', null), [Validators.required]],
     defaultVisibility: [
       get(value, 'defaultVisibility', true),
       [Validators.required],
     ],
     opacity: [get(value, 'opacity', 0.8), [Validators.required]],
-    visibilityRange: [
-      get(value, 'visibilityRange', [2, 18]),
+    visibilityRangeStart: [
+      get(value, 'visibilityRangeStart', 2),
       [Validators.required],
     ],
+    visibilityRangeEnd: [
+      get(value, 'visibilityRangeEnd', 18),
+      [Validators.required],
+    ],
+    style: fb.group({
+      color: [get(value, 'style.color', '#0090d1')],
+      size: [get(value, 'style.size', 24)],
+      icon: [get(value, 'style.icon', 'leaflet_default')],
+    }),
   });
 
 // === MAP ===
