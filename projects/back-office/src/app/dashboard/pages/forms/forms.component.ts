@@ -239,7 +239,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
             },
           })
           .subscribe({
-            next: ({errors}) =>{
+            next: ({ errors }) => {
               if (!errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectDeleted', {
@@ -247,7 +247,8 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
                   })
                 );
                 this.forms.data = this.forms.data.filter(
-                  (x) => x.id !== form.id && form.id !== x.resource?.coreForm?.id
+                  (x) =>
+                    x.id !== form.id && form.id !== x.resource?.coreForm?.id
                 );
               } else {
                 this.snackBar.openSnackBar(

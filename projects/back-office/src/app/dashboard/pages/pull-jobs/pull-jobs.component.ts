@@ -196,8 +196,8 @@ export class PullJobsComponent
                 variables,
               })
               .subscribe({
-                next: ({errors, data}) => {
-                  if(errors){
+                next: ({ errors, data }) => {
+                  if (errors) {
                     this.snackBar.openSnackBar(
                       this.translate.instant(
                         'common.notifications.objectNotCreated',
@@ -209,7 +209,7 @@ export class PullJobsComponent
                         }
                       )
                     );
-                  }else{
+                  } else {
                     if (data?.addPullJob) {
                       this.snackBar.openSnackBar(
                         this.translate.instant(
@@ -236,7 +236,7 @@ export class PullJobsComponent
                   }
                 },
                 error: (err) => {
-                  this.snackBar.openSnackBar(err.message, {error: true});
+                  this.snackBar.openSnackBar(err.message, { error: true });
                 },
               });
           }
@@ -272,20 +272,26 @@ export class PullJobsComponent
               },
             })
             .subscribe({
-              next: ({errors, data}) => {
-                if(errors){
+              next: ({ errors, data }) => {
+                if (errors) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('common.notifications.objectNotDeleted', {
-                      value: this.translate.instant('common.pullJob.one'),
-                      error: errors ? errors[0].message : '',
-                    })
+                    this.translate.instant(
+                      'common.notifications.objectNotDeleted',
+                      {
+                        value: this.translate.instant('common.pullJob.one'),
+                        error: errors ? errors[0].message : '',
+                      }
+                    )
                   );
-                }else{
+                } else {
                   if (data?.deletePullJob) {
                     this.snackBar.openSnackBar(
-                      this.translate.instant('common.notifications.objectDeleted', {
-                        value: this.translate.instant('common.pullJob.one'),
-                      })
+                      this.translate.instant(
+                        'common.notifications.objectDeleted',
+                        {
+                          value: this.translate.instant('common.pullJob.one'),
+                        }
+                      )
                     );
                     this.cachedPullJobs = this.cachedPullJobs.filter(
                       (x) => x.id !== data?.deletePullJob.id
@@ -362,15 +368,18 @@ export class PullJobsComponent
                 variables,
               })
               .subscribe({
-                next: ({errors, data}) => {
-                  if(errors){
+                next: ({ errors, data }) => {
+                  if (errors) {
                     this.snackBar.openSnackBar(
-                      this.translate.instant('common.notifications.objectNotUpdated', {
-                        value: this.translate.instant('common.pullJob.one'),
-                        error: errors ? errors[0].message : '',
-                      })
+                      this.translate.instant(
+                        'common.notifications.objectNotUpdated',
+                        {
+                          value: this.translate.instant('common.pullJob.one'),
+                          error: errors ? errors[0].message : '',
+                        }
+                      )
                     );
-                  }else{
+                  } else {
                     if (data?.editPullJob) {
                       this.snackBar.openSnackBar(
                         this.translate.instant(

@@ -69,7 +69,7 @@ export class DuplicateApplicationModalComponent implements OnInit {
         },
       })
       .subscribe({
-        next: ({errors, data}) => {
+        next: ({ errors, data }) => {
           if (errors) {
             this.snackBar.openSnackBar(
               this.translateService.instant(

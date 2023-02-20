@@ -181,8 +181,11 @@
 			"objectNotDuplicated": "The {{type}} was not duplicated. {{error}}",
 			"objectNotFound": "{{name}} not found.",
 			"objectNotInvited": "{{name}} invitation failed.",
+			"objectNotReordered": "{{type}} not reordered. {{error}}",
+			"objectNotRestored": "{{type}} not restored. {{error}}",
 			"objectNotUpdated": "{{type}} not edited. {{error}}",
 			"objectReordered": "{{type}} reordered.",
+			"objectRestored": "{{type}} restored.",
 			"objectUpdated": "{{value}} {{type}} edited.",
 			"platformAccessNotGranted": "You don't have a valid access to this platform.",
 			"readAll": "Mark all as read",
@@ -1459,6 +1462,7 @@
 			"id": "Application ID",
 			"new": "New application",
 			"notifications": {
+				"notPublished": "Application not published.",
 				"published": "{{value}} application published.",
 				"updated": "Application updated."
 			},
@@ -1523,6 +1527,7 @@
 			"notifications": {
 				"conversionIncomplete": "Selected record(s) do not match with some fields from this form.",
 				"rowsAdded": "Added {{length}} row(s) to the field {{field}} in the record {{value}}.",
+				"rowsNotAdded": "Error on add row(s).",
 				"uploadSuccessful": "Records upload successful."
 			},
 			"restore": "Restore"
@@ -1676,6 +1681,7 @@
 		},
 		"profile": {
 			"notifications": {
+				"notUpdated": "Error on saving preferences.",
 				"updated": "Preferences saved."
 			},
 			"title": "Your profile"

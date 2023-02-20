@@ -352,7 +352,7 @@ export class SafeFormModalComponent implements OnInit {
           },
         })
         .subscribe({
-          next: ({errors, data}) => {
+          next: ({ errors, data }) => {
             if (errors) {
               this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
                 error: true,
@@ -734,12 +734,14 @@ export class SafeFormModalComponent implements OnInit {
             },
           })
           .subscribe({
-            next: (errors){
-              if(errors){
+            next: (errors) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.dataNotRecovered')
+                  this.translate.instant(
+                    'common.notifications.dataNotRecovered'
+                  )
                 );
-              }else{
+              } else {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.dataRecovered')
                 );

@@ -181,8 +181,11 @@
 			"objectNotDuplicated": "****** {{type}} ****** {{error}}",
 			"objectNotFound": "{{name}} ******",
 			"objectNotInvited": "{{name}} ******",
+			"objectNotReordered": "{{type}} ****** {{error}}",
+			"objectNotRestored": "{{type}} ****** {{error}}",
 			"objectNotUpdated": "{{type}} ****** {{error}}",
 			"objectReordered": "{{type}} ******",
+			"objectRestored": "{{type}} ******",
 			"objectUpdated": "{{value}} ****** {{type}} ******",
 			"platformAccessNotGranted": "******",
 			"readAll": "******",
@@ -1459,6 +1462,7 @@
 			"id": "******",
 			"new": "******",
 			"notifications": {
+				"notPublished": "******",
 				"published": "{{value}} ******",
 				"updated": "******"
 			},
@@ -1523,6 +1527,7 @@
 			"notifications": {
 				"conversionIncomplete": "******",
 				"rowsAdded": "****** {{length}} ****** {{field}} ****** {{value}} ******",
+				"rowsNotAdded": "******",
 				"uploadSuccessful": "******"
 			},
 			"restore": "******"
@@ -1676,6 +1681,7 @@
 		},
 		"profile": {
 			"notifications": {
+				"notUpdated": "******",
 				"updated": "******"
 			},
 			"title": "******"

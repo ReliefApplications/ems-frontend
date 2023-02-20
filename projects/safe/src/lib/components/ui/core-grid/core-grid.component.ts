@@ -1055,12 +1055,23 @@ export class SafeCoreGridComponent
             },
           })
           .pipe(takeUntil(this.destroy$))
-          .subscribe(() => {
-            this.reloadData();
-            this.layoutService.setRightSidenav(null);
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.dataRecovered')
-            );
+          .subscribe({
+            next: ({errors}) => {
+              if(errors){
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.dataNotRecovered')
+                );
+              }else{
+                this.reloadData();
+                this.layoutService.setRightSidenav(null);
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.dataRecovered')
+                );
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       }
     });

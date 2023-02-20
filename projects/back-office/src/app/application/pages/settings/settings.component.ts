@@ -150,21 +150,26 @@ export class SettingsComponent
               },
             })
             .subscribe({
-              next: ({errors,data}) => {
-                if(errors){
+              next: ({ errors, data }) => {
+                if (errors) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('common.notifications.objectNotDeleted', {
-                      value: this.translate.instant('common.application.one'),
-                      error: errors[0].message,
-                    }),
+                    this.translate.instant(
+                      'common.notifications.objectNotDeleted',
+                      {
+                        value: this.translate.instant('common.application.one'),
+                        error: errors ? errors[0].message : '',
+                      }
+                    ),
                     { error: true }
                   );
-                
-                }else{
+                } else {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('common.notifications.objectDeleted', {
-                      value: this.translate.instant('common.application.one'),
-                    })
+                    this.translate.instant(
+                      'common.notifications.objectDeleted',
+                      {
+                        value: this.translate.instant('common.application.one'),
+                      }
+                    )
                   );
                   this.applications.data = this.applications.data.filter(
                     (x) => x.id !== data?.deleteApplication.id

@@ -279,7 +279,7 @@ export class FormBuilderComponent implements OnInit {
         },
       })
       .subscribe({
-        next: ({errors, data}) => {
+        next: ({ errors, data }) => {
           if (errors) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotUpdated', {
@@ -365,7 +365,7 @@ export class FormBuilderComponent implements OnInit {
         },
       })
       .subscribe({
-        next: ({errors, data}) => {
+        next: ({ errors, data }) => {
           if (errors) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotUpdated', {

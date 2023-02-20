@@ -306,13 +306,15 @@ export class ReferenceDataComponent
         variables,
       })
       .subscribe({
-        next: ({errors, data, loading}) => {
+        next: ({ errors, data, loading }) => {
           if (errors) {
             this.snackBar.openSnackBar(
               this.translateService.instant(
                 'common.notifications.objectNotUpdated',
                 {
-                  type: this.translateService.instant('common.referenceData.one'),
+                  type: this.translateService.instant(
+                    'common.referenceData.one'
+                  ),
                   error: errors ? errors[0].message : '',
                 }
               ),
@@ -326,7 +328,7 @@ export class ReferenceDataComponent
           }
         },
         error: (err) => {
-          this.snackBar.openSnackBar(err.message, {error: true});
+          this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
   }

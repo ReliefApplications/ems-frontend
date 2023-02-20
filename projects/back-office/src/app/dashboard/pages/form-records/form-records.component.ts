@@ -267,11 +267,38 @@ export class FormRecordsComponent
           hardDelete: this.showDeletedRecords,
         },
       })
-      .subscribe(() => {
-        this.dataSource = this.dataSource.filter((x) => x.id !== id);
-        if (id === this.historyId) {
-          this.layoutService.setRightSidenav(null);
-        }
+      .subscribe({
+        next: ({errors}) => {
+          if(errors){
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'common.notifications.objectNotDeleted',
+                {
+                  value: this.translate
+                    .instant('common.record.one'),
+                  error: errors ? errors[0].message : '',
+                }
+              )
+            );
+          }else{
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'common.notifications.objectDeleted',
+                {
+                  value: this.translate
+                    .instant('common.record.one'),
+                }
+              )
+            );
+            this.dataSource = this.dataSource.filter((x) => x.id !== id);
+            if (id === this.historyId) {
+              this.layoutService.setRightSidenav(null);
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
@@ -307,12 +334,14 @@ export class FormRecordsComponent
             },
           })
           .subscribe({
-            next: ({errors}) =>{
-              if(errors){
+            next: ({ errors }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.dataNotRecovered')
+                  this.translate.instant(
+                    'common.notifications.dataNotRecovered'
+                  )
                 );
-              }else{
+              } else {
                 this.layoutService.setRightSidenav(null);
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.dataRecovered')
@@ -320,7 +349,7 @@ export class FormRecordsComponent
               }
             },
             error: (err) => {
-              this.snackBar.openSnackBar(err.message, {error: true});
+              this.snackBar.openSnackBar(err.message, { error: true });
             },
           });
       }
@@ -447,11 +476,38 @@ export class FormRecordsComponent
           id,
         },
       })
-      .subscribe(() => {
-        this.dataSource = this.dataSource.filter((x) => x.id !== id);
-        if (id === this.historyId) {
-          this.layoutService.setRightSidenav(null);
-        }
+      .subscribe({
+        next: ({errors}) => {
+          if(errors){
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'common.notifications.objectNotRestored',
+                {
+                  type: this.translate
+                    .instant('common.record.one'),
+                  error: errors ? errors[0].message : '',
+                }
+              )
+            );
+          }else{
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'common.notifications.objectRestored',
+                {
+                  type: this.translate
+                    .instant('common.record.one'),
+                }
+              )
+            );
+            this.dataSource = this.dataSource.filter((x) => x.id !== id);
+            if (id === this.historyId) {
+              this.layoutService.setRightSidenav(null);
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 }

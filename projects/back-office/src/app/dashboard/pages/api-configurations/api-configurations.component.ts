@@ -277,21 +277,28 @@ export class ApiConfigurationsComponent
             },
           })
           .subscribe({
-            next: (res) => { 
+            next: (res) => {
               if (res && !res.errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectDeleted', {
-                    value: this.translate.instant('common.apiConfiguration.one'),
+                    value: this.translate.instant(
+                      'common.apiConfiguration.one'
+                    ),
                   })
                 );
                 this.dataSource.data = this.dataSource.data.filter(
                   (x) => x.id !== element.id
                 );
-              }else{
+              } else {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectNotDeleted', {
-                    value: this.translate.instant('common.apiConfiguration.one'),
-                  })
+                  this.translate.instant(
+                    'common.notifications.objectNotDeleted',
+                    {
+                      value: this.translate.instant(
+                        'common.apiConfiguration.one'
+                      ),
+                    }
+                  )
                 );
               }
             },

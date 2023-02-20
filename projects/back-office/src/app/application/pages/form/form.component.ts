@@ -215,15 +215,43 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
             permissions: e,
           },
         })
-        .subscribe(({ data }) => {
-          this.form = {
-            ...this.form,
-            permissions: data?.editStep.permissions,
-          };
-          this.step = {
-            ...this.step,
-            permissions: data?.editStep.permissions,
-          };
+        .subscribe({
+          next: ({errors, data}) => {
+            if(errors){
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotUpdated',
+                  {
+                    type: this.translate
+                      .instant('common.step.one'),
+                    error: errors ? errors[0].message : '',
+                  }
+                )
+              );
+            }else{
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectUpdated',
+                  {
+                    type: this.translate
+                      .instant('common.step.one'),
+                    value: '',
+                  }
+                )
+              );
+              this.form = {
+                ...this.form,
+                permissions: data?.editStep.permissions,
+              };
+              this.step = {
+                ...this.step,
+                permissions: data?.editStep.permissions,
+              };
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     } else {
       this.apollo
@@ -234,15 +262,45 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
             permissions: e,
           },
         })
-        .subscribe(({ data }) => {
-          this.form = {
-            ...this.form,
-            permissions: data?.editPage.permissions,
-          };
-          this.page = {
-            ...this.page,
-            permissions: data?.editPage.permissions,
-          };
+        .subscribe({
+          next: ({errors,data}) => {
+            if(errors){
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotUpdated',
+                  {
+                    type: this.translate
+                      .instant('common.page.one')
+                      .toLowerCase(),
+                    error: errors ? errors[0].message : '',
+                  }
+                )
+              );
+            }else{
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectUpdated',
+                  {
+                    type: this.translate
+                      .instant('common.page.one')
+                      .toLowerCase(),
+                    value: '',
+                  }
+                )
+              );
+              this.form = {
+                ...this.form,
+                permissions: data?.editPage.permissions,
+              };
+              this.page = {
+                ...this.page,
+                permissions: data?.editPage.permissions,
+              };
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }

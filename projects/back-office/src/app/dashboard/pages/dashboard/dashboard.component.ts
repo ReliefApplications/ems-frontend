@@ -270,11 +270,34 @@ export class DashboardComponent
         },
       })
       .subscribe({
-        next: () => {
-          this.dashboardService.openDashboard({
-            ...this.dashboard,
-            structure: this.tiles,
-          });
+        next: ({errors}) => {
+          if(errors){
+            this.snackBar.openSnackBar(
+              this.translateService.instant(
+                'common.notifications.objectNotUpdated',
+                {
+                  type: this.translateService
+                    .instant('common.dashboard.one'),
+                  error: errors ? errors[0].message : '',
+                }
+              )
+            );
+          }else{
+            this.snackBar.openSnackBar(
+              this.translateService.instant(
+                'common.notifications.objectUpdated',
+                {
+                  type: this.translateService
+                    .instant('common.dashboard.one'),
+                  value: ''
+                }
+              )
+            );
+            this.dashboardService.openDashboard({
+              ...this.dashboard,
+              structure: this.tiles,
+            });
+          }
         },
         complete: () => (this.loading = false),
       });
@@ -295,11 +318,34 @@ export class DashboardComponent
             permissions: e,
           },
         })
-        .subscribe(({ data }) => {
-          this.dashboard = {
-            ...this.dashboard,
-            permissions: data?.editStep.permissions,
-          };
+        .subscribe(({ errors, data }) => {
+          if(errors){
+            this.snackBar.openSnackBar(
+              this.translateService.instant(
+                'common.notifications.objectNotUpdated',
+                {
+                  type: this.translateService
+                    .instant('common.step.one'),
+                  error: errors ? errors[0].message : '',
+                }
+              )
+            );
+          }else{
+            this.snackBar.openSnackBar(
+              this.translateService.instant(
+                'common.notifications.objectUpdated',
+                {
+                  type: this.translateService
+                    .instant('common.step.one'),
+                  value:'',
+                }
+              )
+            );
+            this.dashboard = {
+              ...this.dashboard,
+              permissions: data?.editStep.permissions,
+            };
+          }
         });
     } else {
       this.apollo
@@ -310,11 +356,34 @@ export class DashboardComponent
             permissions: e,
           },
         })
-        .subscribe(({ data }) => {
-          this.dashboard = {
-            ...this.dashboard,
-            permissions: data?.editPage.permissions,
-          };
+        .subscribe(({ errors, data }) => {
+          if(errors){
+            this.snackBar.openSnackBar(
+              this.translateService.instant(
+                'common.notifications.objectNotUpdated',
+                {
+                  type: this.translateService
+                    .instant('common.step.one'),
+                  error: errors ? errors[0].message : '',
+                }
+              )
+            );
+          }else{
+            this.snackBar.openSnackBar(
+              this.translateService.instant(
+                'common.notifications.objectUpdated',
+                {
+                  type: this.translateService
+                    .instant('common.step.one'),
+                  value:''
+                }
+              )
+            );
+            this.dashboard = {
+              ...this.dashboard,
+              permissions: data?.editPage.permissions,
+            };
+          }
         });
     }
   }

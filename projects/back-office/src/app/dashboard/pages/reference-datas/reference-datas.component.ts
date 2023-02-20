@@ -266,7 +266,7 @@ export class ReferenceDatasComponent
             },
           })
           .subscribe({
-            next: (res) =>{
+            next: (res) => {
               if (res && !res.errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectDeleted', {
@@ -276,19 +276,24 @@ export class ReferenceDatasComponent
                 this.dataSource.data = this.dataSource.data.filter(
                   (x) => x.id !== element.id
                 );
-              }else{
-                if(res.errors){
+              } else {
+                if (res.errors) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('common.notifications.objectNotDeleted', {
-                      value: this.translate.instant('common.referenceData.one'),
-                      error: res.errors ? res.errors[0] : '',
-                    })
+                    this.translate.instant(
+                      'common.notifications.objectNotDeleted',
+                      {
+                        value: this.translate.instant(
+                          'common.referenceData.one'
+                        ),
+                        error: res.errors ? res.errors[0] : '',
+                      }
+                    )
                   );
                 }
               }
             },
             error: (err) => {
-              this.snackBar.openSnackBar(err.message, {error: true});
+              this.snackBar.openSnackBar(err.message, { error: true });
             },
           });
       }

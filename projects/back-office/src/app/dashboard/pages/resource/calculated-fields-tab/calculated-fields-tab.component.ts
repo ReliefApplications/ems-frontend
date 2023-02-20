@@ -160,7 +160,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
             }
           },
           error: (err) => {
-            this.snackBar.openSnackBar(err.message, {error: true});
+            this.snackBar.openSnackBar(err.message, { error: true });
           },
         });
     });
@@ -203,7 +203,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
             },
           })
           .subscribe({
-            next: (res) =>{
+            next: (res) => {
               if (res.data?.editResource) {
                 this.fields = this.fields.filter(
                   (f: any) => f.name !== field.name
@@ -216,7 +216,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
               }
             },
             error: (err) => {
-              this.snackBar.openSnackBar(err.message, {error: true});
+              this.snackBar.openSnackBar(err.message, { error: true });
             },
           });
       }

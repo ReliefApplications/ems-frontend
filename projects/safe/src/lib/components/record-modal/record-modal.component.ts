@@ -333,12 +333,14 @@ export class SafeRecordModalComponent implements AfterViewInit {
             },
           })
           .subscribe({
-            next: (errors) =>{
-              if(errors){
+            next: (errors) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.dataNotRecovered')
+                  this.translate.instant(
+                    'common.notifications.dataNotRecovered'
+                  )
                 );
-              }else{
+              } else {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.dataRecovered')
                 );

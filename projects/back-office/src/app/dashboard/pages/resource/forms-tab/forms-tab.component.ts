@@ -102,15 +102,18 @@ export class FormsTabComponent implements OnInit {
             },
           })
           .subscribe({
-            next: ({errors}) =>{
-              if(errors){
+            next: ({ errors }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectNotDeleted', {
-                    value: this.translate.instant('common.form.one'),
-                    error: errors ? errors[0].message : '',
-                  })
+                  this.translate.instant(
+                    'common.notifications.objectNotDeleted',
+                    {
+                      value: this.translate.instant('common.form.one'),
+                      error: errors ? errors[0].message : '',
+                    }
+                  )
                 );
-              }else{
+              } else {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectDeleted', {
                     value: this.translate.instant('common.form.one'),

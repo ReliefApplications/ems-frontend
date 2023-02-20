@@ -264,7 +264,7 @@ export class ApplicationsComponent
             },
           })
           .subscribe({
-            next: ({errors, data}) => {
+            next: ({ errors, data }) => {
               if (errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
@@ -275,7 +275,7 @@ export class ApplicationsComponent
                     }
                   )
                 );
-              }else{
+              } else {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectDeleted', {
                     value: this.translate.instant('common.application.one'),
@@ -307,7 +307,7 @@ export class ApplicationsComponent
         mutation: ADD_APPLICATION,
       })
       .subscribe({
-        next: ({errors, data}) => {
+        next: ({ errors, data }) => {
           if (errors?.length) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotCreated', {
@@ -323,8 +323,7 @@ export class ApplicationsComponent
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectCreated', {
                   type: this.translate
-                    .instant('common.application.one')
-                    .toLowerCase(),
+                    .instant('common.application.one'),
                   value: data.addApplication.name,
                 })
               );
@@ -354,20 +353,34 @@ export class ApplicationsComponent
           permissions: e,
         },
       })
-      .subscribe(({ data }) => {
-        if (data) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectUpdated', {
-              type: this.translate.instant('common.access').toLowerCase(),
-              value: element.name,
-            })
-          );
-          const index = this.applications.data.findIndex(
-            (x) => x.id === element.id
-          );
-          this.applications.data[index] = data.editApplication;
-          this.applications.data = this.applications.data;
-        }
+      .subscribe({
+        next: ({errors,data}) => {
+          if(errors){
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.access'),
+                error: errors ? errors[0].message : '',
+              })
+            );
+          }else{
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.access'),
+                  value: element.name,
+                })
+              );
+              const index = this.applications.data.findIndex(
+                (x) => x.id === element.id
+              );
+              this.applications.data[index] = data.editApplication;
+              this.applications.data = this.applications.data;
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
