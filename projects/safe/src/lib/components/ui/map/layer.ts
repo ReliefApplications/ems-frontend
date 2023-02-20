@@ -379,7 +379,7 @@ export class Layer {
                 MIN_CLUSTER_SIZE,
               opacity: this.firstStyle.fillOpacity,
             };
-            const htmlTemplate = `<p>${cluster.getChildCount()}</p>`;
+            const htmlTemplate = `<p>${cluster.getChildCount()}</p>`; // todo(gis): better labels
             return createCustomDivIcon(
               iconProperties,
               htmlTemplate,

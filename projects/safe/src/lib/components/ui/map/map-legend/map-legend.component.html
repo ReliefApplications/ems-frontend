@@ -9,6 +9,7 @@
     <div
       class="flex px-2 py-1 justify-between items-center border-opacity-20 border-b-2"
     >
+    <!-- todo(gis): translate -->
       <h2 class="m-0">LEGEND</h2>
       <safe-button
         icon="close"
@@ -51,6 +52,7 @@
           class="flex flex-col gap-1"
         >
           <div class="grid grid-cols-2 w-fit gap-2 items-center">
+            <!-- todo(gis): sizes should not come from that, but should be calculated from the layer directly -->
             <ng-container *ngFor="let size of [30, 60, 80]; let i = index">
               <div class="w-full h-full flex items-center justify-center">
                 <i

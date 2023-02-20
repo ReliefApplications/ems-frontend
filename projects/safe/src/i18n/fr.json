@@ -1156,27 +1156,27 @@
 					}
 				},
 				"iconPicker": {
-					"default": "@TODO",
-					"placeholder": "@TODO"
+					"default": "Standard",
+					"placeholder": "Chezchez un symbole"
 				},
 				"map": {
 					"basemap": "Fond de carte",
 					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
 					"edit": {
-						"layerProperties": "@TODO",
-						"layerStyling": "@TODO",
+						"layerProperties": "Propriétés",
+						"layerStyling": "Styles",
 						"properties": {
-							"defaultVisibility": "@TODO",
-							"opacity": "@TODO",
-							"visibilityRange": "@TODO",
-							"zoom": "@TODO"
+							"defaultVisibility": "Visible par défaut",
+							"opacity": "Opacité",
+							"visibilityRange": "Plage de visibilité",
+							"zoom": "Zoom"
 						},
 						"style": {
-							"color": "@TODO",
-							"icon": "@TODO",
-							"size": "@TODO",
-							"stylingType": "@TODO"
+							"color": "Couleur",
+							"icon": "Symbole",
+							"size": "Taille",
+							"stylingType": "Style de {{layerType}}"
 						}
 					},
 					"errors": {
@@ -1237,10 +1237,10 @@
 						},
 						"remove": "Supprimer le calque",
 						"types": {
-							"cluster": "@TODO",
-							"heatmap": "@TODO",
-							"point": "@TODO",
-							"polygon": "@TODO"
+							"cluster": "Groupes",
+							"heatmap": "Carte de chaleur",
+							"point": "Point",
+							"polygon": "Polygone"
 						}
 					},
 					"popup": {
