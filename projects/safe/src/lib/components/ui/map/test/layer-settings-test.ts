@@ -16,9 +16,9 @@ export const MOCK_LAYER_SETTINGS: LayerSettingsI = {
           numFeatures: 10,
           Point: {
             generateProperties: () => {
-              let count = 0;
+              const randomString = Math.random().toString(36).substring(7);
               return {
-                name: `Point ${count++}`,
+                name: `Point ${randomString}`,
               };
             },
             probability: 1,
@@ -27,7 +27,12 @@ export const MOCK_LAYER_SETTINGS: LayerSettingsI = {
           generateRandomFeatures({
             numFeatures: 10,
             Polygon: {
-              generateProperties: () => ({}),
+              generateProperties: () => {
+                const randomString = Math.random().toString(36).substring(7);
+                return {
+                  name: `Polygon ${randomString}`,
+                };
+              },
               probability: 1,
               numCoordinates: 4,
             },
@@ -38,6 +43,10 @@ export const MOCK_LAYER_SETTINGS: LayerSettingsI = {
         visibilityRange: [1, 18],
         opacity: 1,
         visibleByDefault: true,
+        legend: {
+          display: true,
+          field: 'name',
+        },
       },
       filter: {
         condition: 'and',
@@ -96,6 +105,9 @@ export const MOCK_LAYER_SETTINGS: LayerSettingsI = {
         visibilityRange: [1, 18],
         opacity: 1,
         visibleByDefault: true,
+        legend: {
+          display: true,
+        },
       },
       styling: [
         {
@@ -141,6 +153,9 @@ export const MOCK_LAYER_SETTINGS: LayerSettingsI = {
         visibilityRange: [1, 18],
         opacity: 1,
         visibleByDefault: true,
+        legend: {
+          display: true,
+        },
       },
       styling: [
         {

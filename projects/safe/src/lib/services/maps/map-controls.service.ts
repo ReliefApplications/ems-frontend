@@ -14,6 +14,7 @@ import 'leaflet-fullscreen';
 import 'leaflet-measure';
 import 'leaflet-timedimension';
 import * as Geocoding from 'esri-leaflet-geocoder';
+import { LegendDefinition } from '../../components/ui/map/interfaces/layer-legend.type';
 
 /**
  * Shared map control service.
@@ -161,8 +162,12 @@ export class SafeMapControlsService {
    * Add legend control to the map
    *
    * @param map leaflet map
+   * @param layerLegends legends to display
    */
-  public getLegendControl(map: L.Map): void {
+  public getLegendControl(
+    map: L.Map,
+    layerLegends: { legend: LegendDefinition; layer: string }[]
+  ): void {
     const control = new L.Control({ position: 'bottomright' });
     control.onAdd = () => {
       const div = L.DomUtil.create('div', 'info legend');
@@ -172,6 +177,7 @@ export class SafeMapControlsService {
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const instance: SafeMapLegendComponent = component.instance;
+      instance.layerLegends = layerLegends;
       return div;
     };
     control.addTo(map);

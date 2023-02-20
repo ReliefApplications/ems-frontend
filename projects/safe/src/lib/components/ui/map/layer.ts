@@ -19,6 +19,7 @@ import {
 } from './interfaces/layer-settings.type';
 import { IconName } from './const/fa-icons';
 import { createCustomDivIcon } from './utils/create-div-icon';
+import { LegendDefinition } from './interfaces/layer-legend.type';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 type ChildLayer = { object: Layer; layer?: L.Layer };
@@ -34,6 +35,9 @@ export const DEFAULT_LAYER_PROPERTIES: LayerProperties = {
   visibilityRange: [1, 18],
   opacity: 1,
   visibleByDefault: true,
+  legend: {
+    display: false,
+  },
 };
 
 /** Default layer filter */
@@ -188,6 +192,13 @@ export class Layer {
     return EMPTY_FEATURE_COLLECTION;
   }
 
+  /** @returns the first style of the layer */
+  get firstStyle() {
+    return this.styling?.[0]?.style
+      ? { ...DEFAULT_LAYER_STYLE, ...this.styling[0].style }
+      : DEFAULT_LAYER_STYLE;
+  }
+
   /**
    * Constructor for the Layer class
    *
@@ -270,9 +281,15 @@ export class Layer {
   private getFeatureStyle(
     feature: Feature<Geometry, FeatureProperties>
   ): Required<LayerStyle> {
+    // if the feature has a style property, use it
+    const featureStyle = feature.properties.style;
+    if (featureStyle) return { ...DEFAULT_LAYER_STYLE, ...featureStyle };
+
     const style = this.styling?.find(
       (s) => featureSatisfiesFilter(feature, s.filter) && s.style
     );
+
+    // If no style is found, return the default style
     return style?.style
       ? { ...DEFAULT_LAYER_STYLE, ...style?.style }
       : DEFAULT_LAYER_STYLE;
@@ -283,23 +300,10 @@ export class Layer {
     // data is the filtered geojson
     const data = this.data;
 
-    let style: Required<LayerStyle> = DEFAULT_LAYER_STYLE;
-
-    // first style is the style of the first styling object
-    // for now, it's being used for the cluster and heatmap layers
-    const firstStyle = this.styling?.[0]?.style
-      ? { ...DEFAULT_LAYER_STYLE, ...this.styling[0].style }
-      : DEFAULT_LAYER_STYLE;
-
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<FeatureProperties> = {
       pointToLayer: (feature, latlng) => {
-        const { style: featureStyle } = feature.properties;
-
-        // Priority: feature style > layer style > default style
-        style = featureStyle
-          ? { ...DEFAULT_LAYER_STYLE, ...featureStyle }
-          : this.getFeatureStyle(feature);
+        const style = this.getFeatureStyle(feature);
 
         // circles are not supported by geojson
         // we abstract them as markers with a radius property
@@ -330,12 +334,7 @@ export class Layer {
       },
       style: (feature: Feature<Geometry, FeatureProperties> | undefined) => {
         if (!feature) return {};
-        const { style: featureStyle } = feature.properties;
-
-        // Priority: feature style > layer style > default style
-        style = featureStyle
-          ? { ...DEFAULT_LAYER_STYLE, ...featureStyle }
-          : this.getFeatureStyle(feature);
+        const style = this.getFeatureStyle(feature);
 
         return {
           fillColor: style.fillColor,
@@ -372,13 +371,13 @@ export class Layer {
           zoomToBoundsOnClick: false,
           iconCreateFunction: (cluster) => {
             const iconProperties = {
-              icon: firstStyle.icon as IconName | 'leaflet_default',
-              color: firstStyle.fillColor,
+              icon: this.firstStyle.icon as IconName | 'leaflet_default',
+              color: this.firstStyle.fillColor,
               size:
                 (cluster.getChildCount() / 50) *
                   (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
                 MIN_CLUSTER_SIZE,
-              opacity: firstStyle.fillOpacity,
+              opacity: this.firstStyle.fillOpacity,
             };
             const htmlTemplate = `<p>${cluster.getChildCount()}</p>`;
             return createCustomDivIcon(
@@ -410,7 +409,7 @@ export class Layer {
           }
         });
 
-        return L.heatLayer(heatArray, firstStyle.heatmap);
+        return L.heatLayer(heatArray, this.firstStyle.heatmap);
     }
 
     // Check for icon property
@@ -455,6 +454,80 @@ export class Layer {
           }
         }
       }
+    }
+  }
+
+  /**
+   * Get the legend definition from the layer
+   *
+   * @returns the legend definition
+   */
+  public getLegend(): LegendDefinition | null {
+    if (!this.properties?.legend || this.properties.legend.display === false)
+      return null;
+
+    const data = this.data;
+    const labelField = this.properties.legend.field;
+
+    switch (this.type) {
+      case 'group':
+        // Groups don't have legends
+        return null;
+
+      case 'sketch':
+      case 'feature':
+        // check if data is a FeatureCollection or a Feature
+        const features =
+          data.type === 'FeatureCollection' ? data.features : [data];
+
+        const items: {
+          label: string;
+          color: string;
+          icon?: IconName | 'leaflet_default';
+        }[] = [];
+
+        features.forEach((feature) => {
+          if ('properties' in feature) {
+            // check if feature is a point
+            const isPoint = feature.geometry.type === 'Point';
+            const style = this.getFeatureStyle(feature);
+            items.push({
+              label: labelField ? feature.properties[labelField] ?? '' : '',
+              color: style.fillColor,
+              icon: isPoint ? style.icon : undefined,
+            });
+          }
+        });
+
+        return {
+          type: 'feature',
+          items,
+        };
+
+      case 'cluster':
+        return {
+          type: 'cluster',
+          color: this.firstStyle.fillColor,
+          icon: this.firstStyle.icon,
+          min: MIN_CLUSTER_SIZE,
+          max: MAX_CLUSTER_SIZE,
+        };
+      case 'heatmap':
+        // transform gradient to array of objects
+        const gradient: { color: string; value: number; label: string }[] = [];
+        Object.keys(this.firstStyle.heatmap.gradient).forEach((key) => {
+          const nbr = parseFloat(key);
+          gradient.push({
+            color: this.firstStyle.heatmap.gradient[nbr],
+            value: parseFloat(key),
+            label: `${parseFloat(key)}`,
+          });
+        });
+
+        return {
+          type: 'heatmap',
+          gradient,
+        };
     }
   }
 }

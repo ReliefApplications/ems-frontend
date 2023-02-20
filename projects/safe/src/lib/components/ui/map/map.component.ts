@@ -44,6 +44,7 @@ import { LayerProperties } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { generateBaseMaps } from './test/basemaps-test';
+import { LegendDefinition } from './interfaces/layer-legend.type';
 
 /**
  * Cleans the settings object from null values
@@ -139,6 +140,9 @@ export class SafeMapComponent
 
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
+
+  // === LAYERS ===
+  private layers: Layer[] = [];
 
   /**
    * Constructor of the map widget component
@@ -394,7 +398,7 @@ export class SafeMapComponent
       this.mapControlsService.getFullScreenControl(this.map);
 
       // Add legend control
-      this.mapControlsService.getLegendControl(this.map);
+      // this.mapControlsService.getLegendControl(this.map);
 
       // Add TimeDimension control
       this.mapControlsService.setTimeDimension(
@@ -485,6 +489,9 @@ export class SafeMapComponent
       layer: Layer,
       leafletLayer?: L.Layer
     ): BaseLayerTree => {
+      // Add to the layers array
+      this.layers.push(layer);
+
       // Gets the leaflet layer. Either the one passed as parameter
       // (from parent) or the one created by the layer itself (if no parent)
       const featureLayer = leafletLayer ?? layer.getLayer();
@@ -516,6 +523,22 @@ export class SafeMapComponent
     this.layerControl = L.control.layers
       .tree(this.baseTree, this.layersTree as any)
       .addTo(this.map);
+
+    // Add legends to the map
+    const layerLegends: {
+      layer: string;
+      legend: LegendDefinition;
+    }[] = [];
+    this.layers.forEach((layer) => {
+      const legend = layer.getLegend();
+      if (legend) {
+        layerLegends.push({
+          layer: layer.name,
+          legend,
+        });
+      }
+    });
+    this.mapControlsService.getLegendControl(this.map, layerLegends);
   }
 
   /**

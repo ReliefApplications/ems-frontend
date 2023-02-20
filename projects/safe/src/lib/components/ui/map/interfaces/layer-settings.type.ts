@@ -6,6 +6,7 @@ export type FeatureProperties = {
   radius?: number;
   // Feature level styles, they should be prioritized over the layer styles
   style?: LayerStyle;
+
   // any other properties
   [key: string]: any;
 };
@@ -106,6 +107,10 @@ export type LayerProperties = {
   visibleByDefault: boolean;
   opacity: number;
   visibilityRange: [number, number];
+  legend: {
+    display: boolean;
+    field?: string;
+  };
 };
 
 export type LayerLabel = {
