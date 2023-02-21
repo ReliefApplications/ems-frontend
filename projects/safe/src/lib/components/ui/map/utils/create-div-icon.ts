@@ -81,29 +81,31 @@ const markerHtmlStyles = (
  */
 export const createCustomDivIcon = (
   iconProperties: MarkerIconOptions,
-  htmlTemplate: any = '',
+  htmlTemplate: HTMLElement | string = '',
   className: string = 'custom-marker'
 ) => {
   const { icon, color, opacity, size } = iconProperties;
-
+  let sizeForIconType = size;
   // fa-icons use the createFontAwesomeIcon
   if (iconProperties.icon !== 'leaflet_default') {
     const htmlIcon = createFontAwesomeIcon({ size, color, icon, opacity });
-    if (!htmlTemplate) {
-      htmlTemplate = htmlIcon;
-    } else {
-      htmlTemplate = htmlTemplate + htmlIcon.outerHTML;
+    if (htmlTemplate) {
+      // add relative position for any label that is going to be added inside the icon span element
+      htmlIcon.style.position = 'relative';
+      htmlIcon.insertAdjacentElement('afterbegin', htmlTemplate as HTMLElement);
     }
+    htmlTemplate = htmlIcon;
   } else {
     // The default icon(leaflet-default) uses the markerHtmlStyles
-    // size set for marker is half that the one for the icon to keep same visibility
-    htmlTemplate = markerHtmlStyles({ color, opacity, size: size / 2 });
+    // size set for marker is half that the one for the icon to keep same proportion
+    sizeForIconType = size / 2;
+    htmlTemplate = markerHtmlStyles({ color, opacity, size: sizeForIconType });
   }
 
   const divIcon = L.divIcon({
     className,
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
+    iconSize: L.point(size, size),
+    iconAnchor: L.point(size / 2, sizeForIconType),
     popupAnchor: [size / 2, -36],
     html: htmlTemplate,
   });
