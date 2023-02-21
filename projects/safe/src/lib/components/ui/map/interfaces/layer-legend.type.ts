@@ -22,6 +22,5 @@ export type LegendDefinition =
       gradient: {
         value: number;
         color: string;
-        label: string;
       }[];
     };
