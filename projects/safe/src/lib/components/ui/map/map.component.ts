@@ -20,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  BaseLayerTree,
+  OverlayLayerTree,
   LayerActionOnMap,
 } from './interfaces/map-layers.interface';
 import {
@@ -488,7 +488,7 @@ export class SafeMapComponent
     const parseTreeNode = (
       layer: Layer,
       leafletLayer?: L.Layer
-    ): BaseLayerTree => {
+    ): OverlayLayerTree => {
       // Add to the layers array
       this.layers.push(layer);
 
@@ -502,14 +502,23 @@ export class SafeMapComponent
       if (!this.map.hasLayer(featureLayer)) this.map.addLayer(featureLayer);
 
       const children = layer.getChildren();
-      return {
-        label: layer.name,
-        layer: featureLayer,
-        children:
-          children.length > 0
-            ? children.map((c) => parseTreeNode(c.object, c.layer))
-            : undefined,
-      };
+      if (layer.type === 'group') {
+        // It is a group, it should not have any layer but it should be able to check/uncheck its children
+        return {
+          label: layer.name,
+          selectAllCheckbox: true,
+          children:
+            children.length > 0
+              ? children.map((c) => parseTreeNode(c.object, c.layer))
+              : undefined,
+        };
+      } else {
+        // It is a node, it does not have any children but it displays a layer
+        return {
+          label: layer.name,
+          layer: featureLayer,
+        };
+      }
     };
 
     const layers = [new Layer(MOCK_LAYER_SETTINGS)];
