@@ -135,6 +135,28 @@ export class SafeMapControlsService {
     if (!this.measureControls[lang]) {
       // import related file, and build control
       import(`leaflet-measure/dist/leaflet-measure.${lang}.js`).then(() => {
+        (L.Control as any).Measure.include({
+          // set icon on the capture marker
+          /**
+           * Function to replace for the Measure plugin
+           * (https://github.com/ljagis/leaflet-measure/issues/171)
+           */
+          // eslint-disable-next-line object-shorthand
+          _setCaptureMarkerIcon: function () {
+            // disable autopan
+            // eslint-disable-next-line no-underscore-dangle
+            this._captureMarker.options.autoPanOnFocus = false;
+
+            // default function
+            // eslint-disable-next-line no-underscore-dangle
+            this._captureMarker.setIcon(
+              L.divIcon({
+                // eslint-disable-next-line no-underscore-dangle
+                iconSize: this._map.getSize().multiplyBy(2),
+              })
+            );
+          },
+        });
         const control = new (L.Control as any).Measure({
           position: 'bottomleft',
           primaryLengthUnit: 'kilometers',
@@ -142,6 +164,7 @@ export class SafeMapControlsService {
           activeColor: this.primaryColor,
           completedColor: this.primaryColor,
         });
+
         this.measureControls[lang] = control;
         // Remove previous control if exists
         if (this.measureControls[this.lang]) {
