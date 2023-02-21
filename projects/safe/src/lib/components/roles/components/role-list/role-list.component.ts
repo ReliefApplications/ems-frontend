@@ -158,24 +158,29 @@ export class SafeRoleListComponent
             })
             .pipe(takeUntil(this.destroy$))
             .subscribe({
-              next: ({errors}) => {
-                if(errors){
+              next: ({ errors }) => {
+                if (errors) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('common.notifications.objectNotCreated', {
-                      type: this.translate
-                        .instant('common.role.one')
-                        .toLowerCase(),
-                      error: errors ? errors[0].message : '',
-                    })
+                    this.translate.instant(
+                      'common.notifications.objectNotCreated',
+                      {
+                        type: this.translate
+                          .instant('common.role.one')
+                          .toLowerCase(),
+                        error: errors ? errors[0].message : '',
+                      }
+                    ),
+                    { error: true }
                   );
-                }else{
+                } else {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('common.notifications.objectCreated', {
-                      type: this.translate
-                        .instant('common.role.one')
-                        .toLowerCase(),
-                      value: value.title,
-                    })
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate.instant('common.role.one'),
+                        value: value.title,
+                      }
+                    )
                   );
                   this.getRoles();
                 }
@@ -221,19 +226,26 @@ export class SafeRoleListComponent
             })
             .pipe(takeUntil(this.destroy$))
             .subscribe({
-              next: ({errors}) => {
-                if(errors){
+              next: ({ errors }) => {
+                if (errors) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('common.notifications.objectNotDeleted', {
-                      value: item.title,
-                      error: errors ? errors[0].message : '',
-                    })
+                    this.translate.instant(
+                      'common.notifications.objectNotDeleted',
+                      {
+                        value: item.title,
+                        error: errors ? errors[0].message : '',
+                      }
+                    ),
+                    { error: true }
                   );
-                }else{
+                } else {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('common.notifications.objectDeleted', {
-                      value: item.title,
-                    })
+                    this.translate.instant(
+                      'common.notifications.objectDeleted',
+                      {
+                        value: item.title,
+                      }
+                    )
                   );
                   this.getRoles();
                 }

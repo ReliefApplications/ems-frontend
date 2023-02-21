@@ -212,7 +212,7 @@ export class AddPageComponent
                       type: this.translate
                         .instant('common.form.one')
                         .toLowerCase(),
-                      çerror: errors ? errors[0].message : '',
+                      error: errors ? errors[0].message : '',
                     }
                   ),
                   { error: true }
@@ -222,8 +222,7 @@ export class AddPageComponent
                 this.pageForm.controls.content.setValue(id);
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectCreated', {
-                    type: this.translate
-                      .instant('common.page.one'),
+                    type: this.translate.instant('common.page.one'),
                     value: value.name,
                   })
                 );

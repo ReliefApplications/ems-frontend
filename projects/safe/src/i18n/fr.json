@@ -986,6 +986,10 @@
 				"confirm": "Inviter des utilisateurs",
 				"description": "Sélectionner des utilisateurs existants, inviter de nouveaux utilisateurs ou en importer depuis un fichier Excel"
 			},
+			"onDelete": {
+				"plural": "todo(translation)",
+				"singular": "todo(translation)"
+			},
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page d'utilisateurs"
 			}

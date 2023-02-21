@@ -75,7 +75,7 @@ export class PullJobsComponent
    *
    * @param dialog Used to show popup dialog.
    * @param apollo Loads the pull jobs.
-   * @param snackBar Service usde to show a snackbar.
+   * @param snackBar Service used to show a snackbar.
    * @param confirmService Shared confirm service
    * @param translate Service used to get the translations.
    */
@@ -207,7 +207,8 @@ export class PullJobsComponent
                             .toLowerCase(),
                           error: errors ? errors[0].message : '',
                         }
-                      )
+                      ),
+                      { error: true }
                     );
                   } else {
                     if (data?.addPullJob) {
@@ -215,9 +216,7 @@ export class PullJobsComponent
                         this.translate.instant(
                           'common.notifications.objectCreated',
                           {
-                            type: this.translate
-                              .instant('common.pullJob.one')
-                              .toLowerCase(),
+                            type: this.translate.instant('common.pullJob.one'),
                             value: value.name,
                           }
                         )
@@ -281,7 +280,8 @@ export class PullJobsComponent
                         value: this.translate.instant('common.pullJob.one'),
                         error: errors ? errors[0].message : '',
                       }
-                    )
+                    ),
+                    { error: true }
                   );
                 } else {
                   if (data?.deletePullJob) {
@@ -377,7 +377,8 @@ export class PullJobsComponent
                           value: this.translate.instant('common.pullJob.one'),
                           error: errors ? errors[0].message : '',
                         }
-                      )
+                      ),
+                      { error: true }
                     );
                   } else {
                     if (data?.editPullJob) {

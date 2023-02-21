@@ -216,28 +216,24 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           },
         })
         .subscribe({
-          next: ({errors, data}) => {
-            if(errors){
+          next: ({ errors, data }) => {
+            if (errors) {
               this.snackBar.openSnackBar(
                 this.translate.instant(
                   'common.notifications.objectNotUpdated',
                   {
-                    type: this.translate
-                      .instant('common.step.one'),
+                    type: this.translate.instant('common.step.one'),
                     error: errors ? errors[0].message : '',
                   }
-                )
+                ),
+                { error: true }
               );
-            }else{
+            } else {
               this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translate
-                      .instant('common.step.one'),
-                    value: '',
-                  }
-                )
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.step.one'),
+                  value: '',
+                })
               );
               this.form = {
                 ...this.form,
@@ -263,30 +259,24 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           },
         })
         .subscribe({
-          next: ({errors,data}) => {
-            if(errors){
+          next: ({ errors, data }) => {
+            if (errors) {
               this.snackBar.openSnackBar(
                 this.translate.instant(
                   'common.notifications.objectNotUpdated',
                   {
-                    type: this.translate
-                      .instant('common.page.one')
-                      .toLowerCase(),
+                    type: this.translate.instant('common.page.one'),
                     error: errors ? errors[0].message : '',
                   }
-                )
+                ),
+                { error: true }
               );
-            }else{
+            } else {
               this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translate
-                      .instant('common.page.one')
-                      .toLowerCase(),
-                    value: '',
-                  }
-                )
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.page.one').toLowerCase(),
+                  value: '',
+                })
               );
               this.form = {
                 ...this.form,

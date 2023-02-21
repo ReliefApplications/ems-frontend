@@ -192,28 +192,21 @@ export class WorkflowComponent
         },
       })
       .subscribe({
-        next: ({errors, data}) =>{
-          if(errors){
+        next: ({ errors, data }) => {
+          if (errors) {
             this.snackBar.openSnackBar(
-              this.translate.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translate
-                    .instant('common.page.one'),
-                  error: errors ? errors[0].message : '',
-                }
-              )
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.page.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
             );
-          }else{
+          } else {
             this.snackBar.openSnackBar(
-              this.translate.instant(
-                'common.notifications.objectUpdated',
-                {
-                  type: this.translate
-                    .instant('common.page.one'),
-                  value: '',
-                }
-              )
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.page.one'),
+                value: '',
+              })
             );
             this.workflow = {
               ...this.workflow,
@@ -387,7 +380,8 @@ export class WorkflowComponent
               this.translate.instant('common.notifications.objectNotUpdated', {
                 type: this.translate.instant('common.workflow.one'),
                 error: errors ? errors[0].message : '',
-              })
+              }),
+              { error: true }
             );
           }
         },

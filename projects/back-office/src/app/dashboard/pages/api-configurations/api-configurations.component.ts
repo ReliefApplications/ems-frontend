@@ -223,9 +223,9 @@ export class ApiConfigurationsComponent
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
                     {
-                      type: this.translate.instant(
-                        'common.apiConfiguration.one'
-                      ),
+                      type: this.translate
+                        .instant('common.apiConfiguration.one')
+                        .toLowerCase(),
                       error: errors ? errors[0].message : '',
                     }
                   ),
@@ -297,8 +297,10 @@ export class ApiConfigurationsComponent
                       value: this.translate.instant(
                         'common.apiConfiguration.one'
                       ),
+                      error: res.errors ? res.errors[0].message : '',
                     }
-                  )
+                  ),
+                  { error: true }
                 );
               }
             },

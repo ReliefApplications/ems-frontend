@@ -112,13 +112,11 @@ export class SafeUsersComponent implements OnInit {
             if (!errors) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectInvited', {
-                  name: this.translate
-                    .instant(
-                      data?.addUsers.length
-                        ? 'common.user.few'
-                        : 'common.user.one'
-                    )
-                    .toLowerCase(),
+                  name: this.translate.instant(
+                    data?.addUsers.length
+                      ? 'common.user.few'
+                      : 'common.user.one'
+                  ),
                 })
               );
               this.users.data = this.users.data.concat(data?.addUsers || []);
@@ -200,17 +198,15 @@ export class SafeUsersComponent implements OnInit {
           .subscribe(({ data }) => {
             this.loading = false;
             if (data?.deleteUsers) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate
-                    .instant(
-                      data.deleteUsers > 1
-                        ? 'common.user.few'
-                        : 'common.user.one'
-                    )
-                    .toLowerCase(),
-                })
-              );
+              if (data.deleteUsers > 1) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('components.users.onDelete.plural')
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('components.users.onDelete.singular')
+                );
+              }
               this.users.data = this.users.data.filter(
                 (u) => !ids.includes(u.id)
               );

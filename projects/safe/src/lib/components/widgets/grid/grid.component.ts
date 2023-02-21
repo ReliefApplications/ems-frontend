@@ -549,13 +549,14 @@ export class SafeGridWidgetComponent implements OnInit {
                     },
                   })
                   .subscribe((editRecord) => {
-                    if(editRecord.errors){
+                    if (editRecord.errors) {
                       this.snackBar.openSnackBar(
                         this.translate.instant(
                           'models.record.notifications.rowsNotAdded'
-                        )
+                        ),
+                        { error: true }
                       );
-                    }else{
+                    } else {
                       if (editRecord.data) {
                         const record = editRecord.data.editRecord;
                         if (record) {

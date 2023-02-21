@@ -1056,12 +1056,15 @@ export class SafeCoreGridComponent
           })
           .pipe(takeUntil(this.destroy$))
           .subscribe({
-            next: ({errors}) => {
-              if(errors){
+            next: ({ errors }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.dataNotRecovered')
+                  this.translate.instant(
+                    'common.notifications.dataNotRecovered'
+                  ),
+                  { error: true }
                 );
-              }else{
+              } else {
                 this.reloadData();
                 this.layoutService.setRightSidenav(null);
                 this.snackBar.openSnackBar(

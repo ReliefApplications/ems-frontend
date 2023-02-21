@@ -393,13 +393,34 @@ export class SafeFormModalComponent implements OnInit {
           template: this.data.template,
         },
       })
-      .subscribe(({ data }) => {
-        if (data) {
-          this.dialogRef.close({
-            template: this.form?.id,
-            data: data.editRecord,
-          });
-        }
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.record.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.record.one'),
+                  value: '',
+                })
+              );
+              this.dialogRef.close({
+                template: this.form?.id,
+                data: data.editRecord,
+              });
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
@@ -420,13 +441,34 @@ export class SafeFormModalComponent implements OnInit {
           template: this.data.template,
         },
       })
-      .subscribe(({ data }) => {
-        if (data) {
-          this.dialogRef.close({
-            template: this.form?.id,
-            data: data.editRecords,
-          });
-        }
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.record.few'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.record.few'),
+                  value: '',
+                })
+              );
+              this.dialogRef.close({
+                template: this.form?.id,
+                data: data.editRecords,
+              });
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
@@ -739,7 +781,8 @@ export class SafeFormModalComponent implements OnInit {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'common.notifications.dataNotRecovered'
-                  )
+                  ),
+                  { error: true }
                 );
               } else {
                 this.snackBar.openSnackBar(

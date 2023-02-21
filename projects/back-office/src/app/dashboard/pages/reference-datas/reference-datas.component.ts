@@ -214,7 +214,9 @@ export class ReferenceDatasComponent
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
                     {
-                      type: this.translate.instant('common.referenceData.one'),
+                      type: this.translate
+                        .instant('common.referenceData.one')
+                        .toLowerCase(),
                       error: errors[0].message,
                     }
                   ),
@@ -287,7 +289,8 @@ export class ReferenceDatasComponent
                         ),
                         error: res.errors ? res.errors[0] : '',
                       }
-                    )
+                    ),
+                    { error: true }
                   );
                 }
               }

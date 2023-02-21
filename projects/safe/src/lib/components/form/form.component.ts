@@ -547,7 +547,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'common.notifications.dataNotRecovered'
-                  )
+                  ),
+                  { error: true }
                 );
               } else {
                 this.layoutService.setRightSidenav(null);

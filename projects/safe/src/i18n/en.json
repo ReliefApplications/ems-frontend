@@ -980,6 +980,10 @@
 				"confirm": "Invite users",
 				"description": "Select existing users, invite new users or import from Excel file"
 			},
+			"onDelete": {
+				"plural": "Users were correctly deleted",
+				"singular": "User was correctly deleted"
+			},
 			"paginator": {
 				"ariaLabel": "Select page of users"
 			}

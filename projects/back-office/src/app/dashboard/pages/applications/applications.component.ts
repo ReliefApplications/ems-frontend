@@ -273,7 +273,8 @@ export class ApplicationsComponent
                       value: this.translate.instant('common.application.one'),
                       error: errors ? errors[0].message : '',
                     }
-                  )
+                  ),
+                  { error: true }
                 );
               } else {
                 this.snackBar.openSnackBar(
@@ -322,8 +323,7 @@ export class ApplicationsComponent
             if (data) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectCreated', {
-                  type: this.translate
-                    .instant('common.application.one'),
+                  type: this.translate.instant('common.application.one'),
                   value: data.addApplication.name,
                 })
               );
@@ -354,15 +354,16 @@ export class ApplicationsComponent
         },
       })
       .subscribe({
-        next: ({errors,data}) => {
-          if(errors){
+        next: ({ errors, data }) => {
+          if (errors) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotUpdated', {
                 type: this.translate.instant('common.access'),
                 error: errors ? errors[0].message : '',
-              })
+              }),
+              { error: true }
             );
-          }else{
+          } else {
             if (data) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectUpdated', {

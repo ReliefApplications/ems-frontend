@@ -268,27 +268,20 @@ export class FormRecordsComponent
         },
       })
       .subscribe({
-        next: ({errors}) => {
-          if(errors){
+        next: ({ errors }) => {
+          if (errors) {
             this.snackBar.openSnackBar(
-              this.translate.instant(
-                'common.notifications.objectNotDeleted',
-                {
-                  value: this.translate
-                    .instant('common.record.one'),
-                  error: errors ? errors[0].message : '',
-                }
-              )
+              this.translate.instant('common.notifications.objectNotDeleted', {
+                value: this.translate.instant('common.record.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
             );
-          }else{
+          } else {
             this.snackBar.openSnackBar(
-              this.translate.instant(
-                'common.notifications.objectDeleted',
-                {
-                  value: this.translate
-                    .instant('common.record.one'),
-                }
-              )
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate.instant('common.record.one'),
+              })
             );
             this.dataSource = this.dataSource.filter((x) => x.id !== id);
             if (id === this.historyId) {
@@ -339,7 +332,8 @@ export class FormRecordsComponent
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'common.notifications.dataNotRecovered'
-                  )
+                  ),
+                  { error: true }
                 );
               } else {
                 this.layoutService.setRightSidenav(null);
@@ -477,27 +471,20 @@ export class FormRecordsComponent
         },
       })
       .subscribe({
-        next: ({errors}) => {
-          if(errors){
+        next: ({ errors }) => {
+          if (errors) {
             this.snackBar.openSnackBar(
-              this.translate.instant(
-                'common.notifications.objectNotRestored',
-                {
-                  type: this.translate
-                    .instant('common.record.one'),
-                  error: errors ? errors[0].message : '',
-                }
-              )
+              this.translate.instant('common.notifications.objectNotRestored', {
+                type: this.translate.instant('common.record.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
             );
-          }else{
+          } else {
             this.snackBar.openSnackBar(
-              this.translate.instant(
-                'common.notifications.objectRestored',
-                {
-                  type: this.translate
-                    .instant('common.record.one'),
-                }
-              )
+              this.translate.instant('common.notifications.objectRestored', {
+                type: this.translate.instant('common.record.one'),
+              })
             );
             this.dataSource = this.dataSource.filter((x) => x.id !== id);
             if (id === this.historyId) {

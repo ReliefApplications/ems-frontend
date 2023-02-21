@@ -80,7 +80,8 @@ export class DuplicateApplicationModalComponent implements OnInit {
                     .toLowerCase(),
                   error: errors ? errors[0].message : '',
                 }
-              )
+              ),
+              { error: true }
             );
           } else {
             this.snackBar.openSnackBar(

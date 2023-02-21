@@ -237,7 +237,7 @@ export class FormBuilderComponent implements OnInit {
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.form.one').toLowerCase(),
+                  type: this.translate.instant('common.form.one'),
                   value: this.form?.name,
                 })
               );
@@ -378,7 +378,7 @@ export class FormBuilderComponent implements OnInit {
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.form.one').toLowerCase(),
+                type: this.translate.instant('common.form.one'),
                 value: formName,
               })
             );
@@ -431,7 +431,7 @@ export class FormBuilderComponent implements OnInit {
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.access').toLowerCase(),
+                type: this.translate.instant('common.access'),
                 value: '',
               })
             );

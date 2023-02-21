@@ -100,12 +100,13 @@ export class SafeProfileComponent
         },
       })
       .subscribe({
-        next: ({errors, data}) =>{
-          if(errors){
+        next: ({ errors, data }) => {
+          if (errors) {
             this.snackBar.openSnackBar(
-              this.translate.instant('pages.profile.notifications.notUpdated')
+              this.translate.instant('pages.profile.notifications.notUpdated'),
+              { error: true }
             );
-          }else{
+          } else {
             if (data) {
               this.snackBar.openSnackBar(
                 this.translate.instant('pages.profile.notifications.updated')
@@ -141,12 +142,15 @@ export class SafeProfileComponent
           },
         })
         .subscribe({
-          next: ({errors, data}) =>{
-            if(errors){
+          next: ({ errors, data }) => {
+            if (errors) {
               this.snackBar.openSnackBar(
-                this.translate.instant('pages.profile.notifications.notUpdated')
+                this.translate.instant(
+                  'pages.profile.notifications.notUpdated'
+                ),
+                { error: true }
               );
-            }else{
+            } else {
               if (data) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('pages.profile.notifications.updated')

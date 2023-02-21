@@ -111,7 +111,8 @@ export class FormsTabComponent implements OnInit {
                       value: this.translate.instant('common.form.one'),
                       error: errors ? errors[0].message : '',
                     }
-                  )
+                  ),
+                  { error: true }
                 );
               } else {
                 this.snackBar.openSnackBar(
