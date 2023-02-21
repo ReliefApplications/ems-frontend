@@ -1,3 +1,10 @@
+## [1.3.10](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.9...v1.3.10) (2023-02-21)
+
+
+### Bug Fixes
+
+* application's users delete button ([#1138](https://github.com/ReliefApplications/oort-frontend/issues/1138)) ([a2cf857](https://github.com/ReliefApplications/oort-frontend/commit/a2cf8573910f8d16eebc7cf2a65441c4f8646495))
+
 ## [1.3.9](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.8...v1.3.9) (2023-02-03)
 
 
