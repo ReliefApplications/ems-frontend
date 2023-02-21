@@ -67,6 +67,7 @@ export class SafeIconPickerComponent implements ControlValueAccessor {
 
   /**
    * Gets the value from the parent form control
+   *
    * @param icon Value set from the linked form control
    */
   writeValue(icon: string): void {
