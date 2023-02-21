@@ -9,8 +9,9 @@
     <div
       class="flex px-2 py-1 justify-between items-center border-opacity-20 border-b-2"
     >
-    <!-- todo(gis): translate -->
-      <h2 class="m-0">LEGEND</h2>
+      <h2 class="m-0">
+        {{ 'components.widget.settings.map.legend.title' | translate }}
+      </h2>
       <safe-button
         icon="close"
         [isIcon]="true"
@@ -19,8 +20,8 @@
     </div>
     <!-- Layers -->
     <div class="max-h-80 overflow-y-auto p-2 flex flex-col gap-2">
-      <div *ngFor="let layerLegend of layerLegends">
-        <h3 class="font-black mb-0">{{ layerLegend.layer }}</h3>
+      <div *ngFor="let layerLegend of layerLegends" class="mb-2">
+        <h3 class="font-black mb-1">{{ layerLegend.layer }}</h3>
         <!-- Features -->
         <div
           *ngIf="layerLegend.legend.type === 'feature'"
@@ -64,14 +65,6 @@
                   [style.fontSize.px]="size"
                   class="{{ layerLegend.legend.icon | safeIconDisplay : 'fa' }}"
                 ></i>
-                <!-- <div
-                  class="rounded-full"
-                  [ngStyle]="{
-                    'background-color': layerLegend.legend.color,
-                    width: size + 'px',
-                    height: size + 'px'
-                  }"
-                ></div> -->
               </div>
 
               <span class="ml-2">
@@ -83,28 +76,18 @@
         <!-- Heatmap -->
         <div *ngIf="layerLegend.legend.type === 'heatmap'" class="flex gap-1">
           <div
-            class="heatmap-legend h-52 w-8 bg-slate-600"
+            class="h-40 w-8"
             [ngStyle]="{
               background: getCssGradient(layerLegend.legend.gradient)
             }"
           ></div>
-          <div class="h-52 relative flex-grow">
-            <!-- IN THE LOGIC BELOW, 208 IS THE HEIGHT OF THE GRADIENT DIV, AND 18 THE FONT SIZE -->
-            <span
-              *ngFor="let color of layerLegend.legend.gradient; let i = index"
-              [ngStyle]="{
-                left: '10px',
-                top:
-                  i === 0
-                    ? '0'
-                    : 208 *
-                        (color.value - layerLegend.legend.gradient[0].value) -
-                      color.value * 18 +
-                      'px'
-              }"
-              class="absolute"
-              >{{ color.label }}</span
-            >
+          <div class="h-40 relative flex-grow justify-between flex flex-col">
+            <p class="m-0">
+              ◄ {{ 'components.widget.settings.map.legend.high' | translate }}
+            </p>
+            <p class="m-0">
+              ◄ {{ 'components.widget.settings.map.legend.low' | translate }}
+            </p>
           </div>
         </div>
       </div>

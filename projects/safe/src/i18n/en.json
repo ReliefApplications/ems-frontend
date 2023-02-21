@@ -1241,6 +1241,11 @@
 							"polygon": "polygon"
 						}
 					},
+					"legend": {
+						"high": "High",
+						"low": "Low",
+						"title": "Legend"
+					},
 					"popup": {
 						"label": "Fields displayed in the popup"
 					},
