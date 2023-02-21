@@ -182,15 +182,14 @@ export class SafeMapControlsService {
   }
 
   /**
-   * Add legend control to the map
+   * Gets the control for the layers legends
    *
-   * @param map leaflet map
    * @param layerLegends legends to display
+   * @returns legend control
    */
   public getLegendControl(
-    map: L.Map,
     layerLegends: { legend: LegendDefinition; layer: string }[]
-  ): void {
+  ) {
     const control = new L.Control({ position: 'bottomright' });
     control.onAdd = () => {
       const div = L.DomUtil.create('div', 'info legend');
@@ -203,20 +202,8 @@ export class SafeMapControlsService {
       instance.layerLegends = layerLegends;
       return div;
     };
-    control.addTo(map);
 
-    const container = control.getContainer();
-    if (container) {
-      // prevent click events from propagating to the map
-      container.addEventListener('click', (e: any) => {
-        L.DomEvent.stopPropagation(e);
-      });
-
-      // prevent mouse wheel events from propagating to the map
-      container.addEventListener('wheel', (e: any) => {
-        L.DomEvent.stopPropagation(e);
-      });
-    }
+    return control;
   }
 
   /**

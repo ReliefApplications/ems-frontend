@@ -144,6 +144,9 @@ export class SafeMapComponent
   // === LAYERS ===
   private layers: Layer[] = [];
 
+  // === LEGEND ===
+  public legendCtrl: L.Control | null = null;
+
   /**
    * Constructor of the map widget component
    *
@@ -273,6 +276,7 @@ export class SafeMapComponent
       this.map.invalidateSize();
       if (this.displayMockedLayers) {
         this.setUpLayers();
+        this.setUpMapLegend();
       }
       if (this.useGeomanTools) {
         this.mapEvent.emit({
@@ -464,6 +468,61 @@ export class SafeMapComponent
       );
     }
   }
+
+  /** Updates the map legend, based on visible layers */
+  private setUpMapLegend() {
+    const updateMapLegend = () => {
+      // Add legends to the map
+      const layerLegends: {
+        layer: string;
+        legend: LegendDefinition;
+      }[] = [];
+      this.layers.forEach((layer) => {
+        // check if layer is visible
+        if (!this.map.hasLayer(layer.getLayer())) return;
+
+        const legend = layer.getLegend();
+        if (legend) {
+          layerLegends.push({
+            layer: layer.name,
+            legend,
+          });
+        }
+      });
+
+      // remove old legend
+      if (this.legendCtrl) this.legendCtrl.remove();
+
+      // add new legend
+      this.legendCtrl = this.mapControlsService.getLegendControl(layerLegends);
+      this.legendCtrl.addTo(this.map);
+
+      const container = this.legendCtrl.getContainer();
+      if (container) {
+        // prevent click events from propagating to the map
+        container.addEventListener('click', (e: any) => {
+          L.DomEvent.stopPropagation(e);
+        });
+
+        // prevent mouse wheel events from propagating to the map
+        container.addEventListener('wheel', (e: any) => {
+          L.DomEvent.stopPropagation(e);
+        });
+      }
+    };
+
+    updateMapLegend();
+
+    // In case any layer is hidden in the tree, we should not display their legend
+    this.map.on('overlayadd', () => {
+      updateMapLegend();
+    });
+
+    this.map.on('overlayremove', () => {
+      updateMapLegend();
+    });
+  }
+
   /**
    * Setup and draw layers on map and sets the baseTree.
    */
@@ -532,22 +591,6 @@ export class SafeMapComponent
     this.layerControl = L.control.layers
       .tree(this.baseTree, this.layersTree as any)
       .addTo(this.map);
-
-    // Add legends to the map
-    const layerLegends: {
-      layer: string;
-      legend: LegendDefinition;
-    }[] = [];
-    this.layers.forEach((layer) => {
-      const legend = layer.getLegend();
-      if (legend) {
-        layerLegends.push({
-          layer: layer.name,
-          legend,
-        });
-      }
-    });
-    this.mapControlsService.getLegendControl(this.map, layerLegends);
   }
 
   /**
