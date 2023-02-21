@@ -161,6 +161,9 @@ export class Layer {
   // Layer fields, extracted from geojson
   private fields: { [key in string]: FieldTypes } = {};
 
+  // Used to store the sizes of the clusters on screen
+  private clusterSizes: number[] = [];
+
   /** @returns the filtered geojson data */
   get data(): GeoJSON {
     if (!this.geojson) return EMPTY_FEATURE_COLLECTION;
@@ -367,6 +370,8 @@ export class Layer {
         // in the cluster satisfies the same filter, then it
         // uses that style for the entire cluster,
         // but I can't find a way to add properties to the clusters' points
+        this.clusterSizes = [];
+
         const clusterGroup = L.markerClusterGroup({
           zoomToBoundsOnClick: false,
           iconCreateFunction: (cluster) => {
@@ -380,6 +385,7 @@ export class Layer {
               opacity: this.firstStyle.fillOpacity,
             };
             const htmlTemplate = `<p>${cluster.getChildCount()}</p>`; // todo(gis): better labels
+            this.clusterSizes.push(iconProperties.size);
             return createCustomDivIcon(
               iconProperties,
               htmlTemplate,
@@ -509,8 +515,8 @@ export class Layer {
           type: 'cluster',
           color: this.firstStyle.fillColor,
           icon: this.firstStyle.icon,
-          min: MIN_CLUSTER_SIZE,
-          max: MAX_CLUSTER_SIZE,
+          min: Math.min(...this.clusterSizes),
+          max: Math.max(...this.clusterSizes),
         };
       case 'heatmap':
         // transform gradient to array of objects

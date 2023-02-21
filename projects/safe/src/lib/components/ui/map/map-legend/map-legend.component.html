@@ -9,7 +9,7 @@
     <div
       class="flex px-2 py-1 justify-between items-center border-opacity-20 border-b-2"
     >
-    <!-- todo(gis): translate -->
+      <!-- todo(gis): translate -->
       <h2 class="m-0">LEGEND</h2>
       <safe-button
         icon="close"
@@ -34,7 +34,7 @@
             <i
               *ngIf="item.icon && item.icon !== 'leaflet_default'"
               [style.color]="item.color"
-              class="{{ item.icon | safeIconDisplay : 'fa' }}"
+              class="{{ item.icon | safeIconDisplay: 'fa' }}"
             ></i>
 
             <!-- Polygon (or point with no icon provided) -->
@@ -53,7 +53,16 @@
         >
           <div class="grid grid-cols-2 w-fit gap-2 items-center">
             <!-- todo(gis): sizes should not come from that, but should be calculated from the layer directly -->
-            <ng-container *ngFor="let size of [30, 60, 80]; let i = index">
+            <ng-container
+              *ngFor="
+                let size of [
+                  layerLegend.legend.min,
+                  (layerLegend.legend.min + layerLegend.legend.max) / 2,
+                  layerLegend.legend.max
+                ];
+                let i = index
+              "
+            >
               <div class="w-full h-full flex items-center justify-center">
                 <i
                   *ngIf="
@@ -62,7 +71,7 @@
                   "
                   [style.color]="layerLegend.legend.color"
                   [style.fontSize.px]="size"
-                  class="{{ layerLegend.legend.icon | safeIconDisplay : 'fa' }}"
+                  class="{{ layerLegend.legend.icon | safeIconDisplay: 'fa' }}"
                 ></i>
                 <!-- <div
                   class="rounded-full"
