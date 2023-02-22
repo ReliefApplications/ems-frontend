@@ -1,4 +1,4 @@
-import { Inject, Injectable, ElementRef } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/languages';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
@@ -15,6 +15,7 @@ import 'leaflet-measure';
 import 'leaflet-timedimension';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import { LegendDefinition } from '../../components/ui/map/interfaces/layer-legend.type';
+import { Layer } from '../../components/ui/map/layer';
 
 /**
  * Shared map control service.
@@ -39,13 +40,11 @@ export class SafeMapControlsService {
    * @param environment environment
    * @param translate Angular translate service
    * @param domService Shared dom service
-   * @param elementRef Reference to a DOM element in the doc
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
-    private domService: DomService,
-    private elementRef: ElementRef
+    private domService: DomService
   ) {
     this.lang = this.translate.currentLang;
     this.primaryColor = environment.theme.primary;
@@ -135,6 +134,28 @@ export class SafeMapControlsService {
     if (!this.measureControls[lang]) {
       // import related file, and build control
       import(`leaflet-measure/dist/leaflet-measure.${lang}.js`).then(() => {
+        (L.Control as any).Measure.include({
+          // set icon on the capture marker
+          /**
+           * Function to replace for the Measure plugin
+           * (https://github.com/ljagis/leaflet-measure/issues/171)
+           */
+          // eslint-disable-next-line object-shorthand
+          _setCaptureMarkerIcon: function () {
+            // disable autopan
+            // eslint-disable-next-line no-underscore-dangle
+            this._captureMarker.options.autoPanOnFocus = false;
+
+            // default function
+            // eslint-disable-next-line no-underscore-dangle
+            this._captureMarker.setIcon(
+              L.divIcon({
+                // eslint-disable-next-line no-underscore-dangle
+                iconSize: this._map.getSize().multiplyBy(2),
+              })
+            );
+          },
+        });
         const control = new (L.Control as any).Measure({
           position: 'bottomleft',
           primaryLengthUnit: 'kilometers',
@@ -142,6 +163,7 @@ export class SafeMapControlsService {
           activeColor: this.primaryColor,
           completedColor: this.primaryColor,
         });
+
         this.measureControls[lang] = control;
         // Remove previous control if exists
         if (this.measureControls[this.lang]) {
@@ -159,15 +181,33 @@ export class SafeMapControlsService {
   }
 
   /**
-   * Add legend control to the map
+   * Build legend control on map
+   * Control is automated to listen to map layers changes
    *
    * @param map leaflet map
-   * @param layerLegends legends to display
+   * @param layers layers
    */
-  public getLegendControl(
-    map: L.Map,
-    layerLegends: { legend: LegendDefinition; layer: string }[]
-  ): void {
+  public getLegendControl(map: L.Map, layers: Layer[]): void {
+    const updateControl = (instance: SafeMapLegendComponent) => {
+      // Add legends to the map
+      const layerLegends: {
+        layer: string;
+        legend: LegendDefinition;
+      }[] = [];
+      layers.forEach((layer) => {
+        // check if layer is visible
+        if (!map.hasLayer(layer.getLayer())) return;
+
+        const legend = layer.getLegend();
+        if (legend) {
+          layerLegends.push({
+            layer: layer.name,
+            legend,
+          });
+        }
+      });
+      instance.layerLegends = layerLegends;
+    };
     const control = new L.Control({ position: 'bottomright' });
     control.onAdd = () => {
       const div = L.DomUtil.create('div', 'info legend');
@@ -177,7 +217,14 @@ export class SafeMapControlsService {
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const instance: SafeMapLegendComponent = component.instance;
-      instance.layerLegends = layerLegends;
+      updateControl(instance);
+      map.on('overlayadd', () => {
+        updateControl(instance);
+      });
+
+      map.on('overlayremove', () => {
+        updateControl(instance);
+      });
       return div;
     };
     control.addTo(map);

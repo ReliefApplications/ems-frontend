@@ -300,6 +300,9 @@ export class Layer {
 
   /** @returns the leaflet layer from layer definition */
   public getLayer(): L.Layer {
+    // If layer has already been created, return it
+    if (this.layer) return this.layer;
+
     // data is the filtered geojson
     const data = this.data;
 
@@ -357,12 +360,13 @@ export class Layer {
         const layers = this.children
           .map((child) => child.layer)
           .filter((layer) => layer !== undefined) as L.Layer[];
-
-        return new L.LayerGroup(layers);
+        this.layer = new L.LayerGroup(layers);
+        return this.layer;
 
       case 'sketch':
       case 'feature':
-        return L.geoJSON(data, geoJSONopts);
+        this.layer = L.geoJSON(data, geoJSONopts);
+        return this.layer;
 
       case 'cluster':
         // gets the first style of the styling array
@@ -384,7 +388,9 @@ export class Layer {
                 MIN_CLUSTER_SIZE,
               opacity: this.firstStyle.fillOpacity,
             };
-            const htmlTemplate = `<p>${cluster.getChildCount()}</p>`; // todo(gis): better labels
+            // Use label as it's an inline element therefor does not take all available space
+            const htmlTemplate = document.createElement('label'); // todo(gis): better labels
+            htmlTemplate.textContent = cluster.getChildCount().toString();
             this.clusterSizes.push(iconProperties.size);
             return createCustomDivIcon(
               iconProperties,
@@ -395,7 +401,8 @@ export class Layer {
         });
         const clusterLayer = L.geoJSON(data, geoJSONopts);
         clusterGroup.addLayer(clusterLayer);
-        return clusterGroup;
+        this.layer = clusterGroup;
+        return this.layer;
 
       case 'heatmap':
         // check data type
@@ -415,7 +422,8 @@ export class Layer {
           }
         });
 
-        return L.heatLayer(heatArray, this.firstStyle.heatmap);
+        this.layer = L.heatLayer(heatArray, this.firstStyle.heatmap);
+        return this.layer;
     }
 
     // Check for icon property
@@ -443,13 +451,16 @@ export class Layer {
         if (layers[layerKey]) {
           if (icon && layers[layerKey] instanceof L.Marker) {
             layers[layerKey].setIcon(icon);
+            layers[layerKey].options = {
+              ...layers[layerKey].options,
+              ...options,
+            };
           } else {
             layers[layerKey].setStyle(options);
           }
           map.removeLayer(layers[layerKey]);
           if (
-            (layers[layerKey].options.visible ||
-              layers[layerKey] instanceof L.Marker) &&
+            layers[layerKey].options.visible &&
             !(
               layers[layerKey].options.visibilityRange &&
               (map.getZoom() > options.visibilityRange[1] ||
@@ -526,13 +537,12 @@ export class Layer {
         };
       case 'heatmap':
         // transform gradient to array of objects
-        const gradient: { color: string; value: number; label: string }[] = [];
+        const gradient: { color: string; value: number }[] = [];
         Object.keys(this.firstStyle.heatmap.gradient).forEach((key) => {
           const nbr = parseFloat(key);
           gradient.push({
             color: this.firstStyle.heatmap.gradient[nbr],
             value: parseFloat(key),
-            label: `${parseFloat(key)}`,
           });
         });
 

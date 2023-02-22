@@ -20,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  BaseLayerTree,
+  OverlayLayerTree,
   LayerActionOnMap,
 } from './interfaces/map-layers.interface';
 import {
@@ -31,7 +31,6 @@ import {
 import { BASEMAP_LAYERS } from './const/baseMaps';
 import { merge } from 'lodash';
 import { timeDimensionGeoJSON } from './test/timedimension-test';
-import { SafeMapLayersService } from '../../../services/maps/map-layers.service';
 import { SafeMapControlsService } from '../../../services/maps/map-controls.service';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/languages';
 
@@ -44,7 +43,6 @@ import { LayerProperties } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { generateBaseMaps } from './test/basemaps-test';
-import { LegendDefinition } from './interfaces/layer-legend.type';
 
 /**
  * Cleans the settings object from null values
@@ -132,11 +130,9 @@ export class SafeMapComponent
   };
 
   // === MARKERS ===
-  private popupMarker: any;
   private baseTree!: L.Control.Layers.TreeObject;
   private layersTree: L.Control.Layers.TreeObject[] = [];
   private layerControl: any;
-  private layerTreeCloned!: any;
 
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
@@ -149,13 +145,11 @@ export class SafeMapComponent
    *
    * @param environment platform environment
    * @param translate The translate service
-   * @param mapLayersService The map layer handler service
    * @param mapControlsService The map controls handler service
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
-    private mapLayersService: SafeMapLayersService,
     private mapControlsService: SafeMapControlsService
   ) {
     super();
@@ -273,6 +267,8 @@ export class SafeMapComponent
       this.map.invalidateSize();
       if (this.displayMockedLayers) {
         this.setUpLayers();
+        // Add legend control
+        this.mapControlsService.getLegendControl(this.map, this.layers);
       }
       if (this.useGeomanTools) {
         this.mapEvent.emit({
@@ -397,9 +393,6 @@ export class SafeMapComponent
       // Add leaflet fullscreen control
       this.mapControlsService.getFullScreenControl(this.map);
 
-      // Add legend control
-      // this.mapControlsService.getLegendControl(this.map);
-
       // Add TimeDimension control
       this.mapControlsService.setTimeDimension(
         this.map,
@@ -464,6 +457,7 @@ export class SafeMapComponent
       );
     }
   }
+
   /**
    * Setup and draw layers on map and sets the baseTree.
    */
@@ -488,7 +482,7 @@ export class SafeMapComponent
     const parseTreeNode = (
       layer: Layer,
       leafletLayer?: L.Layer
-    ): BaseLayerTree => {
+    ): OverlayLayerTree => {
       // Add to the layers array
       this.layers.push(layer);
 
@@ -502,14 +496,23 @@ export class SafeMapComponent
       if (!this.map.hasLayer(featureLayer)) this.map.addLayer(featureLayer);
 
       const children = layer.getChildren();
-      return {
-        label: layer.name,
-        layer: featureLayer,
-        children:
-          children.length > 0
-            ? children.map((c) => parseTreeNode(c.object, c.layer))
-            : undefined,
-      };
+      if (layer.type === 'group') {
+        // It is a group, it should not have any layer but it should be able to check/uncheck its children
+        return {
+          label: layer.name,
+          selectAllCheckbox: true,
+          children:
+            children.length > 0
+              ? children.map((c) => parseTreeNode(c.object, c.layer))
+              : undefined,
+        };
+      } else {
+        // It is a node, it does not have any children but it displays a layer
+        return {
+          label: layer.name,
+          layer: featureLayer,
+        };
+      }
     };
 
     const layers = [new Layer(MOCK_LAYER_SETTINGS)];
@@ -523,22 +526,6 @@ export class SafeMapComponent
     this.layerControl = L.control.layers
       .tree(this.baseTree, this.layersTree as any)
       .addTo(this.map);
-
-    // Add legends to the map
-    const layerLegends: {
-      layer: string;
-      legend: LegendDefinition;
-    }[] = [];
-    this.layers.forEach((layer) => {
-      const legend = layer.getLegend();
-      if (legend) {
-        layerLegends.push({
-          layer: layer.name,
-          legend,
-        });
-      }
-    });
-    this.mapControlsService.getLegendControl(this.map, layerLegends);
   }
 
   /**
