@@ -515,8 +515,14 @@ export class Layer {
           type: 'cluster',
           color: this.firstStyle.fillColor,
           icon: this.firstStyle.icon,
-          min: Math.round(Math.min(...this.clusterSizes)),
-          max: Math.round(Math.max(...this.clusterSizes)),
+          min:
+            this.clusterSizes.length > 0
+              ? Math.round(Math.min(...this.clusterSizes))
+              : MIN_CLUSTER_SIZE,
+          max:
+            this.clusterSizes.length > 0
+              ? Math.round(Math.max(...this.clusterSizes))
+              : MAX_CLUSTER_SIZE,
         };
       case 'heatmap':
         // transform gradient to array of objects
