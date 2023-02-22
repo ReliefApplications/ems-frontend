@@ -7,6 +7,7 @@ import {
   Step,
   SafeFormComponent,
   SafeUnsubscribeComponent,
+  SafeSnackBarService 
 } from '@safe/builder';
 import {
   GetFormByIdQueryResponse,
@@ -17,7 +18,6 @@ import {
   GET_STEP_BY_ID,
 } from './graphql/queries';
 import { Subscription } from 'rxjs';
-import { SafeSnackBarService } from '@safe/builder';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 

@@ -8,7 +8,7 @@ import get from 'lodash/get';
 import { Record } from '../../models/record.model';
 import { EditRecordMutationResponse, EDIT_RECORD } from './graphql/mutations';
 import { Metadata } from '../../models/metadata.model';
-import { SafeSnackBarService } from '@safe/builder';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 
 /**
  * Shared form builder service.

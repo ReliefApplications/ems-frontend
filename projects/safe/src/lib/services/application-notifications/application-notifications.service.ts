@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Application } from '../../models/application.model';
 import { CustomNotification } from '../../models/custom-notification.model';
 import { SafeApplicationService } from '../application/application.service';
-import { SafeSnackBarService } from '@safe/builder';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import {
   AddCustomNotificationMutationResponse,
   ADD_CUSTOM_NOTIFICATION,

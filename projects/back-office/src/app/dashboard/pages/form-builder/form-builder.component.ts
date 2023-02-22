@@ -24,10 +24,10 @@ import {
   Form,
   SafeConfirmService,
   SafeBreadcrumbService,
+  SafeStatusModalComponent
 } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SafeStatusModalComponent } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
