@@ -108,35 +108,37 @@ export class SafeUsersComponent implements OnInit {
               application: this.roles[0].application?.id,
             },
           })
-          .subscribe(({ errors, data }) => {
-            if (!errors) {
-              if (data?.addUsers.length) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('components.users.onInvite.plural')
-                );
+          .subscribe({
+            next: ({errors, data}) => {
+              if (!errors) {
+                if (data?.addUsers.length) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('components.users.onInvite.plural')
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('components.users.onInvite.singular')
+                  );
+                }
+                this.users.data = this.users.data.concat(data?.addUsers || []);
               } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('components.users.onInvite.singular')
-                );
-              }
-              this.users.data = this.users.data.concat(data?.addUsers || []);
-            } else {
-              if (data?.addUsers.length) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.users.onNotInvite.plural',
-                    { error: errors[0].message }
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'components.users.onNotInvite.singular',
-                    { error: errors[0].message }
-                  ),
-                  { error: true }
-                );
+                if (value.length > 1) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'components.users.onNotInvite.plural',
+                      { error: errors[0].message }
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'components.users.onNotInvite.singular',
+                      { error: errors[0].message }
+                    ),
+                    { error: true }
+                  );
+                }
               }
             }
           });

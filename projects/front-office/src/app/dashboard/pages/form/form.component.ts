@@ -7,7 +7,7 @@ import {
   Step,
   SafeFormComponent,
   SafeUnsubscribeComponent,
-  SafeSnackBarService 
+  SafeSnackBarService,
 } from '@safe/builder';
 import {
   GetFormByIdQueryResponse,

@@ -24,8 +24,8 @@ import {
   SafeSnackBarService,
   SafeBreadcrumbService,
   SafeUnsubscribeComponent,
-  SafeDownloadService, 
-  Record 
+  SafeDownloadService,
+  Record,
 } from '@safe/builder';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';

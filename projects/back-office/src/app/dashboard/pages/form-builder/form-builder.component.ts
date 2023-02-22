@@ -24,7 +24,7 @@ import {
   Form,
   SafeConfirmService,
   SafeBreadcrumbService,
-  SafeStatusModalComponent
+  SafeStatusModalComponent,
 } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
