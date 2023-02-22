@@ -1243,6 +1243,11 @@
 							"polygon": "Polygone"
 						}
 					},
+					"legend": {
+						"high": "Haut",
+						"low": "Faible",
+						"title": "Légende"
+					},
 					"popup": {
 						"label": "Champs affichés dans le popup"
 					},

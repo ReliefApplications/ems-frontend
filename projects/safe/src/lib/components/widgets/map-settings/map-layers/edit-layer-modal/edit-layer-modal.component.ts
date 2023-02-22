@@ -96,7 +96,10 @@ export class SafeEditLayerModalComponent
   }
   /** @returns the selected icon with the given style config */
   private get icon(): any | null {
-    return createCustomDivIcon(this.form.get('style')?.value);
+    return createCustomDivIcon({
+      ...this.form.get('style')?.value,
+      ...{ opacity: this.form.get('opacity')?.value },
+    });
   }
 
   // === MAP ===

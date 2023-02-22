@@ -383,7 +383,9 @@ export class Layer {
                 MIN_CLUSTER_SIZE,
               opacity: this.firstStyle.fillOpacity,
             };
-            const htmlTemplate = `<p>${cluster.getChildCount()}</p>`; // todo(gis): better labels
+            // Use label as it's an inline element therefor does not take all available space
+            const htmlTemplate = document.createElement('label'); // todo(gis): better labels
+            htmlTemplate.textContent = cluster.getChildCount().toString();
             return createCustomDivIcon(
               iconProperties,
               htmlTemplate,
@@ -443,13 +445,16 @@ export class Layer {
         if (layers[layerKey]) {
           if (icon && layers[layerKey] instanceof L.Marker) {
             layers[layerKey].setIcon(icon);
+            layers[layerKey].options = {
+              ...layers[layerKey].options,
+              ...options,
+            };
           } else {
             layers[layerKey].setStyle(options);
           }
           map.removeLayer(layers[layerKey]);
           if (
-            (layers[layerKey].options.visible ||
-              layers[layerKey] instanceof L.Marker) &&
+            layers[layerKey].options.visible &&
             !(
               layers[layerKey].options.visibilityRange &&
               (map.getZoom() > options.visibilityRange[1] ||
@@ -520,13 +525,12 @@ export class Layer {
         };
       case 'heatmap':
         // transform gradient to array of objects
-        const gradient: { color: string; value: number; label: string }[] = [];
+        const gradient: { color: string; value: number }[] = [];
         Object.keys(this.firstStyle.heatmap.gradient).forEach((key) => {
           const nbr = parseFloat(key);
           gradient.push({
             color: this.firstStyle.heatmap.gradient[nbr],
             value: parseFloat(key),
-            label: `${parseFloat(key)}`,
           });
         });
 
