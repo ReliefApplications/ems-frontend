@@ -439,14 +439,16 @@ export class Layer {
         if (layers[layerKey]) {
           if (icon && layers[layerKey] instanceof L.Marker) {
             layers[layerKey].setIcon(icon);
-            layers[layerKey].setOpacity(options.opacity ?? 1);
+            layers[layerKey].options = {
+              ...layers[layerKey].options,
+              ...options,
+            };
           } else {
             layers[layerKey].setStyle(options);
           }
           map.removeLayer(layers[layerKey]);
           if (
-            (layers[layerKey].options.visible ||
-              layers[layerKey] instanceof L.Marker) &&
+            layers[layerKey].options.visible &&
             !(
               layers[layerKey].options.visibilityRange &&
               (map.getZoom() > options.visibilityRange[1] ||
