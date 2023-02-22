@@ -297,6 +297,9 @@ export class Layer {
 
   /** @returns the leaflet layer from layer definition */
   public getLayer(): L.Layer {
+    // If layer has already been created, return it
+    if (this.layer) return this.layer;
+
     // data is the filtered geojson
     const data = this.data;
 
@@ -354,12 +357,13 @@ export class Layer {
         const layers = this.children
           .map((child) => child.layer)
           .filter((layer) => layer !== undefined) as L.Layer[];
-
-        return new L.LayerGroup(layers);
+        this.layer = new L.LayerGroup(layers);
+        return this.layer;
 
       case 'sketch':
       case 'feature':
-        return L.geoJSON(data, geoJSONopts);
+        this.layer = L.geoJSON(data, geoJSONopts);
+        return this.layer;
 
       case 'cluster':
         // gets the first style of the styling array
@@ -391,7 +395,8 @@ export class Layer {
         });
         const clusterLayer = L.geoJSON(data, geoJSONopts);
         clusterGroup.addLayer(clusterLayer);
-        return clusterGroup;
+        this.layer = clusterGroup;
+        return this.layer;
 
       case 'heatmap':
         // check data type
@@ -411,7 +416,8 @@ export class Layer {
           }
         });
 
-        return L.heatLayer(heatArray, this.firstStyle.heatmap);
+        this.layer = L.heatLayer(heatArray, this.firstStyle.heatmap);
+        return this.layer;
     }
 
     // Check for icon property
