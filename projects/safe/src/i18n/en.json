@@ -404,6 +404,14 @@
 			"pages": {
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the page {{name}}?"
+				},
+				"notReordered": {
+					"plural": "The pages were not reordered. {{error}}",
+					"singular": "The page was not reordered. {{error}}"
+				},
+				"reordered": {
+					"plural": "The pages were reordered.",
+					"singular": "The page was reordered."
 				}
 			},
 			"positionAttribute": {
@@ -981,8 +989,20 @@
 				"description": "Select existing users, invite new users or import from Excel file"
 			},
 			"onDelete": {
-				"plural": "Users were correctly deleted",
-				"singular": "User was correctly deleted"
+				"plural": "Users were correctly deleted.",
+				"singular": "User was correctly deleted."
+			},
+			"onInvite": {
+				"plural": "Users were invited.",
+				"singular": "User was invited."
+			},
+			"onNotDelete": {
+				"plural": "Users were not deleted. {{error}}",
+				"singular": "User was deleted. {{error}}"
+			},
+			"onNotInvite": {
+				"plural": "Users were not invited. {{error}}",
+				"singular": "User was not invited. {{error}}"
 			},
 			"paginator": {
 				"ariaLabel": "Select page of users"

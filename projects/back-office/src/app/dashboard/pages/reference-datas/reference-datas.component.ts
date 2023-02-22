@@ -217,7 +217,7 @@ export class ReferenceDatasComponent
                       type: this.translate
                         .instant('common.referenceData.one')
                         .toLowerCase(),
-                      error: errors[0].message,
+                      error: errors ? errors[0].message : '',
                     }
                   ),
                   { error: true }

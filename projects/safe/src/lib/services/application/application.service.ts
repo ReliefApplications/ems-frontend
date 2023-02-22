@@ -354,7 +354,7 @@ export class SafeApplicationService {
                 this.translate.instant(
                   'common.notifications.objectNotUpdated',
                   {
-                    type: this.translate.instant('common.access').toLowerCase(),
+                    type: this.translate.instant('common.access'),
                     error: errors ? errors[0].message : '',
                   }
                 ),
@@ -463,7 +463,7 @@ export class SafeApplicationService {
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotDeleted', {
-                value: this.translate.instant('common.page.one').toLowerCase(),
+                value: this.translate.instant('common.page.one'),
                 error: errors ? errors[0].message : '',
               }),
               { error: true }
@@ -492,24 +492,40 @@ export class SafeApplicationService {
         .subscribe({
           next: ({ errors, data }) => {
             if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotReordered',
-                  {
-                    type: this.translate
-                      .instant('common.page.few')
-                      .toLowerCase(),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
+              
+              if(pages.length > 1){
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.application.pages.notReordered.plural',
+                    {error: errors ? errors[0].message : '',}
+                  ),
+                  { error: true }
+                );
+              }else{
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.application.pages.notReordered.singular',
+                    {error: errors ? errors[0].message : '',}
+                  ),
+                  { error: true }
+                );
+              }
+            
             } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectReordered', {
-                  type: this.translate.instant('common.page.few').toLowerCase(),
-                })
-              );
+              if(pages.length > 1){
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.application.pages.reordered.plural',
+                  )
+                );
+              }else{
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.application.pages.reordered.singular',
+                  )
+                );
+              }
+
               this.application.next({
                 ...application,
                 ...{ pages: data?.editApplication.pages },
@@ -753,8 +769,7 @@ export class SafeApplicationService {
                   'common.notifications.objectNotUpdated',
                   {
                     type: this.translate
-                      .instant('common.role.one')
-                      .toLowerCase(),
+                      .instant('common.role.one'),
                     error: errors ? errors[0].message : '',
                   }
                 ),
@@ -879,36 +894,51 @@ export class SafeApplicationService {
             application: application.id,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            const deletedUsers = data.deleteUsersFromApplication.map(
-              (x) => x.id
-            );
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: this.translate
-                  .instant(
-                    deletedUsers.length > 1
-                      ? 'common.user.few'
-                      : 'common.user.one'
-                  )
-                  .toLowerCase(),
-              })
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotDeleted', {
-                value: this.translate
-                  .instant(
-                    ids.length > 1 ? 'common.user.few' : 'common.user.one'
-                  )
-                  .toLowerCase(),
-                error: '',
-              }),
-              { error: true }
-            );
+        .subscribe({
+          next: ({errors, data}) =>{
+            if(errors){
+              if(ids.length > 1){
+                this.snackBar.openSnackBar(
+                  this.translate.instant('components.users.onNotDelete.plural',{error: errors ? errors[0].message : ''}),
+                  { error: true }
+                );
+              }else{
+                this.snackBar.openSnackBar(
+                  this.translate.instant('components.users.onNotDelete.singular', {error: errors ? errors[0].message : ''}),
+                  { error: true }
+                );
+              }
+            }else{
+              if (data) {
+                const deletedUsers = data.deleteUsersFromApplication.map(
+                  (x) => x.id
+                );
+                if(deletedUsers.length > 1){
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('components.users.onDelete.plural')
+                  );
+                }else{
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('components.users.onDelete.singular')
+                  );
+                }
+                
+              } else {
+                if(ids.length > 1){
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('components.users.onNotDelete.plural',{error: ''}),
+                    { error: true }
+                  );
+                }else{
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('components.users.onNotDelete.singular', {error: ''}),
+                    { error: true }
+                  );
+                }
+              }
+            }
+            resolved();
           }
-          resolved();
         });
     }
   }
@@ -1184,7 +1214,7 @@ export class SafeApplicationService {
             if (data) {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.channel.one'),
+                  type: this.translate.instant('common.channel.one').toLowerCase(),
                   value: title,
                 })
               );
@@ -1409,8 +1439,7 @@ export class SafeApplicationService {
                   'common.notifications.objectNotUpdated',
                   {
                     type: this.translate
-                      .instant('common.subscription.one')
-                      .toLowerCase(),
+                      .instant('common.subscription.one'),
                     error: errors ? errors[0].message : '',
                   }
                 ),

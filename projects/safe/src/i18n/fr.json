@@ -404,6 +404,14 @@
 			"pages": {
 				"delete": {
 					"confirmationMessage": "Voulez-vous vraiment supprimer la page {{name}}?"
+				},
+				"notReordered": {
+					"plural": "todo(translation)",
+					"singular": "todo(translation)"
+				},
+				"reordered": {
+					"plural": "todo(translation)",
+					"singular": "todo(translation)"
 				}
 			},
 			"positionAttribute": {
@@ -987,6 +995,18 @@
 				"description": "Sélectionner des utilisateurs existants, inviter de nouveaux utilisateurs ou en importer depuis un fichier Excel"
 			},
 			"onDelete": {
+				"plural": "todo(translation)",
+				"singular": "todo(translation)"
+			},
+			"onInvite": {
+				"plural": "todo(translation)",
+				"singular": "todo(translation)"
+			},
+			"onNotDelete": {
+				"plural": "todo(translation)",
+				"singular": "todo(translation)"
+			},
+			"onNotInvite": {
 				"plural": "todo(translation)",
 				"singular": "todo(translation)"
 			},

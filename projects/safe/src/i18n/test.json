@@ -404,6 +404,14 @@
 			"pages": {
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
+				},
+				"notReordered": {
+					"plural": "****** {{error}}",
+					"singular": "****** {{error}}"
+				},
+				"reordered": {
+					"plural": "******",
+					"singular": "******"
 				}
 			},
 			"positionAttribute": {
@@ -983,6 +991,18 @@
 			"onDelete": {
 				"plural": "******",
 				"singular": "******"
+			},
+			"onInvite": {
+				"plural": "******",
+				"singular": "******"
+			},
+			"onNotDelete": {
+				"plural": "****** {{error}}",
+				"singular": "****** {{error}}"
+			},
+			"onNotInvite": {
+				"plural": "****** {{error}}",
+				"singular": "****** {{error}}"
 			},
 			"paginator": {
 				"ariaLabel": "******"
