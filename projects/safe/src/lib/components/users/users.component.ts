@@ -110,28 +110,31 @@ export class SafeUsersComponent implements OnInit {
           })
           .subscribe(({ errors, data }) => {
             if (!errors) {
-              
-              if(data?.addUsers.length){
+              if (data?.addUsers.length) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('components.users.onInvite.plural')
                 );
-              
-              }else{
+              } else {
                 this.snackBar.openSnackBar(
                   this.translate.instant('components.users.onInvite.singular')
                 );
               }
               this.users.data = this.users.data.concat(data?.addUsers || []);
             } else {
-
-              if(data?.addUsers.length){
+              if (data?.addUsers.length) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('components.users.onNotInvite.plural',{error: errors[0].message}),
+                  this.translate.instant(
+                    'components.users.onNotInvite.plural',
+                    { error: errors[0].message }
+                  ),
                   { error: true }
                 );
-              }else{
+              } else {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('components.users.onNotInvite.singular',{error: errors[0].message}),
+                  this.translate.instant(
+                    'components.users.onNotInvite.singular',
+                    { error: errors[0].message }
+                  ),
                   { error: true }
                 );
               }
@@ -196,19 +199,25 @@ export class SafeUsersComponent implements OnInit {
           })
           .subscribe({
             next: ({ errors, data }) => {
-              if(errors){
-                if(ids.length > 1){
+              if (errors) {
+                if (ids.length > 1) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('components.users.onNotDelete.plural', {error: errors ? errors[0].message : ''}),
+                    this.translate.instant(
+                      'components.users.onNotDelete.plural',
+                      { error: errors ? errors[0].message : '' }
+                    ),
                     { error: true }
                   );
-                }else{
+                } else {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('components.users.onNotDelete.singular',  {error: errors ? errors[0].message : ''}),
+                    this.translate.instant(
+                      'components.users.onNotDelete.singular',
+                      { error: errors ? errors[0].message : '' }
+                    ),
                     { error: true }
                   );
                 }
-              }else{
+              } else {
                 this.loading = false;
                 if (data?.deleteUsers) {
                   if (data.deleteUsers > 1) {
@@ -217,27 +226,35 @@ export class SafeUsersComponent implements OnInit {
                     );
                   } else {
                     this.snackBar.openSnackBar(
-                      this.translate.instant('components.users.onDelete.singular')
+                      this.translate.instant(
+                        'components.users.onDelete.singular'
+                      )
                     );
                   }
                   this.users.data = this.users.data.filter(
                     (u) => !ids.includes(u.id)
                   );
                 } else {
-                  if(ids.length > 1){
+                  if (ids.length > 1) {
                     this.snackBar.openSnackBar(
-                      this.translate.instant('components.users.onNotDelete.plural',{error: ''}),
+                      this.translate.instant(
+                        'components.users.onNotDelete.plural',
+                        { error: '' }
+                      ),
                       { error: true }
                     );
-                  }else{
+                  } else {
                     this.snackBar.openSnackBar(
-                      this.translate.instant('components.users.onNotDelete.singular',{error: ''}),
+                      this.translate.instant(
+                        'components.users.onNotDelete.singular',
+                        { error: '' }
+                      ),
                       { error: true }
                     );
                   }
                 }
               }
-            }
+            },
           });
       }
     });

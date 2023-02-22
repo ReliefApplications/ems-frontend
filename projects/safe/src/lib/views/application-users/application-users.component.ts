@@ -91,25 +91,31 @@ export class SafeApplicationUsersComponent
           })
           .subscribe(({ errors, data }) => {
             if (!errors) {
-              if(data?.addUsers.length){
+              if (data?.addUsers.length) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('components.users.onInvite.plural')
                 );
-              }else{
+              } else {
                 this.snackBar.openSnackBar(
                   this.translate.instant('components.users.onInvite.singular')
                 );
               }
               this.userList?.fetchUsers(true);
             } else {
-              if(data?.addUsers?.length){
+              if (data?.addUsers?.length) {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('components.users.onNotInvite.plural',{error: errors[0].message}),
+                  this.translate.instant(
+                    'components.users.onNotInvite.plural',
+                    { error: errors[0].message }
+                  ),
                   { error: true }
                 );
-              }else{
+              } else {
                 this.snackBar.openSnackBar(
-                  this.translate.instant('components.users.onNotInvite.singular',{error: errors[0].message}),
+                  this.translate.instant(
+                    'components.users.onNotInvite.singular',
+                    { error: errors[0].message }
+                  ),
                   { error: true }
                 );
               }

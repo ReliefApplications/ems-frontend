@@ -63,7 +63,9 @@ export class SafeApplicationNotificationsService {
         if (res.errors) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotCreated', {
-              type: this.translate.instant('common.customNotification.one').toLowerCase(),
+              type: this.translate
+                .instant('common.customNotification.one')
+                .toLowerCase(),
               error: res.errors ? res.errors[0].message : '',
             }),
             { error: true }
