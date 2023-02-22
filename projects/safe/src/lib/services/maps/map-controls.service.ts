@@ -1,4 +1,4 @@
-import { Inject, Injectable, ElementRef } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/languages';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
@@ -15,6 +15,7 @@ import 'leaflet-measure';
 import 'leaflet-timedimension';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import { LegendDefinition } from '../../components/ui/map/interfaces/layer-legend.type';
+import { Layer } from '../../components/ui/map/layer';
 
 /**
  * Shared map control service.
@@ -39,13 +40,11 @@ export class SafeMapControlsService {
    * @param environment environment
    * @param translate Angular translate service
    * @param domService Shared dom service
-   * @param elementRef Reference to a DOM element in the doc
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
-    private domService: DomService,
-    private elementRef: ElementRef
+    private domService: DomService
   ) {
     this.lang = this.translate.currentLang;
     this.primaryColor = environment.theme.primary;
@@ -182,14 +181,33 @@ export class SafeMapControlsService {
   }
 
   /**
-   * Gets the control for the layers legends
+   * Build legend control on map
+   * Control is automated to listen to map layers changes
    *
-   * @param layerLegends legends to display
-   * @returns legend control
+   * @param map leaflet map
+   * @param layers layers
    */
-  public getLegendControl(
-    layerLegends: { legend: LegendDefinition; layer: string }[]
-  ) {
+  public getLegendControl(map: L.Map, layers: Layer[]): void {
+    const updateControl = (instance: SafeMapLegendComponent) => {
+      // Add legends to the map
+      const layerLegends: {
+        layer: string;
+        legend: LegendDefinition;
+      }[] = [];
+      layers.forEach((layer) => {
+        // check if layer is visible
+        if (!map.hasLayer(layer.getLayer())) return;
+
+        const legend = layer.getLegend();
+        if (legend) {
+          layerLegends.push({
+            layer: layer.name,
+            legend,
+          });
+        }
+      });
+      instance.layerLegends = layerLegends;
+    };
     const control = new L.Control({ position: 'bottomright' });
     control.onAdd = () => {
       const div = L.DomUtil.create('div', 'info legend');
@@ -199,11 +217,30 @@ export class SafeMapControlsService {
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const instance: SafeMapLegendComponent = component.instance;
-      instance.layerLegends = layerLegends;
+      updateControl(instance);
+      map.on('overlayadd', () => {
+        updateControl(instance);
+      });
+
+      map.on('overlayremove', () => {
+        updateControl(instance);
+      });
       return div;
     };
+    control.addTo(map);
 
-    return control;
+    const container = control.getContainer();
+    if (container) {
+      // prevent click events from propagating to the map
+      container.addEventListener('click', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
+
+      // prevent mouse wheel events from propagating to the map
+      container.addEventListener('wheel', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
+    }
   }
 
   /**

@@ -31,7 +31,6 @@ import {
 import { BASEMAP_LAYERS } from './const/baseMaps';
 import { merge } from 'lodash';
 import { timeDimensionGeoJSON } from './test/timedimension-test';
-import { SafeMapLayersService } from '../../../services/maps/map-layers.service';
 import { SafeMapControlsService } from '../../../services/maps/map-controls.service';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/languages';
 
@@ -44,7 +43,6 @@ import { LayerProperties } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { generateBaseMaps } from './test/basemaps-test';
-import { LegendDefinition } from './interfaces/layer-legend.type';
 
 /**
  * Cleans the settings object from null values
@@ -132,11 +130,9 @@ export class SafeMapComponent
   };
 
   // === MARKERS ===
-  private popupMarker: any;
   private baseTree!: L.Control.Layers.TreeObject;
   private layersTree: L.Control.Layers.TreeObject[] = [];
   private layerControl: any;
-  private layerTreeCloned!: any;
 
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
@@ -144,21 +140,16 @@ export class SafeMapComponent
   // === LAYERS ===
   private layers: Layer[] = [];
 
-  // === LEGEND ===
-  public legendCtrl: L.Control | null = null;
-
   /**
    * Constructor of the map widget component
    *
    * @param environment platform environment
    * @param translate The translate service
-   * @param mapLayersService The map layer handler service
    * @param mapControlsService The map controls handler service
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
-    private mapLayersService: SafeMapLayersService,
     private mapControlsService: SafeMapControlsService
   ) {
     super();
@@ -276,7 +267,8 @@ export class SafeMapComponent
       this.map.invalidateSize();
       if (this.displayMockedLayers) {
         this.setUpLayers();
-        this.setUpMapLegend();
+        // Add legend control
+        this.mapControlsService.getLegendControl(this.map, this.layers);
       }
       if (this.useGeomanTools) {
         this.mapEvent.emit({
@@ -401,9 +393,6 @@ export class SafeMapComponent
       // Add leaflet fullscreen control
       this.mapControlsService.getFullScreenControl(this.map);
 
-      // Add legend control
-      // this.mapControlsService.getLegendControl(this.map);
-
       // Add TimeDimension control
       this.mapControlsService.setTimeDimension(
         this.map,
@@ -467,60 +456,6 @@ export class SafeMapComponent
         timeDimensionGeoJSON as GeoJsonObject
       );
     }
-  }
-
-  /** Updates the map legend, based on visible layers */
-  private setUpMapLegend() {
-    const updateMapLegend = () => {
-      // Add legends to the map
-      const layerLegends: {
-        layer: string;
-        legend: LegendDefinition;
-      }[] = [];
-      this.layers.forEach((layer) => {
-        // check if layer is visible
-        if (!this.map.hasLayer(layer.getLayer())) return;
-
-        const legend = layer.getLegend();
-        if (legend) {
-          layerLegends.push({
-            layer: layer.name,
-            legend,
-          });
-        }
-      });
-
-      // remove old legend
-      if (this.legendCtrl) this.legendCtrl.remove();
-
-      // add new legend
-      this.legendCtrl = this.mapControlsService.getLegendControl(layerLegends);
-      this.legendCtrl.addTo(this.map);
-
-      const container = this.legendCtrl.getContainer();
-      if (container) {
-        // prevent click events from propagating to the map
-        container.addEventListener('click', (e: any) => {
-          L.DomEvent.stopPropagation(e);
-        });
-
-        // prevent mouse wheel events from propagating to the map
-        container.addEventListener('wheel', (e: any) => {
-          L.DomEvent.stopPropagation(e);
-        });
-      }
-    };
-
-    updateMapLegend();
-
-    // In case any layer is hidden in the tree, we should not display their legend
-    this.map.on('overlayadd', () => {
-      updateMapLegend();
-    });
-
-    this.map.on('overlayremove', () => {
-      updateMapLegend();
-    });
   }
 
   /**
