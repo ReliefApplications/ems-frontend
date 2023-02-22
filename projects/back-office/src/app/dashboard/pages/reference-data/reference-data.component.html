@@ -66,27 +66,35 @@
         </mat-form-field>
       </div>
       <!-- Fields -->
-      <mat-form-field class="chip-list" appearance="outline">
-        <mat-label>{{ 'pages.referenceData.fields' | translate }}</mat-label>
-        <mat-chip-list #chipList [ariaLabel]="'components.referenceData.fields.ariaLabel' | translate">
-          <mat-chip
-            *ngFor="let field of valueFields"
-            [selectable]="true"
-            [removable]="true"
-            (removed)="remove(field)"
+      <kendo-grid [data]="valueFields" class="mb-5" *ngIf="!loading">
+        <kendo-grid-column
+          field="name"
+          title="{{ 'pages.referenceData.fields.title' | translate }}"
+        ></kendo-grid-column>
+        <kendo-grid-column
+          field="type"
+          title="{{ 'pages.referenceData.type' | translate }}"
+        ></kendo-grid-column>
+        <ng-template kendoGridNoRecordsTemplate>
+          <div *ngIf="triedToGetFields && !loadingFields">
+            {{ 'pages.referenceData.fields.noFields' | translate }}
+          </div>
+          <safe-button
+            *ngIf="!loadingFields"
+            category="secondary"
+            variant="primary"
+            (click)="$event.preventDefault(); getFields()"
+            class="mx-auto my-1"
           >
-            {{ field }}
-            <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
-          </mat-chip>
-          <input
-            #fieldInput
-            [matChipInputFor]="chipList"
-            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-            (focusout)="add($event)"
-            (matChipInputTokenEnd)="add($event)"
-          />
-        </mat-chip-list>
-      </mat-form-field>
+            {{ 'pages.referenceData.fields.fetch' | translate }}
+          </safe-button>
+          <mat-spinner
+            diameter="45"
+            class="my-2"
+            *ngIf="loadingFields"
+          ></mat-spinner>
+        </ng-template>
+      </kendo-grid>
     </div>
     <!-- CSV Input for static type -->
     <div *ngIf="type === 'static'" class="flex gap-2">
@@ -137,8 +145,8 @@
           'pages.referenceData.valueField' | translate
         }}</mat-label>
         <mat-select formControlName="valueField">
-          <mat-option *ngFor="let value of valueFields" [value]="value">{{
-            value
+          <mat-option *ngFor="let value of valueFields" [value]="value.name">{{
+            value.name
           }}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -167,9 +175,11 @@
     <!-- Kendo grid to preview data on static type -->
     <div *ngIf="!csvLoading && csvValue && type === 'static'">
       <kendo-grid [data]="newData">
-        <kendo-grid-column *ngFor="let field of valueFields" [field]="field">{{
-          field
-        }}</kendo-grid-column>
+        <kendo-grid-column
+          *ngFor="let field of valueFields"
+          [field]="field.name"
+          [title]="field.name + ' (' + field.type + ')'"
+        ></kendo-grid-column>
       </kendo-grid>
     </div>
   </form>

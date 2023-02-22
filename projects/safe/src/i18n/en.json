@@ -1684,7 +1684,12 @@
 		},
 		"referenceData": {
 			"csv": "CSV input",
-			"fields": "Fields",
+			"fields": {
+				"fetch": "Fetch fields",
+				"missingConfig": "Can't fetch fields. Missing configuration: {{config}}",
+				"noFields": "No fields found",
+				"title": "Field"
+			},
 			"graphQLFilter": "GraphQL query parameters",
 			"path": "Path",
 			"placeholder": {

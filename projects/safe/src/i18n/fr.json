@@ -1692,7 +1692,12 @@
 		},
 		"referenceData": {
 			"csv": "Fichier CSV d'entrée",
-			"fields": "Champs",
+			"fields": {
+				"fetch": "Récupérer les champs",
+				"missingConfig": "Impossible de récupérer les champs. Configuration manquante : {{config}}",
+				"noFields": "Aucun champ trouvé",
+				"title": "Champ"
+			},
 			"graphQLFilter": "Paramètres de la requête GraphQL",
 			"path": "Chemin",
 			"placeholder": {
