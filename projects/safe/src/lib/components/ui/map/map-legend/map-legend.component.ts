@@ -4,6 +4,7 @@ import { SafeButtonModule } from '../../button/button.module';
 import { SafeIconModule } from '../../icon/icon.module';
 import { LegendDefinition } from '../interfaces/layer-legend.type';
 import { SafeIconDisplayModule } from '../../../../pipes/icon-display/icon-display.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Map legend component
@@ -16,6 +17,7 @@ import { SafeIconDisplayModule } from '../../../../pipes/icon-display/icon-displ
     SafeButtonModule,
     SafeIconModule,
     SafeIconDisplayModule,
+    TranslateModule,
   ],
   templateUrl: './map-legend.component.html',
   styleUrls: ['./map-legend.component.scss'],
@@ -40,12 +42,11 @@ export class SafeMapLegendComponent {
     gradient: {
       value: number;
       color: string;
-      label: string;
     }[]
   ) {
     gradient.sort((a: any, b: any) => a.value - b.value);
     return (
-      'linear-gradient(to bottom, ' +
+      'linear-gradient(to top, ' +
       gradient.map((g) => `${g.color} ${g.value * 100}%`).join(', ') +
       ')'
     );

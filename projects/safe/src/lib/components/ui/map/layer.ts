@@ -519,13 +519,12 @@ export class Layer {
         };
       case 'heatmap':
         // transform gradient to array of objects
-        const gradient: { color: string; value: number; label: string }[] = [];
+        const gradient: { color: string; value: number }[] = [];
         Object.keys(this.firstStyle.heatmap.gradient).forEach((key) => {
           const nbr = parseFloat(key);
           gradient.push({
             color: this.firstStyle.heatmap.gradient[nbr],
             value: parseFloat(key),
-            label: `${parseFloat(key)}`,
           });
         });
 
