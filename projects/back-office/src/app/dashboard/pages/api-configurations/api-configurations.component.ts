@@ -5,7 +5,6 @@ import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/materia
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ApiConfiguration,
-  SafeAuthService,
   SafeConfirmService,
   SafeSnackBarService,
   SafeUnsubscribeComponent,
@@ -73,7 +72,6 @@ export class ApiConfigurationsComponent
    * @param apollo Apollo service
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
-   * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param router Angular router
    * @param translate Angular translate service
@@ -82,7 +80,6 @@ export class ApiConfigurationsComponent
     private apollo: Apollo,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private router: Router,
     private translate: TranslateService
@@ -232,6 +229,14 @@ export class ApiConfigurationsComponent
                   { error: true }
                 );
               } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.apiConfiguration.one')
+                      .toLowerCase(),
+                    value: data?.addApiConfiguration.name,
+                  })
+                );
                 if (data) {
                   this.router.navigate([
                     '/settings/apiconfigurations',

@@ -173,7 +173,7 @@
 			"noOpened": "****** {{value}} ******",
 			"objectCreated": "{{value}} ****** {{type}} ******",
 			"objectDeleted": "{{value}} ******",
-			"objectDuplicated": "****** {{type}} ****** {{value}} ******",
+			"objectDuplicated": "{{type}} ****** {{value}} ******",
 			"objectInvited": "{{name}} ******",
 			"objectLocked": "{{name}} ******",
 			"objectNotCreated": "****** {{type}} ****** {{error}}",
