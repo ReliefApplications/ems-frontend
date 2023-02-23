@@ -1611,7 +1611,7 @@
 				"pingFailed": "La requête ping a échoué.",
 				"pingReceived": "La requête ping a reçu une réponse positive."
 			},
-			"ping": "Essayer avec ces paramètres",
+			"ping": "Essayer avec ces {{type}} paramètres",
 			"pingUrl": "Extension ping",
 			"placeholder": {
 				"baseUrl": "URL de base pour l'API",
@@ -1623,6 +1623,7 @@
 				"token": "Entrez le jeton d'accès pour l'authentification",
 				"tokenUrl": "Entrez l'URL du jeton d'accès"
 			},
+			"saved": "sauvegardés",
 			"scope": "Scope",
 			"secret": "Client Secret",
 			"token": "Jeton d'accès",

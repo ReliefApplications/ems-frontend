@@ -1603,7 +1603,7 @@
 				"pingFailed": "******",
 				"pingReceived": "******"
 			},
-			"ping": "******",
+			"ping": "****** {{type}} ******",
 			"pingUrl": "******",
 			"placeholder": {
 				"baseUrl": "******",
@@ -1615,6 +1615,7 @@
 				"token": "******",
 				"tokenUrl": "******"
 			},
+			"saved": "******",
 			"scope": "******",
 			"secret": "******",
 			"token": "******",

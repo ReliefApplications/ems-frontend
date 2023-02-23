@@ -1603,7 +1603,7 @@
 				"pingFailed": "Ping request failed.",
 				"pingReceived": "Received positive response from ping request."
 			},
-			"ping": "Try settings",
+			"ping": "Try {{type}} settings",
 			"pingUrl": "Ping extension",
 			"placeholder": {
 				"baseUrl": "Base URL for the API",
@@ -1615,6 +1615,7 @@
 				"token": "Enter token for authentication",
 				"tokenUrl": "Enter access token URL"
 			},
+			"saved": "saved",
 			"scope": "Scope",
 			"secret": "Client Secret",
 			"token": "Token",

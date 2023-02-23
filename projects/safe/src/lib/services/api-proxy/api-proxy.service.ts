@@ -40,14 +40,23 @@ export class SafeApiProxyService {
    *
    * @param name - The name of the API
    * @param pingUrl - The url to ping
+   * @param body - Optional: The body to the POST request
    * @returns An observable with results of the request, or null if name is
    * undefined or empty
    */
-  public buildPingRequest(name: string | undefined, pingUrl: string): any {
+  public buildPingRequest(
+    name: string | undefined,
+    pingUrl: string,
+    body?: any
+  ): any {
     if (name) {
-      const url = `${this.baseUrl}${name}${pingUrl}`;
+      const url = this.buildPingUrl(name, pingUrl);
       const headers = this.buildHeaders();
-      return this.restService.get(url, { headers });
+      if (body) {
+        return this.restService.post(this.baseUrl, body, { headers });
+      } else {
+        return this.restService.get(url, { headers });
+      }
     }
     return null;
   }
@@ -80,5 +89,19 @@ export class SafeApiProxyService {
     return firstValueFrom(
       this.restService.post(url, body, { ...options, headers })
     );
+  }
+
+  /**
+   * Builds the ping url to call the backend
+   *
+   * @param {string} apiConfigName name of the Api Configuration
+   * @param {string} pingUrl ping extension url
+   * @returns string ping url
+   */
+  private buildPingUrl(apiConfigName: string, pingUrl: string): string {
+    if (!apiConfigName.endsWith('/') && !pingUrl.startsWith('/')) {
+      apiConfigName = apiConfigName + '/';
+    }
+    return `${this.baseUrl}${apiConfigName}${pingUrl}`;
   }
 }

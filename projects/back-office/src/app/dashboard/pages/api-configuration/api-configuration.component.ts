@@ -163,28 +163,28 @@ export class ApiConfigurationComponent
         authTargetUrl: [
           this.apiConfiguration?.settings &&
           this.apiConfiguration?.settings.authTargetUrl
-            ? '●●●●●●●●●●●●●'
+            ? this.apiConfiguration?.settings.authTargetUrl
             : '',
           Validators.required,
         ],
         apiClientID: [
           this.apiConfiguration?.settings &&
           this.apiConfiguration?.settings.apiClientID
-            ? '●●●●●●●●●●●●●'
+            ? this.apiConfiguration?.settings.apiClientID
             : '',
           Validators.minLength(3),
         ],
         safeSecret: [
           this.apiConfiguration?.settings &&
           this.apiConfiguration?.settings.safeSecret
-            ? '●●●●●●●●●●●●●'
+            ? this.apiConfiguration?.settings.safeSecret
             : '',
           Validators.minLength(3),
         ],
         scope: [
           this.apiConfiguration?.settings &&
           this.apiConfiguration?.settings.scope
-            ? '●●●●●●●●●●●●●'
+            ? this.apiConfiguration?.settings.scope
             : '',
           null,
         ],
@@ -194,7 +194,7 @@ export class ApiConfigurationComponent
         token: [
           this.apiConfiguration?.settings &&
           this.apiConfiguration?.settings.token
-            ? '●●●●●●●●●●●●●'
+            ? this.apiConfiguration?.settings.token
             : '',
           Validators.required,
         ],
@@ -229,32 +229,7 @@ export class ApiConfigurationComponent
   /** Edit the API Configuration using apiForm changes */
   onSave(): void {
     this.loading = true;
-    const variables = { id: this.id };
-    Object.assign(
-      variables,
-      this.apiForm.value.name !== this.apiConfiguration?.name && {
-        name: this.apiForm.value.name,
-      },
-      this.apiForm.value.status !== this.apiConfiguration?.status && {
-        status: this.apiForm.value.status,
-      },
-      this.apiForm.value.authType !== this.apiConfiguration?.authType && {
-        authType: this.apiForm.value.authType,
-      },
-      this.apiForm.value.endpoint !== this.apiConfiguration?.endpoint && {
-        endpoint: this.apiForm.value.endpoint,
-      },
-      this.apiForm.value.graphQLEndpoint !==
-        this.apiConfiguration?.graphQLEndpoint && {
-        graphQLEndpoint: this.apiForm.value.graphQLEndpoint,
-      },
-      this.apiForm.value.pingUrl !== this.apiConfiguration?.pingUrl && {
-        pingUrl: this.apiForm.value.pingUrl,
-      },
-      this.apiForm.controls.settings.touched && {
-        settings: this.apiForm.controls.settings.value,
-      }
-    );
+    const variables = this.generateVariables(false);
     this.apollo
       .mutate<EditApiConfigurationMutationResponse>({
         mutation: EDIT_API_CONFIGURATION,
@@ -281,10 +256,23 @@ export class ApiConfigurationComponent
       });
   }
 
-  /** Send a ping request to test the configuration */
-  onPing(): void {
+  /**
+   * Send a ping request to test the configuration
+   *
+   * @param {('saved' | 'unsaved')} type string that indicates with settings to use in the request:
+   * the saved ones or in the form at the moment
+   */
+  onPing(type: 'saved' | 'unsaved'): void {
+    let body = null;
+    if (type === 'unsaved') {
+      body = this.generateVariables(true);
+    }
     this.apiProxy
-      .buildPingRequest(this.apiConfiguration?.name, this.apiForm.value.pingUrl)
+      .buildPingRequest(
+        this.apiConfiguration?.name,
+        this.apiForm.value.pingUrl,
+        body
+      )
       ?.subscribe((res: any) => {
         if (res) {
           if (res.access_token) {
@@ -309,5 +297,48 @@ export class ApiConfigurationComponent
           );
         }
       });
+  }
+
+  /**
+   * Generates a object using the api form with all variables
+   *
+   * @param {boolean} allVariables boolean that indicates if all variables should be included
+   * @returns variables object
+   */
+  generateVariables(allVariables: boolean): any {
+    const variables = { id: this.id };
+    return Object.assign(
+      variables,
+      allVariables && {
+        oldName: this.apiConfiguration?.name,
+      },
+      (this.apiForm.value.name !== this.apiConfiguration?.name ||
+        allVariables) && {
+        name: this.apiForm.value.name,
+      },
+      (this.apiForm.value.status !== this.apiConfiguration?.status ||
+        allVariables) && {
+        status: this.apiForm.value.status,
+      },
+      (this.apiForm.value.authType !== this.apiConfiguration?.authType ||
+        allVariables) && {
+        authType: this.apiForm.value.authType,
+      },
+      (this.apiForm.value.endpoint !== this.apiConfiguration?.endpoint ||
+        allVariables) && {
+        endpoint: this.apiForm.value.endpoint,
+      },
+      (this.apiForm.value.graphQLEndpoint !==
+        this.apiConfiguration?.graphQLEndpoint ||
+        allVariables) && {
+        graphQLEndpoint: this.apiForm.value.graphQLEndpoint,
+      },
+      this.apiForm.value.pingUrl !== this.apiConfiguration?.pingUrl && {
+        pingUrl: this.apiForm.value.pingUrl,
+      },
+      (this.apiForm.controls.settings.touched || allVariables) && {
+        settings: this.apiForm.controls.settings.value,
+      }
+    );
   }
 }

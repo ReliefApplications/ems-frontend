@@ -73,16 +73,28 @@
       <h2>
         {{ 'pages.apiConfiguration.host' | translate }}
       </h2>
-      <!-- Send ping request -->
-      <safe-button
-        icon="online_prediction"
-        category="secondary"
-        variant="primary"
-        (click)="onPing()"
-        [disabled]="!apiForm.value.pingUrl || !apiForm.value.endpoint"
-      >
-        {{ 'pages.apiConfiguration.ping' | translate }}
-      </safe-button>
+      <div class="flex flex-wrap gap-2 justify-end">
+        <!-- Send ping request using saved settings-->
+        <safe-button
+          icon="online_prediction"
+          category="secondary"
+          variant="primary"
+          (click)="onPing('saved')"
+          [disabled]="!apiForm.value.pingUrl || !apiForm.value.endpoint"
+        >
+          {{ 'pages.apiConfiguration.ping' | translate: { type: 'pages.apiConfiguration.saved' | translate } }}
+        </safe-button>
+        <!-- Send ping request using unsaved settings-->
+        <safe-button
+          icon="online_prediction"
+          category="secondary"
+          variant="primary"
+          (click)="onPing('unsaved')"
+          [disabled]="!apiForm.value.pingUrl || !apiForm.value.endpoint || !apiForm.dirty"
+        >
+          {{ 'pages.apiConfiguration.ping' | translate: { type: '' } }}
+        </safe-button>
+      </div>
     </div>
     <div class="flex gap-x-2">
       <!-- Endpoint -->
