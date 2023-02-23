@@ -1064,6 +1064,7 @@
 						"percentage": "Percentage",
 						"showCategory": "Show category labels",
 						"showValue": "Show value labels",
+						"textColor": "Text color",
 						"title": "Labels",
 						"valueType": "Value type"
 					},

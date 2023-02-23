@@ -54,19 +54,19 @@
           
           
             <div>
-              <mat-form-field appearance="outline">
+              <mat-form-field appearance="outline" class="w-full">
                 <mat-label>{{
                   'components.widget.settings.chart.text' | translate
                 }}C</mat-label>
-                <input matInput formControlName="text" />
+                <input matInput formControlName="text"/>
               </mat-form-field>
             </div>
 
             <ng-container *ngIf="chartForm.value.title.text">
               <div>
-                <h3>
+                <!-- <h3>
                   {{ 'components.widget.settings.chart.style' | translate }}D
-                </h3>
+                </h3> -->
                 <mat-form-field appearance="outline">
                   <mat-label>{{
                     'components.widget.settings.chart.size' | translate
@@ -77,8 +77,11 @@
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
-                <div class="flex gap-2 items-center">
-                  <safe-button
+                
+                <div class="flex items-center gap-4">
+                  
+                  <div class="flex justify-center items-center btns-box">
+                    <safe-button
                     icon="format_bold"
                     (click)="onToggleStyle('title.bold')"
                     [category]="
@@ -87,42 +90,67 @@
                         : 'tertiary'
                     "
                     [variant]="chartForm.get('title.bold')?.value && 'primary'"
-                  ></safe-button>
-                  <safe-button
-                    icon="format_italic"
-                    (click)="onToggleStyle('title.italic')"
-                    [category]="
-                      chartForm.get('title.italic')?.value
-                        ? 'secondary'
-                        : 'tertiary'
-                    "
-                    [variant]="chartForm.get('title.italic')?.value && 'primary'"
-                  ></safe-button>
-                  <safe-button
-                    (click)="onToggleStyle('title.underline')"
-                    icon="format_underline"
-                    [category]="
-                      chartForm.get('title.underline')?.value
-                        ? 'secondary'
-                        : 'tertiary'
-                    "
-                    [variant]="
-                      chartForm.get('title.underline')?.value && 'primary'
-                    "
-                  ></safe-button>
-                  <div>
+                    class="border-none *"
+                    ></safe-button>
+                    <safe-button
+                      icon="format_italic"
+                      (click)="onToggleStyle('title.italic')"
+                      [category]="
+                        chartForm.get('title.italic')?.value
+                          ? 'secondary'
+                          : 'tertiary'
+                      "
+                      [variant]="chartForm.get('title.italic')?.value && 'primary'"
+                      class="border-none *"
+                    ></safe-button>
+                    <safe-button
+                      (click)="onToggleStyle('title.underline')"
+                      icon="format_underline"
+                      [category]="
+                        chartForm.get('title.underline')?.value
+                          ? 'secondary'
+                          : 'tertiary'
+                      "
+                      [variant]="
+                        chartForm.get('title.underline')?.value && 'primary'
+                      "
+                      class="border-none *"
+                    ></safe-button>
+                  </div>
+
+                  <div class="relative">
+                    <h5 class="absolute top-[-20px] text-center">{{
+                      'components.widget.settings.chart.labels.textColor' | translate
+                    }}</h5>
                     <kendo-colorpicker
                       formControlName="color"
                     ></kendo-colorpicker>
                   </div>
-                </div>
+                </div>              
+              
               </div>
-            
+              
               <div>
                 <h3>
                   {{ 'components.widget.settings.chart.position' | translate }}G
                 </h3>
-                <div class="flex gap-0.5">
+
+                <mat-form-field appearance="outline">
+                  
+                  <mat-select value="top">
+                    <mat-option *ngFor="let position of titlePositions" value = "{{ position.value }}">
+                      <div class="flex">
+                        <span class="flex">{{ position.value }}
+                          <safe-icon icon="{{ position.icon }}" class="flex ml-2"></safe-icon>
+                        </span>
+                      </div>
+                    </mat-option>
+                  
+                  </mat-select>
+                
+                </mat-form-field>
+                
+                <!-- <div class="flex gap-0.5">
                   <safe-button
                     icon="{{ position.icon }}"
                     category="secondary"
@@ -139,7 +167,8 @@
                     *ngFor="let position of titlePositions"
                   >
                   </safe-button>
-                </div>
+                </div> -->
+              
               </div>
           </ng-container>
         

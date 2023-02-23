@@ -1071,6 +1071,7 @@
 						"percentage": "Pourcentage",
 						"showCategory": "Afficher la catégorie",
 						"showValue": "Afficher la valeur",
+						"textColor": "todo(translation)",
 						"title": "Labels",
 						"valueType": "Type de valeur"
 					},

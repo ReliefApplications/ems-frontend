@@ -1,3 +1,7 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
 .axis-container {
   display: flex;
   gap: 8px;
@@ -5,4 +9,8 @@
   mat-slide-toggle {
     margin-top: 15px;
   }
+}
+
+.btns-box{
+  border: 1px solid #e5e7eb;
 }
