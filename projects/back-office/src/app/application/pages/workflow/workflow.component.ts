@@ -191,11 +191,32 @@ export class WorkflowComponent
           permissions: e,
         },
       })
-      .subscribe(({ data }) => {
-        this.workflow = {
-          ...this.workflow,
-          permissions: data?.editPage.permissions,
-        };
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.page.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.page.one'),
+                value: '',
+              })
+            );
+            this.workflow = {
+              ...this.workflow,
+              permissions: data?.editPage.permissions,
+            };
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
@@ -256,26 +277,47 @@ export class WorkflowComponent
                 id: step.id,
               },
             })
-            .subscribe(({ data }) => {
-              if (data) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: this.translate.instant('common.step.one'),
-                  })
-                );
-                this.steps = this.steps.filter(
-                  (x) => x.id !== data?.deleteStep.id
-                );
-                if (index === this.activeStep) {
-                  this.onOpenStep(-1);
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotDeleted',
+                      {
+                        value: this.translate.instant('common.step.one'),
+                        error: errors ? errors[0].message : '',
+                      }
+                    ),
+                    { error: true }
+                  );
                 } else {
-                  if (currentStep) {
-                    this.activeStep = this.steps.findIndex(
-                      (x) => x.id === currentStep.id
+                  if (data) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectDeleted',
+                        {
+                          value: this.translate.instant('common.step.one'),
+                        }
+                      )
                     );
+                    this.steps = this.steps.filter(
+                      (x) => x.id !== data?.deleteStep.id
+                    );
+                    if (index === this.activeStep) {
+                      this.onOpenStep(-1);
+                    } else {
+                      if (currentStep) {
+                        this.activeStep = this.steps.findIndex(
+                          (x) => x.id === currentStep.id
+                        );
+                      }
+                    }
                   }
                 }
-              }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
             });
         }
       });
@@ -320,26 +362,32 @@ export class WorkflowComponent
           steps: steps.map((step) => step.id),
         },
       })
-      .subscribe(({ errors, data }) => {
-        if (data) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectReordered', {
-              type: this.translate.instant('common.step.one'),
-            })
-          );
-          if (currentStep) {
-            const index = steps.findIndex((x) => x.id === currentStep.id);
-            this.activeStep = index;
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (data) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectReordered', {
+                type: this.translate.instant('common.step.one'),
+              })
+            );
+            if (currentStep) {
+              const index = steps.findIndex((x) => x.id === currentStep.id);
+              this.activeStep = index;
+            }
+            this.steps = steps;
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.workflow.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
           }
-          this.steps = steps;
-        } else {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotUpdated', {
-              type: this.translate.instant('common.workflow.one'),
-              error: errors ? errors[0].message : '',
-            })
-          );
-        }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 

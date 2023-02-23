@@ -148,13 +148,28 @@ export class RecordsTabComponent implements OnInit {
           hardDelete: this.showDeletedRecords,
         },
       })
-      .subscribe(() => {
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.objectDeleted', {
-            value: this.translate.instant('common.record.one'),
-          })
-        );
-        this.fetchRecords(true);
+      .subscribe({
+        next: ({ errors }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotDeleted', {
+                value: this.translate.instant('common.record.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate.instant('common.record.one'),
+              })
+            );
+            this.fetchRecords(true);
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
@@ -173,8 +188,28 @@ export class RecordsTabComponent implements OnInit {
           id,
         },
       })
-      .subscribe(() => {
-        this.fetchRecords(true);
+      .subscribe({
+        next: ({ errors }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotRestored', {
+                type: this.translate.instant('common.record.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectRestored', {
+                type: this.translate.instant('common.record.one'),
+              })
+            );
+            this.fetchRecords(true);
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 

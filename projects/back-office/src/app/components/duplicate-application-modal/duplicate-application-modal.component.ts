@@ -68,33 +68,39 @@ export class DuplicateApplicationModalComponent implements OnInit {
           application: this.currentApp.id,
         },
       })
-      .subscribe(({ errors, data }) => {
-        if (errors) {
-          this.snackBar.openSnackBar(
-            this.translateService.instant(
-              'common.notifications.objectNotDuplicated',
-              {
-                type: this.translateService
-                  .instant('common.application.one')
-                  .toLowerCase(),
-                error: errors[0].message,
-              }
-            )
-          );
-        } else {
-          this.snackBar.openSnackBar(
-            this.translateService.instant(
-              'common.notifications.objectDuplicated',
-              {
-                type: this.translateService
-                  .instant('common.application.one')
-                  .toLowerCase(),
-                value: this.currentApp.name,
-              }
-            )
-          );
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translateService.instant(
+                'common.notifications.objectNotDuplicated',
+                {
+                  type: this.translateService
+                    .instant('common.application.one')
+                    .toLowerCase(),
+                  error: errors ? errors[0].message : '',
+                }
+              ),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translateService.instant(
+                'common.notifications.objectDuplicated',
+                {
+                  type: this.translateService
+                    .instant('common.application.one')
+                    .toLowerCase(),
+                  value: this.currentApp.name,
+                }
+              )
+            );
+          }
           this.dialogRef.close(data?.duplicateApplication);
-        }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 

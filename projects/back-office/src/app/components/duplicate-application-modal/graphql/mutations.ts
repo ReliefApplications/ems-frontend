@@ -9,25 +9,6 @@ export const DUPLICATE_APPLICATION = gql`
       id
       name
       createdAt
-      status
-      permissions {
-        canSee {
-          id
-          title
-        }
-        canUpdate {
-          id
-          title
-        }
-        canDelete {
-          id
-          title
-        }
-      }
-      canSee
-      canUpdate
-      canDelete
-      usersCount
     }
   }
 `;

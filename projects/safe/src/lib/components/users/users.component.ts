@@ -108,36 +108,38 @@ export class SafeUsersComponent implements OnInit {
               application: this.roles[0].application?.id,
             },
           })
-          .subscribe(({ errors, data }) => {
-            if (!errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectInvited', {
-                  name: this.translate
-                    .instant(
-                      data?.addUsers.length
-                        ? 'common.user.few'
-                        : 'common.user.one'
-                    )
-                    .toLowerCase(),
-                })
-              );
-              this.users.data = this.users.data.concat(data?.addUsers || []);
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotInvited',
-                  {
-                    name: this.translate
-                      .instant(
-                        data?.addUsers.length
-                          ? 'common.user.few'
-                          : 'common.user.one'
-                      )
-                      .toLowerCase(),
-                  }
-                ),
-                { error: true }
-              );
+          .subscribe({
+            next: ({errors, data}) => {
+              if (!errors) {
+                if (data?.addUsers.length) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('components.users.onInvite.plural')
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('components.users.onInvite.singular')
+                  );
+                }
+                this.users.data = this.users.data.concat(data?.addUsers || []);
+              } else {
+                if (value.length > 1) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'components.users.onNotInvite.plural',
+                      { error: errors[0].message }
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'components.users.onNotInvite.singular',
+                      { error: errors[0].message }
+                    ),
+                    { error: true }
+                  );
+                }
+              }
             }
           });
       }
@@ -197,39 +199,64 @@ export class SafeUsersComponent implements OnInit {
             mutation: DELETE_USERS,
             variables: { ids },
           })
-          .subscribe(({ data }) => {
-            this.loading = false;
-            if (data?.deleteUsers) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate
-                    .instant(
-                      data.deleteUsers > 1
-                        ? 'common.user.few'
-                        : 'common.user.one'
-                    )
-                    .toLowerCase(),
-                })
-              );
-              this.users.data = this.users.data.filter(
-                (u) => !ids.includes(u.id)
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotDeleted',
-                  {
-                    value: this.translate
-                      .instant(
-                        ids.length > 1 ? 'common.user.few' : 'common.user.one'
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
+                if (ids.length > 1) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'components.users.onNotDelete.plural',
+                      { error: errors ? errors[0].message : '' }
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'components.users.onNotDelete.singular',
+                      { error: errors ? errors[0].message : '' }
+                    ),
+                    { error: true }
+                  );
+                }
+              } else {
+                this.loading = false;
+                if (data?.deleteUsers) {
+                  if (data.deleteUsers > 1) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant('components.users.onDelete.plural')
+                    );
+                  } else {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'components.users.onDelete.singular'
                       )
-                      .toLowerCase(),
-                    error: '',
+                    );
                   }
-                ),
-                { error: true }
-              );
-            }
+                  this.users.data = this.users.data.filter(
+                    (u) => !ids.includes(u.id)
+                  );
+                } else {
+                  if (ids.length > 1) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'components.users.onNotDelete.plural',
+                        { error: '' }
+                      ),
+                      { error: true }
+                    );
+                  } else {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'components.users.onNotDelete.singular',
+                        { error: '' }
+                      ),
+                      { error: true }
+                    );
+                  }
+                }
+              }
+            },
           });
       }
     });

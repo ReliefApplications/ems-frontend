@@ -218,10 +218,21 @@ export class ApiConfigurationComponent
           permissions: e,
         },
       })
-      .subscribe(({ data, loading }) => {
-        if (data) {
-          this.apiConfiguration = data.editApiConfiguration;
-          this.loading = loading;
+      .subscribe(({ errors, data, loading }) => {
+        if (errors) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.apiConfiguration.one'),
+              error: errors ? errors[0].message : '',
+            }),
+            { error: true }
+          );
+          this.loading = false;
+        } else {
+          if (data) {
+            this.apiConfiguration = data.editApiConfiguration;
+            this.loading = loading;
+          }
         }
       });
   }
@@ -265,7 +276,7 @@ export class ApiConfigurationComponent
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotUpdated', {
               type: this.translate.instant('common.apiConfiguration.one'),
-              error: errors[0].message,
+              error: errors ? errors[0].message : '',
             }),
             { error: true }
           );

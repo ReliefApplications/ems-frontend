@@ -99,13 +99,25 @@ export class SafeProfileComponent
           },
         },
       })
-      .subscribe(({ data }) => {
-        if (data) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('pages.profile.notifications.updated')
-          );
-          this.user.name = data.editUserProfile.name;
-        }
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('pages.profile.notifications.notUpdated'),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('pages.profile.notifications.updated')
+              );
+              this.user.name = data.editUserProfile.name;
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
@@ -129,13 +141,27 @@ export class SafeProfileComponent
             },
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('pages.profile.notifications.updated')
-            );
-            this.user.favoriteApp = data.editUserProfile.favoriteApp;
-          }
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'pages.profile.notifications.notUpdated'
+                ),
+                { error: true }
+              );
+            } else {
+              if (data) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('pages.profile.notifications.updated')
+                );
+                this.user.favoriteApp = data.editUserProfile.favoriteApp;
+              }
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }
