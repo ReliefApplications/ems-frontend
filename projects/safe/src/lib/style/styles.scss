@@ -504,10 +504,9 @@ body {
 
 // === DIALOGS ===
 .fullscreen-dialog {
-  margin-top: 72px;
   max-width: unset !important;
   width: 100%;
-  height: calc(100% - 72px);
+  height: 100%;
 }
 
 .no-padding-dialog {
