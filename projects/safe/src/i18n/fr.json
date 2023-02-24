@@ -1103,6 +1103,7 @@
 						"valueType": "Type de valeur"
 					},
 					"legend": "Légende",
+					"legendPositionNone": "todo(translation)",
 					"orientation": "Orientation",
 					"palette": {
 						"enable": "Configurer la palette",

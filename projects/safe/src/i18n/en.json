@@ -1096,6 +1096,7 @@
 						"valueType": "Value type"
 					},
 					"legend": "Legend",
+					"legendPositionNone": "None",
 					"orientation": "Orientation",
 					"palette": {
 						"enable": "Use Custom Palette",

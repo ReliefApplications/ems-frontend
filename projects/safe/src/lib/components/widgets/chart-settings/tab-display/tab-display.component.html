@@ -9,35 +9,30 @@
             {{ 'components.widget.settings.chart.legend' | translate }}
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <mat-slide-toggle formControlName="visible">{{
-          'common.display' | translate
-        }}</mat-slide-toggle>
-        <ng-container *ngIf="chartForm.value.legend.visible">
-          <div>
-            <h3>
-              {{ 'components.widget.settings.chart.position' | translate }}
-            </h3>
-            <div class="flex gap-0.5">
-              <safe-button
-                icon="{{ position.icon }}"
-                category="secondary"
-                [variant]="
-                  position.value === chartForm.value.legend.position
-                    ? 'primary'
-                    : ''
-                "
-                (click)="
-                  chartForm.patchValue({
-                    legend: { position: position.value }
-                  })
-                "
-                *ngFor="let position of legendPositions"
-              >
-              </safe-button>
-            </div>
-          </div>
-          <div></div>
-        </ng-container>
+        <div>
+          <h3>
+            {{ 'components.widget.settings.chart.position' | translate }}
+          </h3>
+          
+            <mat-form-field appearance="outline" [ngClass]="{'bg-opacity-50': selectLegendPosition === 'none'}">
+              
+              <mat-select (selectionChange)="onLegendPositionSelectionChange($event)" [(value)]="selectLegendPosition">
+                <mat-option value = "none">
+                  {{ 'components.widget.settings.chart.legendPositionNone' | translate }}
+                </mat-option>
+                <mat-option *ngFor="let position of legendPositions" value = "{{ position.value }}">
+                  <div class="flex">
+                    <span class="flex capitalize">{{ position.value }}
+                      <safe-icon icon="{{ position.icon }}" class="flex ml-2"></safe-icon>
+                    </span>
+                  </div>
+                </mat-option>
+              
+              </mat-select>
+            
+            </mat-form-field>  
+      
+        </div>
       </mat-expansion-panel>
       <!-- === TITLE === -->
       <mat-expansion-panel formGroupName="title">
