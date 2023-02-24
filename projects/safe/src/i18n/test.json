@@ -197,7 +197,9 @@
 		},
 		"pagination": {
 			"empty": "******",
-			"loadMore": "******"
+			"itemsPerPage": "******",
+			"loadMore": "******",
+			"of": "******"
 		},
 		"placeholder": {
 			"email": "******",
