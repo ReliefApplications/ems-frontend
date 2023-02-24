@@ -65,6 +65,7 @@ export class SafeResourceGridModalComponent implements OnInit {
         convert: false,
         update: false,
         inlineEdition: false,
+        remove: false,
       },
     };
     this.ref.tick();

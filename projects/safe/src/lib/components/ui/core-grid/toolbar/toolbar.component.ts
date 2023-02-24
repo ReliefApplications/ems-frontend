@@ -20,6 +20,7 @@ export class SafeGridToolbarComponent implements OnInit {
     delete: false,
     history: false,
     convert: false,
+    remove: false,
   };
   @Output() action = new EventEmitter();
 

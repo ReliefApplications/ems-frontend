@@ -1123,6 +1123,7 @@
 						"delete": "******",
 						"export": "******",
 						"inline": "******",
+						"remove": "******",
 						"show": "******",
 						"showDetails": "******",
 						"title": "******",
@@ -1180,6 +1181,7 @@
 							"delete": "******",
 							"export": "******",
 							"inline": "******",
+							"remove": "******",
 							"show": "******",
 							"showDetails": "******",
 							"update": "******"

@@ -7,13 +7,21 @@
     kendoButton
     (click)="action.emit({ action: 'convert', items: items })"
   >
-    Convert
+    {{ 'models.record.convert' | translate }}
   </button>
   <button
     *ngIf="actions.delete && canDelete"
     kendoButton
     (click)="action.emit({ action: 'delete', items: items })"
   >
-    Delete
+    {{ 'common.delete' | translate }}
+  </button>
+
+  <button
+    *ngIf="actions.remove && canUpdate"
+    kendoButton
+    (click)="action.emit({ action: 'remove', items: items })"
+  >
+    {{ 'components.widget.settings.grid.actions.remove' | translate }}
   </button>
 </ng-container>

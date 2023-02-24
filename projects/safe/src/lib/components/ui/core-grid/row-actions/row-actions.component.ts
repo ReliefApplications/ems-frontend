@@ -16,6 +16,7 @@ export class SafeGridRowActionsComponent implements OnInit {
     delete: false,
     history: false,
     convert: false,
+    remove: false,
   };
   @Output() action = new EventEmitter();
 
@@ -24,7 +25,8 @@ export class SafeGridRowActionsComponent implements OnInit {
     return (
       this.actions.history ||
       (this.item.canDelete && this.actions.delete) ||
-      (this.item.canUpdate && (this.actions.update || this.actions.convert))
+      (this.item.canUpdate &&
+        (this.actions.update || this.actions.convert || this.actions.remove))
     );
   }
 

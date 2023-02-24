@@ -267,6 +267,20 @@ export const init = (
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
+        name: 'remove:boolean',
+        displayName: 'Allow Remove Records',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'displayAsGrid'],
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource || !obj.displayAsGrid) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
         name: 'addRecord:boolean',
         displayName: 'Add new records',
         category: 'Custom Questions',
@@ -878,6 +892,7 @@ export const init = (
           convert: question.convert,
           update: question.update,
           inlineEdition: question.inlineEdition,
+          remove: question.remove,
         },
       });
     }

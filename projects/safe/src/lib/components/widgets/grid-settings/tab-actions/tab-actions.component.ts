@@ -53,5 +53,10 @@ export class TabActionsComponent {
       text: 'components.widget.settings.grid.actions.showDetails',
       tooltip: 'components.widget.settings.grid.hint.actions.showDetails',
     },
+    {
+      name: 'remove',
+      text: 'components.widget.settings.grid.actions.remove',
+      tooltip: 'components.widget.settings.grid.hint.actions.remove',
+    },
   ];
 }
