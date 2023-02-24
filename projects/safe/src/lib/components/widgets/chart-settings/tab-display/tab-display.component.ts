@@ -24,12 +24,14 @@ export class TabDisplayComponent
   public sizes = [
     4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26,
     28,
-  ];
+  ];  
+  public selectTitlePosition = 'top';
 
   /** @returns the form for the chart */
   public get chartForm(): UntypedFormGroup {
     return this.formGroup.get('chart') as UntypedFormGroup;
   }
+  
 
   /**
    * Constructor of the display tab of the chart settings modal.
@@ -44,6 +46,15 @@ export class TabDisplayComponent
     sizeControl?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.onToggleStyle(''));
+    
+
+    const TitlePosition = this.chartForm.get('title.position');
+    if(TitlePosition){
+      this.selectTitlePosition = TitlePosition.value;
+    }
+    this.chartForm.patchValue({
+      title: { position: this.selectTitlePosition }
+    })
   }
 
   /**
@@ -70,5 +81,12 @@ export class TabDisplayComponent
 
     const font_control = this.chartForm.get('title.font');
     font_control?.setValue(font);
+  }
+
+  //when change the position, set chartForm.title.position as the new position
+  onPositionSelectionChange(event: any){
+    this.chartForm.patchValue({
+      title: { position: event.value }
+    })
   }
 }
