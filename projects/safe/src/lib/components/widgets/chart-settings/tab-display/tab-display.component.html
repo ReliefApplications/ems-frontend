@@ -17,7 +17,7 @@
             <h3>
               {{ 'components.widget.settings.chart.position' | translate }}
             </h3>
-            <div>
+            <div class="flex gap-0.5">
               <safe-button
                 icon="{{ position.icon }}"
                 category="secondary"
@@ -36,29 +36,7 @@
               </safe-button>
             </div>
           </div>
-          <div>
-            <h3>
-              {{ 'components.widget.settings.chart.orientation' | translate }}
-            </h3>
-            <div>
-              <safe-button
-                icon="{{ orientation.icon }}"
-                category="secondary"
-                [variant]="
-                  orientation.value === chartForm.value.legend.orientation
-                    ? 'primary'
-                    : ''
-                "
-                (click)="
-                  chartForm.patchValue({
-                    legend: { orientation: orientation.value }
-                  })
-                "
-                *ngFor="let orientation of legendOrientations"
-              >
-              </safe-button>
-            </div>
-          </div>
+          <div></div>
         </ng-container>
       </mat-expansion-panel>
       <!-- === TITLE === -->
@@ -95,7 +73,7 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-              <div class="style-options">
+              <div class="flex gap-2 items-center">
                 <safe-button
                   icon="format_bold"
                   (click)="onToggleStyle('title.bold')"
@@ -139,7 +117,7 @@
               <h3>
                 {{ 'components.widget.settings.chart.position' | translate }}
               </h3>
-              <div>
+              <div class="flex gap-0.5">
                 <safe-button
                   icon="{{ position.icon }}"
                   category="secondary"

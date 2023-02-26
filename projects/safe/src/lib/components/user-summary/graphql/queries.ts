@@ -15,14 +15,18 @@ export const GET_USER = gql`
 
 /** GraphQL interface of get user by id query */
 export interface GetUserQueryResponse {
-  loading: boolean;
   user: User;
 }
 
 /** Get Applications query */
 export const GET_APPLICATIONS = gql`
-  query GetApplications($first: Int, $afterCursor: ID) {
-    applications(first: $first, afterCursor: $afterCursor, sortField: "name") {
+  query GetApplications($first: Int, $afterCursor: ID, $filter: JSON) {
+    applications(
+      first: $first
+      afterCursor: $afterCursor
+      sortField: "name"
+      filter: $filter
+    ) {
       edges {
         node {
           id
@@ -40,7 +44,6 @@ export const GET_APPLICATIONS = gql`
 
 /** Interface of Get Applications query */
 export interface GetApplicationsQueryResponse {
-  loading: boolean;
   applications: {
     edges: {
       node: Application;
@@ -65,7 +68,6 @@ export const GET_ROLES = gql`
 
 /** Interface of Get Roles query */
 export interface GetRolesQueryResponse {
-  loading: boolean;
   roles: Role[];
 }
 
@@ -82,6 +84,5 @@ export const GET_GROUPS = gql`
 
 /** Model for GetGroupsQueryResponse object */
 export interface GetGroupsQueryResponse {
-  loading: boolean;
   groups: Group[];
 }

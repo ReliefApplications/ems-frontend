@@ -1,7 +1,14 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import {
   DuplicateApplicationMutationResponse,
   DUPLICATE_APPLICATION,
@@ -19,7 +26,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class DuplicateApplicationModalComponent implements OnInit {
   public currentApp: Application;
-  public duplicateForm: FormGroup = new FormGroup({});
+  public duplicateForm: UntypedFormGroup = new UntypedFormGroup({});
 
   /**
    * Duplicate application component.
@@ -33,7 +40,7 @@ export class DuplicateApplicationModalComponent implements OnInit {
    */
   constructor(
     private snackBar: SafeSnackBarService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<DuplicateApplicationModalComponent>,
     private translateService: TranslateService,
@@ -61,8 +68,8 @@ export class DuplicateApplicationModalComponent implements OnInit {
           application: this.currentApp.id,
         },
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ errors, data }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
             this.translateService.instant(
               'common.notifications.objectNotDuplicated',
@@ -70,7 +77,7 @@ export class DuplicateApplicationModalComponent implements OnInit {
                 type: this.translateService
                   .instant('common.application.one')
                   .toLowerCase(),
-                error: res.errors[0].message,
+                error: errors[0].message,
               }
             )
           );
@@ -86,7 +93,7 @@ export class DuplicateApplicationModalComponent implements OnInit {
               }
             )
           );
-          this.dialogRef.close(res.data?.duplicateApplication);
+          this.dialogRef.close(data?.duplicateApplication);
         }
       });
   }

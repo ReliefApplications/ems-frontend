@@ -1,19 +1,20 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   ContentType,
   Step,
   SafeSnackBarService,
   Workflow,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
 import {
   GetWorkflowByIdQueryResponse,
   GET_WORKFLOW_BY_ID,
 } from './graphql/queries';
 import { PreviewService } from '../../../services/preview.service';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Workflow page component for application preview.
@@ -23,7 +24,10 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent implements OnInit, OnDestroy {
+export class WorkflowComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
 
@@ -31,9 +35,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   public id = '';
   public workflow?: Workflow;
   public steps: Step[] = [];
-
-  // === ROUTE ===
-  private routeSubscription?: Subscription;
 
   // === ACTIVE STEP ===
   public activeStep = 0;
@@ -58,16 +59,20 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private router: Router,
     private previewService: PreviewService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Gets the workflow from the route.
    */
   ngOnInit(): void {
-    this.previewService.roleId$.subscribe((role) => {
-      this.role = role;
-    });
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.previewService.roleId$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((role) => {
+        this.role = role;
+      });
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.loading = true;
       this.id = params.id;
       this.apollo
@@ -78,12 +83,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             asRole: this.role,
           },
         })
-        .valueChanges.subscribe(
-          (res) => {
-            if (res.data.workflow) {
-              this.workflow = res.data.workflow;
-              this.steps = res.data.workflow.steps || [];
-              this.loading = res.loading;
+        .valueChanges.subscribe({
+          next: ({ data, loading }) => {
+            if (data.workflow) {
+              this.workflow = data.workflow;
+              this.steps = data.workflow.steps || [];
+              this.loading = loading;
               if (this.steps.length > 0) {
                 this.onOpenStep(0);
               }
@@ -102,10 +107,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
               );
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
-          }
-        );
+          },
+        });
     });
   }
 
@@ -167,15 +172,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     } else {
       this.router.navigate(['./'], { relativeTo: this.route });
-    }
-  }
-
-  /**
-   * Deletes all subscriptions of the page.
-   */
-  ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
     }
   }
 }

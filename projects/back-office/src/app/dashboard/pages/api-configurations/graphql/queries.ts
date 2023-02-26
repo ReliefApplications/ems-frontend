@@ -47,7 +47,6 @@ export const GET_API_CONFIGURATIONS = gql`
 
 /** Model for GetApiConfigurationQueryResponse object */
 export interface GetApiConfigurationsQueryResponse {
-  loading: boolean;
   apiConfigurations: {
     edges: {
       node: ApiConfiguration;

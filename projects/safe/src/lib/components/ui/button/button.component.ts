@@ -30,6 +30,8 @@ export class SafeButtonComponent implements OnInit {
 
   @Input() icon = '';
 
+  @Input() ariaLabel = '';
+
   public emittedEventSubject: Subject<string> = new Subject();
 
   /**

@@ -1,9 +1,95 @@
+## [1.3.6](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.5...v1.3.6) (2023-01-17)
+
+
+### Bug Fixes
+
+* storybook build not working ([6471ddd](https://github.com/ReliefApplications/oort-frontend/commit/6471ddd362140aa468650d4729b5cfb2a36ee63d))
+* widget choice could prevent items below to be clicked ([f70b1a6](https://github.com/ReliefApplications/oort-frontend/commit/f70b1a675ae480047f99bb0cd867414cb05c3367))
+
+## [1.3.5](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.4...v1.3.5) (2023-01-16)
+
+
+### Bug Fixes
+
+* cached choices by url would never expire ([fc8e618](https://github.com/ReliefApplications/oort-frontend/commit/fc8e618b524a9b6e6394116c8cc49ef0011dcc79)), closes [1.3.x/AB#53527](https://github.com/1.3.x/AB/issues/53527)
+* front-office routing break due to incorrect safe import ([ce15ea6](https://github.com/ReliefApplications/oort-frontend/commit/ce15ea6436e45ea50711e68537884f53f0862841))
+
+# [1.4.0-beta.6](https://github.com/ReliefApplications/oort-frontend/compare/v1.4.0-beta.5...v1.4.0-beta.6) (2023-01-10)
+
+
+### Bug Fixes
+
+* aggregation pagination not working ([2911132](https://github.com/ReliefApplications/oort-frontend/commit/29111329311b05b8cec06e13d584dec75901db64))
+* errors would not appear when editing resource permissions ([b5cf05d](https://github.com/ReliefApplications/oort-frontend/commit/b5cf05db974cde49d012855f266b235a9d2f9c1b))
+* history would not reload if record was updated ([162646d](https://github.com/ReliefApplications/oort-frontend/commit/162646d45edc4dc51e21fd51dc4a19570c58745c))
+* metadata error would appear when creating a grid widget ([6dce7fe](https://github.com/ReliefApplications/oort-frontend/commit/6dce7fe71f10f414c27a471ab2f95b638eb3de85))
+* requests with metadata could cause system failure ([db38acc](https://github.com/ReliefApplications/oort-frontend/commit/db38acca903cadf4e979de6b9a53dcc08e6c7d2a)), closes [1.3.x/AB#53528](https://github.com/1.3.x/AB/issues/53528)
+* widget choice container would not be clickable when collapsed ([559866b](https://github.com/ReliefApplications/oort-frontend/commit/559866b2d6ac29eefcb977454587345b4bda5f60))
+
+## [1.3.4](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.3...v1.3.4) (2023-01-10)
+
+### Bug Fixes
+
+* aggregation pagination not working ([2911132](https://github.com/ReliefApplications/oort-frontend/commit/29111329311b05b8cec06e13d584dec75901db64))
+* errors would not appear when editing resource permissions ([b5cf05d](https://github.com/ReliefApplications/oort-frontend/commit/b5cf05db974cde49d012855f266b235a9d2f9c1b))
+* history would not reload if record was updated ([162646d](https://github.com/ReliefApplications/oort-frontend/commit/162646d45edc4dc51e21fd51dc4a19570c58745c))
+* metadata error would appear when creating a grid widget ([6dce7fe](https://github.com/ReliefApplications/oort-frontend/commit/6dce7fe71f10f414c27a471ab2f95b638eb3de85))
+* requests with metadata could cause system failure ([db38acc](https://github.com/ReliefApplications/oort-frontend/commit/db38acca903cadf4e979de6b9a53dcc08e6c7d2a)), closes [1.3.x/AB#53528](https://github.com/1.3.x/AB/issues/53528)
+* widget choice container would not be clickable when collapsed ([559866b](https://github.com/ReliefApplications/oort-frontend/commit/559866b2d6ac29eefcb977454587345b4bda5f60))
+
+## [1.4.0-beta.5](https://github.com/ReliefApplications/oort-frontend/compare/v1.4.0-beta.4...v1.4.0-beta.5) (2023-01-04)
+
+### Bug Fixes
+
+* interaction with query builder would sometimes fail ([a7a3d14](https://github.com/ReliefApplications/oort-frontend/commit/a7a3d145154f899bde9b9becf6fd000f70dd8fec))
+* map settings would not display some resources by default, due to pagination ([388e034](https://github.com/ReliefApplications/oort-frontend/commit/388e0347f7762eb67bc2ace7dea5ddcf839f8704))
+* remove irrelevant elements from graphql-select list of options ([fdf5df9](https://github.com/ReliefApplications/oort-frontend/commit/fdf5df9fe1839860d31c3d3ad3ac0e7b4efeaf90))
+* setting resource in map settings could break some other settings ([c370a51](https://github.com/ReliefApplications/oort-frontend/commit/c370a51feee112df8d01f85c593ee8e047a3b844))
+* user could see 'add' button in grids, even if not authorized ([7d2d95f](https://github.com/ReliefApplications/oort-frontend/commit/7d2d95f4c13a36390856af6bd08d0d05be56e2c5))
+* users filter would always appear ([6a0d5b3](https://github.com/ReliefApplications/oort-frontend/commit/6a0d5b380cffcdc4aebdbf4d17d7d0b131f4010a))
+
+## [1.3.3](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.2...v1.3.3) (2023-01-03)
+
+
+### Bug Fixes
+
+* interaction with query builder would sometimes fail ([a7a3d14](https://github.com/ReliefApplications/oort-frontend/commit/a7a3d145154f899bde9b9becf6fd000f70dd8fec))
+* map settings would not display some resources by default, due to pagination ([388e034](https://github.com/ReliefApplications/oort-frontend/commit/388e0347f7762eb67bc2ace7dea5ddcf839f8704))
+* setting resource in map settings could break some other settings ([c370a51](https://github.com/ReliefApplications/oort-frontend/commit/c370a51feee112df8d01f85c593ee8e047a3b844))
+* user could see 'add' button in grids, even if not authorized ([7d2d95f](https://github.com/ReliefApplications/oort-frontend/commit/7d2d95f4c13a36390856af6bd08d0d05be56e2c5))
+* users filter would always appear ([6a0d5b3](https://github.com/ReliefApplications/oort-frontend/commit/6a0d5b380cffcdc4aebdbf4d17d7d0b131f4010a))
+
+# [1.4.0-beta.4](https://github.com/ReliefApplications/oort-frontend/compare/v1.4.0-beta.3...v1.4.0-beta.4) (2022-12-20)
+
+
+### Bug Fixes
+
+* 'not extensible object' error ([6989e44](https://github.com/ReliefApplications/oort-frontend/commit/6989e44d95a6f856c4dd4638c9b1a7ac8301cb9b))
+* allow only selected fields as coords ([27e1405](https://github.com/ReliefApplications/oort-frontend/commit/27e1405b5b5b42251d8f40b97e4cebe35599ea96))
+* could edit user attributes if not local config ([2399443](https://github.com/ReliefApplications/oort-frontend/commit/2399443652e36847e7c6515834599f4d3c48e259))
+* hide icon overflow ([bc0c507](https://github.com/ReliefApplications/oort-frontend/commit/bc0c50712ef8990cd994d619aaf186969e751728))
+* legend overflow ([70ea13a](https://github.com/ReliefApplications/oort-frontend/commit/70ea13ad1dcf865ec4b2988f3b137d53d771ecb4))
+* replace dataset selection on map settings ([e7c4c64](https://github.com/ReliefApplications/oort-frontend/commit/e7c4c642e177e65d2a749da335082d2650ce9a1c))
+* selected fields search would not appear with full width in query builder ([58b0150](https://github.com/ReliefApplications/oort-frontend/commit/58b0150bf190d90ac3f48735b658fc925255640a))
+* typos ([400197b](https://github.com/ReliefApplications/oort-frontend/commit/400197bf05cb0e90808840a0ff9ca772fdc2d0c5))
+
+# [1.4.0-beta.3](https://github.com/ReliefApplications/oort-frontend/compare/v1.4.0-beta.2...v1.4.0-beta.3) (2022-12-08)
+
+### Bug Fixes
+
+* adding list and template from settings ([991765c](https://github.com/ReliefApplications/oort-frontend/commit/991765cf87c6b6727c9fe7ba4707609afd18be34))
+* **build:** commonjs creating warning when building ([dda7ad3](https://github.com/ReliefApplications/oort-frontend/commit/dda7ad354f93ab66fd8a8313e24d5e7e48e87399))
+* hide labels on small devices ([39d6b54](https://github.com/ReliefApplications/oort-frontend/commit/39d6b546c029bc1bad3bd1a8120e5be379382249))
+* using links in profile menu ([564e40a](https://github.com/ReliefApplications/oort-frontend/commit/564e40a76e017cc23154162d914d6ad959dbd7bb))
+* using links instead of buttons on admin nav ([a47b97e](https://github.com/ReliefApplications/oort-frontend/commit/a47b97e3823064af938492c29553db3135d828db))
+
 # [1.4.0-beta.2](https://github.com/ReliefApplications/oort-frontend/compare/v1.4.0-beta.1...v1.4.0-beta.2) (2022-12-05)
 
 
 ### Bug Fixes
 
 * remove block input from unedited buttons ([2b340f1](https://github.com/ReliefApplications/oort-frontend/commit/2b340f1a099db70f232c14fc62a00fb54d062323))
+
 
 # [1.4.0-beta.1](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.0...v1.4.0-beta.1) (2022-12-01)
 
@@ -32,6 +118,22 @@
 * replace summary card icon by the new one and change its color value in widget_types ([b0fa058](https://github.com/ReliefApplications/oort-frontend/commit/b0fa058c447a149f2b4b0f722a5bbc11ddec23c1))
 * selection of aggregation for summary cards ([fb6c59c](https://github.com/ReliefApplications/oort-frontend/commit/fb6c59c8fb7871a6147597183e02168330cc14ec))
 * start summary card component [#34839](https://github.com/ReliefApplications/oort-frontend/issues/34839) ([0c4e8fd](https://github.com/ReliefApplications/oort-frontend/commit/0c4e8fd6ff18feba261759e6ac4d60f2f73da9f9))
+
+
+## [1.3.2](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.1...v1.3.2) (2022-12-19)
+
+
+### Bug Fixes
+
+* 'not extensible object' error ([6989e44](https://github.com/ReliefApplications/oort-frontend/commit/6989e44d95a6f856c4dd4638c9b1a7ac8301cb9b))
+* allow only selected fields as coords ([27e1405](https://github.com/ReliefApplications/oort-frontend/commit/27e1405b5b5b42251d8f40b97e4cebe35599ea96))
+* could edit user attributes if not local config ([2399443](https://github.com/ReliefApplications/oort-frontend/commit/2399443652e36847e7c6515834599f4d3c48e259))
+* hide icon overflow ([bc0c507](https://github.com/ReliefApplications/oort-frontend/commit/bc0c50712ef8990cd994d619aaf186969e751728))
+* legend overflow ([70ea13a](https://github.com/ReliefApplications/oort-frontend/commit/70ea13ad1dcf865ec4b2988f3b137d53d771ecb4))
+* replace dataset selection on map settings ([e7c4c64](https://github.com/ReliefApplications/oort-frontend/commit/e7c4c642e177e65d2a749da335082d2650ce9a1c))
+* selected fields search would not appear with full width in query builder ([58b0150](https://github.com/ReliefApplications/oort-frontend/commit/58b0150bf190d90ac3f48735b658fc925255640a))
+* typos ([400197b](https://github.com/ReliefApplications/oort-frontend/commit/400197bf05cb0e90808840a0ff9ca772fdc2d0c5))
+
 
 ## [1.3.1](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.0...v1.3.1) (2022-12-07)
 
@@ -317,8 +419,8 @@
 ### Reverts
 
 * Revert "Added queries count #24067" This reverts commit 38d5c900b2055780e86750ad4ad9e84026960bd8. #24067 ([76e20f2](https://github.com/ReliefApplications/oort-frontend/commit/76e20f2107d1923022dd6c513da6ee0b8e2a5afb)), closes [#24067](https://github.com/ReliefApplications/oort-frontend/issues/24067) [#24067](https://github.com/ReliefApplications/oort-frontend/issues/24067)
-* Revert "add metaquery in tab-filter to add choices as a default filter" This reverts commit 6cb4a70c4451a49d3841fa64050e30ba57792dfb. # Veuillez saisir le message de validation pour vos modifications. Les lignes # commençant par '#' seront ignorées, et un message vide abandonne la validation. # # Sur la branche dev # Votre branche est en avance sur 'origin/dev' de 1 commit. # (utilisez "git push" pour publier vos commits locaux) # # Modifications qui seront validées : # modifié : projects/safe/src/lib/components/query-builder/query-builder.component.html # modifié : projects/safe/src/lib/components/query-builder/query-builder.component.ts # modifié : projects/safe/src/lib/components/query-builder/tab-filter/tab-filter.component.html # modifié : projects/safe/src/lib/components/query-builder/tab-filter/tab-filter.component.ts # modifié : projects/safe/src/lib/components/widgets/grid-settings/grid-settings.component.html # modifié : projects/safe/src/lib/services/email.service.ts # modifié : projects/safe/src/lib/services/query-builder.service.ts # ([9f5df57](https://github.com/ReliefApplications/oort-frontend/commit/9f5df57322373a4141a7671411af1ec245e87777))
-* Revert "add users custom question, changes on users query and grid to fit new question" This reverts commit 1b89ccfc2e2e035affeef83a617a952a1830effe. # Veuillez saisir le message de validation pour vos modifications. Les lignes # commençant par '#' seront ignorées, et un message vide abandonne la validation. # # Sur la branche dev # Votre branche est en avance sur 'origin/dev' de 2 commits. # (utilisez "git push" pour publier vos commits locaux) # # Modifications qui seront validées : # modifié : projects/safe/src/lib/components/resource-grid/resource-grid.component.ts # modifié : projects/safe/src/lib/components/widgets/grid/grid.component.html # modifié : projects/safe/src/lib/components/widgets/grid/grid.component.ts # modifié : projects/safe/src/lib/graphql/queries.ts # modifié : projects/safe/src/lib/survey/components/users.ts # ([4fb19ec](https://github.com/ReliefApplications/oort-frontend/commit/4fb19ec5deb00105982a37aba821c9490c082931))
+* Revert "add metaquery in tab-filter to add choices as a default filter" This reverts commit 6cb4a70c4451a49d3841fa64050e30ba57792dfb. # Veuillez saisir le message de validation pour vos modifications. Les lignes # commençant par '#' seront ignorées, et un message vide abandonne la validation. # # Sur la branche dev # Votre branche est en avance sur 'origin/dev' de 1 commit. # (utilisez "git push" pour publier vos commits locaux) # # Modifications qui seront validées : # modifié : projects/safe/src/lib/components/query-builder/query-builder.component.html # modifié : projects/safe/src/lib/components/query-builder/query-builder.component.ts # modifié : projects/safe/src/lib/components/query-builder/tab-filter/tab-filter.component.html # modifié : projects/safe/src/lib/components/query-builder/tab-filter/tab-filter.component.ts # modifié : projects/safe/src/lib/components/widgets/grid-settings/grid-settings.component.html # modifié : projects/safe/src/lib/services/email.service.ts # modifié : projects/safe/src/lib/services/query-builder.service.ts # ([9f5df57](https://github.com/ReliefApplications/oort-frontend/commit/9f5df57322373a4141a7671411af1ec245e87777))
+* Revert "add users custom question, changes on users query and grid to fit new question" This reverts commit 1b89ccfc2e2e035affeef83a617a952a1830effe. # Veuillez saisir le message de validation pour vos modifications. Les lignes # commençant par '#' seront ignorées, et un message vide abandonne la validation. # # Sur la branche dev # Votre branche est en avance sur 'origin/dev' de 2 commits. # (utilisez "git push" pour publier vos commits locaux) # # Modifications qui seront validées : # modifié : projects/safe/src/lib/components/resource-grid/resource-grid.component.ts # modifié : projects/safe/src/lib/components/widgets/grid/grid.component.html # modifié : projects/safe/src/lib/components/widgets/grid/grid.component.ts # modifié : projects/safe/src/lib/graphql/queries.ts # modifié : projects/safe/src/lib/survey/components/users.ts # ([4fb19ec](https://github.com/ReliefApplications/oort-frontend/commit/4fb19ec5deb00105982a37aba821c9490c082931))
 * Revert "chore(release): 0.1.14" ([4e73418](https://github.com/ReliefApplications/oort-frontend/commit/4e73418eb73b635f3d68b238da9733a311048c7a))
 * Revert "clear some parts of code" ([e3fa315](https://github.com/ReliefApplications/oort-frontend/commit/e3fa3157f54a0032901f09cdd4d7c3a397770873))
 * Revert "fix filters in resources" ([cd1f6e6](https://github.com/ReliefApplications/oort-frontend/commit/cd1f6e69b3e30c800763b0dcb6b36777b6906a20))

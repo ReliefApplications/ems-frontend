@@ -34,7 +34,9 @@
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        <td mat-cell *matCellDef="let element" class="font-bold">
+          {{ element.name }}
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="createdAt">
@@ -98,9 +100,9 @@
     [disabled]="loading || updating"
     [pageIndex]="pageInfo.pageIndex"
     [pageSize]="pageInfo.pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
+    [pageSizeOptions]="[10, 25, 50]" 
     [length]="pageInfo.length"
-    aria-label="Select page of resources"
+    [ariaLabel]="'components.resource.paginator.ariaLabel' | translate"
     (page)="onPage($event)"
   >
   </mat-paginator>

@@ -51,14 +51,6 @@
   }
 }
 
-.cdk-drag-placeholder {
-  opacity: 0;
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
 .notification-menu {
   display: flex;
   align-items: flex-end;
@@ -73,7 +65,6 @@
   }
 }
 
-.back-text {
-  font-size: 16px;
-  margin-top: 2px;
+kendo-badge-container {
+  z-index: 1000;
 }

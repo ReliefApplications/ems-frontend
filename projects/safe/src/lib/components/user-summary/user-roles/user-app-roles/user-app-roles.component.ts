@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { get } from 'lodash';
 import { Role, User } from '../../../../models/user.model';
@@ -11,6 +11,8 @@ import {
   GET_ROLES,
 } from '../../graphql/queries';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** Roles tab for the user summary */
 @Component({
@@ -18,11 +20,14 @@ import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.serv
   templateUrl: './user-app-roles.component.html',
   styleUrls: ['./user-app-roles.component.scss'],
 })
-export class UserAppRolesComponent implements OnInit {
+export class UserAppRolesComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public roles: Role[] = [];
   @Input() user!: User;
   @Input() application?: Application;
-  selectedRoles!: FormControl;
+  selectedRoles!: UntypedFormControl;
   @Output() edit = new EventEmitter();
 
   /** loading setter */
@@ -34,7 +39,7 @@ export class UserAppRolesComponent implements OnInit {
     }
   }
 
-  selectedApplication!: FormControl;
+  selectedApplication!: UntypedFormControl;
   public applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   private readonly PAGE_SIZE = 10;
 
@@ -46,35 +51,41 @@ export class UserAppRolesComponent implements OnInit {
    * @param snackBar Shared snackbar service
    */
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.selectedRoles = this.fb.control(
       get(this.user, 'roles', []).filter((x: Role) => !x.application)
     );
-    this.selectedRoles.valueChanges.subscribe((value) => {
-      if (this.selectedApplication.value) {
-        this.edit.emit({
-          roles: value,
-          application: this.selectedApplication.value,
-        });
-      }
-    });
+    this.selectedRoles.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (this.selectedApplication.value) {
+          this.edit.emit({
+            roles: value,
+            application: this.selectedApplication.value,
+          });
+        }
+      });
 
     this.selectedApplication = this.fb.control({
       value: get(this.application, 'id', ''),
       disabled: !!this.application,
     });
-    this.selectedApplication.valueChanges.subscribe((value) => {
-      this.selectedRoles.setValue([], { emitEvent: false });
-      this.roles = [];
-      if (value) {
-        this.getApplicationRoles(value);
-      }
-    });
+    this.selectedApplication.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.selectedRoles.setValue([], { emitEvent: false });
+        this.roles = [];
+        if (value) {
+          this.getApplicationRoles(value);
+        }
+      });
     if (this.application) {
       this.getApplicationRoles(this.application.id as string);
     }
@@ -87,12 +98,13 @@ export class UserAppRolesComponent implements OnInit {
           sortField: 'name',
         },
       });
-    this.applicationsQuery.valueChanges.subscribe(
-      () => {},
-      (err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
-      }
-    );
+    this.applicationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 
   /**
@@ -109,10 +121,11 @@ export class UserAppRolesComponent implements OnInit {
           application,
         },
       })
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            this.roles = res.data.roles;
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data) {
+            this.roles = data.roles;
           }
           this.selectedRoles.setValue(
             get(this.user, 'roles', [])
@@ -120,11 +133,33 @@ export class UserAppRolesComponent implements OnInit {
               .map((x) => x.id),
             { emitEvent: false }
           );
-          this.loading = res.loading;
+          this.loading = loading;
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
-        }
-      );
+        },
+      });
+  }
+
+  /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  public onApplicationSearchChange(search: string): void {
+    const variables = this.applicationsQuery.variables;
+    this.applicationsQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
+    });
   }
 }

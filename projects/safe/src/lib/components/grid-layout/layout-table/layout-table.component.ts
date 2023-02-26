@@ -1,14 +1,16 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
 import { AddLayoutModalComponent } from '../add-layout-modal/add-layout-modal.component';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import get from 'lodash/get';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { SafeEditLayoutModalComponent } from '../edit-layout-modal/edit-layout-modal.component';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Layouts list configuration for grid widgets
@@ -18,10 +20,13 @@ import { SafeEditLayoutModalComponent } from '../edit-layout-modal/edit-layout-m
   templateUrl: './layout-table.component.html',
   styleUrls: ['./layout-table.component.scss'],
 })
-export class LayoutTableComponent implements OnInit, OnChanges {
+export class LayoutTableComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges
+{
   @Input() resource: Resource | null = null;
   @Input() form: Form | null = null;
-  @Input() selectedLayouts: FormControl | null = null;
+  @Input() selectedLayouts: UntypedFormControl | null = null;
   @Input() singleInput = false;
 
   layouts: Layout[] = [];
@@ -37,15 +42,19 @@ export class LayoutTableComponent implements OnInit, OnChanges {
   constructor(
     private dialog: MatDialog,
     private gridLayoutService: SafeGridLayoutService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     const defaultValue = this.selectedLayouts?.value;
     this.setAllLayouts();
     this.setSelectedLayouts(defaultValue);
-    this.selectedLayouts?.valueChanges.subscribe((value) => {
-      this.setSelectedLayouts(value);
-    });
+    this.selectedLayouts?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.setSelectedLayouts(value);
+      });
   }
 
   ngOnChanges(): void {
@@ -129,11 +138,11 @@ export class LayoutTableComponent implements OnInit, OnChanges {
       if (value) {
         this.gridLayoutService
           .editLayout(layout, value, this.resource?.id, this.form?.id)
-          .subscribe((res: any) => {
-            if (res.data.editLayout) {
+          .subscribe(({ data }: any) => {
+            if (data.editLayout) {
               const layouts = [...this.allLayouts];
               const index = layouts.findIndex((x) => x.id === layout.id);
-              layouts[index] = res.data.editLayout;
+              layouts[index] = data.editLayout;
               this.allLayouts = layouts;
               this.setSelectedLayouts(this.selectedLayouts?.value);
             }

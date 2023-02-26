@@ -11,7 +11,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { FIELD_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { SafeEditorService } from '../../../services/editor/editor.service';
 import {
@@ -30,14 +30,14 @@ import { SafeQueryBuilderComponent } from '../query-builder.component';
   styleUrls: ['./tab-fields.component.scss'],
 })
 export class SafeTabFieldsComponent implements OnInit, OnChanges {
-  @Input() form: FormArray = new FormArray([]);
+  @Input() form: UntypedFormArray = new UntypedFormArray([]);
   @Input() fields: any[] = [];
   @ViewChild('childTemplate', { read: ViewContainerRef })
   childTemplate?: ViewContainerRef;
 
   public availableFields: any[] = [];
   public selectedFields: any[] = [];
-  public fieldForm: FormGroup | null = null;
+  public fieldForm: UntypedFormGroup | null = null;
 
   public searchAvailable = '';
   public searchSelected = '';
@@ -108,9 +108,10 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
       if (this.selectedFields === event.previousContainer.data) {
         // Move from selected fields
         if (
-          this.fieldForm === (this.form.at(event.previousIndex) as FormGroup)
+          this.fieldForm ===
+          (this.form.at(event.previousIndex) as UntypedFormGroup)
         ) {
-          this.fieldForm = new FormGroup({});
+          this.fieldForm = new UntypedFormGroup({});
         }
         const index = this.getItemIndex(
           this.selectedFields,
@@ -183,7 +184,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
    * @param index Index of the field
    */
   public onEdit(index: number): void {
-    this.fieldForm = this.form.at(index) as FormGroup;
+    this.fieldForm = this.form.at(index) as UntypedFormGroup;
     if (this.fieldForm.value.kind === 'SCALAR') {
       // Setup field format editor auto completer
       const dataKeys = getDataKeys([

@@ -23,7 +23,7 @@
       category="secondary"
       variant="primary"
       (click)="onAdd()"
-      *ngIf="canAdd"
+      *ngIf="'create' | able: 'ReferenceData'"
     >
       {{ 'models.referenceData.add' | translate }}
     </safe-button>
@@ -41,7 +41,9 @@
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        <td mat-cell *matCellDef="let element" class="font-bold">
+          {{ element.name }}
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="type">
@@ -124,7 +126,7 @@
     [pageSize]="pageInfo.pageSize"
     [pageSizeOptions]="[10, 25, 50]"
     [length]="pageInfo.length"
-    aria-label="Select page of forms"
+    [ariaLabel]="'components.referenceData.paginator.ariaLabel' | translate"
     (page)="onPage($event)"
   >
   </mat-paginator>

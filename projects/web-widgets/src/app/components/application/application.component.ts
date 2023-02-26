@@ -23,17 +23,8 @@ import {
   styleUrls: ['./application.component.scss'],
 })
 export class ApplicationComponent implements OnInit, OnChanges {
-  @Input() id = '618274079eb6019bfc301540';
-
-  /**
-   * Set page id
-   */
-  @Input()
-  set pageId(id: string) {
-    const pages = this.application?.pages || [];
-    this.selectedPage = pages.find((x) => x.id === id) || null;
-  }
   @Output() pages = new EventEmitter<Page[]>();
+  @Input() id = '618274079eb6019bfc301540';
 
   // === DATA ===
   public loading = true;
@@ -49,6 +40,15 @@ export class ApplicationComponent implements OnInit, OnChanges {
    */
   constructor(private apollo: Apollo) {}
 
+  /**
+   * Set page id
+   */
+  @Input()
+  set pageId(id: string) {
+    const pages = this.application?.pages || [];
+    this.selectedPage = pages.find((x) => x.id === id) || null;
+  }
+
   ngOnInit(): void {
     this.apollo
       .watchQuery<GetApplicationByIdQueryResponse>({
@@ -57,13 +57,13 @@ export class ApplicationComponent implements OnInit, OnChanges {
           id: this.id,
         },
       })
-      .valueChanges.subscribe((res) => {
-        if (res.data.application) {
-          this.application = res.data.application;
+      .valueChanges.subscribe(({ data, loading }) => {
+        if (data.application) {
+          this.application = data.application;
           const pages = this.application.pages || [];
           this.pages.emit(pages);
           this.selectedPage = pages.length > 0 ? pages[0] : null;
-          this.loading = res.loading;
+          this.loading = loading;
         }
       });
   }
@@ -77,13 +77,13 @@ export class ApplicationComponent implements OnInit, OnChanges {
             id: this.id,
           },
         })
-        .valueChanges.subscribe((res) => {
-          if (res.data.application) {
-            this.application = res.data.application;
+        .valueChanges.subscribe(({ data, loading }) => {
+          if (data.application) {
+            this.application = data.application;
             const pages = this.application.pages || [];
             this.pages.emit(pages);
             this.selectedPage = pages.length > 0 ? pages[0] : null;
-            this.loading = res.loading;
+            this.loading = loading;
           }
         });
     }

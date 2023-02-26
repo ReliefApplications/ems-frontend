@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
+import { firstValueFrom } from 'rxjs';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -159,14 +160,14 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    */
   private async createDynamicQueryFromLayout(card: any) {
     // gets metadata
-    const metaRes = await this.apollo
-      .query<GetResourceMetadataQueryResponse>({
+    const metaRes = await firstValueFrom(
+      this.apollo.query<GetResourceMetadataQueryResponse>({
         query: GET_RESOURCE_METADATA,
         variables: {
           id: card.resource,
         },
       })
-      .toPromise();
+    );
 
     this.gridLayoutService
       .getLayouts(card.resource, { ids: [card.layout], first: 1 })
@@ -190,35 +191,37 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
             }
           );
 
-          this.dataQuery = this.apollo.watchQuery<any>({
-            query: builtQuery,
-            variables: {
-              first: this.pageInfo.first,
-              filter: layoutQuery.filter,
-              sortField: get(layoutQuery, 'sort.field', null),
-              sortOrder: get(layoutQuery, 'sort.order', ''),
-            },
-            fetchPolicy: 'network-only',
-            nextFetchPolicy: 'cache-first',
-          });
-          this.dataQuery.valueChanges.subscribe((res2) => {
-            const edges = res2.data?.[layoutQuery.name].edges;
-            if (!edges) return;
+          if (builtQuery) {
+            this.dataQuery = this.apollo.watchQuery<any>({
+              query: builtQuery,
+              variables: {
+                first: this.pageInfo.first,
+                filter: layoutQuery.filter,
+                sortField: get(layoutQuery, 'sort.field', null),
+                sortOrder: get(layoutQuery, 'sort.order', ''),
+              },
+              fetchPolicy: 'network-only',
+              nextFetchPolicy: 'cache-first',
+            });
+            this.dataQuery.valueChanges.subscribe((res2) => {
+              const edges = res2.data?.[layoutQuery.name].edges;
+              if (!edges) return;
 
-            const newCards = edges.map((e: any) => ({
-              ...this.settings.cards[0],
-              record: e.node,
-              layout: layouts[0],
-              metadata: fields,
-            }));
+              const newCards = edges.map((e: any) => ({
+                ...this.settings.cards[0],
+                record: e.node,
+                layout: layouts[0],
+                metadata: fields,
+              }));
 
-            this.cards = [...this.cards, ...newCards];
-            this.pageInfo.hasNextPage =
-              get(res2.data[layoutQuery.name], 'totalCount', 0) >
-              this.cards.length;
+              this.cards = [...this.cards, ...newCards];
+              this.pageInfo.hasNextPage =
+                get(res2.data[layoutQuery.name], 'totalCount', 0) >
+                this.cards.length;
 
-            this.loading = res2.loading;
-          });
+              this.loading = res2.loading;
+            });
+          }
         }
       });
   }
@@ -252,29 +255,10 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
+        // TOCHECK
         this.dataQuery?.fetchMore({
           variables: {
-            ...this.dataQuery.variables,
             skip: this.cards.length,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              this.loading = false;
-              return prev;
-            }
-            for (const field in fetchMoreResult) {
-              if (
-                Object.prototype.hasOwnProperty.call(fetchMoreResult, field)
-              ) {
-                this.loading = false;
-                return Object.assign({}, prev, {
-                  [field]: {
-                    edges: fetchMoreResult[field].edges,
-                    totalCount: fetchMoreResult[field].totalCount,
-                  },
-                });
-              }
-            }
           },
         });
       }

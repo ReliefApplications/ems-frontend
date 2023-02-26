@@ -52,7 +52,6 @@ export const GET_SHORT_FORMS = gql`
 
 /** Model for GetFormsQueryResposne object */
 export interface GetFormsQueryResponse {
-  loading: boolean;
   forms: {
     edges: {
       node: Form;

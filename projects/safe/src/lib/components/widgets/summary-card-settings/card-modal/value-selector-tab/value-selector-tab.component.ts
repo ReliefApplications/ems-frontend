@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 /**
  * Component used in the card-modal-settings for selecting the record data.
@@ -10,7 +10,7 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./value-selector-tab.component.scss'],
 })
 export class SafeValueSelectorTabComponent implements OnInit {
-  @Input() form!: FormGroup;
+  @Input() form!: UntypedFormGroup;
   @Input() settings: any;
 
   public selectedRows: string[] = [];

@@ -38,7 +38,6 @@ export const EDIT_RECORD = gql`
 
 /** Model for EditRecordMutationResponse object */
 export interface EditRecordMutationResponse {
-  loading: boolean;
   editRecord: Record;
 }
 
@@ -71,7 +70,6 @@ export const ADD_RECORD = gql`
 
 /** Model for AddRecordMutationResponse object */
 export interface AddRecordMutationResponse {
-  loading: boolean;
   addRecord: Record;
 }
 
@@ -86,7 +84,6 @@ export const UPLOAD_FILE = gql`
 
 /** Model for UploadFileMutationResponse object */
 export interface UploadFileMutationResponse {
-  loading: boolean;
   uploadFile: string;
 }
 
@@ -111,6 +108,5 @@ export const EDIT_RECORDS = gql`
 
 /** Model for EditRecordsMutationResponse object */
 export interface EditRecordsMutationResponse {
-  loading: boolean;
   editRecords: Record[];
 }

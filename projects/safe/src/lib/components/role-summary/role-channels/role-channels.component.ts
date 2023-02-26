@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { Role } from '../../../models/user.model';
 import { GetChannelsQueryResponse, GET_CHANNELS } from '../graphql/queries';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Channels tab of Role Summary.
@@ -15,13 +17,16 @@ import { GetChannelsQueryResponse, GET_CHANNELS } from '../graphql/queries';
   templateUrl: './role-channels.component.html',
   styleUrls: ['./role-channels.component.scss'],
 })
-export class RoleChannelsComponent implements OnInit {
+export class RoleChannelsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() role!: Role;
   @Input() application?: Application;
 
   public channels: Channel[] = [];
   public applications: any[] = [];
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
   @Output() edit = new EventEmitter();
 
   /** Setter for the loading state */
@@ -40,21 +45,24 @@ export class RoleChannelsComponent implements OnInit {
    * @param fb Angular form builder
    * @param apollo Apollo client
    */
-  constructor(private fb: FormBuilder, private apollo: Apollo) {}
+  constructor(private fb: UntypedFormBuilder, private apollo: Apollo) {
+    super();
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({
       channels: [get(this.role, 'channels', []).map((x) => x.id)],
     });
     this.apollo
-      .watchQuery<GetChannelsQueryResponse>({
+      .query<GetChannelsQueryResponse>({
         query: GET_CHANNELS,
         variables: {
           application: this.application?.id,
         },
       })
-      .valueChanges.subscribe((res) => {
-        this.channels = res.data.channels;
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        this.channels = data.channels;
         // Move channels in an array under corresponding applications.
         this.applications = Array.from(
           new Set(this.channels.map((x) => x.application?.name))

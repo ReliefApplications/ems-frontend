@@ -1,7 +1,7 @@
 <safe-modal>
   <h1 mat-dialog-title>Email Preview</h1>
   <div mat-dialog-content>
-    <form [formGroup]="form" *ngIf="form">
+    <form class="flex flex-col" [formGroup]="form" *ngIf="form">
       <mat-form-field>
         <mat-label>Subject</mat-label>
         <input matInput formControlName="subject" type="text" />
@@ -19,6 +19,7 @@
         </mat-chip-list>
       </mat-form-field>
       <kendo-fileselect
+        class="mb-4"
         [multiple]="true"
         formControlName="files"
       ></kendo-fileselect>

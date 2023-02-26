@@ -4,12 +4,16 @@ import { RecordsTabRoutingModule } from './records-tab-routing.module';
 import { RecordsTabComponent } from './records-tab.component';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
+import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
+import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule, SafeSkeletonTableModule } from '@safe/builder';
+import {
+  SafeButtonModule,
+  SafeSkeletonTableModule,
+  SafeEmptyModule,
+} from '@safe/builder';
 import { UploadMenuModule } from 'projects/back-office/src/app/components/upload-menu/upload-menu.module';
 
 /**
@@ -30,6 +34,7 @@ import { UploadMenuModule } from 'projects/back-office/src/app/components/upload
     OverlayModule,
     UploadMenuModule,
     SafeSkeletonTableModule,
+    SafeEmptyModule,
   ],
 })
 export class RecordsTabModule {}

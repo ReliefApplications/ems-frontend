@@ -17,6 +17,11 @@
 			"none": "******",
 			"one": "******"
 		},
+		"ariaLabel": {
+			"search": {
+				"clear": "******"
+			}
+		},
 		"attribute": {
 			"few": "******",
 			"none": "******",
@@ -378,6 +383,9 @@
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******",
 				"title": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"application": {
@@ -412,6 +420,11 @@
 					"listenTo": "******",
 					"placeholder": {
 						"listenTo": "******"
+					},
+					"routingKey": {
+						"clear": {
+							"ariaLabel": "******"
+						}
 					}
 				}
 			},
@@ -423,11 +436,19 @@
 				"placeholder": {
 					"description": "******"
 				}
+			},
+			"users": {
+				"auto": "******",
+				"empty": "******",
+				"manual": "******"
 			}
 		},
 		"applications": {
 			"dropdown": {
 				"select": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"calculatedFields": {
@@ -566,12 +587,17 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
-			}
+			},
+			"saveSurvey": "******"
 		},
 		"forms": {
 			"isCore": "******",
+			"paginator": {
+				"ariaLabel": "******"
+			},
 			"parent": "******"
 		},
 		"group": {
@@ -620,6 +646,9 @@
 			"value": "******"
 		},
 		"notifications": {
+			"paginator": {
+				"ariaLabel": "******"
+			},
 			"readAll": "******"
 		},
 		"preferences": {
@@ -649,6 +678,9 @@
 					"url": "******"
 				},
 				"switch": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"queryBuilder": {
@@ -773,6 +805,9 @@
 		"records": {
 			"active": "******",
 			"archived": "******",
+			"paginator": {
+				"ariaLabel": "******"
+			},
 			"showActive": "******",
 			"showArchived": "******",
 			"upload": {
@@ -789,6 +824,12 @@
 			},
 			"dropdown": {
 				"select": "******"
+			},
+			"fields": {
+				"ariaLabel": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"resource": {
@@ -797,6 +838,15 @@
 			},
 			"dropdown": {
 				"select": "******"
+			},
+			"empty": {
+				"aggregations": "******",
+				"calculatedFields": "******",
+				"layouts": "******",
+				"records": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"role": {
@@ -840,7 +890,12 @@
 				"noForms": "******",
 				"noSteps": "******",
 				"removeFilter": "******",
-				"title": "******"
+				"title": "******",
+				"users": {
+					"auto": "******",
+					"empty": "******",
+					"manual": "******"
+				}
 			},
 			"tooltip": {
 				"allowFieldAccessibility": "****** {{field}}",
@@ -936,6 +991,9 @@
 				"add": "******",
 				"confirm": "******",
 				"description": "******"
+			},
+			"paginator": {
+				"ariaLabel": "******"
 			}
 		},
 		"widget": {
@@ -1229,6 +1287,9 @@
 					"dynamic": "******",
 					"hint": {
 						"dynamic": "******"
+					},
+					"options": {
+						"ariaLabel": "******"
 					},
 					"static": "******"
 				}

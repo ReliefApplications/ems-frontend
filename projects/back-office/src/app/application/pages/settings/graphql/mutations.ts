@@ -14,6 +14,5 @@ export const DELETE_APPLICATION = gql`
 
 /** Delete application gql mutation response interface */
 export interface DeleteApplicationMutationResponse {
-  loading: boolean;
   deleteApplication: Application;
 }

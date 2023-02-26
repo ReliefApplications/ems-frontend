@@ -24,7 +24,6 @@ export const GET_REFERENCE_DATAS = gql`
 
 /** List of reference data query response interface */
 export interface GetReferenceDatasQueryResponse {
-  loading: boolean;
   referenceDatas: {
     edges: {
       node: ReferenceData;
@@ -50,6 +49,5 @@ export const GET_SHORT_REFERENCE_DATA_BY_ID = gql`
 
 /** Interface of get reference data query response */
 export interface GetReferenceDataByIdQueryResponse {
-  loading: boolean;
   referenceData: ReferenceData;
 }

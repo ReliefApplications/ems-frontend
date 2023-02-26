@@ -1,15 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeLineChartComponent } from './line-chart.component';
-import { ChartsModule } from '@progress/kendo-angular-charts';
-import 'hammerjs';
+import { NgChartsModule } from 'ng2-charts';
 
 /**
  * Module declaration for safe-line-chart component
  */
 @NgModule({
   declarations: [SafeLineChartComponent],
-  imports: [CommonModule, ChartsModule],
+  imports: [CommonModule, NgChartsModule],
   exports: [SafeLineChartComponent],
 })
 export class SafeLineChartModule {}

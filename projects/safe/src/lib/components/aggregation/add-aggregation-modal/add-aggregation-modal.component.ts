@@ -1,9 +1,9 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+  MatLegacyDialog as MatDialog,
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
 import { SafeEditAggregationModalComponent } from '../edit-aggregation-modal/edit-aggregation-modal.component';
@@ -13,7 +13,7 @@ import {
   GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { SafeGraphQLSelectComponent } from '../../graphql-select/graphql-select.component';
 
 /**
@@ -42,7 +42,7 @@ export class AddAggregationModalComponent implements OnInit {
 
   public queryRef!: QueryRef<GetResourceAggregationsResponse>;
 
-  public selectedAggregationControl = new FormControl('');
+  public selectedAggregationControl = new UntypedFormControl('');
 
   /** Reference to graphql select for layout */
   @ViewChild(SafeGraphQLSelectComponent)
@@ -104,9 +104,9 @@ export class AddAggregationModalComponent implements OnInit {
       if (aggregation) {
         this.aggregationService
           .addAggregation(aggregation, this.resource?.id, this.form?.id)
-          .subscribe((res) => {
-            if (res.data?.addAggregation) {
-              this.dialogRef.close(res.data.addAggregation);
+          .subscribe(({ data }) => {
+            if (data?.addAggregation) {
+              this.dialogRef.close(data.addAggregation);
             } else {
               this.dialogRef.close();
             }

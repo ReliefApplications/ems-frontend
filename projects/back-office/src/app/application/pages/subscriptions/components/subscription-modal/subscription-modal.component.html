@@ -56,7 +56,7 @@
             matSuffix
             [isIcon]="true"
             icon="close"
-            aria-label="Clear"
+            [ariaLabel]="'components.application.subscription.modal.routingKey.clear.ariaLabel' | translate"
             (click)="routingKey = ''"
           ></safe-button>
           <safe-icon
@@ -80,6 +80,8 @@
             [query]="formsQuery"
             formControlName="convertTo"
             [selectedElements]="[defaultForm]"
+            (searchChange)="onSearchChange($event)"
+            [filterable]="true"
           ></safe-graphql-select>
         </mat-form-field>
         <mat-form-field appearance="outline">

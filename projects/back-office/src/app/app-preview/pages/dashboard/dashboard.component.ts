@@ -6,7 +6,6 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   GetDashboardByIdQueryResponse,
@@ -16,9 +15,10 @@ import {
   Dashboard,
   SafeSnackBarService,
   SafeDashboardService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Dashboard component page, for application preview.
@@ -28,26 +28,25 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   // === DATA ===
   public id = '';
   public loading = true;
   public tiles = [];
   public dashboard?: Dashboard;
 
-  // === ROUTE ===
-  private routeSubscription?: Subscription;
-
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
   /**
-   * Dashboar component page for application preview.
+   * Dashboard component page for application preview.
    *
    * @param apollo Apollo service
    * @param route Angular activated route
    * @param router Angular router
-   * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
    * @param translate Angular translate service
@@ -56,35 +55,36 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Gets the dashboard from the page parameters.
    */
   ngOnInit(): void {
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.loading = true;
       this.id = params.id;
       this.apollo
-        .watchQuery<GetDashboardByIdQueryResponse>({
+        .query<GetDashboardByIdQueryResponse>({
           query: GET_DASHBOARD_BY_ID,
           variables: {
             id: this.id,
           },
         })
-        .valueChanges.subscribe(
-          (res) => {
-            if (res.data.dashboard) {
-              this.dashboard = res.data.dashboard;
+        .subscribe({
+          next: ({ data, loading }) => {
+            if (data.dashboard) {
+              this.dashboard = data.dashboard;
               this.dashboardService.openDashboard(this.dashboard);
-              this.tiles = res.data.dashboard.structure
-                ? res.data.dashboard.structure
+              this.tiles = data.dashboard.structure
+                ? data.dashboard.structure
                 : [];
-              this.loading = res.loading;
+              this.loading = loading;
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant(
@@ -101,11 +101,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
               this.router.navigate(['/dashboards']);
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             this.router.navigate(['/dashboards']);
-          }
-        );
+          },
+        });
     });
   }
 
@@ -113,9 +113,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * Destroys all subscriptions of the page.
    */
   ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
+    super.ngOnDestroy();
     this.dashboardService.closeDashboard();
   }
 }

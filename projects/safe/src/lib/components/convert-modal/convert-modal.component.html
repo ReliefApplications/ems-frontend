@@ -1,6 +1,6 @@
 <safe-modal>
   <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-  <div style="width: 320px" *ngIf="!loading">
+  <div class="w-80" *ngIf="!loading">
     <h1 mat-dialog-title>{{ data.title }}</h1>
     <div mat-dialog-content>
       <form [formGroup]="convertForm">

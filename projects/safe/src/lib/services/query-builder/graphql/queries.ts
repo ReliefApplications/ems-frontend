@@ -9,11 +9,49 @@ export const GET_QUERY_META_DATA = gql`
   query GetQueryMetaData($id: ID!) {
     form(id: $id) {
       id
-      metadata
+      metadata {
+        name
+        automated
+        type
+        editor
+        filter
+        multiSelect
+        filterable
+        options
+        fields {
+          name
+          automated
+          type
+          editor
+          filter
+          multiSelect
+          filterable
+          options
+        }
+      }
     }
     resource(id: $id) {
       id
-      metadata
+      metadata {
+        name
+        automated
+        type
+        editor
+        filter
+        multiSelect
+        filterable
+        options
+        fields {
+          name
+          automated
+          type
+          editor
+          filter
+          multiSelect
+          filterable
+          options
+        }
+      }
     }
   }
 `;
@@ -145,7 +183,6 @@ export const GET_QUERY_TYPES = gql`
 // TODO: check type of __schema
 /** Model for GetQueryTypes object */
 export interface GetQueryTypes {
-  loading: boolean;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __schema: any;
 }

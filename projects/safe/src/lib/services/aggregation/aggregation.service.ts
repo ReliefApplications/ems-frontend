@@ -17,8 +17,8 @@ import {
   Aggregation,
   AggregationConnection,
 } from '../../models/aggregation.model';
-import { Apollo } from 'apollo-angular';
-import { Observable } from 'rxjs';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { firstValueFrom, Observable } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 
 /** Fallback AggregationConnection */
@@ -57,8 +57,8 @@ export class SafeAggregationService {
     resourceId: string,
     options: { ids?: string[]; first?: number }
   ): Promise<AggregationConnection> {
-    return await this.apollo
-      .query<GetResourceByIdQueryResponse>({
+    return await firstValueFrom(
+      this.apollo.query<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_AGGREGATIONS,
         variables: {
           resource: resourceId,
@@ -66,14 +66,13 @@ export class SafeAggregationService {
           first: options.first,
         },
       })
-      .toPromise()
-      .then(async (res) => {
-        if (res.errors) {
-          return FALLBACK_AGGREGATIONS;
-        } else {
-          return res.data.resource.aggregations || FALLBACK_AGGREGATIONS;
-        }
-      });
+    ).then(async ({ errors, data }) => {
+      if (errors) {
+        return FALLBACK_AGGREGATIONS;
+      } else {
+        return data.resource.aggregations || FALLBACK_AGGREGATIONS;
+      }
+    });
   }
 
   /**
@@ -95,6 +94,32 @@ export class SafeAggregationService {
         resource,
         aggregation,
         mapping,
+      },
+    });
+  }
+
+  /**
+   * Builds the aggregation query from aggregation definition
+   *
+   * @param resource Resource Id
+   * @param aggregation Aggregation definition
+   * @param first size of the page
+   * @param skip index of the page
+   * @returns Aggregation query
+   */
+  aggregationDataWatchQuery(
+    resource: string,
+    aggregation: string,
+    first: number,
+    skip: number
+  ): QueryRef<GetAggregationDataQueryResponse> {
+    return this.apollo.watchQuery<GetAggregationDataQueryResponse>({
+      query: GET_AGGREGATION_DATA,
+      variables: {
+        resource,
+        aggregation,
+        first,
+        skip,
       },
     });
   }

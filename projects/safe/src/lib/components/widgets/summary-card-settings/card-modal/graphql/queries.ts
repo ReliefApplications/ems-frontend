@@ -37,14 +37,16 @@ export const GET_RESOURCE = gql`
         }
         totalCount
       }
-      metadata
+      metadata {
+        name
+        type
+      }
     }
   }
 `;
 
 /** Model for GetResourceByIdQueryResponse object */
 export interface GetResourceByIdQueryResponse {
-  loading: boolean;
   resource: Resource;
 }
 
@@ -75,14 +77,23 @@ export const GET_RECORD_BY_ID = gql`
 
 /** Model for GetRecordByIdQueryResponse object */
 export interface GetRecordByIdQueryResponse {
-  loading: boolean;
   record: Record;
 }
 
 /** Graphql query for getting multiple resources with a cursor */
 export const GET_RESOURCES = gql`
-  query GetResources($first: Int, $afterCursor: ID, $sortField: String) {
-    resources(first: $first, afterCursor: $afterCursor, sortField: $sortField) {
+  query GetResources(
+    $first: Int
+    $afterCursor: ID
+    $sortField: String
+    $filter: JSON
+  ) {
+    resources(
+      first: $first
+      afterCursor: $afterCursor
+      sortField: $sortField
+      filter: $filter
+    ) {
       edges {
         node {
           id
@@ -108,7 +119,6 @@ export const GET_RESOURCES = gql`
 
 /** Model for GetResourcesQueryResponse object */
 export interface GetResourcesQueryResponse {
-  loading: boolean;
   resources: {
     edges: {
       node: Resource;
@@ -137,13 +147,16 @@ export const GET_LAYOUT = gql`
           }
         }
       }
+      metadata {
+        name
+        type
+      }
     }
   }
 `;
 
 /** Model for GetLayoutQueryResponse object */
 export interface GetLayoutQueryResponse {
-  loading: boolean;
   resource: Resource;
 }
 
@@ -168,6 +181,5 @@ export const GET_AGGREGATION = gql`
 
 /** Model for GetAggregationQueryResponse object */
 export interface GetAggregationQueryResponse {
-  loading: boolean;
   resource: Resource;
 }

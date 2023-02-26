@@ -17,6 +17,11 @@
 			"none": "No application",
 			"one": "Application"
 		},
+		"ariaLabel": {
+			"search": {
+				"clear": "Clear search"
+			}
+		},
 		"attribute": {
 			"few": "Attributes",
 			"none": "No attribute",
@@ -378,6 +383,9 @@
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the API Configuration {{name}}?",
 				"title": "Delete API configuration"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of API configurations"
 			}
 		},
 		"application": {
@@ -412,6 +420,11 @@
 					"listenTo": "Listen to",
 					"placeholder": {
 						"listenTo": "Select a routing key"
+					},
+					"routingKey": {
+						"clear": {
+							"ariaLabel": "Clear routing key"
+						}
 					}
 				}
 			},
@@ -423,11 +436,19 @@
 				"placeholder": {
 					"description": "Please enter a description for the application"
 				}
+			},
+			"users": {
+				"auto": "Automatically assigned",
+				"empty": "No user detected",
+				"manual": "Manually assigned"
 			}
 		},
 		"applications": {
 			"dropdown": {
 				"select": "From applications"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of applications"
 			}
 		},
 		"calculatedFields": {
@@ -566,12 +587,17 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
-			}
+			},
+			"saveSurvey": "SavingSurvey"
 		},
 		"forms": {
 			"isCore": "Is core",
+			"paginator": {
+				"ariaLabel": "Select page of forms"
+			},
 			"parent": "Parent form"
 		},
 		"group": {
@@ -620,6 +646,9 @@
 			"value": "Value"
 		},
 		"notifications": {
+			"paginator": {
+				"ariaLabel": "Select page of notifications"
+			},
 			"readAll": "Mark all as read"
 		},
 		"preferences": {
@@ -649,6 +678,9 @@
 					"url": "Enter URL..."
 				},
 				"switch": "Switch mode"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of pull jobs"
 			}
 		},
 		"queryBuilder": {
@@ -773,6 +805,9 @@
 		"records": {
 			"active": "Active records",
 			"archived": "Archived records",
+			"paginator": {
+				"ariaLabel": "Select page of records"
+			},
 			"showActive": "Show active records",
 			"showArchived": "Show archived records",
 			"upload": {
@@ -789,6 +824,12 @@
 			},
 			"dropdown": {
 				"select": "From Reference data"
+			},
+			"fields": {
+				"ariaLabel": "Input available fields of reference data"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of reference data"
 			}
 		},
 		"resource": {
@@ -797,6 +838,15 @@
 			},
 			"dropdown": {
 				"select": "From resource"
+			},
+			"empty": {
+				"aggregations": "No aggregation detected",
+				"calculatedFields": "No calculated fields detected",
+				"layouts": "No layout detected",
+				"records": "No record detected"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of resources"
 			}
 		},
 		"role": {
@@ -840,7 +890,12 @@
 				"noForms": "No forms detected",
 				"noSteps": "No steps detected",
 				"removeFilter": "Remove filter",
-				"title": "Summary"
+				"title": "Summary",
+				"users": {
+					"auto": "Automatically assigned",
+					"empty": "No user detected",
+					"manual": "Manually assigned"
+				}
 			},
 			"tooltip": {
 				"allowFieldAccessibility": "Allow this role to see the field {{field}}",
@@ -936,6 +991,9 @@
 				"add": "Add new user",
 				"confirm": "Invite users",
 				"description": "Select existing users, invite new users or import from Excel file"
+			},
+			"paginator": {
+				"ariaLabel": "Select page of users"
 			}
 		},
 		"widget": {
@@ -1229,6 +1287,9 @@
 					"dynamic": "Dynamic",
 					"hint": {
 						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
+					},
+					"options": {
+						"ariaLabel": "Select an option"
 					},
 					"static": "Static"
 				}

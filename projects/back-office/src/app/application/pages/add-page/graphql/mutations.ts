@@ -19,6 +19,5 @@ export const ADD_FORM = gql`
 
 /** Add form gql mutation response interface */
 export interface AddFormMutationResponse {
-  loading: boolean;
   addForm: Form;
 }

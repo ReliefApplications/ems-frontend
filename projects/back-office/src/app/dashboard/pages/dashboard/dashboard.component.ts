@@ -6,10 +6,13 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import {
   Dashboard,
   SafeSnackBarService,
@@ -18,6 +21,7 @@ import {
   SafeDashboardService,
   SafeAuthService,
   Application,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
@@ -32,8 +36,8 @@ import {
   GetDashboardByIdQueryResponse,
   GET_DASHBOARD_BY_ID,
 } from './graphql/queries';
-import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Dashboard page.
@@ -43,7 +47,10 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   // === DATA ===
   public id = '';
   public applicationId?: string;
@@ -56,10 +63,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // === DASHBOARD NAME EDITION ===
   public formActive = false;
-  public dashboardNameForm: FormGroup = new FormGroup({});
-
-  // === ROUTE ===
-  private routeSubscription?: Subscription;
+  public dashboardNameForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -93,10 +97,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private dashboardService: SafeDashboardService,
     private translateService: TranslateService,
     private authService: SafeAuthService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.formActive = false;
       this.loading = true;
       this.id = params.id;
@@ -107,19 +113,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
             id: this.id,
           },
         })
-        .subscribe(
-          (res) => {
-            if (res.data.dashboard) {
-              this.dashboard = res.data.dashboard;
+        .subscribe({
+          next: ({ data, loading }) => {
+            if (data.dashboard) {
+              this.dashboard = data.dashboard;
               this.dashboardService.openDashboard(this.dashboard);
-              this.dashboardNameForm = new FormGroup({
-                dashboardName: new FormControl(
+              this.dashboardNameForm = new UntypedFormGroup({
+                dashboardName: new UntypedFormControl(
                   this.dashboard.name,
                   Validators.required
                 ),
               });
-              this.tiles = res.data.dashboard.structure
-                ? [...res.data.dashboard.structure]
+              this.tiles = data.dashboard.structure
+                ? [...data.dashboard.structure]
                 : [];
               this.generatedTiles =
                 this.tiles.length === 0
@@ -130,7 +136,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 : this.dashboard.step
                 ? this.dashboard.step.workflow?.page?.application?.id
                 : '';
-              this.loading = res.loading;
+              this.loading = loading;
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
@@ -147,18 +153,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
               this.router.navigate(['/applications']);
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             this.router.navigate(['/applications']);
-          }
-        );
+          },
+        });
     });
   }
 
+  /**
+   * Leave dashboard
+   */
   ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
+    super.ngOnDestroy();
     this.dashboardService.closeDashboard();
   }
 
@@ -262,15 +269,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
           structure: this.tiles,
         },
       })
-      .subscribe(
-        () => {
+      .subscribe({
+        next: () => {
           this.dashboardService.openDashboard({
             ...this.dashboard,
             structure: this.tiles,
           });
         },
-        () => (this.loading = false)
-      );
+        complete: () => (this.loading = false),
+      });
   }
 
   /**
@@ -288,10 +295,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
             permissions: e,
           },
         })
-        .subscribe((res) => {
+        .subscribe(({ data }) => {
           this.dashboard = {
             ...this.dashboard,
-            permissions: res.data?.editStep.permissions,
+            permissions: data?.editStep.permissions,
           };
         });
     } else {
@@ -303,10 +310,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
             permissions: e,
           },
         })
-        .subscribe((res) => {
+        .subscribe(({ data }) => {
           this.dashboard = {
             ...this.dashboard,
-            permissions: res.data?.editPage.permissions,
+            permissions: data?.editPage.permissions,
           };
         });
     }
@@ -329,49 +336,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
   saveName(): void {
     const { dashboardName } = this.dashboardNameForm.value;
     this.toggleFormActive();
+    const callback = () => {
+      this.dashboard = { ...this.dashboard, name: dashboardName };
+    };
     if (this.router.url.includes('/workflow/')) {
-      this.apollo
-        .mutate<EditStepMutationResponse>({
-          mutation: EDIT_STEP,
-          variables: {
-            id: this.dashboard?.step?.id,
-            name: dashboardName,
-          },
-        })
-        .subscribe((res) => {
-          if (res.data?.editStep) {
-            this.dashboard = {
-              ...this.dashboard,
-              name: res.data?.editStep.name,
-            };
-            this.workflowService.updateStepName(res.data.editStep);
-          } else {
-            this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService.instant('common.step.one'),
-                  error: res.errors ? res.errors[0].message : '',
-                }
-              )
-            );
-          }
-        });
+      this.workflowService.updateStepName(
+        {
+          id: this.dashboard?.step?.id,
+          name: dashboardName,
+        },
+        callback
+      );
     } else {
-      this.apollo
-        .mutate<EditPageMutationResponse>({
-          mutation: EDIT_PAGE,
-          variables: {
-            id: this.dashboard?.page?.id,
-            name: dashboardName,
-          },
-        })
-        .subscribe((res) => {
-          this.dashboard = { ...this.dashboard, name: res.data?.editPage.name };
-          if (res.data?.editPage) {
-            this.applicationService.updatePageName(res.data.editPage);
-          }
-        });
+      this.applicationService.updatePageName(
+        {
+          id: this.dashboard?.page?.id,
+          name: dashboardName,
+        },
+        callback
+      );
     }
   }
 

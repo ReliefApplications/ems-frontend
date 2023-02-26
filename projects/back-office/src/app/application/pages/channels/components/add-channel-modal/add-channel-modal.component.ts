@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 
 /**
  * Add channel component, act as modal.
@@ -12,7 +16,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class AddChannelModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  channelForm: FormGroup = new FormGroup({});
+  channelForm: UntypedFormGroup = new UntypedFormGroup({});
 
   /**
    * Add channel component
@@ -21,7 +25,7 @@ export class AddChannelModalComponent implements OnInit {
    * @param dialogRef Material dialog ref
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<AddChannelModalComponent>
   ) {}
 

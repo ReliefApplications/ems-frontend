@@ -1,5 +1,6 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { SafeRestService } from '../rest/rest.service';
 
 /**
@@ -59,7 +60,7 @@ export class SafeApiProxyService {
    */
   public promisedRequestWithHeaders(url: string): Promise<any> {
     const headers = this.buildHeaders();
-    return this.restService.get(url, { headers }).toPromise();
+    return firstValueFrom(this.restService.get(url, { headers }));
   }
 
   /**
@@ -76,8 +77,8 @@ export class SafeApiProxyService {
     options: any = {}
   ): Promise<ArrayBuffer> {
     const headers = this.buildHeaders();
-    return this.restService
-      .post(url, body, { ...options, headers })
-      .toPromise();
+    return firstValueFrom(
+      this.restService.post(url, body, { ...options, headers })
+    );
   }
 }

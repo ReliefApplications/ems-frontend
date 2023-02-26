@@ -9,8 +9,9 @@
   <!-- NEW APPLICATIONS -->
   <h2>{{ 'pages.applications.recent' | translate }}</h2>
   <safe-applications-summary
+    class="block mb-14"
     [loading]="loading"
-    [canCreate]="canAdd"
+    [canCreate]="'create' | able: 'Application'"
     (add)="onAdd()"
     [applications]="newApplications"
     (openApplication)="onOpenApplication($event)"
@@ -38,7 +39,9 @@
               {{ 'common.name' | translate }}
             </span>
           </th>
-          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          <td mat-cell *matCellDef="let element" class="font-bold">
+            {{ element.name }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="createdAt">
@@ -54,7 +57,7 @@
 
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef>
-            <span class="headerTitle" mat-sort-header="status">
+            <span class="headerTitle">
               {{ 'common.status' | translate }}
             </span>
           </th>
@@ -93,7 +96,9 @@
               {{ 'common.user.few' | translate }}
             </span>
           </th>
-          <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>
+          <td mat-cell *matCellDef="let element">
+            {{ element.users?.totalCount }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="actions" [stickyEnd]="true">
@@ -127,7 +132,7 @@
                 {{ 'common.duplicate' | translate }}
               </button>
               <ng-container *ngIf="element.canDelete">
-                <safe-divider style="margin: unset"></safe-divider>
+                <safe-divider class="m-0"></safe-divider>
                 <button mat-menu-item (click)="onDelete(element, $event)">
                   <mat-icon>delete</mat-icon>
                   {{ 'common.delete' | translate }}
@@ -165,7 +170,7 @@
       [pageSize]="pageInfo.pageSize"
       [pageSizeOptions]="[10, 25, 50]"
       [length]="pageInfo.length"
-      aria-label="Select page of applications"
+      [ariaLabel]="'components.applications.paginator.ariaLabel' | translate"
       (page)="onPage($event)"
     >
     </mat-paginator>

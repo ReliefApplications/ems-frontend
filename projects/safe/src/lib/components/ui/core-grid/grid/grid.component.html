@@ -1,6 +1,7 @@
 <!-- GRID HEADER -->
 <kendo-grid
   id="recordsGrid"
+  class="w-full"
   [loading]="loadingRecords || loadingSettings"
   [data]="status.error ? [] : data"
   [autoSize]="false"
@@ -10,7 +11,7 @@
   [pageable]="pagerSettings"
   [pageSize]="pageSize"
   [skip]="skip"
-  [filterable]="filterable && showFilter ? true : 'menu'"
+  [filterable]="filterable ? (showFilter ? true : 'menu') : false"
   [filter]="filter"
   (filterChange)="onFilterChange($event)"
   (pageChange)="onPageChange($event)"
@@ -48,7 +49,7 @@
     />
     <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
     <button
-      *ngIf="actions.add"
+      *ngIf="actions.add && canAdd"
       kendoButton
       (click)="action.emit({ action: 'add' })"
     >
@@ -80,8 +81,8 @@
     <ng-container *ngIf="admin">
       <span kendotooltip>
         <button
+          kendoButton
           title="This will erase current layout with default layout"
-          class="k-button"
           (click)="action.emit({ action: 'resetLayout' })"
         >
           {{ 'components.widget.grid.layout.reset' | translate }}
@@ -121,7 +122,7 @@
         [editor]="field.editor"
         [editable]="field.editor && !field.disabled"
         [filter]="field.filter"
-        [filterable]="field.filter"
+        [filterable]="filterable && field.filter"
         [width]="field.width"
         [hidden]="field.hidden"
         [minResizableWidth]="50"
@@ -129,6 +130,23 @@
       >
         <!-- FILTER -->
         <ng-container *ngIf="field.meta">
+          <!-- FILTER ( datetime / date ) -->
+          <ng-container *ngIf="['datetime', 'date'].includes(field.meta.type)">
+            <ng-template
+              kendoGridFilterMenuTemplate
+              let-filter
+              let-column="column"
+              let-filterService="filterService"
+            >
+              <safe-date-filter-menu
+                [filter]="filter"
+                [field]="field.name"
+                [filterService]="filterService"
+                valueField="value"
+              >
+              </safe-date-filter-menu>
+            </ng-template>
+          </ng-container>
           <!-- FILTER ( dropdown / radiogroup ) -->
           <ng-container
             *ngIf="['dropdown', 'radiogroup'].includes(field.meta.type)"
@@ -377,7 +395,7 @@
             <div *ngIf="dataItem[field.name]" class="textbox-container">
               <div
                 #refSpan
-                class="textbox external-link"
+                class="textbox hover:cursor-pointer text-primary-500"
                 *ngIf="dataItem[field.name].length > 0"
                 [matTooltip]="
                   'components.widget.grid.actions.detail' | translate
@@ -671,7 +689,7 @@
               [look]="'flat'"
               [matTooltip]="file.name"
               (click)="onDownload(file)"
-              class="file"
+              class="w-full justify-start overflow-hidden text-overflow-ellipsis"
             >
               <span [class]="'k-icon ' + getFileIcon(file.name)"></span>
               <span class="textbox">{{
@@ -912,7 +930,7 @@
     >
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
         <button
-          style="text-align: center"
+          class="text-center"
           kendoButton
           [icon]="'detail-section'"
           [look]="'flat'"
@@ -956,18 +974,16 @@
           kendoButton
           icon="exclamation-circle"
           look="flat"
-          class="k-color-warning"
+          class="k-color-warning cursor-default"
           [matTooltip]="'components.widget.grid.tooltip.unsaved' | translate"
-          style="cursor: unset"
         ></span>
         <span
           *ngIf="dataItem.saved"
           kendoButton
           icon="check-outline"
           look="flat"
-          class="k-color-success"
+          class="k-color-success cursor-default"
           [matTooltip]="'components.widget.grid.tooltip.saved' | translate"
-          style="cursor: unset"
         ></span>
       </ng-template>
     </kendo-grid-column>

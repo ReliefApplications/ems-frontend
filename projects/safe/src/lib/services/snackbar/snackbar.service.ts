@@ -1,10 +1,10 @@
 import { ComponentType } from '@angular/cdk/portal';
 import { EmbeddedViewRef, Injectable, TemplateRef } from '@angular/core';
 import {
-  MatSnackBar,
-  MatSnackBarRef,
-  TextOnlySnackBar,
-} from '@angular/material/snack-bar';
+  MatLegacySnackBar as MatSnackBar,
+  MatLegacySnackBarRef as MatSnackBarRef,
+  LegacyTextOnlySnackBar as TextOnlySnackBar,
+} from '@angular/material/legacy-snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 
 /** Default snackbar definition */

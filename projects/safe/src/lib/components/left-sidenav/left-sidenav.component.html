@@ -1,8 +1,5 @@
 <mat-nav-list>
-  <ng-container
-    *ngFor="let group of filteredNavGroups; let i = index"
-    style="height: 100% !important"
-  >
+  <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
     <div mat-subheader class="sidenav-header">
       {{ group.name }}
       <safe-button
@@ -77,18 +74,15 @@
               </button>
             </div>
           </mat-list-item>
-          <mat-list *cdkDragPreview>
-            <a
-              mat-list-item
-              class="nav-item"
-              [class]="item.class ? item.class : ''"
-            >
+          <!-- Preview when dragging element -->
+          <mat-list-item *cdkDragPreview class="nav-item">
+            <a [class]="item.class ? item.class : ''">
               <mat-icon mat-list-icon class="nav-icon">
                 {{ item.icon }}
               </mat-icon>
               <div mat-line>{{ item.name }}</div>
             </a>
-          </mat-list>
+          </mat-list-item>
         </div>
       </ng-container>
     </div>
@@ -106,9 +100,6 @@
         </safe-button>
       </div>
     </ng-container>
-    <safe-divider
-      style="margin: unset"
-      *ngIf="i < filteredNavGroups.length - 1"
-    ></safe-divider>
+    <safe-divider class="m-0" *ngIf="i < navGroups.length - 1"></safe-divider>
   </ng-container>
 </mat-nav-list>

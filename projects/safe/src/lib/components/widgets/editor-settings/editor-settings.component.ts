@@ -6,7 +6,7 @@ import {
   Input,
   AfterViewInit,
 } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { SafeEditorService } from '../../../services/editor/editor.service';
 
@@ -20,7 +20,7 @@ import { SafeEditorService } from '../../../services/editor/editor.service';
 })
 export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
-  tileForm: FormGroup | undefined;
+  tileForm: UntypedFormGroup | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -39,7 +39,7 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
    * @param editorService Editor service used to get main URL and current language
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private editorService: SafeEditorService
   ) {
     // Set the editor base url based on the environment file

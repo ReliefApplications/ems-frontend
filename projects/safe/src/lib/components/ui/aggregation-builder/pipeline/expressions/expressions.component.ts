@@ -5,8 +5,10 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import { FormGroup, Validators } from '@angular/forms';
+import { UntypedFormGroup, Validators } from '@angular/forms';
 import { DEFAULT_OPERATORS, NO_FIELD_OPERATORS } from './operators';
+import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Aggregation pipeline expression component.
@@ -16,8 +18,11 @@ import { DEFAULT_OPERATORS, NO_FIELD_OPERATORS } from './operators';
   templateUrl: './expressions.component.html',
   styleUrls: ['./expressions.component.scss'],
 })
-export class SafeExpressionsComponent implements OnInit, OnChanges {
-  @Input() form!: FormGroup;
+export class SafeExpressionsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges
+{
+  @Input() form!: UntypedFormGroup;
   @Input() fields: any[] = [];
   @Input() operators: any = DEFAULT_OPERATORS;
   @Input() displayField = true;
@@ -27,21 +32,26 @@ export class SafeExpressionsComponent implements OnInit, OnChanges {
   /**
    * Aggregation pipeline expression component.
    */
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   ngOnInit(): void {
     if (this.displayField) {
-      this.form.get('operator')?.valueChanges.subscribe((operator: string) => {
-        if (operator) {
-          if (this.noFieldOperators.includes(operator)) {
-            this.form.get('field')?.setValue('');
-            this.form.get('field')?.setValidators(null);
-          } else {
-            this.form.get('field')?.setValidators(Validators.required);
+      this.form
+        .get('operator')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe((operator: string) => {
+          if (operator) {
+            if (this.noFieldOperators.includes(operator)) {
+              this.form.get('field')?.setValue('');
+              this.form.get('field')?.setValidators(null);
+            } else {
+              this.form.get('field')?.setValidators(Validators.required);
+            }
+            this.form.get('field')?.updateValueAndValidity();
           }
-          this.form.get('field')?.updateValueAndValidity();
-        }
-      });
+        });
     }
   }
 

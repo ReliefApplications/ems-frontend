@@ -10,9 +10,9 @@ import { SafeDropdownFilterMenuModule } from '../dropdown-filter-menu/dropdown-f
 import { SafeExpandedCommentModule } from '../expanded-comment/expanded-comment.module';
 import { SafeErrorsModalModule } from '../errors-modal/errors-modal.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -22,6 +22,7 @@ import { SafeExportModule } from '../export/export.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../../../pipes/date/date.module';
 import { SafeButtonModule } from '../../button/button.module';
+import { SafeDateFilterMenuModule } from '../date-filter-menu/date-filter-menu.module';
 
 /** Module for the grid component */
 @NgModule({
@@ -50,6 +51,7 @@ import { SafeButtonModule } from '../../button/button.module';
     SafeArrayFilterMenuModule,
     SafeDropdownFilterModule,
     SafeDropdownFilterMenuModule,
+    SafeDateFilterMenuModule,
     // === ROW ===
     SafeGridRowActionsModule,
     // === TOOLBAR ===

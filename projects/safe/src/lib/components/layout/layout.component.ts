@@ -6,7 +6,6 @@ import {
   Inject,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
   Output,
   TemplateRef,
@@ -19,13 +18,14 @@ import { User } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Notification } from '../../models/notification.model';
-import { Subscription } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeNotificationService } from '../../services/notification/notification.service';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafePreferencesModalComponent } from '../preferences-modal/preferences-modal.component';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Component for the main layout of the platform
@@ -35,7 +35,10 @@ import { SafeDateTranslateService } from '../../services/date-translate/date-tra
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
 })
-export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
+export class SafeLayoutComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges
+{
   // === HEADER TITLE ===
   @Input() title = '';
 
@@ -60,15 +63,12 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   // === NOTIFICATIONS ===
   public notifications: Notification[] = [];
-  private notificationsSubscription?: Subscription;
   public hasMoreNotifications = false;
-  private hasMoreNotificationsSubscription?: Subscription;
   public loadingNotifications = false;
 
   // === USER INFO ===
   public account: Account | null;
   public user?: User;
-  private userSubscription?: Subscription;
 
   // === DISPLAY ===
   public largeDevice: boolean;
@@ -153,6 +153,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     private translate: TranslateService,
     private dateTranslate: SafeDateTranslateService
   ) {
+    super();
     this.largeDevice = window.innerWidth > 1024;
     this.account = this.authService.account;
     this.environment = environment;
@@ -171,19 +172,19 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.loadUser();
     this.notificationService.init();
-    this.notificationsSubscription =
-      this.notificationService.notifications$.subscribe(
-        (notifications: Notification[]) => {
-          if (notifications) {
-            this.notifications = notifications;
-          } else {
-            this.notifications = [];
-          }
+    this.notificationService.notifications$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((notifications: Notification[]) => {
+        if (notifications) {
+          this.notifications = notifications;
+        } else {
+          this.notifications = [];
         }
-      );
+      });
 
-    this.hasMoreNotificationsSubscription =
-      this.notificationService.hasNextPage$.subscribe((res) => {
+    this.notificationService.hasNextPage$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
         this.hasMoreNotifications = res;
         this.loadingNotifications = false;
       });
@@ -215,10 +216,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    * Load the user
    */
   private loadUser(): void {
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
-    this.userSubscription = this.authService.user$.subscribe((user) => {
+    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
       if (user) {
         this.user = { ...user };
       }
@@ -227,18 +225,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(): void {
     this.loadUser();
-  }
-
-  ngOnDestroy(): void {
-    if (this.notificationsSubscription) {
-      this.notificationsSubscription.unsubscribe();
-    }
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
-    if (this.hasMoreNotificationsSubscription) {
-      this.hasMoreNotificationsSubscription.unsubscribe();
-    }
   }
 
   /**

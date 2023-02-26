@@ -17,6 +17,11 @@
 			"none": "Aucune application",
 			"one": "Application"
 		},
+		"ariaLabel": {
+			"search": {
+				"clear": "Supprimer la recherche"
+			}
+		},
 		"attribute": {
 			"few": "Attributs",
 			"none": "Aucun attribut",
@@ -378,6 +383,9 @@
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer la configuration d'API {{name}} ?",
 				"title": "Supprimer la configuration d'API"
+			},
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page de configurations d'API"
 			}
 		},
 		"application": {
@@ -412,6 +420,11 @@
 					"listenTo": "Écouter",
 					"placeholder": {
 						"listenTo": "Sélectionner une clé de routage"
+					},
+					"routingKey": {
+						"clear": {
+							"ariaLabel": "Supprimer la clé de routage"
+						}
 					}
 				}
 			},
@@ -423,11 +436,19 @@
 				"placeholder": {
 					"description": "Veuillez entrer une description pour l'application."
 				}
+			},
+			"users": {
+				"auto": "Attribution automatique",
+				"empty": "Aucun utilisateur détecté",
+				"manual": "Attribution manuelle"
 			}
 		},
 		"applications": {
 			"dropdown": {
 				"select": "Depuis les applications"
+			},
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page d'applications"
 			}
 		},
 		"calculatedFields": {
@@ -503,6 +524,11 @@
 			"subject": "Objet",
 			"withoutRecords": "Sans enregistrements"
 		},
+		"floating": {
+			"menuButton": {
+				"ariaLabel": "***"
+			}
+		},
 		"form": {
 			"aggregation": {
 				"delete": {
@@ -566,12 +592,17 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"missingGridField": "Champs disponible de table de données manquant pour la question {{question}} à la page {{page}}. Veuillez en sélectionner au moins un dans la propriété Custom Question pour sauvegarder le formulaire.",
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
-			}
+			},
+			"saveSurvey": "Sauvegarde du questionnaire"
 		},
 		"forms": {
 			"isCore": "Est un formulaire source",
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page de formulaires"
+			},
 			"parent": "Formulaire parent"
 		},
 		"group": {
@@ -620,6 +651,9 @@
 			"value": "Valeur"
 		},
 		"notifications": {
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page de notifications"
+			},
 			"readAll": "Tout marquer comme lu"
 		},
 		"preferences": {
@@ -649,6 +683,9 @@
 					"url": "Entrer l'URL..."
 				},
 				"switch": "Changer de mode"
+			},
+			"paginator": {
+				"ariaLabel": "Sélectionez la page de tâches programmées"
 			}
 		},
 		"queryBuilder": {
@@ -773,6 +810,9 @@
 		"records": {
 			"active": "Enregistrements actifs",
 			"archived": "Enregistrements archivés",
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page d'enregistrements"
+			},
 			"showActive": "Voir les enregistrements actifs",
 			"showArchived": "Voir les enregistrements archivés",
 			"upload": {
@@ -789,6 +829,12 @@
 			},
 			"dropdown": {
 				"select": "Depuis la référence de données"
+			},
+			"fields": {
+				"ariaLabel": "Indiquez les champs de la référence de données"
+			},
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page de références de données"
 			}
 		},
 		"resource": {
@@ -797,6 +843,15 @@
 			},
 			"dropdown": {
 				"select": "Depuis la ressource"
+			},
+			"empty": {
+				"aggregations": "Aucune agrégation détectée",
+				"calculatedFields": "Aucun champ dérivé détecté",
+				"layouts": "Aucune mise en page détectée",
+				"records": "Aucun enregistrement détecté"
+			},
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page de ressources"
 			}
 		},
 		"role": {
@@ -840,7 +895,12 @@
 				"noForms": "Aucun formulaire détecté",
 				"noSteps": "Aucune étape détectée",
 				"removeFilter": "Supprimer le filtre",
-				"title": "Résumé"
+				"title": "Résumé",
+				"users": {
+					"auto": "Attribution automatique",
+					"empty": "Aucun utilisateur détecté",
+					"manual": "Attribution manuelle"
+				}
 			},
 			"tooltip": {
 				"allowFieldAccessibility": "Autoriser ce rôle à voir le champ {{field}}",
@@ -937,6 +997,9 @@
 				"add": "Ajouter un nouvel utilisateur",
 				"confirm": "Inviter des utilisateurs",
 				"description": "Sélectionner des utilisateurs existants, inviter de nouveaux utilisateurs ou en importer depuis un fichier Excel"
+			},
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page d'utilisateurs"
 			}
 		},
 		"widget": {
@@ -1232,6 +1295,9 @@
 					"dynamic": "Dynamique",
 					"hint": {
 						"dynamic": "Les cartes dynamiques adaptent leur affichage en fonction du nombre d'éléments dans la source de données. Vous devez définir une unique carte qui sera répétée pour chaque élément."
+					},
+					"options": {
+						"ariaLabel": "***"
 					},
 					"static": "Statique"
 				}

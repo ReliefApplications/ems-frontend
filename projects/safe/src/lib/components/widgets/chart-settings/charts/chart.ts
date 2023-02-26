@@ -1,4 +1,8 @@
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import get from 'lodash/get';
 import { createMappingForm } from '../../../ui/aggregation-builder/aggregation-builder-forms';
 
@@ -28,8 +32,8 @@ const DEFAULT_PALETTE = [
 
 /** Class for the chart object */
 export class Chart {
-  public form: FormGroup;
-  private fb: FormBuilder;
+  public form: UntypedFormGroup;
+  private fb: UntypedFormBuilder;
 
   /**
    * The constructor for a chart
@@ -37,7 +41,7 @@ export class Chart {
    * @param settings The settings of the chart
    */
   constructor(settings?: any) {
-    this.fb = new FormBuilder();
+    this.fb = new UntypedFormBuilder();
     const legend = get(settings, 'legend', null);
     const title = get(settings, 'title', null);
     const labels = get(settings, 'labels', null);
@@ -59,7 +63,6 @@ export class Chart {
       legend: this.fb.group({
         visible: [legend ? legend.visible : true],
         position: [legend ? legend.position : 'bottom'],
-        orientation: [legend ? legend.orientation : 'horizontal'],
       }),
       title: this.fb.group({
         visible: [get(title, 'visible', true)],

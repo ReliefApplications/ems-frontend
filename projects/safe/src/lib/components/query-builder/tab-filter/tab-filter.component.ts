@@ -5,8 +5,12 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { UntypedFormGroup } from '@angular/forms';
+import { cloneDeep } from 'lodash';
+import {
+  Field,
+  QueryBuilderService,
+} from '../../../services/query-builder/query-builder.service';
 
 /**
  * Component for displaying the filtering options
@@ -17,12 +21,12 @@ import { QueryBuilderService } from '../../../services/query-builder/query-build
   styleUrls: ['./tab-filter.component.scss'],
 })
 export class SafeTabFilterComponent implements OnInit {
-  @Input() form: FormGroup = new FormGroup({});
+  @Input() form: UntypedFormGroup = new UntypedFormGroup({});
   @Input() query: any;
 
   @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;
 
-  public filterFields: any[] = [];
+  public filterFields: Field[] = [];
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -34,8 +38,9 @@ export class SafeTabFilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.queryBuilder.getFilterFields(this.query).then((fields) => {
-      this.setCustomEditors(fields);
-      this.filterFields = fields;
+      const cloneFields = cloneDeep(fields);
+      this.setCustomEditors(cloneFields);
+      this.filterFields = cloneFields;
     });
   }
 

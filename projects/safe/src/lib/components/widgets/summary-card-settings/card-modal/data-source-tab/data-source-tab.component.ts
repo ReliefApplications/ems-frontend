@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GET_RESOURCES, GetResourcesQueryResponse } from '../graphql/queries';
 import { Resource } from '../../../../../models/resource.model';
 import { Layout } from '../../../../../models/layout.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { AddLayoutModalComponent } from '../../../../grid-layout/add-layout-modal/add-layout-modal.component';
 import { SafeEditLayoutModalComponent } from '../../../../grid-layout/edit-layout-modal/edit-layout-modal.component';
 import { SafeGridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';
@@ -28,7 +28,7 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./data-source-tab.component.scss'],
 })
 export class SafeDataSourceTabComponent implements OnInit {
-  @Input() form!: FormGroup;
+  @Input() form!: UntypedFormGroup;
 
   @Input() selectedResource: Resource | null = null;
   @Input() selectedLayout: Layout | null = null;
@@ -36,9 +36,6 @@ export class SafeDataSourceTabComponent implements OnInit {
 
   @Output() layoutChange = new EventEmitter<Layout | null>();
   @Output() aggregationChange = new EventEmitter<Aggregation | null>();
-
-  // === RADIO ===
-  public radioValue = false;
 
   // === DATA ===
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
@@ -62,9 +59,6 @@ export class SafeDataSourceTabComponent implements OnInit {
    * Gets the selected resource data
    */
   ngOnInit(): void {
-    // Initialize radioValue
-    this.radioValue = this.form.value.isAggregation;
-
     // Data source query
     const variables: any = {
       first: ITEMS_PER_PAGE,
@@ -75,16 +69,6 @@ export class SafeDataSourceTabComponent implements OnInit {
       query: GET_RESOURCES,
       variables,
     });
-  }
-
-  /**
-   * Changes the form value assigned to the radio component.
-   *
-   * @param event Event with the change values.
-   */
-  radioChange(event: any) {
-    this.radioValue = event.value;
-    this.form.patchValue({ isAggregation: event.value });
   }
 
   /** Opens modal for layout selection/creation */
@@ -102,6 +86,7 @@ export class SafeDataSourceTabComponent implements OnInit {
         } else {
           this.form.get('layout')?.setValue(value.id);
         }
+        this.form.patchValue({ isAggregation: false });
       }
     });
   }
@@ -145,6 +130,7 @@ export class SafeDataSourceTabComponent implements OnInit {
         } else {
           this.form.get('aggregation')?.setValue(value.id);
         }
+        this.form.patchValue({ isAggregation: true });
       }
     });
   }
@@ -172,6 +158,28 @@ export class SafeDataSourceTabComponent implements OnInit {
             this.aggregationChange.emit(res.data?.editAggregation || null);
           });
       }
+    });
+  }
+
+  /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  public onResourceSearchChange(search: string): void {
+    const variables = this.resourcesQuery.variables;
+    this.resourcesQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
     });
   }
 }

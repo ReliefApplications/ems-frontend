@@ -2,9 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RoleUsersComponent } from './role-users.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatTableModule } from '@angular/material/table';
+import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
+import { SafeEmptyModule } from '../../ui/empty/empty.module';
 
 /**
  * Users component of role summary
@@ -17,6 +18,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatTableModule,
     SafeSkeletonTableModule,
     MatPaginatorModule,
+    SafeEmptyModule,
   ],
   exports: [RoleUsersComponent],
 })

@@ -1,6 +1,7 @@
 import { AggregationConnection } from './aggregation.model';
 import { Form } from './form.model';
 import { LayoutConnection } from './layout.model';
+import { Metadata } from './metadata.model';
 import { RecordConnection } from './record.model';
 
 /** Model for Resource object. */
@@ -25,5 +26,6 @@ export interface Resource {
     canUpdateRecords: any;
     canDeleteRecords: any;
   };
-  metadata?: any[];
+  metadata?: Metadata[];
+  canCreateRecords?: boolean;
 }

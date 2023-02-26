@@ -8,7 +8,7 @@
       category="secondary"
       variant="primary"
       (click)="onAdd()"
-      *ngIf="canAdd"
+      *ngIf="'create' | able: 'Form'"
     >
       {{ 'models.form.create' | translate }}
     </safe-button>
@@ -31,7 +31,9 @@
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        <td mat-cell *matCellDef="let element" class="font-bold">
+          {{ element.name }}
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="createdAt">
@@ -165,7 +167,7 @@
               </button>
             </ng-container>
             <ng-container *ngIf="element.canDelete">
-              <safe-divider style="margin: unset"></safe-divider>
+              <safe-divider class="m-0"></safe-divider>
               <button mat-menu-item (click)="onDelete(element, $event)">
                 <mat-icon>delete</mat-icon>
                 {{ 'common.delete' | translate }}
@@ -212,7 +214,7 @@
     [pageSize]="pageInfo.pageSize"
     [pageSizeOptions]="[10, 25, 50]"
     [length]="pageInfo.length"
-    aria-label="Select page of forms"
+    [ariaLabel]="'components.forms.paginator.ariaLabel' | translate"
     (page)="onPage($event)"
   >
   </mat-paginator>

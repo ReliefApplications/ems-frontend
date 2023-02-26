@@ -1,4 +1,4 @@
-<div class="actions">
+<div class="mb-4 flex flex-row justify-end">
   <safe-button
     icon="add"
     category="secondary"
@@ -18,7 +18,9 @@
         <th mat-header-cell *matHeaderCellDef>
           {{ 'common.name' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        <td mat-cell *matCellDef="let element" class="font-bold">
+          {{ element.name }}
+        </td>
       </ng-container>
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>
@@ -91,7 +93,7 @@
               <mat-icon>edit</mat-icon>
               {{ 'common.edit' | translate }}
             </button>
-            <safe-divider style="margin: unset"></safe-divider>
+            <safe-divider class="m-0"></safe-divider>
             <button mat-menu-item color="warn" (click)="onDelete(element)">
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
@@ -119,7 +121,7 @@
     [pageSize]="pageInfo.pageSize"
     [pageSizeOptions]="[10, 25, 50]"
     [length]="pageInfo.length"
-    aria-label="Select page of pull jobs"
+    [ariaLabel]="'components.pullJob.paginator.ariaLabel' | translate"
     (page)="onPage($event)"
   >
   </mat-paginator>

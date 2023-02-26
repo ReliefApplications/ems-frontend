@@ -9,18 +9,8 @@ export const GET_ROLES = gql`
     roles(application: $application) {
       id
       title
-      permissions {
-        id
-        type
-      }
-      usersCount
-      channels {
-        id
-        title
-        application {
-          id
-          name
-        }
+      users {
+        totalCount
       }
     }
   }
@@ -28,7 +18,6 @@ export const GET_ROLES = gql`
 
 /** Model for GetRolesQueryResponse object */
 export interface GetRolesQueryResponse {
-  loading: boolean;
   roles: Role[];
 }
 
@@ -45,6 +34,5 @@ export const GET_GROUPS = gql`
 
 /** Model for GetGroupsQueryResponse object */
 export interface GetGroupsQueryResponse {
-  loading: boolean;
   groups: Group[];
 }

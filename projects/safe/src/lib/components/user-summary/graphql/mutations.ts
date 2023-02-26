@@ -14,7 +14,6 @@ export const EDIT_USER_PROFILE = gql`
 
 /** Interface of Edit User Profile mutation */
 export interface EditUserProfileMutationResponse {
-  loading: boolean;
   editUserProfile: User;
 }
 
@@ -35,6 +34,5 @@ export const EDIT_USER_ROLES = gql`
 
 /** Interface of Edit User Roles mutation */
 export interface EditUserRolesMutationResponse {
-  loading: boolean;
   editUser: User;
 }

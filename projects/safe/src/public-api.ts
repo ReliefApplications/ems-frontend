@@ -89,6 +89,7 @@ export * from './lib/components/ui/modal/public-api';
 export * from './lib/components/ui/empty/public-api';
 export * from './lib/components/ui/divider/public-api';
 export * from './lib/components/edit-calculated-field-modal/public-api';
+export * from './lib/components/utils/unsubscribe/public-api';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';
@@ -101,11 +102,8 @@ export * from './lib/components/ui/aggregation-builder/public-api';
 export * from './lib/components/ui/tagbox/public-api';
 export * from './lib/components/ui/icon/public-api';
 
-// === PAGES ===
-export * from './lib/pages/profile/public-api';
-export * from './lib/pages/application-templates/public-api';
-export * from './lib/pages/application-distribution-lists/public-api';
-export * from './lib/pages/application-notifications/public-api';
+// === VIEWS ===
+export * from './lib/views/public-api';
 
 // === MODULE ===
 export * from './lib/safe.module';

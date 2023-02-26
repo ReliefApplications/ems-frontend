@@ -1,6 +1,8 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * List of query styles.
@@ -10,8 +12,11 @@ import { FormArray } from '@angular/forms';
   templateUrl: './query-style-list.component.html',
   styleUrls: ['./query-style-list.component.scss'],
 })
-export class SafeQueryStyleListComponent implements OnInit {
-  @Input() form!: FormArray;
+export class SafeQueryStyleListComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
+  @Input() form!: UntypedFormArray;
   public styles: any[] = [];
   columns: string[] = ['name', 'preview', '_actions'];
 
@@ -20,11 +25,13 @@ export class SafeQueryStyleListComponent implements OnInit {
   /**
    * Constructor for the query style list component
    */
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   ngOnInit(): void {
     this.styles = this.form.value;
-    this.form.valueChanges.subscribe((value) => {
+    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.styles = value;
     });
   }

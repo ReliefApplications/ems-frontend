@@ -52,24 +52,24 @@ export class RoleFeaturesComponent implements OnInit {
           id: this.application?.id,
         },
       })
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            this.dashboards = get(res.data.application, 'pages', []).filter(
+      .subscribe({
+        next: ({ data }) => {
+          if (data) {
+            this.dashboards = get(data.application, 'pages', []).filter(
               (x) => x.type === ContentType.dashboard
             );
-            this.forms = get(res.data.application, 'pages', []).filter(
+            this.forms = get(data.application, 'pages', []).filter(
               (x) => x.type === ContentType.form
             );
-            this.workflows = get(res.data.application, 'pages', []).filter(
+            this.workflows = get(data.application, 'pages', []).filter(
               (x) => x.type === ContentType.workflow
             );
           }
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -90,34 +90,34 @@ export class RoleFeaturesComponent implements OnInit {
           },
         },
       })
-      .subscribe(
-        (res) => {
-          if (res.data) {
-            switch (res.data.editPage.type) {
+      .subscribe({
+        next: ({ data, loading }) => {
+          if (data) {
+            switch (data.editPage.type) {
               case ContentType.dashboard: {
                 const index = this.dashboards.findIndex(
-                  (x) => x.id === res.data?.editPage.id
+                  (x) => x.id === data?.editPage.id
                 );
                 const dashboards = [...this.dashboards];
-                dashboards[index] = res.data.editPage;
+                dashboards[index] = data.editPage;
                 this.dashboards = dashboards;
                 break;
               }
               case ContentType.form: {
                 const index = this.forms.findIndex(
-                  (x) => x.id === res.data?.editPage.id
+                  (x) => x.id === data?.editPage.id
                 );
                 const forms = [...this.forms];
-                forms[index] = res.data.editPage;
+                forms[index] = data.editPage;
                 this.forms = forms;
                 break;
               }
               case ContentType.workflow: {
                 const index = this.workflows.findIndex(
-                  (x) => x.id === res.data?.editPage.id
+                  (x) => x.id === data?.editPage.id
                 );
                 const workflows = [...this.workflows];
-                workflows[index] = res.data.editPage;
+                workflows[index] = data.editPage;
                 this.workflows = workflows;
                 break;
               }
@@ -126,11 +126,11 @@ export class RoleFeaturesComponent implements OnInit {
               }
             }
           }
-          this.loading = res.loading;
+          this.loading = loading;
         },
-        (err) => {
+        error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
-        }
-      );
+        },
+      });
   }
 }

@@ -1,8 +1,12 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * The component is used on a card creation in the summary-card widget
@@ -17,7 +21,7 @@ export class SafeAddCardComponent implements OnInit {
   public loading = true;
   private templatesUrl = '';
   public templates: any = [];
-  public searchControl = new FormControl('');
+  public searchControl = new UntypedFormControl('');
 
   /**
    * Constructor for safe-add-card constructor
@@ -60,13 +64,12 @@ export class SafeAddCardComponent implements OnInit {
     const params = {
       ...(search && { search }),
     };
-    this.http
-      .get(this.templatesUrl, { headers, params })
-      .toPromise()
-      .then((data: any) => {
+    firstValueFrom(this.http.get(this.templatesUrl, { headers, params })).then(
+      (data: any) => {
         this.templates = data.slice(-3).reverse();
         this.loading = false;
-      });
+      }
+    );
   }
 
   /**
@@ -89,6 +92,11 @@ export class SafeAddCardComponent implements OnInit {
    * @param item The summary card template item chosen
    */
   onCreateFromTemplate(item: any): void {
+    // remove record when using static template to create a dynamic card.
+    if (this.data.isDynamic && !item.isDynamic) {
+      item.record = null;
+    }
+    item.isDynamic = this.data.isDynamic;
     this.dialogRef.close(item);
   }
 }

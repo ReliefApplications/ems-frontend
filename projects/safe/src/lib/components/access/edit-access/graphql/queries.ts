@@ -13,7 +13,6 @@ export const GET_ROLES = gql`
         id
         type
       }
-      usersCount
       channels {
         id
         title
@@ -28,6 +27,5 @@ export const GET_ROLES = gql`
 
 /** Model for GetRolesQueryResponse object */
 export interface GetRolesQueryResponse {
-  loading: boolean;
   roles: Role[];
 }

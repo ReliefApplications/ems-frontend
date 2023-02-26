@@ -44,7 +44,7 @@
           </form>
         </ng-container>
       </div>
-      <div class="flex items-center gap-2" *ngIf="!formActive">
+      <div class="flex items-center gap-1" *ngIf="!formActive">
         <safe-access
           [access]="workflow.permissions"
           [application]="workflow.page?.application?.id"
@@ -53,9 +53,9 @@
           *ngIf="workflow.page?.canUpdate || false"
         ></safe-access>
         <safe-button
+          variant="grey"
           [isIcon]="true"
           icon="more_vert"
-          class="share-button"
           [matMenuTriggerFor]="menu"
           cdkOverlayOrigin
           #appMenuTrigger="cdkOverlayOrigin"
@@ -94,6 +94,7 @@
 </ng-container>
 <!-- STEPS -->
 <safe-workflow-stepper
+  class="-mx-6 my-4 block"
   [loading]="loading"
   [steps]="steps"
   [canUpdate]="canUpdate"

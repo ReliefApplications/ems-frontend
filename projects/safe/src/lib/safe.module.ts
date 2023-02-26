@@ -14,7 +14,6 @@ import { SafeConvertModalModule } from './components/convert-modal/convert-modal
 import { SafeRecordHistoryModule } from './components/record-history/record-history.module';
 import { SafeRecordModalModule } from './components/record-modal/record-modal.module';
 import { SafeStatusModalModule } from './components/status-modal/status-modal.module';
-import { SafeProfileModule } from './pages/profile/profile.module';
 import { SafeSearchResourceGridModalModule } from './components/search-resource-grid-modal/search-resource-grid-modal.module';
 import { SafeButtonModule } from './components/ui/button/button.module';
 import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
@@ -37,11 +36,10 @@ import { SafeModalModule } from './components/ui/modal/modal.module';
 import { SafeEmptyModule } from './components/ui/empty/empty.module';
 import { SafeDividerModule } from './components/ui/divider/divider.module';
 import { SafeLeftSidenavModule } from './components/left-sidenav/left-sidenav.module';
-import { SafeApplicationTemplatesModule } from './pages/application-templates/application-templates.module';
-import { SafeApplicationDistributionListsModule } from './pages/application-distribution-lists/application-distribution-lists.module';
-import { SafeApplicationNotificationsModule } from './pages/application-notifications/application-notifications.module';
 import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.module';
 import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
+import { SafeUnsubscribeModule } from './components/utils/unsubscribe/unsubscribe.module';
+import { SafeViewsModule } from './views/views.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -86,11 +84,10 @@ import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
     SafeEmptyModule,
     SafeDividerModule,
     SafeLeftSidenavModule,
-    // === Pages ===
-    SafeProfileModule,
-    SafeApplicationTemplatesModule,
-    SafeApplicationDistributionListsModule,
-    SafeApplicationNotificationsModule,
+    // === UTILS COMPONENTS ===
+    SafeUnsubscribeModule,
+    // === VIEWS ===
+    SafeViewsModule,
   ],
 })
 export class SafeModule {}

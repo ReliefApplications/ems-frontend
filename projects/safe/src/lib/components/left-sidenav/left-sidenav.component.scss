@@ -53,18 +53,6 @@
   }
 }
 
-.cdk-drag-placeholder {
-  opacity: 0;
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.nav-items-list.cdk-drop-list-dragging .nav-item:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
 .nav-item-handle {
   cursor: move;
 }
@@ -81,25 +69,25 @@
 }
 
 .app-sidenav-add-page {
-  // Substracts topbar, sub-topbar, header and add-page height
+  // Subtracts topbar, sub-topbar, header and add-page height
   max-height: calc(100vh - 64px - 60px - 48px - 84px);
   overflow: auto;
 }
 
 .app-sidenav-phone-add-page {
-  // Substracts header and add-page height
+  // Subtracts header and add-page height
   max-height: calc(100vh - 48px - 84px);
   overflow: auto;
 }
 
 .app-sidenav {
-  // Substracts topbar, sub-topbar, header height
+  // Subtracts topbar, sub-topbar, header height
   max-height: calc(100vh - 64px - 60px - 48px);
   overflow: auto;
 }
 
 .app-sidenav-phone {
-  // Substracts header height
+  // Subtracts header height
   max-height: calc(100vh - 48px);
   overflow: auto;
 }

@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   GetFormByIdQueryResponse,
@@ -23,12 +23,14 @@ import {
   SafeConfirmService,
   SafeSnackBarService,
   SafeBreadcrumbService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeDownloadService, Record } from '@safe/builder';
-import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
+import { takeUntil } from 'rxjs/operators';
+import { Metadata } from 'projects/safe/src/lib/models/metadata.model';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -44,7 +46,10 @@ const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
   templateUrl: './form-records.component.html',
   styleUrls: ['./form-records.component.scss'],
 })
-export class FormRecordsComponent implements OnInit, OnDestroy {
+export class FormRecordsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public loadingMore = false;
@@ -55,8 +60,6 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
   dataSource: any[] = [];
   public showSidenav = true;
   private historyId = '';
-  private formSubscription?: Subscription;
-  private recordsSubscription?: Subscription;
   public cachedRecords: Record[] = [];
   public defaultColumns = DEFAULT_COLUMNS;
 
@@ -96,7 +99,9 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private breadcrumbService: SafeBreadcrumbService,
     private confirmService: SafeConfirmService
-  ) {}
+  ) {
+    super();
+  }
 
   /** Load the records, using the form id passed as a parameter. */
   ngOnInit(): void {
@@ -111,12 +116,6 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    */
   private getFormData(): void {
     this.loading = true;
-    if (this.formSubscription) {
-      this.formSubscription.unsubscribe();
-    }
-    if (this.recordsSubscription) {
-      this.recordsSubscription.unsubscribe();
-    }
 
     // get the records linked to the form
     this.recordsQuery = this.apollo.watchQuery<GetFormRecordsQueryResponse>({
@@ -129,23 +128,23 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.recordsSubscription = this.recordsQuery.valueChanges.subscribe(
-      (res) => {
+    this.recordsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
         this.cachedRecords.push(
-          ...res.data.form.records.edges.map((x: any) => x.node)
+          ...data.form.records.edges.map((x: any) => x.node)
         );
         this.dataSource = this.cachedRecords.slice(
           ITEMS_PER_PAGE * this.pageInfo.pageIndex,
           ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
         );
-        this.pageInfo.length = res.data.form.records.totalCount;
-        this.pageInfo.endCursor = res.data.form.records.pageInfo.endCursor;
+        this.pageInfo.length = data.form.records.totalCount;
+        this.pageInfo.endCursor = data.form.records.pageInfo.endCursor;
         this.loadingMore = false;
-      }
-    );
+      });
 
     // get the form detail
-    this.formSubscription = this.apollo
+    this.apollo
       .watchQuery<GetFormByIdQueryResponse>({
         query: GET_FORM_BY_ID,
         variables: {
@@ -154,22 +153,23 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
           showDeletedRecords: this.showDeletedRecords,
         },
       })
-      .valueChanges.subscribe((res) => {
-        if (res.data.form) {
-          this.form = res.data.form;
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(({ errors, data, loading }) => {
+        if (data.form) {
+          this.form = data.form;
           this.breadcrumbService.setBreadcrumb(
             '@form',
             this.form.name as string
           );
           this.setDisplayedColumns();
-          this.loading = res.loading;
+          this.loading = loading;
         }
-        if (res.errors) {
+        if (errors) {
           // TO-DO: Check why it's not working as intended.
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate.instant('common.record.one').toLowerCase(),
-              error: res.errors[0].message,
+              error: errors[0].message,
             }),
             { error: true }
           );
@@ -211,7 +211,7 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
     for (const field of this.form.fields) {
       columns.push(field.name);
     }
-    const metadata = get(this.form, 'metadata', []);
+    const metadata: Metadata[] = get(this.form, 'metadata', []);
     columns = columns
       .filter((x) => {
         const fieldMeta = metadata.find((y: any) => y.name === x);
@@ -329,14 +329,14 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
           id,
         },
       })
-      .subscribe((res) => {
+      .subscribe(({ data }) => {
         this.historyId = id;
         this.layoutService.setRightSidenav({
           component: SafeRecordHistoryComponent,
           inputs: {
-            id: res.data.record.id,
+            id: data.record.id,
             revert: (version: any) =>
-              this.confirmRevertDialog(res.data.record, version),
+              this.confirmRevertDialog(data.record, version),
           },
         });
       });
@@ -391,8 +391,8 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
    */
   uploadFileData(file: any): void {
     const path = `upload/form/records/${this.id}`;
-    this.downloadService.uploadFile(path, file).subscribe(
-      (res) => {
+    this.downloadService.uploadFile(path, file).subscribe({
+      next: (res) => {
         if (res.status === 'OK') {
           this.snackBar.openSnackBar(
             this.translate.instant(
@@ -403,11 +403,11 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
           this.showUpload = false;
         }
       },
-      (error: any) => {
+      error: (error: any) => {
         this.snackBar.openSnackBar(error.error, { error: true });
         this.showUpload = false;
-      }
-    );
+      },
+    });
   }
 
   /**
@@ -442,14 +442,5 @@ export class FormRecordsComponent implements OnInit, OnDestroy {
           this.layoutService.setRightSidenav(null);
         }
       });
-  }
-
-  /**
-   * Unsubscribe to subscriptions before destroying component.
-   */
-  ngOnDestroy(): void {
-    if (this.formSubscription) {
-      this.formSubscription.unsubscribe();
-    }
   }
 }

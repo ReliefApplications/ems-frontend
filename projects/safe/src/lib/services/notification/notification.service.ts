@@ -16,6 +16,7 @@ import {
   NOTIFICATION_SUBSCRIPTION,
 } from './graphql/subscriptions';
 import { Notification } from '../../models/notification.model';
+import { updateQueryUniqueValues } from '../../utils/update-queries';
 
 /** Pagination: number of items per query */
 const ITEMS_PER_PAGE = 10;
@@ -29,6 +30,7 @@ const ITEMS_PER_PAGE = 10;
 export class SafeNotificationService {
   /** Current notifications */
   private notifications = new BehaviorSubject<Notification[]>([]);
+  private cachedNotifications: Notification[] = [];
   /** @returns Current notifications as observable */
   get notifications$(): Observable<Notification[]> {
     return this.notifications.asObservable();
@@ -74,34 +76,26 @@ export class SafeNotificationService {
           },
         });
 
-      this.notificationsQuery.valueChanges.subscribe((res) => {
-        this.notifications.next(
-          res.data.notifications.edges.map((x) => x.node)
-        );
-        this.pageInfo.endCursor = res.data.notifications.pageInfo.endCursor;
-        this.hasNextPage.next(res.data.notifications.pageInfo.hasNextPage);
-        this.firstLoad = false;
+      this.notificationsQuery.valueChanges.subscribe(({ data }) => {
+        this.updateValues(data);
       });
 
       this.apollo
         .subscribe<NotificationSubscriptionResponse>({
           query: NOTIFICATION_SUBSCRIPTION,
         })
-        .subscribe((res) => {
-          if (res.data && res.data.notification) {
+        .subscribe(({ data }) => {
+          if (data && data.notification) {
             // prevent new notification duplication
-            if (this.previousNotificationId !== res.data.notification.id) {
+            if (this.previousNotificationId !== data.notification.id) {
               const notifications = this.notifications.getValue();
               if (notifications) {
-                this.notifications.next([
-                  res.data.notification,
-                  ...notifications,
-                ]);
+                this.notifications.next([data.notification, ...notifications]);
               } else {
-                this.notifications.next([res.data.notification]);
+                this.notifications.next([data.notification]);
               }
             }
-            this.previousNotificationId = res.data.notification.id;
+            this.previousNotificationId = data.notification.id;
           }
         });
     }
@@ -121,9 +115,9 @@ export class SafeNotificationService {
           id: notification.id,
         },
       })
-      .subscribe((res) => {
-        if (res.data && res.data.seeNotification) {
-          const seeNotification = res.data.seeNotification;
+      .subscribe(({ data }) => {
+        if (data && data.seeNotification) {
+          const seeNotification = data.seeNotification;
           this.notifications.next(
             notifications.filter((x) => x.id !== seeNotification.id)
           );
@@ -152,26 +146,29 @@ export class SafeNotificationService {
    * Loads more notifications.
    */
   public fetchMore(): void {
-    this.notificationsQuery.fetchMore({
-      variables: {
-        first: ITEMS_PER_PAGE,
-        afterCursor: this.pageInfo.endCursor,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          notifications: {
-            edges: [
-              ...prev.notifications.edges,
-              ...fetchMoreResult.notifications.edges,
-            ],
-            pageInfo: fetchMoreResult.notifications.pageInfo,
-            totalCount: fetchMoreResult.notifications.totalCount,
-          },
-        });
-      },
-    });
+    this.notificationsQuery
+      .fetchMore({
+        variables: {
+          first: ITEMS_PER_PAGE,
+          afterCursor: this.pageInfo.endCursor,
+        },
+      })
+      .then(({ data }) => this.updateValues(data));
+  }
+
+  /**
+   * Update notification data values
+   *
+   * @param data query response data
+   */
+  private updateValues(data: GetNotificationsQueryResponse) {
+    this.cachedNotifications = updateQueryUniqueValues(
+      this.cachedNotifications,
+      data.notifications.edges.map((x) => x.node)
+    );
+    this.notifications.next(this.cachedNotifications);
+    this.pageInfo.endCursor = data.notifications.pageInfo.endCursor;
+    this.hasNextPage.next(data.notifications.pageInfo.hasNextPage);
+    this.firstLoad = false;
   }
 }

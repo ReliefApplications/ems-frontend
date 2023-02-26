@@ -6,9 +6,12 @@ import {
   ViewChild,
   AfterViewInit,
 } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from '@angular/material/legacy-dialog';
+import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
 import { Apollo } from 'apollo-angular';
 import {
   GET_RESOURCE,
@@ -38,7 +41,7 @@ import { SafeAggregationService } from '../../../../services/aggregation/aggrega
 export class SafeCardModalComponent implements OnInit, AfterViewInit {
   @ViewChild('tabGroup') tabGroup: any;
 
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
   public fields: any[] = [];
 
   // === CURRENT TAB ===
@@ -71,7 +74,7 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<SafeCardModalComponent>,
-    public fb: FormBuilder,
+    public fb: UntypedFormBuilder,
     private cdRef: ChangeDetectorRef,
     private apollo: Apollo,
     private aggregationService: SafeAggregationService
@@ -224,6 +227,15 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
       .subscribe((res) => {
         this.selectedLayout =
           res.data?.resource.layouts?.edges[0]?.node || null;
+        this.fields = [];
+        get(res, 'data.resource.metadata', []).map((metafield: any) => {
+          get(this.selectedLayout, 'query.fields', []).map((field: any) => {
+            if (field.name === metafield.name) {
+              const type = metafield.type;
+              this.fields.push({ ...field, type });
+            }
+          });
+        });
       });
   }
 

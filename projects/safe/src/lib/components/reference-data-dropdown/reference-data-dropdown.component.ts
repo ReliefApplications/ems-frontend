@@ -10,9 +10,9 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { ReferenceData } from '../../models/reference-data.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
-  MAT_SELECT_SCROLL_STRATEGY,
-  MatSelect,
-} from '@angular/material/select';
+  MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
+  MatLegacySelect as MatSelect,
+} from '@angular/material/legacy-select';
 import {
   GetReferenceDataByIdQueryResponse,
   GetReferenceDatasQueryResponse,
@@ -21,6 +21,9 @@ import {
 } from './graphql/queries';
 import { Overlay } from '@angular/cdk/overlay';
 import { scrollFactory } from '../../utils/scroll-factory';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
+import { updateQueryUniqueValues } from '../../utils/update-queries';
 
 /** Pagination */
 const ITEMS_PER_PAGE = 10;
@@ -40,13 +43,17 @@ const ITEMS_PER_PAGE = 10;
     },
   ],
 })
-export class SafeReferenceDataDropdownComponent implements OnInit {
+export class SafeReferenceDataDropdownComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() referenceData = '';
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 
   public selectedReferenceData: ReferenceData | null = null;
   private referenceDatas = new BehaviorSubject<ReferenceData[]>([]);
   public referenceDatas$!: Observable<ReferenceData[]>;
+  private cachedReferenceDatas: ReferenceData[] = [];
   private referenceDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
   private pageInfo = {
     endCursor: '',
@@ -61,7 +68,9 @@ export class SafeReferenceDataDropdownComponent implements OnInit {
    *
    * @param apollo Apollo service
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo) {
+    super();
+  }
 
   ngOnInit(): void {
     if (this.referenceData) {
@@ -72,12 +81,13 @@ export class SafeReferenceDataDropdownComponent implements OnInit {
             id: this.referenceData,
           },
         })
-        .subscribe((res) => {
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
           if (
-            res.data.referenceData &&
+            data.referenceData &&
             !this.referenceDatas.value.find((x) => x.id === this.referenceData)
           ) {
-            this.selectedReferenceData = res.data.referenceData;
+            this.selectedReferenceData = data.referenceData;
           }
         });
     }
@@ -91,15 +101,11 @@ export class SafeReferenceDataDropdownComponent implements OnInit {
       });
 
     this.referenceDatas$ = this.referenceDatas.asObservable();
-    this.referenceDatasQuery.valueChanges.subscribe((res) => {
-      const referenceDatas = res.data.referenceDatas.edges.map((x) => x.node);
-      this.referenceDatas.next(referenceDatas);
-      if (referenceDatas.find((x) => x.id === this.referenceData)) {
-        this.selectedReferenceData = null;
-      }
-      this.pageInfo = res.data.referenceDatas.pageInfo;
-      this.loading = res.loading;
-    });
+    this.referenceDatasQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.updateValues(data, loading);
+      });
   }
 
   /**
@@ -137,37 +143,35 @@ export class SafeReferenceDataDropdownComponent implements OnInit {
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        this.referenceDatasQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            if (this.selectedReferenceData) {
-              if (
-                fetchMoreResult.referenceDatas.edges.find(
-                  (x) => x.node.id === this.selectedReferenceData?.id
-                )
-              ) {
-                this.selectedReferenceData = null;
-              }
-            }
-            return Object.assign({}, prev, {
-              referenceDatas: {
-                edges: [
-                  ...prev.referenceDatas.edges,
-                  ...fetchMoreResult.referenceDatas.edges,
-                ],
-                pageInfo: fetchMoreResult.referenceDatas.pageInfo,
-                totalCount: fetchMoreResult.referenceDatas.totalCount,
-              },
-            });
-          },
-        });
+        this.referenceDatasQuery
+          .fetchMore({
+            variables: {
+              first: ITEMS_PER_PAGE,
+              afterCursor: this.pageInfo.endCursor,
+            },
+          })
+          .then((results) => this.updateValues(results.data, results.loading));
       }
     }
+  }
+
+  /**
+   * Update ref data value
+   *
+   * @param data query response data
+   * @param loading loading status
+   */
+  private updateValues(data: GetReferenceDatasQueryResponse, loading: boolean) {
+    const referenceDatas = data.referenceDatas.edges.map((x) => x.node);
+    this.cachedReferenceDatas = updateQueryUniqueValues(
+      this.cachedReferenceDatas,
+      referenceDatas
+    );
+    this.referenceDatas.next(this.cachedReferenceDatas);
+    if (this.cachedReferenceDatas.find((x) => x.id === this.referenceData)) {
+      this.selectedReferenceData = null;
+    }
+    this.pageInfo = data.referenceDatas.pageInfo;
+    this.loading = loading;
   }
 }

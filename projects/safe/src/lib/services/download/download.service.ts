@@ -6,6 +6,7 @@ import { tap } from 'rxjs/operators';
 import { SafeSnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { SafeRestService } from '../rest/rest.service';
+import { Application } from '../../models/application.model';
 
 /**
  * Shared download service. Handles export and upload events.
@@ -38,7 +39,7 @@ export class SafeDownloadService {
    * @param options (optional) request options
    */
   getFile(path: string, type: string, fileName: string, options?: any): void {
-    // Opens a loader in a snackar
+    // Opens a loader in a snackbar
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SafeSnackbarSpinnerComponent,
       {
@@ -57,8 +58,8 @@ export class SafeDownloadService {
     });
     this.restService
       .get(path, { ...options, responseType: 'blob', headers })
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           const blob = new Blob([res], { type });
           this.saveFile(fileName, blob);
           snackBarRef.instance.data = {
@@ -69,7 +70,7 @@ export class SafeDownloadService {
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
         },
-        () => {
+        error: () => {
           snackBarRef.instance.data = {
             message: this.translate.instant(
               'common.notifications.file.download.error'
@@ -78,8 +79,8 @@ export class SafeDownloadService {
             error: true,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
-        }
-      );
+        },
+      });
   }
 
   /**
@@ -96,7 +97,7 @@ export class SafeDownloadService {
     fileName: string,
     body?: any
   ): void {
-    // Opens a loader in a snackar
+    // Opens a loader in a snackbar
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SafeSnackbarSpinnerComponent,
       {
@@ -115,8 +116,8 @@ export class SafeDownloadService {
     });
     this.restService
       .post(path, body, { responseType: 'blob', headers })
-      .subscribe(
-        (res) => {
+      .subscribe({
+        next: (res) => {
           if (body?.email) {
             snackBarRef.instance.data = {
               message: this.translate.instant(
@@ -136,6 +137,71 @@ export class SafeDownloadService {
             };
             setTimeout(() => snackBarRef.dismiss(), 1000);
           }
+        },
+        error: () => {
+          snackBarRef.instance.data = {
+            message: this.translate.instant(
+              'common.notifications.file.download.error'
+            ),
+            loading: false,
+            error: true,
+          };
+          setTimeout(() => snackBarRef.dismiss(), 1000);
+        },
+      });
+  }
+
+  /**
+   * Downloads file with users from the server
+   *
+   * @param type type of the file
+   * @param users users to export, if any
+   * @param application application get export users from, if any
+   */
+  getUsersExport(
+    type: 'csv' | 'xlsx',
+    users: string[],
+    application?: Application
+  ): void {
+    const fileName = application
+      ? `users_${application.name}.${type}`
+      : `users.${type}`;
+
+    const queryString = new URLSearchParams({ type }).toString();
+    const path = application
+      ? `download/application/${application.id}/users?${queryString}`
+      : `download/users?${queryString}`;
+
+    // Opens a loader in a snackbar
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SafeSnackbarSpinnerComponent,
+      {
+        duration: 0,
+        data: {
+          message: this.translate.instant(
+            'common.notifications.file.download.processing'
+          ),
+          loading: true,
+        },
+      }
+    );
+    const headers = new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      'Content-Type': 'application/json',
+    });
+    this.restService
+      .post(path, { users }, { responseType: 'blob', headers })
+      .subscribe(
+        (res) => {
+          const blob = new Blob([res], { type: `text/${type};charset=utf-8;` });
+          this.saveFile(fileName, blob);
+          snackBarRef.instance.data = {
+            message: this.translate.instant(
+              'common.notifications.file.download.ready'
+            ),
+            loading: false,
+          };
+          setTimeout(() => snackBarRef.dismiss(), 1000);
         },
         () => {
           snackBarRef.instance.data = {
