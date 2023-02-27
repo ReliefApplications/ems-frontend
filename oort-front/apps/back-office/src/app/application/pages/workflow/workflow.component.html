@@ -1,0 +1,108 @@
+<ng-container
+  *safeSkeleton="
+    loading;
+    repeat: 1;
+    height: '32px';
+    width: '120px';
+    shape: 'rectangle'
+  "
+>
+  <ng-container *ngIf="workflow">
+    <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+      <div class="flex items-center overflow-hidden">
+        <ng-container *ngIf="!formActive">
+          <h1
+            class="!m-0 overflow-hidden text-ellipsis hover:bg-neutral-200 rounded-lg"
+            (click)="toggleFormActive()"
+          >
+            {{ workflow.name }}
+          </h1>
+        </ng-container>
+        <ng-container *ngIf="formActive">
+          <form [formGroup]="workflowNameForm" (ngSubmit)="saveName()">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'common.name' | translate }}</mat-label>
+              <input matInput formControlName="workflowName" type="string" />
+              <safe-button
+                matSuffix
+                type="submit"
+                [isIcon]="true"
+                icon="done"
+                variant="primary"
+                [disabled]="!workflowNameForm.valid"
+              >
+              </safe-button>
+              <safe-button
+                matSuffix
+                [isIcon]="true"
+                icon="close"
+                variant="danger"
+                (click)="toggleFormActive()"
+              >
+              </safe-button>
+            </mat-form-field>
+          </form>
+        </ng-container>
+      </div>
+      <div class="flex items-center gap-1" *ngIf="!formActive">
+        <safe-access
+          [access]="workflow.permissions"
+          [application]="workflow.page?.application?.id"
+          [objectTypeName]="'common.page.one' | translate"
+          (save)="saveAccess($event)"
+          *ngIf="workflow.page?.canUpdate || false"
+        ></safe-access>
+        <safe-button
+          variant="grey"
+          [isIcon]="true"
+          icon="more_vert"
+          [matMenuTriggerFor]="menu"
+          cdkOverlayOrigin
+          #appMenuTrigger="cdkOverlayOrigin"
+        >
+        </safe-button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="onAppSelection()">
+            <mat-icon>file_copy</mat-icon>
+            {{ 'common.duplicate' | translate }}
+          </button>
+        </mat-menu>
+
+        <ng-template #searchMenuHeaderTemplate>
+          <safe-alert
+            ><safe-icon icon="info"></safe-icon>
+            {{ 'models.page.tooltip.duplicate' | translate }}
+          </safe-alert>
+        </ng-template>
+
+        <ng-template
+          cdkConnectedOverlay
+          [cdkConnectedOverlayOrigin]="appMenuTrigger"
+          [cdkConnectedOverlayOpen]="showAppMenu"
+        >
+          <safe-search-menu
+            [headerTemplate]="searchMenuHeaderTemplate"
+            [currentApplicationId]="applicationId"
+            [applications]="applications"
+            (close)="showAppMenu = false"
+            (open)="onDuplicate($event)"
+          ></safe-search-menu>
+        </ng-template>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
+<!-- STEPS -->
+<safe-workflow-stepper
+  class="-mx-6 my-4 block"
+  [loading]="loading"
+  [steps]="steps"
+  [canUpdate]="canUpdate"
+  (add)="onAddStep()"
+  (openStep)="onOpenStep($event)"
+  (delete)="onDeleteStep($event)"
+  (reorderSteps)="onReorderSteps($event)"
+  [activeStep]="activeStep"
+>
+</safe-workflow-stepper>
+<router-outlet (activate)="onActivate($event)"></router-outlet>

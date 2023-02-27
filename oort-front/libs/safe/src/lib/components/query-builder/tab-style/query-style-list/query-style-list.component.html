@@ -1,0 +1,62 @@
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
+    <mat-table
+      [dataSource]="styles"
+      cdkDropList
+      (cdkDropListDropped)="drop($event)"
+      [cdkDropListData]="styles"
+    >
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>
+          {{ 'common.name' | translate }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="font-bold">
+          {{ element.name }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="preview">
+        <mat-header-cell *matHeaderCellDef>
+          {{ 'common.preview' | translate }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <safe-query-style-preview
+            [style]="element"
+          ></safe-query-style-preview>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="_actions" [stickyEnd]="true">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index">
+          <safe-button
+            [isIcon]="true"
+            icon="more_vert"
+            [matMenuTriggerFor]="resMenu"
+            (click)="$event.stopPropagation()"
+          >
+          </safe-button>
+          <mat-menu #resMenu="matMenu">
+            <button mat-menu-item (click)="edit.emit(i)">
+              <mat-icon>edit</mat-icon>
+              {{ 'common.edit' | translate }}
+            </button>
+            <button mat-menu-item (click)="delete.emit(i)">
+              <mat-icon>delete</mat-icon>
+              {{ 'common.delete' | translate }}
+            </button>
+          </mat-menu>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: columns"
+        cdkDrag
+        [cdkDragData]="row"
+      ></mat-row>
+    </mat-table>
+  </div>
+</div>

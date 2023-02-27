@@ -19,24 +19,61 @@
           "apps/back-office/src/favicon.ico",
           "apps/back-office/src/assets"
         ],
-        "styles": ["apps/back-office/src/styles.scss"],
-        "scripts": []
+        "styles": [
+          "apps/back-office/src/styles.scss",
+          "libs/safe/src/lib/style/styles.scss",
+          "node_modules/survey-angular/survey.min.css",
+          "node_modules/survey-creator/survey-creator.min.css",
+          "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+          "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+          "node_modules/select2/dist/css/select2.min.css"
+        ],
+        "scripts": [
+          "node_modules/jquery/dist/jquery.js",
+          "node_modules/select2/dist/js/select2.min.js",
+          "node_modules/tinymce/tinymce.js",
+          "node_modules/tinymce/themes/silver/theme.js"
+        ]
       },
       "configurations": {
         "production": {
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "500kb",
-              "maximumError": "1mb"
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
             },
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
-              "maximumError": "4kb"
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "libs/safe/src/lib/style/themes/oort"
+            ]
+          }
+        },
+        "oort-local": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.oort.local.ts"
+            }
+          ],
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true,
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "libs/safe/src/lib/style/themes/oort"
+            ]
+          }
         },
         "development": {
           "buildOptimizer": false,
@@ -44,7 +81,12 @@
           "vendorChunk": true,
           "extractLicenses": false,
           "sourceMap": true,
-          "namedChunks": true
+          "namedChunks": true,
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "libs/safe/src/lib/style/themes/default"
+            ]
+          }
         }
       },
       "defaultConfiguration": "production"
@@ -54,6 +96,9 @@
       "configurations": {
         "production": {
           "browserTarget": "back-office:build:production"
+        },
+        "oort-local": {
+          "browserTarget": "back-office:build:oort-local"
         },
         "development": {
           "browserTarget": "back-office:build:development"
