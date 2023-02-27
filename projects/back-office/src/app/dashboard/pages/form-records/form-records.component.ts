@@ -24,9 +24,10 @@ import {
   SafeSnackBarService,
   SafeBreadcrumbService,
   SafeUnsubscribeComponent,
+  SafeDownloadService,
+  Record,
 } from '@safe/builder';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { SafeDownloadService, Record } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
@@ -169,7 +170,7 @@ export class FormRecordsComponent
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate.instant('common.record.one').toLowerCase(),
-              error: errors[0].message,
+              error: errors ? errors[0].message : '',
             }),
             { error: true }
           );
@@ -267,11 +268,31 @@ export class FormRecordsComponent
           hardDelete: this.showDeletedRecords,
         },
       })
-      .subscribe(() => {
-        this.dataSource = this.dataSource.filter((x) => x.id !== id);
-        if (id === this.historyId) {
-          this.layoutService.setRightSidenav(null);
-        }
+      .subscribe({
+        next: ({ errors }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotDeleted', {
+                value: this.translate.instant('common.record.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate.instant('common.record.one'),
+              })
+            );
+            this.dataSource = this.dataSource.filter((x) => x.id !== id);
+            if (id === this.historyId) {
+              this.layoutService.setRightSidenav(null);
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
@@ -306,11 +327,25 @@ export class FormRecordsComponent
               version: version.id,
             },
           })
-          .subscribe(() => {
-            this.layoutService.setRightSidenav(null);
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.dataRecovered')
-            );
+          .subscribe({
+            next: ({ errors }) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.dataNotRecovered'
+                  ),
+                  { error: true }
+                );
+              } else {
+                this.layoutService.setRightSidenav(null);
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.dataRecovered')
+                );
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       }
     });
@@ -436,11 +471,31 @@ export class FormRecordsComponent
           id,
         },
       })
-      .subscribe(() => {
-        this.dataSource = this.dataSource.filter((x) => x.id !== id);
-        if (id === this.historyId) {
-          this.layoutService.setRightSidenav(null);
-        }
+      .subscribe({
+        next: ({ errors }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotRestored', {
+                type: this.translate.instant('common.record.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectRestored', {
+                type: this.translate.instant('common.record.one'),
+              })
+            );
+            this.dataSource = this.dataSource.filter((x) => x.id !== id);
+            if (id === this.historyId) {
+              this.layoutService.setRightSidenav(null);
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 }

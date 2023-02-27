@@ -101,13 +101,31 @@ export class FormsTabComponent implements OnInit {
               id: form.id,
             },
           })
-          .subscribe(() => {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: this.translate.instant('common.form.one'),
-              })
-            );
-            this.forms = this.forms.filter((x: any) => x.id !== form.id);
+          .subscribe({
+            next: ({ errors }) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotDeleted',
+                    {
+                      value: this.translate.instant('common.form.one'),
+                      error: errors ? errors[0].message : '',
+                    }
+                  ),
+                  { error: true }
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant('common.form.one'),
+                  })
+                );
+                this.forms = this.forms.filter((x: any) => x.id !== form.id);
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       }
     });

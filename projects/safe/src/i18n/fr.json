@@ -134,6 +134,7 @@
 			"accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
 			"alreadyExists": "Cet objet {{type}} {{value}} existe déjà dans cette application.",
 			"copiedToClipboard": "Copié !",
+			"dataNotRecovered": "todo(translation)",
 			"dataRecovered": "Les données ont été récupérées !",
 			"email": {
 				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
@@ -170,9 +171,9 @@
 			},
 			"loadedFromCache": "Objet de type {{type}} chargé depuis le cache.",
 			"noOpened": "Aucun objet {{value}} n'a été ouvert.",
-			"objectCreated": "{{value}} {{type}} créé.",
-			"objectDeleted": "{{value}} supprimé.",
-			"objectDuplicated": "L'objet {{type}} {{value}} a été dupliqué avec succès.",
+			"objectCreated": "{{value}} {{type}} créé avec succès.",
+			"objectDeleted": "{{value}} supprimé avec succès.",
+			"objectDuplicated": "{{type}} {{value}} dupliqué avec succès.",
 			"objectInvited": "{{name}} a été invité.",
 			"objectLocked": "L'édition de {{name}} a été bloquée par un autre utilisateur.",
 			"objectNotCreated": "L'objet de type {{type}} n'a pas pu être créé. {{error}}",
@@ -180,8 +181,11 @@
 			"objectNotDuplicated": "L'objet de type {{type}} n'a pas pu être dupliqué. {{error}}",
 			"objectNotFound": "{{name}} n'a pas été trouvé.",
 			"objectNotInvited": "L'invitation vers {{name}} a échoué.",
+			"objectNotReordered": "todo(translation)",
+			"objectNotRestored": "todo(translation)",
 			"objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
 			"objectReordered": "L'objet de type {{type}} a été réorganisé.",
+			"objectRestored": "todo(translation)",
 			"objectUpdated": "{{value}} {{type}} a été modifié.",
 			"platformAccessNotGranted": "Vous n'avez pas d'accès valide à cette plateforme.",
 			"readAll": "Tout marqué comme lu",
@@ -400,6 +404,14 @@
 			"pages": {
 				"delete": {
 					"confirmationMessage": "Voulez-vous vraiment supprimer la page {{name}}?"
+				},
+				"notReordered": {
+					"plural": "todo(translation)",
+					"singular": "todo(translation)"
+				},
+				"reordered": {
+					"plural": "todo(translation)",
+					"singular": "todo(translation)"
 				}
 			},
 			"positionAttribute": {
@@ -982,6 +994,22 @@
 				"confirm": "Inviter des utilisateurs",
 				"description": "Sélectionner des utilisateurs existants, inviter de nouveaux utilisateurs ou en importer depuis un fichier Excel"
 			},
+			"onDelete": {
+				"plural": "todo(translation)",
+				"singular": "todo(translation)"
+			},
+			"onInvite": {
+				"plural": "todo(translation)",
+				"singular": "todo(translation)"
+			},
+			"onNotDelete": {
+				"plural": "todo(translation)",
+				"singular": "todo(translation)"
+			},
+			"onNotInvite": {
+				"plural": "todo(translation)",
+				"singular": "todo(translation)"
+			},
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page d'utilisateurs"
 			}
@@ -1466,6 +1494,7 @@
 			"id": "ID de l'application",
 			"new": "Nouvelle application",
 			"notifications": {
+				"notPublished": "todo(translation)",
 				"published": "L'application {{value}} a été publiée.",
 				"updated": "Application modifiée."
 			},
@@ -1530,6 +1559,7 @@
 			"notifications": {
 				"conversionIncomplete": "Il n'y a pas de correspondance entre le(s) enregistrement(s) sélectionné(s) et certains champs de ce formulaire.",
 				"rowsAdded": "{{length}} ligne(s) ont été ajoutées à {{field}} dans l'enregistrement {{value}}.",
+				"rowsNotAdded": "todo(translation)",
 				"uploadSuccessful": "Enregistrements importés avec succès"
 			},
 			"restore": "Restaurer"
@@ -1683,6 +1713,7 @@
 		},
 		"profile": {
 			"notifications": {
+				"notUpdated": "todo(translation)",
 				"updated": "Préférences sauvegardées."
 			},
 			"title": "Votre profil"

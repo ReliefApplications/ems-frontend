@@ -24,10 +24,10 @@ import {
   Form,
   SafeConfirmService,
   SafeBreadcrumbService,
+  SafeStatusModalComponent,
 } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SafeStatusModalComponent } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
@@ -237,7 +237,7 @@ export class FormBuilderComponent implements OnInit {
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.form.one').toLowerCase(),
+                  type: this.translate.instant('common.form.one'),
                   value: this.form?.name,
                 })
               );
@@ -278,25 +278,30 @@ export class FormBuilderComponent implements OnInit {
           status: e.value,
         },
       })
-      .subscribe(({ errors, data }) => {
-        if (errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotUpdated', {
-              type: this.translate.instant('common.status'),
-              error: errors[0].message,
-            }),
-            { error: true }
-          );
-          statusModal.close();
-        } else {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.statusUpdated', {
-              value: e.value,
-            })
-          );
-          this.form = { ...this.form, status: data?.editForm.status };
-          statusModal.close();
-        }
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.status'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+            statusModal.close();
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.statusUpdated', {
+                value: e.value,
+              })
+            );
+            this.form = { ...this.form, status: data?.editForm.status };
+            statusModal.close();
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
@@ -359,30 +364,35 @@ export class FormBuilderComponent implements OnInit {
           name: formName,
         },
       })
-      .subscribe(({ errors, data }) => {
-        if (errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotUpdated', {
-              type: this.translate.instant('common.form.one'),
-              error: errors[0].message,
-            }),
-            { error: true }
-          );
-          statusModal.close();
-        } else {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectUpdated', {
-              type: this.translate.instant('common.form.one').toLowerCase(),
-              value: formName,
-            })
-          );
-          this.form = { ...this.form, name: data?.editForm.name };
-          this.breadcrumbService.setBreadcrumb(
-            '@form',
-            this.form.name as string
-          );
-          statusModal.close();
-        }
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.form.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+            statusModal.close();
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.form.one'),
+                value: formName,
+              })
+            );
+            this.form = { ...this.form, name: data?.editForm.name };
+            this.breadcrumbService.setBreadcrumb(
+              '@form',
+              this.form.name as string
+            );
+            statusModal.close();
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
@@ -407,26 +417,31 @@ export class FormBuilderComponent implements OnInit {
           permissions: e,
         },
       })
-      .subscribe(({ errors, data }) => {
-        if (errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotUpdated', {
-              type: this.translate.instant('common.access'),
-              error: errors[0].message,
-            }),
-            { error: true }
-          );
-          statusModal.close();
-        } else {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectUpdated', {
-              type: this.translate.instant('common.access').toLowerCase(),
-              value: '',
-            })
-          );
-          this.form = { ...data?.editForm, structure: this.structure };
-          statusModal.close();
-        }
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.access'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+            statusModal.close();
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.access'),
+                value: '',
+              })
+            );
+            this.form = { ...data?.editForm, structure: this.structure };
+            statusModal.close();
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 

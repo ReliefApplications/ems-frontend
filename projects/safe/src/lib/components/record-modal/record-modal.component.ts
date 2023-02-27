@@ -332,11 +332,25 @@ export class SafeRecordModalComponent implements AfterViewInit {
               version: version.id,
             },
           })
-          .subscribe(() => {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.dataRecovered')
-            );
-            this.dialogRef.close();
+          .subscribe({
+            next: (errors) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.dataNotRecovered'
+                  ),
+                  { error: true }
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.dataRecovered')
+                );
+              }
+              this.dialogRef.close();
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       }
     });
