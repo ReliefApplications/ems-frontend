@@ -2,8 +2,20 @@ import { Injectable } from '@angular/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Service that injects i18n translations in mat-paginator elements
+ *
+ * @class MatPaginationIntlService
+ * @typedef {MatPaginationIntlService}
+ * @augments {MatPaginatorIntl}
+ */
 @Injectable()
 export class MatPaginationIntlService extends MatPaginatorIntl {
+  /**
+   * Creates an instance of MatPaginationIntlService.
+   *
+   * @param {TranslateService} translateService Translation Service Instance
+   */
   constructor(private translateService: TranslateService) {
     super();
 
@@ -16,6 +28,14 @@ export class MatPaginationIntlService extends MatPaginatorIntl {
     this.translateLabels();
   }
 
+  /**
+   * Returns paginator range string
+   *
+   * @param {number} page Page Number
+   * @param {number} pageSize Page Size
+   * @param {number} length Number of Items
+   * @returns {string} Paginator Range String
+   */
   getRangeLabel = (page: number, pageSize: number, length: number): string => {
     const of = this.translateService
       ? this.translateService.instant('common.pagination.of')
@@ -33,6 +53,11 @@ export class MatPaginationIntlService extends MatPaginatorIntl {
     return startIndex + 1 + ' - ' + endIndex + ' ' + of + ' ' + length;
   };
 
+  /**
+   * Whenever the language changes, updates paginator translations as well
+   *
+   * @param {TranslateService} translate Translation Service Instance
+   */
   injectTranslateService(translate: TranslateService): void {
     this.translateService = translate;
 
@@ -43,6 +68,9 @@ export class MatPaginationIntlService extends MatPaginatorIntl {
     this.translateLabels();
   }
 
+  /**
+   * Fetches translations
+   */
   translateLabels(): void {
     this.itemsPerPageLabel = this.translateService.instant(
       'common.pagination.itemsPerPage'

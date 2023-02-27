@@ -42,6 +42,9 @@ import { PureAbility } from '@casl/ability';
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
 
+// Importing the paginators translation service
+import { MatPaginationIntlService } from 'projects/safe/src/lib/utils/paginator-translate';
+
 // Kendo datepicker for surveyjs
 // import {
 //   CalendarDOMService,
@@ -62,6 +65,7 @@ import { IconsService } from '@progress/kendo-angular-icons';
 import { GraphQLModule } from './graphql.module';
 import { MAT_LEGACY_TOOLTIP_DEFAULT_OPTIONS as MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/legacy-tooltip';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 
 /**
  * Initialize authentication in the platform.
@@ -156,6 +160,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
     {
       provide: PureAbility,
       useExisting: AppAbility,
+    },
+    {
+      provide: MatPaginatorIntl,
+      useClass: MatPaginationIntlService,
     },
     PopupService,
     ResizeBatchService,
