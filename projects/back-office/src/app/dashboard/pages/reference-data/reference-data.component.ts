@@ -536,4 +536,14 @@ export class ReferenceDataComponent
     }
     this.loadingFields = false;
   }
+
+  /**
+   * Remove a field from the list.
+   *
+   * @param field field to remove.
+   */
+  onRemoveField(field: any) {
+    this.valueFields = this.valueFields.filter((x) => x.name !== field.name);
+    this.referenceForm?.get('fields')?.setValue(this.valueFields);
+  }
 }
