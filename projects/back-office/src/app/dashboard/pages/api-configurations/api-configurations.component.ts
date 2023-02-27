@@ -5,7 +5,6 @@ import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/materia
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ApiConfiguration,
-  SafeAuthService,
   SafeConfirmService,
   SafeSnackBarService,
   SafeUnsubscribeComponent,
@@ -73,7 +72,6 @@ export class ApiConfigurationsComponent
    * @param apollo Apollo service
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
-   * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param router Angular router
    * @param translate Angular translate service
@@ -82,7 +80,6 @@ export class ApiConfigurationsComponent
     private apollo: Apollo,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private router: Router,
     private translate: TranslateService
@@ -223,15 +220,23 @@ export class ApiConfigurationsComponent
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
                     {
-                      type: this.translate.instant(
-                        'common.apiConfiguration.one'
-                      ),
-                      error: errors[0].message,
+                      type: this.translate
+                        .instant('common.apiConfiguration.one')
+                        .toLowerCase(),
+                      error: errors ? errors[0].message : '',
                     }
                   ),
                   { error: true }
                 );
               } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.apiConfiguration.one')
+                      .toLowerCase(),
+                    value: data?.addApiConfiguration.name,
+                  })
+                );
                 if (data) {
                   this.router.navigate([
                     '/settings/apiconfigurations',
@@ -276,17 +281,37 @@ export class ApiConfigurationsComponent
               id: element.id,
             },
           })
-          .subscribe((res) => {
-            if (res && !res.errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate.instant('common.apiConfiguration.one'),
-                })
-              );
-              this.dataSource.data = this.dataSource.data.filter(
-                (x) => x.id !== element.id
-              );
-            }
+          .subscribe({
+            next: (res) => {
+              if (res && !res.errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant(
+                      'common.apiConfiguration.one'
+                    ),
+                  })
+                );
+                this.dataSource.data = this.dataSource.data.filter(
+                  (x) => x.id !== element.id
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotDeleted',
+                    {
+                      value: this.translate.instant(
+                        'common.apiConfiguration.one'
+                      ),
+                      error: res.errors ? res.errors[0].message : '',
+                    }
+                  ),
+                  { error: true }
+                );
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       }
     });

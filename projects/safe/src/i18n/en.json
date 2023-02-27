@@ -134,6 +134,7 @@
 			"accessNotProvided": "No access provided to this {{type}}. {{error}}",
 			"alreadyExists": "The {{type}} {{value}} already exists on this application.",
 			"copiedToClipboard": "Copied!",
+			"dataNotRecovered": "Failure on data recovery",
 			"dataRecovered": "The data has been recovered",
 			"email": {
 				"error": "Something went wrong during the email sending",
@@ -170,9 +171,9 @@
 			},
 			"loadedFromCache": "{{type}} loaded from cache.",
 			"noOpened": "No opened {{value}}.",
-			"objectCreated": "{{value}} {{type}} created.",
-			"objectDeleted": "{{value}} deleted.",
-			"objectDuplicated": "The {{type}} {{value}} was successfully duplicated.",
+			"objectCreated": "{{value}} {{type}} was successfully created.",
+			"objectDeleted": "{{value}} was successfully deleted.",
+			"objectDuplicated": "{{type}} {{value}} was successfully duplicated.",
 			"objectInvited": "{{name}} invited.",
 			"objectLocked": "{{name}} edition is locked by another user.",
 			"objectNotCreated": "The {{type}} was not created. {{error}}",
@@ -180,9 +181,12 @@
 			"objectNotDuplicated": "The {{type}} was not duplicated. {{error}}",
 			"objectNotFound": "{{name}} not found.",
 			"objectNotInvited": "{{name}} invitation failed.",
+			"objectNotReordered": "{{type}} not reordered. {{error}}",
+			"objectNotRestored": "{{type}} not restored. {{error}}",
 			"objectNotUpdated": "{{type}} not edited. {{error}}",
 			"objectReordered": "{{type}} reordered.",
-			"objectUpdated": "{{value}} {{type}} edited.",
+			"objectRestored": "{{type}} restored.",
+			"objectUpdated": "{{value}} {{type}} was successfully edited.",
 			"platformAccessNotGranted": "You don't have a valid access to this platform.",
 			"readAll": "Mark all as read",
 			"statusUpdated": "Status updated to {{value}}.",
@@ -400,6 +404,14 @@
 			"pages": {
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the page {{name}}?"
+				},
+				"notReordered": {
+					"plural": "The pages were not reordered. {{error}}",
+					"singular": "The page was not reordered. {{error}}"
+				},
+				"reordered": {
+					"plural": "The pages were successfully reordered.",
+					"singular": "The page was successfully reordered."
 				}
 			},
 			"positionAttribute": {
@@ -976,6 +988,22 @@
 				"confirm": "Invite users",
 				"description": "Select existing users, invite new users or import from Excel file"
 			},
+			"onDelete": {
+				"plural": "Users were correctly deleted.",
+				"singular": "User was correctly deleted."
+			},
+			"onInvite": {
+				"plural": "Users were invited.",
+				"singular": "User was invited."
+			},
+			"onNotDelete": {
+				"plural": "Users were not deleted. {{error}}",
+				"singular": "User was deleted. {{error}}"
+			},
+			"onNotInvite": {
+				"plural": "Users were not invited. {{error}}",
+				"singular": "User was not invited. {{error}}"
+			},
 			"paginator": {
 				"ariaLabel": "Select page of users"
 			}
@@ -1459,6 +1487,7 @@
 			"id": "Application ID",
 			"new": "New application",
 			"notifications": {
+				"notPublished": "Application not published.",
 				"published": "{{value}} application published.",
 				"updated": "Application updated."
 			},
@@ -1523,6 +1552,7 @@
 			"notifications": {
 				"conversionIncomplete": "Selected record(s) do not match with some fields from this form.",
 				"rowsAdded": "Added {{length}} row(s) to the field {{field}} in the record {{value}}.",
+				"rowsNotAdded": "Error on add row(s).",
 				"uploadSuccessful": "Records upload successful."
 			},
 			"restore": "Restore"
@@ -1581,7 +1611,7 @@
 		},
 		"workflow": {
 			"notifications": {
-				"cannotGoToNextStep": "Cannot go to next step.",
+				"cannotGoToNextStep": "Cannot go to the next step.",
 				"goToStep": "Back to {{step}} step."
 			}
 		}
@@ -1676,6 +1706,7 @@
 		},
 		"profile": {
 			"notifications": {
+				"notUpdated": "Error on saving preferences.",
 				"updated": "Preferences saved."
 			},
 			"title": "Your profile"

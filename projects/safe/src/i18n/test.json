@@ -134,6 +134,7 @@
 			"accessNotProvided": "****** {{type}} ****** {{error}}",
 			"alreadyExists": "****** {{type}} ****** {{value}} ******",
 			"copiedToClipboard": "******",
+			"dataNotRecovered": "******",
 			"dataRecovered": "******",
 			"email": {
 				"error": "******",
@@ -172,7 +173,7 @@
 			"noOpened": "****** {{value}} ******",
 			"objectCreated": "{{value}} ****** {{type}} ******",
 			"objectDeleted": "{{value}} ******",
-			"objectDuplicated": "****** {{type}} ****** {{value}} ******",
+			"objectDuplicated": "{{type}} ****** {{value}} ******",
 			"objectInvited": "{{name}} ******",
 			"objectLocked": "{{name}} ******",
 			"objectNotCreated": "****** {{type}} ****** {{error}}",
@@ -180,8 +181,11 @@
 			"objectNotDuplicated": "****** {{type}} ****** {{error}}",
 			"objectNotFound": "{{name}} ******",
 			"objectNotInvited": "{{name}} ******",
+			"objectNotReordered": "{{type}} ****** {{error}}",
+			"objectNotRestored": "{{type}} ****** {{error}}",
 			"objectNotUpdated": "{{type}} ****** {{error}}",
 			"objectReordered": "{{type}} ******",
+			"objectRestored": "{{type}} ******",
 			"objectUpdated": "{{value}} ****** {{type}} ******",
 			"platformAccessNotGranted": "******",
 			"readAll": "******",
@@ -400,6 +404,14 @@
 			"pages": {
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
+				},
+				"notReordered": {
+					"plural": "****** {{error}}",
+					"singular": "****** {{error}}"
+				},
+				"reordered": {
+					"plural": "******",
+					"singular": "******"
 				}
 			},
 			"positionAttribute": {
@@ -976,6 +988,22 @@
 				"confirm": "******",
 				"description": "******"
 			},
+			"onDelete": {
+				"plural": "******",
+				"singular": "******"
+			},
+			"onInvite": {
+				"plural": "******",
+				"singular": "******"
+			},
+			"onNotDelete": {
+				"plural": "****** {{error}}",
+				"singular": "****** {{error}}"
+			},
+			"onNotInvite": {
+				"plural": "****** {{error}}",
+				"singular": "****** {{error}}"
+			},
 			"paginator": {
 				"ariaLabel": "******"
 			}
@@ -1459,6 +1487,7 @@
 			"id": "******",
 			"new": "******",
 			"notifications": {
+				"notPublished": "******",
 				"published": "{{value}} ******",
 				"updated": "******"
 			},
@@ -1523,6 +1552,7 @@
 			"notifications": {
 				"conversionIncomplete": "******",
 				"rowsAdded": "****** {{length}} ****** {{field}} ****** {{value}} ******",
+				"rowsNotAdded": "******",
 				"uploadSuccessful": "******"
 			},
 			"restore": "******"
@@ -1676,6 +1706,7 @@
 		},
 		"profile": {
 			"notifications": {
+				"notUpdated": "******",
 				"updated": "******"
 			},
 			"title": "******"

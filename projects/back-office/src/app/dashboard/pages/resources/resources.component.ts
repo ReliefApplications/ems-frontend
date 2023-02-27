@@ -236,9 +236,7 @@ export class ResourcesComponent implements OnInit {
               );
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate
-                    .instant('common.resource.one')
-                    .toLowerCase(),
+                  value: this.translate.instant('common.resource.one'),
                 })
               );
             } else {
@@ -246,9 +244,7 @@ export class ResourcesComponent implements OnInit {
                 this.translate.instant(
                   'common.notifications.objectNotDeleted',
                   {
-                    value: this.translate
-                      .instant('common.resource.one')
-                      .toLowerCase(),
+                    value: this.translate.instant('common.resource.one'),
                     error: errors[0].message,
                   }
                 ),
