@@ -3,7 +3,7 @@
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/back-office/src",
-  "prefix": "oort-front",
+  "prefix": "app",
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
@@ -16,10 +16,30 @@
         "tsConfig": "apps/back-office/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
+          {
+            "glob": "**/*",
+            "input": "libs/safe/src/i18n/",
+            "output": "/assets/i18n/"
+          },
           "apps/back-office/src/favicon.ico",
-          "apps/back-office/src/assets"
+          "apps/back-office/src/assets",
+          "apps/back-office/src/web.config",
+          {
+            "glob": "**/*",
+            "input": "node_modules/tinymce",
+            "output": "/tinymce/"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/safe/src/i18n/tinymce/",
+            "output": "/tinymce/langs"
+          }
         ],
         "styles": [
+          {
+            "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
+            "inject": true
+          },
           "apps/back-office/src/styles.scss",
           "libs/safe/src/lib/style/styles.scss",
           "node_modules/survey-angular/survey.min.css",
@@ -33,6 +53,22 @@
           "node_modules/select2/dist/js/select2.min.js",
           "node_modules/tinymce/tinymce.js",
           "node_modules/tinymce/themes/silver/theme.js"
+        ],
+        "allowedCommonJsDependencies": [
+          "minimatch",
+          "hammerjs",
+          "survey-creator",
+          "survey-knockout",
+          "surveyjs-widgets",
+          "subscriptions-transport-ws",
+          "zen-observable",
+          "lodash",
+          "cronstrue",
+          "cron-parser",
+          "cron-validator",
+          "localforage",
+          "survey-angular",
+          "fast-sha256"
         ]
       },
       "configurations": {
