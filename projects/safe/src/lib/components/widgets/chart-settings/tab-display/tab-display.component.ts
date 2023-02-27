@@ -3,7 +3,6 @@ import { UntypedFormGroup } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
-import { title } from 'process';
 
 /**
  * Display tab of the chart settings modal.
@@ -46,8 +45,7 @@ export class TabDisplayComponent
     sizeControl?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.onToggleStyle(''));
-    
-    
+
     const titleControl = this.chartForm.get('title.text');
     titleControl?.valueChanges.subscribe((value: any) => {
       if (!value) {
@@ -56,14 +54,14 @@ export class TabDisplayComponent
         this.chartForm.get('title.color')?.disable();
         this.chartForm.get('letterStyle')?.disable();
         this.disabledButtons = true;
-      }else{
+      } else {
         this.chartForm.get('title.position')?.enable();
         this.chartForm.get('title.size')?.enable();
         this.chartForm.get('title.color')?.enable();
         this.chartForm.get('letterStyle')?.enable();
         this.disabledButtons = false;
       }
-    })      
+    });
   }
 
   /**
@@ -91,5 +89,4 @@ export class TabDisplayComponent
     const font_control = this.chartForm.get('title.font');
     font_control?.setValue(font);
   }
-  
 }
