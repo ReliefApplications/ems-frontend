@@ -26,8 +26,6 @@ export class TabDisplayComponent
     28,
   ];
 
-  public selectLegendPosition = 'bottom';
-
   /** @returns the form for the chart */
   public get chartForm(): UntypedFormGroup {
     return this.formGroup.get('chart') as UntypedFormGroup;
@@ -46,14 +44,6 @@ export class TabDisplayComponent
     sizeControl?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.onToggleStyle(''));
-
-    const LegendPosition = this.chartForm.get('legend.position');
-    if (LegendPosition) {
-      this.selectLegendPosition = LegendPosition.value;
-    }
-    this.chartForm.patchValue({
-      legend: { position: this.selectLegendPosition },
-    });
   }
 
   /**
@@ -80,16 +70,5 @@ export class TabDisplayComponent
 
     const font_control = this.chartForm.get('title.font');
     font_control?.setValue(font);
-  }
-
-  /**
-   *when change the position of the legend, set chartForm.legend.position as the new position
-   *
-   * @param event on selection change event
-   */
-  onLegendPositionSelectionChange(event: any) {
-    this.chartForm.patchValue({
-      legend: { position: event.value },
-    });
   }
 }
