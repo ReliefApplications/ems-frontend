@@ -304,8 +304,9 @@ export class SafeApplicationService {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotUpdated', {
                 type: this.translate.instant('common.application.one'),
-                error: errors[0].message,
-              })
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
             );
           } else {
             this.snackBar.openSnackBar(
@@ -346,22 +347,40 @@ export class SafeApplicationService {
             permissions: newPermissions,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.access').toLowerCase(),
-                value: application?.name,
-              })
-            );
-            if (data?.editApplication) {
-              const newApplication = {
-                ...application,
-                permissions: data.editApplication.permissions,
-              };
-              this.application.next(newApplication);
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotUpdated',
+                  {
+                    type: this.translate.instant('common.access'),
+                    error: errors ? errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              if (data) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectUpdated', {
+                    type: this.translate.instant('common.access').toLowerCase(),
+                    value: application?.name,
+                  })
+                );
+                if (data?.editApplication) {
+                  const newApplication = {
+                    ...application,
+                    permissions: data.editApplication.permissions,
+                  };
+                  this.application.next(newApplication);
+                }
+              }
             }
-          }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }
@@ -380,18 +399,32 @@ export class SafeApplicationService {
             status: 'active',
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant(
-                'models.application.notifications.published',
-                {
-                  value: data.editApplication.name,
-                }
-              )
-            );
-            this.router.navigate(['/applications']);
-          }
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'models.application.notifications.notPublished'
+                ),
+                { error: true }
+              );
+            } else {
+              if (data) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'models.application.notifications.published',
+                    {
+                      value: data.editApplication.name,
+                    }
+                  )
+                );
+                this.router.navigate(['/applications']);
+              }
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }
@@ -430,7 +463,7 @@ export class SafeApplicationService {
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotDeleted', {
-                value: this.translate.instant('common.page.one').toLowerCase(),
+                value: this.translate.instant('common.page.one'),
                 error: errors ? errors[0].message : '',
               }),
               { error: true }
@@ -456,16 +489,50 @@ export class SafeApplicationService {
             pages,
           },
         })
-        .subscribe(({ data }) => {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectReordered', {
-              type: this.translate.instant('common.page.few').toLowerCase(),
-            })
-          );
-          this.application.next({
-            ...application,
-            ...{ pages: data?.editApplication.pages },
-          });
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              if (pages.length > 1) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.application.pages.notReordered.plural',
+                    { error: errors ? errors[0].message : '' }
+                  ),
+                  { error: true }
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.application.pages.notReordered.singular',
+                    { error: errors ? errors[0].message : '' }
+                  ),
+                  { error: true }
+                );
+              }
+            } else {
+              if (pages.length > 1) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.application.pages.reordered.plural'
+                  )
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.application.pages.reordered.singular'
+                  )
+                );
+              }
+
+              this.application.next({
+                ...application,
+                ...{ pages: data?.editApplication.pages },
+              });
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }
@@ -633,20 +700,42 @@ export class SafeApplicationService {
             application: application.id,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectCreated', {
-                type: this.translate.instant('common.role.one').toLowerCase(),
-                value: role.title,
-              })
-            );
-            const newApplication = {
-              ...application,
-              roles: application.roles?.concat([data.addRole]),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotCreated',
+                  {
+                    type: this.translate
+                      .instant('common.role.one')
+                      .toLowerCase(),
+                    error: errors ? errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              if (data) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.role.one')
+                      .toLowerCase(),
+                    value: role.title,
+                  })
+                );
+                const newApplication = {
+                  ...application,
+                  roles: application.roles?.concat([data.addRole]),
+                };
+                this.application.next(newApplication);
+              }
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }
@@ -670,47 +759,69 @@ export class SafeApplicationService {
             title: value.title,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.role.one').toLowerCase(),
-                value: role.title,
-              })
-            );
-            const newApplication: Application = {
-              ...application,
-              roles: application.roles?.map((x) => {
-                if (x.id === role.id) {
-                  x = {
-                    ...x,
-                    permissions: data?.editRole.permissions,
-                    channels: data?.editRole.channels,
-                  };
-                }
-                return x;
-              }),
-              channels: application.channels?.map((x) => {
-                if (value.channels.includes(x.id)) {
-                  x = {
-                    ...x,
-                    subscribedRoles: x.subscribedRoles?.concat([role]),
-                  };
-                } else if (
-                  x.subscribedRoles?.some((subRole) => subRole.id === role.id)
-                ) {
-                  x = {
-                    ...x,
-                    subscribedRoles: x.subscribedRoles.filter(
-                      (subRole) => subRole.id !== role.id
-                    ),
-                  };
-                }
-                return x;
-              }),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotUpdated',
+                  {
+                    type: this.translate.instant('common.role.one'),
+                    error: errors ? errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              if (data) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectUpdated', {
+                    type: this.translate
+                      .instant('common.role.one')
+                      .toLowerCase(),
+                    value: role.title,
+                  })
+                );
+                const newApplication: Application = {
+                  ...application,
+                  roles: application.roles?.map((x) => {
+                    if (x.id === role.id) {
+                      x = {
+                        ...x,
+                        permissions: data?.editRole.permissions,
+                        channels: data?.editRole.channels,
+                      };
+                    }
+                    return x;
+                  }),
+                  channels: application.channels?.map((x) => {
+                    if (value.channels.includes(x.id)) {
+                      x = {
+                        ...x,
+                        subscribedRoles: x.subscribedRoles?.concat([role]),
+                      };
+                    } else if (
+                      x.subscribedRoles?.some(
+                        (subRole) => subRole.id === role.id
+                      )
+                    ) {
+                      x = {
+                        ...x,
+                        subscribedRoles: x.subscribedRoles.filter(
+                          (subRole) => subRole.id !== role.id
+                        ),
+                      };
+                    }
+                    return x;
+                  }),
+                };
+                this.application.next(newApplication);
+              }
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }
@@ -730,17 +841,35 @@ export class SafeApplicationService {
             id: role.id,
           },
         })
-        .subscribe(() => {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectDeleted', {
-              value: role.title,
-            })
-          );
-          const newApplication = {
-            ...application,
-            roles: application.roles?.filter((x) => x.id !== role.id),
-          };
-          this.application.next(newApplication);
+        .subscribe({
+          next: ({ errors }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: role.title,
+                    error: errors ? errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: role.title,
+                })
+              );
+              const newApplication = {
+                ...application,
+                roles: application.roles?.filter((x) => x.id !== role.id),
+              };
+              this.application.next(newApplication);
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }
@@ -762,36 +891,62 @@ export class SafeApplicationService {
             application: application.id,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            const deletedUsers = data.deleteUsersFromApplication.map(
-              (x) => x.id
-            );
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: this.translate
-                  .instant(
-                    deletedUsers.length > 1
-                      ? 'common.user.few'
-                      : 'common.user.one'
-                  )
-                  .toLowerCase(),
-              })
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotDeleted', {
-                value: this.translate
-                  .instant(
-                    ids.length > 1 ? 'common.user.few' : 'common.user.one'
-                  )
-                  .toLowerCase(),
-                error: '',
-              }),
-              { error: true }
-            );
-          }
-          resolved();
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              if (ids.length > 1) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.users.onNotDelete.plural',
+                    { error: errors ? errors[0].message : '' }
+                  ),
+                  { error: true }
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.users.onNotDelete.singular',
+                    { error: errors ? errors[0].message : '' }
+                  ),
+                  { error: true }
+                );
+              }
+            } else {
+              if (data) {
+                const deletedUsers = data.deleteUsersFromApplication.map(
+                  (x) => x.id
+                );
+                if (deletedUsers.length > 1) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('components.users.onDelete.plural')
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('components.users.onDelete.singular')
+                  );
+                }
+              } else {
+                if (ids.length > 1) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'components.users.onNotDelete.plural',
+                      { error: '' }
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'components.users.onNotDelete.singular',
+                      { error: '' }
+                    ),
+                    { error: true }
+                  );
+                }
+              }
+            }
+            resolved();
+          },
         });
     }
   }
@@ -825,25 +980,45 @@ export class SafeApplicationService {
             application: application.id,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectCreated', {
-                type: this.translate
-                  .instant('common.positionCategory.one')
-                  .toLowerCase(),
-                value: category.title,
-              })
-            );
-            const newApplication: Application = {
-              ...application,
-              positionAttributeCategories:
-                application.positionAttributeCategories?.concat([
-                  data.addPositionAttributeCategory,
-                ]),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotCreated',
+                  {
+                    type: this.translate
+                      .instant('common.positionCategory.one')
+                      .toLowerCase(),
+                    error: errors ? errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              if (data) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.positionCategory.one')
+                      .toLowerCase(),
+                    value: category.title,
+                  })
+                );
+                const newApplication: Application = {
+                  ...application,
+                  positionAttributeCategories:
+                    application.positionAttributeCategories?.concat([
+                      data.addPositionAttributeCategory,
+                    ]),
+                };
+                this.application.next(newApplication);
+              }
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }
@@ -864,22 +1039,40 @@ export class SafeApplicationService {
             application: application.id,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: category.title,
-              })
-            );
-            const newApplication: Application = {
-              ...application,
-              positionAttributeCategories:
-                application.positionAttributeCategories?.filter(
-                  (x) => x.id !== data?.deletePositionAttributeCategory.id
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: category.title,
+                    error: errors ? errors[0].message : '',
+                  }
                 ),
-            };
-            this.application.next(newApplication);
-          }
+                { error: true }
+              );
+            } else {
+              if (data) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: category.title,
+                  })
+                );
+                const newApplication: Application = {
+                  ...application,
+                  positionAttributeCategories:
+                    application.positionAttributeCategories?.filter(
+                      (x) => x.id !== data?.deletePositionAttributeCategory.id
+                    ),
+                };
+                this.application.next(newApplication);
+              }
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }
@@ -959,22 +1152,42 @@ export class SafeApplicationService {
             application: application.id,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectCreated', {
-                type: this.translate
-                  .instant('common.channel.one')
-                  .toLowerCase(),
-                value: channel.title,
-              })
-            );
-            const newApplication: Application = {
-              ...application,
-              channels: application.channels?.concat([data.addChannel]),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotCreated',
+                  {
+                    type: this.translate
+                      .instant('common.channel.one')
+                      .toLowerCase(),
+                    error: errors ? errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              if (data) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.channel.one')
+                      .toLowerCase(),
+                    value: channel.title,
+                  })
+                );
+                const newApplication: Application = {
+                  ...application,
+                  channels: application.channels?.concat([data.addChannel]),
+                };
+                this.application.next(newApplication);
+              }
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }
@@ -995,25 +1208,42 @@ export class SafeApplicationService {
           title,
         },
       })
-      .subscribe(({ data }) => {
-        if (data) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectUpdated', {
-              type: this.translate.instant('common.channel.one'),
-              value: title,
-            })
-          );
-          const newApplication: Application = {
-            ...application,
-            channels: application?.channels?.map((x) => {
-              if (x.id === channel.id) {
-                x = { ...x, title: data?.editChannel.title };
-              }
-              return x;
-            }),
-          };
-          this.application.next(newApplication);
-        }
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.channel.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate
+                    .instant('common.channel.one')
+                    .toLowerCase(),
+                  value: title,
+                })
+              );
+              const newApplication: Application = {
+                ...application,
+                channels: application?.channels?.map((x) => {
+                  if (x.id === channel.id) {
+                    x = { ...x, title: data?.editChannel.title };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
@@ -1032,21 +1262,39 @@ export class SafeApplicationService {
             id: channel.id,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: channel.title,
-              })
-            );
-            const newApplication: Application = {
-              ...application,
-              channels: application.channels?.filter(
-                (x) => x.id !== data?.deleteChannel.id
-              ),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: channel.title,
+                    error: errors ? errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              if (data) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: channel.title,
+                  })
+                );
+                const newApplication: Application = {
+                  ...application,
+                  channels: application.channels?.filter(
+                    (x) => x.id !== data?.deleteChannel.id
+                  ),
+                };
+                this.application.next(newApplication);
+              }
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }
@@ -1079,24 +1327,44 @@ export class SafeApplicationService {
             channel: subscription.channel,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectCreated', {
-                type: this.translate
-                  .instant('common.subscription.one')
-                  .toLowerCase(),
-                value: subscription.title,
-              })
-            );
-            const newApplication: Application = {
-              ...application,
-              subscriptions: application.subscriptions?.concat([
-                data.addSubscription,
-              ]),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotCreated',
+                  {
+                    type: this.translate
+                      .instant('common.subscription.one')
+                      .toLowerCase(),
+                    error: errors ? errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              if (data) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.subscription.one')
+                      .toLowerCase(),
+                    value: subscription.title,
+                  })
+                );
+                const newApplication: Application = {
+                  ...application,
+                  subscriptions: application.subscriptions?.concat([
+                    data.addSubscription,
+                  ]),
+                };
+                this.application.next(newApplication);
+              }
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }
@@ -1117,19 +1385,37 @@ export class SafeApplicationService {
             routingKey: subscription,
           },
         })
-        .subscribe(() => {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectDeleted', {
-              value: this.translate.instant('common.subscription.one'),
-            })
-          );
-          const newApplication = {
-            ...application,
-            subscriptions: application.subscriptions?.filter(
-              (sub) => sub.routingKey !== subscription
-            ),
-          };
-          this.application.next(newApplication);
+        .subscribe({
+          next: ({ errors }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: this.translate.instant('common.subscription.one'),
+                    error: errors ? errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.subscription.one'),
+                })
+              );
+              const newApplication = {
+                ...application,
+                subscriptions: application.subscriptions?.filter(
+                  (sub) => sub.routingKey !== subscription
+                ),
+              };
+              this.application.next(newApplication);
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }
@@ -1155,28 +1441,46 @@ export class SafeApplicationService {
             previousSubscription,
           },
         })
-        .subscribe(({ data }) => {
-          if (data) {
-            const subscription = data.editSubscription;
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate
-                  .instant('common.subscription.one')
-                  .toLowerCase(),
-                value: value.title,
-              })
-            );
-            const newApplication = {
-              ...application,
-              subscriptions: application.subscriptions?.map((sub) => {
-                if (sub.routingKey === previousSubscription) {
-                  sub = subscription;
-                }
-                return sub;
-              }),
-            };
-            this.application.next(newApplication);
-          }
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotUpdated',
+                  {
+                    type: this.translate.instant('common.subscription.one'),
+                    error: errors ? errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              if (data) {
+                const subscription = data.editSubscription;
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectUpdated', {
+                    type: this.translate
+                      .instant('common.subscription.one')
+                      .toLowerCase(),
+                    value: value.title,
+                  })
+                );
+                const newApplication = {
+                  ...application,
+                  subscriptions: application.subscriptions?.map((sub) => {
+                    if (sub.routingKey === previousSubscription) {
+                      sub = subscription;
+                    }
+                    return sub;
+                  }),
+                };
+                this.application.next(newApplication);
+              }
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
   }

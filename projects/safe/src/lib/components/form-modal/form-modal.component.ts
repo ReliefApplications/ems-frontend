@@ -351,22 +351,27 @@ export class SafeFormModalComponent implements OnInit {
             data: survey.data,
           },
         })
-        .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
-              error: true,
-            });
-            this.ngZone.run(() => {
-              this.dialogRef.close();
-            });
-          } else {
-            this.ngZone.run(() => {
-              this.dialogRef.close({
-                template: this.data.template,
-                data: data?.addRecord,
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
+                error: true,
               });
-            });
-          }
+              this.ngZone.run(() => {
+                this.dialogRef.close();
+              });
+            } else {
+              this.ngZone.run(() => {
+                this.dialogRef.close({
+                  template: this.data.template,
+                  data: data?.addRecord,
+                });
+              });
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
         });
     }
     survey.showCompletedPage = true;
@@ -388,13 +393,34 @@ export class SafeFormModalComponent implements OnInit {
           template: this.data.template,
         },
       })
-      .subscribe(({ data }) => {
-        if (data) {
-          this.dialogRef.close({
-            template: this.form?.id,
-            data: data.editRecord,
-          });
-        }
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.record.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.record.one'),
+                  value: '',
+                })
+              );
+              this.dialogRef.close({
+                template: this.form?.id,
+                data: data.editRecord,
+              });
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
@@ -415,13 +441,34 @@ export class SafeFormModalComponent implements OnInit {
           template: this.data.template,
         },
       })
-      .subscribe(({ data }) => {
-        if (data) {
-          this.dialogRef.close({
-            template: this.form?.id,
-            data: data.editRecords,
-          });
-        }
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.record.few'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.record.few'),
+                  value: '',
+                })
+              );
+              this.dialogRef.close({
+                template: this.form?.id,
+                data: data.editRecords,
+              });
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
       });
   }
 
@@ -728,11 +775,25 @@ export class SafeFormModalComponent implements OnInit {
               version: version.id,
             },
           })
-          .subscribe(() => {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.dataRecovered')
-            );
-            this.dialog.closeAll();
+          .subscribe({
+            next: (errors) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.dataNotRecovered'
+                  ),
+                  { error: true }
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.dataRecovered')
+                );
+              }
+              this.dialog.closeAll();
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       }
     });

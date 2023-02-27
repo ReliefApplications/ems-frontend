@@ -214,8 +214,10 @@ export class ReferenceDatasComponent
                   this.translate.instant(
                     'common.notifications.objectNotCreated',
                     {
-                      type: this.translate.instant('common.referenceData.one'),
-                      error: errors[0].message,
+                      type: this.translate
+                        .instant('common.referenceData.one')
+                        .toLowerCase(),
+                      error: errors ? errors[0].message : '',
                     }
                   ),
                   { error: true }
@@ -265,17 +267,37 @@ export class ReferenceDatasComponent
               id: element.id,
             },
           })
-          .subscribe((res) => {
-            if (res && !res.errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate.instant('common.referenceData.one'),
-                })
-              );
-              this.dataSource.data = this.dataSource.data.filter(
-                (x) => x.id !== element.id
-              );
-            }
+          .subscribe({
+            next: (res) => {
+              if (res && !res.errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant('common.referenceData.one'),
+                  })
+                );
+                this.dataSource.data = this.dataSource.data.filter(
+                  (x) => x.id !== element.id
+                );
+              } else {
+                if (res.errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotDeleted',
+                      {
+                        value: this.translate.instant(
+                          'common.referenceData.one'
+                        ),
+                        error: res.errors ? res.errors[0] : '',
+                      }
+                    ),
+                    { error: true }
+                  );
+                }
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       }
     });
