@@ -158,19 +158,35 @@ export class SafeRoleListComponent
             })
             .pipe(takeUntil(this.destroy$))
             .subscribe({
-              next: () => {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectCreated', {
-                    type: this.translate
-                      .instant('common.role.one')
-                      .toLowerCase(),
-                    value: value.title,
-                  })
-                );
-                this.getRoles();
+              next: ({ errors }) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotCreated',
+                      {
+                        type: this.translate
+                          .instant('common.role.one')
+                          .toLowerCase(),
+                        error: errors ? errors[0].message : '',
+                      }
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate.instant('common.role.one'),
+                        value: value.title,
+                      }
+                    )
+                  );
+                  this.getRoles();
+                }
               },
               error: (err) => {
-                console.log(err);
+                this.snackBar.openSnackBar(err.message, { error: true });
               },
             });
         }
@@ -209,13 +225,34 @@ export class SafeRoleListComponent
               },
             })
             .pipe(takeUntil(this.destroy$))
-            .subscribe(() => {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: item.title,
-                })
-              );
-              this.getRoles();
+            .subscribe({
+              next: ({ errors }) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotDeleted',
+                      {
+                        value: item.title,
+                        error: errors ? errors[0].message : '',
+                      }
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectDeleted',
+                      {
+                        value: item.title,
+                      }
+                    )
+                  );
+                  this.getRoles();
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
             });
         }
       }

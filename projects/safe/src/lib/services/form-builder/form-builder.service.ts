@@ -8,6 +8,7 @@ import get from 'lodash/get';
 import { Record } from '../../models/record.model';
 import { EditRecordMutationResponse, EDIT_RECORD } from './graphql/mutations';
 import { Metadata } from '../../models/metadata.model';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 
 /**
  * Shared form builder service.
@@ -23,11 +24,13 @@ export class SafeFormBuilderService {
    * @param referenceDataService Reference data service
    * @param translate Translation service
    * @param apollo Apollo service
+   * @param snackBar Service used to show a snackbar.
    */
   constructor(
     private referenceDataService: SafeReferenceDataService,
     private translate: TranslateService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private snackBar: SafeSnackBarService
   ) {}
 
   /**
@@ -127,7 +130,29 @@ export class SafeFormBuilderService {
             data: { [operation[1]]: operation[2] },
           },
         })
-        .subscribe(() => {});
+        .subscribe({
+          next: ({ errors }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotUpdated',
+                  {
+                    type: this.translate.instant('common.record.one'),
+                    error: errors ? errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.record.one'),
+                  value: '',
+                })
+              );
+            }
+          },
+        });
     }
   }
 }

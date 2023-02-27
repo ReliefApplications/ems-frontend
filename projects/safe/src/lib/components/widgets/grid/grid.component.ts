@@ -549,27 +549,36 @@ export class SafeGridWidgetComponent implements OnInit {
                     },
                   })
                   .subscribe((editRecord) => {
-                    if (editRecord.data) {
-                      const record = editRecord.data.editRecord;
-                      if (record) {
-                        this.snackBar.openSnackBar(
-                          this.translate.instant(
-                            'models.record.notifications.rowsAdded',
-                            {
-                              field: record.data[targetFormField],
-                              length: selectedRecords.length,
-                              value: key,
-                            }
-                          )
-                        );
-                        this.dialog.open(SafeFormModalComponent, {
-                          disableClose: true,
-                          data: {
-                            recordId: record.id,
-                            template: targetForm,
-                          },
-                          autoFocus: false,
-                        });
+                    if (editRecord.errors) {
+                      this.snackBar.openSnackBar(
+                        this.translate.instant(
+                          'models.record.notifications.rowsNotAdded'
+                        ),
+                        { error: true }
+                      );
+                    } else {
+                      if (editRecord.data) {
+                        const record = editRecord.data.editRecord;
+                        if (record) {
+                          this.snackBar.openSnackBar(
+                            this.translate.instant(
+                              'models.record.notifications.rowsAdded',
+                              {
+                                field: record.data[targetFormField],
+                                length: selectedRecords.length,
+                                value: key,
+                              }
+                            )
+                          );
+                          this.dialog.open(SafeFormModalComponent, {
+                            disableClose: true,
+                            data: {
+                              recordId: record.id,
+                              template: targetForm,
+                            },
+                            autoFocus: false,
+                          });
+                        }
                       }
                     }
                   });

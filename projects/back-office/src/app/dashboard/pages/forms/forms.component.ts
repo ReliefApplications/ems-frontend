@@ -238,28 +238,34 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
               id,
             },
           })
-          .subscribe(({ errors }: any) => {
-            if (!errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate.instant('common.form.one'),
-                })
-              );
-              this.forms.data = this.forms.data.filter(
-                (x) => x.id !== form.id && form.id !== x.resource?.coreForm?.id
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotDeleted',
-                  {
+          .subscribe({
+            next: ({ errors }) => {
+              if (!errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
                     value: this.translate.instant('common.form.one'),
-                    error: errors[0].message,
-                  }
-                ),
-                { error: true }
-              );
-            }
+                  })
+                );
+                this.forms.data = this.forms.data.filter(
+                  (x) =>
+                    x.id !== form.id && form.id !== x.resource?.coreForm?.id
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotDeleted',
+                    {
+                      value: this.translate.instant('common.form.one'),
+                      error: errors ? errors[0].message : '',
+                    }
+                  ),
+                  { error: true }
+                );
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       }
     });
@@ -294,7 +300,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
                       type: this.translate
                         .instant('common.form.one')
                         .toLowerCase(),
-                      error: errors[0].message,
+                      error: errors ? errors[0].message : '',
                     }
                   ),
                   { error: true }
