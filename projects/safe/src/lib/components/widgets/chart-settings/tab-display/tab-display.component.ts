@@ -3,6 +3,7 @@ import { UntypedFormGroup } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
+import { title } from 'process';
 
 /**
  * Display tab of the chart settings modal.
@@ -25,6 +26,7 @@ export class TabDisplayComponent
     4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26,
     28,
   ];
+  public disabledButtons = false;
 
   /** @returns the form for the chart */
   public get chartForm(): UntypedFormGroup {
@@ -44,6 +46,24 @@ export class TabDisplayComponent
     sizeControl?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.onToggleStyle(''));
+    
+    
+    const titleControl = this.chartForm.get('title.text');
+    titleControl?.valueChanges.subscribe((value: any) => {
+      if (!value) {
+        this.chartForm.get('title.position')?.disable();
+        this.chartForm.get('title.size')?.disable();
+        this.chartForm.get('title.color')?.disable();
+        this.chartForm.get('letterStyle')?.disable();
+        this.disabledButtons = true;
+      }else{
+        this.chartForm.get('title.position')?.enable();
+        this.chartForm.get('title.size')?.enable();
+        this.chartForm.get('title.color')?.enable();
+        this.chartForm.get('letterStyle')?.enable();
+        this.disabledButtons = false;
+      }
+    })      
   }
 
   /**
@@ -71,4 +91,5 @@ export class TabDisplayComponent
     const font_control = this.chartForm.get('title.font');
     font_control?.setValue(font);
   }
+  
 }

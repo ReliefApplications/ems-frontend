@@ -55,8 +55,8 @@
               <input matInput formControlName="text" />
             </mat-form-field>
           </div>
-
-          <ng-container *ngIf="chartForm.value.title.text">
+            
+          <div class="flex items-center gap-4">
             <div>
               <mat-form-field appearance="outline">
                 <mat-label>{{
@@ -68,60 +68,6 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-
-              <div class="flex items-center gap-4">
-                <div class="flex justify-center items-center">
-                  <safe-button
-                    icon="format_bold"
-                    (click)="onToggleStyle('title.bold')"
-                    [category]="
-                      chartForm.get('title.bold')?.value
-                        ? 'secondary'
-                        : 'tertiary'
-                    "
-                    [variant]="chartForm.get('title.bold')?.value && 'primary'"
-                    class="border-none *"
-                  ></safe-button>
-                  <safe-button
-                    icon="format_italic"
-                    (click)="onToggleStyle('title.italic')"
-                    [category]="
-                      chartForm.get('title.italic')?.value
-                        ? 'secondary'
-                        : 'tertiary'
-                    "
-                    [variant]="
-                      chartForm.get('title.italic')?.value && 'primary'
-                    "
-                    class="border-none *"
-                  ></safe-button>
-                  <safe-button
-                    (click)="onToggleStyle('title.underline')"
-                    icon="format_underline"
-                    [category]="
-                      chartForm.get('title.underline')?.value
-                        ? 'secondary'
-                        : 'tertiary'
-                    "
-                    [variant]="
-                      chartForm.get('title.underline')?.value && 'primary'
-                    "
-                    class="border-none *"
-                  ></safe-button>
-                </div>
-
-                <div class="relative">
-                  <h5 class="absolute top-[-20px] text-center">
-                    {{
-                      'components.widget.settings.chart.labels.textColor'
-                        | translate
-                    }}
-                  </h5>
-                  <kendo-colorpicker
-                    formControlName="color"
-                  ></kendo-colorpicker>
-                </div>
-              </div>
             </div>
 
             <div>
@@ -131,7 +77,7 @@
                 }}</mat-label>
                 <mat-select formControlName="position">
                   <mat-select-trigger>
-                    {{ formGroup.value.title.position }}
+                    {{ chartForm.value.title.position }}
                   </mat-select-trigger>
                   <mat-option
                     *ngFor="let position of titlePositions"
@@ -150,7 +96,64 @@
                 </mat-select>
               </mat-form-field>
             </div>
-          </ng-container>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="flex justify-center items-center">
+              <safe-button
+                icon="format_bold"
+                (click)="onToggleStyle('title.bold')"
+                [category]="
+                  chartForm.get('title.bold')?.value
+                    ? 'secondary'
+                    : 'tertiary'
+                "
+                [variant]="chartForm.get('title.bold')?.value && 'primary'"
+                class="border-none *"
+                formControlName="letterStyle"
+                [disabled] = "disabledButtons"
+              ></safe-button>
+              <safe-button
+                icon="format_italic"
+                (click)="onToggleStyle('title.italic')"
+                [category]="
+                  chartForm.get('title.italic')?.value
+                    ? 'secondary'
+                    : 'tertiary'
+                "
+                [variant]="
+                  chartForm.get('title.italic')?.value && 'primary'
+                "
+                class="border-none *"
+                [disabled] = "disabledButtons"
+              ></safe-button>
+              <safe-button
+                (click)="onToggleStyle('title.underline')"
+                icon="format_underline"
+                [category]="
+                  chartForm.get('title.underline')?.value
+                    ? 'secondary'
+                    : 'tertiary'
+                "
+                [variant]="
+                  chartForm.get('title.underline')?.value && 'primary'
+                "
+                class="border-none *"
+                [disabled] = "disabledButtons"
+              ></safe-button>
+            </div>
+
+            <div>
+              <h5 class="absolute top-[-20px] text-center">
+                {{
+                  'components.widget.settings.chart.labels.textColor'
+                    | translate
+                }}
+              </h5>
+              <kendo-colorpicker
+                formControlName="color"
+              ></kendo-colorpicker>
+            </div>
+          </div>
         </div>
       </mat-expansion-panel>
       <!-- === PALETTE -->
