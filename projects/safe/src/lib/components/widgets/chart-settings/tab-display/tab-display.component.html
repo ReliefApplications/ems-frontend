@@ -46,13 +46,13 @@
             {{ 'common.title' | translate }}
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div class="flex flex-col gap-2">        
+        <div class="flex flex-col gap-2">
           <div>
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>{{
                 'components.widget.settings.chart.text' | translate
               }}</mat-label>
-              <input matInput formControlName="text"/>
+              <input matInput formControlName="text" />
             </mat-form-field>
           </div>
 
@@ -68,20 +68,19 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-              
+
               <div class="flex items-center gap-4">
-                
-                <div class="flex justify-center items-center btns-box">
+                <div class="flex justify-center items-center">
                   <safe-button
-                  icon="format_bold"
-                  (click)="onToggleStyle('title.bold')"
-                  [category]="
-                    chartForm.get('title.bold')?.value
-                      ? 'secondary'
-                      : 'tertiary'
-                  "
-                  [variant]="chartForm.get('title.bold')?.value && 'primary'"
-                  class="border-none *"
+                    icon="format_bold"
+                    (click)="onToggleStyle('title.bold')"
+                    [category]="
+                      chartForm.get('title.bold')?.value
+                        ? 'secondary'
+                        : 'tertiary'
+                    "
+                    [variant]="chartForm.get('title.bold')?.value && 'primary'"
+                    class="border-none *"
                   ></safe-button>
                   <safe-button
                     icon="format_italic"
@@ -91,7 +90,9 @@
                         ? 'secondary'
                         : 'tertiary'
                     "
-                    [variant]="chartForm.get('title.italic')?.value && 'primary'"
+                    [variant]="
+                      chartForm.get('title.italic')?.value && 'primary'
+                    "
                     class="border-none *"
                   ></safe-button>
                   <safe-button
@@ -110,36 +111,44 @@
                 </div>
 
                 <div class="relative">
-                  <h5 class="absolute top-[-20px] text-center">{{
-                    'components.widget.settings.chart.labels.textColor' | translate
-                  }}</h5>
+                  <h5 class="absolute top-[-20px] text-center">
+                    {{
+                      'components.widget.settings.chart.labels.textColor'
+                        | translate
+                    }}
+                  </h5>
                   <kendo-colorpicker
                     formControlName="color"
                   ></kendo-colorpicker>
                 </div>
-              </div>              
-            
+              </div>
             </div>
-            
-            <div>
-              <h3>
-                {{ 'components.widget.settings.chart.position' | translate }}
-              </h3>
 
+            <div>
               <mat-form-field appearance="outline">
-                
-                <mat-select (selectionChange)="onPositionSelectionChange($event)" [(value)]="selectTitlePosition">
-                  <mat-option *ngFor="let position of titlePositions" value = "{{ position.value }}">
+                <mat-label>{{
+                  'components.widget.settings.chart.position' | translate
+                }}</mat-label>
+                <mat-select formControlName="position">
+                  <mat-select-trigger>
+                    {{ formGroup.value.title.position }}
+                  </mat-select-trigger>
+                  <mat-option
+                    *ngFor="let position of titlePositions"
+                    value="{{ position.value }}"
+                  >
                     <div class="flex">
-                      <span class="flex">{{ position.value }}
-                        <safe-icon icon="{{ position.icon }}" class="flex ml-2"></safe-icon>
+                      <span class="flex w-full items-center justify-between"
+                        >{{ position.value }}
+                        <safe-icon
+                          [inline]="true"
+                          icon="{{ position.icon }}"
+                        ></safe-icon>
                       </span>
                     </div>
                   </mat-option>
-                
                 </mat-select>
-              
-              </mat-form-field>          
+              </mat-form-field>
             </div>
           </ng-container>
         </div>
