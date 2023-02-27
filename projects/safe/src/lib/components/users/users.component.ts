@@ -109,7 +109,7 @@ export class SafeUsersComponent implements OnInit {
             },
           })
           .subscribe({
-            next: ({errors, data}) => {
+            next: ({ errors, data }) => {
               if (!errors) {
                 if (data?.addUsers.length) {
                   this.snackBar.openSnackBar(
@@ -140,7 +140,7 @@ export class SafeUsersComponent implements OnInit {
                   );
                 }
               }
-            }
+            },
           });
       }
     });

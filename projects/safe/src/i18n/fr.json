@@ -201,7 +201,9 @@
 		},
 		"pagination": {
 			"empty": "Aucun résultat",
-			"loadMore": "Charger plus"
+			"itemsPerPage": "Éléments par page",
+			"loadMore": "Charger plus",
+			"of": "de"
 		},
 		"placeholder": {
 			"email": "Entrez un email",
