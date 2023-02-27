@@ -12,7 +12,7 @@
         "outputPath": "dist/apps/back-office",
         "index": "apps/back-office/src/index.html",
         "main": "apps/back-office/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": ["apps/back-office/src/polyfills.ts"],
         "tsConfig": "apps/back-office/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -87,9 +87,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": [
-              "libs/safe/src/lib/style/themes/oort"
-            ]
+            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
           }
         },
         "oort-local": {
@@ -106,9 +104,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": [
-              "libs/safe/src/lib/style/themes/oort"
-            ]
+            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
           }
         },
         "development": {
@@ -119,9 +115,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": [
-              "libs/safe/src/lib/style/themes/default"
-            ]
+            "includePaths": ["libs/safe/src/lib/style/themes/default"]
           }
         }
       },
