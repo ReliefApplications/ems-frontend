@@ -201,7 +201,7 @@
 		},
 		"pagination": {
 			"empty": "Aucun résultat",
-			"itemsPerPage": "Objects par page",
+			"itemsPerPage": "Éléments par page",
 			"loadMore": "Charger plus",
 			"of": "de"
 		},
