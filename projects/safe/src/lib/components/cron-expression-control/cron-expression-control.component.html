@@ -1,0 +1,16 @@
+<safe-modal size="medium">
+    <cron-editor [formControl]="form" [options]="cronOptions"></cron-editor>
+    <!-- Show readable value of the schedule -->
+    <safe-alert *ngIf="form.valid" variant="primary" class="mb-6">
+        <safe-icon icon="schedule"></safe-icon>
+        {{ form.value | safeReadableCron }}
+    </safe-alert>
+    <!-- Modal actions -->
+    <div mat-dialog-actions align="end">
+        <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
+        <safe-button category="secondary" variant="primary" mat-dialog-close
+            [disabled]="!form.valid">
+            {{ 'common.save' | translate }}
+        </safe-button>
+    </div>
+</safe-modal>

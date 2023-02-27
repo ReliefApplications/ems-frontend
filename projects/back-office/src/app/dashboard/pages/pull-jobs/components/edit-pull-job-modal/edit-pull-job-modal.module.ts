@@ -4,7 +4,6 @@ import { EditPullJobModalComponent } from './edit-pull-job-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  SafeAlertModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
   SafeReadableCronModule,
@@ -29,7 +28,6 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
     SafeModalModule,
     SafeGraphQLSelectModule,
     SafeReadableCronModule,
-    SafeAlertModule,
     MatTooltipModule,
     MatInputModule,
     MatSelectModule,

@@ -8,6 +8,7 @@ import {
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+  MatLegacyDialog as MatDialog,
 } from '@angular/material/legacy-dialog';
 import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import {
@@ -19,6 +20,7 @@ import {
   status,
   authType,
   cronValidator,
+  SafeCronExpressionControlComponent,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -107,6 +109,7 @@ export class EditPullJobModalComponent implements OnInit {
    *
    * @param formBuilder Angular form builder
    * @param dialogRef Material dialog ref
+   * @param dialog Material dialog service
    * @param apollo Apollo service
    * @param data Modal injected data
    * @param data.channels list of available channels
@@ -115,6 +118,7 @@ export class EditPullJobModalComponent implements OnInit {
   constructor(
     private formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<EditPullJobModalComponent>,
+    public dialog: MatDialog,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA)
     public data: {
@@ -424,5 +428,15 @@ export class EditPullJobModalComponent implements OnInit {
     this.applications.next(this.cachedApplications);
     this.applicationsPageInfo = data.applications.pageInfo;
     this.applicationsLoading = loading;
+  }
+
+  /** Opens the cron expression component modal */
+  public onEditCronExpression(): void {
+    this.dialog.open(SafeCronExpressionControlComponent, {
+      autoFocus: false,
+      data: {
+        form: this.formGroup.controls.schedule,
+      },
+    });
   }
 }

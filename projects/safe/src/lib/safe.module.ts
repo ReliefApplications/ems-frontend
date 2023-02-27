@@ -39,6 +39,7 @@ import { SafeLeftSidenavModule } from './components/left-sidenav/left-sidenav.mo
 import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.module';
 import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
 import { SafeUnsubscribeModule } from './components/utils/unsubscribe/unsubscribe.module';
+import { SafeCronExpressionControlModule } from './components/cron-expression-control/cron-expression-control.module';
 import { SafeViewsModule } from './views/views.module';
 
 /** Main module for the safe project */
@@ -72,6 +73,7 @@ import { SafeViewsModule } from './views/views.module';
     SafeSkeletonTableModule,
     SafeSkeletonModule,
     SafeUserSummaryModule,
+    SafeCronExpressionControlModule,
     // === Pipes ===
     SafeDateModule,
     SafeReadableCronModule,

@@ -88,6 +88,7 @@
     "leaflet.markercluster": "^1.4.1",
     "localforage": "^1.10.0",
     "ng2-charts": "^4.1.1",
+    "ngx-cron-editor": "^0.7.6",
     "rxjs": "^7.8.0",
     "subscriptions-transport-ws": "^0.9.18",
     "survey-angular": "1.9.71",
