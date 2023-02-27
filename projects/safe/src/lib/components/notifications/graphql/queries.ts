@@ -18,6 +18,14 @@ export const GET_CUSTOM_NOTIFICATIONS = gql`
             name
             status
             lastExecution
+            schedule
+            resource
+            notificationType
+            recipients
+            template
+            layout
+            description
+            recipientsType
           }
           cursor
         }

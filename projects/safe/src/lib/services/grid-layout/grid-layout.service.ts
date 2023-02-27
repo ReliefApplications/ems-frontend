@@ -14,11 +14,12 @@ import {
   GetFormByIdQueryResponse,
   GET_GRID_FORM_META,
 } from './graphql/queries';
-import { Layout, LayoutConnection } from '../../models/layout.model';
+import { Layout } from '../../models/layout.model';
 import { firstValueFrom } from 'rxjs';
+import { Connection } from '../../utils/connection.type';
 
-/** Fallback LayoutConnection */
-const FALLBACK_LAYOUTS: LayoutConnection = {
+/** Fallback layout connection */
+const FALLBACK_LAYOUTS: Connection<Layout> = {
   edges: [],
   totalCount: 0,
   pageInfo: {
@@ -54,7 +55,7 @@ export class SafeGridLayoutService {
   async getLayouts(
     source: string,
     options: { ids?: string[]; first?: number }
-  ): Promise<LayoutConnection> {
+  ): Promise<Connection<Layout>> {
     return await firstValueFrom(
       this.apollo.query<GetResourceByIdQueryResponse>({
         query: GET_GRID_RESOURCE_META,

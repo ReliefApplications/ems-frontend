@@ -43,7 +43,6 @@ export const GET_RESOURCE = gql`
     resource(id: $id) {
       id
       name
-      metadata
       layouts(ids: $layoutIds) {
         edges {
           node {

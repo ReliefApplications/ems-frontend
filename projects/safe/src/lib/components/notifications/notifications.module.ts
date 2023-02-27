@@ -9,8 +9,8 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
 import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
+import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 
 /**
  * Module for custom notifications table.

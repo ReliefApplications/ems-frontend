@@ -111,8 +111,9 @@ export class NotificationsComponent implements OnInit, OnDestroy {
    * @param notification The notification to edit
    */
   editNotification(notification: any): void {
+    console.log('notification', notification);
     const dialogRef = this.dialog.open(EditNotificationModalComponent, {
-      data: notification,
+      data: { notification },
       disableClose: true,
       autoFocus: false,
     });

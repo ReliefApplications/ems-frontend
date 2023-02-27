@@ -2,7 +2,7 @@
   <!-- Modal header -->
   <h1 mat-dialog-title>
     {{
-      (data?.notification
+      (notification
         ? 'components.customNotifications.edit.update'
         : 'components.customNotifications.edit.new'
       ) | translate
@@ -197,7 +197,10 @@
             *ngIf="formGroup.value.recipientsType === 'field'"
             class="flex-1"
           >
-            <mat-label>{{ 'components.customNotifications.edit.recipients.userField' | translate }}</mat-label>
+            <mat-label>{{
+              'components.customNotifications.edit.recipients.userField'
+                | translate
+            }}</mat-label>
             <mat-select formControlName="recipients">
               <mat-option
                 *ngFor="let field of userFields"
@@ -212,7 +215,9 @@
             *ngIf="formGroup.value.recipientsType === 'distributionList'"
             class="flex-1"
           >
-            <mat-label>{{ 'common.distributionList.one' | translate }}</mat-label>
+            <mat-label>{{
+              'common.distributionList.one' | translate
+            }}</mat-label>
             <mat-select formControlName="recipients">
               <mat-option
                 *ngFor="let list of distributionLists"
@@ -253,7 +258,7 @@
       [mat-dialog-close]="formGroup.getRawValue()"
       [disabled]="!formGroup.valid"
     >
-      {{ (data?.notification ? 'common.update' : 'common.create') | translate }}
+      {{ (notification ? 'common.update' : 'common.create') | translate }}
     </safe-button>
   </div>
 </safe-modal>

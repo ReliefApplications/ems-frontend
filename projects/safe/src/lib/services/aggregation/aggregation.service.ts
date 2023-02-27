@@ -13,16 +13,14 @@ import {
   GET_AGGREGATION_DATA,
   GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
-import {
-  Aggregation,
-  AggregationConnection,
-} from '../../models/aggregation.model';
+import { Aggregation } from '../../models/aggregation.model';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { firstValueFrom, Observable } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
+import { Connection } from '../../utils/connection.type';
 
-/** Fallback AggregationConnection */
-const FALLBACK_AGGREGATIONS: AggregationConnection = {
+/** Fallback aggregation connection */
+const FALLBACK_AGGREGATIONS: Connection<Aggregation> = {
   edges: [],
   totalCount: 0,
   pageInfo: {
@@ -56,7 +54,7 @@ export class SafeAggregationService {
   async getAggregations(
     resourceId: string,
     options: { ids?: string[]; first?: number }
-  ): Promise<AggregationConnection> {
+  ): Promise<Connection<Aggregation>> {
     return await firstValueFrom(
       this.apollo.query<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_AGGREGATIONS,

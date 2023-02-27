@@ -1,8 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { cronValidator } from '../../../../utils/validators/cron.validator';
 import { CustomNotification } from '../../../../models/custom-notification.model';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+  MatLegacyDialog as MatDialog,
+} from '@angular/material/legacy-dialog';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   GetResourceByIdQueryResponse,
@@ -40,13 +48,14 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./edit-notification-modal.component.scss'],
 })
 export class EditNotificationModalComponent implements OnInit {
-  public formGroup!: FormGroup;
+  public notification?: CustomNotification;
+  public formGroup!: ReturnType<typeof this.getNotificationForm>;
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public resource?: Resource;
   public layout?: Layout;
 
   /** @returns application templates */
-  get templates(): any[] {
+  get templates(): Template[] {
     return (this.applicationService.templates || []).filter(
       (x) => x.type === TemplateTypeEnum.EMAIL
     );
@@ -83,37 +92,28 @@ export class EditNotificationModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.notification = this.data?.notification;
     // Build form
-    this.formGroup = this.formBuilder.group({
-      name: [get(this.data, 'notification.name', ''), Validators.required],
-      description: [get(this.data, 'notification.description', '')],
-      schedule: [
-        get(this.data, 'pullJob.schedule', ''),
-        [Validators.required, cronValidator()],
-      ],
-      notificationType: [{ value: 'email', disabled: true }],
-      resource: [
-        get(this.data, 'notification.resource', ''),
-        Validators.required,
-      ],
-      layout: [get(this.data, 'notification.layout', ''), Validators.required],
-      template: [
-        get(this.data, 'notification.template', ''),
-        Validators.required,
-      ],
-      recipientsType: [get(this.data, 'notification.recipientsType', 'email')],
-      recipients: [
-        get(this.data, 'notification.recipients', null),
-        Validators.required,
-      ],
-    });
+    this.formGroup = this.getNotificationForm();
+
+    // for debugging
+    setInterval(() => {
+      console.log(this.formGroup);
+    }, 10000);
+
     // Initial setup
     if (this.formGroup.value.resource) {
       this.getResource(this.formGroup.value.resource);
     }
-    if (this.formGroup.value.recipientsType === 'email') {
-      this.formGroup.get('recipients')?.addValidators(Validators.email);
-    }
+
+    // Add email validation to recipients field if recipients type is email
+    this.formGroup.get('recipientsType')?.valueChanges.subscribe((value) => {
+      if (value === 'email') {
+        this.formGroup.get('recipients')?.addValidators(Validators.email);
+      } else {
+        this.formGroup.get('recipients')?.removeValidators(Validators.email);
+      }
+    });
     // Subscribe to form changes
     this.formGroup.get('resource')?.valueChanges.subscribe((value) => {
       if (value && !isEqual(value, this.resource?.id)) {
@@ -144,6 +144,42 @@ export class EditNotificationModalComponent implements OnInit {
     });
   }
 
+  /** @returns the notification form group */
+  private getNotificationForm() {
+    console.log(this.notification);
+    return new FormGroup({
+      name: new FormControl(
+        get(this.notification, 'name', ''),
+        Validators.required
+      ),
+      description: new FormControl(get(this.notification, 'description', '')),
+      schedule: new FormControl(get(this.notification, 'schedule', ''), [
+        Validators.required,
+        cronValidator(),
+      ]),
+      notificationType: new FormControl({ value: 'email', disabled: true }),
+      resource: new FormControl(
+        get(this.notification, 'resource', ''),
+        Validators.required
+      ),
+      layout: new FormControl(
+        get(this.notification, 'layout', ''),
+        Validators.required
+      ),
+      template: new FormControl(
+        get(this.notification, 'template', ''),
+        Validators.required
+      ),
+      recipientsType: new FormControl(
+        get(this.notification, 'recipientsType', 'email')
+      ),
+      recipients: new FormControl(
+        get(this.notification, 'recipients', null),
+        Validators.required
+      ),
+    });
+  }
+
   /**
    * Get a resource by id and associated aggregations
    *
@@ -164,7 +200,6 @@ export class EditNotificationModalComponent implements OnInit {
         if (layoutId && this.resource.layouts?.edges[0]) {
           this.layout = this.resource.layouts.edges[0].node;
         }
-        console.log(this.resource.metadata);
       });
   }
 
@@ -232,7 +267,7 @@ export class EditNotificationModalComponent implements OnInit {
             },
           },
           (template: Template) => {
-            this.formGroup.get('template')?.setValue(template.id);
+            this.formGroup.get('template')?.setValue(template.id || null);
           }
         );
     });
