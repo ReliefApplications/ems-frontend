@@ -29,9 +29,4 @@ export class LoginComponent implements OnInit {
       }
     });
   }
-
-  /**
-   * Redirect to authentication page.
-   */
-  onLogin(): void {}
 }

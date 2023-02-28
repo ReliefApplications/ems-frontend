@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 /**
  * Form history component.
@@ -8,7 +8,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.scss'],
 })
-export class HistoryComponent implements OnInit {
+export class HistoryComponent {
   // === DATA ===
   @Input() dataSource: any[] = [];
   displayedColumns: string[] = ['id', 'createdAt'];
@@ -16,13 +16,6 @@ export class HistoryComponent implements OnInit {
   // === EMIT THE SELECTED FORM VERSION ===
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() open: EventEmitter<any> = new EventEmitter();
-
-  /**
-   * Form history component
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 
   /**
    * Open selected version

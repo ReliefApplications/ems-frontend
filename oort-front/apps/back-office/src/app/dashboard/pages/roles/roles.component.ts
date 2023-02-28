@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 /**
  * Component which will show all the roles in the app.
@@ -8,11 +8,4 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.scss'],
 })
-export class RolesComponent implements OnInit {
-  /**
-   * RolesComponent constructor.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
-}
+export class RolesComponent {}

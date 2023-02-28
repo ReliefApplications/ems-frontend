@@ -8,9 +8,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class PreviewService {
   private roleId = new BehaviorSubject<string>('');
 
-  /** Constructor for preview service */
-  constructor() {}
-
   /**
    * Set role which will be used to load the application preview
    *

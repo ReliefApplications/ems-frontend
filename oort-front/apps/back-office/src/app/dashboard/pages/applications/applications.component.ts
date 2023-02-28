@@ -375,6 +375,7 @@ export class ApplicationsComponent
                 (x) => x.id === element.id
               );
               this.applications.data[index] = data.editApplication;
+              // eslint-disable-next-line no-self-assign
               this.applications.data = this.applications.data;
             }
           }
@@ -419,6 +420,7 @@ export class ApplicationsComponent
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.applications.data.push(value);
+        // eslint-disable-next-line no-self-assign
         this.applications.data = this.applications.data;
       }
     });

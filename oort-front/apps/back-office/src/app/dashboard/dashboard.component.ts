@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AppAbility } from '@oort-front/safe';
 
@@ -10,7 +10,7 @@ import { AppAbility } from '@oort-front/safe';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
   // === HEADER TITLE ===
   public title = 'Back-office';
 
@@ -32,8 +32,6 @@ export class DashboardComponent implements OnInit {
       this.setNavGroups();
     });
   }
-
-  ngOnInit(): void {}
 
   /**
    * Set the navigation items, from the permissions of user.

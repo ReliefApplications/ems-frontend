@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
@@ -13,7 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './share-url.component.html',
   styleUrls: ['./share-url.component.css'],
 })
-export class ShareUrlComponent implements OnInit {
+export class ShareUrlComponent {
   /**
    * Component to display current url and copy it.
    *
@@ -34,8 +34,6 @@ export class ShareUrlComponent implements OnInit {
     },
     private translate: TranslateService
   ) {}
-
-  ngOnInit(): void {}
 
   /**
    * Copies in clipboard the displayed value.

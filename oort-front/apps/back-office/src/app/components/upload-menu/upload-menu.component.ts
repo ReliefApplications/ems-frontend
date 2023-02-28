@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  HostListener,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { UploadEvent } from '@progress/kendo-angular-upload';
 
 /**
@@ -16,7 +10,7 @@ import { UploadEvent } from '@progress/kendo-angular-upload';
   templateUrl: './upload-menu.component.html',
   styleUrls: ['./upload-menu.component.scss'],
 })
-export class UploadMenuComponent implements OnInit {
+export class UploadMenuComponent {
   @Output() upload = new EventEmitter<UploadEvent>();
   @Output() download = new EventEmitter();
   // eslint-disable-next-line @angular-eslint/no-output-native
@@ -38,14 +32,6 @@ export class UploadMenuComponent implements OnInit {
     }
     this.show = false;
   }
-
-  /**
-   * Upload Menu to be displayed in overlay container.
-   * Contains file upload and template download.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 
   /**
    * Handles upload event.

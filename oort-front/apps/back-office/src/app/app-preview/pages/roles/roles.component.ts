@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 /**
  * Application preview roles page.
@@ -8,11 +8,4 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.scss'],
 })
-export class RolesComponent implements OnInit {
-  /**
-   * Application preview roles page.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
-}
+export class RolesComponent {}
