@@ -500,7 +500,7 @@ export const init = (
         visibleIf: (obj: any) =>
           obj.resource && obj.displayField && obj.selectQuestion,
         choices: (obj: any, choicesCallback: any) => {
-          const questionByName = !!obj.survey.getQuestionByName(
+          const questionByName = obj.survey.getQuestionByName(
             obj.selectQuestion
           )
             ? obj.survey.getQuestionByName(obj.selectQuestion)
@@ -666,7 +666,7 @@ export const init = (
                 objElement.value = '';
                 question.survey.onValueChanged.add((_: any, options: any) => {
                   if (options.question.name === quest) {
-                    if (!!options.value) {
+                    if (options.value) {
                       setAdvanceFilter(options.value, objElement.field);
                       if (question.displayAsGrid) {
                         resourcesFilterValues.next(filters);

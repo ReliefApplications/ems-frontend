@@ -82,7 +82,7 @@ export class SafeGroupListComponent
    * @param event The event
    */
   applyFilter(event: any): void {
-    this.searchText = !!event
+    this.searchText = event
       ? event.target.value.trim().toLowerCase()
       : this.searchText;
     this.groups.filter = '##';

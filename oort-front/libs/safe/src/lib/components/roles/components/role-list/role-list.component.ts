@@ -271,11 +271,11 @@ export class SafeRoleListComponent
    */
   applyFilter(column: string, event: any): void {
     if (column === 'usersCount') {
-      this.usersFilter = !!event.target
+      this.usersFilter = event.target
         ? event.target.value.trim().toLowerCase()
         : '';
     } else {
-      this.searchText = !!event
+      this.searchText = event
         ? event.target.value.trim().toLowerCase()
         : this.searchText;
     }

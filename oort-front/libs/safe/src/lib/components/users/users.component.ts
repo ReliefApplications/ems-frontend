@@ -270,9 +270,9 @@ export class SafeUsersComponent implements OnInit {
    */
   applyFilter(column: string, event: any): void {
     if (column === 'role') {
-      this.roleFilter = !!event.value ? event.value.trim() : '';
+      this.roleFilter = event.value ? event.value.trim() : '';
     } else {
-      this.searchText = !!event
+      this.searchText = event
         ? event.target.value.trim().toLowerCase()
         : this.searchText;
     }

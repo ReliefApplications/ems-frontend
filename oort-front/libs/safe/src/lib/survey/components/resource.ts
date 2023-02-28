@@ -507,7 +507,7 @@ export const init = (
                 (question.survey as SurveyModel).onValueChanged.add(
                   (_: any, options: any) => {
                     if (options.question.name === quest) {
-                      if (!!options.value) {
+                      if (options.value) {
                         setAdvanceFilter(options.value, objElement.field);
                         this.populateChoices(question);
                       }

@@ -162,7 +162,7 @@ export class SafePieDonutChartComponent implements OnChanges {
             const res: string[] = [];
             if (!val.field || !val.category) return '';
             if (this.showCategoryLabel) res.push(val.category);
-            if (!!this.showValueLabels) {
+            if (this.showValueLabels) {
               const displayPercentage = this.showValueLabels === 'percentage';
               let value = displayPercentage
                 ? (val.field / this.fieldSum) * 100
