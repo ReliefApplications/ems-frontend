@@ -11,10 +11,6 @@ import { Component, Input, OnInit } from '@angular/core';
 export class SafeQueryStylePreviewComponent implements OnInit {
   @Input() style: any;
   public htmlStyle: any;
-  /**
-   * Constructor for the query style preview component
-   */
-  constructor() {}
 
   ngOnInit(): void {
     this.htmlStyle = {

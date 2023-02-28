@@ -69,12 +69,14 @@ export class LayoutTableComponent
   private setAllLayouts(): void {
     if (this.form) {
       this.allLayouts = this.form.layouts
-        ? [...this.form.layouts.edges?.map((e) => e.node)]
+        ? // eslint-disable-next-line no-unsafe-optional-chaining
+          [...this.form.layouts.edges?.map((e) => e.node)]
         : [];
     } else {
       if (this.resource) {
         this.allLayouts = this.resource.layouts
-          ? [...this.resource.layouts.edges?.map((e) => e.node)]
+          ? // eslint-disable-next-line no-unsafe-optional-chaining
+            [...this.resource.layouts.edges?.map((e) => e.node)]
           : [];
       } else {
         this.allLayouts = [];
@@ -168,6 +170,7 @@ export class LayoutTableComponent
    * @param event drop event
    */
   public drop(event: any): void {
+    // eslint-disable-next-line no-unsafe-optional-chaining
     const layouts = [...this.selectedLayouts?.value];
     moveItemInArray(layouts, event.previousIndex, event.currentIndex);
     this.selectedLayouts?.setValue(layouts);

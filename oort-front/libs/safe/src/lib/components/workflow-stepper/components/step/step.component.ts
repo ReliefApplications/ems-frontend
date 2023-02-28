@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CONTENT_TYPES, IContentType } from '../../../../models/page.model';
 import { Step } from '../../../../models/step.model';
 
@@ -8,7 +8,7 @@ import { Step } from '../../../../models/step.model';
   templateUrl: './step.component.html',
   styleUrls: ['./step.component.scss'],
 })
-export class SafeStepComponent implements OnInit {
+export class SafeStepComponent {
   @Input() step!: Step;
   @Input() active = false;
   @Input() canUpdate = false;
@@ -19,11 +19,6 @@ export class SafeStepComponent implements OnInit {
   get type(): IContentType | undefined {
     return CONTENT_TYPES.find((x) => x.name === this.step.type);
   }
-
-  /** Constructor of the class */
-  constructor() {}
-
-  ngOnInit(): void {}
 
   /**
    * Emits delete event.

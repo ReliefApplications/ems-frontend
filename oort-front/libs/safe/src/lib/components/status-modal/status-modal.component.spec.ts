@@ -16,7 +16,9 @@ describe('StatusModalComponent', () => {
         {
           provide: MatDialogRef,
           useValue: {
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             updateSize: () => {},
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             addPanelClass: () => {},
           },
         },

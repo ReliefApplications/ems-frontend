@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 
@@ -16,7 +16,7 @@ interface DialogData {
   templateUrl: './edit-role-auto-assignment-modal.component.html',
   styleUrls: ['./edit-role-auto-assignment-modal.component.scss'],
 })
-export class EditRoleAutoAssignmentModalComponent implements OnInit {
+export class EditRoleAutoAssignmentModalComponent {
   public formGroup!: UntypedFormGroup;
   public fields: any[] = [];
 
@@ -32,6 +32,4 @@ export class EditRoleAutoAssignmentModalComponent implements OnInit {
     this.formGroup = data.formGroup;
     this.fields = data.fields;
   }
-
-  ngOnInit(): void {}
 }

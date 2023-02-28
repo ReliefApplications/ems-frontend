@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnInit, Provider } from '@angular/core';
+import { Component, forwardRef, Input, Provider } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IContentType } from '../../models/page.model';
 
@@ -19,22 +19,13 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   styleUrls: ['./content-choice.component.scss'],
   providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class SafeContentChoiceComponent
-  implements OnInit, ControlValueAccessor
-{
+export class SafeContentChoiceComponent implements ControlValueAccessor {
   @Input() contentTypes?: IContentType[];
 
   selected!: string;
   disabled = false;
   private onTouched!: any;
   private onChanged!: any;
-  /**
-   * The constructor function is a special function that is called when a new instance of the class is
-   * created.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 
   /**
    * Handles the selection of a content

@@ -287,6 +287,7 @@ export class SafeMapComponent
     }
 
     // setting up layer with all markers, if it doesn't exist
+    // eslint-disable-next-line no-prototype-builtins
     if (!this.markersCategories.hasOwnProperty('Markers')) {
       const allLayers: any[] = [];
       Object.keys(this.markersCategories).forEach((name: string) => {

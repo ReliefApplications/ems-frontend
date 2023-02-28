@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, Input } from '@angular/core';
 import { IconVariant } from './icon-variant.enum';
 
 /**
@@ -9,7 +9,7 @@ import { IconVariant } from './icon-variant.enum';
   templateUrl: './icon.component.html',
   styleUrls: ['./icon.component.scss'],
 })
-export class SafeIconComponent implements OnInit {
+export class SafeIconComponent {
   @Input() icon = '';
 
   @Input() inline = false;
@@ -50,11 +50,4 @@ export class SafeIconComponent implements OnInit {
       }
     }
   }
-
-  /**
-   * Constructor for safe-icon component
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 }

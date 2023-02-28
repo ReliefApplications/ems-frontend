@@ -39,11 +39,6 @@ export class SafeTagboxComponent implements OnInit {
   // === OUTPUT CONTROL ===
   @Input() parentControl!: AbstractControl;
 
-  /**
-   * Constructor for safe-tagbox component
-   */
-  constructor() {}
-
   ngOnInit(): void {
     this.choices$.subscribe((choices: any[]) => {
       this.choicesEmpty = choices.length === 0;

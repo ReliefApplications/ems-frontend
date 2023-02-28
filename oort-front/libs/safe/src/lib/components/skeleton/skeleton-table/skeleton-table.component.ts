@@ -16,11 +16,6 @@ export class SafeSkeletonTableComponent implements OnInit {
 
   dataSource: any[] = [];
 
-  /**
-   * Skeleton table component.
-   */
-  constructor() {}
-
   ngOnInit(): void {
     this.columns = [...this.columns];
     // Adds a select column to be able to display checkboxes

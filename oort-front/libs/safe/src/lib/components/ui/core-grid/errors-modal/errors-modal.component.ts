@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
@@ -19,7 +19,7 @@ interface DialogData {
   templateUrl: './errors-modal.component.html',
   styleUrls: ['./errors-modal.component.scss'],
 })
-export class SafeErrorsModalComponent implements OnInit {
+export class SafeErrorsModalComponent {
   public displayedColumns = ['question', 'errors'];
 
   /**
@@ -32,6 +32,4 @@ export class SafeErrorsModalComponent implements OnInit {
     public dialogRef: MatDialogRef<SafeErrorsModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
-
-  ngOnInit(): void {}
 }

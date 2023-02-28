@@ -7,7 +7,6 @@ import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
  * @param {Overlay} overlay - an overlay
  * @returns A function that returns an instance of BlockScrollStrategy.
  */
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
   return block;

@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   Inject,
   ViewChild,
   ViewContainerRef,
@@ -25,7 +24,7 @@ interface DialogData {
   styleUrls: ['./tile-data.component.scss'],
 })
 /** Modal content to edit the settings of a component. */
-export class SafeTileDataComponent implements OnInit, AfterViewInit {
+export class SafeTileDataComponent implements AfterViewInit {
   // === REACTIVE FORM ===
   tileForm?: UntypedFormGroup;
 
@@ -43,8 +42,6 @@ export class SafeTileDataComponent implements OnInit, AfterViewInit {
     public dialogRef: MatDialogRef<SafeTileDataComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
-
-  ngOnInit(): void {}
 
   /** Once the template is ready, inject the settings component linked to the widget type passed as a parameter. */
   ngAfterViewInit(): void {

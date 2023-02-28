@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Application } from '../../models/application.model';
 
 /**
@@ -9,7 +9,7 @@ import { Application } from '../../models/application.model';
   templateUrl: './applications-summary.component.html',
   styleUrls: ['./applications-summary.component.scss'],
 })
-export class SafeApplicationsSummaryComponent implements OnInit {
+export class SafeApplicationsSummaryComponent {
   @Input() loading = false;
   @Input() canCreate = false;
   @Input() applications: Application[] = [];
@@ -19,12 +19,4 @@ export class SafeApplicationsSummaryComponent implements OnInit {
   @Output() delete = new EventEmitter<Application>();
   @Output() clone = new EventEmitter<Application>();
   @Output() editAccess = new EventEmitter<Application>();
-
-  /**
-   * The constructor function is a special function that is called when a new instance of the class is
-   * created.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 }

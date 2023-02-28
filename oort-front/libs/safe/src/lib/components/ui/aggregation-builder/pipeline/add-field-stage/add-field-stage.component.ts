@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
 import { addFieldsForm } from '../../aggregation-builder-forms';
 
@@ -10,17 +10,11 @@ import { addFieldsForm } from '../../aggregation-builder-forms';
   templateUrl: './add-field-stage.component.html',
   styleUrls: ['./add-field-stage.component.scss'],
 })
-export class SafeAddFieldStageComponent implements OnInit {
+export class SafeAddFieldStageComponent {
   @Input() form!: UntypedFormArray;
   @Input() fields: any[] = [];
   @Input() operators: any;
   @Input() displayName = true;
-  /**
-   * Constructor for the fields aggregation pipeline stage
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 
   /**
    * Adds new addField configuration to the pipeline.

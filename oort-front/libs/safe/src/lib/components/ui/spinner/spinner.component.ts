@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { SpinnerSize } from './spinner-size.enum';
 import { SpinnerVariant } from './spinner-variant.enum';
 
@@ -10,7 +10,7 @@ import { SpinnerVariant } from './spinner-variant.enum';
   templateUrl: './spinner.component.html',
   styleUrls: ['./spinner.component.scss'],
 })
-export class SafeSpinnerComponent implements OnInit {
+export class SafeSpinnerComponent {
   @Input() size: SpinnerSize | string = SpinnerSize.MEDIUM;
 
   @Input() variant: SpinnerVariant | string = SpinnerVariant.DEFAULT;
@@ -52,11 +52,4 @@ export class SafeSpinnerComponent implements OnInit {
       }
     }
   }
-
-  /**
-   * Constructor for safe-spinner component.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 }

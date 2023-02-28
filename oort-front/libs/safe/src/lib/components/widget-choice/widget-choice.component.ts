@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IWidgetType } from '../../models/dashboard.model';
 
 /**
@@ -9,7 +9,7 @@ import { IWidgetType } from '../../models/dashboard.model';
   templateUrl: './widget-choice.component.html',
   styleUrls: ['./widget-choice.component.scss'],
 })
-export class SafeWidgetChoiceComponent implements OnInit {
+export class SafeWidgetChoiceComponent {
   public hovered = '';
   public collapsed = false;
 
@@ -20,11 +20,6 @@ export class SafeWidgetChoiceComponent implements OnInit {
   @Output() add: EventEmitter<string> = new EventEmitter();
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter();
-
-  /** Constructor for the component */
-  constructor() {}
-
-  ngOnInit(): void {}
 
   /**
    * Emit an add event on selection

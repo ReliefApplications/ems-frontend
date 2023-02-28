@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
   MatLegacyDialog as MatDialog,
@@ -21,7 +21,7 @@ interface DialogData {
   templateUrl: './record-history-modal.component.html',
   styleUrls: ['./record-history-modal.component.scss'],
 })
-export class RecordHistoryModalComponent implements OnInit {
+export class RecordHistoryModalComponent {
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created
@@ -36,8 +36,6 @@ export class RecordHistoryModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialog: MatDialog
   ) {}
-
-  ngOnInit(): void {}
 
   /**
    * Closes the modal on event

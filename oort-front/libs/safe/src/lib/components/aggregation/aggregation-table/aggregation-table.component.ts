@@ -69,12 +69,14 @@ export class AggregationTableComponent
   private setAllAggregations(): void {
     if (this.form) {
       this.allAggregations = this.form.aggregations
-        ? [...this.form.aggregations.edges?.map((e) => e.node)]
+        ? // eslint-disable-next-line no-unsafe-optional-chaining
+          [...this.form.aggregations.edges?.map((e) => e.node)]
         : [];
     } else {
       if (this.resource) {
         this.allAggregations = this.resource.aggregations
-          ? [...this.resource.aggregations.edges?.map((e) => e.node)]
+          ? // eslint-disable-next-line no-unsafe-optional-chaining
+            [...this.resource.aggregations.edges?.map((e) => e.node)]
           : [];
       } else {
         this.allAggregations = [];
@@ -173,6 +175,7 @@ export class AggregationTableComponent
    * @param event drop event
    */
   public drop(event: any): void {
+    // eslint-disable-next-line no-unsafe-optional-chaining
     const aggregation = [...this.selectedAggregations?.value];
     moveItemInArray(aggregation, event.previousIndex, event.currentIndex);
     this.selectedAggregations?.setValue(aggregation);

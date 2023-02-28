@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, Input } from '@angular/core';
 import { Subject } from 'rxjs';
 import { SpinnerVariant } from '../spinner/spinner-variant.enum';
 import { ButtonCategory } from './button-category.enum';
@@ -13,7 +13,7 @@ import { ButtonVariant } from './button-variant.enum';
   templateUrl: './button.component.html',
   styleUrls: ['./button.component.scss'],
 })
-export class SafeButtonComponent implements OnInit {
+export class SafeButtonComponent {
   @Input() category: ButtonCategory | string = ButtonCategory.PRIMARY;
 
   @Input() size: ButtonSize | string = ButtonSize.MEDIUM;
@@ -78,11 +78,4 @@ export class SafeButtonComponent implements OnInit {
       }
     }
   }
-
-  /**
-   * Button component.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 }

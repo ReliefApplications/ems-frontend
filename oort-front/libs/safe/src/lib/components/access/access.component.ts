@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeEditAccessComponent } from './edit-access/edit-access.component';
 
@@ -10,7 +10,7 @@ import { SafeEditAccessComponent } from './edit-access/edit-access.component';
   templateUrl: './access.component.html',
   styleUrls: ['./access.component.scss'],
 })
-export class SafeAccessComponent implements OnInit {
+export class SafeAccessComponent {
   // === PERMISSIONS LAYER OF CURRENT OBJECT ===
   @Input() access!: any;
   @Input() application?: string;
@@ -29,8 +29,6 @@ export class SafeAccessComponent implements OnInit {
    * @param {MatDialog} dialog - MatDialog - This is the material service that is used to open modal dialogs with Material Design styling and animations.
    */
   constructor(private dialog: MatDialog) {}
-
-  ngOnInit(): void {}
 
   /**
    * Function that on click displays the EditAccess modal. Once closed, emits the result if exists.

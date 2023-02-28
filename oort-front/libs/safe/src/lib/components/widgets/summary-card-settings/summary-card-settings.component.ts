@@ -47,6 +47,9 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
 
+  // To prevent issues where dynamic would erase all cards
+  private cachedCards: any = undefined;
+
   // === WIDGET ===
   @Input() tile: any;
 
@@ -73,9 +76,6 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     return this.tileForm?.get('cards') as UntypedFormArray;
   }
 
-  // To prevent issues where dynamic would erase all cards
-  private cachedCards: any = undefined;
-
   /**
    * Summary Card Settings component.
    *
@@ -101,8 +101,8 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
 
     // Prevents user from having both dynamic and static cards
     this.tileForm.get('isDynamic')?.valueChanges.subscribe(() => {
-      if (!this.tileForm?.value.isDynamic) {
-      }
+      // if (!this.tileForm?.value.isDynamic) {
+      // }
 
       // caches the cards of the other type
       const newCache = cloneDeep(this.cards.value);

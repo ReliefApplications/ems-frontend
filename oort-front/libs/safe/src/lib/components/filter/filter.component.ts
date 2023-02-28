@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 
 /**
@@ -9,9 +9,7 @@ import { UntypedFormGroup } from '@angular/forms';
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
 })
-export class SafeFilterComponent implements OnInit {
+export class SafeFilterComponent {
   @Input() form!: UntypedFormGroup;
   @Input() fields: any[] = [];
-
-  ngOnInit(): void {}
 }

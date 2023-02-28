@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import {
   MatLegacyDialog as MatDialog,
@@ -23,7 +23,7 @@ interface DialogData {
   templateUrl: './map-clorophlet.component.html',
   styleUrls: ['./map-clorophlet.component.scss'],
 })
-export class MapClorophletComponent implements OnInit {
+export class MapClorophletComponent {
   public form!: UntypedFormGroup;
 
   public tableColumns = ['label', 'color', 'actions'];
@@ -60,8 +60,6 @@ export class MapClorophletComponent implements OnInit {
       this.updateGeoJSONfields(this.form.value.geoJSON);
     }
   }
-
-  ngOnInit(): void {}
 
   /**
    * Adds a new division.

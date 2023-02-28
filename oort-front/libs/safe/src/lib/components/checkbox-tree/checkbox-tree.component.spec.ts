@@ -22,6 +22,7 @@ describe('SafeCheckboxTreeComponent', () => {
     component.checklist = {
       data: [],
       dataChange: new BehaviorSubject<TreeItemNode[]>([]),
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       initialize: () => {},
       buildFileTree: () => {
         const rst: TreeItemNode[] = [];

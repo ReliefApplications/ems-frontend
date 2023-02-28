@@ -11,9 +11,4 @@ import { UntypedFormGroup } from '@angular/forms';
 })
 export class SafeDisplayTabComponent {
   @Input() form!: UntypedFormGroup;
-
-  /**
-   * SafeDisplayTabComponent constructor
-   */
-  constructor() {}
 }

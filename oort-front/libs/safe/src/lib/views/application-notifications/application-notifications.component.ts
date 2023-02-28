@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 /**
  * Application custom notifications page.
@@ -8,11 +8,4 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './application-notifications.component.html',
   styleUrls: ['./application-notifications.component.scss'],
 })
-export class SafeApplicationNotificationsComponent implements OnInit {
-  /**
-   * Application custom notifications page.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
-}
+export class SafeApplicationNotificationsComponent {}

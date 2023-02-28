@@ -4,7 +4,6 @@ import {
   Inject,
   Input,
   OnChanges,
-  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -83,7 +82,7 @@ const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
 })
 export class SafeCoreGridComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, OnChanges
+  implements OnChanges
 {
   // === INPUTS ===
   @Input() settings: GridSettings | any = {};
@@ -300,9 +299,6 @@ export class SafeCoreGridComponent
     this.isAdmin =
       this.authService.userIsAdmin && environment.module === 'backoffice';
   }
-
-  // === COMPONENT LIFECYCLE ===
-  ngOnInit(): void {}
 
   /**
    * Detects changes of the settings to (re)load the data.

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { BadgeSize } from './badge-size.enum';
 import { BadgeVariant } from './badge-variant.enum';
 
@@ -10,17 +10,10 @@ import { BadgeVariant } from './badge-variant.enum';
   templateUrl: './badge.component.html',
   styleUrls: ['./badge.component.scss'],
 })
-export class SafeBadgeComponent implements OnInit {
+export class SafeBadgeComponent {
   @Input() size: BadgeSize | string = BadgeSize.MEDIUM;
 
   @Input() variant: BadgeVariant | string = BadgeVariant.DEFAULT;
 
   @Input() icon = '';
-
-  /**
-   * Badge component.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 }

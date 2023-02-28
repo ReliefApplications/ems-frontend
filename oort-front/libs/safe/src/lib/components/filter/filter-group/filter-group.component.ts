@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
   UntypedFormArray,
   UntypedFormBuilder,
@@ -13,7 +13,7 @@ import {
   templateUrl: './filter-group.component.html',
   styleUrls: ['./filter-group.component.scss'],
 })
-export class FilterGroupComponent implements OnInit {
+export class FilterGroupComponent {
   @Input() form!: UntypedFormGroup;
   @Input() fields: any[] = [];
   @Output() delete = new EventEmitter();
@@ -33,8 +33,6 @@ export class FilterGroupComponent implements OnInit {
    * @param fb Angular form builder
    */
   constructor(private fb: UntypedFormBuilder) {}
-
-  ngOnInit(): void {}
 
   /**
    * Remove filter at index

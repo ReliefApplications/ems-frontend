@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Record } from '../../models/record.model';
 
 /**
@@ -9,17 +9,9 @@ import { Record } from '../../models/record.model';
   templateUrl: './record-summary.component.html',
   styleUrls: ['./record-summary.component.scss'],
 })
-export class SafeRecordSummaryComponent implements OnInit {
+export class SafeRecordSummaryComponent {
   @Input() cacheDate?: Date;
   @Input() record?: Record;
   @Output() showHistory = new EventEmitter();
   @Output() clear = new EventEmitter();
-
-  /**
-   * The constructor function is a special function that is called when a new instance of the class is
-   * created.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 }

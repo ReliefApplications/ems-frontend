@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { clorophletForm } from '../../map-forms';
@@ -12,7 +12,7 @@ import { MapClorophletComponent } from '../map-clorophlet/map-clorophlet.compone
   templateUrl: './map-clorophlets.component.html',
   styleUrls: ['./map-clorophlets.component.scss'],
 })
-export class MapClorophletsComponent implements OnInit {
+export class MapClorophletsComponent {
   @Input() clorophlets!: UntypedFormArray;
 
   @Input() selectedFields: any[] = [];
@@ -27,8 +27,6 @@ export class MapClorophletsComponent implements OnInit {
    * @param dialog Material Dialog Service
    */
   constructor(private dialog: MatDialog) {}
-
-  ngOnInit(): void {}
 
   /**
    * Adds a new clorophlet.

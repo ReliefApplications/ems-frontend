@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 /** Component for the grid toolbar */
 @Component({
@@ -10,7 +10,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 /**
  * Custom toolbar that we use in the safe-grid component to interact with the admin features
  */
-export class SafeGridToolbarComponent implements OnInit {
+export class SafeGridToolbarComponent {
   // === DATA ===
   @Input() items: any[] = [];
 
@@ -49,11 +49,4 @@ export class SafeGridToolbarComponent implements OnInit {
   get canDelete(): boolean {
     return !this.items.some((x) => !x.canDelete);
   }
-
-  /**
-   * Constructor for safe-toolbar component
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 }

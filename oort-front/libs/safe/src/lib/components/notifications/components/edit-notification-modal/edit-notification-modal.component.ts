@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 /**
  * Add / Edit custom notification modal component.
@@ -8,11 +8,4 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './edit-notification-modal.component.html',
   styleUrls: ['./edit-notification-modal.component.scss'],
 })
-export class EditNotificationModalComponent implements OnInit {
-  /**
-   * Add / Edit custom notification modal component.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
-}
+export class EditNotificationModalComponent {}

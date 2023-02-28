@@ -20,7 +20,6 @@ import { createQueryForm } from '../query-builder/query-builder-forms';
  * @param overlay material overlay
  * @returns Strategy to prevent scrolling if user sees overlay.
  */
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
   return block;

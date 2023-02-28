@@ -223,6 +223,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     //   }
     // });
     this.survey.render(this.formContainer.nativeElement);
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     setTimeout(() => {}, 100);
   }
 
@@ -235,6 +236,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
     this.survey.render();
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     setTimeout(() => {}, 100);
     this.surveyActive = true;
   }
@@ -503,6 +505,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isFromCacheData = false;
     this.storageDate = undefined;
     this.survey.render();
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     setTimeout(() => {}, 100);
   }
 

@@ -118,9 +118,6 @@ export class SafeGraphQLSelectComponent
   private ePlaceholder = '';
   public focused = false;
   public touched = false;
-  onTouched = () => {};
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onChange = (_: any) => {};
 
   /**
    * Gets the empty status
@@ -195,6 +192,45 @@ export class SafeGraphQLSelectComponent
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
+  // public selected: FormControl;
+
+  /** Query reference for getting the available contents */
+  @Input() query!: QueryRef<any>;
+
+  private queryName!: string;
+  @Input() path = '';
+  @Input() selectedElements: any[] = [];
+  public elements = new BehaviorSubject<any[]>([]);
+  public elements$!: Observable<any[]>;
+  private queryElements: any[] = [];
+  private cachedElements: any[] = [];
+  private pageInfo = {
+    endCursor: '',
+    hasNextPage: true,
+  };
+  public loading = true;
+
+  @ViewChild(MatSelect) elementSelect?: MatSelect;
+
+  /**
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created
+   *
+   * @param elementRef shared element ref service
+   * @param formField MatFormField
+   * @param ngControl form control shared service
+   */
+  constructor(
+    private elementRef: ElementRef<HTMLElement>,
+    @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
+    @Optional() @Self() public ngControl: NgControl
+  ) {
+    super();
+    if (this.ngControl != null) {
+      this.ngControl.valueAccessor = this;
+    }
+  }
+
   /**
    * Sets element ids that should be used for the aria-describedby attribute of your control
    *
@@ -246,44 +282,10 @@ export class SafeGraphQLSelectComponent
     this.onTouched = fn;
   }
 
-  // public selected: FormControl;
-
-  /** Query reference for getting the available contents */
-  @Input() query!: QueryRef<any>;
-
-  private queryName!: string;
-  @Input() path = '';
-  @Input() selectedElements: any[] = [];
-  public elements = new BehaviorSubject<any[]>([]);
-  public elements$!: Observable<any[]>;
-  private queryElements: any[] = [];
-  private cachedElements: any[] = [];
-  private pageInfo = {
-    endCursor: '',
-    hasNextPage: true,
-  };
-  public loading = true;
-
-  @ViewChild(MatSelect) elementSelect?: MatSelect;
-
-  /**
-   * The constructor function is a special function that is called when a new instance of the class is
-   * created
-   *
-   * @param elementRef shared element ref service
-   * @param formField MatFormField
-   * @param ngControl form control shared service
-   */
-  constructor(
-    private elementRef: ElementRef<HTMLElement>,
-    @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
-    @Optional() @Self() public ngControl: NgControl
-  ) {
-    super();
-    if (this.ngControl != null) {
-      this.ngControl.valueAccessor = this;
-    }
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onTouched = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  onChange = (_: any) => {};
 
   ngOnInit(): void {
     this.elements$ = this.elements.asObservable();

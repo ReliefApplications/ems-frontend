@@ -246,6 +246,7 @@ export class SafeFormModalComponent implements OnInit {
     // this.survey.render(this.containerId);
     this.setPages();
     this.survey.onComplete.add(this.onComplete);
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     setTimeout(() => {}, 100);
   }
 

@@ -28,6 +28,7 @@ interface DialogData {
 }
 
 /** Regex pattern for email */
+// eslint-disable-next-line no-useless-escape
 const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 /** Key codes of separators */
@@ -38,7 +39,6 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
  *
  * @returns A function which returns an object with the separator keys
  */
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function codesFactory(): () => any {
   const codes = () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE });
   return codes;

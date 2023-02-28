@@ -1,4 +1,4 @@
-import { ApplicationRef, Component, Inject, OnInit } from '@angular/core';
+import { ApplicationRef, Component, Inject } from '@angular/core';
 import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
   MatLegacyDialogRef as MatDialogRef,
@@ -23,7 +23,7 @@ interface DialogData {
   templateUrl: './search-resource-grid-modal.component.html',
   styleUrls: ['./search-resource-grid-modal.component.scss'],
 })
-export class SafeResourceGridModalComponent implements OnInit {
+export class SafeResourceGridModalComponent {
   public multiSelect = false;
   public gridSettings: GridSettings;
   public selectedRows: any[] = [];
@@ -69,8 +69,6 @@ export class SafeResourceGridModalComponent implements OnInit {
     };
     this.ref.tick();
   }
-
-  ngOnInit(): void {}
 
   /**
    * Handle selection change in the grid.

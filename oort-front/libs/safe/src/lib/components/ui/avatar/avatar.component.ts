@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AvatarSize } from './avatar-size.enum';
 import { AvatarVariant } from './avatar-variant.enum';
 
@@ -10,17 +10,10 @@ import { AvatarVariant } from './avatar-variant.enum';
   templateUrl: './avatar.component.html',
   styleUrls: ['./avatar.component.scss'],
 })
-export class SafeAvatarComponent implements OnInit {
+export class SafeAvatarComponent {
   @Input() size: AvatarSize | string = AvatarSize.MEDIUM;
 
   @Input() variant: AvatarVariant | string = AvatarVariant.DEFAULT;
 
   @Input() icon = '';
-
-  /**
-   * Avatar component.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 }

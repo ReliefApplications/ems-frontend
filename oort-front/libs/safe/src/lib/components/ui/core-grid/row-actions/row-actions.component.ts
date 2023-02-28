@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 /** Component for grid row actions */
 @Component({
@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   templateUrl: './row-actions.component.html',
   styleUrls: ['./row-actions.component.scss'],
 })
-export class SafeGridRowActionsComponent implements OnInit {
+export class SafeGridRowActionsComponent {
   // === DATA ===
   @Input() item: any;
 
@@ -27,9 +27,4 @@ export class SafeGridRowActionsComponent implements OnInit {
       (this.item.canUpdate && (this.actions.update || this.actions.convert))
     );
   }
-
-  /** Constructor of the component */
-  constructor() {}
-
-  ngOnInit(): void {}
 }

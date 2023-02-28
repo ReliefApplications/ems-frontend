@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Application } from '../../../../models/application.model';
 
@@ -20,7 +20,7 @@ interface IStatus {
   templateUrl: './application-summary.component.html',
   styleUrls: ['./application-summary.component.scss'],
 })
-export class SafeApplicationSummaryComponent implements OnInit {
+export class SafeApplicationSummaryComponent {
   @Input() application!: Application;
   @Output() preview = new EventEmitter();
   @Output() delete = new EventEmitter();
@@ -74,6 +74,4 @@ export class SafeApplicationSummaryComponent implements OnInit {
       .instant('common.status_archived')[0]
       .toUpperCase();
   }
-
-  ngOnInit(): void {}
 }

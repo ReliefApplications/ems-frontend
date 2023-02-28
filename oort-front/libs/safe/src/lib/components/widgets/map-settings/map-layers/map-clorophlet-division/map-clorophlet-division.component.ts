@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { divisionForm } from '../../map-forms';
@@ -18,7 +18,7 @@ interface DialogData {
   templateUrl: './map-clorophlet-division.component.html',
   styleUrls: ['./map-clorophlet-division.component.scss'],
 })
-export class MapClorophletDivisionComponent implements OnInit {
+export class MapClorophletDivisionComponent {
   public form!: UntypedFormGroup;
 
   public fields: any[] = [];
@@ -34,6 +34,4 @@ export class MapClorophletDivisionComponent implements OnInit {
     this.fields = data.fields;
     this.query = data.query;
   }
-
-  ngOnInit(): void {}
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import {
   UntypedFormArray,
   UntypedFormControl,
@@ -13,7 +13,7 @@ import {
   templateUrl: './map-layers.component.html',
   styleUrls: ['./map-layers.component.scss'],
 })
-export class MapLayersComponent implements OnInit {
+export class MapLayersComponent {
   @Input() selectedFields: any[] = [];
   @Input() formattedSelectedFields: any[] = [];
 
@@ -36,11 +36,4 @@ export class MapLayersComponent implements OnInit {
   }
 
   @Input() form!: UntypedFormGroup;
-
-  /**
-   * Layers configuration component of Map Widget.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 }

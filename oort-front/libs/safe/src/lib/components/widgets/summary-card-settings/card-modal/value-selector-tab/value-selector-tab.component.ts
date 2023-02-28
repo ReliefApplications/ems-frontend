@@ -16,11 +16,6 @@ export class SafeValueSelectorTabComponent implements OnInit {
   public selectedRows: string[] = [];
 
   /**
-   * Constructor for the SafeValueSelectorTab component.
-   */
-  constructor() {}
-
-  /**
    * Gets the selected row if one is already selected.
    */
   ngOnInit(): void {

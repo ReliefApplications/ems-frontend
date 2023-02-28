@@ -209,6 +209,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
     const rulesStr: string[] = [];
     access.filters.forEach((rule) => {
       // nested access
+      // eslint-disable-next-line no-prototype-builtins
       if (rule.hasOwnProperty('logic')) {
         const nestedAccess = rule as Access;
         rulesStr.push(`(${this.getAccessString(nestedAccess)})`);
@@ -443,6 +444,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
                     [action]: [{ role: this.role, access: access.access }],
                   },
                 });
+              // eslint-disable-next-line no-prototype-builtins
               else if (opPerm && !opPerm?.hasOwnProperty(action)) {
                 opPerm[action] = [{ role: this.role, access: access.access }];
               } else {

@@ -38,11 +38,6 @@ export class SafeTabStyleComponent implements OnInit {
   public fields: any[] = [];
 
   /**
-   * Constructor for the styling component
-   */
-  constructor() {}
-
-  /**
    * Creates a new form group and add it to the array of styles.
    */
   public onAdd(): void {

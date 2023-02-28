@@ -66,7 +66,6 @@ import {
  * @param overlay The overlay
  * @returns A function that returns a block scroll strategy
  */
-// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   const block = () => overlay.scrollStrategies.block();
   return block;

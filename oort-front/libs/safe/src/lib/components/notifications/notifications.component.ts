@@ -111,23 +111,23 @@ export class NotificationsComponent implements OnInit, OnDestroy {
    * @param notification The notification to edit
    */
   editNotification(notification: any): void {
-    const dialogRef = this.dialog.open(EditNotificationModalComponent, {
+    this.dialog.open(EditNotificationModalComponent, {
       data: notification,
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value) {
-      }
-      // this.applicationService.editTemplate({
-      //   id: template.id,
-      //   name: value.name,
-      //   type: TemplateTypeEnum.EMAIL,
-      //   content: {
-      //     subject: value.subject,
-      //     body: value.body,
-      //   },
-      // });
-    });
+    // dialogRef.afterClosed().subscribe((value) => {
+    //   if (value) {
+    //   }
+    //   // this.applicationService.editTemplate({
+    //   //   id: template.id,
+    //   //   name: value.name,
+    //   //   type: TemplateTypeEnum.EMAIL,
+    //   //   content: {
+    //   //     subject: value.subject,
+    //   //     body: value.body,
+    //   //   },
+    //   // });
+    // });
   }
 
   /**
@@ -157,21 +157,21 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   /** Opens modal for adding a new notification */
   addNotification(): void {
-    const dialogRef = this.dialog.open(EditNotificationModalComponent, {
+    this.dialog.open(EditNotificationModalComponent, {
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value) {
-      }
-      // this.applicationService.addTemplate({
-      //   name: value.name,
-      //   type: TemplateTypeEnum.EMAIL,
-      //   content: {
-      //     subject: value.subject,
-      //     body: value.body,
-      //   },
-      // });
-    });
+    // dialogRef.afterClosed().subscribe((value) => {
+    //   if (value) {
+    //   }
+    //   // this.applicationService.addTemplate({
+    //   //   name: value.name,
+    //   //   type: TemplateTypeEnum.EMAIL,
+    //   //   content: {
+    //   //     subject: value.subject,
+    //   //     body: value.body,
+    //   //   },
+    //   // });
+    // });
   }
 
   ngOnDestroy(): void {

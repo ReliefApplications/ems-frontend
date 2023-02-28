@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 
 /**
@@ -9,16 +9,9 @@ import { UntypedFormControl } from '@angular/forms';
   templateUrl: './field-dropdown.component.html',
   styleUrls: ['./field-dropdown.component.scss'],
 })
-export class SafeFieldDropdownComponent implements OnInit {
+export class SafeFieldDropdownComponent {
   @Input() fieldControl!: UntypedFormControl;
   @Input() fields: any[] = [];
   @Input() label = '';
   @Input() nullable = false;
-
-  /**
-   * Fields dropdown component.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 }

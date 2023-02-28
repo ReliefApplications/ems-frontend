@@ -75,6 +75,7 @@ export const init = (
           }
         });
     },
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     onAfterRender: (): void => {},
   };
   Survey.ComponentCollection.Instance.add(component);

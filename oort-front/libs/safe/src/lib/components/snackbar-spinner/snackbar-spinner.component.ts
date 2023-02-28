@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_LEGACY_SNACK_BAR_DATA as MAT_SNACK_BAR_DATA } from '@angular/material/legacy-snack-bar';
 
 /**
@@ -19,7 +19,7 @@ interface SnackBarData {
   templateUrl: './snackbar-spinner.component.html',
   styleUrls: ['./snackbar-spinner.component.scss'],
 })
-export class SafeSnackbarSpinnerComponent implements OnInit {
+export class SafeSnackbarSpinnerComponent {
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
@@ -30,6 +30,4 @@ export class SafeSnackbarSpinnerComponent implements OnInit {
     @Inject(MAT_SNACK_BAR_DATA)
     public data: SnackBarData
   ) {}
-
-  ngOnInit(): void {}
 }

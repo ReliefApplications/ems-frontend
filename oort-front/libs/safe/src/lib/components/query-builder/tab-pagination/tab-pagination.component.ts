@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 
 /**
@@ -10,14 +10,6 @@ import { UntypedFormGroup } from '@angular/forms';
   templateUrl: './tab-pagination.component.html',
   styleUrls: ['./tab-pagination.component.scss'],
 })
-export class SafeTabPaginationComponent implements OnInit {
+export class SafeTabPaginationComponent {
   @Input() form!: UntypedFormGroup;
-
-  /**
-   * Pagination tab component for the query builder.
-   * Not always visible.
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 }

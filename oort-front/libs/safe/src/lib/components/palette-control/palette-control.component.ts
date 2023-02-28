@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnInit, Provider } from '@angular/core';
+import { Component, forwardRef, Input, Provider } from '@angular/core';
 import {
   ControlValueAccessor,
   UntypedFormControl,
@@ -23,9 +23,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   styleUrls: ['./palette-control.component.scss'],
   providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class SafePaletteControlComponent
-  implements OnInit, ControlValueAccessor
-{
+export class SafePaletteControlComponent implements ControlValueAccessor {
   @Input() formControl!: UntypedFormControl;
 
   @Input() formControlName!: string;
@@ -36,11 +34,6 @@ export class SafePaletteControlComponent
   public value: string[] = [];
   public colors: string[] = [];
   public disabled = false;
-
-  /** Custom palette form control */
-  constructor() {}
-
-  ngOnInit(): void {}
 
   /**
    * Register change of the control

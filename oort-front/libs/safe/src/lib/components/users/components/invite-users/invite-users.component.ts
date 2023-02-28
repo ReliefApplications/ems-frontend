@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, Inject, Renderer2, ViewChild } from '@angular/core';
 import {
   MatLegacyDialog as MatDialog,
   MatLegacyDialogRef as MatDialogRef,
@@ -34,7 +34,7 @@ interface DialogData {
   templateUrl: './invite-users.component.html',
   styleUrls: ['./invite-users.component.scss'],
 })
-export class SafeInviteUsersComponent implements OnInit {
+export class SafeInviteUsersComponent {
   public gridData: GridDataResult = { data: [], total: 0 };
   public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   private editedRowIndex = 0;
@@ -73,8 +73,6 @@ export class SafeInviteUsersComponent implements OnInit {
     public translate: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
-
-  ngOnInit(): void {}
 
   /**
    * Closes the modal.

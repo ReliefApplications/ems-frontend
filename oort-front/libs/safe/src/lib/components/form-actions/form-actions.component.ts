@@ -29,11 +29,6 @@ export class SafeFormActionsComponent implements OnInit {
   public usedLocalesSurvey: LangObject[] = [];
   public currentLocaleSurvey = DEFAULT_LOCALE_SURVEY;
 
-  /**
-   * Constructor of the component.
-   */
-  constructor() {}
-
   ngOnInit(): void {
     // set the available languages and default language of the survey
     this.usedLocalesSurvey = this.survey.getUsedLocales().map((lang) => ({

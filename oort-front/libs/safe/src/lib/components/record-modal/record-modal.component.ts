@@ -168,6 +168,7 @@ export class SafeRecordModalComponent implements AfterViewInit {
     this.survey.focusFirstQuestionAutomatic = false;
     this.survey.showProgressBar = 'off';
     this.survey.render(this.formContainer.nativeElement);
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     setTimeout(() => {}, 100);
     this.setPages();
     this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>

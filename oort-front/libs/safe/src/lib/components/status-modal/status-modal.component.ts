@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
   MatLegacyDialogRef as MatDialogRef,
@@ -21,7 +21,7 @@ interface StatusDialogData {
   templateUrl: './status-modal.component.html',
   styleUrls: ['./status-modal.component.scss'],
 })
-export class SafeStatusModalComponent implements OnInit {
+export class SafeStatusModalComponent {
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
@@ -33,6 +33,4 @@ export class SafeStatusModalComponent implements OnInit {
     private dialogRef: MatDialogRef<SafeStatusModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: StatusDialogData
   ) {}
-
-  ngOnInit(): void {}
 }
