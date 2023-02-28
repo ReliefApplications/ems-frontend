@@ -2,7 +2,11 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Form, SafeBreadcrumbService, SafeFormComponent } from '@oort-front/safe';
+import {
+  Form,
+  SafeBreadcrumbService,
+  SafeFormComponent,
+} from '@oort-front/safe';
 import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,

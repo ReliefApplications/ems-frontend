@@ -180,9 +180,9 @@ export class ApiConfigurationsComponent
    */
   applyFilter(column: string, event: any): void {
     if (column === 'status') {
-      this.statusFilter = !!event.value ? event.value.trim().toLowerCase() : '';
+      this.statusFilter = event.value ? event.value.trim().toLowerCase() : '';
     } else {
-      this.searchText = !!event
+      this.searchText = event
         ? event.target.value.trim().toLowerCase()
         : this.searchText;
     }

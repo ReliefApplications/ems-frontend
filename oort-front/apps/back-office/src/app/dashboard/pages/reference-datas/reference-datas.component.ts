@@ -178,7 +178,7 @@ export class ReferenceDatasComponent
    * @param event Value of the filter.
    */
   applyFilter(column: string, event: any): void {
-    this.searchText = !!event
+    this.searchText = event
       ? event.target.value.trim().toLowerCase()
       : this.searchText;
     this.dataSource.filter = '##';
