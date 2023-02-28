@@ -119,16 +119,15 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
+        this.updating = true;
+        this.applicationService.updateCustomNotification(
+          notification.id,
+          value,
+          () => {
+            this.notificationsQuery.refetch();
+          }
+        );
       }
-      // this.applicationService.editTemplate({
-      //   id: template.id,
-      //   name: value.name,
-      //   type: TemplateTypeEnum.EMAIL,
-      //   content: {
-      //     subject: value.subject,
-      //     body: value.body,
-      //   },
-      // });
     });
   }
 
