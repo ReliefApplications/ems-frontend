@@ -139,7 +139,18 @@ If you want to run the dev server of the back-office and front-office at the sam
 
 ## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Generate a component:
+```
+npx nx g component <component-name>
+```
+
+Generate a module:
+```
+npx nx g module <module-name>
+```
+
+You can also use `npx nx generate directive|pipe|service|class|guard|interface|enum|module`.
+
 
 ## Build
 
