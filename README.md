@@ -27,32 +27,35 @@ To read more about the project, and how to setup the back-end, please refer to t
 *   [Setup](https://gitlab.com/who-ems/ui-doc#how-to-setup)
 *   [Deployment](https://gitlab.com/who-ems/ui-doc#how-to-deploy)
 
+In top of Angular, [Nx](https://nx.dev/) was installed, to better split projects and libs.
+
 
 # General
 
-The project is seperated into four sub-projects:
+The project is seperated into three sub-projects:
 - back-office, an application accessible to administrators
 - front-office, an application that would depend on the logged user
-- safe, a library shared by both other projects
 - web-widgets, an application to genereate the web components
 
-Every change made to the shared library will require a new build of the library, please refer to the commands section to see the command to execute.
+One library exists:
+- safe, a library for common ui / capacity, shared with other projects
+
+Library changes should automatically be detected when serving the other projects.
 
 # Azure configuration
 
-If you want to deploy on Azure, start building the shared library:
+If you want to deploy on Azure, build back-office and front-office:
 ```
-ng build --project=safe
-```
-
-Then, build the back-office with Azure environment file:
-```
-ng build --configuration=azure
+npx nx run back-office:build:azure-dev
+npx nx run back-office:build:azure-dev
 ```
 
-The compiled code can be found there in ./dist/back-office folder.
+For prod, replace `azure-dev` with `azure-prod`.
+For uat, replace `azure-dev` with `azure-uat`.
 
-# Bundle Analysis
+The compiled applications can be found there in ./dist/apps/ folder.
+
+<!-- # Bundle Analysis
 
 First, install globally the bundle analyzer:
 ```
@@ -70,11 +73,11 @@ Finally, run:
 ```
 webpack-bundle-analyzer ./dist/<project-name>/stats.json
 ```
-and your browser will pop up the page at localhost:8888.
+and your browser will pop up the page at localhost:8888. -->
 
 # Useful commands
 
-## Compodoc
+<!-- ## Compodoc
 
 The package.json contains commands to generate Angular documentation.
 
@@ -93,17 +96,31 @@ npm i -g compodoc
 
 A subfolder should be generated under *documentation* folder.
 
-You can drag and drop the index.html file of this subfolder directly in a browser to see the documentation of an angular project.
+You can drag and drop the index.html file of this subfolder directly in a browser to see the documentation of an angular project. -->
 
 ## Development server
 
-To launch the dev server of a project, run:
+To serve a project, run:
 ```
-ng serve --project=<project-name>
+npx nx run <project>:server:<config>
 ```
 Navigate to [http://localhost:4200/](http://localhost:4200/). The app will automatically reload if you change any of the source files.
 
-### Running both front-office and back-office
+For example:
+
+```
+npx nx run back-office:serve
+```
+
+will serve back-office with default development configuration.
+
+```
+npx nx run back-office:serve:oort-local
+```
+
+will serve back-office, connecting to the deployed back-end for development.
+
+<!-- ### Running both front-office and back-office
 If you want to run the dev server of the back-office and front-office at the same time:
 * in the `back-office` project:
     * in the `environment.ts` file, update the `frontOfficeUri` property to `http://localhost:4201/`
@@ -118,7 +135,7 @@ If you want to run the dev server of the back-office and front-office at the sam
     ```
     ng serve --project=back-office
     ng serve --project=front-office --port 4201
-    ```
+    ``` -->
 
 ## Code scaffolding
 
@@ -126,21 +143,9 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Run `npx nx run <project>:build:<config>` to build a project. The build artifacts will be stored in the `dist/apps/` directory.
 
-It is needed to use the `--project` flag in order to build a specific project.
-
-For example, in order to build the *safe* library, the command is:
-```
-ng build --project=safe
-```
-
-If you're working on the library, you can see the changes in direct time using this command:
-```
-ng build --watch --project=safe
-```
-
-## Build the web components
+<!-- ## Build the web components
 
 We first need to generate the elements, using this command:
 ```
@@ -150,32 +155,34 @@ npm run build:elem
 Then, a bundle can be generated from the files using this command:
 ```
 npm run bundle:elem
-```
+``` -->
 
-## Running unit tests
+<!-- ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/). -->
 
-## Further help
+<!-- ## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md). -->
 
 # Common issues
 
 ## Javascript heap out of memory
 
-Error can appear when executing the front-end due to a memory limit.
+In case you encounter any memory issue, open your terminal and type this command:
 
-You can use one of these commands to serve the front-end if the error occurs:
 ```
-node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng serve
+export NODE_OPTIONS="--max-old-space-size=4096"
 ```
 
-And if previous command raises the same issue:
+In case you still face issues, you can still increase it:
+
 ```
-node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng serve
+export NODE_OPTIONS="--max-old-space-size=8192"
 ```
+
+You can then pass your commands as before.

@@ -5,7 +5,8 @@
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
     "semantic-release": "semantic-release",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "ng": "node --max_old_space_size=4096 ./node_modules/.bin/ng"
   },
   "private": true,
   "dependencies": {
