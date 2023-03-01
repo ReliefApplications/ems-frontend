@@ -72,7 +72,13 @@
         ]
       },
       "configurations": {
-        "production": {
+        "azure-prod": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.azure.prod.ts"
+            }
+          ],
           "budgets": [
             {
               "type": "initial",
@@ -85,6 +91,164 @@
               "maximumError": "10kb"
             }
           ],
+          "baseHref": "/backoffice/",
+          "deployUrl": "/backoffice/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+          }
+        },
+        "azure-uat": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.azure.uat.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/backoffice/",
+          "deployUrl": "/backoffice/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+          }
+        },
+        "azure-dev": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.azure.dev.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/backoffice/",
+          "deployUrl": "/backoffice/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+          }
+        },
+        "oort-prod": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.oort.prod.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/admin/",
+          "deployUrl": "/admin/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+          }
+        },
+        "oort-dev": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.oort.dev.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/admin/",
+          "deployUrl": "/admin/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+          }
+        },
+        "oort-guyane": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.oort.guyane.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/admin/",
+          "deployUrl": "/admin/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+          }
+        },
+        "oort-demo": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.oort.demo.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/admin/",
+          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -119,13 +283,13 @@
           }
         }
       },
-      "defaultConfiguration": "production"
+      "defaultConfiguration": "oort-prod"
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
-        "production": {
-          "browserTarget": "back-office:build:production"
+        "oort-prod": {
+          "browserTarget": "back-office:build:oort-prod"
         },
         "oort-local": {
           "browserTarget": "back-office:build:oort-local"
