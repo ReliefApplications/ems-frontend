@@ -1,6 +1,6 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-nx lint safe
-nx lint back-office
-nx lint front-office
+npx nx lint safe
+npx nx lint back-office
+npx nx lint front-office
