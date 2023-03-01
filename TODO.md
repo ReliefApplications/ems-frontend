@@ -7,8 +7,6 @@ List there all actions to do ( eg: update to perform on some components when rel
 [ ] - check that new tailwind palette is correctly applied
 
 ## TODO
-- husly
-- tailwind
 - check CI
 - add web widgets project
-- 
+- environments

@@ -1,8 +1,12 @@
 {
-  "i18n-ally.localesPaths": [
-    "libs/safe/src/i18n",
-    "old-code/storybook-static/assets/i18n",
-    "old-code/storybook-static/tinymce/langs",
-    "old-code/projects/safe/src/i18n"
-  ]
+  "files.exclude": {
+    "documentation/**": true
+  },
+  "appService.defaultWebAppToDeploy": "None",
+  "i18n-ally.localesPaths": ["libs/safe/src/i18n"],
+  "i18n-ally.sortKeys": true,
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.usage.scanningIgnore": ["widgets/*", "dist/*"],
+  "i18n-ally.tabStyle": "tab",
+  "i18n-ally.indent": 4
 }
