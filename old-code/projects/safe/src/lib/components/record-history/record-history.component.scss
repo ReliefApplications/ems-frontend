@@ -1,0 +1,57 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  width: 328px;
+}
+
+.history-user {
+  background-color: #b2c9eb;
+  border-radius: 10px;
+  padding: 4px;
+  margin-left: auto;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+  overflow: hidden;
+}
+
+::ng-deep .modify-field,
+::ng-deep .add-field,
+::ng-deep .remove-field {
+  border-radius: 10px;
+  padding: 5px;
+  margin-right: 0.5em;
+}
+
+::ng-deep .modify-field {
+  background-color: #e8ddb8;
+}
+
+::ng-deep .add-field {
+  background-color: #b2ebbf;
+}
+
+::ng-deep .remove-field {
+  background-color: #ebb2b2;
+}
+
+.changes-content {
+  margin-top: 0.7rem;
+}
+
+mat-expansion-panel {
+  box-shadow: none !important;
+  border-bottom: solid 1px rgba(0, 0, 0, 0.12);
+  border-radius: 0;
+}
+
+.mat-expansion-panel-header-title {
+  align-items: center;
+  font-size: 14px;
+}
+
+::ng-deep p {
+  line-height: 2;
+}

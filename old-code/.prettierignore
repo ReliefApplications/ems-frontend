@@ -1,0 +1,8 @@
+# Doc
+documentation/*
+
+# Widgets
+widgets/*
+
+# Dist
+dist/*

@@ -24,24 +24,22 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install Dependencies
         run: npm i
-      - name: Build Shared Library
-        run: npm run build -- --configuration=production --project=safe
       - name: Build Back-office ${{ github.event.client_payload.environment }}
-        run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=back-office
+        run: nx run back-office:build:${{ secrets.CONFIG }}
       - name: Build Front-office ${{ github.event.client_payload.environment }}
-        run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=front-office
+        run: nx run front-office:build:${{ secrets.CONFIG }}
       - name: Archive build Back-office
         if: success()
         uses: actions/upload-artifact@v3
         with:
           name: back_office_${{ github.event.client_payload.environment }}
-          path: dist/back-office
+          path: dist/apps/back-office
       - name: Archive build Front-office
         if: success()
         uses: actions/upload-artifact@v3
         with:
           name: front_office_${{ github.event.client_payload.environment }}
-          path: dist/front-office
+          path: dist/apps/front-office
 
   deploy_back_office:
     name: Deploy Back-office 🚀
@@ -55,7 +53,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: back_office_${{ github.event.client_payload.environment }}
-          path: dist/back-office
+          path: dist/apps/back-office
       - name: Setup SSH Keys and known_hosts
         uses: webfactory/ssh-agent@v0.7.0
         with:
@@ -66,7 +64,7 @@ jobs:
           SSH_PASS: ${{ secrets.SSH_PASS }}
           CONNECTION: ${{ secrets.CONNECTION }}
           REMOTE_PATH: ${{ secrets.BO_REMOTE_PATH }}
-          OUT: dist/back-office
+          OUT: dist/apps/back-office
 
   deploy_front_office:
     name: Deploy Front-office 🚀
@@ -80,7 +78,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: front_office_${{ github.event.client_payload.environment }}
-          path: dist/front-office
+          path: dist/apps/front-office
       - name: Setup SSH Keys and known_hosts
         uses: webfactory/ssh-agent@v0.7.0
         with:
@@ -91,4 +89,4 @@ jobs:
           SSH_PASS: ${{ secrets.SSH_PASS }}
           CONNECTION: ${{ secrets.CONNECTION }}
           REMOTE_PATH: ${{ secrets.FO_REMOTE_PATH }}
-          OUT: dist/front-office
+          OUT: dist/apps/front-office

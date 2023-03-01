@@ -1,0 +1,20 @@
+<safe-modal [closable]="true" size="fullscreen">
+  <h1 mat-dialog-title>{{ 'common.settings' | translate }}</h1>
+  <mat-dialog-content class="flex max-h-full grow">
+    <template #settingsContainer></template>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <safe-button mat-dialog-close>
+      {{ 'common.close' | translate }}
+    </safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      cdkFocusInitial
+      [disabled]="!tileForm || !tileForm.valid"
+    >
+      {{ 'common.save' | translate }}
+    </safe-button>
+  </mat-dialog-actions>
+</safe-modal>

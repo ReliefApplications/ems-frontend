@@ -3,9 +3,8 @@
 module.exports = {
   important: true,
   content: [
-    './projects/**/src/**/*.{html,ts}',
-    './dist/safe/**/*.{html,ts,js,mjs}',
-    './node_modules/safe/**/*.mjs',
+    './apps/**/src/**/*.{html,ts}',
+    './libs/safe/**/*.{html,ts,js,mjs}',
   ],
   theme: {
     extend: {
