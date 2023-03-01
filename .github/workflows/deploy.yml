@@ -1,0 +1,92 @@
+name: Front-end CD
+
+on:
+  repository_dispatch:
+    types: [CD]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.client_payload.environment }}
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.client_payload.ref }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Dependencies
+        run: npm i
+      - name: Build Back-office ${{ github.event.client_payload.environment }}
+        run: nx run back-office:build:${{ secrets.CONFIG }}
+      - name: Build Front-office ${{ github.event.client_payload.environment }}
+        run: nx run front-office:build:${{ secrets.CONFIG }}
+      - name: Archive build Back-office
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: back_office_${{ github.event.client_payload.environment }}
+          path: dist/apps/back-office
+      - name: Archive build Front-office
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: front_office_${{ github.event.client_payload.environment }}
+          path: dist/apps/front-office
+
+  deploy_back_office:
+    name: Deploy Back-office 🚀
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.client_payload.environment }}
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download build
+        uses: actions/download-artifact@v1
+        with:
+          name: back_office_${{ github.event.client_payload.environment }}
+          path: dist/apps/back-office
+      - name: Setup SSH Keys and known_hosts
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Deploy
+        run: ./CI/deploy.sh
+        env:
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+          CONNECTION: ${{ secrets.CONNECTION }}
+          REMOTE_PATH: ${{ secrets.BO_REMOTE_PATH }}
+          OUT: dist/apps/back-office
+
+  deploy_front_office:
+    name: Deploy Front-office 🚀
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.client_payload.environment }}
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download build
+        uses: actions/download-artifact@v1
+        with:
+          name: front_office_${{ github.event.client_payload.environment }}
+          path: dist/apps/front-office
+      - name: Setup SSH Keys and known_hosts
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Deploy
+        run: ./CI/deploy.sh
+        env:
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+          CONNECTION: ${{ secrets.CONNECTION }}
+          REMOTE_PATH: ${{ secrets.FO_REMOTE_PATH }}
+          OUT: dist/apps/front-office
