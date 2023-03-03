@@ -1,0 +1,30 @@
+<safe-modal size="small">
+  <h1 mat-dialog-title>{{ title | translate }}</h1>
+  <div mat-dialog-content>
+    <form [formGroup]="roleForm" class="flex flex-col">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'common.title' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="title"
+          type="text"
+          [placeholder]="'common.placeholder.title' | translate"
+        />
+      </mat-form-field>
+    </form>
+  </div>
+  <div mat-dialog-actions align="end">
+    <safe-button (click)="onClose()">
+      {{ 'common.close' | translate }}
+    </safe-button>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      [mat-dialog-close]="roleForm.value"
+      cdkFocusInitial
+      [disabled]="!roleForm.valid"
+    >
+      {{ 'common.create' | translate }}
+    </safe-button>
+  </div>
+</safe-modal>

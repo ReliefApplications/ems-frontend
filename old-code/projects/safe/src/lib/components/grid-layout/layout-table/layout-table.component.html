@@ -1,0 +1,72 @@
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg" *ngIf="layouts.length > 0">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
+    <mat-table
+      [dataSource]="layouts"
+      cdkDropList
+      (cdkDropListDropped)="drop($event)"
+      [cdkDropListData]="layouts"
+    >
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>
+          {{ 'common.name' | translate }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="font-bold">
+          {{ element.name }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <mat-header-cell *matHeaderCellDef>
+          {{ 'common.createdOn' | translate }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.createdAt | safeDate }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="_actions" [stickyEnd]="true">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <safe-button
+            [isIcon]="true"
+            icon="more_vert"
+            [matMenuTriggerFor]="resMenu"
+            (click)="$event.stopPropagation()"
+          >
+          </safe-button>
+          <mat-menu #resMenu="matMenu">
+            <button mat-menu-item (click)="onEditLayout(element)">
+              <mat-icon>edit</mat-icon>
+              {{ 'common.edit' | translate }}
+            </button>
+            <button mat-menu-item (click)="onDeleteLayout(element)">
+              <mat-icon>delete</mat-icon>
+              {{ 'common.delete' | translate }}
+            </button>
+          </mat-menu>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: columns"
+        cdkDrag
+        [cdkDragData]="row"
+      ></mat-row>
+    </mat-table>
+  </div>
+</div>
+<div class="flex justify-center mt-4">
+  <safe-button
+    class="max-w-xs grow"
+    category="tertiary"
+    variant="primary"
+    (click)="onAdd()"
+    [disabled]="!resource && !form"
+    >{{
+      'components.widget.settings.grid.layouts.add.title' | translate
+    }}</safe-button
+  >
+</div>

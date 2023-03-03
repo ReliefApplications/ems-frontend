@@ -1,0 +1,121 @@
+<form [formGroup]="form">
+  <!-- FIELD SELECTION -->
+  <ng-container *ngTemplateOutlet="fieldSelect"></ng-container>
+  <!-- OPERATOR -->
+  <mat-form-field appearance="outline" *ngIf="operators.length > 0">
+    <mat-label>{{
+      'components.queryBuilder.filter.operator' | translate
+    }}</mat-label>
+    <mat-select formControlName="operator">
+      <mat-option *ngFor="let operator of operators" [value]="operator.value">{{
+        operator.label | translate
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <ng-container *ngIf="field && editor">
+    <ng-container
+      [ngTemplateOutlet]="editor"
+      [ngTemplateOutletContext]="{ valueControl: valueControl }"
+    ></ng-container>
+  </ng-container>
+  <!-- DELETE ROW -->
+  <safe-button
+    [isIcon]="true"
+    icon="delete"
+    variant="danger"
+    (click)="delete.emit()"
+  >
+  </safe-button>
+
+  <!-- DEFAULT FIELD TEMPLATE -->
+  <ng-template #fieldSelect>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.field.one' | translate }}</mat-label>
+      <mat-select formControlName="field">
+        <ng-container *ngFor="let field of fields">
+          <mat-option *ngIf="!field.fields" [value]="field.name">
+            {{ field.text || field.name }}
+          </mat-option>
+          <mat-optgroup *ngIf="field.fields" [label]="field.text || field.name">
+            <mat-option
+              *ngFor="let subField of field.fields"
+              [value]="field.name + '.' + subField.name"
+            >
+              {{
+                field.name === '$attribute'
+                  ? subField.text || subField.name
+                  : field.name + ' - ' + (subField.text || subField.name)
+              }}
+            </mat-option>
+          </mat-optgroup>
+        </ng-container>
+      </mat-select>
+    </mat-form-field>
+  </ng-template>
+
+  <!-- TEXT EDITOR -->
+  <ng-template #textEditor>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.value.one' | translate }}</mat-label>
+      <input matInput formControlName="value" type="string" />
+    </mat-form-field>
+  </ng-template>
+
+  <!-- BOOLEAN EDITOR -->
+  <ng-template #booleanEditor>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.value.one' | translate }}</mat-label>
+      <mat-select formControlName="value">
+        <mat-option [value]="true">{{ 'common.true' | translate }}</mat-option>
+        <mat-option [value]="false">{{
+          'common.false' | translate
+        }}</mat-option>
+        <mat-option [value]="null">{{
+          'common.input.none' | translate
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-template>
+
+  <!-- NUMERIC EDITOR -->
+  <ng-template #numericEditor>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.value.one' | translate }}</mat-label>
+      <input matInput formControlName="value" type="number" />
+    </mat-form-field>
+  </ng-template>
+
+  <!-- SELECT EDITOR -->
+  <ng-template #selectEditor>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.value.one' | translate }}</mat-label>
+      <mat-select *ngIf="!field.multiSelect" formControlName="value">
+        <mat-option>{{ 'common.input.none' | translate }}</mat-option>
+        <mat-option *ngFor="let option of field.options" [value]="option.value">
+          {{ option.text }}
+        </mat-option>
+      </mat-select>
+      <mat-select
+        *ngIf="field.multiSelect"
+        formControlName="value"
+        multiple="true"
+      >
+        <mat-option>{{ 'common.input.none' | translate }}</mat-option>
+        <mat-option *ngFor="let option of field.options" [value]="option.value">
+          {{ option.text }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-template>
+
+  <!-- DATE EDITOR -->
+  <ng-template #dateEditor>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.value.one' | translate }}</mat-label>
+      <input matInput [matDatepicker]="datePicker" formControlName="value" />
+      <mat-datepicker-toggle matSuffix [for]="datePicker">
+      </mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
+  </ng-template>
+</form>

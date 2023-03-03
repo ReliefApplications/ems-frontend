@@ -1,0 +1,23 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-error {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: max-content;
+  height: max-content;
+  display: flex;
+
+  p {
+    font-size: 16px;
+    margin: 0;
+    margin-left: 4px;
+    margin-top: 2px;
+  }
+}

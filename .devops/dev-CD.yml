@@ -16,16 +16,15 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    npm install -g @angular/cli
+    npm install -g @nrwl/cli
     npm install
-    ng build --configuration=production safe
-    ng build --configuration=azure-dev front-office
-    ng build --configuration=azure-dev back-office
+    nx run front-office:build:azure-dev
+    nx run back-office:build:azure-dev
   displayName: 'npm install and build the apps'
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/front-office'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/apps/front-office'
     includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/dev/front-office/$(Build.BuildId).zip'
@@ -33,7 +32,7 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/back-office'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/apps/back-office'
     includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/dev/back-office/$(Build.BuildId).zip'

@@ -39,12 +39,10 @@ jobs:
             ${{ runner.OS }}-
       - name: Install Dependencies
         run: npm i
-      - name: Build Shared Library
-        run: npm run build -- --configuration=production --project=safe
       - name: Build Back-office
-        run: npm run build -- --configuration=azure-uat --project=back-office
+        run: npx nx run front-office:build:azure-uat
       - name: Build Front-office
-        run: npm run build -- --configuration=azure-uat --project=front-office
+        run: npx nx run back-office:build:azure-uat
 
   # prettier:
   #   name: Prettier

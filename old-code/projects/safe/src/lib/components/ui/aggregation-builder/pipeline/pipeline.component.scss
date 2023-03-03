@@ -1,0 +1,9 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  ::ng-deep .mat-expansion-panel-body {
+    overflow-x: auto;
+  }
+}

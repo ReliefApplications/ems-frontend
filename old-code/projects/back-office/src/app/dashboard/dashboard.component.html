@@ -1,0 +1,5 @@
+<safe-layout [title]="title" [leftSidenav]="leftSidenav"></safe-layout>
+<!--Need the nav variable, don't remove let-nav, used in layout-->
+<ng-template #leftSidenav let-nav>
+  <safe-left-sidenav [nav]="nav" [navGroups]="navGroups"></safe-left-sidenav>
+</ng-template>
