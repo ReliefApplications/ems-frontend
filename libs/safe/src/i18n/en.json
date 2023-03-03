@@ -1090,6 +1090,7 @@
 			"settings": {
 				"chart": {
 					"axes": "Axes",
+					"hideLegend": "Hide legend",
 					"labels": {
 						"percentage": "Percentage",
 						"showCategory": "Show category labels",

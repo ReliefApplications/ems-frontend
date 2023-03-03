@@ -5,38 +5,38 @@
       <!-- === LEGEND === -->
       <mat-expansion-panel formGroupName="legend">
         <mat-expansion-panel-header>
-          <mat-panel-title>{{ 
+          <mat-panel-title>{{
             'components.widget.settings.chart.legend' | translate
-           }}</mat-panel-title>
+          }}</mat-panel-title>
         </mat-expansion-panel-header>
         <div>
-          <h3>{{ 
-            'components.widget.settings.chart.position' | translate 
-          }}</h3>
-            <mat-form-field appearance="outline">   
-              <mat-select formControlName="position">
-                <mat-select-trigger>
-                  {{ chartForm.value.legend.position }}
-                </mat-select-trigger>
-                <mat-option value = "none">{{ 
-                  'components.widget.settings.chart.legendPositionNone' | translate 
-                }}</mat-option>
-                <mat-option 
-                  *ngFor="let position of legendPositions" 
-                  value = "{{ position.value }}"
-                >
-                  <div class="flex">
-                    <span class="flex w-full items-center justify-between"
-                      >{{ position.value }}
-                      <safe-icon
-                        [inline]="true"
-                        icon="{{ position.icon }}"
-                      ></safe-icon>
-                    </span>
-                  </div>
-                </mat-option>
-              </mat-select>
-            </mat-form-field>  
+          <mat-form-field appearance="outline">
+            <mat-label>{{
+              'components.widget.settings.chart.position' | translate
+            }}</mat-label>
+            <mat-select formControlName="position">
+              <mat-select-trigger>
+                {{ chartForm.value.legend.position }}
+              </mat-select-trigger>
+              <mat-option value="none">{{
+                'components.widget.settings.chart.hideLegend' | translate
+              }}</mat-option>
+              <mat-option
+                *ngFor="let position of legendPositions"
+                value="{{ position.value }}"
+              >
+                <div class="flex">
+                  <span class="flex w-full items-center justify-between"
+                    >{{ position.value }}
+                    <safe-icon
+                      [inline]="true"
+                      icon="{{ position.icon }}"
+                    ></safe-icon>
+                  </span>
+                </div>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
       </mat-expansion-panel>
       <!-- === TITLE === -->
