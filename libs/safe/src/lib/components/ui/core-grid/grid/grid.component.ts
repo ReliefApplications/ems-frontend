@@ -139,6 +139,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() hasChanges = false;
   @Output() edit: EventEmitter<any> = new EventEmitter();
   public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  public timeoutId: any;
   private currentEditedRow = 0;
   private currentEditedItem: any;
   public gradientSettings = GRADIENT_SETTINGS;
@@ -566,6 +567,24 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     this.currentEditedItem = dataItem;
     this.currentEditedRow = rowIndex;
     this.grid?.editRow(rowIndex, this.formGroup);
+
+    this.fields.forEach((field) => {
+      this.formGroup.get(field.name)?.valueChanges.subscribe(() =>{
+        if (this.timeoutId) {
+          clearTimeout(this.timeoutId);
+        }
+        this.timeoutId = setTimeout(() => {
+          if (this.formGroup.dirty) {
+            this.action.emit({
+              action: 'edit',
+              item: this.currentEditedItem,
+              value: this.formGroup.value,
+            });
+          }
+          this.closeEditor();
+        }, 1000);
+      })
+    })
   }
 
   /**
