@@ -1,3 +1,44 @@
+# [2.0.0-beta.1](https://github.com/ReliefApplications/oort-frontend/compare/v1.4.0-beta.7...v2.0.0-beta.1) (2023-03-06)
+
+
+### Bug Fixes
+
+* add a save error message when display as grid is selected witout an available field in custom question resources ([b798303](https://github.com/ReliefApplications/oort-frontend/commit/b79830310edaec50f461891cbb734097df9afd97))
+* application's users delete button ([#1138](https://github.com/ReliefApplications/oort-frontend/issues/1138)) ([a2cf857](https://github.com/ReliefApplications/oort-frontend/commit/a2cf8573910f8d16eebc7cf2a65441c4f8646495))
+* avoid error 400 when loading empty summary card or creating a new one ([2efe4aa](https://github.com/ReliefApplications/oort-frontend/commit/2efe4aadba28b836c0cfa2ce215a587135d4519f))
+* calculated fields 'add' component and style + add safe empty ([40c962e](https://github.com/ReliefApplications/oort-frontend/commit/40c962ec0b16164d3737f6b88d09405918352c7c))
+* editing role access could be too slow for good experience ([b7dc5a2](https://github.com/ReliefApplications/oort-frontend/commit/b7dc5a21db8dce647626e0d2e2b508849ef30dd7))
+* exporting selected users ([02186de](https://github.com/ReliefApplications/oort-frontend/commit/02186de9525a7b1e34420971169f1135edd7a0bb))
+* filters without needed value could break + metadata fetched too often when editing role access ([1dd2a16](https://github.com/ReliefApplications/oort-frontend/commit/1dd2a166b015910addd71b5afa41c83b9765dbd5))
+* i18n for pagination elements ([#1153](https://github.com/ReliefApplications/oort-frontend/issues/1153)) ([bcd5297](https://github.com/ReliefApplications/oort-frontend/commit/bcd5297089f24927e4001c5d746d426367f1f3e6))
+* label field edition in layouts would not appear ([cff0c77](https://github.com/ReliefApplications/oort-frontend/commit/cff0c7793bc2e621b33b7c6c10f5cd58664b63a7))
+* missing translation for save survey modal ([82c121f](https://github.com/ReliefApplications/oort-frontend/commit/82c121f359725cbabde2fe4c2d259f6a1ebc1a23))
+* reordering of actions buttons would not work ([4a2ce93](https://github.com/ReliefApplications/oort-frontend/commit/4a2ce9317985f3bdbc467f812b9be6118f9d0f9b))
+* step could not be duplicated ([9383527](https://github.com/ReliefApplications/oort-frontend/commit/9383527075be50fa18003c87bab352059164fefd))
+* summary card settings layout selection + fix: summary card item ([9d92451](https://github.com/ReliefApplications/oort-frontend/commit/9d9245158e4eb6a02101ec9a64d376523edae077))
+* summary card style + allow card creation with the other type template ([91587b0](https://github.com/ReliefApplications/oort-frontend/commit/91587b07c1db048b14aa9959b08c2d76941074db))
+* tagboxes and checkboxes fields of merged records could contain duplicates ([3f3beca](https://github.com/ReliefApplications/oort-frontend/commit/3f3beca89aebcdbb523bc9fa61f12ec84b094301))
+* unlock application ([b9dd79b](https://github.com/ReliefApplications/oort-frontend/commit/b9dd79bdd9fbbea608aa8207e65d311385bbf34b))
+
+
+### Features
+
+* smart date filter in grids ([#1135](https://github.com/ReliefApplications/oort-frontend/issues/1135)) ([8c2406a](https://github.com/ReliefApplications/oort-frontend/commit/8c2406a1e23d368df439b1ded837406c1937b08a))
+
+
+### Performance Improvements
+
+* setup nx ([e207715](https://github.com/ReliefApplications/oort-frontend/commit/e207715b1b46f7e54fd76ac0960b99a9e13ea89b))
+
+
+### BREAKING CHANGES
+
+* now a nx repo
+
+Setup all projects as applications
+Create safe shared library, based on existing safe library
+Simplify development
+
 ## [1.3.10](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.9...v1.3.10) (2023-02-21)
 
 
