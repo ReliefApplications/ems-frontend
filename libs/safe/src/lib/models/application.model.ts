@@ -1,11 +1,13 @@
 import { Page } from './page.model';
 import { Channel } from './channel.model';
-import { Role, User, UserConnection } from './user.model';
+import { Role, User } from './user.model';
 import { Subscription } from './subscription.model';
 import { PositionAttributeCategory } from './position-attribute-category.model';
 import { status } from './form.model';
 import { Template } from './template.model';
 import { DistributionList } from './distribution-list.model';
+import { Connection } from '../utils/graphql/connection.type';
+import { CustomNotification } from './custom-notification.model';
 
 /** Model for Application object. */
 export interface Application {
@@ -17,7 +19,7 @@ export interface Application {
   pages?: Page[];
   roles?: Role[];
   userRoles?: Role[];
-  users?: UserConnection;
+  users?: Connection<User>;
   status?: status;
   settings?: any;
   permissions?: any;
@@ -32,4 +34,5 @@ export interface Application {
   lockedByUser?: boolean;
   templates?: Template[];
   distributionLists?: DistributionList[];
+  customNotifications?: Connection<CustomNotification>;
 }

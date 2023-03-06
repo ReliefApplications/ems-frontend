@@ -34,7 +34,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   private applicationSubscription?: Subscription;
 
   // === DISPLAYED COLUMNS ===
-  public displayedColumns = ['name', 'status', 'lastExecution'];
+  public displayedColumns = ['name', 'status', 'lastExecution', 'actions'];
 
   public loading = true;
   public updating = false;
@@ -111,23 +111,23 @@ export class NotificationsComponent implements OnInit, OnDestroy {
    * @param notification The notification to edit
    */
   editNotification(notification: any): void {
-    this.dialog.open(EditNotificationModalComponent, {
-      data: notification,
+    const dialogRef = this.dialog.open(EditNotificationModalComponent, {
+      data: { notification },
       disableClose: true,
+      autoFocus: false,
     });
-    // dialogRef.afterClosed().subscribe((value) => {
-    //   if (value) {
-    //   }
-    //   // this.applicationService.editTemplate({
-    //   //   id: template.id,
-    //   //   name: value.name,
-    //   //   type: TemplateTypeEnum.EMAIL,
-    //   //   content: {
-    //   //     subject: value.subject,
-    //   //     body: value.body,
-    //   //   },
-    //   // });
-    // });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.updating = true;
+        this.applicationService.updateCustomNotification(
+          notification.id,
+          value,
+          () => {
+            this.notificationsQuery.refetch();
+          }
+        );
+      }
+    });
   }
 
   /**
@@ -139,7 +139,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   deleteNotification(notification: any): void {
     const dialogRef = this.confirmService.openConfirmModal({
       title: this.translate.instant('common.deleteObject', {
-        name: this.translate.instant('common.step.one'),
+        name: this.translate.instant('common.customNotification.one'),
       }),
       // content: this.translate.instant(
       //   'pages.workflow.deleteStep.confirmationMessage',
@@ -150,28 +150,29 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        // this.applicationService.deleteTemplate(template.id);
+        this.applicationService.deleteCustomNotification(
+          notification.id,
+          () => {
+            this.notificationsQuery.refetch();
+          }
+        );
       }
     });
   }
 
   /** Opens modal for adding a new notification */
   addNotification(): void {
-    this.dialog.open(EditNotificationModalComponent, {
+    const dialogRef = this.dialog.open(EditNotificationModalComponent, {
       disableClose: true,
+      autoFocus: false,
     });
-    // dialogRef.afterClosed().subscribe((value) => {
-    //   if (value) {
-    //   }
-    //   // this.applicationService.addTemplate({
-    //   //   name: value.name,
-    //   //   type: TemplateTypeEnum.EMAIL,
-    //   //   content: {
-    //   //     subject: value.subject,
-    //   //     body: value.body,
-    //   //   },
-    //   // });
-    // });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        this.applicationService.addCustomNotification(value, () => {
+          this.notificationsQuery.refetch();
+        });
+      }
+    });
   }
 
   ngOnDestroy(): void {

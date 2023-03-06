@@ -43,10 +43,10 @@ export class SafeDataSourceTabComponent implements OnInit {
   /**
    * SafeDataSourceTabComponent constructor
    *
-   * @param apollo Used for getting the resources and layouts query
-   * @param dialog Used for opening the modal for layout selection/creation
-   * @param gridLayoutService Used for editing/adding layouts
-   * @param aggregationService Used for editing/adding aggregations
+   * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param gridLayoutService Shared dataset layout service
+   * @param aggregationService Shared aggregation service
    */
   constructor(
     private apollo: Apollo,

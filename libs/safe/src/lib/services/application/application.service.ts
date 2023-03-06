@@ -58,6 +58,10 @@ import {
   DELETE_DISTRIBUTION_LIST,
   EditPageMutationResponse,
   EDIT_PAGE,
+  AddCustomNotificationMutationResponse,
+  ADD_CUSTOM_NOTIFICATION,
+  DeleteCustomNotificationMutationResponse,
+  DELETE_CUSTOM_NOTIFICATION,
 } from './graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
@@ -75,6 +79,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { Template } from '../../models/template.model';
 import { DistributionList } from '../../models/distribution-list.model';
 import { SafeDownloadService } from '../download/download.service';
+import { CustomNotification } from '../../models/custom-notification.model';
+import {
+  UpdateCustomNotificationMutationResponse,
+  UPDATE_CUSTOM_NOTIFICATION,
+} from '../application-notifications/graphql/mutations';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -1719,6 +1728,84 @@ export class SafeApplicationService {
             };
             this.application.next(newApplication);
           }
+        });
+    }
+  }
+
+  /**
+   * Add custom notification
+   *
+   * @param notification notification input
+   * @param callback callback method
+   */
+  addCustomNotification(
+    notification: CustomNotification,
+    callback?: any
+  ): void {
+    const application = this.application.getValue();
+    if (application) {
+      this.apollo
+        .mutate<AddCustomNotificationMutationResponse>({
+          mutation: ADD_CUSTOM_NOTIFICATION,
+          variables: {
+            application: application.id,
+            notification,
+          },
+        })
+        .subscribe((res) => {
+          if (callback) callback(res);
+        });
+    }
+  }
+
+  /**
+   * Delete custom notification
+   *
+   * @param id id of custom notification
+   * @param callback callback method
+   */
+  deleteCustomNotification(id: string, callback?: any): void {
+    const application = this.application.getValue();
+    if (application) {
+      this.apollo
+        .mutate<DeleteCustomNotificationMutationResponse>({
+          mutation: DELETE_CUSTOM_NOTIFICATION,
+          variables: {
+            id,
+            application: application.id,
+          },
+        })
+        .subscribe((res) => {
+          if (callback) callback(res);
+        });
+    }
+  }
+
+  /**
+   * Update custom notification
+   *
+   * @param id id of custom notification
+   * @param notification custom notification
+   * @param callback callback method
+   */
+  updateCustomNotification(
+    id: string,
+    notification: CustomNotification,
+    callback?: any
+  ): void {
+    const application = this.application.getValue();
+    if (application) {
+      this.apollo
+        .mutate<UpdateCustomNotificationMutationResponse>({
+          mutation: UPDATE_CUSTOM_NOTIFICATION,
+          variables: {
+            id,
+            application: application.id,
+            notification,
+          },
+        })
+        .subscribe((res) => {
+          if (callback) callback(res);
         });
     }
   }

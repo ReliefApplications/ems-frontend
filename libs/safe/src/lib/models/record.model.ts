@@ -25,17 +25,3 @@ export interface Record {
   canDelete?: boolean;
   validationErrors?: { question: string; errors: string[] }[];
 }
-
-/** Model for RecordConnection object */
-export interface RecordConnection {
-  totalCount?: number;
-  edges?: {
-    node?: Record;
-    cursor?: string;
-  }[];
-  pageInfo?: {
-    startCursor?: string;
-    endCursor?: string;
-    hasNextPage?: boolean;
-  };
-}

@@ -1,8 +1,9 @@
-import { AggregationConnection } from './aggregation.model';
+import { Connection } from '../utils/graphql/connection.type';
+import { Aggregation } from './aggregation.model';
 import { Form } from './form.model';
-import { LayoutConnection } from './layout.model';
+import { Layout } from './layout.model';
 import { Metadata } from './metadata.model';
-import { RecordConnection } from './record.model';
+import { Record } from './record.model';
 
 /** Model for Resource object. */
 export interface Resource {
@@ -12,14 +13,14 @@ export interface Resource {
   forms?: Form[];
   relatedForms?: Form[];
   createdAt?: Date;
-  records?: RecordConnection;
+  records?: Connection<Record>;
   fields?: any;
   canSee?: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
   coreForm?: Form;
-  layouts?: LayoutConnection;
-  aggregations?: AggregationConnection;
+  layouts?: Connection<Layout>;
+  aggregations?: Connection<Aggregation>;
   rolePermissions?: {
     canCreateRecords: any;
     canSeeRecords: any;
