@@ -25,7 +25,6 @@ export class DomService {
    */
   constructor(
     // Needed as alternatives are either to provide viewContainerRef in app modules, or use it per component.
-    // eslint-disable-next-line deprecation/deprecation
     private componentFactoryResolver: ComponentFactoryResolver,
     private applicationRef: ApplicationRef,
     private injector: Injector
