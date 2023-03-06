@@ -23,7 +23,6 @@ import {
   EDIT_RESOURCE_FIELD_PERMISSION,
   EDIT_RESOURCE_ACCESS,
   EditResourceFieldPermissionMutationResponse,
-  EDIT_FULL_RESOURCE_ACCESS,
 } from '../graphql/mutations';
 import { Permission } from './permissions.types';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -294,9 +293,7 @@ export class RoleResourcesComponent
 
     this.apollo
       .mutate<EditResourceAccessMutationResponse>({
-        mutation: isEqual(resource.id, this.openedResource?.id)
-          ? EDIT_RESOURCE_ACCESS
-          : EDIT_FULL_RESOURCE_ACCESS,
+        mutation: EDIT_RESOURCE_ACCESS,
         variables: {
           id: resource.id,
           permissions: {
@@ -313,12 +310,11 @@ export class RoleResourcesComponent
               (x) => x.resource.id === resource.id
             );
             const tableElements = [...this.resources.data];
-            tableElements[index].resource = isEqual(
-              resource.id,
-              this.openedResource?.id
-            )
-              ? { ...this.openedResource, ...data?.editResource }
-              : data?.editResource;
+            tableElements[index] = this.setTableElement(
+              isEqual(resource.id, this.openedResource?.id)
+                ? { ...this.openedResource, ...data?.editResource }
+                : data?.editResource
+            );
             this.resources.data = tableElements;
             if (isEqual(resource.id, this.openedResource?.id)) {
               this.openedResource = tableElements[index].resource;
@@ -343,11 +339,10 @@ export class RoleResourcesComponent
    * @param update update to perform
    */
   editResourceAccessFilter(resource: Resource, update: any): void {
+    this.updating = true;
     this.apollo
       .mutate<EditResourceAccessMutationResponse>({
-        mutation: isEqual(resource.id, this.openedResource?.id)
-          ? EDIT_RESOURCE_ACCESS
-          : EDIT_FULL_RESOURCE_ACCESS,
+        mutation: EDIT_RESOURCE_ACCESS,
         variables: {
           id: resource.id,
           permissions: update,
@@ -368,7 +363,9 @@ export class RoleResourcesComponent
                 : data?.editResource
             );
             this.resources.data = tableElements;
-            this.openedResource = tableElements[index].resource;
+            if (isEqual(resource.id, this.openedResource?.id)) {
+              this.openedResource = tableElements[index].resource;
+            }
           }
           if (errors) {
             this.snackBar.openSnackBar(errors[0].message, { error: true });
@@ -433,9 +430,15 @@ export class RoleResourcesComponent
               (x) => x.resource.id === resource.id
             );
             const tableElements = [...this.resources.data];
-            tableElements[index] = this.setTableElement(data?.editResource);
+            tableElements[index] = this.setTableElement(
+              isEqual(resource.id, this.openedResource?.id)
+                ? { ...this.openedResource, ...data?.editResource }
+                : data?.editResource
+            );
             this.resources.data = tableElements;
-            this.openedResource = tableElements[index].resource;
+            if (isEqual(resource.id, this.openedResource?.id)) {
+              this.openedResource = tableElements[index].resource;
+            }
           }
           if (errors) {
             this.snackBar.openSnackBar(errors[0].message, { error: true });

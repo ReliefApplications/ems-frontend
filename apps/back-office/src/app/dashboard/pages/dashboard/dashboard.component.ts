@@ -6,11 +6,6 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import {
-  UntypedFormControl,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -62,8 +57,8 @@ export class DashboardComponent
   private generatedTiles = 0;
 
   // === DASHBOARD NAME EDITION ===
+  public canEditName = false;
   public formActive = false;
-  public dashboardNameForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -117,13 +112,11 @@ export class DashboardComponent
           next: ({ data, loading }) => {
             if (data.dashboard) {
               this.dashboard = data.dashboard;
+              this.canEditName =
+                (this.dashboard?.page
+                  ? this.dashboard?.page?.canUpdate
+                  : this.dashboard?.step?.canUpdate) || false;
               this.dashboardService.openDashboard(this.dashboard);
-              this.dashboardNameForm = new UntypedFormGroup({
-                dashboardName: new UntypedFormControl(
-                  this.dashboard.name,
-                  Validators.required
-                ),
-              });
               this.tiles = data.dashboard.structure
                 ? [...data.dashboard.structure]
                 : [];
@@ -407,30 +400,33 @@ export class DashboardComponent
       this.formActive = !this.formActive;
     }
   }
-
-  /** Update the name of the dashboard and the step or page linked to it. */
-  saveName(): void {
-    const { dashboardName } = this.dashboardNameForm.value;
-    this.toggleFormActive();
-    const callback = () => {
-      this.dashboard = { ...this.dashboard, name: dashboardName };
-    };
-    if (this.router.url.includes('/workflow/')) {
-      this.workflowService.updateStepName(
-        {
-          id: this.dashboard?.step?.id,
-          name: dashboardName,
-        },
-        callback
-      );
-    } else {
-      this.applicationService.updatePageName(
-        {
-          id: this.dashboard?.page?.id,
-          name: dashboardName,
-        },
-        callback
-      );
+  /**
+   * Update the name of the dashboard and the step or page linked to it.
+   *
+   * @param {string} dashboardName new dashboard name
+   */
+  saveName(dashboardName: string): void {
+    if (dashboardName && dashboardName !== this.dashboard?.name) {
+      const callback = () => {
+        this.dashboard = { ...this.dashboard, name: dashboardName };
+      };
+      if (this.router.url.includes('/workflow/')) {
+        this.workflowService.updateStepName(
+          {
+            id: this.dashboard?.step?.id,
+            name: dashboardName,
+          },
+          callback
+        );
+      } else {
+        this.applicationService.updatePageName(
+          {
+            id: this.dashboard?.page?.id,
+            name: dashboardName,
+          },
+          callback
+        );
+      }
     }
   }
 
@@ -451,9 +447,10 @@ export class DashboardComponent
    * @param event duplication event
    */
   public onDuplicate(event: any): void {
-    if (this.dashboard?.page?.id) {
-      this.applicationService.duplicatePage(this.dashboard?.page?.id, event.id);
-    }
+    this.applicationService.duplicatePage(event.id, {
+      pageId: this.dashboard?.page?.id,
+      stepId: this.dashboard?.step?.id,
+    });
   }
 
   /**

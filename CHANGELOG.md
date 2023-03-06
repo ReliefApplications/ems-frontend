@@ -1,3 +1,25 @@
+## [1.3.10](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.9...v1.3.10) (2023-02-21)
+
+
+### Bug Fixes
+
+* application's users delete button ([#1138](https://github.com/ReliefApplications/oort-frontend/issues/1138)) ([a2cf857](https://github.com/ReliefApplications/oort-frontend/commit/a2cf8573910f8d16eebc7cf2a65441c4f8646495))
+
+## [1.3.9](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.8...v1.3.9) (2023-02-03)
+
+
+### Bug Fixes
+
+* step could not be duplicated ([9383527](https://github.com/ReliefApplications/oort-frontend/commit/9383527075be50fa18003c87bab352059164fefd))
+
+## [1.3.8](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.7...v1.3.8) (2023-01-26)
+
+
+### Bug Fixes
+
+* editing role access could be too slow for good experience ([b7dc5a2](https://github.com/ReliefApplications/oort-frontend/commit/b7dc5a21db8dce647626e0d2e2b508849ef30dd7))
+* label field edition in layouts would not appear ([cff0c77](https://github.com/ReliefApplications/oort-frontend/commit/cff0c7793bc2e621b33b7c6c10f5cd58664b63a7))
+
 # [1.4.0-beta.7](https://github.com/ReliefApplications/oort-frontend/compare/v1.4.0-beta.6...v1.4.0-beta.7) (2023-01-17)
 
 
@@ -7,6 +29,30 @@
 * front-office routing break due to incorrect safe import ([ce15ea6](https://github.com/ReliefApplications/oort-frontend/commit/ce15ea6436e45ea50711e68537884f53f0862841))
 * storybook build not working ([6471ddd](https://github.com/ReliefApplications/oort-frontend/commit/6471ddd362140aa468650d4729b5cfb2a36ee63d))
 * widget choice could prevent items below to be clicked ([f70b1a6](https://github.com/ReliefApplications/oort-frontend/commit/f70b1a675ae480047f99bb0cd867414cb05c3367))
+
+## [1.3.7](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.6...v1.3.7) (2023-01-17)
+
+
+### Bug Fixes
+
+* filters without needed value could break + metadata fetched too often when editing role access ([1dd2a16](https://github.com/ReliefApplications/oort-frontend/commit/1dd2a166b015910addd71b5afa41c83b9765dbd5))
+
+## [1.3.6](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.5...v1.3.6) (2023-01-17)
+
+
+### Bug Fixes
+
+* storybook build not working ([6471ddd](https://github.com/ReliefApplications/oort-frontend/commit/6471ddd362140aa468650d4729b5cfb2a36ee63d))
+* widget choice could prevent items below to be clicked ([f70b1a6](https://github.com/ReliefApplications/oort-frontend/commit/f70b1a675ae480047f99bb0cd867414cb05c3367))
+
+## [1.3.5](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.4...v1.3.5) (2023-01-16)
+
+
+### Bug Fixes
+
+* cached choices by url would never expire ([fc8e618](https://github.com/ReliefApplications/oort-frontend/commit/fc8e618b524a9b6e6394116c8cc49ef0011dcc79)), closes [1.3.x/AB#53527](https://github.com/1.3.x/AB/issues/53527)
+* front-office routing break due to incorrect safe import ([ce15ea6](https://github.com/ReliefApplications/oort-frontend/commit/ce15ea6436e45ea50711e68537884f53f0862841))
+
 
 # [1.4.0-beta.6](https://github.com/ReliefApplications/oort-frontend/compare/v1.4.0-beta.5...v1.4.0-beta.6) (2023-01-10)
 

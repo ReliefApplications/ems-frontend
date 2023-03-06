@@ -646,12 +646,13 @@ export class SafeFormModalComponent implements OnInit {
               inputField.type === 'tagbox' ||
               targetField.type === 'checkbox'
             ) {
-              data[inputField.name] = records.reduce(
-                (o: string[], record: Record) => {
-                  o = o.concat(record.data[inputField.name]);
-                  return o;
-                },
-                []
+              data[inputField.name] = Array.from(
+                new Set(
+                  records.reduce((o: string[], record: Record) => {
+                    o = o.concat(record.data[inputField.name]);
+                    return o;
+                  }, [])
+                )
               );
             } else {
               data[inputField.name] = records.map(

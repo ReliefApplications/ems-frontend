@@ -1,6 +1,7 @@
 {
 	"common": {
 		"access": "******",
+		"accessDenied": "******",
 		"add": "******",
 		"aggregation": {
 			"few": "******",

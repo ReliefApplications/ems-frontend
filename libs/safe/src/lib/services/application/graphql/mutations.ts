@@ -35,8 +35,8 @@ export interface AddPageMutationResponse {
 
 /** Duplicate page mutation, used by Application service. */
 export const DUPLICATE_PAGE = gql`
-  mutation duplicatePage($id: ID!, $application: ID!) {
-    duplicatePage(id: $id, application: $application) {
+  mutation duplicatePage($page: ID, $step: ID, $application: ID!) {
+    duplicatePage(page: $page, step: $step, application: $application) {
       id
       name
       type

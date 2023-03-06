@@ -1,10 +1,5 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormControl,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -53,8 +48,8 @@ export class WorkflowComponent
   public steps: Step[] = [];
 
   // === WORKFLOW EDITION ===
+  public canEditName = false;
   public formActive = false;
-  public workflowNameForm: UntypedFormGroup = new UntypedFormGroup({});
   public canUpdate = false;
 
   // === ACTIVE STEP ===
@@ -106,12 +101,6 @@ export class WorkflowComponent
       .subscribe((workflow: Workflow | null) => {
         if (workflow) {
           this.steps = workflow.steps || [];
-          this.workflowNameForm = new UntypedFormGroup({
-            workflowName: new UntypedFormControl(
-              workflow.name,
-              Validators.required
-            ),
-          });
           this.loading = false;
           if (!this.workflow || workflow.id !== this.workflow.id) {
             const firstStep = get(workflow, 'steps', [])[0];
@@ -141,6 +130,7 @@ export class WorkflowComponent
             }
           }
           this.workflow = workflow;
+          this.canEditName = this.workflow?.page?.canUpdate || false;
           this.applicationId = this.workflow.page?.application?.id;
           this.canUpdate = this.workflow.canUpdate || false;
         } else {
@@ -161,20 +151,22 @@ export class WorkflowComponent
 
   /**
    * Updates the name of the workflow and his linked page.
+   *
+   * @param workflowName new workflow name
    */
-  saveName(): void {
-    const { workflowName } = this.workflowNameForm.value;
-    this.toggleFormActive();
-    const callback = () => {
-      this.workflow = { ...this.workflow, name: workflowName };
-    };
-    this.applicationService.updatePageName(
-      {
-        id: this.workflow?.page?.id,
-        name: workflowName,
-      },
-      callback
-    );
+  saveName(workflowName: string): void {
+    if (workflowName && workflowName !== this.workflow?.name) {
+      const callback = () => {
+        this.workflow = { ...this.workflow, name: workflowName };
+      };
+      this.applicationService.updatePageName(
+        {
+          id: this.workflow?.page?.id,
+          name: workflowName,
+        },
+        callback
+      );
+    }
   }
 
   /**
@@ -227,7 +219,9 @@ export class WorkflowComponent
    */
   public onDuplicate(event: any): void {
     if (this.workflow?.page?.id) {
-      this.applicationService.duplicatePage(this.workflow?.page?.id, event.id);
+      this.applicationService.duplicatePage(event.id, {
+        pageId: this.workflow?.page?.id,
+      });
     }
   }
 

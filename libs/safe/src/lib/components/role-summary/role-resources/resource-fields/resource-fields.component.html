@@ -22,7 +22,7 @@
               [isIcon]="true"
               [icon]="element.canSee ? 'visibility' : 'visibility_off'"
               [variant]="element.canSee ? 'primary' : 'grey'"
-              [disabled]="updating"
+              [disabled]="disabled"
               [matTooltip]="
                 (element.canSee
                   ? 'components.role.tooltip.allowFieldAccessibility'
@@ -37,7 +37,7 @@
               [isIcon]="true"
               [icon]="element.canUpdate ? 'edit' : 'edit_off'"
               [variant]="element.canUpdate ? 'primary' : 'grey'"
-              [disabled]="updating"
+              [disabled]="disabled"
               [matTooltip]="
                 (element.canUpdate
                   ? 'components.role.tooltip.allowFieldUpdate'

@@ -9,41 +9,16 @@
 >
   <ng-container *ngIf="workflow">
     <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
-      <div class="flex items-center overflow-hidden">
-        <ng-container *ngIf="!formActive">
-          <h1
-            class="!m-0 overflow-hidden text-ellipsis hover:bg-neutral-200 rounded-lg"
-            (click)="toggleFormActive()"
-          >
-            {{ workflow.name }}
-          </h1>
-        </ng-container>
-        <ng-container *ngIf="formActive">
-          <form [formGroup]="workflowNameForm" (ngSubmit)="saveName()">
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'common.name' | translate }}</mat-label>
-              <input matInput formControlName="workflowName" type="string" />
-              <safe-button
-                matSuffix
-                type="submit"
-                [isIcon]="true"
-                icon="done"
-                variant="primary"
-                [disabled]="!workflowNameForm.valid"
-              >
-              </safe-button>
-              <safe-button
-                matSuffix
-                [isIcon]="true"
-                icon="close"
-                variant="danger"
-                (click)="toggleFormActive()"
-              >
-              </safe-button>
-            </mat-form-field>
-          </form>
-        </ng-container>
-      </div>
+      <safe-editable-text
+        [text]="workflow.name"
+        [canEdit]="canEditName"
+        (onChange)="saveName($event)"
+        (formActiveEvent)="formActive = $event">
+        <h1 class="!m-0 overflow-hidden text-ellipsis">
+          {{ workflow.name }}
+        </h1>
+      </safe-editable-text>
+
       <div class="flex items-center gap-1" *ngIf="!formActive">
         <safe-access
           [access]="workflow.permissions"

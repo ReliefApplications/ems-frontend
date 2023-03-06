@@ -9,11 +9,9 @@ import {
   SafeWorkflowStepperModule,
   SafeIconModule,
   SafeSkeletonModule,
+  SafeEditableTextModule,
 } from '@oort-front/safe';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeSearchMenuModule } from '@oort-front/safe';
@@ -30,10 +28,6 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     CommonModule,
     WorkflowRoutingModule,
     SafeAccessModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatProgressSpinnerModule,
     SafeButtonModule,
     SafeWorkflowStepperModule,
@@ -46,6 +40,7 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     SafeAlertModule,
     SafeIconModule,
     SafeSkeletonModule,
+    SafeEditableTextModule,
   ],
   exports: [WorkflowComponent],
 })

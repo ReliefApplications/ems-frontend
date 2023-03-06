@@ -1,11 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  UntypedFormControl,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
 import { Subscription } from 'rxjs';
 import {
   Form,
@@ -56,8 +51,8 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
   public querySubscription?: Subscription;
 
   // === TAB NAME EDITION ===
+  public canEditName = false;
   public formActive = false;
-  public tabNameForm: UntypedFormGroup = new UntypedFormGroup({});
   public page?: Page;
   public step?: Step;
   public isStep = false;
@@ -116,12 +111,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           )
           .subscribe(({ data, loading }) => {
             this.form = data.form;
-            this.tabNameForm = new UntypedFormGroup({
-              tabName: new UntypedFormControl(
-                this.step?.name,
-                Validators.required
-              ),
-            });
+            this.canEditName = this.step?.canUpdate || false;
             this.applicationId =
               this.step?.workflow?.page?.application?.id || '';
             this.loading = loading;
@@ -147,12 +137,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           )
           .subscribe(({ data, loading }) => {
             this.form = data.form;
-            this.tabNameForm = new UntypedFormGroup({
-              tabName: new UntypedFormControl(
-                this.page?.name,
-                Validators.required
-              ),
-            });
+            this.canEditName = this.step?.canUpdate || false;
             this.applicationId = this.page?.application?.id || '';
             this.loading = loading;
           });
@@ -169,34 +154,39 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
     }
   }
 
-  /** Update the name of the tab. */
-  saveName(): void {
-    const { tabName } = this.tabNameForm.value;
-    this.toggleFormActive();
-    if (this.isStep) {
-      // If form is workflow step
-      const callback = () => {
-        this.step = { ...this.step, name: tabName };
-      };
-      this.workflowService.updateStepName(
-        {
-          id: this.id,
-          name: tabName,
-        },
-        callback
-      );
-    } else {
-      // If form is page
-      const callback = () => {
-        this.page = { ...this.page, name: tabName };
-      };
-      this.applicationService.updatePageName(
-        {
-          id: this.id,
-          name: tabName,
-        },
-        callback
-      );
+  /**
+   * Update the name of the tab.
+   *
+   * @param {string} tabName new tab name
+   */
+  saveName(tabName: string): void {
+    const currentName = this.page ? this.page.name : this.step?.name;
+    if (tabName && tabName !== currentName) {
+      if (this.isStep) {
+        // If form is workflow step
+        const callback = () => {
+          this.step = { ...this.step, name: tabName };
+        };
+        this.workflowService.updateStepName(
+          {
+            id: this.id,
+            name: tabName,
+          },
+          callback
+        );
+      } else {
+        // If form is page
+        const callback = () => {
+          this.page = { ...this.page, name: tabName };
+        };
+        this.applicationService.updatePageName(
+          {
+            id: this.id,
+            name: tabName,
+          },
+          callback
+        );
+      }
     }
   }
 

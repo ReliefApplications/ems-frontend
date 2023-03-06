@@ -7,10 +7,12 @@ import {
   UrlTree,
 } from '@angular/router';
 import { subject } from '@casl/ability';
+import { TranslateService } from '@ngx-translate/core';
 import { get } from 'lodash';
 import { Observable } from 'rxjs';
 import { SafeApplicationService } from '../services/application/application.service';
 import { AppAbility } from '../services/auth/auth.service';
+import { SafeSnackBarService } from '../services/snackbar/snackbar.service';
 
 /**
  * Check if the logged user has an access to the route.
@@ -32,6 +34,8 @@ export class SafePermissionGuard implements CanActivate {
     @Inject('environment') private environment: any,
     private router: Router,
     private ability: AppAbility,
+    private translate: TranslateService,
+    private snackBar: SafeSnackBarService,
     private appService: SafeApplicationService
   ) {}
 
@@ -92,7 +96,10 @@ export class SafePermissionGuard implements CanActivate {
     }
 
     // If not in app, and no global permission, deny access
-    // and redirect to the root route
+    // show error message and redirect to the root route
+    this.snackBar.openSnackBar(this.translate.instant('common.accessDenied'), {
+      error: true,
+    });
     return this.router.parseUrl('/');
   }
 }

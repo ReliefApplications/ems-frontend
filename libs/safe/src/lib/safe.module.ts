@@ -40,6 +40,7 @@ import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.modu
 import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
 import { SafeUnsubscribeModule } from './components/utils/unsubscribe/unsubscribe.module';
 import { SafeViewsModule } from './views/views.module';
+import { SafeEditableTextModule } from './components/editable-text/editable-text.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -72,6 +73,7 @@ import { SafeViewsModule } from './views/views.module';
     SafeSkeletonTableModule,
     SafeSkeletonModule,
     SafeUserSummaryModule,
+    SafeEditableTextModule,
     // === Pipes ===
     SafeDateModule,
     SafeReadableCronModule,

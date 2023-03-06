@@ -76,6 +76,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
   };
   public permissionTypes = Object.values(Permission);
 
+  @Input() disabled = false;
   @Input() role!: string; // Opened role
 
   // === RESOURCE ===

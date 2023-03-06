@@ -1,40 +1,17 @@
 <ng-container *ngIf="form">
   <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
     <div class="flex items-center overflow-hidden">
-      <ng-container *ngIf="!formActive">
-        <h1
-          class="!m-0 overflow-hidden text-ellipsis hover:bg-neutral-200 rounded-lg"
-          (click)="toggleFormActive()"
-        >
+      <safe-editable-text
+        [text]="form.name"
+        [canEdit]="canEditName"
+        (onChange)="saveName($event)"
+        (formActiveEvent)="formActive = $event"
+      >
+        <h1 class="!m-0 overflow-hidden text-ellipsis">
           {{ form.name }} {{ activeVersion ? activeVersion.id : '' }}
         </h1>
-      </ng-container>
+      </safe-editable-text>
 
-      <ng-container *ngIf="formActive">
-        <form [formGroup]="nameForm" (ngSubmit)="saveName()">
-          <mat-form-field appearance="outline">
-            <mat-label>{{ 'common.name' | translate }}</mat-label>
-            <input matInput formControlName="formName" type="string" />
-            <safe-button
-              matSuffix
-              type="submit"
-              [isIcon]="true"
-              icon="done"
-              variant="primary"
-              [disabled]="!nameForm.valid"
-            >
-            </safe-button>
-            <safe-button
-              matSuffix
-              [isIcon]="true"
-              icon="close"
-              variant="danger"
-              (click)="toggleFormActive()"
-            >
-            </safe-button>
-          </mat-form-field>
-        </form>
-      </ng-container>
       <safe-access
         [access]="form.permissions"
         [objectTypeName]="'common.form.one' | translate"
