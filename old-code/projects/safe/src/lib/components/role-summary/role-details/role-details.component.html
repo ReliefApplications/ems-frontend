@@ -1,0 +1,151 @@
+<form [formGroup]="form">
+  <div class="flex flex-col">
+    <mat-form-field appearance="outline">
+      <mat-label>
+        {{ 'models.role.title' | translate }}
+      </mat-label>
+      <input matInput formControlName="title" type="text" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>
+        {{ 'models.role.description' | translate }}
+      </mat-label>
+      <textarea
+        matInput
+        formControlName="description"
+        [cdkTextareaAutosize]="true"
+        [cdkAutosizeMinRows]="5"
+      ></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{
+        'components.role.update.permissions' | translate
+      }}</mat-label>
+      <mat-select formControlName="permissions" multiple>
+        <mat-option
+          *ngFor="let permission of permissions"
+          [value]="permission.id"
+        >
+          {{ permission.type }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <safe-button
+    variant="primary"
+    category="secondary"
+    type="submit"
+    [disabled]="!form.valid"
+    (click)="onUpdate()"
+    >{{ 'common.saveChanges' | translate }}</safe-button
+  >
+</form>
+
+<div class="role-description">
+  <h2>{{ 'components.role.summary.details.access.title' | translate }}</h2>
+  <div class="role-description-content">
+    <div class="role-description-block">
+      <b>{{
+        'components.role.summary.details.access.resources' | translate
+      }}</b>
+      <div class="role-description-item">
+        {{
+          'components.role.summary.details.access.fullAccess'
+            | translate
+              : {
+                  accessible: roleStats.resources.full,
+                  total: roleStats.resources.total
+                }
+        }}
+      </div>
+      <div class="role-description-item">
+        {{
+          'components.role.summary.details.access.limitedAccess'
+            | translate
+              : {
+                  accessible: roleStats.resources.limited,
+                  total: roleStats.resources.total
+                }
+        }}
+      </div>
+      <div class="role-description-item">
+        {{
+          'components.role.summary.details.access.noAccess'
+            | translate
+              : {
+                  accessible:
+                    roleStats.resources.total -
+                    roleStats.resources.full -
+                    roleStats.resources.limited,
+                  total: roleStats.resources.total
+                }
+        }}
+      </div>
+    </div>
+    <div class="role-description-block" *ngIf="role.application">
+      <b>{{ 'components.role.summary.details.access.pages' | translate }}</b>
+      <div class="role-description-item">
+        {{
+          'components.role.summary.details.access.fullAccess'
+            | translate
+              : {
+                  accessible: roleStats.pages.full,
+                  total: roleStats.pages.total
+                }
+        }}
+      </div>
+      <div class="role-description-item">
+        {{
+          'components.role.summary.details.access.noAccess'
+            | translate
+              : {
+                  accessible: roleStats.pages.total - roleStats.pages.full,
+                  total: roleStats.pages.total
+                }
+        }}
+      </div>
+    </div>
+    <div class="role-description-block">
+      <b>{{ 'components.role.summary.details.access.channels' | translate }}</b>
+      <div class="role-description-item">
+        {{
+          'components.role.summary.details.access.fullAccess'
+            | translate
+              : {
+                  accessible: roleStats.channels.full,
+                  total: roleStats.channels.total
+                }
+        }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Summary of users with role assigned -->
+<div>
+  <h2>{{ 'common.user.few' | translate }}</h2>
+  <mat-tab-group>
+    <!-- Manual assignment -->
+    <mat-tab>
+      <ng-template mat-tab-label>{{
+        'components.role.summary.users.manual' | translate
+      }}</ng-template>
+      <ng-template matTabContent>
+        <safe-role-users [role]="role" *ngIf="role"></safe-role-users>
+      </ng-template>
+    </mat-tab>
+    <!-- Automated assignment -->
+    <mat-tab>
+      <ng-template mat-tab-label>{{
+        'components.role.summary.users.auto' | translate
+      }}</ng-template>
+      <ng-template matTabContent>
+        <safe-role-users
+          [autoAssigned]="true"
+          [role]="role"
+          *ngIf="role"
+        ></safe-role-users>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>

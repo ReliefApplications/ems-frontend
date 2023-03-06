@@ -1,0 +1,92 @@
+<ng-container *ngIf="tileForm">
+  <form [formGroup]="tileForm">
+    <div class="form-group">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'common.title' | translate }}</mat-label>
+        <input matInput formControlName="title" type="string" />
+      </mat-form-field>
+    </div>
+    <div class="settings">
+      <mat-radio-group
+        formControlName="isDynamic"
+      >
+        <mat-radio-button [value]="false">{{
+          'components.widget.settings.summaryCard.static' | translate
+        }}</mat-radio-button>
+        <mat-radio-button [value]="true">{{
+          'components.widget.settings.summaryCard.dynamic' | translate
+        }}</mat-radio-button>
+      </mat-radio-group>
+      <safe-button
+        (click)="addCard()"
+        icon="add"
+        [disabled]="tileForm.get('isDynamic')?.value && this.cards.length === 1"
+        >{{
+          'components.widget.settings.summaryCard.add' | translate
+        }}</safe-button
+      >
+    </div>
+    <kendo-tilelayout
+      [columns]="colsNumber"
+      [rowHeight]="200"
+      [resizable]="true"
+      [reorderable]="!tileForm.value.isDynamic"
+      (reorder)="onReorder($event)"
+      (resize)="onResize($event)"
+    >
+      <kendo-tilelayout-item
+        *ngFor="let card of cards.controls; let i = index"
+        [colSpan]="
+          card.value.width > colsNumber ? colsNumber : card.value.width
+        "
+        [rowSpan]="card.value.height"
+      >
+        <!-- CARD ITEM -->
+        <safe-summary-card-item
+          [id]="'card-' + i"
+          [card]="card.value"
+          [headerTemplate]="cardItemHeader"
+        ></safe-summary-card-item>
+        <ng-template #cardItemHeader>
+          <kendo-tilelayout-item-header class="widget-header">
+            <span class="widget-title" [title]="card.value.title">{{
+              card.value.title
+            }}</span>
+            <div class="floating-button">
+              <safe-button
+                variant="primary"
+                icon="open_in_new"
+                *ngIf="card.value.showDataSourceLink"
+              >
+                {{ 'components.widget.summaryCard.dataSource' | translate }}
+              </safe-button>
+            </div>
+          </kendo-tilelayout-item-header>
+        </ng-template>
+        <safe-button
+          icon="more_vert"
+          [isIcon]="true"
+          class="widget-options"
+          [matMenuTriggerFor]="menu"
+        ></safe-button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="openCard(i)">
+            <mat-icon>insert_chart</mat-icon>
+            <span>{{ 'common.settings' | translate }}</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="removeCard(i)">
+            <mat-icon>delete</mat-icon>
+            <span>{{ 'common.delete' | translate }}</span>
+          </button>
+        </mat-menu>
+        <safe-icon
+          *ngIf="!tileForm.value.isDynamic"
+          icon="drag_indicator"
+          class="widget-handle"
+        >
+        </safe-icon>
+      </kendo-tilelayout-item>
+    </kendo-tilelayout>
+  </form>
+</ng-container>

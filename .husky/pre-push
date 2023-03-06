@@ -1,4 +1,6 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run lint
+npx nx lint safe
+npx nx lint back-office
+npx nx lint front-office

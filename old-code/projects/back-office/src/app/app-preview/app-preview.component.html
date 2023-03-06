@@ -1,0 +1,12 @@
+<safe-layout
+  [title]="title"
+  [leftSidenav]="leftSidenav"
+  [toolbar]="toolbar"
+></safe-layout>
+<ng-template #toolbar>
+  <app-preview-toolbar></app-preview-toolbar>
+</ng-template>
+<!--Need the nav variable, don't remove let-nav, used in layout-->
+<ng-template #leftSidenav let-nav>
+  <safe-left-sidenav [nav]="nav" [navGroups]="navGroups"></safe-left-sidenav>
+</ng-template>

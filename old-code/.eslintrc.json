@@ -1,0 +1,80 @@
+{
+  "root": true,
+  "ignorePatterns": [
+    "projects/**/*"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "plugins": [
+        "prettier",
+        "jsdoc"
+        // "deprecation"
+      ],
+      "parserOptions": {
+        "project": [
+          "tsconfig.json",
+          "e2e/tsconfig.json"
+        ],
+        "createDefaultProgram": true
+      },
+      "extends": [
+        "plugin:@angular-eslint/ng-cli-compat",
+        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
+        "plugin:@angular-eslint/template/process-inline-templates",
+        "plugin:storybook/recommended",
+        "prettier",
+        "plugin:jsdoc/recommended"
+      ],
+      "rules": {
+        "prettier/prettier": 2,
+        "@typescript-eslint/naming-convention": [
+          1,
+          {
+            "selector": [
+              "enumMember"
+            ],
+            "format": ["camelCase", "UPPER_CASE"]
+          }
+        ],
+        "jsdoc/require-jsdoc": [
+          1,
+          {
+            "exemptEmptyConstructors": false,
+            "contexts": [
+              "ExportDefaultDeclaration > ArrowFunctionExpression",
+              "TSInterfaceDeclaration",
+              "TSEnumDeclaration",
+              "Program > VariableDeclaration[kind='const']",
+              "ExportNamedDeclaration[declaration.kind='const']",
+              "MethodDefinition[key.name!=/^ngOn(Init|Destroy|Changes)|ngDoCheck|ngAfter(ContentInit|ContentChecked|ViewInit|ViewChecked)$/]"
+            ],
+            "require": {
+              "ClassDeclaration": true,
+              "FunctionDeclaration": true,
+              "ClassExpression": true,
+              "FunctionExpression": true
+            }
+          }
+        ],
+        "jsdoc/require-param-type": 0,
+        "jsdoc/require-property-type": 0,
+        "jsdoc/require-description": 1,
+        "jsdoc/require-returns-type": 0,
+        "@typescript-eslint/no-unused-vars": 2
+        // "deprecation/deprecation": "warn"
+      }
+    },
+    {
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended"
+      ],
+      "rules": {}
+    }
+  ]
+}

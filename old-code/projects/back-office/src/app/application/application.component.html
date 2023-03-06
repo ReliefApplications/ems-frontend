@@ -1,0 +1,23 @@
+<safe-layout
+  [toolbar]="toolbar"
+  [leftSidenav]="leftSidenav"
+  [route]="route"
+></safe-layout>
+<ng-template #toolbar>
+  <safe-app-application-toolbar
+    [title]="title"
+    [settings]="adminNavItems"
+    [canUpdate]="application?.canUpdate!"
+    [showActions]="true"
+  ></safe-app-application-toolbar>
+</ng-template>
+<!--Need the nav variable, don't remove let-nav, used in layout-->
+<ng-template #leftSidenav let-nav>
+  <safe-left-sidenav
+    [nav]="nav"
+    [navGroups]="navGroups"
+    [appLayout]="true"
+    [canAddPage]="application?.canUpdate!"
+    (reorder)="onReorder($event)"
+  ></safe-left-sidenav>
+</ng-template>
