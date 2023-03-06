@@ -16,6 +16,7 @@ export class SafeEditableTextComponent implements OnInit {
   @Input() text: string | undefined = '';
   @Input() canEdit = false;
 
+  // eslint-disable-next-line @angular-eslint/no-output-on-prefix
   @Output() onChange = new EventEmitter<string>();
   @Output() formActiveEvent = new EventEmitter<boolean>();
   public formControl!: FormControl;
