@@ -17,15 +17,15 @@
         </mat-form-field>
       </div>
 
+      <!-- DEFINITION OF FILTERS -->
       <div class="field-form">
         <span class="field-name">{{
           'components.queryBuilder.style.edit.criteria' | translate
         }}</span>
-        <safe-tab-filter
-          [form]="$any(form?.controls?.filter)"
-          [fields]="scalarFields"
-        >
-        </safe-tab-filter>
+        <safe-filter
+          [form]="$any(form.controls.filter)"
+          [fields]="filterFields"
+        ></safe-filter>
       </div>
 
       <ng-container formGroupName="background">
@@ -47,7 +47,7 @@
           <span class="field-name">{{
             'components.queryBuilder.style.edit.text.style' | translate
           }}</span>
-          <div class="text-style">
+          <div class="flex gap-1">
             <safe-button
               icon="format_bold"
               (click)="onToggle('text.bold')"
@@ -95,6 +95,7 @@
           'components.queryBuilder.style.edit.fields' | translate
         }}</span>
         <safe-checkbox-tree
+          class="grow"
           [checklist]="checklist"
           (valueChange)="onChange($event)"
           [value]="this.form.get('fields')?.value || []"

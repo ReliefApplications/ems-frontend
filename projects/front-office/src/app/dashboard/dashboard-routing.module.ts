@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { SafePermissionGuard } from '@safe/builder';
 import { AccessGuard } from '../guards/access.guard';
 import { DashboardComponent } from './dashboard.component';
 
@@ -12,6 +13,22 @@ export const routes = [
     path: '',
     component: DashboardComponent,
     children: [
+      {
+        path: 'share',
+        children: [
+          // Redirect to main page
+          {
+            path: '',
+            redirectTo: '/',
+            pathMatch: 'full',
+          },
+          {
+            path: ':id',
+            loadChildren: () =>
+              import('./pages/share/share.module').then((m) => m.ShareModule),
+          },
+        ],
+      },
       {
         path: ':id',
         children: [
@@ -37,36 +54,113 @@ export const routes = [
           {
             path: 'profile',
             loadChildren: () =>
-              import('./pages/profile/profile.module').then(
-                (m) => m.ProfileModule
-              ),
+              import('@safe/builder').then((m) => m.SafeProfileViewModule),
           },
           {
             path: 'settings',
             children: [
               {
-                path: 'roles',
-                loadChildren: () =>
-                  import('./pages/roles/roles.module').then(
-                    (m) => m.RolesModule
-                  ),
-                // canActivate: [WhoPermissionGuard]
-              },
-              {
-                path: 'users',
-                loadChildren: () =>
-                  import('./pages/users/users.module').then(
-                    (m) => m.UsersModule
-                  ),
-                // canActivate: [WhoPermissionGuard]
-              },
-              {
                 path: 'templates',
                 loadChildren: () =>
                   import('@safe/builder').then(
-                    (m) => m.SafeApplicationTemplatesModule
+                    (m) => m.SafeApplicationTemplatesViewModule
                   ),
-                // canActivate: [WhoPermissionGuard]
+                canActivate: [SafePermissionGuard],
+                data: {
+                  permission: {
+                    action: 'manage',
+                    subject: 'Template',
+                  },
+                },
+              },
+              {
+                path: 'distribution-lists',
+                loadChildren: () =>
+                  import('@safe/builder').then(
+                    (m) => m.SafeApplicationDistributionListsViewModule
+                  ),
+                canActivate: [SafePermissionGuard],
+                data: {
+                  permission: {
+                    action: 'manage',
+                    subject: 'DistributionList',
+                  },
+                },
+              },
+              {
+                path: 'roles',
+                children: [
+                  {
+                    path: '',
+                    loadChildren: () =>
+                      import('./pages/roles/roles.module').then(
+                        (m) => m.RolesModule
+                      ),
+                    // canActivate: [SafePermissionGuard]
+                  },
+                  {
+                    path: ':id',
+                    loadChildren: () =>
+                      import('./pages/role-summary/role-summary.module').then(
+                        (m) => m.RoleSummaryModule
+                      ),
+                    data: {
+                      breadcrumb: {
+                        alias: '@role',
+                      },
+                    },
+                    // canActivate: [SafePermissionGuard]
+                  },
+                ],
+                canActivate: [SafePermissionGuard],
+                data: {
+                  breadcrumb: {
+                    key: 'common.role.few',
+                  },
+                  permission: {
+                    action: 'read',
+                    subject: 'Role',
+                  },
+                },
+              },
+              {
+                path: 'users',
+                children: [
+                  {
+                    path: '',
+                    loadChildren: () =>
+                      import('@safe/builder').then(
+                        (m) => m.SafeApplicationUsersViewModule
+                      ),
+                    // canActivate: [SafePermissionGuard]
+                  },
+                  {
+                    path: ':id',
+                    loadChildren: () =>
+                      import('./pages/user-summary/user-summary.module').then(
+                        (m) => m.UserSummaryModule
+                      ),
+                    data: {
+                      breadcrumb: {
+                        alias: '@user',
+                      },
+                    },
+                    // canActivate: [SafePermissionGuard]
+                  },
+                ],
+                canActivate: [SafePermissionGuard],
+                data: {
+                  breadcrumb: {
+                    key: 'common.user.few',
+                  },
+                  permission: {
+                    action: 'read',
+                    subject: 'User',
+                  },
+                },
+              },
+              {
+                path: '**',
               },
             ],
           },

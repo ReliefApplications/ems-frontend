@@ -3,7 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { AccessGuard } from './guards/access.guard';
 import { AuthGuard } from './guards/auth.guard';
 
-/** Routes of back-office. */
+/**
+ * List of top level routes of the Back-Office.
+ */
 const routes: Routes = [
   {
     path: 'auth',

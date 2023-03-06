@@ -1,7 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { merge, Observable } from 'rxjs';
+import { merge } from 'rxjs';
 import { startWith, delay } from 'rxjs/operators';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Mapping of series parameters ( category / field ).
@@ -11,46 +13,48 @@ import { startWith, delay } from 'rxjs/operators';
   templateUrl: './series-mapping.component.html',
   styleUrls: ['./series-mapping.component.scss'],
 })
-export class SafeSeriesMappingComponent implements OnInit {
+export class SafeSeriesMappingComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
-  @Input() fields$!: Observable<any[]>;
-  public availableFields: any[] = [];
+  @Input() availableFields: any[] = [];
   public fieldsByControl: any = {};
   // === REACTIVE FORM ===
-  @Input() mappingForm!: AbstractControl;
+  @Input() formGroup!: AbstractControl;
   public controlNames: string[] = [];
 
   /**
    * Mapping of series parameters ( category / field ).
    */
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   /**
    * Gets the control names from the inputs.
    * Sets the available fields.
    */
   ngOnInit(): void {
-    this.controlNames = Object.keys((this.mappingForm as FormGroup).controls);
-    this.fields$.subscribe((fields: any[]) => {
-      this.availableFields = [...fields];
-    });
+    this.controlNames = Object.keys((this.formGroup as FormGroup).controls);
+    // this.fields$.subscribe((fields: any[]) => {
+    //   this.availableFields = [...fields];
+    // });
     // Remove fields from other controls list when selected
     merge(
       ...this.controlNames.map(
-        (controlName) => this.mappingForm.get(controlName)?.valueChanges || 0
-      ),
-      this.fields$
+        (controlName) => this.formGroup.get(controlName)?.valueChanges || 0
+      )
+      // this.fields$
     )
       .pipe(startWith(null), delay(100))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         for (const controlName of this.controlNames) {
           const excludedFields: string[] = [];
           for (const control of this.controlNames) {
-            if (
-              control !== controlName &&
-              this.mappingForm.get(control)?.valid
-            ) {
-              excludedFields.push(this.mappingForm.get(control)?.value);
+            if (control !== controlName && this.formGroup.get(control)?.valid) {
+              excludedFields.push(this.formGroup.get(control)?.value);
             }
           }
           // Filter fields AND subfields

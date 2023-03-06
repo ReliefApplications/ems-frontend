@@ -17,10 +17,12 @@ import {
   GetResourceRecordsQueryResponse,
   GET_RECORD_BY_ID,
   GET_RESOURCE_RECORDS,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Record } from '../../models/record.model';
 import { TranslateService } from '@ngx-translate/core';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /** A constant that is used to set the number of items to be displayed on the page. */
 const ITEMS_PER_PAGE = 25;
@@ -52,7 +54,10 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     },
   ],
 })
-export class SafeRecordDropdownComponent implements OnInit {
+export class SafeRecordDropdownComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() record = '';
   @Input() resourceId = '';
   @Input() field = '';
@@ -81,7 +86,9 @@ export class SafeRecordDropdownComponent implements OnInit {
    * @param apollo This is the Apollo service use to generate GraphQL queries
    * @param translate This is the service that we will use to translate the text in the platform
    */
-  constructor(private apollo: Apollo, private translate: TranslateService) {}
+  constructor(private apollo: Apollo, private translate: TranslateService) {
+    super();
+  }
 
   ngOnInit(): void {
     if (this.record) {
@@ -92,9 +99,10 @@ export class SafeRecordDropdownComponent implements OnInit {
             id: this.record,
           },
         })
-        .subscribe((res) => {
-          if (res.data.record) {
-            this.selectedRecord = res.data.record;
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          if (data.record) {
+            this.selectedRecord = data.record;
           }
         });
     }
@@ -111,11 +119,13 @@ export class SafeRecordDropdownComponent implements OnInit {
         });
 
       this.records$ = this.records.asObservable();
-      this.recordsQuery.valueChanges.subscribe((res) => {
-        this.records.next(res.data.resource.records.edges.map((x) => x.node));
-        this.pageInfo = res.data.resource.records.pageInfo;
-        this.loading = res.loading;
-      });
+      this.recordsQuery.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data, loading }) => {
+          this.records.next(data.resource.records.edges.map((x) => x.node));
+          this.pageInfo = data.resource.records.pageInfo;
+          this.loading = loading;
+        });
     }
   }
 

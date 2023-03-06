@@ -6,6 +6,7 @@
     "streetsidesoftware.code-spell-checker-french",
     "waderyan.gitblame",
     "lokalise.i18n-ally",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss"
   ]
 }

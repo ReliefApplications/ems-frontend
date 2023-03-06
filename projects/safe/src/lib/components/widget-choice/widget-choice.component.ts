@@ -11,12 +11,14 @@ import { IWidgetType } from '../../models/dashboard.model';
 })
 export class SafeWidgetChoiceComponent implements OnInit {
   public hovered = '';
+  public collapsed = false;
 
   @Input() floating = false;
 
   @Input() widgetTypes?: IWidgetType[];
 
   @Output() add: EventEmitter<string> = new EventEmitter();
+  @Output() close = new EventEmitter();
 
   /** Constructor for the component */
   constructor() {}

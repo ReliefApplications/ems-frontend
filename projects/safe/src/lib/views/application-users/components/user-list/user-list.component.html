@@ -1,0 +1,154 @@
+<!-- Actions when selected items -->
+<div
+  *ngIf="selection.selected.length > 0"
+  class="flex gap-2 items-center mb-2 justify-end"
+>
+  <safe-button
+    icon="delete"
+    category="secondary"
+    variant="danger"
+    (click)="onDelete(selection.selected)"
+  >
+    {{
+      'common.deleteObject' | translate: { name: 'common.user.few' | translate }
+    }}
+  </safe-button>
+</div>
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
+    <table *ngIf="!loading" mat-table [dataSource]="users" matSort>
+      <!-- Checkbox Column -->
+      <ng-container *ngIf="!autoAssigned" matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox
+            class="mr-2"
+            (change)="$event ? masterToggle() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()"
+            [aria-label]="checkboxLabel()"
+          >
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox
+            class="mr-2"
+            (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(row) : null"
+            [checked]="selection.isSelected(row)"
+            [aria-label]="checkboxLabel(row)"
+          >
+          </mat-checkbox>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle" mat-sort-header>
+            {{ 'models.user.username' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.username }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle" mat-sort-header>
+            {{ 'common.name' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element" class="font-bold">
+          {{ element.name }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="roles">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle" mat-sort-header>
+            {{ 'common.role.few' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span *ngFor="let role of element.roles"> {{ role.title }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="attributes">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle" mat-sort-header>
+            {{ 'common.positionAttribute.few' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span *ngFor="let attribute of element.positionAttributes">
+            {{ attribute.value }},
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="oid">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle" mat-sort-header>
+            {{ 'common.id' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.oid }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions" [stickyEnd]="true">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+        <td mat-cell *matCellDef="let element">
+          <safe-button
+            [isIcon]="true"
+            icon="more_vert"
+            [matMenuTriggerFor]="menu"
+            (click)="$event.stopPropagation()"
+          >
+          </safe-button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="onDelete([element])">
+              <mat-icon>delete</mat-icon>
+              {{ 'common.delete' | translate }}
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        (click)="onClick(row)"
+        class="cursor-pointer"
+      ></tr>
+    </table>
+    <safe-skeleton-table
+      *ngIf="loading"
+      [columns]="[
+        'common.name',
+        'models.user.username',
+        'common.id',
+        'common.role.one'
+      ]"
+      [actions]="true"
+      [checkbox]="true"
+    >
+    </safe-skeleton-table>
+    <safe-empty
+      class="py-3 px-0 bg-white"
+      *ngIf="empty"
+      [title]="'components.application.users.empty' | translate"
+    >
+    </safe-empty>
+    <mat-paginator
+      *ngIf="!empty"
+      [disabled]="loading || updating"
+      [pageIndex]="pageInfo.pageIndex"
+      [pageSize]="pageInfo.pageSize"
+      [pageSizeOptions]="[10, 25, 50]"
+      [length]="pageInfo.length"
+      (page)="onPage($event)"
+    >
+    </mat-paginator>
+  </div>
+</div>

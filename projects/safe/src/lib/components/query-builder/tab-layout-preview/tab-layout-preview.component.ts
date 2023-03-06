@@ -1,4 +1,6 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 import { GridSettings } from '../../ui/core-grid/models/grid-settings.model';
 
 /** Layout preview interface */
@@ -26,14 +28,18 @@ const DEFAULT_GRID_SETTINGS = {
   templateUrl: './tab-layout-preview.component.html',
   styleUrls: ['./tab-layout-preview.component.scss'],
 })
-export class SafeTabLayoutPreviewComponent implements OnInit, OnDestroy {
+export class SafeTabLayoutPreviewComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() data: LayoutPreviewData | null = null;
   public gridSettings: GridSettings = DEFAULT_GRID_SETTINGS;
-  private subscription: any;
   /**
    * The constructor for the preview of the grid widget
    */
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   /** Update grid actions, listening to form changes */
   ngOnInit(): void {
@@ -42,9 +48,10 @@ export class SafeTabLayoutPreviewComponent implements OnInit, OnDestroy {
         ...this.data?.form?.getRawValue(),
         ...DEFAULT_GRID_SETTINGS,
       };
-      this.subscription = this.data.form
+      this.data.form
         .get('query')
-        ?.valueChanges.subscribe(() => {
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
           this.gridSettings = {
             ...this.data?.form?.getRawValue(),
             ...DEFAULT_GRID_SETTINGS,
@@ -65,11 +72,13 @@ export class SafeTabLayoutPreviewComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Remove subscriptions.
+   * Updates pageSize parameter.
+   *
+   * @param value new value
    */
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+  onPageSizeChange(value: any): void {
+    if (this.data) {
+      this.data.form?.get('query')?.patchValue({ pageSize: value });
     }
   }
 }

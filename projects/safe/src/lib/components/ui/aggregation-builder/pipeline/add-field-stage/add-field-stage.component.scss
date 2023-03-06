@@ -1,8 +1,5 @@
-.add-field {
+:host {
   display: flex;
-  flex-direction: row;
-}
-
-.remove-button {
-  margin: 10px 10px 0 0;
+  flex-direction: column;
+  gap: 8px;
 }

@@ -9,7 +9,8 @@
     "../src/test.ts",
     "../src/**/*.spec.ts",
     "../projects/**/*.spec.ts",
-    "../projects/**/*e2e-spec.ts"
+    "../projects/**/*e2e-spec.ts",
+    "../projects/web-widgets/**/*"
   ],
   "include": [
     "../src/**/*",

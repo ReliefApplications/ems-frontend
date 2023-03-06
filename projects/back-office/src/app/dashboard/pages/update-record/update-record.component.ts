@@ -7,8 +7,8 @@ import {
   GetRecordByIdQueryResponse,
   GET_FORM_STRUCTURE,
   GET_RECORD_BY_ID,
-} from '../../../graphql/queries';
-import { Record, Form } from '@safe/builder';
+} from './graphql/queries';
+import { Record, Form, SafeBreadcrumbService } from '@safe/builder';
 
 /**
  * Component which will be used at record update.
@@ -24,7 +24,6 @@ export class UpdateRecordComponent implements OnInit {
   public id = '';
   public record?: Record;
   public form?: Form;
-  public backPath = '';
 
   /**
    * UpdateRecordComponent constructor.
@@ -32,16 +31,17 @@ export class UpdateRecordComponent implements OnInit {
    * @param apollo Used to get the form and the record data
    * @param route Used to get url params.
    * @param router Used to change the app route.
+   * @param breadcrumbService Shared breadcrumb service
    */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
-    this.backPath = this.router.url.replace(`/update/${this.id}`, '');
     const template = history.state.template;
     if (template) {
       this.apollo
@@ -51,9 +51,13 @@ export class UpdateRecordComponent implements OnInit {
             id: template,
           },
         })
-        .valueChanges.subscribe((res) => {
-          this.form = res.data.form;
-          this.loading = res.loading;
+        .valueChanges.subscribe(({ data, loading }) => {
+          this.form = data.form;
+          this.breadcrumbService.setBreadcrumb(
+            '@resource',
+            this.form.name as string
+          );
+          this.loading = loading;
         });
     }
     if (this.id !== null) {
@@ -64,11 +68,23 @@ export class UpdateRecordComponent implements OnInit {
             id: this.id,
           },
         })
-        .valueChanges.subscribe((res) => {
-          this.record = res.data.record;
+        .valueChanges.subscribe(({ data, loading }) => {
+          this.record = data.record;
+          this.breadcrumbService.setBreadcrumb(
+            '@record',
+            this.record.incrementalId as string
+          );
+          this.breadcrumbService.setBreadcrumb(
+            '@form',
+            this.record.form?.name as string
+          );
+          this.breadcrumbService.setBreadcrumb(
+            '@resource',
+            this.record.form?.name as string
+          );
           if (!template) {
             this.form = this.record.form || {};
-            this.loading = res.loading;
+            this.loading = loading;
           }
         });
     }

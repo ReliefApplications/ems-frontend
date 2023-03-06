@@ -1,20 +1,22 @@
 :host {
+  display: block;
+  width: fit-content;
   &.disabled {
     pointer-events: none;
   }
 }
 
 :host ::ng-deep .mat-button {
+  &:not(.mat-icon-button) {
+    width: 100%;
+  }
+
   .mat-button-wrapper {
     display: block;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: pre;
   }
-}
-
-.safe-btn-block {
-  width: 100%;
 }
 
 .safe-btn-small {
@@ -51,6 +53,19 @@ safe-icon {
     }
     &.mat-stroked-button {
       border-color: #63d168;
+    }
+  }
+}
+
+.safe-btn-grey {
+  &:not(:disabled) {
+    color: #a9a9a9;
+    &.mat-flat-button {
+      background-color: #a9a9a9;
+      color: white;
+    }
+    &.mat-stroked-button {
+      border-color: #a9a9a9;
     }
   }
 }

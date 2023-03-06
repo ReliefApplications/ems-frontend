@@ -38,7 +38,7 @@ export class SafeGridToolbarComponent implements OnInit {
    * @returns Returns true if the option is available
    */
   get canUpdate(): boolean {
-    return !this.items.some((x) => x.canUpdate);
+    return !this.items.some((x) => !x.canUpdate);
   }
 
   /**
@@ -47,7 +47,7 @@ export class SafeGridToolbarComponent implements OnInit {
    * @returns Returns true if the option is available
    */
   get canDelete(): boolean {
-    return !this.items.some((x) => x.canDelete);
+    return !this.items.some((x) => !x.canDelete);
   }
 
   /**

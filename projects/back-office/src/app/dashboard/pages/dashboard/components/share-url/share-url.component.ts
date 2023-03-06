@@ -1,7 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
+import { SafeSnackBarService } from '@safe/builder';
+import { TranslateService } from '@ngx-translate/core';
 
 /** Component to display current url and copy it. */
 @Component({
@@ -18,6 +19,7 @@ export class ShareUrlComponent implements OnInit {
    * @param dialogRef Material dialog ref
    * @param data Injected dialog data
    * @param data.url active url
+   * @param translate Angular translate service
    */
   constructor(
     public snackBar: SafeSnackBarService,
@@ -26,15 +28,20 @@ export class ShareUrlComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA)
     public data: {
       url: string;
-    }
+    },
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {}
 
-  /** Copy in clipboard the value displayed. */
+  /**
+   * Copies in clipboard the displayed value.
+   */
   onCopy(): void {
     this.clipboard.copy(this.data.url);
-    this.snackBar.openSnackBar(NOTIFICATIONS.copied);
+    this.snackBar.openSnackBar(
+      this.translate.instant('common.notifications.copiedToClipboard')
+    );
     this.dialogRef.close();
   }
 }

@@ -1,4 +1,6 @@
-import { Layout } from './layout.model';
+import { AggregationConnection } from './aggregation.model';
+import { LayoutConnection } from './layout.model';
+import { Metadata } from './metadata.model';
 import { Record } from './record.model';
 import { Resource } from './resource.model';
 
@@ -43,5 +45,7 @@ export interface Form {
   canDelete?: boolean;
   canCreateRecords?: boolean;
   uniqueRecord?: Record;
-  layouts?: Layout[];
+  layouts?: LayoutConnection;
+  aggregations?: AggregationConnection;
+  metadata?: Metadata[];
 }

@@ -28,11 +28,11 @@
     >
     </safe-button>
   </div>
-  <img [src]="type?.img" />
+  <img class="h-9 mt-5" [src]="type?.img" />
   <span>{{ step.name | titlecase }}</span>
   <div
     *ngIf="active"
     [style.background]="type?.focusColor"
-    class="safe-step-active"
+    class="w-full h-1 absolute bottom-0"
   ></div>
 </div>

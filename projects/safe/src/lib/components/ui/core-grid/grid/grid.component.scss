@@ -4,10 +4,6 @@
   width: 100%;
 }
 
-#recordsGrid {
-  width: 100%;
-}
-
 :host ::ng-deep .k-grid-content,
 .k-grid-content-locked,
 .k-pager-wrap {
@@ -58,6 +54,7 @@ textarea {
   align-items: center;
   padding: 8px 12px;
   height: 30px;
+  // box-sizing: content-box;
 
   & > .url-container {
     color: #008dc9;
@@ -65,18 +62,7 @@ textarea {
   }
 }
 
-.grid-searchbox {
-  width: 100%;
-}
-
 .textbox {
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.external-link {
-  color: #008dc9;
-  &:hover {
-    cursor: pointer;
-  }
 }

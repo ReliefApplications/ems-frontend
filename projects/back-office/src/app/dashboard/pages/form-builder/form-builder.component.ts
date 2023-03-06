@@ -1,6 +1,5 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   EditFormMutationResponse,
@@ -8,21 +7,22 @@ import {
   EDIT_FORM_PERMISSIONS,
   EDIT_FORM_STATUS,
   EDIT_FORM_STRUCTURE,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { MatDialog } from '@angular/material/dialog';
 import {
   SafeAuthService,
   SafeSnackBarService,
   Form,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
+  SafeBreadcrumbService,
 } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SafeStatusModalComponent, NOTIFICATIONS } from '@safe/builder';
+import { SafeStatusModalComponent } from '@safe/builder';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
@@ -61,8 +61,8 @@ export class FormBuilderComponent implements OnInit {
   ];
 
   // === FORM EDITION ===
+  public canEditName = false;
   public formActive = false;
-  public nameForm: FormGroup = new FormGroup({});
   public hasChanges = false;
 
   /**
@@ -74,7 +74,9 @@ export class FormBuilderComponent implements OnInit {
    * @param snackBar Shared snackbar service
    * @param dialog Material dialog service
    * @param authService Shared authentication service
+   * @param confirmService Shared confirm service
    * @param translate Angular translate service
+   * @param breadcrumbService Shared breadcrumb service
    */
   constructor(
     private apollo: Apollo,
@@ -83,7 +85,9 @@ export class FormBuilderComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     public dialog: MatDialog,
     private authService: SafeAuthService,
-    private translate: TranslateService
+    private confirmService: SafeConfirmService,
+    private translate: TranslateService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   /**
@@ -93,16 +97,11 @@ export class FormBuilderComponent implements OnInit {
    */
   canDeactivate(): Observable<boolean> | boolean {
     if (this.hasChanges) {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('components.form.update.exit'),
-          content: this.translate.instant('components.form.update.exitMessage'),
-          confirmText: this.translate.instant(
-            'components.confirmModal.confirm'
-          ),
-          cancelText: this.translate.instant('components.confirmModal.cancel'),
-          confirmColor: 'primary',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('components.form.update.exit'),
+        content: this.translate.instant('components.form.update.exitMessage'),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'primary',
       });
       return dialogRef.afterClosed().pipe(
         map((value) => {
@@ -129,14 +128,21 @@ export class FormBuilderComponent implements OnInit {
             id: this.id,
           },
         })
-        .valueChanges.subscribe(
-          (res) => {
-            if (res.data.form) {
-              this.loading = res.loading;
-              this.form = res.data.form;
-              this.nameForm = new FormGroup({
-                formName: new FormControl(this.form.name, Validators.required),
-              });
+        .valueChanges.subscribe({
+          next: ({ data, loading }) => {
+            if (data.form) {
+              this.loading = loading;
+              this.form = data.form;
+              this.breadcrumbService.setBreadcrumb(
+                '@form',
+                this.form.name as string
+              );
+              this.breadcrumbService.setBreadcrumb(
+                '@resource',
+                this.form.resource?.name as string
+              );
+              // this.breadcrumbService.setResourceName();
+              this.canEditName = this.form?.canUpdate || false;
               const storedStructure = window.localStorage.getItem(
                 `form:${this.id}`
               );
@@ -149,19 +155,27 @@ export class FormBuilderComponent implements OnInit {
               }
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.accessNotProvided('form'),
+                this.translate.instant(
+                  'common.notifications.accessNotProvided',
+                  {
+                    type: this.translate
+                      .instant('common.form.one')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
               // redirect to default screen if error
               this.router.navigate(['/forms']);
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             // redirect to default screen if error
             this.router.navigate(['/forms']);
-          }
-        );
+          },
+        });
     } else {
       this.loading = false;
       // redirect to default screen if error
@@ -202,30 +216,21 @@ export class FormBuilderComponent implements OnInit {
             structure,
           },
         })
-        .subscribe(
-          (res) => {
-            if (res.errors) {
-              this.snackBar.openSnackBar(res.errors[0].message, {
+        .subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(errors[0].message, {
                 error: true,
               });
               statusModal.close();
             } else {
-              // SCHEMA_UPDATE.asObservable().subscribe(refresh => {
-              //   if (refresh) {
-              //     this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('form', this.form?.name));
-              //     this.form = { ...res.data?.editForm, structure };
-              //     this.structure = structure;
-              //     localStorage.removeItem(`form:${this.id}`);
-              //     this.hasChanges = false;
-              //     this.authService.canLogout.next(true);
-              //     statusModal.close();
-              //   }
-              // });
-              // TODO: should be waiting for the BACK to be ready
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectEdited('form', this.form?.name)
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.form.one').toLowerCase(),
+                  value: this.form?.name,
+                })
               );
-              this.form = { ...res.data?.editForm, structure };
+              this.form = { ...data?.editForm, structure };
               this.structure = structure;
               localStorage.removeItem(`form:${this.id}`);
               this.hasChanges = false;
@@ -233,11 +238,11 @@ export class FormBuilderComponent implements OnInit {
               statusModal.close();
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             statusModal.close();
-          }
-        );
+          },
+        });
     }
   }
 
@@ -262,16 +267,23 @@ export class FormBuilderComponent implements OnInit {
           status: e.value,
         },
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ errors, data }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotUpdated('Status', res.errors[0].message),
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.status'),
+              error: errors[0].message,
+            }),
             { error: true }
           );
           statusModal.close();
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.statusUpdated(e.value));
-          this.form = { ...this.form, status: res.data?.editForm.status };
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.statusUpdated', {
+              value: e.value,
+            })
+          );
+          this.form = { ...this.form, status: data?.editForm.status };
           statusModal.close();
         }
       });
@@ -290,8 +302,8 @@ export class FormBuilderComponent implements OnInit {
           id,
         },
       })
-      .valueChanges.subscribe((res) => {
-        this.structure = res.data.form.structure;
+      .valueChanges.subscribe(({ data }) => {
+        this.structure = data.form.structure;
       });
   }
 
@@ -317,40 +329,54 @@ export class FormBuilderComponent implements OnInit {
     // this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
   }
 
-  /** Edit the form name. */
-  public saveName(): void {
-    const statusModal = this.dialog.open(SafeStatusModalComponent, {
-      disableClose: true,
-      data: {
-        title: 'Saving survey',
-        showSpinner: true,
-      },
-    });
-    const { formName } = this.nameForm.value;
-    this.toggleFormActive();
-    this.apollo
-      .mutate<EditFormMutationResponse>({
-        mutation: EDIT_FORM_NAME,
-        variables: {
-          id: this.id,
-          name: formName,
+  /**
+   * Edit the form name.
+   *
+   * @param {string} formName new form name
+   */
+  public saveName(formName: string): void {
+    if (formName && formName !== this.form?.name) {
+      const statusModal = this.dialog.open(SafeStatusModalComponent, {
+        disableClose: true,
+        data: {
+          title: 'Saving survey',
+          showSpinner: true,
         },
-      })
-      .subscribe((res) => {
-        if (res.errors) {
-          this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotUpdated('form', res.errors[0].message),
-            { error: true }
-          );
-          statusModal.close();
-        } else {
-          this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectEdited('form', formName)
-          );
-          this.form = { ...this.form, name: res.data?.editForm.name };
-          statusModal.close();
-        }
       });
+      this.apollo
+        .mutate<EditFormMutationResponse>({
+          mutation: EDIT_FORM_NAME,
+          variables: {
+            id: this.id,
+            name: formName,
+          },
+        })
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.form.one'),
+                error: errors[0].message,
+              }),
+              { error: true }
+            );
+            statusModal.close();
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.form.one').toLowerCase(),
+                value: formName,
+              })
+            );
+            this.form = { ...this.form, name: data?.editForm.name };
+            this.breadcrumbService.setBreadcrumb(
+              '@form',
+              this.form.name as string
+            );
+            statusModal.close();
+          }
+        });
+    }
   }
 
   /**
@@ -374,16 +400,24 @@ export class FormBuilderComponent implements OnInit {
           permissions: e,
         },
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ errors, data }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotUpdated('access', res.errors[0].message),
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.access'),
+              error: errors[0].message,
+            }),
             { error: true }
           );
           statusModal.close();
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectEdited('access', ''));
-          this.form = { ...res.data?.editForm, structure: this.structure };
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectUpdated', {
+              type: this.translate.instant('common.access').toLowerCase(),
+              value: '',
+            })
+          );
+          this.form = { ...data?.editForm, structure: this.structure };
           statusModal.close();
         }
       });

@@ -5,15 +5,13 @@ import { theme } from '../themes/oort/oort.prod';
  * Authentification configuration
  */
 const authConfig: AuthConfig = {
-  issuer:
-    'https://login.microsoftonline.com/fbacd48d-ccf4-480d-baf0-31048368055f/v2.0',
+  issuer: 'https://id.oortcloud.tech/auth/realms/oort',
   redirectUri: 'https://dms.oortcloud.tech/admin/',
-  postLogoutRedirectUri: 'https://dms.oortcloud.tech/admin/auth',
-  clientId: 'a85e101e-e193-4a3f-8911-c6e89bc973e6',
+  postLogoutRedirectUri: 'https://dms.oortcloud.tech/admin/auth/',
+  clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
   showDebugInformation: true,
-  strictDiscoveryDocumentValidation: false,
 };
 
 /**
@@ -26,7 +24,10 @@ export const environment = {
   frontOfficeUri: 'https://dms.oortcloud.tech',
   backOfficeUri: 'https://dms.oortcloud.tech/admin/',
   module: 'backoffice',
-  availableLanguages: ['en'],
+  availableLanguages: ['en', 'fr'],
   authConfig,
+  esriApiKey:
+    'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
   theme,
+  availableWidgets: ['chart', 'grid', 'editor', 'map'],
 };

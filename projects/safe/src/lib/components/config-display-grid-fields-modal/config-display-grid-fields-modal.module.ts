@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ConfigDisplayGridFieldsModalComponent } from './config-display-grid-fields-modal.component';
 import { SafeQueryBuilderModule } from '../query-builder/query-builder.module';
@@ -9,6 +8,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeButtonModule } from '../ui/button/button.module';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * ConfigDisplayGridFieldsModalModule is a class used to manage all the modules and components
@@ -18,7 +19,6 @@ import { TranslateModule } from '@ngx-translate/core';
   declarations: [ConfigDisplayGridFieldsModalComponent],
   imports: [
     CommonModule,
-    MatDialogModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -27,6 +27,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     MatInputModule,
     TranslateModule,
+    SafeButtonModule,
+    SafeModalModule,
   ],
   exports: [ConfigDisplayGridFieldsModalComponent],
 })

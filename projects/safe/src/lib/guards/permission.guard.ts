@@ -1,14 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
   CanActivate,
+  Router,
   RouterStateSnapshot,
   UrlTree,
-  Router,
 } from '@angular/router';
+import { subject } from '@casl/ability';
+import { TranslateService } from '@ngx-translate/core';
+import { get } from 'lodash';
 import { Observable } from 'rxjs';
-import { PermissionsManagement, PermissionType } from '../models/user.model';
-import { SafeAuthService } from '../services/auth.service';
+import { SafeApplicationService } from '../services/application/application.service';
+import { AppAbility } from '../services/auth/auth.service';
+import { SafeSnackBarService } from '../services/snackbar/snackbar.service';
 
 /**
  * Check if the logged user has an access to the route.
@@ -19,15 +23,24 @@ import { SafeAuthService } from '../services/auth.service';
 })
 export class SafePermissionGuard implements CanActivate {
   /**
-   * Constructor of the SAfePermissionGuard class
+   * Guard to prevent unauthorized users to see pages
    *
-   * @param authService The authentification service
-   * @param router The router service
+   * @param environment environment
+   * @param router Angular router
+   * @param ability user ability
+   * @param appService application service
    */
-  constructor(private authService: SafeAuthService, private router: Router) {}
+  constructor(
+    @Inject('environment') private environment: any,
+    private router: Router,
+    private ability: AppAbility,
+    private translate: TranslateService,
+    private snackBar: SafeSnackBarService,
+    private appService: SafeApplicationService
+  ) {}
 
   /**
-   * Executed everytime a route is called, in order to check user permissions.
+   * Executed anytime a route is called, in order to check user permissions.
    * Redirects to default route if not authorized.
    * When reloading the page, the router will redirect to 'applications'.
    * GraphQL should prevent that issue.
@@ -44,14 +57,49 @@ export class SafePermissionGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    const permission = PermissionsManagement.getRightFromPath(
-      state.url,
-      PermissionType.access
+    const permission = get(next, 'data.permission', null);
+
+    // If permission is not defined in data object, allow access
+    if (!permission || !permission.action || !permission.subject) return true;
+
+    const hasGlobalPermission = this.ability.can(
+      permission.action,
+      permission.subject
     );
-    const isAuthorized = this.authService.userHasClaim(permission);
-    if (!isAuthorized) {
-      this.router.navigate(['/applications']);
+
+    // If the user has global permission, allow access
+    if (hasGlobalPermission) return true;
+
+    // Check if the user is in an application
+    const appId =
+      this.environment.module === 'frontoffice'
+        ? state.url.split('/')[1]
+        : null;
+
+    // If the user is navigating in an application, returns
+    // a promise that will resolve when the app is loaded (and the ability extended)
+    if (appId) {
+      this.appService.loadApplication(appId);
+      return new Promise((resolve) => {
+        const sub = this.appService.application$.subscribe((app) => {
+          if (!app?.id) return;
+          sub.unsubscribe();
+          const hasPermission = this.ability.can(
+            permission.action,
+            subject(permission.subject, {
+              application: app.id,
+            })
+          );
+          resolve(hasPermission ? true : this.router.parseUrl('/'));
+        });
+      });
     }
-    return isAuthorized;
+
+    // If not in app, and no global permission, deny access
+    // show error message and redirect to the root route
+    this.snackBar.openSnackBar(this.translate.instant('common.accessDenied'), {
+      error: true,
+    });
+    return this.router.parseUrl('/');
   }
 }

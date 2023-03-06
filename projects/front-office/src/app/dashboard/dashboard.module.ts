@@ -2,7 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
-import { SafeLayoutModule } from '@safe/builder';
+import {
+  SafeApplicationToolbarModule,
+  SafeLayoutModule,
+  SafeLeftSidenavModule,
+} from '@safe/builder';
 
 /**
  * Front-Office Dashboard module.
@@ -11,6 +15,12 @@ import { SafeLayoutModule } from '@safe/builder';
  */
 @NgModule({
   declarations: [DashboardComponent],
-  imports: [CommonModule, SafeLayoutModule, DashboardRoutingModule],
+  imports: [
+    CommonModule,
+    SafeLayoutModule,
+    SafeLeftSidenavModule,
+    DashboardRoutingModule,
+    SafeApplicationToolbarModule,
+  ],
 })
 export class DashboardModule {}

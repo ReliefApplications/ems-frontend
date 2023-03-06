@@ -1,19 +1,19 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Workflow,
   Step,
   SafeSnackBarService,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   ContentType,
   SafeApplicationService,
   SafeWorkflowService,
-  NOTIFICATIONS,
+  SafeAuthService,
+  Application,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
 import {
   EditPageMutationResponse,
   EDIT_PAGE,
@@ -21,8 +21,10 @@ import {
   DELETE_STEP,
   EditWorkflowMutationResponse,
   EDIT_WORKFLOW,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
+import get from 'lodash/get';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Application workflow page component.
@@ -32,26 +34,30 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent implements OnInit, OnDestroy {
+export class WorkflowComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
 
   // === WORKFLOW ===
   public id = '';
+  public applicationId?: string;
   public workflow?: Workflow;
-  private workflowSubscription?: Subscription;
   public steps: Step[] = [];
 
   // === WORKFLOW EDITION ===
+  public canEditName = false;
   public formActive = false;
-  public workflowNameForm: FormGroup = new FormGroup({});
   public canUpdate = false;
 
   // === ACTIVE STEP ===
   public activeStep = 0;
 
-  // === ROUTE ===
-  private routeSubscription?: Subscription;
+  // === DUP APP SELECTION ===
+  public showAppMenu = false;
+  public applications: Application[] = [];
 
   /**
    * Application workflow page component
@@ -63,6 +69,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
    * @param router Angular router
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
+   * @param authService Shared authentication service
+   * @param confirmService Shared confirm service
    * @param translate Angular translate module.
    */
   constructor(
@@ -73,26 +81,29 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
+    private authService: SafeAuthService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.formActive = false;
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.loading = true;
       this.id = params.id;
       this.workflowService.loadWorkflow(this.id);
     });
 
-    this.workflowSubscription = this.workflowService.workflow$.subscribe(
-      (workflow: Workflow | null) => {
+    this.workflowService.workflow$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((workflow: Workflow | null) => {
         if (workflow) {
           this.steps = workflow.steps || [];
-          this.workflowNameForm = new FormGroup({
-            workflowName: new FormControl(workflow.name, Validators.required),
-          });
           this.loading = false;
           if (!this.workflow || workflow.id !== this.workflow.id) {
-            const [firstStep, ..._] = workflow.steps || [];
+            const firstStep = get(workflow, 'steps', [])[0];
             if (firstStep) {
               if (firstStep.type === ContentType.form) {
                 this.router.navigate(
@@ -119,44 +130,38 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             }
           }
           this.workflow = workflow;
+          this.canEditName = this.workflow?.page?.canUpdate || false;
+          this.applicationId = this.workflow.page?.application?.id;
           this.canUpdate = this.workflow.canUpdate || false;
         } else {
           this.loading = true;
           this.steps = [];
         }
-      }
-    );
-  }
-
-  /**
-   * Toggle workflow name form.
-   */
-  toggleFormActive(): void {
-    if (this.workflow?.page?.canUpdate) {
-      this.formActive = !this.formActive;
-    }
+      });
   }
 
   /**
    * Updates the name of the workflow and his linked page.
+   *
+   * @param workflowName new workflow name
    */
-  saveName(): void {
-    const { workflowName } = this.workflowNameForm.value;
-    this.toggleFormActive();
-    this.apollo
-      .mutate<EditPageMutationResponse>({
-        mutation: EDIT_PAGE,
-        variables: {
-          id: this.workflow?.page?.id,
-          name: workflowName,
-        },
-      })
-      .subscribe((res) => {
-        if (res.data) {
-          this.workflow = { ...this.workflow, name: res.data.editPage.name };
-          this.applicationService.updatePageName(res.data.editPage);
-        }
-      });
+  saveName(workflowName: string): void {
+    if (workflowName && workflowName !== this.workflow?.name) {
+      this.apollo
+        .mutate<EditPageMutationResponse>({
+          mutation: EDIT_PAGE,
+          variables: {
+            id: this.workflow?.page?.id,
+            name: workflowName,
+          },
+        })
+        .subscribe(({ data }) => {
+          if (data) {
+            this.workflow = { ...this.workflow, name: data.editPage.name };
+            this.applicationService.updatePageName(data.editPage);
+          }
+        });
+    }
   }
 
   /**
@@ -173,12 +178,41 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           permissions: e,
         },
       })
-      .subscribe((res) => {
+      .subscribe(({ data }) => {
         this.workflow = {
           ...this.workflow,
-          permissions: res.data?.editPage.permissions,
+          permissions: data?.editPage.permissions,
         };
       });
+  }
+
+  /**
+   * Duplicate page, in a new ( or same ) application
+   *
+   * @param event duplication event
+   */
+  public onDuplicate(event: any): void {
+    if (this.workflow?.page?.id) {
+      this.applicationService.duplicatePage(event.id, {
+        pageId: this.workflow?.page?.id,
+      });
+    }
+  }
+
+  /**
+   * Show or hide application selector.
+   * Get applications.
+   */
+  public onAppSelection(): void {
+    this.showAppMenu = !this.showAppMenu;
+    const authSubscription = this.authService.user$.subscribe(
+      (user: any | null) => {
+        if (user) {
+          this.applications = user.applications;
+        }
+      }
+    );
+    authSubscription.unsubscribe();
   }
 
   /**
@@ -191,18 +225,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       const step = this.steps[index];
       const currentStep =
         this.activeStep >= 0 ? this.steps[this.activeStep] : null;
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('common.deleteObject', {
-            name: this.translate.instant('common.step.one'),
-          }),
-          content: this.translate.instant(
-            'pages.workflow.deleteStep.confirmationMessage',
-            { step: step.name }
-          ),
-          confirmText: this.translate.instant('components.confirmModal.delete'),
-          confirmColor: 'warn',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.step.one'),
+        }),
+        content: this.translate.instant(
+          'pages.workflow.deleteStep.confirmationMessage',
+          { step: step.name }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        confirmColor: 'warn',
       });
       dialogRef.afterClosed().subscribe((value) => {
         if (value) {
@@ -213,11 +245,15 @@ export class WorkflowComponent implements OnInit, OnDestroy {
                 id: step.id,
               },
             })
-            .subscribe((res) => {
-              if (res.data) {
-                this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('Step'));
+            .subscribe(({ data }) => {
+              if (data) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant('common.step.one'),
+                  })
+                );
                 this.steps = this.steps.filter(
-                  (x) => x.id !== res.data?.deleteStep.id
+                  (x) => x.id !== data?.deleteStep.id
                 );
                 if (index === this.activeStep) {
                   this.onOpenStep(-1);
@@ -273,9 +309,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           steps: steps.map((step) => step.id),
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.objectReordered('Step'));
+      .subscribe(({ errors, data }) => {
+        if (data) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectReordered', {
+              type: this.translate.instant('common.step.one'),
+            })
+          );
           if (currentStep) {
             const index = steps.findIndex((x) => x.id === currentStep.id);
             this.activeStep = index;
@@ -283,10 +323,10 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           this.steps = steps;
         } else {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotEdited(
-              'Workflow',
-              res.errors ? res.errors[0].message : ''
-            )
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.workflow.one'),
+              error: errors ? errors[0].message : '',
+            })
           );
         }
       });
@@ -300,11 +340,18 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.onOpenStep(this.activeStep + 1);
     } else if (this.activeStep + 1 === this.steps.length) {
       this.onOpenStep(0);
-      this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.workflow.notifications.goToStep', {
+          step: this.steps[0].name,
+        })
+      );
     } else {
-      this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, {
-        error: true,
-      });
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'models.workflow.notifications.cannotGoToNextStep'
+        ),
+        { error: true }
+      );
     }
   }
 
@@ -328,15 +375,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     } else {
       this.router.navigate(['./'], { relativeTo: this.route });
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
-    if (this.workflowSubscription) {
-      this.workflowSubscription.unsubscribe();
     }
   }
 }

@@ -8,6 +8,7 @@ import { SafeArrayFilterMenuModule } from '../array-filter-menu/array-filter-men
 import { SafeDropdownFilterModule } from '../dropdown-filter/dropdown-filter.module';
 import { SafeDropdownFilterMenuModule } from '../dropdown-filter-menu/dropdown-filter-menu.module';
 import { SafeExpandedCommentModule } from '../expanded-comment/expanded-comment.module';
+import { SafeErrorsModalModule } from '../errors-modal/errors-modal.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,6 +20,8 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { SafeExportModule } from '../export/export.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeDateModule } from '../../../../pipes/date/date.module';
+import { SafeButtonModule } from '../../button/button.module';
 
 /** Module for the grid component */
 @NgModule({
@@ -31,6 +34,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
+    SafeButtonModule,
     // === KENDO ===
     GridModule,
     ButtonModule,
@@ -40,6 +44,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ButtonsModule,
     // === UTILS ===
     SafeExpandedCommentModule,
+    SafeErrorsModalModule,
     // === FILTER ===
     SafeArrayFilterModule,
     SafeArrayFilterMenuModule,
@@ -53,6 +58,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeExportModule,
     // === TRANSLATE ===
     TranslateModule,
+    SafeDateModule,
   ],
   exports: [SafeGridComponent],
 })

@@ -2,7 +2,7 @@ import { Apollo } from 'apollo-angular';
 import {
   GET_RESOURCE_BY_ID,
   GetResourceByIdQueryResponse,
-} from '../../graphql/queries';
+} from '../graphql/queries';
 import { BehaviorSubject } from 'rxjs';
 import * as SurveyCreator from 'survey-creator';
 import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
-import { DomService } from '../../services/dom.service';
+import { DomService } from '../../services/dom/dom.service';
 import { buildSearchButton, buildAddButton } from './utils';
 
 /** Create the list of filter values for resources */
@@ -68,9 +68,16 @@ export const init = (
     },
   ];
 
+  // registers icon-resources in the SurveyJS library
+  Survey.SvgRegistry.registerIconFromSvg(
+    'resources',
+    '<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="18px" viewBox="0 0 20 20" width="18px" fill="#000000"><g><rect fill="none" height="20" width="20" x="0"/></g><g><g><path d="M2.5,5H1v10.5C1,16.33,1.67,17,2.5,17h13.18v-1.5H2.5V5z"/><path d="M16.5,4H11L9,2H5.5C4.67,2,4,2.67,4,3.5v9C4,13.33,4.67,14,5.5,14h11c0.83,0,1.5-0.67,1.5-1.5v-7C18,4.67,17.33,4,16.5,4z M16.5,12.5h-11v-9h2.88l2,2h6.12V12.5z"/></g></g></svg>'
+  );
+
   const component = {
     name: 'resources',
     title: 'Resources',
+    iconName: 'icon-resources',
     category: 'Custom Questions',
     questionJSON: {
       name: 'resources',
@@ -99,6 +106,7 @@ export const init = (
           const instance: SafeResourceDropdownComponent = dropdown.instance;
           instance.resource = question.resource;
           instance.choice.subscribe((res) => editor.onChanged(res));
+          // instance.
         },
       };
 
@@ -122,8 +130,8 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe((response) => {
-              const serverRes = response.data.resource.fields;
+            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
+              const serverRes = data.resource.fields;
               const res = [];
               res.push({ value: null });
               for (const item of serverRes) {
@@ -172,12 +180,12 @@ export const init = (
           btn.style.border = 'none';
           btn.style.padding = '10px';
           htmlElement.appendChild(btn);
-          btn.onclick = (ev: any) => {
+          btn.onclick = () => {
             const currentQuestion = editor.object;
             getResourceById({ id: currentQuestion.resource }).subscribe(
-              (response) => {
-                if (response.data.resource && response.data.resource.name) {
-                  const nameTrimmed = response.data.resource.name
+              ({ data }) => {
+                if (data.resource && data.resource.name) {
+                  const nameTrimmed = data.resource.name
                     .replace(/\s/g, '')
                     .toLowerCase();
                   const dialogRef = dialog.open(
@@ -236,9 +244,9 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe((response) => {
+            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
               const serverRes =
-                response.data.resource.records?.edges?.map((x) => x.node) || [];
+                data.resource.records?.edges?.map((x) => x.node) || [];
               const res = [];
               res.push({ value: null });
               for (const item of serverRes) {
@@ -278,7 +286,7 @@ export const init = (
             // return !hasUniqueRecord(obj.resource);
           }
         },
-        visibleIndex: 3,
+        visibleIndex: 2,
       });
       Survey.Serializer.addProperty('resources', {
         name: 'canDelete:boolean',
@@ -351,6 +359,20 @@ export const init = (
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
+        name: 'export:boolean',
+        displayName: 'Export records',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          if (!obj || !obj.resource) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
         name: 'canSearch:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',
@@ -384,8 +406,8 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource && obj.addRecord) {
-            getResourceById({ id: obj.resource }).subscribe((response) => {
-              const serverRes = response.data.resource.forms || [];
+            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
+              const serverRes = data.resource.forms || [];
               const res = [];
               res.push({ value: null });
               for (const item of serverRes) {
@@ -465,8 +487,8 @@ export const init = (
         visibleIf: (obj: any) => obj.selectQuestion && obj.displayField,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe((response) => {
-              const serverRes = response.data.resource.fields;
+            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
+              const serverRes = data.resource.fields;
               const res = [];
               for (const item of serverRes) {
                 res.push({ value: item.name });
@@ -600,9 +622,9 @@ export const init = (
             );
           }
         }
-        getResourceById({ id: question.resource }).subscribe((response) => {
+        getResourceById({ id: question.resource }).subscribe(({ data }) => {
           const serverRes =
-            response.data.resource.records?.edges?.map((x) => x.node) || [];
+            data.resource.records?.edges?.map((x) => x.node) || [];
           const res = [];
           for (const item of serverRes) {
             res.push({
@@ -613,7 +635,7 @@ export const init = (
           question.contentQuestion.choices = res;
           if (!question.placeholder) {
             question.contentQuestion.optionsCaption =
-              'Select a record from ' + response.data.resource.name + '...';
+              'Select a record from ' + data.resource.name + '...';
           }
           if (!question.filterBy || question.filterBy.length < 1) {
             this.populateChoices(question);
@@ -647,10 +669,10 @@ export const init = (
             for (const objElement of obj) {
               const value = objElement.value;
               if (typeof value === 'string' && value.match(/^{*.*}$/)) {
-                const quest = value.substr(1, value.length - 2);
+                const name = value.slice(1, value.length - 1);
                 objElement.value = '';
                 question.survey.onValueChanged.add((_: any, options: any) => {
-                  if (options.question.name === quest) {
+                  if (options.question.name === name) {
                     if (!!options.value) {
                       setAdvanceFilter(options.value, objElement.field);
                       if (question.displayAsGrid) {
@@ -682,9 +704,9 @@ export const init = (
         }
       } else {
         getResourceById({ id: question.resource, filters }).subscribe(
-          (response) => {
+          ({ data }) => {
             const serverRes =
-              response.data.resource.records?.edges?.map((x) => x.node) || [];
+              data.resource.records?.edges?.map((x) => x.node) || [];
             const res: any[] = [];
             for (const item of serverRes) {
               res.push({
@@ -702,13 +724,8 @@ export const init = (
      *
      * @param question The current question
      * @param propertyName The name of the property
-     * @param newValue The new value assigned to the property by user
      */
-    onPropertyChanged(
-      question: any,
-      propertyName: string,
-      newValue: any
-    ): void {
+    onPropertyChanged(question: any, propertyName: string): void {
       if (propertyName === 'resource') {
         question.displayField = null;
         filters = [];
@@ -728,12 +745,10 @@ export const init = (
       if (question.resource) {
         const parentElement = el.querySelector('.safe-qst-content');
         if (parentElement) {
-          const gridComponent = buildRecordsGrid(
-            question,
-            parentElement.firstChild
-          );
+          buildRecordsGrid(question, parentElement.firstChild);
 
           if (question.survey.mode !== 'display') {
+            el.parentElement.querySelector('#actionsButtons')?.remove();
             const actionsButtons = document.createElement('div');
             actionsButtons.id = 'actionsButtons';
             actionsButtons.style.display = 'flex';
@@ -747,12 +762,7 @@ export const init = (
             );
             actionsButtons.appendChild(searchBtn);
 
-            const addBtn = buildAddButton(
-              question,
-              true,
-              dialog,
-              gridComponent
-            );
+            const addBtn = buildAddButton(question, true, dialog);
             actionsButtons.appendChild(addBtn);
 
             parentElement.insertBefore(
@@ -879,6 +889,6 @@ export const init = (
       });
     }
     instance.settings = settings;
-    instance.ngOnChanges();
+    instance.configureGrid();
   };
 };

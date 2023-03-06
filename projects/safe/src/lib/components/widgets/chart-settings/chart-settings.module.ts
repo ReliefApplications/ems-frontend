@@ -21,6 +21,11 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { SafeGridModule } from '../../../components/ui/core-grid/grid/grid.module';
 import { SafeIconModule } from '../../ui/icon/icon.module';
+import { SafePaletteControlModule } from '../../palette-control/palette-control.module';
+import { TabMainModule } from './tab-main/tab-main.module';
+import { TabDisplayModule } from './tab-display/tab-display.module';
+import { TabPreviewModule } from './tab-preview/tab-preview.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 /** Module for the chart settings component */
 @NgModule({
@@ -48,6 +53,11 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
     MatChipsModule,
     SafeGridModule,
     SafeIconModule,
+    SafePaletteControlModule,
+    TabMainModule,
+    TabDisplayModule,
+    TabPreviewModule,
+    MatTooltipModule,
   ],
   exports: [SafeChartSettingsComponent],
 })

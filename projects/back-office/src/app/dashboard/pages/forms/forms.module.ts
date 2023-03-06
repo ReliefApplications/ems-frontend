@@ -8,8 +8,13 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
-import { SafeConfirmModalModule, SafeButtonModule } from '@safe/builder';
-import { AddFormModule } from '../../../components/add-form/add-form.module';
+import {
+  SafeButtonModule,
+  SafeSkeletonTableModule,
+  SafeDateModule,
+  SafeDividerModule,
+} from '@safe/builder';
+import { AddFormModule } from '../../../components/add-form-modal/add-form-modal.module';
 import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -20,10 +25,10 @@ import {
   FormsModule as AngularFormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { AbilityModule } from '@casl/angular';
 
 /** Forms page module */
 @NgModule({
@@ -40,17 +45,19 @@ import { TranslateModule } from '@ngx-translate/core';
     MatMenuModule,
     MatIconModule,
     MatChipsModule,
-    SafeConfirmModalModule,
     AddFormModule,
     MatFormFieldModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,
     MatSelectModule,
-    MatDividerModule,
+    SafeDividerModule,
     SafeButtonModule,
     MatPaginatorModule,
     TranslateModule,
+    SafeSkeletonTableModule,
+    SafeDateModule,
+    AbilityModule,
   ],
   exports: [FormsComponent],
 })

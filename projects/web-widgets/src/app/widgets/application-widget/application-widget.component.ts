@@ -1,4 +1,6 @@
+import { OverlayContainer } from '@angular/cdk/overlay';
 import {
+  AfterViewInit,
   Component,
   ComponentRef,
   EventEmitter,
@@ -7,16 +9,21 @@ import {
   Output,
   ViewChild,
   ViewContainerRef,
+  ViewEncapsulation,
 } from '@angular/core';
 import { Page, SafeLayoutService } from '@safe/builder';
+import { AppOverlayContainer } from '../../utils/overlay-container';
 
 /** Application web widget component */
 @Component({
   selector: 'app-application-widget',
   templateUrl: './application-widget.component.html',
   styleUrls: ['./application-widget.component.scss'],
+  encapsulation: ViewEncapsulation.ShadowDom,
 })
-export class ApplicationWidgetComponent implements OnInit {
+export class ApplicationWidgetComponent implements OnInit, AfterViewInit {
+  @Input() id = '';
+
   @Input() pageId = '';
 
   @Output() pages = new EventEmitter<Page[]>();
@@ -30,8 +37,12 @@ export class ApplicationWidgetComponent implements OnInit {
    * Application web widget component
    *
    * @param layoutService Shared layout service
+   * @param overlayContainer Angular overlay container
    */
-  constructor(private layoutService: SafeLayoutService) {}
+  constructor(
+    private layoutService: SafeLayoutService,
+    private overlayContainer: OverlayContainer
+  ) {}
 
   ngOnInit(): void {
     this.layoutService.rightSidenav$.subscribe((view) => {
@@ -55,5 +66,11 @@ export class ApplicationWidgetComponent implements OnInit {
         }
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    const test: AppOverlayContainer = this
+      .overlayContainer as AppOverlayContainer;
+    test.updateContainer('application-widget');
   }
 }

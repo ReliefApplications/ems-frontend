@@ -1,6 +1,10 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
+  Field,
+  QueryBuilderService,
+} from '../../../../services/query-builder/query-builder.service';
+import {
   ChecklistDatabase,
   TreeItemFlatNode,
 } from '../../../checkbox-tree/checkbox-tree.component';
@@ -15,22 +19,28 @@ import {
   styleUrls: ['./query-style.component.scss'],
 })
 export class SafeQueryStyleComponent implements OnInit {
-  @Input() fields: any[] = [];
+  @Input() query: any;
   public selectedFields: any[] = [];
   @Input() form!: FormGroup;
-  @Input() scalarFields: any[] = [];
   public wholeRow!: FormControl;
+
+  public filterFields: Field[] = [];
 
   @Output() closeEdition = new EventEmitter<any>();
 
   checklist!: ChecklistDatabase;
+
   /**
    * Constructor for the query style component
+   *
+   * @param queryBuilder This is the service that will be used to build the query.
    */
-  constructor() {}
+  constructor(private queryBuilder: QueryBuilderService) {}
 
   ngOnInit(): void {
-    this.checklist = new ChecklistDatabase(this.getChecklist(this.fields));
+    this.checklist = new ChecklistDatabase(
+      this.getChecklist(this.query.fields)
+    );
     const fields = this.form.get('fields')?.value || [];
     if (fields.length > 0) {
       this.wholeRow = new FormControl(false);
@@ -41,6 +51,10 @@ export class SafeQueryStyleComponent implements OnInit {
       if (value) {
         this.form.get('fields')?.setValue([]);
       }
+    });
+
+    this.queryBuilder.getFilterFields(this.query).then((f) => {
+      this.filterFields = f;
     });
   }
 

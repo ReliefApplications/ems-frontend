@@ -1,20 +1,6 @@
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.mat-chip {
-  max-width: none;
-  border-radius: 1rem !important;
-}
-
 ::ng-deep #previewEmailTo {
   .mat-chip-list-wrapper {
     overflow-y: auto;
     max-height: 200px;
   }
-}
-
-kendo-fileselect {
-  margin-bottom: 16px;
 }

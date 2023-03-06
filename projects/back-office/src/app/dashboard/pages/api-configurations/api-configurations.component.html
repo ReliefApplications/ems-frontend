@@ -1,158 +1,186 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
-  <div class="header">
-    <div class="filters">
-      <div class="top">
-        <mat-form-field appearance="outline">
-          <mat-icon matPrefix>search</mat-icon>
-          <input
-            id="custom-search"
-            matInput
-            [ngModel]="searchText"
-            (keyup)="applyFilter('', $event)"
-            type="search"
-            [placeholder]="'common.placeholder.search' | translate"
-          />
-        </mat-form-field>
-        <safe-button
-          icon="filter_list"
-          category="tertiary"
-          variant="primary"
-          (click)="showFilters = !showFilters"
-          class="filters-toggle"
-        >
-          {{
-            showFilters
-              ? ('common.filter.hide' | translate)
-              : ('common.filter.show' | translate)
-          }}
-        </safe-button>
-      </div>
-      <div class="advanced" [style.display]="!showFilters ? 'none' : ''">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.status' | translate }}</mat-label>
-          <mat-select
-            [ngModel]="statusFilter"
-            (selectionChange)="applyFilter('status', $event)"
-          >
-            <mat-option>-</mat-option>
-            <mat-option value="active">
-              {{ 'common.status_active' | translate }}
-            </mat-option>
-            <mat-option value="pending">
-              {{ 'common.status_pending' | translate }}
-            </mat-option>
-            <mat-option value="archived">
-              {{ 'common.status_archived' | translate }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <safe-button variant="danger" (click)="clearAllFilters()">{{
-          'common.filter.clear' | translate
-        }}</safe-button>
-      </div>
-    </div>
-
-    <div class="actions">
+<div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
+  <!-- Filters -->
+  <div class="flex flex-col gap-4">
+    <!-- Default filter -->
+    <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
+      <!-- Search text filter -->
+      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
+        <mat-icon matPrefix>search</mat-icon>
+        <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
+        <input
+          matInput
+          [ngModel]="searchText"
+          (keyup)="applyFilter('', $event)"
+          type="search"
+        />
+      </mat-form-field>
+      <!-- Toggle advanced filters -->
       <safe-button
-        icon="add"
-        category="secondary"
+        class="max-sm:!w-auto"
+        icon="filter_list"
+        category="tertiary"
         variant="primary"
-        (click)="onAdd()"
-        *ngIf="canAdd"
+        (click)="showFilters = !showFilters"
       >
-        {{ 'pages.apiConfigurations.create' | translate }}
+        {{
+          showFilters
+            ? ('common.filter.hide' | translate)
+            : ('common.filter.show' | translate)
+        }}
       </safe-button>
     </div>
-  </div>
-
-  <table mat-table [dataSource]="dataSource" matSort>
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>
-        <span class="headerTitle" mat-sort-header>
-          {{ 'common.name' | translate }}
-        </span>
-      </th>
-      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef>
-        <span class="headerTitle" mat-sort-header>
-          {{ 'common.status' | translate }}
-        </span>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <mat-chip-list>
-          <mat-chip
-            class="success-chip"
-            disabled
-            *ngIf="element.status === 'active'"
-          >
-            {{ 'common.status_active' | translate | titlecase }}
-          </mat-chip>
-          <mat-chip
-            class="accent-chip"
-            disabled
-            color="accent"
-            *ngIf="element.status === 'pending'"
-          >
-            {{ 'common.status_pending' | translate | titlecase }}
-          </mat-chip>
-          <mat-chip
-            class="warn-chip"
-            disabled
-            color="warn"
-            *ngIf="element.status === 'archived'"
-          >
-            {{ 'common.status_archived' | translate | titlecase }}
-          </mat-chip>
-        </mat-chip-list>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="authType">
-      <th mat-header-cell *matHeaderCellDef>
-        <span class="headerTitle" mat-sort-header>
-          {{ 'models.apiConfiguration.authType' | translate }}
-        </span>
-      </th>
-      <td mat-cell *matCellDef="let element">{{ element.authType }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let element">
-        <safe-button
-          [isIcon]="true"
-          icon="more_vert"
-          [matMenuTriggerFor]="menu"
-          (click)="$event.stopPropagation()"
-          [disabled]="!(element.canUpdate || element.canDelete)"
+    <!-- Advanced filters -->
+    <div
+      *ngIf="showFilters"
+      class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row"
+    >
+      <!-- Status filter -->
+      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
+        <mat-label>{{ 'common.status' | translate }}</mat-label>
+        <mat-select
+          [ngModel]="statusFilter"
+          (selectionChange)="applyFilter('status', $event)"
         >
-        </safe-button>
-        <mat-menu #menu="matMenu">
-          <button
-            mat-menu-item
-            (click)="onDelete(element, $event)"
-            *ngIf="element.canDelete"
-          >
-            <mat-icon>delete</mat-icon>
-            {{ 'common.delete' | translate }}
-          </button>
-        </mat-menu>
-      </td>
-    </ng-container>
+          <mat-option>-</mat-option>
+          <mat-option value="active">
+            {{ 'common.status_active' | translate }}
+          </mat-option>
+          <mat-option value="pending">
+            {{ 'common.status_pending' | translate }}
+          </mat-option>
+          <mat-option value="archived">
+            {{ 'common.status_archived' | translate }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <!-- Clear filters -->
+      <safe-button
+        variant="danger"
+        (click)="clearAllFilters()"
+        class="max-sm:!w-auto"
+        >{{ 'common.filter.clear' | translate }}</safe-button
+      >
+    </div>
+  </div>
+  <!-- Actions -->
+  <div class="flex items-center">
+    <safe-button
+      icon="add"
+      category="secondary"
+      variant="primary"
+      (click)="onAdd()"
+      *ngIf="'create' | able: 'ApiConfiguration'"
+    >
+      {{ 'pages.apiConfigurations.create' | translate }}
+    </safe-button>
+  </div>
+</div>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"
-      class="clickable"
-      [routerLink]="['/settings/apiconfigurations', row.id]"
-    ></tr>
-  </table>
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
+    <table *ngIf="!loading" mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle" mat-sort-header>
+            {{ 'common.name' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element" class="font-bold">
+          {{ element.name }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle" mat-sort-header>
+            {{ 'common.status' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-chip-list>
+            <mat-chip
+              class="success-chip !rounded-lg"
+              disabled
+              *ngIf="element.status === 'active'"
+            >
+              {{ 'common.status_active' | translate | titlecase }}
+            </mat-chip>
+            <mat-chip
+              class="accent-chip !rounded-lg"
+              disabled
+              color="accent"
+              *ngIf="element.status === 'pending'"
+            >
+              {{ 'common.status_pending' | translate | titlecase }}
+            </mat-chip>
+            <mat-chip
+              class="warn-chip !rounded-lg"
+              disabled
+              color="warn"
+              *ngIf="element.status === 'archived'"
+            >
+              {{ 'common.status_archived' | translate | titlecase }}
+            </mat-chip>
+          </mat-chip-list>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="authType">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="headerTitle" mat-sort-header>
+            {{ 'models.apiConfiguration.authType' | translate }}
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.authType }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions" [stickyEnd]="true">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <safe-button
+            [isIcon]="true"
+            icon="more_vert"
+            [matMenuTriggerFor]="menu"
+            (click)="$event.stopPropagation()"
+            [disabled]="!(element.canUpdate || element.canDelete)"
+          >
+          </safe-button>
+          <mat-menu #menu="matMenu">
+            <button
+              mat-menu-item
+              (click)="onDelete(element, $event)"
+              *ngIf="element.canDelete"
+            >
+              <mat-icon>delete</mat-icon>
+              {{ 'common.delete' | translate }}
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="cursor-pointer"
+        [routerLink]="['/settings/apiconfigurations', row.id]"
+      ></tr>
+    </table>
+    <safe-skeleton-table
+      *ngIf="loading"
+      [columns]="[
+        'common.name',
+        'common.status',
+        'models.apiConfiguration.authType'
+      ]"
+      [actions]="true"
+    >
+    </safe-skeleton-table>
+  </div>
   <mat-paginator
+    [disabled]="loading"
     [pageSize]="pageInfo.pageSize"
     [pageSizeOptions]="[10, 25, 50]"
     [length]="pageInfo.length"
@@ -160,4 +188,4 @@
     (page)="onPage($event)"
   >
   </mat-paginator>
-</ng-container>
+</div>

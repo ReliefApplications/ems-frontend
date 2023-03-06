@@ -16,8 +16,10 @@ import {
 import {
   GetApplicationsQueryResponse,
   GET_APPLICATIONS,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.
@@ -51,7 +53,10 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     },
   ],
 })
-export class SafeApplicationDropdownComponent implements OnInit {
+export class SafeApplicationDropdownComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() value = [];
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
 
@@ -74,7 +79,9 @@ export class SafeApplicationDropdownComponent implements OnInit {
    * @param apollo This is the Apollo service that we'll use to make our GraphQL
    * queries.
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo) {
+    super();
+  }
 
   ngOnInit(): void {
     if (Array.isArray(this.value) && this.value.length > 0) {
@@ -89,8 +96,9 @@ export class SafeApplicationDropdownComponent implements OnInit {
             },
           },
         })
-        .subscribe((res) => {
-          this.selectedApplications = res.data.applications.edges.map(
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          this.selectedApplications = data.applications.edges.map(
             (x) => x.node
           );
         });
@@ -101,21 +109,25 @@ export class SafeApplicationDropdownComponent implements OnInit {
         query: GET_APPLICATIONS,
         variables: {
           first: ITEMS_PER_PAGE,
+          sortField: 'name',
+          sortOrder: 'asc',
         },
       });
 
     this.applications$ = this.applications.asObservable();
-    this.applicationsQuery.valueChanges.subscribe((res) => {
-      this.applications.next(res.data.applications.edges.map((x) => x.node));
-      if (this.selectedApplications.length > 0) {
-        const applicationsIds = this.applications.getValue().map((x) => x.id);
-        this.selectedApplications = this.selectedApplications.filter(
-          (x) => applicationsIds.indexOf(x.id) < 0
-        );
-      }
-      this.pageInfo = res.data.applications.pageInfo;
-      this.loading = res.loading;
-    });
+    this.applicationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.applications.next(data.applications.edges.map((x) => x.node));
+        if (this.selectedApplications.length > 0) {
+          const applicationsIds = this.applications.getValue().map((x) => x.id);
+          this.selectedApplications = this.selectedApplications.filter(
+            (x) => applicationsIds.indexOf(x.id) < 0
+          );
+        }
+        this.pageInfo = data.applications.pageInfo;
+        this.loading = loading;
+      });
   }
 
   /**

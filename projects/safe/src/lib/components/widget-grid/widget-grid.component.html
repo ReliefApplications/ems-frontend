@@ -1,4 +1,4 @@
-<div class="grid-container">
+<div *ngIf="!loading">
   <!-- NEW WIDGETS -->
   <div
     class="widget-choice-wrapper"
@@ -8,7 +8,7 @@
     <h2 *ngIf="widgets.length === 0">{{ 'models.widget.add' | translate }}</h2>
     <safe-widget-choice
       [floating]="widgets.length > 0"
-      [widgetTypes]="widgetTypes"
+      [widgetTypes]="availableWidgets"
       (add)="onAdd($event)"
     >
     </safe-widget-choice>
@@ -21,6 +21,7 @@
     [reorderable]="canUpdate"
     (reorder)="onReorder($event)"
     (resize)="onResize($event)"
+    class="-m-4"
   >
     <kendo-tilelayout-item
       *ngFor="let widget of widgets; let i = index"
@@ -30,6 +31,7 @@
           : widget.defaultCols
       "
       [rowSpan]="!canUpdate && widgets.length === 1 ? 4 : widget.defaultRows"
+      class="!shadow-2lg"
     >
       <safe-floating-options
         *ngIf="canUpdate"
@@ -43,6 +45,9 @@
       <safe-widget
         [widget]="widget"
         (goToNextStep)="goToNextStep.emit($event)"
+        [id]="'widget-' + widget.id"
+        (edit)="onEditWidget($event)"
+        [canUpdate]="canUpdate"
       ></safe-widget>
       <safe-icon *ngIf="canUpdate" icon="drag_indicator" class="widget-handle">
       </safe-icon>
@@ -54,6 +59,23 @@
         (click)="onExpandWidget(widget)"
       >
       </safe-button>
+    </kendo-tilelayout-item>
+  </kendo-tilelayout>
+</div>
+<!-- LOADING INDICATOR -->
+<div *ngIf="loading" class="mt-6">
+  <kendo-tilelayout [rowHeight]="200" [columns]="colsNumber" class="-m-4">
+    <kendo-tilelayout-item
+      *ngFor="let skeleton of skeletons"
+      [colSpan]="skeleton.colSpan"
+      [rowSpan]="skeleton.rowSpan"
+    >
+      <kendo-skeleton
+        shape="rectangle"
+        animation="pulse"
+        [width]="'100%'"
+        [height]="'100%'"
+      ></kendo-skeleton>
     </kendo-tilelayout-item>
   </kendo-tilelayout>
 </div>

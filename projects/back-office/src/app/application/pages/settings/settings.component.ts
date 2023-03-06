@@ -1,24 +1,24 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import {
   Application,
   SafeApplicationService,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   SafeSnackBarService,
-  NOTIFICATIONS,
   SafeAuthService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import {
   DeleteApplicationMutationResponse,
   DELETE_APPLICATION,
-} from '../../../graphql/mutations';
-import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
+} from './graphql/mutations';
+import { DuplicateApplicationModalComponent } from '../../../components/duplicate-application-modal/duplicate-application-modal.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Application settings page component.
@@ -28,10 +28,12 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
 })
-export class SettingsComponent implements OnInit, OnDestroy {
+export class SettingsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public applications = new MatTableDataSource<Application>([]);
   public settingsForm?: FormGroup;
-  private applicationSubscription?: Subscription;
   public application?: Application;
   public user: any;
   public locked: boolean | undefined = undefined;
@@ -46,6 +48,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
    * @param snackBar Shared snackbar service
    * @param applicationService Shared application service
    * @param authService Shared authentication service
+   * @param confirmService Shared confirm service
    * @param dialog Material dialog service
    * @param translate Angular translate service
    */
@@ -56,27 +59,29 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private applicationService: SafeApplicationService,
     private authService: SafeAuthService,
+    private confirmService: SafeConfirmService,
     public dialog: MatDialog,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          if (application) {
-            this.application = application;
-            this.settingsForm = this.formBuilder.group({
-              id: [{ value: application.id, disabled: true }],
-              name: [application.name, Validators.required],
-              description: [application.description],
-              status: [application.status],
-            });
-            this.locked = this.application?.locked;
-            this.lockedByUser = this.application?.lockedByUser;
-          }
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.application = application;
+          this.settingsForm = this.formBuilder.group({
+            id: [{ value: application.id, disabled: true }],
+            name: [application.name, Validators.required],
+            description: [application.description],
+            status: [application.status],
+          });
+          this.locked = this.application?.locked;
+          this.lockedByUser = this.application?.lockedByUser;
         }
-      );
+      });
   }
 
   /**
@@ -93,10 +98,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
   onDuplicate(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
-        NOTIFICATIONS.objectIsLocked(this.application?.name)
+        this.translate.instant('common.notifications.objectLocked', {
+          name: this.application?.name,
+        })
       );
     } else {
-      this.dialog.open(DuplicateApplicationComponent, {
+      this.dialog.open(DuplicateApplicationModalComponent, {
         data: {
           id: this.application?.id,
           name: this.application?.name,
@@ -112,22 +119,21 @@ export class SettingsComponent implements OnInit, OnDestroy {
   onDelete(): void {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
-        NOTIFICATIONS.objectIsLocked(this.application?.name)
+        this.translate.instant('common.notifications.objectLocked', {
+          name: this.application?.name,
+        })
       );
     } else {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('common.deleteObject', {
-            name: this.translate.instant('common.application.one'),
-          }),
-          content: this.translate.instant(
-            'components.application.delete.confirmationMessage',
-            { name: this.application?.name }
-          ),
-          confirmText: this.translate.instant('components.confirmModal.delete'),
-          cancelText: this.translate.instant('components.confirmModal.cancel'),
-          confirmColor: 'warn',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.deleteObject', {
+          name: this.translate.instant('common.application.one'),
+        }),
+        content: this.translate.instant(
+          'components.application.delete.confirmationMessage',
+          { name: this.application?.name }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        confirmColor: 'warn',
       });
       dialogRef.afterClosed().subscribe((value) => {
         if (value) {
@@ -139,23 +145,19 @@ export class SettingsComponent implements OnInit, OnDestroy {
                 id,
               },
             })
-            .subscribe((res) => {
+            .subscribe(({ data }) => {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectDeleted('Application')
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.application.one'),
+                })
               );
               this.applications.data = this.applications.data.filter(
-                (x) => x.id !== res.data?.deleteApplication.id
+                (x) => x.id !== data?.deleteApplication.id
               );
             });
           this.router.navigate(['/applications']);
         }
       });
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
     }
   }
 }

@@ -1,61 +1,61 @@
 <ng-container *ngIf="form">
   <form [formGroup]="form" [ngClass]="{ 'field-form': isField }">
-    <safe-button
-      [isIcon]="true"
-      icon="arrow_back"
-      (click)="onCloseField()"
-      *ngIf="isField"
-    >
-    </safe-button>
+    <div>
+      <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
+        <mat-label>{{
+          'components.queryBuilder.dataset.select' | translate
+        }}</mat-label>
+        <input
+          type="text"
+          [placeholder]="'components.queryBuilder.dataset.select' | translate"
+          matInput
+          formControlName="name"
+          [matAutocomplete]="auto"
+        />
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <mat-option *ngFor="let option of filteredQueries" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+        <safe-icon
+          *ngIf="canSelectDataSet && form.invalid"
+          matSuffix
+          icon="error"
+          variant="danger"
+          [matTooltip]="'components.form.layout.errors.invalid' | translate"
+        ></safe-icon>
+      </mat-form-field>
 
-    <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
-      <mat-label>{{
-        'components.queryBuilder.dataset.select' | translate
-      }}</mat-label>
-      <input
-        type="text"
-        [placeholder]="'components.queryBuilder.dataset.select' | translate"
-        matInput
-        formControlName="name"
-        [matAutocomplete]="auto"
-      />
-      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-        <mat-option *ngFor="let option of filteredQueries" [value]="option">
-          {{ option }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-
-    <mat-form-field
-      appearance="outline"
-      *ngIf="!isField && canSelectDataSet && templates.length > 0"
-    >
-      <mat-label>{{ 'models.form.template' | translate }}</mat-label>
-      <mat-select formControlName="template">
-        <mat-option>-</mat-option>
-        <mat-option *ngFor="let template of templates" [value]="template.id">{{
-          template.name
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+      <mat-form-field
+        appearance="outline"
+        *ngIf="!isField && canSelectDataSet && templates.length > 0"
+      >
+        <mat-label>{{ 'models.form.template' | translate }}</mat-label>
+        <mat-select formControlName="template">
+          <mat-option>-</mat-option>
+          <mat-option
+            *ngFor="let template of templates"
+            [value]="template.id"
+            >{{ template.name }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+    </div>
 
     <ng-container *ngIf="isField">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'models.form.field.name' | translate }}</mat-label>
-        <input matInput formControlName="name" type="text" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'models.form.field.label' | translate }}</mat-label>
-        <input matInput formControlName="label" type="text" />
-      </mat-form-field>
+      <div class="flex gap-2">
+        <safe-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
+        </safe-button>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'models.form.field.name' | translate }}</mat-label>
+          <input matInput formControlName="name" type="text" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'models.form.field.label' | translate }}</mat-label>
+          <input matInput formControlName="label" type="text" />
+        </mat-form-field>
+      </div>
     </ng-container>
-    <button
-      class="form-error"
-      mat-icon-button
-      *ngIf="canSelectDataSet && form.invalid"
-    >
-      <mat-icon>error</mat-icon>
-    </button>
     <mat-tab-group
       mat-align-tabs="start"
       animationDuration="0ms"
@@ -90,12 +90,11 @@
       </mat-tab>
       <mat-tab
         [label]="'components.queryBuilder.filter.title' | translate"
-        *ngIf="form.get('filter')"
+        *ngIf="showFilter && form.get('filter')"
       >
         <ng-template matTabContent>
           <safe-tab-filter
             [form]="$any(form.controls.filter)"
-            [fields]="availableScalarFields"
             [query]="form.getRawValue()"
           >
           </safe-tab-filter>
@@ -103,13 +102,13 @@
       </mat-tab>
       <mat-tab
         [label]="'components.queryBuilder.style.title' | translate"
-        *ngIf="form.get('style')"
+        *ngIf="showStyle && form.get('style')"
       >
         <ng-template matTabContent>
           <safe-tab-style
             [form]="$any(form.controls.style)"
-            [fields]="form.getRawValue().fields"
             [scalarFields]="availableScalarFields"
+            [query]="form.getRawValue()"
           >
           </safe-tab-style>
         </ng-template>

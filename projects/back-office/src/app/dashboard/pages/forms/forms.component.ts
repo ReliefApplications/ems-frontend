@@ -1,36 +1,24 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  AfterViewInit,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import {
-  GET_SHORT_FORMS,
-  GetFormsQueryResponse,
-} from '../../../graphql/queries';
-import { Subscription } from 'rxjs';
-import {
   SafeSnackBarService,
   SafeAuthService,
-  PermissionsManagement,
-  PermissionType,
-  SafeConfirmModalComponent,
-  NOTIFICATIONS,
+  SafeConfirmService,
   Form,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
+import { GET_SHORT_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import {
   DeleteFormMutationResponse,
   DELETE_FORM,
   AddFormMutationResponse,
   ADD_FORM,
-} from '../../../graphql/mutations';
-import { AddFormComponent } from '../../../components/add-form/add-form.component';
+} from './graphql/mutations';
+import { AddFormModalComponent } from '../../../components/add-form-modal/add-form-modal.component';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 
 /** Default number of items for pagination */
@@ -42,9 +30,10 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './forms.component.html',
   styleUrls: ['./forms.component.scss'],
 })
-export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
+export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
+  public updating = false;
   private formsQuery!: QueryRef<GetFormsQueryResponse>;
   public displayedColumns = [
     'name',
@@ -59,15 +48,9 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
   public forms = new MatTableDataSource<Form>([]);
   public cachedForms: Form[] = [];
 
-  // === PERMISSIONS ===
-  canAdd = false;
-  private authSubscription?: Subscription;
-
-  // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
-
   // === FILTERING ===
   public filter: any;
+  private sort: Sort = { active: '', direction: '' };
 
   // === PAGINATION ===
   public pageInfo = {
@@ -85,6 +68,7 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param router Angular router
    * @param snackBar Shared snackbar
    * @param authService Shared authentication service
+   * @param confirmService Shared confirmation service
    * @param translate Angular translate service
    */
   constructor(
@@ -93,8 +77,11 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Creates the form query, and subscribes to the query changes.
@@ -107,24 +94,16 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       },
     });
 
-    this.formsQuery.valueChanges.subscribe((res) => {
-      this.cachedForms = res.data.forms.edges.map((x) => x.node);
+    this.formsQuery.valueChanges.subscribe(({ data, loading }) => {
+      this.cachedForms = data.forms.edges.map((x) => x.node);
       this.forms.data = this.cachedForms.slice(
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
       );
-      this.pageInfo.length = res.data.forms.totalCount;
-      this.pageInfo.endCursor = res.data.forms.pageInfo.endCursor;
-      this.loading = res.loading;
-    });
-
-    this.authSubscription = this.authService.user$.subscribe(() => {
-      this.canAdd = this.authService.userHasClaim(
-        PermissionsManagement.getRightFromPath(
-          this.router.url,
-          PermissionType.create
-        )
-      );
+      this.pageInfo.length = data.forms.totalCount;
+      this.pageInfo.endCursor = data.forms.pageInfo.endCursor;
+      this.loading = loading;
+      this.updating = loading;
     });
   }
 
@@ -148,25 +127,8 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
-      this.formsQuery.fetchMore({
-        variables: {
-          first,
-          afterCursor: this.pageInfo.endCursor,
-          filter: this.filter,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            forms: {
-              edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
-              pageInfo: fetchMoreResult.forms.pageInfo,
-              totalCount: fetchMoreResult.forms.totalCount,
-            },
-          });
-        },
-      });
+      this.pageInfo.pageSize = first;
+      this.fetchForms();
     } else {
       this.forms.data = this.cachedForms.slice(
         e.pageSize * this.pageInfo.pageIndex,
@@ -183,41 +145,63 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   onFilter(filter: any): void {
     this.filter = filter;
-    this.cachedForms = [];
-    this.pageInfo.pageIndex = 0;
-    this.formsQuery.fetchMore({
-      variables: {
-        first: this.pageInfo.pageSize,
-        filter: this.filter,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          forms: {
-            edges: fetchMoreResult.forms.edges,
-            pageInfo: fetchMoreResult.forms.pageInfo,
-            totalCount: fetchMoreResult.forms.totalCount,
-          },
+    this.fetchForms(true);
+  }
+
+  /**
+   * Handle sort change.
+   *
+   * @param event sort event
+   */
+  onSort(event: Sort): void {
+    this.sort = event;
+    this.fetchForms(true);
+  }
+
+  /**
+   * Update forms query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchForms(refetch?: boolean): void {
+    this.updating = true;
+    if (refetch) {
+      this.cachedForms = [];
+      this.pageInfo.pageIndex = 0;
+      this.formsQuery
+        .refetch({
+          first: this.pageInfo.pageSize,
+          afterCursor: null,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
+        })
+        .then(() => {
+          this.loading = false;
+          this.updating = false;
         });
-      },
-    });
-  }
-
-  /**
-   * Sets the sort in the view.
-   */
-  ngAfterViewInit(): void {
-    this.forms.sort = this.sort || null;
-  }
-
-  /**
-   * Removes all the subscriptions.
-   */
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
+    } else {
+      this.formsQuery.fetchMore({
+        variables: {
+          first: this.pageInfo.pageSize,
+          afterCursor: this.pageInfo.endCursor,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) {
+            return prev;
+          }
+          return Object.assign({}, prev, {
+            forms: {
+              edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
+              pageInfo: fetchMoreResult.forms.pageInfo,
+              totalCount: fetchMoreResult.forms.totalCount,
+            },
+          });
+        },
+      });
     }
   }
 
@@ -228,24 +212,19 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param e click event.
    */
   onDelete(form: Form, e: any): void {
-    const warning =
-      'Deleting a core form will recursively delete linked forms and resources.';
     e.stopPropagation();
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('common.deleteObject', {
-          name: this.translate.instant('common.form.one'),
-        }),
-        content: this.translate.instant(
-          'components.form.delete.confirmationMessage',
-          {
-            name: form.name,
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.form.one'),
+      }),
+      content: this.translate.instant(
+        'components.form.delete.confirmationMessage',
+        {
+          name: form.name,
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
@@ -257,15 +236,25 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
               id,
             },
           })
-          .subscribe((res: any) => {
-            if (!res.errors) {
-              this.snackBar.openSnackBar(NOTIFICATIONS.objectDeleted('form'));
+          .subscribe(({ errors }: any) => {
+            if (!errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.form.one'),
+                })
+              );
               this.forms.data = this.forms.data.filter(
                 (x) => x.id !== form.id && form.id !== x.resource?.coreForm?.id
               );
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectNotDeleted('form', res.errors[0].message),
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: this.translate.instant('common.form.one'),
+                    error: errors[0].message,
+                  }
+                ),
                 { error: true }
               );
             }
@@ -279,40 +268,46 @@ export class FormsComponent implements OnInit, OnDestroy, AfterViewInit {
    * Creates a new form on closed if result.
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddFormComponent, {
-      panelClass: 'add-dialog',
-    });
+    const dialogRef = this.dialog.open(AddFormModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        const data = { name: value.name };
+        const variablesData = { name: value.name };
         Object.assign(
-          data,
+          variablesData,
           value.resource && { resource: value.resource },
           value.template && { template: value.template }
         );
         this.apollo
           .mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,
-            variables: data,
+            variables: variablesData,
           })
-          .subscribe(
-            (res) => {
-              if (res.errors) {
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectNotCreated('form', res.errors[0].message),
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate
+                        .instant('common.form.one')
+                        .toLowerCase(),
+                      error: errors[0].message,
+                    }
+                  ),
                   { error: true }
                 );
               } else {
-                if (res.data) {
-                  const { id } = res.data.addForm;
-                  this.router.navigate(['/forms/builder', id]);
+                if (data) {
+                  const { id } = data.addForm;
+                  this.router.navigate(['/forms/' + id + '/builder']);
                 }
               }
             },
-            (err) => {
+            error: (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
-            }
-          );
+            },
+          });
       }
     });
   }

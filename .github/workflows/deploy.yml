@@ -26,21 +26,21 @@ jobs:
         run: npm i
       - name: Build Shared Library
         run: npm run build -- --configuration=production safe
-      - name: Build Back-office
+      - name: Build Back-office ${{ github.event.client_payload.environment }}
         run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=back-office
-      - name: Build Front-office
+      - name: Build Front-office ${{ github.event.client_payload.environment }}
         run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=front-office
       - name: Archive build Back-office
         if: success()
         uses: actions/upload-artifact@v3
         with:
-          name: deploy_dist_back_office
+          name: back_office_${{ github.event.client_payload.environment }}
           path: dist/back-office
       - name: Archive build Front-office
         if: success()
         uses: actions/upload-artifact@v3
         with:
-          name: deploy_dist_front_office
+          name: front_office_${{ github.event.client_payload.environment }}
           path: dist/front-office
 
   deploy_back_office:
@@ -54,7 +54,7 @@ jobs:
       - name: Download build
         uses: actions/download-artifact@v1
         with:
-          name: deploy_dist_back_office
+          name: back_office_${{ github.event.client_payload.environment }}
           path: dist/back-office
       - name: Setup SSH Keys and known_hosts
         uses: webfactory/ssh-agent@v0.7.0
@@ -79,7 +79,7 @@ jobs:
       - name: Download build
         uses: actions/download-artifact@v1
         with:
-          name: deploy_dist_front_office
+          name: front_office_${{ github.event.client_payload.environment }}
           path: dist/front-office
       - name: Setup SSH Keys and known_hosts
         uses: webfactory/ssh-agent@v0.7.0

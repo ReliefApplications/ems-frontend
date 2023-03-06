@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -6,24 +6,27 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import {
   ApiConfiguration,
   authType,
-  NOTIFICATIONS,
   SafeSnackBarService,
   SafeApiProxyService,
   status,
+  SafeBreadcrumbService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
-import { Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { apiValidator } from '../../../utils/nameValidation';
 import {
   EditApiConfigurationMutationResponse,
   EDIT_API_CONFIGURATION,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetApiConfigurationQueryResponse,
   GET_API_CONFIGURATION,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 
 /**
  * API configuration page component.
@@ -33,12 +36,14 @@ import {
   templateUrl: './api-configuration.component.html',
   styleUrls: ['./api-configuration.component.scss'],
 })
-export class ApiConfigurationComponent implements OnInit, OnDestroy {
+export class ApiConfigurationComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public id = '';
   public apiConfiguration?: ApiConfiguration;
-  private apolloSubscription?: Subscription;
 
   // === FORM ===
   public apiForm: FormGroup = new FormGroup({});
@@ -61,6 +66,8 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
    * @param router Angular router
    * @param formBuilder Angular form builder
    * @param apiProxy Shared API proxy service
+   * @param translate Angular translate service
+   * @param breadcrumbService Shared breadcrumb service
    */
   constructor(
     private apollo: Apollo,
@@ -68,27 +75,36 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private apiProxy: SafeApiProxyService
-  ) {}
+    private apiProxy: SafeApiProxyService,
+    private translate: TranslateService,
+    private breadcrumbService: SafeBreadcrumbService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id) {
-      this.apolloSubscription = this.apollo
+      this.apollo
         .watchQuery<GetApiConfigurationQueryResponse>({
           query: GET_API_CONFIGURATION,
           variables: {
             id: this.id,
           },
         })
-        .valueChanges.subscribe(
-          (res) => {
-            if (res.data.apiConfiguration) {
-              this.apiConfiguration = res.data.apiConfiguration;
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: ({ data, loading }) => {
+            if (data.apiConfiguration) {
+              this.apiConfiguration = data.apiConfiguration;
+              this.breadcrumbService.setBreadcrumb(
+                '@api',
+                this.apiConfiguration.name as string
+              );
               this.apiForm = this.formBuilder.group({
                 name: [
                   this.apiConfiguration?.name,
-                  [Validators.required, Validators.pattern('^[A-Za-z-_]+$')],
+                  [Validators.required, Validators.pattern(apiValidator)],
                 ],
                 status: [this.apiConfiguration?.status, Validators.required],
                 authType: [
@@ -103,33 +119,35 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
                 settings: this.buildSettingsForm(
                   this.apiConfiguration?.authType || ''
                 ),
+                graphQLEndpoint: this.apiConfiguration?.graphQLEndpoint,
               });
               this.apiForm.get('authType')?.valueChanges.subscribe((value) => {
                 this.apiForm.controls.settings.clearValidators();
                 this.apiForm.controls.settings = this.buildSettingsForm(value);
                 this.apiForm.controls.settings.updateValueAndValidity();
               });
-              this.loading = res.data.loading;
+              this.loading = loading;
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.accessNotProvided('resource'),
+                this.translate.instant(
+                  'common.notifications.accessNotProvided',
+                  {
+                    type: this.translate
+                      .instant('common.resource.one')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
               this.router.navigate(['/settings/apiconfigurations']);
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
             this.router.navigate(['/settings/apiconfigurations']);
-          }
-        );
-    }
-  }
-
-  /** Unsubscribe from the apollo subscription if needed */
-  ngOnDestroy(): void {
-    if (this.apolloSubscription) {
-      this.apolloSubscription.unsubscribe();
+          },
+        });
     }
   }
 
@@ -191,9 +209,6 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
    * @param e permissions
    */
   saveAccess(e: any): void {
-    if (this.apolloSubscription) {
-      this.apolloSubscription.unsubscribe();
-    }
     this.loading = true;
     this.apollo
       .mutate<EditApiConfigurationMutationResponse>({
@@ -203,19 +218,16 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
           permissions: e,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
-          this.apiConfiguration = res.data.editApiConfiguration;
-          this.loading = res.data.loading;
+      .subscribe(({ data, loading }) => {
+        if (data) {
+          this.apiConfiguration = data.editApiConfiguration;
+          this.loading = loading;
         }
       });
   }
 
   /** Edit the API Configuration using apiForm changes */
   onSave(): void {
-    if (this.apolloSubscription) {
-      this.apolloSubscription.unsubscribe();
-    }
     this.loading = true;
     const variables = { id: this.id };
     Object.assign(
@@ -232,6 +244,10 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       this.apiForm.value.endpoint !== this.apiConfiguration?.endpoint && {
         endpoint: this.apiForm.value.endpoint,
       },
+      this.apiForm.value.graphQLEndpoint !==
+        this.apiConfiguration?.graphQLEndpoint && {
+        graphQLEndpoint: this.apiForm.value.graphQLEndpoint,
+      },
       this.apiForm.value.pingUrl !== this.apiConfiguration?.pingUrl && {
         pingUrl: this.apiForm.value.pingUrl,
       },
@@ -244,23 +260,23 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
         mutation: EDIT_API_CONFIGURATION,
         variables,
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ errors, data, loading }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotUpdated(
-              'ApiConfiguration',
-              res.errors[0].message
-            ),
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.apiConfiguration.one'),
+              error: errors[0].message,
+            }),
             { error: true }
           );
           this.loading = false;
         } else {
-          this.apiConfiguration = res.data?.editApiConfiguration;
+          this.apiConfiguration = data?.editApiConfiguration;
           this.apiForm.controls.settings = this.buildSettingsForm(
             this.apiForm.value.authType
           );
           this.apiForm.markAsPristine();
-          this.loading = res.data?.loading || false;
+          this.loading = loading || false;
         }
       });
   }
@@ -272,14 +288,25 @@ export class ApiConfigurationComponent implements OnInit, OnDestroy {
       ?.subscribe((res: any) => {
         if (res) {
           if (res.access_token) {
-            this.snackBar.openSnackBar(NOTIFICATIONS.pingResponseAuthToken);
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'pages.apiConfiguration.notifications.authTokenFetched'
+              )
+            );
           } else {
-            this.snackBar.openSnackBar(NOTIFICATIONS.pingResponseReceived);
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'pages.apiConfiguration.notifications.pingReceived'
+              )
+            );
           }
         } else {
-          this.snackBar.openSnackBar(NOTIFICATIONS.pingResponseError, {
-            error: true,
-          });
+          this.snackBar.openSnackBar(
+            this.translate.instant(
+              'pages.apiConfiguration.notifications.pingFailed'
+            ),
+            { error: true }
+          );
         }
       });
   }

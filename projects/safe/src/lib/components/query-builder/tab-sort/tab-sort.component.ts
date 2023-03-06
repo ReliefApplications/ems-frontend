@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 /**
@@ -9,15 +9,8 @@ import { FormGroup } from '@angular/forms';
   templateUrl: './tab-sort.component.html',
   styleUrls: ['./tab-sort.component.scss'],
 })
-export class SafeTabSortComponent implements OnInit {
+export class SafeTabSortComponent {
   @Input() form: FormGroup = new FormGroup({});
   @Input() fields: any[] = [];
   @Input() showLimit = false;
-
-  /**
-   * Constructor for the sorting component
-   */
-  constructor() {}
-
-  ngOnInit(): void {}
 }

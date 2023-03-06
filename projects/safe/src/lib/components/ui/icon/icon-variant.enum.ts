@@ -5,4 +5,5 @@ export enum IconVariant {
   SUCCESS = 'success',
   DANGER = 'danger',
   LIGHT = 'light',
+  GREY = 'grey',
 }

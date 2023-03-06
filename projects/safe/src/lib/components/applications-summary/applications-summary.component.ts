@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  TemplateRef,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Application } from '../../models/application.model';
 
 /**
@@ -17,6 +10,7 @@ import { Application } from '../../models/application.model';
   styleUrls: ['./applications-summary.component.scss'],
 })
 export class SafeApplicationsSummaryComponent implements OnInit {
+  @Input() loading = false;
   @Input() canCreate = false;
   @Input() applications: Application[] = [];
   @Output() add = new EventEmitter();

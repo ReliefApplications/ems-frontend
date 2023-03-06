@@ -1,5 +1,12 @@
 import { Apollo } from 'apollo-angular';
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  NgZone,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
@@ -10,9 +17,7 @@ import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
   GET_FORM_BY_ID,
-  GetRecordDetailsQueryResponse,
-  GET_RECORD_DETAILS,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import * as Survey from 'survey-angular';
@@ -25,16 +30,14 @@ import {
   UPLOAD_FILE,
   EDIT_RECORDS,
   EditRecordsMutationResponse,
-} from '../../graphql/mutations';
-import { v4 as uuidv4 } from 'uuid';
-import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+} from './graphql/mutations';
+import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import addCustomFunctions from '../../utils/custom-functions';
-import { SafeSnackBarService } from '../../services/snackbar.service';
-import { SafeDownloadService } from '../../services/download.service';
-import { SafeAuthService } from '../../services/auth.service';
-import { SafeFormBuilderService } from '../../services/form-builder.service';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { NOTIFICATIONS } from '../../const/notifications';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
+import { SafeRestService } from '../../services/rest/rest.service';
+import { SafeAuthService } from '../../services/auth/auth.service';
+import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
@@ -47,7 +50,6 @@ import { cleanRecord } from '../../utils/cleanRecord';
 interface DialogData {
   template?: string;
   recordId?: string | [];
-  locale?: string;
   prefillRecords?: Record[];
   prefillData?: any;
   askForConfirm?: boolean;
@@ -72,7 +74,6 @@ export class SafeFormModalComponent implements OnInit {
   public form?: Form;
   public record?: Record;
 
-  public containerId: string;
   public modifiedAt: Date | null = null;
 
   private isMultiEdition = false;
@@ -82,6 +83,8 @@ export class SafeFormModalComponent implements OnInit {
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
+
+  @ViewChild('formContainer') formContainer!: ElementRef;
 
   environment: any;
 
@@ -104,10 +107,12 @@ export class SafeFormModalComponent implements OnInit {
    * @param dialogRef This is the reference to the dialog.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
    * @param snackBar This is the service that allows you to display a snackbar.
-   * @param downloadService This is the service that is used to download files.
+   * @param restService This is the service that is used to make http requests.
    * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
+   * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
+   * @param ngZone Angular ng zone
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -116,12 +121,13 @@ export class SafeFormModalComponent implements OnInit {
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private downloadService: SafeDownloadService,
+    private restService: SafeRestService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
-    private translate: TranslateService
+    private confirmService: SafeConfirmService,
+    private translate: TranslateService,
+    private ngZone: NgZone
   ) {
-    this.containerId = uuidv4();
     this.environment = environment;
   }
 
@@ -143,60 +149,58 @@ export class SafeFormModalComponent implements OnInit {
         ? this.data.recordId[0]
         : this.data.recordId;
       promises.push(
-        this.apollo
-          .query<GetRecordByIdQueryResponse>({
+        firstValueFrom(
+          this.apollo.query<GetRecordByIdQueryResponse>({
             query: GET_RECORD_BY_ID,
             variables: {
               id,
             },
           })
-          .toPromise()
-          .then((res) => {
-            this.record = res.data.record;
-            this.modifiedAt = this.isMultiEdition
-              ? null
-              : this.record.modifiedAt || null;
-            if (!this.data.template) {
-              this.form = this.record.form;
-            }
-          })
+        ).then(({ data }) => {
+          this.record = data.record;
+          this.modifiedAt = this.isMultiEdition
+            ? null
+            : this.record.modifiedAt || null;
+          if (!this.data.template) {
+            this.form = this.record.form;
+          }
+        })
       );
     }
 
     if (!this.data.recordId || this.data.template) {
       promises.push(
-        this.apollo
-          .query<GetFormByIdQueryResponse>({
+        firstValueFrom(
+          this.apollo.query<GetFormByIdQueryResponse>({
             query: GET_FORM_BY_ID,
             variables: {
               id: this.data.template,
             },
           })
-          .toPromise()
-          .then((res) => {
-            this.form = res.data.form;
-            if (this.data.prefillData) {
-              this.storedMergedData = this.data.prefillData;
-            }
-            if (
-              this.data.prefillRecords &&
-              this.data.prefillRecords.length > 0
-            ) {
-              this.storedMergedData = this.mergedData(this.data.prefillRecords);
-              const resId = this.data.prefillRecords[0].form?.resource?.id;
-              const resourcesField = this.form.fields?.find(
-                (x) => x.type === 'resources' && x.resource === resId
+        ).then(({ data }) => {
+          this.form = data.form;
+          if (this.data.prefillData) {
+            this.storedMergedData = this.data.prefillData;
+          }
+          if (this.data.prefillRecords && this.data.prefillRecords.length > 0) {
+            this.storedMergedData = this.mergedData(this.data.prefillRecords);
+            const resId = this.data.prefillRecords[0].form?.resource?.id;
+            const resourcesField = this.form.fields?.find(
+              (x) => x.type === 'resources' && x.resource === resId
+            );
+            if (resourcesField) {
+              this.storedMergedData[resourcesField.name] =
+                this.data.prefillRecords.map((x) => x.id);
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'models.record.notifications.conversionIncomplete'
+                ),
+                { error: true }
               );
-              if (resourcesField) {
-                this.storedMergedData[resourcesField.name] =
-                  this.data.prefillRecords.map((x) => x.id);
-              } else {
-                this.snackBar.openSnackBar(NOTIFICATIONS.recordDoesNotMatch, {
-                  error: true,
-                });
-              }
             }
-          })
+          }
+        })
       );
     }
     await Promise.all(promises);
@@ -210,6 +214,7 @@ export class SafeFormModalComponent implements OnInit {
   private initSurvey(): void {
     this.survey = this.formBuilderService.createSurvey(
       this.form?.structure || '',
+      this.form?.metadata,
       this.record
     );
     this.survey.onClearFiles.add((survey: Survey.SurveyModel, options: any) =>
@@ -224,23 +229,16 @@ export class SafeFormModalComponent implements OnInit {
     this.survey.onUpdateQuestionCssClasses.add(
       (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
     );
-    this.survey.onCurrentPageChanged.add(
-      (survey: Survey.SurveyModel, options: any) => {
-        survey.checkErrorsMode = survey.isLastPage
-          ? 'onComplete'
-          : 'onNextPage';
-        this.selectedTabIndex = survey.currentPageNo;
-      }
-    );
+    this.survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
+      survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
+      this.selectedTabIndex = survey.currentPageNo;
+    });
     this.survey.onPageVisibleChanged.add(() => {
       this.setPages();
     });
-    this.survey.onSettingQuestionErrors.add(
-      (survey: Survey.SurveyModel, options: any) => {
-        this.setPages();
-      }
-    );
-    this.survey.locale = this.data.locale ? this.data.locale : 'en';
+    this.survey.onSettingQuestionErrors.add(() => {
+      this.setPages();
+    });
     if (this.data.recordId && this.record) {
       addCustomFunctions(Survey, this.authService, this.apollo, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;
@@ -253,7 +251,9 @@ export class SafeFormModalComponent implements OnInit {
       };
     }
     this.survey.showNavigationButtons = false;
-    this.survey.render(this.containerId);
+    this.survey.focusFirstQuestionAutomatic = false;
+    this.survey.render(this.formContainer.nativeElement);
+    // this.survey.render(this.containerId);
     this.setPages();
     this.survey.onComplete.add(this.onComplete);
     setTimeout(() => {}, 100);
@@ -268,7 +268,7 @@ export class SafeFormModalComponent implements OnInit {
       this.survey?.completeLastPage();
     } else {
       this.snackBar.openSnackBar(
-        'Saving failed, some fields require your attention.',
+        this.translate.instant('models.form.notifications.savingFailed'),
         { error: true }
       );
       this.saving = false;
@@ -305,29 +305,25 @@ export class SafeFormModalComponent implements OnInit {
     survey.data = data;
     // Displays confirmation modal.
     if (this.data.askForConfirm) {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('common.updateObject', {
-            name:
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.updateObject', {
+          name:
+            rowsSelected > 1
+              ? this.translate.instant('common.row.few')
+              : this.translate.instant('common.row.one'),
+        }),
+        content: this.translate.instant(
+          'components.form.updateRow.confirmationMessage',
+          {
+            quantity: rowsSelected,
+            rowText:
               rowsSelected > 1
                 ? this.translate.instant('common.row.few')
                 : this.translate.instant('common.row.one'),
-          }),
-          content: this.translate.instant(
-            'components.form.updateRow.confirmationMessage',
-            {
-              quantity: rowsSelected,
-              rowText:
-                rowsSelected > 1
-                  ? this.translate.instant('common.row.few')
-                  : this.translate.instant('common.row.one'),
-            }
-          ),
-          confirmText: this.translate.instant(
-            'components.confirmModal.confirm'
-          ),
-          confirmColor: 'primary',
-        },
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'primary',
       });
       dialogRef.afterClosed().subscribe(async (value) => {
         if (value) {
@@ -365,16 +361,20 @@ export class SafeFormModalComponent implements OnInit {
             data: survey.data,
           },
         })
-        .subscribe((res) => {
-          if (res.errors) {
-            this.snackBar.openSnackBar(`Error. ${res.errors[0].message}`, {
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
               error: true,
             });
-            this.dialogRef.close();
+            this.ngZone.run(() => {
+              this.dialogRef.close();
+            });
           } else {
-            this.dialogRef.close({
-              template: this.data.template,
-              data: res.data?.addRecord,
+            this.ngZone.run(() => {
+              this.dialogRef.close({
+                template: this.data.template,
+                data: data?.addRecord,
+              });
             });
           }
         });
@@ -398,11 +398,11 @@ export class SafeFormModalComponent implements OnInit {
           template: this.data.template,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ data }) => {
+        if (data) {
           this.dialogRef.close({
             template: this.form?.id,
-            data: res.data.editRecord,
+            data: data.editRecord,
           });
         }
       });
@@ -415,21 +415,21 @@ export class SafeFormModalComponent implements OnInit {
    * @param survey current survey.
    */
   public updateMultipleData(ids: any, survey: any): void {
-    const data = cleanRecord(survey.data);
+    const recordData = cleanRecord(survey.data);
     this.apollo
       .mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
-          data,
+          data: recordData,
           template: this.data.template,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ data }) => {
+        if (data) {
           this.dialogRef.close({
             template: this.form?.id,
-            data: res.data.editRecords,
+            data: data.editRecords,
           });
         }
       });
@@ -446,8 +446,8 @@ export class SafeFormModalComponent implements OnInit {
     for (const name of questionsToUpload) {
       const files = this.temporaryFilesStorage[name];
       for (const [index, file] of files.entries()) {
-        const res = await this.apollo
-          .mutate<UploadFileMutationResponse>({
+        const res = await firstValueFrom(
+          this.apollo.mutate<UploadFileMutationResponse>({
             mutation: UPLOAD_FILE,
             variables: {
               file,
@@ -457,7 +457,7 @@ export class SafeFormModalComponent implements OnInit {
               useMultipart: true,
             },
           })
-          .toPromise();
+        );
         if (res.errors) {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
           return;
@@ -493,7 +493,7 @@ export class SafeFormModalComponent implements OnInit {
     let content: any[] = [];
     options.files.forEach((file: any) => {
       const fileReader = new FileReader();
-      fileReader.onload = (e) => {
+      fileReader.onload = () => {
         content = content.concat([
           {
             name: file.name,
@@ -555,12 +555,11 @@ export class SafeFormModalComponent implements OnInit {
       options.content.indexOf('http') !== -1
     ) {
       options.callback('success', options.content);
-      return;
     } else {
       const xhr = new XMLHttpRequest();
       xhr.open(
         'GET',
-        `${this.downloadService.baseUrl}/download/file/${options.content}`
+        `${this.restService.apiUrl}/download/file/${options.content}`
       );
       xhr.setRequestHeader(
         'Authorization',
@@ -696,25 +695,16 @@ export class SafeFormModalComponent implements OnInit {
    * Opens the history of the record in a modal.
    */
   public onShowHistory(): void {
-    this.apollo
-      .query<GetRecordDetailsQueryResponse>({
-        query: GET_RECORD_DETAILS,
-        variables: {
-          id: this.record?.id,
+    if (this.record) {
+      this.dialog.open(RecordHistoryModalComponent, {
+        data: {
+          id: this.record.id,
+          revert: (version: any) =>
+            this.confirmRevertDialog(this.record, version),
         },
-      })
-      .subscribe((res) => {
-        this.dialog.open(RecordHistoryModalComponent, {
-          data: {
-            record: res.data.record,
-            revert: (item: any, dialog: any) => {
-              this.confirmRevertDialog(res.data.record, item);
-            },
-          },
-          panelClass: 'no-padding-dialog',
-          autoFocus: false,
-        });
+        autoFocus: false,
       });
+    }
   }
 
   /**
@@ -725,22 +715,18 @@ export class SafeFormModalComponent implements OnInit {
    */
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
-    const date = new Date(parseInt(version.created, 0));
+    const date = new Date(parseInt(version.createdAt, 0));
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant(
-          'components.record.recovery.titleMessage'
-        ),
-        content: this.translate.instant(
-          'components.record.recovery.confirmationMessage',
-          { date: formatDate }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('components.record.recovery.title'),
+      content: this.translate.instant(
+        'components.record.recovery.confirmationMessage',
+        { date: formatDate }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmColor: 'primary',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
@@ -752,8 +738,10 @@ export class SafeFormModalComponent implements OnInit {
               version: version.id,
             },
           })
-          .subscribe((res) => {
-            this.snackBar.openSnackBar(NOTIFICATIONS.dataRecovered);
+          .subscribe(() => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.dataRecovered')
+            );
             this.dialog.closeAll();
           });
       }

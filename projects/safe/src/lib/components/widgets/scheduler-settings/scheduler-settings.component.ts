@@ -3,15 +3,11 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import {
-  GetResourcesQueryResponse,
-  GET_RESOURCES,
-  GetFormsQueryResponse,
-  GET_FORMS,
   GetResourceByIdQueryResponse,
   GET_RESOURCE_BY_ID,
   GetFormByIdQueryResponse,
   GET_FORM_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 
 /** A component for the scheduler settings */
 @Component({
@@ -92,7 +88,7 @@ export class SafeSchedulerSettingsComponent implements OnInit {
       this.change.emit(this.tileForm);
     });
 
-    this.getSources({ value: this.tileForm.get('from')?.value }, true);
+    // this.getSources({ value: this.tileForm.get('from')?.value }, true);
     if (tileSettings.source) {
       this.getSource({ value: tileSettings.source });
     }
@@ -100,16 +96,13 @@ export class SafeSchedulerSettingsComponent implements OnInit {
 
   /**
    * Load the list of resources or forms.
-   *
-   * @param {any} e An event or any object with a value attribute
-   * @param {boolean} init Indicating if we must init the sources (optional)
    */
-  getSources(e: any, init?: boolean): void {
+  getSources(): void {
     // if (e.value === 'resource') {
     //   this.apollo.query<GetResourcesQueryResponse>({
     //     query: GET_RESOURCES
-    //   }).subscribe(res => {
-    //     this.sources = res.data.resources.edges.map(x => x.node.source = { id: source.id, name: source.name });
+    //   }).subscribe(({ data }) => {
+    //     this.sources = data.resources.edges.map(x => x.node.source = { id: source.id, name: source.name });
     //     if (!init) {
     //       this.tileForm.get('source')?.setValue(null);
     //       this.tileForm.get('events.title')?.setValue(null);
@@ -122,8 +115,8 @@ export class SafeSchedulerSettingsComponent implements OnInit {
     // } else {
     //   this.apollo.query<GetFormsQueryResponse>({
     //     query: GET_FORMS
-    //   }).subscribe(res => {
-    //     this.sources = res.data.forms.map(source => source = { id: source.id, name: source.name });
+    //   }).subscribe(({ data }) => {
+    //     this.sources = data.forms.map(source => source = { id: source.id, name: source.name });
     //     if (!init) {
     //       this.tileForm.get('source')?.setValue(null);
     //       this.tileForm.get('events.title')?.setValue(null);
@@ -150,9 +143,9 @@ export class SafeSchedulerSettingsComponent implements OnInit {
             id: e.value,
           },
         })
-        .subscribe((res) => {
-          this.fields = res.data.resource.fields || [];
-          this.forms = res.data.resource.forms || [];
+        .subscribe(({ data }) => {
+          this.fields = data.resource.fields || [];
+          this.forms = data.resource.forms || [];
         });
     } else {
       this.apollo
@@ -162,9 +155,9 @@ export class SafeSchedulerSettingsComponent implements OnInit {
             id: e.value,
           },
         })
-        .subscribe((res) => {
-          this.fields = res.data.form.fields || [];
-          this.forms = [{ id: res.data.form.id, name: res.data.form.name }];
+        .subscribe(({ data }) => {
+          this.fields = data.form.fields || [];
+          this.forms = [{ id: data.form.id, name: data.form.name }];
         });
     }
   }

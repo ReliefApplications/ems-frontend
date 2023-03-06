@@ -1,9 +1,15 @@
-<kendo-chart #chart>
+<kendo-chart #chart [seriesColors]="options && options.palette">
+  <kendo-chart-value-axis>
+    <kendo-chart-value-axis-item [min]="min" [max]="max">
+    </kendo-chart-value-axis-item>
+  </kendo-chart-value-axis>
   <kendo-chart-title
     *ngIf="title"
     [visible]="title.visible"
     [text]="title.text"
     [position]="title.position"
+    [font]="title.font"
+    [color]="title.color"
   >
   </kendo-chart-title>
   <kendo-chart-legend
@@ -16,15 +22,23 @@
   <kendo-chart-tooltip format="{0}"></kendo-chart-tooltip>
   <kendo-chart-series>
     <kendo-chart-series-item
-      *ngFor="let item of series"
+      *ngFor="let serie of series"
       type="bar"
       field="field"
       categoryField="category"
+      [stack]="stack"
       [gap]="gap"
       [spacing]="spacing"
-      [data]="item.data"
-      [name]="item.name || ''"
-      [color]="item.color"
-    ></kendo-chart-series-item>
+      [data]="serie.data"
+      [name]="serie.name || ''"
+      [color]="serie.color"
+    >
+      <kendo-chart-series-item-labels
+        *ngIf="labelContent"
+        position="outsideEnd"
+        color="#000"
+        [content]="labelContent"
+      ></kendo-chart-series-item-labels>
+    </kendo-chart-series-item>
   </kendo-chart-series>
 </kendo-chart>

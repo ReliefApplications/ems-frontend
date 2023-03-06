@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeFormBuilderComponent } from './form-builder.component';
 import { SafeFormModalModule } from '../form-modal/form-modal.module';
 import { MatDialogModule } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 
 /**
@@ -15,6 +16,7 @@ import { DateInputModule } from '@progress/kendo-angular-dateinputs';
     CommonModule,
     SafeFormModalModule,
     MatDialogModule,
+    TranslateModule,
     DateInputModule,
   ],
   exports: [SafeFormBuilderComponent],

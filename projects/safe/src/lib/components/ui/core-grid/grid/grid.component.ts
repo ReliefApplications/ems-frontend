@@ -2,14 +2,15 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
+  Inject,
   Input,
+  OnChanges,
   OnInit,
   Output,
   Renderer2,
   ViewChild,
 } from '@angular/core';
 import {
-  ColumnReorderEvent,
   GridComponent,
   GridDataResult,
   PageChangeEvent,
@@ -17,7 +18,6 @@ import {
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
-import get from 'lodash/get';
 import { MatDialog } from '@angular/material/dialog';
 import {
   EXPORT_SETTINGS,
@@ -25,6 +25,7 @@ import {
   MULTISELECT_TYPES,
   PAGER_SETTINGS,
   SELECTABLE_SETTINGS,
+  ICON_EXTENSIONS,
 } from './grid.constants';
 import {
   CompositeFilterDescriptor,
@@ -42,11 +43,18 @@ import {
 } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { FormControl, FormGroup } from '@angular/forms';
-import { SafeGridService } from '../../../../services/grid.service';
-import { SafeDownloadService } from '../../../../services/download.service';
+import { SafeGridService } from '../../../../services/grid/grid.service';
+import { SafeDownloadService } from '../../../../services/download/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
+import { SafeErrorsModalComponent } from '../errors-modal/errors-modal.component';
+import { get } from 'lodash';
+import { SafeTileDataComponent } from '../../../widget-grid/floating-options/menu/tile-data/tile-data.component';
+import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
+import { TranslateService } from '@ngx-translate/core';
+import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
 
 /**
  * Factory for creating scroll strategy
@@ -98,24 +106,35 @@ const matches = (el: any, selector: any) =>
     },
   ],
 })
-export class SafeGridComponent implements OnInit, AfterViewInit {
+export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
+
+  public environment: 'frontoffice' | 'backoffice';
+  public statusMessage = '';
 
   // === DATA ===
   @Input() fields: any[] = [];
   @Input() data: GridDataResult = { data: [], total: 0 };
-  @Input() loading = false;
-  @Input() error = false;
+  @Input() loadingRecords = false;
+  @Input() loadingSettings = true;
+  @Input() status: {
+    error: boolean;
+    message?: string;
+  } = {
+    error: false,
+  };
   @Input() blank = false;
+  @Input() widget: any;
+  @Input() canUpdate = false;
 
   // === EXPORT ===
-  @Input() exportable = true;
   public exportSettings = EXPORT_SETTINGS;
   @Output() export = new EventEmitter();
 
   // === EDITION ===
   @Input() editable = false;
   @Input() hasChanges = false;
+  @Output() edit: EventEmitter<any> = new EventEmitter();
   public formGroup: FormGroup = new FormGroup({});
   private currentEditedRow = 0;
   private currentEditedItem: any;
@@ -129,7 +148,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
     delete: false,
     history: false,
     convert: false,
-    showDetails: true,
+    export: false,
+    showDetails: false,
   };
   @Input() hasDetails = true;
   @Output() action = new EventEmitter();
@@ -142,6 +162,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   // === DISPLAY ===
   @Input() resizable = true;
   @Input() reorderable = true;
+  @Input() canAdd = false;
 
   /** @returns The column menu */
   get columnMenu(): { columnChooser: boolean; filter: boolean } {
@@ -157,6 +178,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   public selectableSettings = SELECTABLE_SETTINGS;
   @Input() selectedRows: string[] = [];
   @Output() selectionChange = new EventEmitter();
+  public selectedItems: any[] = [];
 
   // === FILTER ===
   @Input() filterable = true;
@@ -188,22 +210,36 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   private columnsOrder: any[] = [];
   @Output() columnChange = new EventEmitter();
 
+  // === SNACKBAR ===
+  private snackBarRef: MatSnackBarRef<TextOnlySnackBar> | undefined;
+
   /**
    * Constructor of the grid component
    *
+   * @param environment Current environment
    * @param dialog The material dialog service
    * @param gridService The grid service
    * @param renderer The renderer library
    * @param downloadService The download service
+   * @param dashboardService Dashboard service
+   * @param translate The translate service
+   * @param snackBar The snackbar service
    */
   constructor(
+    @Inject('environment') environment: any,
     private dialog: MatDialog,
     private gridService: SafeGridService,
     private renderer: Renderer2,
-    private downloadService: SafeDownloadService
-  ) {}
+    private downloadService: SafeDownloadService,
+    private dashboardService: SafeDashboardService,
+    private translate: TranslateService,
+    private snackBar: SafeSnackBarService
+  ) {
+    this.environment = environment.module || 'frontoffice';
+  }
 
   ngOnInit(): void {
+    this.setSelectedItems();
     this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
     // this way we can wait for 2s before sending an update
     this.search.valueChanges
@@ -213,9 +249,14 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
       });
   }
 
+  ngOnChanges(): void {
+    this.statusMessage = this.getStatusMessage();
+  }
+
   ngAfterViewInit(): void {
+    this.setSelectedItems();
     // Wait for columns to be reordered before updating the layout
-    this.grid?.columnReorder.subscribe((res) =>
+    this.grid?.columnReorder.subscribe(() =>
       setTimeout(() => this.columnChange.emit(), 500)
     );
   }
@@ -229,20 +270,44 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @returns Value of the property.
    */
   public getPropertyValue(item: any, path: string): any {
-    const meta = this.fields.find((x) => x.name === path).meta;
+    const meta = this.fields.find((x) => x.name === path)?.meta;
     const value = get(item, path);
     if (meta.choices) {
       if (Array.isArray(value)) {
-        return meta.choices.reduce(
+        const text = meta.choices.reduce(
           (acc: string[], x: any) =>
             value.includes(x.value) ? acc.concat([x.text]) : acc,
           []
         );
+        if (text.length < value.length) {
+          return value;
+        } else {
+          return text;
+        }
       } else {
-        return meta.choices.find((x: any) => x.value === value)?.text || '';
+        return meta.choices.find((x: any) => x.value === value)?.text || value;
       }
     } else {
       return value;
+    }
+  }
+
+  /**
+   * Returns property value in object from path. Specific for multiselect reference data.
+   *
+   * @param item Item to get property of.
+   * @param path Path of the property.
+   * @param attribute Path of the final attribute.
+   * @returns Value of the property.
+   */
+  public getReferenceDataPropertyValue(
+    item: any,
+    path: string,
+    attribute: string
+  ): any {
+    const values = get(item, path);
+    if (Array.isArray(values)) {
+      return values.map((x) => x[attribute]).join(', ');
     }
   }
 
@@ -284,7 +349,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param filter Filter event.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
-    if (!this.loading) {
+    if (!this.loadingRecords) {
       this.filter = filter;
       this.filterChange.emit(filter);
     }
@@ -294,7 +359,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * Toggles quick filter visibility
    */
   public onToggleFilter(): void {
-    if (!this.loading) {
+    if (!this.loadingRecords) {
       this.showFilter = !this.showFilter;
       this.showFilterChange.emit(this.showFilter);
       this.onFilterChange({
@@ -305,7 +370,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Searchs through all text columns.
+   * Searches through all text columns.
    *
    * @param search text input value.
    */
@@ -320,7 +385,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param sort Sort event.
    */
   public onSortChange(sort: SortDescriptor[]): void {
-    if (!this.loading) {
+    if (!this.loadingRecords) {
       this.sort = sort;
       this.sortChange.emit(sort);
     }
@@ -333,7 +398,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param page Page event.
    */
   public onPageChange(page: PageChangeEvent): void {
-    if (!this.loading) {
+    if (!this.loadingRecords) {
       this.skip = page.skip;
       this.pageSize = page.take;
       this.pageChange.emit(page);
@@ -361,6 +426,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         selectedRows.map((x) => x.dataItem.id)
       );
     }
+    this.setSelectedItems();
     this.selectionChange.emit(selection);
   }
 
@@ -373,13 +439,20 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
   public isRowSelected = (row: RowArgs) =>
     this.selectedRows.includes(row.dataItem.id);
 
+  /**
+   * Set array of selected items from selected rows.
+   */
+  private setSelectedItems(): void {
+    this.selectedItems = this.data.data.filter((x) =>
+      this.selectedRows.includes(x.id)
+    );
+  }
+
   // === LAYOUT ===
   /**
    * Set and emit new grid configuration after column reorder event.
-   *
-   * @param e ColumnReorderEvent
    */
-  onColumnReorder(e: ColumnReorderEvent): void {
+  onColumnReorder(): void {
     this.columnChange.emit();
   }
 
@@ -399,22 +472,33 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
 
   /** @returns Visible columns of the grid. */
   get visibleFields(): any {
+    const extractFieldFromColumn = (column: any): any => ({
+      [column.field]: {
+        field: column.field,
+        title: column.title,
+        width: column.width,
+        hidden: column.hidden,
+        order: column.orderIndex,
+        subFields:
+          this.fields.find((x) => x.name === column.field)?.subFields || [],
+      },
+    });
     return this.grid?.columns
       .toArray()
       .sort((a: any, b: any) => a.orderIndex - b.orderIndex)
-      .filter((x: any) => x.field)
+      .filter((x: any) => x.field || x.hasChildren)
       .reduce(
         (obj, c: any) => ({
           ...obj,
-          [c.field]: {
-            field: c.field,
-            title: c.title,
-            width: c.width,
-            hidden: c.hidden,
-            order: c.orderIndex,
-            subFields:
-              this.fields.find((x) => x.name === c.field)?.subFields || [],
-          },
+          ...(c.field && extractFieldFromColumn(c)),
+          ...(c.hasChildren &&
+            c.childrenArray.reduce(
+              (objChildren: any, y: any) => ({
+                ...objChildren,
+                ...(y.field && extractFieldFromColumn(y)),
+              }),
+              {}
+            )),
         }),
         {}
       );
@@ -537,8 +621,15 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param file File to download.
    */
   public onDownload(file: any): void {
-    const path = `download/file/${file.content}`;
-    this.downloadService.getFile(path, file.type, file.name);
+    if (file.content.startsWith('data')) {
+      const downloadLink = document.createElement('a');
+      downloadLink.href = file.content;
+      downloadLink.download = file.name;
+      downloadLink.click();
+    } else {
+      const path = `download/file/${file.content}`;
+      this.downloadService.getFile(path, file.type, file.name);
+    }
   }
 
   /**
@@ -576,19 +667,17 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
    * @param item Item to display data of.
    * @param field field name.
    */
-  public onExpandText(item: any, field: any): void {
+  public onExpandText(item: any, field: string): void {
     const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
       data: {
-        title: field.title,
-        comment: get(item, field),
-        readonly: !this.actions.update,
+        title: field,
+        value: get(item, field),
+        readonly:
+          !this.actions.update ||
+          !item.canUpdate ||
+          this.fields.find((val) => val.name === field).meta.readOnly,
       },
       autoFocus: false,
-      position: {
-        bottom: '0',
-        right: '0',
-      },
-      panelClass: 'expanded-widget-dialog',
     });
     dialogRef.afterClosed().subscribe((res) => {
       if (res && res !== get(item, field)) {
@@ -596,5 +685,101 @@ export class SafeGridComponent implements OnInit, AfterViewInit {
         this.action.emit({ action: 'edit', item, value });
       }
     });
+  }
+
+  /**
+   * Open a modal to show the errors
+   *
+   * @param item The item of the grid
+   */
+  public showErrors(item: any): void {
+    const dialogRef = this.dialog.open(SafeErrorsModalComponent, {
+      data: {
+        incrementalId: item.incrementalId,
+        errors: item.validationErrors,
+      },
+      autoFocus: false,
+    });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) {
+        this.action.emit({ action: 'update', item });
+      }
+    });
+  }
+
+  /**
+   * Emit an event to open settings window
+   */
+  public openSettings(): void {
+    const dialogRef = this.dialog.open(SafeTileDataComponent, {
+      disableClose: true,
+      data: {
+        tile: this.widget,
+        template: this.dashboardService.findSettingsTemplate(this.widget),
+      },
+    });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) {
+        this.edit.emit({ type: 'data', id: this.widget.id, options: res });
+      }
+    });
+  }
+
+  /**
+   * Gets the kendo class icon for the file extension
+   *
+   * @param name Name of the file with the extension
+   * @returns String with the name of the icon class
+   */
+  public getFileIcon(name: string): string {
+    const fileExt = name.split('.').pop();
+    return fileExt && ICON_EXTENSIONS[fileExt]
+      ? ICON_EXTENSIONS[fileExt]
+      : 'k-i-file';
+  }
+
+  /**
+   * Removes file extension from the file name
+   *
+   * @param name Name of the file with the extension
+   * @returns String with the name of the file without the extension
+   */
+  public removeFileExtension(name: string): string {
+    const fileExt = name.split('.').pop();
+    return fileExt && ICON_EXTENSIONS[fileExt]
+      ? name.slice(0, name.lastIndexOf(fileExt) - 1)
+      : name;
+  }
+
+  /**
+   * Gets the corresponding status message for the status of the grid
+   *
+   * @returns string with the status message
+   */
+  public getStatusMessage(): string {
+    if (this.status.error) {
+      if (this.status.message && this.environment === 'backoffice') {
+        if (this.snackBarRef) this.snackBarRef.dismiss();
+        this.snackBarRef = this.snackBar.openSnackBar(this.status.message, {
+          error: true,
+        });
+      }
+      return this.translate.instant(
+        `components.widget.grid.errors.invalid.${this.environment}`
+      );
+    }
+    if (this.loadingSettings)
+      return this.translate.instant('components.widget.grid.loading.settings');
+    if (this.blank && this.environment === 'backoffice')
+      return this.translate.instant(
+        'components.widget.grid.errors.missingDataset'
+      );
+    if (this.blank && this.environment === 'frontoffice')
+      return this.translate.instant(
+        'components.widget.grid.errors.invalid.frontoffice'
+      );
+    if (this.loadingRecords)
+      return this.translate.instant('components.widget.grid.loading.records');
+    return this.translate.instant('kendo.grid.noRecords');
   }
 }

@@ -1,6 +1,7 @@
-<div class="info-text">
+<safe-alert class="mb-4">
+  <safe-icon icon="info"></safe-icon>
   {{ 'components.queryBuilder.hint.style' | translate }}
-</div>
+</safe-alert>
 <ng-container *ngIf="!editedStyleForm">
   <!-- LIST OF STYLES -->
   <safe-query-style-list
@@ -8,13 +9,13 @@
     (delete)="onDelete($event)"
     (edit)="onEdit($event)"
   ></safe-query-style-list>
-  <div class="actions">
+  <div class="flex justify-center mt-4">
     <safe-button
+      class="grow max-w-xs"
       icon="add"
       (click)="onAdd()"
       category="tertiary"
       variant="primary"
-      [block]="true"
       >{{ 'components.queryBuilder.style.new' | translate }}</safe-button
     >
   </div>
@@ -24,7 +25,6 @@
   <safe-query-style
     [form]="editedStyleForm"
     (closeEdition)="onClose()"
-    [scalarFields]="scalarFields"
-    [fields]="fields"
+    [query]="query"
   ></safe-query-style>
 </ng-container>

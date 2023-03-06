@@ -1,27 +1,26 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   DeleteResourceMutationResponse,
   DELETE_RESOURCE,
   AddFormMutationResponse,
   ADD_FORM,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import {
   GetResourcesQueryResponse,
   GET_RESOURCES_EXTENDED,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   Resource,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   SafeSnackBarService,
-  NOTIFICATIONS,
 } from '@safe/builder';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
-import { AddResourceComponent } from '../../../components/add-resource/add-resource.component';
+import { AddResourceModalComponent } from '../../../components/add-resource-modal/add-resource-modal.component';
 
 /**
  * Default number of resources that will be shown at once.
@@ -36,16 +35,18 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './resources.component.html',
   styleUrls: ['./resources.component.scss'],
 })
-export class ResourcesComponent implements OnInit, AfterViewInit {
+export class ResourcesComponent implements OnInit {
   // === DATA ===
   public loading = true;
+  public filterLoading = false;
   private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   displayedColumns: string[] = ['name', 'createdAt', 'recordsCount', 'actions'];
   public cachedResources: Resource[] = [];
   public resources = new MatTableDataSource<Resource>([]);
 
   // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
+  public updating = false;
+  private sort: Sort = { active: '', direction: '' };
 
   // === FILTERING ===
   public filter: any;
@@ -64,6 +65,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
    * @param dialog Used for opening a dialog.
    * @param apollo Used for loading the resources.
    * @param snackBar Service used to show the snackbar,
+   * @param confirmService Service used to show the confirmation window
    * @param translate Service used to get translations
    * @param router Used to change the app route.
    */
@@ -71,6 +73,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private router: Router
   ) {}
@@ -81,18 +84,22 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       query: GET_RESOURCES_EXTENDED,
       variables: {
         first: DEFAULT_PAGE_SIZE,
+        sortField: 'name',
+        sortOrder: 'asc',
       },
     });
 
-    this.resourcesQuery.valueChanges.subscribe((res) => {
-      this.cachedResources = res.data.resources.edges.map((x) => x.node);
+    this.resourcesQuery.valueChanges.subscribe(({ data, loading }) => {
+      this.cachedResources = data.resources.edges.map((x) => x.node);
       this.resources.data = this.cachedResources.slice(
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
       );
-      this.pageInfo.length = res.data.resources.totalCount;
-      this.pageInfo.endCursor = res.data.resources.pageInfo.endCursor;
-      this.loading = res.loading;
+      this.pageInfo.length = data.resources.totalCount;
+      this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
+      this.loading = loading;
+      this.updating = loading;
+      this.filterLoading = false;
     });
   }
 
@@ -116,9 +123,11 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
+      this.pageInfo.pageSize = first;
+      this.loading = true;
       this.resourcesQuery.fetchMore({
         variables: {
-          first,
+          first: this.pageInfo.pageSize,
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter,
         },
@@ -153,6 +162,7 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
    * @param filter filter event.
    */
   onFilter(filter: any): void {
+    this.filterLoading = true;
     this.filter = filter;
     this.cachedResources = [];
     this.pageInfo.pageIndex = 0;
@@ -176,8 +186,65 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    this.resources.sort = this.sort || null;
+  /**
+   * Handle sort change.
+   *
+   * @param event sort event
+   */
+  onSort(event: Sort): void {
+    this.sort = event;
+    this.fetchResources(true);
+  }
+
+  /**
+   * Update resources query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchResources(refetch?: boolean): void {
+    this.updating = true;
+    if (refetch) {
+      this.cachedResources = [];
+      this.pageInfo.pageIndex = 0;
+      this.resourcesQuery
+        .refetch({
+          first: this.pageInfo.pageSize,
+          afterCursor: null,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
+        })
+        .then(() => {
+          this.loading = false;
+          this.updating = false;
+        });
+    } else {
+      this.loading = true;
+      this.resourcesQuery.fetchMore({
+        variables: {
+          first: this.pageInfo.pageSize,
+          afterCursor: this.pageInfo.endCursor,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) {
+            return prev;
+          }
+          return Object.assign({}, prev, {
+            resources: {
+              edges: [
+                ...prev.resources.edges,
+                ...fetchMoreResult.resources.edges,
+              ],
+              pageInfo: fetchMoreResult.resources.pageInfo,
+              totalCount: fetchMoreResult.resources.totalCount,
+            },
+          });
+        },
+      });
+    }
   }
 
   /**
@@ -186,21 +253,18 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
    * @param resource Resource to delete.
    */
   onDelete(resource: Resource): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('common.deleteObject', {
-          name: this.translate.instant('common.resource.one'),
-        }),
-        content: this.translate.instant(
-          'components.resource.delete.confirmationMessage',
-          {
-            name: resource.name,
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.resource.one'),
+      }),
+      content: this.translate.instant(
+        'components.resource.delete.confirmationMessage',
+        {
+          name: resource.name,
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
 
     dialogRef.afterClosed().subscribe((value) => {
@@ -212,19 +276,28 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
               id: resource.id,
             },
           })
-          .subscribe((res) => {
-            if (!res.errors) {
+          .subscribe(({ errors }) => {
+            if (!errors) {
               this.resources.data = this.resources.data.filter(
                 (x) => x.id !== resource.id
               );
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectDeleted('resource')
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate
+                    .instant('common.resource.one')
+                    .toLowerCase(),
+                })
               );
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectNotDeleted(
-                  'resource',
-                  res.errors[0].message
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: this.translate
+                      .instant('common.resource.one')
+                      .toLowerCase(),
+                    error: errors[0].message,
+                  }
                 ),
                 { error: true }
               );
@@ -239,35 +312,41 @@ export class ResourcesComponent implements OnInit, AfterViewInit {
    * Creates a new form on closed if result.
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddResourceComponent, {
-      panelClass: 'add-dialog',
-    });
+    const dialogRef = this.dialog.open(AddResourceModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        const data = { name: value.name };
+        const variablesData = { name: value.name };
         this.apollo
           .mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,
-            variables: data,
+            variables: variablesData,
           })
-          .subscribe(
-            (res) => {
-              if (res.errors) {
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectNotCreated('form', res.errors[0].message),
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate
+                        .instant('common.form.one')
+                        .toLowerCase(),
+                      error: errors[0].message,
+                    }
+                  ),
                   { error: true }
                 );
               } else {
-                if (res.data) {
-                  const { id } = res.data.addForm;
+                if (data) {
+                  const { id } = data.addForm;
                   this.router.navigate(['/forms/builder', id]);
                 }
               }
             },
-            (err) => {
+            error: (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
-            }
-          );
+            },
+          });
       }
     });
   }

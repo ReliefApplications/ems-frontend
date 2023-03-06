@@ -1,15 +1,15 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
   Application,
   Channel,
   Subscription as ApplicationSubscription,
   SafeApplicationService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
-
 import { SubscriptionModalComponent } from './components/subscription-modal/subscription-modal.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Application subscriptions page component.
@@ -19,7 +19,10 @@ import { SubscriptionModalComponent } from './components/subscription-modal/subs
   templateUrl: './subscriptions.component.html',
   styleUrls: ['./subscriptions.component.scss'],
 })
-export class SubscriptionsComponent implements OnInit, OnDestroy {
+export class SubscriptionsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public subscriptions: ApplicationSubscription[] = [];
   public loading = true;
@@ -31,7 +34,6 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
   ];
 
   // === SUBSCRIPTIONS ===
-  private applicationSubscription?: Subscription;
   private channels: Channel[] = [];
 
   /**
@@ -45,21 +47,22 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
     private applicationService: SafeApplicationService,
     public dialog: MatDialog,
     private apollo: Apollo
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.loading = false;
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          if (application) {
-            this.subscriptions = application.subscriptions || [];
-            this.channels = application.channels || [];
-          } else {
-            this.subscriptions = [];
-          }
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.subscriptions = application.subscriptions || [];
+          this.channels = application.channels || [];
+        } else {
+          this.subscriptions = [];
         }
-      );
+      });
   }
 
   /**
@@ -68,7 +71,6 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
    */
   onAdd(): void {
     const dialogRef = this.dialog.open(SubscriptionModalComponent, {
-      width: '400px',
       data: {
         channels: this.channels,
       },
@@ -107,7 +109,6 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
    */
   onEdit(element: any): void {
     const dialogRef = this.dialog.open(SubscriptionModalComponent, {
-      width: '400px',
       data: {
         channels: this.channels,
         subscription: element,
@@ -118,11 +119,5 @@ export class SubscriptionsComponent implements OnInit, OnDestroy {
         this.applicationService.editSubscription(value, element.routingKey);
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
   }
 }

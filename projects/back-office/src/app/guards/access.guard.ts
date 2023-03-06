@@ -1,16 +1,7 @@
 import { Injectable } from '@angular/core';
-import {
-  CanActivate,
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-  UrlTree,
-  Router,
-} from '@angular/router';
-import {
-  SafeAuthService,
-  SafeSnackBarService,
-  NOTIFICATIONS,
-} from '@safe/builder';
+import { CanActivate, UrlTree, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { SafeAuthService, SafeSnackBarService } from '@safe/builder';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -27,24 +18,21 @@ export class AccessGuard implements CanActivate {
    * @param authService The authentification service
    * @param snackBar The snack bar service
    * @param router The router client
+   * @param translate Angular translate service
    */
   constructor(
     private authService: SafeAuthService,
     private snackBar: SafeSnackBarService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   /**
    * Check if user can activate the route
    *
-   * @param route The route to test
-   * @param state The current state
    * @returns A boolean indicating if he can activate
    */
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ):
+  canActivate():
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree>
     | boolean
@@ -57,7 +45,9 @@ export class AccessGuard implements CanActivate {
             return true;
           } else {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.accessNotProvided('platform'),
+              this.translate.instant(
+                'common.notifications.platformAccessNotGranted'
+              ),
               { error: true }
             );
             this.authService.logout();

@@ -6,7 +6,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { QueryBuilderService } from '../../services/query-builder.service';
+import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { FormGroup } from '@angular/forms';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/select';

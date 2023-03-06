@@ -12,6 +12,7 @@ interface Version {
 /** Model for Record object. */
 export interface Record {
   id?: string;
+  incrementalId?: string;
   createdAt?: Date;
   modifiedAt?: Date;
   deleted?: boolean;
@@ -22,6 +23,7 @@ export interface Record {
   modifiedBy?: User;
   canUpdate?: boolean;
   canDelete?: boolean;
+  validationErrors?: { question: string; errors: string[] }[];
 }
 
 /** Model for RecordConnection object */

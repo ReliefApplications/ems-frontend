@@ -1,6 +1,8 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
+import { QueryField } from '../../services/query-builder/query-builder.service';
 import { prettifyLabel } from '../../utils/prettify';
+import { FILTER_OPERATORS } from '../filter/filter.const';
 
 /** Creating a new instance of the FormBuilder class. */
 const formBuilder = new FormBuilder();
@@ -12,23 +14,25 @@ const formBuilder = new FormBuilder();
  * @returns Filter form
  */
 export const createFilterGroup = (filter: any): FormGroup => {
-  if (filter) {
-    if (filter.filters) {
-      const filters = filter.filters.map((x: any) => createFilterGroup(x));
-      return formBuilder.group({
-        logic: filter.logic || 'and',
-        filters: formBuilder.array(filters),
-      });
-    } else {
-      if (filter.field) {
-        return formBuilder.group({
-          field: filter.field,
-          operator: filter.operator || 'eq',
-          value: Array.isArray(filter.value) ? [filter.value] : filter.value,
-          useExpression: get(filter, 'useExpression', false),
-        });
-      }
+  if (filter?.filters) {
+    const filters = filter.filters.map((x: any) => createFilterGroup(x));
+    return formBuilder.group({
+      logic: filter.logic || 'and',
+      filters: formBuilder.array(filters),
+    });
+  }
+  if (filter?.field) {
+    const group = formBuilder.group({
+      field: filter.field,
+      operator: filter.operator || 'eq',
+      value: Array.isArray(filter.value) ? [filter.value] : filter.value,
+    });
+    if (
+      FILTER_OPERATORS.find((op) => op.value === filter.operator)?.disableValue
+    ) {
+      group.get('value')?.disable();
     }
+    return group;
   }
   return formBuilder.group({
     logic: 'and',
@@ -58,8 +62,8 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
           Validators.required
         ),
         sort: formBuilder.group({
-          field: [field.sort ? field.sort.field : ''],
-          order: [field.sort && field.sort.order ? field.sort.order : 'asc'],
+          field: [get(field, 'sort.field', '')],
+          order: [get(field, 'sort.order', 'asc')],
         }),
         first: [get(field, 'first', null), Validators.min(0)],
         filter: newField
@@ -70,7 +74,13 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
     case 'OBJECT': {
       return formBuilder.group({
         name: [{ value: field.name, disabled: true }],
-        type: [newField ? field.type.name : field.type],
+        type: [
+          newField
+            ? field.type.name
+              ? field.type.name
+              : field.type.ofType.name
+            : field.type,
+        ],
         kind: [newField ? field.type.kind : field.kind],
         fields: formBuilder.array(
           !newField && field.fields
@@ -97,6 +107,19 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
 };
 
 /**
+ * Create a default QueryField from a name only.
+ *
+ * @param name Name of the field
+ * @returns Default QueryField
+ */
+export const createDefaultField = (name: string): QueryField => ({
+  name,
+  type: 'String',
+  kind: 'SCALAR',
+  label: prettifyLabel(name),
+});
+
+/**
  * Builds a query form.
  *
  * @param value Initial value
@@ -105,21 +128,20 @@ export const addNewField = (field: any, newField?: boolean): FormGroup => {
  */
 export const createQueryForm = (value: any, validators = true): FormGroup =>
   formBuilder.group({
-    name: [value ? value.name : '', validators ? Validators.required : null],
-    template: [value ? value.template : '', null],
+    name: [get(value, 'name', ''), validators ? Validators.required : null],
+    template: [get(value, 'template', ''), null],
+    pageSize: [get(value, 'pageSize', 10)],
     fields: formBuilder.array(
-      value && value.fields ? value.fields.map((x: any) => addNewField(x)) : [],
+      get(value, 'fields', []).map((x: any) => addNewField(x)),
       validators ? Validators.required : null
     ),
     sort: formBuilder.group({
-      field: [value && value.sort ? value.sort.field : ''],
-      order: [value && value.sort ? value.sort.order : 'asc'],
+      field: [get(value, 'sort.field', '')],
+      order: [get(value, 'sort.order', 'asc')],
     }),
-    filter: createFilterGroup(value && value.filter ? value.filter : {}),
+    filter: createFilterGroup(get(value, 'filter', {})),
     style: formBuilder.array(
-      value && value.style && value.style.length
-        ? value.style.map((x: any) => createStyleForm(x))
-        : []
+      get(value, 'style', []).map((x: any) => createStyleForm(x))
     ),
   });
 

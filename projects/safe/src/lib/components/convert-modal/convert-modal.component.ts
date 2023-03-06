@@ -5,8 +5,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
   GetRecordDetailsQueryResponse,
   GET_RECORD_DETAILS,
-} from '../../graphql/queries';
+} from './graphql/queries';
 import { Form } from '../../models/form.model';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * An interface to define the structure of the data displayed in the modal
@@ -25,7 +27,10 @@ interface DialogData {
   templateUrl: './convert-modal.component.html',
   styleUrls: ['./convert-modal.component.scss'],
 })
-export class SafeConvertModalComponent implements OnInit {
+export class SafeConvertModalComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === REACTIVE FORM ===
   convertForm: FormGroup = new FormGroup({});
 
@@ -50,18 +55,21 @@ export class SafeConvertModalComponent implements OnInit {
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeConvertModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.apollo
-      .watchQuery<GetRecordDetailsQueryResponse>({
+      .query<GetRecordDetailsQueryResponse>({
         query: GET_RECORD_DETAILS,
         variables: {
           id: this.data.record,
         },
       })
-      .valueChanges.subscribe((res) => {
-        const record = res.data.record;
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        const record = data.record;
         this.form = record.form;
         this.loading = false;
         this.availableForms =
@@ -74,7 +82,8 @@ export class SafeConvertModalComponent implements OnInit {
     });
     this.convertForm
       .get('targetForm')
-      ?.valueChanges.subscribe((targetForm: Form) => {
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((targetForm: Form) => {
         if (targetForm) {
           this.ignoredFields =
             this.form?.fields?.filter(

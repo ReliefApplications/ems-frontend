@@ -1,0 +1,186 @@
+<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ng-container *ngIf="!loading && referenceData">
+  <!-- Header -->
+  <div class="page-header">
+    <h1 class="page-title">
+      {{ referenceData?.name }}
+    </h1>
+    <safe-access
+      [access]="referenceData?.permissions"
+      [objectTypeName]="'common.referenceData.one' | translate"
+      (save)="saveAccess($event)"
+      *ngIf="referenceData?.canUpdate"
+    ></safe-access>
+  </div>
+  <!-- Form -->
+  <form [formGroup]="referenceForm" class="flex flex-col mb-8">
+    <div class="flex gap-x-2">
+      <!-- Name -->
+      <mat-form-field appearance="outline" class="flex-auto">
+        <mat-label>{{ 'common.name' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="name"
+          type="text"
+          [placeholder]="'common.placeholder.name' | translate"
+        />
+      </mat-form-field>
+      <!-- Type selection -->
+      <mat-form-field appearance="outline" class="1">
+        <mat-label>{{ 'pages.referenceData.type' | translate }}</mat-label>
+        <mat-select formControlName="type">
+          <mat-option
+            *ngFor="let referenceTypeChoice of referenceTypeChoices"
+            [value]="referenceTypeChoice"
+            >{{ referenceTypeChoice }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <!-- Specific to GraphQL and Rest type -->
+    <div *ngIf="['rest', 'graphql'].includes(type)" class="flex flex-col">
+      <div class="flex gap-x-2">
+        <!-- API Configuration -->
+        <mat-form-field appearance="outline" class="flex-auto">
+          <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
+          <safe-graphql-select
+            valueField="id"
+            textField="name"
+            [query]="apiConfigurationsQuery"
+            formControlName="apiConfiguration"
+            [selectedElements]="[selectedApiConfiguration]"
+          >
+          </safe-graphql-select>
+        </mat-form-field>
+        <!-- QueryName -->
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>{{
+            'pages.referenceData.queryName' | translate
+          }}</mat-label>
+          <input
+            matInput
+            formControlName="query"
+            type="text"
+            [placeholder]="'common.placeholder.name' | translate"
+          />
+        </mat-form-field>
+      </div>
+      <!-- Fields -->
+      <mat-form-field class="chip-list" appearance="outline">
+        <mat-label>{{ 'pages.referenceData.fields' | translate }}</mat-label>
+        <mat-chip-list #chipList aria-label="Fields chip list">
+          <mat-chip
+            *ngFor="let field of valueFields"
+            [selectable]="true"
+            [removable]="true"
+            (removed)="remove(field)"
+          >
+            {{ field }}
+            <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
+          </mat-chip>
+          <input
+            #fieldInput
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            (focusout)="add($event)"
+            (matChipInputTokenEnd)="add($event)"
+          />
+        </mat-chip-list>
+      </mat-form-field>
+    </div>
+    <!-- CSV Input for static type -->
+    <div *ngIf="type === 'static'" class="flex gap-2">
+      <mat-form-field appearance="outline" class="flex-auto">
+        <mat-label>{{ 'pages.referenceData.csv' | translate }}</mat-label>
+        <textarea
+          #csvData
+          matInput
+          [placeholder]="'pages.referenceData.placeholder.csv' | translate"
+          [value]="csvValue"
+        ></textarea>
+      </mat-form-field>
+      <safe-button
+        category="secondary"
+        variant="primary"
+        (click)="onValidateCSV()"
+      >
+        {{ 'pages.referenceData.validateCsv' | translate }}
+      </safe-button>
+    </div>
+    <mat-spinner
+      diameter="45"
+      class="page-loader"
+      *ngIf="csvLoading"
+    ></mat-spinner>
+    <div class="flex gap-x-2">
+      <!-- Path -->
+      <mat-form-field
+        class="flex-auto"
+        appearance="outline"
+        *ngIf="['rest', 'graphql'].includes(type)"
+      >
+        <mat-label>{{ 'pages.referenceData.path' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="path"
+          type="text"
+          [placeholder]="'common.placeholder.name' | translate"
+        />
+      </mat-form-field>
+      <!-- Value field to be displayed -->
+      <mat-form-field
+        class="flex-1"
+        appearance="outline"
+        *ngIf="!csvLoading && type && valueFields.length > 0"
+      >
+        <mat-label>{{
+          'pages.referenceData.valueField' | translate
+        }}</mat-label>
+        <mat-select formControlName="valueField">
+          <mat-option *ngFor="let value of valueFields" [value]="value">{{
+            value
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <!-- For graphql -->
+    <mat-form-field appearance="outline" *ngIf="type === 'graphql'">
+      <mat-label
+        >{{ 'pages.referenceData.graphQLFilter' | translate }}
+      </mat-label>
+      <input
+        matInput
+        formControlName="graphQLFilter"
+        type="text"
+        [placeholder]="
+          'pages.referenceData.placeholder.graphQLFilter' | translate
+        "
+      />
+      <safe-icon
+        icon="info_outline"
+        class="cursor-pointer"
+        variant="grey"
+        matSuffix
+        [matTooltip]="'pages.referenceData.tooltip.graphQLFilter' | translate"
+      ></safe-icon>
+    </mat-form-field>
+    <!-- Kendo grid to preview data on static type -->
+    <div *ngIf="!csvLoading && csvValue && type === 'static'">
+      <kendo-grid [data]="newData">
+        <kendo-grid-column *ngFor="let field of valueFields" [field]="field">{{
+          field
+        }}</kendo-grid-column>
+      </kendo-grid>
+    </div>
+  </form>
+  <!-- Submit button -->
+  <safe-button
+    class="!w-auto"
+    category="secondary"
+    variant="primary"
+    (click)="onSave()"
+    [disabled]="referenceForm.invalid || !referenceForm.dirty"
+  >
+    {{ 'common.save' | translate }}
+  </safe-button>
+</ng-container>

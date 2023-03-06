@@ -1,16 +1,16 @@
-<div [formGroup]="form" class="resources-filter">
-  <div class="top">
-    <mat-form-field appearance="outline">
+<div [formGroup]="form" class="flex flex-col gap-4">
+  <!-- Default filter -->
+  <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
+    <!-- Search text filter -->
+    <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
       <mat-icon matPrefix>search</mat-icon>
-      <input
-        id="custom-search"
-        matInput
-        [formControl]="search"
-        type="search"
-        [placeholder]="'common.placeholder.search' | translate"
-      />
+      <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
+      <input matInput [formControl]="search" type="search" />
+      <mat-spinner *ngIf="loading" diameter="24" matSuffix></mat-spinner>
     </mat-form-field>
+    <!-- Toggle advanced filters -->
     <safe-button
+      class="max-sm:!w-auto"
       icon="filter_list"
       category="tertiary"
       variant="primary"
@@ -23,8 +23,13 @@
       }}
     </safe-button>
   </div>
-  <div class="advanced" *ngIf="show">
-    <mat-form-field appearance="outline">
+  <!-- Advanced filters -->
+  <div
+    *ngIf="show"
+    class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row"
+  >
+    <!-- Date range filter -->
+    <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
       <mat-label>{{ 'common.input.dateRange' | translate }}</mat-label>
       <mat-date-range-input [rangePicker]="rangePicker">
         <input formControlName="startDate" matStartDate />
@@ -49,7 +54,8 @@
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
-    <safe-button variant="danger" (click)="clear()">
+    <!-- Clear filters -->
+    <safe-button class="max-sm:!w-auto" variant="danger" (click)="clear()">
       {{ 'common.filter.clear' | translate }}
     </safe-button>
   </div>

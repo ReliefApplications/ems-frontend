@@ -2,7 +2,13 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Form, Page, Step, SafeFormComponent } from '@safe/builder';
+import {
+  Form,
+  Page,
+  Step,
+  SafeFormComponent,
+  SafeUnsubscribeComponent,
+} from '@safe/builder';
 import {
   GetFormByIdQueryResponse,
   GetPageByIdQueryResponse,
@@ -10,8 +16,8 @@ import {
   GET_SHORT_FORM_BY_ID,
   GET_PAGE_BY_ID,
   GET_STEP_BY_ID,
-} from '../../../graphql/queries';
-import { Subscription } from 'rxjs';
+} from './graphql/queries';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Application preview form page component.
@@ -21,7 +27,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent implements OnInit {
+export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
   @ViewChild(SafeFormComponent)
   private formComponent?: SafeFormComponent;
 
@@ -37,7 +43,6 @@ export class FormComponent implements OnInit {
   public step?: Step;
 
   // === ROUTE ===
-  private routeSubscription?: Subscription;
   public isStep = false;
 
   /**
@@ -51,13 +56,15 @@ export class FormComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Gets the form from the page parameters.
    */
   ngOnInit(): void {
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.loading = true;
       this.id = params.id;
       this.isStep = this.router.url.includes('/workflow/');
@@ -78,9 +85,9 @@ export class FormComponent implements OnInit {
                   id: this.step.content,
                 },
               })
-              .valueChanges.subscribe((res2) => {
-                this.form = res2.data.form;
-                this.loading = res2.data.loading;
+              .valueChanges.subscribe(({ data, loading }) => {
+                this.form = data.form;
+                this.loading = loading;
               });
           });
       } else {
@@ -100,11 +107,11 @@ export class FormComponent implements OnInit {
                   id: this.page.content,
                 },
               })
-              .subscribe((res2) => {
-                if (res2.data) {
-                  this.form = res2.data.form;
+              .subscribe(({ data, loading }) => {
+                if (data) {
+                  this.form = data.form;
                 }
-                this.loading = res2.data.loading;
+                this.loading = loading;
               });
           });
       }

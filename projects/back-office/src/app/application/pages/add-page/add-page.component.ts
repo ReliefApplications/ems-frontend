@@ -1,25 +1,22 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
   ContentType,
   CONTENT_TYPES,
   Form,
-  Permissions,
   SafeApplicationService,
   SafeAuthService,
   SafeSnackBarService,
-  NOTIFICATIONS,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { AddFormComponent } from '../../../components/add-form/add-form.component';
-import { AddFormMutationResponse, ADD_FORM } from '../../../graphql/mutations';
-import {
-  GET_FORM_NAMES,
-  GetFormsQueryResponse,
-} from '../../../graphql/queries';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { AddFormModalComponent } from '../../../components/add-form-modal/add-form-modal.component';
+import { AddFormMutationResponse, ADD_FORM } from './graphql/mutations';
+import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import { MatSelect } from '@angular/material/select';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Number of items per page.
@@ -34,7 +31,10 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './add-page.component.html',
   styleUrls: ['./add-page.component.scss'],
 })
-export class AddPageComponent implements OnInit, OnDestroy {
+export class AddPageComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public contentTypes = CONTENT_TYPES;
   private forms = new BehaviorSubject<Form[]>([]);
@@ -45,16 +45,13 @@ export class AddPageComponent implements OnInit, OnDestroy {
     hasNextPage: true,
   };
   private loading = true;
+  public loadingMore = false;
 
   @ViewChild('formSelect') formSelect?: MatSelect;
 
   // === REACTIVE FORM ===
   public pageForm: FormGroup = new FormGroup({});
   public step = 1;
-
-  // === PERMISSIONS ===
-  canCreateForm = false;
-  private authSubscription?: Subscription;
 
   /**
    * Add page component
@@ -65,6 +62,7 @@ export class AddPageComponent implements OnInit, OnDestroy {
    * @param dialog Material dialog service
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
+   * @param translate Angular translate service
    */
   constructor(
     private formBuilder: FormBuilder,
@@ -72,8 +70,11 @@ export class AddPageComponent implements OnInit, OnDestroy {
     private applicationService: SafeApplicationService,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
-    private authService: SafeAuthService
-  ) {}
+    private authService: SafeAuthService,
+    private translate: TranslateService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.pageForm = this.formBuilder.group({
@@ -85,17 +86,17 @@ export class AddPageComponent implements OnInit, OnDestroy {
       const contentControl = this.pageForm.controls.content;
       if (type === ContentType.form) {
         this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
-          query: GET_FORM_NAMES,
+          query: GET_FORMS,
           variables: {
             first: ITEMS_PER_PAGE,
           },
         });
 
         this.forms$ = this.forms.asObservable();
-        this.formsQuery.valueChanges.subscribe((res) => {
-          this.forms.next(res.data.forms.edges.map((x) => x.node));
-          this.pageInfo = res.data.forms.pageInfo;
-          this.loading = res.loading;
+        this.formsQuery.valueChanges.subscribe(({ data, loading }) => {
+          this.forms.next(data.forms.edges.map((x) => x.node));
+          this.pageInfo = data.forms.pageInfo;
+          this.loadingMore = loading;
         });
         contentControl.setValidators([Validators.required]);
         contentControl.updateValueAndValidity();
@@ -105,11 +106,6 @@ export class AddPageComponent implements OnInit, OnDestroy {
         contentControl.updateValueAndValidity();
       }
       this.onNext();
-    });
-    this.authSubscription = this.authService.user.subscribe(() => {
-      this.canCreateForm = this.authService.userHasClaim(
-        Permissions.canCreateForms
-      );
     });
   }
 
@@ -174,98 +170,123 @@ export class AddPageComponent implements OnInit, OnDestroy {
    * Add a new form.
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddFormComponent, {
-      panelClass: 'add-dialog',
-    });
+    const dialogRef = this.dialog.open(AddFormModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        const data = { name: value.name };
+        const variablesData = { name: value.name };
         Object.assign(
-          data,
+          variablesData,
           value.resource && { resource: value.resource },
           value.template && { template: value.template }
         );
         this.apollo
           .mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,
-            variables: data,
+            variables: variablesData,
           })
-          .subscribe(
-            (res) => {
-              if (res.errors) {
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectNotCreated('form', res.errors[0].message),
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate
+                        .instant('common.form.one')
+                        .toLowerCase(),
+                      error: errors[0].message,
+                    }
+                  ),
                   { error: true }
                 );
               } else {
-                const id = res.data?.addForm.id || '';
+                const id = data?.addForm.id || '';
                 this.pageForm.controls.content.setValue(id);
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectCreated('page', value.name)
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.page.one')
+                      .toLowerCase(),
+                    value: value.name,
+                  })
                 );
 
                 this.onSubmit();
               }
             },
-            (err) => {
+            error: (err) => {
               this.snackBar.openSnackBar(err.message, { error: true });
-            }
-          );
+            },
+          });
       }
     });
   }
 
   /**
-   * Adds scroll listener to select.
+   * Fetches next page of forms to add to list.
    *
-   * @param e open select event.
+   * @param value boolean that decides wether a next page of forms should be fetched
    */
-  onOpenSelect(e: any): void {
-    if (e && this.formSelect) {
-      const panel = this.formSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScroll(event)
-      );
+  public onScrollDataSource(value: boolean): void {
+    if (!this.loadingMore && this.pageInfo.hasNextPage) {
+      this.loadingMore = true;
+      this.fetchMoreForms(value);
     }
   }
 
   /**
-   * Fetches more forms on scroll.
+   * Filters forms by name
    *
-   * @param e scroll event.
+   * @param filter string used to filter.
    */
-  private loadOnScroll(e: any): void {
-    if (
-      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
-      50
-    ) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
-        this.loading = true;
-        this.formsQuery.fetchMore({
-          variables: {
-            first: ITEMS_PER_PAGE,
-            afterCursor: this.pageInfo.endCursor,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-            return Object.assign({}, prev, {
-              forms: {
-                edges: [...prev.forms.edges, ...fetchMoreResult.forms.edges],
-                pageInfo: fetchMoreResult.forms.pageInfo,
-                totalCount: fetchMoreResult.forms.totalCount,
-              },
-            });
-          },
-        });
-      }
+  public onFilterDataSource(filter: string): void {
+    if (!this.loadingMore) {
+      this.loadingMore = true;
+      this.fetchMoreForms(false, filter);
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
+  /**
+   * Fetches more forms using filtering and pagination.
+   *
+   * @param nextPage boolean to indicate if we must fetch the next page.
+   * @param filter the forms fetched must respect this filter
+   */
+  public fetchMoreForms(nextPage: boolean = false, filter: string = '') {
+    const variables: any = {
+      first: ITEMS_PER_PAGE,
+    };
+    variables.filter = {
+      logic: 'and',
+      filters: [
+        {
+          field: 'name',
+          operator: 'contains',
+          value: filter,
+        },
+      ],
+    };
+    if (nextPage) {
+      variables.afterCursor = this.pageInfo.endCursor;
     }
+    this.formsQuery.fetchMore({
+      variables,
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
+        return Object.assign({}, prev, {
+          forms: {
+            edges: prev.forms.edges.concat(
+              fetchMoreResult.forms.edges.filter(
+                (x) => !prev.forms.edges.some((y) => y.node.id === x.node.id)
+              )
+            ),
+            pageInfo: fetchMoreResult.forms.pageInfo,
+            totalCount: fetchMoreResult.forms.totalCount,
+          },
+        });
+      },
+    });
   }
 }

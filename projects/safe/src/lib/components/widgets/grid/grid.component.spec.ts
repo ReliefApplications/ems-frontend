@@ -22,10 +22,7 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import {
-  GET_GRID_RESOURCE_META,
-  GET_QUERY_TYPES,
-} from '../../../graphql/queries';
+import { GET_QUERY_TYPES } from './graphql/queries';
 
 describe('SafeGridWidgetComponent', () => {
   let component: SafeGridWidgetComponent;
@@ -81,12 +78,6 @@ describe('SafeGridWidgetComponent', () => {
         },
         fields: [],
       },
-    });
-
-    const op2 = controller.expectOne(GET_GRID_RESOURCE_META);
-
-    op2.flush({
-      data: {},
     });
   });
 

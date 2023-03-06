@@ -7,7 +7,7 @@
 </button>
 <mat-menu #menu="matMenu">
   <ng-container *ngFor="let item of items">
-    <mat-divider *ngIf="item.name === 'Delete'"></mat-divider>
+    <safe-divider *ngIf="item.name === 'Delete'" class="m-0"></safe-divider>
 
     <button mat-menu-item (click)="onClick(item)" [disabled]="item.disabled">
       <mat-icon>{{ item.icon }}</mat-icon>

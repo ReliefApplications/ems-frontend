@@ -1,30 +1,6 @@
-.workflow-name-container {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  margin-bottom: 20px;
-
-  .workflow-name {
-    display: inline-block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    border-radius: 6px;
-    margin: unset;
-  }
-  .workflow-name:hover {
-    background-color: #dddddd54;
-  }
-}
-
-safe-workflow-stepper {
-  margin: 16px -24px;
-  display: block;
-}
-
 .cdk-drag-preview {
-  box-sizing: border-box;
   background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 0;
 }
 
 .cdk-drag-animating {

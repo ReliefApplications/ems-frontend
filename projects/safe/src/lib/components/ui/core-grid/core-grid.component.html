@@ -1,8 +1,9 @@
 <safe-grid
   [fields]="fields"
   [data]="gridData"
-  [loading]="settings.query && loading"
-  [error]="error"
+  [loadingRecords]="settings.query && loading"
+  [loadingSettings]="loadingSettings"
+  [status]="status"
   [pageSize]="pageSize"
   [skip]="skip"
   (pageChange)="onPageChange($event)"
@@ -24,5 +25,9 @@
   (searchChange)="onSearchChange($event)"
   (export)="onExport($event)"
   [blank]="!settings.query"
+  (edit)="edit.emit($event)"
+  [widget]="widget"
+  [canUpdate]="canUpdate"
+  [canAdd]="canCreateRecords"
 >
 </safe-grid>

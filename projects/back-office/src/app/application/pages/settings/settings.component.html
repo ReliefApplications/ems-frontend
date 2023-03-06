@@ -1,7 +1,8 @@
-<form [formGroup]="settingsForm" *ngIf="settingsForm" class="settings-form">
-  <h1>{{ 'common.general' | translate }}</h1>
-  <div class="app-status">
-    <mat-form-field appearance="outline">
+<form [formGroup]="settingsForm" *ngIf="settingsForm">
+  <!-- Header -->
+  <div class="flex gap-2 flex-wrap justify-between mb-8">
+    <h1 class="!m-0">{{ 'common.general' | translate }}</h1>
+    <mat-form-field appearance="outline" class="p-0">
       <mat-label>{{ 'common.status' | translate }}</mat-label>
       <mat-select formControlName="status">
         <mat-option value="active">
@@ -16,9 +17,10 @@
       </mat-select>
     </mat-form-field>
   </div>
-  <div class="form-group">
-    <div class="form-group-row">
-      <mat-form-field appearance="outline" style="flex: 2">
+  <!-- Settings -->
+  <div class="flex flex-col">
+    <div class="flex gap-x-2 flex-wrap">
+      <mat-form-field appearance="outline" class="flex-auto">
         <mat-label>
           {{ 'common.name' | translate }}
         </mat-label>
@@ -30,7 +32,7 @@
         />
       </mat-form-field>
 
-      <mat-form-field appearance="outline" style="flex: 1">
+      <mat-form-field appearance="outline" class="flex-1">
         <mat-label>
           {{ 'models.application.id' | translate }}
         </mat-label>
@@ -63,28 +65,30 @@
     {{ 'common.saveChanges' | translate }}
   </safe-button>
 </form>
-
+<!-- Actions -->
 <div
-  class="action-list"
   *ngIf="application && (application.canUpdate || application.canDelete)"
+  class="mt-8"
 >
-  <h1 class="header">{{ 'pages.application.settings.actions' | translate }}</h1>
-  <safe-button
-    icon="file_copy"
-    category="tertiary"
-    variant="primary"
-    (click)="onDuplicate()"
-    *ngIf="application.canUpdate"
-  >
-    {{ 'common.duplicate' | translate }}
-  </safe-button>
-  <safe-button
-    icon="delete"
-    category="tertiary"
-    variant="danger"
-    (click)="onDelete()"
-    *ngIf="application.canDelete"
-  >
-    {{ 'common.delete' | translate }}
-  </safe-button>
+  <h1>{{ 'pages.application.settings.actions' | translate }}</h1>
+  <div class="flex gap-2 flex-wrap">
+    <safe-button
+      icon="file_copy"
+      category="tertiary"
+      variant="primary"
+      (click)="onDuplicate()"
+      *ngIf="application.canUpdate"
+    >
+      {{ 'common.duplicate' | translate }}
+    </safe-button>
+    <safe-button
+      icon="delete"
+      category="tertiary"
+      variant="danger"
+      (click)="onDelete()"
+      *ngIf="application.canDelete"
+    >
+      {{ 'common.delete' | translate }}
+    </safe-button>
+  </div>
 </div>

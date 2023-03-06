@@ -6,12 +6,14 @@
 </ng-container>
 <ng-container *ngIf="!menuItem">
   <safe-button
+    variant="grey"
     [isIcon]="true"
     icon="admin_panel_settings"
     matTooltipPosition="above"
-    [matTooltip]="'components.access.description' | translate"
+    [matTooltip]="
+      'components.access.description' | translate: { name: objectTypeName }
+    "
     (click)="onClick()"
-    class="access-button"
   >
   </safe-button>
 </ng-container>

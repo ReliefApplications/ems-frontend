@@ -14,6 +14,8 @@ import { isMongoId } from '../../../../utils/is-mongo-id';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Form } from '../../../../models/form.model';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * This component is used to display a dropdown where the user chan choose a form
@@ -23,9 +25,13 @@ import { Form } from '../../../../models/form.model';
   templateUrl: './forms-dropdown.component.html',
   styleUrls: ['./forms-dropdown.component.scss'],
 })
-export class SafeFormsDropdownComponent implements OnInit, DoCheck {
+export class SafeFormsDropdownComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, DoCheck
+{
   // === DATA ===
   @Input() public forms$!: Observable<Form[]>;
+  @Input() public loadingMore = true;
   private currentForms: Form[] = [];
   public filteredForms: Form[] = [];
   private loading = true;
@@ -33,6 +39,9 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   // === REACTIVE FORM ===
   @Input() sourceControl!: AbstractControl;
   private sourceFilter = '';
+
+  // === LABEL ===
+  @Input() label!: string;
 
   // === SCROLL DETECTION ===
   @ViewChild('auto') autocomplete?: MatAutocomplete;
@@ -42,10 +51,13 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
 
   // === FILTER ===
   @Output() filter = new EventEmitter<string>();
+
   /**
    * Constructor for the dropdown of forms
    */
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   ngOnInit(): void {
     this.sourceFilter =
@@ -59,6 +71,7 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
     });
     this.sourceControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged())
+      .pipe(takeUntil(this.destroy$))
       .subscribe((value: string) => {
         // If not an ID
         if (!isMongoId(value)) {
@@ -106,18 +119,16 @@ export class SafeFormsDropdownComponent implements OnInit, DoCheck {
   /**
    * Trigger add scroll listener to autocomplete.
    *
-   * @param e open autocomplete event.
    */
-  public onOpen(e: void) {
+  public onOpen() {
     this.initializeScrollListener = true;
   }
 
   /**
    * Remove scroll listener to autocomplete.
    *
-   * @param e close autocomplete event.
    */
-  public onClose(e: void) {
+  public onClose() {
     if (this.panel) {
       this.panel.nativeElement.removeEventListener('scroll', (event: any) =>
         this.scrollListener(event)

@@ -7,21 +7,19 @@ import {
   GET_USERS,
   GetRolesQueryResponse,
   GET_ROLES,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { Role, User } from '@safe/builder';
 
 /**
  * Component which will show all the user in the app.
+ * Accessible with '/settings/users' route.
+ * Management of users.
  */
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-/**
-  Accessible with '/settings/users' route.
-  Management of users.
- */
 export class UsersComponent implements OnInit {
   // === DATA ===
   public loading = true;
@@ -49,9 +47,9 @@ export class UsersComponent implements OnInit {
           .watchQuery<GetRolesQueryResponse>({
             query: GET_ROLES,
           })
-          .valueChanges.subscribe((resRoles) => {
-            this.roles = resRoles.data.roles;
-            this.loading = resRoles.loading;
+          .valueChanges.subscribe(({ data, loading }) => {
+            this.roles = data.roles;
+            this.loading = loading;
           });
       });
   }

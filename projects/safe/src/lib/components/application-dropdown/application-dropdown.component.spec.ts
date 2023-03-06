@@ -11,7 +11,7 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_APPLICATIONS } from '../../graphql/queries';
+import { GET_APPLICATIONS } from './graphql/queries';
 
 describe('SafeApplicationDropdownComponent', () => {
   let component: SafeApplicationDropdownComponent;

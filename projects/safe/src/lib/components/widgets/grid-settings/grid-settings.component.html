@@ -1,126 +1,72 @@
-<ng-container *ngIf="tileForm">
-  <form [formGroup]="tileForm">
-    <!-- MAIN PARAMETERS -->
-    <div class="form-group">
-      <div class="form-group-title">{{ 'common.general' | translate }}</div>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.title' | translate }}</mat-label>
-        <input matInput formControlName="title" type="string" />
-      </mat-form-field>
-    </div>
-    <ng-container formGroupName="query">
-      <mat-form-field appearance="outline">
-        <mat-label>{{
-          'components.queryBuilder.dataset.select' | translate
-        }}</mat-label>
-        <input
-          type="text"
-          [placeholder]="'components.queryBuilder.dataset.select' | translate"
-          matInput
-          formControlName="name"
-          [matAutocomplete]="auto"
-        />
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-          <mat-option *ngFor="let option of filteredQueries" [value]="option">
-            {{ option }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'models.form.template' | translate }}</mat-label>
-        <mat-select formControlName="template">
-          <mat-option>-</mat-option>
-          <mat-option
-            *ngFor="let template of templates"
-            [value]="template.id"
-            >{{ template.name }}</mat-option
-          >
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
-    <!-- SELECTION OF LAYOUTS -->
-    <div class="form-group" *ngIf="queryName">
-      <div class="form-group-title">
-        {{ 'components.widget.settings.grid.layouts.title' | translate }}
-      </div>
-      <safe-layouts-parameters
-        [form]="form"
+<mat-tab-group
+  class="grow"
+  vertical
+  animationDuration="0ms"
+  (selectedTabChange)="handleTabChange($event)"
+>
+  <!-- MAIN PARAMETERS / SELECTION OF LAYOUTS -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <safe-icon
+        icon="preview"
+        [size]="24"
+        matTooltip="{{ 'common.general' | translate }}"
+        matTooltipPosition="right"
+      ></safe-icon>
+      <span>{{ 'common.general' | translate }}</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <safe-tab-main
+        [formGroup]="formGroup"
         [resource]="resource"
-        [selectedLayouts]="$any(tileForm).get('layouts')"
-      ></safe-layouts-parameters>
-    </div>
-    <!-- AVAILABLE ACTIONS -->
-    <div formGroupName="actions" class="form-group">
-      <div class="form-group-title">
-        {{ 'components.widget.settings.grid.actions.title' | translate }}
-      </div>
-      <mat-slide-toggle formControlName="delete">
-        {{ 'components.widget.settings.grid.actions.delete' | translate }}
-      </mat-slide-toggle>
-      <mat-slide-toggle formControlName="history">
-        {{ 'components.widget.settings.grid.actions.show' | translate }}
-      </mat-slide-toggle>
-      <mat-slide-toggle formControlName="convert">
-        {{ 'components.widget.settings.grid.actions.convert' | translate }}
-      </mat-slide-toggle>
-      <mat-slide-toggle formControlName="update">
-        {{ 'components.widget.settings.grid.actions.update' | translate }}
-      </mat-slide-toggle>
-      <mat-slide-toggle formControlName="inlineEdition">
-        {{ 'components.widget.settings.grid.actions.inline' | translate }}
-      </mat-slide-toggle>
-      <mat-slide-toggle formControlName="addRecord">
-        {{ 'components.widget.settings.grid.actions.add' | translate }}
-      </mat-slide-toggle>
-      <mat-slide-toggle formControlName="showDetails">
-        {{ 'components.widget.settings.grid.actions.showDetails' | translate }}
-      </mat-slide-toggle>
-    </div>
-    <!-- BUTTONS -->
-    <div class="form-group">
-      <div class="form-group-title">
-        {{ 'components.widget.settings.grid.buttons.title' | translate }}
-      </div>
-      <div class="info-text">
-        {{ 'components.widget.settings.grid.hint.buttons' | translate }}
-      </div>
-      <safe-button
-        icon="add"
-        variant="primary"
-        class="add-button"
-        (click)="addFloatingButton()"
-      >
-        {{ 'components.widget.settings.grid.buttons.create' | translate }}
-      </safe-button>
-      <mat-tab-group
-        mat-align-tabs="start"
-        animationDuration="0ms"
-        dynamicHeight
-        style="min-height: 500px"
-        [(selectedIndex)]="tabIndex"
-        *ngIf="floatingButtons.length > 0"
-      >
-        <ng-container *ngFor="let floatingButton of floatingButtons.controls">
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <mat-icon class="form-error" *ngIf="floatingButton.invalid"
-                >error</mat-icon
-              >
-              {{ floatingButton.value.name }}
-            </ng-template>
-            <ng-template matTabContent>
-              <safe-floating-button-settings
-                [buttonForm]="$any(floatingButton)"
-                [templates]="appTemplates"
-                [fields]="fields"
-                [channels]="channels"
-                [relatedForms]="relatedForms"
-                (deleteButton)="deleteFloatingButton()"
-              ></safe-floating-button-settings>
-            </ng-template>
-          </mat-tab>
-        </ng-container>
-      </mat-tab-group>
-    </div>
-  </form>
-</ng-container>
+        [queries]="filteredQueries"
+        [templates]="templates"
+      ></safe-tab-main>
+    </ng-template>
+  </mat-tab>
+  <!-- AVAILABLE ACTIONS -->
+  <mat-tab [disabled]="formGroup.value.aggregations.length > 0">
+    <ng-template mat-tab-label>
+      <safe-icon
+        icon="toggle_on"
+        [size]="24"
+        matTooltip="{{
+          'components.widget.settings.grid.actions.title' | translate
+        }}"
+        matTooltipPosition="right"
+      ></safe-icon>
+      <span>{{
+        'components.widget.settings.grid.actions.title' | translate
+      }}</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <safe-tab-actions [formGroup]="formGroup"></safe-tab-actions>
+    </ng-template>
+  </mat-tab>
+  <!-- BUTTONS -->
+  <mat-tab [disabled]="formGroup.value.aggregations.length > 0">
+    <ng-template mat-tab-label>
+      <safe-icon
+        icon="bolt"
+        [size]="24"
+        matTooltip="{{
+          'components.widget.settings.grid.buttons.title' | translate
+        }}"
+        matTooltipPosition="right"
+      ></safe-icon>
+      <span>{{
+        'components.widget.settings.grid.buttons.title' | translate
+      }}</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <safe-tab-buttons
+        [formGroup]="formGroup"
+        [fields]="fields"
+        [templates]="appTemplates"
+        [distributionLists]="distributionLists"
+        [relatedForms]="relatedForms"
+        [channels]="channels"
+      ></safe-tab-buttons>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

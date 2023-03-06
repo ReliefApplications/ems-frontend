@@ -1,16 +1,18 @@
-<div class="history-header">
-  <div>
-    <h2>{{ 'common.history' | translate }}</h2>
+<div class="items-center p-4 border-b">
+  <!-- HEADER -->
+  <div class="flex justify-between items-center mb-2">
+    <h2 class="float-left mb-0">{{ 'common.history' | translate }}</h2>
     <safe-button
       [isIcon]="true"
       icon="close"
-      style="float: right"
+      class="float-right"
       (click)="onCancel()"
     >
     </safe-button>
   </div>
-  <div style="clear: both">
-    <mat-form-field>
+  <!-- FILTER -->
+  <div class="clear-both flex flex-col">
+    <mat-form-field appearance="outline">
       <mat-date-range-input
         (click)="rangePicker.open()"
         [rangePicker]="rangePicker"
@@ -49,8 +51,25 @@
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'components.history.field.select' | translate }}</mat-label>
+      <mat-select
+        (selectionChange)="applyFilter($event.value)"
+        [value]="filterField"
+      >
+        <mat-option value="">{{
+          'components.history.field.all' | translate
+        }}</mat-option>
+        <mat-option
+          *ngFor="let field of sortedFields"
+          value="{{ field.name }}"
+          >{{ field.title || field.name }}</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
   </div>
-  <div class="actions">
+  <!-- ACTIONS -->
+  <div class="flex flex-row justify-start text-end ml-auto">
     <safe-button
       category="secondary"
       variant="primary"
@@ -64,15 +83,33 @@
     </mat-menu>
   </div>
 </div>
-<div class="history-container">
-  <ng-container *ngFor="let item of filterHistory; let index = index">
+<!-- LOADING -->
+<div class="grow overflow-y-auto" *ngIf="loading">
+  <ng-container *ngFor="let _ of [].constructor(4)">
+    <mat-expansion-panel closed>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <kendo-skeleton width="50%"></kendo-skeleton>
+          <kendo-skeleton
+            class="history-user"
+            width="30%"
+            height="2em"
+          ></kendo-skeleton>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+    </mat-expansion-panel>
+  </ng-container>
+</div>
+<!-- HISTORY CHANGES -->
+<div class="history-container" *ngIf="!loading">
+  <ng-container *ngFor="let item of filterHistory">
     <mat-expansion-panel (closed)="showMore = false">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <span class="history-date">{{
-            item.created | date: 'dd/MM/yyyy'
+          <span class="font-bold mr-2">{{
+            item.createdAt | safeDate: 'shortDate'
           }}</span>
-          {{ item.created | date: 'h:mm a' }}
+          {{ item.createdAt | safeDate: 'shortTime' }}
           <span class="history-user" *ngIf="item.createdBy">{{
             item.createdBy
           }}</span>
@@ -85,9 +122,9 @@
           *ngFor="
             let value of showMore ? item.changes : item.changes.slice(0, 4)
           "
-          [innerHTML]="value"
+          [innerHTML]="getHTMLFromChange(value)"
         ></div>
-        <div class="full-history">
+        <div class="text-center mb-3">
           <safe-button
             variant="primary"
             *ngIf="!showMore && item.changes.length > 4"
@@ -99,13 +136,18 @@
         </div>
         <safe-button
           icon="update"
-          class="revert-icon"
-          (click)="onRevert(item)"
-          *ngIf="index > 0"
+          class="float-right"
+          (click)="onRevert(item.version)"
+          *ngIf="item.version"
         >
           {{ 'components.history.preview' | translate }}
         </safe-button>
       </ng-template>
     </mat-expansion-panel>
   </ng-container>
+  <safe-empty
+    class="m-auto py-6 px-0"
+    *ngIf="filterHistory.length === 0"
+    [title]="'components.history.empty' | translate"
+  ></safe-empty>
 </div>

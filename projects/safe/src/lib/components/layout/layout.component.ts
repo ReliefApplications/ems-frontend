@@ -6,31 +6,26 @@ import {
   Inject,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
   Output,
-  SimpleChanges,
   TemplateRef,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { Account, SafeAuthService } from '../../services/auth.service';
-import { SafeLayoutService } from '../../services/layout.service';
-import {
-  PermissionsManagement,
-  PermissionType,
-  User,
-} from '../../models/user.model';
+import { Account, SafeAuthService } from '../../services/auth/auth.service';
+import { SafeLayoutService } from '../../services/layout/layout.service';
+import { User } from '../../models/user.model';
 import { Application } from '../../models/application.model';
-import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Notification } from '../../models/notification.model';
-import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { SafeNotificationService } from '../../services/notification.service';
-import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
+import { SafeNotificationService } from '../../services/notification/notification.service';
+import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafePreferencesModalComponent } from '../preferences-modal/preferences-modal.component';
+import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Component for the main layout of the platform
@@ -40,17 +35,20 @@ import { SafePreferencesModalComponent } from '../preferences-modal/preferences-
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
 })
-export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
+export class SafeLayoutComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges
+{
   // === HEADER TITLE ===
   @Input() title = '';
-
-  @Input() navGroups: any[] = [];
 
   @Input() applications: Application[] = [];
 
   @Input() route?: ActivatedRoute;
 
   @Input() toolbar?: TemplateRef<any>;
+
+  @Input() leftSidenav?: TemplateRef<any>;
 
   @ViewChild('rightSidenav', { read: ViewContainerRef })
   rightSidenav?: ViewContainerRef;
@@ -61,21 +59,16 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() profileRoute = '/profile';
 
-  filteredNavGroups: any[] = [];
-
   languages: string[] = [];
 
   // === NOTIFICATIONS ===
   public notifications: Notification[] = [];
-  private notificationsSubscription?: Subscription;
   public hasMoreNotifications = false;
-  private hasMoreNotificationsSubscription?: Subscription;
   public loadingNotifications = false;
 
   // === USER INFO ===
   public account: Account | null;
   public user?: User;
-  private userSubscription?: Subscription;
 
   // === DISPLAY ===
   public largeDevice: boolean;
@@ -92,6 +85,50 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   public showAppMenu = false;
 
   /**
+   * Gets URI of the other office
+   *
+   * @returns URI of the other office
+   */
+  get otherOfficeUri(): string {
+    const frontOfficeUri =
+      this.environment.frontOfficeUri.slice(-1) === '/'
+        ? this.environment.frontOfficeUri
+        : this.environment.frontOfficeUri + '/';
+    const backOfficeUri =
+      this.environment.backOfficeUri.slice(-1) === '/'
+        ? this.environment.backOfficeUri
+        : this.environment.backOfficeUri + '/';
+
+    if (this.environment.module === 'backoffice') {
+      const location = backOfficeUri + 'applications/';
+      if (window.location.href.indexOf(location) === 0) {
+        return (
+          frontOfficeUri +
+          window.location.href.slice(
+            location.length,
+            window.location.href.length
+          )
+        );
+      } else {
+        return frontOfficeUri;
+      }
+    } else {
+      if (window.location.href.indexOf('profile') > 0) {
+        return backOfficeUri + 'profile/';
+      } else {
+        return (
+          backOfficeUri +
+          'applications/' +
+          window.location.href.slice(
+            frontOfficeUri.length,
+            window.location.href.length
+          )
+        );
+      }
+    }
+  }
+
+  /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
@@ -100,8 +137,10 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    * @param authService This is the service that handles authentication
    * @param notificationService This is the service that handles the notifications.
    * @param layoutService This is the service that handles the layout of the application.
+   * @param confirmService This is the service that is used to display a confirm window.
    * @param dialog This is the dialog service provided by Angular Material
    * @param translate This is the Angular service that translates text
+   * @param dateTranslate Service used for date formatting
    */
   constructor(
     @Inject('environment') environment: any,
@@ -109,13 +148,17 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     private authService: SafeAuthService,
     private notificationService: SafeNotificationService,
     private layoutService: SafeLayoutService,
+    private confirmService: SafeConfirmService,
     public dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dateTranslate: SafeDateTranslateService
   ) {
+    super();
     this.largeDevice = window.innerWidth > 1024;
     this.account = this.authService.account;
     this.environment = environment;
     this.languages = this.translate.getLangs();
+    this.getLanguage();
     this.theme = this.environment.theme;
     this.showPreferences = environment.availableLanguages.length > 1;
   }
@@ -127,21 +170,21 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       this.otherOffice = 'back office';
     }
-    this.loadUserAndUpdateLayout();
+    this.loadUser();
     this.notificationService.init();
-    this.notificationsSubscription =
-      this.notificationService.notifications$.subscribe(
-        (notifications: Notification[]) => {
-          if (notifications) {
-            this.notifications = notifications;
-          } else {
-            this.notifications = [];
-          }
+    this.notificationService.notifications$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((notifications: Notification[]) => {
+        if (notifications) {
+          this.notifications = notifications;
+        } else {
+          this.notifications = [];
         }
-      );
+      });
 
-    this.hasMoreNotificationsSubscription =
-      this.notificationService.hasNextPage$.subscribe((res) => {
+    this.notificationService.hasNextPage$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
         this.hasMoreNotifications = res;
         this.loadingNotifications = false;
       });
@@ -170,57 +213,18 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Load the user and update availables navGroups accordingly
+   * Load the user
    */
-  private loadUserAndUpdateLayout(): void {
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
-    this.userSubscription = this.authService.user$.subscribe((user) => {
+  private loadUser(): void {
+    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
       if (user) {
         this.user = { ...user };
-      }
-      this.filteredNavGroups = [];
-      for (const group of this.navGroups) {
-        const navItems = group.navItems.filter((item: any) => {
-          if (this.inApplication) {
-            return true;
-          }
-          const permission = PermissionsManagement.getRightFromPath(
-            item.path,
-            PermissionType.access
-          );
-          return this.authService.userHasClaim(
-            permission,
-            this.environment.module === 'backoffice'
-          );
-        });
-        if (navItems.length > 0) {
-          const filteredGroup = {
-            name: group.name,
-            callback: group.callback,
-            navItems,
-          };
-          this.filteredNavGroups.push(filteredGroup);
-        }
       }
     });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    this.loadUserAndUpdateLayout();
-  }
-
-  ngOnDestroy(): void {
-    if (this.notificationsSubscription) {
-      this.notificationsSubscription.unsubscribe();
-    }
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
-    if (this.hasMoreNotificationsSubscription) {
-      this.hasMoreNotificationsSubscription.unsubscribe();
-    }
+  ngOnChanges(): void {
+    this.loadUser();
   }
 
   /**
@@ -250,42 +254,17 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Handles the click event
-   *
-   * @param callback Callback that defines the action to perform on click
-   * @param event Event that happends with the click
-   */
-  onClick(callback: () => any, event: any): void {
-    callback();
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  /**
-   * Drop event handler. Move item in layout navigation item list.
-   *
-   * @param event drop event
-   * @param group group where the event occurs
-   */
-  drop(event: any, group: any): void {
-    moveItemInArray(group.navItems, event.previousIndex, event.currentIndex);
-    this.reorder.emit(group.navItems);
-  }
-
-  /**
    * Call logout method of authService.
    */
   logout(): void {
     if (!this.authService.canLogout.value) {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('common.logout.titleMessage'),
-          content: this.translate.instant('common.logout.confirmationMessage'),
-          confirmText: this.translate.instant(
-            'components.confirmModal.confirm'
-          ),
-          confirmColor: 'primary',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('components.logout.title'),
+        content: this.translate.instant(
+          'components.logout.confirmationMessage'
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'primary',
       });
       dialogRef.afterClosed().subscribe((value) => {
         if (value) {
@@ -300,13 +279,6 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Shows options when opening user profile
-   */
-  onOpenProfile(): void {
-    this.router.navigate([this.profileRoute]);
-  }
-
-  /**
    * Opens the preferences modal and deals with the resulting form
    */
   onOpenPreferences(): void {
@@ -314,24 +286,15 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
       data: {
         languages: this.languages,
       },
-      width: '100%',
     });
     dialogRef.afterClosed().subscribe((form) => {
       if (form && form.touched) {
         this.setLanguage(form.value.language);
+        this.dateTranslate.use(form.value.dateFormat);
+      } else if (!form) {
+        this.setLanguage(this.getLanguage());
       }
     });
-  }
-
-  /**
-   * Switches to back or front-office
-   */
-  onSwitchOffice(): void {
-    if (this.environment.module === 'backoffice') {
-      window.location.href = this.environment.frontOfficeUri;
-    } else {
-      window.location.href = this.environment.backOfficeUri;
-    }
   }
 
   /**
@@ -368,7 +331,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    */
   setLanguage(language: string) {
     this.translate.use(language);
-    window.localStorage.setItem('lang', language);
+    localStorage.setItem('lang', language);
   }
 
   /**
@@ -379,7 +342,7 @@ export class SafeLayoutComponent implements OnInit, OnChanges, OnDestroy {
    */
   getLanguage(): string {
     // select the langage saved (or default if not)
-    let language = window.localStorage.getItem('lang');
+    let language = localStorage.getItem('lang');
     if (!language || !this.languages.includes(language)) {
       language = this.translate.defaultLang;
     }

@@ -1,99 +1,128 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
-  <div class="actions">
-    <safe-button
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="onAdd()"
+<div class="mb-4 flex flex-row justify-end">
+  <safe-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="onAdd()"
+  >
+    {{ 'pages.pullJobs.create' | translate }}
+  </safe-button>
+</div>
+
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
+    <table *ngIf="!loading" mat-table [dataSource]="pullJobs">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'common.name' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="font-bold">
+          {{ element.name }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'common.status' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-chip-list>
+            <mat-chip
+              class="success-chip !rounded-lg"
+              disabled
+              *ngIf="element.status === 'active'"
+            >
+              {{ 'common.status_active' | translate | titlecase }}
+            </mat-chip>
+            <mat-chip
+              class="accent-chip !rounded-lg"
+              disabled
+              color="accent"
+              *ngIf="element.status === 'pending'"
+            >
+              {{ 'common.status_pending' | translate | titlecase }}
+            </mat-chip>
+            <mat-chip
+              class="warn-chip !rounded-lg"
+              disabled
+              color="warn"
+              *ngIf="element.status === 'archived'"
+            >
+              {{ 'common.status_archived' | translate | titlecase }}
+            </mat-chip>
+          </mat-chip-list>
+        </td>
+      </ng-container>
+      <!-- <ng-container matColumnDef="apiConfiguration">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'common.apiConfiguration.one' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.apiConfiguration ? element.apiConfiguration.name : '-' }}
+        </td>
+      </ng-container> -->
+      <ng-container matColumnDef="schedule">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'models.pullJob.nextIteration' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.schedule | safeCronParser | safeDate: 'short' }}
+        </td>
+      </ng-container>
+      <!-- <ng-container matColumnDef="convertTo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'components.record.convert.select' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.convertTo ? element.convertTo.name : '-' }}
+        </td>
+      </ng-container> -->
+      <ng-container matColumnDef="actions" [stickyEnd]="true">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <safe-button
+            [isIcon]="true"
+            icon="more_vert"
+            [matMenuTriggerFor]="menu"
+            (click)="$event.stopPropagation()"
+          >
+          </safe-button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="onEdit(element)">
+              <mat-icon>edit</mat-icon>
+              {{ 'common.edit' | translate }}
+            </button>
+            <safe-divider class="m-0"></safe-divider>
+            <button mat-menu-item color="warn" (click)="onDelete(element)">
+              <mat-icon>delete</mat-icon>
+              {{ 'common.delete' | translate }}
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+    </table>
+    <safe-skeleton-table
+      *ngIf="loading"
+      [columns]="[
+        'common.name',
+        'common.status',
+        'common.apiConfiguration.one',
+        'components.record.convert.select'
+      ]"
+      [actions]="true"
     >
-      {{ 'pages.pullJobs.create' | translate }}
-    </safe-button>
+    </safe-skeleton-table>
   </div>
-  <table mat-table [dataSource]="pullJobs">
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>{{ 'common.name' | translate }}</th>
-      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-    </ng-container>
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ 'common.status' | translate }}
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <mat-chip-list>
-          <mat-chip
-            class="success-chip"
-            disabled
-            *ngIf="element.status === 'active'"
-          >
-            {{ 'common.status_active' | translate | titlecase }}
-          </mat-chip>
-          <mat-chip
-            class="accent-chip"
-            disabled
-            color="accent"
-            *ngIf="element.status === 'pending'"
-          >
-            {{ 'common.status_pending' | translate | titlecase }}
-          </mat-chip>
-          <mat-chip
-            class="warn-chip"
-            disabled
-            color="warn"
-            *ngIf="element.status === 'archived'"
-          >
-            {{ 'common.status_archived' | translate | titlecase }}
-          </mat-chip>
-        </mat-chip-list>
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="apiConfiguration">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ 'common.apiConfiguration.one' | translate }}
-      </th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.apiConfiguration ? element.apiConfiguration.name : '-' }}
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="convertTo">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ 'components.record.convert.select' | translate }}
-      </th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.convertTo ? element.convertTo.name : '-' }}
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let element">
-        <safe-button
-          [isIcon]="true"
-          icon="more_vert"
-          [matMenuTriggerFor]="menu"
-          (click)="$event.stopPropagation()"
-        >
-        </safe-button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onEdit(element)">
-            <mat-icon>edit</mat-icon>
-            {{ 'common.edit' | translate }}
-          </button>
-          <mat-divider></mat-divider>
-          <button mat-menu-item color="warn" (click)="onDelete(element)">
-            <mat-icon>delete</mat-icon>
-            {{ 'common.delete' | translate }}
-          </button>
-        </mat-menu>
-      </td>
-    </ng-container>
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
-  </table>
   <mat-paginator
+    [disabled]="loading"
     [pageSize]="pageInfo.pageSize"
+    [pageSizeOptions]="[10, 25, 50]"
     [length]="pageInfo.length"
     aria-label="Select page of pull jobs"
     (page)="onPage($event)"
   >
   </mat-paginator>
-</ng-container>
+</div>

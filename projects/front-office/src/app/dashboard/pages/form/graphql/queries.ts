@@ -19,6 +19,12 @@ export const GET_FORM_BY_ID = gql`
         modifiedAt
         data
       }
+      metadata {
+        name
+        automated
+        canSee
+        canUpdate
+      }
     }
   }
 `;
@@ -28,7 +34,7 @@ export const GET_FORM_BY_ID = gql`
  */
 export interface GetFormByIdQueryResponse {
   /** Loading state of the query */
-  loading: boolean;
+
   /** Application form */
   form: Form;
 }
@@ -54,7 +60,7 @@ export const GET_STEP_BY_ID = gql`
  */
 export interface GetStepByIdQueryResponse {
   /** Loading state of the query */
-  loading: boolean;
+
   /** Application step */
   step: Step;
 }
@@ -81,7 +87,7 @@ export const GET_PAGE_BY_ID = gql`
  */
 export interface GetPageByIdQueryResponse {
   /** Loading state of the query */
-  loading: boolean;
+
   /** Application page */
   page: Page;
 }

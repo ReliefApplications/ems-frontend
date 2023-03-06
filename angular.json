@@ -79,6 +79,11 @@
                 "glob": "**/*",
                 "input": "node_modules/tinymce",
                 "output": "/tinymce/"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/tinymce/",
+                "output": "/tinymce/langs"
               }
             ],
             "styles": [
@@ -88,7 +93,7 @@
               },
               "projects/back-office/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
-              "./node_modules/leaflet/dist/leaflet.css",
+              "node_modules/survey-angular/survey.min.css",
               "node_modules/survey-creator/survey-creator.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
@@ -108,7 +113,9 @@
               "surveyjs-widgets",
               "subscriptions-transport-ws",
               "zen-observable",
-              "lodash"
+              "lodash",
+              "cronstrue",
+              "cron-parser"
             ]
           },
           "configurations": {
@@ -334,6 +341,87 @@
                 "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
+            "oort-demo": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.oort.demo.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deployUrl": "/admin/",
+              "baseHref": "/admin/",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+              }
+            },
+            "oort-local": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.oort.local.ts"
+                }
+              ],
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
+            },
+            "oort-aws": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.oort.aws.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deployUrl": "/back-office/",
+              "baseHref": "/back-office/",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+              }
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -354,6 +442,9 @@
             "browserTarget": "back-office:build:development"
           },
           "configurations": {
+            "oort-local": {
+              "browserTarget": "back-office:build:oort-local"
+            },
             "production": {
               "browserTarget": "back-office:build:production"
             }
@@ -454,6 +545,11 @@
                 "glob": "**/*",
                 "input": "node_modules/tinymce",
                 "output": "/tinymce/"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/tinymce/",
+                "output": "/tinymce/langs"
               }
             ],
             "styles": [
@@ -463,9 +559,8 @@
               },
               "projects/front-office/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
-              "./node_modules/leaflet/dist/leaflet.css",
-              "node_modules/survey-angular/survey.css",
-              "node_modules/survey-creator/survey-creator.css",
+              "node_modules/survey-angular/survey.min.css",
+              "node_modules/survey-creator/survey-creator.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
               "node_modules/select2/dist/css/select2.min.css"
@@ -484,7 +579,9 @@
               "surveyjs-widgets",
               "subscriptions-transport-ws",
               "zen-observable",
-              "lodash"
+              "lodash",
+              "cronstrue",
+              "cron-parser"
             ]
           },
           "configurations": {
@@ -698,6 +795,85 @@
                 "includePaths": ["projects/safe/src/lib/style/themes/oort"]
               }
             },
+            "oort-demo": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.oort.demo.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+              }
+            },
+            "oort-local": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.oort.local.ts"
+                }
+              ],
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/default"]
+              }
+            },
+            "oort-aws": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/front-office/src/environments/environment.ts",
+                  "with": "projects/front-office/src/environments/environment.oort.aws.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deployUrl": "/front-office/",
+              "baseHref": "/front-office/",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "12mb",
+                  "maximumError": "15mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["projects/safe/src/lib/style/themes/oort"]
+              }
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -718,6 +894,9 @@
             "browserTarget": "front-office:build:development"
           },
           "configurations": {
+            "oort-local": {
+              "browserTarget": "front-office:build:oort-local"
+            },
             "production": {
               "browserTarget": "front-office:build:production"
             }
@@ -815,12 +994,16 @@
                 "glob": "**/*",
                 "input": "node_modules/tinymce",
                 "output": "/tinymce/"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/safe/src/i18n/tinymce",
+                "output": "/tinymce/langs"
               }
             ],
             "styles": [
               "projects/web-widgets/src/styles.scss",
               "projects/safe/src/lib/style/styles.scss",
-              "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/survey-angular/survey.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
@@ -839,7 +1022,10 @@
               "survey-knockout",
               "surveyjs-widgets",
               "subscriptions-transport-ws",
-              "zen-observable"
+              "zen-observable",
+              "lodash",
+              "cronstrue",
+              "cron-parser"
             ]
           },
           "configurations": {
@@ -852,8 +1038,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 }
               ],
               "stylePreprocessorOptions": {
@@ -983,11 +1169,15 @@
             ],
             "styles": [
               {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              },
+              {
                 "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
                 "inject": true
               },
               "projects/safe/src/lib/style/styles.scss",
-              "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/survey-creator/survey-creator.min.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",

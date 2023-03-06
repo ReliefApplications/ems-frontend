@@ -1,47 +1,49 @@
 <form [formGroup]="stepForm">
-  <div
-    class="form-group"
-    [ngSwitch]="stage"
-    [ngClass]="{ 'content-choice-step': stage === 1 }"
-  >
+  <div class="flex flex-col items-center" [ngSwitch]="stage">
+    <!-- Selection of type of content -->
     <ng-container *ngSwitchCase="1">
       <h2>{{ 'pages.workflow.addStep.selectType' | translate }}</h2>
       <safe-content-choice
+        class="mt-8"
         formControlName="type"
         [contentTypes]="contentTypes"
       ></safe-content-choice>
     </ng-container>
+    <!-- Form selection -->
     <ng-container *ngSwitchCase="2">
-      <h2>{{ 'pages.forms.title' | translate }}</h2>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'models.form.select' | translate }}</mat-label>
-        <mat-select
-          #formSelect
-          formControlName="content"
-          (openedChange)="onOpenSelect($event)"
+      <div class="flex flex-col w-80 items-center">
+        <!-- Existing form -->
+        <safe-forms-dropdown
+          [forms$]="forms$"
+          [label]="'models.form.select' | translate"
+          [sourceControl]="stepForm.controls.content"
+          [loadingMore]="loadingMore"
+          (filter)="onFilterDataSource($event)"
+          (scrolled)="onScrollDataSource($event)"
+        ></safe-forms-dropdown>
+        <safe-divider [text]="'or'"></safe-divider>
+        <!-- New form -->
+        <safe-button
+          class="mt-4"
+          icon="add"
+          category="secondary"
+          variant="primary"
+          (click)="onAdd()"
+          [disabled]="!('create' | able: 'Form')"
         >
-          <mat-option *ngFor="let form of forms$ | async" [value]="form.id">{{
-            form.name
-          }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <safe-button
-        icon="add"
-        category="secondary"
-        variant="primary"
-        (click)="onAdd()"
-        [disabled]="!canCreateForm"
-      >
-        {{ 'models.form.create' | translate }}
-      </safe-button>
+          {{ 'models.form.create' | translate }}
+        </safe-button>
+      </div>
     </ng-container>
   </div>
 </form>
-<div class="add-step-stepper" *ngIf="stage !== 1">
-  <safe-button [disabled]="stage <= 1" (click)="onBack()">{{
+<!-- Actions -->
+<div class="flex flex-row justify-center mt-16" *ngIf="stage !== 1">
+  <safe-button [disabled]="stage <= 1" (click)="onBack()" class="my-0 mx-1">{{
     'common.back' | translate
   }}</safe-button>
   <safe-button
+    class="my-0 mx-1"
     category="secondary"
     variant="primary"
     (click)="onNext()"

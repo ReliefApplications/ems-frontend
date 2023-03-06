@@ -8,8 +8,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatRippleModule } from '@angular/material/core';
-import { SafeButtonModule, SafeContentChoiceModule } from '@safe/builder';
+import {
+  SafeButtonModule,
+  SafeContentChoiceModule,
+  SafeFormsDropdownModule,
+  SafeDividerModule,
+} from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
+import { AbilityModule } from '@casl/angular';
 
 /**
  * Add step module
@@ -29,6 +35,9 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeButtonModule,
     SafeContentChoiceModule,
     TranslateModule,
+    SafeFormsDropdownModule,
+    SafeDividerModule,
+    AbilityModule,
   ],
 })
 export class AddStepModule {}

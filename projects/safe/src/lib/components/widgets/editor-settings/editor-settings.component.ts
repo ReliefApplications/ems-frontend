@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
+import { SafeEditorService } from '../../../services/editor/editor.service';
 
 /**
  * Modal content for the settings of the editor widgets.
@@ -35,8 +36,17 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
    * Modal content for the settings of the editor widgets.
    *
    * @param formBuilder Angular Form Builder
+   * @param editorService Editor service used to get main URL and current language
    */
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private editorService: SafeEditorService
+  ) {
+    // Set the editor base url based on the environment file
+    this.editor.base_url = editorService.url;
+    // Set the editor language
+    this.editor.language = editorService.language;
+  }
 
   /**
    * Build the settings form, using the widget saved parameters.

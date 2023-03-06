@@ -1,14 +1,54 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AbilityBuilder } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
 import {
+  AppAbility,
   Application,
   ContentType,
-  Permissions,
   SafeApplicationService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
+import get from 'lodash/get';
+import { takeUntil } from 'rxjs/operators';
 import { PreviewService } from '../services/preview.service';
+
+/**
+ * Creates a ability object the app preview
+ * given the application and the role to preview with
+ *
+ * @param app The application being previewed
+ * @param role The role to preview with
+ * @returns The ability object
+ */
+const getAbilityForAppPreview = (app: Application, role: string) => {
+  const { can, rules } = new AbilityBuilder(AppAbility);
+  const permissions =
+    app.roles?.find((x) => x.id === role)?.permissions?.map((p) => p.type) ||
+    [];
+
+  // === Role ===
+  if (permissions.includes('can_see_roles')) {
+    can(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);
+  }
+
+  // === User ===
+  if (permissions.includes('can_see_users')) {
+    can(['create', 'read', 'update', 'delete'], 'User');
+  }
+
+  // === Template ===
+  if (permissions.includes('can_manage_templates')) {
+    can(['create', 'read', 'update', 'delete', 'manage'], 'Template');
+  }
+
+  // === Distribution list ===
+  if (permissions.includes('can_manage_distribution_lists')) {
+    can(['create', 'read', 'update', 'delete', 'manage'], 'DistributionList');
+  }
+
+  return new AppAbility(rules);
+};
 
 /**
  * Main component of Application preview capacity.
@@ -18,7 +58,10 @@ import { PreviewService } from '../services/preview.service';
   templateUrl: './app-preview.component.html',
   styleUrls: ['./app-preview.component.scss'],
 })
-export class AppPreviewComponent implements OnInit, OnDestroy {
+export class AppPreviewComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   /**
    * Title of application.
    */
@@ -35,10 +78,6 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
    * Role to preview with.
    */
   public role = '';
-  /**
-   * Subscription to application service.
-   */
-  private applicationSubscription?: Subscription;
 
   /**
    * Main component of Application preview capacity.
@@ -55,110 +94,104 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
     private previewService: PreviewService,
     private router: Router,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Generates the routes from the application that is loaded.
    */
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      this.previewService.roleId$.subscribe((role: string) => {
-        this.applicationService.loadApplication(params.id, role);
-        this.role = role;
-      });
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.previewService.roleId$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((role: string) => {
+          this.applicationService.loadApplication(params.id, role);
+          this.role = role;
+        });
     });
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          if (application) {
-            this.title = application.name + ' (Preview)';
-            const role = application.roles?.find((x) =>
-              this.role ? x.id === this.role : true
-            );
-            const adminNavItems = [];
-            if (role) {
-              if (
-                role.permissions?.some(
-                  (x) => x.type === Permissions.canSeeUsers && !x.global
-                )
-              ) {
-                adminNavItems.push({
-                  name: this.translate.instant('common.user.few'),
-                  path: './settings/users',
-                  icon: 'supervisor_account',
-                });
-              }
-              if (
-                role.permissions?.some(
-                  (x) => x.type === Permissions.canSeeRoles && !x.global
-                )
-              ) {
-                adminNavItems.push({
-                  name: this.translate.instant('common.role.few'),
-                  path: './settings/roles',
-                  icon: 'admin_panel_settings',
-                });
-              }
-              if (
-                role.permissions?.some(
-                  (x) => x.type === Permissions.canManageTemplates && !x.global
-                )
-              ) {
-                adminNavItems.push({
-                  name: this.translate.instant('common.template.few'),
-                  path: './settings/templates',
-                  icon: 'description',
-                });
-              }
-            }
-            this.navGroups = [
-              {
-                name: 'Pages',
-                navItems: application.pages
-                  ?.filter((x) => x.content)
-                  .map((x) => ({
-                    name: x.name,
-                    path:
-                      x.type === ContentType.form
-                        ? `./${x.type}/${x.id}`
-                        : `./${x.type}/${x.content}`,
-                    icon: this.getNavIcon(x.type || ''),
-                  })),
-              },
-              {
-                name: 'Administration',
-                navItems: adminNavItems,
-              },
-            ];
-            if (!this.application || application.id !== this.application.id) {
-              const [firstPage, ..._] = application.pages || [];
-              if (
-                this.router.url.endsWith('/') ||
-                (this.application && application.id !== this.application?.id) ||
-                !firstPage
-              ) {
-                if (firstPage) {
-                  this.router.navigate(
-                    [
-                      `./${firstPage.type}/${
-                        firstPage.type === ContentType.form
-                          ? firstPage.id
-                          : firstPage.content
-                      }`,
-                    ],
-                    { relativeTo: this.route }
-                  );
-                } else {
-                  this.router.navigate([`./`], { relativeTo: this.route });
-                }
-              }
-            }
-            this.application = application;
-          } else {
-            this.navGroups = [];
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.title = application.name + ' (Preview)';
+          const ability = getAbilityForAppPreview(application, this.role);
+          const adminNavItems: any[] = [];
+          if (ability.can('read', 'User')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.user.few'),
+              path: './settings/users',
+              icon: 'supervisor_account',
+            });
           }
+          if (ability.can('read', 'Role')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.role.few'),
+              path: './settings/roles',
+              icon: 'admin_panel_settings',
+            });
+          }
+          if (ability.can('manage', 'Template')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.template.few'),
+              path: './settings/templates',
+              icon: 'description',
+            });
+          }
+          if (ability.can('manage', 'DistributionList')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.distributionList.few'),
+              path: './settings/distribution-lists',
+              icon: 'mail',
+            });
+          }
+          this.navGroups = [
+            {
+              name: 'Pages',
+              navItems: application.pages
+                ?.filter((x) => x.content)
+                .map((x) => ({
+                  name: x.name,
+                  path:
+                    x.type === ContentType.form
+                      ? `./${x.type}/${x.id}`
+                      : `./${x.type}/${x.content}`,
+                  icon: this.getNavIcon(x.type || ''),
+                })),
+            },
+            {
+              name: 'Administration',
+              navItems: adminNavItems,
+            },
+          ];
+          if (!this.application || application.id !== this.application.id) {
+            const firstPage = get(application, 'pages', [])[0];
+            if (
+              this.router.url.endsWith('/') ||
+              (this.application && application.id !== this.application?.id) ||
+              !firstPage
+            ) {
+              if (firstPage) {
+                this.router.navigate(
+                  [
+                    `./${firstPage.type}/${
+                      firstPage.type === ContentType.form
+                        ? firstPage.id
+                        : firstPage.content
+                    }`,
+                  ],
+                  { relativeTo: this.route }
+                );
+              } else {
+                this.router.navigate([`./`], { relativeTo: this.route });
+              }
+            }
+          }
+          this.application = application;
+        } else {
+          this.navGroups = [];
         }
-      );
+      });
   }
 
   /**
@@ -175,15 +208,6 @@ export class AppPreviewComponent implements OnInit, OnDestroy {
         return 'description';
       default:
         return 'dashboard';
-    }
-  }
-
-  /**
-   * Deletes all subscriptions of the component.
-   */
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
     }
   }
 }

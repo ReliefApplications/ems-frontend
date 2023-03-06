@@ -23,11 +23,7 @@ describe('SafeCheckboxTreeComponent', () => {
       data: [],
       dataChange: new BehaviorSubject<TreeItemNode[]>([]),
       initialize: () => {},
-      buildFileTree: (
-        obj: { [key: string]: any },
-        level: number,
-        prefix?: string | undefined
-      ) => {
+      buildFileTree: () => {
         const rst: TreeItemNode[] = [];
         return rst;
       },

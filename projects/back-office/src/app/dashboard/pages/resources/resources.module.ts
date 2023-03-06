@@ -13,11 +13,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SafeButtonModule } from '@safe/builder';
+import {
+  SafeButtonModule,
+  SafeSkeletonTableModule,
+  SafeDateModule,
+} from '@safe/builder';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FilterComponent } from './filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { AddResourceModule } from '../../../components/add-resource/add-resource.module';
+import { AddResourceModalModule } from '../../../components/add-resource-modal/add-resource-modal.module';
 
 /**
  * Resources page module.
@@ -42,7 +46,9 @@ import { AddResourceModule } from '../../../components/add-resource/add-resource
     MatPaginatorModule,
     ReactiveFormsModule,
     TranslateModule,
-    AddResourceModule,
+    AddResourceModalModule,
+    SafeSkeletonTableModule,
+    SafeDateModule,
   ],
   exports: [ResourcesComponent],
 })

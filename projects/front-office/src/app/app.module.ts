@@ -7,7 +7,11 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Http
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  HTTP_INTERCEPTORS,
+} from '@angular/common/http';
 
 // Env
 import { environment } from '../environments/environment';
@@ -22,7 +26,21 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import { MessageService } from '@progress/kendo-angular-l10n';
-import { KendoTranslationService } from '@safe/builder';
+import {
+  AppAbility,
+  KendoTranslationService,
+  SafeAuthInterceptorService,
+} from '@safe/builder';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import localeEn from '@angular/common/locales/en';
+
+/** CASL */
+import { PureAbility } from '@casl/ability';
+
+// Register local translations for dates
+registerLocaleData(localeFr);
+registerLocaleData(localeEn);
 
 // Kendo datepicker for surveyjs
 import {
@@ -41,6 +59,7 @@ import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { touchEnabled } from '@progress/kendo-common';
 // Apollo / GraphQL
 import { GraphQLModule } from './graphql.module';
+import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 
 /**
  * Initialize authentication in the platform.
@@ -88,12 +107,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
         deps: [HttpClient],
       },
     }),
-    OAuthModule.forRoot({
-      resourceServer: {
-        allowedUrls: ['http://localhost:9090/api'],
-        sendAccessToken: true,
-      },
-    }),
+    OAuthModule.forRoot(),
     GraphQLModule,
   ],
   providers: [
@@ -111,6 +125,13 @@ export const httpTranslateLoader = (http: HttpClient) =>
       provide: MessageService,
       useClass: KendoTranslationService,
     },
+    // Default parameters of material tooltip
+    {
+      provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
+      useValue: {
+        showDelay: 500,
+      },
+    },
     {
       provide: OAuthStorage,
       useValue: localStorage,
@@ -119,6 +140,19 @@ export const httpTranslateLoader = (http: HttpClient) =>
     {
       provide: TOUCH_ENABLED,
       useValue: [touchEnabled],
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: SafeAuthInterceptorService,
+      multi: true,
+    },
+    {
+      provide: AppAbility,
+      useValue: new AppAbility(),
+    },
+    {
+      provide: PureAbility,
+      useExisting: AppAbility,
     },
     PopupService,
     ResizeBatchService,

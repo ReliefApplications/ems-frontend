@@ -6,13 +6,13 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { QueryBuilderService } from '../../../services/query-builder.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { SafeTabFieldsComponent } from './tab-fields.component';
 import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_QUERY_TYPES } from '../../../graphql/queries';
+import { GET_QUERY_TYPES } from '../graphql/queries';
 
 describe('SafeTabFieldsComponent', () => {
   let component: SafeTabFieldsComponent;

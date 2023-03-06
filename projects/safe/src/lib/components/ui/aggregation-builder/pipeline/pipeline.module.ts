@@ -17,6 +17,8 @@ import { SafeFieldDropdownComponent } from './field-dropdown/field-dropdown.comp
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeIconModule } from '../../icon/icon.module';
+import { SafeFilterModule } from '../../../filter/filter.module';
+import { SafeSortStageComponent } from './sort-stage/sort-stage.component';
 
 /**
  * Aggregation builder pipeline module.
@@ -28,6 +30,7 @@ import { SafeIconModule } from '../../icon/icon.module';
     SafeAddFieldStageComponent,
     SafeExpressionsComponent,
     SafeFieldDropdownComponent,
+    SafeSortStageComponent,
   ],
   imports: [
     CommonModule,
@@ -44,6 +47,7 @@ import { SafeIconModule } from '../../icon/icon.module';
     DragDropModule,
     SafeIconModule,
     MatTooltipModule,
+    SafeFilterModule,
   ],
   exports: [
     SafePipelineComponent,
@@ -51,6 +55,7 @@ import { SafeIconModule } from '../../icon/icon.module';
     SafeAddFieldStageComponent,
     SafeExpressionsComponent,
     SafeFieldDropdownComponent,
+    SafeSortStageComponent,
   ],
 })
 export class SafePipelineModule {}

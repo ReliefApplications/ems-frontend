@@ -1,15 +1,5 @@
-.advanced-filtering {
+:host {
+  flex: 1;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.add-button {
-  width: min-content;
-  align-self: flex-end;
-}
-
-.form-error {
-  color: red;
+  max-width: 100%;
 }

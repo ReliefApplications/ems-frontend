@@ -1,12 +1,9 @@
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import {
-  GetRolesQueryResponse,
-  GET_ROLES,
-} from '../../../../../graphql/queries';
+import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { Role } from '@safe/builder';
 
 /**
@@ -25,6 +22,8 @@ export class ChoseRoleComponent implements OnInit {
   // === REACTIVE FORM ===
   roleForm: FormGroup = new FormGroup({});
 
+  // === ROLES QUERY ===
+  public rolesQuery!: QueryRef<GetRolesQueryResponse>;
   /**
    * Chose role component, to preview application with selected role.
    *
@@ -45,17 +44,16 @@ export class ChoseRoleComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.apollo
-      .watchQuery<GetRolesQueryResponse>({
-        query: GET_ROLES,
-        variables: {
-          application: this.data.application,
-        },
-      })
-      .valueChanges.subscribe((res) => {
-        this.roles = res.data.roles;
-        this.loading = res.data.loading;
-      });
+    this.rolesQuery = this.apollo.watchQuery<GetRolesQueryResponse>({
+      query: GET_ROLES,
+      variables: {
+        application: this.data.application,
+      },
+    });
+
+    this.rolesQuery.valueChanges.subscribe(({ loading }) => {
+      this.loading = loading;
+    });
     this.roleForm = this.formBuilder.group({
       role: [null, Validators.required],
     });

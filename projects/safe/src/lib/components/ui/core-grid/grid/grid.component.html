@@ -1,8 +1,9 @@
 <!-- GRID HEADER -->
 <kendo-grid
   id="recordsGrid"
-  [loading]="loading"
-  [data]="error ? [] : data"
+  class="w-full"
+  [loading]="loadingRecords || loadingSettings"
+  [data]="status.error ? [] : data"
   [autoSize]="false"
   [resizable]="resizable"
   [reorderable]="reorderable"
@@ -10,7 +11,7 @@
   [pageable]="pagerSettings"
   [pageSize]="pageSize"
   [skip]="skip"
-  [filterable]="filterable && showFilter ? true : 'menu'"
+  [filterable]="filterable ? (showFilter ? true : 'menu') : false"
   [filter]="filter"
   (filterChange)="onFilterChange($event)"
   (pageChange)="onPageChange($event)"
@@ -30,7 +31,7 @@
       searchable ||
       reorderable ||
       actions.add ||
-      exportable ||
+      actions.export ||
       editable ||
       filterable ||
       admin ||
@@ -44,17 +45,17 @@
       [placeholder]="'common.placeholder.search' | translate"
       kendoTextBox
       [formControl]="search"
-      class="grid-searchbox"
+      class="!w-full"
     />
     <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
     <button
-      *ngIf="actions.add"
+      *ngIf="actions.add && canAdd"
       kendoButton
       (click)="action.emit({ action: 'add' })"
     >
       {{ 'common.add' | translate }}
     </button>
-    <button *ngIf="exportable" kendoButton (click)="onExport()">
+    <button *ngIf="actions.export" kendoButton (click)="onExport()">
       {{ 'common.export' | translate }}
     </button>
     <ng-container *ngIf="editable">
@@ -90,7 +91,7 @@
     </ng-container>
     <safe-grid-toolbar
       [actions]="actions"
-      [items]="selectedRows"
+      [items]="selectedItems"
       (action)="action.emit($event)"
     >
     </safe-grid-toolbar>
@@ -106,20 +107,22 @@
       [columnMenu]="false"
       [showSelectAll]="multiSelect"
       [sticky]="true"
-    >
-    </kendo-grid-checkbox-column>
+    ></kendo-grid-checkbox-column>
     <!-- FIELDS -->
     <ng-container *ngFor="let field of fields">
       <!-- SIMPLE QUESTIONS TYPES ( text / comment - resource - dropdown - radiogroup - boolean - numeric - date / datetime / datetime-local / time ) -->
       <kendo-grid-column
-        *ngIf="field.type !== 'JSON'"
+        *ngIf="
+          field.type !== 'JSON' &&
+          (!field.meta || field.meta.type !== 'referenceData')
+        "
         [field]="field.name"
         [title]="field.title"
         [format]="field.format"
         [editor]="field.editor"
         [editable]="field.editor && !field.disabled"
         [filter]="field.filter"
-        [filterable]="field.filter"
+        [filterable]="filterable && field.filter"
         [width]="field.width"
         [hidden]="field.hidden"
         [minResizableWidth]="50"
@@ -205,39 +208,61 @@
               [style]="getStyle(dataItem, field.name)"
             >
               <div #refSpan class="textbox" *ngIf="field.meta.type === 'time'">
-                {{ getPropertyValue(dataItem, field.name) | date: 'shortTime' }}
+                {{
+                  getPropertyValue(dataItem, field.name) | safeDate: 'shortTime'
+                }}
               </div>
               <div
                 #refSpan
                 class="textbox"
                 *ngIf="['datetime', 'datetime-local'].includes(field.meta.type)"
               >
-                {{
-                  getPropertyValue(dataItem, field.name)
-                    | date: 'dd/MM/yyyy, h:mm a'
-                }}
+                {{ getPropertyValue(dataItem, field.name) | safeDate: 'short' }}
               </div>
               <div #refSpan class="textbox" *ngIf="field.meta.type === 'date'">
                 {{
-                  getPropertyValue(dataItem, field.name) | date: 'dd/MM/yyyy'
+                  getPropertyValue(dataItem, field.name) | safeDate: 'shortDate'
                 }}
               </div>
             </div>
           </ng-template>
-          <!-- DISPLAY ( url ) -->
+          <!-- DISPLAY ( url / email / tel ) -->
           <ng-template
             #refSpan
             kendoGridCellTemplate
             let-dataItem="dataItem"
-            *ngIf="field.meta.type === 'url'"
+            *ngIf="['url', 'tel', 'email'].includes(field.meta.type)"
           >
             <div
               class="textbox-container"
               [style]="getStyle(dataItem, field.name)"
             >
               <a
+                *ngIf="field.meta.type === 'url'"
                 class="url-container textbox"
                 href="{{ getUrl(getPropertyValue(dataItem, field.name)) }}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div #refSpan>
+                  {{ getPropertyValue(dataItem, field.name) }}
+                </div>
+              </a>
+              <a
+                *ngIf="field.meta.type === 'email'"
+                class="url-container textbox"
+                href="mailto:{{ getPropertyValue(dataItem, field.name) }}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div #refSpan>
+                  {{ getPropertyValue(dataItem, field.name) }}
+                </div>
+              </a>
+              <a
+                *ngIf="field.meta.type === 'tel'"
+                class="url-container textbox"
+                href="tel:{{ getPropertyValue(dataItem, field.name) }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -315,7 +340,7 @@
             <div *ngIf="dataItem[field.name]" class="textbox-container">
               <div
                 #refSpan
-                class="textbox external-link"
+                class="textbox hover:cursor-pointer text-primary-500"
                 *ngIf="dataItem[field.name].length > 0"
                 [matTooltip]="
                   'components.widget.grid.actions.detail' | translate
@@ -362,10 +387,8 @@
           let-formGroup="formGroup"
           *ngIf="field.editor === 'text'"
         >
-          <!-- EDITION ( text / comment / url ) -->
-          <ng-container
-            *ngIf="field.meta.type === 'text' || field.meta.type === 'url'"
-          >
+          <!-- EDITION ( text / comment ) -->
+          <ng-container *ngIf="field.meta.type === 'text'">
             <textarea
               rows="2"
               [formControl]="formGroup.get(field.name)"
@@ -373,6 +396,17 @@
               [name]="field.name"
               class="k-textbox"
             ></textarea>
+          </ng-container>
+          <!-- EDITION ( url / email / tel ) -->
+          <ng-container
+            *ngIf="['url', 'email', 'tel'].includes(field.meta.type)"
+          >
+            <input
+              [formControl]="formGroup.get(field.name)"
+              kendoGridFocusable
+              [name]="field.name"
+              class="k-textbox"
+            />
           </ng-container>
           <!-- EDITION ( color ) -->
           <ng-container *ngIf="field.meta.type === 'color'">
@@ -443,6 +477,65 @@
           ></kendo-datetimepicker>
         </ng-template>
       </kendo-grid-column>
+      <!-- REFERENCE DATA MULTI SELECT -->
+      <ng-container *ngIf="field.meta && field.meta.type === 'referenceData'">
+        <ng-container *ngFor="let subField of field.subFields">
+          <kendo-grid-column
+            [field]="subField.name"
+            [title]="subField.title"
+            [filterable]="true"
+            [width]="subField.width"
+            [hidden]="subField.hidden"
+            [minResizableWidth]="50"
+            [editable]="!subField.disabled"
+          >
+            <ng-template
+              kendoGridFilterMenuTemplate
+              let-filter
+              let-column="column"
+              let-filterService="filterService"
+            >
+              <safe-array-filter-menu
+                [filter]="filter"
+                [filterService]="filterService"
+                [data]="subField.meta.choices || []"
+                [field]="subField.name"
+                textField="text"
+                valueField="value"
+              >
+              </safe-array-filter-menu>
+            </ng-template>
+            <ng-template
+              kendoGridFilterCellTemplate
+              let-filter
+              let-dataItem="dataItem"
+            >
+              <safe-array-filter
+                [filter]="filter"
+                [data]="subField.meta.choices || []"
+                [field]="subField.name"
+                textField="text"
+                valueField="value"
+              >
+              </safe-array-filter>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <div
+                class="textbox-container"
+                [style]="getStyle(dataItem, field.name)"
+              >
+                {{
+                  getReferenceDataPropertyValue(
+                    dataItem,
+                    field.name,
+                    subField.meta.name
+                  )
+                }}
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+        </ng-container>
+      </ng-container>
       <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner / users ) -->
       <kendo-grid-column
         *ngIf="
@@ -524,14 +617,22 @@
         class="no-padding"
       >
         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-          <button
-            kendoButton
-            icon="file-data"
-            *ngFor="let file of dataItem[field.name]"
-            [look]="'flat'"
-            [matTooltip]="file.name"
-            (click)="onDownload(file)"
-          ></button>
+          <div
+            class="textbox-container"
+            [style]="getStyle(dataItem, field.name)"
+          >
+            <button
+              kendoButton
+              *ngFor="let file of dataItem[field.name]"
+              [look]="'flat'"
+              [matTooltip]="file.name"
+              (click)="onDownload(file)"
+              class="w-full justify-start overflow-hidden text-overflow-ellipsis"
+            >
+              <span [class]="'k-icon ' + getFileIcon(file.name)"></span>
+              <span class="textbox">{{ removeFileExtension(file.name) }}</span>
+            </button>
+          </div>
         </ng-template>
       </kendo-grid-column>
       <!-- COMPLEX QUESTION TYPES ( matrix / matrixdropdown / matrixdynamic / multipletext ) -->
@@ -673,7 +774,7 @@
                       >
                         <kendo-dropdownlist
                           [data]="field.meta.choices"
-                          [textField]="'text'"
+                          textField="text"
                           [valueField]="'value'"
                           [valuePrimitive]="true"
                           [formControl]="
@@ -709,7 +810,7 @@
                       >
                         <kendo-dropdownlist
                           [data]="field.meta.choices"
-                          [textField]="'text'"
+                          textField="text"
                           [valueField]="'value'"
                           [valuePrimitive]="true"
                           [formControlName]="column.name"
@@ -728,7 +829,7 @@
                       >
                         <kendo-multiselect
                           [data]="field.meta.choices"
-                          [textField]="'text'"
+                          textField="text"
                           [valueField]="'value'"
                           [valuePrimitive]="true"
                           [formControlName]="column.name"
@@ -765,7 +866,7 @@
     >
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
         <button
-          style="text-align: center"
+          class="text-center"
           kendoButton
           [icon]="'detail-section'"
           [look]="'flat'"
@@ -778,7 +879,7 @@
     <kendo-grid-column
       *ngIf="hasEnabledActions"
       [columnMenu]="false"
-      [width]="56"
+      [width]="86"
       [resizable]="false"
       [sticky]="true"
     >
@@ -793,18 +894,52 @@
           (action)="action.emit($event)"
         >
         </safe-grid-row-actions>
+        <button
+          *ngIf="dataItem.validationErrors"
+          kendoButton
+          icon="error"
+          look="flat"
+          class="k-color-error"
+          (click)="showErrors(dataItem)"
+          [matTooltip]="
+            'components.widget.grid.tooltip.uploadFailed' | translate
+          "
+        ></button>
+        <span
+          *ngIf="dataItem.saved === false && !dataItem.validationErrors"
+          kendoButton
+          icon="exclamation-circle"
+          look="flat"
+          class="k-color-warning cursor-default"
+          [matTooltip]="'components.widget.grid.tooltip.unsaved' | translate"
+        ></span>
+        <span
+          *ngIf="dataItem.saved"
+          kendoButton
+          icon="check-outline"
+          look="flat"
+          class="k-color-success cursor-default"
+          [matTooltip]="'components.widget.grid.tooltip.saved' | translate"
+        ></span>
       </ng-template>
     </kendo-grid-column>
   </ng-container>
   <!-- EMPTY TABLE / INVALID QUERY -->
   <ng-template kendoGridNoRecordsTemplate>
-    {{
-      (error
-        ? 'components.widget.grid.errors.invalid'
-        : blank
-        ? 'components.widget.grid.errors.missingDataset'
-        : 'components.widget.grid.empty'
-      ) | translate
-    }}
+    {{ statusMessage }}
+    <div class="mt-8 flex justify-center">
+      <safe-button
+        *ngIf="
+          !loadingSettings &&
+          !loadingRecords &&
+          canUpdate &&
+          (status.error || blank)
+        "
+        variant="primary"
+        category="secondary"
+        (click)="openSettings()"
+        >{{ 'components.widget.grid.openSettings' | translate }}
+      </safe-button>
+    </div>
   </ng-template>
 </kendo-grid>

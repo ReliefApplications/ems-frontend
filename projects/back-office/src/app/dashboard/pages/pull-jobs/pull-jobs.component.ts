@@ -1,18 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
   Channel,
   PullJob,
   status,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   SafeSnackBarService,
-  NOTIFICATIONS,
 } from '@safe/builder';
 import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  GetPullJobsQueryResponse,
-  GET_PULL_JOBS,
-} from '../../../graphql/queries';
+import { GetPullJobsQueryResponse, GET_PULL_JOBS } from './graphql/queries';
 import {
   AddPullJobMutationResponse,
   ADD_PULL_JOB,
@@ -20,10 +16,10 @@ import {
   DELETE_PULL_JOB,
   EditPullJobMutationResponse,
   EDIT_PULL_JOB,
-} from '../../../graphql/mutations';
-import { PullJobModalComponent } from './components/pull-job-modal/pull-job-modal.component';
+} from './graphql/mutations';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
+import { EditPullJobModalComponent } from './components/edit-pull-job-modal/edit-pull-job-modal.component';
 
 /**
  * Limit of pull jobs shown at once.
@@ -38,7 +34,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './pull-jobs.component.html',
   styleUrls: ['./pull-jobs.component.scss'],
 })
-export class PullJobsComponent implements OnInit, OnDestroy {
+export class PullJobsComponent implements OnInit {
   // === DATA ===
   public loading = true;
   private pullJobsQuery!: QueryRef<GetPullJobsQueryResponse>;
@@ -48,8 +44,9 @@ export class PullJobsComponent implements OnInit, OnDestroy {
   public displayedColumns: string[] = [
     'name',
     'status',
-    'apiConfiguration',
-    'convertTo',
+    // 'apiConfiguration',
+    // 'convertTo',
+    'schedule',
     'actions',
   ];
 
@@ -69,12 +66,14 @@ export class PullJobsComponent implements OnInit, OnDestroy {
    * @param dialog Used to show popup dialog.
    * @param apollo Loads the pull jobs.
    * @param snackBar Service usde to show a snackbar.
+   * @param confirmService Shared confirm service
    * @param translate Service used to get the translations.
    */
   constructor(
     public dialog: MatDialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {}
 
@@ -86,15 +85,15 @@ export class PullJobsComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.pullJobsQuery.valueChanges.subscribe((res) => {
-      this.cachedPullJobs = res.data.pullJobs.edges.map((x) => x.node);
+    this.pullJobsQuery.valueChanges.subscribe(({ data, loading }) => {
+      this.cachedPullJobs = data.pullJobs.edges.map((x) => x.node);
       this.pullJobs.data = this.cachedPullJobs.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex,
         ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
       );
-      this.pageInfo.length = res.data.pullJobs.totalCount;
-      this.pageInfo.endCursor = res.data.pullJobs.pageInfo.endCursor;
-      this.loading = res.loading;
+      this.pageInfo.length = data.pullJobs.totalCount;
+      this.pageInfo.endCursor = data.pullJobs.pageInfo.endCursor;
+      this.loading = loading;
     });
   }
 
@@ -109,6 +108,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
       e.pageIndex > e.previousPageIndex &&
       e.length > this.cachedPullJobs.length
     ) {
+      this.loading = true;
       this.pullJobsQuery.fetchMore({
         variables: {
           first: ITEMS_PER_PAGE,
@@ -143,8 +143,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
    * Creates the pull job on close.
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(PullJobModalComponent, {
-      width: '600px',
+    const dialogRef = this.dialog.open(EditPullJobModalComponent, {
       autoFocus: false,
       data: {
         channels: this.channels,
@@ -189,14 +188,22 @@ export class PullJobsComponent implements OnInit, OnDestroy {
                 mutation: ADD_PULL_JOB,
                 variables,
               })
-              .subscribe((res) => {
-                if (res.data?.addPullJob) {
+              .subscribe(({ data }) => {
+                if (data?.addPullJob) {
                   this.snackBar.openSnackBar(
-                    NOTIFICATIONS.objectCreated('pull job', value.name)
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate
+                          .instant('common.pullJob.one')
+                          .toLowerCase(),
+                        value: value.name,
+                      }
+                    )
                   );
                   if (this.cachedPullJobs.length === this.pageInfo.length) {
                     this.cachedPullJobs = this.cachedPullJobs.concat([
-                      res.data?.addPullJob,
+                      data?.addPullJob,
                     ]);
                     this.pullJobs.data = this.cachedPullJobs.slice(
                       ITEMS_PER_PAGE * this.pageInfo.pageIndex,
@@ -218,19 +225,16 @@ export class PullJobsComponent implements OnInit, OnDestroy {
    */
   onDelete(element: any): void {
     if (element) {
-      const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-        data: {
-          title: this.translate.instant('components.pullJob.delete.title'),
-          content: this.translate.instant(
-            'components.pullJob.delete.confirmationMessage',
-            {
-              name: element.name,
-            }
-          ),
-          confirmText: this.translate.instant('components.confirmModal.delete'),
-          cancelText: this.translate.instant('components.confirmModal.cancel'),
-          confirmColor: 'warn',
-        },
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('components.pullJob.delete.title'),
+        content: this.translate.instant(
+          'components.pullJob.delete.confirmationMessage',
+          {
+            name: element.name,
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.delete'),
+        confirmColor: 'warn',
       });
       dialogRef.afterClosed().subscribe((value) => {
         if (value) {
@@ -241,13 +245,15 @@ export class PullJobsComponent implements OnInit, OnDestroy {
                 id: element.id,
               },
             })
-            .subscribe((res) => {
-              if (res.data?.deletePullJob) {
+            .subscribe(({ data }) => {
+              if (data?.deletePullJob) {
                 this.snackBar.openSnackBar(
-                  NOTIFICATIONS.objectDeleted('Pull job')
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant('common.pullJob.one'),
+                  })
                 );
                 this.cachedPullJobs = this.cachedPullJobs.filter(
-                  (x) => x.id !== res.data?.deletePullJob.id
+                  (x) => x.id !== data?.deletePullJob.id
                 );
                 this.pageInfo.length -= 1;
                 this.pullJobs.data = this.cachedPullJobs.slice(
@@ -267,8 +273,7 @@ export class PullJobsComponent implements OnInit, OnDestroy {
    * @param element pull job to edit.
    */
   onEdit(element: any): void {
-    const dialogRef = this.dialog.open(PullJobModalComponent, {
-      width: '600px',
+    const dialogRef = this.dialog.open(EditPullJobModalComponent, {
       data: {
         channels: this.channels,
         pullJob: element,
@@ -316,15 +321,22 @@ export class PullJobsComponent implements OnInit, OnDestroy {
                 mutation: EDIT_PULL_JOB,
                 variables,
               })
-              .subscribe((res) => {
-                if (res.data?.editPullJob) {
+              .subscribe(({ data }) => {
+                if (data?.editPullJob) {
                   this.snackBar.openSnackBar(
-                    NOTIFICATIONS.objectEdited('pull job', value.name)
+                    this.translate.instant(
+                      'common.notifications.objectUpdated',
+                      {
+                        type: this.translate.instant('common.pullJob.one')
+                          .toLowerCase,
+                        value: value.name,
+                      }
+                    )
                   );
                   this.cachedPullJobs = this.cachedPullJobs.map(
                     (pullJob: PullJob) => {
-                      if (pullJob.id === res.data?.editPullJob.id) {
-                        pullJob = res.data?.editPullJob || pullJob;
+                      if (pullJob.id === data?.editPullJob.id) {
+                        pullJob = data?.editPullJob || pullJob;
                       }
                       return pullJob;
                     }
@@ -339,6 +351,4 @@ export class PullJobsComponent implements OnInit, OnDestroy {
         }
       );
   }
-
-  ngOnDestroy(): void {}
 }

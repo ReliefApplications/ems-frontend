@@ -1,12 +1,14 @@
-<div class="form-group">
-  <div class="info-text">
+<div class="flex flex-col">
+  <safe-alert class="mb-4">
+    <safe-icon icon="info"></safe-icon>
     {{ 'components.form.layout.update.preview.description' | translate }}
-  </div>
+  </safe-alert>
   <safe-core-grid
+    class="h-96"
     [defaultLayout]="data?.defaultLayout || {}"
     [settings]="gridSettings"
-    style="height: 410px"
     (layoutChanged)="onGridLayoutChange($event)"
+    (pageSizeChanged)="onPageSizeChange($event)"
   >
   </safe-core-grid>
 </div>

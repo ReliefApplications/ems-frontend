@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PreviewToolbarComponent } from './preview-toolbar.component';
-import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -10,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
  */
 @NgModule({
   declarations: [PreviewToolbarComponent],
-  imports: [CommonModule, MatDividerModule, SafeButtonModule, TranslateModule],
+  imports: [CommonModule, SafeButtonModule, TranslateModule],
   exports: [PreviewToolbarComponent],
 })
 export class PreviewToolbarModule {}

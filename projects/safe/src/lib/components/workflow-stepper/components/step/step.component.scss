@@ -16,11 +16,6 @@
     }
   }
 
-  img {
-    height: 36px;
-    margin-top: 22px;
-  }
-
   span {
     font-weight: 500;
     margin-bottom: 8px;
@@ -34,13 +29,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-height: 30px;
-  }
-
-  .safe-step-active {
-    width: 100%;
-    height: 4px;
-    position: absolute;
-    bottom: 0;
+    white-space: nowrap;
   }
 
   .step-actions {

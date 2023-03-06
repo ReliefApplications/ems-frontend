@@ -42,6 +42,5 @@ export const GET_WORKFLOW_BY_ID = gql`
 
 /** Get workflow query response */
 export interface GetWorkflowByIdQueryResponse {
-  loading: boolean;
   workflow: Workflow;
 }

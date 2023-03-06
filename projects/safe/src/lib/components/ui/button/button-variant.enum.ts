@@ -6,4 +6,5 @@ export enum ButtonVariant {
   PRIMARY = 'primary',
   SUCCESS = 'success',
   DANGER = 'danger',
+  GREY = 'grey',
 }

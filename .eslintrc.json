@@ -10,7 +10,8 @@
       ],
       "plugins": [
         "prettier",
-        "jsdoc"
+        "jsdoc",
+        "deprecation"
       ],
       "parserOptions": {
         "project": [
@@ -61,7 +62,9 @@
         "jsdoc/require-param-type": 0,
         "jsdoc/require-property-type": 0,
         "jsdoc/require-description": 1,
-        "jsdoc/require-returns-type": 0
+        "jsdoc/require-returns-type": 0,
+        "@typescript-eslint/no-unused-vars": 2,
+        "deprecation/deprecation": "warn"
       }
     },
     {

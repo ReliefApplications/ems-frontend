@@ -7,7 +7,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { PositionAttributesRoutingModule } from './position-attributes-routing.module';
 import { PositionAttributesComponent } from './position-attributes.component';
-import { SafePreviousButtonModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -23,7 +22,6 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    SafePreviousButtonModule,
     TranslateModule,
   ],
   exports: [PositionAttributesComponent],

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PositionAttribute } from '@safe/builder';
+import { PositionAttribute, SafeBreadcrumbService } from '@safe/builder';
 import { Apollo } from 'apollo-angular';
 import {
   GetPositionAttributesFromCategoryQueryResponse,
   GET_POSITION_ATTRIBUTES_FROM_CATEGORY,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 
 /**
  * Position attributes component.
@@ -30,11 +30,13 @@ export class PositionAttributesComponent implements OnInit {
    * @param apollo Apollo service
    * @param route Angular activated route
    * @param router Angular router
+   * @param breadcrumbService Shared breadcrumb service
    */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private breadcrumbService: SafeBreadcrumbService
   ) {}
 
   ngOnInit(): void {
@@ -47,12 +49,13 @@ export class PositionAttributesComponent implements OnInit {
           id: this.id,
         },
       })
-      .valueChanges.subscribe((res) => {
-        this.positionAttributes = res.data.positionAttributes;
+      .valueChanges.subscribe(({ data, loading }) => {
+        this.positionAttributes = data.positionAttributes;
         if (this.positionAttributes.length > 0) {
           this.categoryName = this.positionAttributes[0].category?.title || '';
+          this.breadcrumbService.setBreadcrumb('@attribute', this.categoryName);
         }
-        this.loading = res.loading;
+        this.loading = loading;
       });
   }
 }

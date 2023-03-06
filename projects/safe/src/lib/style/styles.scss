@@ -2,14 +2,18 @@
 @import 'variables.scss';
 @include mat.core();
 
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
 .sv_main {
-  --primary-color: #{$primary_500};
-  --secondary-color: #{$primary_500};
+  --primary-color: #{rgb($primary_500)};
+  --secondary-color: #{rgb($primary_500)};
   // --primary-text-color: #676a6c;
   // --secondary-text-color: #a7a7a7;
   // --inverted-text-color: #ffffff;
-  --primary-hover-color: #{$primary_500};
-  --selection-border-color: #{$primary_500};
+  --primary-hover-color: #{rgb($primary_500)};
+  --selection-border-color: #{rgb($primary_500)};
   // --primary-icon-color: #3d4d5d;
   // --primary-bg-color: #fff;
   // --secondary-bg-color: #f4f4f4;
@@ -19,43 +23,44 @@
 }
 
 $safe-palette: (
-  50: $primary_50,
-  100: $primary_100,
-  200: $primary_200,
-  300: $primary_300,
-  400: $primary_400,
-  500: $primary_500,
-  600: $primary_600,
-  700: $primary_700,
-  800: $primary_800,
-  900: $primary_900,
-  A100: $primary_A100,
-  A200: $primary_A200,
-  A400: $primary_A400,
-  A700: $primary_A700,
-  contrast: (
-    50: #000000,
-    100: #000000,
-    200: #000000,
-    300: #000000,
-    400: #ffffff,
-    500: #ffffff,
-    600: #ffffff,
-    700: #ffffff,
-    800: #ffffff,
-    900: #ffffff,
-    A100: #000000,
-    A200: #000000,
-    A400: #ffffff,
-    A700: #ffffff,
-  ),
+  50: rgb($primary_50),
+  100: rgb($primary_100),
+  200: rgb($primary_200),
+  300: rgb($primary_300),
+  400: rgb($primary_400),
+  500: rgb($primary_500),
+  600: rgb($primary_600),
+  700: rgb($primary_700),
+  800: rgb($primary_800),
+  900: rgb($primary_900),
+  // A100: $primary_A100,
+  // A200: $primary_A200,
+  // A400: $primary_A400,
+  // A700: $primary_A700,
+  contrast:
+    (
+      50: #000000,
+      100: #000000,
+      200: #000000,
+      300: #000000,
+      400: #ffffff,
+      500: #ffffff,
+      600: #ffffff,
+      700: #ffffff,
+      800: #ffffff,
+      900: #ffffff,
+      // A100: #000000,
+      // A200: #000000,
+      // A400: #ffffff,
+      // A700: #ffffff,
+    ),
 );
 
 $safe-palette-accent: (
-  main: $secondary_main,
-  lighter: $secondary_lighter,
-  darker: $secondary_darker,
-  200: $secondary_200,
+  main: rgb($secondary_50),
+  lighter: rgb($secondary_100),
+  darker: rgb($secondary_150),
+  200: rgb($secondary_200),
   // For slide toggle,
   contrast:
     (
@@ -70,6 +75,7 @@ $safe-palette-warn: (
   // 500
   lighter: #ff766f,
   darker: #9b001d,
+  50: #fae9e9,
   200: #e9a2a2,
   // 200
   // For slide toggle,
@@ -95,6 +101,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   .snack-error {
     background-color: mat.get-color-from-palette($warn);
     color: white;
+    white-space: pre-wrap;
 
     .mat-simple-snackbar-action {
       color: white;
@@ -113,10 +120,6 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
     }
   }
 
-  .primary {
-    color: mat.get-color-from-palette($primary);
-  }
-
   .accent {
     color: mat.get-color-from-palette($accent);
   }
@@ -124,16 +127,9 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   .warn {
     color: mat.get-color-from-palette($warn);
   }
-
-  .safe-add-application {
-    background-color: mat.get-color-from-palette($primary, 50);
-
-    span {
-      color: mat.get-color-from-palette($primary);
-    }
-  }
 }
 
+// === CHIP ===
 @mixin chip($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
@@ -160,6 +156,7 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
+// === BUTTON ===
 @mixin button($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
@@ -188,16 +185,148 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
-// img-choice
-// img-selected
+// === ALERT ===
+@mixin alert($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+
+  .safe-alert {
+    &-default {
+      $variant-color: #f1f1f1;
+      background-color: $variant-color;
+      color: darken($variant-color, 30%);
+    }
+
+    &-primary {
+      background-color: mat.get-color-from-palette($primary, 50);
+      color: mat.get-color-from-palette($primary);
+    }
+
+    &-danger {
+      background-color: mat.get-color-from-palette($warn, 50);
+      color: mat.get-color-from-palette($warn);
+    }
+
+    &-success {
+      background-color: rgba(149, 221, 101, 0.2);
+      color: rgb(149, 221, 101);
+    }
+
+    &-warning {
+      background-color: rgba(244, 174, 82, 0.2);
+      color: rgb(244, 174, 82);
+    }
+  }
+}
+
+// === RADIO ===
+@mixin radio($theme) {
+  .mat-radio-label-content {
+    safe-icon {
+      vertical-align: text-bottom;
+    }
+  }
+}
+
+// === SLIDE TOGGLE ===
+@mixin slide-toggle($theme) {
+  .mat-slide-toggle-content {
+    safe-icon {
+      vertical-align: text-bottom;
+    }
+  }
+}
+
+// === EXPANSION PANEL ===
+@mixin expansion-panel($theme) {
+  .mat-expansion-panel-header-title {
+    gap: 4px;
+  }
+}
+
+// === CHECKBOX ===
+@mixin checkbox($theme) {
+  .mat-checkbox-label {
+    safe-icon {
+      vertical-align: text-bottom;
+    }
+  }
+}
+
+// === FORM FIELD ===
+@mixin form-field($theme) {
+  mat-label {
+    safe-icon {
+      vertical-align: text-bottom;
+    }
+  }
+
+  .p-0 {
+    // no padding fields
+    &.mat-form-field {
+      .mat-form-field-wrapper {
+        padding: 0 !important;
+      }
+    }
+  }
+
+  .mat-form-field-sm {
+    // small form-field
+    &.mat-form-field {
+      .mat-form-field-label-wrapper {
+        top: -1.4em;
+      }
+    }
+
+    .mat-form-field-flex > .mat-form-field-infix {
+      padding: 0.42em 0px !important;
+    }
+
+    &.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
+      .mat-form-field-label {
+      transform: translateY(-1.1em) scale(0.75);
+      width: 133.33333%;
+    }
+  }
+}
+
+// === MODAL ===
+@mixin modal($theme) {
+  .mat-dialog-actions {
+    gap: 8px;
+  }
+}
+
+// === TOOLTIP ===
+@mixin tooltip($theme) {
+  .mat-tooltip-panel {
+    pointer-events: none !important;
+  }
+}
 
 // === GLOBAL STYLES ==
 .mat-table {
-  box-shadow: 0 2px 5px 0 rgba(219, 134, 134, 0.2);
   font-size: 14px;
   opacity: 0.87;
   border-radius: 4px;
   width: 100%;
+  th,
+  td {
+    padding: 0 4px !important;
+    &:first-of-type {
+      padding-left: 24px !important;
+      &:not(:last-of-type) {
+        padding-right: 4px !important;
+      }
+    }
+    &:last-of-type {
+      padding-right: 24px !important;
+      &:not(:first-of-type) {
+        padding-left: 4px !important;
+      }
+    }
+  }
 }
 
 .success-button {
@@ -220,10 +349,6 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   .mat-cell {
     border-bottom: 1px solid #f2f3f5 !important;
     color: #3f3c3c;
-  }
-  .mat-cell:first-child {
-    color: #000000;
-    font-weight: 500;
   }
 }
 
@@ -259,21 +384,13 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   }
 }
 
-.clickable {
-  &:hover {
-    cursor: pointer;
-  }
-}
-
 .mat-column-_actions,
 .mat-column-actions {
   width: 64px;
 }
 
 .mat-chip {
-  border-radius: 0px !important;
   min-width: 75px;
-  max-width: 1px; //This works??
   justify-content: center;
   font-weight: 500 !important;
 
@@ -291,57 +408,35 @@ $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
   margin: 32px;
 }
 
-.form-group {
-  &:not(td) {
-    display: flex;
-    flex-direction: column;
+.mat-tab-group .mat-tab-header,
+.mat-tab-nav-bar {
+  margin-bottom: 12px;
+}
 
-    &:not(:first-child) {
-      margin-top: 32px;
-    }
+.collapsible-form-group {
+  mat-expansion-panel {
+    border: solid 1px rgba(0, 0, 0, 0.1);
+    box-shadow: none !important;
+  }
 
-    .form-group-row {
-      display: flex;
-      gap: 8px;
-    }
-
-    .form-group-title {
-      font-weight: bold;
-      font-size: 16px;
-      margin-bottom: 12px;
-      border-bottom: 1px solid darkgray;
-      padding-bottom: 4px;
-    }
-    .nested-form-group {
-      padding: 16px;
-      border: 1px solid darkgray;
-      border-radius: 4px;
-
-      .form-group:last-child {
-        margin-bottom: 0;
-      }
-    }
-    .form-radio-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 1.25em;
-      gap: 4px;
-    }
-    .form-slide-toggle {
-      margin-bottom: 1.25em;
-    }
+  mat-expansion-panel:not(.mat-expanded)
+    + mat-expansion-panel:not(.mat-expanded) {
+    border-top: 0;
   }
 }
 
-.mat-tab-group {
-  .mat-tab-header {
-    margin-bottom: 12px;
-  }
-}
-
+// === ADDITIONAL MATERIAL STYLING ===
 @include mat.all-component-themes($safe-theme);
 @include chip($safe-theme);
 @include button($safe-theme);
+@include alert($safe-theme);
+@include radio($safe-theme);
+@include slide-toggle($safe-theme);
+@include expansion-panel($safe-theme);
+@include checkbox($safe-theme);
+@include form-field($safe-theme);
+@include modal($safe-theme);
+@include tooltip($safe-theme);
 @include custom-theme($safe-theme);
 
 html,
@@ -352,30 +447,6 @@ body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
   overflow: hidden;
-}
-
-.widget-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-
-  .widget-last-update {
-    visibility: hidden;
-    position: absolute;
-    bottom: 0;
-    font-size: 11px;
-    padding: 0 4px;
-    z-index: 1000;
-    margin: 0;
-    color: #a9a9a9;
-  }
-
-  &:hover {
-    .widget-last-update {
-      visibility: visible;
-    }
-  }
 }
 
 .widget-header {
@@ -402,16 +473,12 @@ body {
   }
 }
 
-.widget-content {
-  flex: 1;
-  height: auto;
-}
-
 // === DIALOGS ===
-.add-dialog {
-  mat-dialog-container {
-    width: 700px;
-  }
+.fullscreen-dialog {
+  margin-top: 72px;
+  max-width: unset !important;
+  width: 100%;
+  height: calc(100% - 72px);
 }
 
 .no-padding-dialog {
@@ -427,16 +494,16 @@ body {
   }
 }
 
-.tile-settings-dialog,
-.expanded-widget-dialog {
+.resource-access-dialog {
   max-width: unset !important;
-  width: 100%;
+  width: 90%;
   height: calc(100% - 72px);
 
   mat-dialog-container {
     position: relative;
     border-radius: 4px 4px 0 0;
     width: 100%;
+    background-color: #fafafa;
   }
 
   .mat-dialog-content {
@@ -445,30 +512,12 @@ body {
   }
 }
 
-.expanded-widget-dialog {
-  .mat-dialog-content {
-    max-height: unset;
-    height: 100%;
-  }
-}
-
 // === UTILS ===
-.info-icon {
-  color: #939393;
-  font-size: 22px;
-  cursor: pointer;
-}
-
-.info-text {
-  color: #939393;
-  margin-bottom: 32px;
-}
-
-.info-row {
-  display: flex;
-  .info-icon {
-    margin-left: 6px;
-  }
+// Correct a bug of angular, see https://github.com/angular/components/issues/14311
+.mat-form-field-suffix,
+.mat-form-field-prefix {
+  display: inline-flex;
+  align-items: center;
 }
 
 // === SURVEY BUILDER ===
@@ -476,10 +525,190 @@ body {
   color: mat.get-color-from-palette($safe-warn) !important;
 }
 
+// === KENDO THEME ===
 @import 'theme.scss';
+
+// === VERTICAL TABS ===
+mat-tab-group[vertical] {
+  display: flex;
+  flex-direction: row !important;
+
+  & > .mat-tab-header {
+    border-bottom: none;
+    width: 240px;
+    z-index: 1;
+
+    .mat-tab-labels {
+      display: flex;
+      flex-direction: column !important;
+      position: relative;
+
+      .mat-tab-label {
+        justify-content: left;
+        border-radius: 7px;
+        transition: all 0.1s ease;
+
+        &.mat-tab-label-active:not(.cdk-keyboard-focused) {
+          opacity: 1;
+          background-color: #f5f5f5;
+        }
+
+        .mat-tab-label-content {
+          gap: 6px;
+
+          safe-icon {
+            display: flex;
+            pointer-events: none;
+          }
+        }
+      }
+    }
+
+    .mat-ink-bar {
+      display: none;
+    }
+  }
+
+  & > .mat-tab-body-wrapper {
+    width: 100%;
+
+    & > .mat-tab-body {
+      & > .mat-tab-body-content {
+        transition: all ease 200ms;
+        padding-left: 32px;
+      }
+      &
+        > .mat-tab-body-content[style*='transform: translate3d(100%, 0px, 0px)'] {
+        transform: translate3d(0px, 100%, 0px) !important;
+      }
+      &
+        > .mat-tab-body-content[style*='transform: translate3d(-100%, 0px, 0px)'] {
+        transform: translate3d(0px, -100%, 0px) !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 598px) {
+  mat-tab-group[vertical] {
+    & > .mat-tab-header {
+      width: unset;
+
+      .mat-tab-label {
+        .mat-tab-label-content {
+          span {
+            display: none;
+          }
+
+          safe-icon {
+            pointer-events: all !important;
+          }
+        }
+      }
+    }
+  }
+}
 
 // === TINYMCE ===
 .tox-editor-header *,
 .tox-tinymce-aux * {
   font-family: Roboto, 'Helvetica Neue', sans-serif !important;
+}
+
+// === SCROLL BARS ===
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* === Track === */
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+/* === Handle === */
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #d4d4d9;
+  border: solid 2px white;
+}
+
+// === LEAFLET ===
+.map-legend-container {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: white;
+  outline: solid rgba(0, 0, 0, 0.2) 2px;
+  border-radius: 4px;
+  line-height: 18px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .map-legend {
+    position: relative;
+
+    h4 {
+      margin: 0;
+      opacity: 0.8;
+      cursor: pointer;
+    }
+
+    i {
+      width: 18px;
+      height: 18px;
+      float: left;
+      margin-right: 8px;
+      opacity: 0.7;
+    }
+
+    .map-legend-division {
+      cursor: pointer;
+    }
+  }
+
+  .map-legend-hide {
+    opacity: 0.4;
+
+    .map-legend-division {
+      display: none;
+    }
+  }
+
+  .legend-division-hide {
+    opacity: 0.4;
+  }
+}
+
+/* === Tailwindcss === */
+// Allow to use @apply in not visible by default elements
+@layer components {
+  .cdk-drag-preview {
+    @apply box-border rounded shadow-xl;
+    // previous shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12),
+  }
+}
+
+// Define new colors
+@layer base {
+  :root {
+    --primary-50: #{$primary_50};
+    --primary-100: #{$primary_100};
+    --primary-200: #{$primary_200};
+    --primary-300: #{$primary_300};
+    --primary-400: #{$primary_400};
+    --primary-500: #{$primary_500};
+    --primary-600: #{$primary_600};
+    --primary-700: #{$primary_700};
+    --primary-800: #{$primary_800};
+    --primary-900: #{$primary_900};
+    --secondary-50: #{$secondary_50};
+    --secondary-100: #{$secondary_100};
+    --secondary-150: #{$secondary_150};
+    --secondary-200: #{$secondary_200};
+  }
 }

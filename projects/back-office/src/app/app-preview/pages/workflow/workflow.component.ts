@@ -1,19 +1,20 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   ContentType,
   Step,
   SafeSnackBarService,
   Workflow,
-  NOTIFICATIONS,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
 import {
   GetWorkflowByIdQueryResponse,
   GET_WORKFLOW_BY_ID,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import { PreviewService } from '../../../services/preview.service';
+import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Workflow page component for application preview.
@@ -23,7 +24,10 @@ import { PreviewService } from '../../../services/preview.service';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent implements OnInit, OnDestroy {
+export class WorkflowComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
 
@@ -31,9 +35,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   public id = '';
   public workflow?: Workflow;
   public steps: Step[] = [];
-
-  // === ROUTE ===
-  private routeSubscription?: Subscription;
 
   // === ACTIVE STEP ===
   public activeStep = 0;
@@ -49,23 +50,30 @@ export class WorkflowComponent implements OnInit, OnDestroy {
    * @param snackBar Shared snackbar service
    * @param router Angular router
    * @param previewService Shared preview service
+   * @param translate Angular translate service
    */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router,
-    private previewService: PreviewService
-  ) {}
+    private previewService: PreviewService,
+    private translate: TranslateService
+  ) {
+    super();
+  }
 
   /**
    * Gets the workflow from the route.
    */
   ngOnInit(): void {
-    this.previewService.roleId$.subscribe((role) => {
-      this.role = role;
-    });
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.previewService.roleId$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((role) => {
+        this.role = role;
+      });
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.loading = true;
       this.id = params.id;
       this.apollo
         .watchQuery<GetWorkflowByIdQueryResponse>({
@@ -75,26 +83,34 @@ export class WorkflowComponent implements OnInit, OnDestroy {
             asRole: this.role,
           },
         })
-        .valueChanges.subscribe(
-          (res) => {
-            if (res.data.workflow) {
-              this.workflow = res.data.workflow;
-              this.steps = res.data.workflow.steps || [];
-              this.loading = res.loading;
+        .valueChanges.subscribe({
+          next: ({ data, loading }) => {
+            if (data.workflow) {
+              this.workflow = data.workflow;
+              this.steps = data.workflow.steps || [];
+              this.loading = loading;
               if (this.steps.length > 0) {
                 this.onOpenStep(0);
               }
             } else {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.accessNotProvided('workflow'),
+                this.translate.instant(
+                  'common.notifications.accessNotProvided',
+                  {
+                    type: this.translate
+                      .instant('common.workflow.one')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
             }
           },
-          (err) => {
+          error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
-          }
-        );
+          },
+        });
     });
   }
 
@@ -121,11 +137,18 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.onOpenStep(this.activeStep + 1);
     } else if (this.activeStep + 1 === this.steps.length) {
       this.onOpenStep(0);
-      this.snackBar.openSnackBar(NOTIFICATIONS.goToStep(this.steps[0].name));
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.workflow.notifications.goToStep', {
+          step: this.steps[0].name,
+        })
+      );
     } else {
-      this.snackBar.openSnackBar(NOTIFICATIONS.cannotGoToNextStep, {
-        error: true,
-      });
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'models.workflow.notifications.cannotGoToNextStep'
+        ),
+        { error: true }
+      );
     }
   }
 
@@ -149,15 +172,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       }
     } else {
       this.router.navigate(['./'], { relativeTo: this.route });
-    }
-  }
-
-  /**
-   * Deletes all subscriptions of the page.
-   */
-  ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
     }
   }
 }

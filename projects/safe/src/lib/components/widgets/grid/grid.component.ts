@@ -9,16 +9,18 @@ import {
   PUBLISH_NOTIFICATION,
   PublishMutationResponse,
   PublishNotificationMutationResponse,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
-import { SafeConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
-import { Form } from '../../../models/form.model';
 import {
   GetRecordDetailsQueryResponse,
   GET_RECORD_DETAILS,
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-} from '../../../graphql/queries';
+  GetFormByIdQueryResponse,
+  GET_FORM_BY_ID,
+  GetUserRolesPermissionsQueryResponse,
+  GET_USER_ROLES_PERMISSIONS,
+} from './graphql/queries';
 import {
   Component,
   OnInit,
@@ -28,24 +30,28 @@ import {
   EventEmitter,
   Inject,
 } from '@angular/core';
-import { SafeSnackBarService } from '../../../services/snackbar.service';
-import { SafeWorkflowService } from '../../../services/workflow.service';
+import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
+import { SafeWorkflowService } from '../../../services/workflow/workflow.service';
 import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
-import { NOTIFICATIONS } from '../../../const/notifications';
-import { SafeAuthService } from '../../../services/auth.service';
-import { SafeEmailService } from '../../../services/email.service';
-import { QueryBuilderService } from '../../../services/query-builder.service';
+import { SafeAuthService } from '../../../services/auth/auth.service';
+import { SafeEmailService } from '../../../services/email/email.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { SafeCoreGridComponent } from '../../ui/core-grid/core-grid.component';
-import { SafeGridLayoutService } from '../../../services/grid-layout.service';
+import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
+import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
-import { EmailTemplateModalComponent } from './email-template-modal/email-template-modal.component';
-import { SafeApplicationService } from '../../../services/application.service';
+import get from 'lodash/get';
+import { EmailTemplateModalComponent } from '../../email-template-modal/email-template-modal.component';
+import { SafeApplicationService } from '../../../services/application/application.service';
+import { Aggregation } from '../../../models/aggregation.model';
+import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
+import { firstValueFrom } from 'rxjs';
 
 /** Regex for the pattern "today()+[number of days to add]" */
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
-/** Regex for the pattern "today()-[number of days to substract]" */
+/** Regex for the pattern "today()-[number of days to subtract]" */
 const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
 
 /** Component for the grid widget */
@@ -61,11 +67,19 @@ export class SafeGridWidgetComponent implements OnInit {
   private grid!: SafeCoreGridComponent;
 
   // === DATA ===
+  @Input() widget: any;
   public loading = true;
+
+  // === PERMISSIONS ===
+  public canCreateRecords = false;
 
   // === CACHED CONFIGURATION ===
   public layout: Layout | null = null;
   public layouts: Layout[] = [];
+
+  // === AGGREGATION ===
+  public aggregation: Aggregation | null = null;
+  public aggregations: Aggregation[] = [];
 
   // === VERIFICATION IF USER IS ADMIN ===
   public isAdmin: boolean;
@@ -74,10 +88,18 @@ export class SafeGridWidgetComponent implements OnInit {
   @Input() header = true;
   @Input() settings: any = null;
   @Input() id = '';
+  @Input() canUpdate = false;
   public gridSettings: any = null;
+  public status: {
+    message?: string;
+    error: boolean;
+  } = { error: false };
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+
+  // === EMIT EVENT ===
+  @Output() edit: EventEmitter<any> = new EventEmitter();
 
   /**
    * Heavy constructor for the grid widget component
@@ -85,14 +107,17 @@ export class SafeGridWidgetComponent implements OnInit {
    * @param environment Environment variables
    * @param apollo The apollo client
    * @param dialog Material dialogs service
-   * @param snackBar The safe snack bar service
-   * @param workflowService The safe wofkflow service
-   * @param safeAuthService The safe authentification service
-   * @param emailService The safe email service
-   * @param queryBuilder The query builder service
-   * @param gridLayoutService The safe grid layout service
+   * @param snackBar Shared snack bar service
+   * @param workflowService Shared workflow service
+   * @param safeAuthService Shared authentication service
+   * @param emailService Shared email service
+   * @param queryBuilder Shared query builder service
+   * @param gridLayoutService Shared grid layout service
+   * @param confirmService Shared confirm service
    * @param applicationService The safe application service
-   * @param translate The translate service
+   * @param translate Angular translate service
+   * @param aggregationService Shared aggregation service
+   * @param snackbarService Shared snackbar service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -104,27 +129,88 @@ export class SafeGridWidgetComponent implements OnInit {
     private emailService: SafeEmailService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
+    private confirmService: SafeConfirmService,
     private applicationService: SafeApplicationService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private aggregationService: SafeAggregationService,
+    private snackbarService: SafeSnackBarService
   ) {
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.gridSettings = { ...this.settings };
+    delete this.gridSettings.query;
     if (this.settings.resource) {
-      this.gridLayoutService
-        .getLayouts(this.settings.resource, this.settings.layouts)
-        .then((res) => {
-          this.layouts = res;
-          this.layout = this.layouts[0] || null;
-          this.gridSettings = {
-            ...this.settings,
-            ...this.layout,
-            ...{ template: this.settings.query?.template },
-          };
+      const layouts = get(this.settings, 'layouts', []);
+      const aggregations = get(this.settings, 'aggregations', []);
+
+      // Get user permission on resource
+      this.apollo
+        .query<GetUserRolesPermissionsQueryResponse>({
+          query: GET_USER_ROLES_PERMISSIONS,
+          variables: {
+            resource: this.settings.resource,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            this.canCreateRecords = get(
+              res,
+              'data.resource.canCreateRecords',
+              false
+            );
+          }
         });
+
+      if (layouts.length > 0) {
+        this.gridLayoutService
+          .getLayouts(this.settings.resource, {
+            ids: layouts,
+            first: layouts?.length,
+          })
+          .then((res) => {
+            this.layouts = res.edges
+              .map((edge) => edge.node)
+              .sort((a, b) => layouts.indexOf(a.id) - layouts.indexOf(b.id));
+            this.layout = this.layouts[0] || null;
+            if (!this.layout) {
+              this.status = {
+                error: true,
+              };
+            }
+            this.gridSettings = {
+              ...this.settings,
+              ...this.layout,
+              ...{ template: get(this.settings, 'template', null) },
+            };
+          });
+        return;
+      }
+
+      if (aggregations.length > 0) {
+        this.aggregationService
+          .getAggregations(this.settings.resource, {
+            ids: aggregations,
+            first: aggregations.length,
+          })
+          .then((res) => {
+            this.aggregations = res.edges
+              .map((edge) => edge.node)
+              .sort(
+                (a, b) =>
+                  aggregations.indexOf(a.id) - aggregations.indexOf(b.id)
+              );
+            if (!this.aggregation) {
+              this.status = {
+                error: true,
+              };
+            }
+            this.aggregation = this.aggregations[0] || null;
+          });
+        return;
+      }
     }
   }
 
@@ -140,16 +226,16 @@ export class SafeGridWidgetComponent implements OnInit {
       const data = Object.assign({}, item);
       delete data.id;
       promises.push(
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
+        firstValueFrom(
+          this.apollo.mutate<EditRecordMutationResponse>({
             mutation: EDIT_RECORD,
             variables: {
               id: item.id,
               data,
-              template: this.settings.query?.template,
+              template: get(this.settings, 'template', null),
             },
           })
-          .toPromise()
+        )
       );
     }
     return promises;
@@ -168,15 +254,15 @@ export class SafeGridWidgetComponent implements OnInit {
         this.grid.settings.query.name,
         'id\n'
       );
-      const records = await this.apollo
-        .query<any>({
+      const records = await firstValueFrom(
+        this.apollo.query<any>({
           query,
           variables: {
             first: this.grid.gridData.total,
             filter: this.grid.queryFilter,
           },
         })
-        .toPromise();
+      );
       this.grid.selectedRows = records.data[
         this.grid.settings.query.name
       ].edges.map((x: any) => x.node.id);
@@ -211,8 +297,8 @@ export class SafeGridWidgetComponent implements OnInit {
     // Notifies on a channel.
     if (options.notify && this.grid.selectedRows.length > 0) {
       promises.push(
-        this.apollo
-          .mutate<PublishNotificationMutationResponse>({
+        firstValueFrom(
+          this.apollo.mutate<PublishNotificationMutationResponse>({
             mutation: PUBLISH_NOTIFICATION,
             variables: {
               action: options.notificationMessage
@@ -222,21 +308,21 @@ export class SafeGridWidgetComponent implements OnInit {
               channel: options.notificationChannel,
             },
           })
-          .toPromise()
+        )
       );
     }
     // Publishes on a channel.
     if (options.publish && this.grid.selectedRows.length > 0) {
       promises.push(
-        this.apollo
-          .mutate<PublishMutationResponse>({
+        firstValueFrom(
+          this.apollo.mutate<PublishMutationResponse>({
             mutation: PUBLISH,
             variables: {
               ids: this.grid.selectedRows,
               channel: options.publicationChannel,
             },
           })
-          .toPromise()
+        )
       );
     }
     if (promises.length > 0) {
@@ -244,37 +330,68 @@ export class SafeGridWidgetComponent implements OnInit {
     }
     // Send email using backend mail service.
     if (options.sendMail) {
-      // select template
-      const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
-        data: {
-          templates: this.applicationService.templates.filter((x) =>
-            options.templates?.includes(x.id)
+      const templates =
+        this.applicationService.templates.filter((x) =>
+          options.templates?.includes(x.id)
+        ) || [];
+      if (templates.length === 0) {
+        // no template found, skip
+        this.snackbarService.openSnackBar(
+          this.translate.instant(
+            'common.notifications.email.errors.noTemplate'
           ),
-        },
-      });
-
-      const value = await dialogRef.afterClosed().toPromise();
-      const template = value?.template;
-
-      if (template) {
-        this.emailService.previewMail(
-          options.distributionList,
-          template.content.subject,
-          template.content.body,
-          {
-            logic: 'and',
-            filters: [
-              { operator: 'eq', field: 'ids', value: this.grid.selectedRows },
-            ],
-          },
-          {
-            name: this.settings.query.name,
-            fields: options.bodyFields,
-          },
-          this.grid.sortField || undefined,
-          this.grid.sortOrder || undefined,
-          options.export
+          { error: true }
         );
+      } else {
+        // find recipients
+        const recipients =
+          this.applicationService.distributionLists.find(
+            (x) => x.id === options.distributionList
+          )?.emails || [];
+        if (recipients.length === 0) {
+          // no recipient found, skip
+          this.snackbarService.openSnackBar(
+            this.translate.instant(
+              'common.notifications.email.errors.noDistributionList'
+            ),
+            { error: true }
+          );
+        } else {
+          // select template
+          const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
+            data: {
+              templates,
+            },
+          });
+
+          const value = await firstValueFrom(dialogRef.afterClosed());
+          const template = value?.template;
+
+          if (template) {
+            this.emailService.previewMail(
+              recipients,
+              template.content.subject,
+              template.content.body,
+              {
+                logic: 'and',
+                filters: [
+                  {
+                    operator: 'eq',
+                    field: 'ids',
+                    value: this.grid.selectedRows,
+                  },
+                ],
+              },
+              {
+                name: this.grid.settings.query.name,
+                fields: options.bodyFields,
+              },
+              this.grid.sortField || undefined,
+              this.grid.sortOrder || undefined,
+              options.export
+            );
+          }
+        }
       }
     }
 
@@ -284,14 +401,14 @@ export class SafeGridWidgetComponent implements OnInit {
       // Fetches the record object for each selected record.
       for (const record of this.grid.selectedItems) {
         promisedRecords.push(
-          this.apollo
-            .query<GetRecordDetailsQueryResponse>({
+          firstValueFrom(
+            this.apollo.query<GetRecordDetailsQueryResponse>({
               query: GET_RECORD_DETAILS,
               variables: {
                 id: record.id,
               },
             })
-            .toPromise()
+          )
         );
       }
       const records = (await Promise.all(promisedRecords)).map(
@@ -302,13 +419,9 @@ export class SafeGridWidgetComponent implements OnInit {
       this.dialog.open(SafeFormModalComponent, {
         data: {
           template: options.prefillTargetForm,
-          locale: 'en',
           prefillRecords: records,
           askForConfirm: false,
         },
-        height: '98%',
-        width: '100vw',
-        panelClass: 'full-screen-modal',
         autoFocus: false,
       });
     }
@@ -318,17 +431,15 @@ export class SafeGridWidgetComponent implements OnInit {
       if (options.goToNextStep) {
         this.goToNextStep.emit(true);
       } else {
-        const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-          data: {
-            title: this.translate.instant(
-              'components.widget.settings.grid.buttons.callback.workflow.close'
-            ),
-            content: options.confirmationText,
-            confirmText: this.translate.instant(
-              'components.confirmModal.confirm'
-            ),
-            confirmColor: 'primary',
-          },
+        const dialogRef = this.confirmService.openConfirmModal({
+          title: this.translate.instant(
+            'components.widget.settings.grid.buttons.callback.workflow.close'
+          ),
+          content: options.confirmationText,
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
+          confirmColor: 'primary',
         });
         dialogRef.afterClosed().subscribe((confirm: boolean) => {
           if (confirm) {
@@ -355,9 +466,12 @@ export class SafeGridWidgetComponent implements OnInit {
   ): Promise<any> {
     const update: any = {};
     for (const modification of modifications) {
-      // modificationFields.push(modification.field.name);
       if (['Date', 'DateTime'].includes(modification.field.type.name)) {
         update[modification.field.name] = this.getDateForFilter(
+          modification.value
+        );
+      } else if (['Time'].includes(modification.field.type.name)) {
+        update[modification.field.name] = this.getTimeForFilter(
           modification.value
         );
       } else {
@@ -365,16 +479,16 @@ export class SafeGridWidgetComponent implements OnInit {
       }
     }
     const data = cleanRecord(update);
-    return this.apollo
-      .mutate<EditRecordsMutationResponse>({
+    return firstValueFrom(
+      this.apollo.mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
         variables: {
           ids,
           data,
-          template: this.settings.query?.template,
+          template: get(this.settings, 'template', null),
         },
       })
-      .toPromise();
+    );
   }
 
   /**
@@ -406,88 +520,129 @@ export class SafeGridWidgetComponent implements OnInit {
   }
 
   /**
+   * Gets from input time value a time value display.
+   *
+   * @param value record value
+   * @returns calculated time
+   */
+  private getTimeForFilter(value: any): string {
+    if (value === 'now()') {
+      const time = new Date()
+        .toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+        .split(/:| /);
+      if (
+        (time[2] === 'PM' && time[0] !== '12') ||
+        (time[2] === 'AM' && time[0] === '12')
+      ) {
+        time[0] = (parseInt(time[0], 10) + 12).toString();
+      }
+      return time[0] + ':' + time[1];
+    } else {
+      return value;
+    }
+  }
+
+  /**
    * Open a modal to select which record we want to attach the rows to and
    * perform the attach.
    * The inputs comes from 'attach to record' button from grid component
    *
    * @param selectedRecords The list of selected records
-   * @param targetForm The targetted form
+   * @param targetForm Target template id
    * @param targetFormField The form field
    * @param targetFormQuery The form query
    */
   private async promisedAttachToRecord(
     selectedRecords: string[],
-    targetForm: Form,
+    targetForm: string,
     targetFormField: string,
     targetFormQuery: any
   ): Promise<void> {
-    const dialogRef = this.dialog.open(SafeChooseRecordModalComponent, {
-      data: {
-        targetForm,
-        targetFormField,
-        targetFormQuery,
-      },
-    });
-    const value = await Promise.resolve(dialogRef.afterClosed().toPromise());
-    if (value && value.record) {
-      this.apollo
-        .query<GetRecordByIdQueryResponse>({
-          query: GET_RECORD_BY_ID,
-          variables: {
-            id: value.record,
-          },
-        })
-        .subscribe((res) => {
-          const resourceField = targetForm.fields?.find(
-            (field) =>
-              field.resource && field.resource === this.settings.resource
+    this.apollo
+      .query<GetFormByIdQueryResponse>({
+        query: GET_FORM_BY_ID,
+        variables: {
+          id: targetForm,
+        },
+      })
+      .subscribe(async (getForm) => {
+        if (getForm.data.form) {
+          const form = getForm.data.form;
+          const dialogRef = this.dialog.open(SafeChooseRecordModalComponent, {
+            data: {
+              targetForm: form,
+              targetFormField,
+              targetFormQuery,
+            },
+          });
+          const value = await Promise.resolve(
+            firstValueFrom(dialogRef.afterClosed())
           );
-          let data = res.data.record.data;
-          const key = resourceField.name;
-          if (resourceField.type === 'resource') {
-            data = { ...data, [key]: selectedRecords[0] };
-          } else {
-            if (data[key]) {
-              data = { ...data, [key]: data[key].concat(selectedRecords) };
-            } else {
-              data = { ...data, [key]: selectedRecords };
-            }
-          }
-          this.apollo
-            .mutate<EditRecordMutationResponse>({
-              mutation: EDIT_RECORD,
-              variables: {
-                id: value.record,
-                data,
-              },
-            })
-            .subscribe((res2) => {
-              if (res2.data) {
-                const record = res2.data.editRecord;
-                if (record) {
-                  this.snackBar.openSnackBar(
-                    NOTIFICATIONS.addRowsToRecord(
-                      selectedRecords.length,
-                      key,
-                      record.data[targetFormField]
-                    )
-                  );
-                  this.dialog.open(SafeFormModalComponent, {
-                    disableClose: true,
-                    data: {
-                      recordId: record.id,
-                      locale: 'en',
-                    },
-                    height: '98%',
-                    width: '100vw',
-                    panelClass: 'full-screen-modal',
-                    autoFocus: false,
-                  });
+          if (value && value.record) {
+            this.apollo
+              .query<GetRecordByIdQueryResponse>({
+                query: GET_RECORD_BY_ID,
+                variables: {
+                  id: value.record,
+                },
+              })
+              .subscribe((getRecord) => {
+                const resourceField = form.fields?.find(
+                  (field) =>
+                    field.resource && field.resource === this.settings.resource
+                );
+                let data = getRecord.data.record.data;
+                const key = resourceField.name;
+                if (resourceField.type === 'resource') {
+                  data = { ...data, [key]: selectedRecords[0] };
+                } else {
+                  if (data[key]) {
+                    data = {
+                      ...data,
+                      [key]: data[key].concat(selectedRecords),
+                    };
+                  } else {
+                    data = { ...data, [key]: selectedRecords };
+                  }
                 }
-              }
-            });
-        });
-    }
+                this.apollo
+                  .mutate<EditRecordMutationResponse>({
+                    mutation: EDIT_RECORD,
+                    variables: {
+                      id: value.record,
+                      template: targetForm,
+                      data,
+                    },
+                  })
+                  .subscribe((editRecord) => {
+                    if (editRecord.data) {
+                      const record = editRecord.data.editRecord;
+                      if (record) {
+                        this.snackBar.openSnackBar(
+                          this.translate.instant(
+                            'models.record.notifications.rowsAdded',
+                            {
+                              field: record.data[targetFormField],
+                              length: selectedRecords.length,
+                              value: key,
+                            }
+                          )
+                        );
+                        this.dialog.open(SafeFormModalComponent, {
+                          disableClose: true,
+                          data: {
+                            recordId: record.id,
+                            template: targetForm,
+                          },
+                          autoFocus: false,
+                        });
+                      }
+                    }
+                  });
+              });
+          }
+        }
+      });
   }
 
   /**
@@ -500,7 +655,7 @@ export class SafeGridWidgetComponent implements OnInit {
     this.gridSettings = {
       ...this.settings,
       ...this.layout,
-      ...{ template: this.settings.query?.template },
+      ...{ template: get(this.settings, 'template', null) },
     };
   }
 
@@ -509,5 +664,14 @@ export class SafeGridWidgetComponent implements OnInit {
    */
   onResetLayout(): void {
     this.onLayoutChange(this.layout || {});
+  }
+
+  /**
+   * Updates current aggregation.
+   *
+   * @param aggregation new aggregation.
+   */
+  onAggregationChange(aggregation: Aggregation): void {
+    this.aggregation = aggregation;
   }
 }

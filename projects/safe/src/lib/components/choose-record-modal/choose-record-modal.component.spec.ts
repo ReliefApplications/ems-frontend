@@ -5,13 +5,13 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { QueryBuilderService } from '../../services/query-builder.service';
+import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { SafeChooseRecordModalComponent } from './choose-record-modal.component';
 import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_QUERY_TYPES } from '../../graphql/queries';
+import { GET_QUERY_TYPES } from './graphql/queries';
 
 describe('SafeChooseRecordModalComponent', () => {
   let component: SafeChooseRecordModalComponent;

@@ -1,7 +1,13 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Form, Page, Step, SafeFormComponent } from '@safe/builder';
+import {
+  Form,
+  Page,
+  Step,
+  SafeFormComponent,
+  SafeUnsubscribeComponent,
+} from '@safe/builder';
 import {
   GetFormByIdQueryResponse,
   GetPageByIdQueryResponse,
@@ -11,8 +17,9 @@ import {
   GET_STEP_BY_ID,
 } from './graphql/queries';
 import { Subscription } from 'rxjs';
-import { SafeSnackBarService, NOTIFICATIONS } from '@safe/builder';
-import { switchMap } from 'rxjs/operators';
+import { SafeSnackBarService } from '@safe/builder';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Form page.
@@ -22,7 +29,7 @@ import { switchMap } from 'rxjs/operators';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent implements OnInit, OnDestroy {
+export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
   /** View reference of Shared form component */
   @ViewChild(SafeFormComponent)
   private formComponent?: SafeFormComponent;
@@ -46,8 +53,6 @@ export class FormComponent implements OnInit, OnDestroy {
   public step?: Step;
   /** Tells if the form is within a workflow */
   public isStep = false;
-  /** Subscribes to current route to load form accordingly */
-  private routeSubscription?: Subscription;
 
   /**
    * Form page.
@@ -56,19 +61,23 @@ export class FormComponent implements OnInit, OnDestroy {
    * @param route Angular current route
    * @param router Angular router
    * @param snackBar Shared snackbar service
+   * @param translate Angular translate service
    */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SafeSnackBarService
-  ) {}
+    private snackBar: SafeSnackBarService,
+    private translate: TranslateService
+  ) {
+    super();
+  }
 
   /**
    * Subscribes to the route to load the form.
    */
   ngOnInit(): void {
-    this.routeSubscription = this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.loading = true;
       this.id = params.id;
       this.isStep = this.router.url.includes('/workflow/');
@@ -95,9 +104,9 @@ export class FormComponent implements OnInit, OnDestroy {
               });
             })
           )
-          .subscribe((res) => {
-            if (res.data) {
-              this.form = res.data.form;
+          .subscribe(({ data, loading }) => {
+            if (data) {
+              this.form = data.form;
             }
             if (
               !this.form ||
@@ -105,13 +114,21 @@ export class FormComponent implements OnInit, OnDestroy {
               !this.form.canCreateRecords
             ) {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectAccessDenied('form'),
+                this.translate.instant(
+                  'common.notifications.accessNotProvided',
+                  {
+                    type: this.translate
+                      .instant('common.form.one')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
             } else {
               this.canCreateRecords = true;
             }
-            this.loading = res.data.loading;
+            this.loading = loading;
           });
       } else {
         this.querySubscription = this.apollo
@@ -132,9 +149,9 @@ export class FormComponent implements OnInit, OnDestroy {
               });
             })
           )
-          .subscribe((res) => {
-            if (res.data) {
-              this.form = res.data.form;
+          .subscribe(({ data, loading }) => {
+            if (data) {
+              this.form = data.form;
             }
             if (
               !this.form ||
@@ -142,25 +159,24 @@ export class FormComponent implements OnInit, OnDestroy {
               !this.form.canCreateRecords
             ) {
               this.snackBar.openSnackBar(
-                NOTIFICATIONS.objectAccessDenied('form'),
+                this.translate.instant(
+                  'common.notifications.accessNotProvided',
+                  {
+                    type: this.translate
+                      .instant('common.form.one')
+                      .toLowerCase(),
+                    error: '',
+                  }
+                ),
                 { error: true }
               );
             } else {
               this.canCreateRecords = true;
             }
-            this.loading = res.data.loading;
+            this.loading = loading;
           });
       }
     });
-  }
-
-  /**
-   * Removes the subscriptions of the component.
-   */
-  ngOnDestroy(): void {
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
   }
 
   /**

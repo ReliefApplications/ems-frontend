@@ -15,6 +15,7 @@ export interface ApiConfiguration {
   status?: status;
   authType?: authType;
   endpoint?: string;
+  graphQLEndpoint?: string;
   pingUrl?: string;
   settings?: any;
   permissions?: any;

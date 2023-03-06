@@ -1,14 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
   SafeApplicationService,
   PositionAttributeCategory,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
-import { Subscription } from 'rxjs';
-import { AddPositionComponent } from './components/position-modal/position-modal.component';
+import { takeUntil } from 'rxjs/operators';
+import { PositionModalComponent } from './components/position-modal/position-modal.component';
 
 /**
  * Application position component.
@@ -18,46 +19,51 @@ import { AddPositionComponent } from './components/position-modal/position-modal
   templateUrl: './position.component.html',
   styleUrls: ['./position.component.scss'],
 })
-export class PositionComponent implements OnInit, OnDestroy {
+export class PositionComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public positionCategories: any[] = [];
   public displayedColumns = ['title', 'actions'];
-  private applicationSubscription?: Subscription;
 
   /**
    * Application position component
    *
    * @param dialog Material dialog service
    * @param applicationService Shared application service
+   * @param confirmService Shared confirm service
    * @param translate Angular translate service
    */
   constructor(
     public dialog: MatDialog,
     private applicationService: SafeApplicationService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.loading = false;
-    this.applicationSubscription =
-      this.applicationService.application$.subscribe(
-        (application: Application | null) => {
-          if (application) {
-            this.positionCategories =
-              application.positionAttributeCategories || [];
-          } else {
-            this.positionCategories = [];
-          }
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.positionCategories =
+            application.positionAttributeCategories || [];
+        } else {
+          this.positionCategories = [];
         }
-      );
+      });
   }
 
   /**
    * Add new position
    */
   onAdd(): void {
-    const dialogRef = this.dialog.open(AddPositionComponent, {
+    const dialogRef = this.dialog.open(PositionModalComponent, {
       data: {
         add: true,
       },
@@ -75,8 +81,7 @@ export class PositionComponent implements OnInit, OnDestroy {
    * @param positionCategory position category to edit
    */
   onEdit(positionCategory: PositionAttributeCategory): void {
-    const dialogRef = this.dialog.open(AddPositionComponent, {
-      width: '400px',
+    const dialogRef = this.dialog.open(PositionModalComponent, {
       data: {
         edit: true,
         title: positionCategory.title,
@@ -98,21 +103,18 @@ export class PositionComponent implements OnInit, OnDestroy {
    * @param positionCategory position category to delete
    */
   onDelete(positionCategory: PositionAttributeCategory): void {
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant(
-          'components.application.positionAttribute.delete.title'
-        ),
-        content: this.translate.instant(
-          'components.application.positionAttribute.delete.confirmationMessage',
-          {
-            name: positionCategory.title,
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant(
+        'components.application.positionAttribute.delete.title'
+      ),
+      content: this.translate.instant(
+        'components.application.positionAttribute.delete.confirmationMessage',
+        {
+          name: positionCategory.title,
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
@@ -121,11 +123,5 @@ export class PositionComponent implements OnInit, OnDestroy {
         );
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    if (this.applicationSubscription) {
-      this.applicationSubscription.unsubscribe();
-    }
   }
 }

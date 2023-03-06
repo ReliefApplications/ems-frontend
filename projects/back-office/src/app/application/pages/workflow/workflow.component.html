@@ -1,55 +1,83 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading && workflow">
-  <!-- HEADER -->
-  <div *ngIf="!formActive" class="workflow-name-container">
-    <h1 class="workflow-name" (click)="toggleFormActive()">
-      {{ workflow.name }}
-    </h1>
-    <safe-access
-      [access]="workflow.permissions"
-      [application]="workflow.page?.application?.id"
-      (save)="saveAccess($event)"
-      *ngIf="workflow.page?.canUpdate || false"
-    ></safe-access>
-  </div>
-  <!-- NAME EDITION -->
-  <ng-container *ngIf="formActive">
-    <form
-      [formGroup]="workflowNameForm"
-      (ngSubmit)="saveName()"
-      class="workflow-name-container"
-    >
-      <mat-form-field>
-        <mat-label>{{ 'common.name' | translate }}</mat-label>
-        <input matInput formControlName="workflowName" type="string" />
-      </mat-form-field>
-      <safe-button
-        type="submit"
-        [isIcon]="true"
-        icon="save"
-        variant="primary"
-        [disabled]="!workflowNameForm.valid"
-      >
-      </safe-button>
-      <safe-button
-        [isIcon]="true"
-        icon="close"
-        variant="danger"
-        (click)="toggleFormActive()"
-      >
-      </safe-button>
-    </form>
+<ng-container
+  *safeSkeleton="
+    loading;
+    repeat: 1;
+    height: '32px';
+    width: '120px';
+    shape: 'rectangle'
+  "
+>
+  <ng-container *ngIf="workflow">
+    <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+      <safe-editable-text
+        [text]="workflow.name"
+        [canEdit]="canEditName"
+        (onChange)="saveName($event)"
+        (formActiveEvent)="formActive = $event">
+        <h1 class="!m-0 overflow-hidden text-ellipsis">
+          {{ workflow.name }}
+        </h1>
+      </safe-editable-text>
+
+      <div class="flex items-center gap-1" *ngIf="!formActive">
+        <safe-access
+          [access]="workflow.permissions"
+          [application]="workflow.page?.application?.id"
+          [objectTypeName]="'common.page.one' | translate"
+          (save)="saveAccess($event)"
+          *ngIf="workflow.page?.canUpdate || false"
+        ></safe-access>
+        <safe-button
+          variant="grey"
+          [isIcon]="true"
+          icon="more_vert"
+          [matMenuTriggerFor]="menu"
+          cdkOverlayOrigin
+          #appMenuTrigger="cdkOverlayOrigin"
+        >
+        </safe-button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="onAppSelection()">
+            <mat-icon>file_copy</mat-icon>
+            {{ 'common.duplicate' | translate }}
+          </button>
+        </mat-menu>
+
+        <ng-template #searchMenuHeaderTemplate>
+          <safe-alert
+            ><safe-icon icon="info"></safe-icon>
+            {{ 'models.page.tooltip.duplicate' | translate }}
+          </safe-alert>
+        </ng-template>
+
+        <ng-template
+          cdkConnectedOverlay
+          [cdkConnectedOverlayOrigin]="appMenuTrigger"
+          [cdkConnectedOverlayOpen]="showAppMenu"
+        >
+          <safe-search-menu
+            [headerTemplate]="searchMenuHeaderTemplate"
+            [currentApplicationId]="applicationId"
+            [applications]="applications"
+            (close)="showAppMenu = false"
+            (open)="onDuplicate($event)"
+          ></safe-search-menu>
+        </ng-template>
+      </div>
+    </div>
   </ng-container>
-  <!-- STEPS -->
-  <safe-workflow-stepper
-    [steps]="steps"
-    [canUpdate]="canUpdate"
-    (add)="onAddStep()"
-    (openStep)="onOpenStep($event)"
-    (delete)="onDeleteStep($event)"
-    (reorderSteps)="onReorderSteps($event)"
-    [activeStep]="activeStep"
-  >
-  </safe-workflow-stepper>
 </ng-container>
+<!-- STEPS -->
+<safe-workflow-stepper
+  class="-mx-6 my-4 block"
+  [loading]="loading"
+  [steps]="steps"
+  [canUpdate]="canUpdate"
+  (add)="onAddStep()"
+  (openStep)="onOpenStep($event)"
+  (delete)="onDeleteStep($event)"
+  (reorderSteps)="onReorderSteps($event)"
+  [activeStep]="activeStep"
+>
+</safe-workflow-stepper>
 <router-outlet (activate)="onActivate($event)"></router-outlet>

@@ -34,15 +34,65 @@ const routes: Routes = [
           },
           {
             path: 'roles',
-            loadChildren: () =>
-              import('./pages/roles/roles.module').then((m) => m.RolesModule),
-            // canActivate: [SafePermissionGuard]
+            children: [
+              {
+                path: '',
+                loadChildren: () =>
+                  import('./pages/roles/roles.module').then(
+                    (m) => m.RolesModule
+                  ),
+                // canActivate: [SafePermissionGuard]
+              },
+              {
+                path: ':id',
+                loadChildren: () =>
+                  import('./pages/role-summary/role-summary.module').then(
+                    (m) => m.RoleSummaryModule
+                  ),
+                data: {
+                  breadcrumb: {
+                    alias: '@role',
+                  },
+                },
+                // canActivate: [SafePermissionGuard]
+              },
+            ],
+            data: {
+              breadcrumb: {
+                key: 'common.role.few',
+              },
+            },
           },
           {
             path: 'users',
-            loadChildren: () =>
-              import('./pages/users/users.module').then((m) => m.UsersModule),
-            // canActivate: [SafePermissionGuard]
+            children: [
+              {
+                path: '',
+                loadChildren: () =>
+                  import('@safe/builder').then(
+                    (m) => m.SafeApplicationUsersViewModule
+                  ),
+                // canActivate: [SafePermissionGuard]
+              },
+              {
+                path: ':id',
+                loadChildren: () =>
+                  import('./pages/user-summary/user-summary.module').then(
+                    (m) => m.UserSummaryModule
+                  ),
+                data: {
+                  breadcrumb: {
+                    alias: '@user',
+                  },
+                },
+                // canActivate: [SafePermissionGuard]
+              },
+            ],
+            data: {
+              breadcrumb: {
+                key: 'common.user.few',
+              },
+            },
           },
           {
             path: 'position',
@@ -61,9 +111,19 @@ const routes: Routes = [
                   import(
                     './pages/position-attributes/position-attributes.module'
                   ).then((m) => m.PositionAttributesModule),
+                data: {
+                  breadcrumb: {
+                    alias: '@attribute',
+                  },
+                },
                 // canActivate: [SafePermissionGuard]
               },
             ],
+            data: {
+              breadcrumb: {
+                key: 'common.attribute.few',
+              },
+            },
           },
           {
             path: 'channels',
@@ -85,7 +145,15 @@ const routes: Routes = [
             path: 'templates',
             loadChildren: () =>
               import('@safe/builder').then(
-                (m) => m.SafeApplicationTemplatesModule
+                (m) => m.SafeApplicationTemplatesViewModule
+              ),
+            // canActivate: [SafePermissionGuard]
+          },
+          {
+            path: 'distribution-lists',
+            loadChildren: () =>
+              import('@safe/builder').then(
+                (m) => m.SafeApplicationDistributionListsViewModule
               ),
             // canActivate: [SafePermissionGuard]
           },

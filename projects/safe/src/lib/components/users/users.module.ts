@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeUsersComponent } from './users.component';
-import { SafeEditUserComponent } from './components/edit-user/edit-user.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -12,7 +11,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
-import { MatSortModule } from '@angular/material/sort';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
@@ -22,10 +20,11 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 
 /** Module for components related to users */
 @NgModule({
-  declarations: [SafeUsersComponent, SafeEditUserComponent],
+  declarations: [SafeUsersComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -39,7 +38,6 @@ import { TranslateModule } from '@ngx-translate/core';
     MatIconModule,
     MatInputModule,
     MatAutocompleteModule,
-    MatSortModule,
     MatChipsModule,
     MatRippleModule,
     MatCheckboxModule,
@@ -49,6 +47,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTooltipModule,
     SafeInviteUsersModule,
     TranslateModule,
+    SafeSkeletonTableModule,
   ],
   exports: [SafeUsersComponent],
 })

@@ -1,10 +1,12 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { Apollo } from 'apollo-angular';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { QueryBuilderService } from '../../services/query-builder.service';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 
 /**
@@ -37,7 +39,10 @@ interface IRecord {
   templateUrl: './choose-record-modal.component.html',
   styleUrls: ['./choose-record-modal.component.scss'],
 })
-export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
+export class SafeChooseRecordModalComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === REACTIVE FORM ===
   chooseRecordForm: FormGroup = new FormGroup({});
 
@@ -49,7 +54,6 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
   public records$!: Observable<IRecord[]>;
   private filter: any;
   private dataQuery: any;
-  private dataSubscription?: Subscription;
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -82,11 +86,14 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeChooseRecordModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.settings = { query: this.data.targetFormQuery };
     this.filter = this.settings.query?.filter || {};
+    if (!this.settings.query?.name) return;
     const builtQuery = this.queryBuilder.buildQuery({
       ...this.settings,
       query: {
@@ -94,40 +101,40 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
         fields: [{ kind: 'SCALAR', name: this.data.targetFormField }],
       },
     });
-    this.dataQuery = this.apollo.watchQuery<any>({
+    if (!builtQuery) return;
+    this.dataQuery = this.apollo.watchQuery({
       query: builtQuery,
       variables: {
-        ...builtQuery.variables,
         ...{
           first: ITEMS_PER_PAGE,
           filter: this.filter,
           sortField:
             this.settings.query?.sort && this.settings.query.sort.field
               ? this.settings.query.sort.field
-              : null,
+              : undefined,
           sortOrder: this.settings.query?.sort?.order || '',
         },
       },
     });
     if (this.dataQuery) {
       this.records$ = this.records.asObservable();
-      this.dataSubscription = this.dataQuery.valueChanges.subscribe(
-        (res: any) => {
-          for (const field in res.data) {
-            if (Object.prototype.hasOwnProperty.call(res.data, field)) {
+      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+        next: ({ data }: any) => {
+          for (const field in data) {
+            if (Object.prototype.hasOwnProperty.call(data, field)) {
               const nodes =
-                res.data[field].edges.map((x: any) => ({
+                data[field].edges.map((x: any) => ({
                   value: x.node.id,
                   label: x.node[this.data.targetFormField],
                 })) || [];
-              this.pageInfo = res.data[field].pageInfo;
+              this.pageInfo = data[field].pageInfo;
               this.records.next(nodes);
             }
           }
           this.loading = false;
         },
-        () => (this.loading = false)
-      );
+        complete: () => (this.loading = false),
+      });
     } else {
       this.loading = false;
     }
@@ -173,12 +180,6 @@ export class SafeChooseRecordModalComponent implements OnInit, OnDestroy {
    */
   onClose(): void {
     this.dialogRef.close();
-  }
-
-  ngOnDestroy(): void {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
-    }
   }
 
   /**

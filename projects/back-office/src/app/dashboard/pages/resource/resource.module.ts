@@ -10,9 +10,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import {
   SafeAccessModule,
-  SafePreviousButtonModule,
   SafeButtonModule,
-  SafeLayoutModalModule,
+  SafeDateModule,
 } from '@safe/builder';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -33,14 +32,13 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     MatMenuModule,
     MatChipsModule,
     SafeAccessModule,
-    SafePreviousButtonModule,
     SafeButtonModule,
     MatTooltipModule,
     MatPaginatorModule,
     TranslateModule,
-    SafeLayoutModalModule,
     OverlayModule,
     UploadMenuModule,
+    SafeDateModule,
   ],
   exports: [ResourceComponent],
 })

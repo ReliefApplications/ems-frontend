@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { SafeSeriesMappingComponent } from './series-mapping.component';
 import { SafeSeriesMappingModule } from './series-mapping.module';
 import { StorybookTranslateModule } from '../../../storybook-translate/storybook-translate-module';
-import { createAggregationForm } from '../aggregation-builder-forms';
+import { createMappingForm } from '../aggregation-builder-forms';
 import { delay } from 'rxjs/operators';
 
 export default {
@@ -149,22 +149,19 @@ const DEFAULT_FIELDS = [
 /**
  * Template used by storybook to display the component in stories.
  *
- * @param args story arguments
  * @returns story template
  */
-const TEMPLATE: Story<SafeSeriesMappingComponent> = (args) => ({
+const TEMPLATE: Story<SafeSeriesMappingComponent> = () => ({
   template:
     '<safe-series-mapping [fields$]=fields$ [mappingForm]=mappingForm></safe-series-mapping>',
   props: {
     fields$: new BehaviorSubject(DEFAULT_FIELDS)
       .asObservable()
       .pipe(delay(500)),
-    mappingForm: createAggregationForm(
+    mappingForm: createMappingForm(
       {
-        mapping: {
-          xAxis: 'date',
-          yAxis: 'follow',
-        },
+        category: 'date',
+        field: 'follow',
       },
       'column'
     ).controls.mapping,
@@ -177,6 +174,6 @@ const TEMPLATE: Story<SafeSeriesMappingComponent> = (args) => ({
 export const INITIAL_SOURCE = TEMPLATE.bind({});
 INITIAL_SOURCE.storyName = 'Initial source';
 INITIAL_SOURCE.args = {
-  controlNames: ['xAxis', 'yAxis'],
+  controlNames: ['category', 'field'],
   availableFields: [],
 };

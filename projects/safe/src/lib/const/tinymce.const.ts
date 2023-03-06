@@ -1,6 +1,13 @@
+/** Language tinymce keys paired with the default ones */
+export const EDITOR_LANGUAGE_PAIRS: { key: string; tinymceKey: string }[] = [
+  {
+    key: 'fr',
+    tinymceKey: 'fr_FR',
+  },
+];
+
 /** Widget Editor tinymce configuration. */
 export const WIDGET_EDITOR_CONFIG = {
-  base_url: '/tinymce',
   suffix: '.min',
   plugins:
     'preview paste importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap hr nonbreaking insertdatetime advlist lists wordcount imagetools textpattern help charmap quickbars emoticons',
@@ -18,11 +25,14 @@ export const WIDGET_EDITOR_CONFIG = {
   toolbar_mode: 'sliding',
   contextmenu: 'link image imagetools table',
   content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
+  help_tabs: [
+    'shortcuts', // the default shortcuts tab
+    'keyboardnav', // the default keyboard navigation tab
+  ],
 };
 
 /** Email Editor tinymce configuration. */
 export const EMAIL_EDITOR_CONFIG = {
-  base_url: '/tinymce',
   suffix: '.min',
   plugins:
     'preview paste importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap hr nonbreaking insertdatetime advlist lists wordcount imagetools textpattern help charmap quickbars emoticons',
@@ -42,4 +52,8 @@ export const EMAIL_EDITOR_CONFIG = {
   contextmenu: 'link image imagetools table',
   content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
   file_browser_callback: false, // removes possibility to upload files
+  help_tabs: [
+    'shortcuts', // the default shortcuts tab
+    'keyboardnav', // the default keyboard navigation tab
+  ],
 };

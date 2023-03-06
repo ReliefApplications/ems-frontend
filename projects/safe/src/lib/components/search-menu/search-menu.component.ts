@@ -6,7 +6,9 @@ import {
   OnInit,
   Output,
   ElementRef,
+  TemplateRef,
 } from '@angular/core';
+import { Application } from '../../models/application.model';
 
 /**
  * Applications Menu, visible in Front-Office
@@ -17,7 +19,9 @@ import {
   styleUrls: ['./search-menu.component.scss'],
 })
 export class SafeSearchMenuComponent implements OnInit {
-  @Input() data: any[] = [];
+  @Input() currentApplicationId: string | undefined = '';
+  @Input() applications: Application[] = [];
+  @Input() headerTemplate?: TemplateRef<any>;
   private show = true;
 
   // eslint-disable-next-line @angular-eslint/no-output-native
@@ -25,6 +29,7 @@ export class SafeSearchMenuComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close: EventEmitter<null> = new EventEmitter();
 
+  public currentApplication: Application | undefined;
   public searchResults: any = [];
   public search = '';
 
@@ -52,7 +57,12 @@ export class SafeSearchMenuComponent implements OnInit {
   constructor(private eRef: ElementRef) {}
 
   ngOnInit(): void {
-    this.searchResults = this.data.slice(0, 5);
+    this.searchResults = this.applications
+      .filter((x) => x.id !== this.currentApplicationId)
+      .slice(0, 5);
+    this.currentApplication = this.applications.find(
+      (x) => x.id === this.currentApplicationId
+    );
   }
 
   /**
@@ -61,7 +71,8 @@ export class SafeSearchMenuComponent implements OnInit {
   onSearch() {
     this.searchResults = [];
     const search = this.search.toLowerCase();
-    this.searchResults = this.data
+    this.searchResults = this.applications
+      .filter((x) => x.id !== this.currentApplicationId)
       .filter((x) => x.name?.toLowerCase().includes(search))
       .slice(0, 5);
   }

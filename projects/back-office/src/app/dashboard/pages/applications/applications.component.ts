@@ -1,27 +1,18 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ViewChild,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import {
   Application,
-  PermissionsManagement,
-  PermissionType,
   SafeAuthService,
-  SafeConfirmModalComponent,
+  SafeConfirmService,
   SafeSnackBarService,
-  NOTIFICATIONS,
+  SafeUnsubscribeComponent,
 } from '@safe/builder';
 import {
   GetApplicationsQueryResponse,
   GET_APPLICATIONS,
-} from '../../../graphql/queries';
+} from './graphql/queries';
 import {
   DeleteApplicationMutationResponse,
   DELETE_APPLICATION,
@@ -29,14 +20,15 @@ import {
   ADD_APPLICATION,
   EditApplicationMutationResponse,
   EDIT_APPLICATION,
-} from '../../../graphql/mutations';
+} from './graphql/mutations';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
-import { DuplicateApplicationComponent } from '../../../components/duplicate-application/duplicate-application.component';
+import { DuplicateApplicationModalComponent } from '../../../components/duplicate-application-modal/duplicate-application-modal.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -47,10 +39,15 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './applications.component.html',
   styleUrls: ['./applications.component.scss'],
 })
-export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ApplicationsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
+  public updating = false;
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
+  private newApplicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   public applications = new MatTableDataSource<Application>([]);
   public cachedApplications: Application[] = [];
   public displayedColumns = [
@@ -62,9 +59,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
   public newApplications: Application[] = [];
   public filter: any;
-
-  // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
+  private sort: Sort = { active: '', direction: '' };
 
   public pageInfo = {
     pageIndex: 0,
@@ -77,10 +72,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
 
-  // === PERMISSIONS ===
-  canAdd = false;
-  private authSubscription?: Subscription;
-
   /**
    * Applications page component
    *
@@ -90,6 +81,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
    * @param previewService Shared preview service
+   * @param confirmService Share confirm service
    * @param translate Angular translate service
    */
   constructor(
@@ -99,8 +91,11 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     private previewService: PreviewService,
+    private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Creates the application query and subscribes to the query changes.
@@ -113,33 +108,37 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
           first: DEFAULT_PAGE_SIZE,
         },
       });
+    // new query for card
 
-    this.applicationsQuery.valueChanges.subscribe((res) => {
-      this.cachedApplications = res.data.applications.edges.map((x) => x.node);
-      this.newApplications = this.cachedApplications.slice(0, 5);
-      this.applications.data = this.cachedApplications.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      );
-      this.pageInfo.length = res.data.applications.totalCount;
-      this.pageInfo.endCursor = res.data.applications.pageInfo.endCursor;
-      this.loading = res.loading;
-    });
-    this.authSubscription = this.authService.user$.subscribe(() => {
-      this.canAdd =
-        this.authService.userHasClaim(
-          PermissionsManagement.getRightFromPath(
-            this.router.url,
-            PermissionType.create
-          )
-        ) ||
-        this.authService.userHasClaim(
-          PermissionsManagement.getRightFromPath(
-            this.router.url,
-            PermissionType.manage
-          )
+    this.newApplicationsQuery =
+      this.apollo.watchQuery<GetApplicationsQueryResponse>({
+        query: GET_APPLICATIONS,
+        variables: {
+          first: DEFAULT_PAGE_SIZE,
+          sortField: 'modifiedAt',
+          sortOrder: 'desc',
+        },
+      });
+    this.applicationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.cachedApplications = data.applications.edges.map((x) => x.node);
+        this.applications.data = this.cachedApplications.slice(
+          this.pageInfo.pageSize * this.pageInfo.pageIndex,
+          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         );
-    });
+        this.pageInfo.length = data.applications.totalCount;
+        this.pageInfo.endCursor = data.applications.pageInfo.endCursor;
+        this.loading = loading;
+        this.updating = false;
+      });
+    this.newApplicationsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        this.newApplications = data.applications.edges
+          .map((x) => x.node)
+          .slice(0, 5);
+      });
   }
 
   /**
@@ -162,11 +161,67 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
+      this.pageInfo.pageSize = first;
+      this.fetchApplications();
+    } else {
+      this.applications.data = this.cachedApplications.slice(
+        e.pageSize * this.pageInfo.pageIndex,
+        e.pageSize * (this.pageInfo.pageIndex + 1)
+      );
+    }
+    this.pageInfo.pageSize = e.pageSize;
+  }
+
+  /**
+   * Filters applications and updates table.
+   *
+   * @param filter filter event.
+   */
+  onFilter(filter: any): void {
+    this.filter = filter;
+    this.fetchApplications(true);
+  }
+
+  /**
+   * Handle sort change.
+   *
+   * @param event sort event
+   */
+  onSort(event: Sort): void {
+    this.sort = event;
+    this.fetchApplications(true);
+  }
+
+  /**
+   * Update applications query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchApplications(refetch?: boolean): void {
+    this.updating = true;
+    if (refetch) {
+      this.cachedApplications = [];
+      this.pageInfo.pageIndex = 0;
+      this.applicationsQuery
+        .refetch({
+          first: this.pageInfo.pageSize,
+          afterCursor: null,
+          filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
+        })
+        .then(() => {
+          this.loading = false;
+          this.updating = false;
+        });
+    } else {
       this.applicationsQuery.fetchMore({
         variables: {
-          first,
+          first: this.pageInfo.pageSize,
           afterCursor: this.pageInfo.endCursor,
           filter: this.filter,
+          sortField: this.sort?.direction && this.sort.active,
+          sortOrder: this.sort?.direction,
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) {
@@ -184,57 +239,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
           });
         },
       });
-    } else {
-      this.applications.data = this.cachedApplications.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
-    }
-    this.pageInfo.pageSize = e.pageSize;
-  }
-
-  /**
-   * Filters applications and updates table.
-   *
-   * @param filter filter event.
-   */
-  onFilter(filter: any): void {
-    this.filter = filter;
-    this.cachedApplications = [];
-    this.pageInfo.pageIndex = 0;
-    this.applicationsQuery.fetchMore({
-      variables: {
-        first: this.pageInfo.pageSize,
-        filter: this.filter,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-        return Object.assign({}, prev, {
-          applications: {
-            edges: fetchMoreResult.applications.edges,
-            pageInfo: fetchMoreResult.applications.pageInfo,
-            totalCount: fetchMoreResult.applications.totalCount,
-          },
-        });
-      },
-    });
-  }
-
-  /**
-   * Sets the sort in the view.
-   */
-  ngAfterViewInit(): void {
-    this.applications.sort = this.sort || null;
-  }
-
-  /**
-   * Removes all subscriptions.
-   */
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
     }
   }
 
@@ -248,19 +252,16 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
     if (e) {
       e.stopPropagation();
     }
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translate.instant('common.deleteObject', {
-          name: this.translate.instant('common.application.one'),
-        }),
-        content: this.translate.instant(
-          'components.application.delete.confirmationMessage',
-          { name: element.name }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.delete'),
-        cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
-      },
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.application.one'),
+      }),
+      content: this.translate.instant(
+        'components.application.delete.confirmationMessage',
+        { name: element.name }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmColor: 'warn',
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
@@ -272,15 +273,17 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
               id,
             },
           })
-          .subscribe((res) => {
+          .subscribe(({ data }) => {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectDeleted('Application')
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate.instant('common.application.one'),
+              })
             );
             this.applications.data = this.applications.data.filter(
-              (x) => x.id !== res.data?.deleteApplication.id
+              (x) => x.id !== data?.deleteApplication.id
             );
             this.newApplications = this.newApplications.filter(
-              (x) => x.id !== res.data?.deleteApplication.id
+              (x) => x.id !== data?.deleteApplication.id
             );
           });
       }
@@ -296,21 +299,28 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
       .mutate<AddApplicationMutationResponse>({
         mutation: ADD_APPLICATION,
       })
-      .subscribe((res) => {
-        if (res.errors?.length) {
+      .subscribe(({ errors, data }) => {
+        if (errors?.length) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectNotCreated('App', res.errors[0].message),
+            this.translate.instant('common.notifications.objectNotCreated', {
+              type: this.translate
+                .instant('common.application.one')
+                .toLowerCase(),
+              error: errors[0].message,
+            }),
             { error: true }
           );
         } else {
-          if (res.data) {
+          if (data) {
             this.snackBar.openSnackBar(
-              NOTIFICATIONS.objectCreated(
-                res.data.addApplication.name,
-                'application'
-              )
+              this.translate.instant('common.notifications.objectCreated', {
+                type: this.translate
+                  .instant('common.application.one')
+                  .toLowerCase(),
+                value: data.addApplication.name,
+              })
             );
-            const id = res.data.addApplication.id;
+            const id = data.addApplication.id;
             this.router.navigate(['/applications', id]);
           }
         }
@@ -332,15 +342,18 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
           permissions: e,
         },
       })
-      .subscribe((res) => {
-        if (res.data) {
+      .subscribe(({ data }) => {
+        if (data) {
           this.snackBar.openSnackBar(
-            NOTIFICATIONS.objectEdited('access', element.name)
+            this.translate.instant('common.notifications.objectUpdated', {
+              type: this.translate.instant('common.access').toLowerCase(),
+              value: element.name,
+            })
           );
           const index = this.applications.data.findIndex(
             (x) => x.id === element.id
           );
-          this.applications.data[index] = res.data.editApplication;
+          this.applications.data[index] = data.editApplication;
           this.applications.data = this.applications.data;
         }
       });
@@ -371,7 +384,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param application application to duplicate.
    */
   onClone(application: Application): void {
-    const dialogRef = this.dialog.open(DuplicateApplicationComponent, {
+    const dialogRef = this.dialog.open(DuplicateApplicationModalComponent, {
       data: {
         id: application.id,
         name: application.name,

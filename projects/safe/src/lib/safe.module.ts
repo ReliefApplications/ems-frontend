@@ -15,15 +15,12 @@ import { SafeSchedulerModule } from './components/widgets/scheduler/scheduler.mo
 import { SafeSchedulerSettingsModule } from './components/widgets/scheduler-settings/scheduler-settings.module';
 import { SafeWidgetModule } from './components/widget/widget.module';
 import { SafeWidgetGridModule } from './components/widget-grid/widget-grid.module';
-import { SafeConfirmModalModule } from './components/confirm-modal/confirm-modal.module';
 import { SafeUsersModule } from './components/users/users.module';
 import { SafeRolesModule } from './components/roles/roles.module';
-import { SafePreviousButtonModule } from './components/previous-button/previous-button.module';
 import { SafeConvertModalModule } from './components/convert-modal/convert-modal.module';
 import { SafeRecordHistoryModule } from './components/record-history/record-history.module';
 import { SafeRecordModalModule } from './components/record-modal/record-modal.module';
 import { SafeStatusModalModule } from './components/status-modal/status-modal.module';
-import { SafeProfileModule } from './pages/profile/profile.module';
 import { SafeSearchResourceGridModalModule } from './components/search-resource-grid-modal/search-resource-grid-modal.module';
 import { SafeButtonModule } from './components/ui/button/button.module';
 import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
@@ -32,9 +29,24 @@ import { SafeApplicationsSummaryModule } from './components/applications-summary
 import { SafeSearchMenuModule } from './components/search-menu/search-menu.module';
 import { SafeAggregationBuilderModule } from './components/ui/aggregation-builder/aggregation-builder.module';
 import { SafeTagboxModule } from './components/ui/tagbox/tagbox.module';
-import { SafeLayoutModalModule } from './components/layout-modal/layout-modal.module';
+import { SafeEditLayoutModalModule } from './components/grid-layout/edit-layout-modal/edit-layout-modal.module';
 import { SafeSnackbarSpinnerModule } from './components/snackbar-spinner/snackbar-spinner.module';
-import { SafeApplicationTemplatesModule } from './pages/application-templates/application-templates.module';
+import { SafeSkeletonTableModule } from './components/skeleton/skeleton-table/skeleton-table.module';
+import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
+import { SafeUserSummaryModule } from './components/user-summary/user-summary.module';
+import { SafeDateModule } from './pipes/date/date.module';
+import { SafeIconModule } from './components/ui/icon/icon.module';
+import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
+import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-select.module';
+import { SafeModalModule } from './components/ui/modal/modal.module';
+import { SafeEmptyModule } from './components/ui/empty/empty.module';
+import { SafeDividerModule } from './components/ui/divider/divider.module';
+import { SafeLeftSidenavModule } from './components/left-sidenav/left-sidenav.module';
+import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.module';
+import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
+import { SafeUnsubscribeModule } from './components/utils/unsubscribe/unsubscribe.module';
+import { SafeViewsModule } from './views/views.module';
+import { SafeEditableTextModule } from './components/editable-text/editable-text.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -55,15 +67,12 @@ import { SafeApplicationTemplatesModule } from './pages/application-templates/ap
     SafeSchedulerSettingsModule,
     SafeWidgetModule,
     SafeWidgetGridModule,
-    SafeConfirmModalModule,
     SafeStatusModalModule,
     SafeUsersModule,
     SafeRolesModule,
-    SafePreviousButtonModule,
     SafeConvertModalModule,
     SafeRecordHistoryModule,
     SafeRecordModalModule,
-    SafeProfileModule,
     SafeSearchResourceGridModalModule,
     SafeButtonModule,
     SafeContentChoiceModule,
@@ -72,10 +81,27 @@ import { SafeApplicationTemplatesModule } from './pages/application-templates/ap
     SafeSearchMenuModule,
     SafeAggregationBuilderModule,
     SafeTagboxModule,
-    SafeLayoutModalModule,
+    SafeEditLayoutModalModule,
     SafeSnackbarSpinnerModule,
-    SafeApplicationTemplatesModule,
+    SafeSkeletonTableModule,
+    SafeSkeletonModule,
+    SafeUserSummaryModule,
+    SafeEditableTextModule,
+    // === Pipes ===
+    SafeDateModule,
+    SafeReadableCronModule,
+    SafeCronParserModule,
+    SafeIconModule,
+    SafeRoleSummaryModule,
+    SafeGraphQLSelectModule,
+    SafeModalModule,
+    SafeEmptyModule,
+    SafeDividerModule,
+    SafeLeftSidenavModule,
+    // === UTILS COMPONENTS ===
+    SafeUnsubscribeModule,
+    // === VIEWS ===
+    SafeViewsModule,
   ],
-  declarations: [],
 })
 export class SafeModule {}

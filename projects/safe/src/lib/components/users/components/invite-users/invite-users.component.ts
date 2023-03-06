@@ -9,9 +9,8 @@ import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SafeAddUserComponent } from '../add-user/add-user.component';
-import { NOTIFICATIONS } from '../../../../const/notifications';
-import { SafeSnackBarService } from '../../../../services/snackbar.service';
-import { SafeDownloadService } from '../../../../services/download.service';
+import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { SafeDownloadService } from '../../../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UploadEvent } from '@progress/kendo-angular-upload';
 
@@ -85,7 +84,6 @@ export class SafeInviteUsersComponent implements OnInit {
   onAdd(): void {
     const invitedUsers = this.gridData.data.map((x) => x.email);
     const dialogRef = this.dialog.open(SafeAddUserComponent, {
-      panelClass: 'add-dialog',
       data: {
         roles: this.data.roles,
         users: this.data.users.filter(
@@ -124,27 +122,35 @@ export class SafeInviteUsersComponent implements OnInit {
     if (e.files.length > 0) {
       const file = e.files[0].rawFile;
       if (file && this.isValidFile(file)) {
-        this.downloadService.uploadFile(this.data.uploadPath, file).subscribe(
-          (res) => {
-            this.gridData.data = res;
+        this.downloadService.uploadFile(this.data.uploadPath, file).subscribe({
+          next: (res) => {
+            this.gridData.data = this.gridData.data.concat(res);
           },
-          (err) => {
+          error: (err) => {
             if (err.status === 400) {
               this.snackBar.openSnackBar(err.error, { error: true });
               this.resetFileInput();
             } else {
-              this.snackBar.openSnackBar(NOTIFICATIONS.userImportFail, {
-                error: true,
-              });
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'models.user.notifications.userImportFail'
+                ),
+                {
+                  error: true,
+                }
+              );
               this.resetFileInput();
             }
-          }
-        );
+          },
+        });
       } else {
         if (e.files.length > 1) {
-          this.snackBar.openSnackBar(NOTIFICATIONS.formatInvalid('xlsx'), {
-            error: true,
-          });
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.formatInvalid', {
+              format: 'xlsx',
+            }),
+            { error: true }
+          );
           this.resetFileInput();
         }
       }
@@ -183,11 +189,10 @@ export class SafeInviteUsersComponent implements OnInit {
    * Handles cell click events. Creates form group for edition.
    *
    * @param param0 cell click event.
-   * @param param0.isEdited Weather the cell is edited
    * @param param0.dataItem The data of the item
    * @param param0.rowIndex The index of the current row
    */
-  public cellClickHandler({ isEdited, dataItem, rowIndex }: any): void {
+  public cellClickHandler({ dataItem, rowIndex }: any): void {
     if (!this.editionActive) {
       this.formGroup = this.createFormGroup(dataItem);
       this.editionActive = true;

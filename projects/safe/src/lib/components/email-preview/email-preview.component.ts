@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { EMAIL_EDITOR_CONFIG } from '../../const/tinymce.const';
+import { SafeEditorService } from '../../services/editor/editor.service';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {
@@ -34,12 +35,19 @@ export class SafeEmailPreviewComponent implements OnInit {
    * @param data injected dialog data
    * @param dialogRef Dialog reference
    * @param formBuilder Angular Form Builder
+   * @param editorService Editor service used to get main URL and current language
    */
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialogRef: MatDialogRef<SafeEmailPreviewComponent>,
-    private formBuilder: FormBuilder
-  ) {}
+    private formBuilder: FormBuilder,
+    private editorService: SafeEditorService
+  ) {
+    // Set the editor base url based on the environment file
+    this.editor.base_url = editorService.url;
+    // Set the editor language
+    this.editor.language = editorService.language;
+  }
 
   /** Create the form from the dialog data, putting all fields as read-only */
   ngOnInit(): void {
