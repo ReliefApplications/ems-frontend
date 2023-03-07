@@ -1,5 +1,6 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default/default.prod';
+import { sharedEnvironment } from './environment.shared';
 
 /** Authentication configuration of the module. */
 const authConfig: AuthConfig = {
@@ -16,6 +17,7 @@ const authConfig: AuthConfig = {
 
 /** Environment configuration */
 export const environment = {
+  ...sharedEnvironment,
   production: true,
   apiUrl: 'https://ems-safe.who.int/api',
   subscriptionApiUrl: 'wss://ems-safe.who.int/api',
@@ -27,7 +29,6 @@ export const environment = {
   postLogoutRedirectUri: 'https://ems-safe.who.int/auth',
   frontOfficeUri: 'https://ems-safe.who.int/',
   backOfficeUri: 'https://ems-safe.who.int/backoffice/',
-  module: 'frontoffice',
   availableLanguages: ['en'],
   authConfig,
   esriApiKey:
