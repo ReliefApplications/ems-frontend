@@ -13,6 +13,7 @@ import {
 } from './graphql/queries';
 import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
 import { firstValueFrom } from 'rxjs';
+import { ApiConfiguration } from '../../models/apiConfiguration.model';
 
 /** Local storage key for last modified */
 const LAST_MODIFIED_KEY = '_last_modified';
@@ -357,4 +358,43 @@ export class SafeReferenceDataService {
         return true;
     }
   };
+
+  /**
+   * Gets the fields from the API Configuration
+   * and parses them to a list of fields names and types
+   *
+   * @param apiConfiguration API Configuration
+   * @param path Path to the data
+   * @param query Query name
+   * @param type Type of reference data
+   * @returns List of fields names and types
+   */
+  public async getFields(
+    apiConfiguration: ApiConfiguration,
+    path: string,
+    query: string,
+    type: referenceDataType
+  ) {
+    const referenceData: ReferenceData = {
+      apiConfiguration,
+      path,
+      query,
+      type,
+    };
+
+    const object = await this.fetchItems(referenceData);
+
+    if (object && object.length > 0) {
+      const fields: {
+        name: string;
+        type: string;
+      }[] = [];
+      for (const key of Object.keys(object[0])) {
+        fields.push({ name: key, type: typeof object[0][key] });
+      }
+      return fields;
+    }
+
+    return [];
+  }
 }

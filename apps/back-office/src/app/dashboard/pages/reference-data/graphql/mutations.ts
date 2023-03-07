@@ -10,7 +10,7 @@ export const EDIT_REFERENCE_DATA = gql`
     $type: ReferenceDataType
     $apiConfiguration: ID
     $query: String
-    $fields: [String]
+    $fields: JSON
     $valueField: String
     $path: String
     $data: JSON

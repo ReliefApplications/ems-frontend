@@ -15,7 +15,7 @@ export interface ReferenceData {
   type?: referenceDataType;
   apiConfiguration?: ApiConfiguration;
   query?: string;
-  fields?: string[];
+  fields?: { name: string; type: string }[];
   valueField?: string;
   path?: string;
   data?: any;

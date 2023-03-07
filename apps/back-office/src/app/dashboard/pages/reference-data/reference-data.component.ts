@@ -1,6 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
+  FormControl,
+  FormGroup,
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
@@ -14,6 +16,7 @@ import {
   ApiConfiguration,
   SafeBreadcrumbService,
   SafeUnsubscribeComponent,
+  SafeReferenceDataService,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -31,6 +34,10 @@ import {
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 import { takeUntil } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { inferTypeFromString } from './utils/inferTypeFromString';
+import { get } from 'lodash';
 
 /** Default pagination parameter. */
 const ITEMS_PER_PAGE = 10;
@@ -55,13 +62,15 @@ export class ReferenceDataComponent
   public referenceData?: ReferenceData;
 
   // === FORM ===
-  public referenceForm: UntypedFormGroup = new UntypedFormGroup({});
+  public referenceForm!: ReturnType<typeof this.getRefDataForm>;
   public referenceTypeChoices = Object.values(referenceDataType);
 
   public selectedApiConfiguration?: ApiConfiguration;
   public apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
 
-  public valueFields: string[] = [];
+  public valueFields: NonNullable<ReferenceData['fields']> = [];
+  public triedToGetFields = false;
+  public loadingFields = false;
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
 
   // === CSV ===
@@ -79,7 +88,7 @@ export class ReferenceDataComponent
 
   /** @returns type of reference model */
   get type(): string {
-    return this.referenceForm.get('type')?.value;
+    return this.referenceForm.get('type')?.value || '';
   }
 
   /**
@@ -92,6 +101,7 @@ export class ReferenceDataComponent
    * @param formBuilder Angular form builder
    * @param translateService Angular translate service
    * @param breadcrumbService Setups the breadcrumb component variables
+   * @param refDataService Reference data service
    */
   constructor(
     private apollo: Apollo,
@@ -100,9 +110,62 @@ export class ReferenceDataComponent
     private router: Router,
     private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: SafeBreadcrumbService,
+    private refDataService: SafeReferenceDataService
   ) {
     super();
+  }
+
+  /** @returns the reference data group form */
+  private getRefDataForm() {
+    const form = new FormGroup({
+      name: new FormControl(this.referenceData?.name, Validators.required),
+      type: new FormControl(this.referenceData?.type, Validators.required),
+      valueField: new FormControl(
+        this.referenceData?.valueField,
+        Validators.required
+      ),
+      fields: new FormControl(this.referenceData?.fields, Validators.required),
+      apiConfiguration: new FormControl(
+        this.referenceData?.apiConfiguration?.id
+      ),
+      query: new FormControl(this.referenceData?.query),
+      path: new FormControl(this.referenceData?.path),
+      data: new FormControl(this.referenceData?.data),
+      graphQLFilter: new FormControl(this.referenceData?.graphQLFilter),
+    });
+
+    // Clear valueFields when type, apiConfiguration, path or query changes
+    const clearFields = () => {
+      this.triedToGetFields = false;
+      this.valueFields = [];
+      form.get('fields')?.setValue([]);
+    };
+
+    // Wait for the form to be initialized before subscribing to changes
+    setTimeout(() => {
+      form
+        .get('type')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe(clearFields);
+
+      form
+        .get('apiConfiguration')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe(clearFields);
+
+      form
+        .get('path')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe(clearFields);
+
+      form
+        .get('query')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe(clearFields);
+    }, 100);
+
+    return form;
   }
 
   /**
@@ -135,21 +198,8 @@ export class ReferenceDataComponent
                 this.referenceData?.data && this.referenceData?.data.length > 0
                   ? this.referenceData?.data
                   : [];
-              this.referenceForm = this.formBuilder.group({
-                name: [this.referenceData?.name, Validators.required],
-                type: [this.referenceData?.type, Validators.required],
-                valueField: [
-                  this.referenceData?.valueField,
-                  Validators.required,
-                ],
-                fields: [this.referenceData?.fields, Validators.required],
-                apiConfiguration: [this.referenceData?.apiConfiguration?.id],
-                query: [this.referenceData?.query],
-                path: [this.referenceData?.path],
-                data: [this.referenceData?.data],
-                graphQLFilter: [this.referenceData?.graphQLFilter],
-              });
-              this.valueFields = this.referenceForm?.get('fields')?.value;
+              this.referenceForm = this.getRefDataForm();
+              this.valueFields = this.referenceForm?.get('fields')?.value || [];
               this.loadApiConfigurations(
                 this.referenceForm?.get('type')?.value
               );
@@ -305,7 +355,9 @@ export class ReferenceDataComponent
         fields: this.referenceForm.value.fields,
       }
     );
-    if (['graphql', 'rest'].includes(this.referenceForm.value.type)) {
+    if (
+      ['graphql', 'rest'].includes(get(this.referenceForm, 'value.type', ''))
+    ) {
       Object.assign(
         variables,
         this.referenceForm.value.apiConfiguration !==
@@ -407,7 +459,7 @@ export class ReferenceDataComponent
    * @param field field to remove.
    */
   remove(field: string): void {
-    const index = this.valueFields.indexOf(field);
+    const index = this.valueFields.findIndex((x) => x.name === field);
     if (index >= 0) {
       // Deep copy needed for the edition
       const valueFieldsCopy = [...this.valueFields];
@@ -424,13 +476,21 @@ export class ReferenceDataComponent
    */
   onValidateCSV(): void {
     this.csvLoading = true;
-    const dataTemp: any = this.csvData?.nativeElement.value;
+    const dataTemp = this.csvData?.nativeElement.value || '';
     if (dataTemp !== this.csvValue) {
       this.csvValue = dataTemp;
       this.newData = [];
       const lines = dataTemp.split('\n');
       const headers = lines[0].split(',').map((x: string) => x.trim());
-      this.valueFields = headers;
+      if (lines.length < 2) return;
+      // Infer types from first line
+      const fields = headers.reduce((acc, header) => {
+        const value = lines[1].split(',')[headers.indexOf(header)].trim();
+        const type = inferTypeFromString(value);
+        acc.push({ name: header, type });
+        return acc;
+      }, [] as { name: string; type: string }[]);
+      this.valueFields = fields;
       for (let i = 1; i < lines.length; i++) {
         if (!lines[i]) continue;
         const obj: any = {};
@@ -458,5 +518,73 @@ export class ReferenceDataComponent
   convertToCSV(obj: any): string {
     const array = [Object.keys(obj[0])].concat(obj);
     return array.map((it) => Object.values(it).toString()).join('\n');
+  }
+
+  /** Uses the API Configuration to get the fields and parse their types. */
+  public async getFields() {
+    const apiConfID = this.referenceForm.value.apiConfiguration;
+    const path = this.referenceForm.value.path;
+    const query = this.referenceForm.value.query;
+    const type = this.referenceForm.value.type;
+    if (!apiConfID || !query || !type) {
+      const missingField = !this.referenceForm.value.apiConfiguration
+        ? 'common.apiConfiguration.one'
+        : !this.referenceForm.value.query
+        ? 'pages.referenceData.queryName'
+        : 'pages.referenceData.type';
+
+      this.snackBar.openSnackBar(
+        this.translateService.instant(
+          'pages.referenceData.fields.missingConfig',
+          {
+            config: this.translateService.instant(missingField),
+          }
+        ),
+        { error: true }
+      );
+      return;
+    }
+    // get the api configuration
+    this.loadingFields = true;
+    const query$ = this.apollo.query<GetApiConfigurationQueryResponse>({
+      query: GET_API_CONFIGURATION,
+      variables: {
+        id: apiConfID,
+      },
+    });
+
+    const { data: apiConfData } = await firstValueFrom(query$);
+    if (!apiConfData?.apiConfiguration) {
+      this.loadingFields = false;
+      return;
+    }
+
+    try {
+      this.triedToGetFields = true;
+      // get the fields
+      const fields = await this.refDataService.getFields(
+        apiConfData.apiConfiguration,
+        path || '',
+        query,
+        type
+      );
+      this.valueFields = fields;
+      this.referenceForm?.get('fields')?.setValue(this.valueFields);
+    } catch (e) {
+      if (e instanceof HttpErrorResponse) {
+        this.snackBar.openSnackBar(e.message, { error: true });
+      }
+    }
+    this.loadingFields = false;
+  }
+
+  /**
+   * Remove a field from the list.
+   *
+   * @param field field to remove.
+   */
+  onRemoveField(field: any) {
+    this.valueFields = this.valueFields.filter((x) => x.name !== field.name);
+    this.referenceForm?.get('fields')?.setValue(this.valueFields);
   }
 }
