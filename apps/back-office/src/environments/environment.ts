@@ -1,5 +1,6 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default/default.local';
+import { sharedEnvironment } from './environment.shared';
 
 // const authConfig: AuthConfig = {
 //   issuer:
@@ -30,12 +31,12 @@ const authConfig: AuthConfig = {
  * Environment file for local development.
  */
 export const environment = {
+  ...sharedEnvironment,
   production: false,
   apiUrl: 'http://localhost:3000',
   subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
-  module: 'backoffice',
   availableLanguages: ['en', 'fr', 'test'],
   authConfig,
   esriApiKey:
