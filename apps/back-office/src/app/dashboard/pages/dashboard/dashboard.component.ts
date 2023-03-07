@@ -10,6 +10,7 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
   Validators,
+  FormGroupDirective
 } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -38,6 +39,11 @@ import {
 } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { SafeConfirmService } from '@oort-front/safe';
+import { SafeGridComponent } from 'libs/safe/src/lib/components/ui/core-grid/grid/grid.component';
+
 
 /**
  * Dashboard page.
@@ -64,6 +70,7 @@ export class DashboardComponent
   // === DASHBOARD NAME EDITION ===
   public formActive = false;
   public dashboardNameForm: UntypedFormGroup = new UntypedFormGroup({});
+  public InlineChange?: boolean[];
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -85,6 +92,7 @@ export class DashboardComponent
    * @param dashboardService Shared dashboard service
    * @param translateService Angular translate service
    * @param authService Shared authentication service
+   * @param confirmService Shared confirm service
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -96,9 +104,38 @@ export class DashboardComponent
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService,
     private translateService: TranslateService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    private confirmService: SafeConfirmService,
   ) {
     super();
+  }
+
+  /**
+   * Show modal confirmation before leave the page if has changes on form
+   *
+   * @returns boolean of observable of boolean
+   */
+  canDeactivate(): Observable<boolean> | boolean {
+    if (this.InlineChange?.some(bool => bool === true)) {
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translateService.instant('components.form.update.exit'),
+        content: this.translateService.instant('components.form.update.exitMessage'),
+        confirmText: this.translateService.instant('components.confirmModal.confirm'),
+        confirmColor: 'primary',
+      });
+      return dialogRef.afterClosed().pipe(
+        map((value) => {
+          if (value) {
+            this.authService.canLogout.next(true);
+            window.localStorage.removeItem(`form:${this.id}`);
+            this.dashboardService.clearInlineChange();
+            return true;
+          }
+          return false;
+        })
+      );
+    }
+    return true;
   }
 
   ngOnInit(): void {
@@ -159,6 +196,7 @@ export class DashboardComponent
           },
         });
     });
+    this.dashboardService.inlineChangeObserver?.subscribe(InlineChange => this.InlineChange = InlineChange);
   }
 
   /**

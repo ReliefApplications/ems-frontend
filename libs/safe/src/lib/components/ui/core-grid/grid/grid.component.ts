@@ -140,6 +140,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() edit: EventEmitter<any> = new EventEmitter();
   public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   public timeoutId: any;
+  public InlineChange?: boolean[];
   private currentEditedRow = 0;
   private currentEditedItem: any;
   public gradientSettings = GRADIENT_SETTINGS;
@@ -264,6 +265,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       ...this.selectableSettings,
       mode: this.multiSelect ? 'multiple' : 'single',
     };
+    this.dashboardService.inlineChangeObserver?.subscribe(InlineChange => this.InlineChange = InlineChange);
   }
 
   ngOnChanges(): void {
@@ -567,13 +569,14 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     this.currentEditedItem = dataItem;
     this.currentEditedRow = rowIndex;
     this.grid?.editRow(rowIndex, this.formGroup);
-
+    
     this.fields.forEach((field) => {
-      this.formGroup.get(field.name)?.valueChanges.subscribe(() =>{
+      this.formGroup.get(field.name)?.valueChanges.subscribe(() => {
         if (this.timeoutId) {
           clearTimeout(this.timeoutId);
         }
         this.timeoutId = setTimeout(() => {
+          this.dashboardService.setInlineChange(true);
           if (this.formGroup.dirty) {
             this.action.emit({
               action: 'edit',
@@ -583,8 +586,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
           }
           this.closeEditor();
         }, 1000);
-      })
-    })
+      });
+    });
   }
 
   /**
@@ -629,6 +632,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
    * Saves edition.
    */
   public onSave(): void {
+    this.dashboardService.clearInlineChange();
     // Closes the editor, and saves the value locally
     if (this.formGroup.dirty) {
       this.action.emit({

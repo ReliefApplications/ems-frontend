@@ -24,6 +24,9 @@ export class SafeDashboardService {
   get dashboard$(): Observable<Dashboard | null> {
     return this.dashboard.asObservable();
   }
+  
+  private inlineChange?: BehaviorSubject<boolean[]> = new BehaviorSubject<boolean[]>([]);
+  public inlineChangeObserver?: Observable<boolean[]> = this.inlineChange?.asObservable();
 
   /**
    * Shared dashboard service. Handles dashboard events.
@@ -37,6 +40,24 @@ export class SafeDashboardService {
       get(environment, 'availableWidgets', []).includes(widget.component)
     );
   }
+
+  /**
+   * Set that Inline has changed
+   *
+   * @param value if changed the inline edition
+   */
+  setInlineChange(value: boolean){
+    this.inlineChange?.next([...this.inlineChange.getValue(), value]);
+  }
+
+  /**
+   * Clear checker of inline edition
+   *
+   */
+  clearInlineChange(){
+    this.inlineChange?.next([]);
+  }
+
 
   /**
    * Opens a new dashboard.
