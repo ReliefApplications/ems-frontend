@@ -1,8 +1,9 @@
 <mat-chip
   *ngIf="!editing"
-  (mouseenter)="onHover()"
-  (mouseleave)="onHover()"
+  (mouseenter)="hovering = true"
+  (mouseleave)="hovering = false"
   [ngClass]="{
+    '!rounded-lg': status.status === 'blank',
     'success-chip !rounded-lg': status.status === 'active',
     'accent-chip !rounded-lg': status.status === 'pending',
     'warn-chip !rounded-lg': status.status === 'archived'
@@ -18,12 +19,12 @@
     </safe-icon>
 </mat-chip>
 
-<mat-list 
+<mat-list
   *ngIf="editing"
   style="display: flex; flex-direction: column;">
     <mat-list-item
       *ngFor="let chip of statusList">
-        <mat-chip  
+        <mat-chip 
           (click)="onSelect(chip)"
           [ngClass]="{
             'success-chip !rounded-lg': chip.status === 'active',

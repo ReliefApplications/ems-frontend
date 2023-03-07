@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatLegacyChipsModule } from '@angular/material/legacy-chips';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { MatListModule } from '@angular/material/list';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [StatusSelectorComponent],
@@ -22,6 +23,7 @@ import { MatListModule } from '@angular/material/list';
     MatListModule,
     // MatChipsModule,
     SafeIconModule,
+    ReactiveFormsModule,
   ],
   exports: [StatusSelectorComponent],
 })

@@ -46,6 +46,13 @@
             </mat-select>
           </mat-form-field>
           
+          <!-- <mat-form-field>
+            <safe-status-selector
+                style="padding-top:0.75rem; padding-left: 1rem; padding-right: 0.5rem;"
+                formControlName="status"
+                [formControl]="formGroup">
+            </safe-status-selector>
+          </mat-form-field> -->
         </div>
         <!-- Show readable value of the schedule -->
         <safe-alert
@@ -292,7 +299,6 @@
       {{ (data.pullJob ? 'common.update' : 'common.create') | translate }}
     </safe-button>
   </div>
-  <safe-status-selector></safe-status-selector>
 </safe-modal>
 
 <!-- Template to display status -->
