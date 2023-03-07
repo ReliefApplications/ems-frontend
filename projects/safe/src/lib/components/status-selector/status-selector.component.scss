@@ -1,0 +1,15 @@
+.status-selector {
+    display: flex;
+    align-content: space-evenly;
+    border-radius: 0.5rem;
+}
+
+.active {
+    background-color: #e9fae1 !important;
+    color: #67dd2d !important;
+}
+
+.pending {
+    background-color: rgba(255, 159, 0, 0.14) !important;
+    color: #ff9f00 !important;
+}

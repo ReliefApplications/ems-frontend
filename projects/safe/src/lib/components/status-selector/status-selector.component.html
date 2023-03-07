@@ -1,0 +1,36 @@
+<mat-chip
+  *ngIf="!editing"
+  (mouseenter)="onHover()"
+  (mouseleave)="onHover()"
+  [ngClass]="{
+    'success-chip !rounded-lg': status.status === 'active',
+    'accent-chip !rounded-lg': status.status === 'pending',
+    'warn-chip !rounded-lg': status.status === 'archived'
+  }">
+    {{ status.name }}
+    <safe-icon
+      (click)="onEdit()"
+      style="padding-left: 0.5rem"
+      *ngIf="hovering"
+      icon="edit"
+      class="cursor-pointer"
+      variant="default">
+    </safe-icon>
+</mat-chip>
+
+<mat-list 
+  *ngIf="editing"
+  style="display: flex; flex-direction: column;">
+    <mat-list-item
+      *ngFor="let chip of statusList">
+        <mat-chip  
+          (click)="onSelect(chip)"
+          [ngClass]="{
+            'success-chip !rounded-lg': chip.status === 'active',
+            'accent-chip !rounded-lg': chip.status === 'pending',
+            'warn-chip !rounded-lg': chip.status === 'archived'
+          }">
+            {{ chip.name }}
+        </mat-chip>
+    </mat-list-item>
+</mat-list>
