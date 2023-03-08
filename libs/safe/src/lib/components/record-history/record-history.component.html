@@ -56,6 +56,8 @@
       <mat-select
         (selectionChange)="applyFilter($event.value)"
         [value]="filterField"
+        multiple
+        #selectFields
       >
         <mat-option value="">{{
           'components.history.field.all' | translate
@@ -63,6 +65,7 @@
         <mat-option
           *ngFor="let field of sortedFields"
           value="{{ field.name }}"
+          [disabled]="disableFieldsOption"
           >{{ field.title || field.name }}</mat-option
         >
       </mat-select>
