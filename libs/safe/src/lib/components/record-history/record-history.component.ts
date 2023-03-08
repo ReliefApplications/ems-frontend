@@ -27,7 +27,6 @@ import { Subject } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { MatSelect } from '@angular/material/select';
-import { filter } from 'lodash';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -325,10 +324,12 @@ export class SafeRecordHistoryComponent
     // filtering by field
     if (this.filterField !== null) {
       //disable others options if select all is selected
-      (this.filterField.includes('')) ? this.disableFieldsOption = true : this.disableFieldsOption = false;
-      if(this.disableFieldsOption === true){
+      this.filterField.includes('')
+        ? (this.disableFieldsOption = true)
+        : (this.disableFieldsOption = false);
+      if (this.disableFieldsOption === true) {
         this.select.options.forEach((item) => {
-          if(item.value != ''){
+          if (item.value != '') {
             item.deselect();
           }
         });
