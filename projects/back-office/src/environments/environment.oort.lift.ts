@@ -5,7 +5,7 @@ import { theme } from '../themes/oort/oort.prod';
  * Authentification configuration
  */
 const authConfig: AuthConfig = {
-  issuer: 'https://id-lift.oortcloud.tech/realms/oort',
+  issuer: 'https://id-lift.oortcloud.tech/auth/realms/oort',
   redirectUri: 'https://lift.oortcloud.tech/admin/',
   postLogoutRedirectUri: 'https://lift.oortcloud.tech/admin/auth/',
   clientId: 'oort-client',
