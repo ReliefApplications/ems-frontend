@@ -24,35 +24,12 @@
             />
           </mat-form-field>
           <!-- Status -->
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'common.status' | translate }}</mat-label>
-            <mat-select formControlName="status">
-              <mat-select-trigger>
-                <ng-container
-                  *ngTemplateOutlet="
-                    statusTemplate;
-                    context: { $implicit: formGroup.value.status }
-                  "
-                ></ng-container>
-              </mat-select-trigger>
-              <mat-option *ngFor="let status of statusChoices" [value]="status">
-                <ng-container
-                  *ngTemplateOutlet="
-                    statusTemplate;
-                    context: { $implicit: status }
-                  "
-                ></ng-container>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          
-          <!-- <mat-form-field>
-            <safe-status-selector
-                style="padding-top:0.75rem; padding-left: 1rem; padding-right: 0.5rem;"
-                formControlName="status"
-                [formControl]="formGroup">
-            </safe-status-selector>
-          </mat-form-field> -->
+          <safe-status-selector
+            style="
+            padding-top: 0.75rem;
+            "
+            [parentForm]="formGroup"
+          ></safe-status-selector>
         </div>
         <!-- Show readable value of the schedule -->
         <safe-alert

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiConfigurationRoutingModule } from './api-configuration-routing.module';
 import { ApiConfigurationComponent } from './api-configuration.component';
-import { SafeAccessModule } from '@safe/builder';
+import { SafeAccessModule, StatusSelectorModule } from '@safe/builder';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -31,6 +31,7 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
     SafeButtonModule,
     TranslateModule,
     MatChipsModule,
+    StatusSelectorModule,
   ],
 })
 export class ApiConfigurationModule {}

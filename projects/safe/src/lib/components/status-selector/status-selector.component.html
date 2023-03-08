@@ -8,7 +8,7 @@
     'accent-chip !rounded-lg': status.status === 'pending',
     'warn-chip !rounded-lg': status.status === 'archived'
   }">
-    {{ status.name }}
+    {{ status.name | translate | titlecase  }}
     <safe-icon
       (click)="onEdit()"
       style="padding-left: 0.5rem"
@@ -23,15 +23,15 @@
   *ngIf="editing"
   style="display: flex; flex-direction: column;">
     <mat-list-item
-      *ngFor="let chip of statusList">
-        <mat-chip 
+      *ngFor="let chip of statusDisplayList">
+        <mat-chip
           (click)="onSelect(chip)"
           [ngClass]="{
             'success-chip !rounded-lg': chip.status === 'active',
             'accent-chip !rounded-lg': chip.status === 'pending',
             'warn-chip !rounded-lg': chip.status === 'archived'
           }">
-            {{ chip.name }}
+            {{ chip.name | translate | titlecase  }}
         </mat-chip>
     </mat-list-item>
 </mat-list>

@@ -10,7 +10,14 @@ import { MatLegacyChipsModule } from '@angular/material/legacy-chips';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { MatListModule } from '@angular/material/list';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ * Status Selector Module
+ *
+ * @class StatusSelectorModule
+ * @typedef {StatusSelectorModule}
+ */
 @NgModule({
   declarations: [StatusSelectorComponent],
   imports: [
@@ -24,6 +31,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     // MatChipsModule,
     SafeIconModule,
     ReactiveFormsModule,
+    TranslateModule,
   ],
   exports: [StatusSelectorComponent],
 })

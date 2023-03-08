@@ -16,24 +16,11 @@
     <div class="flex justify-between mt-8">
       <h2>{{ 'common.general' | translate }}</h2>
       <!-- Status -->
-      <mat-form-field appearance="outline" class="p-0">
-        <mat-label>{{ 'common.status' | translate }}</mat-label>
-        <mat-select formControlName="status">
-          <mat-select-trigger>
-            <ng-container
-              *ngTemplateOutlet="
-                statusTemplate;
-                context: { $implicit: apiForm.value.status }
-              "
-            ></ng-container>
-          </mat-select-trigger>
-          <mat-option *ngFor="let status of statusChoices" [value]="status">
-            <ng-container
-              *ngTemplateOutlet="statusTemplate; context: { $implicit: status }"
-            ></ng-container>
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <safe-status-selector
+        style="padding-top: 1.5rem;
+        padding-bottom: 0.5rem;"
+        [parentForm]="apiForm"
+      ></safe-status-selector>
     </div>
     <div class="flex flex-col last:mb-0">
       <div class="flex gap-x-2 flex-wrap">

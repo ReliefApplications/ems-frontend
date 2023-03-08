@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SettingsRoutingModule } from './settings-routing.module';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { SafeButtonModule } from '@safe/builder';
+import { SafeButtonModule, StatusSelectorModule } from '@safe/builder';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -24,6 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule,
     SafeButtonModule,
     TranslateModule,
+    StatusSelectorModule,
   ],
 })
 export class SettingsModule {}

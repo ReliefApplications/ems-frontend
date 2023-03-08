@@ -1,8 +1,8 @@
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import {
   ControlValueAccessor,
+  FormGroup,
   NG_VALUE_ACCESSOR,
-  UntypedFormControl,
 } from '@angular/forms';
 
 /**
@@ -27,85 +27,93 @@ import {
 })
 export class StatusSelectorComponent implements OnInit, ControlValueAccessor {
   /**
-   * Variable that controls the appearence of the status chip
+   * Form from parent component
+   *
+   * @public
+   * @type {!FormGroup}
+   */
+  @Input() public parentForm!: FormGroup;
+
+  /**
+   * value for ControlValueAccessor
+   *
+   * @public
+   * @type {!string}
+   */
+  public value!: string;
+
+  /**
+   * changed for ControlValueAccessor
+   *
+   * @public
+   * @type {!(value: string) => void}
+   */
+  public changed!: (value: string) => void;
+
+  /**
+   * touched for ControlValueAccessor
+   *
+   * @public
+   * @type {!() => void}
+   */
+  public touched!: () => void;
+
+  /**
+   * isDisabled for ControlValueAccessor
+   *
+   * @public
+   * @type {!boolean}
+   */
+  public isDisabled!: boolean;
+
+  /**
+   * status data for chip/button
    *
    * @public
    * @type {*}
    */
   public status: any;
+
   /**
-   * Variable that controls if the edit icon is visible
+   * property which detects mouse hover
    *
    * @public
    * @type {boolean}
    */
   public hovering = false;
+
   /**
-   * Variable that controls if the status list is visible
+   * property which enables the status options list
    *
    * @public
    * @type {boolean}
    */
   public editing = false;
+
   /**
-   * List of selectable statuses for the mat-list
+   * status data for status options list
    *
    * @public
    * @type {{}}
    */
-  public statusList = [
-    { name: 'Active', status: 'active' },
-    { name: 'Pending', status: 'pending' },
-    { name: 'Archived', status: 'archived' },
+  public statusDisplayList = [
+    { name: 'common.status_active', status: 'active' },
+    { name: 'common.status_pending', status: 'pending' },
+    { name: 'common.status_archived', status: 'archived' },
   ];
+
   /**
-   *
+   * status data for chip/button initialization
    *
    * @public
-   * @type { [key: string]: { name: string; status: string } }
+   * @type {{}}
    */
   public statusChoices: { [key: string]: { name: string; status: string } } = {
-    blank: { name: '', status: 'undefined' },
-    active: { name: 'Active', status: 'active' },
-    pending: { name: 'Pending', status: 'pending' },
-    archived: { name: 'Archived', status: 'archived' },
+    blank: { name: 'status', status: '' },
+    active: { name: 'common.status_active', status: 'active' },
+    pending: { name: 'common.status_pending', status: 'pending' },
+    archived: { name: 'common.status_archived', status: 'archived' },
   };
-
-  /**
-   * Description placeholder
-   *
-   * @type {!UntypedFormControl}
-   */
-  @Input() formControl!: UntypedFormControl;
-
-  /**
-   * Description placeholder
-   *
-   * @type {!string}
-   */
-  @Input() formControlName!: string;
-
-  /**
-   * Description placeholder
-   *
-   * @private
-   * @type {!*}
-   */
-  private onTouched!: any;
-  /**
-   * Description placeholder
-   *
-   * @private
-   * @type {!*}
-   */
-  private onChanged!: any;
-  /**
-   * Description placeholder
-   *
-   * @public
-   * @type {boolean}
-   */
-  public disabled = false;
 
   /**
    * Creates an instance of StatusSelectorComponent.
@@ -113,65 +121,71 @@ export class StatusSelectorComponent implements OnInit, ControlValueAccessor {
   constructor() {}
 
   /**
-   * NgOnInit
+   * onInit which assigns status value from parent
    */
   ngOnInit(): void {
-    //console.log(this.formControl);
-    //this.status = this.statusChoices[this.currentStatus.value];
+    if (this.parentForm.controls.status.value === '') {
+      this.status = this.statusChoices.blank;
+    } else {
+      this.status = this.statusChoices[this.parentForm.controls.status.value];
+    }
   }
 
   /**
-   * Description placeholder
+   * writeValue for ControlValueAccessor
    *
-   * @param {*} value Value
+   * @public
+   * @param {string} value value
    */
-  writeValue(value: any): void {
-    this.formControl.setValue(value);
+  public writeValue(value: string): void {
+    this.value = value;
   }
 
   /**
-   * Description placeholder
+   * registerOnChange for ControlValueAccessor
    *
-   * @param {*} fn Fn
+   * @param {*} fn fn
    */
   registerOnChange(fn: any): void {
-    this.onChanged = fn;
+    this.changed = fn;
   }
 
   /**
-   * Description placeholder
+   * registerOnTouched for ControlValueAccessor
    *
-   * @param {*} fn Fn
+   * @param {*} fn fn
    */
   registerOnTouched(fn: any): void {
-    this.onTouched = fn;
+    this.touched = fn;
   }
 
   /**
-   * Description placeholder
+   * SetDisabledState for ControlValueAccessor
    *
    * @param {boolean} isDisabled isDisabled
    */
   setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    this.isDisabled = isDisabled;
   }
 
   /**
-   * Method that controls 'editing variable'
+   * Method that controls 'editing' property
    */
   onEdit(): void {
     this.editing = !this.editing;
   }
+
   /**
-   * Method that switches the appearance of the chip
+   * Method that updates the status value
    *
-   * @param {*} item Selected Item
+   * @param {*} chip  Selected option
    */
-  onSelect(item: any): void {
+  onSelect(chip: any): void {
     this.editing = false;
     this.status = {
-      name: item.name,
-      status: item.status,
+      name: chip.name,
+      status: chip.status,
     };
+    this.parentForm.controls.status.patchValue(chip.status);
   }
 }
