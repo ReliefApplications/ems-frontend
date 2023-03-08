@@ -111,6 +111,7 @@ export class EditPullJobModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log('edited pull job');
     this.formGroup = this.formBuilder.group({
       name: [get(this.data, 'pullJob.name', ''), Validators.required],
       status: [get(this.data, 'pullJob.status', ''), Validators.required],
@@ -131,7 +132,15 @@ export class EditPullJobModalComponent implements OnInit {
           ? Object.keys(this.data.pullJob.mapping).map((x: any) =>
               this.formBuilder.group({
                 name: [x, Validators.required],
-                value: [this.data.pullJob?.mapping[x], Validators.required],
+                value: [
+                  ((arr) => {
+                    if (arr && Array.isArray(arr)) {
+                      return [...new Set(arr)]; //We check that each time we have an array it does not contain any duplicate
+                    }
+                    return arr;
+                  })(this.data.pullJob?.mapping[x]),
+                  Validators.required,
+                ],
               })
             )
           : []

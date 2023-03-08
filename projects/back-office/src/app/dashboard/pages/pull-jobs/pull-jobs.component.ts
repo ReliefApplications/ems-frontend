@@ -65,7 +65,7 @@ export class PullJobsComponent implements OnInit {
    *
    * @param dialog Used to show popup dialog.
    * @param apollo Loads the pull jobs.
-   * @param snackBar Service usde to show a snackbar.
+   * @param snackBar Service used to show a snackbar.
    * @param confirmService Shared confirm service
    * @param translate Service used to get the translations.
    */
