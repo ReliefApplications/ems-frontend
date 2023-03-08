@@ -1737,7 +1737,12 @@
 		},
 		"referenceData": {
 			"csv": "******",
-			"fields": "******",
+			"fields": {
+				"fetch": "******",
+				"missingConfig": "****** {{config}}",
+				"noFields": "******",
+				"title": "******"
+			},
 			"graphQLFilter": "******",
 			"path": "******",
 			"placeholder": {
