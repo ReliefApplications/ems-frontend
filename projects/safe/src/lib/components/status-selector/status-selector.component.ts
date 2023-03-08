@@ -124,6 +124,7 @@ export class StatusSelectorComponent implements OnInit, ControlValueAccessor {
    * onInit which assigns status value from parent
    */
   ngOnInit(): void {
+    console.log(this.parentForm);
     if (this.parentForm.controls.status.value === '') {
       this.status = this.statusChoices.blank;
     } else {
@@ -186,6 +187,8 @@ export class StatusSelectorComponent implements OnInit, ControlValueAccessor {
       name: chip.name,
       status: chip.status,
     };
-    this.parentForm.controls.status.patchValue(chip.status);
+    this.parentForm.controls.status.setValue(chip.status);
+    this.parentForm.controls.status.markAsDirty();
+    this.parentForm.controls.status.markAsTouched();
   }
 }
