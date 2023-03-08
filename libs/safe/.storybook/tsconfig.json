@@ -12,5 +12,5 @@
     "../src/**/*.stories.tsx",
     "../src/**/*.stories.mdx",
     "*.js"
-  ]
+, "../src/lib/components/ui/button/button.old-stories.ts"  ]
 }

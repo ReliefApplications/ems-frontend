@@ -32,20 +32,19 @@
         "port": 4400,
         "configDir": "libs/safe/.storybook",
         "browserTarget": "safe:build-storybook",
-        "compodoc": false
+        "compodoc": false,
+        "styles": [
+          "libs/safe/src/lib/style/styles.scss"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/safe/src/lib/style/themes/default"]
+        }
       },
       "configurations": {
         "ci": {
           "quiet": true
         }
-      },
-      "assets": [
-        {
-          "glob": "**/*",
-          "input": "node_modules/tinymce",
-          "output": "/tinymce/"
-        }
-      ]
+      }
     },
     "build-storybook": {
       "executor": "@storybook/angular:build-storybook",
@@ -54,7 +53,13 @@
         "outputDir": "dist/storybook/safe",
         "configDir": "libs/safe/.storybook",
         "browserTarget": "safe:build-storybook",
-        "compodoc": false
+        "compodoc": false,
+        "styles": [
+          "libs/safe/src/lib/style/styles.scss"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/safe/src/lib/style/themes/default"]
+        }
       },
       "configurations": {
         "ci": {
