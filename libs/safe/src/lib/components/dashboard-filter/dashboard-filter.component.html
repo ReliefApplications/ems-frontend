@@ -1,0 +1,47 @@
+<div
+  [ngClass]="{
+    bottom: position === filterPosition.BOTTOM,
+    top: position === filterPosition.TOP,
+    right: position === filterPosition.RIGHT,
+    left: position === filterPosition.LEFT,
+    uncollapsed: !isCollapsed
+  }"
+  class="absolute dashboard-filter-container bg-slate-500"
+>
+  <header
+    [style.background-color]="themeColor"
+    class="dashboard-filter-header relative py-1 items-center px-4 flex"
+  >
+    <div
+      [style.background-color]="themeColor"
+      [ngClass]="{
+        bottom: position === filterPosition.BOTTOM,
+        top: position === filterPosition.TOP,
+        right: position === filterPosition.RIGHT,
+        left: position === filterPosition.LEFT
+      }"
+      class="h-10 py-2 px-3 flex dashboard-filter-tab absolute"
+      (click)="toggleCollapse()"
+    >
+      <safe-icon icon="view_stream" class="cursor-pointer"></safe-icon>
+    </div>
+    <section *ngIf="!isCollapsed"></section>
+    <section></section>
+    <section *ngIf="!isCollapsed" class="flex">
+      <ng-container *ngFor="let position of positionList">
+        <safe-button
+          *ngIf="
+            position.position === filterPosition.TOP ||
+            position.position === filterPosition.BOTTOM
+          "
+          matSuffix
+          [isIcon]="true"
+          [icon]="position.icon"
+          [ariaLabel]="''"
+          (click)="changeFilterPosition(position.position)"
+        ></safe-button>
+      </ng-container>
+    </section>
+  </header>
+  <div class="dashboard-filter-content"></div>
+</div>

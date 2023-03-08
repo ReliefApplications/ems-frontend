@@ -81,6 +81,7 @@ export * from './lib/components/config-display-grid-fields-modal/public-api';
 export * from './lib/components/content-choice/public-api';
 export * from './lib/components/workflow-stepper/public-api';
 export * from './lib/components/applications-summary/public-api';
+export * from './lib/components/dashboard-filter/public-api';
 export * from './lib/components/snackbar-spinner/public-api';
 export * from './lib/components/reference-data-dropdown/public-api';
 export * from './lib/components/skeleton/skeleton-table/public-api';

@@ -133,8 +133,8 @@
   <ng-container *ngTemplateOutlet="toolbar"></ng-container>
 </ng-container>
 
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav
+<mat-drawer-container class="h-full sidenav-container">
+  <mat-drawer
     class="sidenav"
     #nav
     [mode]="largeDevice ? 'side' : 'over'"
@@ -146,14 +146,15 @@
         [ngTemplateOutletContext]="{ $implicit: nav }"
       ></ng-container>
     </ng-container>
-  </mat-sidenav>
-
-  <mat-sidenav-content class="sidenav-content">
-    <safe-breadcrumb></safe-breadcrumb>
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
-
-  <mat-sidenav mode="side" position="end" [(opened)]="showSidenav">
+  </mat-drawer>
+  <mat-drawer-content>
+    <div class="sidenav-content h-fit w-full">
+      <safe-breadcrumb></safe-breadcrumb>
+      <router-outlet></router-outlet>
+    </div>
+    <safe-dashboard-filter> </safe-dashboard-filter>
+  </mat-drawer-content>
+  <mat-drawer mode="side" position="end" [(opened)]="showSidenav">
     <ng-template #rightSidenav></ng-template>
-  </mat-sidenav>
-</mat-sidenav-container>
+  </mat-drawer>
+</mat-drawer-container>
