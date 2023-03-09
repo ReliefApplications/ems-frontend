@@ -1,0 +1,37 @@
+// === Measure plugin ===
+::ng-deep .leaflet-control-measure a.start::before {
+  content: '► ';
+}
+
+::ng-deep .leaflet-control-measure a.finish::before {
+  content: '✔ ';
+}
+
+::ng-deep .leaflet-control-measure a.cancel::before {
+  content: '✖ ';
+}
+
+::ng-deep .leaflet-measure-resultpopup a.zoomto::before {
+  content: '⇱ ';
+}
+
+::ng-deep .leaflet-measure-resultpopup a.deletemarkup::before {
+  content: '♻ ';
+}
+
+// Clustering
+::ng-deep .leaflet-data-marker {
+  label {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: absolute;
+    inset: 0;
+    font-size: 12px;
+    margin: 0;
+    color: white;
+    font-weight: 600;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+      1px 1px 0 #000;
+  }
+}

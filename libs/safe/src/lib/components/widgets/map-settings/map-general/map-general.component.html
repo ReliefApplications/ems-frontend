@@ -6,7 +6,7 @@
       <input matInput formControlName="title" type="string" />
     </mat-form-field>
     <!-- Resource selection -->
-    <mat-form-field appearance="outline" class="flex-1">
+    <!-- <mat-form-field appearance="outline" class="flex-1">
       <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
       <safe-graphql-select
         valueField="id"
@@ -16,7 +16,7 @@
         [selectedElements]="[resource]"
       >
       </safe-graphql-select>
-    </mat-form-field>
+    </mat-form-field> -->
   </div>
   <div class="flex flex-col mt-8" *ngIf="resource">
     <h2>{{ 'components.widget.settings.map.dataset' | translate }}</h2>

@@ -1,0 +1,73 @@
+<div class="relative mb-3">
+  <div class="safe-icon-picker-border border-gray-400 flex flex-auto">
+    <div class="text-white p-2 text-base bg-gray-400 cursor-pointer">
+      <ng-template
+        [ngTemplateOutlet]="iconDisplayTemplate"
+        [ngTemplateOutletContext]="{ icon: selectedIcon }"
+      ></ng-template>
+    </div>
+    <input class="p-2 flex-1" disabled [value]="selectedIcon" />
+  </div>
+  <ng-container *ngIf="displayIconList">
+    <mat-card class="absolute top-full w-full z-10">
+      <mat-card-header class="mb-4">
+        <input
+          class="safe-icon-picker-border border-gray-400 p-2 w-full"
+          (keyup)="filterIconList($event)"
+          type="text"
+          [placeholder]="
+            'components.widget.settings.iconPicker.placeholder' | translate
+          "
+        />
+      </mat-card-header>
+      <mat-card-content class="max-h-60 h-60 overflow-auto">
+        <div class="safe-icon-list-grid">
+          <ng-container *ngFor="let icon of filteredIconList">
+            <div (click)="setIcon(icon)">
+              <ng-template
+                [ngTemplateOutlet]="iconDisplayTemplate"
+                [ngTemplateOutletContext]="{ icon, selectionEvent: true }"
+              ></ng-template>
+            </div>
+          </ng-container>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+</div>
+
+<!--Template that handles the display of default icon or FA-ICONS-->
+<ng-template
+  let-icon="icon"
+  let-selectionEvent="selectionEvent"
+  #iconDisplayTemplate
+>
+  <ng-container *ngIf="icon === 'leaflet_default'; else iconTemplate">
+    <p
+      [ngClass]="{
+        'safe-icon-grid-item safe-icon-picker-border border-gray-400 cursor-pointer':
+          selectionEvent
+      }"
+      class="text-sm m-0"
+    >
+      {{ 'components.widget.settings.iconPicker.default' | translate }}
+    </p>
+  </ng-container>
+  <ng-template #iconTemplate>
+    <ng-container *ngIf="selectionEvent; else iconHeaderTmpl">
+      <div
+        [matTooltip]="icon"
+        class="safe-icon-grid-item safe-icon-picker-border border-gray-400 cursor-pointer"
+      >
+        <i
+          [style.color]="primaryColor"
+          (click)="setIcon(icon)"
+          class="{{ icon | safeIconDisplay : fontFamily }}"
+        ></i>
+      </div>
+    </ng-container>
+    <ng-template #iconHeaderTmpl>
+      <i class="{{ icon | safeIconDisplay : fontFamily }} "></i>
+    </ng-template>
+  </ng-template>
+</ng-template>

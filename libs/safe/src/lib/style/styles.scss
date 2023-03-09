@@ -15,8 +15,10 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+@import "~@fortawesome/fontawesome-free/css/all.css";
 
-.sv_main, .svd_container {
+.sv_main,
+.svd_container {
   --main-color: #{rgb($primary_500)};
   --main-hover-color: #{rgb($primary_600)};
   --primary-color: #{rgb($primary_500)};
@@ -65,7 +67,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,
+      // A700: #ffffff,,,
     ),
 );
 
@@ -723,6 +725,17 @@ mat-tab-group[vertical] {
     .cdk-drag:not(.cdk-drag-placeholder) {
       @apply transition-transform;
     }
+  }
+
+  // === Measure plugin ===
+  // todo(gis): move somewhere else
+  .leaflet-measure-resultpopup a.deletemarkup,
+  .leaflet-measure-resultpopup a.zoomto,
+  .leaflet-control-measure a.cancel,
+  .leaflet-control-measure a.finish,
+  .leaflet-control-measure a.start {
+    @apply text-primary-500;
+    background-image: none !important;
   }
 }
 

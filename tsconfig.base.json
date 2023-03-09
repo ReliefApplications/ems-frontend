@@ -16,7 +16,6 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@oort-front/common-ui": ["libs/common-ui/src/index.ts"],
       "@oort-front/safe": ["libs/safe/src/index.ts"]
     }
   },

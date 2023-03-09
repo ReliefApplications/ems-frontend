@@ -1,0 +1,19 @@
+<div class="flex gap-4">
+  <oort-front-map
+    (mapEvent)="handleMapEvent($event)"
+    [useGeomanTools]="true"
+    [displayMockedLayers]="false"
+    [mapSettings]="mapSettings"
+    [addOrDeleteLayer]="layerToAddOrDelete$ | async"
+    [updateLayerOptions]="updateLayer$ | async"
+    [controls]="controls"
+    class="grow basis-full h-96"
+  ></oort-front-map>
+  <safe-layer-styling
+    class="h-96 grow basis-72"
+    *ngIf="selectedLayer"
+    [selectedLayer]="selectedLayer"
+    (close)="selectedLayer = undefined"
+    (edit)="updateLayerOptions($event)"
+  ></safe-layer-styling>
+</div>

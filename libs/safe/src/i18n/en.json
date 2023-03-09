@@ -84,6 +84,7 @@
 		"errors": {
 			"objectDuplicated": "{{type}} {{value}} already exists."
 		},
+		"exitFullscreen": "Exit Fullscreen",
 		"export": "Export",
 		"exportObject": "Export {{name}}",
 		"false": "False",
@@ -303,6 +304,7 @@
 			"none": "No value",
 			"one": "Value"
 		},
+		"viewFullscreen": "View Fullscreen",
 		"viewObject": "View {{name}}",
 		"workflow": {
 			"few": "Workflows",
@@ -652,6 +654,23 @@
 		"logout": {
 			"confirmationMessage": "There are unsaved changes on your form. Are you sure you want to logout?",
 			"title": "Exit without saving changes"
+		},
+		"map": {
+			"controls": {
+				"download": {
+					"layers": {
+						"all": "All layers",
+						"selected": "Selected Layers",
+						"visible": "Visible layers"
+					},
+					"output": "Select an output format",
+					"selectLayers": "Select layers",
+					"view": {
+						"all": "Map",
+						"current": "Current view"
+					}
+				}
+			}
 		},
 		"mapping": {
 			"field": "User field",
@@ -1224,27 +1243,58 @@
 						"template": "Select a template for addition and edition of records"
 					}
 				},
+				"iconPicker": {
+					"default": "Default",
+					"placeholder": "Search an icon"
+				},
 				"map": {
 					"basemap": "Base map",
 					"category": "Map quick layers",
 					"dataset": "Data set selection",
+					"edit": {
+						"layerProperties": "Layer properties",
+						"layerStyling": "Layer styling",
+						"properties": {
+							"defaultVisibility": "Visible by default",
+							"opacity": "Opacity",
+							"visibilityRange": "Visibility range",
+							"zoom": "Current zoom"
+						},
+						"style": {
+							"color": "Color",
+							"icon": "Icon",
+							"size": "Size",
+							"stylingType": "{{layerType}} styling"
+						}
+					},
 					"errors": {
 						"latitude": "Invalid latitude, please select a number between -90 and 90",
 						"longitude": "Invalid longitude, please select a number between -180 and 180"
 					},
-					"layers": {
-						"clorophlet": {
-							"add": "Add new clorophlet",
-							"division": {
-								"add": "Add new division",
-								"title": "Divisions"
+					"geospatial": {
+						"layersStyles": {
+							"fill": {
+								"color": "Fill color",
+								"opacity": "Fill opacity",
+								"title": "Fill"
 							},
-							"geoJSON": "geoJSON",
-							"geoJSONidentifier": "geoJSON Identifier",
-							"identifier": "Identifier",
-							"info": "Set up different clorophlets which will be displayed as layers in the map",
-							"title": "Clorophlets"
-						},
+							"marker": {
+								"color": "Marker color",
+								"opacity": "Marker opacity",
+								"title": "Marker"
+							},
+							"outline": {
+								"color": "Outline color",
+								"opacity": "Outline opacity",
+								"title": "Outline",
+								"width": "Outline width"
+							},
+							"title": "Layer styles"
+						}
+					},
+					"layers": {
+						"add": "Add new layer",
+						"edit": "Update layer {{name}}",
 						"online": {
 							"info": "Search for online layers in arcGIS online",
 							"select": "Search layers",
@@ -1260,7 +1310,19 @@
 							"rulesInfo": "Customize the size and colors of your markers",
 							"size": "Size",
 							"title": "Marker layers"
+						},
+						"remove": "Remove layer",
+						"types": {
+							"cluster": "cluster",
+							"heatmap": "heatmap",
+							"point": "point",
+							"polygon": "polygon"
 						}
+					},
+					"legend": {
+						"high": "High",
+						"low": "Low",
+						"title": "Legend"
 					},
 					"popup": {
 						"label": "Fields displayed in the popup"
@@ -1269,6 +1331,8 @@
 						"basemap": "Base map",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
+						"setByMap": "Set By Map",
+						"timeSlider": "Time Slider",
 						"title": "Map Parameters",
 						"zoom": "Default zoom"
 					},
@@ -1276,8 +1340,8 @@
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
 						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
 						"default": {
-							"latitude": "Select a default latitude to center the map around",
-							"longitude": "Select a default longitude to center the map around",
+							"latitude": "Set the default latitude of the center of the map. You can use 'Set By Map' to use the latitude of the preview map.",
+							"longitude": "Set the default longitude of the center of the map. You can use 'Set By Map' to use the longitude of the preview map.",
 							"zoom": "Select a default zoom for the map display"
 						}
 					}

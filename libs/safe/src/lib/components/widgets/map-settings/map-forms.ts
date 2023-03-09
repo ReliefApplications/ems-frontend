@@ -1,5 +1,5 @@
 import {
-  createQueryForm,
+  // createQueryForm,
   createFilterGroup,
 } from '../../query-builder/query-builder-forms';
 import {
@@ -8,6 +8,19 @@ import {
   Validators,
 } from '@angular/forms';
 import get from 'lodash/get';
+import { MapLayerI } from './map-layers/map-layers.component';
+
+type Nullable<T> = { [P in keyof T]: T[P] | null };
+/** Interface for the maps settings */
+export interface MapSettingsI {
+  title: string;
+  zoom: number;
+  basemap: string;
+  centerLong: number;
+  centerLat: number;
+  layers: MapLayerI[];
+  timeDimension: boolean;
+}
 
 /** Angular Form Builder */
 const fb = new UntypedFormBuilder();
@@ -41,20 +54,22 @@ const DEFAULT_MARKER_RULE = {
   },
 };
 /** Default map value */
-const DEFAULT_MAP = {
+const DEFAULT_MAP: Nullable<MapSettingsI> = {
   title: null,
-  query: null,
-  latitude: 0,
-  longitude: 0,
+  // query: null,
+  // latitude: 0,
+  // longitude: 0,
   zoom: 2,
-  category: null,
+  // category: null,
   basemap: null,
   centerLong: null,
   centerLat: null,
-  popupFields: [],
-  onlineLayers: [],
-  markersRules: [],
-  clorophlets: [],
+  // popupFields: [],
+  // onlineLayers: [],
+  // markersRules: [],
+  // clorophlets: [],
+  layers: [],
+  timeDimension: true,
 };
 
 // === CLOROPHLET ===
@@ -104,6 +119,36 @@ export const divisionForm = (value?: any): UntypedFormGroup =>
     filter: createFilterGroup(get(value, 'filter', DEFAULT_DIVISION.filter)),
   });
 
+/**
+ * Create layer form from value
+ *
+ * @param value layer value ( optional )
+ * @returns new form group
+ */
+export const createLayerForm = (value?: MapLayerI): UntypedFormGroup =>
+  fb.group({
+    name: [get(value, 'name', null), [Validators.required]],
+    type: [get(value, 'type', null), [Validators.required]],
+    defaultVisibility: [
+      get(value, 'defaultVisibility', true),
+      [Validators.required],
+    ],
+    opacity: [get(value, 'opacity', 0.8), [Validators.required]],
+    visibilityRangeStart: [
+      get(value, 'visibilityRangeStart', 2),
+      [Validators.required],
+    ],
+    visibilityRangeEnd: [
+      get(value, 'visibilityRangeEnd', 18),
+      [Validators.required],
+    ],
+    style: fb.group({
+      color: [get(value, 'style.color', '#0090d1')],
+      size: [get(value, 'style.size', 24)],
+      icon: [get(value, 'style.icon', 'leaflet_default')],
+    }),
+  });
+
 // === MARKERS ===
 /**
  * Create marker rule form from value
@@ -141,22 +186,23 @@ export const createMapWidgetFormGroup = (
   fb.group({
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],
-    resource: [get(value, 'resource', null), Validators.required],
-    query: createQueryForm(get(value, 'query', DEFAULT_MAP.query), true),
-    latitude: [
-      get(value, 'latitude', DEFAULT_MAP.latitude),
-      [Validators.min(-90), Validators.max(90)],
-    ],
-    longitude: [
-      get(value, 'longitude', DEFAULT_MAP.longitude),
-      [Validators.min(-180), Validators.max(180)],
-    ],
+    // resource: [get(value, 'resource', null), Validators.required],
+    // query: createQueryForm(get(value, 'query', DEFAULT_MAP.query), true),
+    // latitude: [
+    //   get(value, 'latitude', DEFAULT_MAP.latitude),
+    //   [Validators.min(-90), Validators.max(90)],
+    // ],
+    // longitude: [
+    //   get(value, 'longitude', DEFAULT_MAP.longitude),
+    //   [Validators.min(-180), Validators.max(180)],
+    // ],
     zoom: [
       get(value, 'zoom', DEFAULT_MAP.zoom),
       [Validators.min(2), Validators.max(18)],
     ],
-    category: [get(value, 'category', DEFAULT_MAP.category)],
+    // category: [get(value, 'category', DEFAULT_MAP.category)],
     basemap: [get(value, 'basemap', DEFAULT_MAP.basemap)],
+    timeDimension: [get(value, 'timeDimension', DEFAULT_MAP.timeDimension)],
     centerLong: [
       get(value, 'centerLong', DEFAULT_MAP.centerLong),
       [Validators.min(-180), Validators.max(180)],
@@ -165,16 +211,21 @@ export const createMapWidgetFormGroup = (
       get(value, 'centerLat', DEFAULT_MAP.centerLat),
       [Validators.min(-90), Validators.max(90)],
     ],
-    popupFields: [get(value, 'popupFields', DEFAULT_MAP.popupFields)],
-    onlineLayers: [get(value, 'onlineLayers', DEFAULT_MAP.onlineLayers)],
-    markerRules: fb.array(
-      get(value, 'markerRules', DEFAULT_MAP.markersRules).map((x: any) =>
-        markerRuleForm(x)
-      )
-    ),
-    clorophlets: fb.array(
-      get(value, 'clorophlets', DEFAULT_MAP.clorophlets).map((x: any) =>
-        clorophletForm(x)
+    // popupFields: [get(value, 'popupFields', DEFAULT_MAP.popupFields)],
+    // onlineLayers: [get(value, 'onlineLayers', DEFAULT_MAP.onlineLayers)],
+    // markerRules: fb.array(
+    //   get(value, 'markerRules', DEFAULT_MAP.markersRules).map((x: any) =>
+    //     markerRuleForm(x)
+    //   )
+    // ),
+    // clorophlets: fb.array(
+    //   get(value, 'clorophlets', DEFAULT_MAP.clorophlets).map((x: any) =>
+    //     clorophletForm(x)
+    //   )
+    // ),
+    layers: fb.array(
+      get(value, 'layers', DEFAULT_MAP.layers).map((x: any) =>
+        createLayerForm(x)
       )
     ),
   });

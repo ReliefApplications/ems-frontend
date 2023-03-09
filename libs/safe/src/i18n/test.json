@@ -84,6 +84,7 @@
 		"errors": {
 			"objectDuplicated": "{{type}} ****** {{value}} ******"
 		},
+		"exitFullscreen": "******",
 		"export": "******",
 		"exportObject": "****** {{name}}",
 		"false": "******",
@@ -303,6 +304,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"viewFullscreen": "******",
 		"viewObject": "****** {{name}}",
 		"workflow": {
 			"few": "******",
@@ -652,6 +654,23 @@
 		"logout": {
 			"confirmationMessage": "******",
 			"title": "******"
+		},
+		"map": {
+			"controls": {
+				"download": {
+					"layers": {
+						"all": "******",
+						"selected": "******",
+						"visible": "******"
+					},
+					"output": "******",
+					"selectLayers": "******",
+					"view": {
+						"all": "******",
+						"current": "******"
+					}
+				}
+			}
 		},
 		"mapping": {
 			"field": "******",
@@ -1224,27 +1243,58 @@
 						"template": "******"
 					}
 				},
+				"iconPicker": {
+					"default": "******",
+					"placeholder": "******"
+				},
 				"map": {
 					"basemap": "******",
 					"category": "******",
 					"dataset": "******",
+					"edit": {
+						"layerProperties": "******",
+						"layerStyling": "******",
+						"properties": {
+							"defaultVisibility": "******",
+							"opacity": "******",
+							"visibilityRange": "******",
+							"zoom": "******"
+						},
+						"style": {
+							"color": "******",
+							"icon": "******",
+							"size": "******",
+							"stylingType": "{{layerType}} ******"
+						}
+					},
 					"errors": {
 						"latitude": "******",
 						"longitude": "******"
 					},
-					"layers": {
-						"clorophlet": {
-							"add": "******",
-							"division": {
-								"add": "******",
+					"geospatial": {
+						"layersStyles": {
+							"fill": {
+								"color": "******",
+								"opacity": "******",
 								"title": "******"
 							},
-							"geoJSON": "******",
-							"geoJSONidentifier": "******",
-							"identifier": "******",
-							"info": "******",
+							"marker": {
+								"color": "******",
+								"opacity": "******",
+								"title": "******"
+							},
+							"outline": {
+								"color": "******",
+								"opacity": "******",
+								"title": "******",
+								"width": "******"
+							},
 							"title": "******"
-						},
+						}
+					},
+					"layers": {
+						"add": "******",
+						"edit": "****** {{name}}",
 						"online": {
 							"info": "******",
 							"select": "******",
@@ -1260,7 +1310,19 @@
 							"rulesInfo": "******",
 							"size": "******",
 							"title": "******"
+						},
+						"remove": "******",
+						"types": {
+							"cluster": "******",
+							"heatmap": "******",
+							"point": "******",
+							"polygon": "******"
 						}
+					},
+					"legend": {
+						"high": "******",
+						"low": "******",
+						"title": "******"
 					},
 					"popup": {
 						"label": "******"
@@ -1269,6 +1331,8 @@
 						"basemap": "******",
 						"latitude": "******",
 						"longitude": "******",
+						"setByMap": "******",
+						"timeSlider": "******",
 						"title": "******",
 						"zoom": "******"
 					},

@@ -1,0 +1,37 @@
+::ng-deep .leaflet-control-layers-toggle.leaflet-layerstree-named-toggle {
+  margin: 2px 5px;
+  width: auto;
+  height: auto;
+  background-image: none;
+}
+
+::ng-deep .leaflet-layerstree-header input {
+  margin-left: 0px;
+}
+
+::ng-deep .leaflet-layerstree-header-pointer {
+  cursor: pointer;
+}
+
+::ng-deep .leaflet-layerstree-header label {
+  display: inline-block;
+  cursor: pointer;
+}
+
+::ng-deep .leaflet-layerstree-children {
+  &:not(.leaflet-layerstree-children-nopad) {
+    padding-left: 20px;
+  }
+}
+
+::ng-deep .leaflet-layerstree-hide {
+  display: none;
+}
+
+::ng-deep .leaflet-layerstree-nevershow {
+  display: none;
+}
+
+::ng-deep .leaflet-layerstree-expand-collapse {
+  cursor: pointer;
+}

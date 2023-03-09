@@ -1,31 +1,13 @@
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { SafeMapComponent } from '../../map/map.component';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-
-/** List of basemap that can be used by the widget */
-const BASEMAPS: string[] = [
-  'Sreets',
-  'Navigation',
-  'Topographic',
-  'Light Gray',
-  'Dark Gray',
-  'Streets Relief',
-  'Imagery',
-  'ChartedTerritory',
-  'ColoredPencil',
-  'Nova',
-  'Midcentury',
-  'OSM',
-  'OSM:Streets',
-];
+import {
+  MapConstructorSettings,
+  MapEvent,
+  MapEventType,
+} from '../../../ui/map/interfaces/map.interface';
+import { BASEMAPS } from '../../../ui/map/const/baseMaps';
 
 /**
  * Map Properties of Map widget.
@@ -37,20 +19,12 @@ const BASEMAPS: string[] = [
 })
 export class MapPropertiesComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
   @Input() form!: UntypedFormGroup;
 
-  @ViewChild(SafeMapComponent) previewMap!: SafeMapComponent;
-
-  public basemaps = BASEMAPS;
-
-  public mapSettings!: {
-    basemap: string;
-    zoom: number;
-    centerLat: number;
-    centerLong: number;
-  };
+  public mapSettings!: MapConstructorSettings;
+  public baseMaps = BASEMAPS;
 
   /**
    * Map Properties of Map widget.
@@ -63,52 +37,105 @@ export class MapPropertiesComponent
    * Subscribe to settings changes to update map.
    */
   ngOnInit(): void {
-    this.mapSettings = {
+    const defaultMapSettings = {
       basemap: this.form.value.basemap,
       zoom: this.form.value.zoom,
       centerLat: this.form.value.centerLat,
       centerLong: this.form.value.centerLong,
+      timeDimension: this.form.value.timeDimension,
     };
+    this.updateMapSettings(defaultMapSettings);
+    this.setUpFormListeners();
+  }
+
+  /**
+   * Set form listeners
+   */
+  private setUpFormListeners() {
     this.form
       .get('zoom')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.previewMap.map.setZoom(value);
-      });
+      .subscribe((value) =>
+        this.updateMapSettings({ zoom: value } as MapConstructorSettings)
+      );
     this.form
       .get('centerLat')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        const map = this.previewMap.map;
-        map.setView([value, map.getCenter().lng], map.getZoom());
-      });
+      .subscribe((value) =>
+        this.updateMapSettings({ centerLat: value } as MapConstructorSettings)
+      );
     this.form
       .get('centerLong')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        const map = this.previewMap.map;
-        map.setView([map.getCenter().lat, value], map.getZoom());
-      });
+      .subscribe((value) =>
+        this.updateMapSettings({ centerLong: value } as MapConstructorSettings)
+      );
     this.form
       .get('basemap')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) =>
+        this.updateMapSettings({ basemap: value } as MapConstructorSettings)
+      );
+    this.form
+      .get('timeDimension')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.previewMap.setBasemap(value);
+        this.updateMapSettings({
+          timeDimension: value,
+        } as MapConstructorSettings);
       });
   }
 
   /**
-   * Subscribe to map events to update settings
+   * Update map settings
+   *
+   * @param settings new settings
    */
-  ngAfterViewInit(): void {
-    const map = this.previewMap.map;
-    map.on('zoomend', () => {
-      this.form.get('zoom')?.setValue(map.getZoom(), { emitEvent: false });
-    });
-    map.on('moveend', () => {
-      const center = map.getCenter();
-      this.form.get('centerLat')?.setValue(center.lat, { emitEvent: false });
-      this.form.get('centerLong')?.setValue(center.lng, { emitEvent: false });
-    });
+  private updateMapSettings(settings: MapConstructorSettings) {
+    if (this.mapSettings) {
+      this.mapSettings = {
+        ...this.mapSettings,
+        ...settings,
+      };
+    } else {
+      this.mapSettings = settings;
+    }
+  }
+
+  /**
+   * Set the latitude and longitude of the center of the map using the one in the preview map.
+   */
+  onSetByMap(): void {
+    this.form
+      .get('centerLat')
+      ?.setValue(this.mapSettings.centerLat, { emitEvent: false });
+    this.form
+      .get('centerLong')
+      ?.setValue(this.mapSettings.centerLong, { emitEvent: false });
+    this.form
+      .get('zoom')
+      ?.setValue(this.mapSettings.zoom, { emitEvent: false });
+  }
+
+  /**
+   * Handle leaflet map events
+   *
+   * @param event leaflet map event
+   */
+  handleMapEvent(event: MapEvent) {
+    switch (event.type) {
+      case MapEventType.MOVE_END:
+        this.mapSettings.centerLat = event.content.center.lat;
+        this.mapSettings.centerLong = event.content.center.lng;
+        break;
+      case MapEventType.ZOOM_END:
+        this.mapSettings.zoom = event.content.zoom;
+        this.form
+          .get('zoom')
+          ?.setValue(this.mapSettings.zoom, { emitEvent: false });
+        break;
+      default:
+        break;
+    }
   }
 }

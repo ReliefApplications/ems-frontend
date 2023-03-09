@@ -9,7 +9,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { SafeMapModule } from '../../map/map.module';
+import { SafeMapModule } from '../../../ui/map/map.module';
+import { SafeButtonModule } from '../../../ui/button/button.module';
+import { SafeDividerModule } from '../../../ui/divider/divider.module';
+import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 
 /**
  * Module of Map Properties of Map Widget.
@@ -28,6 +31,9 @@ import { SafeMapModule } from '../../map/map.module';
     MatSelectModule,
     SafeIconModule,
     SafeMapModule,
+    SafeButtonModule,
+    SafeDividerModule,
+    MatCheckboxModule,
   ],
   exports: [MapPropertiesComponent],
 })
