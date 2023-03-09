@@ -1,3 +1,11 @@
+# [2.0.0-beta.2](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.1...v2.0.0-beta.2) (2023-03-08)
+
+
+### Features
+
+* add cron editor modal ([d675ca2](https://github.com/ReliefApplications/oort-frontend/commit/d675ca2bc0619c34e504c6a13df804eb6d158dba))
+* add notification interface ([1cc5134](https://github.com/ReliefApplications/oort-frontend/commit/1cc5134cbaa6c912469466aad659671c7926c391))
+
 # [2.0.0-beta.1](https://github.com/ReliefApplications/oort-frontend/compare/v1.4.0-beta.7...v2.0.0-beta.1) (2023-03-06)
 
 
