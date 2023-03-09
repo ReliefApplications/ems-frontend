@@ -1,11 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeModalModule } from '../../../../ui/modal/modal.module';
-import { SafeMapModule } from '../../../../ui/map/map.module';
-import {
-  SafeEditLayerModalComponent,
-  EditLayerModalComponent,
-} from './edit-layer-modal.component';
+import { MapModule } from '../../../../ui/map/map.module';
+import { SafeEditLayerModalComponent } from './edit-layer-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
@@ -16,7 +13,7 @@ import { LayerPropertiesComponent } from './layer-properties/layer-properties.co
 import { LayerStylingComponent } from './layer-styling/layer-styling.component';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { SafeIconPickerModule } from '../../../../ui/icon-picker/icon-picker.module';
+import { IconPickerModule } from '../../../../icon-picker/icon-picker.module';
 
 /** Module for the SafeEditLayerModalComponent */
 @NgModule({
@@ -24,7 +21,6 @@ import { SafeIconPickerModule } from '../../../../ui/icon-picker/icon-picker.mod
     SafeEditLayerModalComponent,
     LayerPropertiesComponent,
     LayerStylingComponent,
-    EditLayerModalComponent,
   ],
   imports: [
     CommonModule,
@@ -38,8 +34,8 @@ import { SafeIconPickerModule } from '../../../../ui/icon-picker/icon-picker.mod
     MatSliderModule,
     MatTabsModule,
     MatSelectModule,
-    SafeMapModule,
-    SafeIconPickerModule,
+    MapModule,
+    IconPickerModule,
   ],
   exports: [SafeEditLayerModalComponent],
 })

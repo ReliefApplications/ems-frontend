@@ -2,14 +2,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeMapWidgetComponent } from './map.component';
 import { LayoutModule } from '@progress/kendo-angular-layout';
-import { SafeMapModule } from '../../ui/map/map.module';
+import { MapModule } from '../../ui/map/map.module';
 
 /**
  * Map widget module
  */
 @NgModule({
   declarations: [SafeMapWidgetComponent],
-  imports: [CommonModule, LayoutModule, SafeMapModule],
+  imports: [CommonModule, LayoutModule, MapModule],
   exports: [SafeMapWidgetComponent],
 })
 export class SafeMapWidgetModule {}

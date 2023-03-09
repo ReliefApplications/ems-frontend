@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SafeDividerModule } from '../../ui/divider/divider.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 /** Module for the LayerStylingComponent */
 @NgModule({
@@ -15,6 +16,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     MatInputModule,
     MatIconModule,
+    MatFormFieldModule,
     SafeDividerModule,
     TranslateModule,
   ],

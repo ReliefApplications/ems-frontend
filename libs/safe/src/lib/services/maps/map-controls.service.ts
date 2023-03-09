@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/languages';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
 import { MapDownloadComponent } from '../../components/ui/map/map-download/map-download.component';
 import { MapLegendComponent } from '../../components/ui/map/map-legend/map-legend.component';
@@ -16,6 +15,7 @@ import 'leaflet-timedimension';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import { LegendDefinition } from '../../components/ui/map/interfaces/layer-legend.type';
 import { Layer } from '../../components/ui/map/layer';
+import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/language';
 
 /**
  * Shared map control service.

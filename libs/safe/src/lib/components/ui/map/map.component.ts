@@ -33,7 +33,6 @@ import { BASEMAP_LAYERS } from './const/baseMaps';
 import { merge } from 'lodash';
 import { timeDimensionGeoJSON } from './test/timedimension-test';
 import { SafeMapControlsService } from '../../../services/maps/map-controls.service';
-import { AVAILABLE_GEOMAN_LANGUAGES } from './const/languages';
 
 // import 'leaflet';
 import * as L from 'leaflet';
@@ -44,6 +43,7 @@ import { LayerProperties } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { generateBaseMaps } from './test/basemaps-test';
+import { AVAILABLE_GEOMAN_LANGUAGES } from './const/language';
 
 /**
  * Cleans the settings object from null values
@@ -69,7 +69,7 @@ const cleanSettingsFromNulls = (settings: MapConstructorSettings) => {
   styleUrls: ['../../../style/map.scss', './map.component.scss'],
   providers: [SafeMapControlsService],
 })
-export class SafeMapComponent
+export class MapComponent
   extends SafeUnsubscribeComponent
   implements AfterViewInit
 {

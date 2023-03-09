@@ -24,11 +24,11 @@ import '@geoman-io/leaflet-geoman-free';
 import * as L from 'leaflet';
 import { FeatureProperties } from '../ui/map/interfaces/layer-settings.type';
 import { IconName } from '../ui/map/const/fa-icons';
-import { SafeLayerStylingComponent } from './layer-styling/layer-styling.component';
+import { LayerStylingComponent } from './layer-styling/layer-styling.component';
 import { createCustomDivIcon } from '../ui/map/utils/create-div-icon';
 
 type StyleChange =
-  typeof SafeLayerStylingComponent.prototype.edit extends EventEmitter<infer T>
+  typeof LayerStylingComponent.prototype.edit extends EventEmitter<infer T>
     ? T
     : never;
 

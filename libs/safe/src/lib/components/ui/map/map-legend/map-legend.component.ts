@@ -22,7 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './map-legend.component.html',
   styleUrls: ['./map-legend.component.scss'],
 })
-export class SafeMapLegendComponent {
+export class MapLegendComponent {
   public expanded = false;
 
   @Input() layerLegends: { legend: LegendDefinition; layer: string }[] = [];

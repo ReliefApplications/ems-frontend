@@ -42,6 +42,7 @@ import { SafeUnsubscribeModule } from './components/utils/unsubscribe/unsubscrib
 import { SafeViewsModule } from './views/views.module';
 import { SafeEditableTextModule } from './components/editable-text/editable-text.module';
 import { CronExpressionControlModule } from './components/cron-expression-control/cron-expression-control.module';
+import { MapModule } from './components/ui/map';
 
 /** Main module for the safe project */
 @NgModule({
@@ -76,6 +77,7 @@ import { CronExpressionControlModule } from './components/cron-expression-contro
     SafeUserSummaryModule,
     SafeEditableTextModule,
     CronExpressionControlModule,
+    MapModule,
     // === Pipes ===
     SafeDateModule,
     SafeReadableCronModule,
