@@ -4,11 +4,16 @@
 
 .dashboard-filter-header {
   color: white;
+  min-height: 3rem;
 }
 
 .dashboard-filter-content {
-  background-color: lightgray;
+  background-color: white;
+}
+
+.dashboard-filter-content-filter-wrapper {
   display: flex;
+  flex: 1 0 33%;
 }
 
 .dashboard-filter-y-axis {

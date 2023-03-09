@@ -1,3 +1,6 @@
+/**
+ * Filter position enum
+ */
 export enum FilterPosition {
   TOP = 'top',
   RIGHT = 'right',
