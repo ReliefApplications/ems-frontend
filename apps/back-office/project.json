@@ -46,7 +46,9 @@
           "node_modules/survey-creator/survey-creator.min.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
-          "node_modules/select2/dist/css/select2.min.css"
+          "node_modules/select2/dist/css/select2.min.css",
+          "node_modules/devextreme/dist/css/dx.common.css",
+          "node_modules/devextreme/dist/css/dx.light.css"
         ],
         "scripts": [
           "node_modules/jquery/dist/jquery.js",

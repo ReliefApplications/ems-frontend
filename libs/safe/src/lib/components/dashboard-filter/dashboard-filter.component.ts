@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
 
 @Component({
@@ -6,10 +6,9 @@ import { FilterPosition } from './enums/dashboard-filters.enum';
   templateUrl: './dashboard-filter.component.html',
   styleUrls: ['./dashboard-filter.component.scss'],
 })
-export class SafeDashboardFilterComponent implements OnInit {
-  @Input() position: FilterPosition = FilterPosition.BOTTOM;
-  public filterPosition = FilterPosition;
-  public isCollapsed = true;
+export class SafeDashboardFilterComponent {
+  @Input() position: FilterPosition = FilterPosition.TOP;
+  public isDrawerOpen = false;
   public positionList = [
     {
       position: FilterPosition.BOTTOM,
@@ -29,13 +28,10 @@ export class SafeDashboardFilterComponent implements OnInit {
     },
   ];
   public themeColor!: string;
+  public filterPosition = FilterPosition;
 
   constructor(@Inject('environment') environment: any) {
     this.themeColor = environment.theme.primary;
-  }
-
-  ngOnInit(): void {
-    console.log(this.position);
   }
 
   public changeFilterPosition(position: FilterPosition) {
@@ -43,6 +39,6 @@ export class SafeDashboardFilterComponent implements OnInit {
   }
 
   public toggleCollapse() {
-    this.isCollapsed = !this.isCollapsed;
+    this.isDrawerOpen = !this.isDrawerOpen;
   }
 }

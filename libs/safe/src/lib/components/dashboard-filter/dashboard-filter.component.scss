@@ -1,72 +1,60 @@
 :host {
-  width: inherit;
-  display: block;
-}
-
-.dashboard-filter-container {
-  z-index: 3001;
-  transition: all 0.5s ease-in-out;
-
-  &.top {
-    top: -152px;
-    width: 100%;
-  }
-  &.uncollapsed.top {
-    top: 0;
-    width: 100%;
-  }
-  &.bottom {
-    bottom: -152px;
-    width: 100%;
-  }
-  &.uncollapsed.bottom {
-    bottom: 0;
-    width: 100%;
-  }
-  //   &.right {
-  //     right: 0;
-  //     width: 240px;
-  //     top: 0;
-  //     bottom: 0;
-  //   }
-  //   &.left {
-  //     left: 0;
-  //     width: 240px;
-  //     top: 0;
-  //     bottom: 0;
-  //   }
-}
-
-.dashboard-filter-tab {
-  margin: auto;
-  width: 80px;
-  justify-content: center;
-  &.top {
-    right: 0;
-    left: 0;
-    top: 200px;
-    border-bottom-left-radius: 1rem;
-    border-bottom-right-radius: 1rem;
-  }
-  &.bottom {
-    right: 0;
-    left: 0;
-    top: -40px;
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-  }
-  &.right {
-  }
-  &.tab-left {
-  }
+  height: inherit;
 }
 
 .dashboard-filter-header {
   color: white;
-  height: 48px;
 }
 
-.dashboard-filter-container {
+.dashboard-filter-content {
   background-color: lightgray;
-  height: 200px;
+  display: flex;
+}
+
+.dashboard-filter-y-axis {
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+}
+
+.dashboard-filter-x-axis {
+  margin-top: auto;
+  margin-bottom: auto;
+  top: 0;
+  bottom: 0;
+}
+
+.dashboard-filter-tab {
+  width: 80px;
+  justify-content: center;
+
+  &.top {
+    top: 40px;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    @extend .dashboard-filter-y-axis;
+  }
+  &.bottom {
+    bottom: 40px;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    @extend .dashboard-filter-y-axis;
+  }
+  &.right {
+    right: 0;
+    border-bottom-left-radius: 1rem;
+    border-top-left-radius: 1rem;
+    @extend .dashboard-filter-x-axis;
+  }
+  &.left {
+    left: 0;
+    border-bottom-right-radius: 1rem;
+    border-top-right-radius: 1rem;
+    @extend .dashboard-filter-x-axis;
+  }
+}
+
+::ng-deep.dx-overlay-content {
+  overflow: visible;
 }

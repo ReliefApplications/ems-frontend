@@ -66,6 +66,7 @@
     "cron-parser": "^4.7.0",
     "cron-validator": "^1.3.1",
     "cronstrue": "^2.20.0",
+    "devextreme-angular": "^22.2.4",
     "extract-files": "^13.0.0",
     "graphql": "^16",
     "hammerjs": "^2.0.8",
