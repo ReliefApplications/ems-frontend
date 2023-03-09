@@ -19,8 +19,8 @@
 }
 
 .sub-parameters {
+  @apply border-l-2 border-gray-500;
   margin-left: 24px;
-  border-left: 2px solid gray;
   padding-left: 24px;
   display: flex;
   flex-direction: column;

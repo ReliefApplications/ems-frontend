@@ -1,13 +1,13 @@
 .safe-icon-success {
-  color: #63d168;
+  @apply text-lime-500;
 }
 
 .safe-icon-light {
-  color: white;
+  @apply text-white;
 }
 
 .safe-icon-grey {
-  color: #a9a9a9;
+  @apply text-gray-400;
 }
 
 .material-icons-outlined {

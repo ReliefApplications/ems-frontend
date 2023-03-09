@@ -8,7 +8,8 @@
 }
 
 ::ng-deep .sv_q_required_text {
-  color: red;
+  @apply text-red-500;
+  // color: red;
 }
 
 // === QUESTION CONTENT ===
@@ -64,7 +65,8 @@
     border-color: rgba(0, 0, 0, 0.08);
     min-width: unset;
     color: #424242;
-    background-color: #f5f5f5;
+    @apply bg-white;
+    // background-color: #f5f5f5;
     background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.02));
     border-radius: 2px;
     padding: 4px 8px;

@@ -17,31 +17,35 @@ div {
 }
 
 .safe-badge-default {
-  background-color: #f1f1f1;
+  @apply bg-white;
   font-weight: lighter;
 }
 
 .safe-badge-primary {
-  background-color: rgba(0, 141, 201, 0.1);
-  color: rgb(0, 141, 201);
+  @apply text-sky-500 bg-sky-900;
+  // background-color: rgba(0, 141, 201, 0.1);
+  // color: rgb(0, 141, 201);
 }
 
 .safe-badge-danger {
-  background-color: rgba(241, 67, 67, 0.19);
-  color: rgb(241, 67, 67);
+  @apply text-red-500 bg-red-900;
+  // background-color: rgba(241, 67, 67, 0.19);
+  // color: rgb(241, 67, 67);
 }
 .safe-badge-success {
-  background-color: rgba(149, 221, 101, 0.2);
-  color: rgb(149, 221, 101);
+  @apply text-green-500 bg-green-900;
+  // background-color: rgba(149, 221, 101, 0.2);
+  // color: rgb(149, 221, 101);
 }
 .safe-badge-warning {
-  background-color: rgba(244, 174, 82, 0.2);
-  color: rgb(244, 174, 82);
+  @apply text-orange-500 bg-yellow-900;
+  // background-color: rgba(244, 174, 82, 0.2);
+  // color: rgb(244, 174, 82);
 }
 
 .safe-badge-icon {
   width: 2em;
-  background-color: white;
+  @apply bg-white;
   line-height: initial;
 
   safe-icon {

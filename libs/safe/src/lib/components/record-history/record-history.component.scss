@@ -7,7 +7,7 @@
 }
 
 .history-user {
-  background-color: #b2c9eb;
+  @apply bg-sky-200;
   border-radius: 10px;
   padding: 4px;
   margin-left: auto;
@@ -26,15 +26,15 @@
 }
 
 ::ng-deep .modify-field {
-  background-color: #e8ddb8;
+  @apply bg-amber-100;
 }
 
 ::ng-deep .add-field {
-  background-color: #b2ebbf;
+  @apply bg-green-100;
 }
 
 ::ng-deep .remove-field {
-  background-color: #ebb2b2;
+  @apply bg-red-100;
 }
 
 .changes-content {

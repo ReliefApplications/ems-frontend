@@ -46,26 +46,24 @@ safe-icon {
 
 .safe-btn-success {
   &:not(:disabled) {
-    color: #63d168;
+    @apply text-lime-400;
     &.mat-flat-button {
-      background-color: #63d168;
-      color: white;
+      @apply bg-lime-400 text-white;
     }
     &.mat-stroked-button {
-      border-color: #63d168;
+      @apply border-lime-400;
     }
   }
 }
 
 .safe-btn-grey {
   &:not(:disabled) {
-    color: #a9a9a9;
+    @apply text-gray-500;
     &.mat-flat-button {
-      background-color: #a9a9a9;
-      color: white;
+      @apply bg-gray-500 text-white;
     }
     &.mat-stroked-button {
-      border-color: #a9a9a9;
+      @apply border-gray-500;
     }
   }
 }

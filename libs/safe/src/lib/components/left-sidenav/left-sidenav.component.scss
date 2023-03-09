@@ -44,7 +44,7 @@
     }
     .nav-action,
     .nav-item-handle {
-      color: #aeaeaf;
+      @apply text-gray-400;
     }
   }
 
@@ -58,6 +58,7 @@
 }
 
 .add-page-container {
+  @apply border-t-black;
   border-top: 1px solid rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: space-around;

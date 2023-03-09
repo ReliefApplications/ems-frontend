@@ -28,7 +28,7 @@ kendo-tilelayout {
     .widget-options,
     .widget-handle {
       position: absolute;
-      color: darkgray;
+      @apply text-gray-500;
       z-index: 1100;
     }
 

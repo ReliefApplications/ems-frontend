@@ -22,7 +22,7 @@
   padding-left: 8px;
 
   &::before {
-    background-color: rgba(0, 0, 0, 0.08);
+    @apply bg-black;
     content: '';
     position: absolute;
     width: 16px;
@@ -32,7 +32,7 @@
   }
 
   &::after {
-    background-color: rgba(0, 0, 0, 0.08);
+    @apply bg-black;
     content: '';
     position: absolute;
     width: 1px;

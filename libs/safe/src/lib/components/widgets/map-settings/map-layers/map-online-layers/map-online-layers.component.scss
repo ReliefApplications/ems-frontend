@@ -8,7 +8,8 @@
 .layer-suggestions {
   position: relative;
   margin-top: 16px;
-  border: solid 1px lightgray;
+  border: solid 1px;
+  @apply border-gray-300;
   border-radius: 8m;
   display: flex;
   flex-direction: column;

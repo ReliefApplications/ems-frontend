@@ -7,7 +7,8 @@ ol {
   flex-wrap: wrap;
   margin: 0;
   padding: 0;
-  color: #2f383eb2;
+  //color: #2f383eb2;
+  @apply text-blue-900;
   margin-bottom: 14px;
 
   li {
@@ -16,7 +17,8 @@ ol {
     a {
       display: inline-flex;
       text-decoration: none;
-      color: #2f383eb2 !important;
+      @apply text-blue-900;
+      //color: #2f383eb2 !important;
       &:hover {
         text-decoration: underline;
       }
