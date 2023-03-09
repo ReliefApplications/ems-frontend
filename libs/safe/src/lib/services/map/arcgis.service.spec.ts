@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SafeArcGISService } from './arc-gis.service';
+import { ArcgisService } from './arcgis.service';
 
-describe('ArcGISService', () => {
-  let service: SafeArcGISService;
+describe('ArcgisService', () => {
+  let service: ArcgisService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SafeArcGISService);
+    service = TestBed.inject(ArcgisService);
   });
 
   it('should be created', () => {

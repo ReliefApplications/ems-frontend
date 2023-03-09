@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { FeatureCollection } from 'geojson';
 import { BehaviorSubject } from 'rxjs';
-import { SafeMapLayersService } from '../../services/maps/map-layers.service';
+import { SafeMapLayersService } from '../../services/map/map-layers.service';
 import {
   BaseLayerTree,
   LayerActionOnMap,
