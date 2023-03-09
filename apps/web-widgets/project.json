@@ -81,9 +81,7 @@
             }
           ],
           "stylePreprocessorOptions": {
-            "includePaths": [
-              "apps/safe/src/lib/style/themes/default"
-            ]
+            "includePaths": ["apps/safe/src/lib/style/themes/default"]
           },
           "fileReplacements": [
             {
@@ -101,9 +99,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": [
-              "apps/safe/src/lib/style/themes/default"
-            ]
+            "includePaths": ["apps/safe/src/lib/style/themes/default"]
           }
         }
       },
