@@ -16,10 +16,9 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    npm install -g @nrwl/cli
     npm install
-    nx run front-office:build:azure-dev
-    nx run back-office:build:azure-dev
+    npx nx run front-office:build:azure-dev
+    npx run back-office:build:azure-dev
   displayName: 'npm install and build the apps'
 
 - task: ArchiveFiles@2
