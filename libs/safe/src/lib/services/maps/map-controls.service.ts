@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/languages';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
-import { SafeMapDownloadComponent } from '../../components/ui/map/map-download/map-download.component';
-import { SafeMapLegendComponent } from '../../components/ui/map/map-legend/map-legend.component';
+import { MapDownloadComponent } from '../../components/ui/map/map-download/map-download.component';
+import { MapLegendComponent } from '../../components/ui/map/map-legend/map-legend.component';
 import { DomService } from '../dom/dom.service';
 import { GeoJsonObject } from 'geojson';
 
@@ -188,7 +188,7 @@ export class SafeMapControlsService {
    * @param layers layers
    */
   public getLegendControl(map: L.Map, layers: Layer[]): void {
-    const updateControl = (instance: SafeMapLegendComponent) => {
+    const updateControl = (instance: MapLegendComponent) => {
       // Add legends to the map
       const layerLegends: {
         layer: string;
@@ -212,11 +212,11 @@ export class SafeMapControlsService {
     control.onAdd = () => {
       const div = L.DomUtil.create('div', 'info legend');
       const component = this.domService.appendComponentToBody(
-        SafeMapLegendComponent,
+        MapLegendComponent,
         div
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const instance: SafeMapLegendComponent = component.instance;
+      const instance: MapLegendComponent = component.instance;
       updateControl(instance);
       map.on('overlayadd', () => {
         updateControl(instance);
@@ -253,11 +253,11 @@ export class SafeMapControlsService {
     control.onAdd = () => {
       const div = L.DomUtil.create('div', 'info legend');
       const component = this.domService.appendComponentToBody(
-        SafeMapDownloadComponent,
+        MapDownloadComponent,
         div
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const instance: SafeMapDownloadComponent = component.instance;
+      const instance: MapDownloadComponent = component.instance;
       return div;
     };
     control.addTo(map);

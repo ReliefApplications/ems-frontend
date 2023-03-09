@@ -1,1 +1,74 @@
-<p>map-download works!</p>
+<div class="border-2 border-opacity-20 border-black rounded-md bg-white">
+  <!-- Small control ( not showing download ) -->
+  <button class="bg-none p2" (click)="toggleVisibility()" *ngIf="!expanded">
+    <safe-icon icon="download"></safe-icon>
+  </button>
+  <!-- Expanded control ( showing download ) -->
+  <div class="flex flex-col" *ngIf="expanded" [formGroup]="formGroup">
+    <!-- Selection of view -->
+    <div class="p-1">
+      <mat-radio-group
+        formControlName="view"
+        aria-labelledby="view-radio-group"
+        class="flex flex-col gap-1"
+      >
+        <mat-radio-button *ngFor="let view of viewOptions" [value]="view.value">
+          {{ view.label }}
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <safe-divider class="m-0"></safe-divider>
+    <!-- Selection of layers to export -->
+    <div class="p-1 flex flex-col gap-1">
+      <mat-radio-group
+        formControlName="layers"
+        aria-labelledby="layer-radio-group"
+        class="flex flex-col gap-1"
+      >
+        <mat-radio-button
+          class="radio-button"
+          *ngFor="let layer of layersOptions"
+          [value]="layer.value"
+        >
+          {{ layer.label }}
+        </mat-radio-button>
+      </mat-radio-group>
+      <ng-container *ngIf="formGroup.value.layers === 'selected'">
+        <mat-form-field appearance="outline" class="p-0">
+          <mat-label>{{
+            'components.map.controls.download.selectLayers' | translate
+          }}</mat-label>
+          <mat-select formControlName="selectedLayers" multiple>
+            <mat-option *ngFor="let layer of layers" [value]="layer.label">
+              {{ layer.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+    </div>
+    <safe-divider class="m-0"></safe-divider>
+    <!-- Export format -->
+    <div class="p-1">
+      <mat-form-field appearance="outline" class="p-0">
+        <mat-label>{{
+          'components.map.controls.download.output' | translate
+        }}</mat-label>
+        <mat-select formControlName="output">
+          <mat-option *ngFor="let output of outputOptions" [value]="output">
+            {{ output }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <safe-divider class="m-0"></safe-divider>
+    <!-- Actions -->
+    <div class="flex gap-1 justify-end">
+      <safe-button
+        [isIcon]="true"
+        icon="close"
+        (click)="toggleVisibility()"
+      ></safe-button>
+      <safe-button [isIcon]="true" icon="download"></safe-button>
+    </div>
+  </div>
+</div>
