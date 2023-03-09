@@ -28,7 +28,6 @@
 .dashboard-filter-tab {
   width: 80px;
   justify-content: center;
-
   &.top {
     top: 40px;
     border-bottom-left-radius: 1rem;
@@ -45,16 +44,21 @@
     right: 0;
     border-bottom-left-radius: 1rem;
     border-top-left-radius: 1rem;
+    justify-content: start;
     @extend .dashboard-filter-x-axis;
   }
   &.left {
     left: 0;
     border-bottom-right-radius: 1rem;
     border-top-right-radius: 1rem;
+    justify-content: end;
     @extend .dashboard-filter-x-axis;
   }
 }
 
 ::ng-deep.dx-overlay-content {
   overflow: visible;
+}
+::ng-deep.dx-drawer-content {
+  overflow: auto;
 }

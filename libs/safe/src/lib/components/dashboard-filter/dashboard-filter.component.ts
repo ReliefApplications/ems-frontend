@@ -35,6 +35,15 @@ export class SafeDashboardFilterComponent {
   }
 
   public changeFilterPosition(position: FilterPosition) {
+    // Needed when switching to left and right, otherwise open/close feature not working
+    // (probably a bug, checkable in their example  code as well: https://js.devexpress.com/Demos/WidgetsGallery/Demo/Drawer/LeftOrRightPosition/Angular/Light/)
+    if (position === FilterPosition.LEFT || position === FilterPosition.RIGHT) {
+      const isDrawerOpenState = this.isDrawerOpen;
+      this.isDrawerOpen = true;
+      setTimeout(() => {
+        this.isDrawerOpen = isDrawerOpenState;
+      }, 0);
+    }
     this.position = position;
   }
 
