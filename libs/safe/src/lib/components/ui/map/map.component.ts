@@ -16,7 +16,7 @@ import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
 import 'leaflet-fullscreen';
 import 'esri-leaflet';
-import * as Vector from 'esri-leaflet-vector';
+// import * as Vector from 'esri-leaflet-vector';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
@@ -29,7 +29,6 @@ import {
   MapEvent,
   MapEventType,
 } from './interfaces/map.interface';
-import { BASEMAP_LAYERS } from './const/baseMaps';
 import { merge } from 'lodash';
 import { timeDimensionGeoJSON } from './test/timedimension-test';
 import { SafeMapControlsService } from '../../../services/maps/map-controls.service';
@@ -125,7 +124,6 @@ export class MapComponent
   private basemap: any;
   private esriApiKey!: string;
   public settingsConfig: MapConstructorSettings = {
-    basemap: 'OSM',
     centerLat: 0,
     centerLong: 0,
   };
@@ -302,7 +300,6 @@ export class MapComponent
       [-90, -180],
       [90, 180],
     ]);
-    const basemap = get(this.settingsConfig, 'basemap', 'OSM');
     const maxZoom = get(this.settingsConfig, 'maxZoom', 18);
     const minZoom = get(this.settingsConfig, 'minZoom', 2);
     const worldCopyJump = get(this.settingsConfig, 'worldCopyJump', true);
@@ -328,7 +325,6 @@ export class MapComponent
       centerLong,
       centerLat,
       maxBounds,
-      basemap,
       maxZoom,
       minZoom,
       worldCopyJump,
@@ -345,7 +341,6 @@ export class MapComponent
       centerLong,
       centerLat,
       maxBounds: maxBoundArray,
-      basemap,
       maxZoom,
       minZoom,
       worldCopyJump,
@@ -371,8 +366,13 @@ export class MapComponent
       timeDimension,
     } as any).setView(L.latLng(centerLat, centerLong), zoom);
 
-    // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
-    this.setBasemap(basemap);
+    this.basemap = L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }
+    ).addTo(this.map);
 
     // Add zoom control
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
@@ -417,7 +417,6 @@ export class MapComponent
         centerLong,
         centerLat,
         maxBounds,
-        basemap,
         maxZoom,
         minZoom,
         zoom,
@@ -436,14 +435,6 @@ export class MapComponent
 
       if (this.map.getZoom() !== zoom) {
         this.map.setZoom(zoom);
-      }
-
-      if (basemap) {
-        const currentBasemap = this.basemap?.options?.key;
-        const newBaseMap = get(BASEMAP_LAYERS, basemap);
-        if (newBaseMap !== currentBasemap) {
-          this.setBasemap(basemap);
-        }
       }
 
       const center = this.map.getCenter();
@@ -759,18 +750,18 @@ export class MapComponent
   // }
 
   /**
-   * Set the basemap.
+   * Set the basemap. NOT BEING USED.
    *
    * @param basemap String containing the id (name) of the basemap
    */
-  public setBasemap(basemap: any) {
-    // @TODO when switching between basemaps the related layers and controls to the previous map are there
-    if (this.basemap) {
-      this.basemap.remove();
-    }
-    const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
-    this.basemap = Vector.vectorBasemapLayer(basemapName, {
-      apiKey: this.esriApiKey,
-    }).addTo(this.map);
-  }
+  // public setBasemap(basemap: any) {
+  //   // @TODO when switching between basemaps the related layers and controls to the previous map are there
+  //   if (this.basemap) {
+  //     this.basemap.remove();
+  //   }
+  //   const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
+  //   this.basemap = Vector.vectorBasemapLayer(basemapName, {
+  //     apiKey: this.esriApiKey,
+  //   }).addTo(this.map);
+  // }
 }

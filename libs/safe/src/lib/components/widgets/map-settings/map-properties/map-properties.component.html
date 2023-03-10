@@ -11,18 +11,6 @@
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
       <safe-divider></safe-divider>
-      <!-- Basemap -->
-      <mat-form-field appearance="outline" class="p-0">
-        <mat-label>{{
-          'components.widget.settings.map.properties.basemap' | translate
-        }}</mat-label>
-        <mat-select formControlName="basemap" placeholder="OSM">
-          <mat-option *ngFor="let map of baseMaps" [value]="map">
-            {{ map }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <safe-divider></safe-divider>
       <!-- Default view -->
       <!-- Default zoom -->
       <mat-label>

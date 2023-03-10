@@ -7,7 +7,6 @@ import {
   MapEvent,
   MapEventType,
 } from '../../../ui/map/interfaces/map.interface';
-import { BASEMAPS } from '../../../ui/map/const/baseMaps';
 
 /**
  * Map Properties of Map widget.
@@ -24,7 +23,6 @@ export class MapPropertiesComponent
   @Input() form!: UntypedFormGroup;
 
   public mapSettings!: MapConstructorSettings;
-  public baseMaps = BASEMAPS;
 
   /**
    * Map Properties of Map widget.
@@ -38,7 +36,6 @@ export class MapPropertiesComponent
    */
   ngOnInit(): void {
     const defaultMapSettings = {
-      basemap: this.form.value.basemap,
       zoom: this.form.value.zoom,
       centerLat: this.form.value.centerLat,
       centerLong: this.form.value.centerLong,
@@ -69,12 +66,6 @@ export class MapPropertiesComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) =>
         this.updateMapSettings({ centerLong: value } as MapConstructorSettings)
-      );
-    this.form
-      .get('basemap')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) =>
-        this.updateMapSettings({ basemap: value } as MapConstructorSettings)
       );
     this.form
       .get('timeDimension')

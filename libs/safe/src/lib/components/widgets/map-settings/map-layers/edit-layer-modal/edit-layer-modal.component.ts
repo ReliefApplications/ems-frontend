@@ -144,7 +144,6 @@ export class SafeEditLayerModalComponent
         [-90, -1000],
         [90, 1000],
       ],
-      basemap: 'OSM',
       zoomControl: false,
       minZoom: 2,
       maxZoom: 18,
