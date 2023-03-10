@@ -489,7 +489,8 @@
 			"cancel": "Cancel",
 			"confirm": "Confirm",
 			"delete": "Delete",
-			"title": "Confirm"
+			"title": "Confirm",
+			"confirmClose": "Are you sure you want to close the edition window?"
 		},
 		"customNotifications": {
 			"edit": {

@@ -1,6 +1,6 @@
 <safe-button
   *ngIf="closable"
-  mat-dialog-close
+  (click)="onClose()"
   class="absolute z-10 -right-5 -top-5"
   [isIcon]="true"
   icon="close"

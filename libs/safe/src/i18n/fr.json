@@ -489,7 +489,8 @@
 			"cancel": "Annuler",
 			"confirm": "Confirmer",
 			"delete": "Supprimer",
-			"title": "Confirmer"
+			"title": "Confirmer",
+			"confirmClose": "Voulez-vous vraiment fermer la fenêtre d'édition?"
 		},
 		"customNotifications": {
 			"edit": {
