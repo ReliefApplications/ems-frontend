@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import get from 'lodash/get';
 import { MapLayerI } from './map-layers/map-layers.component';
+import { Layer } from '../../../models/layer.model';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 /** Interface for the maps settings */
@@ -148,6 +149,25 @@ export const createLayerForm = (value?: MapLayerI): UntypedFormGroup =>
       icon: [get(value, 'style.icon', 'leaflet_default')],
     }),
   });
+
+/**
+ * Format received layer from backend to layer form structure
+ *
+ * @param value Layer data from backend
+ * @returns The layer object for form
+ */
+export const formatLayerDataForForm = (value: Layer): MapLayerI => {
+  return {
+    defaultVisibility: value.visibility ?? true,
+    name: value.name ?? '',
+    opacity: value.layerDefinition?.drawingInfo.opacity,
+    style: value.layerDefinition?.drawingInfo.style,
+    type: value.layerDefinition?.featureReduction.type,
+    visibilityRangeEnd: value.layerDefinition?.drawingInfo.visibilityRangeEnd,
+    visibilityRangeStart:
+      value.layerDefinition?.drawingInfo.visibilityRangeStart,
+  };
+};
 
 // === MARKERS ===
 /**

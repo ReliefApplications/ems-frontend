@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { createLayerForm } from '../../map-forms';
@@ -83,10 +83,9 @@ const TEST_LAYER: {
 })
 export class SafeEditLayerModalComponent
   extends SafeUnsubscribeComponent
-  implements AfterViewInit
+  implements OnInit, AfterViewInit
 {
   public form: UntypedFormGroup;
-
   private currentLayer: L.Layer | null = null;
   private layerOptions: any = {};
 
@@ -124,9 +123,12 @@ export class SafeEditLayerModalComponent
     this.form = createLayerForm(layer);
   }
 
+  ngOnInit(): void {
+    this.configureMapSettings();
+  }
+
   ngAfterViewInit(): void {
     console.log(this.form);
-    this.configureMapSettings();
     if (this.layerType) {
       this.setUpLayer();
     }

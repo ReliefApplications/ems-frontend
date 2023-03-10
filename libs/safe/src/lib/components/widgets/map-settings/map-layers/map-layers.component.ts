@@ -6,6 +6,7 @@ import {
   MatLegacyDialog as MatDialog,
 } from '@angular/material/legacy-dialog';
 import { MatTableDataSource } from '@angular/material/table';
+import { SafeMapLayersService } from '../..../../../../../services/maps/map-layers.service';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { createLayerForm } from '../map-forms';
@@ -17,6 +18,15 @@ export const LAYER_TYPES = ['polygon', 'point', 'heatmap', 'cluster'] as const;
 export interface MapLayerI {
   name: string;
   type: (typeof LAYER_TYPES)[number];
+  defaultVisibility: boolean;
+  opacity: number;
+  visibilityRangeStart: number;
+  visibilityRangeEnd: number;
+  style: {
+    color: string;
+    size: number;
+    icon: string;
+  };
 }
 
 /**
@@ -46,8 +56,12 @@ export class MapLayersComponent
    * Layers configuration component of Map Widget.
    *
    * @param dialog service for opening modals
+   * @param safeMapLayerService service for map layers
    */
-  constructor(private dialog: MatDialog) {
+  constructor(
+    private dialog: MatDialog,
+    private safeMapLayerService: SafeMapLayersService
+  ) {
     super();
   }
 
@@ -67,7 +81,16 @@ export class MapLayersComponent
    * @param index Index of the layer to remove
    */
   public onDeleteLayer(index: number) {
-    this.layers.removeAt(index);
+    this.safeMapLayerService
+      .deleteLayer(this.layers.at(index).getRawValue().id)
+      .subscribe({
+        next: (result) => {
+          if (result) {
+            this.layers.removeAt(index);
+          }
+          // Handle errors and snackbar to inform user of successful operation?
+        },
+      });
   }
 
   /** Opens a modal to add a new layer */
@@ -77,7 +100,14 @@ export class MapLayersComponent
 
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) return;
-      this.layers.push(createLayerForm(result));
+      this.safeMapLayerService.addLayer(this.form.getRawValue()).subscribe({
+        next: (result) => {
+          if (result) {
+            this.layers.push(createLayerForm(result));
+          }
+          // Handle errors and snackbar to inform user of successful operation?
+        },
+      });
     });
   }
 
@@ -95,7 +125,19 @@ export class MapLayersComponent
 
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) return;
-      this.layers.at(index).patchValue(result);
+      this.safeMapLayerService
+        .editLayer(
+          this.layers.at(index).getRawValue().id,
+          this.form.getRawValue()
+        )
+        .subscribe({
+          next: (result) => {
+            if (result) {
+              this.layers.at(index).patchValue(result);
+            }
+            // Handle errors and snackbar to inform user of successful operation?
+          },
+        });
     });
   }
 
