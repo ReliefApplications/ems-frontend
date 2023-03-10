@@ -1,11 +1,14 @@
-import { Component, forwardRef, Inject, Provider } from '@angular/core';
+import { Component, forwardRef, Inject, Input, Provider } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
   UntypedFormControl,
+  UntypedFormGroup,
 } from '@angular/forms';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { CronOptions } from 'ngx-cron-editor';
+import { CronExpressionControlModalComponent } from './cron-expression-control-modal/cron-expression-control-modal.component';
 
 /**
  * Control value accessor
@@ -27,6 +30,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
 })
 export class CronExpressionControlComponent implements ControlValueAccessor {
   public control: UntypedFormControl = new UntypedFormControl({});
+  @Input() public formGroup!: UntypedFormGroup;
 
   public cronOptions: CronOptions = {
     defaultTime: '00:00:00',
@@ -58,6 +62,7 @@ export class CronExpressionControlComponent implements ControlValueAccessor {
    * @param data.control is the cron form control
    */
   constructor(
+    private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       control: UntypedFormControl;
@@ -102,5 +107,15 @@ export class CronExpressionControlComponent implements ControlValueAccessor {
    */
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+
+  /** Opens the cron expression component modal */
+  public onEditCronExpression(): void {
+    this.dialog.open(CronExpressionControlModalComponent, {
+      autoFocus: false,
+      data: {
+        control: this.formGroup.controls.schedule,
+      },
+    });
   }
 }

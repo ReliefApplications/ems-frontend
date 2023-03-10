@@ -4,7 +4,7 @@
     {{
       data.pullJob
         ? ('common.editObject'
-          | translate: { name: 'common.pullJob.one' | translate })
+          | translate : { name: 'common.pullJob.one' | translate })
         : ('models.pullJob.new' | translate)
     }}
   </h1>
@@ -48,34 +48,9 @@
         </div>
         <div class="flex gap-x-2 flex-wrap">
           <!-- Schedule -->
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'models.pullJob.schedule' | translate }}</mat-label>
-            <input
-              type="text"
-              [placeholder]="
-                'components.pullJob.modal.placeholder.schedule' | translate
-              "
-              matInput
-              readonly
-              value="{{ formGroup.get('schedule')?.invalid 
-                ? ('components.pullJob.modal.placeholder.schedule' | translate)
-                : (formGroup.value.schedule | safeReadableCron)
-              }}"
-            />
-            <safe-icon
-              icon="edit"
-              class="cursor-pointer"
-              variant="grey"
-              matSuffix
-              (click)="onEditCronExpression()"
-              [matTooltip]="
-                'components.pullJob.modal.hint.schedule' | translate
-              "
-            ></safe-icon>
-            <mat-error *ngIf="formGroup.get('schedule')?.errors">
-              {{ 'components.pullJob.modal.errors.schedule' | translate }}
-            </mat-error>
-          </mat-form-field>
+          <safe-cron-expression-control
+            [formGroup]="formGroup"
+          ></safe-cron-expression-control>
           <!-- API to use -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{
