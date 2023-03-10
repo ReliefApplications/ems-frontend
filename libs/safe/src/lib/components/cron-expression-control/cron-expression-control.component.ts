@@ -60,6 +60,7 @@ export class CronExpressionControlComponent implements ControlValueAccessor {
    *
    * @param data Injected dialog data
    * @param data.control is the cron form control
+   * @param dialog Material dialog service
    */
   constructor(
     private dialog: MatDialog,

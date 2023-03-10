@@ -3,6 +3,9 @@ import { UntypedFormControl } from '@angular/forms';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { CronOptions } from 'ngx-cron-editor';
 
+/**
+ * Cron expression form control modal
+ */
 @Component({
   selector: 'safe-cron-expression-control-modal',
   templateUrl: './cron-expression-control-modal.component.html',
@@ -29,6 +32,12 @@ export class CronExpressionControlModalComponent {
     cronFlavor: 'standard',
   };
 
+  /**
+   *  Cron expression form control modal
+   *
+   * @param data Injected dialog data
+   * @param data.control is the cron form control
+   */
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public data: {
