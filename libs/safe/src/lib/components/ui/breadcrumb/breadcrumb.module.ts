@@ -16,7 +16,7 @@ import { SkeletonModule } from '@progress/kendo-angular-indicators';
     RouterModule,
     RouterTestingModule,
     TranslateModule,
-    SkeletonModule
+    SkeletonModule,
   ],
   exports: [SafeBreadcrumbComponent],
 })
