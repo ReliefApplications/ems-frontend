@@ -20,6 +20,7 @@ export interface MapSettingsI {
   centerLat: number;
   layers: MapLayerI[];
   timeDimension: boolean;
+  arcGisWebMap: string;
 }
 
 /** Angular Form Builder */
@@ -70,6 +71,7 @@ const DEFAULT_MAP: Nullable<MapSettingsI> = {
   // clorophlets: [],
   layers: [],
   timeDimension: true,
+  arcGisWebMap: null
 };
 
 // === CLOROPHLET ===
@@ -228,4 +230,5 @@ export const createMapWidgetFormGroup = (
         createLayerForm(x)
       )
     ),
+    arcGisWebMap: [get(value, 'arcGisWebMap', DEFAULT_MAP.arcGisWebMap)],
   });

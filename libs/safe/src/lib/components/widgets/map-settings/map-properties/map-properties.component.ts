@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
@@ -8,6 +8,9 @@ import {
   MapEventType,
 } from '../../../ui/map/interfaces/map.interface';
 import { BASEMAPS } from '../../../ui/map/const/baseMaps';
+import { ArcgisService } from 'libs/safe/src/lib/services/map/arcgis.service';
+import { MatSelect } from '@angular/material/select';
+
 
 /**
  * Map Properties of Map widget.
@@ -26,10 +29,22 @@ export class MapPropertiesComponent
   public mapSettings!: MapConstructorSettings;
   public baseMaps = BASEMAPS;
 
+  public items: any[] = [];
+
+  private start = 1;
+  private loading = true;
+  private nextPage = true;
+
+  @Output()
+  selectionChange = new EventEmitter<string>();
+
+  @ViewChild("arcGisWebMap") elementSelect?: MatSelect;
+
+
   /**
    * Map Properties of Map widget.
    */
-  constructor() {
+  constructor(private arcgis: ArcgisService){
     super();
   }
 
@@ -43,9 +58,44 @@ export class MapPropertiesComponent
       centerLat: this.form.value.centerLat,
       centerLong: this.form.value.centerLong,
       timeDimension: this.form.value.timeDimension,
+      arcGisWebMap: this.form.value.arcGisWebMap
     };
     this.updateMapSettings(defaultMapSettings);
     this.setUpFormListeners();
+    this.search();
+  }
+
+  private search(): void {
+    this.arcgis.searchItems({ start: this.start }).then((search) => {
+      if (search.nextStart > this.start) {
+        this.start = search.nextStart;
+      } else {
+        this.nextPage = false;
+      }
+      this.items = this.items.concat(search.results);
+      this.loading = false;
+    });
+  }
+
+  openedChange(event: any): void {
+    if (event && this.elementSelect) {
+      const panel = this.elementSelect.panel.nativeElement;
+      panel.addEventListener('scroll', (event: any) =>
+        this.loadOnScroll(event)
+      );
+    }
+  }
+
+  private loadOnScroll(event: any): void {
+    if (
+      event.target.scrollHeight - (event.target.clientHeight + event.target.scrollTop) <
+      50
+    ) {
+      if (!this.loading && this.nextPage) {
+        this.loading = true;
+        this.search();
+      }
+    }
   }
 
   /**
@@ -84,6 +134,12 @@ export class MapPropertiesComponent
           timeDimension: value,
         } as MapConstructorSettings);
       });
+    this.form
+    .get('arcGisWebMap')
+    ?.valueChanges.pipe(takeUntil(this.destroy$))
+    .subscribe((value) =>
+      this.updateMapSettings({ arcGisWebMap: value } as MapConstructorSettings)
+    );
   }
 
   /**

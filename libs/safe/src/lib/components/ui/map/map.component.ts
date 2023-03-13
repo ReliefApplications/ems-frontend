@@ -130,6 +130,7 @@ export class MapComponent
     centerLat: 0,
     centerLong: 0,
   };
+  private arcGisWebMap: any;
 
   // === MARKERS ===
   private baseTree!: L.Control.Layers.TreeObject;
@@ -311,6 +312,7 @@ export class MapComponent
     const zoomControl = get(this.settingsConfig, 'zoomControl', false);
     const zoom = get(this.settingsConfig, 'zoom', 3);
     const timeDimension = get(this.settingsConfig, 'timeDimension', false);
+    const arcGisWebMap = get(this.settingsConfig, 'arcGisWebMap', '');
     /**
      * TODO implement layer loading for the layers returned from the settings
      *
@@ -338,6 +340,7 @@ export class MapComponent
       zoom,
       layers,
       timeDimension,
+      arcGisWebMap,
     };
   }
 
@@ -354,6 +357,7 @@ export class MapComponent
       zoomControl,
       zoom,
       timeDimension,
+      arcGisWebMap,
       // layers,
     } = this.extractSettings();
 
@@ -373,7 +377,7 @@ export class MapComponent
       timeDimension,
     } as any).setView(L.latLng(centerLat, centerLong), zoom);
 
-    this.arcgisService.loadWebMap(this.map, 'e322b877a98847d79692a3c7bf45e5cf');
+    this.arcgisService.loadWebMap(this.map, arcGisWebMap ? arcGisWebMap : 'e322b877a98847d79692a3c7bf45e5cf');
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(basemap);
@@ -426,6 +430,7 @@ export class MapComponent
         minZoom,
         zoom,
         timeDimension,
+        arcGisWebMap
       } = this.extractSettings();
 
       // If value changes for the map we would change in order to not trigger map events unnecessarily
@@ -447,6 +452,13 @@ export class MapComponent
         const newBaseMap = get(BASEMAP_LAYERS, basemap);
         if (newBaseMap !== currentBasemap) {
           this.setBasemap(basemap);
+        }
+      }
+
+      if(arcGisWebMap != ''){
+        const currentWebMap = this.arcGisWebMap?.options?.key;
+        if(arcGisWebMap !== currentWebMap){
+          this.arcgisService.loadWebMap(this.map, currentWebMap);
         }
       }
 

@@ -3,9 +3,9 @@ import * as L from 'leaflet';
 import { ApiKeyManager } from '@esri/arcgis-rest-request';
 import {
   getItemData,
-  // ISearchOptions,
-  // searchItems,
-  // SearchQueryBuilder,
+  ISearchOptions,
+  searchItems,
+  SearchQueryBuilder,
 } from '@esri/arcgis-rest-portal';
 
 @Injectable({
@@ -30,6 +30,24 @@ export class ArcgisService {
   private loadBaseMap(): void {}
 
   private loadOperationalLayers(): void {}
+
+  public searchItems(options: { start?: number }) {
+    // console.log(this.session);
+    const filter: ISearchOptions = {
+      q: new SearchQueryBuilder()
+        .match('Web Map')
+        .in('type')
+        .and() // to search all web maps, just remove following 3 lines
+        //.match('org')
+        .in('access'),
+      start: options.start,
+      authentication: this.session,
+      // portal: arcgisUrl + '/sharing/rest',
+    };
+    console.log("ABC");
+    console.log(searchItems(filter));
+    return searchItems(filter);
+  }
 }
 
 // private availableLayers = new BehaviorSubject<any[]>([]);

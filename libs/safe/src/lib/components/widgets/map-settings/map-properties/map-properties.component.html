@@ -23,6 +23,23 @@
         </mat-select>
       </mat-form-field>
       <safe-divider></safe-divider>
+      <!-- Webmap -->
+      <mat-form-field appearance="outline" class="p-0">
+        <mat-label>{{
+          'components.widget.settings.map.properties.webmap' | translate
+        }}</mat-label>
+        <mat-select
+          (selectionChange)="selectionChange.emit($event.value)"
+          (openedChange)="openedChange($event)"
+          formControlName="arcGisWebMap"
+          id="arcGisWebMap"
+        >
+          <mat-option *ngFor="let item of items" [value]="item.id">
+            {{ item.title }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <safe-divider></safe-divider>
       <!-- Default view -->
       <!-- Default zoom -->
       <mat-label>
