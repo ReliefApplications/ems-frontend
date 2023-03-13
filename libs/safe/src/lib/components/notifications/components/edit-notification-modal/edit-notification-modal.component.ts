@@ -1,10 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { cronValidator } from '../../../../utils/validators/cron.validator';
 import { CustomNotification } from '../../../../models/custom-notification.model';
 import {
@@ -28,6 +23,8 @@ import { EditTemplateModalComponent } from '../../../templates/components/edit-t
 import { Template, TemplateTypeEnum } from '../../../../models/template.model';
 import { SafeApplicationService } from '../../../../services/application/application.service';
 import { DistributionList } from '../../../../models/distribution-list.model';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
 
 /**
  * Dialog data interface
@@ -47,7 +44,10 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './edit-notification-modal.component.html',
   styleUrls: ['./edit-notification-modal.component.scss'],
 })
-export class EditNotificationModalComponent implements OnInit {
+export class EditNotificationModalComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public notification?: CustomNotification;
   public formGroup!: ReturnType<typeof this.getNotificationForm>;
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
@@ -74,7 +74,7 @@ export class EditNotificationModalComponent implements OnInit {
   /**
    * Add / Edit custom notification modal component.
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param data Modal injected data
    * @param apollo Apollo service
    * @param dialog Material dialog service
@@ -82,24 +82,21 @@ export class EditNotificationModalComponent implements OnInit {
    * @param applicationService Shared application service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA)
     public data: DialogData,
     private apollo: Apollo,
     private dialog: MatDialog,
     private gridLayoutService: SafeGridLayoutService,
     private applicationService: SafeApplicationService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.notification = this.data?.notification;
     // Build form
     this.formGroup = this.getNotificationForm();
-
-    // for debugging
-    setInterval(() => {
-      console.log(this.formGroup);
-    }, 10000);
 
     // Initial setup
     if (this.formGroup.value.resource) {
@@ -107,33 +104,42 @@ export class EditNotificationModalComponent implements OnInit {
     }
 
     // Add email validation to recipients field if recipients type is email
-    this.formGroup.get('recipientsType')?.valueChanges.subscribe((value) => {
-      if (value === 'email') {
-        this.formGroup.get('recipients')?.addValidators(Validators.email);
-      } else {
-        this.formGroup.get('recipients')?.removeValidators(Validators.email);
-      }
-    });
+    this.formGroup
+      .get('recipientsType')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value === 'email') {
+          this.formGroup.get('recipients')?.addValidators(Validators.email);
+        } else {
+          this.formGroup.get('recipients')?.removeValidators(Validators.email);
+        }
+      });
     // Subscribe to form changes
-    this.formGroup.get('resource')?.valueChanges.subscribe((value) => {
-      if (value && !isEqual(value, this.resource?.id)) {
-        this.getResource(value);
-        this.layout = undefined;
-        this.formGroup.get('layout')?.setValue(null);
-      } else {
-        this.resource = undefined;
-        this.layout = undefined;
-        this.formGroup.get('layout')?.setValue(null);
-      }
-    });
-    this.formGroup.get('recipientsType')?.valueChanges.subscribe((value) => {
-      this.formGroup.get('recipients')?.setValue(null);
-      if (value === 'email') {
-        this.formGroup.get('recipients.')?.addValidators(Validators.email);
-      } else {
-        this.formGroup.get('recipients.')?.removeValidators(Validators.email);
-      }
-    });
+    this.formGroup
+      .get('resource')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value && !isEqual(value, this.resource?.id)) {
+          this.getResource(value);
+          this.layout = undefined;
+          this.formGroup.get('layout')?.setValue(null);
+        } else {
+          this.resource = undefined;
+          this.layout = undefined;
+          this.formGroup.get('layout')?.setValue(null);
+        }
+      });
+    this.formGroup
+      .get('recipientsType')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.formGroup.get('recipients')?.setValue(null);
+        if (value === 'email') {
+          this.formGroup.get('recipients.')?.addValidators(Validators.email);
+        } else {
+          this.formGroup.get('recipients.')?.removeValidators(Validators.email);
+        }
+      });
     // Build resource query
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES,
@@ -146,37 +152,22 @@ export class EditNotificationModalComponent implements OnInit {
 
   /** @returns the notification form group */
   private getNotificationForm() {
-    console.log(this.notification);
-    return new FormGroup({
-      name: new FormControl(
-        get(this.notification, 'name', ''),
-        Validators.required
-      ),
-      description: new FormControl(get(this.notification, 'description', '')),
-      schedule: new FormControl(get(this.notification, 'schedule', ''), [
-        Validators.required,
-        cronValidator(),
-      ]),
-      notificationType: new FormControl({ value: 'email', disabled: true }),
-      resource: new FormControl(
-        get(this.notification, 'resource', ''),
-        Validators.required
-      ),
-      layout: new FormControl(
-        get(this.notification, 'layout', ''),
-        Validators.required
-      ),
-      template: new FormControl(
-        get(this.notification, 'template', ''),
-        Validators.required
-      ),
-      recipientsType: new FormControl(
-        get(this.notification, 'recipientsType', 'email')
-      ),
-      recipients: new FormControl(
+    return this.fb.group({
+      name: [get(this.notification, 'name', ''), Validators.required],
+      description: [get(this.notification, 'description', '')],
+      schedule: [
+        get(this.notification, 'schedule', ''),
+        [Validators.required, cronValidator()],
+      ],
+      notificationType: [{ value: 'email', disabled: true }],
+      resource: [get(this.notification, 'resource', ''), Validators.required],
+      layout: [get(this.notification, 'layout', ''), Validators.required],
+      template: [get(this.notification, 'template', ''), Validators.required],
+      recipientsType: [get(this.notification, 'recipientsType', 'email')],
+      recipients: [
         get(this.notification, 'recipients', null),
-        Validators.required
-      ),
+        Validators.required,
+      ],
     });
   }
 
@@ -211,16 +202,19 @@ export class EditNotificationModalComponent implements OnInit {
         hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value) {
-        if (typeof value === 'string') {
-          this.formGroup.get('layout')?.setValue(value);
-        } else {
-          this.formGroup.get('layout')?.setValue(value.id);
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          if (typeof value === 'string') {
+            this.formGroup.get('layout')?.setValue(value);
+          } else {
+            this.formGroup.get('layout')?.setValue(value.id);
+          }
+          this.getResource(this.resource?.id as string);
         }
-        this.getResource(this.resource?.id as string);
-      }
-    });
+      });
   }
 
   /**
@@ -233,15 +227,18 @@ export class EditNotificationModalComponent implements OnInit {
         layout: this.layout,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value && this.layout) {
-        this.gridLayoutService
-          .editLayout(this.layout, value, this.resource?.id)
-          .subscribe((res: any) => {
-            this.layout = res.data?.editLayout;
-          });
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value && this.layout) {
+          this.gridLayoutService
+            .editLayout(this.layout, value, this.resource?.id)
+            .subscribe((res: any) => {
+              this.layout = res.data?.editLayout;
+            });
+        }
+      });
   }
 
   /** Unset layout. */
@@ -255,21 +252,24 @@ export class EditNotificationModalComponent implements OnInit {
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value)
-        this.applicationService.addTemplate(
-          {
-            name: value.name,
-            type: TemplateTypeEnum.EMAIL,
-            content: {
-              subject: value.subject,
-              body: value.body,
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value)
+          this.applicationService.addTemplate(
+            {
+              name: value.name,
+              type: TemplateTypeEnum.EMAIL,
+              content: {
+                subject: value.subject,
+                body: value.body,
+              },
             },
-          },
-          (template: Template) => {
-            this.formGroup.get('template')?.setValue(template.id || null);
-          }
-        );
-    });
+            (template: Template) => {
+              this.formGroup.get('template')?.setValue(template.id || null);
+            }
+          );
+      });
   }
 }
