@@ -29,7 +29,7 @@ export const environment = {
   availableLanguages: ['en', 'fr', 'test'],
   authConfig,
   esriApiKey:
-    'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
+    'AAPK6020068836884707b511570bfb55c042Y7JsUDJU7Dg19M1paHAURrcaX7rPUEnxZj1a_-rDCRSrzSSluutrv3vNaDRnpb9N',
   theme,
   availableWidgets: ['chart', 'grid', 'editor', 'map', 'summaryCard'],
 };

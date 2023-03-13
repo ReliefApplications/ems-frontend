@@ -32,7 +32,7 @@ import {
 import { BASEMAP_LAYERS } from './const/baseMaps';
 import { merge } from 'lodash';
 import { timeDimensionGeoJSON } from './test/timedimension-test';
-import { SafeMapControlsService } from '../../../services/maps/map-controls.service';
+import { SafeMapControlsService } from '../../../services/map/map-controls.service';
 
 // import 'leaflet';
 import * as L from 'leaflet';
@@ -44,6 +44,7 @@ import { GeoJsonObject } from 'geojson';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { generateBaseMaps } from './test/basemaps-test';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/language';
+import { ArcgisService } from '../../../services/map/arcgis.service';
 
 /**
  * Cleans the settings object from null values
@@ -151,7 +152,8 @@ export class MapComponent
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
-    private mapControlsService: SafeMapControlsService
+    private mapControlsService: SafeMapControlsService,
+    private arcgisService: ArcgisService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -370,6 +372,8 @@ export class MapComponent
       zoom,
       timeDimension,
     } as any).setView(L.latLng(centerLat, centerLong), zoom);
+
+    this.arcgisService.loadWebMap(this.map, 'e322b877a98847d79692a3c7bf45e5cf');
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(basemap);
