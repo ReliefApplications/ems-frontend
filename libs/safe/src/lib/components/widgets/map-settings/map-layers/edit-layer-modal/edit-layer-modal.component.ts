@@ -10,7 +10,7 @@ import {
 } from '../../../../ui/map/interfaces/map.interface';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
-import { SafeMapLayersService } from '../../../../../services/maps/map-layers.service';
+import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
 import {
   LayerActionOnMap,
   OverlayLayerTree,
