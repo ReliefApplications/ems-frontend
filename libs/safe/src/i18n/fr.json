@@ -488,13 +488,29 @@
 		"confirmModal": {
 			"cancel": "Annuler",
 			"confirm": "Confirmer",
+			"confirmClose": "Voulez-vous vraiment fermer la fenêtre d'édition?",
 			"delete": "Supprimer",
-			"title": "Confirmer",
-			"confirmClose": "Voulez-vous vraiment fermer la fenêtre d'édition?"
+			"title": "Confirmer"
 		},
 		"customNotifications": {
 			"edit": {
-				"new": "Nouvelle notification"
+				"dataset": "Jeu de données",
+				"email": "Notification par email",
+				"new": "Nouvelle notification",
+				"recipients": {
+					"distributionList": "Utiliser une liste de distribution",
+					"email": "Utiliser une adresse email unique",
+					"title": "Destinataires",
+					"userField": "Grouper par utilisateurs détectés dans les enregistrements"
+				},
+				"update": "Éditer la notification"
+			},
+			"errors": {
+				"email": "Veuillez entrer une adresse email valide",
+				"schedule": "Veuillez entrer une expression cron valide"
+			},
+			"hint": {
+				"schedule": "Indiquez une fréquence d'envoi"
 			}
 		},
 		"distributionLists": {
@@ -1513,7 +1529,9 @@
 			"new": "Nouveau canal de diffusion"
 		},
 		"customNotification": {
-			"lastExecution": "Dernière exécution"
+			"lastExecution": "Dernière exécution",
+			"schedule": "Fréquence",
+			"type": "Type"
 		},
 		"dashboard": {
 			"share": "Partager le tableau de bord"
@@ -1728,7 +1746,12 @@
 		},
 		"referenceData": {
 			"csv": "Fichier CSV d'entrée",
-			"fields": "Champs",
+			"fields": {
+				"fetch": "Récupérer les champs",
+				"missingConfig": "Impossible de récupérer les champs. Configuration manquante : {{config}}",
+				"noFields": "Aucun champ trouvé",
+				"title": "Champ"
+			},
 			"graphQLFilter": "Paramètres de la requête GraphQL",
 			"path": "Chemin",
 			"placeholder": {

@@ -78,7 +78,7 @@ export class SafeLayoutComponent
   public showPreferences = false;
 
   public otherOffice = '';
-  private environment: any;
+  public environment: any;
   private inApplication = false;
 
   // === APP SEARCH ===

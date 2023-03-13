@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "1.4.0-beta.7",
+  "version": "2.0.0-beta.2",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
@@ -72,6 +72,7 @@
     "leaflet.markercluster": "^1.4.1",
     "localforage": "^1.10.0",
     "ng2-charts": "^4.1.1",
+    "ngx-cron-editor": "^0.7.6",
     "rxjs": "~7.8.0",
     "subscriptions-transport-ws": "^0.9.18",
     "survey-angular": "1.9.71",

@@ -488,13 +488,29 @@
 		"confirmModal": {
 			"cancel": "Cancel",
 			"confirm": "Confirm",
+			"confirmClose": "Are you sure you want to close the edition window?",
 			"delete": "Delete",
-			"title": "Confirm",
-			"confirmClose": "Are you sure you want to close the edition window?"
+			"title": "Confirm"
 		},
 		"customNotifications": {
 			"edit": {
-				"new": "New Custom Notification"
+				"dataset": "Dataset",
+				"email": "Email notification",
+				"new": "New custom Notification",
+				"recipients": {
+					"distributionList": "Use a distribution list",
+					"email": "Input a single email address",
+					"title": "Recipients",
+					"userField": "Group by dataset user field"
+				},
+				"update": "Edit custom notification"
+			},
+			"errors": {
+				"email": "Please input a valid email address",
+				"schedule": "Enter a valid cron expression"
+			},
+			"hint": {
+				"schedule": "Enter schedule for notification sending"
 			}
 		},
 		"distributionLists": {
@@ -1505,7 +1521,9 @@
 			"new": "New channel"
 		},
 		"customNotification": {
-			"lastExecution": "Last execution"
+			"lastExecution": "Last execution",
+			"schedule": "Schedule",
+			"type": "Notification type"
 		},
 		"dashboard": {
 			"share": "Share Dashboard"
@@ -1720,7 +1738,12 @@
 		},
 		"referenceData": {
 			"csv": "CSV input",
-			"fields": "Fields",
+			"fields": {
+				"fetch": "Fetch fields",
+				"missingConfig": "Can't fetch fields. Missing configuration: {{config}}",
+				"noFields": "No fields found",
+				"title": "Field"
+			},
 			"graphQLFilter": "GraphQL query parameters",
 			"path": "Path",
 			"placeholder": {

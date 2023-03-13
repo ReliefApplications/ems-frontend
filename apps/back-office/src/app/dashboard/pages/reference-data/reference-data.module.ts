@@ -15,6 +15,7 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
 import { SafeIconModule } from '@oort-front/safe';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { ButtonModule } from '@progress/kendo-angular-buttons';
 
 /**
  * Reference Data page module.
@@ -38,6 +39,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     GridModule,
     MatTooltipModule,
     SafeGraphQLSelectModule,
+    ButtonModule,
   ],
 })
 export class ReferenceDataModule {}

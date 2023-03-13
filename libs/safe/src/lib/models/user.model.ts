@@ -46,17 +46,3 @@ export interface User {
   positionAttributes?: PositionAttribute[];
   favoriteApp?: string;
 }
-
-/** Model for UserConnection object. */
-export interface UserConnection {
-  totalCount?: number;
-  edges?: {
-    node: User;
-    cursor: string;
-  }[];
-  pageInfo?: {
-    startCursor: string | null;
-    endCursor: string | null;
-    hasNextPage: boolean;
-  };
-}

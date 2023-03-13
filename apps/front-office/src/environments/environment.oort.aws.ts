@@ -1,5 +1,6 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/oort/oort.prod';
+import { sharedEnvironment } from './environment.shared';
 
 /** Authentication configuration of the module. */
 const authConfig: AuthConfig = {
@@ -14,12 +15,12 @@ const authConfig: AuthConfig = {
 
 /** Environment configuration */
 export const environment = {
+  ...sharedEnvironment,
   production: true,
   apiUrl: 'https://oort-dev.oortcloud.tech/api',
   subscriptionApiUrl: 'wss://oort-dev.oortcloud.tech/api',
   frontOfficeUri: 'https://d3rv4m9pcr8lg2.cloudfront.net',
   backOfficeUri: 'https://d3rv4m9pcr8lg2.cloudfront.net/admin/',
-  module: 'frontoffice',
   availableLanguages: ['en', 'fr'],
   authConfig,
   esriApiKey:
