@@ -129,6 +129,7 @@ export const divisionForm = (value?: any): UntypedFormGroup =>
 export const createLayerForm = (value?: MapLayerI): UntypedFormGroup =>
   fb.group({
     name: [get(value, 'name', null), [Validators.required]],
+    id: [get(value, 'id', null)],
     type: [get(value, 'type', null), [Validators.required]],
     defaultVisibility: [
       get(value, 'defaultVisibility', true),
