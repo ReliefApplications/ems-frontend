@@ -1136,6 +1136,9 @@
 					"xAxis": "******",
 					"yAxis": "******"
 				},
+				"close": {
+					"confirmationMessage": "******"
+				},
 				"grid": {
 					"actions": {
 						"add": "******",

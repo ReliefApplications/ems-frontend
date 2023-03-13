@@ -1136,6 +1136,9 @@
 					"xAxis": "X Axis",
 					"yAxis": "Y Axis"
 				},
+				"close": {
+					"confirmationMessage": "Some changes will be lost when closing edition. Do you want to continue?"
+				},
 				"grid": {
 					"actions": {
 						"add": "Add new records",
