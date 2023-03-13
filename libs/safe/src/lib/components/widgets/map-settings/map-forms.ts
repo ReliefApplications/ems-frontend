@@ -71,7 +71,7 @@ const DEFAULT_MAP: Nullable<MapSettingsI> = {
   // clorophlets: [],
   layers: [],
   timeDimension: true,
-  arcGisWebMap: null
+  arcGisWebMap: null,
 };
 
 // === CLOROPHLET ===

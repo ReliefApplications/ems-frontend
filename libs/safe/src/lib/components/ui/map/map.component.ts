@@ -149,6 +149,7 @@ export class MapComponent
    * @param environment platform environment
    * @param translate The translate service
    * @param mapControlsService The map controls handler service
+   * @param arcgisService
    */
   constructor(
     @Inject('environment') environment: any,
@@ -377,7 +378,10 @@ export class MapComponent
       timeDimension,
     } as any).setView(L.latLng(centerLat, centerLong), zoom);
 
-    this.arcgisService.loadWebMap(this.map, arcGisWebMap ? arcGisWebMap : 'e322b877a98847d79692a3c7bf45e5cf');
+    this.arcgisService.loadWebMap(
+      this.map,
+      arcGisWebMap ? arcGisWebMap : 'e322b877a98847d79692a3c7bf45e5cf'
+    );
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(basemap);
@@ -430,7 +434,7 @@ export class MapComponent
         minZoom,
         zoom,
         timeDimension,
-        arcGisWebMap
+        arcGisWebMap,
       } = this.extractSettings();
 
       // If value changes for the map we would change in order to not trigger map events unnecessarily
@@ -455,9 +459,9 @@ export class MapComponent
         }
       }
 
-      if(arcGisWebMap != ''){
+      if (arcGisWebMap != '') {
         const currentWebMap = this.arcGisWebMap?.options?.key;
-        if(arcGisWebMap !== currentWebMap){
+        if (arcGisWebMap !== currentWebMap) {
           this.arcgisService.loadWebMap(this.map, currentWebMap);
         }
       }

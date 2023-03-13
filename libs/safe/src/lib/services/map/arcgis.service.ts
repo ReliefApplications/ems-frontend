@@ -8,16 +8,28 @@ import {
   SearchQueryBuilder,
 } from '@esri/arcgis-rest-portal';
 
+/**
+ *
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class ArcgisService {
   private session!: ApiKeyManager;
 
+  /**
+   *
+   * @param environment
+   */
   constructor(@Inject('environment') environment: any) {
     this.session = new ApiKeyManager({ key: environment.esriApiKey });
   }
 
+  /**
+   *
+   * @param map
+   * @param id
+   */
   public loadWebMap(map: L.Map, id: string): void {
     console.log(this.session);
     getItemData(id, {
@@ -27,10 +39,21 @@ export class ArcgisService {
     });
   }
 
-  private loadBaseMap(): void {}
+  /**
+   *
+   */
+  //private loadBaseMap(): void {}
 
-  private loadOperationalLayers(): void {}
+  /**
+   *
+   */
+  //private loadOperationalLayers(): void {}
 
+  /**
+   *
+   * @param options
+   * @param options.start
+   */
   public searchItems(options: { start?: number }) {
     // console.log(this.session);
     const filter: ISearchOptions = {
@@ -44,7 +67,7 @@ export class ArcgisService {
       authentication: this.session,
       // portal: arcgisUrl + '/sharing/rest',
     };
-    console.log("ABC");
+    console.log('ABC');
     console.log(searchItems(filter));
     return searchItems(filter);
   }

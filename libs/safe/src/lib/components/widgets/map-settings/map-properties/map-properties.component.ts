@@ -1,4 +1,11 @@
-import { Component, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  Output,
+  EventEmitter,
+  ViewChild,
+} from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
@@ -10,7 +17,6 @@ import {
 import { BASEMAPS } from '../../../ui/map/const/baseMaps';
 import { ArcgisService } from 'libs/safe/src/lib/services/map/arcgis.service';
 import { MatSelect } from '@angular/material/select';
-
 
 /**
  * Map Properties of Map widget.
@@ -38,13 +44,14 @@ export class MapPropertiesComponent
   @Output()
   selectionChange = new EventEmitter<string>();
 
-  @ViewChild("arcGisWebMap") elementSelect?: MatSelect;
-
+  @ViewChild('arcGisWebMap') elementSelect?: MatSelect;
 
   /**
    * Map Properties of Map widget.
+   *
+   * @param arcgis
    */
-  constructor(private arcgis: ArcgisService){
+  constructor(private arcgis: ArcgisService) {
     super();
   }
 
@@ -58,13 +65,16 @@ export class MapPropertiesComponent
       centerLat: this.form.value.centerLat,
       centerLong: this.form.value.centerLong,
       timeDimension: this.form.value.timeDimension,
-      arcGisWebMap: this.form.value.arcGisWebMap
+      arcGisWebMap: this.form.value.arcGisWebMap,
     };
     this.updateMapSettings(defaultMapSettings);
     this.setUpFormListeners();
     this.search();
   }
 
+  /**
+   *
+   */
   private search(): void {
     this.arcgis.searchItems({ start: this.start }).then((search) => {
       if (search.nextStart > this.start) {
@@ -77,6 +87,10 @@ export class MapPropertiesComponent
     });
   }
 
+  /**
+   *
+   * @param event
+   */
   openedChange(event: any): void {
     if (event && this.elementSelect) {
       const panel = this.elementSelect.panel.nativeElement;
@@ -86,9 +100,14 @@ export class MapPropertiesComponent
     }
   }
 
+  /**
+   *
+   * @param event
+   */
   private loadOnScroll(event: any): void {
     if (
-      event.target.scrollHeight - (event.target.clientHeight + event.target.scrollTop) <
+      event.target.scrollHeight -
+        (event.target.clientHeight + event.target.scrollTop) <
       50
     ) {
       if (!this.loading && this.nextPage) {
@@ -135,11 +154,13 @@ export class MapPropertiesComponent
         } as MapConstructorSettings);
       });
     this.form
-    .get('arcGisWebMap')
-    ?.valueChanges.pipe(takeUntil(this.destroy$))
-    .subscribe((value) =>
-      this.updateMapSettings({ arcGisWebMap: value } as MapConstructorSettings)
-    );
+      .get('arcGisWebMap')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) =>
+        this.updateMapSettings({
+          arcGisWebMap: value,
+        } as MapConstructorSettings)
+      );
   }
 
   /**
