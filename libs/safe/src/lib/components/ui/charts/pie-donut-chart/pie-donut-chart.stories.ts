@@ -1,4 +1,9 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import {
+  Meta,
+  moduleMetadata,
+  Story,
+  componentWrapperDecorator,
+} from '@storybook/angular';
 import { SafePieDonutChartComponent } from './pie-donut-chart.component';
 import { SafePieDonutChartModule } from './pie-donut-chart.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -10,6 +15,7 @@ export default {
       imports: [SafePieDonutChartModule, BrowserAnimationsModule],
       providers: [],
     }),
+    componentWrapperDecorator((story) => `<div class="h-96">${story}</div>`),
   ],
   title: 'UI/Charts/Pie Chart',
   argTypes: {
@@ -32,8 +38,6 @@ export default {
  * @returns Returns an object used as the stories template
  */
 const TEMPLATE: Story<SafePieDonutChartComponent> = (args) => ({
-  template:
-    '<div style="height:400px"><safe-pie-donut-chart [legend]="legend" [title]="title" [series]="series"></safe-pie-donut-chart></div>',
   props: {
     ...args,
   },
@@ -51,24 +55,30 @@ DEFAULT.args = {
         {
           field: 2,
           category: 'category 1',
-          color: '#FDA649',
         },
         {
           field: 7,
           category: 'category 2',
-          color: '#F4E683',
         },
         {
           field: 19,
           category: 'category 3',
-          color: '#B83C70',
         },
         {
           field: 16,
           category: 'category 4',
-          color: '#4DB3E4',
         },
       ],
     },
   ],
+};
+
+/**
+ * Doughnut story.
+ */
+export const DOUGHNUT = TEMPLATE.bind({});
+DOUGHNUT.storyName = 'Doughnut';
+DOUGHNUT.args = {
+  ...DEFAULT.args,
+  chartType: 'doughnut',
 };
