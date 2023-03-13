@@ -26,7 +26,7 @@ const arcgisProj =
 @Injectable({
   providedIn: 'root',
 })
-export class SafeArcgisService {
+export class ArcgisService {
   private esriApiKey!: string;
   private session!: ApiKeyManager;
 
@@ -95,8 +95,8 @@ export class SafeArcgisService {
           id = esriUrlContent
             ? esriUrlContent?.serviceItemId
             : id
-              ? id
-              : layer.itemId;
+            ? id
+            : layer.itemId;
           const vectorTileLayer = Vector.vectorTileLayer(id, {
             token: this.esriApiKey,
             opacity,
