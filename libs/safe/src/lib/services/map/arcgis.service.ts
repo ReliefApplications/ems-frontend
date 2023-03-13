@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import proj4 from 'proj4';
 import * as Color from 'color';
 
-import { ArcGISIdentityManager } from '@esri/arcgis-rest-request';
+import { ApiKeyManager } from '@esri/arcgis-rest-request';
 import { getItemData } from '@esri/arcgis-rest-portal';
 
 import * as EsriHeat from 'esri-leaflet-heatmap';
@@ -13,13 +13,6 @@ import * as EsriRenderers from 'esri-leaflet-renderers';
 import * as Esri from 'esri-leaflet';
 import * as Vector from 'esri-leaflet-vector';
 import * as L from 'leaflet';
-
-/** ArcGIS clientID */
-const clientId = 'A1AnRJUQF4vPnFUj';
-/** redirectUri */
-const redirectUri = 'http://localhost:4200/auth';
-/** arcgis Url */
-const arcgisUrl = 'https://whnvifkjptqgedzc.maps.arcgis.com/';
 
 /**
  * Define the ArcGIS projected coordinate system (102100 is the WKID for Web Mercator)
@@ -35,7 +28,7 @@ const arcgisProj =
 })
 export class SafeArcgisService {
   private esriApiKey!: string;
-  private session?: ArcGISIdentityManager;
+  private session!: ApiKeyManager;
 
   private layers: any[] = [];
   private baseMaps: any[] = [];
@@ -50,44 +43,8 @@ export class SafeArcgisService {
     @Inject('environment') environment: any,
     private http: HttpClient
   ) {
-    // Not using esriApiKey (TO CHECKL: authentication to arcGIS -> replace with API key not done ?)
     this.esriApiKey = environment.esriApiKey;
-    const serializedSession = localStorage.getItem('arcgis_session');
-    if (serializedSession !== null && serializedSession !== 'undefined') {
-      const session = ArcGISIdentityManager.deserialize(serializedSession);
-      if (session) {
-        this.session = session;
-      }
-    } else {
-      this.signIn();
-    }
-  }
-
-  /**
-   * TO CHECK: "authentication to arcGIS -> replace with API key ? ( done )" was suppose to work?
-   */
-  public signIn(): void {
-    ArcGISIdentityManager.beginOAuth2({
-      clientId,
-      redirectUri,
-      portal: arcgisUrl + '/sharing/rest',
-      popup: false,
-    })
-      ?.then(() => {
-        // console.log(session);
-        ArcGISIdentityManager.completeOAuth2({
-          clientId,
-          redirectUri,
-        })
-          .then((session) => {
-            if (session) {
-              this.session = session;
-              localStorage.setItem('arcgis_session', session.serialize());
-            }
-          })
-          .catch((err) => console.log(err));
-      })
-      .catch((error) => console.log(error));
+    this.session = new ApiKeyManager({ key: environment.esriApiKey });
   }
 
   /**
@@ -96,100 +53,108 @@ export class SafeArcgisService {
    * @param {L.Map} map to add the webmap
    * @param {string} id webmap id
    */
-  public getWebMap(map: L.Map, id: string): void {
+  public loadWebMap(map: L.Map, id: string): void {
     getItemData(id, {
       authentication: this.session,
-    }).then(async (webMap: any) => {
-      console.log('webMap: ', webMap);
-      // Get the xmin, xmax, ymin and ymax from arcgis coordinates
-      if (get(webMap, 'initialState.viewpoint.targetGeometry')) {
-        this.setDefaultView(webMap, map);
-      }
-
-      // BaseMaps
-      this.baseMaps = [];
-      const baseMapLayers: L.Layer[] = [];
-      for (const layer of webMap.baseMap.baseMapLayers) {
-        const opacity = get(layer, 'opacity', 1);
-        switch (layer.layerType) {
-          case 'VectorTileLayer': {
-            // getItemData(layer.itemId, {
-            //   authentication: this.session,
-            // }).then((item: any) => {
-            //   console.log(item);
-            // });
-            // When using the styleUrl of the given layer, the built in vectorTileLayer function duplicates the url to fetch it
-            // So we will use the id in the styleUrls to fetch the vector tile layer
-            // This regex matches the content for => {{url}}/items/tileLayerId/blabla/blabla
-            let id = layer.styleUrl.match(/(?<=items\/).*?(?=\/)/gi);
-            let esriUrlContent: any = null;
-            // Get the styleUrl content to use the esriUrlContent.serviceItemId (if it exists) instead of the id
-            const styleUrlContent: any = await this.httpGet(layer.styleUrl);
-            if (styleUrlContent.sources.esri?.url) {
-              esriUrlContent = await this.httpGet(
-                styleUrlContent.sources.esri.url
-              );
-            }
-            id = esriUrlContent
-              ? esriUrlContent?.serviceItemId
-              : id
-              ? id
-              : layer.itemId;
-            const vectorTileLayer = Vector.vectorTileLayer(id, {
-              // portalUrl: arcgisUrl,
-              token: this.session?.token,
-              opacity,
-            });
-            vectorTileLayer.label = layer.title;
-            baseMapLayers.push(vectorTileLayer);
-            break;
-          }
-          case 'ArcGISTiledMapServiceLayer': {
-            const tiledMapLayer = Esri.tiledMapLayer({
-              pane: 'tilePane',
-              url: layer.url,
-              token: this.session?.token,
-              opacity,
-            });
-            (tiledMapLayer as any).label = layer.title;
-            baseMapLayers.push(tiledMapLayer);
-            break;
-          }
-          // case 'ArcGISImageServiceLayer': {
-          //   (Esri as any).imageMapLayer({
-          //     pane: 'tilePane',
-          //     url: layer.url,
-          //     token: this.session?.token,
-          //   }).addTo(map);
-          //   break;
-          // }
-          default: {
-            break;
-          }
-        }
-        // if (get(layer, 'visibility', true) && visibility) {
-        //   layerAux.addTo(this.map);
-        // }
-      }
-
-      // Display baseMap layer
-      const baseMapLayerGroup = L.layerGroup(baseMapLayers).addTo(map);
-      this.baseMaps.push({
-        label: webMap.baseMap.title,
-        layer: baseMapLayerGroup,
-      });
-      // Operational layers
-      this.layers = [];
-      for (const layer of webMap.operationalLayers) {
-        await this.addLayer(map, layer, this.layers);
-      }
-      this.setLayerControl(map);
+    }).then((webMap: any) => {
+      this.loadBaseMap(map, webMap);
     });
   }
 
   /**
+   * Load basemaps from the webamp
+   *
+   * @param {L.Map} map to add the webmap
+   * @param {*} webMap webmap loaded
+   */
+  private async loadBaseMap(map: L.Map, webMap: any): Promise<void> {
+    // Get the xmin, xmax, ymin and ymax from arcgis coordinates
+    if (get(webMap, 'initialState.viewpoint.targetGeometry')) {
+      this.setDefaultView(webMap, map);
+    }
+
+    // BaseMaps
+    this.baseMaps = [];
+    const baseMapLayers: L.Layer[] = [];
+    for (const layer of webMap.baseMap.baseMapLayers) {
+      const opacity = get(layer, 'opacity', 1);
+      switch (layer.layerType) {
+        case 'VectorTileLayer': {
+          // When using the styleUrl of the given layer, the built in vectorTileLayer function duplicates the url to fetch it
+          // So we will use the id in the styleUrls to fetch the vector tile layer
+          // This regex matches the content for => {{url}}/items/tileLayerId/blabla/blabla
+          let id = layer.styleUrl.match(/(?<=items\/).*?(?=\/)/gi);
+          let esriUrlContent: any = null;
+          // Get the styleUrl content to use the esriUrlContent.serviceItemId (if it exists) instead of the id
+          const styleUrlContent: any = await this.httpGet(layer.styleUrl);
+          if (styleUrlContent.sources.esri?.url) {
+            esriUrlContent = await this.httpGet(
+              styleUrlContent.sources.esri.url
+            );
+          }
+          id = esriUrlContent
+            ? esriUrlContent?.serviceItemId
+            : id
+              ? id
+              : layer.itemId;
+          const vectorTileLayer = Vector.vectorTileLayer(id, {
+            token: this.esriApiKey,
+            opacity,
+          });
+          vectorTileLayer.label = layer.title;
+          baseMapLayers.push(vectorTileLayer);
+          break;
+        }
+        case 'ArcGISTiledMapServiceLayer': {
+          const tiledMapLayer = Esri.tiledMapLayer({
+            pane: 'tilePane',
+            url: layer.url,
+            token: this.esriApiKey,
+            opacity,
+          });
+          (tiledMapLayer as any).label = layer.title;
+          baseMapLayers.push(tiledMapLayer);
+          break;
+        }
+        // case 'ArcGISImageServiceLayer': {
+        //   (Esri as any).imageMapLayer({
+        //     pane: 'tilePane',
+        //     url: layer.url,
+        //     token: this.esriApiKey,
+        //   }).addTo(map);
+        //   break;
+        // }
+        default: {
+          break;
+        }
+      }
+    }
+
+    // Display baseMap layer
+    const baseMapLayerGroup = L.layerGroup(baseMapLayers).addTo(map);
+    this.baseMaps.push({
+      label: webMap.baseMap.title,
+      layer: baseMapLayerGroup,
+    });
+    this.loadOperationalLayers(map, webMap);
+  }
+
+  /**
+   * Load operational layers
+   *
+   * @param {L.Map} map to add the webmap
+   * @param {*} webMap webmap loaded
+   */
+  private async loadOperationalLayers(map: L.Map, webMap: any): Promise<void> {
+    this.layers = [];
+    for (const layer of webMap.operationalLayers) {
+      await this.addLayer(map, layer, this.layers);
+    }
+    this.setLayerControl(map);
+  }
+
+  /**
    * Creates the layer control.
-   * TO CHECK: Remove to use the one in MapComponent ?
    *
    * @param {L.Map} map map to add the control
    */
@@ -272,7 +237,7 @@ export class SafeArcgisService {
                 const pane = map.createPane(layer.id);
                 featureLayer = EsriCluster.featureLayer({
                   url: layer.url,
-                  token: this.session?.token,
+                  token: this.esriApiKey,
                   // If popup is not disabled we want to show the cluster popup, no zoom to bounds
                   zoomToBoundsOnClick:
                     layer.layerDefinition.featureReduction.disablePopup,
@@ -320,7 +285,7 @@ export class SafeArcgisService {
                   // todo(arcgis): not working with current options
                   featureLayer = EsriHeat.featureLayer({
                     url: layer.url,
-                    token: this.session?.token,
+                    token: this.esriApiKey,
                     gradient,
                     blur: get(heatOptionsValue, 'blurRadius', 15),
                     radius: get(heatOptionsValue, 'radius', 10),
@@ -341,7 +306,7 @@ export class SafeArcgisService {
                 case 'simple': {
                   featureLayer = Esri.featureLayer({
                     url: layer.url,
-                    token: this.session?.token,
+                    token: this.esriApiKey,
                     ...{ opacity },
                     ...(get(layer, 'layerDefinition.drawingInfo') && {
                       drawingInfo: layer.layerDefinition.drawingInfo,
@@ -356,7 +321,7 @@ export class SafeArcgisService {
                 case 'uniqueValue': {
                   featureLayer = Esri.featureLayer({
                     url: layer.url,
-                    token: this.session?.token,
+                    token: this.esriApiKey,
                     ...{ opacity },
                     ...(get(layer, 'layerDefinition.drawingInfo') && {
                       drawingInfo: layer.layerDefinition.drawingInfo,
@@ -375,7 +340,7 @@ export class SafeArcgisService {
             } else {
               featureLayer = Esri.featureLayer({
                 url: layer.url,
-                token: this.session?.token,
+                token: this.esriApiKey,
                 ...{ opacity },
                 ...(get(layer, 'layerDefinition.drawingInfo') && {
                   drawingInfo: layer.layerDefinition.drawingInfo,
@@ -399,7 +364,7 @@ export class SafeArcgisService {
         if (layer.url) {
           featureLayer = Esri.featureLayer({
             url: layer.url + '/7',
-            token: this.session?.token,
+            token: this.esriApiKey,
             ...{ opacity },
             minZoom: minScaleLevel,
             maxZoom: maxScaleLevel,
@@ -422,7 +387,7 @@ export class SafeArcgisService {
             if (layer.url) {
               imageMapLayer = (Esri as any).imageMapLayer({
                 url: layer.url,
-                token: this.session?.token,
+                token: this.esriApiKey,
                 minZoom: minScaleLevel,
                 maxZoom: maxScaleLevel,
                 opacity,
@@ -489,6 +454,6 @@ export class SafeArcgisService {
    * @returns requisition promise
    */
   private httpGet(path: string): Promise<any> {
-    return this.http.get(path + `?token=${this.session?.token}`).toPromise();
+    return this.http.get(path + `?token=${this.esriApiKey}`).toPromise();
   }
 }

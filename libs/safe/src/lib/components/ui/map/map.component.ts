@@ -44,7 +44,7 @@ import { GeoJsonObject } from 'geojson';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { generateBaseMaps } from './test/basemaps-test';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/language';
-import { ArcgisService } from '../../../services/map/arcgis.service';
+import { SafeArcgisService } from '../../../services/map/arcgis.service';
 
 /**
  * Cleans the settings object from null values
@@ -153,7 +153,7 @@ export class MapComponent
     @Inject('environment') environment: any,
     private translate: TranslateService,
     private mapControlsService: SafeMapControlsService,
-    private arcgisService: ArcgisService
+    private arcgisService: SafeArcgisService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
