@@ -9,6 +9,10 @@ import {
 } from '@angular/forms';
 import get from 'lodash/get';
 import { MapLayerI } from './map-layers/map-layers.component';
+import {
+  MapControls,
+  DefaultMapControls,
+} from '../../ui/map/interfaces/map.interface';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 /** Interface for the maps settings */
@@ -20,6 +24,7 @@ export interface MapSettingsI {
   centerLat: number;
   layers: MapLayerI[];
   timeDimension: boolean;
+  controls: MapControls;
 }
 
 /** Angular Form Builder */
@@ -70,6 +75,7 @@ const DEFAULT_MAP: Nullable<MapSettingsI> = {
   // clorophlets: [],
   layers: [],
   timeDimension: true,
+  controls: DefaultMapControls,
 };
 
 // === CLOROPHLET ===
@@ -173,6 +179,22 @@ export const markerRuleForm = (value?: any): UntypedFormGroup =>
 // === MAP ===
 
 /**
+ * Create map controls from value
+ *
+ * @param value map controls value ( optional )
+ * @returns new form group
+ */
+export const createMapControlsForm = (value?: MapControls): UntypedFormGroup =>
+  fb.group({
+    timedimension: [get(value, 'timedimension', false), [Validators.required]],
+    download: [get(value, 'download ', true), [Validators.required]],
+    legend: [get(value, 'legend ', true), [Validators.required]],
+    measure: [get(value, 'measure ', false), [Validators.required]],
+    group: [get(value, 'group ', true), [Validators.required]],
+    search: [get(value, 'search ', false), [Validators.required]],
+  });
+
+/**
  * Create map form from value
  *
  * @param id widget id
@@ -227,5 +249,8 @@ export const createMapWidgetFormGroup = (
       get(value, 'layers', DEFAULT_MAP.layers).map((x: any) =>
         createLayerForm(x)
       )
+    ),
+    controls: fb.group(
+      createMapControlsForm(get(value, 'controls', DEFAULT_MAP.controls))
     ),
   });

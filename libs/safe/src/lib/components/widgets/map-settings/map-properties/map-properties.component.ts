@@ -26,6 +26,11 @@ export class MapPropertiesComponent
   public mapSettings!: MapConstructorSettings;
   public baseMaps = BASEMAPS;
 
+  /** @returns the form group for the map controls */
+  get controls() {
+    return this.form.get('controls') as UntypedFormGroup;
+  }
+
   /**
    * Map Properties of Map widget.
    */
@@ -43,9 +48,12 @@ export class MapPropertiesComponent
       centerLat: this.form.value.centerLat,
       centerLong: this.form.value.centerLong,
       timeDimension: this.form.value.timeDimension,
+      controls: this.form.value.controls,
     };
     this.updateMapSettings(defaultMapSettings);
     this.setUpFormListeners();
+    console.log('form', this.form);
+    console.log('controls', this.controls);
   }
 
   /**

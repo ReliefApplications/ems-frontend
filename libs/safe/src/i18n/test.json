@@ -1329,10 +1329,17 @@
 					},
 					"properties": {
 						"basemap": "******",
+						"controls": {
+							"download": "******",
+							"group": "******",
+							"legend": "******",
+							"measure": "******",
+							"search": "******",
+							"timedimension": "******"
+						},
 						"latitude": "******",
 						"longitude": "******",
 						"setByMap": "******",
-						"timeSlider": "******",
 						"title": "******",
 						"zoom": "******"
 					},

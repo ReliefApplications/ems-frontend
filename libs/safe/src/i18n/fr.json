@@ -1336,10 +1336,17 @@
 					},
 					"properties": {
 						"basemap": "Fond de carte",
+						"controls": {
+							"download": "Télécharger",
+							"group": "Groupe",
+							"legend": "Légende",
+							"measure": "Mesure",
+							"search": "Recherche",
+							"timedimension": "Dimension temporelle"
+						},
 						"latitude": "Latitude du centre de la carte",
 						"longitude": "Longitude du centre de la carte",
 						"setByMap": "Utiliser la vue actuelle",
-						"timeSlider": "Suivi du temps",
 						"title": "Affichage par défaut",
 						"zoom": "Zoom par défaut"
 					},

@@ -13,6 +13,7 @@ import { MapModule } from '../../../ui/map/map.module';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
+import { MapControlsModule } from './map-controls/map-controls.module';
 
 /**
  * Module of Map Properties of Map Widget.
@@ -34,6 +35,7 @@ import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/
     SafeButtonModule,
     SafeDividerModule,
     MatCheckboxModule,
+    MapControlsModule,
   ],
   exports: [MapPropertiesComponent],
 })
