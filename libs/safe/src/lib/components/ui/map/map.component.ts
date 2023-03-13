@@ -143,11 +143,12 @@ export class MapComponent
   private layers: Layer[] = [];
 
   /**
-   * Constructor of the map widget component
+   * Map widget component
    *
    * @param environment platform environment
-   * @param translate The translate service
-   * @param mapControlsService The map controls handler service
+   * @param translate Angular translate service
+   * @param mapControlsService Map controls handler service
+   * @param arcgisService Shared arcgis service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -373,6 +374,7 @@ export class MapComponent
       timeDimension,
     } as any).setView(L.latLng(centerLat, centerLong), zoom);
 
+    // todo(gis): replace with correct map loading
     this.arcgisService.loadWebMap(this.map, 'e322b877a98847d79692a3c7bf45e5cf');
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
