@@ -1,4 +1,5 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { StorybookTranslateModule } from '../../storybook-translate/storybook-translate-module';
 import { SafeBreadcrumbComponent } from './breadcrumb.component';
 import { SafeBreadcrumbModule } from './breadcrumb.module';
 
@@ -6,7 +7,7 @@ export default {
   component: SafeBreadcrumbComponent,
   decorators: [
     moduleMetadata({
-      imports: [SafeBreadcrumbModule],
+      imports: [SafeBreadcrumbModule, StorybookTranslateModule],
     }),
   ],
   title: 'UI/Breadcrumb',
