@@ -1,14 +1,26 @@
 <div class="flex flex-col">
   <h2>{{ 'common.layers' | translate }}</h2>
   <safe-button
+    [matMenuTriggerFor]="layerMenu"
     class="mb-4 self-end"
-    (click)="onAddLayer()"
     category="secondary"
     variant="primary"
   >
     {{ 'components.widget.settings.map.layers.add' | translate }}
   </safe-button>
 
+  <mat-menu #layerMenu="matMenu">
+    <button mat-menu-item (click)="layerForm!.reset(); onAddLayer()">
+      <span>{{
+        'components.widget.settings.map.layers.createLayer' | translate
+      }}</span>
+    </button>
+    <button mat-menu-item (click)="onSelectFromLayerList()">
+      <span>{{
+        'components.widget.settings.map.layers.selectLayer' | translate
+      }}</span>
+    </button>
+  </mat-menu>
   <table
     mat-table
     [dataSource]="mapLayers"
@@ -56,3 +68,42 @@
     <tr *matRowDef="let row; columns: displayedColumns" mat-row cdkDrag></tr>
   </table>
 </div>
+
+<ng-template #layerOptionsModal>
+  <safe-modal size="small">
+    <h1 mat-dialog-title>
+      {{ 'components.widget.settings.map.layers.chooseLayer' | translate }}
+    </h1>
+    <div mat-dialog-content>
+      <form [formGroup]="layerForm" class="flex flex-col">
+        <!-- API to use -->
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>{{ 'common.layers' | translate }}</mat-label>
+          <safe-graphql-select
+            valueField="id"
+            textField="name"
+            [required]="true"
+            [query]="layerListQuery"
+            formControlName="layer"
+            [selectedElements]="[selectedLayer]"
+          >
+          </safe-graphql-select>
+        </mat-form-field>
+      </form>
+    </div>
+    <div mat-dialog-actions align="end">
+      <safe-button mat-dialog-close="discard">{{
+        'common.close' | translate
+      }}</safe-button>
+      <safe-button
+        category="secondary"
+        variant="primary"
+        cdkFocusInitial
+        mat-dialog-close
+        [disabled]="!layerForm.valid"
+      >
+        {{ 'common.create' | translate }}
+      </safe-button>
+    </div>
+  </safe-modal>
+</ng-template>

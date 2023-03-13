@@ -10,6 +10,9 @@ import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-m
 import { MatIconModule } from '@angular/material/icon';
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { SafeGraphQLSelectModule } from '../../../graphql-select/public-api';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { SafeModalModule } from '../../../ui/modal/public-api';
 
 /**
  * Map Widget layers configuration module.
@@ -28,6 +31,9 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatIconModule,
     SafeDividerModule,
     DragDropModule,
+    SafeGraphQLSelectModule,
+    MatFormFieldModule,
+    SafeModalModule,
   ],
   exports: [MapLayersComponent],
 })

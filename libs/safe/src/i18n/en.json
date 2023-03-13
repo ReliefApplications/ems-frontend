@@ -1294,6 +1294,8 @@
 					},
 					"layers": {
 						"add": "Add new layer",
+						"chooseLayer": "Choose a layer",
+						"createLayer": "Create a new layer",
 						"edit": "Update layer {{name}}",
 						"online": {
 							"info": "Search for online layers in arcGIS online",
@@ -1312,6 +1314,7 @@
 							"title": "Marker layers"
 						},
 						"remove": "Remove layer",
+						"selectLayer": "Select existing layer",
 						"types": {
 							"cluster": "cluster",
 							"heatmap": "heatmap",
