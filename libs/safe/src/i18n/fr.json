@@ -1143,6 +1143,9 @@
 					"xAxis": "Axe X",
 					"yAxis": "Axe Y"
 				},
+				"close": {
+					"confirmationMessage": "Vos changements vont être perdus si vous fermez la fenêtre d'édition. Voulez-vous continuer ?"
+				},
 				"grid": {
 					"actions": {
 						"add": "Ajouter de nouveaux enregistrements",
