@@ -7,18 +7,20 @@ export enum LayerTypes {
 
 /** Layer documents interface declaration */
 export interface Layer {
+  id: string;
   name?: string;
-  sublayers?: any[];
+  sublayers?: string[];
   createdAt?: Date;
   modifiedAt?: Date;
-  visibility?: boolean;
-  layerType?: LayerTypes;
-  layerDefinition?: {
-    featureReduction: any;
-    drawingInfo: any;
-  };
-  popupInfo?: {
-    popupElements: any[];
-    description: string;
-  };
+  //@ TODO upcoming implementation
+  // visibility?: boolean;
+  // layerType?: LayerTypes;
+  // layerDefinition?: {
+  //   featureReduction: any;
+  //   drawingInfo: any;
+  // };
+  // popupInfo?: {
+  //   popupElements: any[];
+  //   description: string;
+  // };
 }

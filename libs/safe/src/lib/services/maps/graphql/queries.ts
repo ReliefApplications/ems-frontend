@@ -7,6 +7,7 @@ export const GET_LAYER_BY_ID = gql`
   query GetLayerById($id: ID!) {
     layer(id: $id) {
       id
+      name
     }
   }
 `;
@@ -14,9 +15,10 @@ export const GET_LAYER_BY_ID = gql`
 // === GET LAYERS ===
 /** Graphql request for getting layers */
 export const GET_LAYERS = gql`
-  query GetLayers($asRole: ID) {
-    layers(asRole: $asRole) {
+  query GetLayers {
+    layers {
       id
+      name
     }
   }
 `;

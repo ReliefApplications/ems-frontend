@@ -157,15 +157,20 @@ export const createLayerForm = (value?: MapLayerI): UntypedFormGroup =>
  * @returns The layer object for form
  */
 export const formatLayerDataForForm = (value: Layer): MapLayerI => {
+  // Map values from the backend with default values(as the ones in createLayerForm)
   return {
-    defaultVisibility: value.visibility ?? true,
+    defaultVisibility: true,
     name: value.name ?? '',
-    opacity: value.layerDefinition?.drawingInfo.opacity,
-    style: value.layerDefinition?.drawingInfo.style,
-    type: value.layerDefinition?.featureReduction.type,
-    visibilityRangeEnd: value.layerDefinition?.drawingInfo.visibilityRangeEnd,
-    visibilityRangeStart:
-      value.layerDefinition?.drawingInfo.visibilityRangeStart,
+    id: value.id ?? '',
+    opacity: 0.8,
+    style: {
+      color: '#0090d1',
+      size: 24,
+      icon: 'leaflet_default',
+    },
+    type: 'point',
+    visibilityRangeStart: 2,
+    visibilityRangeEnd: 18,
   };
 };
 

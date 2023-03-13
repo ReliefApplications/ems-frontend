@@ -3,7 +3,6 @@ import { Apollo } from 'apollo-angular';
 import { filter, map, Observable } from 'rxjs';
 import { formatLayerDataForForm } from '../../components/widgets/map-settings/map-forms';
 import { MapLayerI } from '../../components/widgets/map-settings/map-layers/map-layers.component';
-import { Layer } from '../../models/layer.model';
 import {
   AddLayerMutationResponse,
   ADD_LAYER,
@@ -39,18 +38,21 @@ export class SafeMapLayersService {
    * @param layer Layer to add
    * @returns An observable with the new layer data formatted for the application form
    */
-  public addLayer(layer: Layer): Observable<MapLayerI> {
+  public addLayer(layer: MapLayerI): Observable<MapLayerI> {
     return this.apollo
       .mutate<AddLayerMutationResponse>({
         mutation: ADD_LAYER,
         variables: {
           name: layer.name,
-          sublayers: [layer],
+          sublayers: [],
         },
       })
       .pipe(
         filter((response) => !!response.data),
         map((response) => {
+          if (response.errors) {
+            throw new Error(response.errors[0].message);
+          }
           return formatLayerDataForForm(
             (response.data as AddLayerMutationResponse).addLayer
           );
@@ -61,25 +63,26 @@ export class SafeMapLayersService {
   /**
    * Edit a layer in the DB
    *
-   * @param layerId Layer id
-   * @param layerData New layer data to save
+   * @param layer Layer data to save
    * @returns An observable with the edited layer data formatted for the application form
    */
-  public editLayer(
-    layerId: string,
-    layerData: MapLayerI
-  ): Observable<MapLayerI> {
+  public editLayer(layer: MapLayerI): Observable<MapLayerI> {
     return this.apollo
       .mutate<EditLayerMutationResponse>({
         mutation: EDIT_LAYER,
         variables: {
-          id: layerId,
-          layer: layerData,
+          id: layer.id,
+          parent: layer.id,
+          name: layer.name,
+          sublayers: [],
         },
       })
       .pipe(
         filter((response) => !!response.data),
         map((response) => {
+          if (response.errors) {
+            throw new Error(response.errors[0].message);
+          }
           return formatLayerDataForForm(
             (response.data as EditLayerMutationResponse).editLayer
           );
@@ -115,6 +118,9 @@ export class SafeMapLayersService {
       .pipe(
         filter((response) => !!response.data),
         map((response) => {
+          if (response.errors) {
+            throw new Error(response.errors[0].message);
+          }
           return (response.data as GetLayersQueryResponse).layers.map((layer) =>
             formatLayerDataForForm(layer)
           );
@@ -139,6 +145,9 @@ export class SafeMapLayersService {
       .pipe(
         filter((response) => !!response.data),
         map((response) => {
+          if (response.errors) {
+            throw new Error(response.errors[0].message);
+          }
           return formatLayerDataForForm(
             (response.data as GetLayerByIdQueryResponse).layer
           );

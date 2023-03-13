@@ -6,7 +6,7 @@ import {
   MatLegacyDialog as MatDialog,
 } from '@angular/material/legacy-dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { SafeMapLayersService } from '../..../../../../../services/maps/map-layers.service';
+import { SafeMapLayersService } from '../../../../services/maps/map-layers.service';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { createLayerForm } from '../map-forms';
@@ -17,6 +17,7 @@ export const LAYER_TYPES = ['polygon', 'point', 'heatmap', 'cluster'] as const;
 /** Interface for a map layer */
 export interface MapLayerI {
   name: string;
+  id: string;
   type: (typeof LAYER_TYPES)[number];
   defaultVisibility: boolean;
   opacity: number;
@@ -90,6 +91,9 @@ export class MapLayersComponent
           }
           // Handle errors and snackbar to inform user of successful operation?
         },
+        error: (err) => {
+          console.log(err);
+        },
       });
   }
 
@@ -98,17 +102,22 @@ export class MapLayersComponent
     const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
       this.dialog.open(SafeEditLayerModalComponent, { disableClose: true });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-      this.safeMapLayerService.addLayer(this.form.getRawValue()).subscribe({
-        next: (result) => {
-          if (result) {
-            this.layers.push(createLayerForm(result));
-          }
-          // Handle errors and snackbar to inform user of successful operation?
-        },
+    dialogRef
+      .afterClosed()
+      .subscribe((selectedLayer: MapLayerI | undefined) => {
+        if (!selectedLayer) return;
+        this.safeMapLayerService.addLayer(selectedLayer).subscribe({
+          next: (result) => {
+            if (result) {
+              this.layers.push(createLayerForm(result));
+            }
+            // Handle errors and snackbar to inform user of successful operation?
+          },
+          error: (err) => {
+            console.log(err);
+          },
+        });
       });
-    });
   }
 
   /**
@@ -123,22 +132,22 @@ export class MapLayersComponent
         data: this.layers.at(index).value,
       });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-      this.safeMapLayerService
-        .editLayer(
-          this.layers.at(index).getRawValue().id,
-          this.form.getRawValue()
-        )
-        .subscribe({
+    dialogRef
+      .afterClosed()
+      .subscribe((selectedLayer: MapLayerI | undefined) => {
+        if (!selectedLayer) return;
+        this.safeMapLayerService.editLayer(selectedLayer).subscribe({
           next: (result) => {
             if (result) {
               this.layers.at(index).patchValue(result);
             }
             // Handle errors and snackbar to inform user of successful operation?
           },
+          error: (err) => {
+            console.log(err);
+          },
         });
-    });
+      });
   }
 
   /**
