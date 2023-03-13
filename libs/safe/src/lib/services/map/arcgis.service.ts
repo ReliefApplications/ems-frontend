@@ -57,7 +57,9 @@ export class ArcgisService {
     getItemData(id, {
       authentication: this.session,
     }).then((webMap: any) => {
+      this.setDefaultView(map, webMap);
       this.loadBaseMap(map, webMap);
+      this.loadOperationalLayers(map, webMap);
     });
   }
 
@@ -68,11 +70,6 @@ export class ArcgisService {
    * @param {*} webMap webmap loaded
    */
   private async loadBaseMap(map: L.Map, webMap: any): Promise<void> {
-    // Get the xmin, xmax, ymin and ymax from arcgis coordinates
-    if (get(webMap, 'initialState.viewpoint.targetGeometry')) {
-      this.setDefaultView(webMap, map);
-    }
-
     // BaseMaps
     this.baseMaps = [];
     const baseMapLayers: L.Layer[] = [];
@@ -136,7 +133,6 @@ export class ArcgisService {
       label: webMap.baseMap.title,
       layer: baseMapLayerGroup,
     });
-    this.loadOperationalLayers(map, webMap);
   }
 
   /**
@@ -150,29 +146,7 @@ export class ArcgisService {
     for (const layer of webMap.operationalLayers) {
       await this.addLayer(map, layer, this.layers);
     }
-    this.setLayerControl(map);
-  }
-
-  /**
-   * Creates the layer control.
-   *
-   * @param {L.Map} map map to add the control
-   */
-  private setLayerControl(map: L.Map): void {
-    const baseTree = {
-      label: 'Base Maps',
-      children: this.baseMaps,
-      collapsed: true,
-    };
-
-    const overlays = [
-      {
-        label: 'Layers',
-        selectAllCheckbox: 'Un/select all',
-        children: this.layers,
-      },
-    ];
-    (L.control.layers as any).tree(baseTree, overlays as any).addTo(map);
+    // this.setLayerControl(map);
   }
 
   /**
@@ -434,17 +408,28 @@ export class ArcgisService {
    * @param map leaflet map
    */
   private setDefaultView(webMap: any, map: L.Map): void {
-    const xmin = parseFloat(webMap.initialState.viewpoint.targetGeometry.xmin);
-    const xmax = parseFloat(webMap.initialState.viewpoint.targetGeometry.xmax);
-    const ymin = parseFloat(webMap.initialState.viewpoint.targetGeometry.ymin);
-    const ymax = parseFloat(webMap.initialState.viewpoint.targetGeometry.ymax);
-    // Convert the ArcGIS coordinates to geographic coordinates
-    const xminYmin = proj4(arcgisProj, 'EPSG:4326', [xmin, ymin]);
-    const xmaxYmax = proj4(arcgisProj, 'EPSG:4326', [xmax, ymax]);
+    // Get the xmin, xmax, ymin and ymax from arcgis coordinates
+    if (get(webMap, 'initialState.viewpoint.targetGeometry')) {
+      const xmin = parseFloat(
+        webMap.initialState.viewpoint.targetGeometry.xmin
+      );
+      const xmax = parseFloat(
+        webMap.initialState.viewpoint.targetGeometry.xmax
+      );
+      const ymin = parseFloat(
+        webMap.initialState.viewpoint.targetGeometry.ymin
+      );
+      const ymax = parseFloat(
+        webMap.initialState.viewpoint.targetGeometry.ymax
+      );
+      // Convert the ArcGIS coordinates to geographic coordinates
+      const xminYmin = proj4(arcgisProj, 'EPSG:4326', [xmin, ymin]);
+      const xmaxYmax = proj4(arcgisProj, 'EPSG:4326', [xmax, ymax]);
 
-    const sw = L.latLng(xminYmin[1], xminYmin[0]);
-    const ne = L.latLng(xmaxYmax[1], xmaxYmax[0]);
-    map.fitBounds(L.latLngBounds(sw, ne));
+      const sw = L.latLng(xminYmin[1], xminYmin[0]);
+      const ne = L.latLng(xmaxYmax[1], xmaxYmax[0]);
+      map.fitBounds(L.latLngBounds(sw, ne));
+    }
   }
 
   /**

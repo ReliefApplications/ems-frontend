@@ -42,7 +42,6 @@ import { getMapFeatures } from './utils/get-map-features';
 import { LayerProperties } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
 import { createCustomDivIcon } from './utils/create-div-icon';
-import { generateBaseMaps } from './test/basemaps-test';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/language';
 import { ArcgisService } from '../../../services/map/arcgis.service';
 
@@ -471,11 +470,21 @@ export class MapComponent
   private setUpLayers(): void {
     this.layersTree = [];
 
-    // Sets the basemaps
-    const baseMaps = generateBaseMaps(this.esriApiKey, this.basemap);
+    this.basemap = L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }
+    ).addTo(this.map);
     this.baseTree = {
       label: 'Base Maps',
-      children: baseMaps,
+      children: [
+        {
+          label: 'OSM',
+          layer: this.basemap,
+        },
+      ],
       collapsed: true,
     };
 
