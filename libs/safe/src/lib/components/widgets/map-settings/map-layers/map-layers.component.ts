@@ -184,9 +184,7 @@ export class MapLayersComponent
       .afterClosed()
       .subscribe((selectedLayer: MapLayerI | undefined) => {
         if (!selectedLayer) return;
-        if (selectedLayer) {
-          this.layers.at(index).patchValue(selectedLayer);
-        }
+        this.layers.at(index).patchValue(selectedLayer);
       });
   }
 
