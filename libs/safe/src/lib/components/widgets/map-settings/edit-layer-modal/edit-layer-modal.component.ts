@@ -1,23 +1,23 @@
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
-import { createLayerForm } from '../../map-forms';
-import { MapLayerI } from '../map-layers.component';
+import { createLayerForm } from '../map-forms';
+import { MapLayerI } from '../map-layers/map-layers.component';
 import {
   MapConstructorSettings,
   MapEvent,
   MapEventType,
-} from '../../../../ui/map/interfaces/map.interface';
+} from '../../../ui/map/interfaces/map.interface';
 import { BehaviorSubject, takeUntil } from 'rxjs';
-import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
-import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 import {
   LayerActionOnMap,
   OverlayLayerTree,
-} from '../../../../ui/map/interfaces/map-layers.interface';
+} from '../../../ui/map/interfaces/map-layers.interface';
 
 import * as L from 'leaflet';
-import { createCustomDivIcon } from '../../../../ui/map/utils/create-div-icon';
+import { createCustomDivIcon } from '../../../ui/map/utils/create-div-icon';
 
 /** Layer used to test the component */
 const TEST_LAYER: {

@@ -26,24 +26,6 @@
           ></safe-layer-properties>
         </ng-template>
       </mat-tab>
-
-      <!-- LAYER STYLING -->
-      <mat-tab [disabled]="!form.get('type')?.value">
-        <ng-template mat-tab-label>
-          <safe-icon
-            icon="layers"
-            [size]="24"
-            matTooltip="Layer styling"
-            matTooltipPosition="right"
-          ></safe-icon>
-          <span>{{
-            'components.widget.settings.map.edit.layerStyling' | translate
-          }}</span>
-        </ng-template>
-        <ng-template matTabContent>
-          <safe-layer-styling [form]="form" class="w-full"></safe-layer-styling>
-        </ng-template>
-      </mat-tab>
     </mat-tab-group>
     <!-- Map section -->
     <safe-map

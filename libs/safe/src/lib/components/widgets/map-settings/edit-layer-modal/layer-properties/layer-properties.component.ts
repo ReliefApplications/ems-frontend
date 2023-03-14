@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { LAYER_TYPES } from '../../map-layers.component';
+import { LAYER_TYPES } from '../../map-layers/map-layers.component';
 
 /** Component for the general layer properties */
 @Component({

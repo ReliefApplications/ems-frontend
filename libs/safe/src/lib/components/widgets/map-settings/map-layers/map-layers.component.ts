@@ -9,7 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { createLayerForm } from '../map-forms';
-import { SafeEditLayerModalComponent } from './edit-layer-modal/edit-layer-modal.component';
+import { SafeEditLayerModalComponent } from '../edit-layer-modal/edit-layer-modal.component';
 
 /** List of available layer types */
 export const LAYER_TYPES = ['polygon', 'point', 'heatmap', 'cluster'] as const;
