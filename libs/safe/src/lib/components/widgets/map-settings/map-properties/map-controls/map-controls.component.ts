@@ -1,4 +1,4 @@
-import { Component, forwardRef, Provider } from '@angular/core';
+import { Component, forwardRef, Provider, Input } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -24,7 +24,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class MapControlsComponent implements ControlValueAccessor {
-  public form: UntypedFormGroup = new UntypedFormGroup({});
+  @Input() form: UntypedFormGroup = new UntypedFormGroup({});
 
   private onTouched!: any;
   private onChanged!: any;

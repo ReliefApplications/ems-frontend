@@ -4,6 +4,7 @@ import { MapControlsComponent } from './map-controls.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 
 /**
  * Module of Map Controls of the Map Properties.
@@ -16,6 +17,7 @@ import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/mat
     ReactiveFormsModule,
     TranslateModule,
     MatSlideToggleModule,
+    MatFormFieldModule,
   ],
   exports: [MapControlsComponent],
 })

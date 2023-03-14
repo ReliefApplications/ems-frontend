@@ -1,4 +1,4 @@
-<form [formGroup]="form" class="overflow-hidden h-full">
+<form [formGroup]="form" class="h-full">
   <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
     <!-- Map properties -->
     <div class="flex flex-col flex-1">
@@ -93,17 +93,16 @@
       </div>
       <!-- Use map to set properties -->
       <safe-button
-        class="mb-4 self-end flex-1"
+        class="self-end flex-1"
         (click)="onSetByMap()"
         category="secondary"
         variant="primary"
       >
         {{ 'components.widget.settings.map.properties.setByMap' | translate }}
       </safe-button>
-      <!-- Time Dimension -->
-      <!-- <mat-checkbox formControlName="timeDimension">{{ 'components.widget.settings.map.properties.timeSlider' | translate }}</mat-checkbox> -->
+      <safe-divider></safe-divider>
       <!-- Map controls -->
-      <safe-map-controls formGroupName="controls"></safe-map-controls>
+      <safe-map-controls formGroupName="controls" [form]="controlsFormGroup"></safe-map-controls>
     </div>
     <!-- Map preview -->
     <div class="lg:flex-1 max-lg:min-w-full h-80 lg:min-h-full">

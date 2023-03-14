@@ -1331,11 +1331,12 @@
 						"basemap": "Base map",
 						"controls": {
 							"download": "Download",
-							"group": "Group",
+							"layer": "Layers",
 							"legend": "Legend",
 							"measure": "Measure",
 							"search": "Search",
-							"timedimension": "Time dimension"
+							"timedimension": "Time dimension",
+							"title": "Map Controls"
 						},
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",

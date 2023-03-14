@@ -23,7 +23,6 @@ export interface MapSettingsI {
   centerLong: number;
   centerLat: number;
   layers: MapLayerI[];
-  timeDimension: boolean;
   controls: MapControls;
 }
 
@@ -74,7 +73,6 @@ const DEFAULT_MAP: Nullable<MapSettingsI> = {
   // markersRules: [],
   // clorophlets: [],
   layers: [],
-  timeDimension: true,
   controls: DefaultMapControls,
 };
 
@@ -186,12 +184,12 @@ export const markerRuleForm = (value?: any): UntypedFormGroup =>
  */
 export const createMapControlsForm = (value?: MapControls): UntypedFormGroup =>
   fb.group({
-    timedimension: [get(value, 'timedimension', false), [Validators.required]],
-    download: [get(value, 'download ', true), [Validators.required]],
-    legend: [get(value, 'legend ', true), [Validators.required]],
-    measure: [get(value, 'measure ', false), [Validators.required]],
-    group: [get(value, 'group ', true), [Validators.required]],
-    search: [get(value, 'search ', false), [Validators.required]],
+    timedimension: [get(value, 'timedimension', false)],
+    download: [get(value, 'download ', true)],
+    legend: [get(value, 'legend ', true)],
+    measure: [get(value, 'measure ', false)],
+    layer: [get(value, 'layer', true)],
+    search: [get(value, 'search ', false)],
   });
 
 /**
@@ -224,7 +222,6 @@ export const createMapWidgetFormGroup = (
     ],
     // category: [get(value, 'category', DEFAULT_MAP.category)],
     basemap: [get(value, 'basemap', DEFAULT_MAP.basemap)],
-    timeDimension: [get(value, 'timeDimension', DEFAULT_MAP.timeDimension)],
     centerLong: [
       get(value, 'centerLong', DEFAULT_MAP.centerLong),
       [Validators.min(-180), Validators.max(180)],
@@ -250,7 +247,7 @@ export const createMapWidgetFormGroup = (
         createLayerForm(x)
       )
     ),
-    controls: fb.group(
-      createMapControlsForm(get(value, 'controls', DEFAULT_MAP.controls))
+    controls: createMapControlsForm(
+      get(value, 'controls', DEFAULT_MAP.controls)
     ),
   });

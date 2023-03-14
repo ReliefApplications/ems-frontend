@@ -18,6 +18,7 @@ import {
 
 import * as L from 'leaflet';
 import { createCustomDivIcon } from '../../../../ui/map/utils/create-div-icon';
+import { DefaultMapControls } from '../../../../ui/map/interfaces/map.interface';
 
 /** Layer used to test the component */
 const TEST_LAYER: {
@@ -150,6 +151,7 @@ export class SafeEditLayerModalComponent
       maxZoom: 18,
       zoom: 2,
       worldCopyJump: true,
+      controls: DefaultMapControls,
     };
   }
 

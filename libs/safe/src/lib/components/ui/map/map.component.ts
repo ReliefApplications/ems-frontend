@@ -28,6 +28,8 @@ import {
   MapConstructorSettings,
   MapEvent,
   MapEventType,
+  DefaultMapControls,
+  MapControls,
 } from './interfaces/map.interface';
 import { BASEMAP_LAYERS } from './const/baseMaps';
 import { merge } from 'lodash';
@@ -129,6 +131,7 @@ export class MapComponent
     basemap: 'OSM',
     centerLat: 0,
     centerLong: 0,
+    controls: DefaultMapControls,
   };
 
   // === MARKERS ===
@@ -148,6 +151,7 @@ export class MapComponent
    * @param environment platform environment
    * @param translate The translate service
    * @param mapControlsService The map controls handler service
+   * @param arcgisService Shared arcgis service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -187,7 +191,10 @@ export class MapComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((event) => {
         if (event.lang !== this.mapControlsService.lang) {
-          this.mapControlsService.getMeasureControl(this.map);
+          this.mapControlsService.getMeasureControl(
+            this.map,
+            this.extractSettings().controls.measure
+          );
           this.mapControlsService.getFullScreenControl(this.map);
         }
       });
@@ -271,7 +278,11 @@ export class MapComponent
       if (this.displayMockedLayers) {
         this.setUpLayers();
         // Add legend control
-        this.mapControlsService.getLegendControl(this.map, this.layers);
+        this.mapControlsService.getLegendControl(
+          this.map,
+          this.layers,
+          this.extractSettings().controls.legend
+        );
       }
       if (this.useGeomanTools) {
         this.mapEvent.emit({
@@ -310,7 +321,7 @@ export class MapComponent
     const worldCopyJump = get(this.settingsConfig, 'worldCopyJump', true);
     const zoomControl = get(this.settingsConfig, 'zoomControl', false);
     const zoom = get(this.settingsConfig, 'zoom', 3);
-    const timeDimension = get(this.settingsConfig, 'timeDimension', false);
+    const controls = get(this.settingsConfig, 'controls', DefaultMapControls);
     /**
      * TODO implement layer loading for the layers returned from the settings
      *
@@ -337,7 +348,7 @@ export class MapComponent
       zoomControl,
       zoom,
       layers,
-      timeDimension,
+      controls,
     };
   }
 
@@ -353,8 +364,8 @@ export class MapComponent
       worldCopyJump,
       zoomControl,
       zoom,
-      timeDimension,
       // layers,
+      controls,
     } = this.extractSettings();
 
     // Create leaflet map
@@ -370,7 +381,7 @@ export class MapComponent
       maxZoom,
       worldCopyJump,
       zoom,
-      timeDimension,
+      timeDimension: true,
     } as any).setView(L.latLng(centerLat, centerLong), zoom);
 
     this.arcgisService.loadWebMap(this.map, 'e322b877a98847d79692a3c7bf45e5cf');
@@ -389,23 +400,61 @@ export class MapComponent
       }
     }
     if (!this.useGeomanTools) {
-      // Add leaflet measure control
-      this.mapControlsService.getMeasureControl(this.map);
+      this.setMapControls(controls, true);
+    }
+  }
 
-      // Add leaflet geosearch control
-      this.mapControlsService.getSearchbarControl(this.map, this.esriApiKey);
-
+  /**
+   * Add / remove map controls according to the settings
+   *
+   * @param {MapControls} controls map controls values
+   * @param {boolean} [initMap=false] if initializing map to add the fixed controls
+   */
+  private setMapControls(controls: MapControls, initMap = false) {
+    // Add leaflet measure control
+    this.mapControlsService.getMeasureControl(
+      this.map,
+      controls.measure ?? false
+    );
+    // Add leaflet geosearch control
+    this.mapControlsService.getSearchbarControl(
+      this.map,
+      this.esriApiKey,
+      controls.search ?? false
+    );
+    // Add TimeDimension control
+    this.mapControlsService.setTimeDimension(
+      this.map,
+      controls.timedimension ?? false,
+      timeDimensionGeoJSON as GeoJsonObject
+    );
+    // Add download button and download menu
+    this.mapControlsService.getDownloadControl(
+      this.map,
+      controls.download ?? true
+    );
+    // Add legend contorl if layers ready
+    if (this.layerControl) {
+      this.mapControlsService.getLegendControl(
+        this.map,
+        this.layers,
+        controls.legend ?? true
+      );
+    }
+    // Add layer contorl
+    if (controls.layer) {
+      if (this.layerControl) {
+        this.layerControl.addTo(this.map);
+      }
+    } else {
+      if (this.layerControl) {
+        this.layerControl.remove();
+      }
+    }
+    // If initializing map: add fixed controls
+    if (initMap) {
       // Add leaflet fullscreen control
       this.mapControlsService.getFullScreenControl(this.map);
-
-      // Add TimeDimension control
-      this.mapControlsService.setTimeDimension(
-        this.map,
-        timeDimension ?? false,
-        timeDimensionGeoJSON as GeoJsonObject
-      );
-      // Add download button and download menu
-      this.mapControlsService.getDownloadControl(this.map);
     }
   }
 
@@ -425,7 +474,7 @@ export class MapComponent
         maxZoom,
         minZoom,
         zoom,
-        timeDimension,
+        controls,
       } = this.extractSettings();
 
       // If value changes for the map we would change in order to not trigger map events unnecessarily
@@ -455,11 +504,7 @@ export class MapComponent
         this.map.setView(L.latLng(centerLat, centerLong), zoom);
       }
 
-      this.mapControlsService.setTimeDimension(
-        this.map,
-        timeDimension ?? false,
-        timeDimensionGeoJSON as GeoJsonObject
-      );
+      this.setMapControls(controls);
     }
   }
 
@@ -528,9 +573,14 @@ export class MapComponent
     });
 
     // Add control to the map layers
-    this.layerControl = L.control.layers
-      .tree(this.baseTree, this.layersTree as any)
-      .addTo(this.map);
+    this.layerControl = L.control.layers.tree(
+      this.baseTree,
+      this.layersTree as any
+    );
+
+    if (this.extractSettings().controls.layer) {
+      this.layerControl.addTo(this.map);
+    }
   }
 
   /**
@@ -557,9 +607,11 @@ export class MapComponent
       drawLayer(layers);
     }
 
-    this.layerControl = L.control.layers
-      .tree(this.baseTree, layers as any)
-      .addTo(this.map);
+    this.layerControl = L.control.layers.tree(this.baseTree, layers as any);
+
+    if (this.extractSettings().controls.layer) {
+      this.layerControl.addTo(this.map);
+    }
   }
 
   /**

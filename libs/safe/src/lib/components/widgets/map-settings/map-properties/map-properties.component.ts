@@ -27,7 +27,7 @@ export class MapPropertiesComponent
   public baseMaps = BASEMAPS;
 
   /** @returns the form group for the map controls */
-  get controls() {
+  get controlsFormGroup() {
     return this.form.get('controls') as UntypedFormGroup;
   }
 
@@ -47,13 +47,10 @@ export class MapPropertiesComponent
       zoom: this.form.value.zoom,
       centerLat: this.form.value.centerLat,
       centerLong: this.form.value.centerLong,
-      timeDimension: this.form.value.timeDimension,
       controls: this.form.value.controls,
     };
     this.updateMapSettings(defaultMapSettings);
     this.setUpFormListeners();
-    console.log('form', this.form);
-    console.log('controls', this.controls);
   }
 
   /**
@@ -85,11 +82,11 @@ export class MapPropertiesComponent
         this.updateMapSettings({ basemap: value } as MapConstructorSettings)
       );
     this.form
-      .get('timeDimension')
+      .get('controls')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.updateMapSettings({
-          timeDimension: value,
+          controls: value,
         } as MapConstructorSettings);
       });
   }

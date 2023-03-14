@@ -1338,11 +1338,12 @@
 						"basemap": "Fond de carte",
 						"controls": {
 							"download": "Télécharger",
-							"group": "Groupe",
+							"layer": "Couches",
 							"legend": "Légende",
 							"measure": "Mesure",
 							"search": "Recherche",
-							"timedimension": "Dimension temporelle"
+							"timedimension": "Dimension temporelle",
+							"title": "Contrôles de la carte"
 						},
 						"latitude": "Latitude du centre de la carte",
 						"longitude": "Longitude du centre de la carte",

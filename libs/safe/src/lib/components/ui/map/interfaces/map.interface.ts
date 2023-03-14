@@ -17,8 +17,7 @@ export interface MapConstructorSettings {
   layers?: any[];
   pm?: any;
   pmIgnore?: boolean;
-  timeDimension?: boolean;
-  controls?: MapControls;
+  controls: MapControls;
 }
 
 /** Available leaflet event types. */
@@ -42,7 +41,7 @@ export interface MapControls {
   download: boolean;
   legend: boolean;
   measure: boolean;
-  group: boolean;
+  layer: boolean;
   search: boolean;
 }
 
@@ -52,6 +51,6 @@ export const DefaultMapControls: MapControls = {
   download: true,
   legend: true,
   measure: false,
-  group: true,
+  layer: true,
   search: false,
 };
