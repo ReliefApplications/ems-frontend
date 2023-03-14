@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { MapConstructorSettings } from '../../../ui/map/interfaces/map.interface';
@@ -17,6 +17,8 @@ export class MapPropertiesComponent extends SafeUnsubscribeComponent {
   @Input() mapSettings!: MapConstructorSettings;
 
   public baseMaps = BASEMAPS;
+  // eslint-disable-next-line @angular-eslint/no-output-native
+  @Output() close = new EventEmitter();
 
   /**
    * Map Properties of Map widget.
