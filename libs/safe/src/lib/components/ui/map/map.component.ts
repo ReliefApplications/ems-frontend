@@ -127,8 +127,15 @@ export class MapComponent
   private esriApiKey!: string;
   public settingsConfig: MapConstructorSettings = {
     basemap: 'OSM',
-    centerLat: 0,
-    centerLong: 0,
+    initialState: {
+      viewpoint: {
+        center: {
+          longitude: 0,
+          latitude: 0,
+        },
+        zoom: 2,
+      },
+    },
   };
 
   // === MARKERS ===
@@ -148,6 +155,7 @@ export class MapComponent
    * @param environment platform environment
    * @param translate The translate service
    * @param mapControlsService The map controls handler service
+   * @param arcgisService Service for arcGIS features
    */
   constructor(
     @Inject('environment') environment: any,
@@ -298,8 +306,16 @@ export class MapComponent
    */
   private extractSettings(): MapConstructorSettings {
     // Settings initialization
-    const centerLong = Number(get(this.settingsConfig, 'centerLong', 0));
-    const centerLat = Number(get(this.settingsConfig, 'centerLat', 0));
+    const initialState = get(this.settingsConfig, 'initialState', {
+      viewpoint: {
+        center: {
+          latitude: 0,
+          longitude: 0,
+        },
+        zoom: 3,
+      },
+    });
+
     const maxBounds = get(this.settingsConfig, 'maxBounds', [
       [-90, -180],
       [90, 180],
@@ -309,7 +325,6 @@ export class MapComponent
     const minZoom = get(this.settingsConfig, 'minZoom', 2);
     const worldCopyJump = get(this.settingsConfig, 'worldCopyJump', true);
     const zoomControl = get(this.settingsConfig, 'zoomControl', false);
-    const zoom = get(this.settingsConfig, 'zoom', 3);
     const timeDimension = get(this.settingsConfig, 'timeDimension', false);
     /**
      * TODO implement layer loading for the layers returned from the settings
@@ -327,15 +342,13 @@ export class MapComponent
     const layers = get(this.settingsConfig, 'layers', []);
 
     return {
-      centerLong,
-      centerLat,
+      initialState,
       maxBounds,
       basemap,
       maxZoom,
       minZoom,
       worldCopyJump,
       zoomControl,
-      zoom,
       layers,
       timeDimension,
     };
@@ -344,15 +357,13 @@ export class MapComponent
   /** Creates the map and adds all the controls we use */
   private drawMap(): void {
     const {
-      centerLong,
-      centerLat,
+      initialState,
       maxBounds: maxBoundArray,
       basemap,
       maxZoom,
       minZoom,
       worldCopyJump,
       zoomControl,
-      zoom,
       timeDimension,
       // layers,
     } = this.extractSettings();
@@ -369,9 +380,15 @@ export class MapComponent
       minZoom,
       maxZoom,
       worldCopyJump,
-      zoom,
+      zoom: initialState.viewpoint.zoom,
       timeDimension,
-    } as any).setView(L.latLng(centerLat, centerLong), zoom);
+    } as any).setView(
+      L.latLng(
+        initialState.viewpoint.center.latitude,
+        initialState.viewpoint.center.longitude
+      ),
+      initialState.viewpoint.zoom
+    );
 
     this.arcgisService.loadWebMap(this.map, 'e322b877a98847d79692a3c7bf45e5cf');
 
@@ -418,13 +435,11 @@ export class MapComponent
     merge(this.settingsConfig, settingsValue);
     if (this.map) {
       const {
-        centerLong,
-        centerLat,
+        initialState,
         maxBounds,
         basemap,
         maxZoom,
         minZoom,
-        zoom,
         timeDimension,
       } = this.extractSettings();
 
@@ -438,8 +453,8 @@ export class MapComponent
 
       this.map.setMaxBounds(maxBounds);
 
-      if (this.map.getZoom() !== zoom) {
-        this.map.setZoom(zoom);
+      if (this.map.getZoom() !== initialState.viewpoint.zoom) {
+        this.map.setZoom(initialState.viewpoint.zoom);
       }
 
       if (basemap) {
@@ -450,9 +465,18 @@ export class MapComponent
         }
       }
 
-      const center = this.map.getCenter();
-      if (centerLat !== center.lat || centerLong !== center.lng) {
-        this.map.setView(L.latLng(centerLat, centerLong), zoom);
+      const currentCenter = this.map.getCenter();
+      if (
+        initialState.viewpoint.center.latitude !== currentCenter.lat ||
+        initialState.viewpoint.center.longitude !== currentCenter.lng
+      ) {
+        this.map.setView(
+          L.latLng(
+            initialState.viewpoint.center.latitude,
+            initialState.viewpoint.center.longitude
+          ),
+          initialState.viewpoint.zoom
+        );
       }
 
       this.mapControlsService.setTimeDimension(

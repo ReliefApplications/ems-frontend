@@ -37,11 +37,9 @@ export class MapPropertiesComponent
    * Subscribe to settings changes to update map.
    */
   ngOnInit(): void {
-    const defaultMapSettings = {
+    const defaultMapSettings: MapConstructorSettings = {
       basemap: this.form.value.basemap,
-      zoom: this.form.value.zoom,
-      centerLat: this.form.value.centerLat,
-      centerLong: this.form.value.centerLong,
+      initialState: this.form.get('initialState')?.value,
       timeDimension: this.form.value.timeDimension,
     };
     this.updateMapSettings(defaultMapSettings);
@@ -53,22 +51,12 @@ export class MapPropertiesComponent
    */
   private setUpFormListeners() {
     this.form
-      .get('zoom')
+      .get('initialState')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) =>
-        this.updateMapSettings({ zoom: value } as MapConstructorSettings)
-      );
-    this.form
-      .get('centerLat')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) =>
-        this.updateMapSettings({ centerLat: value } as MapConstructorSettings)
-      );
-    this.form
-      .get('centerLong')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) =>
-        this.updateMapSettings({ centerLong: value } as MapConstructorSettings)
+        this.updateMapSettings({
+          initialState: value,
+        } as MapConstructorSettings)
       );
     this.form
       .get('basemap')
@@ -107,14 +95,10 @@ export class MapPropertiesComponent
    */
   onSetByMap(): void {
     this.form
-      .get('centerLat')
-      ?.setValue(this.mapSettings.centerLat, { emitEvent: false });
-    this.form
-      .get('centerLong')
-      ?.setValue(this.mapSettings.centerLong, { emitEvent: false });
-    this.form
-      .get('zoom')
-      ?.setValue(this.mapSettings.zoom, { emitEvent: false });
+      .get('initialState.viewpoint')
+      ?.setValue(this.mapSettings.initialState.viewpoint, {
+        emitEvent: false,
+      });
   }
 
   /**
@@ -125,14 +109,18 @@ export class MapPropertiesComponent
   handleMapEvent(event: MapEvent) {
     switch (event.type) {
       case MapEventType.MOVE_END:
-        this.mapSettings.centerLat = event.content.center.lat;
-        this.mapSettings.centerLong = event.content.center.lng;
+        this.mapSettings.initialState.viewpoint.center.latitude =
+          event.content.center.lat;
+        this.mapSettings.initialState.viewpoint.center.longitude =
+          event.content.center.lng;
         break;
       case MapEventType.ZOOM_END:
-        this.mapSettings.zoom = event.content.zoom;
+        this.mapSettings.initialState.viewpoint.zoom = event.content.zoom;
         this.form
-          .get('zoom')
-          ?.setValue(this.mapSettings.zoom, { emitEvent: false });
+          .get('initialState.viewpoint.zoom')
+          ?.setValue(this.mapSettings.initialState.viewpoint.zoom, {
+            emitEvent: false,
+          });
         break;
       default:
         break;

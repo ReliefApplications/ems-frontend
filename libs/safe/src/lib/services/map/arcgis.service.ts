@@ -14,10 +14,21 @@ import {
 export class ArcgisService {
   private session!: ApiKeyManager;
 
+  /**
+   * Class constructor
+   *
+   * @param environment Environment token
+   */
   constructor(@Inject('environment') environment: any) {
     this.session = new ApiKeyManager({ key: environment.esriApiKey });
   }
 
+  /**
+   * Load retrieve webmap with given id to the given map
+   *
+   * @param map Map where to load given webmap
+   * @param id Webmap id
+   */
   public loadWebMap(map: L.Map, id: string): void {
     console.log(this.session);
     getItemData(id, {
@@ -27,9 +38,9 @@ export class ArcgisService {
     });
   }
 
-  private loadBaseMap(): void {}
+  // private loadBaseMap(): void {}
 
-  private loadOperationalLayers(): void {}
+  // private loadOperationalLayers(): void {}
 }
 
 // private availableLayers = new BehaviorSubject<any[]>([]);

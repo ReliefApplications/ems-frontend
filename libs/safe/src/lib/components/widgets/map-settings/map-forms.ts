@@ -9,17 +9,12 @@ import {
 } from '@angular/forms';
 import get from 'lodash/get';
 import { MapLayerI } from './map-layers/map-layers.component';
+import { MapConstructorSettings } from '../../ui/map/interfaces/map.interface';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 /** Interface for the maps settings */
-export interface MapSettingsI {
-  title: string;
-  zoom: number;
-  basemap: string;
-  centerLong: number;
-  centerLat: number;
+export interface MapSettingsI extends MapConstructorSettings {
   layers: MapLayerI[];
-  timeDimension: boolean;
 }
 
 /** Angular Form Builder */
@@ -59,11 +54,18 @@ const DEFAULT_MAP: Nullable<MapSettingsI> = {
   // query: null,
   // latitude: 0,
   // longitude: 0,
-  zoom: 2,
+
   // category: null,
   basemap: null,
-  centerLong: null,
-  centerLat: null,
+  initialState: {
+    viewpoint: {
+      center: {
+        latitude: 0,
+        longitude: 0,
+      },
+      zoom: 2,
+    },
+  },
   // popupFields: [],
   // onlineLayers: [],
   // markersRules: [],
@@ -196,21 +198,40 @@ export const createMapWidgetFormGroup = (
     //   get(value, 'longitude', DEFAULT_MAP.longitude),
     //   [Validators.min(-180), Validators.max(180)],
     // ],
-    zoom: [
-      get(value, 'zoom', DEFAULT_MAP.zoom),
-      [Validators.min(2), Validators.max(18)],
-    ],
+    initialState: fb.group({
+      viewpoint: fb.group({
+        zoom: [
+          get(
+            value,
+            'initialState.viewpoint.zoom',
+            DEFAULT_MAP.initialState?.viewpoint.zoom
+          ),
+          [Validators.min(2), Validators.max(18)],
+        ],
+        center: fb.group({
+          longitude: [
+            get(
+              value,
+              'initialState.viewpoint.center.longitude',
+              DEFAULT_MAP.initialState?.viewpoint.center.longitude
+            ),
+            [Validators.min(-180), Validators.max(180)],
+          ],
+          latitude: [
+            get(
+              value,
+              'initialState.viewpoint.center.latitude',
+              DEFAULT_MAP.initialState?.viewpoint.center.latitude
+            ),
+            [Validators.min(-90), Validators.max(90)],
+          ],
+        }),
+      }),
+    }),
     // category: [get(value, 'category', DEFAULT_MAP.category)],
     basemap: [get(value, 'basemap', DEFAULT_MAP.basemap)],
     timeDimension: [get(value, 'timeDimension', DEFAULT_MAP.timeDimension)],
-    centerLong: [
-      get(value, 'centerLong', DEFAULT_MAP.centerLong),
-      [Validators.min(-180), Validators.max(180)],
-    ],
-    centerLat: [
-      get(value, 'centerLat', DEFAULT_MAP.centerLat),
-      [Validators.min(-90), Validators.max(90)],
-    ],
+
     // popupFields: [get(value, 'popupFields', DEFAULT_MAP.popupFields)],
     // onlineLayers: [get(value, 'onlineLayers', DEFAULT_MAP.onlineLayers)],
     // markerRules: fb.array(
