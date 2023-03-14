@@ -103,7 +103,7 @@ export class MapPropertiesComponent
 
   /**
    * Load on Scroll
-   *
+   * 
    * @param event handler
    */
   private loadOnScroll(event: any): void {
