@@ -1,8 +1,4 @@
 import {
-  // createQueryForm,
-  createFilterGroup,
-} from '../../query-builder/query-builder-forms';
-import {
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
@@ -19,35 +15,7 @@ export interface MapSettingsI extends MapConstructorSettings {
 
 /** Angular Form Builder */
 const fb = new UntypedFormBuilder();
-/** Default clorophlet value */
-const DEFAULT_CLOROPHLET = {
-  name: 'New clorophlet',
-  geoJSON: '',
-  geoJSONname: '',
-  geoJSONfield: '',
-  opacity: 100,
-  place: '',
-  divisions: [],
-};
-/** Default division value */
-const DEFAULT_DIVISION = {
-  label: 'New division',
-  color: '#0090d1',
-  filter: {
-    logic: ['and'],
-    filters: [],
-  },
-};
-/** Default marker rule */
-const DEFAULT_MARKER_RULE = {
-  label: 'New rule',
-  color: '#0090d1',
-  size: 1,
-  filter: {
-    logic: ['and'],
-    filters: [],
-  },
-};
+
 /** Default map value */
 const DEFAULT_MAP: Nullable<MapSettingsI> = {
   title: null,
@@ -66,60 +34,11 @@ const DEFAULT_MAP: Nullable<MapSettingsI> = {
       zoom: 2,
     },
   },
-  // popupFields: [],
   // onlineLayers: [],
   // markersRules: [],
-  // clorophlets: [],
   layers: [],
   timeDimension: true,
 };
-
-// === CLOROPHLET ===
-/**
- * Create new clorophlet form from value
- *
- * @param value value of clorophlet, optional
- * @returns new form group
- */
-export const clorophletForm = (value?: any): UntypedFormGroup =>
-  fb.group({
-    name: [get(value, 'name', DEFAULT_CLOROPHLET.name), [Validators.required]],
-    geoJSON: [
-      get(value, 'geoJSON', DEFAULT_CLOROPHLET.geoJSON),
-      [Validators.required],
-    ],
-    geoJSONname: [
-      get(value, 'geoJSONname', DEFAULT_CLOROPHLET.geoJSONname),
-      [Validators.required],
-    ],
-    geoJSONfield: [
-      get(value, 'geoJSONfield', DEFAULT_CLOROPHLET.geoJSONfield),
-      [Validators.required],
-    ],
-    opacity: [get(value, 'opacity', DEFAULT_CLOROPHLET.opacity)],
-    place: [
-      get(value, 'place', DEFAULT_CLOROPHLET.place),
-      [Validators.required],
-    ],
-    divisions: fb.array(
-      get(value, 'divisions', DEFAULT_CLOROPHLET.divisions).map((x: any) =>
-        divisionForm(x)
-      )
-    ),
-  });
-
-/**
- * Create new division form from value
- *
- * @param value value of division, optional
- * @returns new division group
- */
-export const divisionForm = (value?: any): UntypedFormGroup =>
-  fb.group({
-    label: [get(value, 'label', DEFAULT_DIVISION.label)],
-    color: [get(value, 'color', DEFAULT_DIVISION.color)],
-    filter: createFilterGroup(get(value, 'filter', DEFAULT_DIVISION.filter)),
-  });
 
 /**
  * Create layer form from value
@@ -151,29 +70,7 @@ export const createLayerForm = (value?: MapLayerI): UntypedFormGroup =>
     }),
   });
 
-// === MARKERS ===
-/**
- * Create marker rule form from value
- *
- * @param value marker rule value ( optional )
- * @returns new form group
- */
-export const markerRuleForm = (value?: any): UntypedFormGroup =>
-  fb.group({
-    label: [
-      get(value, 'label', DEFAULT_MARKER_RULE.label),
-      [Validators.required],
-    ],
-    color: [get(value, 'color', DEFAULT_MARKER_RULE.color)],
-    size: [
-      get(value, 'size', DEFAULT_MARKER_RULE.size),
-      [Validators.min(1), Validators.max(10)],
-    ],
-    filter: createFilterGroup(get(value, 'filter', DEFAULT_MARKER_RULE.filter)),
-  });
-
 // === MAP ===
-
 /**
  * Create map form from value
  *
