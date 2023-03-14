@@ -129,6 +129,7 @@ export class MapComponent
     basemap: 'OSM',
     centerLat: 0,
     centerLong: 0,
+    arcGisWebMap: 'e322b877a98847d79692a3c7bf45e5cf',
   };
   private arcGisWebMap: any;
 
@@ -149,7 +150,7 @@ export class MapComponent
    * @param environment platform environment
    * @param translate The translate service
    * @param mapControlsService The map controls handler service
-   * @param arcgisService
+   * @param arcgisService the arcgis service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -313,7 +314,11 @@ export class MapComponent
     const zoomControl = get(this.settingsConfig, 'zoomControl', false);
     const zoom = get(this.settingsConfig, 'zoom', 3);
     const timeDimension = get(this.settingsConfig, 'timeDimension', false);
-    const arcGisWebMap = get(this.settingsConfig, 'arcGisWebMap', '');
+    const arcGisWebMap = get(
+      this.settingsConfig,
+      'arcGisWebMap',
+      'e322b877a98847d79692a3c7bf45e5cf'
+    );
     /**
      * TODO implement layer loading for the layers returned from the settings
      *
@@ -378,10 +383,8 @@ export class MapComponent
       timeDimension,
     } as any).setView(L.latLng(centerLat, centerLong), zoom);
 
-    this.arcgisService.loadWebMap(
-      this.map,
-      arcGisWebMap ? arcGisWebMap : 'e322b877a98847d79692a3c7bf45e5cf'
-    );
+    //set webmap
+    this.setWebmap(arcGisWebMap);
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(basemap);
@@ -459,10 +462,10 @@ export class MapComponent
         }
       }
 
-      if (arcGisWebMap != '') {
-        const currentWebMap = this.arcGisWebMap?.options?.key;
+      if (arcGisWebMap) {
+        const currentWebMap = this.arcGisWebMap;
         if (arcGisWebMap !== currentWebMap) {
-          this.arcgisService.loadWebMap(this.map, currentWebMap);
+          this.setWebmap(arcGisWebMap);
         }
       }
 
@@ -792,5 +795,15 @@ export class MapComponent
     this.basemap = Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
+  }
+
+  /**
+   * Set the webmap.
+   *
+   * @param webmap String containing the id (name) of the webmap
+   */
+  public setWebmap(webmap: any) {
+    this.arcGisWebMap = webmap;
+    this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
   }
 }

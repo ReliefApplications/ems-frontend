@@ -18,17 +18,19 @@ export class ArcgisService {
   private session!: ApiKeyManager;
 
   /**
+   * Build constructor
    *
-   * @param environment
+   * @param environment parameter
    */
   constructor(@Inject('environment') environment: any) {
     this.session = new ApiKeyManager({ key: environment.esriApiKey });
   }
 
   /**
+   * Load web map
    *
-   * @param map
-   * @param id
+   * @param map to change
+   * @param id of webmap
    */
   public loadWebMap(map: L.Map, id: string): void {
     console.log(this.session);
@@ -50,9 +52,11 @@ export class ArcgisService {
   //private loadOperationalLayers(): void {}
 
   /**
+   * Search for web map in arcgis-rest-request
    *
-   * @param options
-   * @param options.start
+   * @param options parameter
+   * @param options.start parameter
+   * @returns searched items
    */
   public searchItems(options: { start?: number }) {
     // console.log(this.session);
@@ -67,8 +71,6 @@ export class ArcgisService {
       authentication: this.session,
       // portal: arcgisUrl + '/sharing/rest',
     };
-    console.log('ABC');
-    console.log(searchItems(filter));
     return searchItems(filter);
   }
 }

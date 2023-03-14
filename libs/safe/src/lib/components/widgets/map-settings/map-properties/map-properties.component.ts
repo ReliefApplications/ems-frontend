@@ -15,7 +15,7 @@ import {
   MapEventType,
 } from '../../../ui/map/interfaces/map.interface';
 import { BASEMAPS } from '../../../ui/map/const/baseMaps';
-import { ArcgisService } from 'libs/safe/src/lib/services/map/arcgis.service';
+import { ArcgisService } from '../../../../../lib/services/map/arcgis.service';
 import { MatSelect } from '@angular/material/select';
 
 /**
@@ -49,7 +49,7 @@ export class MapPropertiesComponent
   /**
    * Map Properties of Map widget.
    *
-   * @param arcgis
+   * @param arcgis service
    */
   constructor(private arcgis: ArcgisService) {
     super();
@@ -73,7 +73,7 @@ export class MapPropertiesComponent
   }
 
   /**
-   *
+   * Search for webmap data in argcis-rest-request using arcgis service
    */
   private search(): void {
     this.arcgis.searchItems({ start: this.start }).then((search) => {
@@ -88,8 +88,9 @@ export class MapPropertiesComponent
   }
 
   /**
+   * Deals with open change
    *
-   * @param event
+   * @param event handler
    */
   openedChange(event: any): void {
     if (event && this.elementSelect) {
@@ -101,8 +102,9 @@ export class MapPropertiesComponent
   }
 
   /**
+   * Load on Scroll
    *
-   * @param event
+   * @param event handler
    */
   private loadOnScroll(event: any): void {
     if (
