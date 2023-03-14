@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { createLayerForm } from '../../map-forms';
@@ -83,7 +83,7 @@ const TEST_LAYER: {
 })
 export class SafeEditLayerModalComponent
   extends SafeUnsubscribeComponent
-  implements AfterViewInit
+  implements OnInit, AfterViewInit
 {
   public form: UntypedFormGroup;
 
@@ -124,9 +124,12 @@ export class SafeEditLayerModalComponent
     this.form = createLayerForm(layer);
   }
 
+  ngOnInit(): void {
+    this.configureMapSettings();
+  }
+
   ngAfterViewInit(): void {
     console.log(this.form);
-    this.configureMapSettings();
     if (this.layerType) {
       this.setUpLayer();
     }
@@ -138,8 +141,15 @@ export class SafeEditLayerModalComponent
    */
   private configureMapSettings() {
     this.mapSettings = {
-      centerLong: 0,
-      centerLat: 0,
+      initialState: {
+        viewpoint: {
+          center: {
+            latitude: 0,
+            longitude: 0,
+          },
+          zoom: 2,
+        },
+      },
       maxBounds: [
         [-90, -1000],
         [90, 1000],
@@ -148,7 +158,6 @@ export class SafeEditLayerModalComponent
       zoomControl: false,
       minZoom: 2,
       maxZoom: 18,
-      zoom: 2,
       worldCopyJump: true,
     };
   }
@@ -278,7 +287,7 @@ export class SafeEditLayerModalComponent
     if (event) {
       switch (event.type) {
         case MapEventType.ZOOM_END:
-          this.mapSettings.zoom = event.content.zoom;
+          this.mapSettings.initialState.viewpoint.zoom = event.content.zoom;
           const visibilityRange = [
             this.form.get('visibilityRangeStart')?.value,
             this.form.get('visibilityRangeEnd')?.value,

@@ -32,13 +32,9 @@ export class MapPropertiesComponent extends SafeUnsubscribeComponent {
    */
   onSetByMap(): void {
     this.form
-      .get('centerLat')
-      ?.setValue(this.mapSettings.centerLat, { emitEvent: false });
-    this.form
-      .get('centerLong')
-      ?.setValue(this.mapSettings.centerLong, { emitEvent: false });
-    this.form
-      .get('zoom')
-      ?.setValue(this.mapSettings.zoom, { emitEvent: false });
+      .get('initialState.viewpoint')
+      ?.setValue(this.mapSettings.initialState.viewpoint, {
+        emitEvent: false,
+      });
   }
 }

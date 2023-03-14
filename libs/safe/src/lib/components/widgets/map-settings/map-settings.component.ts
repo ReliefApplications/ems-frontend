@@ -41,11 +41,9 @@ export class SafeMapSettingsComponent
       this.change.emit(this.tileForm);
     });
 
-    const defaultMapSettings = {
+    const defaultMapSettings: MapConstructorSettings = {
       basemap: this.tileForm.value.basemap,
-      zoom: this.tileForm.value.zoom,
-      centerLat: this.tileForm.value.centerLat,
-      centerLong: this.tileForm.value.centerLong,
+      initialState: this.tileForm.get('initialState')?.value,
       timeDimension: this.tileForm.value.timeDimension,
     };
     this.updateMapSettings(defaultMapSettings);
@@ -58,22 +56,12 @@ export class SafeMapSettingsComponent
   private setUpFormListeners() {
     if (!this.tileForm) return;
     this.tileForm
-      .get('zoom')
+      .get('initialState')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) =>
-        this.updateMapSettings({ zoom: value } as MapConstructorSettings)
-      );
-    this.tileForm
-      .get('centerLat')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) =>
-        this.updateMapSettings({ centerLat: value } as MapConstructorSettings)
-      );
-    this.tileForm
-      .get('centerLong')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) =>
-        this.updateMapSettings({ centerLong: value } as MapConstructorSettings)
+        this.updateMapSettings({
+          initialState: value,
+        } as MapConstructorSettings)
       );
     this.tileForm
       .get('basemap')
@@ -97,17 +85,21 @@ export class SafeMapSettingsComponent
    * @param event leaflet map event
    */
   handleMapEvent(event: MapEvent) {
+    if (!this.tileForm) return;
     switch (event.type) {
       case MapEventType.MOVE_END:
-        this.mapSettings.centerLat = event.content.center.lat;
-        this.mapSettings.centerLong = event.content.center.lng;
+        this.mapSettings.initialState.viewpoint.center.latitude =
+          event.content.center.lat;
+        this.mapSettings.initialState.viewpoint.center.longitude =
+          event.content.center.lng;
         break;
       case MapEventType.ZOOM_END:
-        this.mapSettings.zoom = event.content.zoom;
-        if (this.tileForm)
-          this.tileForm
-            .get('zoom')
-            ?.setValue(this.mapSettings.zoom, { emitEvent: false });
+        this.mapSettings.initialState.viewpoint.zoom = event.content.zoom;
+        this.tileForm
+          .get('initialState.viewpoint.zoom')
+          ?.setValue(this.mapSettings.initialState.viewpoint.zoom, {
+            emitEvent: false,
+          });
         break;
       default:
         break;
