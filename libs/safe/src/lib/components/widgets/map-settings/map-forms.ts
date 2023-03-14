@@ -188,16 +188,6 @@ export const createMapWidgetFormGroup = (
   fb.group({
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],
-    // resource: [get(value, 'resource', null), Validators.required],
-    // query: createQueryForm(get(value, 'query', DEFAULT_MAP.query), true),
-    // latitude: [
-    //   get(value, 'latitude', DEFAULT_MAP.latitude),
-    //   [Validators.min(-90), Validators.max(90)],
-    // ],
-    // longitude: [
-    //   get(value, 'longitude', DEFAULT_MAP.longitude),
-    //   [Validators.min(-180), Validators.max(180)],
-    // ],
     initialState: fb.group({
       viewpoint: fb.group({
         zoom: [
@@ -228,22 +218,9 @@ export const createMapWidgetFormGroup = (
         }),
       }),
     }),
-    // category: [get(value, 'category', DEFAULT_MAP.category)],
     basemap: [get(value, 'basemap', DEFAULT_MAP.basemap)],
     timeDimension: [get(value, 'timeDimension', DEFAULT_MAP.timeDimension)],
-
-    // popupFields: [get(value, 'popupFields', DEFAULT_MAP.popupFields)],
     // onlineLayers: [get(value, 'onlineLayers', DEFAULT_MAP.onlineLayers)],
-    // markerRules: fb.array(
-    //   get(value, 'markerRules', DEFAULT_MAP.markersRules).map((x: any) =>
-    //     markerRuleForm(x)
-    //   )
-    // ),
-    // clorophlets: fb.array(
-    //   get(value, 'clorophlets', DEFAULT_MAP.clorophlets).map((x: any) =>
-    //     clorophletForm(x)
-    //   )
-    // ),
     layers: fb.array(
       get(value, 'layers', DEFAULT_MAP.layers).map((x: any) =>
         createLayerForm(x)

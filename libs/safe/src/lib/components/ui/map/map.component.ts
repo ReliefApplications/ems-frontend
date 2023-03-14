@@ -42,7 +42,6 @@ import { getMapFeatures } from './utils/get-map-features';
 import { LayerProperties } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
 import { createCustomDivIcon } from './utils/create-div-icon';
-import { generateBaseMaps } from './test/basemaps-test';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/language';
 import { ArcgisService } from '../../../services/map/arcgis.service';
 
@@ -150,12 +149,12 @@ export class MapComponent
   private layers: Layer[] = [];
 
   /**
-   * Constructor of the map widget component
+   * Map widget component
    *
    * @param environment platform environment
-   * @param translate The translate service
-   * @param mapControlsService The map controls handler service
-   * @param arcgisService Service for arcGIS features
+   * @param translate Angular translate service
+   * @param mapControlsService Map controls handler service
+   * @param arcgisService Shared arcgis service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -390,6 +389,7 @@ export class MapComponent
       initialState.viewpoint.zoom
     );
 
+    // todo(gis): replace with correct map loading
     this.arcgisService.loadWebMap(this.map, 'e322b877a98847d79692a3c7bf45e5cf');
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
@@ -493,11 +493,21 @@ export class MapComponent
   private setUpLayers(): void {
     this.layersTree = [];
 
-    // Sets the basemaps
-    const baseMaps = generateBaseMaps(this.esriApiKey, this.basemap);
+    this.basemap = L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }
+    ).addTo(this.map);
     this.baseTree = {
       label: 'Base Maps',
-      children: baseMaps,
+      children: [
+        {
+          label: 'OSM',
+          layer: this.basemap,
+        },
+      ],
       collapsed: true,
     };
 

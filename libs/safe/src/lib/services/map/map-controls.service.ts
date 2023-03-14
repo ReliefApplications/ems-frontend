@@ -51,6 +51,35 @@ export class SafeMapControlsService {
   }
 
   /**
+   * Creates the layer control.
+   *
+   * @param {L.Map} map map to add the control
+   * @param baseMaps selected base maps
+   * @param layers selected layers
+   * @returns layer control
+   */
+  public setLayerControl(
+    map: L.Map,
+    baseMaps: L.Layer[],
+    layers: L.Layer[]
+  ): void {
+    const baseTree = {
+      label: 'Base Maps',
+      children: baseMaps,
+      collapsed: true,
+    };
+
+    const overlays = [
+      {
+        label: 'Layers',
+        selectAllCheckbox: 'Un/select all',
+        children: layers,
+      },
+    ];
+    return (L.control.layers as any).tree(baseTree, overlays as any).addTo(map);
+  }
+
+  /**
    * Creates a custom searchbar control with esri geocoding
    *
    * @param map current map

@@ -1,5 +1,18 @@
 :host {
-  flex: 1;
-  display: flex;
-  max-width: 100%;
+  @apply grow flex max-w-full;
+
+  mat-drawer {
+    safe-button {
+      @apply w-full rounded-sm text-neutral-500;
+      ::ng-deep {
+        .mat-button-wrapper {
+          @apply flex items-center p-1.5;
+        }
+      }
+    }
+
+    safe-button[data-selected='true'] {
+      @apply text-black bg-neutral-100;
+    }
+  }
 }
