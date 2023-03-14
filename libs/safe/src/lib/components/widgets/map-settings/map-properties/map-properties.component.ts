@@ -1,12 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
-import {
-  MapConstructorSettings,
-  MapEvent,
-  MapEventType,
-} from '../../../ui/map/interfaces/map.interface';
+import { MapConstructorSettings } from '../../../ui/map/interfaces/map.interface';
 import { BASEMAPS } from '../../../ui/map/const/baseMaps';
 
 /**
@@ -17,19 +12,18 @@ import { BASEMAPS } from '../../../ui/map/const/baseMaps';
   templateUrl: './map-properties.component.html',
   styleUrls: ['./map-properties.component.scss'],
 })
-export class MapPropertiesComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class MapPropertiesComponent extends SafeUnsubscribeComponent {
   @Input() form!: UntypedFormGroup;
+  @Input() mapSettings!: MapConstructorSettings;
 
-  public mapSettings!: MapConstructorSettings;
   public baseMaps = BASEMAPS;
 
   /** @returns the form group for the map controls */
   get controlsFormGroup() {
     return this.form.get('controls') as UntypedFormGroup;
   }
+  // eslint-disable-next-line @angular-eslint/no-output-native
+  @Output() close = new EventEmitter();
 
   /**
    * Map Properties of Map widget.
@@ -39,108 +33,13 @@ export class MapPropertiesComponent
   }
 
   /**
-   * Subscribe to settings changes to update map.
-   */
-  ngOnInit(): void {
-    const defaultMapSettings = {
-      basemap: this.form.value.basemap,
-      zoom: this.form.value.zoom,
-      centerLat: this.form.value.centerLat,
-      centerLong: this.form.value.centerLong,
-      controls: this.form.value.controls,
-    };
-    this.updateMapSettings(defaultMapSettings);
-    this.setUpFormListeners();
-  }
-
-  /**
-   * Set form listeners
-   */
-  private setUpFormListeners() {
-    this.form
-      .get('zoom')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) =>
-        this.updateMapSettings({ zoom: value } as MapConstructorSettings)
-      );
-    this.form
-      .get('centerLat')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) =>
-        this.updateMapSettings({ centerLat: value } as MapConstructorSettings)
-      );
-    this.form
-      .get('centerLong')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) =>
-        this.updateMapSettings({ centerLong: value } as MapConstructorSettings)
-      );
-    this.form
-      .get('basemap')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) =>
-        this.updateMapSettings({ basemap: value } as MapConstructorSettings)
-      );
-    this.form
-      .get('controls')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.updateMapSettings({
-          controls: value,
-        } as MapConstructorSettings);
-      });
-  }
-
-  /**
-   * Update map settings
-   *
-   * @param settings new settings
-   */
-  private updateMapSettings(settings: MapConstructorSettings) {
-    if (this.mapSettings) {
-      this.mapSettings = {
-        ...this.mapSettings,
-        ...settings,
-      };
-    } else {
-      this.mapSettings = settings;
-    }
-  }
-
-  /**
    * Set the latitude and longitude of the center of the map using the one in the preview map.
    */
   onSetByMap(): void {
     this.form
-      .get('centerLat')
-      ?.setValue(this.mapSettings.centerLat, { emitEvent: false });
-    this.form
-      .get('centerLong')
-      ?.setValue(this.mapSettings.centerLong, { emitEvent: false });
-    this.form
-      .get('zoom')
-      ?.setValue(this.mapSettings.zoom, { emitEvent: false });
-  }
-
-  /**
-   * Handle leaflet map events
-   *
-   * @param event leaflet map event
-   */
-  handleMapEvent(event: MapEvent) {
-    switch (event.type) {
-      case MapEventType.MOVE_END:
-        this.mapSettings.centerLat = event.content.center.lat;
-        this.mapSettings.centerLong = event.content.center.lng;
-        break;
-      case MapEventType.ZOOM_END:
-        this.mapSettings.zoom = event.content.zoom;
-        this.form
-          .get('zoom')
-          ?.setValue(this.mapSettings.zoom, { emitEvent: false });
-        break;
-      default:
-        break;
-    }
+      .get('initialState.viewpoint')
+      ?.setValue(this.mapSettings.initialState.viewpoint, {
+        emitEvent: false,
+      });
   }
 }

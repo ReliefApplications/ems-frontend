@@ -81,9 +81,15 @@ export class GeospatialMapComponent
 
   ngAfterViewInit(): void {
     this.mapSettings = {
-      centerLat: 0,
-      centerLong: 0,
-      zoom: 2,
+      initialState: {
+        viewpoint: {
+          center: {
+            latitude: 0,
+            longitude: 0,
+          },
+          zoom: 2,
+        },
+      },
       pmIgnore: false,
       worldCopyJump: true,
     };

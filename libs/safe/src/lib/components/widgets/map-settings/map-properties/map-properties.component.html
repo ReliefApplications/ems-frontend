@@ -2,9 +2,17 @@
   <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
     <!-- Map properties -->
     <div class="flex flex-col flex-1">
-      <h2>
-        {{ 'components.widget.settings.map.properties.title' | translate }}
-      </h2>
+      <div class="flex justify-between">
+        <h2>
+          {{ 'components.widget.settings.map.properties.title' | translate }}
+        </h2>
+        <!-- Close button -->
+        <safe-button
+          [isIcon]="true"
+          icon="close"
+          (click)="close.emit()"
+        ></safe-button>
+      </div>
       <!-- Widget ( map ) name -->
       <mat-form-field appearance="outline" class="p-0">
         <mat-label>{{ 'common.name' | translate }}</mat-label>
@@ -24,72 +32,90 @@
       </mat-form-field>
       <safe-divider></safe-divider>
       <!-- Default view -->
-      <!-- Default zoom -->
-      <mat-label>
-        {{ 'components.widget.settings.map.properties.zoom' | translate }}
-        <safe-icon
-          icon="info_outline"
-          class="cursor-pointer"
-          [matTooltip]="
-            'components.widget.settings.map.properties.zoom' | translate
-          "
-          [inline]="true"
-          [size]="18"
-          variant="grey"
-        ></safe-icon>
-      </mat-label>
-      <mat-slider
-        thumbLabel
-        tickInterval="1"
-        formControlName="zoom"
-        [min]="2"
-        [max]="18"
-      ></mat-slider>
-      <div class="flex flex-wrap gap-2">
-        <!-- Default latitude -->
-        <mat-form-field appearance="outline" class="flex-1">
+      <div class="w-full" formGroupName="initialState">
+        <div class="flex flex-col flex-1" formGroupName="viewpoint">
+          <!-- Default zoom -->
           <mat-label>
-            {{
-              'components.widget.settings.map.properties.latitude' | translate
-            }}
+            {{ 'components.widget.settings.map.properties.zoom' | translate }}
+            <safe-icon
+              icon="info_outline"
+              class="cursor-pointer"
+              [matTooltip]="
+                'components.widget.settings.map.properties.zoom' | translate
+              "
+              [inline]="true"
+              [size]="18"
+              variant="grey"
+            ></safe-icon>
           </mat-label>
-          <input type="number" matInput formControlName="centerLat" />
-          <safe-icon
-            matSuffix
-            icon="info"
-            class="cursor-pointer"
-            variant="grey"
-            [matTooltip]="
-              'components.widget.settings.map.tooltip.default.latitude'
-                | translate
-            "
-          ></safe-icon>
-          <mat-error *ngIf="form.controls.centerLat.errors">
-            {{ 'components.widget.settings.map.errors.latitude' | translate }}
-          </mat-error>
-        </mat-form-field>
-        <!-- Default longitude -->
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>
-            {{
-              'components.widget.settings.map.properties.longitude' | translate
-            }}
-          </mat-label>
-          <input type="number" matInput formControlName="centerLong" />
-          <safe-icon
-            matSuffix
-            icon="info"
-            class="cursor-pointer"
-            variant="grey"
-            [matTooltip]="
-              'components.widget.settings.map.tooltip.default.longitude'
-                | translate
-            "
-          ></safe-icon>
-          <mat-error *ngIf="form.controls.centerLat.errors">
-            {{ 'components.widget.settings.map.errors.longitude' | translate }}
-          </mat-error>
-        </mat-form-field>
+          <mat-slider
+            thumbLabel
+            tickInterval="1"
+            formControlName="zoom"
+            [min]="2"
+            [max]="18"
+          ></mat-slider>
+          <div formGroupName="center" class="flex flex-wrap gap-2">
+            <!-- Default latitude -->
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>
+                {{
+                  'components.widget.settings.map.properties.latitude'
+                    | translate
+                }}
+              </mat-label>
+              <input type="number" matInput formControlName="latitude" />
+              <safe-icon
+                matSuffix
+                icon="info"
+                class="cursor-pointer"
+                variant="grey"
+                [matTooltip]="
+                  'components.widget.settings.map.tooltip.default.latitude'
+                    | translate
+                "
+              ></safe-icon>
+              <mat-error
+                *ngIf="
+                  form.get('initialState.viewpoint.center.latitude')!.errors
+                "
+              >
+                {{
+                  'components.widget.settings.map.errors.latitude' | translate
+                }}
+              </mat-error>
+            </mat-form-field>
+            <!-- Default longitude -->
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>
+                {{
+                  'components.widget.settings.map.properties.longitude'
+                    | translate
+                }}
+              </mat-label>
+              <input type="number" matInput formControlName="longitude" />
+              <safe-icon
+                matSuffix
+                icon="info"
+                class="cursor-pointer"
+                variant="grey"
+                [matTooltip]="
+                  'components.widget.settings.map.tooltip.default.longitude'
+                    | translate
+                "
+              ></safe-icon>
+              <mat-error
+                *ngIf="
+                  form.get('initialState.viewpoint.center.longitude')!.errors
+                "
+              >
+                {{
+                  'components.widget.settings.map.errors.longitude' | translate
+                }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
       </div>
       <!-- Use map to set properties -->
       <safe-button

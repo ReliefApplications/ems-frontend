@@ -170,7 +170,7 @@ export class Layer {
     options: any,
     icon?: any
   ) {
-    if (layer.children) {
+    if (layer?.children) {
       this.applyOptionsToLayer(map, layer.children, options);
     } else {
       const layers = get(layer, '_layers', [layer]);

@@ -5,10 +5,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
-import { MapGeneralModule } from './map-general/map-general.module';
 import { MapLayersModule } from './map-layers/map-layers.module';
 import { MapPropertiesModule } from './map-properties/map-properties.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { SafeButtonModule } from '../../ui/button/button.module';
+import { MapModule } from '../../ui/map/map.module';
 
 /** Module for map settings component */
 @NgModule({
@@ -20,10 +22,12 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     SafeIconModule,
     TranslateModule,
     MatTabsModule,
-    MapGeneralModule,
     MapLayersModule,
     MapPropertiesModule,
     MatTooltipModule,
+    MatSidenavModule,
+    MapModule,
+    SafeButtonModule,
   ],
   exports: [SafeMapSettingsComponent],
 })
