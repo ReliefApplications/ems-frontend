@@ -396,6 +396,9 @@
 			}
 		},
 		"application": {
+			"dashboard": {
+				"empty": "No content available. Wait for your administrator to build some."
+			},
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the application {{name}}?"
 			},

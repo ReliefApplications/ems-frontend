@@ -396,6 +396,9 @@
 			}
 		},
 		"application": {
+			"dashboard": {
+				"empty": "******"
+			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
 			},
