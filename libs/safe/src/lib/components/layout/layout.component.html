@@ -148,12 +148,11 @@
     </ng-container>
   </mat-drawer>
   <mat-drawer-content>
-    <safe-dashboard-filter>
-      <div content class="sidenav-content h-fit w-full">
-        <safe-breadcrumb></safe-breadcrumb>
-        <router-outlet></router-outlet>
-      </div>
-    </safe-dashboard-filter>
+    <safe-dashboard-filter *ngIf="inApplication"> </safe-dashboard-filter>
+    <div content class="sidenav-content h-fit w-full">
+      <safe-breadcrumb></safe-breadcrumb>
+      <router-outlet></router-outlet>
+    </div>
   </mat-drawer-content>
   <mat-drawer mode="side" position="end" [(opened)]="showSidenav">
     <ng-template #rightSidenav></ng-template>

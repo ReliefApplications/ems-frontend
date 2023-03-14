@@ -1,122 +1,112 @@
-<dx-drawer
-  [openedStateMode]="'overlap'"
+<div
+  safeDrawerPositioner
+  class="fixed"
   [position]="position"
-  [revealMode]="'slide'"
-  [(opened)]="isDrawerOpen"
-  template="template"
-  [height]="'inherit'"
-  [minSize]="48"
-  [closeOnOutsideClick]="true"
+  [minSizeOnClosed]="48"
+  [elementWidth]="containerWidth"
+  [elementHeight]="containerHeight"
+  [opened]="isDrawerOpen"
 >
-  <div *dxTemplate="let data of 'template'">
-    <div
+  <div
+    [ngClass]="{
+      'h-full':
+        position === filterPosition.LEFT || position === filterPosition.RIGHT,
+      'flex-col':
+        position === filterPosition.TOP || position === filterPosition.BOTTOM
+    }"
+    class="dashboard-filter-container flex"
+  >
+    <header
       [ngClass]="{
-        'h-full':
+        'order-1':
+          position === filterPosition.BOTTOM ||
+          position === filterPosition.RIGHT,
+        'order-2':
+          position === filterPosition.TOP || position === filterPosition.LEFT,
+        'w-12 h-full px-1 py-4':
           position === filterPosition.LEFT || position === filterPosition.RIGHT,
-        'flex-col':
+        'w-full py-1 px-4':
           position === filterPosition.TOP || position === filterPosition.BOTTOM
       }"
-      class="dashboard-filter-container flex"
+      [style.background-color]="themeColor"
+      class="dashboard-filter-header relative flex"
     >
-      <header
+      <section *ngIf="isDrawerOpen" class="flex-auto"></section>
+      <section class="flex-auto"></section>
+      <section
+        *ngIf="isDrawerOpen"
         [ngClass]="{
-          'order-1':
-            position === filterPosition.BOTTOM ||
-            position === filterPosition.RIGHT,
-          'order-2':
-            position === filterPosition.TOP || position === filterPosition.LEFT,
-          'w-12 h-full px-1 py-4':
-            position === filterPosition.LEFT ||
-            position === filterPosition.RIGHT,
-          'w-full py-1 px-4':
-            position === filterPosition.TOP ||
-            position === filterPosition.BOTTOM
-        }"
-        [style.background-color]="themeColor"
-        class="dashboard-filter-header relative flex"
-      >
-        <section *ngIf="isDrawerOpen" class="flex-auto"></section>
-        <section class="flex-auto"></section>
-        <section
-          *ngIf="isDrawerOpen"
-          [ngClass]="{
-            'flex-col':
-              position === filterPosition.LEFT ||
-              position === filterPosition.RIGHT
-          }"
-          class="flex flex-auto justify-end"
-        >
-          <ng-container *ngFor="let position of positionList">
-            <safe-button
-              matSuffix
-              [isIcon]="true"
-              icon="{{ position + '_panel_open' }}"
-              [fontSet]="'material-symbols-outlined'"
-              (click)="changeFilterPosition(position)"
-            ></safe-button>
-          </ng-container>
-        </section>
-        <div
-          [ngClass]="{
-            bottom: position === filterPosition.BOTTOM,
-            top: position === filterPosition.TOP,
-            right: position === filterPosition.RIGHT,
-            left: position === filterPosition.LEFT
-          }"
-          [style.background-color]="themeColor"
-          class="dashboard-filter-tab absolute h-10 py-2 px-3 flex"
-          (click)="isDrawerOpen = !isDrawerOpen"
-        >
-          <safe-icon icon="view_stream" class="cursor-pointer"></safe-icon>
-        </div>
-      </header>
-      <div
-        [style.width]="containerWidth"
-        [style.height]="containerHeight"
-        [ngClass]="{
-          'order-1':
-            position === filterPosition.TOP || position === filterPosition.LEFT,
-          'order-2':
-            position === filterPosition.BOTTOM ||
-            position === filterPosition.RIGHT,
-          'w-full':
-            position === filterPosition.TOP ||
-            position === filterPosition.BOTTOM,
-          'h-full':
+          'flex-col':
             position === filterPosition.LEFT ||
             position === filterPosition.RIGHT
         }"
-        class="dashboard-filter-content p-3"
+        class="flex flex-auto justify-end"
       >
-        <form
-          [ngClass]="{
-            'flex-col':
-              position === filterPosition.LEFT ||
-              position === filterPosition.RIGHT
-          }"
-          class="flex w-full flex-wrap"
-          [formGroup]="filterFormGroup"
-        >
-          <ng-container *ngFor="let filter of filters">
-            <div class="dashboard-filter-content-filter-wrapper">
-              <mat-form-field class="m-auto" appearance="fill">
-                <mat-label class="capitalize">{{ filter.name }}</mat-label>
-                <mat-select
-                  [formControlName]="filter.name"
-                  [multiple]="filter.multiple"
-                >
-                  <mat-option
-                    *ngFor="let option of filter.options"
-                    [value]="option"
-                    >{{ option }}</mat-option
-                  >
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </ng-container>
-        </form>
+        <ng-container *ngFor="let position of positionList">
+          <safe-button
+            matSuffix
+            [isIcon]="true"
+            icon="{{ position + '_panel_open' }}"
+            [fontSet]="'material-symbols-outlined'"
+            (click)="changeFilterPosition(position)"
+          ></safe-button>
+        </ng-container>
+      </section>
+      <div
+        [ngClass]="{
+          bottom: position === filterPosition.BOTTOM,
+          top: position === filterPosition.TOP,
+          right: position === filterPosition.RIGHT,
+          left: position === filterPosition.LEFT
+        }"
+        [style.background-color]="themeColor"
+        class="dashboard-filter-tab absolute h-10 py-2 px-3 flex"
+        (click)="isDrawerOpen = !isDrawerOpen"
+      >
+        <safe-icon icon="view_stream" class="cursor-pointer"></safe-icon>
       </div>
+    </header>
+    <div
+      [ngClass]="{
+        'order-1':
+          position === filterPosition.TOP || position === filterPosition.LEFT,
+        'order-2':
+          position === filterPosition.BOTTOM ||
+          position === filterPosition.RIGHT,
+        'w-full':
+          position === filterPosition.TOP || position === filterPosition.BOTTOM,
+        'h-full':
+          position === filterPosition.LEFT || position === filterPosition.RIGHT
+      }"
+      class="dashboard-filter-content p-3"
+    >
+      <form
+        [ngClass]="{
+          'flex-col':
+            position === filterPosition.LEFT ||
+            position === filterPosition.RIGHT
+        }"
+        class="flex w-full flex-wrap"
+        [formGroup]="filterFormGroup"
+      >
+        <ng-container *ngFor="let filter of filters">
+          <div class="dashboard-filter-content-filter-wrapper">
+            <mat-form-field class="m-auto" appearance="fill">
+              <mat-label class="capitalize">{{ filter.name }}</mat-label>
+              <mat-select
+                [formControlName]="filter.name"
+                [multiple]="filter.multiple"
+              >
+                <mat-option
+                  *ngFor="let option of filter.options"
+                  [value]="option"
+                  >{{ option }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </ng-container>
+      </form>
     </div>
   </div>
-  <ng-content select="[content]"></ng-content>
-</dx-drawer>
+</div>

@@ -1,7 +1,8 @@
 import {
   AfterViewInit,
-  ChangeDetectorRef,
   Component,
+  ElementRef,
+  HostListener,
   Inject,
   Input,
   OnInit,
@@ -48,7 +49,7 @@ export class SafeDashboardFilterComponent implements OnInit, AfterViewInit {
     FilterPosition.BOTTOM,
     FilterPosition.RIGHT,
   ] as const;
-  public isDrawerOpen = true;
+  public isDrawerOpen = false;
   public filterFormGroup!: FormGroup;
   public themeColor!: string;
   public filterPosition = FilterPosition;
@@ -59,13 +60,24 @@ export class SafeDashboardFilterComponent implements OnInit, AfterViewInit {
    * Class constructor
    *
    * @param environment environment
-   * @param cdr ChangeDetectorRef
+   * @param hostElement HostElement
    */
   constructor(
     @Inject('environment') environment: any,
-    private cdr: ChangeDetectorRef
+    private hostElement: ElementRef
   ) {
     this.themeColor = environment.theme.primary;
+  }
+
+  /**
+   * Set the drawer height and width on resize
+   */
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.containerWidth =
+      this.hostElement.nativeElement?.offsetWidth.toString() + 'px';
+    this.containerHeight =
+      this.hostElement.nativeElement?.offsetHeight.toString() + 'px';
   }
 
   ngOnInit(): void {
@@ -84,33 +96,11 @@ export class SafeDashboardFilterComponent implements OnInit, AfterViewInit {
   // We need the set the fix values first as we do not know the number of filters the component is going to receive
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.isDrawerOpen = false;
-      this.setFixedStyles();
+      this.containerWidth =
+        this.hostElement.nativeElement?.offsetWidth.toString() + 'px';
+      this.containerHeight =
+        this.hostElement.nativeElement?.offsetHeight.toString() + 'px';
     }, 0);
-  }
-
-  /**
-   * Set the dashboard-filter content fix width and height
-   * in order to make the drawer work correctly
-   */
-  private setFixedStyles() {
-    this.containerHeight =
-      this.position === FilterPosition.TOP ||
-      this.position === FilterPosition.BOTTOM
-        ? document
-            .getElementsByClassName('dashboard-filter-content')
-            .item(0)
-            ?.clientHeight.toString() + 'px'
-        : 'auto';
-    this.containerWidth =
-      this.position === FilterPosition.LEFT ||
-      this.position === FilterPosition.RIGHT
-        ? document
-            .getElementsByClassName('dashboard-filter-content')
-            .item(0)
-            ?.clientWidth.toString() + 'px'
-        : 'auto';
-    this.cdr.detectChanges();
   }
 
   /**
@@ -119,18 +109,6 @@ export class SafeDashboardFilterComponent implements OnInit, AfterViewInit {
    * @param position Position to set
    */
   public changeFilterPosition(position: FilterPosition) {
-    // Needed when switching to left and right, otherwise open/close feature not working
-    // (probably a bug, checkable in their example code as well: https://js.devexpress.com/Demos/WidgetsGallery/Demo/Drawer/LeftOrRightPosition/Angular/Light/)
-    if (position === FilterPosition.LEFT || position === FilterPosition.RIGHT) {
-      const isDrawerOpenState = this.isDrawerOpen;
-      this.isDrawerOpen = true;
-      setTimeout(() => {
-        this.isDrawerOpen = isDrawerOpenState;
-      }, 0);
-    }
     this.position = position;
-    setTimeout(() => {
-      this.setFixedStyles();
-    }, 0);
   }
 }
