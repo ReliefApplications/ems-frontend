@@ -130,13 +130,5 @@
       <!-- Map controls -->
       <safe-map-controls formGroupName="controls" [form]="controlsFormGroup"></safe-map-controls>
     </div>
-    <!-- Map preview -->
-    <div class="lg:flex-1 max-lg:min-w-full h-80 lg:min-h-full">
-      <safe-map
-        class="w-full h-full"
-        (mapEvent)="handleMapEvent($event)"
-        [mapSettings]="mapSettings"
-      ></safe-map>
-    </div>
   </div>
 </form>

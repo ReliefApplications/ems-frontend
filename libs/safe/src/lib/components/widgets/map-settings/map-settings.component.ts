@@ -44,7 +44,7 @@ export class SafeMapSettingsComponent
     const defaultMapSettings: MapConstructorSettings = {
       basemap: this.tileForm.value.basemap,
       initialState: this.tileForm.get('initialState')?.value,
-      timeDimension: this.tileForm.value.timeDimension,
+      controls: this.tileForm.value.controls,
     };
     this.updateMapSettings(defaultMapSettings);
     this.setUpFormListeners();
@@ -70,11 +70,11 @@ export class SafeMapSettingsComponent
         this.updateMapSettings({ basemap: value } as MapConstructorSettings)
       );
     this.tileForm
-      .get('timeDimension')
+      .get('controls')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.updateMapSettings({
-          timeDimension: value,
+          controls: value,
         } as MapConstructorSettings);
       });
   }

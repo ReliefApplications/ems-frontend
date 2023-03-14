@@ -8,13 +8,13 @@ import { MapLayerI } from './map-layers/map-layers.component';
 import {
   MapControls,
   DefaultMapControls,
+  MapConstructorSettings,
 } from '../../ui/map/interfaces/map.interface';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 /** Interface for the maps settings */
 export interface MapSettingsI extends MapConstructorSettings {
   layers: MapLayerI[];
-  controls: MapControls;
 }
 
 /** Angular Form Builder */
