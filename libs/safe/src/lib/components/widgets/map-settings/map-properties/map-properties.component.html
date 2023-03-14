@@ -101,15 +101,9 @@
         {{ 'components.widget.settings.map.properties.setByMap' | translate }}
       </safe-button>
       <!-- Time Dimension -->
-      <mat-checkbox formControlName="timeDimension">{{ 'components.widget.settings.map.properties.timeSlider' | translate }}</mat-checkbox>
-    </div>
-    <!-- Map preview -->
-    <div class="lg:flex-1 max-lg:min-w-full h-80 lg:min-h-full">
-      <safe-map
-        class="w-full h-full"
-        (mapEvent)="handleMapEvent($event)"
-        [mapSettings]="mapSettings"
-      ></safe-map>
+      <mat-checkbox formControlName="timeDimension">{{
+        'components.widget.settings.map.properties.timeSlider' | translate
+      }}</mat-checkbox>
     </div>
   </div>
 </form>

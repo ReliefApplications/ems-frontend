@@ -1,44 +1,45 @@
-<ng-container *ngIf="tileForm">
-  <mat-tab-group
-    mat-align-tabs="start"
-    animationDuration="0ms"
-    vertical
-    class="grow"
-  >
-    <!-- MAP PARAMETERS -->
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <safe-icon
-          icon="map"
-          [size]="24"
-          matTooltip="{{
-            'components.widget.settings.map.properties.title' | translate
-          }}"
-          matTooltipPosition="right"
-        ></safe-icon>
-        <span>{{
-          'components.widget.settings.map.properties.title' | translate
-        }}</span>
-      </ng-template>
-      <ng-template matTabContent>
-        <safe-map-properties [form]="tileForm"></safe-map-properties>
-      </ng-template>
-    </mat-tab>
+<mat-drawer-container class="grow bg-transparent" autosize *ngIf="tileForm">
+  <mat-drawer class="border-none pr-2" mode="side" [opened]="true">
+    <safe-button
+      icon="map"
+      [attr.data-selected]="currentTab === 'parameters'"
+      (click)="currentTab = 'parameters'"
+    >
+      {{ 'components.widget.settings.map.properties.title' | translate }}
+    </safe-button>
 
-    <!-- LAYERS CONFIGURATION -->
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <safe-icon
-          icon="layers"
-          [size]="24"
-          matTooltip="{{ 'common.layers' | translate }}"
-          matTooltipPosition="right"
-        ></safe-icon>
-        <span>{{ 'common.layers' | translate }}</span>
-      </ng-template>
-      <ng-template matTabContent>
-        <safe-map-layers [form]="tileForm"></safe-map-layers>
-      </ng-template>
-    </mat-tab>
-  </mat-tab-group>
-</ng-container>
+    <safe-button
+      icon="layers"
+      [attr.data-selected]="currentTab === 'layers'"
+      (click)="currentTab = 'layers'"
+    >
+      {{ 'common.layers' | translate }}
+    </safe-button>
+  </mat-drawer>
+
+  <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+    <!-- MAP PARAMETERS -->
+    <safe-map-properties
+      [form]="tileForm"
+      [mapSettings]="mapSettings"
+      *ngIf="currentTab === 'parameters'"
+      class="lg:basis-1/2"
+    ></safe-map-properties>
+
+    <!-- MAP LAYERS -->
+    <safe-map-layers
+      [form]="tileForm"
+      *ngIf="currentTab === 'layers'"
+      class="lg:basis-1/2"
+    ></safe-map-layers>
+
+    <!-- MAP PREVIEW -->
+    <div class="lg:flex-1 max-lg:min-w-full h-80 lg:min-h-full flex-shrink-0">
+      <safe-map
+        class="w-full h-full"
+        (mapEvent)="handleMapEvent($event)"
+        [mapSettings]="mapSettings"
+      ></safe-map>
+    </div>
+  </div>
+</mat-drawer-container>
