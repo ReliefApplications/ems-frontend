@@ -1,6 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { createMapWidgetFormGroup } from './map-forms';
 import { UntypedFormGroup } from '@angular/forms';
+import {
+  MapConstructorSettings,
+  MapEvent,
+  MapEventType,
+} from '../../ui/map/interfaces/map.interface';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /** Component for the map widget settings */
 @Component({
@@ -8,7 +15,13 @@ import { UntypedFormGroup } from '@angular/forms';
   templateUrl: './map-settings.component.html',
   styleUrls: ['./map-settings.component.scss'],
 })
-export class SafeMapSettingsComponent implements OnInit {
+export class SafeMapSettingsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
+  public currentTab: 'parameters' | 'layers' | null = 'parameters';
+  public mapSettings!: MapConstructorSettings;
+
   // === REACTIVE FORM ===
   tileForm: UntypedFormGroup | undefined;
 
@@ -27,6 +40,94 @@ export class SafeMapSettingsComponent implements OnInit {
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
+
+    const defaultMapSettings = {
+      basemap: this.tileForm.value.basemap,
+      zoom: this.tileForm.value.zoom,
+      centerLat: this.tileForm.value.centerLat,
+      centerLong: this.tileForm.value.centerLong,
+      timeDimension: this.tileForm.value.timeDimension,
+    };
+    this.updateMapSettings(defaultMapSettings);
+    this.setUpFormListeners();
+  }
+
+  /**
+   * Set form listeners
+   */
+  private setUpFormListeners() {
+    if (!this.tileForm) return;
+    this.tileForm
+      .get('zoom')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) =>
+        this.updateMapSettings({ zoom: value } as MapConstructorSettings)
+      );
+    this.tileForm
+      .get('centerLat')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) =>
+        this.updateMapSettings({ centerLat: value } as MapConstructorSettings)
+      );
+    this.tileForm
+      .get('centerLong')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) =>
+        this.updateMapSettings({ centerLong: value } as MapConstructorSettings)
+      );
+    this.tileForm
+      .get('basemap')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) =>
+        this.updateMapSettings({ basemap: value } as MapConstructorSettings)
+      );
+    this.tileForm
+      .get('timeDimension')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.updateMapSettings({
+          timeDimension: value,
+        } as MapConstructorSettings);
+      });
+  }
+
+  /**
+   * Handle leaflet map events
+   *
+   * @param event leaflet map event
+   */
+  handleMapEvent(event: MapEvent) {
+    switch (event.type) {
+      case MapEventType.MOVE_END:
+        this.mapSettings.centerLat = event.content.center.lat;
+        this.mapSettings.centerLong = event.content.center.lng;
+        break;
+      case MapEventType.ZOOM_END:
+        this.mapSettings.zoom = event.content.zoom;
+        if (this.tileForm)
+          this.tileForm
+            .get('zoom')
+            ?.setValue(this.mapSettings.zoom, { emitEvent: false });
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Update map settings
+   *
+   * @param settings new settings
+   */
+  private updateMapSettings(settings: MapConstructorSettings) {
+    if (this.mapSettings) {
+      this.mapSettings = {
+        ...this.mapSettings,
+        ...settings,
+      };
+    } else {
+      this.mapSettings = settings;
+    }
   }
 }
 

@@ -1,5 +1,5 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import {
   MatLegacyDialogRef as MatDialogRef,
@@ -32,6 +32,8 @@ export class MapLayersComponent
   implements OnInit
 {
   @Input() form!: UntypedFormGroup;
+  // eslint-disable-next-line @angular-eslint/no-output-native
+  @Output() close = new EventEmitter();
 
   /** @returns the form array for the map layers */
   get layers() {

@@ -1,10 +1,18 @@
-<form [formGroup]="form" class="overflow-hidden h-full">
+<form [formGroup]="form" class="overflow-x-hidden h-full">
   <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
     <!-- Map properties -->
     <div class="flex flex-col flex-1">
-      <h2>
-        {{ 'components.widget.settings.map.properties.title' | translate }}
-      </h2>
+      <div class="flex justify-between">
+        <h2>
+          {{ 'components.widget.settings.map.properties.title' | translate }}
+        </h2>
+        <!-- Close button -->
+        <safe-button
+          [isIcon]="true"
+          icon="close"
+          (click)="close.emit()"
+        ></safe-button>
+      </div>
       <!-- Widget ( map ) name -->
       <mat-form-field appearance="outline" class="p-0">
         <mat-label>{{ 'common.name' | translate }}</mat-label>
@@ -101,15 +109,9 @@
         {{ 'components.widget.settings.map.properties.setByMap' | translate }}
       </safe-button>
       <!-- Time Dimension -->
-      <mat-checkbox formControlName="timeDimension">{{ 'components.widget.settings.map.properties.timeSlider' | translate }}</mat-checkbox>
-    </div>
-    <!-- Map preview -->
-    <div class="lg:flex-1 max-lg:min-w-full h-80 lg:min-h-full">
-      <safe-map
-        class="w-full h-full"
-        (mapEvent)="handleMapEvent($event)"
-        [mapSettings]="mapSettings"
-      ></safe-map>
+      <mat-checkbox formControlName="timeDimension">{{
+        'components.widget.settings.map.properties.timeSlider' | translate
+      }}</mat-checkbox>
     </div>
   </div>
 </form>
