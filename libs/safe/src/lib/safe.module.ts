@@ -41,6 +41,7 @@ import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
 import { SafeUnsubscribeModule } from './components/utils/unsubscribe/unsubscribe.module';
 import { SafeViewsModule } from './views/views.module';
 import { SafeEditableTextModule } from './components/editable-text/editable-text.module';
+import { SafeResourceModalModule } from './components/resource-modal/resource-modal.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -49,6 +50,7 @@ import { SafeEditableTextModule } from './components/editable-text/editable-text
     SafeAccessModule,
     SafeFormModule,
     SafeFormBuilderModule,
+    SafeResourceModalModule,
     SafeChartSettingsModule,
     SafeEditorSettingsModule,
     SafeGridSettingsModule,

@@ -76,7 +76,7 @@ export class SafeFormModalComponent implements OnInit {
 
   public modifiedAt: Date | null = null;
 
-  private isMultiEdition = false;
+  protected isMultiEdition = false;
   private storedMergedData: any;
 
   public survey!: Survey.SurveyModel;
@@ -116,13 +116,13 @@ export class SafeFormModalComponent implements OnInit {
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    protected snackBar: SafeSnackBarService,
     private restService: SafeRestService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
-    private confirmService: SafeConfirmService,
-    private translate: TranslateService,
-    private ngZone: NgZone
+    protected confirmService: SafeConfirmService,
+    protected translate: TranslateService,
+    protected ngZone: NgZone
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -478,7 +478,7 @@ export class SafeFormModalComponent implements OnInit {
    *
    * @param survey The form in which the files will be updated
    */
-  private async uploadFiles(survey: any): Promise<void> {
+  protected async uploadFiles(survey: any): Promise<void> {
     const data = survey.data;
     const questionsToUpload = Object.keys(this.temporaryFilesStorage);
     for (const name of questionsToUpload) {

@@ -1,8 +1,8 @@
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { SafeFormModalComponent } from '../../components/form-modal/form-modal.component';
 import { SafeResourceGridModalComponent } from '../../components/search-resource-grid-modal/search-resource-grid-modal.component';
 import { UntypedFormGroup } from '@angular/forms';
 import { surveyLocalization } from 'survey-angular';
+import { SafeResourceModalComponent } from '../../components/resource-modal/resource-modal.component';
 
 /**
  * Build the search button for resource and resources components
@@ -77,7 +77,7 @@ export const buildAddButton = (
   );
   if (question.addRecord && question.addTemplate) {
     addButton.onclick = () => {
-      const dialogRef = dialog.open(SafeFormModalComponent, {
+      const dialogRef = dialog.open(SafeResourceModalComponent, {
         disableClose: true,
         data: {
           template: question.addTemplate,

@@ -32,6 +32,7 @@ import { SafeFormBuilderService } from '../../services/form-builder/form-builder
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
+import localForage from 'localforage';
 
 /**
  * This component is used to display forms
@@ -297,16 +298,73 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
     const questions = this.survey.getAllQuestions();
-    for (const field in questions) {
-      if (questions[field]) {
-        const key = questions[field].getValueName();
+    for (const question of questions) {
+      if (question) {
+        const key = question.getValueName();
         if (!surveyData[key]) {
-          if (questions[field].getType() !== 'boolean') {
+          if (question.getType() !== 'boolean') {
             surveyData[key] = null;
           }
-          if (questions[field].readOnly || !questions[field].visible) {
+          if (question.readOnly || !question.visible) {
             delete surveyData[key];
           }
+        }
+        if (
+          question.getType() === 'resources' ||
+          question.getType() == 'resource'
+        ) {
+          //We save the records created from the resources question
+          for (const recordId of question.value) {
+            let recordFromResource: any = null;
+            localForage
+              .getItem(recordId)
+              .then((data: any) => {
+                if (data != null) {
+                  //We ensure to make it only if such a record is found
+                  recordFromResource = JSON.parse(data);
+                  this.apollo
+                    .mutate<AddRecordMutationResponse>({
+                      mutation: ADD_RECORD,
+                      variables: {
+                        form: recordFromResource.template,
+                        data: recordFromResource.data,
+                      },
+                    })
+                    .subscribe({
+                      next: ({ data, errors }) => {
+                        if (errors) {
+                          this.snackBar.openSnackBar(
+                            `Error. ${errors[0].message}`,
+                            {
+                              error: true,
+                            }
+                          );
+                        } else {
+                          question.value[question.value.indexOf(recordId)] =
+                            question.value.includes(recordId)
+                              ? data?.addRecord.id
+                              : recordId;
+                          question.newCreatedRecords[
+                            question.newCreatedRecords.indexOf(recordId)
+                          ] = question.newCreatedRecords.includes(recordId)
+                            ? data?.addRecord.id
+                            : recordId; //If there is no error, we replace in the question the temporary id by the final one
+                        }
+                      },
+                      error: (err) => {
+                        this.snackBar.openSnackBar(err.message, {
+                          error: true,
+                        });
+                      },
+                    });
+                }
+              })
+              .catch((error: any) => {
+                console.error(error); // Handle any errors that occur while getting the item
+              });
+            localForage.removeItem(recordId); //We clear it from the local storage once we have retrieved it;
+          }
+          console.log(question.value);
         }
       }
     }
@@ -502,6 +560,13 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.temporaryFilesStorage = {};
     localStorage.removeItem(this.storageId);
+    this.survey.getAllQuestions().forEach((question) => {
+      if (['resources', 'resource'].includes(question.getType())) {
+        question.value.forEach((recordId: any) =>
+          localForage.removeItem(recordId)
+        );
+      }
+    }); //We clear the cache for the records created by resource questions
     this.isFromCacheData = false;
     this.storageDate = undefined;
     this.survey.render();
@@ -511,6 +576,13 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     localStorage.removeItem(this.storageId);
+    this.survey.getAllQuestions().forEach((question) => {
+      if (['resources', 'resource'].includes(question.getType())) {
+        question.value.forEach((recordId: any) =>
+          localForage.removeItem(recordId)
+        );
+      }
+    }); //We clear the cache for the records created by resource questions
   }
 
   /**
