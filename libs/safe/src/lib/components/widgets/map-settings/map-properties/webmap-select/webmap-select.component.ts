@@ -13,6 +13,11 @@ import {
   UntypedFormControl,
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { CommonModule } from '@angular/common';
+
 /**
  * Control value accessor
  */
@@ -26,6 +31,8 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
  *
  */
 @Component({
+  standalone: true,
+  imports: [CommonModule, MatFormFieldModule, TranslateModule, MatSelectModule],
   selector: 'safe-webmap-select',
   templateUrl: './webmap-select.component.html',
   styleUrls: ['./webmap-select.component.scss'],
@@ -36,7 +43,7 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
 
   @Input() formControlName!: string;
 
-  private onTouched!: any; 
+  private onTouched!: any;
   private onChanged!: any;
 
   public value = '';

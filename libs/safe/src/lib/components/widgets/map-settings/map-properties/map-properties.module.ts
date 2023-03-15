@@ -19,7 +19,7 @@ import { WebmapSelectComponent } from './webmap-select/webmap-select.component';
  * Module of Map Properties of Map Widget.
  */
 @NgModule({
-  declarations: [MapPropertiesComponent, WebmapSelectComponent],
+  declarations: [MapPropertiesComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -35,6 +35,7 @@ import { WebmapSelectComponent } from './webmap-select/webmap-select.component';
     SafeDividerModule,
     MatCheckboxModule,
     MapControlsModule,
+    WebmapSelectComponent,
   ],
   exports: [MapPropertiesComponent],
 })
