@@ -2,6 +2,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
@@ -20,7 +21,10 @@ import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
   templateUrl: './map-properties.component.html',
   styleUrls: ['./map-properties.component.scss'],
 })
-export class MapPropertiesComponent extends SafeUnsubscribeComponent {
+export class MapPropertiesComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() form!: UntypedFormGroup;
   @Input() mapSettings!: MapConstructorSettings;
 
