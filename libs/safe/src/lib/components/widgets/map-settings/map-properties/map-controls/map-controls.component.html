@@ -1,17 +1,24 @@
-<mat-label class="flex mb-4">
+<h3 class="mb-4">
   {{ 'components.widget.settings.map.properties.controls.title' | translate }}
-</mat-label>
-<form [formGroup]="form" class="flex flex-wrap justify-between">
+</h3>
+<form [formGroup]="form" class="flex flex-col gap-1">
   <mat-slide-toggle formControlName="timedimension">
-    {{ 'components.widget.settings.map.properties.controls.timedimension' | translate }}
+    {{
+      'components.widget.settings.map.properties.controls.timedimension'
+        | translate
+    }}
   </mat-slide-toggle>
 
   <mat-slide-toggle formControlName="download">
-    {{ 'components.widget.settings.map.properties.controls.download' | translate }}
+    {{
+      'components.widget.settings.map.properties.controls.download' | translate
+    }}
   </mat-slide-toggle>
 
-<mat-slide-toggle formControlName="search">
-    {{ 'components.widget.settings.map.properties.controls.search' | translate }}
+  <mat-slide-toggle formControlName="search">
+    {{
+      'components.widget.settings.map.properties.controls.search' | translate
+    }}
   </mat-slide-toggle>
 
   <mat-slide-toggle formControlName="layer">
@@ -19,10 +26,14 @@
   </mat-slide-toggle>
 
   <mat-slide-toggle formControlName="legend">
-    {{ 'components.widget.settings.map.properties.controls.legend' | translate }}
+    {{
+      'components.widget.settings.map.properties.controls.legend' | translate
+    }}
   </mat-slide-toggle>
 
   <mat-slide-toggle formControlName="measure">
-    {{ 'components.widget.settings.map.properties.controls.measure' | translate }}
+    {{
+      'components.widget.settings.map.properties.controls.measure' | translate
+    }}
   </mat-slide-toggle>
 </form>

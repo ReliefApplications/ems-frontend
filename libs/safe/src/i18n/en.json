@@ -1336,7 +1336,7 @@
 							"measure": "Measure",
 							"search": "Search",
 							"timedimension": "Time dimension",
-							"title": "Map Controls"
+							"title": "Visible Map Controls"
 						},
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
