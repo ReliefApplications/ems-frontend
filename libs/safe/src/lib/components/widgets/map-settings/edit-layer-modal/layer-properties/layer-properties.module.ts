@@ -9,6 +9,7 @@ import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/
 import { MatSliderModule } from '@angular/material/slider';
 import { TranslateModule } from '@ngx-translate/core';
 
+/** Module for the LayerPropertiesComponent */
 @NgModule({
   declarations: [LayerPropertiesComponent],
   imports: [
