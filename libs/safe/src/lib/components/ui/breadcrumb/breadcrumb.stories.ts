@@ -1,3 +1,4 @@
+import { RouterTestingModule } from '@angular/router/testing';
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { StorybookTranslateModule } from '../../storybook-translate/storybook-translate-module';
 import { SafeBreadcrumbComponent } from './breadcrumb.component';
@@ -7,7 +8,11 @@ export default {
   component: SafeBreadcrumbComponent,
   decorators: [
     moduleMetadata({
-      imports: [SafeBreadcrumbModule, StorybookTranslateModule],
+      imports: [
+        SafeBreadcrumbModule,
+        StorybookTranslateModule,
+        RouterTestingModule,
+      ],
     }),
   ],
   title: 'UI/Breadcrumb',
