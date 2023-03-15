@@ -19,7 +19,7 @@ export class SafeMapSettingsComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  public currentTab: 'parameters' | 'layers' | null = 'parameters';
+  public currentTab: 'parameters' | 'layers' | 'popup' | null = 'parameters';
   public mapSettings!: MapConstructorSettings;
 
   // === REACTIVE FORM ===

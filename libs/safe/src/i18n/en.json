@@ -216,6 +216,7 @@
 		"platform": {
 			"backOffice": "Back-Office"
 		},
+		"popup": "Pop-up",
 		"positionAttribute": {
 			"few": "Position attributes",
 			"none": "No position attribute",

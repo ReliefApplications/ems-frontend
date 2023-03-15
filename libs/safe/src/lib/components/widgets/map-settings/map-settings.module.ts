@@ -11,6 +11,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { MapModule } from '../../ui/map/map.module';
+import { LayerPopupModule } from './edit-layer-modal/layer-popup/layer-popup.module';
 
 /** Module for map settings component */
 @NgModule({
@@ -28,6 +29,7 @@ import { MapModule } from '../../ui/map/map.module';
     MatSidenavModule,
     MapModule,
     SafeButtonModule,
+    LayerPopupModule,
   ],
   exports: [SafeMapSettingsComponent],
 })

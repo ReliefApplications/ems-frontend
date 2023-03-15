@@ -7,13 +7,19 @@
     >
       {{ 'components.widget.settings.map.properties.title' | translate }}
     </safe-button>
-
     <safe-button
       icon="layers"
       [attr.data-selected]="currentTab === 'layers'"
       (click)="currentTab = 'layers'"
     >
       {{ 'common.layers' | translate }}
+    </safe-button>
+    <safe-button
+      icon="place"
+      [attr.data-selected]="currentTab === 'popup'"
+      (click)="currentTab = 'popup'"
+    >
+      {{ 'common.popup' | translate }}
     </safe-button>
   </mat-drawer>
 
@@ -37,6 +43,10 @@
             [form]="tileForm"
             (close)="currentTab = null"
           ></safe-map-layers>
+        </ng-container>
+        <!-- MAP LAYERS -->
+        <ng-container *ngSwitchCase="'popup'">
+          <safe-layer-popup (close)="currentTab = null"></safe-layer-popup>
         </ng-container>
       </div>
     </ng-container>
