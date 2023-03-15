@@ -5,7 +5,11 @@ import {
 } from '@angular/forms';
 import get from 'lodash/get';
 import { MapLayerI } from './map-layers/map-layers.component';
-import { MapConstructorSettings } from '../../ui/map/interfaces/map.interface';
+import {
+  MapControls,
+  DefaultMapControls,
+  MapConstructorSettings,
+} from '../../ui/map/interfaces/map.interface';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 /** Interface for the maps settings */
@@ -37,7 +41,8 @@ const DEFAULT_MAP: Nullable<MapSettingsI> = {
   // onlineLayers: [],
   // markersRules: [],
   layers: [],
-  timeDimension: true,
+  controls: DefaultMapControls,
+  arcGisWebMap: null,
 };
 
 /**
@@ -71,6 +76,23 @@ export const createLayerForm = (value?: MapLayerI): UntypedFormGroup =>
   });
 
 // === MAP ===
+
+/**
+ * Create map controls from value
+ *
+ * @param value map controls value ( optional )
+ * @returns new form group
+ */
+export const createMapControlsForm = (value?: MapControls): UntypedFormGroup =>
+  fb.group({
+    timedimension: [get(value, 'timedimension', false)],
+    download: [get(value, 'download', true)],
+    legend: [get(value, 'legend', true)],
+    measure: [get(value, 'measure', false)],
+    layer: [get(value, 'layer', true)],
+    search: [get(value, 'search', false)],
+  });
+
 /**
  * Create map form from value
  *
@@ -116,11 +138,15 @@ export const createMapWidgetFormGroup = (
       }),
     }),
     basemap: [get(value, 'basemap', DEFAULT_MAP.basemap)],
-    timeDimension: [get(value, 'timeDimension', DEFAULT_MAP.timeDimension)],
+    // popupFields: [get(value, 'popupFields', DEFAULT_MAP.popupFields)],
     // onlineLayers: [get(value, 'onlineLayers', DEFAULT_MAP.onlineLayers)],
     layers: fb.array(
       get(value, 'layers', DEFAULT_MAP.layers).map((x: any) =>
         createLayerForm(x)
       )
     ),
+    controls: createMapControlsForm(
+      get(value, 'controls', DEFAULT_MAP.controls)
+    ),
+    arcGisWebMap: [get(value, 'arcGisWebMap', DEFAULT_MAP.arcGisWebMap)],
   });

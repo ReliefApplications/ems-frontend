@@ -18,6 +18,7 @@ import {
 
 import * as L from 'leaflet';
 import { createCustomDivIcon } from '../../../ui/map/utils/create-div-icon';
+import { DefaultMapControls } from '../../../ui/map/interfaces/map.interface';
 
 /** Layer used to test the component */
 const TEST_LAYER: {
@@ -129,7 +130,6 @@ export class SafeEditLayerModalComponent
   }
 
   ngAfterViewInit(): void {
-    console.log(this.form);
     if (this.layerType) {
       this.setUpLayer();
     }
@@ -159,6 +159,7 @@ export class SafeEditLayerModalComponent
       minZoom: 2,
       maxZoom: 18,
       worldCopyJump: true,
+      controls: DefaultMapControls,
     };
   }
 

@@ -5,8 +5,12 @@ import proj4 from 'proj4';
 import * as Color from 'color';
 
 import { ApiKeyManager } from '@esri/arcgis-rest-request';
-import { getItemData } from '@esri/arcgis-rest-portal';
-
+import {
+  getItemData,
+  ISearchOptions,
+  searchItems,
+  SearchQueryBuilder,
+} from '@esri/arcgis-rest-portal';
 import * as EsriHeat from 'esri-leaflet-heatmap';
 import * as EsriCluster from 'esri-leaflet-cluster';
 import * as EsriRenderers from 'esri-leaflet-renderers';
@@ -75,6 +79,28 @@ export class ArcgisService {
         });
       });
     });
+  }
+
+  /**
+   * Search for web map in arcgis-rest-request
+   *
+   * @param options parameter
+   * @param options.start parameter
+   * @returns searched items
+   */
+  public searchItems(options: { start?: number }) {
+    const filter: ISearchOptions = {
+      q: new SearchQueryBuilder()
+        .match('Web Map')
+        .in('type')
+        .and() // to search all web maps, just remove following 3 lines
+        //.match('org')
+        .in('access'),
+      start: options.start,
+      authentication: this.session,
+      // portal: arcgisUrl + '/sharing/rest',
+    };
+    return searchItems(filter);
   }
 
   /**

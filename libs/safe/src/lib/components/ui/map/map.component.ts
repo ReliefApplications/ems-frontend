@@ -25,6 +25,8 @@ import {
   MapConstructorSettings,
   MapEvent,
   MapEventType,
+  DefaultMapControls,
+  MapControls,
 } from './interfaces/map.interface';
 import { BASEMAP_LAYERS } from './const/baseMaps';
 import { merge } from 'lodash';
@@ -58,6 +60,12 @@ const cleanSettingsFromNulls = (settings: MapConstructorSettings) => {
     }
   });
 };
+
+/**
+ * Id of default webmap
+ * todo(gis): remove
+ */
+const defaultWebMap = 'a8c3c531be1a4615b03c45b6353ab2c8';
 
 /** Component for the map widget */
 @Component({
@@ -132,7 +140,10 @@ export class MapComponent
         zoom: 2,
       },
     },
+    controls: DefaultMapControls,
+    arcGisWebMap: defaultWebMap,
   };
+  private arcGisWebMap: any;
 
   // === MARKERS ===
   private baseTree!: L.Control.Layers.TreeObject;
@@ -190,7 +201,10 @@ export class MapComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((event) => {
         if (event.lang !== this.mapControlsService.lang) {
-          this.mapControlsService.getMeasureControl(this.map);
+          this.mapControlsService.getMeasureControl(
+            this.map,
+            this.extractSettings().controls.measure
+          );
           this.mapControlsService.getFullScreenControl(this.map);
         }
       });
@@ -303,7 +317,11 @@ export class MapComponent
         // Add layers to map
         this.setUpLayers(layers, arcgisLayerTree, this.baseTree);
         // Add legend control
-        this.mapControlsService.getLegendControl(this.map, this.layers);
+        this.mapControlsService.getLegendControl(
+          this.map,
+          this.layers,
+          this.extractSettings().controls.legend
+        );
       }
       if (this.useGeomanTools) {
         this.mapEvent.emit({
@@ -349,7 +367,12 @@ export class MapComponent
     const minZoom = get(this.settingsConfig, 'minZoom', 2);
     const worldCopyJump = get(this.settingsConfig, 'worldCopyJump', true);
     const zoomControl = get(this.settingsConfig, 'zoomControl', false);
-    const timeDimension = get(this.settingsConfig, 'timeDimension', false);
+    const controls = get(this.settingsConfig, 'controls', DefaultMapControls);
+    const arcGisWebMap = get(
+      this.settingsConfig,
+      'arcGisWebMap',
+      defaultWebMap
+    );
     /**
      * TODO implement layer loading for the layers returned from the settings
      *
@@ -374,7 +397,8 @@ export class MapComponent
       worldCopyJump,
       zoomControl,
       layers,
-      timeDimension,
+      controls,
+      arcGisWebMap,
     };
   }
 
@@ -388,8 +412,9 @@ export class MapComponent
       minZoom,
       worldCopyJump,
       zoomControl,
-      timeDimension,
+      arcGisWebMap,
       // layers,
+      controls,
     } = this.extractSettings();
 
     // Create leaflet map
@@ -404,8 +429,7 @@ export class MapComponent
       minZoom,
       maxZoom,
       worldCopyJump,
-      zoom: initialState.viewpoint.zoom,
-      timeDimension,
+      timeDimension: true,
     } as any).setView(
       L.latLng(
         initialState.viewpoint.center.latitude,
@@ -428,23 +452,61 @@ export class MapComponent
       }
     }
     if (!this.useGeomanTools) {
-      // Add leaflet measure control
-      this.mapControlsService.getMeasureControl(this.map);
+      this.setMapControls(controls, true);
+    }
+  }
 
-      // Add leaflet geosearch control
-      this.mapControlsService.getSearchbarControl(this.map, this.esriApiKey);
-
+  /**
+   * Add / remove map controls according to the settings
+   *
+   * @param {MapControls} controls map controls values
+   * @param {boolean} [initMap=false] if initializing map to add the fixed controls
+   */
+  private setMapControls(controls: MapControls, initMap = false) {
+    // Add leaflet measure control
+    this.mapControlsService.getMeasureControl(
+      this.map,
+      controls.measure ?? false
+    );
+    // Add leaflet geosearch control
+    this.mapControlsService.getSearchbarControl(
+      this.map,
+      this.esriApiKey,
+      controls.search ?? false
+    );
+    // Add TimeDimension control
+    this.mapControlsService.setTimeDimension(
+      this.map,
+      controls.timedimension ?? false,
+      timeDimensionGeoJSON as GeoJsonObject
+    );
+    // Add download button and download menu
+    this.mapControlsService.getDownloadControl(
+      this.map,
+      controls.download ?? true
+    );
+    // Add legend contorl if layers ready
+    if (this.layerControl) {
+      this.mapControlsService.getLegendControl(
+        this.map,
+        this.layers,
+        controls.legend ?? true
+      );
+    }
+    // Add layer contorl
+    if (controls.layer) {
+      if (this.layerControl) {
+        this.layerControl.addTo(this.map);
+      }
+    } else {
+      if (this.layerControl) {
+        this.layerControl.remove();
+      }
+    }
+    // If initializing map: add fixed controls
+    if (initMap) {
       // Add leaflet fullscreen control
       this.mapControlsService.getFullScreenControl(this.map);
-
-      // Add TimeDimension control
-      this.mapControlsService.setTimeDimension(
-        this.map,
-        timeDimension ?? false,
-        timeDimensionGeoJSON as GeoJsonObject
-      );
-      // Add download button and download menu
-      this.mapControlsService.getDownloadControl(this.map);
     }
   }
 
@@ -462,7 +524,8 @@ export class MapComponent
         basemap,
         maxZoom,
         minZoom,
-        timeDimension,
+        controls,
+        arcGisWebMap,
       } = this.extractSettings();
 
       // If value changes for the map we would change in order to not trigger map events unnecessarily
@@ -487,6 +550,13 @@ export class MapComponent
         }
       }
 
+      if (arcGisWebMap) {
+        const currentWebMap = this.arcGisWebMap;
+        if (arcGisWebMap !== currentWebMap) {
+          this.setWebmap(arcGisWebMap);
+        }
+      }
+
       const currentCenter = this.map.getCenter();
       if (
         initialState.viewpoint.center.latitude !== currentCenter.lat ||
@@ -501,11 +571,7 @@ export class MapComponent
         );
       }
 
-      this.mapControlsService.setTimeDimension(
-        this.map,
-        timeDimension ?? false,
-        timeDimensionGeoJSON as GeoJsonObject
-      );
+      this.setMapControls(controls);
     }
   }
 
@@ -561,9 +627,11 @@ export class MapComponent
       drawLayer(layers);
     }
 
-    this.layerControl = L.control.layers
-      .tree(this.baseTree, layers as any)
-      .addTo(this.map);
+    this.layerControl = L.control.layers.tree(this.baseTree, layers as any);
+
+    if (this.extractSettings().controls.layer) {
+      this.layerControl.addTo(this.map);
+    }
   }
 
   /**
@@ -780,5 +848,15 @@ export class MapComponent
     this.basemap = Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
+  }
+
+  /**
+   * Set the webmap.
+   *
+   * @param webmap String containing the id (name) of the webmap
+   */
+  public setWebmap(webmap: any) {
+    this.arcGisWebMap = webmap;
+    this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
   }
 }

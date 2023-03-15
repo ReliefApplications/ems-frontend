@@ -9,10 +9,10 @@ import {
 } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
-import drawUnderlinePlugin from '../../../utils/graphs/plugins/underline.plugin';
-import { parseFontOptions } from '../../../utils/graphs/parseFontString';
-import { addTransparency } from '../../../utils/graphs/addTransparency';
-import whiteBackgroundPlugin from '../../../utils/graphs/plugins/background.plugin';
+import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plugin';
+import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
+import { addTransparency } from '../../../../utils/graphs/addTransparency';
+import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 
 /**
  * Interface containing the settings of the chart title

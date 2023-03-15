@@ -1,4 +1,4 @@
-<form [formGroup]="form" class="overflow-x-hidden h-full">
+<form [formGroup]="form" class="h-full">
   <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
     <!-- Map properties -->
     <div class="flex flex-col flex-1">
@@ -27,6 +27,23 @@
         <mat-select formControlName="basemap" placeholder="OSM">
           <mat-option *ngFor="let map of baseMaps" [value]="map">
             {{ map }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <safe-divider></safe-divider>
+      <!-- Webmap selection -->
+      <mat-form-field appearance="outline" class="p-0">
+        <mat-label>{{
+          'components.widget.settings.map.properties.webmap' | translate
+        }}</mat-label>
+        <mat-select
+          #arcGisWebMap
+          (selectionChange)="selectionChange.emit($event.value)"
+          (openedChange)="onOpenSelect($event)"
+          formControlName="arcGisWebMap"
+        >
+          <mat-option *ngFor="let item of items" [value]="item.id">
+            {{ item.title }}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -119,17 +136,16 @@
       </div>
       <!-- Use map to set properties -->
       <safe-button
-        class="mb-4 self-end flex-1"
+        class="self-end flex-1"
         (click)="onSetByMap()"
         category="secondary"
         variant="primary"
       >
         {{ 'components.widget.settings.map.properties.setByMap' | translate }}
       </safe-button>
-      <!-- Time Dimension -->
-      <mat-checkbox formControlName="timeDimension">{{
-        'components.widget.settings.map.properties.timeSlider' | translate
-      }}</mat-checkbox>
+      <safe-divider></safe-divider>
+      <!-- Map controls -->
+      <safe-map-controls formGroupName="controls" [form]="controlsFormGroup"></safe-map-controls>
     </div>
   </div>
 </form>
