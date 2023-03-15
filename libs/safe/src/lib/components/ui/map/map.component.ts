@@ -412,7 +412,7 @@ export class MapComponent
       minZoom,
       worldCopyJump,
       zoomControl,
-      arcGisWebMap,
+      // arcGisWebMap,
       // layers,
       controls,
     } = this.extractSettings();
