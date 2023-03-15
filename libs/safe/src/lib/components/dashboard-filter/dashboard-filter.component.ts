@@ -60,7 +60,7 @@ export class SafeDashboardFilterComponent implements OnInit, AfterViewInit {
    * Class constructor
    *
    * @param environment environment
-   * @param hostElement HostElement
+   * @param hostElement Host/Component Element
    */
   constructor(
     @Inject('environment') environment: any,
@@ -80,6 +80,14 @@ export class SafeDashboardFilterComponent implements OnInit, AfterViewInit {
       this.hostElement.nativeElement?.offsetHeight.toString() + 'px';
   }
 
+  /**
+   * Event to close drawer on esc
+   */
+  @HostListener('document:keydown.escape', ['$event'])
+  onEsc() {
+    this.isDrawerOpen = false;
+  }
+
   ngOnInit(): void {
     if (this.filters) {
       let controlsObj = {};
@@ -94,7 +102,11 @@ export class SafeDashboardFilterComponent implements OnInit, AfterViewInit {
   }
 
   // We need the set the fix values first as we do not know the number of filters the component is going to receive
+  // And because the drawerPositioner directive makes the element fixed
   ngAfterViewInit(): void {
+    // This settimeout is needed as this dashboard is currently placed inside a mat-drawer
+    // We have to set a minimum timeout fix to get the real width of the host component until mat-drawer fully opens
+    // If the dashboard filter is placed somewhere else that is not a mat-drawer this would not be needed
     setTimeout(() => {
       this.containerWidth =
         this.hostElement.nativeElement?.offsetWidth.toString() + 'px';
