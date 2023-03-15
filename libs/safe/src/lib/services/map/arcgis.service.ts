@@ -104,7 +104,7 @@ export class ArcgisService {
   }
 
   /**
-   * Load basemaps from the webamp
+   * Load basemaps from the webmap
    *
    * @param {L.Map} map to add the webmap
    * @param {*} webMap webmap loaded
@@ -173,8 +173,6 @@ export class ArcgisService {
       label: webMap.baseMap.title,
       layer: baseMapLayerGroup,
     });
-
-    console.log('this.baseMaps', this.baseMaps);
   }
 
   /**
