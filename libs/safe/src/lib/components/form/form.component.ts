@@ -298,6 +298,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
     const questions = this.survey.getAllQuestions();
+    const promises = [];
     for (const question of questions) {
       if (question) {
         const key = question.getValueName();
@@ -315,107 +316,115 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         ) {
           //We save the records created from the resources question
           for (const recordId of question.value) {
-            let recordFromResource: any = null;
-            localForage
-              .getItem(recordId)
-              .then((data: any) => {
-                if (data != null) {
-                  //We ensure to make it only if such a record is found
-                  recordFromResource = JSON.parse(data);
-                  this.apollo
-                    .mutate<AddRecordMutationResponse>({
-                      mutation: ADD_RECORD,
-                      variables: {
-                        form: recordFromResource.template,
-                        data: recordFromResource.data,
-                      },
-                    })
-                    .subscribe({
-                      next: ({ data, errors }) => {
-                        if (errors) {
-                          this.snackBar.openSnackBar(
-                            `Error. ${errors[0].message}`,
-                            {
-                              error: true,
-                            }
-                          );
-                        } else {
-                          question.value[question.value.indexOf(recordId)] =
-                            question.value.includes(recordId)
-                              ? data?.addRecord.id
-                              : recordId;
-                          question.newCreatedRecords[
-                            question.newCreatedRecords.indexOf(recordId)
-                          ] = question.newCreatedRecords.includes(recordId)
-                            ? data?.addRecord.id
-                            : recordId; //If there is no error, we replace in the question the temporary id by the final one
-                        }
-                      },
-                      error: (err) => {
-                        this.snackBar.openSnackBar(err.message, {
-                          error: true,
-                        });
-                      },
-                    });
-                }
-              })
-              .catch((error: any) => {
-                console.error(error); // Handle any errors that occur while getting the item
-              });
-            localForage.removeItem(recordId); //We clear it from the local storage once we have retrieved it;
+            const promise = new Promise<void>((resolve, reject) => {
+              localForage
+                .getItem(recordId)
+                .then((data: any) => {
+                  if (data != null) {
+                    // We ensure to make it only if such a record is found
+                    const recordFromResource = JSON.parse(data);
+                    this.apollo
+                      .mutate<AddRecordMutationResponse>({
+                        mutation: ADD_RECORD,
+                        variables: {
+                          form: recordFromResource.template,
+                          data: recordFromResource.data,
+                        },
+                      })
+                      .subscribe({
+                        next: ({ data, errors }) => {
+                          if (errors) {
+                            this.snackBar.openSnackBar(
+                              `Error. ${errors[0].message}`,
+                              {
+                                error: true,
+                              }
+                            );
+                            reject(errors);
+                          } else {
+                            question.value[question.value.indexOf(recordId)] =
+                              question.value.includes(recordId)
+                                ? data?.addRecord.id
+                                : recordId; // If there is no error, we replace in the question the temporary id by the final one
+                            surveyData[question.name] = question.value; //We update the survey data to consider our changes
+                            resolve();
+                          }
+                        },
+                        error: (err) => {
+                          this.snackBar.openSnackBar(err.message, {
+                            error: true,
+                          });
+                          reject(err);
+                        },
+                      });
+                  } else {
+                    resolve(); //there is no data
+                  }
+                })
+                .catch((error: any) => {
+                  console.error(error); // Handle any errors that occur while getting the item
+                  reject(error);
+                });
+              localForage.removeItem(recordId); // We clear it from the local storage once we have retrieved it
+            });
+            promises.push(promise);
           }
-          console.log(question.value);
         }
       }
     }
-    this.survey.data = surveyData;
-    if (this.record || this.form.uniqueRecord) {
-      const recordId = this.record
-        ? this.record.id
-        : this.form.uniqueRecord?.id;
-      mutation = this.apollo.mutate<EditRecordMutationResponse>({
-        mutation: EDIT_RECORD,
-        variables: {
-          id: recordId,
-          data: this.survey.data,
-          template:
-            this.form.id !== this.record?.form?.id ? this.form.id : null,
-        },
-      });
-    } else {
-      mutation = this.apollo.mutate<AddRecordMutationResponse>({
-        mutation: ADD_RECORD,
-        variables: {
-          form: this.form.id,
-          data: this.survey.data,
-        },
-      });
-    }
-    mutation.subscribe(({ errors, data }: any) => {
-      if (errors) {
-        this.save.emit({ completed: false });
-        this.survey.clear(false, true);
-        this.surveyActive = true;
-        this.snackBar.openSnackBar(errors[0].message, { error: true });
+    Promise.allSettled(promises).then(() => {
+      //We wait for the resources questions to update their ids
+      this.survey.data = surveyData;
+      console.log(surveyData);
+      if (this.record || this.form.uniqueRecord) {
+        const recordId = this.record
+          ? this.record.id
+          : this.form.uniqueRecord?.id;
+        mutation = this.apollo.mutate<EditRecordMutationResponse>({
+          mutation: EDIT_RECORD,
+          variables: {
+            id: recordId,
+            data: this.survey.data,
+            template:
+              this.form.id !== this.record?.form?.id ? this.form.id : null,
+          },
+        });
       } else {
-        localStorage.removeItem(this.storageId);
-        if (data.editRecord || data.addRecord.form.uniqueRecord) {
-          this.survey.clear(false, false);
-          if (data.addRecord) {
-            this.record = data.addRecord;
-            this.modifiedAt = this.record?.modifiedAt || null;
-          } else {
-            this.modifiedAt = data.editRecord.modifiedAt;
-          }
-          this.surveyActive = true;
-        } else {
-          this.survey.showCompletedPage = true;
-        }
-        this.save.emit({
-          completed: true,
-          hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
+        console.log('mutating');
+        mutation = this.apollo.mutate<AddRecordMutationResponse>({
+          mutation: ADD_RECORD,
+          variables: {
+            form: this.form.id,
+            data: this.survey.data,
+          },
         });
       }
+      mutation.subscribe(({ errors, data }: any) => {
+        if (errors) {
+          this.save.emit({ completed: false });
+          this.survey.clear(false, true);
+          this.surveyActive = true;
+          this.snackBar.openSnackBar(errors[0].message, { error: true });
+        } else {
+          localStorage.removeItem(this.storageId);
+          if (data.editRecord || data.addRecord.form.uniqueRecord) {
+            this.survey.clear(false, false);
+            if (data.addRecord) {
+              this.record = data.addRecord;
+              this.modifiedAt = this.record?.modifiedAt || null;
+            } else {
+              this.modifiedAt = data.editRecord.modifiedAt;
+            }
+            this.surveyActive = true;
+          } else {
+            this.survey.showCompletedPage = true;
+          }
+          this.save.emit({
+            completed: true,
+            hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
+          });
+        }
+      });
     });
   };
 
