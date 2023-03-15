@@ -13,12 +13,13 @@ import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 import { MapControlsModule } from './map-controls/map-controls.module';
+import { WebmapSelectComponent } from './webmap-select/webmap-select.component';
 
 /**
  * Module of Map Properties of Map Widget.
  */
 @NgModule({
-  declarations: [MapPropertiesComponent],
+  declarations: [MapPropertiesComponent, WebmapSelectComponent],
   imports: [
     CommonModule,
     FormsModule,
