@@ -64,6 +64,12 @@ const cleanSettingsFromNulls = (settings: MapConstructorSettings) => {
   });
 };
 
+/**
+ * Id of default webmap
+ * todo(gis): remove
+ */
+const defaultWebMap = 'a8c3c531be1a4615b03c45b6353ab2c8';
+
 /** Component for the map widget */
 @Component({
   selector: 'safe-map',
@@ -138,7 +144,7 @@ export class MapComponent
       },
     },
     controls: DefaultMapControls,
-    arcGisWebMap: 'e322b877a98847d79692a3c7bf45e5cf',
+    arcGisWebMap: defaultWebMap,
   };
   private arcGisWebMap: any;
 
@@ -340,7 +346,7 @@ export class MapComponent
     const arcGisWebMap = get(
       this.settingsConfig,
       'arcGisWebMap',
-      'e322b877a98847d79692a3c7bf45e5cf'
+      defaultWebMap
     );
     /**
      * TODO implement layer loading for the layers returned from the settings
