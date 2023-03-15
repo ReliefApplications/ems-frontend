@@ -135,7 +135,9 @@ export class MapComponent
         zoom: 2,
       },
     },
+    arcGisWebMap: 'e322b877a98847d79692a3c7bf45e5cf',
   };
+  private arcGisWebMap: any;
 
   // === MARKERS ===
   private baseTree!: L.Control.Layers.TreeObject;
@@ -325,6 +327,11 @@ export class MapComponent
     const worldCopyJump = get(this.settingsConfig, 'worldCopyJump', true);
     const zoomControl = get(this.settingsConfig, 'zoomControl', false);
     const timeDimension = get(this.settingsConfig, 'timeDimension', false);
+    const arcGisWebMap = get(
+      this.settingsConfig,
+      'arcGisWebMap',
+      'e322b877a98847d79692a3c7bf45e5cf'
+    );
     /**
      * TODO implement layer loading for the layers returned from the settings
      *
@@ -350,6 +357,7 @@ export class MapComponent
       zoomControl,
       layers,
       timeDimension,
+      arcGisWebMap,
     };
   }
 
@@ -364,6 +372,7 @@ export class MapComponent
       worldCopyJump,
       zoomControl,
       timeDimension,
+      arcGisWebMap,
       // layers,
     } = this.extractSettings();
 
@@ -389,8 +398,8 @@ export class MapComponent
       initialState.viewpoint.zoom
     );
 
-    // todo(gis): replace with correct map loading
-    this.arcgisService.loadWebMap(this.map, 'e322b877a98847d79692a3c7bf45e5cf');
+    //set webmap
+    this.setWebmap(arcGisWebMap);
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(basemap);
@@ -441,6 +450,7 @@ export class MapComponent
         maxZoom,
         minZoom,
         timeDimension,
+        arcGisWebMap,
       } = this.extractSettings();
 
       // If value changes for the map we would change in order to not trigger map events unnecessarily
@@ -462,6 +472,13 @@ export class MapComponent
         const newBaseMap = get(BASEMAP_LAYERS, basemap);
         if (newBaseMap !== currentBasemap) {
           this.setBasemap(basemap);
+        }
+      }
+
+      if (arcGisWebMap) {
+        const currentWebMap = this.arcGisWebMap;
+        if (arcGisWebMap !== currentWebMap) {
+          this.setWebmap(arcGisWebMap);
         }
       }
 
@@ -810,5 +827,15 @@ export class MapComponent
     this.basemap = Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
     }).addTo(this.map);
+  }
+
+  /**
+   * Set the webmap.
+   *
+   * @param webmap String containing the id (name) of the webmap
+   */
+  public setWebmap(webmap: any) {
+    this.arcGisWebMap = webmap;
+    this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
   }
 }

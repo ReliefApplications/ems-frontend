@@ -1341,6 +1341,7 @@
 						"setByMap": "Utiliser la vue actuelle",
 						"timeSlider": "Suivi du temps",
 						"title": "Affichage par défaut",
+						"webmap": "todo(translation)",
 						"zoom": "Zoom par défaut"
 					},
 					"tooltip": {

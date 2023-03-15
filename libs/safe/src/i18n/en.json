@@ -1334,6 +1334,7 @@
 						"setByMap": "Set By Map",
 						"timeSlider": "Time Slider",
 						"title": "Map Parameters",
+						"webmap": "WebMap",
 						"zoom": "Default zoom"
 					},
 					"tooltip": {

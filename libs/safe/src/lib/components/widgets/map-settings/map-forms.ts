@@ -38,6 +38,7 @@ const DEFAULT_MAP: Nullable<MapSettingsI> = {
   // markersRules: [],
   layers: [],
   timeDimension: true,
+  arcGisWebMap: null,
 };
 
 /**
@@ -123,4 +124,5 @@ export const createMapWidgetFormGroup = (
         createLayerForm(x)
       )
     ),
+    arcGisWebMap: [get(value, 'arcGisWebMap', DEFAULT_MAP.arcGisWebMap)],
   });
