@@ -3,7 +3,8 @@ import {
   ViewChild,
   Input,
   Provider,
-  forwardRef
+  forwardRef,
+  OnInit,
 } from '@angular/core';
 import { ArcgisService } from '../../../../../../lib/services/map/arcgis.service';
 import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
@@ -21,35 +22,37 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   multi: true,
 };
 
-
+/**
+ *
+ */
 @Component({
   selector: 'safe-webmap-select',
   templateUrl: './webmap-select.component.html',
   styleUrls: ['./webmap-select.component.scss'],
-  providers: [CONTROL_VALUE_ACCESSOR]
+  providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class WebmapSelectComponent implements ControlValueAccessor{
+export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
   @Input() formControl!: UntypedFormControl;
 
   @Input() formControlName!: string;
 
-  private onTouched!: any;
+  private onTouched!: any; 
   private onChanged!: any;
 
-  public value: string = '';  
+  public value = '';
   public items: any[] = [];
   private start = 1;
   private loading = true;
   private nextPage = true;
 
   @ViewChild('arcGisWebMap') elementSelect?: MatSelect;
-  
+
   /**
    * Map Properties of Map widget.
    *
    * @param arcgis service
    */
-  constructor(private arcgis: ArcgisService){}
+  constructor(private arcgis: ArcgisService) {}
   /**
    * Subscribe to settings changes to update map.
    */
@@ -62,7 +65,7 @@ export class WebmapSelectComponent implements ControlValueAccessor{
    *
    * @param e event
    */
-  public selectionOnChange(e: any){
+  public selectionOnChange(e: any) {
     this.value = e.value;
     this.onChanged(this.value);
   }
@@ -76,12 +79,12 @@ export class WebmapSelectComponent implements ControlValueAccessor{
     this.onChanged = fn;
   }
 
-   /**
+  /**
    * Register touch event
    *
    * @param fn callback
    */
-   public registerOnTouched(fn: any): void {
+  public registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
 
@@ -93,7 +96,6 @@ export class WebmapSelectComponent implements ControlValueAccessor{
   writeValue(value: string): void {
     this.value = JSON.parse(JSON.stringify(value));
   }
-
 
   /**
    * Search for webmap data in argcis-rest-request using arcgis service
