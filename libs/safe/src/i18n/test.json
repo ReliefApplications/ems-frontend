@@ -1329,10 +1329,18 @@
 					},
 					"properties": {
 						"basemap": "******",
+						"controls": {
+							"download": "******",
+							"layer": "******",
+							"legend": "******",
+							"measure": "******",
+							"search": "******",
+							"timedimension": "******",
+							"title": "******"
+						},
 						"latitude": "******",
 						"longitude": "******",
 						"setByMap": "******",
-						"timeSlider": "******",
 						"title": "******",
 						"webmap": "******",
 						"zoom": "******"

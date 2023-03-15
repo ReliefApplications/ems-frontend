@@ -23,7 +23,7 @@ export interface MapConstructorSettings {
   layers?: any[];
   pm?: any;
   pmIgnore?: boolean;
-  timeDimension?: boolean;
+  controls: MapControls;
   arcGisWebMap?: string;
 }
 
@@ -41,3 +41,23 @@ export interface MapEvent {
   type: MapEventType;
   content: any;
 }
+
+/** Map controls interface */
+export interface MapControls {
+  timedimension: boolean;
+  download: boolean;
+  legend: boolean;
+  measure: boolean;
+  layer: boolean;
+  search: boolean;
+}
+
+/** Default values for the map controls */
+export const DefaultMapControls: MapControls = {
+  timedimension: false,
+  download: true,
+  legend: true,
+  measure: false,
+  layer: true,
+  search: false,
+};

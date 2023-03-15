@@ -1329,10 +1329,18 @@
 					},
 					"properties": {
 						"basemap": "Base map",
+						"controls": {
+							"download": "Download",
+							"layer": "Layers",
+							"legend": "Legend",
+							"measure": "Measure",
+							"search": "Search",
+							"timedimension": "Time dimension",
+							"title": "Visible Map Controls"
+						},
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
 						"setByMap": "Set By Map",
-						"timeSlider": "Time Slider",
 						"title": "Map Parameters",
 						"webmap": "WebMap",
 						"zoom": "Default zoom"
