@@ -43,6 +43,7 @@ import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../utils/cleanRecord';
+import localForage from 'localforage';
 
 /**
  * Interface of Dialog data.
@@ -279,54 +280,119 @@ export class SafeFormModalComponent implements OnInit {
 
     /** we can send to backend empty data if they are not required */
     const questions = survey.getAllQuestions();
-    const data = survey.data;
-    for (const field in questions) {
-      if (questions[field]) {
-        const key = questions[field].getValueName();
-        if (!data[key]) {
-          if (questions[field].getType() !== 'boolean') {
-            data[key] = null;
+    const surveyData = survey.data;
+    const promises = [];
+    for (const question of questions) {
+      if (question) {
+        const key = question.getValueName();
+        if (!surveyData[key]) {
+          if (question.getType() !== 'boolean') {
+            surveyData[key] = null;
           }
-          if (questions[field].readOnly || !questions[field].visible) {
-            delete data[key];
+          if (question.readOnly || !question.visible) {
+            delete surveyData[key];
+          }
+        }
+        if (
+          question.getType() === 'resources' ||
+          question.getType() == 'resource'
+        ) {
+          //We save the records created from the resources question
+          for (const recordId of question.value) {
+            const promise = new Promise<void>((resolve, reject) => {
+              localForage
+                .getItem(recordId)
+                .then((data: any) => {
+                  if (data != null) {
+                    // We ensure to make it only if such a record is found
+                    const recordFromResource = JSON.parse(data);
+                    this.apollo
+                      .mutate<AddRecordMutationResponse>({
+                        mutation: ADD_RECORD,
+                        variables: {
+                          form: recordFromResource.template,
+                          data: recordFromResource.data,
+                        },
+                      })
+                      .subscribe({
+                        next: ({ data, errors }) => {
+                          if (errors) {
+                            this.snackBar.openSnackBar(
+                              `Error. ${errors[0].message}`,
+                              {
+                                error: true,
+                              }
+                            );
+                            reject(errors);
+                          } else {
+                            question.value[question.value.indexOf(recordId)] =
+                              question.value.includes(recordId)
+                                ? data?.addRecord.id
+                                : recordId; // If there is no error, we replace in the question the temporary id by the final one
+                            surveyData[question.name] = question.value; //We update the survey data to consider our changes
+                            resolve();
+                          }
+                        },
+                        error: (err) => {
+                          this.snackBar.openSnackBar(err.message, {
+                            error: true,
+                          });
+                          reject(err);
+                        },
+                      });
+                  } else {
+                    resolve(); //there is no data
+                  }
+                })
+                .catch((error: any) => {
+                  console.error(error); // Handle any errors that occur while getting the item
+                  reject(error);
+                });
+              localForage.removeItem(recordId); // We clear it from the local storage once we have retrieved it
+            });
+            promises.push(promise);
           }
         }
       }
     }
-    survey.data = data;
-    // Displays confirmation modal.
-    if (this.data.askForConfirm) {
-      const dialogRef = this.confirmService.openConfirmModal({
-        title: this.translate.instant('common.updateObject', {
-          name:
-            rowsSelected > 1
-              ? this.translate.instant('common.row.few')
-              : this.translate.instant('common.row.one'),
-        }),
-        content: this.translate.instant(
-          'components.form.updateRow.confirmationMessage',
-          {
-            quantity: rowsSelected,
-            rowText:
+    Promise.allSettled(promises).then(() => {
+      survey.data = surveyData;
+      if (this.data.askForConfirm) {
+        // Displays confirmation modal.
+        const dialogRef = this.confirmService.openConfirmModal({
+          title: this.translate.instant('common.updateObject', {
+            name:
               rowsSelected > 1
                 ? this.translate.instant('common.row.few')
                 : this.translate.instant('common.row.one'),
+          }),
+          content: this.translate.instant(
+            'components.form.updateRow.confirmationMessage',
+            {
+              quantity: rowsSelected,
+              rowText:
+                rowsSelected > 1
+                  ? this.translate.instant('common.row.few')
+                  : this.translate.instant('common.row.one'),
+            }
+          ),
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
+          confirmColor: 'primary',
+        });
+        dialogRef.afterClosed().subscribe(async (value) => {
+          if (value) {
+            await this.onUpdate(survey);
+          } else {
+            this.saving = false;
           }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
-      });
-      dialogRef.afterClosed().subscribe(async (value) => {
-        if (value) {
-          await this.onUpdate(survey);
-        } else {
-          this.saving = false;
-        }
-      });
-      // Updates the data directly.
-    } else {
-      this.onUpdate(survey);
-    }
+        });
+        // Updates the data directly.
+      } else {
+        this.onUpdate(survey);
+      }
+    });
   };
 
   /**

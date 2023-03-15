@@ -375,7 +375,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     Promise.allSettled(promises).then(() => {
       //We wait for the resources questions to update their ids
       this.survey.data = surveyData;
-      console.log(surveyData);
       if (this.record || this.form.uniqueRecord) {
         const recordId = this.record
           ? this.record.id
@@ -390,7 +389,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
           },
         });
       } else {
-        console.log('mutating');
         mutation = this.apollo.mutate<AddRecordMutationResponse>({
           mutation: ADD_RECORD,
           variables: {
