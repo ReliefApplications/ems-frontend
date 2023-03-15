@@ -52,14 +52,25 @@ export class ArcgisService {
    *
    * @param {L.Map} map to add the webmap
    * @param {string} id webmap id
+   * @returns baseMaps and operational layers from the webmap
    */
-  public loadWebMap(map: L.Map, id: string): void {
-    getItemData(id, {
-      authentication: this.session,
-    }).then((webMap: any) => {
-      this.setDefaultView(map, webMap);
-      this.loadBaseMap(map, webMap);
-      this.loadOperationalLayers(map, webMap);
+  public loadWebMap(
+    map: L.Map,
+    id: string
+  ): Promise<{ baseMaps: any; layers: any }> {
+    return new Promise((resolve) => {
+      getItemData(id, {
+        authentication: this.session,
+      }).then((webMap: any) => {
+        this.setDefaultView(map, webMap);
+        const bmPromise = this.loadBaseMap(map, webMap);
+        const olPromise = this.loadOperationalLayers(map, webMap);
+
+        // Wait for the basemaps and operational layers to be loaded
+        Promise.all([bmPromise, olPromise]).then(() => {
+          resolve({ baseMaps: this.baseMaps, layers: this.layers });
+        });
+      });
     });
   }
 
@@ -133,6 +144,8 @@ export class ArcgisService {
       label: webMap.baseMap.title,
       layer: baseMapLayerGroup,
     });
+
+    console.log('this.baseMaps', this.baseMaps);
   }
 
   /**

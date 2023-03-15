@@ -16,6 +16,7 @@ import * as Geocoding from 'esri-leaflet-geocoder';
 import { LegendDefinition } from '../../components/ui/map/interfaces/layer-legend.type';
 import { Layer } from '../../components/ui/map/layer';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/language';
+import { OverlayLayerTree } from '../../components/ui/map/interfaces/map-layers.interface';
 
 /**
  * Shared map control service.
@@ -27,6 +28,7 @@ export class SafeMapControlsService {
   public addressMarker: any;
   public measureControls: any = {};
   public fullscreenControl!: L.Control;
+  public layerControl: L.Control | null = null;
   public lang!: any;
   // === THEME ===
   private primaryColor = '';
@@ -145,6 +147,77 @@ export class SafeMapControlsService {
       },
     });
     this.fullscreenControl?.addTo(map);
+  }
+
+  /**
+   * Build the layer control and add it to the map
+   *
+   * @param map The map to add the control to
+   * @param layers Layers to build the control from
+   * @param baseTree Base tree layers to build the control from
+   * @param arcgisLayersTree Arcgis layers tree to add to the control
+   */
+  public getLayerControl(
+    map: L.Map,
+    layers: Layer[],
+    baseTree: L.Control.Layers.TreeObject,
+    arcgisLayersTree: L.Control.Layers.TreeObject[]
+  ): void {
+    const addedLayers: Layer[] = [];
+    const layersTree: L.Control.Layers.TreeObject[] = [];
+
+    /**
+     * Parses a layer into a tree node
+     *
+     * @param layer The layer to create the tree node from
+     * @param leafletLayer The leaflet layer previously created by the parent layer, if any
+     * @returns The tree node
+     */
+    const parseTreeNode = (
+      layer: Layer,
+      leafletLayer?: L.Layer
+    ): OverlayLayerTree => {
+      // Add to the layers array
+      addedLayers.push(layer);
+
+      // Gets the leaflet layer. Either the one passed as parameter
+      // (from parent) or the one created by the layer itself (if no parent)
+      const featureLayer = leafletLayer ?? layer.getLayer();
+
+      // Adds the layer to the map if not already added
+      // note: group layers are of type L.LayerGroup
+      // so we should check if the layer is not already added
+      if (!map.hasLayer(featureLayer)) map.addLayer(featureLayer);
+
+      const children = layer.getChildren();
+      if (layer.type === 'group') {
+        // It is a group, it should not have any layer but it should be able to check/uncheck its children
+        return {
+          label: layer.name,
+          selectAllCheckbox: true,
+          children:
+            children.length > 0
+              ? children.map((c) => parseTreeNode(c.object, c.layer))
+              : undefined,
+        };
+      } else {
+        // It is a node, it does not have any children but it displays a layer
+        return {
+          label: layer.name,
+          layer: featureLayer,
+        };
+      }
+    };
+
+    // Add each layer to the tree
+    layers.forEach((layer) => {
+      layersTree.push(parseTreeNode(layer));
+    });
+
+    // Add control to the map layers
+    this.layerControl = L.control.layers
+      .tree(baseTree, ...layersTree, ...arcgisLayersTree)
+      .addTo(map);
   }
 
   /**

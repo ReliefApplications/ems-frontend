@@ -20,10 +20,7 @@ import * as Vector from 'esri-leaflet-vector';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  OverlayLayerTree,
-  LayerActionOnMap,
-} from './interfaces/map-layers.interface';
+import { LayerActionOnMap } from './interfaces/map-layers.interface';
 import {
   MapConstructorSettings,
   MapEvent,
@@ -260,9 +257,28 @@ export class MapComponent
   }
 
   /** Once template is ready, build the map. */
-  ngAfterViewInit(): void {
+  async ngAfterViewInit(): Promise<void> {
     // Creates the map and adds all the controls we use.
     this.drawMap();
+
+    const { baseMaps, layers } = await this.arcgisService.loadWebMap(
+      this.map,
+      'e322b877a98847d79692a3c7bf45e5cf'
+    );
+
+    // console.log(2);
+    this.layersTree = layers;
+    this.baseTree = {
+      label: 'Base Maps',
+      children: [
+        {
+          label: 'OSM',
+          layer: this.basemap,
+        },
+      ].concat(baseMaps),
+      collapsed: true,
+    };
+
     /**
      * If Geoman tools are going to be used we will set up related listeners
      * Otherwise the map listeners for the user interaction with it
@@ -274,6 +290,7 @@ export class MapComponent
     }
 
     setTimeout(() => {
+      console.log('hm1');
       this.map.invalidateSize();
       if (this.displayMockedLayers) {
         this.setUpLayers();
@@ -295,7 +312,7 @@ export class MapComponent
           },
         });
       }
-    }, 100);
+    }, 1000);
   }
 
   /**
@@ -354,7 +371,7 @@ export class MapComponent
   }
 
   /** Creates the map and adds all the controls we use */
-  private drawMap(): void {
+  private async drawMap(): Promise<void> {
     const {
       initialState,
       maxBounds: maxBoundArray,
@@ -388,9 +405,6 @@ export class MapComponent
       ),
       initialState.viewpoint.zoom
     );
-
-    // todo(gis): replace with correct map loading
-    this.arcgisService.loadWebMap(this.map, 'e322b877a98847d79692a3c7bf45e5cf');
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(basemap);
@@ -491,8 +505,6 @@ export class MapComponent
    * Setup and draw layers on map and sets the baseTree.
    */
   private setUpLayers(): void {
-    this.layersTree = [];
-
     this.basemap = L.tileLayer(
       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       {
@@ -500,71 +512,78 @@ export class MapComponent
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }
     ).addTo(this.map);
-    this.baseTree = {
-      label: 'Base Maps',
-      children: [
-        {
-          label: 'OSM',
-          layer: this.basemap,
-        },
-      ],
-      collapsed: true,
-    };
-
-    /**
-     * Parses a layer into a tree node
-     *
-     * @param layer The layer to create the tree node from
-     * @param leafletLayer The leaflet layer previously created by the parent layer, if any
-     * @returns The tree node
-     */
-    const parseTreeNode = (
-      layer: Layer,
-      leafletLayer?: L.Layer
-    ): OverlayLayerTree => {
-      // Add to the layers array
-      this.layers.push(layer);
-
-      // Gets the leaflet layer. Either the one passed as parameter
-      // (from parent) or the one created by the layer itself (if no parent)
-      const featureLayer = leafletLayer ?? layer.getLayer();
-
-      // Adds the layer to the map if not already added
-      // note: group layers are of type L.LayerGroup
-      // so we should check if the layer is not already added
-      if (!this.map.hasLayer(featureLayer)) this.map.addLayer(featureLayer);
-
-      const children = layer.getChildren();
-      if (layer.type === 'group') {
-        // It is a group, it should not have any layer but it should be able to check/uncheck its children
-        return {
-          label: layer.name,
-          selectAllCheckbox: true,
-          children:
-            children.length > 0
-              ? children.map((c) => parseTreeNode(c.object, c.layer))
-              : undefined,
-        };
-      } else {
-        // It is a node, it does not have any children but it displays a layer
-        return {
-          label: layer.name,
-          layer: featureLayer,
-        };
-      }
-    };
+    // this.baseTree = {
+    //   label: 'Base Maps',
+    //   children: [
+    //     {
+    //       label: 'OSM',
+    //       layer: this.basemap,
+    //     },
+    //   ],
+    //   collapsed: true,
+    // };
 
     const layers = [new Layer(MOCK_LAYER_SETTINGS)];
+    console.log(1);
+    this.mapControlsService.getLayerControl(
+      this.map,
+      layers,
+      this.baseTree,
+      this.layersTree
+    );
 
-    // Add each layer to the tree
-    layers.forEach((layer) => {
-      this.layersTree.push(parseTreeNode(layer));
-    });
+    // /**
+    //  * Parses a layer into a tree node
+    //  *
+    //  * @param layer The layer to create the tree node from
+    //  * @param leafletLayer The leaflet layer previously created by the parent layer, if any
+    //  * @returns The tree node
+    //  */
+    // const parseTreeNode = (
+    //   layer: Layer,
+    //   leafletLayer?: L.Layer
+    // ): OverlayLayerTree => {
+    //   // Add to the layers array
+    //   this.layers.push(layer);
 
-    // Add control to the map layers
-    this.layerControl = L.control.layers
-      .tree(this.baseTree, this.layersTree as any)
-      .addTo(this.map);
+    //   // Gets the leaflet layer. Either the one passed as parameter
+    //   // (from parent) or the one created by the layer itself (if no parent)
+    //   const featureLayer = leafletLayer ?? layer.getLayer();
+
+    //   // Adds the layer to the map if not already added
+    //   // note: group layers are of type L.LayerGroup
+    //   // so we should check if the layer is not already added
+    //   if (!this.map.hasLayer(featureLayer)) this.map.addLayer(featureLayer);
+
+    //   const children = layer.getChildren();
+    //   if (layer.type === 'group') {
+    //     // It is a group, it should not have any layer but it should be able to check/uncheck its children
+    //     return {
+    //       label: layer.name,
+    //       selectAllCheckbox: true,
+    //       children:
+    //         children.length > 0
+    //           ? children.map((c) => parseTreeNode(c.object, c.layer))
+    //           : undefined,
+    //     };
+    //   } else {
+    //     // It is a node, it does not have any children but it displays a layer
+    //     return {
+    //       label: layer.name,
+    //       layer: featureLayer,
+    //     };
+    //   }
+    // };
+
+    // // Add each layer to the tree
+    // layers.forEach((layer) => {
+    //   this.layersTree.push(parseTreeNode(layer));
+    // });
+
+    // // Add control to the map layers
+    // this.layerControl = L.control.layers
+    //   .tree(this.baseTree, this.layersTree as any)
+    //   .addTo(this.map);
   }
 
   /**
