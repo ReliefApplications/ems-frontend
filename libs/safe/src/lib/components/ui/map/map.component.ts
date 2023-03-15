@@ -390,7 +390,7 @@ export class MapComponent
     );
 
     // todo(gis): replace with correct map loading
-    this.arcgisService.loadWebMap(this.map, 'e322b877a98847d79692a3c7bf45e5cf');
+    this.arcgisService.loadWebMap(this.map, 'a8c3c531be1a4615b03c45b6353ab2c8');
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(basemap);
