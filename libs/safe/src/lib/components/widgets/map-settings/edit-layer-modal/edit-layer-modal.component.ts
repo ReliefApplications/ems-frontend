@@ -159,7 +159,7 @@ export class SafeEditLayerModalComponent
       minZoom: 2,
       maxZoom: 18,
       worldCopyJump: true,
-      controls: DefaultMapControls, 
+      controls: DefaultMapControls,
     };
   }
 

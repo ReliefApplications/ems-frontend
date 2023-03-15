@@ -86,11 +86,11 @@ export const createLayerForm = (value?: MapLayerI): UntypedFormGroup =>
 export const createMapControlsForm = (value?: MapControls): UntypedFormGroup =>
   fb.group({
     timedimension: [get(value, 'timedimension', false)],
-    download: [get(value, 'download ', true)],
-    legend: [get(value, 'legend ', true)],
-    measure: [get(value, 'measure ', false)],
+    download: [get(value, 'download', true)],
+    legend: [get(value, 'legend', true)],
+    measure: [get(value, 'measure', false)],
     layer: [get(value, 'layer', true)],
-    search: [get(value, 'search ', false)],
+    search: [get(value, 'search', false)],
   });
 
 /**
