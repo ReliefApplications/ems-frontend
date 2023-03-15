@@ -10,7 +10,7 @@ import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe
 import { MapConstructorSettings } from '../../../ui/map/interfaces/map.interface';
 import { BASEMAPS } from '../../../ui/map/const/baseMaps';
 import { ArcgisService } from '../../../../../lib/services/map/arcgis.service';
-import { MatSelect } from '@angular/material/select';
+import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 
 /**
  * Map Properties of Map widget.
@@ -71,12 +71,12 @@ export class MapPropertiesComponent extends SafeUnsubscribeComponent {
   }
 
   /**
-   * Deals with open change
+   * Adds scroll listener to select.
    *
-   * @param event handler
+   * @param e open select event.
    */
-  openedChange(event: any): void {
-    if (event && this.elementSelect) {
+  onOpenSelect(e: any): void {
+    if (e && this.elementSelect) {
       const panel = this.elementSelect.panel.nativeElement;
       panel.addEventListener('scroll', (event: any) =>
         this.loadOnScroll(event)
@@ -100,5 +100,16 @@ export class MapPropertiesComponent extends SafeUnsubscribeComponent {
         this.search();
       }
     }
+  }
+
+  /**
+   * Set the latitude and longitude of the center of the map using the one in the preview map.
+   */
+  onSetByMap(): void {
+    this.form
+      .get('initialState.viewpoint')
+      ?.setValue(this.mapSettings.initialState.viewpoint, {
+        emitEvent: false,
+      });
   }
 }

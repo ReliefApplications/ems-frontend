@@ -75,7 +75,6 @@ export class ArcgisService {
    * @returns searched items
    */
   public searchItems(options: { start?: number }) {
-    // console.log(this.session);
     const filter: ISearchOptions = {
       q: new SearchQueryBuilder()
         .match('Web Map')
