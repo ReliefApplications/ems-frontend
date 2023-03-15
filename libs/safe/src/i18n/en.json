@@ -1342,6 +1342,7 @@
 						"longitude": "Map center longitude",
 						"setByMap": "Set By Map",
 						"title": "Map Parameters",
+						"webmap": "WebMap",
 						"zoom": "Default zoom"
 					},
 					"tooltip": {

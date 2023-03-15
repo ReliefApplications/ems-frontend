@@ -1349,6 +1349,7 @@
 						"longitude": "Longitude du centre de la carte",
 						"setByMap": "Utiliser la vue actuelle",
 						"title": "Affichage par défaut",
+						"webmap": "todo(translation)",
 						"zoom": "Zoom par défaut"
 					},
 					"tooltip": {

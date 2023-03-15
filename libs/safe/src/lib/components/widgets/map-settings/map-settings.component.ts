@@ -45,6 +45,7 @@ export class SafeMapSettingsComponent
       basemap: this.tileForm.value.basemap,
       initialState: this.tileForm.get('initialState')?.value,
       controls: this.tileForm.value.controls,
+      arcGisWebMap: this.tileForm.value.arcGisWebMap,
     };
     this.updateMapSettings(defaultMapSettings);
     this.setUpFormListeners();
@@ -77,6 +78,14 @@ export class SafeMapSettingsComponent
           controls: value,
         } as MapConstructorSettings);
       });
+    this.tileForm
+      .get('arcGisWebMap')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) =>
+        this.updateMapSettings({
+          arcGisWebMap: value,
+        } as MapConstructorSettings)
+      );
   }
 
   /**

@@ -130,7 +130,6 @@ export class SafeEditLayerModalComponent
   }
 
   ngAfterViewInit(): void {
-    console.log(this.form);
     if (this.layerType) {
       this.setUpLayer();
     }

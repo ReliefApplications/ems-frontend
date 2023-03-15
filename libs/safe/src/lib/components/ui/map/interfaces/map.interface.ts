@@ -24,6 +24,7 @@ export interface MapConstructorSettings {
   pm?: any;
   pmIgnore?: boolean;
   controls: MapControls;
+  arcGisWebMap?: string;
 }
 
 /** Available leaflet event types. */

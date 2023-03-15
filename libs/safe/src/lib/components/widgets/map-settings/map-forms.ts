@@ -42,6 +42,7 @@ const DEFAULT_MAP: Nullable<MapSettingsI> = {
   // markersRules: [],
   layers: [],
   controls: DefaultMapControls,
+  arcGisWebMap: null,
 };
 
 /**
@@ -147,4 +148,5 @@ export const createMapWidgetFormGroup = (
     controls: createMapControlsForm(
       get(value, 'controls', DEFAULT_MAP.controls)
     ),
+    arcGisWebMap: [get(value, 'arcGisWebMap', DEFAULT_MAP.arcGisWebMap)],
   });

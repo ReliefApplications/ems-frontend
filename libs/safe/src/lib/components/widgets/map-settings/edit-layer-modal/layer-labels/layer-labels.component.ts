@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 
+/**
+ * Map layer labels settings component.
+ */
 @Component({
   selector: 'safe-layer-labels',
   templateUrl: './layer-labels.component.html',
