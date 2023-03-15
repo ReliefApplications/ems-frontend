@@ -1,6 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { createMapWidgetFormGroup } from './map-forms';
 import { UntypedFormGroup } from '@angular/forms';
+import {
+  MapConstructorSettings,
+  MapEvent,
+  MapEventType,
+} from '../../ui/map/interfaces/map.interface';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /** Component for the map widget settings */
 @Component({
@@ -8,7 +15,13 @@ import { UntypedFormGroup } from '@angular/forms';
   templateUrl: './map-settings.component.html',
   styleUrls: ['./map-settings.component.scss'],
 })
-export class SafeMapSettingsComponent implements OnInit {
+export class SafeMapSettingsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
+  public currentTab: 'parameters' | 'layers' | null = 'parameters';
+  public mapSettings!: MapConstructorSettings;
+
   // === REACTIVE FORM ===
   tileForm: UntypedFormGroup | undefined;
 
@@ -27,6 +40,95 @@ export class SafeMapSettingsComponent implements OnInit {
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
+
+    const defaultMapSettings: MapConstructorSettings = {
+      basemap: this.tileForm.value.basemap,
+      initialState: this.tileForm.get('initialState')?.value,
+      timeDimension: this.tileForm.value.timeDimension,
+      arcGisWebMap: this.tileForm.value.arcGisWebMap,
+    };
+    this.updateMapSettings(defaultMapSettings);
+    this.setUpFormListeners();
+  }
+
+  /**
+   * Set form listeners
+   */
+  private setUpFormListeners() {
+    if (!this.tileForm) return;
+    this.tileForm
+      .get('initialState')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) =>
+        this.updateMapSettings({
+          initialState: value,
+        } as MapConstructorSettings)
+      );
+    this.tileForm
+      .get('basemap')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) =>
+        this.updateMapSettings({ basemap: value } as MapConstructorSettings)
+      );
+    this.tileForm
+      .get('timeDimension')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.updateMapSettings({
+          timeDimension: value,
+        } as MapConstructorSettings);
+      });
+    this.tileForm
+      .get('arcGisWebMap')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) =>
+        this.updateMapSettings({
+          arcGisWebMap: value,
+        } as MapConstructorSettings)
+      );
+  }
+
+  /**
+   * Handle leaflet map events
+   *
+   * @param event leaflet map event
+   */
+  handleMapEvent(event: MapEvent) {
+    if (!this.tileForm) return;
+    switch (event.type) {
+      case MapEventType.MOVE_END:
+        this.mapSettings.initialState.viewpoint.center.latitude =
+          event.content.center.lat;
+        this.mapSettings.initialState.viewpoint.center.longitude =
+          event.content.center.lng;
+        break;
+      case MapEventType.ZOOM_END:
+        this.mapSettings.initialState.viewpoint.zoom = event.content.zoom;
+        this.tileForm
+          .get('initialState.viewpoint.zoom')
+          ?.setValue(this.mapSettings.initialState.viewpoint.zoom, {
+            emitEvent: false,
+          });
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Update map settings
+   *
+   * @param settings new settings
+   */
+  private updateMapSettings(settings: MapConstructorSettings) {
+    if (this.mapSettings) {
+      this.mapSettings = {
+        ...this.mapSettings,
+        ...settings,
+      };
+    } else {
+      this.mapSettings = settings;
+    }
   }
 }
 

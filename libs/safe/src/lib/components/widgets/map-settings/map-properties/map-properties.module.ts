@@ -9,7 +9,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MapModule } from '../../../ui/map/map.module';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
@@ -30,7 +29,6 @@ import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/
     MatTooltipModule,
     MatSelectModule,
     SafeIconModule,
-    MapModule,
     SafeButtonModule,
     SafeDividerModule,
     MatCheckboxModule,
