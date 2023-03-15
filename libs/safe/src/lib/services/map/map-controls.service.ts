@@ -162,8 +162,7 @@ export class SafeMapControlsService {
     layers: Layer[],
     baseTree: L.Control.Layers.TreeObject,
     arcgisLayersTree: L.Control.Layers.TreeObject[]
-  ): void {
-    const addedLayers: Layer[] = [];
+  ) {
     const layersTree: L.Control.Layers.TreeObject[] = [];
 
     /**
@@ -177,9 +176,6 @@ export class SafeMapControlsService {
       layer: Layer,
       leafletLayer?: L.Layer
     ): OverlayLayerTree => {
-      // Add to the layers array
-      addedLayers.push(layer);
-
       // Gets the leaflet layer. Either the one passed as parameter
       // (from parent) or the one created by the layer itself (if no parent)
       const featureLayer = leafletLayer ?? layer.getLayer();
@@ -216,7 +212,7 @@ export class SafeMapControlsService {
 
     // Add control to the map layers
     this.layerControl = L.control.layers
-      .tree(baseTree, ...layersTree, ...arcgisLayersTree)
+      .tree(baseTree, layersTree.concat(arcgisLayersTree) as any)
       .addTo(map);
   }
 

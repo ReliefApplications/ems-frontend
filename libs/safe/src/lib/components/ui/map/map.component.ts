@@ -136,7 +136,6 @@ export class MapComponent
 
   // === MARKERS ===
   private baseTree!: L.Control.Layers.TreeObject;
-  private layersTree: L.Control.Layers.TreeObject[] = [];
   private layerControl: any;
 
   // === QUERY UPDATE INFO ===
@@ -261,13 +260,13 @@ export class MapComponent
     // Creates the map and adds all the controls we use.
     this.drawMap();
 
-    const { baseMaps, layers } = await this.arcgisService.loadWebMap(
-      this.map,
-      'e322b877a98847d79692a3c7bf45e5cf'
-    );
+    const { baseMaps, layers: arcgisLayerTree } =
+      await this.arcgisService.loadWebMap(
+        this.map,
+        'e322b877a98847d79692a3c7bf45e5cf'
+      );
 
-    // console.log(2);
-    this.layersTree = layers;
+    // Updating baseTree with the base maps from ArcGIS
     this.baseTree = {
       label: 'Base Maps',
       children: [
@@ -275,7 +274,14 @@ export class MapComponent
           label: 'OSM',
           layer: this.basemap,
         },
-      ].concat(baseMaps),
+      ].concat(
+        baseMaps.map((basemap) => {
+          return {
+            label: basemap.label,
+            layer: basemap.layer,
+          };
+        })
+      ),
       collapsed: true,
     };
 
@@ -290,10 +296,12 @@ export class MapComponent
     }
 
     setTimeout(() => {
-      console.log('hm1');
       this.map.invalidateSize();
       if (this.displayMockedLayers) {
-        this.setUpLayers();
+        const layers = [new Layer(MOCK_LAYER_SETTINGS)];
+
+        // Add layers to map
+        this.setUpLayers(layers, arcgisLayerTree, this.baseTree);
         // Add legend control
         this.mapControlsService.getLegendControl(this.map, this.layers);
       }
@@ -312,7 +320,7 @@ export class MapComponent
           },
         });
       }
-    }, 1000);
+    }, 500);
   }
 
   /**
@@ -502,9 +510,17 @@ export class MapComponent
   }
 
   /**
-   * Setup and draw layers on map and sets the baseTree.
+   * Setup and draw layers on map.
+   *
+   * @param layers Platform layer objects
+   * @param arcgisLayerTree ArcGIS layer tree
+   * @param baseTree Base layer tree
    */
-  private setUpLayers(): void {
+  private setUpLayers(
+    layers: Layer[],
+    arcgisLayerTree: L.Control.Layers.TreeObject[],
+    baseTree: L.Control.Layers.TreeObject
+  ): void {
     this.basemap = L.tileLayer(
       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       {
@@ -512,78 +528,13 @@ export class MapComponent
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }
     ).addTo(this.map);
-    // this.baseTree = {
-    //   label: 'Base Maps',
-    //   children: [
-    //     {
-    //       label: 'OSM',
-    //       layer: this.basemap,
-    //     },
-    //   ],
-    //   collapsed: true,
-    // };
 
-    const layers = [new Layer(MOCK_LAYER_SETTINGS)];
-    console.log(1);
     this.mapControlsService.getLayerControl(
       this.map,
       layers,
-      this.baseTree,
-      this.layersTree
+      baseTree,
+      arcgisLayerTree
     );
-
-    // /**
-    //  * Parses a layer into a tree node
-    //  *
-    //  * @param layer The layer to create the tree node from
-    //  * @param leafletLayer The leaflet layer previously created by the parent layer, if any
-    //  * @returns The tree node
-    //  */
-    // const parseTreeNode = (
-    //   layer: Layer,
-    //   leafletLayer?: L.Layer
-    // ): OverlayLayerTree => {
-    //   // Add to the layers array
-    //   this.layers.push(layer);
-
-    //   // Gets the leaflet layer. Either the one passed as parameter
-    //   // (from parent) or the one created by the layer itself (if no parent)
-    //   const featureLayer = leafletLayer ?? layer.getLayer();
-
-    //   // Adds the layer to the map if not already added
-    //   // note: group layers are of type L.LayerGroup
-    //   // so we should check if the layer is not already added
-    //   if (!this.map.hasLayer(featureLayer)) this.map.addLayer(featureLayer);
-
-    //   const children = layer.getChildren();
-    //   if (layer.type === 'group') {
-    //     // It is a group, it should not have any layer but it should be able to check/uncheck its children
-    //     return {
-    //       label: layer.name,
-    //       selectAllCheckbox: true,
-    //       children:
-    //         children.length > 0
-    //           ? children.map((c) => parseTreeNode(c.object, c.layer))
-    //           : undefined,
-    //     };
-    //   } else {
-    //     // It is a node, it does not have any children but it displays a layer
-    //     return {
-    //       label: layer.name,
-    //       layer: featureLayer,
-    //     };
-    //   }
-    // };
-
-    // // Add each layer to the tree
-    // layers.forEach((layer) => {
-    //   this.layersTree.push(parseTreeNode(layer));
-    // });
-
-    // // Add control to the map layers
-    // this.layerControl = L.control.layers
-    //   .tree(this.baseTree, this.layersTree as any)
-    //   .addTo(this.map);
   }
 
   /**

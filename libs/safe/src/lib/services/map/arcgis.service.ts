@@ -30,8 +30,8 @@ export class ArcgisService {
   private esriApiKey!: string;
   private session!: ApiKeyManager;
 
-  private layers: any[] = [];
-  private baseMaps: any[] = [];
+  private layers: L.Control.Layers.TreeObject[] = [];
+  private baseMaps: L.Control.Layers.TreeObject[] = [];
 
   /**
    * Shared ArcGIS service map
@@ -57,7 +57,10 @@ export class ArcgisService {
   public loadWebMap(
     map: L.Map,
     id: string
-  ): Promise<{ baseMaps: any; layers: any }> {
+  ): Promise<{
+    baseMaps: L.Control.Layers.TreeObject[];
+    layers: L.Control.Layers.TreeObject[];
+  }> {
     return new Promise((resolve) => {
       getItemData(id, {
         authentication: this.session,
