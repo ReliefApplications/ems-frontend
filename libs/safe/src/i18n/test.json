@@ -1299,6 +1299,13 @@
 							"title": "******"
 						}
 					},
+					"layerPopup": {
+						"description": "******",
+						"field": "******",
+						"fieldsList": "******",
+						"text": "******",
+						"title": "******"
+					},
 					"layers": {
 						"add": "******",
 						"edit": "****** {{name}}",

@@ -1299,6 +1299,13 @@
 							"title": "Layer styles"
 						}
 					},
+					"layerPopup": {
+						"description": "Description",
+						"field": "Field",
+						"fieldsList": "Fields List",
+						"text": "Text",
+						"title": "Title"
+					},
 					"layers": {
 						"add": "Add new layer",
 						"edit": "Update layer {{name}}",

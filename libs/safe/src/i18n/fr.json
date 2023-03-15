@@ -1306,6 +1306,13 @@
 							"title": "Styles de calque"
 						}
 					},
+					"layerPopup": {
+						"description": "Description",
+						"field": "Champ",
+						"fieldsList": "Liste de champ",
+						"text": "Texte",
+						"title": "Titre"
+					},
 					"layers": {
 						"add": "Ajouter un nouveau calque",
 						"edit": "Mettre à jour le calque {{name}}",

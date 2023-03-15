@@ -1,5 +1,11 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Output } from '@angular/core';
+import { contentType, Content } from './layer-popup.interface';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+} from '@angular/forms';
 
 /**
  * Map layer popup settings component.
@@ -12,16 +18,84 @@ import { Component, EventEmitter, Output } from '@angular/core';
 export class LayerPopupComponent {
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter();
-  list = [1, 2, 3, 4, 5, 6];
+  private list: Content[] = [
+    {
+      type: 'field',
+      content: {
+        title: 'super',
+        description: 'text',
+      },
+    },
+    {
+      type: 'text',
+      content: {
+        title: 'featureclass',
+      },
+    },
+  ];
 
-  // constructor() {}
+  public formGroup!: UntypedFormGroup;
+
+  /** @returns content as form array */
+  get contentArray(): UntypedFormArray {
+    return this.formGroup.get('content') as UntypedFormArray;
+  }
+
+  /**
+   * Creates an instance of LayerPopupComponent.
+   *
+   * @param formBuilder Angular form builder
+   */
+  constructor(private formBuilder: UntypedFormBuilder) {
+    this.formGroup = this.formBuilder.group({
+      content: this.formBuilder.array([]),
+    });
+
+    this.list.forEach((item: Content) => {
+      this.contentArray.push(
+        this.formBuilder.group({
+          type: [item.type],
+          title: [item.content.title],
+          description: [item.type === 'field' ? item.content.description : ''],
+        })
+      );
+    });
+  }
+
   /**
    * Handles the event emitted when a layer is reordered
    *
-   * @param e Event emitted when a layer is reordered
+   * @param event Event emitted when a layer is reordered
    */
-  public onListDrop(e: CdkDragDrop<number[]>) {
-    const movedElement = this.list.splice(e.previousIndex, 1);
-    this.list.splice(e.currentIndex, 0, movedElement[0]);
+  public onListDrop(event: CdkDragDrop<Content[]>) {
+    moveItemInArray(
+      this.contentArray.controls,
+      event.previousIndex,
+      event.currentIndex
+    );
+  }
+
+  /**
+   * Add a new content block text or field block)
+   *
+   * @param {contentType} type content type (text or field)
+   */
+  public onAdd(type: contentType): void {
+    this.contentArray.push(
+      this.formBuilder.group({
+        type: [type],
+        title: [type],
+        description: [''],
+      })
+    );
+  }
+
+  /**
+   * Remove content item from the array
+   *
+   * @param {number} index item index
+   */
+  public onRemove(index: number): void {
+    this.contentArray.removeAt(index);
   }
 }

@@ -8,8 +8,67 @@
       (click)="close.emit()"
     ></safe-button>
   </div>
+  <form cdkDropList (cdkDropListDropped)="onListDrop($event)" class="shadow-md" [formGroup]="formGroup">
+    <ng-container formArrayName="content">
+      <mat-expansion-panel [expanded]="false" hideToggle cdkDrag
+        *ngFor="let item of contentArray.controls; let index = index" [formGroup]="$any(item)">
+        <!-- Expand block header -->
+        <mat-expansion-panel-header class="flex">
+          <mat-panel-title class="grow-0">
+            <safe-button
+              cdkDragHandle
+              [isIcon]="true"
+              icon="drag_indicator"
+            ></safe-button>
+          </mat-panel-title>
+          <mat-panel-description>
+            <h4> {{ item.value.type === 'text' ? item.value.title : 'components.widget.settings.map.layerPopup.fieldsList' | translate  }} </h4>
+            <h6 *ngIf="item.value.type === 'field'"> {{ item.value.title }} </h6>
+          </mat-panel-description>
+          <safe-button
+            [isIcon]="true"
+            icon="close"
+            (click)="onRemove(index)"
+          ></safe-button>
+        </mat-expansion-panel-header>
+        <!-- Expanded block content -->
+        <div class="flex flex-col mx-4">
+          <mat-label *ngIf="item.value.type === 'field'">
+            {{ 'components.widget.settings.map.layerPopup.title' | translate }}
+          </mat-label>
+          <mat-form-field appearance="outline">
+            <input matInput formControlName="title" type="string" />
+          </mat-form-field>
+        </div>
+  
+        <div *ngIf="item.value.type === 'field'" class="flex flex-col mx-4">
+          <mat-label>
+            {{ 'components.widget.settings.map.layerPopup.description' | translate }}
+          </mat-label>
+          <mat-form-field appearance="outline">
+            <input matInput formControlName="description" type="string" />
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+    </ng-container>
+  </form>
 
-  <div cdkDropList (cdkDropListDropped)="onListDrop($event)" class="shadow-md">
-    <div *ngFor="let item of list" cdkDrag>{{ item }}</div>
-  </div>
+  <!-- Add new block -->
+  <safe-button
+    category="secondary"
+    variant="primary"
+    [matMenuTriggerFor]="contentOptions"
+    class="self-center mt-4"
+  >
+    {{ 'common.add' | translate }}
+  </safe-button>
+  <mat-menu #contentOptions="matMenu">
+    <a mat-menu-item (click)="onAdd('field')">
+      {{ 'components.widget.settings.map.layerPopup.field' | translate }}
+    </a>
+    <mat-divider></mat-divider>
+    <a mat-menu-item (click)="onAdd('text')">
+      {{ 'components.widget.settings.map.layerPopup.text' | translate }}
+    </a>
+  </mat-menu>
 </div>
