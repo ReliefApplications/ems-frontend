@@ -1,4 +1,9 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import {
+  Meta,
+  moduleMetadata,
+  Story,
+  componentWrapperDecorator,
+} from '@storybook/angular';
 import { SafeBarChartComponent } from './bar-chart.component';
 import { SafeBarChartModule } from './bar-chart.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -10,6 +15,7 @@ export default {
       imports: [SafeBarChartModule, BrowserAnimationsModule],
       providers: [],
     }),
+    componentWrapperDecorator((story) => `<div class="h-96">${story}</div>`),
   ],
   title: 'UI/Charts/Bar Chart',
   argTypes: {
@@ -32,8 +38,6 @@ export default {
  * @returns storybook template
  */
 const TEMPLATE: Story<SafeBarChartComponent> = (args) => ({
-  template:
-    '<div style="height:400px"><safe-bar-chart [legend]="legend" [title]="title" [series]="series"></safe-bar-chart></div>',
   props: {
     ...args,
   },
@@ -119,4 +123,14 @@ DEFAULT.args = {
       ],
     },
   ],
+};
+
+/**
+ * Column story
+ */
+export const COLUMN = TEMPLATE.bind({});
+COLUMN.storyName = 'Vertical';
+COLUMN.args = {
+  ...DEFAULT.args,
+  orientation: 'vertical',
 };

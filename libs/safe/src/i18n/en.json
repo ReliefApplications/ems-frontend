@@ -399,6 +399,9 @@
 			}
 		},
 		"application": {
+			"dashboard": {
+				"empty": "No content available. Wait for your administrator to build some."
+			},
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the application {{name}}?"
 			},
@@ -1156,6 +1159,9 @@
 					"xAxis": "X Axis",
 					"yAxis": "Y Axis"
 				},
+				"close": {
+					"confirmationMessage": "Some changes will be lost when closing edition. Do you want to continue?"
+				},
 				"grid": {
 					"actions": {
 						"add": "Add new records",
@@ -1330,10 +1336,18 @@
 					},
 					"properties": {
 						"basemap": "Base map",
+						"controls": {
+							"download": "Download",
+							"layer": "Layers",
+							"legend": "Legend",
+							"measure": "Measure",
+							"search": "Search",
+							"timedimension": "Time dimension",
+							"title": "Visible Map Controls"
+						},
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
 						"setByMap": "Set By Map",
-						"timeSlider": "Time Slider",
 						"title": "Map Parameters",
 						"webmap": "WebMap",
 						"zoom": "Default zoom"

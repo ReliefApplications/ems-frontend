@@ -1,10 +1,10 @@
-<safe-modal [closable]="true" size="fullscreen">
+<safe-modal [closable]="true" size="fullscreen" [onClose]="onClose.bind(this)">
   <h1 mat-dialog-title>{{ 'common.settings' | translate }}</h1>
   <mat-dialog-content class="flex max-h-full grow">
     <template #settingsContainer></template>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+    <safe-button (click)="onClose()">
       {{ 'common.close' | translate }}
     </safe-button>
     <safe-button

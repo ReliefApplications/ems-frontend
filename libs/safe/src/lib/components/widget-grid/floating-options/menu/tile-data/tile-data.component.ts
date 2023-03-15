@@ -10,6 +10,8 @@ import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { SafeConfirmService } from '../../../../../services/confirm/confirm.service';
 
 /** Model for dialog data */
 interface DialogData {
@@ -37,10 +39,14 @@ export class SafeTileDataComponent implements AfterViewInit {
    *
    * @param dialogRef Reference to a dialog opened via the material dialog service
    * @param data The dialog data
+   * @param confirmService Shared confirm service
+   * @param translate Angular translate service
    */
   constructor(
     public dialogRef: MatDialogRef<SafeTileDataComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private confirmService: SafeConfirmService,
+    private translate: TranslateService
   ) {}
 
   /** Once the template is ready, inject the settings component linked to the widget type passed as a parameter. */
@@ -59,5 +65,29 @@ export class SafeTileDataComponent implements AfterViewInit {
    */
   onSubmit(): void {
     this.dialogRef.close(this.tileForm?.getRawValue());
+  }
+
+  /**
+   * Custom close method of dialog.
+   * Check if the form is updated or not, and display a confirmation modal if changes detected.
+   */
+  onClose(): void {
+    if (this.tileForm?.pristine) {
+      this.dialogRef.close();
+    } else {
+      const confirmDialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.close'),
+        content: this.translate.instant(
+          'components.widget.settings.close.confirmationMessage'
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'warn',
+      });
+      confirmDialogRef.afterClosed().subscribe((value) => {
+        if (value) {
+          this.dialogRef.close();
+        }
+      });
+    }
   }
 }

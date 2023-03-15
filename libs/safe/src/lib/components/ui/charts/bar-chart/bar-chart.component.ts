@@ -2,11 +2,11 @@ import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import get from 'lodash/get';
 import { ChartConfiguration, ChartData, ChartType, Plugin } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
-import drawUnderlinePlugin from '../../../utils/graphs/plugins/underline.plugin';
+import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plugin';
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
-import { parseFontOptions } from '../../../utils/graphs/parseFontString';
-import { addTransparency } from '../../../utils/graphs/addTransparency';
-import whiteBackgroundPlugin from '../../../utils/graphs/plugins/background.plugin';
+import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
+import { addTransparency } from '../../../../utils/graphs/addTransparency';
+import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 
 /**
  * Interface of chart title.

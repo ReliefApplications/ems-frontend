@@ -29,6 +29,11 @@ export class MapPropertiesComponent
   @Input() mapSettings!: MapConstructorSettings;
 
   public baseMaps = BASEMAPS;
+
+  /** @returns the form group for the map controls */
+  get controlsFormGroup() {
+    return this.form.get('controls') as UntypedFormGroup;
+  }
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter();
 

@@ -88,7 +88,10 @@
           "leaflet",
           "esri-leaflet-geocoder",
           "esri-leaflet-vector",
-          "leaflet.markercluster"
+          "leaflet.markercluster",
+          "color",
+          "esri-leaflet-heatmap",
+          "esri-leaflet-renderers"
         ]
       },
       "configurations": {
