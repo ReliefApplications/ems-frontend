@@ -4,6 +4,7 @@ import {
   ElementRef,
   Inject,
   NgZone,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -68,7 +69,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
   templateUrl: './form-modal.component.html',
   styleUrls: ['./form-modal.component.scss'],
 })
-export class SafeFormModalComponent implements OnInit {
+export class SafeFormModalComponent implements OnInit, OnDestroy {
   // === DATA ===
   public loading = true;
   public saving = false;
@@ -645,6 +646,19 @@ export class SafeFormModalComponent implements OnInit {
       this.survey.currentPageNo = i;
     }
     this.selectedTabIndex = i;
+  }
+
+  /**
+   * Clears the cache for the records created by resource questions
+   */
+  ngOnDestroy(): void {
+    this.survey.getAllQuestions().forEach((question) => {
+      if (['resources', 'resource'].includes(question.getType())) {
+        question.value.forEach((recordId: any) =>
+          localForage.removeItem(recordId)
+        );
+      }
+    });
   }
 
   /**
