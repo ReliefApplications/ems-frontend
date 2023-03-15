@@ -483,7 +483,7 @@ body {
   height: 40px;
   position: relative;
   z-index: 1001;
-  background-color: white;
+  @apply bg-white;
   color: black;
   text-align: left;
   line-height: 40px;
