@@ -275,10 +275,7 @@ export class MapComponent
     this.drawMap();
 
     const { baseMaps, layers: arcgisLayerTree } =
-      await this.arcgisService.loadWebMap(
-        this.map,
-        'e322b877a98847d79692a3c7bf45e5cf'
-      );
+      await this.arcgisService.loadWebMap(this.map, defaultWebMap);
 
     // Updating baseTree with the base maps from ArcGIS
     this.baseTree = {
