@@ -1303,6 +1303,7 @@
 						"description": "Description",
 						"field": "Field",
 						"fieldsList": "Fields List",
+						"selectFields": "Select fields",
 						"text": "Text",
 						"title": "Title"
 					},

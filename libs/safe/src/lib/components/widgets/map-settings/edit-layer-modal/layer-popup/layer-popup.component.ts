@@ -98,4 +98,23 @@ export class LayerPopupComponent {
   public onRemove(index: number): void {
     this.contentArray.removeAt(index);
   }
+
+  /**
+   * Select fields from field block
+   *
+   * @param {number} index field block index
+   */
+  public onSelectFields(index: number): void {
+    const fieldsList = [
+      {
+        fieldName: 'Test field name',
+        description: 'Field description text',
+      },
+    ];
+    this.contentArray.controls[index].setValue({
+      type: 'field',
+      title: fieldsList[0].fieldName,
+      description: fieldsList[0].description,
+    });
+  }
 }

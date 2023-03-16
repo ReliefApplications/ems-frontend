@@ -1310,6 +1310,7 @@
 						"description": "Description",
 						"field": "Champ",
 						"fieldsList": "Liste de champ",
+						"selectFields": "Sélectionnez champ",
 						"text": "Texte",
 						"title": "Titre"
 					},

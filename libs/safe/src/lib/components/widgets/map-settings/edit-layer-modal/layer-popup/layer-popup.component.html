@@ -48,6 +48,14 @@
           <mat-form-field appearance="outline">
             <input matInput formControlName="description" type="string" />
           </mat-form-field>
+          <!-- Select popup map fields -->
+          <safe-button
+            variant="primary"
+            class="self-center"
+            (click)="onSelectFields(index)"
+          >
+            {{ 'components.widget.settings.map.layerPopup.selectFields' | translate }}
+          </safe-button>
         </div>
       </mat-expansion-panel>
     </ng-container>
