@@ -42,6 +42,7 @@ import { SafeUnsubscribeModule } from './components/utils/unsubscribe/unsubscrib
 import { SafeViewsModule } from './views/views.module';
 import { SafeEditableTextModule } from './components/editable-text/editable-text.module';
 import { CronExpressionControlModule } from './components/cron-expression-control/cron-expression-control.module';
+import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -72,7 +73,6 @@ import { CronExpressionControlModule } from './components/cron-expression-contro
     SafeEditLayoutModalModule,
     SafeSnackbarSpinnerModule,
     SafeSkeletonTableModule,
-    SafeSkeletonModule,
     SafeUserSummaryModule,
     SafeEditableTextModule,
     CronExpressionControlModule,
@@ -88,6 +88,9 @@ import { CronExpressionControlModule } from './components/cron-expression-contro
     SafeEmptyModule,
     SafeDividerModule,
     SafeLeftSidenavModule,
+    // === Directives
+    SafeSkeletonModule,
+    FullScreenModule,
     // === UTILS COMPONENTS ===
     SafeUnsubscribeModule,
     // === VIEWS ===
