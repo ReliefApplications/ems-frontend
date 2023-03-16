@@ -103,6 +103,8 @@ export class SafeBarChartComponent implements OnChanges {
     const titleText = get(this.title, 'text', '');
     const titleColor = get(this.title, 'color', undefined);
     const titleVisible = get(this.title, 'visible', false);
+    const showGridX = get(this.options, 'grids.showGridX', true);
+    const showGridY = get(this.options, 'grids.showGridY', true);
 
     this.chartOptions = {
       ...this.chartOptions,
@@ -114,6 +116,9 @@ export class SafeBarChartComponent implements OnChanges {
       },
       scales: {
         x: {
+          grid: {
+            display: showGridX,
+          },
           stacked: get(this.options, 'stack', false),
           min: isBar ? get(this.options, 'axes.x.min', undefined) : undefined,
           max: isBar ? get(this.options, 'axes.x.max', undefined) : undefined,
@@ -124,6 +129,9 @@ export class SafeBarChartComponent implements OnChanges {
           },
         },
         y: {
+          grid: {
+            display: showGridY,
+          },
           stacked: get(this.options, 'stack', false),
           min: !isBar ? get(this.options, 'axes.y.min', undefined) : undefined,
           max: !isBar ? get(this.options, 'axes.y.max', undefined) : undefined,
