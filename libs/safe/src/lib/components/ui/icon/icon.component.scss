@@ -3,11 +3,11 @@
 }
 
 .safe-icon-light {
-  color: white;
+  @apply text-white;
 }
 
 .safe-icon-grey {
-  color: #a9a9a9;
+  @apply text-neutral-400;
 }
 
 .material-icons-outlined {

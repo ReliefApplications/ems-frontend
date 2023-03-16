@@ -25,6 +25,47 @@
       "options": {
         "lintFilePatterns": ["libs/safe/**/*.ts", "libs/safe/**/*.html"]
       }
+    },
+    "storybook": {
+      "executor": "@storybook/angular:start-storybook",
+      "options": {
+        "port": 4400,
+        "configDir": "libs/safe/.storybook",
+        "browserTarget": "safe:build-storybook",
+        "compodoc": false,
+        "styles": [
+          "libs/safe/src/lib/style/styles.scss"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/safe/src/lib/style/themes/default"]
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "build-storybook": {
+      "executor": "@storybook/angular:build-storybook",
+      "outputs": ["{options.outputDir}"],
+      "options": {
+        "outputDir": "dist/storybook/safe",
+        "configDir": "libs/safe/.storybook",
+        "browserTarget": "safe:build-storybook",
+        "compodoc": false,
+        "styles": [
+          "libs/safe/src/lib/style/styles.scss"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/safe/src/lib/style/themes/default"]
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
     }
   },
   "tags": []

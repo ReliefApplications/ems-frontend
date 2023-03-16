@@ -1,4 +1,9 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import {
+  Meta,
+  moduleMetadata,
+  Story,
+  componentWrapperDecorator,
+} from '@storybook/angular';
 import { SafeLineChartComponent } from './line-chart.component';
 import { SafeLineChartModule } from './line-chart.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -10,6 +15,7 @@ export default {
       imports: [SafeLineChartModule, BrowserAnimationsModule],
       providers: [],
     }),
+    componentWrapperDecorator((story) => `<div class="h-96">${story}</div>`),
   ],
   title: 'UI/Charts/Line Chart',
   argTypes: {
@@ -32,8 +38,6 @@ export default {
  * @returns Returns an object used as the stories template
  */
 const TEMPLATE: Story<SafeLineChartComponent> = (args) => ({
-  template:
-    '<div style="height:400px"><safe-line-chart [legend]="legend" [title]="title" [series]="series"></safe-line-chart></div>',
   props: {
     ...args,
   },

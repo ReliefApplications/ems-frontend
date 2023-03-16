@@ -396,6 +396,9 @@
 			}
 		},
 		"application": {
+			"dashboard": {
+				"empty": "******"
+			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
 			},
@@ -1135,6 +1138,9 @@
 					"type": "******",
 					"xAxis": "******",
 					"yAxis": "******"
+				},
+				"close": {
+					"confirmationMessage": "******"
 				},
 				"grid": {
 					"actions": {

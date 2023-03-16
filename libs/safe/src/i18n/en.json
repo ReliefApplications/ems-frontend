@@ -396,6 +396,9 @@
 			}
 		},
 		"application": {
+			"dashboard": {
+				"empty": "No content available. Wait for your administrator to build some."
+			},
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the application {{name}}?"
 			},
@@ -1135,6 +1138,9 @@
 					"type": "Chart Type",
 					"xAxis": "X Axis",
 					"yAxis": "Y Axis"
+				},
+				"close": {
+					"confirmationMessage": "Some changes will be lost when closing edition. Do you want to continue?"
 				},
 				"grid": {
 					"actions": {

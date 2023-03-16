@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core';
-import { SafeLineChartComponent } from '../../ui/line-chart/line-chart.component';
-import { SafePieDonutChartComponent } from '../../ui/pie-donut-chart/pie-donut-chart.component';
-import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
+import { SafeLineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
+import { SafePieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
+import { SafeBarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component';
 import { uniq, get, groupBy } from 'lodash';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';

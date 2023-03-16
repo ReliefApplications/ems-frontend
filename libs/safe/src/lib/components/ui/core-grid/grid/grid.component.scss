@@ -57,7 +57,7 @@ textarea {
   // box-sizing: content-box;
 
   & > .url-container {
-    color: #008dc9;
+    @apply text-primary-500;
     text-decoration: underline;
   }
 }

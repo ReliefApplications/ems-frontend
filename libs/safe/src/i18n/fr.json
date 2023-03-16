@@ -396,6 +396,9 @@
 			}
 		},
 		"application": {
+			"dashboard": {
+				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée."
+			},
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer cette application ?"
 			},
@@ -1142,6 +1145,9 @@
 					"type": "Graphique",
 					"xAxis": "Axe X",
 					"yAxis": "Axe Y"
+				},
+				"close": {
+					"confirmationMessage": "Vos changements vont être perdus si vous fermez la fenêtre d'édition. Voulez-vous continuer ?"
 				},
 				"grid": {
 					"actions": {

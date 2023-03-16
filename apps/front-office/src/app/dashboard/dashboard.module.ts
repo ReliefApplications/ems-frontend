@@ -6,7 +6,9 @@ import {
   SafeApplicationToolbarModule,
   SafeLayoutModule,
   SafeLeftSidenavModule,
+  SafeEmptyModule,
 } from '@oort-front/safe';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Front-Office Dashboard module.
@@ -21,6 +23,8 @@ import {
     SafeLeftSidenavModule,
     DashboardRoutingModule,
     SafeApplicationToolbarModule,
+    SafeEmptyModule,
+    TranslateModule,
   ],
 })
 export class DashboardModule {}
