@@ -12,7 +12,9 @@
           <safe-icon
             icon="settings"
             [size]="24"
-            matTooltip="Layer properties"
+            [matTooltip]="
+              'components.widget.settings.map.edit.layerProperties' | translate
+            "
             matTooltipPosition="right"
           ></safe-icon>
           <span>{{
