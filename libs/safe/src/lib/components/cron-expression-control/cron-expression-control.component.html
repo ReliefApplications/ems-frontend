@@ -6,9 +6,9 @@
     matInput
     readonly
     value="{{
-      formGroup.get('schedule')?.invalid
+      ngControl.invalid
         ? ('components.pullJob.modal.placeholder.schedule' | translate)
-        : (formGroup.value.schedule | safeReadableCron)
+        : (value | safeReadableCron)
     }}"
   />
   <safe-icon
@@ -16,10 +16,10 @@
     class="cursor-pointer"
     variant="grey"
     matSuffix
-    (click)="onEditCronExpression()"
+    (click)="onEdit()"
     [matTooltip]="'components.pullJob.modal.hint.schedule' | translate"
   ></safe-icon>
-  <mat-error *ngIf="formGroup.get('schedule')?.errors">
+  <mat-error *ngIf="ngControl.errors">
     {{ 'components.pullJob.modal.errors.schedule' | translate }}
   </mat-error>
 </mat-form-field>

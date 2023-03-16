@@ -12,7 +12,7 @@
     <safe-button
       category="secondary"
       variant="primary"
-      mat-dialog-close
+      [mat-dialog-close]="control.value"
       [disabled]="!control.valid"
     >
       {{ 'common.save' | translate }}

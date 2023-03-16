@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import get from 'lodash/get';
 import { CronOptions } from 'ngx-cron-editor';
 
 /**
@@ -12,7 +13,7 @@ import { CronOptions } from 'ngx-cron-editor';
   styleUrls: ['./cron-expression-control-modal.component.scss'],
 })
 export class CronExpressionControlModalComponent {
-  public control: UntypedFormControl = new UntypedFormControl({});
+  public control!: FormControl;
   public cronOptions: CronOptions = {
     defaultTime: '00:00:00',
     // Cron Tab Options
@@ -36,16 +37,14 @@ export class CronExpressionControlModalComponent {
    *  Cron expression form control modal
    *
    * @param data Injected dialog data
-   * @param data.control is the cron form control
+   * @param data.value form control value
    */
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public data: {
-      control: UntypedFormControl;
+      value: string | undefined | null;
     }
   ) {
-    if (this.data) {
-      this.control = this.data.control;
-    }
+    this.control = new FormControl(get(this.data, 'value', null));
   }
 }

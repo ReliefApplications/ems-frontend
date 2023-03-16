@@ -46,27 +46,24 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="flex gap-x-2 flex-wrap">
-          <!-- Schedule -->
-          <safe-cron-expression-control
-            [formGroup]="formGroup"
-          ></safe-cron-expression-control>
-          <!-- API to use -->
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{
-              'common.apiConfiguration.one' | translate
-            }}</mat-label>
-            <safe-graphql-select
-              valueField="id"
-              textField="name"
-              [required]="true"
-              [query]="apiConfigurationsQuery"
-              formControlName="apiConfiguration"
-              [selectedElements]="[defaultApiConfiguration]"
-            >
-            </safe-graphql-select>
-          </mat-form-field>
-        </div>
+        <!-- Schedule -->
+        <safe-cron-expression-control
+          class="flex"
+          formControlName="schedule"
+        ></safe-cron-expression-control>
+        <!-- API to use -->
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
+          <safe-graphql-select
+            valueField="id"
+            textField="name"
+            [required]="true"
+            [query]="apiConfigurationsQuery"
+            formControlName="apiConfiguration"
+            [selectedElements]="[defaultApiConfiguration]"
+          >
+          </safe-graphql-select>
+        </mat-form-field>
         <div class="flex gap-x-2 flex-wrap" *ngIf="!isHardcoded">
           <!-- Url to pull -->
           <mat-form-field appearance="outline" class="flex-1">
