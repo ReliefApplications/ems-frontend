@@ -14,7 +14,6 @@ export * from './lib/services/form/form.service';
 export * from './lib/services/layout/layout.service';
 export * from './lib/services/api-proxy/api-proxy.service';
 export * from './lib/services/dashboard/dashboard.service';
-export * from './lib/services/full-screen/full-screen.service';
 export * from './lib/services/grid-layout/grid-layout.service';
 export * from './lib/services/reference-data/reference-data.service';
 export * from './lib/services/kendo-translation/kendo-translation.service';
@@ -25,6 +24,7 @@ export * from './lib/services/auth-interceptor/auth-interceptor.service';
 export * from './lib/services/confirm/confirm.service';
 
 // === DIRECTIVES ===
+export * from './lib/directives/full-screen/public-api';
 export * from './lib/directives/skeleton/public-api';
 
 // === GUARDS ===

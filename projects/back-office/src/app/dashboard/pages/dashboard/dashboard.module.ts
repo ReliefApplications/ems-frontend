@@ -12,6 +12,7 @@ import {
   SafeSearchMenuModule,
   SafeIconModule,
   SafeModalModule,
+  SafeFullScreenModule,
 } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -56,6 +57,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     SafeSearchMenuModule,
     SafeSkeletonModule,
     SafeAlertModule,
+    SafeFullScreenModule,
     SafeModalModule,
   ],
   exports: [DashboardComponent],

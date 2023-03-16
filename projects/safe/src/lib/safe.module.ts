@@ -26,6 +26,7 @@ import { SafeEditLayoutModalModule } from './components/grid-layout/edit-layout-
 import { SafeSnackbarSpinnerModule } from './components/snackbar-spinner/snackbar-spinner.module';
 import { SafeSkeletonTableModule } from './components/skeleton/skeleton-table/skeleton-table.module';
 import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
+import { SafeFullScreenModule } from './directives/full-screen/full-screen.module';
 import { SafeUserSummaryModule } from './components/user-summary/user-summary.module';
 import { SafeDateModule } from './pipes/date/date.module';
 import { SafeIconModule } from './components/ui/icon/icon.module';
@@ -71,6 +72,7 @@ import { SafeViewsModule } from './views/views.module';
     SafeSnackbarSpinnerModule,
     SafeSkeletonTableModule,
     SafeSkeletonModule,
+    SafeFullScreenModule,
     SafeUserSummaryModule,
     // === Pipes ===
     SafeDateModule,

@@ -22,7 +22,6 @@ import {
   SafeAuthService,
   Application,
   SafeUnsubscribeComponent,
-  SafeFullScreenService,
 } from '@safe/builder';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
@@ -52,6 +51,9 @@ export class DashboardComponent
   extends SafeUnsubscribeComponent
   implements OnInit, OnDestroy
 {
+  // === PAGE RENDER ===
+  public isFullScreen!: boolean;
+
   // === DATA ===
   public id = '';
   public applicationId?: string;
@@ -85,7 +87,6 @@ export class DashboardComponent
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
    * @param translateService Angular translate service
-   * @param fullScreenService Shared fullscreen service
    * @param authService Shared authentication service
    */
   constructor(
@@ -98,70 +99,71 @@ export class DashboardComponent
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService,
     private translateService: TranslateService,
-    private fullScreenService: SafeFullScreenService,
     private authService: SafeAuthService
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.formActive = false;
-      this.loading = true;
-      this.id = params.id;
-      this.apollo
-        .query<GetDashboardByIdQueryResponse>({
-          query: GET_DASHBOARD_BY_ID,
-          variables: {
-            id: this.id,
-          },
-        })
-        .subscribe({
-          next: ({ data, loading }) => {
-            if (data.dashboard) {
-              this.dashboard = data.dashboard;
-              this.dashboardService.openDashboard(this.dashboard);
-              this.dashboardNameForm = new UntypedFormGroup({
-                dashboardName: new UntypedFormControl(
-                  this.dashboard.name,
-                  Validators.required
-                ),
-              });
-              this.tiles = data.dashboard.structure
-                ? [...data.dashboard.structure]
-                : [];
-              this.generatedTiles =
-                this.tiles.length === 0
-                  ? 0
-                  : Math.max(...this.tiles.map((x) => x.id)) + 1;
-              this.applicationId = this.dashboard.page
-                ? this.dashboard.page.application?.id
-                : this.dashboard.step
-                ? this.dashboard.step.workflow?.page?.application?.id
-                : '';
-              this.loading = loading;
-            } else {
-              this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.accessNotProvided',
-                  {
-                    type: this.translateService
-                      .instant('common.dashboard.one')
-                      .toLowerCase(),
-                    error: '',
-                  }
-                ),
-                { error: true }
-              );
+    this.route.params
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((params: any) => {
+        this.formActive = false;
+        this.loading = true;
+        this.id = params.id;
+        this.apollo
+          .query<GetDashboardByIdQueryResponse>({
+            query: GET_DASHBOARD_BY_ID,
+            variables: {
+              id: this.id,
+            },
+          })
+          .subscribe({
+            next: ({ data, loading }) => {
+              if (data.dashboard) {
+                this.dashboard = data.dashboard;
+                this.dashboardService.openDashboard(this.dashboard);
+                this.dashboardNameForm = new UntypedFormGroup({
+                  dashboardName: new UntypedFormControl(
+                    this.dashboard.name,
+                    Validators.required
+                  ),
+                });
+                this.tiles = data.dashboard.structure
+                  ? [...data.dashboard.structure]
+                  : [];
+                this.generatedTiles =
+                  this.tiles.length === 0
+                    ? 0
+                    : Math.max(...this.tiles.map((x) => x.id)) + 1;
+                this.applicationId = this.dashboard.page
+                  ? this.dashboard.page.application?.id
+                  : this.dashboard.step
+                  ? this.dashboard.step.workflow?.page?.application?.id
+                  : '';
+                this.loading = loading;
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translateService.instant(
+                    'common.notifications.accessNotProvided',
+                    {
+                      type: this.translateService
+                        .instant('common.dashboard.one')
+                        .toLowerCase(),
+                      error: '',
+                    }
+                  ),
+                  { error: true }
+                );
+                this.router.navigate(['/applications']);
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
               this.router.navigate(['/applications']);
-            }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-            this.router.navigate(['/applications']);
-          },
-        });
-    });
+            },
+          });
+      });
   }
 
   /**
@@ -397,12 +399,5 @@ export class DashboardComponent
       }
     );
     authSubscription.unsubscribe();
-  }
-
-  /** Go to fullscreen mode with the SafeFullScreenService */
-  public onFullScreen(): void {
-    const component = document.getElementById('component') as HTMLElement;
-    const dashboardComponent = component.parentElement as HTMLElement;
-    this.fullScreenService.goFullScreen(dashboardComponent);
   }
 }
