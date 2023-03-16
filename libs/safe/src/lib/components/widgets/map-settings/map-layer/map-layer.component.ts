@@ -78,11 +78,11 @@ const TEST_LAYER: {
 
 /** Modal for adding and editing map layers */
 @Component({
-  selector: 'safe-edit-layer-modal',
-  templateUrl: './edit-layer-modal.component.html',
-  styleUrls: ['./edit-layer-modal.component.scss'],
+  selector: 'safe-map-layer',
+  templateUrl: './map-layer.component.html',
+  styleUrls: ['./map-layer.component.scss'],
 })
-export class SafeEditLayerModalComponent
+export class SafeMapLayerComponent
   extends SafeUnsubscribeComponent
   implements OnInit, AfterViewInit
 {

@@ -9,7 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { createLayerForm } from '../map-forms';
-import { SafeEditLayerModalComponent } from '../edit-layer-modal/edit-layer-modal.component';
+import { SafeMapLayerComponent } from '../map-layer/map-layer.component';
 
 /** List of available layer types */
 export const LAYER_TYPES = ['polygon', 'point', 'heatmap', 'cluster'] as const;
@@ -74,8 +74,8 @@ export class MapLayersComponent
 
   /** Opens a modal to add a new layer */
   public onAddLayer() {
-    const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
-      this.dialog.open(SafeEditLayerModalComponent, { disableClose: true });
+    const dialogRef: MatDialogRef<SafeMapLayerComponent, MapLayerI> =
+      this.dialog.open(SafeMapLayerComponent, { disableClose: true });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) return;
@@ -89,8 +89,8 @@ export class MapLayersComponent
    * @param index Index of the layer to edit
    */
   public onEditLayer(index: number) {
-    const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
-      this.dialog.open(SafeEditLayerModalComponent, {
+    const dialogRef: MatDialogRef<SafeMapLayerComponent, MapLayerI> =
+      this.dialog.open(SafeMapLayerComponent, {
         disableClose: true,
         data: this.layers.at(index).value,
       });
