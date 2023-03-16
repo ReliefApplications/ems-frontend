@@ -6,6 +6,9 @@ import {
   FullscreenOverlayContainer,
 } from '@angular/cdk/overlay';
 
+/**
+ *
+ */
 @NgModule({
   declarations: [FullScreenDirective],
   imports: [CommonModule],

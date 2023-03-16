@@ -57,6 +57,9 @@ export class SafeWidgetGridComponent implements OnInit {
   @ViewChildren(SafeWidgetComponent)
   widgetComponents!: QueryList<SafeWidgetComponent>;
 
+  /**
+   *
+   */
   get canDeactivate() {
     return !this.widgetComponents.some((x) => !x.canDeactivate);
   }

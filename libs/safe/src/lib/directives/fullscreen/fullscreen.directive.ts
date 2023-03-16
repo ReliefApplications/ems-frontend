@@ -14,6 +14,9 @@ import {
 } from '@angular/core';
 import get from 'lodash/get';
 
+/**
+ *
+ */
 @Directive({
   selector: '[safeFullScreen]',
 })

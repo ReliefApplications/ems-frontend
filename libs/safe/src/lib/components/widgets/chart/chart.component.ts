@@ -177,7 +177,7 @@ export class SafeChartComponent
             ':' +
             ('0' + today.getMinutes()).slice(-2);
           if (
-            ['pie', 'donut', 'line', 'bar', 'column'].includes(
+            ['pie', 'donut', 'line', 'bar', 'column', 'polar'].includes(
               this.settings.chart.type
             )
           ) {
