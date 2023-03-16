@@ -1135,6 +1135,10 @@
 					"size": "Size",
 					"style": "Style",
 					"text": "Text",
+					"title": {
+						"color": "Title color",
+						"format": "Title format"
+					},
 					"type": "Chart Type",
 					"xAxis": "X Axis",
 					"yAxis": "Y Axis"

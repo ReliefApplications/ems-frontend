@@ -7,17 +7,7 @@ import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plug
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
-
-/**
- * Interface containing the settings of the chart title
- */
-interface ChartTitle {
-  visible: boolean;
-  text: string;
-  position: 'top' | 'bottom';
-  font: string;
-  color: string;
-}
+import { ChartTitle } from '../interfaces';
 
 /**
  * Interface containing the settings of the chart legend
@@ -109,7 +99,7 @@ export class SafePieDonutChartComponent implements OnChanges {
 
     const titleText = get(this.title, 'text', '');
     const titleColor = get(this.title, 'color', undefined);
-    const titleVisible = get(this.title, 'visible', false);
+    const titleVisible = titleText !== '';
 
     this.chartOptions = {
       ...this.chartOptions,

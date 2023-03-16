@@ -1142,6 +1142,10 @@
 					"size": "Taille",
 					"style": "Style",
 					"text": "Texte",
+					"title": {
+						"color": "Couleur",
+						"format": "Format"
+					},
 					"type": "Graphique",
 					"xAxis": "Axe X",
 					"yAxis": "Axe Y"
