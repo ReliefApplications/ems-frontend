@@ -1722,6 +1722,12 @@
 			"recent": "Applications récentes",
 			"title": "Mes applications"
 		},
+		"dashboard": {
+			"update": {
+				"exit": "Quitter sans sauvegarder les changements",
+				"exitMessage": "Il y a des changements non sauvegardés dans la page, voulez-vous vraiment quitter cette page ?"
+			}
+		},
 		"formBuilder": {
 			"errors": {
 				"choices": {

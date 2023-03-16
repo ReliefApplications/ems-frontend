@@ -97,6 +97,19 @@ export class SafeGridWidgetComponent implements OnInit {
   @Output() edit: EventEmitter<any> = new EventEmitter();
 
   /**
+   * Test if the grid uses a layout, and if a layout is used, if any item is currently updated.
+   *
+   * @returns Tell if component could block navigation
+   */
+  get canDeactivate() {
+    return this.coreGridComponent
+      ? this.coreGridComponent.updatedItems.length === 0
+      : true;
+  }
+
+  @ViewChild(SafeCoreGridComponent) coreGridComponent?: SafeCoreGridComponent;
+
+  /**
    * Heavy constructor for the grid widget component
    *
    * @param environment Environment variables

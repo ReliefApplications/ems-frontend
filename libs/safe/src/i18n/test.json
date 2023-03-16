@@ -1714,6 +1714,12 @@
 			"recent": "******",
 			"title": "******"
 		},
+		"dashboard": {
+			"update": {
+				"exit": "******",
+				"exitMessage": "******"
+			}
+		},
 		"formBuilder": {
 			"errors": {
 				"choices": {

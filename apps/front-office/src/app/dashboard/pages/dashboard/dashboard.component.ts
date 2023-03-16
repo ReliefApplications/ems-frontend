@@ -5,6 +5,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,9 +18,12 @@ import {
   SafeSnackBarService,
   SafeDashboardService,
   SafeUnsubscribeComponent,
+  SafeWidgetGridComponent,
+  SafeConfirmService,
 } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 /**
  * Dashboard page.
@@ -46,6 +50,9 @@ export class DashboardComponent
   /** Current dashboard */
   public dashboard?: Dashboard;
 
+  @ViewChild(SafeWidgetGridComponent)
+  widgetGridComponent!: SafeWidgetGridComponent;
+
   /**
    * Dashboard page.
    *
@@ -56,6 +63,7 @@ export class DashboardComponent
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
    * @param translate Angular translate service
+   * @param confirmService Shared confirm service
    */
   constructor(
     private apollo: Apollo,
@@ -64,7 +72,8 @@ export class DashboardComponent
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private confirmService: SafeConfirmService
   ) {
     super();
   }
@@ -122,5 +131,30 @@ export class DashboardComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.dashboardService.closeDashboard();
+  }
+
+  /**
+   * Show modal confirmation before leave the page if has changes on form
+   *
+   * @returns boolean of observable of boolean
+   */
+  canDeactivate(): Observable<boolean> | boolean {
+    if (!this.widgetGridComponent.canDeactivate) {
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('pages.dashboard.update.exit'),
+        content: this.translate.instant('pages.dashboard.update.exitMessage'),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'primary',
+      });
+      return dialogRef.afterClosed().pipe(
+        map((confirm) => {
+          if (confirm) {
+            return true;
+          }
+          return false;
+        })
+      );
+    }
+    return true;
   }
 }
