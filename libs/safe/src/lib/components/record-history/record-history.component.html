@@ -55,17 +55,21 @@
       <mat-label>{{ 'components.history.field.select' | translate }}</mat-label>
       <mat-select
         (selectionChange)="applyFilter($event.value)"
-        [value]="filterField"
+        [value]="filterFields"
+        multiple
       >
-        <mat-option value="">{{
-          'components.history.field.all' | translate
-        }}</mat-option>
         <mat-option
           *ngFor="let field of sortedFields"
           value="{{ field.name }}"
           >{{ field.title || field.name }}</mat-option
         >
       </mat-select>
+      <safe-button
+        matSuffix
+        icon="close"
+        [isIcon]="true"
+        (click)="applyFilter([]); $event.stopPropagation();"
+      ></safe-button>
     </mat-form-field>
   </div>
   <!-- ACTIONS -->
@@ -107,9 +111,9 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <span class="font-bold mr-2">{{
-            item.createdAt | safeDate: 'shortDate'
+            item.createdAt | safeDate : 'shortDate'
           }}</span>
-          {{ item.createdAt | safeDate: 'shortTime' }}
+          {{ item.createdAt | safeDate : 'shortTime' }}
           <span class="history-user" *ngIf="item.createdBy">{{
             item.createdBy
           }}</span>
