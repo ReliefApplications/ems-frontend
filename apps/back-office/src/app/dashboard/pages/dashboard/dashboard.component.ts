@@ -46,6 +46,7 @@ export class DashboardComponent
   extends SafeUnsubscribeComponent
   implements OnInit, OnDestroy
 {
+  public isFullScreen = false;
   // === DATA ===
   public id = '';
   public applicationId?: string;
