@@ -33,6 +33,7 @@ export class DashboardComponent
   extends SafeUnsubscribeComponent
   implements OnInit, OnDestroy
 {
+  public isFullScreen = false;
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
