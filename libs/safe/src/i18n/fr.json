@@ -1265,6 +1265,20 @@
 					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
 					"edit": {
+						"cluster": {
+							"clusterSettings": "Paramètres de groupes",
+							"fields": "Champs de groupes",
+							"high": "Haut",
+							"label": "Libellé du groupes",
+							"low": "Faible",
+							"max": "Max",
+							"min": "Min",
+							"overrideSymbol": "Remplacer le symbole de groupes",
+							"popups": "Groupes pop-ups",
+							"radius": "Rayon de groupes",
+							"sizeRange": "Gamme de taille",
+							"symbol": "Style de symboles"
+						},
 						"layerProperties": "Propriétés",
 						"layerStyling": "Styles",
 						"properties": {

@@ -12,7 +12,7 @@
           <safe-icon
             icon="settings"
             [size]="24"
-            matTooltip="Layer properties"
+            matTooltip="{{ 'components.widget.settings.map.edit.layerProperties' | translate }}"
             matTooltipPosition="right"
           ></safe-icon>
           <span>{{
@@ -24,6 +24,23 @@
             [form]="form"
             [currentZoom]="mapSettings.initialState.viewpoint.zoom"
           ></safe-layer-properties>
+        </ng-template>
+      </mat-tab>
+      <!-- CLUSTER SETTINGS -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <safe-icon
+            icon="group_work"
+            [size]="24"
+            matTooltip="{{ 'components.widget.settings.map.edit.cluster.clusterSettings' | translate }}"
+            matTooltipPosition="right"
+          ></safe-icon>
+          <span>
+            {{ 'components.widget.settings.map.edit.cluster.clusterSettings' | translate }}
+          </span>
+        </ng-template>
+        <ng-template matTabContent>
+          <safe-layer-cluster></safe-layer-cluster>
         </ng-template>
       </mat-tab>
     </mat-tab-group>

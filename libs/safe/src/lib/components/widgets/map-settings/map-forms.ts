@@ -75,6 +75,27 @@ export const createLayerForm = (value?: MapLayerI): UntypedFormGroup =>
     }),
   });
 
+/**
+ * Create layer cluster form from value
+ *
+ * @param value cluster value ( optional )
+ * @returns new form group
+ */
+export const createClusterForm = (value?: any): UntypedFormGroup =>
+  fb.group({
+    overrideSymbol: [
+      get(value, 'overrideSymbol', false),
+      [Validators.required],
+    ],
+    symbol: [get(value, 'symbol ', '')],
+    radius: [get(value, 'radius', 80), [Validators.required]],
+    sizeRangeStart: [get(value, 'sizeRangeStart', 2), [Validators.required]],
+    sizeRangeEnd: [get(value, 'sizeRangeEnd', 8)],
+    fields: [get(value, 'fields', ''), [Validators.required]],
+    label: [get(value, 'label', ''), [Validators.required]],
+    popups: [get(value, 'popups', ''), [Validators.required]],
+  });
+
 // === MAP ===
 
 /**
