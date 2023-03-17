@@ -1265,6 +1265,10 @@
 					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
 					"edit": {
+						"datasource": {
+							"origin": "Origine"
+						},
+						"layerDatasource": "Source de données de la couche",
 						"layerProperties": "Propriétés",
 						"layerStyling": "Styles",
 						"properties": {
