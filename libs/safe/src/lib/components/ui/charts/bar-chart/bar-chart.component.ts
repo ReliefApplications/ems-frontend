@@ -104,6 +104,9 @@ export class SafeBarChartComponent implements OnChanges {
       },
       scales: {
         x: {
+          grid: {
+            display: get(this.options, 'grid.x.display', true),
+          },
           stacked: get(this.options, 'stack', false),
           min: isBar ? get(this.options, 'axes.x.min', undefined) : undefined,
           max: isBar ? get(this.options, 'axes.x.max', undefined) : undefined,
@@ -114,6 +117,9 @@ export class SafeBarChartComponent implements OnChanges {
           },
         },
         y: {
+          grid: {
+            display: get(this.options, 'grid.y.display', true),
+          },
           stacked: get(this.options, 'stack', false),
           min: !isBar ? get(this.options, 'axes.y.min', undefined) : undefined,
           max: !isBar ? get(this.options, 'axes.y.max', undefined) : undefined,

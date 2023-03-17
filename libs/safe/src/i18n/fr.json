@@ -1117,6 +1117,15 @@
 			"settings": {
 				"chart": {
 					"axes": "Axes",
+					"grid": {
+						"title": "Grille",
+						"x": {
+							"display": "Afficher les lignes horizontales"
+						},
+						"y": {
+							"display": "Afficher les lignes verticales"
+						}
+					},
 					"hideLegend": "Masquer la légende",
 					"labels": {
 						"percentage": "Pourcentage",

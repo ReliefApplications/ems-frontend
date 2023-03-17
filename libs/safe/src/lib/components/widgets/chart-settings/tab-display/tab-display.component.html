@@ -276,6 +276,27 @@
           </div>
         </ng-container>
       </mat-expansion-panel>
+      <!-- === DISPLAY GRIDS === -->
+      <mat-expansion-panel
+        formGroupName="grid"
+        *ngIf="['bar', 'column', 'line'].includes(type.name)"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{
+            'components.widget.settings.chart.grid.title' | translate
+          }}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="flex flex-col gap-2" formGroupName="x">
+          <mat-slide-toggle formControlName="display">{{
+            'components.widget.settings.chart.grid.x.display' | translate
+          }}</mat-slide-toggle>
+        </div>
+        <div class="flex flex-col gap-2" formGroupName="y">
+          <mat-slide-toggle formControlName="display">{{
+            'components.widget.settings.chart.grid.y.display' | translate
+          }}</mat-slide-toggle>
+        </div>
+      </mat-expansion-panel>
       <!-- === SERIES AND STACKS PARAMETERS === -->
       <mat-expansion-panel
         formGroupName="stack"

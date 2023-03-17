@@ -147,6 +147,14 @@ export class SafeChartComponent
             : null,
         },
       },
+      grid: {
+        x: {
+          display: get(this.settings, 'chart.grid.x.display', true),
+        },
+        y: {
+          display: get(this.settings, 'chart.grid.y.display', true),
+        },
+      },
       labels: {
         showCategory: get(this.settings, 'chart.labels.showCategory', false),
         showValue: get(this.settings, 'chart.labels.showValue', false),
