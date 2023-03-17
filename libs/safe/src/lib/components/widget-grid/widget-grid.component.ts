@@ -58,7 +58,9 @@ export class SafeWidgetGridComponent implements OnInit {
   widgetComponents!: QueryList<SafeWidgetComponent>;
 
   /**
+   * Indicate if the widget grid can be deactivated or not.
    *
+   * @returns indicate if one of the widget children cannot be deactivated.
    */
   get canDeactivate() {
     return !this.widgetComponents.some((x) => !x.canDeactivate);

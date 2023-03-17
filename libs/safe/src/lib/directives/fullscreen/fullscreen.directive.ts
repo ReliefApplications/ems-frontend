@@ -15,7 +15,8 @@ import {
 import get from 'lodash/get';
 
 /**
- *
+ * Fullscreen directive.
+ * Allow components to take full size of the screen.
  */
 @Directive({
   selector: '[safeFullScreen]',
