@@ -71,7 +71,7 @@ export class SafePieDonutChartComponent implements OnChanges {
       this.series[0]?.data.reduce(
         (acc: number, curr: any) => acc + curr.field,
         0
-      ) || 0;  
+      ) || 0;
     this.chartData.datasets = this.series.map((x) => ({
       ...x,
       ...(this.options.palette && {
@@ -82,7 +82,7 @@ export class SafePieDonutChartComponent implements OnChanges {
         ),
       }),
       hoverOffset: 4,
-      label: this.options.aggregationName
+      label: this.options.aggregationName,
     }));
     this.chartData.labels = flatten(
       this.series.map((x) => x.data.map((y: any) => y.category))

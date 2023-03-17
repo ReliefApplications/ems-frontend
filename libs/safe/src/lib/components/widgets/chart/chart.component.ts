@@ -82,7 +82,7 @@ export class SafeChartComponent
         .then((res) => {
           const aggregation = res.edges[0]?.node || null;
           if (aggregation) {
-            this.settings['chart']['aggregationName'] = aggregation.name
+            this.settings['chart']['aggregationName'] = aggregation.name;
             this.dataQuery = this.aggregationService.aggregationDataQuery(
               this.settings.resource,
               aggregation.id || '',
@@ -167,7 +167,7 @@ export class SafeChartComponent
     this.dataQuery
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ errors, data, loading }: any) => {
-        if (errors) {
+        if (errors) { 
           this.loading = false;
           this.hasError = true;
           this.series = [];
@@ -179,9 +179,15 @@ export class SafeChartComponent
             ':' +
             ('0' + today.getMinutes()).slice(-2);
           if (
-            ['pie', 'donut', 'line', 'bar', 'column', 'polar', 'radar'].includes(
-              this.settings.chart.type
-            )
+            [
+              'pie',
+              'donut',
+              'line',
+              'bar',
+              'column',
+              'polar',
+              'radar',
+            ].includes(this.settings.chart.type)
           ) {
             const aggregationData = JSON.parse(
               JSON.stringify(data.recordsAggregation)
