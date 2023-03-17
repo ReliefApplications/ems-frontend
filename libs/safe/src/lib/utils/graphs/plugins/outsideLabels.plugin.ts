@@ -43,18 +43,25 @@ const getSuitableY = (
  *
  * @param {Point} source - The source point of the line
  * @param {Point} center - The center point of the chart
- * @param {number} l - The length of the line
+ * @param {number} radius - the outer radius of the chart
  * @returns {Point} - The origin point of the line
  */
-const getOriginPoints = (source: Point, center: Point, l: number): Point => {
+const getOriginPoints = (
+  source: Point,
+  center: Point,
+  radius: number
+): Point => {
   const a = {
     x: 0,
     y: 0,
   };
-  const dx = (center.x - source.x) / l;
-  const dy = (center.y - source.y) / l;
-  a.x = center.x + l * dx;
-  a.y = center.y + l * dy;
+  const dx = center.x - source.x;
+  const dy = center.y - source.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  const outerRadius = radius - distance;
+  const ratio = outerRadius / distance;
+  a.x = center.x + dx * ratio;
+  a.y = center.y + dy * ratio;
   return a;
 };
 
