@@ -1265,6 +1265,7 @@
 					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
 					"edit": {
+						"fields": "Champs",
 						"layerProperties": "Propriétés",
 						"layerStyling": "Styles",
 						"properties": {
