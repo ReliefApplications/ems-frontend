@@ -1279,6 +1279,10 @@
 							"sizeRange": "Gamme de taille",
 							"symbol": "Style de symboles"
 						},
+						"datasource": {
+							"origin": "Origine"
+						},
+						"layerDatasource": "Source de données de la couche",
 						"layerProperties": "Propriétés",
 						"layerStyling": "Styles",
 						"properties": {

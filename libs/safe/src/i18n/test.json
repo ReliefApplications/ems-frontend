@@ -1272,6 +1272,10 @@
 							"sizeRange": "******",
 							"symbol": "******"
 						},
+						"datasource": {
+							"origin": "******"
+						},
+						"layerDatasource": "******",
 						"layerProperties": "******",
 						"layerStyling": "******",
 						"properties": {

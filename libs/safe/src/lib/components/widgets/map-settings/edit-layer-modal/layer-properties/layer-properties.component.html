@@ -1,4 +1,4 @@
-<div class="flex flex-col space-y-12" *ngIf="form">
+<div class="flex flex-col space-y-12 w-full overflow-x-hidden" *ngIf="form">
   <!-- Options section -->
   <form [formGroup]="form" class="flex flex-col space-y-8">
     <!-- Layer name -->
@@ -21,38 +21,26 @@
         | translate
     }}</mat-checkbox>
     <!-- Opacity -->
-    <div>
+    <div class="flex flex-col">
       <div class="flex flex-row w-full justify-between">
         <label>{{
           'components.widget.settings.map.edit.properties.opacity' | translate
         }}</label>
         <label>{{ form.controls.opacity.value }}</label>
       </div>
-      <mat-slider
-        class="w-full m-0"
-        min="0"
-        max="1"
-        step="0.1"
-        [discrete]="true"
-      >
+      <mat-slider class="grow" min="0" max="1" step="0.1" [discrete]="true">
         <input matSliderThumb formControlName="opacity" />
       </mat-slider>
     </div>
     <!-- Visibility range -->
-    <div>
+    <div class="flex flex-col">
       <div class="flex flex-row w-full justify-between">
         <label>{{
           'components.widget.settings.map.edit.properties.visibilityRange'
             | translate
         }}</label>
       </div>
-      <mat-slider
-        class="w-full m-0"
-        min="2"
-        max="18"
-        step="1"
-        [discrete]="true"
-      >
+      <mat-slider class="grow" min="2" max="18" step="1" [discrete]="true">
         <input formControlName="visibilityRangeStart" matSliderStartThumb />
         <input formControlName="visibilityRangeEnd" matSliderEndThumb />
       </mat-slider>

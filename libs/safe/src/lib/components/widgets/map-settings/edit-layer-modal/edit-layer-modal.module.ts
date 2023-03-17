@@ -14,6 +14,7 @@ import { LayerFilterModule } from './layer-filter/layer-filter.module';
 import { LayerLabelsModule } from './layer-labels/layer-labels.module';
 import { LayerPopupModule } from './layer-popup/layer-popup.module';
 import { LayerClusterModule } from './layer-cluster/layer-cluster.module';
+import { LayerDatasourceModule } from './layer-datasource/layer-datasource.module';
 
 /** Module for the SafeEditLayerModalComponent */
 @NgModule({
@@ -34,6 +35,7 @@ import { LayerClusterModule } from './layer-cluster/layer-cluster.module';
     LayerLabelsModule,
     LayerPopupModule,
     LayerClusterModule,
+    LayerDatasourceModule,
   ],
   exports: [SafeEditLayerModalComponent],
 })
