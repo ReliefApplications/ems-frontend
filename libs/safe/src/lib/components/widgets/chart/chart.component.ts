@@ -82,6 +82,7 @@ export class SafeChartComponent
         .then((res) => {
           const aggregation = res.edges[0]?.node || null;
           if (aggregation) {
+            this.settings['chart']['aggregationName'] = aggregation.name
             this.dataQuery = this.aggregationService.aggregationDataQuery(
               this.settings.resource,
               aggregation.id || '',
@@ -126,6 +127,7 @@ export class SafeChartComponent
    */
   public getOptions(): void {
     this.options = {
+      aggregationName: get(this.settings, 'chart.aggregationName', null),
       palette: get(this.settings, 'chart.palette.enabled', false)
         ? get(this.settings, 'chart.palette.value', null)
         : null,
@@ -177,7 +179,7 @@ export class SafeChartComponent
             ':' +
             ('0' + today.getMinutes()).slice(-2);
           if (
-            ['pie', 'donut', 'line', 'bar', 'column', 'polar'].includes(
+            ['pie', 'donut', 'line', 'bar', 'column', 'polar', 'radar'].includes(
               this.settings.chart.type
             )
           ) {

@@ -101,6 +101,23 @@ export const WIDGET_TYPES = [
     settingsTemplate: SafeChartSettingsComponent,
   },
   {
+    id: 'radar-chart',
+    name: 'Radar chart',
+    icon: '/assets/pie.svg',
+    color: '#8CCDD5',
+    settings: {
+      title: 'Radar chart widget',
+      chart: {
+        type: 'radar',
+      },
+    },
+    defaultCols: 3,
+    defaultRows: 3,
+    minRow: 1,
+    component: 'chart',
+    settingsTemplate: SafeChartSettingsComponent,
+  },
+  {
     id: 'bar-chart',
     name: 'Bar chart',
     icon: '/assets/bar.svg',

@@ -26,7 +26,7 @@ interface ChartLegend {
   styleUrls: ['./pie-donut-chart.component.scss'],
 })
 /**
- * Pie/Doughnut/polarArea chart component, based on chart.js component.
+ * Pie/Doughnut/polarArea/Radar chart component, based on chart.js component.
  */
 export class SafePieDonutChartComponent implements OnChanges {
   private fieldSum = 0;
@@ -37,7 +37,7 @@ export class SafePieDonutChartComponent implements OnChanges {
     DataLabelsPlugin,
     whiteBackgroundPlugin,
   ];
-  @Input() chartType: 'pie' | 'doughnut' | 'polarArea' = 'doughnut';
+  @Input() chartType: 'pie' | 'doughnut' | 'polarArea' | 'radar' = 'doughnut';
 
   @Input() title: ChartTitle | undefined;
 
@@ -59,7 +59,7 @@ export class SafePieDonutChartComponent implements OnChanges {
     },
   };
 
-  public chartData: ChartData<'doughnut' | 'pie' | 'polarArea'> = {
+  public chartData: ChartData<'doughnut' | 'pie' | 'polarArea' | 'radar'> = {
     datasets: [],
   };
 
@@ -71,8 +71,7 @@ export class SafePieDonutChartComponent implements OnChanges {
       this.series[0]?.data.reduce(
         (acc: number, curr: any) => acc + curr.field,
         0
-      ) || 0;
-
+      ) || 0;  
     this.chartData.datasets = this.series.map((x) => ({
       ...x,
       ...(this.options.palette && {
@@ -83,6 +82,7 @@ export class SafePieDonutChartComponent implements OnChanges {
         ),
       }),
       hoverOffset: 4,
+      label: this.options.aggregationName
     }));
     this.chartData.labels = flatten(
       this.series.map((x) => x.data.map((y: any) => y.category))
