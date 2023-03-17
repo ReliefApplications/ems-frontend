@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { MapModule } from '../../../ui/map/map.module';
-import { SafeMapLayerComponent } from './map-layer.component';
+import { MapLayerComponent } from './map-layer.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
@@ -14,9 +14,9 @@ import { LayerFilterModule } from './layer-filter/layer-filter.module';
 import { LayerLabelsModule } from './layer-labels/layer-labels.module';
 import { LayerPopupModule } from './layer-popup/layer-popup.module';
 
-/** Module for the SafeMapLayerComponent */
+/** Module for the MapLayerComponent */
 @NgModule({
-  declarations: [SafeMapLayerComponent],
+  declarations: [MapLayerComponent],
   imports: [
     CommonModule,
     SafeModalModule,
@@ -33,6 +33,6 @@ import { LayerPopupModule } from './layer-popup/layer-popup.module';
     LayerLabelsModule,
     LayerPopupModule,
   ],
-  exports: [SafeMapLayerComponent],
+  exports: [MapLayerComponent],
 })
 export class SafeMapLayerModule {}

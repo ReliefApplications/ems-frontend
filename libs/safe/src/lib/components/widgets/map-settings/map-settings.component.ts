@@ -1,54 +1,146 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  AfterViewInit,
+  ViewContainerRef,
+  ViewChild,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  ComponentRef,
+} from '@angular/core';
 import { createMapWidgetFormGroup } from './map-forms';
 import { UntypedFormGroup } from '@angular/forms';
 import {
   MapConstructorSettings,
   MapEvent,
-  MapEventType,
 } from '../../ui/map/interfaces/map.interface';
-import { takeUntil } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import {
+  MapSettingsButtons,
+  MapSettingsService,
+  TabContentTypes,
+} from './map-settings.service';
 
 /** Component for the map widget settings */
 @Component({
   selector: 'safe-map-settings',
   templateUrl: './map-settings.component.html',
   styleUrls: ['./map-settings.component.scss'],
+  providers: [MapSettingsService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SafeMapSettingsComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, AfterViewInit
 {
-  public currentTab: 'parameters' | 'layers' | null = 'parameters';
-  public mapSettings!: MapConstructorSettings;
+  @ViewChild('templateLoader', { read: ViewContainerRef })
+  templateLoader!: ViewContainerRef;
 
+  // === MAP ===
+  public layerToAddOrDelete$!: Observable<any>;
+  public updateLayer$!: Observable<any>;
+
+  public mapSettings!: MapConstructorSettings;
   // === REACTIVE FORM ===
   tileForm: UntypedFormGroup | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
 
+  // === Shared drawer template settings ===
+  public currentTab!: TabContentTypes | null;
+  public currentButtons: MapSettingsButtons[] = [];
+  public currentTabTitle!: string;
+  public displayMockedLayers = true;
+  private componentRef!: ComponentRef<any>;
+
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
+  /**
+   * Class constructor
+   *
+   * @param mapSettingsService MapSettingsService
+   * @param cdr ChangeDetectorRef
+   */
+  constructor(
+    private mapSettingsService: MapSettingsService,
+    private cdr: ChangeDetectorRef
+  ) {
+    super();
+  }
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
+    this.updateLayer$ = this.mapSettingsService.updateLayer$;
+    this.layerToAddOrDelete$ = this.mapSettingsService.layerToAddOrDelete$;
     this.tileForm = createMapWidgetFormGroup(this.tile.id, this.tile.settings);
-
     this.change.emit(this.tileForm);
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
-
     const defaultMapSettings: MapConstructorSettings = {
       basemap: this.tileForm.value.basemap,
       initialState: this.tileForm.get('initialState')?.value,
       controls: this.tileForm.value.controls,
       arcGisWebMap: this.tileForm.value.arcGisWebMap,
     };
+
     this.updateMapSettings(defaultMapSettings);
     this.setUpFormListeners();
+    this.setUpTemplateListeners();
+  }
+
+  ngAfterViewInit(): void {
+    // When loading the component, default selected tab is parameters
+    this.setCurrentTab(TabContentTypes.PARAMETERS);
+  }
+
+  /**
+   * Load selected component to custom view container
+   */
+  public loadComponent() {
+    setTimeout(() => {
+      const componentToLoad =
+        this.mapSettingsService.tabContent[
+          this.currentTab as keyof typeof this.mapSettingsService.tabContent
+        ];
+      // Clear and destroy any previously set view and component reference
+      this.templateLoader?.clear();
+      this.componentRef?.destroy();
+
+      this.componentRef = this.templateLoader.createComponent<
+        typeof componentToLoad
+      >(componentToLoad as any);
+      if (this.currentTab !== TabContentTypes.LAYER) {
+        this.mapSettings = { ...this.tileForm?.getRawValue() };
+        this.componentRef.instance.form = this.tileForm;
+        this.componentRef.instance.mapSettings = this.mapSettings;
+      } else {
+        // LAYER tab content has it's own map settings which we set in the components mapSettings
+        this.mapSettings = this.componentRef.instance.mapSettings;
+      }
+
+      // Trigger new component lifecycle hooks
+      this.componentRef.changeDetectorRef.detectChanges();
+      // Trigger DOM change detection
+      this.cdr.detectChanges();
+    }, 0);
+  }
+
+  /**
+   * Set the given tab as current
+   *
+   * @param currentTab Tab to set
+   */
+  public setCurrentTab(currentTab: TabContentTypes | null) {
+    this.mapSettingsService.mapSettingsCurrentSelectedTabButton.next(
+      currentTab
+    );
   }
 
   /**
@@ -89,29 +181,49 @@ export class SafeMapSettingsComponent
   }
 
   /**
+   * Set drawer shared template listeners
+   */
+  private setUpTemplateListeners() {
+    // Set the current tabs for each selected component in the drawer content
+    this.mapSettingsService.mapSettingsButtons$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((buttons: MapSettingsButtons[] | null) => {
+        if (buttons) {
+          this.currentButtons = buttons;
+        }
+      });
+    // Set the drawer content title in it's header
+    this.mapSettingsService.mapSettingsCurrentTabTitle$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((title: string | null) => {
+        if (title) {
+          this.currentTabTitle = title;
+        }
+      });
+    // Load component with the actual needed settings on selecting tab
+    this.mapSettingsService.mapSettingsCurrentSelectedTabButton$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((selectedTabButton: TabContentTypes | null) => {
+        if (selectedTabButton !== null) {
+          if (selectedTabButton === TabContentTypes.LAYER) {
+            this.displayMockedLayers = false;
+          } else {
+            this.displayMockedLayers = true;
+          }
+          this.currentTab = selectedTabButton;
+          this.loadComponent();
+        }
+      });
+  }
+
+  /**
    * Handle leaflet map events
    *
    * @param event leaflet map event
    */
   handleMapEvent(event: MapEvent) {
-    if (!this.tileForm) return;
-    switch (event.type) {
-      case MapEventType.MOVE_END:
-        this.mapSettings.initialState.viewpoint.center.latitude =
-          event.content.center.lat;
-        this.mapSettings.initialState.viewpoint.center.longitude =
-          event.content.center.lng;
-        break;
-      case MapEventType.ZOOM_END:
-        this.mapSettings.initialState.viewpoint.zoom = event.content.zoom;
-        this.tileForm
-          .get('initialState.viewpoint.zoom')
-          ?.setValue(this.mapSettings.initialState.viewpoint.zoom, {
-            emitEvent: false,
-          });
-        break;
-      default:
-        break;
+    if (this.componentRef.instance.handleMapEvent) {
+      this.componentRef.instance.handleMapEvent(event);
     }
   }
 

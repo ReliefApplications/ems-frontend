@@ -1,54 +1,19 @@
-<safe-modal size="fullscreen">
-  <div class="flex flex-row gap-4 grow">
-    <mat-tab-group
-      mat-align-tabs="start"
-      animationDuration="0ms"
-      vertical
-      class="grow basis-2/3"
-    >
-      <!-- LAYER PROPERTIES -->
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <safe-icon
-            icon="settings"
-            [size]="24"
-            matTooltip="Layer properties"
-            matTooltipPosition="right"
-          ></safe-icon>
-          <span>{{
-            'components.widget.settings.map.edit.layerProperties' | translate
-          }}</span>
-        </ng-template>
-        <ng-template matTabContent>
-          <safe-layer-properties
-            [form]="form"
-            [currentZoom]="mapSettings.initialState.viewpoint.zoom"
-          ></safe-layer-properties>
-        </ng-template>
-      </mat-tab>
-    </mat-tab-group>
-    <!-- Map section -->
-    <safe-map
-      (mapEvent)="handleMapEvent($event)"
-      [displayMockedLayers]="false"
-      [mapSettings]="mapSettings"
-      [updateLayerOptions]="updateLayer$ | async"
-      [addOrDeleteLayer]="layerToAddOrDelete$ | async"
-      class="grow basis-1/3"
-    >
-    </safe-map>
-  </div>
-  <!-- Dialog actions ( cancel / close ) -->
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
-    <safe-button
-      category="secondary"
-      variant="primary"
-      [mat-dialog-close]="form.value"
-      cdkFocusInitial
-      [disabled]="!form.valid"
-    >
-      {{ (!layer ? 'common.create' : 'common.update') | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+<safe-layer-properties
+  [form]="form"
+  [currentZoom]="mapSettings.initialState.viewpoint.zoom"
+></safe-layer-properties>
+<!-- Actions ( cancel / close ) -->
+<div class="flex justify-end">
+  <safe-button class="mr-2" (click)="finishLayerEdition('discard')">{{
+    'common.close' | translate
+  }}</safe-button>
+  <safe-button
+    category="secondary"
+    variant="primary"
+    cdkFocusInitial
+    [disabled]="!form.valid"
+    (click)="finishLayerEdition()"
+  >
+    {{ (!layer ? 'common.create' : 'common.update') | translate }}
+  </safe-button>
+</div>

@@ -7,6 +7,8 @@ import {
   Inject,
   Output,
   EventEmitter,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import get from 'lodash/get';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -79,7 +81,7 @@ const defaultWebMap = 'a8c3c531be1a4615b03c45b6353ab2c8';
 })
 export class MapComponent
   extends SafeUnsubscribeComponent
-  implements AfterViewInit
+  implements AfterViewInit, OnChanges
 {
   @Input() controls!: any;
   @Input() useGeomanTools = false;
@@ -271,6 +273,31 @@ export class MapComponent
       .subscribe((event) => {
         setLang(event.lang);
       });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.displayMockedLayers?.previousValue !== undefined) {
+      // Any time displayMockedValue changes, we first reset all controls and layers in the map
+      // Could contain layers from layer editor(map layer component)
+      if (this.layerControl) {
+        this.map.eachLayer((layer: any) => {
+          layer.remove();
+        });
+        this.basemap = undefined;
+        this.map?.removeControl(this.layerControl);
+        this.layerControl = null;
+      }
+      // If then we have to display mocked layers, we do
+      if (changes.displayMockedLayers.currentValue === true) {
+        this.setUpLayers();
+        // Add legend control
+        this.mapControlsService.getLegendControl(
+          this.map,
+          this.layers,
+          this.extractSettings().controls.legend
+        );
+      }
+    }
   }
 
   /** Once template is ready, build the map. */

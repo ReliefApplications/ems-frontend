@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeMapLayerComponent } from './map-layer.component';
+import { MapLayerComponent } from './map-layer.component';
 
 describe('EditLayerModalComponent', () => {
-  let component: SafeMapLayerComponent;
-  let fixture: ComponentFixture<SafeMapLayerComponent>;
+  let component: MapLayerComponent;
+  let fixture: ComponentFixture<MapLayerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SafeMapLayerComponent],
+      declarations: [MapLayerComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SafeMapLayerComponent);
+    fixture = TestBed.createComponent(MapLayerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

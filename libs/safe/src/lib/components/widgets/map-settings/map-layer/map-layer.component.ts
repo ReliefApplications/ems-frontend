@@ -1,24 +1,24 @@
-import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, SkipSelf } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { createLayerForm } from '../map-forms';
-import { MapLayerI } from '../map-layers/map-layers.component';
 import {
   MapConstructorSettings,
   MapEvent,
   MapEventType,
 } from '../../../ui/map/interfaces/map.interface';
-import { BehaviorSubject, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
-import {
-  LayerActionOnMap,
-  OverlayLayerTree,
-} from '../../../ui/map/interfaces/map-layers.interface';
+import { OverlayLayerTree } from '../../../ui/map/interfaces/map-layers.interface';
 
 import * as L from 'leaflet';
 import { createCustomDivIcon } from '../../../ui/map/utils/create-div-icon';
 import { DefaultMapControls } from '../../../ui/map/interfaces/map.interface';
+import {
+  MapSettingsDynamicComponent,
+  MapSettingsService,
+  TabContentTypes,
+} from '../map-settings.service';
 
 /** Layer used to test the component */
 const TEST_LAYER: {
@@ -82,14 +82,38 @@ const TEST_LAYER: {
   templateUrl: './map-layer.component.html',
   styleUrls: ['./map-layer.component.scss'],
 })
-export class SafeMapLayerComponent
+export class MapLayerComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit, AfterViewInit, MapSettingsDynamicComponent
 {
-  public form: UntypedFormGroup;
-
+  public form!: UntypedFormGroup;
+  public layer!: any;
+  public layerIndex!: number;
   private currentLayer: L.Layer | null = null;
   private layerOptions: any = {};
+
+  // === MAP ===
+  public mapSettings: MapConstructorSettings = {
+    initialState: {
+      viewpoint: {
+        center: {
+          latitude: 0,
+          longitude: 0,
+        },
+        zoom: 2,
+      },
+    },
+    maxBounds: [
+      [-90, -1000],
+      [90, 1000],
+    ],
+    basemap: 'OSM',
+    zoomControl: false,
+    minZoom: 2,
+    maxZoom: 18,
+    worldCopyJump: true,
+    controls: DefaultMapControls,
+  };
 
   /** @returns the selected layer type */
   public get layerType(): keyof typeof TEST_LAYER | null {
@@ -103,30 +127,40 @@ export class SafeMapLayerComponent
     });
   }
 
-  // === MAP ===
-  public mapSettings!: MapConstructorSettings;
-  private addOrDeleteLayer: BehaviorSubject<LayerActionOnMap | null> =
-    new BehaviorSubject<LayerActionOnMap | null>(null);
-  public layerToAddOrDelete$ = this.addOrDeleteLayer.asObservable();
-  private updateLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  public updateLayer$ = this.updateLayer.asObservable();
-
   /**
    * Modal for adding and editing map layers
    *
    * @param safeMapLayerService Service needed to create the icon for point type layer
-   * @param layer Injected map layer, if any
+   * @param mapSettingsService MapSettingsService
    */
   constructor(
     private safeMapLayerService: SafeMapLayersService,
-    @Inject(MAT_DIALOG_DATA) public layer?: MapLayerI
+    @SkipSelf() private mapSettingsService: MapSettingsService
   ) {
     super();
-    this.form = createLayerForm(layer);
   }
 
   ngOnInit(): void {
-    this.configureMapSettings();
+    this.setUpLayerListeners();
+    this.mapSettingsService.mapSettingsButtons.next([
+      {
+        value: TabContentTypes.LAYER,
+        icon: 'settings',
+        label: 'components.widget.settings.map.edit.layerProperties',
+        /**
+         * Is tab selected
+         *
+         * @param currentTab current tab value
+         * @returns {boolean} is selected
+         */
+        isSelected: function (currentTab: TabContentTypes | null): boolean {
+          return currentTab === this.value;
+        },
+      },
+    ]);
+    this.mapSettingsService.mapSettingsCurrentTabTitle.next(
+      'components.widget.settings.map.layers.add'
+    );
   }
 
   ngAfterViewInit(): void {
@@ -137,30 +171,39 @@ export class SafeMapLayerComponent
   }
 
   /**
-   * Configure map settings
+   * Set layer editor listener
    */
-  private configureMapSettings() {
-    this.mapSettings = {
-      initialState: {
-        viewpoint: {
-          center: {
-            latitude: 0,
-            longitude: 0,
-          },
-          zoom: 2,
-        },
-      },
-      maxBounds: [
-        [-90, -1000],
-        [90, 1000],
-      ],
-      basemap: 'OSM',
-      zoomControl: false,
-      minZoom: 2,
-      maxZoom: 18,
-      worldCopyJump: true,
-      controls: DefaultMapControls,
-    };
+  setUpLayerListeners() {
+    this.mapSettingsService.selectedLayerToEdit$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((layer: { layer: any; layerIndex: number } | null) => {
+        this.layer = layer?.layer;
+        this.layerIndex = layer?.layerIndex ?? -1;
+        this.form = createLayerForm(layer?.layer);
+      });
+  }
+
+  /**
+   * Close the map layer editor
+   *
+   * @param discard Discard the current layer creation/edition
+   */
+  finishLayerEdition(discard?: string) {
+    if (discard) {
+      this.mapSettingsService.layerDataToSave.next(null);
+    } else {
+      const layer = this.layer
+        ? this.form.value
+        : createLayerForm(this.form.value);
+      this.mapSettingsService.layerDataToSave.next({
+        layer,
+        layerIndex: this.layerIndex,
+      });
+    }
+    // Get back to Layers tab and content
+    this.mapSettingsService.mapSettingsCurrentSelectedTabButton.next(
+      TabContentTypes.LAYERS
+    );
   }
 
   /**
@@ -173,7 +216,7 @@ export class SafeMapLayerComponent
       ...this.layerOptions,
       ...(options && options),
     };
-    this.updateLayer.next({
+    this.mapSettingsService.updateLayer.next({
       layer: this.currentLayer,
       options: this.layerOptions,
       ...(this.layerType === 'point' && { icon: this.icon }),
@@ -244,7 +287,7 @@ export class SafeMapLayerComponent
   private setUpLayer() {
     // If a layer is already applied to the map we first delete it
     if (this.currentLayer) {
-      this.addOrDeleteLayer.next({
+      this.mapSettingsService.addOrDeleteLayer.next({
         layerData: {
           layer: this.currentLayer,
           label: this.form.get('name')?.value,
@@ -273,7 +316,10 @@ export class SafeMapLayerComponent
 
       // Then we use a timeout to add the new layer in order to delete the previous layer if so
       setTimeout(() => {
-        this.addOrDeleteLayer.next({ layerData: overlays, isDelete: false });
+        this.mapSettingsService.addOrDeleteLayer.next({
+          layerData: overlays,
+          isDelete: false,
+        });
       }, 0);
 
       this.updateLayerOptions(defaultLayerOptions);

@@ -1,16 +1,7 @@
 <div class="flex flex-col">
-  <div class="flex justify-between">
-    <h2>{{ 'common.layers' | translate }}</h2>
-    <!-- Close button -->
-    <safe-button
-      [isIcon]="true"
-      icon="close"
-      (click)="close.emit()"
-    ></safe-button>
-  </div>
   <safe-button
     class="mb-4 self-end"
-    (click)="onAddLayer()"
+    (click)="setLayerEditionTemplate()"
     category="secondary"
     variant="primary"
   >
@@ -47,7 +38,7 @@
         >
         </safe-button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onEditLayer(i)">
+          <button mat-menu-item (click)="setLayerEditionTemplate(i)">
             <mat-icon>edit</mat-icon>
             {{ 'common.edit' | translate }}
           </button>

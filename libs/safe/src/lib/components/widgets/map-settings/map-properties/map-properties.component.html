@@ -2,17 +2,6 @@
   <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
     <!-- Map properties -->
     <div class="flex flex-col flex-1">
-      <div class="flex justify-between">
-        <h2>
-          {{ 'components.widget.settings.map.properties.title' | translate }}
-        </h2>
-        <!-- Close button -->
-        <safe-button
-          [isIcon]="true"
-          icon="close"
-          (click)="close.emit()"
-        ></safe-button>
-      </div>
       <!-- Widget ( map ) name -->
       <mat-form-field appearance="outline" class="p-0">
         <mat-label>{{ 'common.name' | translate }}</mat-label>
@@ -131,7 +120,10 @@
       </safe-button>
       <safe-divider></safe-divider>
       <!-- Map controls -->
-      <safe-map-controls formGroupName="controls" [form]="controlsFormGroup"></safe-map-controls>
+      <safe-map-controls
+        formGroupName="controls"
+        [form]="controlsFormGroup"
+      ></safe-map-controls>
     </div>
   </div>
 </form>
