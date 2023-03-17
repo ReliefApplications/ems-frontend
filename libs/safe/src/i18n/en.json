@@ -1110,6 +1110,15 @@
 			"settings": {
 				"chart": {
 					"axes": "Axes",
+					"grid": {
+						"title": "Gridlines",
+						"x": {
+							"display": "Display horizontal gridlines"
+						},
+						"y": {
+							"display": "Display vertical gridlines"
+						}
+					},
 					"hideLegend": "Hide legend",
 					"labels": {
 						"percentage": "Percentage",
