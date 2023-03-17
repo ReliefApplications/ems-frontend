@@ -149,6 +149,11 @@ export class SafeChartComponent
       },
       labels: {
         showCategory: get(this.settings, 'chart.labels.showCategory', false),
+        categoryPosition: get(
+          this.settings,
+          'chart.labels.categoryPosition',
+          'inside'
+        ),
         showValue: get(this.settings, 'chart.labels.showValue', false),
         valueType: get(this.settings, 'chart.labels.valueType', 'value'),
       },

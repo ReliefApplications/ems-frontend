@@ -45,7 +45,7 @@ export class Chart {
     const legend = get(settings, 'legend', null);
     const title = get(settings, 'title', null);
     const labels = get(settings, 'labels', null);
-    const palette: string[] = get(settings, 'palette.value', []);
+    const palette: string[] = get(settings, 'palette.value', DEFAULT_PALETTE);
     const axes = get(settings, 'axes', null);
     const stack = get(settings, 'stack', null);
 
@@ -89,6 +89,7 @@ export class Chart {
       }),
       labels: this.fb.group({
         showCategory: [get(labels, 'showCategory', false)],
+        categoryPosition: [get(labels, 'categoryPosition', 'inside')],
         showValue: [get(labels, 'showValue', false)],
         valueType: [
           {

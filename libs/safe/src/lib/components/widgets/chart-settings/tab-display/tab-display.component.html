@@ -168,6 +168,17 @@
               'components.widget.settings.chart.labels.showCategory' | translate
             }}</mat-slide-toggle
           >
+          <div *ngIf="chartForm.value.labels.showCategory">
+            <mat-radio-group formControlName="categoryPosition">
+              <mat-radio-button value="inside">{{
+                'components.widget.settings.chart.labels.inside' | translate
+              }}</mat-radio-button>
+              <br>
+              <mat-radio-button value="outside">{{
+                'components.widget.settings.chart.labels.outside' | translate
+              }}</mat-radio-button>
+            </mat-radio-group>
+          </div>
           <mat-slide-toggle formControlName="showValue">{{
             'components.widget.settings.chart.labels.showValue' | translate
           }}</mat-slide-toggle>

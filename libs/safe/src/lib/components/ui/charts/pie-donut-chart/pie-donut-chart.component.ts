@@ -7,6 +7,7 @@ import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plug
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
+import outsideLabelsPlugin from '../../../../utils/graphs/plugins/outsideLabels.plugin';
 
 /**
  * Interface containing the settings of the chart title
@@ -42,10 +43,12 @@ export class SafePieDonutChartComponent implements OnChanges {
   private fieldSum = 0;
   private showValueLabels: false | 'percentage' | 'value' = false;
   private showCategoryLabel = false;
+  private categoryPositionLabel: false | 'inside' | 'outside' = false;
   public plugins: Plugin[] = [
     drawUnderlinePlugin,
     DataLabelsPlugin,
     whiteBackgroundPlugin,
+    outsideLabelsPlugin,
   ];
   @Input() chartType: 'pie' | 'doughnut' = 'doughnut';
 
@@ -56,7 +59,28 @@ export class SafePieDonutChartComponent implements OnChanges {
   @Input() series: any[] = [];
 
   @Input() options: any = {
-    palette: [],
+    palette: [
+      '#ff6358',
+      '#ffd246',
+      '#78d237',
+      '#28b4c8',
+      '#2d73f5',
+      '#aa46be',
+      '#FF8A82',
+      '#FFDD74',
+      '#9ADD69',
+      '#5EC7D6',
+      '#6296F8',
+      '#BF74CE',
+      '#BF4A42',
+      '#BF9E35',
+      '#5A9E29',
+      '#1E8796',
+      '#2256B8',
+      '#80358F',
+      '#FFB1AC',
+      '#FFE9A3',
+    ], //default palette
   };
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
@@ -75,6 +99,12 @@ export class SafePieDonutChartComponent implements OnChanges {
 
   ngOnChanges(): void {
     this.showCategoryLabel = get(this.options, 'labels.showCategory', false);
+    if (get(this.options, 'labels.showCategory', false))
+      this.categoryPositionLabel = get(
+        this.options,
+        'labels.categoryPosition',
+        false
+      );
     if (get(this.options, 'labels.showValue', false))
       this.showValueLabels = get(this.options, 'labels.valueType', false);
     this.fieldSum =
@@ -82,18 +112,15 @@ export class SafePieDonutChartComponent implements OnChanges {
         (acc: number, curr: any) => acc + curr.field,
         0
       ) || 0;
-
-    this.chartData.datasets = this.series.map((x) => ({
-      ...x,
-      ...(this.options.palette && {
-        backgroundColor: this.options.palette,
-        hoverBorderColor: this.options.palette,
-        hoverBackgroundColor: this.options.palette?.map((color: any) =>
-          addTransparency(color)
-        ),
-      }),
-      hoverOffset: 4,
-    }));
+    this.chartData.datasets = this.series.map((x, i) => {
+      const color: any = get(this.options, `palette[${i}]`, undefined);
+      return {
+        ...x,
+        backgroundColor: color,
+        hoverBackgroundColor: color ? addTransparency(color) : undefined,
+        hoverOffset: 4,
+      };
+    });
     this.chartData.labels = flatten(
       this.series.map((x) => x.data.map((y: any) => y.category))
     );
@@ -150,7 +177,9 @@ export class SafePieDonutChartComponent implements OnChanges {
     if (this.chartOptions?.plugins) {
       Object.assign(this.chartOptions.plugins, {
         datalabels: {
-          display: !!this.showValueLabels || this.showCategoryLabel,
+          display:
+            !!this.showValueLabels ||
+            (this.showCategoryLabel && this.categoryPositionLabel === 'inside'),
           color: 'white',
           font: {
             weight: 'bold',
@@ -161,7 +190,11 @@ export class SafePieDonutChartComponent implements OnChanges {
           formatter: (val: any = {}) => {
             const res: string[] = [];
             if (!val.field || !val.category) return '';
-            if (this.showCategoryLabel) res.push(val.category);
+            if (
+              this.showCategoryLabel &&
+              this.categoryPositionLabel === 'inside'
+            )
+              res.push(val.category);
             if (this.showValueLabels) {
               const displayPercentage = this.showValueLabels === 'percentage';
               let value = displayPercentage
@@ -176,6 +209,11 @@ export class SafePieDonutChartComponent implements OnChanges {
             }
             return res;
           },
+        },
+        customOutsideDataLabels: {
+          display:
+            !!this.showCategoryLabel &&
+            this.categoryPositionLabel === 'outside',
         },
       });
     }

@@ -1112,6 +1112,9 @@
 					"axes": "Axes",
 					"hideLegend": "Hide legend",
 					"labels": {
+						"categoryPosition": "Choose where the labels should be displayed",
+						"inside": "Inside",
+						"outside": "Outside",
 						"percentage": "Percentage",
 						"showCategory": "Show category labels",
 						"showValue": "Show value labels",

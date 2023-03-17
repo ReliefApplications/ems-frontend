@@ -1112,6 +1112,9 @@
 					"axes": "******",
 					"hideLegend": "******",
 					"labels": {
+						"categoryPosition": "******",
+						"inside": "******",
+						"outside": "******",
 						"percentage": "******",
 						"showCategory": "******",
 						"showValue": "******",
