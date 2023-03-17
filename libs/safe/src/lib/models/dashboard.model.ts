@@ -84,6 +84,23 @@ export const WIDGET_TYPES = [
     settingsTemplate: SafeChartSettingsComponent,
   },
   {
+    id: 'polar-chart',
+    name: 'Polar chart',
+    icon: '/assets/pie.svg',
+    color: '#8CCDD5',
+    settings: {
+      title: 'Polar chart widget',
+      chart: {
+        type: 'polar',
+      },
+    },
+    defaultCols: 3,
+    defaultRows: 3,
+    minRow: 1,
+    component: 'chart',
+    settingsTemplate: SafeChartSettingsComponent,
+  },
+  {
     id: 'bar-chart',
     name: 'Bar chart',
     icon: '/assets/bar.svg',

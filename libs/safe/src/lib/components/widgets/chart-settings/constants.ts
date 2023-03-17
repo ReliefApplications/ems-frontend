@@ -23,6 +23,11 @@ export const CHART_TYPES = [
     class: Pie,
   },
   {
+    name: 'polar',
+    icon: '/assets/pie.svg',
+    class: Pie,
+  },
+  {
     name: 'bar',
     icon: '/assets/bar.svg',
     class: Pie,
