@@ -6,7 +6,8 @@
     "check-i18n": "node .scripts/check-i18n",
     "semantic-release": "semantic-release",
     "prepare": "husky install",
-    "ng": "node --max_old_space_size=4096 ./node_modules/.bin/ng"
+    "ng": "node --max_old_space_size=4096 ./node_modules/.bin/ng",
+    "lint": "npx nx run-many --target=lint --projects=safe,front-office,back-office"
   },
   "private": true,
   "dependencies": {

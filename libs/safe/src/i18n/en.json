@@ -1135,6 +1135,10 @@
 					"size": "Size",
 					"style": "Style",
 					"text": "Text",
+					"title": {
+						"color": "Title color",
+						"format": "Title format"
+					},
 					"type": "Chart Type",
 					"xAxis": "X Axis",
 					"yAxis": "Y Axis"
@@ -1709,6 +1713,12 @@
 			"goTo": "Go to Application list",
 			"recent": "Recent applications",
 			"title": "My applications"
+		},
+		"dashboard": {
+			"update": {
+				"exit": "Exit without saving changes",
+				"exitMessage": "There are unsaved changes on the page. Are you sure you want to exit?"
+			}
 		},
 		"formBuilder": {
 			"errors": {

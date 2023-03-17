@@ -1135,6 +1135,10 @@
 					"size": "******",
 					"style": "******",
 					"text": "******",
+					"title": {
+						"color": "******",
+						"format": "******"
+					},
 					"type": "******",
 					"xAxis": "******",
 					"yAxis": "******"
@@ -1709,6 +1713,12 @@
 			"goTo": "******",
 			"recent": "******",
 			"title": "******"
+		},
+		"dashboard": {
+			"update": {
+				"exit": "******",
+				"exitMessage": "******"
+			}
 		},
 		"formBuilder": {
 			"errors": {

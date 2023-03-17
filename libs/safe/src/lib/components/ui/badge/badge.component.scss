@@ -41,7 +41,7 @@ div {
 
 .safe-badge-icon {
   width: 2em;
-  background-color: white;
+  @apply bg-white;
   line-height: initial;
 
   safe-icon {

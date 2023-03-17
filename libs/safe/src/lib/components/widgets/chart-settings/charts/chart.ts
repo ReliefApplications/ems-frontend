@@ -66,15 +66,49 @@ export class Chart {
         position: [legend ? legend.position : 'bottom'],
       }),
       title: this.fb.group({
-        visible: [get(title, 'visible', true)],
         text: [get(title, 'text', null)],
-        position: [get(title, 'position', 'top')],
-        bold: [get(title, 'bold', false)],
-        italic: [get(title, 'italic', false)],
-        underline: [get(title, 'underline', false)],
-        font: [get(title, 'font', '')],
-        size: [get(title, 'size', 12)],
-        color: [get(title, 'color', null)],
+        position: [
+          {
+            value: get(title, 'position', 'top'),
+            disabled: !get(title, 'text', false),
+          },
+        ],
+        bold: [
+          {
+            value: get(title, 'bold', false),
+            disabled: !get(title, 'text', false),
+          },
+        ],
+        italic: [
+          {
+            value: get(title, 'italic', false),
+            disabled: !get(title, 'text', false),
+          },
+        ],
+        underline: [
+          {
+            value: get(title, 'underline', false),
+            disabled: !get(title, 'text', false),
+          },
+        ],
+        font: [
+          {
+            value: get(title, 'font', ''),
+            disabled: !get(title, 'text', false),
+          },
+        ],
+        size: [
+          {
+            value: get(title, 'size', 12),
+            disabled: !get(title, 'text', false),
+          },
+        ],
+        color: [
+          {
+            value: get(title, 'color', null),
+            disabled: !get(title, 'text', false),
+          },
+        ],
       }),
       palette: this.fb.group({
         enabled: get(settings, 'palette.enabled', false),
@@ -268,6 +302,24 @@ export class Chart {
       } else {
         this.form.get('labels.valueType')?.setValue('value');
         this.form.get('labels.valueType')?.disable();
+      }
+    });
+
+    this.form.get('title.text')?.valueChanges.subscribe((value) => {
+      if (!value) {
+        this.form.get('title.position')?.disable();
+        this.form.get('title.size')?.disable();
+        this.form.get('title.color')?.disable();
+        this.form.get('title.bold')?.disable();
+        this.form.get('title.italic')?.disable();
+        this.form.get('title.underline')?.disable();
+      } else {
+        this.form.get('title.position')?.enable();
+        this.form.get('title.size')?.enable();
+        this.form.get('title.color')?.enable();
+        this.form.get('title.bold')?.enable();
+        this.form.get('title.italic')?.enable();
+        this.form.get('title.underline')?.enable();
       }
     });
   }

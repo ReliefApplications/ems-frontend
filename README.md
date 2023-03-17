@@ -184,7 +184,10 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## Javascript heap out of memory
 
-In case you encounter any memory issue, open your terminal and type this command:
+In case you encounter any memory issue, open your terminal and type following command, depending on your vscode terminal.
+You should then be able to pass your commands as before.
+
+### Bash
 
 ```
 export NODE_OPTIONS="--max-old-space-size=4096"
@@ -196,4 +199,14 @@ In case you still face issues, you can still increase it:
 export NODE_OPTIONS="--max-old-space-size=8192"
 ```
 
-You can then pass your commands as before.
+### Powershell
+
+```
+set NODE_OPTIONS="--max-old-space-size=4096"
+```
+
+In case you still face issues, you can still increase it:
+
+```
+set NODE_OPTIONS="--max-old-space-size=8192"
+```

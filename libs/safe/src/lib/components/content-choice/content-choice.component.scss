@@ -16,7 +16,6 @@
     border-radius: 8px;
 
     .safe-type-selected {
-      background: rgb(146, 173, 255);
       height: 4px;
       width: 100%;
       position: absolute;
@@ -31,7 +30,7 @@
 
     span {
       font-size: 20px;
-      color: #6e7478;
+      @apply text-gray-500;
       margin-bottom: 16px;
     }
   }

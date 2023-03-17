@@ -7,6 +7,7 @@ import {
   SafeGraphQLSelectModule,
   SafeModalModule,
   SafeReadableCronModule,
+  CronExpressionControlModule,
 } from '@oort-front/safe';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -34,6 +35,7 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
     MatFormFieldModule,
     MatExpansionModule,
     MatChipsModule,
+    CronExpressionControlModule,
   ],
   exports: [EditPullJobModalComponent],
 })

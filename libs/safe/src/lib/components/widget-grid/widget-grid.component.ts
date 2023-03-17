@@ -5,6 +5,8 @@ import {
   Input,
   OnInit,
   Output,
+  QueryList,
+  ViewChildren,
 } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
@@ -14,6 +16,7 @@ import {
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
 import { SafeDashboardService } from '../../services/dashboard/dashboard.service';
+import { SafeWidgetComponent } from '../widget/widget.component';
 
 /** Maximum height of the widget in row units */
 const MAX_ROW_SPAN = 4;
@@ -50,6 +53,13 @@ export class SafeWidgetGridComponent implements OnInit {
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+
+  @ViewChildren(SafeWidgetComponent)
+  widgetComponents!: QueryList<SafeWidgetComponent>;
+
+  get canDeactivate() {
+    return !this.widgetComponents.some((x) => !x.canDeactivate);
+  }
 
   /**
    * Changes display when windows size changes.

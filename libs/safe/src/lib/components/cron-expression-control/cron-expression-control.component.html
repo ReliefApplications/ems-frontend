@@ -1,21 +1,25 @@
-<safe-modal size="medium">
-    <!-- Show readable value of the schedule -->
-  <safe-alert *ngIf="control.valid" variant="primary" class="mb-6">
-    <safe-icon icon="schedule"></safe-icon>
-    {{ control.value | safeReadableCron }}
-  </safe-alert>
-  <!-- Cron editor -->
-  <cron-editor [formControl]="control" [options]="cronOptions"></cron-editor>
-  <!-- Modal actions -->
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
-    <safe-button
-      category="secondary"
-      variant="primary"
-      mat-dialog-close
-      [disabled]="!control.valid"
-    >
-      {{ 'common.save' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+<mat-form-field appearance="outline" class="flex-1">
+  <mat-label>{{ 'models.pullJob.schedule' | translate }}</mat-label>
+  <input
+    type="text"
+    [placeholder]="'components.pullJob.modal.placeholder.schedule' | translate"
+    matInput
+    readonly
+    value="{{
+      ngControl.invalid
+        ? ('components.pullJob.modal.placeholder.schedule' | translate)
+        : (value | safeReadableCron)
+    }}"
+  />
+  <safe-icon
+    icon="edit"
+    class="cursor-pointer"
+    variant="grey"
+    matSuffix
+    (click)="onEdit()"
+    [matTooltip]="'components.pullJob.modal.hint.schedule' | translate"
+  ></safe-icon>
+  <mat-error *ngIf="ngControl.errors">
+    {{ 'components.pullJob.modal.errors.schedule' | translate }}
+  </mat-error>
+</mat-form-field>

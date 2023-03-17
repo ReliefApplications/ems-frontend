@@ -7,11 +7,11 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { SafeAlertModule } from '../../../ui/alert/alert.module';
 import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
 
 /**
  * Add / Edit notification modal module.
@@ -27,11 +27,11 @@ import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy
     MatInputModule,
     MatSelectModule,
     MatTooltipModule,
-    SafeAlertModule,
     SafeReadableCronModule,
     SafeDividerModule,
     SafeGraphQLSelectModule,
     MatRadioModule,
+    CronExpressionControlModule,
   ],
   exports: [EditNotificationModalComponent],
 })
