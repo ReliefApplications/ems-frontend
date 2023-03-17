@@ -112,11 +112,15 @@ export class SafeLineChartComponent implements OnChanges {
     const titleText = get(this.title, 'text', '');
     const titleColor = get(this.title, 'color', undefined);
     const titleVisible = titleText !== '';
+
     // log min an max
     this.chartOptions = {
       ...this.chartOptions,
       scales: {
         x: {
+          grid: {
+            display: get(this.options, 'grid.x.display', true),
+          },
           ticks: {
             autoSkip: false,
             maxRotation: 90,
@@ -124,6 +128,9 @@ export class SafeLineChartComponent implements OnChanges {
           },
         },
         y: {
+          grid: {
+            display: get(this.options, 'grid.y.display', true),
+          },
           min: this.min - 0.1 * this.min,
           max: this.max + 0.1 * this.max,
         },

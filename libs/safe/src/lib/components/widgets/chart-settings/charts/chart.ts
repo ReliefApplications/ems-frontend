@@ -48,6 +48,7 @@ export class Chart {
     const palette: string[] = get(settings, 'palette.value', []);
     const axes = get(settings, 'axes', null);
     const stack = get(settings, 'stack', null);
+    const grid = get(settings, 'grid', null);
 
     // build form
     this.form = this.fb.group({
@@ -135,6 +136,16 @@ export class Chart {
           },
         ],
       }),
+
+      grid: this.fb.group({
+        x: this.fb.group({
+          display: get(grid, 'x.display', true),
+        }),
+        y: this.fb.group({
+          display: get(grid, 'y.display', true),
+        }),
+      }),
+
       axes: this.fb.group({
         y: this.fb.group({
           enableMin: [get(axes, 'y.enableMin', false)],

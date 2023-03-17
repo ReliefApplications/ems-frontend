@@ -1110,6 +1110,15 @@
 			"settings": {
 				"chart": {
 					"axes": "******",
+					"grid": {
+						"title": "******",
+						"x": {
+							"display": "******"
+						},
+						"y": {
+							"display": "******"
+						}
+					},
 					"hideLegend": "******",
 					"labels": {
 						"percentage": "******",
