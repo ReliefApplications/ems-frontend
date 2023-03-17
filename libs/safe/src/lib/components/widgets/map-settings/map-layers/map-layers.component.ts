@@ -10,13 +10,31 @@ import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { createLayerForm } from '../map-forms';
 import { SafeEditLayerModalComponent } from '../edit-layer-modal/edit-layer-modal.component';
+import { IconName } from '../../../ui/map/const/fa-icons';
 
 /** List of available layer types */
 export const LAYER_TYPES = ['polygon', 'point', 'heatmap', 'cluster'] as const;
+
 /** Interface for a map layer */
 export interface MapLayerI {
   name: string;
   type: (typeof LAYER_TYPES)[number];
+  defaultVisibility: boolean;
+  opacity: number;
+  visibilityRangeStart: number;
+  visibilityRangeEnd: number;
+  style: {
+    color: string;
+    size: number;
+    icon: IconName | 'leaflet_default';
+  };
+  datasource: {
+    origin: 'resource' | 'refData';
+    resource: string;
+    layout: string;
+    aggregation: string;
+    refData: string;
+  };
 }
 
 /**

@@ -1,4 +1,6 @@
 import {
+  FormControl,
+  FormGroup,
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
@@ -51,29 +53,46 @@ const DEFAULT_MAP: Nullable<MapSettingsI> = {
  * @param value layer value ( optional )
  * @returns new form group
  */
-export const createLayerForm = (value?: MapLayerI): UntypedFormGroup =>
-  fb.group({
-    name: [get(value, 'name', null), [Validators.required]],
-    type: [get(value, 'type', null), [Validators.required]],
-    defaultVisibility: [
-      get(value, 'defaultVisibility', true),
-      [Validators.required],
-    ],
-    opacity: [get(value, 'opacity', 0.8), [Validators.required]],
-    visibilityRangeStart: [
+export const createLayerForm = (value?: MapLayerI) =>
+  new FormGroup({
+    // Layer properties
+    name: new FormControl(get(value, 'name', null), [Validators.required]),
+    type: new FormControl(get(value, 'type', null), [Validators.required]),
+    defaultVisibility: new FormControl(get(value, 'defaultVisibility', true), [
+      Validators.required,
+    ]),
+    opacity: new FormControl(get(value, 'opacity', 0.8), [Validators.required]),
+    visibilityRangeStart: new FormControl(
       get(value, 'visibilityRangeStart', 2),
-      [Validators.required],
-    ],
-    visibilityRangeEnd: [
-      get(value, 'visibilityRangeEnd', 18),
-      [Validators.required],
-    ],
-    style: fb.group({
-      color: [get(value, 'style.color', '#0090d1')],
-      size: [get(value, 'style.size', 24)],
-      icon: [get(value, 'style.icon', 'leaflet_default')],
+      [Validators.required]
+    ),
+    visibilityRangeEnd: new FormControl(get(value, 'visibilityRangeEnd', 18), [
+      Validators.required,
+    ]),
+
+    // Layer style
+    style: new FormGroup({
+      color: new FormControl(get(value, 'style.color', '#0090d1')),
+      size: new FormControl(get(value, 'style.size', 24)),
+      icon: new FormControl<MapLayerI['style']['icon']>(
+        get(value, 'style.icon', 'leaflet_default')
+      ),
+    }),
+
+    // Layer datasource
+    datasource: new FormGroup({
+      origin: new FormControl<MapLayerI['datasource']['origin']>(
+        get(value, 'datasource.source', 'resource'),
+        [Validators.required]
+      ),
+      resource: new FormControl(get(value, 'datasource.resource', null)),
+      layout: new FormControl(get(value, 'datasource.layout', null)),
+      aggregation: new FormControl(get(value, 'datasource.aggregation', null)),
+      refData: new FormControl(get(value, 'datasource.refData', null)),
     }),
   });
+
+export type LayerFormT = ReturnType<typeof createLayerForm>;
 
 // === MAP ===
 

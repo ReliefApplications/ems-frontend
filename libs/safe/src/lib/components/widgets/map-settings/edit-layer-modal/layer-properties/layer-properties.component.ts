@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { LayerFormT } from '../../map-forms';
 import { LAYER_TYPES } from '../../map-layers/map-layers.component';
 
 /** Component for the general layer properties */
@@ -9,7 +9,7 @@ import { LAYER_TYPES } from '../../map-layers/map-layers.component';
   styleUrls: ['./layer-properties.component.scss'],
 })
 export class LayerPropertiesComponent {
-  @Input() form!: UntypedFormGroup;
+  @Input() form!: LayerFormT;
   @Input() currentZoom!: number | undefined;
 
   public layerTypes = LAYER_TYPES;
