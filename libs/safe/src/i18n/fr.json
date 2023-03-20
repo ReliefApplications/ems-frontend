@@ -1282,6 +1282,7 @@
 						"datasource": {
 							"origin": "Origine"
 						},
+						"fields": "Champs",
 						"layerDatasource": "Source de données de la couche",
 						"layerProperties": "Propriétés",
 						"layerStyling": "Styles",

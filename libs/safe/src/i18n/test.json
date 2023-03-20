@@ -1275,6 +1275,7 @@
 						"datasource": {
 							"origin": "******"
 						},
+						"fields": "******",
 						"layerDatasource": "******",
 						"layerProperties": "******",
 						"layerStyling": "******",
