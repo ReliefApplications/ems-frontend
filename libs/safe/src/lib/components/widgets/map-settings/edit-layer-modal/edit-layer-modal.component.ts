@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
-import { createLayerForm } from '../map-forms';
+import { createLayerForm, LayerFormT } from '../map-forms';
 import { MapLayerI } from '../map-layers/map-layers.component';
 import {
   MapConstructorSettings,
@@ -17,7 +16,10 @@ import {
 } from '../../../ui/map/interfaces/map-layers.interface';
 
 import * as L from 'leaflet';
-import { createCustomDivIcon } from '../../../ui/map/utils/create-div-icon';
+import {
+  createCustomDivIcon,
+  DEFAULT_MARKER_ICON_OPTIONS,
+} from '../../../ui/map/utils/create-div-icon';
 import { DefaultMapControls } from '../../../ui/map/interfaces/map.interface';
 
 /** Layer used to test the component */
@@ -86,20 +88,26 @@ export class SafeEditLayerModalComponent
   extends SafeUnsubscribeComponent
   implements OnInit, AfterViewInit
 {
-  public form: UntypedFormGroup;
+  public form: LayerFormT;
 
   private currentLayer: L.Layer | null = null;
   private layerOptions: any = {};
 
   /** @returns the selected layer type */
-  public get layerType(): keyof typeof TEST_LAYER | null {
-    return this.form.get('type')?.value;
+  public get layerType() {
+    return this.form.get('type')?.value || null;
   }
   /** @returns the selected icon with the given style config */
-  private get icon(): any | null {
+  private get icon() {
+    const style = this.form.get('style')?.value;
+    if (!style) return null;
+
     return createCustomDivIcon({
-      ...this.form.get('style')?.value,
-      ...{ opacity: this.form.get('opacity')?.value },
+      icon: style.icon || DEFAULT_MARKER_ICON_OPTIONS.icon,
+      color: style.color || DEFAULT_MARKER_ICON_OPTIONS.color,
+      size: style.size || DEFAULT_MARKER_ICON_OPTIONS.size,
+      opacity:
+        this.form.get('opacity')?.value || DEFAULT_MARKER_ICON_OPTIONS.opacity,
     });
   }
 
@@ -184,16 +192,17 @@ export class SafeEditLayerModalComponent
    * Set edit layers listeners.
    */
   private setUpEditLayerListeners() {
+    if (!this.form.controls) return;
     this.form.controls.visibilityRangeStart.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: number) => {
+      .subscribe((value) => {
         this.updateLayerOptions({
           visibilityRange: [value, this.form.controls.visibilityRangeEnd.value],
         });
       });
     this.form.controls.visibilityRangeEnd.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: number) => {
+      .subscribe((value) => {
         this.updateLayerOptions({
           visibilityRange: [
             this.form.controls.visibilityRangeStart.value,
@@ -204,19 +213,19 @@ export class SafeEditLayerModalComponent
 
     this.form.controls.opacity.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: number) => {
+      .subscribe((value) => {
         this.updateLayerOptions({ opacity: value, fillOpacity: value });
       });
 
     this.form.controls.name.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: string) => {
+      .subscribe((value) => {
         this.updateLayerOptions({ name: value });
       });
 
     this.form.controls.defaultVisibility.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: string) => {
+      .subscribe((value) => {
         this.updateLayerOptions({ visible: value });
       });
 
@@ -247,7 +256,7 @@ export class SafeEditLayerModalComponent
       this.addOrDeleteLayer.next({
         layerData: {
           layer: this.currentLayer,
-          label: this.form.get('name')?.value,
+          label: this.form.get('name')?.value || '',
         },
         isDelete: true,
       });
@@ -267,7 +276,7 @@ export class SafeEditLayerModalComponent
       };
       const overlays: OverlayLayerTree = {
         layer: this.currentLayer,
-        label: this.form.get('name')?.value,
+        label: this.form.get('name')?.value || '',
         options: defaultLayerOptions,
       };
 

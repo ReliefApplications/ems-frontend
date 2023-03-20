@@ -12,7 +12,9 @@
           <safe-icon
             icon="settings"
             [size]="24"
-            matTooltip="Layer properties"
+            [matTooltip]="
+              'components.widget.settings.map.edit.layerProperties' | translate
+            "
             matTooltipPosition="right"
           ></safe-icon>
           <span>{{
@@ -40,6 +42,26 @@
         </ng-template>
         <ng-template matTabContent>
           <safe-layer-fields></safe-layer-fields>
+        </ng-template>
+      </mat-tab>
+
+      <!-- DATASET SELECTION -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <safe-icon
+            icon="storage"
+            [size]="24"
+            [matTooltip]="
+              'components.widget.settings.map.edit.layerDatasource' | translate
+            "
+            matTooltipPosition="right"
+          ></safe-icon>
+          <span>{{
+            'components.widget.settings.map.edit.layerDatasource' | translate
+          }}</span>
+        </ng-template>
+        <ng-template matTabContent>
+          <safe-layer-datasource [form]="form"></safe-layer-datasource>
         </ng-template>
       </mat-tab>
     </mat-tab-group>

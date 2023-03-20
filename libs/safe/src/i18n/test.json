@@ -1258,7 +1258,11 @@
 					"category": "******",
 					"dataset": "******",
 					"edit": {
+						"datasource": {
+							"origin": "******"
+						},
 						"fields": "******",
+						"layerDatasource": "******",
 						"layerProperties": "******",
 						"layerStyling": "******",
 						"properties": {

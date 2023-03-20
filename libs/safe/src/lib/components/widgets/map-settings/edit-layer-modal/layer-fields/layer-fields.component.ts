@@ -17,7 +17,14 @@ interface Fields {
   styleUrls: ['./layer-fields.component.scss'],
 })
 export class LayerFieldsComponent {
-  @Input() fields: Fields[] = [];
+  // todo(gis): remove test data
+  @Input() fields: Fields[] = [
+    {
+      label: 'test',
+      name: 'test',
+      type: 'test',
+    },
+  ];
   /**
    * Save value of the input
    *
