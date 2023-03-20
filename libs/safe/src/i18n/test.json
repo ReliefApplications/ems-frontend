@@ -1258,6 +1258,20 @@
 					"category": "******",
 					"dataset": "******",
 					"edit": {
+						"cluster": {
+							"clusterSettings": "******",
+							"fields": "******",
+							"high": "******",
+							"label": "******",
+							"low": "******",
+							"max": "******",
+							"min": "******",
+							"overrideSymbol": "******",
+							"popups": "******",
+							"radius": "******",
+							"sizeRange": "******",
+							"symbol": "******"
+						},
 						"datasource": {
 							"origin": "******"
 						},

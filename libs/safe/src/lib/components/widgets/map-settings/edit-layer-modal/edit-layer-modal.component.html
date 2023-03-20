@@ -6,15 +6,15 @@
       vertical
       class="grow basis-2/3"
     >
-      <!-- LAYER PROPERTIES -->
+      <!-- Main properties -->
       <mat-tab>
         <ng-template mat-tab-label>
           <safe-icon
             icon="settings"
             [size]="24"
-            [matTooltip]="
+            matTooltip="{{
               'components.widget.settings.map.edit.layerProperties' | translate
-            "
+            }}"
             matTooltipPosition="right"
           ></safe-icon>
           <span>{{
@@ -28,6 +28,30 @@
           ></safe-layer-properties>
         </ng-template>
       </mat-tab>
+      <!-- Clustering -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <safe-icon
+            icon="group_work"
+            [size]="24"
+            matTooltip="{{
+              'components.widget.settings.map.edit.cluster.clusterSettings'
+                | translate
+            }}"
+            matTooltipPosition="right"
+          ></safe-icon>
+          <span>
+            {{
+              'components.widget.settings.map.edit.cluster.clusterSettings'
+                | translate
+            }}
+          </span>
+        </ng-template>
+        <ng-template matTabContent>
+          <safe-layer-cluster></safe-layer-cluster>
+        </ng-template>
+      </mat-tab>
+      <!-- Fields -->
       <mat-tab>
         <ng-template mat-tab-label>
           <safe-icon
@@ -45,7 +69,7 @@
         </ng-template>
       </mat-tab>
 
-      <!-- DATASET SELECTION -->
+      <!-- Dataset -->
       <mat-tab>
         <ng-template mat-tab-label>
           <safe-icon
