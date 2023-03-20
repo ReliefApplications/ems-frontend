@@ -52,7 +52,7 @@ jobs:
         run: npx nx run back-office:build:${{ secrets.CONFIG }}
         if: github.ref == 'beta' || github.ref == 'alpha'
       - name: Build Front-office ${{ github.event.client_payload.environment }} ( >= 2.0 )
-        run:npx nx run front-office:build:${{ secrets.CONFIG }}
+        run: npx nx run front-office:build:${{ secrets.CONFIG }}
         if: github.ref == 'beta' || github.ref == 'alpha'
       - name: Archive build Back-office ( >= 2.0 )
         if: success()
