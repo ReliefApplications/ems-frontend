@@ -8,8 +8,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
-import { MatDividerModule } from '@angular/material/divider';
 import { IconPickerModule } from '../../../../icon-picker/icon-picker.module';
+import { SafeDividerModule } from '../../../../ui/divider/divider.module';
 
 /**
  * layer cluster settings module.
@@ -26,8 +26,8 @@ import { IconPickerModule } from '../../../../icon-picker/icon-picker.module';
     MatInputModule,
     MatSliderModule,
     MatSlideToggleModule,
-    MatDividerModule,
     IconPickerModule,
+    SafeDividerModule,
   ],
   exports: [LayerClusterComponent],
 })

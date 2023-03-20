@@ -2,7 +2,9 @@
   <form [formGroup]="form">
     <!-- Override cluster Symbol -->
     <div class="flex flex-row justify-between my-4">
-      <mat-label>{{ 'components.widget.settings.map.edit.cluster.overrideSymbol' | translate }}</mat-label>
+      <mat-label>{{
+        'components.widget.settings.map.edit.cluster.overrideSymbol' | translate
+      }}</mat-label>
       <mat-slide-toggle formControlName="overrideSymbol"></mat-slide-toggle>
     </div>
     <!-- Symbol style -->
@@ -10,49 +12,66 @@
       <mat-label class="mb-4">
         {{ 'components.widget.settings.map.edit.cluster.symbol' | translate }}
       </mat-label>
-      <safe-icon-picker formControlName="symbol" [iconList]="iconList "></safe-icon-picker>
+      <safe-icon-picker
+        formControlName="symbol"
+        [iconList]="iconList"
+      ></safe-icon-picker>
     </div>
-    <mat-divider></mat-divider>
+    <safe-divider></safe-divider>
     <!-- Cluster radius -->
     <div class="flex flex-col my-4">
       <mat-label>
         {{ 'components.widget.settings.map.edit.cluster.radius' | translate }}
       </mat-label>
-      <mat-slider  min="1" max="100" step="1" [discrete]="true">
+      <mat-slider min="1" max="100" step="1" [discrete]="true">
         <input matSliderThumb formControlName="radius" />
       </mat-slider>
       <div class="flex flex-row justify-between">
-        <mat-label>{{ 'components.widget.settings.map.edit.cluster.low' | translate }}</mat-label>
-        <mat-label>{{ 'components.widget.settings.map.edit.cluster.high' | translate }}</mat-label>
+        <mat-label>{{
+          'components.widget.settings.map.edit.cluster.low' | translate
+        }}</mat-label>
+        <mat-label>{{
+          'components.widget.settings.map.edit.cluster.high' | translate
+        }}</mat-label>
       </div>
     </div>
-    <mat-divider></mat-divider>
+    <safe-divider></safe-divider>
     <!-- Size range -->
     <div class="flex flex-col my-4">
       <mat-label>
-        {{ 'components.widget.settings.map.edit.cluster.sizeRange' | translate }}
+        {{
+          'components.widget.settings.map.edit.cluster.sizeRange' | translate
+        }}
       </mat-label>
       <mat-slider min="1" max="10" step="1" [discrete]="true">
         <input formControlName="sizeRangeStart" matSliderStartThumb />
         <input formControlName="sizeRangeEnd" matSliderEndThumb />
       </mat-slider>
       <div class="flex flex-row justify-between">
-        <mat-label>{{ 'components.widget.settings.map.edit.cluster.min' | translate }}</mat-label>
-        <mat-label>{{ 'components.widget.settings.map.edit.cluster.max' | translate }}</mat-label>
+        <mat-label>{{
+          'components.widget.settings.map.edit.cluster.min' | translate
+        }}</mat-label>
+        <mat-label>{{
+          'components.widget.settings.map.edit.cluster.max' | translate
+        }}</mat-label>
       </div>
     </div>
-    <mat-divider></mat-divider>
+    <safe-divider></safe-divider>
 
     <!--  Expansion panels -->
-    <ng-container *ngFor="let panel of expansivePanels">
-      <mat-expansion-panel [expanded]="false" class="shadow-none">
-        <mat-expansion-panel-header class="p-0">
-          <mat-panel-title class="font-normal">
-            {{ 'components.widget.settings.map.edit.cluster.' + panel | translate }}
+    <mat-accordion>
+      <mat-expansion-panel
+        *ngFor="let panel of expansivePanels"
+        [expanded]="false"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{
+              'components.widget.settings.map.edit.cluster.' + panel | translate
+            }}
           </mat-panel-title>
         </mat-expansion-panel-header>
       </mat-expansion-panel>
-      <mat-divider></mat-divider>
-    </ng-container>
+    </mat-accordion>
   </form>
 </div>
