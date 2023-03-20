@@ -162,16 +162,29 @@
         *ngIf="type.name === 'line'"
       >
         <mat-expansion-panel-header>
-          <mat-panel-title> {{
-            'components.widget.settings.chart.smoothness.smoothness' | translate
-          }} </mat-panel-title>
+          <mat-panel-title>
+            {{
+              'components.widget.settings.chart.smoothness.smoothness'
+                | translate
+            }}
+          </mat-panel-title>
         </mat-expansion-panel-header>
-        <mat-slide-toggle
-            formControlName="tension"
-            >{{
-              'components.widget.settings.chart.smoothness.tension' | translate
-            }}</mat-slide-toggle
-          >
+        <div class="flex flex-col gap-2">
+          <mat-slide-toggle formControlName="tension">{{
+            'components.widget.settings.chart.smoothness.tension' | translate
+          }}</mat-slide-toggle>
+          <mat-form-field appearance="outline">
+            <mat-label>Display as stepped graph</mat-label>
+            <mat-select formControlName="stepped">
+              <mat-option value="false">Not stepped</mat-option>
+              <mat-option value="before">Before</mat-option>
+              <mat-option value="middle">Middle</mat-option>
+              <mat-option value="after">After</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          Why not working ?
+        </div>
       </mat-expansion-panel>
       <!-- === LABELS === -->
       <mat-expansion-panel formGroupName="labels">

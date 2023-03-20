@@ -157,6 +157,7 @@ export class SafeChartComponent
       },
       smoothness: {
         tension: get(this.settings, 'chart.smoothness.tension', false),
+        stepped: get(this.settings, 'chart.smoothness.stepped', false),
       },
       labels: {
         showCategory: get(this.settings, 'chart.labels.showCategory', false),

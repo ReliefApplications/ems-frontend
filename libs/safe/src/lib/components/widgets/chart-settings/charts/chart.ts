@@ -123,7 +123,10 @@ export class Chart {
           },
         ],
       }),
-      smoothness: this.fb.group({ tension: get(smoothness, 'tension', false) }),
+      smoothness: this.fb.group({
+        tension: get(smoothness, 'tension', false),
+        stepped: get(smoothness, 'stepped', false),
+      }),
       labels: this.fb.group({
         showCategory: [get(labels, 'showCategory', false)],
         showValue: [get(labels, 'showValue', false)],
