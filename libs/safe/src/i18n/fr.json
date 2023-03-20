@@ -1149,6 +1149,10 @@
 						"title": "Séries"
 					},
 					"size": "Taille",
+					"smoothness": {
+						"smoothness": "Lissage de la courbe",
+						"tension": "Courbe lissée"
+					},
 					"style": "Style",
 					"text": "Texte",
 					"title": {

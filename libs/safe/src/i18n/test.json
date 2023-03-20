@@ -1142,6 +1142,10 @@
 						"title": "******"
 					},
 					"size": "******",
+					"smoothness": {
+						"smoothness": "******",
+						"tension": "******"
+					},
 					"style": "******",
 					"text": "******",
 					"title": {

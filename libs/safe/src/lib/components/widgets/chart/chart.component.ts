@@ -155,6 +155,9 @@ export class SafeChartComponent
           display: get(this.settings, 'chart.grid.y.display', true),
         },
       },
+      smoothness: {
+        tension: get(this.settings, 'chart.smoothness.tension', false),
+      },
       labels: {
         showCategory: get(this.settings, 'chart.labels.showCategory', false),
         showValue: get(this.settings, 'chart.labels.showValue', false),

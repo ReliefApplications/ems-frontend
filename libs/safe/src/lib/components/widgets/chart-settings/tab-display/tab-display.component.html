@@ -156,6 +156,23 @@
           <safe-palette-control formControlName="value"></safe-palette-control>
         </div>
       </mat-expansion-panel>
+      <!-- === SMOOTHNESS === -->
+      <mat-expansion-panel
+        formGroupName="smoothness"
+        *ngIf="type.name === 'line'"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title> {{
+            'components.widget.settings.chart.smoothness.smoothness' | translate
+          }} </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-slide-toggle
+            formControlName="tension"
+            >{{
+              'components.widget.settings.chart.smoothness.tension' | translate
+            }}</mat-slide-toggle
+          >
+      </mat-expansion-panel>
       <!-- === LABELS === -->
       <mat-expansion-panel formGroupName="labels">
         <mat-expansion-panel-header>

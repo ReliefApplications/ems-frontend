@@ -1142,6 +1142,10 @@
 						"title": "Series"
 					},
 					"size": "Size",
+					"smoothness": {
+						"smoothness": "Curve smoothness",
+						"tension": "Smooth line"
+					},
 					"style": "Style",
 					"text": "Text",
 					"title": {
