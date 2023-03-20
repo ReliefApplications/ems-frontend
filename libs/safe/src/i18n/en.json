@@ -1143,7 +1143,12 @@
 					},
 					"size": "Size",
 					"smoothness": {
+						"after": "After",
+						"before": "Before",
+						"middle": "Middle",
 						"smoothness": "Curve smoothness",
+						"stepStyle": "Step style",
+						"steppedGraph": "Display as stepped graph",
 						"tension": "Smooth line"
 					},
 					"style": "Style",

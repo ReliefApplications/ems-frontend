@@ -97,10 +97,9 @@ export class SafeLineChartComponent implements OnChanges {
         pointHoverBorderColor: color,
         pointHoverBorderWidth: 2,
         tension: get(this.options, 'smoothness.tension', false) ? 0.4 : 0,
-        stepped:
-          get(this.options, 'smoothness.stepped', false) === 'false'
-            ? false
-            : get(this.options, 'smoothness.stepped', false),
+        stepped: get(this.options, 'smoothness.stepped', false)
+          ? get(this.options, 'smoothness.stepStyle', false)
+          : false,
       };
     });
     this.setOptions();

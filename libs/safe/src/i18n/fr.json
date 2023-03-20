@@ -1150,7 +1150,12 @@
 					},
 					"size": "Taille",
 					"smoothness": {
+						"after": "Après",
+						"before": "Avant",
+						"middle": "Milieu",
 						"smoothness": "Lissage de la courbe",
+						"stepStyle": "Type d'escalier",
+						"steppedGraph": "Afficher sous forme de graphe en escalier",
 						"tension": "Courbe lissée"
 					},
 					"style": "Style",

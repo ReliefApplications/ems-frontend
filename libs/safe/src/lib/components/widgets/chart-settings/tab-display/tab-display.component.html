@@ -170,20 +170,37 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
         <div class="flex flex-col gap-2">
-          <mat-slide-toggle formControlName="tension">{{
-            'components.widget.settings.chart.smoothness.tension' | translate
+          <mat-slide-toggle formControlName="stepped">{{
+            'components.widget.settings.chart.smoothness.steppedGraph'
+              | translate
           }}</mat-slide-toggle>
-          <mat-form-field appearance="outline">
-            <mat-label>Display as stepped graph</mat-label>
-            <mat-select formControlName="stepped">
-              <mat-option value="false">Not stepped</mat-option>
-              <mat-option value="before">Before</mat-option>
-              <mat-option value="middle">Middle</mat-option>
-              <mat-option value="after">After</mat-option>
+          <mat-form-field
+            appearance="outline"
+            *ngIf="chartForm.value.smoothness.stepped"
+          >
+            <mat-label>{{
+              'components.widget.settings.chart.smoothness.stepStyle'
+                | translate
+            }}</mat-label>
+            <mat-select formControlName="stepStyle">
+              <mat-option value="before">{{
+                'components.widget.settings.chart.smoothness.before' | translate
+              }}</mat-option>
+              <mat-option value="middle">{{
+                'components.widget.settings.chart.smoothness.middle' | translate
+              }}</mat-option>
+              <mat-option value="after">{{
+                'components.widget.settings.chart.smoothness.after' | translate
+              }}</mat-option>
             </mat-select>
           </mat-form-field>
-
-          Why not working ?
+          <mat-slide-toggle
+            formControlName="tension"
+            *ngIf="!chartForm.value.smoothness.stepped"
+            >{{
+              'components.widget.settings.chart.smoothness.tension' | translate
+            }}</mat-slide-toggle
+          >
         </div>
       </mat-expansion-panel>
       <!-- === LABELS === -->
