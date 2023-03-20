@@ -1146,7 +1146,7 @@
 						"after": "After",
 						"before": "Before",
 						"middle": "Middle",
-						"smoothness": "Curve smoothness",
+						"smoothness": "Graph style",
 						"stepStyle": "Step style",
 						"steppedGraph": "Display as stepped graph",
 						"tension": "Smooth line"
