@@ -4,6 +4,10 @@ on:
   repository_dispatch:
     types: [CD]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.client_payload.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build and Test
