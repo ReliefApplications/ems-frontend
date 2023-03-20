@@ -33,35 +33,40 @@ jobs:
         run: npm run ng -- --help
       - name: Build Shared Library ( < 2.0 )
         run: npm run build -- --configuration=production safe
+        if: ${{ steps.ng-test.conclusion == 'success' }}
       - name: Build Back-office ${{ github.event.client_payload.environment }} ( < 2.0 )
         run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=back-office
+        if: ${{ steps.ng-test.conclusion == 'success' }}
       - name: Build Front-office ${{ github.event.client_payload.environment }} ( < 2.0 )
         run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=front-office
+        if: ${{ steps.ng-test.conclusion == 'success' }}
       - name: Archive build Back-office ( < 2.0 )
         uses: actions/upload-artifact@v3
         with:
           name: back_office_${{ github.event.client_payload.environment }}
           path: dist/back-office
+        if: ${{ steps.ng-test.conclusion == 'success' }}
       - name: Archive build Front-office ( < 2.0 )
         uses: actions/upload-artifact@v3
         with:
           name: front_office_${{ github.event.client_payload.environment }}
           path: dist/front-office
+        if: ${{ steps.ng-test.conclusion == 'success' }}
 
       - name: Build Back-office ${{ github.event.client_payload.environment }} ( >= 2.0 )
         run: npx nx run back-office:build:${{ secrets.CONFIG }}
-        if: ${{ failure() && steps.ng-test.conclusion == 'failure' }}
+        if: ${{ steps.ng-test.conclusion == 'failure' }}
       - name: Build Front-office ${{ github.event.client_payload.environment }} ( >= 2.0 )
         run: npx nx run front-office:build:${{ secrets.CONFIG }}
-        if: ${{ failure() && steps.ng-test.conclusion == 'failure' }}
+        if: ${{ steps.ng-test.conclusion == 'failure' }}
       - name: Archive build Back-office ( >= 2.0 )
-        if: ${{ failure() && steps.ng-test.conclusion == 'failure' }}
+        if: ${{ steps.ng-test.conclusion == 'failure' }}
         uses: actions/upload-artifact@v3
         with:
           name: back_office_${{ github.event.client_payload.environment }}
           path: dist/apps/back-office
       - name: Archive build Front-office ( >= 2.0 )
-        if: ${{ failure() && steps.ng-test.conclusion == 'failure' }}
+        if: ${{ steps.ng-test.conclusion == 'failure' }}
         uses: actions/upload-artifact@v3
         with:
           name: front_office_${{ github.event.client_payload.environment }}
