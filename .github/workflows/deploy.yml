@@ -28,6 +28,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install Dependencies
         run: npm i
+      - name: Test if Ng installed
+        run: ng --help
       - name: Build Shared Library ( < 2.0 )
         run: npm run build -- --configuration=production safe
         if: github.ref != 'beta' && github.ref != 'alpha'
