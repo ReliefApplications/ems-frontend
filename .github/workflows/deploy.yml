@@ -24,24 +24,50 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install Dependencies
         run: npm i
-      - name: Build Shared Library
+      - name: Build Shared Library ( < 2.0 )
         run: npm run build -- --configuration=production safe
-      - name: Build Back-office ${{ github.event.client_payload.environment }}
+        if: github.ref != 'beta' && github.ref != 'alpha'
+      - name: Build Back-office ${{ github.event.client_payload.environment }} ( < 2.0 )
         run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=back-office
-      - name: Build Front-office ${{ github.event.client_payload.environment }}
+        if: github.ref != 'beta' && github.ref != 'alpha'
+      - name: Build Front-office ${{ github.event.client_payload.environment }} ( < 2.0 )
         run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=front-office
-      - name: Archive build Back-office
+        if: github.ref != 'beta' && github.ref != 'alpha'
+      - name: Archive build Back-office ( < 2.0 )
         if: success()
         uses: actions/upload-artifact@v3
+        if: github.ref != 'beta' && github.ref != 'alpha'
         with:
           name: back_office_${{ github.event.client_payload.environment }}
           path: dist/back-office
-      - name: Archive build Front-office
+      - name: Archive build Front-office ( < 2.0 )
         if: success()
         uses: actions/upload-artifact@v3
+        if: github.ref != 'beta' && github.ref != 'alpha'
         with:
           name: front_office_${{ github.event.client_payload.environment }}
           path: dist/front-office
+
+      - name: Build Back-office ${{ github.event.client_payload.environment }} ( >= 2.0 )
+        run: npx nx run back-office:build:${{ secrets.CONFIG }}
+        if: github.ref == 'beta' || github.ref == 'alpha'
+      - name: Build Front-office ${{ github.event.client_payload.environment }} ( >= 2.0 )
+        run:npx nx run front-office:build:${{ secrets.CONFIG }}
+        if: github.ref == 'beta' || github.ref == 'alpha'
+      - name: Archive build Back-office ( >= 2.0 )
+        if: success()
+        uses: actions/upload-artifact@v3
+        if: github.ref == 'beta' || github.ref == 'alpha'
+        with:
+          name: back_office_${{ github.event.client_payload.environment }}
+          path: dist/apps/back-office
+      - name: Archive build Front-office ( >= 2.0 )
+        if: success()
+        uses: actions/upload-artifact@v3
+        if: github.ref == 'beta' || github.ref == 'alpha'
+        with:
+          name: front_office_${{ github.event.client_payload.environment }}
+          path: dist/apps/front-office
 
   deploy_back_office:
     name: Deploy Back-office 🚀
