@@ -29,24 +29,20 @@ jobs:
       - name: Install Dependencies
         run: npm i
       - name: Test if Ng cli available
+        id: ng-test
         run: npm run ng -- --help
       - name: Build Shared Library ( < 2.0 )
         run: npm run build -- --configuration=production safe
-        if: github.ref != 'beta' && github.ref != 'alpha'
       - name: Build Back-office ${{ github.event.client_payload.environment }} ( < 2.0 )
         run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=back-office
-        if: github.ref != 'beta' && github.ref != 'alpha'
       - name: Build Front-office ${{ github.event.client_payload.environment }} ( < 2.0 )
         run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=front-office
-        if: github.ref != 'beta' && github.ref != 'alpha'
       - name: Archive build Back-office ( < 2.0 )
-        if: success() && github.ref != 'beta' && github.ref != 'alpha'
         uses: actions/upload-artifact@v3
         with:
           name: back_office_${{ github.event.client_payload.environment }}
           path: dist/back-office
       - name: Archive build Front-office ( < 2.0 )
-        if: success() && github.ref != 'beta' && github.ref != 'alpha'
         uses: actions/upload-artifact@v3
         with:
           name: front_office_${{ github.event.client_payload.environment }}
@@ -54,18 +50,18 @@ jobs:
 
       - name: Build Back-office ${{ github.event.client_payload.environment }} ( >= 2.0 )
         run: npx nx run back-office:build:${{ secrets.CONFIG }}
-        if: github.ref == 'beta' || github.ref == 'alpha'
+        if: ${{ failure() && steps.ng-test.conclusion == 'failure' }}
       - name: Build Front-office ${{ github.event.client_payload.environment }} ( >= 2.0 )
         run: npx nx run front-office:build:${{ secrets.CONFIG }}
-        if: github.ref == 'beta' || github.ref == 'alpha'
+        if: ${{ failure() && steps.ng-test.conclusion == 'failure' }}
       - name: Archive build Back-office ( >= 2.0 )
-        if: success() && (github.ref == 'beta' || github.ref == 'alpha')
+        if: ${{ failure() && steps.ng-test.conclusion == 'failure' }}
         uses: actions/upload-artifact@v3
         with:
           name: back_office_${{ github.event.client_payload.environment }}
           path: dist/apps/back-office
       - name: Archive build Front-office ( >= 2.0 )
-        if: success() && (github.ref == 'beta' || github.ref == 'alpha')
+        if: ${{ failure() && steps.ng-test.conclusion == 'failure' }}
         uses: actions/upload-artifact@v3
         with:
           name: front_office_${{ github.event.client_payload.environment }}
