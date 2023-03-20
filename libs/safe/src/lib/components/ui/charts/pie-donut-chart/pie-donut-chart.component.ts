@@ -26,7 +26,7 @@ interface ChartLegend {
   styleUrls: ['./pie-donut-chart.component.scss'],
 })
 /**
- * Pie/Doughnut/polarArea chart component, based on chart.js component.
+ * Pie/Doughnut/polarArea/Radar chart component, based on chart.js component.
  */
 export class SafePieDonutChartComponent implements OnChanges {
   private fieldSum = 0;
@@ -37,7 +37,7 @@ export class SafePieDonutChartComponent implements OnChanges {
     DataLabelsPlugin,
     whiteBackgroundPlugin,
   ];
-  @Input() chartType: 'pie' | 'doughnut' | 'polarArea' = 'doughnut';
+  @Input() chartType: 'pie' | 'doughnut' | 'polarArea' | 'radar' = 'doughnut';
 
   @Input() title: ChartTitle | undefined;
 
@@ -59,7 +59,7 @@ export class SafePieDonutChartComponent implements OnChanges {
     },
   };
 
-  public chartData: ChartData<'doughnut' | 'pie' | 'polarArea'> = {
+  public chartData: ChartData<'doughnut' | 'pie' | 'polarArea' | 'radar'> = {
     datasets: [],
   };
 

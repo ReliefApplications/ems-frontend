@@ -185,9 +185,15 @@ export class SafeChartComponent
             ':' +
             ('0' + today.getMinutes()).slice(-2);
           if (
-            ['pie', 'donut', 'line', 'bar', 'column', 'polar'].includes(
-              this.settings.chart.type
-            )
+            [
+              'pie',
+              'donut',
+              'radar',
+              'line',
+              'bar',
+              'column',
+              'polar',
+            ].includes(this.settings.chart.type)
           ) {
             const aggregationData = JSON.parse(
               JSON.stringify(data.recordsAggregation)
