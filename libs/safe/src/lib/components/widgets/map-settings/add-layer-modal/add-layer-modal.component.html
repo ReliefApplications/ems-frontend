@@ -26,10 +26,10 @@
       category="secondary"
       variant="primary"
       cdkFocusInitial
-      mat-dialog-close
-      [disabled]="!layerControl.valid"
+      [mat-dialog-close]="layerControl.value"
+      [disabled]="!layerControl.value"
     >
-      {{ 'common.create' | translate }}
+      {{ 'common.select' | translate }}
     </safe-button>
   </div>
 </safe-modal>

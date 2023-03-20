@@ -63,7 +63,7 @@
         >
         </safe-button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onEditLayer(i)">
+          <button mat-menu-item (click)="onEditLayer(layer.id)">
             <mat-icon>edit</mat-icon>
             {{ 'common.edit' | translate }}
           </button>

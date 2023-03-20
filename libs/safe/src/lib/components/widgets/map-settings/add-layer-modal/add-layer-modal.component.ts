@@ -5,13 +5,12 @@ import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
-import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 import { Apollo } from 'apollo-angular';
-import {
-  GetLayersQueryResponse,
-  GET_LAYERS,
-} from '../../../../services/map/graphql/queries';
+import { GetLayersQueryResponse, GET_LAYERS } from './graphql/queries';
 
+/**
+ * Modal to select existing layer to add to map widget.
+ */
 @Component({
   selector: 'safe-add-layer-modal',
   standalone: true,
@@ -33,8 +32,10 @@ export class AddLayerModalComponent {
     query: GET_LAYERS,
   });
 
-  constructor(
-    private apollo: Apollo,
-    private mapLayersService: SafeMapLayersService
-  ) {}
+  /**
+   * Modal to select existing layer to add to map widget.
+   *
+   * @param apollo Angular apollo
+   */
+  constructor(private apollo: Apollo) {}
 }

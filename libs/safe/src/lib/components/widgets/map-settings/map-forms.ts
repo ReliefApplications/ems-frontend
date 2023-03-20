@@ -177,11 +177,7 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup =>
     basemap: [get(value, 'basemap', DEFAULT_MAP.basemap)],
     // popupFields: [get(value, 'popupFields', DEFAULT_MAP.popupFields)],
     // onlineLayers: [get(value, 'onlineLayers', DEFAULT_MAP.onlineLayers)],
-    layers: fb.array(
-      get(value, 'layers', DEFAULT_MAP.layers).map((x: any) =>
-        createLayerForm(x)
-      )
-    ),
+    layers: [get(value, 'layers', [])] as string[],
     controls: createMapControlsForm(
       get(value, 'controls', DEFAULT_MAP.controls)
     ),

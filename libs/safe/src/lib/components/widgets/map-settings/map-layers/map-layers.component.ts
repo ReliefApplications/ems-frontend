@@ -1,6 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MatLegacyDialog as MatDialog,
@@ -8,11 +8,13 @@ import {
 import { MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { createLayerForm } from '../map-forms';
 import { SafeEditLayerModalComponent } from '../edit-layer-modal/edit-layer-modal.component';
 import { IconName } from '../../../ui/map/const/fa-icons';
 import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.component';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
+import { Apollo } from 'apollo-angular';
+import { GetLayersQueryResponse, GET_LAYERS } from './graphql/queries';
+import { Layer } from '../../../../models/layer.model';
 
 /** List of available layer types */
 export const LAYER_TYPES = ['polygon', 'point', 'heatmap', 'cluster'] as const;
@@ -58,32 +60,50 @@ export class MapLayersComponent
 
   /** @returns the form array for the map layers */
   get layers() {
-    return this.form.get('layers') as UntypedFormArray;
+    return this.form.get('layers') as FormControl<string[]>;
   }
 
   // Table
-  public mapLayers: MatTableDataSource<MapLayerI> = new MatTableDataSource();
+  public mapLayers: MatTableDataSource<Layer> = new MatTableDataSource();
   public displayedColumns = ['name', 'actions'];
 
   /**
    * Layers configuration component of Map Widget.
    *
    * @param dialog service for opening modals
+   * @param mapLayersService Shared map layers service
+   * @param apollo Angular Apollo
    */
   constructor(
     private dialog: MatDialog,
-    private mapLayersService: SafeMapLayersService
+    private mapLayersService: SafeMapLayersService,
+    private apollo: Apollo
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.mapLayers.data = this.layers.value;
-    this.form
-      .get('layers')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+    // this.mapLayers.data = this.layers.value;
+    this.layers?.valueChanges
+      .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.mapLayers.data = value;
+        if (value.length !== this.layers.value.length) {
+          this.fetchLayers();
+        }
+      });
+    this.fetchLayers();
+  }
+
+  private fetchLayers(): void {
+    this.apollo
+      .query<GetLayersQueryResponse>({
+        query: GET_LAYERS,
+        variables: {},
+      })
+      .subscribe((res) => {
+        this.mapLayers.data = res.data.layers.filter((x) =>
+          this.layers.value.includes(x.id)
+        );
       });
   }
 
@@ -93,7 +113,7 @@ export class MapLayersComponent
    * @param index Index of the layer to remove
    */
   public onDeleteLayer(index: number) {
-    this.layers.removeAt(index);
+    this.layers.setValue(this.layers.value.splice(index, 1));
   }
 
   /** Opens a modal to add a new layer */
@@ -106,7 +126,8 @@ export class MapLayersComponent
         this.mapLayersService.addLayer(layer).subscribe({
           next: (res) => {
             if (res) {
-              this.layers.push(createLayerForm(res));
+              this.layers.setValue([...this.layers.value, res.id]);
+              console.log(this.layers.value);
             }
           },
         });
@@ -114,14 +135,18 @@ export class MapLayersComponent
     });
   }
 
+  /**
+   * Open dialog to select existing layer.
+   */
   public onSelectLayer() {
     const dialogRef = this.dialog.open(AddLayerModalComponent, {
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((layer) => {
-      if (layer) {
-        this.layers.push(createLayerForm(layer));
-        this.onEditLayer(this.layers.length - 1);
+    dialogRef.afterClosed().subscribe((id) => {
+      if (id) {
+        this.layers.setValue(this.layers.value.concat(id));
+        // this.layers.push(createLayerForm(layer));
+        this.onEditLayer(id);
       }
     });
   }
@@ -129,23 +154,26 @@ export class MapLayersComponent
   /**
    * Opens a modal to edit a layer
    *
-   * @param index Index of the layer to edit
+   * @param id id of layer to edit
    */
-  public onEditLayer(index: number) {
-    const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
-      this.dialog.open(SafeEditLayerModalComponent, {
-        disableClose: true,
-        data: this.layers.at(index).value,
-      });
-
-    dialogRef.afterClosed().subscribe((layer) => {
-      if (layer) {
-        this.mapLayersService.editLayer(layer).subscribe((res) => {
-          if (res) {
-            this.layers.at(index).patchValue(res);
-          }
+  public onEditLayer(id: string) {
+    this.mapLayersService.getLayerById(id).subscribe((layer) => {
+      const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
+        this.dialog.open(SafeEditLayerModalComponent, {
+          disableClose: true,
+          data: layer,
         });
-      }
+
+      dialogRef.afterClosed().subscribe((editedLayer) => {
+        if (editedLayer) {
+          this.mapLayersService.editLayer(editedLayer).subscribe((res) => {
+            if (res) {
+              // this.layers.at(index).patchValue(res);
+              this.fetchLayers();
+            }
+          });
+        }
+      });
     });
   }
 
@@ -155,8 +183,9 @@ export class MapLayersComponent
    * @param e Event emitted when a layer is reordered
    */
   public onListDrop(e: CdkDragDrop<MapLayerI[]>) {
-    const movedElement = this.layers.at(e.previousIndex);
-    this.layers.removeAt(e.previousIndex);
-    this.layers.insert(e.currentIndex, movedElement);
+    let layerIds = this.layers.value;
+    const movedElement = layerIds[e.previousIndex];
+    layerIds = layerIds.splice(e.previousIndex, 1, movedElement);
+    this.layers.setValue(layerIds);
   }
 }

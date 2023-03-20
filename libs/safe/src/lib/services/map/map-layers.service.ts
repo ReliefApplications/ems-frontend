@@ -10,12 +10,7 @@ import {
   DeleteLayerMutationResponse,
   DELETE_LAYER,
 } from './graphql/mutations';
-import {
-  GetLayersQueryResponse,
-  GET_LAYERS,
-  GetLayerByIdQueryResponse,
-  GET_LAYER_BY_ID,
-} from './graphql/queries';
+import { GetLayerByIdQueryResponse, GET_LAYER_BY_ID } from './graphql/queries';
 
 /**
  * Shared map layer service
@@ -98,27 +93,6 @@ export class SafeMapLayersService {
         id: layerId,
       },
     });
-  }
-
-  /**
-   * Get layers in DB
-   *
-   * @returns Observable of layers
-   */
-  public getLayers(): Observable<Layer[]> {
-    return this.apollo
-      .query<GetLayersQueryResponse>({
-        query: GET_LAYERS,
-      })
-      .pipe(
-        filter((response) => !!response.data),
-        map((response) => {
-          if (response.errors) {
-            throw new Error(response.errors[0].message);
-          }
-          return response.data.layers;
-        })
-      );
   }
 
   /**
