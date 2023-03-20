@@ -28,6 +28,22 @@
           ></safe-layer-properties>
         </ng-template>
       </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <safe-icon
+            icon="text_fields"
+            [size]="24"
+            matTooltip="Layer properties"
+            matTooltipPosition="right"
+          ></safe-icon>
+          <span>{{
+            'components.widget.settings.map.edit.fields' | translate
+          }}</span>
+        </ng-template>
+        <ng-template matTabContent>
+          <safe-layer-fields></safe-layer-fields>
+        </ng-template>
+      </mat-tab>
 
       <!-- DATASET SELECTION -->
       <mat-tab>

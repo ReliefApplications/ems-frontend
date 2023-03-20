@@ -1261,6 +1261,7 @@
 						"datasource": {
 							"origin": "Origin"
 						},
+						"fields": "Fields",
 						"layerDatasource": "Layer datasource",
 						"layerProperties": "Layer properties",
 						"layerStyling": "Layer styling",
