@@ -1319,6 +1319,8 @@
 					},
 					"layers": {
 						"add": "******",
+						"chooseLayer": "******",
+						"createLayer": "******",
 						"edit": "****** {{name}}",
 						"online": {
 							"info": "******",
@@ -1337,6 +1339,7 @@
 							"title": "******"
 						},
 						"remove": "******",
+						"selectLayer": "******",
 						"types": {
 							"cluster": "******",
 							"heatmap": "******",

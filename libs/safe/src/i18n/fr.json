@@ -1326,6 +1326,8 @@
 					},
 					"layers": {
 						"add": "Ajouter un nouveau calque",
+						"chooseLayer": "Choisir un calque existant",
+						"createLayer": "Créer un nouveau calque",
 						"edit": "Mettre à jour le calque {{name}}",
 						"online": {
 							"info": "Charger des couches depuis arcGIS online",
@@ -1344,6 +1346,7 @@
 							"title": "Marqueurs"
 						},
 						"remove": "Supprimer le calque",
+						"selectLayer": "Sélectionner un calque",
 						"types": {
 							"cluster": "Groupes",
 							"heatmap": "Carte de chaleur",

@@ -11,12 +11,15 @@ import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe
 import { createLayerForm } from '../map-forms';
 import { SafeEditLayerModalComponent } from '../edit-layer-modal/edit-layer-modal.component';
 import { IconName } from '../../../ui/map/const/fa-icons';
+import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.component';
+import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 
 /** List of available layer types */
 export const LAYER_TYPES = ['polygon', 'point', 'heatmap', 'cluster'] as const;
 
 /** Interface for a map layer */
 export interface MapLayerI {
+  id: string;
   name: string;
   type: (typeof LAYER_TYPES)[number];
   defaultVisibility: boolean;
@@ -67,7 +70,10 @@ export class MapLayersComponent
    *
    * @param dialog service for opening modals
    */
-  constructor(private dialog: MatDialog) {
+  constructor(
+    private dialog: MatDialog,
+    private mapLayersService: SafeMapLayersService
+  ) {
     super();
   }
 
@@ -95,9 +101,28 @@ export class MapLayersComponent
     const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
       this.dialog.open(SafeEditLayerModalComponent, { disableClose: true });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-      this.layers.push(createLayerForm(result));
+    dialogRef.afterClosed().subscribe((layer) => {
+      if (layer) {
+        this.mapLayersService.addLayer(layer).subscribe({
+          next: (res) => {
+            if (res) {
+              this.layers.push(createLayerForm(res));
+            }
+          },
+        });
+      }
+    });
+  }
+
+  public onSelectLayer() {
+    const dialogRef = this.dialog.open(AddLayerModalComponent, {
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((layer) => {
+      if (layer) {
+        this.layers.push(createLayerForm(layer));
+        this.onEditLayer(this.layers.length - 1);
+      }
     });
   }
 
@@ -113,9 +138,14 @@ export class MapLayersComponent
         data: this.layers.at(index).value,
       });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-      this.layers.at(index).patchValue(result);
+    dialogRef.afterClosed().subscribe((layer) => {
+      if (layer) {
+        this.mapLayersService.editLayer(layer).subscribe((res) => {
+          if (res) {
+            this.layers.at(index).patchValue(res);
+          }
+        });
+      }
     });
   }
 

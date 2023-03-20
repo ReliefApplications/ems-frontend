@@ -1,8 +1,7 @@
 import {
+  FormBuilder,
   FormControl,
   FormGroup,
-  UntypedFormBuilder,
-  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import get from 'lodash/get';
@@ -12,6 +11,7 @@ import {
   DefaultMapControls,
   MapConstructorSettings,
 } from '../../ui/map/interfaces/map.interface';
+import { Layer } from '../../../models/layer.model';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 /** Interface for the maps settings */
@@ -20,7 +20,7 @@ export interface MapSettingsI extends MapConstructorSettings {
 }
 
 /** Angular Form Builder */
-const fb = new UntypedFormBuilder();
+const fb = new FormBuilder();
 
 /** Default map value */
 const DEFAULT_MAP: Nullable<MapSettingsI> = {
@@ -53,42 +53,45 @@ const DEFAULT_MAP: Nullable<MapSettingsI> = {
  * @param value layer value ( optional )
  * @returns new form group
  */
-export const createLayerForm = (value?: MapLayerI) =>
-  new FormGroup({
+export const createLayerForm = (value?: Layer) =>
+  fb.group({
     // Layer properties
-    name: new FormControl(get(value, 'name', null), [Validators.required]),
-    type: new FormControl(get(value, 'type', null), [Validators.required]),
-    defaultVisibility: new FormControl(get(value, 'defaultVisibility', true), [
+    id: [get(value, 'id', null)],
+    name: [get(value, 'name', null), Validators.required],
+    type: [get(value, 'type', null), Validators.required],
+    defaultVisibility: [
+      get(value, 'defaultVisibility', true),
       Validators.required,
-    ]),
-    opacity: new FormControl(get(value, 'opacity', 0.8), [Validators.required]),
-    visibilityRangeStart: new FormControl(
+    ],
+    opacity: [get(value, 'opacity', 0.8), Validators.required],
+    visibilityRangeStart: [
       get(value, 'visibilityRangeStart', 2),
-      [Validators.required]
-    ),
-    visibilityRangeEnd: new FormControl(get(value, 'visibilityRangeEnd', 18), [
       Validators.required,
-    ]),
+    ],
+    visibilityRangeEnd: [
+      get(value, 'visibilityRangeEnd', 18),
+      Validators.required,
+    ],
 
     // Layer style
-    style: new FormGroup({
-      color: new FormControl(get(value, 'style.color', '#0090d1')),
-      size: new FormControl(get(value, 'style.size', 24)),
+    style: fb.group({
+      color: [get(value, 'style.color', '#0090d1')],
+      size: [get(value, 'style.size', 24)],
       icon: new FormControl<MapLayerI['style']['icon']>(
         get(value, 'style.icon', 'leaflet_default')
       ),
     }),
 
     // Layer datasource
-    datasource: new FormGroup({
+    datasource: fb.group({
       origin: new FormControl<MapLayerI['datasource']['origin']>(
         get(value, 'datasource.source', 'resource'),
-        [Validators.required]
+        Validators.required
       ),
-      resource: new FormControl(get(value, 'datasource.resource', null)),
-      layout: new FormControl(get(value, 'datasource.layout', null)),
-      aggregation: new FormControl(get(value, 'datasource.aggregation', null)),
-      refData: new FormControl(get(value, 'datasource.refData', null)),
+      resource: [get(value, 'datasource.resource', null)],
+      layout: [get(value, 'datasource.layout', null)],
+      aggregation: [get(value, 'datasource.aggregation', null)],
+      refData: [get(value, 'datasource.refData', null)],
     }),
   });
 
@@ -98,19 +101,16 @@ export const createLayerForm = (value?: MapLayerI) =>
  * @param value cluster value ( optional )
  * @returns new form group
  */
-export const createClusterForm = (value?: any): UntypedFormGroup =>
+export const createClusterForm = (value?: any): FormGroup =>
   fb.group({
-    overrideSymbol: [
-      get(value, 'overrideSymbol', false),
-      [Validators.required],
-    ],
+    overrideSymbol: [get(value, 'overrideSymbol', false), Validators.required],
     symbol: [get(value, 'symbol ', '')],
-    radius: [get(value, 'radius', 80), [Validators.required]],
-    sizeRangeStart: [get(value, 'sizeRangeStart', 2), [Validators.required]],
+    radius: [get(value, 'radius', 80), Validators.required],
+    sizeRangeStart: [get(value, 'sizeRangeStart', 2), Validators.required],
     sizeRangeEnd: [get(value, 'sizeRangeEnd', 8)],
-    fields: [get(value, 'fields', ''), [Validators.required]],
-    label: [get(value, 'label', ''), [Validators.required]],
-    popups: [get(value, 'popups', ''), [Validators.required]],
+    fields: [get(value, 'fields', ''), Validators.required],
+    label: [get(value, 'label', ''), Validators.required],
+    popups: [get(value, 'popups', ''), Validators.required],
   });
 
 export type LayerFormT = ReturnType<typeof createLayerForm>;
@@ -123,7 +123,7 @@ export type LayerFormT = ReturnType<typeof createLayerForm>;
  * @param value map controls value ( optional )
  * @returns new form group
  */
-export const createMapControlsForm = (value?: MapControls): UntypedFormGroup =>
+export const createMapControlsForm = (value?: MapControls): FormGroup =>
   fb.group({
     timedimension: [get(value, 'timedimension', false)],
     download: [get(value, 'download', true)],
@@ -140,10 +140,7 @@ export const createMapControlsForm = (value?: MapControls): UntypedFormGroup =>
  * @param value map settings ( optional )
  * @returns map form
  */
-export const createMapWidgetFormGroup = (
-  id: any,
-  value?: any
-): UntypedFormGroup =>
+export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup =>
   fb.group({
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],

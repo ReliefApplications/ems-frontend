@@ -8,15 +8,31 @@
       (click)="close.emit()"
     ></safe-button>
   </div>
+  <!-- Add button -->
   <safe-button
     class="mb-4 self-end"
-    (click)="onAddLayer()"
+    [matMenuTriggerFor]="layerMenu"
     category="secondary"
     variant="primary"
   >
     {{ 'components.widget.settings.map.layers.add' | translate }}
   </safe-button>
 
+  <!-- Contextual menu for layer addition -->
+  <mat-menu #layerMenu="matMenu">
+    <button mat-menu-item (click)="onAddLayer()">
+      <span>{{
+        'components.widget.settings.map.layers.createLayer' | translate
+      }}</span>
+    </button>
+    <button mat-menu-item (click)="onSelectLayer()">
+      <span>{{
+        'components.widget.settings.map.layers.selectLayer' | translate
+      }}</span>
+    </button>
+  </mat-menu>
+
+  <!-- List of layers -->
   <table
     mat-table
     [dataSource]="mapLayers"
