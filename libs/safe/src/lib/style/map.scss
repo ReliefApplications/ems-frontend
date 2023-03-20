@@ -35,14 +35,3 @@
       1px 1px 0 #000;
   }
 }
-
-// Fields edit label
-::ng-deep safe-editable-text.edit-fields > div > div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  min-width: 271px;
-  min-height: 54.75px;
-  padding: 0.75rem;
-}
