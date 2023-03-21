@@ -151,8 +151,7 @@ const outsideLabelsPlugin: Plugin = {
       //fill custom label
       const labelAlignStyle =
         edgePointX < chartCenterPoint.x ? 'right' : 'left';
-      const labelX =
-        edgePointX < chartCenterPoint.x ? edgePointX : edgePointX + 0;
+      const labelX = edgePointX;
       const labelY = point2Y + 7;
       ctx.textAlign = labelAlignStyle;
       ctx.textBaseline = 'bottom';
