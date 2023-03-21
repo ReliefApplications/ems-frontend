@@ -396,6 +396,7 @@
 			}
 		},
 		"application": {
+			"customStyling": "******",
 			"dashboard": {
 				"empty": "******"
 			},

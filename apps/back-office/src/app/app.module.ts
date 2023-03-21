@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 
 // Http
 import {
@@ -55,6 +56,9 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { MatPaginationIntlService } from '@oort-front/safe';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 
+// Code editor component for Angular applications
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+
 /**
  * Initialize authentication in the platform.
  * Configuration in environment file.
@@ -104,6 +108,9 @@ export const httpTranslateLoader = (http: HttpClient) =>
     OAuthModule.forRoot(),
     GraphQLModule,
     DateInputsModule,
+    // CodeEditorModule.forRoot(),
+    MatTabsModule,
+    MonacoEditorModule.forRoot(),
   ],
   providers: [
     {
