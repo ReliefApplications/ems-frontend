@@ -1,3 +1,63 @@
+# [2.0.0-alpha.1](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.10...v2.0.0-alpha.1) (2023-03-21)
+
+
+### Bug Fixes
+
+* add a save error message when display as grid is selected witout an available field in custom question resources ([b798303](https://github.com/ReliefApplications/oort-frontend/commit/b79830310edaec50f461891cbb734097df9afd97))
+* added validator to derived field name ([34fc348](https://github.com/ReliefApplications/oort-frontend/commit/34fc348452037af781da87a1fe5d48e9e5b49f23))
+* avoid error 400 when loading empty summary card or creating a new one ([2efe4aa](https://github.com/ReliefApplications/oort-frontend/commit/2efe4aadba28b836c0cfa2ce215a587135d4519f))
+* calculated fields 'add' component and style + add safe empty ([40c962e](https://github.com/ReliefApplications/oort-frontend/commit/40c962ec0b16164d3737f6b88d09405918352c7c))
+* could not load any route due to incorrect routing import ([953cca3](https://github.com/ReliefApplications/oort-frontend/commit/953cca3bfe95945fb643d4bb43904e7661ac9fd9))
+* exporting selected users ([02186de](https://github.com/ReliefApplications/oort-frontend/commit/02186de9525a7b1e34420971169f1135edd7a0bb))
+* filter for autocomplete on edit field ([166904b](https://github.com/ReliefApplications/oort-frontend/commit/166904b24a97adce93d4ebe87a992a9a72795aee))
+* filtering properly for autocompletion ([13edd53](https://github.com/ReliefApplications/oort-frontend/commit/13edd532ce0b3c59399c002f3e237dd87f2be721))
+* i18n for pagination elements ([#1153](https://github.com/ReliefApplications/oort-frontend/issues/1153)) ([bcd5297](https://github.com/ReliefApplications/oort-frontend/commit/bcd5297089f24927e4001c5d746d426367f1f3e6))
+* missing translation for save survey modal ([82c121f](https://github.com/ReliefApplications/oort-frontend/commit/82c121f359725cbabde2fe4c2d259f6a1ebc1a23))
+* remove block input from unedited buttons ([2b340f1](https://github.com/ReliefApplications/oort-frontend/commit/2b340f1a099db70f232c14fc62a00fb54d062323))
+* remove irrelevant elements from graphql-select list of options ([fdf5df9](https://github.com/ReliefApplications/oort-frontend/commit/fdf5df9fe1839860d31c3d3ad3ac0e7b4efeaf90))
+* removed calc fields from autocomplete ([f618f39](https://github.com/ReliefApplications/oort-frontend/commit/f618f399ef20a7b4252d60a02f5bae898616446d))
+* reordering of actions buttons would not work ([4a2ce93](https://github.com/ReliefApplications/oort-frontend/commit/4a2ce9317985f3bdbc467f812b9be6118f9d0f9b))
+* resource query on chart settings ([e07353e](https://github.com/ReliefApplications/oort-frontend/commit/e07353e96c145eed2a9f855318f9693bfdd4ed89))
+* setting queryname from resource ([9d11809](https://github.com/ReliefApplications/oort-frontend/commit/9d11809f51a709bb6a0eb43d43b0ffa3da03b9ce))
+* summary card settings layout selection + fix: summary card item ([9d92451](https://github.com/ReliefApplications/oort-frontend/commit/9d9245158e4eb6a02101ec9a64d376523edae077))
+* summary card style + allow card creation with the other type template ([91587b0](https://github.com/ReliefApplications/oort-frontend/commit/91587b07c1db048b14aa9959b08c2d76941074db))
+* tagboxes and checkboxes fields of merged records could contain duplicates ([3f3beca](https://github.com/ReliefApplications/oort-frontend/commit/3f3beca89aebcdbb523bc9fa61f12ec84b094301))
+* unlock application ([b9dd79b](https://github.com/ReliefApplications/oort-frontend/commit/b9dd79bdd9fbbea608aa8207e65d311385bbf34b))
+* When reloading any tab of resource page, the tab appear as selected ([4fa88e9](https://github.com/ReliefApplications/oort-frontend/commit/4fa88e96c5f7ea667a1bc13a39b4dd3b308dfe96))
+
+
+### Features
+
+* add cron editor modal ([d675ca2](https://github.com/ReliefApplications/oort-frontend/commit/d675ca2bc0619c34e504c6a13df804eb6d158dba))
+* add fields component in map layer settings ([6327f21](https://github.com/ReliefApplications/oort-frontend/commit/6327f21663ae04d4e0b20e744497dd05f37917f4))
+* add notification interface ([1cc5134](https://github.com/ReliefApplications/oort-frontend/commit/1cc5134cbaa6c912469466aad659671c7926c391))
+* added derived fields tab on resources ([32920b4](https://github.com/ReliefApplications/oort-frontend/commit/32920b42aaa16a95e6bba5650237d609a3326798))
+* added info keys ([aaaaa60](https://github.com/ReliefApplications/oort-frontend/commit/aaaaa60bef5719e2ae87dcf5d803e5a02e5106eb))
+* autocomplete for definition editor ([c8534df](https://github.com/ReliefApplications/oort-frontend/commit/c8534dfc2d23668400c0f4f6db3450967b116eb7))
+* derived fields tab ([77972bc](https://github.com/ReliefApplications/oort-frontend/commit/77972bcd84eac98d8b54fcc6c717aaab1228d6e8))
+* layout selection on summary cards settings ([95c580d](https://github.com/ReliefApplications/oort-frontend/commit/95c580d75de3d2cdc0bf3a3fc6fcae814cda44ed))
+* now supporting dynamic cards w/ aggregation ([fd27429](https://github.com/ReliefApplications/oort-frontend/commit/fd2742985008641521f67e7a63578971ffd6464c))
+* now supporting static cards w/ aggregation ([119b842](https://github.com/ReliefApplications/oort-frontend/commit/119b842b6323b3445f586d7ad0ee3aa498c5bcec))
+* removed field validator for grouping ([a963f46](https://github.com/ReliefApplications/oort-frontend/commit/a963f46a35d96e86a098a366f20162092b98f8ba))
+* replace summary card icon by the new one and change its color value in widget_types ([b0fa058](https://github.com/ReliefApplications/oort-frontend/commit/b0fa058c447a149f2b4b0f722a5bbc11ddec23c1))
+* selection of aggregation for summary cards ([fb6c59c](https://github.com/ReliefApplications/oort-frontend/commit/fb6c59c8fb7871a6147597183e02168330cc14ec))
+* smart date filter in grids ([#1135](https://github.com/ReliefApplications/oort-frontend/issues/1135)) ([8c2406a](https://github.com/ReliefApplications/oort-frontend/commit/8c2406a1e23d368df439b1ded837406c1937b08a))
+* start summary card component [#34839](https://github.com/ReliefApplications/oort-frontend/issues/34839) ([0c4e8fd](https://github.com/ReliefApplications/oort-frontend/commit/0c4e8fd6ff18feba261759e6ac4d60f2f73da9f9))
+
+
+### Performance Improvements
+
+* setup nx ([e207715](https://github.com/ReliefApplications/oort-frontend/commit/e207715b1b46f7e54fd76ac0960b99a9e13ea89b))
+
+
+### BREAKING CHANGES
+
+* now a nx repo
+
+Setup all projects as applications
+Create safe shared library, based on existing safe library
+Simplify development
+
 # [2.0.0-beta.2](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.1...v2.0.0-beta.2) (2023-03-08)
 
 
