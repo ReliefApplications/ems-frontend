@@ -32,14 +32,14 @@ jobs:
         if: ${{startsWith(steps.get_version.outputs.version, '1.')}}
       - name: Build Back-office ${{ github.event.client_payload.environment }} - ${{ steps.get_version.outputs.version }}
         run: |
-          ${{startsWith(steps.get_version.outputs.version, '1.')}}; then
+          if ${{startsWith(steps.get_version.outputs.version, '1.')}}; then
             npm run build -- --configuration=${{ secrets.CONFIG }} --project=back-office
           else
             npx nx run back-office:build:${{ secrets.CONFIG }} --outputPath=dist/back-office
           fi
       - name: Build Front-office ${{ github.event.client_payload.environment }} - ${{ steps.get_version.outputs.version }}
         run: |
-          ${{startsWith(steps.get_version.outputs.version, '1.')}}; then
+          if ${{startsWith(steps.get_version.outputs.version, '1.')}}; then
             npm run build -- --configuration=${{ secrets.CONFIG }} --project=front-office
           else
             npx nx run front-office:build:${{ secrets.CONFIG }} --outputPath=dist/front-office
