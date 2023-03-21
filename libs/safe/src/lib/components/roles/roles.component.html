@@ -13,7 +13,7 @@
   </mat-tab>
   <mat-tab
     [label]="'common.group.few' | translate"
-    *ngIf="!inApplication && ('read' | able: 'Group')"
+    *ngIf="!inApplication && ('read' | able : 'Group')"
   >
     <ng-template matTabContent>
       <safe-group-list></safe-group-list>

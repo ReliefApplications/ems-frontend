@@ -156,6 +156,10 @@ You can also use `npx nx generate directive|pipe|service|class|guard|interface|e
 
 Run `npx nx run <project>:build:<config>` to build a project. The build artifacts will be stored in the `dist/apps/` directory.
 
+## Prettify scss and html
+
+Run `npx prettier --write "**/*.{scss,html}"` to execute prettier and update all scss / html files locally.
+
 <!-- ## Build the web components
 
 We first need to generate the elements, using this command:

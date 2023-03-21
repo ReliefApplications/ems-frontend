@@ -1,5 +1,5 @@
-@use "@angular/material" as mat;
-@import "variables.scss";
+@use '@angular/material' as mat;
+@import 'variables.scss';
 // TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
 //  The following line adds:
 //    1. Default typography styles for all components
@@ -12,9 +12,9 @@
 @include mat.legacy-core();
 @include mat.core();
 
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 @import "~@fortawesome/fontawesome-free/css/all.css";
 
 .sv_main,
@@ -310,7 +310,8 @@ $safe-theme: mat.define-light-theme(
       padding: 0.42em 0px !important;
     }
 
-    &.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+    &.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
+      .mat-form-field-label {
       transform: translateY(-1.1em) scale(0.75);
       width: 133.33333%;
     }
@@ -450,7 +451,8 @@ mat-header-row {
     box-shadow: none !important;
   }
 
-  mat-expansion-panel:not(.mat-expanded) + mat-expansion-panel:not(.mat-expanded) {
+  mat-expansion-panel:not(.mat-expanded)
+    + mat-expansion-panel:not(.mat-expanded) {
     border-top: 0;
   }
 }
@@ -476,7 +478,7 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   overflow: hidden;
 }
 
@@ -549,7 +551,7 @@ body {
 }
 
 // === KENDO THEME ===
-@import "theme.scss";
+@import 'theme.scss';
 
 // === VERTICAL TABS ===
 mat-tab-group[vertical] {
@@ -600,10 +602,12 @@ mat-tab-group[vertical] {
         transition: all ease 200ms;
         padding-left: 32px;
       }
-      & > .mat-tab-body-content[style*="transform: translate3d(100%, 0px, 0px)"] {
+      &
+        > .mat-tab-body-content[style*='transform: translate3d(100%, 0px, 0px)'] {
         transform: translate3d(0px, 100%, 0px) !important;
       }
-      & > .mat-tab-body-content[style*="transform: translate3d(-100%, 0px, 0px)"] {
+      &
+        > .mat-tab-body-content[style*='transform: translate3d(-100%, 0px, 0px)'] {
         transform: translate3d(0px, -100%, 0px) !important;
       }
     }
@@ -633,7 +637,7 @@ mat-tab-group[vertical] {
 // === TINYMCE ===
 .tox-editor-header *,
 .tox-tinymce-aux * {
-  font-family: Roboto, "Helvetica Neue", sans-serif !important;
+  font-family: Roboto, 'Helvetica Neue', sans-serif !important;
 }
 
 // === SCROLL BARS ===
