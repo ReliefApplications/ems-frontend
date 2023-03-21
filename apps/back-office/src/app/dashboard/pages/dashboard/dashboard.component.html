@@ -13,7 +13,8 @@
         [text]="dashboard.name"
         [canEdit]="canEditName"
         (onChange)="saveName($event)"
-        (formActiveEvent)="formActive = $event">
+        (formActiveEvent)="formActive = $event"
+      >
         <h1 class="!m-0 overflow-hidden text-ellipsis">
           {{ dashboard.name }}
         </h1>

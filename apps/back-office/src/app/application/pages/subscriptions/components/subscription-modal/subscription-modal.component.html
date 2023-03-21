@@ -3,7 +3,7 @@
     {{
       data.subscription
         ? ('common.editObject'
-          | translate: { name: 'common.subscription.one' | translate })
+          | translate : { name: 'common.subscription.one' | translate })
         : ('models.subscription.new' | translate)
     }}
   </h1>
@@ -56,7 +56,10 @@
             matSuffix
             [isIcon]="true"
             icon="close"
-            [ariaLabel]="'components.application.subscription.modal.routingKey.clear.ariaLabel' | translate"
+            [ariaLabel]="
+              'components.application.subscription.modal.routingKey.clear.ariaLabel'
+                | translate
+            "
             (click)="routingKey = ''"
           ></safe-button>
           <safe-icon

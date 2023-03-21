@@ -107,9 +107,9 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           <span class="font-bold mr-2">{{
-            item.createdAt | safeDate: 'shortDate'
+            item.createdAt | safeDate : 'shortDate'
           }}</span>
-          {{ item.createdAt | safeDate: 'shortTime' }}
+          {{ item.createdAt | safeDate : 'shortTime' }}
           <span class="history-user" *ngIf="item.createdBy">{{
             item.createdBy
           }}</span>
