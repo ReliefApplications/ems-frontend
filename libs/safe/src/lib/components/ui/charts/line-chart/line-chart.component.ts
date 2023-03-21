@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, ViewChild, ElementRef} from '@angular/core';
 import get from 'lodash/get';
 import {
   Plugin,
@@ -54,6 +54,8 @@ export class SafeLineChartComponent implements OnChanges {
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 
+  @ViewChild('lineChart') canvasRef!: ElementRef;
+
   public chartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
@@ -83,10 +85,23 @@ export class SafeLineChartComponent implements OnChanges {
       const max = Math.max(...x.data.map((y: any) => y.field ?? -Infinity));
       if (min < this.min) this.min = min;
       if (max > this.max) this.max = max;
+      
+      //create a gradient area 
+      var canvas = this.canvasRef.nativeElement;
+      var ctx = canvas?.getContext('2d');
+      var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      if(color){
+        gradient.addColorStop(0, color);
+        gradient.addColorStop(1, color.slice(0,-3) + ' 0.1)');
+      }else{
+        gradient.addColorStop(0, 'rgba(255,0,0, 1)');
+        gradient.addColorStop(1, 'rgba(255,0,0,0.1)');
+      }
+      
       return {
         ...x,
         color,
-        backgroundColor: color,
+        backgroundColor: gradient,
         borderColor: color,
         pointRadius: 5,
         pointHoverRadius: 8,
@@ -97,6 +112,7 @@ export class SafeLineChartComponent implements OnChanges {
         pointHoverBorderColor: color,
         pointHoverBorderWidth: 2,
         tension: 0.4,
+        fill: true
       };
     });
     this.setOptions();
