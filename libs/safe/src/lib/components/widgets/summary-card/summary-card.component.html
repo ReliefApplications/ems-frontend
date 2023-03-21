@@ -3,6 +3,13 @@
     <span class="widget-title" [title]="settings.title">{{
       settings.title
     }}</span>
+    <mat-form-field appearance="fill" *ngIf="settings.isDynamic===true">
+      <mat-label>Display mode</mat-label>
+      <mat-select [(ngModel)]="displayMode">
+        <mat-option value="card"> Card </mat-option>
+        <mat-option value="grid"> Grid </mat-option>
+      </mat-select>
+    </mat-form-field>
   </kendo-tilelayout-item-header>
   <safe-button
     *ngIf="export"
@@ -16,6 +23,7 @@
       #summaryCardGrid
       class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
       style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
+      *ngIf="displayMode==='card' || settings.isDynamic===false"
     >
       <safe-summary-card-item
         *ngFor="let card of cards; let i = index"
@@ -29,5 +37,6 @@
       >
       </safe-summary-card-item>
     </div>
+    <div><ng-container *ngTemplateOutlet="coreGridTemplate"></ng-container></div>
   </kendo-pdf-export>
 </div>

@@ -6,6 +6,9 @@ import { SafeSummaryCardComponent } from './summary-card.component';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { SummaryCardItemModule } from './summary-card-item/summary-card-item.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 /** Summary Card Widget Module */
 @NgModule({
@@ -17,6 +20,9 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     PDFExportModule,
     SummaryCardItemModule,
     IndicatorsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
   ],
   exports: [SafeSummaryCardComponent],
 })

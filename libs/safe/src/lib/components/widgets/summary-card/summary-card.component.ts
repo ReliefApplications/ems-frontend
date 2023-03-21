@@ -36,6 +36,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   @Input() export = true;
   @Input() settings: any = null;
 
+  public displayMode = '';
   // === GRID ===
   public colsNumber = MAX_COL_SPAN;
 
