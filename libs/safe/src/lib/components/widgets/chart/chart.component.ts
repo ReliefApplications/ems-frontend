@@ -147,6 +147,14 @@ export class SafeChartComponent
             : null,
         },
       },
+      grid: {
+        x: {
+          display: get(this.settings, 'chart.grid.x.display', true),
+        },
+        y: {
+          display: get(this.settings, 'chart.grid.y.display', true),
+        },
+      },
       labels: {
         showCategory: get(this.settings, 'chart.labels.showCategory', false),
         categoryPosition: get(
@@ -182,9 +190,15 @@ export class SafeChartComponent
             ':' +
             ('0' + today.getMinutes()).slice(-2);
           if (
-            ['pie', 'donut', 'line', 'bar', 'column'].includes(
-              this.settings.chart.type
-            )
+            [
+              'pie',
+              'donut',
+              'radar',
+              'line',
+              'bar',
+              'column',
+              'polar',
+            ].includes(this.settings.chart.type)
           ) {
             const aggregationData = JSON.parse(
               JSON.stringify(data.recordsAggregation)

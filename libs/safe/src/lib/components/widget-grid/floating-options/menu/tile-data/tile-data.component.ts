@@ -72,6 +72,8 @@ export class SafeTileDataComponent implements AfterViewInit {
    * Check if the form is updated or not, and display a confirmation modal if changes detected.
    */
   onClose(): void {
+    console.log('ici la');
+    console.log(this.tileForm?.pristine);
     if (this.tileForm?.pristine) {
       this.dialogRef.close();
     } else {

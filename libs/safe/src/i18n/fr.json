@@ -1117,6 +1117,15 @@
 			"settings": {
 				"chart": {
 					"axes": "Axes",
+					"grid": {
+						"title": "Grille",
+						"x": {
+							"display": "Afficher les lignes horizontales"
+						},
+						"y": {
+							"display": "Afficher les lignes verticales"
+						}
+					},
 					"hideLegend": "Masquer la légende",
 					"labels": {
 						"categoryPosition": "Choisissez où afficher les labels",
@@ -1145,6 +1154,10 @@
 					"size": "Taille",
 					"style": "Style",
 					"text": "Texte",
+					"title": {
+						"color": "Couleur",
+						"format": "Format"
+					},
 					"type": "Graphique",
 					"xAxis": "Axe X",
 					"yAxis": "Axe Y"
@@ -1720,6 +1733,12 @@
 			"goTo": "Aller vers la liste d'applications",
 			"recent": "Applications récentes",
 			"title": "Mes applications"
+		},
+		"dashboard": {
+			"update": {
+				"exit": "Quitter sans sauvegarder les changements",
+				"exitMessage": "Il y a des changements non sauvegardés dans la page, voulez-vous vraiment quitter cette page ?"
+			}
 		},
 		"formBuilder": {
 			"errors": {

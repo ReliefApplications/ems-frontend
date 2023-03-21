@@ -7,17 +7,7 @@ import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
-
-/**
- * Interface of chart title.
- */
-interface ChartTitle {
-  visible: boolean;
-  text: string;
-  position: 'top' | 'bottom';
-  font: string;
-  color: string;
-}
+import { ChartTitle } from '../interfaces';
 
 /**
  * Interface of chart legend.
@@ -102,7 +92,7 @@ export class SafeBarChartComponent implements OnChanges {
 
     const titleText = get(this.title, 'text', '');
     const titleColor = get(this.title, 'color', undefined);
-    const titleVisible = get(this.title, 'visible', false);
+    const titleVisible = titleText !== '';
 
     this.chartOptions = {
       ...this.chartOptions,
@@ -114,6 +104,9 @@ export class SafeBarChartComponent implements OnChanges {
       },
       scales: {
         x: {
+          grid: {
+            display: get(this.options, 'grid.x.display', true),
+          },
           stacked: get(this.options, 'stack', false),
           min: isBar ? get(this.options, 'axes.x.min', undefined) : undefined,
           max: isBar ? get(this.options, 'axes.x.max', undefined) : undefined,
@@ -124,6 +117,9 @@ export class SafeBarChartComponent implements OnChanges {
           },
         },
         y: {
+          grid: {
+            display: get(this.options, 'grid.y.display', true),
+          },
           stacked: get(this.options, 'stack', false),
           min: !isBar ? get(this.options, 'axes.y.min', undefined) : undefined,
           max: !isBar ? get(this.options, 'axes.y.max', undefined) : undefined,

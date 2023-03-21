@@ -1110,6 +1110,15 @@
 			"settings": {
 				"chart": {
 					"axes": "******",
+					"grid": {
+						"title": "******",
+						"x": {
+							"display": "******"
+						},
+						"y": {
+							"display": "******"
+						}
+					},
 					"hideLegend": "******",
 					"labels": {
 						"categoryPosition": "******",
@@ -1138,6 +1147,10 @@
 					"size": "******",
 					"style": "******",
 					"text": "******",
+					"title": {
+						"color": "******",
+						"format": "******"
+					},
 					"type": "******",
 					"xAxis": "******",
 					"yAxis": "******"
@@ -1712,6 +1725,12 @@
 			"goTo": "******",
 			"recent": "******",
 			"title": "******"
+		},
+		"dashboard": {
+			"update": {
+				"exit": "******",
+				"exitMessage": "******"
+			}
 		},
 		"formBuilder": {
 			"errors": {

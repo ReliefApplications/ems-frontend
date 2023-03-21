@@ -29,5 +29,14 @@ export const environment = {
   authConfig,
   esriApiKey: '',
   theme,
-  availableWidgets: ['chart', 'grid', 'editor', 'map'],
+  availableWidgets: [
+    'donut-chart',
+    'line-chart',
+    'bar-chart',
+    'column-chart',
+    'pie-chart',
+    'grid',
+    'text',
+    'map',
+  ],
 };

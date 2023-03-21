@@ -13,17 +13,7 @@ import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plug
 import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
-
-/**
- * Interface containing the settings of the chart title
- */
-interface ChartTitle {
-  visible: boolean;
-  text: string;
-  position: 'top' | 'bottom';
-  font: string;
-  color: string;
-}
+import { ChartTitle } from '../interfaces';
 
 /**
  * Interface containing the settings of the chart legend
@@ -121,12 +111,16 @@ export class SafeLineChartComponent implements OnChanges {
 
     const titleText = get(this.title, 'text', '');
     const titleColor = get(this.title, 'color', undefined);
-    const titleVisible = get(this.title, 'visible', false);
+    const titleVisible = titleText !== '';
+
     // log min an max
     this.chartOptions = {
       ...this.chartOptions,
       scales: {
         x: {
+          grid: {
+            display: get(this.options, 'grid.x.display', true),
+          },
           ticks: {
             autoSkip: false,
             maxRotation: 90,
@@ -134,6 +128,9 @@ export class SafeLineChartComponent implements OnChanges {
           },
         },
         y: {
+          grid: {
+            display: get(this.options, 'grid.y.display', true),
+          },
           min: this.min - 0.1 * this.min,
           max: this.max + 0.1 * this.max,
         },
