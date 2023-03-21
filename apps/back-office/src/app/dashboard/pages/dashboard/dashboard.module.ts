@@ -13,6 +13,7 @@ import {
   SafeIconModule,
   SafeModalModule,
   SafeEditableTextModule,
+  SafeGraphQLSelectModule,
 } from '@oort-front/safe';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -24,7 +25,8 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 /**
  * Dashboard page module.
  */
@@ -52,6 +54,10 @@ import { OverlayModule } from '@angular/cdk/overlay';
     SafeAlertModule,
     SafeModalModule,
     SafeEditableTextModule,
+    SafeGraphQLSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
   ],
   exports: [DashboardComponent],
 })

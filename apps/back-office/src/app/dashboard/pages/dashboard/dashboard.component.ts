@@ -1,4 +1,4 @@
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import {
   Component,
   EventEmitter,
@@ -17,6 +17,9 @@ import {
   SafeAuthService,
   Application,
   SafeUnsubscribeComponent,
+  DashboardContextT,
+  SafeReferenceDataService,
+  // Record,
 } from '@oort-front/safe';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
@@ -29,11 +32,29 @@ import {
 } from './graphql/mutations';
 import {
   GetDashboardByIdQueryResponse,
+  GetResourceRecordsQueryResponse,
   GET_DASHBOARD_BY_ID,
+  GET_RESOURCE_RECORDS,
 } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
+import { ContextDatasourceComponent } from './components/context-datasource/context-datasource.component';
+import { firstValueFrom } from 'rxjs';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
+/**
+ * Create a new the context form.
+ *
+ * @returns The form group
+ */
+const createContextForm = () =>
+  new FormGroup({
+    record: new FormControl<null | string>(null, [Validators.required]),
+    element: new FormControl<null | string>(null, [Validators.required]),
+  });
+
+/** Default number of records fetched per page */
+const ITEMS_PER_PAGE = 10;
 /**
  * Dashboard page.
  */
@@ -67,6 +88,12 @@ export class DashboardComponent
   public showAppMenu = false;
   public applications: Application[] = [];
 
+  // === CONTEXT ===
+  public refDataElements: any[] = [];
+  public recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
+  public contextForm = createContextForm();
+  public refDataValueField = '';
+
   /**
    * Dashboard page
    *
@@ -80,6 +107,7 @@ export class DashboardComponent
    * @param dashboardService Shared dashboard service
    * @param translateService Angular translate service
    * @param authService Shared authentication service
+   * @param refDataService Shared reference data service
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -91,7 +119,8 @@ export class DashboardComponent
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService,
     private translateService: TranslateService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    private refDataService: SafeReferenceDataService
   ) {
     super();
   }
@@ -243,7 +272,7 @@ export class DashboardComponent
    * @param e move event.
    */
   onMove(e: any): void {
-    // Dups array, some times the arrays is write protected
+    // Duplicates array, some times the arrays is write protected
     this.tiles = this.tiles.slice();
     [this.tiles[e.oldIndex], this.tiles[e.newIndex]] = [
       this.tiles[e.newIndex],
@@ -467,5 +496,78 @@ export class DashboardComponent
       }
     );
     authSubscription.unsubscribe();
+  }
+
+  /** Opens modal for context dataset selection */
+  public async selectContextDatasource() {
+    const currContext =
+      (await firstValueFrom(this.dashboardService.dashboard$))?.context ?? null;
+
+    const dialogRef = this.dialog.open(ContextDatasourceComponent, {
+      data: currContext,
+    });
+
+    dialogRef.afterClosed().subscribe((context: DashboardContextT | null) => {
+      if (context) {
+        this.dashboardService.updateContext(context);
+        this.dashboard = {
+          ...this.dashboard,
+          context,
+        };
+
+        this.updateContextOptions();
+      }
+    });
+  }
+
+  /**
+   * Update the context options.
+   * Loads elements from reference data or records from resource.
+   */
+  private updateContextOptions() {
+    const context = this.dashboard?.context;
+    if (!context) return;
+
+    if ('resource' in context) {
+      this.recordsQuery =
+        this.apollo.watchQuery<GetResourceRecordsQueryResponse>({
+          query: GET_RESOURCE_RECORDS,
+          variables: {
+            first: ITEMS_PER_PAGE,
+            id: context.resource,
+          },
+        });
+    }
+
+    if ('refData' in context) {
+      this.refDataService.loadReferenceData(context.refData).then((refData) => {
+        this.refDataValueField = refData.valueField || '';
+        this.refDataService.fetchItems(refData).then((items) => {
+          this.refDataElements = items;
+        });
+      });
+    }
+  }
+
+  /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  public onRecordSearchChange(search: string): void {
+    this.recordsQuery.refetch({
+      first: ITEMS_PER_PAGE,
+      sortField: `data.${search}`,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: `data.${search}`,
+          },
+        ],
+      },
+    });
   }
 }

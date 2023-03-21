@@ -322,6 +322,8 @@ export class SafeGraphQLSelectComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    // TODO(FIX): Check why updating the query does not work
+
     // check if the query has changed
     // if so, reset the loading and pageInfo states
     if (changes.query) {
@@ -470,5 +472,15 @@ export class SafeGraphQLSelectComponent
     this.queryElements = this.cachedElements;
     this.pageInfo = get(data, path).pageInfo;
     this.loading = loading;
+  }
+
+  /**
+   * Returns the display value for the given element
+   *
+   * @param element the element to get the display value for
+   * @returns the display value
+   */
+  public getDisplayValue(element: any) {
+    return get(element, this.textField);
   }
 }

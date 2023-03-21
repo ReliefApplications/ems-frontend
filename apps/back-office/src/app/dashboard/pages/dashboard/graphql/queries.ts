@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Dashboard } from '@oort-front/safe';
+import { Connection, Dashboard, Record } from '@oort-front/safe';
 
 // === GET DASHBOARD BY ID ===
 /** Graphql query for getting a dashboard by its id */
@@ -53,4 +53,39 @@ export const GET_DASHBOARD_BY_ID = gql`
 /** Model for GetDashboardByIdQueryResponse object */
 export interface GetDashboardByIdQueryResponse {
   dashboard: Dashboard;
+}
+
+/** Graphql query for getting records of a resource */
+export const GET_RESOURCE_RECORDS = gql`
+  query GetResourceRecords(
+    $id: ID!
+    $afterCursor: ID
+    $first: Int
+    $filter: JSON
+  ) {
+    resource(id: $id) {
+      records(first: $first, afterCursor: $afterCursor, filter: $filter) {
+        edges {
+          node {
+            id
+            incrementalId
+            data
+          }
+          cursor
+        }
+        totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
+`;
+
+/** Model for GetResourceRecordsQueryResponse object */
+export interface GetResourceRecordsQueryResponse {
+  resource: {
+    records: Connection<Record>;
+  };
 }

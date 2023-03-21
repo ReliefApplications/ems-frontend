@@ -13,6 +13,18 @@ export interface IWidgetType {
   color: string;
 }
 
+/** Interface for the dashboard context */
+export type DashboardContextT = (
+  | {
+      refData: string;
+    }
+  | {
+      resource: string;
+    }
+) & {
+  displayField: string;
+};
+
 /** List of Widget types with their properties */
 export const WIDGET_TYPES = [
   {
@@ -177,4 +189,5 @@ export interface Dashboard {
   canDelete?: boolean;
   page?: Page;
   step?: Step;
+  context?: DashboardContextT;
 }

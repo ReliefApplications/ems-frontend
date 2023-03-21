@@ -1507,6 +1507,18 @@
 			"lastExecution": "Last execution"
 		},
 		"dashboard": {
+			"context": {
+				"datasource": {
+					"set": "Set context datasource",
+					"title": "Context datasource",
+					"update": "Update context datasource"
+				},
+				"displayField": "Display field",
+				"origin": "Context origin",
+				"refData": {
+					"element": "Element"
+				}
+			},
 			"share": "Share Dashboard"
 		},
 		"form": {

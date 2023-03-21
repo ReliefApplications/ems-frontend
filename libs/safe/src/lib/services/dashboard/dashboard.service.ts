@@ -1,5 +1,9 @@
 import { Inject, Injectable } from '@angular/core';
-import { Dashboard, WIDGET_TYPES } from '../../models/dashboard.model';
+import {
+  Dashboard,
+  DashboardContextT,
+  WIDGET_TYPES,
+} from '../../models/dashboard.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import {
@@ -164,5 +168,22 @@ export class SafeDashboardService {
     return availableTile && availableTile.settingsTemplate
       ? availableTile.settingsTemplate
       : null;
+  }
+
+  /**
+   * Updates the context of the dashboard.
+   *
+   * @param context The new context of the dashboard
+   */
+  public updateContext(context: DashboardContextT): void {
+    const dashboard = this.dashboard.getValue();
+    if (dashboard) {
+      this.dashboard.next({
+        ...dashboard,
+        context,
+      });
+    }
+
+    // TODO: update context in DB
   }
 }

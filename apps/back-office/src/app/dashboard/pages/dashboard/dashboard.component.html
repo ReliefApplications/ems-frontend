@@ -13,7 +13,8 @@
         [text]="dashboard.name"
         [canEdit]="canEditName"
         (onChange)="saveName($event)"
-        (formActiveEvent)="formActive = $event">
+        (formActiveEvent)="formActive = $event"
+      >
         <h1 class="!m-0 overflow-hidden text-ellipsis">
           {{ dashboard.name }}
         </h1>
@@ -34,6 +35,19 @@
           "
         >
         </safe-access>
+        <safe-button
+          variant="grey"
+          [isIcon]="true"
+          [icon]="dashboard.context ? 'cached' : 'add'"
+          (click)="selectContextDatasource()"
+          [matTooltip]="
+            (dashboard.context
+              ? 'models.dashboard.context.datasource.update'
+              : 'models.dashboard.context.datasource.set'
+            ) | translate
+          "
+        >
+        </safe-button>
         <safe-button
           variant="grey"
           [isIcon]="true"
@@ -76,6 +90,41 @@
         </ng-template>
       </div>
     </div>
+    <span [formGroup]="contextForm">
+      <!-- Selection of record -->
+      <mat-form-field
+        appearance="outline"
+        *ngIf="dashboard.context && $any(dashboard.context).resource"
+      >
+        <mat-label>{{ 'common.record.one' | translate }}</mat-label>
+        <safe-graphql-select
+          [query]="recordsQuery"
+          formControlName="record"
+          path="records"
+          valueField="id"
+          textField="data.{{ dashboard.context.displayField }}"
+        >
+        </safe-graphql-select>
+      </mat-form-field>
+
+      <!-- Selection of element from reference data -->
+      <mat-form-field
+        appearance="outline"
+        *ngIf="dashboard.context && $any(dashboard.context).refData"
+      >
+        <mat-label>{{
+          'models.dashboard.context.refData.element' | translate
+        }}</mat-label>
+        <mat-select formControlName="element">
+          <mat-option
+            *ngFor="let element of refDataElements"
+            [value]="element[refDataValueField]"
+          >
+            {{ element[dashboard.context.displayField] }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </span>
   </ng-container>
 </ng-container>
 <safe-widget-grid
