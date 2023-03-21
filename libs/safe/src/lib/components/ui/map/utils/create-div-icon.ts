@@ -8,6 +8,14 @@ export type MarkerIconOptions = {
   opacity: number;
 };
 
+/** Default marker icon options */
+export const DEFAULT_MARKER_ICON_OPTIONS: MarkerIconOptions = {
+  icon: 'leaflet_default',
+  color: '#0090d1',
+  size: 24,
+  opacity: 0.8,
+};
+
 /**
  * Generates an HTML element for an icon
  *

@@ -116,13 +116,22 @@ export class SafeMapSettingsComponent
       this.componentRef = this.templateLoader.createComponent<
         typeof componentToLoad
       >(componentToLoad as any);
-      if (this.currentTab !== TabContentTypes.LAYER) {
-        this.mapSettings = { ...this.tileForm?.getRawValue() };
-        this.componentRef.instance.form = this.tileForm;
-        this.componentRef.instance.mapSettings = this.mapSettings;
-      } else {
-        // LAYER tab content has it's own map settings which we set in the components mapSettings
-        this.mapSettings = this.componentRef.instance.mapSettings;
+      switch (this.currentTab) {
+        case TabContentTypes.LAYER:
+          // LAYER tab content has it's own map settings which we set in the components mapSettings
+          this.mapSettings = this.componentRef.instance.mapSettings;
+          break;
+        case TabContentTypes.DATASOURCE:
+          this.componentRef.instance.form = this.mapSettingsService.form;
+          break;
+        case TabContentTypes.PARAMETERS:
+        case TabContentTypes.LAYERS:
+          this.mapSettings = { ...this.tileForm?.getRawValue() };
+          this.componentRef.instance.form = this.tileForm;
+          this.componentRef.instance.mapSettings = this.mapSettings;
+          break;
+        default:
+          break;
       }
 
       // Trigger new component lifecycle hooks

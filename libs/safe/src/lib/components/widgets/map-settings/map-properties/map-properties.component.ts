@@ -7,11 +7,7 @@ import {
   MapEventType,
 } from '../../../ui/map/interfaces/map.interface';
 import { BASEMAPS } from '../../../ui/map/const/baseMaps';
-import {
-  MapSettingsDynamicComponent,
-  MapSettingsService,
-  TabContentTypes,
-} from '../map-settings.service';
+import { MapSettingsService, TabContentTypes } from '../map-settings.service';
 
 /**
  * Map Properties of Map widget.
@@ -23,7 +19,7 @@ import {
 })
 export class MapPropertiesComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, MapSettingsDynamicComponent
+  implements OnInit
 {
   @Input() form!: UntypedFormGroup;
   @Input() mapSettings!: MapConstructorSettings;

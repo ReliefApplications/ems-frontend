@@ -2,6 +2,7 @@
   <mat-drawer class="border-none pr-2" mode="side" [opened]="true">
     <ng-container *ngFor="let button of currentButtons">
       <safe-button
+        matTooltip="{{ button.label | translate }}"
         icon="{{ button.icon }}"
         [attr.data-selected]="button.isSelected(currentTab)"
         (click)="setCurrentTab(button.value)"

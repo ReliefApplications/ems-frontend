@@ -4,11 +4,10 @@ import { MapPropertiesComponent } from './map-properties/map-properties.componen
 import { MapLayersComponent } from './map-layers/map-layers.component';
 import { MapLayerComponent } from './map-layer/map-layer.component';
 import { LayerActionOnMap } from '../../ui/map/interfaces/map-layers.interface';
-import { UntypedFormGroup } from '@angular/forms';
-import {
-  MapConstructorSettings,
-  MapEvent,
-} from '../../ui/map/interfaces/map.interface';
+import { LayerClusterComponent } from './map-layer/layer-cluster/layer-cluster.component';
+import { LayerFieldsComponent } from './map-layer/layer-fields/layer-fields.component';
+import { LayerDatasourceComponent } from './map-layer/layer-datasource/layer-datasource.component';
+import { LayerFormT, createLayerForm } from './map-forms';
 
 /**
  * Button types that can be displayed in the
@@ -18,6 +17,9 @@ export enum TabContentTypes {
   PARAMETERS,
   LAYERS,
   LAYER,
+  CLUSTER,
+  FIELD,
+  DATASOURCE,
 }
 
 /**
@@ -28,16 +30,6 @@ export interface MapSettingsButtons {
   icon: string;
   label: string;
   isSelected: (value: TabContentTypes | null) => boolean;
-}
-
-/**
- * They have to at least implement this interface all the components
- * that want to dynamically render in the map settings component drawer content
- */
-export interface MapSettingsDynamicComponent {
-  form: UntypedFormGroup;
-  mapSettings?: MapConstructorSettings;
-  handleMapEvent?: (event: MapEvent) => void;
 }
 
 /**
@@ -53,6 +45,9 @@ export class MapSettingsService {
     [TabContentTypes.PARAMETERS]: MapPropertiesComponent,
     [TabContentTypes.LAYERS]: MapLayersComponent,
     [TabContentTypes.LAYER]: MapLayerComponent,
+    [TabContentTypes.CLUSTER]: LayerClusterComponent,
+    [TabContentTypes.FIELD]: LayerFieldsComponent,
+    [TabContentTypes.DATASOURCE]: LayerDatasourceComponent,
   };
 
   /** Current tab buttons */
@@ -85,20 +80,22 @@ export class MapSettingsService {
   public updateLayer$ = this.updateLayer.asObservable();
 
   // === MAP LAYER EDITOR ===
+  public form: LayerFormT = createLayerForm();
+
   public selectedLayerToEdit: BehaviorSubject<{
     layer: any;
-    layerIndex: number;
+    layerId: string;
   } | null> = new BehaviorSubject<{
     layer: any;
-    layerIndex: number;
+    layerId: string;
   } | null>(null);
   public selectedLayerToEdit$ = this.selectedLayerToEdit.asObservable();
   public layerDataToSave: BehaviorSubject<{
     layer: any;
-    layerIndex: number;
+    layerId: string;
   } | null> = new BehaviorSubject<{
     layer: any;
-    layerIndex: number;
+    layerId: string;
   } | null>(null);
   public layerDataToSave$ = this.layerDataToSave.asObservable();
 }

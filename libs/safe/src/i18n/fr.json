@@ -1265,6 +1265,25 @@
 					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
 					"edit": {
+						"cluster": {
+							"clusterSettings": "Paramètres de groupes",
+							"fields": "Champs de groupes",
+							"high": "Haut",
+							"label": "Libellé du groupes",
+							"low": "Faible",
+							"max": "Max",
+							"min": "Min",
+							"overrideSymbol": "Remplacer le symbole de groupes",
+							"popups": "Groupes pop-ups",
+							"radius": "Rayon de groupes",
+							"sizeRange": "Gamme de taille",
+							"symbol": "Style de symboles"
+						},
+						"datasource": {
+							"origin": "Origine"
+						},
+						"fields": "Champs",
+						"layerDatasource": "Source de données de la couche",
 						"layerProperties": "Propriétés",
 						"layerStyling": "Styles",
 						"properties": {
@@ -1307,6 +1326,8 @@
 					},
 					"layers": {
 						"add": "Ajouter un nouveau calque",
+						"chooseLayer": "Choisir un calque existant",
+						"createLayer": "Créer un nouveau calque",
 						"edit": "Mettre à jour le calque {{name}}",
 						"online": {
 							"info": "Charger des couches depuis arcGIS online",
@@ -1325,6 +1346,7 @@
 							"title": "Marqueurs"
 						},
 						"remove": "Supprimer le calque",
+						"selectLayer": "Sélectionner un calque",
 						"types": {
 							"cluster": "Groupes",
 							"heatmap": "Carte de chaleur",

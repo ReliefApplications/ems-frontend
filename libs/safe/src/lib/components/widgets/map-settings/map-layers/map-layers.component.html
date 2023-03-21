@@ -1,13 +1,28 @@
 <div class="flex flex-col">
   <safe-button
     class="mb-4 self-end"
-    (click)="setLayerEditionTemplate()"
+    [matMenuTriggerFor]="layerMenu"
     category="secondary"
     variant="primary"
   >
     {{ 'components.widget.settings.map.layers.add' | translate }}
   </safe-button>
 
+  <!-- Contextual menu for layer addition -->
+  <mat-menu #layerMenu="matMenu">
+    <button mat-menu-item (click)="setLayerEditionTemplate()">
+      <span>{{
+        'components.widget.settings.map.layers.createLayer' | translate
+      }}</span>
+    </button>
+    <button mat-menu-item (click)="onSelectLayer()">
+      <span>{{
+        'components.widget.settings.map.layers.selectLayer' | translate
+      }}</span>
+    </button>
+  </mat-menu>
+
+  <!-- List of layers -->
   <table
     mat-table
     [dataSource]="mapLayers"
@@ -38,12 +53,12 @@
         >
         </safe-button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="setLayerEditionTemplate(i)">
+          <button mat-menu-item (click)="setLayerEditionTemplate(layer.id)">
             <mat-icon>edit</mat-icon>
             {{ 'common.edit' | translate }}
           </button>
           <safe-divider class="m-0"></safe-divider>
-          <button mat-menu-item (click)="onDeleteLayer(i)">
+          <button mat-menu-item (click)="onDeleteLayer(layer.id)">
             <mat-icon>delete</mat-icon>
             {{ 'common.delete' | translate }}
           </button>

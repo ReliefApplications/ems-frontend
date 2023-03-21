@@ -1,21 +1,42 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit, SkipSelf } from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
+import { Apollo } from 'apollo-angular';
+import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 import { takeUntil } from 'rxjs';
+import { Layer } from '../../../../models/layer.model';
+import { IconName } from '../../../ui/map/const/fa-icons';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import {
-  MapSettingsDynamicComponent,
-  MapSettingsService,
-  TabContentTypes,
-} from '../map-settings.service';
+import { MapSettingsService, TabContentTypes } from '../map-settings.service';
+import { GetLayersQueryResponse, GET_LAYERS } from './graphql/queries';
+import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.component';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 
 /** List of available layer types */
 export const LAYER_TYPES = ['polygon', 'point', 'heatmap', 'cluster'] as const;
+
 /** Interface for a map layer */
 export interface MapLayerI {
+  id: string;
   name: string;
   type: (typeof LAYER_TYPES)[number];
+  defaultVisibility: boolean;
+  opacity: number;
+  visibilityRangeStart: number;
+  visibilityRangeEnd: number;
+  style: {
+    color: string;
+    size: number;
+    icon: IconName | 'leaflet_default';
+  };
+  datasource: {
+    origin: 'resource' | 'refData';
+    resource: string;
+    layout: string;
+    aggregation: string;
+    refData: string;
+  };
 }
 
 /**
@@ -28,35 +49,36 @@ export interface MapLayerI {
 })
 export class MapLayersComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, MapSettingsDynamicComponent
+  implements OnInit
 {
   @Input() form!: UntypedFormGroup;
   /** @returns the form array for the map layers */
   get layers() {
-    return this.form.get('layers') as UntypedFormArray;
+    return this.form.get('layers') as FormControl<string[]>;
   }
 
   // Table
-  public mapLayers: MatTableDataSource<MapLayerI> = new MatTableDataSource();
+  public mapLayers: MatTableDataSource<Layer> = new MatTableDataSource();
   public displayedColumns = ['name', 'actions'];
-
+  public savedLayers: Layer[] = [];
   /**
    * Layers configuration component of Map Widget.
    *
    * @param mapSettingsService MapSettingsService
+   * @param safeMapLayersService SafeMapLayersService
+   * @param dialog MatDialog
+   * @param apollo Angular Apollo
    */
-  constructor(@SkipSelf() private mapSettingsService: MapSettingsService) {
+  constructor(
+    @SkipSelf() private mapSettingsService: MapSettingsService,
+    private safeMapLayersService: SafeMapLayersService,
+    private dialog: MatDialog,
+    private apollo: Apollo
+  ) {
     super();
   }
 
   ngOnInit(): void {
-    this.mapLayers.data = this.layers.value;
-    this.form
-      .get('layers')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.mapLayers.data = value;
-      });
     this.mapSettingsService.mapSettingsCurrentTabTitle.next('common.layers');
     this.mapSettingsService.mapSettingsButtons.next([
       {
@@ -89,6 +111,24 @@ export class MapLayersComponent
       },
     ]);
     this.setUpLayerEditorListeners();
+    this.fetchLayers();
+  }
+
+  /**
+   * Fetch the current layers in the DB
+   */
+  private fetchLayers(): void {
+    this.apollo
+      .query<GetLayersQueryResponse>({
+        query: GET_LAYERS,
+        variables: {},
+      })
+      .subscribe((res) => {
+        this.savedLayers = res.data.layers;
+        this.mapLayers.data = res.data.layers.filter((x) =>
+          this.layers.value.includes(x.id)
+        );
+      });
   }
 
   /**
@@ -97,14 +137,36 @@ export class MapLayersComponent
   private setUpLayerEditorListeners() {
     this.mapSettingsService.layerDataToSave$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((layer: { layer: any; layerIndex: number } | null) => {
+      .subscribe((layer: { layer: any; layerId: string } | null) => {
         if (layer?.layer) {
-          // If has a valid index is a layer edition
-          if (layer.layerIndex !== -1) {
-            this.layers.at(layer.layerIndex).patchValue(layer.layer);
+          // If already contains an id is a layer edition
+          if (layer.layerId) {
+            this.safeMapLayersService
+              .editLayer(layer.layer)
+              .subscribe((res) => {
+                if (res) {
+                  // this.layers.at(index).patchValue(res);
+                  this.fetchLayers();
+                }
+              });
           } else {
-            this.layers.push(layer.layer);
+            this.safeMapLayersService.addLayer(layer.layer).subscribe({
+              next: (res) => {
+                if (res) {
+                  this.layers.setValue([...this.layers.value, res.id]);
+                  console.log(this.layers.value);
+                }
+              },
+            });
           }
+        }
+      });
+
+    this.layers?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value.length !== this.layers.value.length) {
+          this.fetchLayers();
         }
       });
   }
@@ -115,21 +177,42 @@ export class MapLayersComponent
    * @param index Index of the layer to remove
    */
   public onDeleteLayer(index: number) {
-    this.layers.removeAt(index);
+    this.layers.setValue(this.layers.value.splice(index, 1));
   }
 
   /**
    * Set template to add/edit a layer
    *
-   * @param index Index of the layer to edit
+   * @param id id of layer to edit
    */
-  public setLayerEditionTemplate(index?: number) {
+  public setLayerEditionTemplate(id?: string) {
     this.mapSettingsService.selectedLayerToEdit.next(
-      index ? { layer: this.layers.at(index).value, layerIndex: index } : null
+      id
+        ? {
+            layer: this.savedLayers.find((layer) => layer.id === id),
+            layerId: id,
+          }
+        : null
     );
     this.mapSettingsService.mapSettingsCurrentSelectedTabButton.next(
       TabContentTypes.LAYER
     );
+  }
+
+  /**
+   * Open dialog to select existing layer.
+   */
+  public onSelectLayer() {
+    const dialogRef = this.dialog.open(AddLayerModalComponent, {
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((id: string) => {
+      if (id) {
+        this.layers.setValue(this.layers.value.concat(id));
+        // this.layers.push(createLayerForm(layer));
+        this.setLayerEditionTemplate(id);
+      }
+    });
   }
 
   /**
@@ -138,8 +221,9 @@ export class MapLayersComponent
    * @param e Event emitted when a layer is reordered
    */
   public onListDrop(e: CdkDragDrop<MapLayerI[]>) {
-    const movedElement = this.layers.at(e.previousIndex);
-    this.layers.removeAt(e.previousIndex);
-    this.layers.insert(e.currentIndex, movedElement);
+    let layerIds = this.layers.value;
+    const movedElement = layerIds[e.previousIndex];
+    layerIds = layerIds.splice(e.previousIndex, 1, movedElement);
+    this.layers.setValue(layerIds);
   }
 }

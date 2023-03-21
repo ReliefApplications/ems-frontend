@@ -1258,6 +1258,25 @@
 					"category": "******",
 					"dataset": "******",
 					"edit": {
+						"cluster": {
+							"clusterSettings": "******",
+							"fields": "******",
+							"high": "******",
+							"label": "******",
+							"low": "******",
+							"max": "******",
+							"min": "******",
+							"overrideSymbol": "******",
+							"popups": "******",
+							"radius": "******",
+							"sizeRange": "******",
+							"symbol": "******"
+						},
+						"datasource": {
+							"origin": "******"
+						},
+						"fields": "******",
+						"layerDatasource": "******",
 						"layerProperties": "******",
 						"layerStyling": "******",
 						"properties": {
@@ -1300,6 +1319,8 @@
 					},
 					"layers": {
 						"add": "******",
+						"chooseLayer": "******",
+						"createLayer": "******",
 						"edit": "****** {{name}}",
 						"online": {
 							"info": "******",
@@ -1318,6 +1339,7 @@
 							"title": "******"
 						},
 						"remove": "******",
+						"selectLayer": "******",
 						"types": {
 							"cluster": "******",
 							"heatmap": "******",

@@ -1,24 +1,23 @@
 import { AfterViewInit, Component, OnInit, SkipSelf } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
-import { createLayerForm } from '../map-forms';
+import { takeUntil } from 'rxjs';
+import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
+import { OverlayLayerTree } from '../../../ui/map/interfaces/map-layers.interface';
 import {
   MapConstructorSettings,
   MapEvent,
   MapEventType,
 } from '../../../ui/map/interfaces/map.interface';
-import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
-import { OverlayLayerTree } from '../../../ui/map/interfaces/map-layers.interface';
+import { createLayerForm, LayerFormT } from '../map-forms';
 
 import * as L from 'leaflet';
-import { createCustomDivIcon } from '../../../ui/map/utils/create-div-icon';
 import { DefaultMapControls } from '../../../ui/map/interfaces/map.interface';
 import {
-  MapSettingsDynamicComponent,
-  MapSettingsService,
-  TabContentTypes,
-} from '../map-settings.service';
+  createCustomDivIcon,
+  DEFAULT_MARKER_ICON_OPTIONS,
+} from '../../../ui/map/utils/create-div-icon';
+import { MapSettingsService, TabContentTypes } from '../map-settings.service';
+import { Layer } from '../../../../models/layer.model';
 
 /** Layer used to test the component */
 const TEST_LAYER: {
@@ -84,11 +83,12 @@ const TEST_LAYER: {
 })
 export class MapLayerComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit, MapSettingsDynamicComponent
+  implements OnInit, AfterViewInit
 {
-  public form!: UntypedFormGroup;
+  public form!: LayerFormT;
   public layer!: any;
-  public layerIndex!: number;
+  public layerId!: string;
+
   private currentLayer: L.Layer | null = null;
   private layerOptions: any = {};
 
@@ -116,14 +116,20 @@ export class MapLayerComponent
   };
 
   /** @returns the selected layer type */
-  public get layerType(): keyof typeof TEST_LAYER | null {
-    return this.form.get('type')?.value;
+  public get layerType() {
+    return this.form.get('type')?.value || null;
   }
   /** @returns the selected icon with the given style config */
-  private get icon(): any | null {
+  private get icon() {
+    const style = this.form.get('style')?.value;
+    if (!style) return null;
+
     return createCustomDivIcon({
-      ...this.form.get('style')?.value,
-      ...{ opacity: this.form.get('opacity')?.value },
+      icon: style.icon || DEFAULT_MARKER_ICON_OPTIONS.icon,
+      color: style.color || DEFAULT_MARKER_ICON_OPTIONS.color,
+      size: style.size || DEFAULT_MARKER_ICON_OPTIONS.size,
+      opacity:
+        this.form.get('opacity')?.value || DEFAULT_MARKER_ICON_OPTIONS.opacity,
     });
   }
 
@@ -138,6 +144,7 @@ export class MapLayerComponent
     @SkipSelf() private mapSettingsService: MapSettingsService
   ) {
     super();
+    this.form = this.mapSettingsService.form;
   }
 
   ngOnInit(): void {
@@ -147,6 +154,48 @@ export class MapLayerComponent
         value: TabContentTypes.LAYER,
         icon: 'settings',
         label: 'components.widget.settings.map.edit.layerProperties',
+        /**
+         * Is tab selected
+         *
+         * @param currentTab current tab value
+         * @returns {boolean} is selected
+         */
+        isSelected: function (currentTab: TabContentTypes | null): boolean {
+          return currentTab === this.value;
+        },
+      },
+      {
+        value: TabContentTypes.CLUSTER,
+        icon: 'group_work',
+        label: 'components.widget.settings.map.edit.cluster.clusterSettings',
+        /**
+         * Is tab selected
+         *
+         * @param currentTab current tab value
+         * @returns {boolean} is selected
+         */
+        isSelected: function (currentTab: TabContentTypes | null): boolean {
+          return currentTab === this.value;
+        },
+      },
+      {
+        value: TabContentTypes.FIELD,
+        icon: 'text_fields',
+        label: 'components.widget.settings.map.edit.fields',
+        /**
+         * Is tab selected
+         *
+         * @param currentTab current tab value
+         * @returns {boolean} is selected
+         */
+        isSelected: function (currentTab: TabContentTypes | null): boolean {
+          return currentTab === this.value;
+        },
+      },
+      {
+        value: TabContentTypes.DATASOURCE,
+        icon: 'storage',
+        label: 'components.widget.settings.map.edit.layerDatasource',
         /**
          * Is tab selected
          *
@@ -176,9 +225,9 @@ export class MapLayerComponent
   setUpLayerListeners() {
     this.mapSettingsService.selectedLayerToEdit$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((layer: { layer: any; layerIndex: number } | null) => {
+      .subscribe((layer: { layer: any; layerId: string } | null) => {
         this.layer = layer?.layer;
-        this.layerIndex = layer?.layerIndex ?? -1;
+        this.layerId = layer?.layerId as string;
         this.form = createLayerForm(layer?.layer);
       });
   }
@@ -194,10 +243,10 @@ export class MapLayerComponent
     } else {
       const layer = this.layer
         ? this.form.value
-        : createLayerForm(this.form.value);
+        : createLayerForm(this.form.value as Layer);
       this.mapSettingsService.layerDataToSave.next({
         layer,
-        layerIndex: this.layerIndex,
+        layerId: this.layerId,
       });
     }
     // Get back to Layers tab and content
@@ -227,16 +276,17 @@ export class MapLayerComponent
    * Set edit layers listeners.
    */
   private setUpEditLayerListeners() {
+    if (!this.form.controls) return;
     this.form.controls.visibilityRangeStart.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: number) => {
+      .subscribe((value) => {
         this.updateLayerOptions({
           visibilityRange: [value, this.form.controls.visibilityRangeEnd.value],
         });
       });
     this.form.controls.visibilityRangeEnd.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: number) => {
+      .subscribe((value) => {
         this.updateLayerOptions({
           visibilityRange: [
             this.form.controls.visibilityRangeStart.value,
@@ -247,19 +297,19 @@ export class MapLayerComponent
 
     this.form.controls.opacity.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: number) => {
+      .subscribe((value) => {
         this.updateLayerOptions({ opacity: value, fillOpacity: value });
       });
 
     this.form.controls.name.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: string) => {
+      .subscribe((value) => {
         this.updateLayerOptions({ name: value });
       });
 
     this.form.controls.defaultVisibility.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: string) => {
+      .subscribe((value) => {
         this.updateLayerOptions({ visible: value });
       });
 
@@ -290,7 +340,7 @@ export class MapLayerComponent
       this.mapSettingsService.addOrDeleteLayer.next({
         layerData: {
           layer: this.currentLayer,
-          label: this.form.get('name')?.value,
+          label: this.form.get('name')?.value || '',
         },
         isDelete: true,
       });
@@ -310,7 +360,7 @@ export class MapLayerComponent
       };
       const overlays: OverlayLayerTree = {
         layer: this.currentLayer,
-        label: this.form.get('name')?.value,
+        label: this.form.get('name')?.value || '',
         options: defaultLayerOptions,
       };
 
