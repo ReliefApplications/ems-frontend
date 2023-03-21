@@ -22,14 +22,28 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Get package version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(node -p "require('./package.json').version")
       - name: Install Dependencies
         run: npm i
       - name: Build Shared Library
         run: npm run build -- --configuration=production safe
+        if: startsWith("${{ steps.get_version.outputs.VERSION }}", '1.')
       - name: Build Back-office ${{ github.event.client_payload.environment }}
-        run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=back-office
+        run: |
+          startsWith("${{ steps.get_version.outputs.VERSION }}", '1.'); then
+            npm run build -- --configuration=${{ secrets.CONFIG }} --project=back-office
+          else
+            npx nx run back-office:build:${{ secrets.CONFIG }}
+          fi
       - name: Build Front-office ${{ github.event.client_payload.environment }}
-        run: npm run build -- --configuration=${{ secrets.CONFIG }} --project=front-office
+        run: |
+          startsWith("${{ steps.get_version.outputs.VERSION }}", '1.'); then
+            npm run build -- --configuration=${{ secrets.CONFIG }} --project=front-office
+          else
+            npx nx run front-office:build:${{ secrets.CONFIG }}
+          fi
       - name: Archive build Back-office
         if: success()
         uses: actions/upload-artifact@v3
