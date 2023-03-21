@@ -35,14 +35,14 @@ jobs:
           startsWith("${{ steps.get_version.outputs.VERSION }}", '1.'); then
             npm run build -- --configuration=${{ secrets.CONFIG }} --project=back-office
           else
-            npx nx run back-office:build:${{ secrets.CONFIG }}
+            npx nx run back-office:build:${{ secrets.CONFIG }} --outputPath=dist/back-office
           fi
       - name: Build Front-office ${{ github.event.client_payload.environment }}
         run: |
           startsWith("${{ steps.get_version.outputs.VERSION }}", '1.'); then
             npm run build -- --configuration=${{ secrets.CONFIG }} --project=front-office
           else
-            npx nx run front-office:build:${{ secrets.CONFIG }}
+            npx nx run front-office:build:${{ secrets.CONFIG }} --outputPath=dist/front-office
           fi
       - name: Archive build Back-office
         if: success()
