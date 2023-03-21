@@ -66,7 +66,7 @@
     >
       {{
         'common.exportObject'
-          | translate: { name: 'common.user.few' | translate }
+          | translate : { name: 'common.user.few' | translate }
       }}
     </safe-button>
     <mat-menu #menu="matMenu">
@@ -95,7 +95,8 @@
     (click)="onDelete(selection.selected)"
   >
     {{
-      'common.deleteObject' | translate: { name: 'common.user.few' | translate }
+      'common.deleteObject'
+        | translate : { name: 'common.user.few' | translate }
     }}
   </safe-button>
 </div>

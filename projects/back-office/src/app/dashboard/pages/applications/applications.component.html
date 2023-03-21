@@ -11,7 +11,7 @@
   <safe-applications-summary
     class="block mb-14"
     [loading]="loading"
-    [canCreate]="'create' | able: 'Application'"
+    [canCreate]="'create' | able : 'Application'"
     (add)="onAdd()"
     [applications]="newApplications"
     (openApplication)="onOpenApplication($event)"

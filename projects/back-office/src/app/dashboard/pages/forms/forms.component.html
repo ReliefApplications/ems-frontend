@@ -8,7 +8,7 @@
       category="secondary"
       variant="primary"
       (click)="onAdd()"
-      *ngIf="'create' | able: 'Form'"
+      *ngIf="'create' | able : 'Form'"
     >
       {{ 'models.form.create' | translate }}
     </safe-button>
@@ -162,7 +162,7 @@
                 <mat-icon>plagiarism</mat-icon>
                 {{
                   'common.viewObject'
-                    | translate: { name: 'common.record.few' | translate }
+                    | translate : { name: 'common.record.few' | translate }
                 }}
               </button>
             </ng-container>
