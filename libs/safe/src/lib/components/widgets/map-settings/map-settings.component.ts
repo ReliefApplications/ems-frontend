@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  AfterViewInit,
+} from '@angular/core';
 import { createMapWidgetFormGroup } from './map-forms';
 import { UntypedFormGroup } from '@angular/forms';
 import {
@@ -6,7 +13,7 @@ import {
   MapEvent,
   MapEventType,
 } from '../../ui/map/interfaces/map.interface';
-import { takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /** Component for the map widget settings */
@@ -17,10 +24,15 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 })
 export class SafeMapSettingsComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, AfterViewInit
 {
   public currentTab: 'parameters' | 'layers' | null = 'parameters';
   public mapSettings!: MapConstructorSettings;
+  public layerSettings: BehaviorSubject<any[] | null> = new BehaviorSubject<
+    any[] | null
+  >(null);
+  public layerSettings$: Observable<any[] | null> =
+    this.layerSettings.asObservable();
 
   // === REACTIVE FORM ===
   tileForm: UntypedFormGroup | undefined;
@@ -32,14 +44,23 @@ export class SafeMapSettingsComponent
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
+  /**
+   * Class constructor
+   */
+  constructor() {
+    super();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.tileForm?.get('layers')?.value?.length) {
+      this.layerSettings.next(this.tileForm?.get('layers')?.value);
+    }
+  }
+
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     this.tileForm = createMapWidgetFormGroup(this.tile.id, this.tile.settings);
-
     this.change.emit(this.tileForm);
-    this.tileForm?.valueChanges.subscribe(() => {
-      this.change.emit(this.tileForm);
-    });
 
     const defaultMapSettings: MapConstructorSettings = {
       basemap: this.tileForm.value.basemap,
@@ -56,6 +77,10 @@ export class SafeMapSettingsComponent
    */
   private setUpFormListeners() {
     if (!this.tileForm) return;
+
+    this.tileForm?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.change.emit(this.tileForm);
+    });
     this.tileForm
       .get('initialState')
       ?.valueChanges.pipe(takeUntil(this.destroy$))

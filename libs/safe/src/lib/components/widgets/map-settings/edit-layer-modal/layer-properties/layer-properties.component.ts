@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { LAYER_TYPES } from '../../../../../models/layer.model';
 import { LayerFormT } from '../../map-forms';
-import { LAYER_TYPES } from '../../map-layers/map-layers.component';
 
 /** Component for the general layer properties */
 @Component({

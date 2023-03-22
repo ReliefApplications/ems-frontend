@@ -14,10 +14,7 @@ import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.compo
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 import { Apollo } from 'apollo-angular';
 import { GetLayersQueryResponse, GET_LAYERS } from './graphql/queries';
-import { Layer } from '../../../../models/layer.model';
-
-/** List of available layer types */
-export const LAYER_TYPES = ['polygon', 'point', 'heatmap', 'cluster'] as const;
+import { Layer, LAYER_TYPES } from '../../../../models/layer.model';
 
 /** Interface for a map layer */
 export interface MapLayerI {

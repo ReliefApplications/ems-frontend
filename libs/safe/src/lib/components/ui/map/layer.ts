@@ -20,6 +20,9 @@ import {
 import { IconName } from './const/fa-icons';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { LegendDefinition } from './interfaces/layer-legend.type';
+import { SafeRestService } from '../../../services/rest/rest.service';
+import { from, lastValueFrom, map, mergeMap, toArray } from 'rxjs';
+import { LayerTypes } from '../../../models/layer.model';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 type ChildLayer = { object: Layer; layer?: L.Layer };
@@ -138,8 +141,8 @@ export class Layer {
   private layer: L.Layer | null = null;
 
   // Global properties for the layer
-  public readonly name: string;
-  public readonly type: LayerType;
+  public name!: string;
+  public type!: LayerType;
 
   // Properties for the layer, if layer type is 'group'
   private children: ChildLayer[] = [];
@@ -201,6 +204,115 @@ export class Layer {
     }
   }
 
+  /**
+   * Format given settings for Layer class
+   *
+   * @param layerSettings layer settings saved from the layer editor
+   * @param restService rest service to get the geojson
+   * @returns Observable of LayerSettingsI
+   */
+  public static async formatLayerSettings(
+    layerSettings: any,
+    restService: SafeRestService
+  ): Promise<Layer> {
+    const formattedLayerSettings = await lastValueFrom(
+      from(layerSettings).pipe(
+        mergeMap((ls: any) => {
+          const capitalizeType = ls.type.replace(
+            /^./g,
+            ls.type[0].toUpperCase()
+          );
+          return restService.get(
+            `${
+              restService.apiUrl
+            }/gis/feature?type=${capitalizeType}&tolerance=${0.9}&highquality=${true}`
+          );
+        }),
+        toArray(),
+        map((geojson: any[]) => ({
+          name: 'group layers',
+          type: 'group',
+          children: this.getLayerSettings(layerSettings, geojson),
+        }))
+      )
+    );
+    return new Layer(formattedLayerSettings as LayerSettingsI);
+  }
+
+  /**
+   * Set the geojson to the given layer settings
+   *
+   * @param layerSettings layer settings saved from the layer editor
+   * @param geojson geojson properties for each layer settings
+   * @returns LayerSettingsI array
+   */
+  private static getLayerSettings(
+    layerSettings: any[],
+    geojson: any[]
+  ): LayerSettingsI[] {
+    return layerSettings.map(
+      (ls: any, index: number) =>
+        // @TODO As we complete the layer editor we will have to set those new values in these function
+        // instead of the hardcoded ones
+        ({
+          name: ls.name,
+          type:
+            ls.type === LayerTypes.POINT || ls.type === LayerTypes.POLYGON
+              ? 'feature'
+              : ls.type,
+          geojson: geojson[index],
+          filter: {
+            condition: 'and',
+            filters: [
+              {
+                field: 'name',
+                operator: 'neq',
+                value: 'Point 1',
+              },
+            ],
+          },
+          properties: {
+            visibilityRange: [ls.visibilityRangeStart, ls.visibilityRangeEnd],
+            opacity: ls.opacity,
+            visibleByDefault: ls.defaultVisibility,
+            legend: {
+              display: true,
+              field: 'name',
+            },
+          },
+          styling: [
+            {
+              filter: {
+                condition: 'and',
+                filters: [],
+              },
+              style: {
+                borderColor: 'black',
+                borderWidth: 1,
+                fillOpacity: ls.opacity,
+                borderOpacity: ls.opacity,
+                fillColor: ls.style.color,
+                icon: ls.style.icon,
+                iconSize: ls.style.size,
+              },
+            },
+          ],
+          labels: {
+            filter: {
+              condition: 'and',
+              filters: [],
+            },
+            label: '{{name}}',
+            style: {
+              color: '#000000',
+              fontSize: 12,
+              fontWeight: 'normal',
+            },
+          },
+        } as LayerSettingsI)
+    );
+  }
+
   /** @returns the children of the current layer */
   public getChildren() {
     return this.children;
@@ -250,6 +362,19 @@ export class Layer {
    * @param settings The settings for the layer
    */
   constructor(settings: LayerSettingsI) {
+    if (settings) {
+      this.setConfig(settings);
+    } else {
+      throw 'No settings provided';
+    }
+  }
+
+  /**
+   * Set config
+   *
+   * @param settings LayerSettings
+   */
+  private setConfig(settings: LayerSettingsI) {
     this.name = settings.name;
     this.type = settings.type as LayerType;
 
@@ -500,7 +625,10 @@ export class Layer {
         features.forEach((feature) => {
           if ('properties' in feature) {
             // check if feature is a point
-            const isPoint = feature.geometry.type === 'Point';
+            // @TODO structure sent from backend follows the feature.type structure
+            const isPoint = feature.geometry?.type
+              ? feature.geometry.type === 'Point'
+              : (feature as any).type === 'Point';
             const style = this.getFeatureStyle(feature);
             items.push({
               label: labelField ? feature.properties[labelField] ?? '' : '',

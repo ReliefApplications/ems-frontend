@@ -20,6 +20,7 @@ export type GeoJSON =
 // the layer types are defined as follows:
 export type LayerType = 'feature' | 'heatmap' | 'cluster' | 'sketch' | 'group';
 
+export type GeometryTypes = 'Point' | 'Polygon' | 'LineString';
 // The 'feature' layer type would display in the layer all the features
 // in the geoJSON object. Points would be displayed as markers, unless
 // they have the radius property, in which case they would be displayed

@@ -39,13 +39,13 @@ import { SafeMapControlsService } from '../../../services/map/map-controls.servi
 // import 'leaflet';
 import * as L from 'leaflet';
 import { Layer } from './layer';
-import { MOCK_LAYER_SETTINGS } from './test/layer-settings-test';
 import { getMapFeatures } from './utils/get-map-features';
 import { LayerProperties } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/language';
 import { ArcgisService } from '../../../services/map/arcgis.service';
+import { SafeRestService } from '../../../services/rest/rest.service';
 
 /**
  * Cleans the settings object from null values
@@ -83,8 +83,6 @@ export class MapComponent
 {
   @Input() controls!: any;
   @Input() useGeomanTools = false;
-  // Temporary input in order to display the mocked layers as we want
-  @Input() displayMockedLayers = true;
   /** Map settings setter */
   @Input() set mapSettings(settings: MapConstructorSettings) {
     if (settings) {
@@ -122,6 +120,18 @@ export class MapComponent
           content: getMapFeatures(this.map),
         });
       }
+    }
+  }
+  /** Set layer/s settings to map with the given layer/s data */
+  @Input() set layerSettings(layerSettings: any[] | null) {
+    if (layerSettings) {
+      this.setUpLayers(layerSettings);
+      // Add legend control
+      this.mapControlsService.getLegendControl(
+        this.map,
+        this.layers,
+        this.extractSettings().controls.legend
+      );
     }
   }
 
@@ -166,12 +176,14 @@ export class MapComponent
    * @param translate Angular translate service
    * @param mapControlsService Map controls handler service
    * @param arcgisService Shared arcgis service
+   * @param restService SafeRestService
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
     private mapControlsService: SafeMapControlsService,
-    private arcgisService: ArcgisService
+    private arcgisService: ArcgisService,
+    private restService: SafeRestService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -289,15 +301,6 @@ export class MapComponent
 
     setTimeout(() => {
       this.map.invalidateSize();
-      if (this.displayMockedLayers) {
-        this.setUpLayers();
-        // Add legend control
-        this.mapControlsService.getLegendControl(
-          this.map,
-          this.layers,
-          this.extractSettings().controls.legend
-        );
-      }
       if (this.useGeomanTools) {
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
@@ -555,8 +558,10 @@ export class MapComponent
 
   /**
    * Setup and draw layers on map and sets the baseTree.
+   *
+   * @param layerSettings layerSettings from saved edit layer info
    */
-  private setUpLayers(): void {
+  private async setUpLayers(layerSettings: any[]) {
     this.layersTree = [];
 
     this.basemap = L.tileLayer(
@@ -620,7 +625,9 @@ export class MapComponent
       }
     };
 
-    const layers = [new Layer(MOCK_LAYER_SETTINGS)];
+    const layers = [
+      await Layer.formatLayerSettings(layerSettings, this.restService),
+    ];
 
     // Add each layer to the tree
     layers.forEach((layer) => {

@@ -46,6 +46,7 @@
         class="w-full h-full"
         (mapEvent)="handleMapEvent($event)"
         [mapSettings]="mapSettings"
+        [layerSettings]="layerSettings$ | async"
       ></safe-map>
     </div>
   </div>

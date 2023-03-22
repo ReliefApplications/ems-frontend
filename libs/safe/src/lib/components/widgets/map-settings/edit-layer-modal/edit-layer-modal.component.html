@@ -92,7 +92,6 @@
     <!-- Map section -->
     <safe-map
       (mapEvent)="handleMapEvent($event)"
-      [displayMockedLayers]="false"
       [mapSettings]="mapSettings"
       [updateLayerOptions]="updateLayer$ | async"
       [addOrDeleteLayer]="layerToAddOrDelete$ | async"
