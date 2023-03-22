@@ -46,6 +46,7 @@ import { createCustomDivIcon } from './utils/create-div-icon';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/language';
 import { ArcgisService } from '../../../services/map/arcgis.service';
 import { SafeRestService } from '../../../services/rest/rest.service';
+import { Apollo } from 'apollo-angular';
 
 /**
  * Cleans the settings object from null values
@@ -122,18 +123,6 @@ export class MapComponent
       }
     }
   }
-  /** Set layer/s settings to map with the given layer/s data */
-  @Input() set layerSettings(layerSettings: any[] | null) {
-    if (layerSettings) {
-      this.setUpLayers(layerSettings);
-      // Add legend control
-      this.mapControlsService.getLegendControl(
-        this.map,
-        this.layers,
-        this.extractSettings().controls.legend
-      );
-    }
-  }
 
   @Output() mapEvent: EventEmitter<MapEvent> = new EventEmitter<MapEvent>();
 
@@ -177,13 +166,15 @@ export class MapComponent
    * @param mapControlsService Map controls handler service
    * @param arcgisService Shared arcgis service
    * @param restService SafeRestService
+   * @param apollo Apollo
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
     private mapControlsService: SafeMapControlsService,
     private arcgisService: ArcgisService,
-    private restService: SafeRestService
+    private restService: SafeRestService,
+    private apollo: Apollo
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -391,7 +382,7 @@ export class MapComponent
       worldCopyJump,
       zoomControl,
       arcGisWebMap,
-      // layers,
+      layers,
       controls,
     } = this.extractSettings();
 
@@ -421,6 +412,16 @@ export class MapComponent
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(basemap);
+
+    if (layers?.length) {
+      this.setUpLayers(layers);
+      // Add legend control
+      this.mapControlsService.getLegendControl(
+        this.map,
+        this.layers,
+        this.extractSettings().controls.legend
+      );
+    }
 
     // Add zoom control
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
@@ -559,9 +560,9 @@ export class MapComponent
   /**
    * Setup and draw layers on map and sets the baseTree.
    *
-   * @param layerSettings layerSettings from saved edit layer info
+   * @param layerIds layerIds from saved edit layer info
    */
-  private async setUpLayers(layerSettings: any[]) {
+  private async setUpLayers(layerIds: string[]) {
     this.layersTree = [];
 
     this.basemap = L.tileLayer(
@@ -626,7 +627,7 @@ export class MapComponent
     };
 
     const layers = [
-      await Layer.formatLayerSettings(layerSettings, this.restService),
+      await Layer.createLayerFrom(layerIds, this.restService, this.apollo),
     ];
 
     // Add each layer to the tree

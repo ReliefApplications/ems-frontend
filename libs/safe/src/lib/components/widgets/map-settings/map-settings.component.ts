@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { createMapWidgetFormGroup } from './map-forms';
 import { UntypedFormGroup } from '@angular/forms';
 import {
@@ -13,7 +6,7 @@ import {
   MapEvent,
   MapEventType,
 } from '../../ui/map/interfaces/map.interface';
-import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /** Component for the map widget settings */
@@ -24,15 +17,10 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 })
 export class SafeMapSettingsComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
   public currentTab: 'parameters' | 'layers' | null = 'parameters';
   public mapSettings!: MapConstructorSettings;
-  public layerSettings: BehaviorSubject<any[] | null> = new BehaviorSubject<
-    any[] | null
-  >(null);
-  public layerSettings$: Observable<any[] | null> =
-    this.layerSettings.asObservable();
 
   // === REACTIVE FORM ===
   tileForm: UntypedFormGroup | undefined;
@@ -51,12 +39,6 @@ export class SafeMapSettingsComponent
     super();
   }
 
-  ngAfterViewInit(): void {
-    if (this.tileForm?.get('layers')?.value?.length) {
-      this.layerSettings.next(this.tileForm?.get('layers')?.value);
-    }
-  }
-
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     this.tileForm = createMapWidgetFormGroup(this.tile.id, this.tile.settings);
@@ -67,6 +49,7 @@ export class SafeMapSettingsComponent
       initialState: this.tileForm.get('initialState')?.value,
       controls: this.tileForm.value.controls,
       arcGisWebMap: this.tileForm.value.arcGisWebMap,
+      layers: this.tileForm.value.layers,
     };
     this.updateMapSettings(defaultMapSettings);
     this.setUpFormListeners();

@@ -21,8 +21,21 @@ import { IconName } from './const/fa-icons';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { LegendDefinition } from './interfaces/layer-legend.type';
 import { SafeRestService } from '../../../services/rest/rest.service';
-import { from, lastValueFrom, map, mergeMap, toArray } from 'rxjs';
-import { LayerTypes } from '../../../models/layer.model';
+import {
+  forkJoin,
+  from,
+  lastValueFrom,
+  map,
+  mergeMap,
+  of,
+  switchMap,
+  toArray,
+} from 'rxjs';
+import {
+  GetLayersQueryResponse,
+  GET_LAYERS,
+} from '../../../services/map/graphql/queries';
+import { Apollo } from 'apollo-angular';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 type ChildLayer = { object: Layer; layer?: L.Layer };
@@ -207,34 +220,63 @@ export class Layer {
   /**
    * Format given settings for Layer class
    *
-   * @param layerSettings layer settings saved from the layer editor
+   * @param layerIds layer settings saved from the layer editor
    * @param restService rest service to get the geojson
+   * @param apollo Apollo
    * @returns Observable of LayerSettingsI
    */
-  public static async formatLayerSettings(
-    layerSettings: any,
-    restService: SafeRestService
+  public static async createLayerFrom(
+    layerIds: string[],
+    restService: SafeRestService,
+    apollo: Apollo
   ): Promise<Layer> {
     const formattedLayerSettings = await lastValueFrom(
-      from(layerSettings).pipe(
-        mergeMap((ls: any) => {
-          const capitalizeType = ls.type.replace(
-            /^./g,
-            ls.type[0].toUpperCase()
-          );
-          return restService.get(
-            `${
-              restService.apiUrl
-            }/gis/feature?type=${capitalizeType}&tolerance=${0.9}&highquality=${true}`
-          );
-        }),
-        toArray(),
-        map((geojson: any[]) => ({
-          name: 'group layers',
-          type: 'group',
-          children: this.getLayerSettings(layerSettings, geojson),
-        }))
-      )
+      apollo
+        .query<GetLayersQueryResponse>({
+          query: GET_LAYERS,
+        })
+        .pipe(
+          // Get the layer info from the layers where the id is included in the given layerIds
+          switchMap((response) =>
+            from(
+              response.data.layers.filter((layer) =>
+                layerIds.includes(layer.id)
+              )
+            )
+          ),
+          // Then go layer by layer to create the layerSettings object
+          mergeMap((layerInfo: any) => {
+            // No type yet, set to Polygon by default
+            const capitalizeType = layerInfo.type
+              ? layerInfo.type.replace(/^./g, layerInfo.type[0].toUpperCase())
+              : 'Polygon';
+            // Get the current layerInfo plus it's geojson
+            return forkJoin({
+              layer: of(layerInfo),
+              geojson: restService.get(
+                `${
+                  restService.apiUrl
+                }/gis/feature?type=${capitalizeType}&tolerance=${0.9}&highquality=${true}`
+              ),
+            });
+          }),
+          // Destructure layer information to have all data at the same level
+          map((mergedLayerInfo) => ({
+            ...mergedLayerInfo.layer,
+            geojson: mergedLayerInfo.geojson,
+          })),
+          // Get them into an array after all pipes are done
+          toArray(),
+          // And set those layers into the children of our hardcoded layer group
+          // @TODO it would be mapped later onto it's current layer type
+          map((mergedLayerInfo: any[]) => {
+            return {
+              name: 'group layers',
+              type: 'group',
+              children: this.getLayerSettings(mergedLayerInfo),
+            };
+          })
+        )
     );
     return new Layer(formattedLayerSettings as LayerSettingsI);
   }
@@ -242,25 +284,34 @@ export class Layer {
   /**
    * Set the geojson to the given layer settings
    *
-   * @param layerSettings layer settings saved from the layer editor
-   * @param geojson geojson properties for each layer settings
+   * @param mergedLayerInfo layer settings saved from the layer editor
    * @returns LayerSettingsI array
    */
   private static getLayerSettings(
-    layerSettings: any[],
-    geojson: any[]
+    mergedLayerInfo: {
+      name: string;
+      id: string;
+      geojson: any;
+      // These properties dont have to be like that, they are just as example
+      type?: any;
+      visibilityRangeStart?: number;
+      visibilityRangeEnd?: number;
+      opacity?: number;
+      defaultVisibility?: boolean;
+      style?: any;
+    }[]
   ): LayerSettingsI[] {
-    return layerSettings.map(
-      (ls: any, index: number) =>
+    return mergedLayerInfo.map(
+      (layerInfo) =>
         // @TODO As we complete the layer editor we will have to set those new values in these function
         // instead of the hardcoded ones
         ({
-          name: ls.name,
-          type:
-            ls.type === LayerTypes.POINT || ls.type === LayerTypes.POLYGON
-              ? 'feature'
-              : ls.type,
-          geojson: geojson[index],
+          // Currently we only have name and id in the graphql endpoint for each layer metadata
+          name: layerInfo.name,
+          id: layerInfo.id,
+          type: layerInfo.type ?? 'feature',
+          // The geojson previously fetched from the REST
+          geojson: layerInfo.geojson,
           filter: {
             condition: 'and',
             filters: [
@@ -272,9 +323,13 @@ export class Layer {
             ],
           },
           properties: {
-            visibilityRange: [ls.visibilityRangeStart, ls.visibilityRangeEnd],
-            opacity: ls.opacity,
-            visibleByDefault: ls.defaultVisibility,
+            // None of this data is available yet
+            visibilityRange: [
+              layerInfo.visibilityRangeStart ?? 2,
+              layerInfo.visibilityRangeEnd ?? 18,
+            ],
+            opacity: layerInfo.opacity ?? 1,
+            visibleByDefault: layerInfo.defaultVisibility ?? true,
             legend: {
               display: true,
               field: 'name',
@@ -289,11 +344,11 @@ export class Layer {
               style: {
                 borderColor: 'black',
                 borderWidth: 1,
-                fillOpacity: ls.opacity,
-                borderOpacity: ls.opacity,
-                fillColor: ls.style.color,
-                icon: ls.style.icon,
-                iconSize: ls.style.size,
+                fillOpacity: layerInfo.opacity ?? 1,
+                borderOpacity: layerInfo.opacity ?? 1,
+                fillColor: layerInfo.style?.color ?? 'purple',
+                icon: layerInfo.style?.icon ?? 'leaflet_default',
+                iconSize: layerInfo.style?.size ?? 24,
               },
             },
           ],

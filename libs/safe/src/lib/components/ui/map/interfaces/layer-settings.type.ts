@@ -43,6 +43,7 @@ export type GeometryTypes = 'Point' | 'Polygon' | 'LineString';
 // The other properties depend on the layer type.
 export type LayerSettingsI = {
   name: string;
+  id: string;
 } & (LayerNode | LayerGroup);
 
 // The group layer has a children property, which is an array of layers.
