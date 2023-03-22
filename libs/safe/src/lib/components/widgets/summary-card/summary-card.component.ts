@@ -32,6 +32,7 @@ const DEFAULT_PAGE_SIZE = 25;
   styleUrls: ['./summary-card.component.scss'],
 })
 export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
+  @Input() widget: any;
   @Input() header = true;
   @Input() export = true;
   @Input() settings: any = null;
@@ -241,16 +242,27 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       .getLayouts(card.resource, { ids: [card.layout], first: 1 })
       .then((res) => {
         const layouts = res.edges.map((edge) => edge.node);
-        const layout = layouts[0] || null;
-        if (!layout) {
-          console.error('error: No layout found');
+        if (layouts.length > 0) {
+          const layout = layouts[0] || null;
+          this.gridSettings = {
+            ...{ template: get(this.settings, 'template', null) }, //TO MODIFY
+            ...{ resource: card.resource },
+            ...{ layouts: layout.id },
+            ...{
+              actions: {
+                //default actions, might need to modify later
+                addRecord: false,
+                convert: true,
+                delete: true,
+                export: true,
+                history: true,
+                inlineEdition: true,
+                showDetails: true,
+                update: true,
+              },
+            },
+          };
         }
-        this.gridSettings = {
-          ...{ template: get(this.settings, 'template', null) },
-          ...{ resource: card.resource },
-          ...{ layouts: layout.id },
-        };
-        console.log('settings', this.gridSettings);
       });
     return;
   }
