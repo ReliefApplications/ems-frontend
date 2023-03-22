@@ -108,6 +108,9 @@ export class SafeApplicationService {
   /** Current environment */
   private environment: any;
 
+  /** Application custom style */
+  public customStyle?: HTMLStyleElement;
+
   /** @returns Path to download application users */
   get usersDownloadPath(): string {
     const id = this.application.getValue()?.id;
@@ -250,6 +253,10 @@ export class SafeApplicationService {
     this.applicationSubscription?.unsubscribe();
     this.notificationSubscription?.unsubscribe();
     this.lockSubscription?.unsubscribe();
+    if (this.customStyle) {
+      document.getElementsByTagName('body')[0].removeChild(this.customStyle);
+      this.customStyle = undefined;
+    }
     this.apollo
       .mutate<ToggleApplicationLockMutationResponse>({
         mutation: TOGGLE_APPLICATION_LOCK,

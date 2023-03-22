@@ -190,6 +190,7 @@ export class SettingsComponent
     }
   }
 
+  /** Opens right sidenav with custom css editor */
   onOpenStyle(): void {
     this.layoutService.setRightSidenav({
       component: CustomStyleComponent,

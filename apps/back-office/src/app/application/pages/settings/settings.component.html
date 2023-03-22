@@ -66,7 +66,14 @@
   </safe-button>
 </form>
 <!-- Styling -->
-<safe-button (click)="onOpenStyle()"> STYLING </safe-button>
+<safe-button
+  category="secondary"
+  variant="primary"
+  class="mt-2"
+  (click)="onOpenStyle()"
+>
+  {{ 'components.application.customStyling' | translate }}
+</safe-button>
 <!-- Actions -->
 <div
   *ngIf="application && (application.canUpdate || application.canDelete)"

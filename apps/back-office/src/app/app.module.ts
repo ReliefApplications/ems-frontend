@@ -108,7 +108,6 @@ export const httpTranslateLoader = (http: HttpClient) =>
     OAuthModule.forRoot(),
     GraphQLModule,
     DateInputsModule,
-    // CodeEditorModule.forRoot(),
     MatTabsModule,
     MonacoEditorModule.forRoot(),
   ],
