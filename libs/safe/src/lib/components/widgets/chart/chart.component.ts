@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import { SafeLineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { SafePieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
 import { SafeBarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component';
-import { uniq, get, groupBy } from 'lodash';
+import { uniq, get, groupBy, isNil } from 'lodash';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
@@ -192,7 +192,15 @@ export class SafeChartComponent
             const aggregationData = JSON.parse(
               JSON.stringify(data.recordsAggregation)
             );
-            if (get(this.settings, 'chart.mapping.series', null)) {
+            // Check if any of the elements has a series values that is null or undefined
+            const hasInvalidSeriesValue = aggregationData.some((x: any) =>
+              isNil(x.series)
+            );
+            // If so, ignore the series, and only use the category/value
+            if (
+              get(this.settings, 'chart.mapping.series', null) &&
+              !hasInvalidSeriesValue
+            ) {
               const groups = groupBy(aggregationData, 'series');
               const categories = uniq(
                 aggregationData.map((x: any) => x.category)
