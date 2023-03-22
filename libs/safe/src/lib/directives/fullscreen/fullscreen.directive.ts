@@ -106,9 +106,10 @@ export class FullScreenDirective
   }
 
   ngOnDestroy(): void {
-    this.renderer.removeStyle(
-      get(this.el.nativeElement, this.accessorString),
-      'background'
-    );
+    get(this.el.nativeElement, this.accessorString) &&
+      this.renderer.removeStyle(
+        get(this.el.nativeElement, this.accessorString),
+        'background'
+      );
   }
 }

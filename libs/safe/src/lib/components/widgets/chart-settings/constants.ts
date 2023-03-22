@@ -32,6 +32,11 @@ export const CHART_TYPES = [
     icon: '/assets/bar.svg',
     class: Pie,
   },
+  {
+    name: 'radar',
+    icon: '/assets/pie.svg',
+    class: Pie,
+  },
 ];
 
 /** List of available positions for the legend in charts */
