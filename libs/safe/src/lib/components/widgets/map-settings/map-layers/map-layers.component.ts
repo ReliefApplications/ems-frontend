@@ -91,6 +91,9 @@ export class MapLayersComponent
     this.fetchLayers();
   }
 
+  /**
+   * Fetch layers.
+   */
   private fetchLayers(): void {
     this.apollo
       .query<GetLayersQueryResponse>({

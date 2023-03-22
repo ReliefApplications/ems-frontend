@@ -8,6 +8,9 @@ import {
 import { Layer } from '../../../../models/layer.model';
 import { createLayerForm, LayerFormT } from '../map-forms';
 
+/**
+ *
+ */
 @Component({
   selector: 'safe-map-layer',
   templateUrl: './map-layer.component.html',

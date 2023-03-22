@@ -7,6 +7,9 @@ import { LayerPropertiesModule } from './layer-properties/layer-properties.modul
 import { LayerDatasourceModule } from './layer-datasource/layer-datasource.module';
 import { LayerFieldsModule } from './layer-fields/layer-fields.module';
 
+/**
+ *
+ */
 @NgModule({
   declarations: [MapLayerComponent],
   imports: [

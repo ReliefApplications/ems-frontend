@@ -4,7 +4,6 @@ import {
   Input,
   Output,
   EventEmitter,
-  TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { createMapWidgetFormGroup } from './map-forms';
@@ -147,6 +146,11 @@ export class SafeMapSettingsComponent
     }
   }
 
+  /**
+   * Open layer edition
+   *
+   * @param layer layer to open
+   */
   onEditLayer(layer?: Layer): void {
     console.log(layer);
     this.openedLayer = layer;
