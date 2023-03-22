@@ -8,9 +8,6 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { ApplicationSettingsComponent } from '../application-settings/application-settings.component';
-
 /**
  * The left side navigator used in the main layout
  */
@@ -38,13 +35,8 @@ export class SafeLeftSidenavComponent {
    *
    * @param environment This is the environment in which we are running the application
    * @param router The Angular Router service
-   * @param dialog Material dialog service
    */
-  constructor(
-    @Inject('environment') environment: any,
-    private router: Router,
-    public dialog: MatDialog
-  ) {
+  constructor(@Inject('environment') environment: any, private router: Router) {
     this.environment = environment;
     this.largeDevice = window.innerWidth > 1024;
   }
@@ -80,13 +72,5 @@ export class SafeLeftSidenavComponent {
   @HostListener('window:resize', ['$event'])
   onResize(event: any): void {
     this.largeDevice = event.target.innerWidth > 1024;
-  }
-
-  /** Opens application custom settings dialog */
-  onOpenSettings(): void {
-    this.dialog.open(ApplicationSettingsComponent, {
-      disableClose: true,
-      backdropClass: 'backdropBackground',
-    });
   }
 }

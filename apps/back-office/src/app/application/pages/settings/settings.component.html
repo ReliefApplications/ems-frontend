@@ -65,6 +65,8 @@
     {{ 'common.saveChanges' | translate }}
   </safe-button>
 </form>
+<!-- Styling -->
+<safe-button (click)="onOpenStyle()"> STYLING </safe-button>
 <!-- Actions -->
 <div
   *ngIf="application && (application.canUpdate || application.canDelete)"

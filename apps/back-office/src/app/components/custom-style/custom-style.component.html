@@ -1,0 +1,23 @@
+<div class="w-80 h-full flex flex-col">
+  <!-- Header -->
+  <div class="items-center p-4 border-b">
+    <div class="flex justify-between items-center mb-2">
+      <h2 class="float-left mb-0">Style</h2>
+      <safe-button
+        [isIcon]="true"
+        icon="close"
+        class="float-right"
+        (click)="onClose()"
+      >
+      </safe-button>
+    </div>
+  </div>
+  <!-- Style editor -->
+  <div class="grow overflow-y-auto">
+    <ngx-monaco-editor
+      class="h-full"
+      [options]="editorOptions"
+      [formControl]="formControl"
+    ></ngx-monaco-editor>
+  </div>
+</div>
