@@ -19,7 +19,7 @@ import {
   SafeUnsubscribeComponent,
   SafeReferenceDataService,
   PageContextT,
-  // Record,
+  Record,
 } from '@oort-front/safe';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
@@ -32,8 +32,10 @@ import {
 } from './graphql/mutations';
 import {
   GetDashboardByIdQueryResponse,
+  GetRecordByIdQueryResponse,
   GetResourceRecordsQueryResponse,
   GET_DASHBOARD_BY_ID,
+  GET_RECORD_BY_ID,
   GET_RESOURCE_RECORDS,
 } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
@@ -41,6 +43,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ContextDatasourceComponent } from './components/context-datasource/context-datasource.component';
 import { firstValueFrom } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { isEqual } from 'lodash';
 
 /**
  * Create a new the context form.
@@ -93,6 +96,7 @@ export class DashboardComponent
   public recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
   public contextForm = createContextForm();
   public refDataValueField = '';
+  public contextRecord: Record | null = null;
 
   /**
    * Dashboard page
@@ -141,6 +145,8 @@ export class DashboardComponent
           next: ({ data, loading }) => {
             if (data.dashboard) {
               this.dashboard = data.dashboard;
+              this.updateContextOptions();
+              this.initContext();
               this.canEditName =
                 (this.dashboard?.page
                   ? this.dashboard?.page?.canUpdate
@@ -179,6 +185,17 @@ export class DashboardComponent
             this.snackBar.openSnackBar(err.message, { error: true });
             this.router.navigate(['/applications']);
           },
+        });
+    });
+
+    (['element', 'record'] as const).forEach((origin) => {
+      this.contextForm
+        .get(origin)
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe((value) => {
+          if (value) {
+            this.handleContextChange(origin, value);
+          }
         });
     });
   }
@@ -510,6 +527,8 @@ export class DashboardComponent
 
     dialogRef.afterClosed().subscribe((context: PageContextT | null) => {
       if (context) {
+        if (isEqual(context, currContext)) return;
+
         this.dashboardService.updateContext(context);
         this.dashboard = {
           ...this.dashboard,
@@ -549,6 +568,73 @@ export class DashboardComponent
         this.refDataService.fetchItems(refData).then((items) => {
           this.refDataElements = items;
         });
+      });
+    }
+  }
+
+  /**
+   * Handle dashboard context change.
+   *
+   * @param type Determines if the context is an element or a record
+   * @param value id of the element or record
+   */
+  private async handleContextChange(type: 'element' | 'record', value: string) {
+    if (!this.dashboard?.page?.id) return;
+
+    // Check if there is a dashboard with the same context
+    const dashboardsWithContext = this.dashboard?.page?.contentWithContext;
+    const dashboardWithContext = dashboardsWithContext?.find((d) => {
+      if (type === 'element') return 'element' in d && d.element === value;
+      else if (type === 'record') return 'record' in d && d.record === value;
+      return false;
+    });
+
+    const urlArr = this.router.url.split('/');
+    if (dashboardWithContext) {
+      urlArr[urlArr.length - 1] = dashboardWithContext.content;
+      this.router.navigateByUrl(urlArr.join('/'));
+    } else {
+      const { data } = await this.dashboardService.createDashboardWithContext(
+        this.dashboard?.page?.id,
+        type,
+        value
+      );
+      if (!data?.addDashboardWithContext?.id) return;
+      urlArr[urlArr.length - 1] = data.addDashboardWithContext.id;
+      this.router.navigateByUrl(urlArr.join('/'));
+    }
+  }
+
+  /** Initializes the dashboard context;  */
+  private initContext() {
+    if (!this.dashboard?.page?.context || !this.dashboard?.id) return;
+    // Checks if the dashboard has context attached to it
+    const contentWithContext = this.dashboard?.page?.contentWithContext || [];
+    const id = this.dashboard.id;
+    const dContext = contentWithContext.find((c) => c.content === id);
+
+    if (!dContext) return;
+
+    // If it has updated the form
+    if ('element' in dContext)
+      this.contextForm.patchValue({
+        element: dContext.element,
+      });
+    else if ('record' in dContext) {
+      this.contextForm.patchValue({
+        record: dContext.record,
+      });
+
+      // Get record by id
+      firstValueFrom(
+        this.apollo.query<GetRecordByIdQueryResponse>({
+          query: GET_RECORD_BY_ID,
+          variables: {
+            id: dContext.record,
+          },
+        })
+      ).then(({ data }) => {
+        this.contextRecord = data.record;
       });
     }
   }

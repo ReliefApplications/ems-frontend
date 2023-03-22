@@ -76,4 +76,15 @@ export interface Page {
   canUpdate?: boolean;
   canDelete?: boolean;
   context?: PageContextT;
+  contentWithContext?: ((
+    | {
+        // The element string is the value for the value field of the refData
+        element: string;
+      }
+    | {
+        record: string;
+      }
+  ) & {
+    content: string;
+  })[];
 }

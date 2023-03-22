@@ -1,5 +1,6 @@
 import { gql } from 'apollo-angular';
 import { Dashboard } from '../../../models/dashboard.model';
+import { Page } from '../../../models/page.model';
 
 // === EDIT DASHBOARD ===
 
@@ -38,7 +39,45 @@ export const EDIT_DASHBOARD = gql`
   }
 `;
 
-/** Model for EditiDashboardMutationResponse object */
+/** Model for EditDashboardMutationResponse object */
 export interface EditDashboardMutationResponse {
   editDashboard: Dashboard;
+}
+
+/** GraphQL mutation for updating the context of a Page */
+export const UPDATE_PAGE_CONTEXT = gql`
+  mutation editPageContext($id: ID!, $context: PageContextInputType!) {
+    editPageContext(id: $id, context: $context) {
+      id
+      context
+    }
+  }
+`;
+
+/** Model for EditPageContextMutationResponse object */
+export interface EditPageContextMutationResponse {
+  editPageContext: Pick<Page, 'context' | 'id'>;
+}
+
+/** GraphQL mutation for creating a dashboard with context */
+export const CREATE_DASHBOARD_WITH_CONTEXT = gql`
+  mutation createDashboardWithContext(
+    $page: ID!
+    $element: String
+    $record: ID
+  ) {
+    addDashboardWithContext(page: $page, element: $element, record: $record) {
+      id
+      structure
+      page {
+        id
+        context
+      }
+    }
+  }
+`;
+
+/** Model for CreateDashboardWithContextMutationResponse object */
+export interface CreateDashboardWithContextMutationResponse {
+  addDashboardWithContext: Pick<Dashboard, 'id' | 'structure' | 'page'>;
 }

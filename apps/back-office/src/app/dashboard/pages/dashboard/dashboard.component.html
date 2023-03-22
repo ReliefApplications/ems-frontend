@@ -90,14 +90,16 @@
         </ng-template>
       </div>
     </div>
-    <span [formGroup]="contextForm">
+    <span>
       <!-- Selection of record -->
       <mat-form-field
+        [formGroup]="contextForm"
         appearance="outline"
         *ngIf="
           dashboard.page &&
           dashboard.page.context &&
-          $any(dashboard.page.context).resource
+          $any(dashboard.page.context).resource &&
+          recordsQuery
         "
       >
         <mat-label>{{ 'common.record.one' | translate }}</mat-label>
@@ -107,6 +109,7 @@
           path="records"
           valueField="id"
           textField="data.{{ dashboard.page.context.displayField }}"
+          [selectedElements]="contextRecord ? [contextRecord] : []"
         >
         </safe-graphql-select>
       </mat-form-field>
