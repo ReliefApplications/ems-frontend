@@ -17,8 +17,8 @@ import {
   SafeAuthService,
   Application,
   SafeUnsubscribeComponent,
-  DashboardContextT,
   SafeReferenceDataService,
+  PageContextT,
   // Record,
 } from '@oort-front/safe';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
@@ -501,18 +501,22 @@ export class DashboardComponent
   /** Opens modal for context dataset selection */
   public async selectContextDatasource() {
     const currContext =
-      (await firstValueFrom(this.dashboardService.dashboard$))?.context ?? null;
+      (await firstValueFrom(this.dashboardService.dashboard$))?.page?.context ??
+      null;
 
     const dialogRef = this.dialog.open(ContextDatasourceComponent, {
       data: currContext,
     });
 
-    dialogRef.afterClosed().subscribe((context: DashboardContextT | null) => {
+    dialogRef.afterClosed().subscribe((context: PageContextT | null) => {
       if (context) {
         this.dashboardService.updateContext(context);
         this.dashboard = {
           ...this.dashboard,
-          context,
+          page: {
+            ...this.dashboard?.page,
+            context,
+          },
         };
 
         this.updateContextOptions();
@@ -525,7 +529,7 @@ export class DashboardComponent
    * Loads elements from reference data or records from resource.
    */
   private updateContextOptions() {
-    const context = this.dashboard?.context;
+    const context = this.dashboard?.page?.context;
     if (!context) return;
 
     if ('resource' in context) {
@@ -547,27 +551,5 @@ export class DashboardComponent
         });
       });
     }
-  }
-
-  /**
-   * Changes the query according to search text
-   *
-   * @param search Search text from the graphql select
-   */
-  public onRecordSearchChange(search: string): void {
-    this.recordsQuery.refetch({
-      first: ITEMS_PER_PAGE,
-      sortField: `data.${search}`,
-      filter: {
-        logic: 'and',
-        filters: [
-          {
-            field: 'name',
-            operator: 'contains',
-            value: `data.${search}`,
-          },
-        ],
-      },
-    });
   }
 }

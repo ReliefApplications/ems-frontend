@@ -198,6 +198,7 @@ export class SafeGraphQLSelectComponent
   @Input() query!: QueryRef<any>;
 
   private queryName!: string;
+  private queryChange$ = new Subject<void>();
   @Input() path = '';
   @Input() selectedElements: any[] = [];
   public elements = new BehaviorSubject<any[]>([]);
@@ -290,7 +291,7 @@ export class SafeGraphQLSelectComponent
   ngOnInit(): void {
     this.elements$ = this.elements.asObservable();
     this.query.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$), takeUntil(this.queryChange$))
       .subscribe(({ data, loading }) => {
         this.queryName = Object.keys(data)[0];
         this.updateValues(data, loading);
@@ -322,27 +323,53 @@ export class SafeGraphQLSelectComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // TODO(FIX): Check why updating the query does not work
+    if (changes.query && changes.query.previousValue) {
+      // Unsubscribe from the old query
+      this.queryChange$.next();
 
-    // check if the query has changed
-    // if so, reset the loading and pageInfo states
-    if (changes.query) {
+      // Reset the loading and pageInfo states
       this.loading = true;
       this.pageInfo = {
         endCursor: '',
         hasNextPage: true,
       };
-    }
 
-    const elements = this.elements.getValue();
-    const selectedElements = this.selectedElements.filter(
-      (selectedElement) =>
-        selectedElement &&
-        !elements.find(
-          (node) => node[this.valueField] === selectedElement[this.valueField]
-        )
-    );
-    this.elements.next([...selectedElements, ...elements]);
+      // Clear the cached elements
+      this.cachedElements = [];
+
+      // Clear the selected elements
+      this.selectedElements = [];
+
+      // Clear the elements
+      this.elements.next([]);
+
+      // Clear the search control
+      this.searchControl.setValue('');
+
+      // Clear the form control
+      this.ngControl.control?.setValue(null);
+
+      // Emit the selection change
+      this.selectionChange.emit(null);
+
+      // Subscribe to the new query
+      this.query.valueChanges
+        .pipe(takeUntil(this.destroy$), takeUntil(this.queryChange$))
+        .subscribe(({ data, loading }) => {
+          this.queryName = Object.keys(data)[0];
+          this.updateValues(data, loading);
+        });
+    } else {
+      const elements = this.elements.getValue();
+      const selectedElements = this.selectedElements.filter(
+        (selectedElement) =>
+          selectedElement &&
+          !elements.find(
+            (node) => node[this.valueField] === selectedElement[this.valueField]
+          )
+      );
+      this.elements.next([...selectedElements, ...elements]);
+    }
   }
 
   override ngOnDestroy(): void {

@@ -15,7 +15,7 @@ import {
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import {
-  DashboardContextT,
+  PageContextT,
   ReferenceData,
   Resource,
   SafeGraphQLSelectComponent,
@@ -40,12 +40,12 @@ import {
 const ITEMS_PER_PAGE = 10;
 
 /**
- * Create a form group for the dashboard context datasource selection
+ * Create a form group for the page context datasource selection
  *
- * @param data the initial dashboard context
+ * @param data the initial page context
  * @returns the form group
  */
-const createContextDatasourceForm = (data?: DashboardContextT) => {
+const createContextDatasourceForm = (data?: PageContextT) => {
   const origin =
     data && 'resource' in data ? 'resource' : data ? 'refData' : 'resource';
 
@@ -112,7 +112,7 @@ export class ContextDatasourceComponent
    */
   constructor(
     private apollo: Apollo,
-    @Inject(MAT_DIALOG_DATA) public data: DashboardContextT,
+    @Inject(MAT_DIALOG_DATA) public data: PageContextT,
     public dialogRef: MatDialogRef<ContextDatasourceComponent>
   ) {
     super();
@@ -264,7 +264,7 @@ export class ContextDatasourceComponent
     if (!formValue.displayField || !formValue.origin || noResource || noRefData)
       return;
 
-    const context: DashboardContextT =
+    const context: PageContextT =
       formValue.origin === 'resource'
         ? {
             resource: this.resource?.id ?? '',

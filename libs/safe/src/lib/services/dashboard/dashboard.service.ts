@@ -1,9 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
-import {
-  Dashboard,
-  DashboardContextT,
-  WIDGET_TYPES,
-} from '../../models/dashboard.model';
+import { Dashboard, WIDGET_TYPES } from '../../models/dashboard.model';
+import { PageContextT } from '../../models/page.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import {
@@ -171,16 +168,19 @@ export class SafeDashboardService {
   }
 
   /**
-   * Updates the context of the dashboard.
+   * Updates the context of the page.
    *
-   * @param context The new context of the dashboard
+   * @param context The new context of the page
    */
-  public updateContext(context: DashboardContextT): void {
+  public updateContext(context: PageContextT): void {
     const dashboard = this.dashboard.getValue();
     if (dashboard) {
       this.dashboard.next({
         ...dashboard,
-        context,
+        page: {
+          ...dashboard.page,
+          context,
+        },
       });
     }
 

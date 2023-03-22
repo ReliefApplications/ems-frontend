@@ -38,10 +38,10 @@
         <safe-button
           variant="grey"
           [isIcon]="true"
-          [icon]="dashboard.context ? 'cached' : 'add'"
+          [icon]="dashboard.page?.context ? 'cached' : 'add'"
           (click)="selectContextDatasource()"
           [matTooltip]="
-            (dashboard.context
+            (dashboard.page?.context
               ? 'models.dashboard.context.datasource.update'
               : 'models.dashboard.context.datasource.set'
             ) | translate
@@ -94,7 +94,11 @@
       <!-- Selection of record -->
       <mat-form-field
         appearance="outline"
-        *ngIf="dashboard.context && $any(dashboard.context).resource"
+        *ngIf="
+          dashboard.page &&
+          dashboard.page.context &&
+          $any(dashboard.page.context).resource
+        "
       >
         <mat-label>{{ 'common.record.one' | translate }}</mat-label>
         <safe-graphql-select
@@ -102,7 +106,7 @@
           formControlName="record"
           path="records"
           valueField="id"
-          textField="data.{{ dashboard.context.displayField }}"
+          textField="data.{{ dashboard.page.context.displayField }}"
         >
         </safe-graphql-select>
       </mat-form-field>
@@ -110,7 +114,11 @@
       <!-- Selection of element from reference data -->
       <mat-form-field
         appearance="outline"
-        *ngIf="dashboard.context && $any(dashboard.context).refData"
+        *ngIf="
+          dashboard.page &&
+          dashboard.page.context &&
+          $any(dashboard.page.context).refData
+        "
       >
         <mat-label>{{
           'models.dashboard.context.refData.element' | translate
@@ -120,7 +128,7 @@
             *ngFor="let element of refDataElements"
             [value]="element[refDataValueField]"
           >
-            {{ element[dashboard.context.displayField] }}
+            {{ element[dashboard.page.context.displayField] }}
           </mat-option>
         </mat-select>
       </mat-form-field>
