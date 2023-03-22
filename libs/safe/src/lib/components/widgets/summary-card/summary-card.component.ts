@@ -36,7 +36,9 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   @Input() export = true;
   @Input() settings: any = null;
 
-  public displayMode = '';
+  public gridSettings: any = null;
+
+  public displayMode = 'card';
   // === GRID ===
   public colsNumber = MAX_COL_SPAN;
 
@@ -111,6 +113,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       this.cards = this.settings.cards;
     }
     this.colsNumber = this.setColsNumber(window.innerWidth);
+    this.setupGridSettings();
   }
 
   ngAfterViewInit(): void {
@@ -225,6 +228,31 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
           }
         }
       });
+  }
+
+  /**
+   * mdr
+   */
+  private async setupGridSettings() {
+    const [card] = this.settings.cards;
+    if (!card) return;
+
+    this.gridLayoutService
+      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
+      .then((res) => {
+        const layouts = res.edges.map((edge) => edge.node);
+        const layout = layouts[0] || null;
+        if (!layout) {
+          console.error('error: No layout found');
+        }
+        this.gridSettings = {
+          ...{ template: get(this.settings, 'template', null) },
+          ...{ resource: card.resource },
+          ...{ layouts: layout.id },
+        };
+        console.log('settings', this.gridSettings);
+      });
+    return;
   }
 
   /**

@@ -9,6 +9,7 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { SafeGridWidgetModule } from '../grid/grid.module';
 
 /** Summary Card Widget Module */
 @NgModule({
@@ -19,6 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
     SafeButtonModule,
     PDFExportModule,
     SummaryCardItemModule,
+    SafeGridWidgetModule,
     IndicatorsModule,
     FormsModule,
     MatFormFieldModule,
