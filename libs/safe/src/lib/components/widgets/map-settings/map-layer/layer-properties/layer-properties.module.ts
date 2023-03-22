@@ -5,9 +5,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 import { MatSliderModule } from '@angular/material/slider';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 
 /**
  * Map layer properties module.
@@ -21,9 +21,9 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     MatFormFieldModule,
     MatInputModule,
-    MatCheckboxModule,
     MatSelectModule,
     MatSliderModule,
+    MatSlideToggleModule,
   ],
   exports: [LayerPropertiesComponent],
 })

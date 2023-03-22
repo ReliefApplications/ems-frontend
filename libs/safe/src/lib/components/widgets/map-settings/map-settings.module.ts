@@ -11,6 +11,8 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { MapModule } from '../../ui/map/map.module';
+import { SafeDividerModule } from '../../ui/divider/divider.module';
+import { MapLayerModule } from './map-layer/map-layer.module';
 
 /** Module for map settings component */
 @NgModule({
@@ -28,6 +30,8 @@ import { MapModule } from '../../ui/map/map.module';
     MatSidenavModule,
     MapModule,
     SafeButtonModule,
+    SafeDividerModule,
+    MapLayerModule,
   ],
   exports: [SafeMapSettingsComponent],
 })

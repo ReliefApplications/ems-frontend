@@ -1,0 +1,40 @@
+<ng-template #layerNavigationTemplate>
+  <safe-button
+    icon="map"
+    [attr.data-selected]="currentTab === 'parameters'"
+    (click)="currentTab = 'parameters'"
+  >
+    {{ 'components.widget.settings.map.edit.layerProperties' | translate }}
+  </safe-button>
+  <safe-button
+    icon="storage"
+    [attr.data-selected]="currentTab === 'datasource'"
+    (click)="currentTab = 'datasource'"
+  >
+    {{ 'components.widget.settings.map.edit.layerDatasource' | translate }}
+  </safe-button>
+  <safe-button
+    icon="map"
+    [attr.data-selected]="currentTab === 'fields'"
+    (click)="currentTab = 'fields'"
+  >
+    {{ 'components.widget.settings.map.edit.fields' | translate }}
+  </safe-button>
+</ng-template>
+
+<ng-template #layerSettingsTemplate>
+  <div [ngSwitch]="currentTab">
+    <!-- Layer parameters -->
+    <ng-container *ngSwitchCase="'parameters'">
+      <safe-layer-properties [form]="form"></safe-layer-properties>
+    </ng-container>
+    <!-- Layer datasource -->
+    <ng-container *ngSwitchCase="'datasource'">
+      <safe-layer-datasource [form]="form"></safe-layer-datasource>
+    </ng-container>
+    <!-- Layer fields -->
+    <ng-container *ngSwitchCase="'fields'">
+      <safe-layer-fields></safe-layer-fields>
+    </ng-container>
+  </div>
+</ng-template>

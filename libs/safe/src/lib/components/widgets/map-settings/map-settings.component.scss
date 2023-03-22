@@ -2,7 +2,7 @@
   @apply grow flex max-w-full;
 
   mat-drawer {
-    safe-button {
+    ::ng-deep safe-button {
       @apply w-full rounded-sm text-neutral-500;
       ::ng-deep {
         .mat-button-wrapper {
@@ -11,7 +11,7 @@
       }
     }
 
-    safe-button[data-selected='true'] {
+    ::ng-deep safe-button[data-selected='true'] {
       @apply text-black bg-neutral-100;
     }
   }

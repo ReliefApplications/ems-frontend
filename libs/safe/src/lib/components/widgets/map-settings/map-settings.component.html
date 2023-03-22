@@ -15,13 +15,19 @@
     >
       {{ 'common.layers' | translate }}
     </safe-button>
+    <ng-container *ngIf="currentTab === 'layer' && layerComponent">
+      <safe-divider></safe-divider>
+      <ng-container
+        [ngTemplateOutlet]="layerComponent.layerNavigationTemplate"
+      ></ng-container>
+    </ng-container>
   </mat-drawer>
 
   <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
     <ng-container *ngIf="currentTab">
       <div
         [ngSwitch]="currentTab"
-        class="lg:basis-1/2 overflow-auto lg:max-h-full"
+        class="lg:basis-1/2 overflow-auto lg:max-h-full px-2"
       >
         <!-- MAP PARAMETERS -->
         <ng-container *ngSwitchCase="'parameters'">
@@ -36,7 +42,15 @@
           <safe-map-layers
             [form]="tileForm"
             (close)="currentTab = null"
+            (editLayer)="onEditLayer($event)"
           ></safe-map-layers>
+        </ng-container>
+        <ng-container *ngSwitchCase="'layer'">
+          <ng-container *ngIf="layerComponent">
+            <ng-container
+              [ngTemplateOutlet]="layerComponent.layerSettingsTemplate"
+            ></ng-container>
+          </ng-container>
         </ng-container>
       </div>
     </ng-container>
@@ -50,3 +64,7 @@
     </div>
   </div>
 </mat-drawer-container>
+
+<ng-container *ngIf="openedLayer">
+  <safe-map-layer *ngIf="openedLayer" [layer]="openedLayer"></safe-map-layer>
+</ng-container>
