@@ -55,7 +55,7 @@ import { SeriesSettingsModule } from '../series-settings/series-settings.module'
     SafeIconModule,
     SafePaletteControlModule,
     InputsModule,
-    SeriesSettingsModule
+    SeriesSettingsModule,
   ],
   exports: [TabDisplayComponent],
 })

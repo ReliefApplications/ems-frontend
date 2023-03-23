@@ -1,18 +1,25 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
+/**
+ *
+ */
 @Component({
   selector: 'safe-series-settings',
   templateUrl: './series-settings.component.html',
-  styleUrls: ['./series-settings.component.css']
+  styleUrls: ['./series-settings.component.css'],
 })
-export class SafeSeriesSettingsComponent implements OnChanges, OnInit{
+export class SafeSeriesSettingsComponent implements OnChanges, OnInit {
   seriesSettings!: FormGroup;
 
-  constructor(private fb: FormBuilder){
+  /**
+   *
+   * @param fb
+   */
+  constructor(private fb: FormBuilder) {
     this.seriesSettings = this.fb.group({
-      color123: ''
-    })
+      color123: '',
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -20,14 +27,17 @@ export class SafeSeriesSettingsComponent implements OnChanges, OnInit{
   }
 
   ngOnInit(): void {
-    console.log("TESTE");
+    console.log('TESTE');
     setTimeout(() => {
       console.log(this.seriesSettings);
-    }, 10000)
+    }, 10000);
   }
 
-  testing(){
-    alert("aqui");
+  /**
+   *
+   */
+  testing() {
+    alert('aqui');
     console.log(this.seriesSettings);
   }
 }

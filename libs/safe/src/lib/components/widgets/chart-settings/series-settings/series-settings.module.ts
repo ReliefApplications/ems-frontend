@@ -5,6 +5,9 @@ import { NgChartsModule } from 'ng2-charts';
 import { ColorPickerModule } from '@progress/kendo-angular-inputs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+/**
+ *
+ */
 @NgModule({
   declarations: [SafeSeriesSettingsComponent],
   imports: [
@@ -12,8 +15,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     NgChartsModule,
     FormsModule,
     ReactiveFormsModule,
-    ColorPickerModule
+    ColorPickerModule,
   ],
   exports: [SafeSeriesSettingsComponent],
 })
-export class SeriesSettingsModule { }
+export class SeriesSettingsModule {}
