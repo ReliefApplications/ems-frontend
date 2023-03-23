@@ -249,7 +249,7 @@ export class Layer {
             // No type yet, set to Polygon by default
             const capitalizeType = layerInfo.type
               ? layerInfo.type.replace(/^./g, layerInfo.type[0].toUpperCase())
-              : 'Polygon';
+              : 'Point';
             // Get the current layerInfo plus it's geojson
             return forkJoin({
               layer: of(layerInfo),
