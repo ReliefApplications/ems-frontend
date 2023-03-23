@@ -6,6 +6,10 @@ import { SafeButtonModule } from '../../../ui/button/button.module';
 import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
 import { LayerDatasourceModule } from './layer-datasource/layer-datasource.module';
 import { LayerFieldsModule } from './layer-fields/layer-fields.module';
+import { LayerAggregationModule } from './layer-aggregation/layer-aggregation.module';
+import { LayerPopupModule } from './layer-popup/layer-popup.module';
+import { LayerLabelsModule } from './layer-labels/layer-labels.module';
+import { LayerFilterModule } from './layer-filter/layer-filter.module';
 
 /**
  *
@@ -19,6 +23,10 @@ import { LayerFieldsModule } from './layer-fields/layer-fields.module';
     LayerPropertiesModule,
     LayerDatasourceModule,
     LayerFieldsModule,
+    LayerAggregationModule,
+    LayerPopupModule,
+    LayerLabelsModule,
+    LayerFilterModule,
   ],
   exports: [MapLayerComponent],
 })

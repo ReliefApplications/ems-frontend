@@ -3,7 +3,7 @@
     <safe-button
       icon="map"
       [attr.data-selected]="currentTab === 'parameters'"
-      (click)="currentTab = 'parameters'"
+      (click)="handleTabChange('parameters')"
     >
       {{ 'components.widget.settings.map.properties.title' | translate }}
     </safe-button>
@@ -11,7 +11,7 @@
     <safe-button
       icon="layers"
       [attr.data-selected]="currentTab === 'layers'"
-      (click)="currentTab = 'layers'"
+      (click)="handleTabChange('layers')"
     >
       {{ 'common.layers' | translate }}
     </safe-button>
@@ -26,8 +26,9 @@
   <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
     <ng-container *ngIf="currentTab">
       <div
+        [ngClass]="{ 'overflow-auto': currentTab !== 'layer' }"
         [ngSwitch]="currentTab"
-        class="lg:basis-1/2 overflow-auto lg:max-h-full px-2"
+        class="lg:basis-1/2 lg:max-h-full px-2"
       >
         <!-- MAP PARAMETERS -->
         <ng-container *ngSwitchCase="'parameters'">
@@ -65,6 +66,10 @@
   </div>
 </mat-drawer-container>
 
-<ng-container *ngIf="openedLayer">
-  <safe-map-layer *ngIf="openedLayer" [layer]="openedLayer"></safe-map-layer>
+<ng-container *ngIf="currentTab === 'layer'">
+  <safe-map-layer
+    [layer]="openedLayer"
+    [mapReference]="mapComponent"
+    (layerToSave)="saveLayer($event)"
+  ></safe-map-layer>
 </ng-container>

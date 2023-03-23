@@ -4,9 +4,16 @@ import {
   TemplateRef,
   ViewChild,
   OnInit,
+  Output,
+  EventEmitter,
 } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { Layer } from '../../../../models/layer.model';
 import { createLayerForm, LayerFormT } from '../map-forms';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { MapComponent } from '../../../ui/map/map.component';
 
 /**
  *
@@ -16,21 +23,96 @@ import { createLayerForm, LayerFormT } from '../map-forms';
   templateUrl: './map-layer.component.html',
   styleUrls: ['./map-layer.component.scss'],
 })
-export class MapLayerComponent implements OnInit {
+export class MapLayerComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
+  @Input() layer?: Layer;
+  @Input() mapReference!: MapComponent | undefined;
+  @Output() layerToSave = new EventEmitter<Layer>();
+
   @ViewChild('layerNavigationTemplate')
   layerNavigationTemplate!: TemplateRef<any>;
 
   @ViewChild('layerSettingsTemplate')
   layerSettingsTemplate!: TemplateRef<any>;
 
-  public currentTab: 'parameters' | 'fields' | 'datasource' | null =
-    'parameters';
+  // === MAP ===
+  public currentTab:
+    | 'parameters'
+    | 'datasource'
+    | 'filter'
+    | 'aggregation'
+    | 'popup'
+    | 'fields'
+    | 'labels'
+    | null = 'parameters';
   public form!: LayerFormT;
 
-  @Input() layer?: Layer;
+  /**
+   * Class constructor
+   *
+   * @param confirmService SafeConfirmService
+   * @param translate TranslateService
+   */
+  constructor(
+    private confirmService: SafeConfirmService,
+    private translate: TranslateService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.form = createLayerForm(this.layer);
+    this.setUpEditLayerListeners();
+  }
+
+  /**
+   * Set edit layers listeners.
+   */
+  private setUpEditLayerListeners() {
+    // Those listeners would handle any change for layer into the map component reference
+    console.log(this.mapReference);
+    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      console.log(value);
+    });
+    this.form
+      .get('type')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        console.log(value);
+      });
+  }
+
+  /**
+   * Send the current form value to save
+   */
+  onSubmit() {
+    this.layerToSave.emit(this.form.getRawValue() as Layer);
+  }
+
+  /**
+   * Custom close method of dialog.
+   * Check if the form is updated or not, and display a confirmation modal if changes detected.
+   */
+  onCancel(): void {
+    if (this.form?.pristine) {
+      this.layerToSave.emit(undefined);
+    } else {
+      const confirmDialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.close'),
+        content: this.translate.instant(
+          'components.widget.settings.close.confirmationMessage'
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'warn',
+      });
+      confirmDialogRef.afterClosed().subscribe((value: any) => {
+        if (value) {
+          this.layerToSave.emit(undefined);
+        }
+      });
+    }
   }
 }
 

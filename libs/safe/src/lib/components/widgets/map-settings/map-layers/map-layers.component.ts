@@ -132,7 +132,7 @@ export class MapLayersComponent
     //     });
     //   }
     // });
-    this.editLayer.emit();
+    this.editLayer.emit({} as Layer);
   }
 
   /**

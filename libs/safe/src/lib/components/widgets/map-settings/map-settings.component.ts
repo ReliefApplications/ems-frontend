@@ -5,6 +5,7 @@ import {
   Output,
   EventEmitter,
   ViewChild,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { createMapWidgetFormGroup } from './map-forms';
 import { UntypedFormGroup } from '@angular/forms';
@@ -17,6 +18,10 @@ import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { Layer } from '../../../models/layer.model';
 import { MapLayerComponent } from './map-layer/map-layer.component';
+import { SafeMapLayersService } from '../../../services/map/map-layers.service';
+import { SafeConfirmService } from '../../../services/confirm/confirm.service';
+import { TranslateService } from '@ngx-translate/core';
+import { MapComponent } from '../../ui/map';
 
 /** Component for the map widget settings */
 @Component({
@@ -46,6 +51,24 @@ export class SafeMapSettingsComponent
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   @ViewChild(MapLayerComponent) layerComponent?: MapLayerComponent;
+  @ViewChild(MapComponent) mapComponent?: MapComponent;
+
+  /**
+   * Class constructor
+   *
+   * @param mapLayersService SafeMapLayersService to add/edit/remove layers
+   * @param confirmService SafeConfirmService
+   * @param translate TranslateService
+   * @param cdr ChangeDetectorRef
+   */
+  constructor(
+    private mapLayersService: SafeMapLayersService,
+    private confirmService: SafeConfirmService,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
+  ) {
+    super();
+  }
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
@@ -104,6 +127,57 @@ export class SafeMapSettingsComponent
   }
 
   /**
+   * Set tab an initialize map properties if needed
+   *
+   * @param tab Tab
+   */
+  private setTab(tab: 'parameters' | 'layers' | 'layer' | null) {
+    this.currentTab = tab;
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Handle tab set logic
+   *
+   * @param selectedTab tab
+   */
+  handleTabChange(selectedTab: 'parameters' | 'layers' | 'layer' | null) {
+    if (this.currentTab === 'layer' && !this.layerComponent?.form.pristine) {
+      const confirmDialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.close'),
+        content: this.translate.instant(
+          'components.widget.settings.close.confirmationMessage'
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'warn',
+      });
+      confirmDialogRef.afterClosed().subscribe((value: any) => {
+        if (value) {
+          this.setTab(selectedTab);
+        }
+      });
+    } else {
+      this.setTab(selectedTab);
+    }
+  }
+
+  /**
+   * Update map settings
+   *
+   * @param settings new settings
+   */
+  private updateMapSettings(settings: MapConstructorSettings) {
+    if (this.mapSettings) {
+      this.mapSettings = {
+        ...this.mapSettings,
+        ...settings,
+      };
+    } else {
+      this.mapSettings = settings;
+    }
+  }
+
+  /**
    * Handle leaflet map events
    *
    * @param event leaflet map event
@@ -131,22 +205,6 @@ export class SafeMapSettingsComponent
   }
 
   /**
-   * Update map settings
-   *
-   * @param settings new settings
-   */
-  private updateMapSettings(settings: MapConstructorSettings) {
-    if (this.mapSettings) {
-      this.mapSettings = {
-        ...this.mapSettings,
-        ...settings,
-      };
-    } else {
-      this.mapSettings = settings;
-    }
-  }
-
-  /**
    * Open layer edition
    *
    * @param layer layer to open
@@ -155,5 +213,39 @@ export class SafeMapSettingsComponent
     console.log(layer);
     this.openedLayer = layer;
     this.currentTab = 'layer';
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Add or edit existing layer
+   *
+   * @param layerData layer to save
+   */
+  saveLayer(layerData?: any) {
+    if (layerData) {
+      if (layerData.id) {
+        this.mapLayersService.editLayer(layerData).subscribe({
+          next: () => {
+            // Redirect to main layers list
+            this.setTab('layers');
+          },
+          error: (err) => console.log(err),
+        });
+      } else {
+        this.mapLayersService.addLayer(layerData).subscribe({
+          next: (result) => {
+            if (result) {
+              this.tileForm?.get('layers')?.value.push(result.id);
+            }
+            // Redirect to main layers list
+            this.setTab('layers');
+          },
+          error: (err) => console.log(err),
+        });
+      }
+    } else {
+      // Redirect to main layers list
+      this.setTab('layers');
+    }
   }
 }
