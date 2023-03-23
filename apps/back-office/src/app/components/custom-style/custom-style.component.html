@@ -3,13 +3,23 @@
   <div class="items-center p-4 border-b">
     <div class="flex justify-between items-center mb-2">
       <h2 class="float-left mb-0">Style</h2>
-      <safe-button
-        [isIcon]="true"
-        icon="close"
-        class="float-right"
-        (click)="onClose()"
-      >
-      </safe-button>
+      <div class="flex">
+        <safe-button
+          [isIcon]="true"
+          icon="check"
+          class="float-right"
+          (click)="onSave()"
+          [disabled]="!applicationId"
+        >
+        </safe-button>
+        <safe-button
+          [isIcon]="true"
+          icon="close"
+          class="float-right"
+          (click)="onClose()"
+        >
+        </safe-button>
+      </div>
     </div>
   </div>
   <!-- Style editor -->
