@@ -22,6 +22,13 @@
   </safe-button>
   <safe-button
     icon="map"
+    [attr.data-selected]="currentTab === 'cluster'"
+    (click)="currentTab = 'cluster'"
+  >
+    {{ 'components.widget.settings.map.edit.cluster.cluster' | translate }}
+  </safe-button>
+  <safe-button
+    icon="map"
     [attr.data-selected]="currentTab === 'aggregation'"
     (click)="currentTab = 'aggregation'"
   >
@@ -56,18 +63,21 @@
       <!-- Layer parameters -->
       <ng-container *ngSwitchCase="'parameters'">
         <safe-layer-properties
+          [currentZoom]="currentZoom"
           [form]="form"
         ></safe-layer-properties>
       </ng-container>
       <!-- Layer datasource -->
       <ng-container *ngSwitchCase="'datasource'">
-        <safe-layer-datasource
-          [form]="form"
-        ></safe-layer-datasource>
+        <safe-layer-datasource [form]="form"></safe-layer-datasource>
       </ng-container>
       <!-- Layer filters -->
       <ng-container *ngSwitchCase="'filter'">
         <safe-layer-filter></safe-layer-filter>
+      </ng-container>
+      <!-- Layer cluster -->
+      <ng-container *ngSwitchCase="'cluster'">
+        <safe-layer-cluster></safe-layer-cluster>
       </ng-container>
       <!-- Layer aggregations -->
       <ng-container *ngSwitchCase="'aggregation'">

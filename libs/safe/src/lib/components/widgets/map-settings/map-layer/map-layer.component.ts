@@ -14,6 +14,10 @@ import { createLayerForm, LayerFormT } from '../map-forms';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { MapComponent } from '../../../ui/map/map.component';
+import {
+  MapEvent,
+  MapEventType,
+} from '../../../ui/map/interfaces/map.interface';
 
 /**
  *
@@ -42,12 +46,14 @@ export class MapLayerComponent
     | 'parameters'
     | 'datasource'
     | 'filter'
+    | 'cluster'
     | 'aggregation'
     | 'popup'
     | 'fields'
     | 'labels'
     | null = 'parameters';
   public form!: LayerFormT;
+  public currentZoom!: number;
 
   /**
    * Class constructor
@@ -64,6 +70,7 @@ export class MapLayerComponent
 
   ngOnInit(): void {
     this.form = createLayerForm(this.layer);
+    this.currentZoom = this.mapReference?.map.getZoom();
     this.setUpEditLayerListeners();
   }
 
@@ -72,7 +79,6 @@ export class MapLayerComponent
    */
   private setUpEditLayerListeners() {
     // Those listeners would handle any change for layer into the map component reference
-    console.log(this.mapReference);
     this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       console.log(value);
     });
@@ -82,6 +88,27 @@ export class MapLayerComponent
       .subscribe((value) => {
         console.log(value);
       });
+
+    this.mapReference?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (event: MapEvent) => this.handleMapEvent(event),
+    });
+  }
+
+  /**
+   * Handle leaflet map events
+   *
+   * @param event leaflet map event
+   */
+  public handleMapEvent(event: MapEvent) {
+    if (event) {
+      switch (event.type) {
+        case MapEventType.ZOOM_END:
+          this.currentZoom = event.content.zoom as number;
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   /**

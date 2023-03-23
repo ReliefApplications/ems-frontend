@@ -508,6 +508,7 @@ export class MapComponent
         minZoom,
         controls,
         arcGisWebMap,
+        layers,
       } = this.extractSettings();
 
       // If value changes for the map we would change in order to not trigger map events unnecessarily
@@ -537,6 +538,20 @@ export class MapComponent
         if (arcGisWebMap !== currentWebMap) {
           this.setWebmap(arcGisWebMap);
         }
+      }
+      // If we update the initial settings of an already loaded map component
+      // We remove previous layers
+      if (!layers?.length && this.layers.length) {
+        this.map.removeControl(this.layerControl);
+        this.layers.forEach((layer) => {
+          layer.getLayer().removeFrom(this.map);
+        });
+        this.layers = [];
+        this.layersTree = [];
+        this.layerControl = undefined;
+        // Or if there was none We add layers
+      } else if (layers?.length && !this.layers.length) {
+        this.setUpLayers(layers);
       }
 
       const currentCenter = this.map.getCenter();

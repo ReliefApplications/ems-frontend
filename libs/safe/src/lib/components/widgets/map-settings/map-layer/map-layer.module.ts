@@ -10,6 +10,7 @@ import { LayerAggregationModule } from './layer-aggregation/layer-aggregation.mo
 import { LayerPopupModule } from './layer-popup/layer-popup.module';
 import { LayerLabelsModule } from './layer-labels/layer-labels.module';
 import { LayerFilterModule } from './layer-filter/layer-filter.module';
+import { LayerClusterModule } from './layer-cluster/layer-cluster.module';
 
 /**
  *
@@ -25,6 +26,7 @@ import { LayerFilterModule } from './layer-filter/layer-filter.module';
     LayerFieldsModule,
     LayerAggregationModule,
     LayerPopupModule,
+    LayerClusterModule,
     LayerLabelsModule,
     LayerFilterModule,
   ],

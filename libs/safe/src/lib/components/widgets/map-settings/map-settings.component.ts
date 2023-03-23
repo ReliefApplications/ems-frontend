@@ -10,6 +10,7 @@ import {
 import { createMapWidgetFormGroup } from './map-forms';
 import { UntypedFormGroup } from '@angular/forms';
 import {
+  DefaultMapControls,
   MapConstructorSettings,
   MapEvent,
   MapEventType,
@@ -133,6 +134,22 @@ export class SafeMapSettingsComponent
    * @param tab Tab
    */
   private setTab(tab: 'parameters' | 'layers' | 'layer' | null) {
+    // Reset settings when switching to/from 'layer' tab
+    if (
+      (this.currentTab === 'layer' && tab !== 'layer') ||
+      (this.currentTab !== 'layer' && tab === 'layer')
+    ) {
+      this.mapSettings = {
+        basemap: this.tileForm?.value.basemap,
+        initialState: this.tileForm?.get('initialState')?.value,
+        controls:
+          tab !== 'layer' ? this.tileForm?.value.controls : DefaultMapControls,
+        arcGisWebMap: this.tileForm?.value.arcGisWebMap,
+        ...(tab !== 'layer' && {
+          layers: this.tileForm?.value.layers,
+        }),
+      };
+    }
     this.currentTab = tab;
     this.cdr.detectChanges();
   }
@@ -213,8 +230,22 @@ export class SafeMapSettingsComponent
   onEditLayer(layer?: Layer): void {
     console.log(layer);
     this.openedLayer = layer;
-    this.currentTab = 'layer';
-    this.cdr.detectChanges();
+    // We initialize the map settings to default value once we display the map layer editor
+    (this.mapComponent as MapComponent).settingsConfig = {
+      basemap: 'OSM',
+      initialState: {
+        viewpoint: {
+          center: {
+            longitude: 0,
+            latitude: 0,
+          },
+          zoom: 2,
+        },
+      },
+      controls: DefaultMapControls,
+      arcGisWebMap: 'a8c3c531be1a4615b03c45b6353ab2c8',
+    };
+    this.setTab('layer');
   }
 
   /**

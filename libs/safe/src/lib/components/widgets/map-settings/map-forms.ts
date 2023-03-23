@@ -100,7 +100,7 @@ export const createLayerForm = (value?: Layer) =>
 export const createClusterForm = (value?: any): FormGroup =>
   fb.group({
     overrideSymbol: [get(value, 'overrideSymbol', false), Validators.required],
-    symbol: [get(value, 'symbol ', '')],
+    symbol: [get(value, 'symbol ', 'leaflet_default')],
     radius: [get(value, 'radius', 80), Validators.required],
     sizeRangeStart: [get(value, 'sizeRangeStart', 2), Validators.required],
     sizeRangeEnd: [get(value, 'sizeRangeEnd', 8)],

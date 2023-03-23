@@ -1260,6 +1260,7 @@
 					"edit": {
 						"aggregation": "******",
 						"cluster": {
+							"cluster": "******",
 							"clusterSettings": "******",
 							"fields": "******",
 							"high": "******",

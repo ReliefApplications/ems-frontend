@@ -1267,6 +1267,7 @@
 					"edit": {
 						"aggregation": "@TODO",
 						"cluster": {
+							"cluster": "Cluster",
 							"clusterSettings": "Paramètres de groupes",
 							"fields": "Champs de groupes",
 							"high": "Haut",
