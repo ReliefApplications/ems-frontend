@@ -32,7 +32,7 @@ export class MapLayerComponent
   implements OnInit
 {
   @Input() layer?: Layer;
-  @Input() mapReference!: MapComponent | undefined;
+  @Input() mapComponent!: MapComponent | undefined;
   @Output() layerToSave = new EventEmitter<Layer>();
 
   @ViewChild('layerNavigationTemplate')
@@ -71,7 +71,7 @@ export class MapLayerComponent
 
   ngOnInit(): void {
     this.form = createLayerForm(this.layer);
-    this.currentZoom = this.mapReference?.map.getZoom();
+    this.currentZoom = this.mapComponent?.map.getZoom();
     this.setUpEditLayerListeners();
   }
 
@@ -90,7 +90,7 @@ export class MapLayerComponent
         console.log(value);
       });
 
-    this.mapReference?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
+    this.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
       next: (event: MapEvent) => this.handleMapEvent(event),
     });
   }

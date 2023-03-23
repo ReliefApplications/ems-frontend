@@ -133,7 +133,7 @@ export class SafeMapSettingsComponent
    *
    * @param tab Tab
    */
-  private setTab(tab: 'parameters' | 'layers' | 'layer' | null) {
+  private openTab(tab: 'parameters' | 'layers' | 'layer' | null) {
     // Reset settings when switching to/from 'layer' tab
     if (
       (this.currentTab === 'layer' && tab !== 'layer') ||
@@ -171,11 +171,11 @@ export class SafeMapSettingsComponent
       });
       confirmDialogRef.afterClosed().subscribe((value: any) => {
         if (value) {
-          this.setTab(selectedTab);
+          this.openTab(selectedTab);
         }
       });
     } else {
-      this.setTab(selectedTab);
+      this.openTab(selectedTab);
     }
   }
 
@@ -245,7 +245,7 @@ export class SafeMapSettingsComponent
       controls: DefaultMapControls,
       arcGisWebMap: 'a8c3c531be1a4615b03c45b6353ab2c8',
     };
-    this.setTab('layer');
+    this.openTab('layer');
   }
 
   /**
@@ -259,7 +259,7 @@ export class SafeMapSettingsComponent
         this.mapLayersService.editLayer(layerData).subscribe({
           next: () => {
             // Redirect to main layers list
-            this.setTab('layers');
+            this.openTab('layers');
           },
           error: (err) => console.log(err),
         });
@@ -270,14 +270,14 @@ export class SafeMapSettingsComponent
               this.tileForm?.get('layers')?.value.push(result.id);
             }
             // Redirect to main layers list
-            this.setTab('layers');
+            this.openTab('layers');
           },
           error: (err) => console.log(err),
         });
       }
     } else {
       // Redirect to main layers list
-      this.setTab('layers');
+      this.openTab('layers');
     }
   }
 }
