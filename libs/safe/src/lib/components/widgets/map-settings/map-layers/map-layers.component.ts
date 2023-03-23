@@ -127,7 +127,6 @@ export class MapLayersComponent
           next: (res) => {
             if (res) {
               this.layers.setValue([...this.layers.value, res.id]);
-              console.log(this.layers.value);
             }
           },
         });

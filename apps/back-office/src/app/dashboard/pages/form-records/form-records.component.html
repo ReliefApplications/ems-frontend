@@ -37,7 +37,7 @@
     >
       {{
         'common.downloadObject'
-          | translate: { name: 'common.record.few' | translate }
+          | translate : { name: 'common.record.few' | translate }
       }}
     </safe-button>
     <mat-menu #menu="matMenu">
@@ -55,7 +55,7 @@
     >
       {{
         'common.uploadObject'
-          | translate: { name: 'common.record.few' | translate }
+          | translate : { name: 'common.record.few' | translate }
       }}
     </safe-button>
     <ng-template
@@ -157,7 +157,7 @@
       *ngIf="loading"
       [columns]="displayedColumns"
       [actions]="true"
-    > 
+    >
     </safe-skeleton-table>
   </div>
   <mat-paginator

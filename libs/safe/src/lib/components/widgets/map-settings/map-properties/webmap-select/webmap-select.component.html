@@ -1,16 +1,16 @@
 <!-- Webmap selection -->
 <mat-form-field appearance="outline" class="p-0 w-full">
-    <mat-label>{{
-        'components.widget.settings.map.properties.webmap' | translate
-    }}</mat-label>
-    <mat-select
-        #arcGisWebMap
-        (selectionChange)="selectionOnChange($event)"
-        (openedChange)="onOpenSelect($event)"
-        [value]="value"
-        >
-        <mat-option *ngFor="let item of items" [value]="item.id">
-            {{ item.title }}
-        </mat-option>
-    </mat-select>
+  <mat-label>{{
+    'components.widget.settings.map.properties.webmap' | translate
+  }}</mat-label>
+  <mat-select
+    #arcGisWebMap
+    (selectionChange)="selectionOnChange($event)"
+    (openedChange)="onOpenSelect($event)"
+    [value]="value"
+  >
+    <mat-option *ngFor="let item of items" [value]="item.id">
+      {{ item.title }}
+    </mat-option>
+  </mat-select>
 </mat-form-field>
