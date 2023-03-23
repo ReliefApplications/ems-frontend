@@ -1544,6 +1544,18 @@
 			"type": "******"
 		},
 		"dashboard": {
+			"context": {
+				"datasource": {
+					"set": "******",
+					"title": "******",
+					"update": "******"
+				},
+				"displayField": "******",
+				"origin": "******",
+				"refData": {
+					"element": "******"
+				}
+			},
 			"share": "******"
 		},
 		"form": {

@@ -1552,6 +1552,18 @@
 			"type": "Type"
 		},
 		"dashboard": {
+			"context": {
+				"datasource": {
+					"set": "Définir la source de données contextuelle",
+					"title": "Source de données de contexte",
+					"update": "Mettre à jour la source de données contextuelle"
+				},
+				"displayField": "Champ d'affichage",
+				"origin": "Origine du contexte",
+				"refData": {
+					"element": "Élément"
+				}
+			},
 			"share": "Partager le tableau de bord"
 		},
 		"form": {
