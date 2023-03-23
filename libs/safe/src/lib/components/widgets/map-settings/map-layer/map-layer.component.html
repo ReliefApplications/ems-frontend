@@ -13,20 +13,28 @@
   >
     {{ 'components.widget.settings.map.edit.layerDatasource' | translate }}
   </safe-button>
+  <!-- todo(gis): translate -->
   <safe-button
+    icon="storage"
+    [attr.data-selected]="currentTab === 'styling'"
+    (click)="currentTab = 'styling'"
+  >
+    Styling
+  </safe-button>
+  <!-- <safe-button
     icon="map"
     [attr.data-selected]="currentTab === 'filter'"
     (click)="currentTab = 'filter'"
   >
     {{ 'components.widget.settings.map.edit.filter' | translate }}
-  </safe-button>
-  <safe-button
+  </safe-button> -->
+  <!-- <safe-button
     icon="map"
     [attr.data-selected]="currentTab === 'cluster'"
     (click)="currentTab = 'cluster'"
   >
     {{ 'components.widget.settings.map.edit.cluster.cluster' | translate }}
-  </safe-button>
+  </safe-button> -->
   <safe-button
     icon="map"
     [attr.data-selected]="currentTab === 'aggregation'"
@@ -48,13 +56,13 @@
   >
     {{ 'components.widget.settings.map.edit.fields' | translate }}
   </safe-button>
-  <safe-button
+  <!-- <safe-button
     icon="map"
     [attr.data-selected]="currentTab === 'labels'"
     (click)="currentTab = 'labels'"
   >
     {{ 'components.widget.settings.map.edit.labels' | translate }}
-  </safe-button>
+  </safe-button> -->
 </ng-template>
 
 <ng-template #layerSettingsTemplate>
@@ -70,6 +78,12 @@
       <!-- Layer datasource -->
       <ng-container *ngSwitchCase="'datasource'">
         <safe-layer-datasource [form]="form"></safe-layer-datasource>
+      </ng-container>
+      <!-- Layer styling -->
+      <ng-container *ngSwitchCase="'styling'">
+        <safe-layer-styling
+          [formGroup]="$any(form.get('layerDefinition.drawingInfo'))"
+        ></safe-layer-styling>
       </ng-container>
       <!-- Layer filters -->
       <ng-container *ngSwitchCase="'filter'">

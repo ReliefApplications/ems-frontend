@@ -21,11 +21,6 @@ const fb = new FormBuilder();
 /** Default map value */
 const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
   title: null,
-  // query: null,
-  // latitude: 0,
-  // longitude: 0,
-
-  // category: null,
   basemap: null,
   initialState: {
     viewpoint: {
@@ -36,8 +31,6 @@ const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
       zoom: 2,
     },
   },
-  // onlineLayers: [],
-  // markersRules: [],
   layers: [],
   controls: DefaultMapControls,
   arcGisWebMap: null,
@@ -53,22 +46,10 @@ export const createLayerForm = (value?: Layer) =>
   fb.group({
     // Layer properties
     id: [get(value, 'id', null)],
-    name: [get(value, 'name', null), Validators.required],
-    type: [get(value, 'type', null), Validators.required],
-    defaultVisibility: [
-      get(value, 'defaultVisibility', true),
-      Validators.required,
-    ],
-    opacity: [get(value, 'opacity', 0.8), Validators.required],
-    visibilityRangeStart: [
-      get(value, 'visibilityRangeStart', 2),
-      Validators.required,
-    ],
-    visibilityRangeEnd: [
-      get(value, 'visibilityRangeEnd', 18),
-      Validators.required,
-    ],
-
+    title: [get(value, 'title', null), Validators.required],
+    visibility: [get(value, 'visibility', true), Validators.required],
+    opacity: [get(value, 'opacity', 1), Validators.required],
+    layerDefinition: createLayerDefinitionForm(get(value, 'layerDefinition')),
     // Layer style
     style: fb.group({
       color: [get(value, 'style.color', '#0090d1')],
@@ -88,6 +69,48 @@ export const createLayerForm = (value?: Layer) =>
       layout: [get(value, 'datasource.layout', null)],
       aggregation: [get(value, 'datasource.aggregation', null)],
       refData: [get(value, 'datasource.refData', null)],
+    }),
+  });
+
+/**
+ * Create layer definition form group
+ *
+ * @param value layer definition
+ * @returns layer definition form group
+ */
+const createLayerDefinitionForm = (value?: any): FormGroup =>
+  fb.group({
+    minZoom: [get(value, 'minZoom', 2), Validators.required],
+    maxZoom: [get(value, 'maxZoom', 18), Validators.required],
+    drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
+    ...(get(value, 'featureReduction') && {
+      featureReduction: createLayerFeatureReductionForm(
+        get(value, 'featureReduction')
+      ),
+    }),
+  });
+
+/**
+ * Create layer feature reduction form
+ *
+ * @param value layer feature reduction
+ * @returns layer feature reduction form
+ */
+export const createLayerFeatureReductionForm = (value: any): FormGroup =>
+  fb.group({
+    type: [get(value, 'type')],
+  });
+
+/**
+ * Create layer drawing info form
+ *
+ * @param value layer drawing info
+ * @returns layer drawing info form
+ */
+export const createLayerDrawingInfoForm = (value: any): FormGroup =>
+  fb.group({
+    renderer: fb.group({
+      type: [get(value, 'type', 'simple'), Validators.required],
     }),
   });
 

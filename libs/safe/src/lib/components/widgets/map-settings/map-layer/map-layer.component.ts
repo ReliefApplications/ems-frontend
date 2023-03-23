@@ -51,6 +51,7 @@ export class MapLayerComponent
     | 'popup'
     | 'fields'
     | 'labels'
+    | 'styling'
     | null = 'parameters';
   public form!: LayerFormT;
   public currentZoom!: number;

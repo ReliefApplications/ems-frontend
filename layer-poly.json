@@ -1,0 +1,84 @@
+{
+  "id": "1870f24068a-layer-2",
+  "opacity": 0.31,
+  "title": "Countriestest - countriestest polygons",
+  "url": "https://services8.arcgis.com/txUUTsBLJZHY6Coo/arcgis/rest/services/countriestest/FeatureServer/0",
+  "itemId": "d9cf4b1619d14b2e9dc274164dc5ba26",
+  "layerType": "ArcGISFeatureLayer",
+  "layerDefinition": {
+    "minScale": 0,
+    "maxScale": 3730.23595,
+    "featureReduction": null,
+    "drawingInfo": {
+      "renderer": {
+        "type": "simple",
+        "symbol": {
+          "type": "esriSFS",
+          "color": [144, 168, 138, 191],
+          "outline": {
+            "type": "esriSLS",
+            "color": [0, 0, 0, 255],
+            "width": 0.75,
+            "style": "esriSLSSolid"
+          },
+          "style": "esriSFSSolid"
+        }
+      }
+    }
+  },
+  "popupInfo": {
+    "popupElements": [
+      {
+        "type": "fields",
+        "description": "SUPER TOP !",
+        "fieldInfos": [
+          {
+            "fieldName": "ISO_A3",
+            "isEditable": true,
+            "label": "test test",
+            "visible": true
+          }
+        ],
+        "title": "super"
+      }
+    ],
+    "fieldInfos": [
+      {
+        "fieldName": "ObjectId",
+        "label": "",
+        "visible": false
+      },
+      {
+        "fieldName": "ADMIN",
+        "isEditable": true,
+        "label": "ADMIN",
+        "visible": false
+      },
+      {
+        "fieldName": "ISO_A3",
+        "isEditable": true,
+        "label": "test test",
+        "visible": true
+      },
+      {
+        "fieldName": "Shape__Area",
+        "format": {
+          "digitSeparator": true,
+          "places": 2
+        },
+        "label": "Shape__Area",
+        "visible": false
+      },
+      {
+        "fieldName": "Shape__Length",
+        "format": {
+          "digitSeparator": true,
+          "places": 2
+        },
+        "label": "Shape__Length",
+        "visible": false
+      }
+    ],
+    "title": "Countriestest - countriestest polygons"
+  }
+}
