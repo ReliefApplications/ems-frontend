@@ -1,8 +1,14 @@
-import { Component, Input, OnChanges, ViewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { SafeLineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { SafePieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
 import { SafeBarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component';
-import { uniq, get, groupBy } from 'lodash';
+import { uniq, get, groupBy, isEqual } from 'lodash';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
@@ -70,37 +76,56 @@ export class SafeChartComponent
     super();
   }
 
-  /** Detect changes of the settings to reload the data. */
-  ngOnChanges(): void {
-    this.loading = true;
-    if (this.settings.resource) {
-      this.aggregationService
-        .getAggregations(this.settings.resource, {
-          ids: [get(this.settings, 'chart.aggregationId', null)],
-          first: 1,
-        })
-        .then((res) => {
-          const aggregation = res.edges[0]?.node || null;
-          if (aggregation) {
-            this.dataQuery = this.aggregationService.aggregationDataQuery(
-              this.settings.resource,
-              aggregation.id || '',
-              get(this.settings, 'chart.mapping', null)
-            );
-            if (this.dataQuery) {
-              this.getOptions();
-              this.getData();
+  ngOnChanges(changes: SimpleChanges): void {
+    const previousDatasource = {
+      resource: get(changes, 'settings.previousValue.resource'),
+      chart: {
+        aggregationId: get(
+          changes,
+          'settings.previousValue.chart.aggregationId'
+        ),
+      },
+    };
+    const currentDatasource = {
+      resource: get(changes, 'settings.currentValue.resource'),
+      chart: {
+        aggregationId: get(
+          changes,
+          'settings.currentValue.chart.aggregationId'
+        ),
+      },
+    };
+    if (!isEqual(previousDatasource, currentDatasource)) {
+      this.loading = true;
+      if (this.settings.resource) {
+        this.aggregationService
+          .getAggregations(this.settings.resource, {
+            ids: [get(this.settings, 'chart.aggregationId', null)],
+            first: 1,
+          })
+          .then((res) => {
+            const aggregation = res.edges[0]?.node || null;
+            if (aggregation) {
+              this.dataQuery = this.aggregationService.aggregationDataQuery(
+                this.settings.resource,
+                aggregation.id || '',
+                get(this.settings, 'chart.mapping', null)
+              );
+              if (this.dataQuery) {
+                this.getData();
+              } else {
+                this.loading = false;
+              }
             } else {
               this.loading = false;
             }
-          } else {
-            this.loading = false;
-          }
-        })
-        .catch(() => (this.loading = false));
-    } else {
-      this.loading = false;
+          })
+          .catch(() => (this.loading = false));
+      } else {
+        this.loading = false;
+      }
     }
+    this.getOptions();
   }
 
   /**

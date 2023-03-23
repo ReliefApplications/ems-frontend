@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
 
 /**
@@ -18,6 +18,7 @@ export class TabDisplayComponent
 {
   @Input() formGroup!: UntypedFormGroup;
   @Input() type: any;
+  public chartSettings: any;
 
   public legendPositions = LEGEND_POSITIONS;
   public titlePositions = TITLE_POSITIONS;
@@ -44,6 +45,14 @@ export class TabDisplayComponent
     sizeControl?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.onToggleStyle(''));
+    // Set the chart settings and add delay to avoid changes to be too frequent
+    this.chartSettings = this.formGroup.value;
+    this.formGroup.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe((value) => {
+        this.chartSettings = value;
+      });
   }
 
   /**
