@@ -20,6 +20,22 @@ import {
 import { IconName } from './const/fa-icons';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { LegendDefinition } from './interfaces/layer-legend.type';
+import { SafeRestService } from '../../../services/rest/rest.service';
+import {
+  forkJoin,
+  from,
+  lastValueFrom,
+  map,
+  mergeMap,
+  of,
+  switchMap,
+  toArray,
+} from 'rxjs';
+import {
+  GetLayersQueryResponse,
+  GET_LAYERS,
+} from '../../../services/map/graphql/queries';
+import { Apollo } from 'apollo-angular';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 type ChildLayer = { object: Layer; layer?: L.Layer };
@@ -138,8 +154,8 @@ export class Layer {
   private layer: L.Layer | null = null;
 
   // Global properties for the layer
-  public readonly name: string;
-  public readonly type: LayerType;
+  public name!: string;
+  public type!: LayerType;
 
   // Properties for the layer, if layer type is 'group'
   private children: ChildLayer[] = [];
@@ -201,6 +217,157 @@ export class Layer {
     }
   }
 
+  /**
+   * Format given settings for Layer class
+   *
+   * @param layerIds layer settings saved from the layer editor
+   * @param restService rest service to get the geojson
+   * @param apollo Apollo
+   * @returns Observable of LayerSettingsI
+   */
+  public static async createLayerFrom(
+    layerIds: string[],
+    restService: SafeRestService,
+    apollo: Apollo
+  ): Promise<Layer> {
+    const formattedLayerSettings = await lastValueFrom(
+      apollo
+        .query<GetLayersQueryResponse>({
+          query: GET_LAYERS,
+        })
+        .pipe(
+          // Get the layer info from the layers where the id is included in the given layerIds
+          switchMap((response) =>
+            from(
+              response.data.layers.filter((layer) =>
+                layerIds.includes(layer.id)
+              )
+            )
+          ),
+          // Then go layer by layer to create the layerSettings object
+          mergeMap((layerInfo: any) => {
+            // No type yet, set to Polygon by default
+            const capitalizeType = layerInfo.type
+              ? layerInfo.type.replace(/^./g, layerInfo.type[0].toUpperCase())
+              : 'Point';
+            // Get the current layerInfo plus it's geojson
+            return forkJoin({
+              layer: of(layerInfo),
+              geojson: restService.get(
+                `${
+                  restService.apiUrl
+                }/gis/feature?type=${capitalizeType}&tolerance=${0.9}&highquality=${true}`
+              ),
+            });
+          }),
+          // Destructure layer information to have all data at the same level
+          map((mergedLayerInfo) => ({
+            ...mergedLayerInfo.layer,
+            geojson: mergedLayerInfo.geojson,
+          })),
+          // Get them into an array after all pipes are done
+          toArray(),
+          // And set those layers into the children of our hardcoded layer group
+          // @TODO it would be mapped later onto it's current layer type
+          map((mergedLayerInfo: any[]) => {
+            return {
+              name: 'group layers',
+              type: 'group',
+              children: this.getLayerSettings(mergedLayerInfo),
+            };
+          })
+        )
+    );
+    return new Layer(formattedLayerSettings as LayerSettingsI);
+  }
+
+  /**
+   * Set the geojson to the given layer settings
+   *
+   * @param mergedLayerInfo layer settings saved from the layer editor
+   * @returns LayerSettingsI array
+   */
+  private static getLayerSettings(
+    mergedLayerInfo: {
+      name: string;
+      id: string;
+      geojson: any;
+      // These properties dont have to be like that, they are just as example
+      type?: any;
+      visibilityRangeStart?: number;
+      visibilityRangeEnd?: number;
+      opacity?: number;
+      defaultVisibility?: boolean;
+      style?: any;
+    }[]
+  ): LayerSettingsI[] {
+    return mergedLayerInfo.map(
+      (layerInfo) =>
+        // @TODO As we complete the layer editor we will have to set those new values in these function
+        // instead of the hardcoded ones
+        ({
+          // Currently we only have name and id in the graphql endpoint for each layer metadata
+          name: layerInfo.name,
+          id: layerInfo.id,
+          type: layerInfo.type ?? 'feature',
+          // The geojson previously fetched from the REST
+          geojson: layerInfo.geojson,
+          filter: {
+            condition: 'and',
+            filters: [
+              {
+                field: 'name',
+                operator: 'neq',
+                value: 'Point 1',
+              },
+            ],
+          },
+          properties: {
+            // None of this data is available yet
+            visibilityRange: [
+              layerInfo.visibilityRangeStart ?? 2,
+              layerInfo.visibilityRangeEnd ?? 18,
+            ],
+            opacity: layerInfo.opacity ?? 1,
+            visibleByDefault: layerInfo.defaultVisibility ?? true,
+            legend: {
+              display: true,
+              field: 'name',
+            },
+          },
+          styling: [
+            {
+              filter: {
+                condition: 'and',
+                filters: [],
+              },
+              style: {
+                borderColor: 'black',
+                borderWidth: 1,
+                fillOpacity: layerInfo.opacity ?? 1,
+                borderOpacity: layerInfo.opacity ?? 1,
+                fillColor: layerInfo.style?.color ?? 'purple',
+                icon: layerInfo.style?.icon ?? 'leaflet_default',
+                iconSize: layerInfo.style?.size ?? 24,
+              },
+            },
+          ],
+          labels: {
+            filter: {
+              condition: 'and',
+              filters: [],
+            },
+            label: '{{name}}',
+            style: {
+              color: '#000000',
+              fontSize: 12,
+              fontWeight: 'normal',
+            },
+          },
+        } as LayerSettingsI)
+    );
+  }
+
   /** @returns the children of the current layer */
   public getChildren() {
     return this.children;
@@ -250,6 +417,19 @@ export class Layer {
    * @param settings The settings for the layer
    */
   constructor(settings: LayerSettingsI) {
+    if (settings) {
+      this.setConfig(settings);
+    } else {
+      throw 'No settings provided';
+    }
+  }
+
+  /**
+   * Set config
+   *
+   * @param settings LayerSettings
+   */
+  private setConfig(settings: LayerSettingsI) {
     this.name = settings.name;
     this.type = settings.type as LayerType;
 
@@ -500,7 +680,10 @@ export class Layer {
         features.forEach((feature) => {
           if ('properties' in feature) {
             // check if feature is a point
-            const isPoint = feature.geometry.type === 'Point';
+            // @TODO structure sent from backend follows the feature.type structure
+            const isPoint = feature.geometry?.type
+              ? feature.geometry.type === 'Point'
+              : (feature as any).type === 'Point';
             const style = this.getFeatureStyle(feature);
             items.push({
               label: labelField ? feature.properties[labelField] ?? '' : '',

@@ -20,7 +20,7 @@ export interface MapConstructorSettings {
   minZoom?: number;
   maxZoom?: number;
   worldCopyJump?: boolean;
-  layers?: any[];
+  layers?: string[];
   pm?: any;
   pmIgnore?: boolean;
   controls: MapControls;
