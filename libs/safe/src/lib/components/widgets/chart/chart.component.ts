@@ -12,6 +12,7 @@ import { uniq, get, groupBy, isEqual } from 'lodash';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * Default file name for chart exports
@@ -32,9 +33,11 @@ export class SafeChartComponent
 {
   // === DATA ===
   public loading = true;
-  public series: any[] = [];
   public options: any = null;
   private dataQuery: any;
+
+  private series = new BehaviorSubject<any[]>([]);
+  public series$ = this.series.asObservable();
 
   public lastUpdate = '';
   public hasError = false;
@@ -201,7 +204,7 @@ export class SafeChartComponent
         if (errors) {
           this.loading = false;
           this.hasError = true;
-          this.series = [];
+          this.series.next([]);
         } else {
           this.hasError = false;
           const today = new Date();
@@ -228,31 +231,33 @@ export class SafeChartComponent
               const categories = uniq(
                 aggregationData.map((x: any) => x.category)
               );
-              this.series = Object.keys(groups).map((key) => {
-                const rawData = groups[key];
-                const returnData = Array.from(
-                  categories,
-                  (category) =>
-                    rawData.find((x) => x.category === category) || {
-                      category,
-                      field: null,
-                    }
-                );
-                return {
-                  label: key,
-                  name: key,
-                  data: returnData,
-                };
-              });
+              this.series.next(
+                Object.keys(groups).map((key) => {
+                  const rawData = groups[key];
+                  const returnData = Array.from(
+                    categories,
+                    (category) =>
+                      rawData.find((x) => x.category === category) || {
+                        category,
+                        field: null,
+                      }
+                  );
+                  return {
+                    label: key,
+                    name: key,
+                    data: returnData,
+                  };
+                })
+              );
             } else {
-              this.series = [
+              this.series.next([
                 {
                   data: aggregationData,
                 },
-              ];
+              ]);
             }
           } else {
-            this.series = data.recordsAggregation;
+            this.series.next(data.recordsAggregation);
           }
           this.loading = loading;
         }

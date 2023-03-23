@@ -1,8 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
+import { SafeChartComponent } from '../../chart/chart.component';
 
 /**
  * Display tab of the chart settings modal.
@@ -14,7 +21,7 @@ import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
 })
 export class TabDisplayComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, AfterViewInit
 {
   @Input() formGroup!: UntypedFormGroup;
   @Input() type: any;
@@ -31,6 +38,8 @@ export class TabDisplayComponent
   public get chartForm(): UntypedFormGroup {
     return this.formGroup.get('chart') as UntypedFormGroup;
   }
+
+  @ViewChild(SafeChartComponent) chartComponent!: SafeChartComponent;
 
   /**
    * Constructor of the display tab of the chart settings modal.
@@ -52,6 +61,14 @@ export class TabDisplayComponent
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value) => {
         this.chartSettings = value;
+      });
+  }
+
+  ngAfterViewInit(): void {
+    this.chartComponent.series$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((series) => {
+        console.log(series);
       });
   }
 
