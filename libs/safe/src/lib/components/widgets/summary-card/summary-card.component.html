@@ -11,39 +11,45 @@
       </mat-select>
     </mat-form-field>
   </kendo-tilelayout-item-header>
-  <safe-button
-    *ngIf="export"
-    [isIcon]="true"
-    icon="get_app"
-    class="export-button"
-    (click)="pdf.saveAs(exportName)"
-  ></safe-button>
-  <kendo-pdf-export #pdf paperSize="A4" margin="2cm" style="overflow: auto">
-    <div
-      #summaryCardGrid
-      class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
-      style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
-      *ngIf="displayMode === 'card' || settings.isDynamic === false"
-    >
-      <safe-summary-card-item
-        *ngFor="let card of cards; let i = index"
-        class="k-tilelayout-item k-card"
-        [style.order]="i"
-        style.grid-column-end="{{
-          'span ' + (card.width > colsNumber ? colsNumber : card.width)
-        }}"
-        style.grid-row-end="{{ 'span ' + card.height }}"
-        [card]="card"
+  <ng-container *ngIf="displayMode === 'card' || settings.isDynamic === false">
+    <safe-button
+      *ngIf="export && (displayMode === 'card' || settings.isDynamic === false)"
+      [isIcon]="true"
+      icon="get_app"
+      class="export-button"
+      (click)="pdf.saveAs(exportName)"
+    ></safe-button>
+    <kendo-pdf-export #pdf paperSize="A4" margin="2cm" style="overflow: auto">
+      <div
+        #summaryCardGrid
+        class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
+        style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
       >
-      </safe-summary-card-item>
-    </div>
-    <div *ngIf="displayMode === 'grid' && settings.isDynamic === true">
-      <safe-grid-widget
-        class="flex-1 h-full w-full"
-        [header]="false"
-        [settings]="gridSettings"
-        [widget]="widget"
-      ></safe-grid-widget>
-    </div>
-  </kendo-pdf-export>
+        <safe-summary-card-item
+          *ngFor="let card of cards; let i = index"
+          class="k-tilelayout-item k-card"
+          [style.order]="i"
+          style.grid-column-end="{{
+            'span ' + (card.width > colsNumber ? colsNumber : card.width)
+          }}"
+          style.grid-row-end="{{ 'span ' + card.height }}"
+          [card]="card"
+        >
+        </safe-summary-card-item>
+      </div>
+    </kendo-pdf-export>
+  </ng-container>
 </div>
+
+<ng-container *ngIf="displayMode === 'grid' && settings.isDynamic === true">
+  <div
+    class="summary-grid"
+  >
+    <safe-grid-widget
+      class="flex-auto max-h-full w-full"
+      [header]="false"
+      [settings]="gridSettings"
+      [widget]="widget"
+    ></safe-grid-widget>
+  </div>
+</ng-container>
