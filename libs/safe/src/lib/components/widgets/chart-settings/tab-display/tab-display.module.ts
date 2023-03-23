@@ -23,6 +23,7 @@ import { SafeGridModule } from '../../../ui/core-grid/grid/grid.module';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { InputsModule } from '@progress/kendo-angular-inputs';
+import { SeriesSettingsModule } from '../series-settings/series-settings.module';
 
 /**
  * Display tab of chart settings modal.
@@ -54,6 +55,7 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
     SafeIconModule,
     SafePaletteControlModule,
     InputsModule,
+    SeriesSettingsModule
   ],
   exports: [TabDisplayComponent],
 })

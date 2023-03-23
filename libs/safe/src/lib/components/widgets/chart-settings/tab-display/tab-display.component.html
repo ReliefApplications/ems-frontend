@@ -331,6 +331,25 @@
             }}</mat-slide-toggle>
           </div>
         </mat-expansion-panel>
+
+        <!-- === SERIES COLOR === -->
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ 'components.widget.settings.chart.series.title' | translate }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div 
+            *ngFor="let s of series; let i = index"
+            class="flex flex-col gap-2"
+          >
+            <p>Series{{ i+1 }}</p>
+            <safe-series-settings>
+            </safe-series-settings>
+            <br>
+          </div>
+        </mat-expansion-panel>
+
       </mat-accordion>
     </div>
     <!-- Chart preview -->

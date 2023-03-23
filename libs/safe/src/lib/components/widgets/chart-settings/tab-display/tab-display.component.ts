@@ -34,6 +34,8 @@ export class TabDisplayComponent
     28,
   ];
 
+  public series: any;
+
   /** @returns the form for the chart */
   public get chartForm(): UntypedFormGroup {
     return this.formGroup.get('chart') as UntypedFormGroup;
@@ -68,7 +70,7 @@ export class TabDisplayComponent
     this.chartComponent.series$
       .pipe(takeUntil(this.destroy$))
       .subscribe((series) => {
-        console.log(series);
+        this.series = series;
       });
   }
 
