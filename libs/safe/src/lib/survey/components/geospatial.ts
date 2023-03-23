@@ -24,6 +24,16 @@ export const init = (Survey: any, domService: DomService): void => {
       type: 'text',
     },
     category: 'Custom Questions',
+    onInit: (): void => {
+      Survey.Serializer.addProperty('geospatial', {
+        name: 'geometry',
+        type: 'dropdown',
+        category: 'general',
+        required: true,
+        default: 'Point',
+        choices: ['Point'],
+      });
+    },
     onAfterRender: (question: Question, el: HTMLElement): void => {
       // hides the input element
       const element = el.getElementsByTagName('input')[0].parentElement;
@@ -38,6 +48,7 @@ export const init = (Survey: any, domService: DomService): void => {
 
       // updates the question value when the map changes
       instance.mapChange.subscribe((res) => {
+        console.log(res);
         question.value = res;
       });
     },
