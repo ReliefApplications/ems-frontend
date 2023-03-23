@@ -3,10 +3,9 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
-type GeometryTypes = 'Point' | 'Polygon' | 'LineString';
-
 /** Leaflet */
 import * as L from 'leaflet';
+import { GeometryTypes } from '../../ui/map/interfaces/layer-settings.type';
 
 /** Component for styling leaflet layers */
 @Component({

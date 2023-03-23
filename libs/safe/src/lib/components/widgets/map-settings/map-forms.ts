@@ -14,16 +14,12 @@ import {
 import { Layer } from '../../../models/layer.model';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
-/** Interface for the maps settings */
-export interface MapSettingsI extends MapConstructorSettings {
-  layers: MapLayerI[];
-}
 
 /** Angular Form Builder */
 const fb = new FormBuilder();
 
 /** Default map value */
-const DEFAULT_MAP: Nullable<MapSettingsI> = {
+const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
   title: null,
   // query: null,
   // latitude: 0,

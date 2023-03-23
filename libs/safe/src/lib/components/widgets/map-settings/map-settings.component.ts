@@ -73,17 +73,14 @@ export class SafeMapSettingsComponent
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     this.tileForm = createMapWidgetFormGroup(this.tile.id, this.tile.settings);
-
     this.change.emit(this.tileForm);
-    this.tileForm?.valueChanges.subscribe(() => {
-      this.change.emit(this.tileForm);
-    });
 
     const defaultMapSettings: MapConstructorSettings = {
       basemap: this.tileForm.value.basemap,
       initialState: this.tileForm.get('initialState')?.value,
       controls: this.tileForm.value.controls,
       arcGisWebMap: this.tileForm.value.arcGisWebMap,
+      layers: this.tileForm.value.layers,
     };
     this.updateMapSettings(defaultMapSettings);
     this.setUpFormListeners();
@@ -94,6 +91,10 @@ export class SafeMapSettingsComponent
    */
   private setUpFormListeners() {
     if (!this.tileForm) return;
+
+    this.tileForm?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.change.emit(this.tileForm);
+    });
     this.tileForm
       .get('initialState')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
