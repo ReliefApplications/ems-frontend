@@ -50,22 +50,19 @@ export const UPDATE_PAGE_CONTEXT = gql`
     editPageContext(id: $id, context: $context) {
       id
       context
+      contentWithContext
     }
   }
 `;
 
 /** Model for EditPageContextMutationResponse object */
 export interface EditPageContextMutationResponse {
-  editPageContext: Pick<Page, 'context' | 'id'>;
+  editPageContext: Pick<Page, 'context' | 'id' | 'contentWithContext'>;
 }
 
 /** GraphQL mutation for creating a dashboard with context */
 export const CREATE_DASHBOARD_WITH_CONTEXT = gql`
-  mutation createDashboardWithContext(
-    $page: ID!
-    $element: String
-    $record: ID
-  ) {
+  mutation createDashboardWithContext($page: ID!, $element: JSON, $record: ID) {
     addDashboardWithContext(page: $page, element: $element, record: $record) {
       id
       structure

@@ -116,6 +116,7 @@
 
       <!-- Selection of element from reference data -->
       <mat-form-field
+        [formGroup]="contextForm"
         appearance="outline"
         *ngIf="
           dashboard.page &&

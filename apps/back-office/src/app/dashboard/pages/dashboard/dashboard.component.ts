@@ -53,7 +53,9 @@ import { isEqual } from 'lodash';
 const createContextForm = () =>
   new FormGroup({
     record: new FormControl<null | string>(null, [Validators.required]),
-    element: new FormControl<null | string>(null, [Validators.required]),
+    element: new FormControl<null | string | number>(null, [
+      Validators.required,
+    ]),
   });
 
 /** Default number of records fetched per page */
@@ -145,8 +147,8 @@ export class DashboardComponent
           next: ({ data, loading }) => {
             if (data.dashboard) {
               this.dashboard = data.dashboard;
-              this.updateContextOptions();
               this.initContext();
+              this.updateContextOptions();
               this.canEditName =
                 (this.dashboard?.page
                   ? this.dashboard?.page?.canUpdate
@@ -525,11 +527,11 @@ export class DashboardComponent
       data: currContext,
     });
 
-    dialogRef.afterClosed().subscribe((context: PageContextT | null) => {
+    dialogRef.afterClosed().subscribe(async (context: PageContextT | null) => {
       if (context) {
         if (isEqual(context, currContext)) return;
 
-        this.dashboardService.updateContext(context);
+        await this.dashboardService.updateContext(context);
         this.dashboard = {
           ...this.dashboard,
           page: {
@@ -538,7 +540,20 @@ export class DashboardComponent
           },
         };
 
-        this.updateContextOptions();
+        const newSource =
+          (currContext as any)?.resource !== (context as any).resource ||
+          (currContext as any)?.refData !== (context as any).refData;
+
+        const urlArr = this.router.url.split('/');
+
+        if (
+          newSource &&
+          this.dashboard?.page?.content &&
+          urlArr[urlArr.length - 1] !== this.dashboard.page.content
+        ) {
+          urlArr[urlArr.length - 1] = this.dashboard.page.content;
+          this.router.navigateByUrl(urlArr.join('/'));
+        } else this.updateContextOptions();
       }
     });
   }
@@ -578,7 +593,10 @@ export class DashboardComponent
    * @param type Determines if the context is an element or a record
    * @param value id of the element or record
    */
-  private async handleContextChange(type: 'element' | 'record', value: string) {
+  private async handleContextChange(
+    type: 'element' | 'record',
+    value: string | number
+  ) {
     if (!this.dashboard?.page?.id) return;
 
     // Check if there is a dashboard with the same context

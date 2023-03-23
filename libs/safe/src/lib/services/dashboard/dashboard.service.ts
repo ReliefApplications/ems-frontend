@@ -175,30 +175,36 @@ export class SafeDashboardService {
    * Updates the context of the page.
    *
    * @param context The new context of the page
+   * @returns promise the mutation result
    */
-  public updateContext(context: PageContextT): void {
+  public updateContext(context: PageContextT) {
     const dashboard = this.dashboard.getValue();
-    if (dashboard) {
-      this.dashboard.next({
-        ...dashboard,
-        page: {
-          ...dashboard.page,
-          context,
-        },
-      });
-    }
-
     if (!dashboard?.page?.id) return;
 
-    this.apollo
-      .mutate<EditPageContextMutationResponse>({
+    const res = firstValueFrom(
+      this.apollo.mutate<EditPageContextMutationResponse>({
         mutation: UPDATE_PAGE_CONTEXT,
         variables: {
           id: dashboard.page.id,
           context,
         },
       })
-      .subscribe();
+    );
+
+    res.then(({ data }) => {
+      if (data) {
+        this.dashboard.next({
+          ...dashboard,
+          page: {
+            ...dashboard.page,
+            context,
+            contentWithContext: data.editPageContext.contentWithContext,
+          },
+        });
+      }
+    });
+
+    return res;
   }
 
   /**
@@ -212,7 +218,7 @@ export class SafeDashboardService {
   public createDashboardWithContext(
     page: string,
     context: 'element' | 'record',
-    id: string
+    id: string | number
   ) {
     return firstValueFrom(
       this.apollo.mutate<CreateDashboardWithContextMutationResponse>({
