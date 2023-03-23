@@ -1,3 +1,4 @@
+import { IconName } from '../components/ui/map/const/fa-icons';
 /** List of available layer types in layer editor */
 export enum LayerTypes {
   POLYGON = 'polygon',
@@ -20,7 +21,26 @@ export enum BackendLayerTypes {
 /** Layer documents interface declaration */
 export interface Layer {
   id: string;
-  name?: string;
+  name: string;
   createdAt?: Date;
   modifiedAt?: Date;
+  type: string;
+  defaultVisibility: boolean;
+  opacity: number;
+  visibilityRangeStart: number;
+  visibilityRangeEnd: number;
+  // Layer style
+  style: {
+    color: string;
+    size: number;
+    icon: IconName | 'leaflet_default';
+  };
+  // Layer datasource
+  datasource: {
+    origin: any;
+    resource: any;
+    layout: any;
+    aggregation: any;
+    refData: any;
+  };
 }

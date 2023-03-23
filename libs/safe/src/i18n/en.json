@@ -1258,7 +1258,9 @@
 					"category": "Map quick layers",
 					"dataset": "Data set selection",
 					"edit": {
+						"aggregation": "Aggregation",
 						"cluster": {
+							"cluster": "Cluster",
 							"clusterSettings": "Cluster settings",
 							"fields": "Cluster fields",
 							"high": "High",
@@ -1276,9 +1278,12 @@
 							"origin": "Origin"
 						},
 						"fields": "Fields",
+						"filter": "Filter",
+						"labels": "Labels",
 						"layerDatasource": "Layer datasource",
 						"layerProperties": "Layer properties",
 						"layerStyling": "Layer styling",
+						"popup": "Pop-up",
 						"properties": {
 							"defaultVisibility": "Visible by default",
 							"opacity": "Opacity",

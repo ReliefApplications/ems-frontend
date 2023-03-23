@@ -1,14 +1,10 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, UntypedFormGroup } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MatLegacyDialog as MatDialog,
-} from '@angular/material/legacy-dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { SafeEditLayerModalComponent } from '../edit-layer-modal/edit-layer-modal.component';
 import { IconName } from '../../../ui/map/const/fa-icons';
 import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.component';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
@@ -54,6 +50,7 @@ export class MapLayersComponent
   @Input() form!: UntypedFormGroup;
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter();
+  @Output() editLayer = new EventEmitter<Layer>();
 
   /** @returns the form array for the map layers */
   get layers() {
@@ -118,20 +115,21 @@ export class MapLayersComponent
 
   /** Opens a modal to add a new layer */
   public onAddLayer() {
-    const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
-      this.dialog.open(SafeEditLayerModalComponent, { disableClose: true });
+    // const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
+    //   this.dialog.open(SafeEditLayerModalComponent, { disableClose: true });
 
-    dialogRef.afterClosed().subscribe((layer) => {
-      if (layer) {
-        this.mapLayersService.addLayer(layer).subscribe({
-          next: (res) => {
-            if (res) {
-              this.layers.setValue([...this.layers.value, res.id]);
-            }
-          },
-        });
-      }
-    });
+    // dialogRef.afterClosed().subscribe((layer) => {
+    //   if (layer) {
+    //     this.mapLayersService.addLayer(layer).subscribe({
+    //       next: (res) => {
+    //         if (res) {
+    //           this.layers.setValue([...this.layers.value, res.id]);
+    //         }
+    //       },
+    //     });
+    //   }
+    // });
+    this.editLayer.emit({} as Layer);
   }
 
   /**
@@ -157,22 +155,23 @@ export class MapLayersComponent
    */
   public onEditLayer(id: string) {
     this.mapLayersService.getLayerById(id).subscribe((layer) => {
-      const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
-        this.dialog.open(SafeEditLayerModalComponent, {
-          disableClose: true,
-          data: layer,
-        });
+      this.editLayer.emit(layer);
+      // const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
+      //   this.dialog.open(SafeEditLayerModalComponent, {
+      //     disableClose: true,
+      //     data: layer,
+      //   });
 
-      dialogRef.afterClosed().subscribe((editedLayer) => {
-        if (editedLayer) {
-          this.mapLayersService.editLayer(editedLayer).subscribe((res) => {
-            if (res) {
-              // this.layers.at(index).patchValue(res);
-              this.fetchLayers();
-            }
-          });
-        }
-      });
+      // dialogRef.afterClosed().subscribe((editedLayer) => {
+      //   if (editedLayer) {
+      //     this.mapLayersService.editLayer(editedLayer).subscribe((res) => {
+      //       if (res) {
+      //         // this.layers.at(index).patchValue(res);
+      //         this.fetchLayers();
+      //       }
+      //     });
+      //   }
+      // });
     });
   }
 

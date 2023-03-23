@@ -1258,7 +1258,9 @@
 					"category": "******",
 					"dataset": "******",
 					"edit": {
+						"aggregation": "******",
 						"cluster": {
+							"cluster": "******",
 							"clusterSettings": "******",
 							"fields": "******",
 							"high": "******",
@@ -1276,9 +1278,12 @@
 							"origin": "******"
 						},
 						"fields": "******",
+						"filter": "******",
+						"labels": "******",
 						"layerDatasource": "******",
 						"layerProperties": "******",
 						"layerStyling": "******",
+						"popup": "******",
 						"properties": {
 							"defaultVisibility": "******",
 							"opacity": "******",

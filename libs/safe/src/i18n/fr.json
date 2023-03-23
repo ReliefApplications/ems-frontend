@@ -1265,7 +1265,9 @@
 					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
 					"edit": {
+						"aggregation": "@TODO",
 						"cluster": {
+							"cluster": "Cluster",
 							"clusterSettings": "Paramètres de groupes",
 							"fields": "Champs de groupes",
 							"high": "Haut",
@@ -1283,9 +1285,12 @@
 							"origin": "Origine"
 						},
 						"fields": "Champs",
+						"filter": "@TODO",
+						"labels": "@TODO",
 						"layerDatasource": "Source de données de la couche",
 						"layerProperties": "Propriétés",
 						"layerStyling": "Styles",
+						"popup": "@TODO",
 						"properties": {
 							"defaultVisibility": "Visible par défaut",
 							"opacity": "Opacité",

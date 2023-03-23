@@ -1,0 +1,115 @@
+<ng-template #layerNavigationTemplate>
+  <safe-button
+    icon="map"
+    [attr.data-selected]="currentTab === 'parameters'"
+    (click)="currentTab = 'parameters'"
+  >
+    {{ 'components.widget.settings.map.edit.layerProperties' | translate }}
+  </safe-button>
+  <safe-button
+    icon="storage"
+    [attr.data-selected]="currentTab === 'datasource'"
+    (click)="currentTab = 'datasource'"
+  >
+    {{ 'components.widget.settings.map.edit.layerDatasource' | translate }}
+  </safe-button>
+  <safe-button
+    icon="map"
+    [attr.data-selected]="currentTab === 'filter'"
+    (click)="currentTab = 'filter'"
+  >
+    {{ 'components.widget.settings.map.edit.filter' | translate }}
+  </safe-button>
+  <safe-button
+    icon="map"
+    [attr.data-selected]="currentTab === 'cluster'"
+    (click)="currentTab = 'cluster'"
+  >
+    {{ 'components.widget.settings.map.edit.cluster.cluster' | translate }}
+  </safe-button>
+  <safe-button
+    icon="map"
+    [attr.data-selected]="currentTab === 'aggregation'"
+    (click)="currentTab = 'aggregation'"
+  >
+    {{ 'components.widget.settings.map.edit.aggregation' | translate }}
+  </safe-button>
+  <safe-button
+    icon="map"
+    [attr.data-selected]="currentTab === 'popup'"
+    (click)="currentTab = 'popup'"
+  >
+    {{ 'components.widget.settings.map.edit.popup' | translate }}
+  </safe-button>
+  <safe-button
+    icon="map"
+    [attr.data-selected]="currentTab === 'fields'"
+    (click)="currentTab = 'fields'"
+  >
+    {{ 'components.widget.settings.map.edit.fields' | translate }}
+  </safe-button>
+  <safe-button
+    icon="map"
+    [attr.data-selected]="currentTab === 'labels'"
+    (click)="currentTab = 'labels'"
+  >
+    {{ 'components.widget.settings.map.edit.labels' | translate }}
+  </safe-button>
+</ng-template>
+
+<ng-template #layerSettingsTemplate>
+  <div class="flex flex-col h-full">
+    <div class="flex-auto overflow-auto" [ngSwitch]="currentTab">
+      <!-- Layer parameters -->
+      <ng-container *ngSwitchCase="'parameters'">
+        <safe-layer-properties
+          [currentZoom]="currentZoom"
+          [form]="form"
+        ></safe-layer-properties>
+      </ng-container>
+      <!-- Layer datasource -->
+      <ng-container *ngSwitchCase="'datasource'">
+        <safe-layer-datasource [form]="form"></safe-layer-datasource>
+      </ng-container>
+      <!-- Layer filters -->
+      <ng-container *ngSwitchCase="'filter'">
+        <safe-layer-filter></safe-layer-filter>
+      </ng-container>
+      <!-- Layer cluster -->
+      <ng-container *ngSwitchCase="'cluster'">
+        <safe-layer-cluster></safe-layer-cluster>
+      </ng-container>
+      <!-- Layer aggregations -->
+      <ng-container *ngSwitchCase="'aggregation'">
+        <safe-layer-aggregation></safe-layer-aggregation>
+      </ng-container>
+      <!-- Layer popup -->
+      <ng-container *ngSwitchCase="'popup'">
+        <safe-layer-popup></safe-layer-popup>
+      </ng-container>
+      <!-- Layer fields -->
+      <ng-container *ngSwitchCase="'fields'">
+        <safe-layer-fields></safe-layer-fields>
+      </ng-container>
+      <!-- Layer labels -->
+      <ng-container *ngSwitchCase="'labels'">
+        <safe-layer-labels></safe-layer-labels>
+      </ng-container>
+    </div>
+    <!-- Layer editor actions-->
+    <div class="flex justify-end">
+      <safe-button (click)="onCancel()">
+        {{ 'common.cancel' | translate }}
+      </safe-button>
+      <safe-button
+        category="secondary"
+        variant="primary"
+        (click)="onSubmit()"
+        cdkFocusInitial
+        [disabled]="!form || !form.valid"
+      >
+        {{ (!layer ? 'common.create' : 'common.update') | translate }}
+      </safe-button>
+    </div>
+  </div>
+</ng-template>

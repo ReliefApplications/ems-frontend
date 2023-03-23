@@ -3,7 +3,7 @@
     <safe-button
       icon="map"
       [attr.data-selected]="currentTab === 'parameters'"
-      (click)="currentTab = 'parameters'"
+      (click)="handleTabChange('parameters')"
     >
       {{ 'components.widget.settings.map.properties.title' | translate }}
     </safe-button>
@@ -11,17 +11,24 @@
     <safe-button
       icon="layers"
       [attr.data-selected]="currentTab === 'layers'"
-      (click)="currentTab = 'layers'"
+      (click)="handleTabChange('layers')"
     >
       {{ 'common.layers' | translate }}
     </safe-button>
+    <ng-container *ngIf="currentTab === 'layer' && layerComponent">
+      <safe-divider></safe-divider>
+      <ng-container
+        [ngTemplateOutlet]="layerComponent.layerNavigationTemplate"
+      ></ng-container>
+    </ng-container>
   </mat-drawer>
 
   <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
     <ng-container *ngIf="currentTab">
       <div
+        [ngClass]="{ 'overflow-auto': currentTab !== 'layer' }"
         [ngSwitch]="currentTab"
-        class="lg:basis-1/2 overflow-auto lg:max-h-full"
+        class="lg:basis-1/2 lg:max-h-full px-2"
       >
         <!-- MAP PARAMETERS -->
         <ng-container *ngSwitchCase="'parameters'">
@@ -36,7 +43,15 @@
           <safe-map-layers
             [form]="tileForm"
             (close)="currentTab = null"
+            (editLayer)="onEditLayer($event)"
           ></safe-map-layers>
+        </ng-container>
+        <ng-container *ngSwitchCase="'layer'">
+          <ng-container *ngIf="layerComponent">
+            <ng-container
+              [ngTemplateOutlet]="layerComponent.layerSettingsTemplate"
+            ></ng-container>
+          </ng-container>
         </ng-container>
       </div>
     </ng-container>
@@ -50,3 +65,11 @@
     </div>
   </div>
 </mat-drawer-container>
+
+<ng-container *ngIf="currentTab === 'layer'">
+  <safe-map-layer
+    [layer]="openedLayer"
+    [mapReference]="mapComponent"
+    (layerToSave)="saveLayer($event)"
+  ></safe-map-layer>
+</ng-container>
