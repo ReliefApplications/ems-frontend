@@ -1,1 +1,22 @@
-<p>layer-aggregation works!</p>
+<div [formGroup]="formGroup">
+  <mat-form-field appearance="outline">
+    <!-- todo(gis): translate -->
+    <mat-label>Reduction</mat-label>
+    <mat-select formControlName="type">
+      <mat-option>No reduction</mat-option>
+      <mat-option *ngFor="let type of reductionTypes" [value]="type"
+        >{{ type }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div class="flex flex-col" [ngSwitch]="formGroup.value.type">
+    <div *ngSwitchCase="'cluster'">
+      <ng-container *ngTemplateOutlet="clusterRenderer"></ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #clusterRenderer>
+<!-- todo(gis): add more items there -->
+<div>cluster</div>
+</ng-template>

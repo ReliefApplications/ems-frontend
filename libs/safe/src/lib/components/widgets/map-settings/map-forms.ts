@@ -82,17 +82,29 @@ export const createLayerForm = (value?: Layer) =>
  * @param value layer definition
  * @returns layer definition form group
  */
-const createLayerDefinitionForm = (value?: any): FormGroup =>
-  fb.group({
+const createLayerDefinitionForm = (value?: any): FormGroup => {
+  const formGroup = fb.group({
     minZoom: [get(value, 'minZoom', 2), Validators.required],
     maxZoom: [get(value, 'maxZoom', 18), Validators.required],
     drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
-    ...(get(value, 'featureReduction') && {
-      featureReduction: createLayerFeatureReductionForm(
-        get(value, 'featureReduction')
-      ),
-    }),
+    featureReduction: createLayerFeatureReductionForm(
+      get(value, 'featureReduction')
+    ),
   });
+  const rendererType = formGroup.value.drawingInfo.renderer.type;
+  // Add more conditions there to disabled aggregation
+  if (rendererType === 'heatmap') {
+    formGroup.get('featureReduction')?.disable();
+  }
+  formGroup.get('drawingInfo.renderer.type')?.valueChanges.subscribe((type) => {
+    if (type === 'heatmap') {
+      formGroup.get('featureReduction')?.disable();
+    } else {
+      formGroup.get('featureReduction')?.enable();
+    }
+  });
+  return formGroup;
+};
 
 /**
  * Create layer feature reduction form
