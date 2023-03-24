@@ -6,6 +6,9 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 
+/**
+ * Layer simple renderer settings component.
+ */
 @Component({
   selector: 'safe-simple-renderer',
   standalone: true,

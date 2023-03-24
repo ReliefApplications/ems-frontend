@@ -10,6 +10,9 @@ import { FormControl } from '@angular/forms';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { IconName } from '../icon-picker.const';
 
+/**
+ * Icon picker popup component
+ */
 @Component({
   selector: 'safe-icon-picker-popup',
   templateUrl: './icon-picker-popup.component.html',
@@ -41,6 +44,11 @@ export class IconPickerPopupComponent implements OnInit {
     this.show = false;
   }
 
+  /**
+   * Select icon
+   *
+   * @param icon icon name
+   */
   select(icon: string): void {
     this.close.emit(icon);
     this.show = false;

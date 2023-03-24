@@ -203,13 +203,6 @@ export class IconPickerComponent
     }
   }
 
-  ngOnInit(): void {
-    console.log(this.ngControl);
-    // this.ngControl.valueChanges?.subscribe((value) => {
-    //   this.value = value;
-    // });
-  }
-
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched = () => {};
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
@@ -278,6 +271,9 @@ export class IconPickerComponent
     }
   }
 
+  /**
+   * Open selection of icon
+   */
   onOpenSelect(): void {
     if (!this.disabled) {
       this.showList = true;
