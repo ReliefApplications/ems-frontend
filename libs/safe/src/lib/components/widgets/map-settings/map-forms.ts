@@ -16,6 +16,7 @@ import {
   popupElement,
   popupElementType,
 } from './map-layer/layer-popup/layer-popup.interface';
+import { IconName } from '../../icon-picker/icon-picker.const';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -131,7 +132,7 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup =>
         color: [get(value, 'symbol.color', ''), Validators.required],
         type: 'fa',
         size: [get(value, 'symbol.size', 24)],
-        style: new FormControl<MapLayerI['style']['icon']>(
+        style: new FormControl<IconName>(
           get(value, 'symbol.style', 'leaflet_default')
         ),
       }),

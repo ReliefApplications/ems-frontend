@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconPickerModule } from '../../../../../icon-picker/icon-picker.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { FA_ICONS } from '../../../../../ui/map/const/fa-icons';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 
@@ -24,5 +23,4 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
 })
 export class SimpleRendererComponent {
   @Input() formGroup!: FormGroup;
-  public iconList = [...FA_ICONS];
 }

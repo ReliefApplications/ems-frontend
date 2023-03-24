@@ -1,4 +1,4 @@
-import { IconName } from '../const/fa-icons';
+import { IconName } from '../../../icon-picker/icon-picker.const';
 
 /** Interface for a layer legends */
 export type LegendDefinition =

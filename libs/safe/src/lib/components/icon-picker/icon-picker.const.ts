@@ -537,6 +537,7 @@ export const FA_ICONS = [
   'list-ol',
   'list-ul',
   'location-arrow',
+  'location-dot',
   'lock',
   'lock-open',
   'long-arrow-alt-down',
@@ -1001,16 +1002,6 @@ export const FA_ICONS = [
   'x-ray',
   'yen-sign',
   'yin-yang',
-] as const;
+];
 
 export type IconName = (typeof FA_ICONS)[number];
-
-/**
- * Gets a random icon name from the FA_ICONS array
- *
- * @returns a random icon from the FA_ICONS array
- */
-export const getRandomIcon = () => {
-  const randomIndex = Math.floor(Math.random() * FA_ICONS.length);
-  return FA_ICONS[randomIndex];
-};

@@ -1,5 +1,5 @@
 import { Geometry, FeatureCollection, Feature } from 'geojson';
-import { IconName } from '../const/fa-icons';
+import { IconName } from '../../../icon-picker/icon-picker.const';
 
 export type FeatureProperties = {
   // For circles

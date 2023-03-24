@@ -17,7 +17,7 @@ import {
   FeatureProperties,
   LayerStyle,
 } from './interfaces/layer-settings.type';
-import { IconName } from './const/fa-icons';
+import { IconName } from '../../icon-picker/icon-picker.const';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { LegendDefinition } from './interfaces/layer-legend.type';
 import { SafeRestService } from '../../../services/rest/rest.service';
