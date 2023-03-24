@@ -127,6 +127,14 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup =>
   fb.group({
     renderer: fb.group({
       type: [get(value, 'type', 'simple'), Validators.required],
+      symbol: fb.group({
+        color: [get(value, 'symbol.color', ''), Validators.required],
+        type: 'fa',
+        size: [get(value, 'symbol.size', 24)],
+        style: new FormControl<MapLayerI['style']['icon']>(
+          get(value, 'symbol.style', 'leaflet_default')
+        ),
+      }),
     }),
   });
 

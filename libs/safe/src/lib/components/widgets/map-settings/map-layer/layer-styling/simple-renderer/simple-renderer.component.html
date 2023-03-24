@@ -1,0 +1,18 @@
+<div [formGroup]="formGroup">
+  <div formGroupName="symbol" class="flex flex-col gap-y-2">
+    <!-- Symbol style -->
+    <div class="flex flex-col">
+      <mat-label class="mb-4">
+        {{ 'components.widget.settings.map.edit.cluster.symbol' | translate }}
+      </mat-label>
+      <safe-icon-picker
+        formControlName="symbol"
+        [iconList]="iconList"
+      ></safe-icon-picker>
+    </div>
+    <div class="flex flex-col">
+      <h4>Color</h4>
+      <kendo-colorpicker formControlName="color"></kendo-colorpicker>
+    </div>
+  </div>
+</div>
