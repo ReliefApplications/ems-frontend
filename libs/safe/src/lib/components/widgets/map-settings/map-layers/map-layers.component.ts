@@ -24,7 +24,7 @@ export interface MapLayerI {
   style: {
     color: string;
     size: number;
-    icon: IconName | 'leaflet_default';
+    icon: IconName | 'location-dot';
   };
   datasource: {
     origin: 'resource' | 'refData';

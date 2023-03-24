@@ -36,7 +36,7 @@ export interface Layer {
         symbol?: {
           color?: string;
           size?: number;
-          icon?: IconName | 'leaflet_default';
+          icon?: IconName | 'location-dot';
         };
       };
     };
