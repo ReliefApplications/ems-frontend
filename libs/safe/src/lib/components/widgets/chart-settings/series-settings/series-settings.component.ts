@@ -1,5 +1,11 @@
-import { Component, OnChanges, OnInit, SimpleChanges, Input } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import {
+  Component,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  Input,
+} from '@angular/core';
+import { UntypedFormGroup } from '@angular/forms';
 
 /**
  *
@@ -11,23 +17,22 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 })
 export class SafeSeriesSettingsComponent implements OnChanges, OnInit {
   @Input() formGroup!: UntypedFormGroup;
-  private fb: UntypedFormBuilder;
-  
-  constructor() {
-    this.fb = new UntypedFormBuilder();
-  }
+  /**
+   *
+   * @param fb
+   */
+  constructor() {}
 
-  
   ngOnChanges(changes: SimpleChanges): void {
     console.log(changes);
   }
 
   ngOnInit(): void {
+    console.log(this.formGroup);
   }
 
-  createSerieForm(value:any){
-    return this.fb.group({
-      test: ['null']
-    })
-  }
+  /**
+   *
+   */
+  testing() {}
 }

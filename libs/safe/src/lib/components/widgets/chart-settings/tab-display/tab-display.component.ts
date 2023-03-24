@@ -5,7 +5,11 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormGroup,
+  UntypedFormBuilder,
+} from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
@@ -45,8 +49,10 @@ export class TabDisplayComponent
 
   /**
    * Constructor of the display tab of the chart settings modal.
+   *
+   * @param fb
    */
-  constructor() {
+  constructor(public fb: UntypedFormBuilder) {
     super();
   }
 
@@ -72,7 +78,22 @@ export class TabDisplayComponent
       .subscribe((series) => {
         this.series = series;
         console.log(this.series);
+
+        const seriesForm = this.fb.group({
+          serieColor: null,
+        });
+        this.seriesFormArray.push(seriesForm);
       });
+
+    console.log(this.chartForm.get('series'));
+    console.log(this.chartForm.get('series')?.value);
+  }
+
+  /**
+   *
+   */
+  get seriesFormArray() {
+    return this.chartForm.controls['series'] as UntypedFormArray;
   }
 
   /**
