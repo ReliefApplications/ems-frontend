@@ -1,0 +1,31 @@
+<div [formGroup]="formGroup">
+  <div formGroupName="renderer">
+    <mat-form-field appearance="outline">
+      <!-- todo(gis): translate -->
+      <mat-label>Style</mat-label>
+      <mat-select formControlName="type">
+        <mat-option *ngFor="let type of rendererTypes" [value]="type"
+          >{{ type }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="flex flex-col" [ngSwitch]="formGroup.value.renderer.type">
+      <div *ngSwitchCase="'simple'">
+        <ng-container *ngTemplateOutlet="simpleRenderer"></ng-container>
+      </div>
+      <div *ngSwitchCase="'heatmap'">
+        <ng-container *ngTemplateOutlet="heatmapRenderer"></ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #simpleRenderer>
+<!-- todo(gis): add more items there -->
+<div>simple</div>
+</ng-template>
+
+<ng-template #heatmapRenderer>
+<!-- todo(gis): add more items there -->
+<div>heatmap</div>
+</ng-template>

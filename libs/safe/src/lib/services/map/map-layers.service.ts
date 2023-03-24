@@ -37,7 +37,7 @@ export class SafeMapLayersService {
       .mutate<AddLayerMutationResponse>({
         mutation: ADD_LAYER,
         variables: {
-          name: layer.name,
+          title: layer.title,
           sublayers: [],
         },
       })
@@ -65,7 +65,7 @@ export class SafeMapLayersService {
         variables: {
           id: layer.id,
           parent: layer.id,
-          name: layer.name,
+          title: layer.title,
           sublayers: [],
         },
       })

@@ -21,20 +21,27 @@ export enum BackendLayerTypes {
 /** Layer documents interface declaration */
 export interface Layer {
   id: string;
-  name: string;
+  title: string;
+  visibility: boolean;
   createdAt?: Date;
   modifiedAt?: Date;
-  type: string;
-  defaultVisibility: boolean;
-  opacity: number;
-  visibilityRangeStart: number;
-  visibilityRangeEnd: number;
-  // Layer style
-  style: {
-    color: string;
-    size: number;
-    icon: IconName | 'leaflet_default';
+  layerDefinition?: {
+    minZoom?: number;
+    maxZoom?: number;
+    featureReduction?: any;
+    // Symbol
+    drawingInfo?: {
+      renderer?: {
+        type?: string;
+        symbol?: {
+          color?: string;
+          size?: number;
+          icon?: IconName | 'leaflet_default';
+        };
+      };
+    };
   };
+  opacity: number;
   // Layer datasource
   datasource: {
     origin: any;
@@ -42,5 +49,9 @@ export interface Layer {
     layout: any;
     aggregation: any;
     refData: any;
+  };
+  popupInfo?: {
+    popupElements?: any[];
+    title?: string;
   };
 }

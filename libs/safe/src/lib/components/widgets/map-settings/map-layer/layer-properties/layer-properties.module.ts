@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LayerPropertiesComponent } from './layer-properties.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatSliderModule } from '@angular/material/slider';
@@ -21,7 +20,6 @@ import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/mat
     TranslateModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     MatSliderModule,
     MatSlideToggleModule,
   ],

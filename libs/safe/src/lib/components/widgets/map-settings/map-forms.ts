@@ -12,6 +12,10 @@ import {
   MapConstructorSettings,
 } from '../../ui/map/interfaces/map.interface';
 import { Layer } from '../../../models/layer.model';
+import {
+  popupElement,
+  popupElementType,
+} from './map-layer/layer-popup/layer-popup.interface';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -21,11 +25,6 @@ const fb = new FormBuilder();
 /** Default map value */
 const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
   title: null,
-  // query: null,
-  // latitude: 0,
-  // longitude: 0,
-
-  // category: null,
   basemap: null,
   initialState: {
     viewpoint: {
@@ -36,8 +35,6 @@ const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
       zoom: 2,
     },
   },
-  // onlineLayers: [],
-  // markersRules: [],
   layers: [],
   controls: DefaultMapControls,
   arcGisWebMap: null,
@@ -53,31 +50,19 @@ export const createLayerForm = (value?: Layer) =>
   fb.group({
     // Layer properties
     id: [get(value, 'id', null)],
-    name: [get(value, 'name', null), Validators.required],
-    type: [get(value, 'type', null), Validators.required],
-    defaultVisibility: [
-      get(value, 'defaultVisibility', true),
-      Validators.required,
-    ],
-    opacity: [get(value, 'opacity', 0.8), Validators.required],
-    visibilityRangeStart: [
-      get(value, 'visibilityRangeStart', 2),
-      Validators.required,
-    ],
-    visibilityRangeEnd: [
-      get(value, 'visibilityRangeEnd', 18),
-      Validators.required,
-    ],
-
+    title: [get(value, 'title', null), Validators.required],
+    visibility: [get(value, 'visibility', true), Validators.required],
+    opacity: [get(value, 'opacity', 1), Validators.required],
+    layerDefinition: createLayerDefinitionForm(get(value, 'layerDefinition')),
     // Layer style
-    style: fb.group({
-      color: [get(value, 'style.color', '#0090d1')],
-      size: [get(value, 'style.size', 24)],
-      icon: new FormControl<MapLayerI['style']['icon']>(
-        get(value, 'style.icon', 'leaflet_default')
-      ),
-    }),
-
+    // style: fb.group({
+    //   color: [get(value, 'style.color', '#0090d1')],
+    //   size: [get(value, 'style.size', 24)],
+    //   icon: new FormControl<MapLayerI['style']['icon']>(
+    //     get(value, 'style.icon', 'leaflet_default')
+    //   ),
+    // }),
+    popupInfo: createPopupInfoForm(get(value, 'popupInfo')),
     // Layer datasource
     datasource: fb.group({
       origin: new FormControl<MapLayerI['datasource']['origin']>(
@@ -90,6 +75,90 @@ export const createLayerForm = (value?: Layer) =>
       refData: [get(value, 'datasource.refData', null)],
     }),
   });
+
+/**
+ * Create layer definition form group
+ *
+ * @param value layer definition
+ * @returns layer definition form group
+ */
+const createLayerDefinitionForm = (value?: any): FormGroup =>
+  fb.group({
+    minZoom: [get(value, 'minZoom', 2), Validators.required],
+    maxZoom: [get(value, 'maxZoom', 18), Validators.required],
+    drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
+    ...(get(value, 'featureReduction') && {
+      featureReduction: createLayerFeatureReductionForm(
+        get(value, 'featureReduction')
+      ),
+    }),
+  });
+
+/**
+ * Create layer feature reduction form
+ *
+ * @param value layer feature reduction
+ * @returns layer feature reduction form
+ */
+export const createLayerFeatureReductionForm = (value: any): FormGroup =>
+  fb.group({
+    type: [get(value, 'type')],
+  });
+
+/**
+ * Create layer drawing info form
+ *
+ * @param value layer drawing info
+ * @returns layer drawing info form
+ */
+export const createLayerDrawingInfoForm = (value: any): FormGroup =>
+  fb.group({
+    renderer: fb.group({
+      type: [get(value, 'type', 'simple'), Validators.required],
+    }),
+  });
+
+/**
+ * Create popup info form group
+ *
+ * @param value popup info value
+ * @returns popup info form group
+ */
+export const createPopupInfoForm = (value: any): FormGroup =>
+  fb.group({
+    title: get(value, 'title', ''),
+    description: get(value, 'description', ''),
+    popupElements: fb.array(
+      get(value, 'popupElements', []).map((element: popupElement) =>
+        createPopupElementForm(element)
+      )
+    ),
+  });
+
+/**
+ * Create popup element form group
+ *
+ * @param value popup element value
+ * @returns popup element form group
+ */
+export const createPopupElementForm = (value: popupElement): FormGroup => {
+  switch (get(value, 'type', 'fields') as popupElementType) {
+    case 'text': {
+      return fb.group({
+        type: 'text',
+        text: get(value, 'text', ''),
+      });
+    }
+    default:
+    case 'fields': {
+      return fb.group({
+        type: 'fields',
+        title: get(value, 'title', ''),
+        description: get(value, 'description', ''),
+      });
+    }
+  }
+};
 
 /**
  * Create layer cluster form from value

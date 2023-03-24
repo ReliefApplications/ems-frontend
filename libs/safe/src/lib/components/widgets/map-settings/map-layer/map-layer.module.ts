@@ -11,9 +11,10 @@ import { LayerPopupModule } from './layer-popup/layer-popup.module';
 import { LayerLabelsModule } from './layer-labels/layer-labels.module';
 import { LayerFilterModule } from './layer-filter/layer-filter.module';
 import { LayerClusterModule } from './layer-cluster/layer-cluster.module';
+import { LayerStylingModule } from './layer-styling/layer-styling.module';
 
 /**
- *
+ * Map layer settings component.
  */
 @NgModule({
   declarations: [MapLayerComponent],
@@ -29,6 +30,7 @@ import { LayerClusterModule } from './layer-cluster/layer-cluster.module';
     LayerClusterModule,
     LayerLabelsModule,
     LayerFilterModule,
+    LayerStylingModule,
   ],
   exports: [MapLayerComponent],
 })

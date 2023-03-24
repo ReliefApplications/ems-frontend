@@ -1,0 +1,29 @@
+<!-- todo(gis): translate -->
+<ng-container [formGroup]="formGroup">
+  <div class="flex flex-col">
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" type="string" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description" type="string" />
+    </mat-form-field>
+  </div>
+  <safe-divider></safe-divider>
+  <div cdkDropList (cdkDropListDropped)="onListDrop($event)">
+    <div *ngFor="let field of fields; let index = index" cdkDrag class="flex flex-row items-center">
+      <safe-button
+        cdkDragHandle
+        [isIcon]="true"
+        icon="drag_indicator"
+      ></safe-button>
+      <span class="flex-1">{{ field.name }}</span>
+      <safe-button
+        [isIcon]="true"
+        icon="close"
+        (click)="onRemoveField(index)"
+      ></safe-button>
+    </div>
+  </div>
+</ng-container>
