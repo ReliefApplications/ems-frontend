@@ -13,6 +13,9 @@ import { SafeDividerModule } from '../../../../../ui/divider/divider.module';
 import { SafeButtonModule } from '../../../../../ui/button/button.module';
 import { popupElement } from '../layer-popup.interface';
 
+/**
+ * Popup fields element component.
+ */
 @Component({
   selector: 'safe-fields-element',
   standalone: true,

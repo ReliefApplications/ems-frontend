@@ -5,6 +5,9 @@ import { SafeEditorService } from '../../../../../../services/editor/editor.serv
 import { POPUP_EDITOR_CONFIG } from '../../../../../../const/tinymce.const';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
+/**
+ * Popup text element component.
+ */
 @Component({
   selector: 'safe-text-element',
   standalone: true,
@@ -21,6 +24,11 @@ export class TextElementComponent {
   /** tinymce editor */
   public editor: any = POPUP_EDITOR_CONFIG;
 
+  /**
+   * Popup text element component.
+   *
+   * @param editorService Shared tinymce editor service
+   */
   constructor(private editorService: SafeEditorService) {
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;

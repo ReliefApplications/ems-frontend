@@ -6,6 +6,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 
+/**
+ * Layer styling module.
+ */
 @NgModule({
   declarations: [LayerStylingComponent],
   imports: [

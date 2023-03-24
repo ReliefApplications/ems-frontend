@@ -15,6 +15,7 @@ import { popupElement, popupElementType } from './layer-popup.interface';
 export class LayerPopupComponent {
   @Input() formGroup!: FormGroup;
 
+  /** @returns popup elements as form array */
   get popupElements(): FormArray {
     return this.formGroup.get('popupElements') as FormArray;
   }

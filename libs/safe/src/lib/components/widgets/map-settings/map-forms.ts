@@ -118,6 +118,12 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup =>
     }),
   });
 
+/**
+ * Create popup info form group
+ *
+ * @param value popup info value
+ * @returns popup info form group
+ */
 export const createPopupInfoForm = (value: any): FormGroup =>
   fb.group({
     title: get(value, 'title', ''),
@@ -129,6 +135,12 @@ export const createPopupInfoForm = (value: any): FormGroup =>
     ),
   });
 
+/**
+ * Create popup element form group
+ *
+ * @param value popup element value
+ * @returns popup element form group
+ */
 export const createPopupElementForm = (value: popupElement): FormGroup => {
   switch (get(value, 'type', 'fields') as popupElementType) {
     case 'text': {

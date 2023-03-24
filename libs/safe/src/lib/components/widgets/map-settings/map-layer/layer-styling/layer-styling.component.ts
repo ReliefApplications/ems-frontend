@@ -4,6 +4,9 @@ import { FormGroup } from '@angular/forms';
 /** Available renderer types */
 const AVAILABLE_RENDERER_TYPES = ['simple', 'heatmap'];
 
+/**
+ * Layer styling component.
+ */
 @Component({
   selector: 'safe-layer-styling',
   templateUrl: './layer-styling.component.html',
