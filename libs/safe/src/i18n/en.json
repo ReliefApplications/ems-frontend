@@ -339,6 +339,7 @@
 			"dataset": {
 				"select": "Select the data source"
 			},
+			"deleleFieldsAlert": "Used fields cannot be deleted. Please remove the used fields before deleting them.",
 			"fieldName": "Field name",
 			"groupBy": "Group by",
 			"groupingRules": "Grouping rules",

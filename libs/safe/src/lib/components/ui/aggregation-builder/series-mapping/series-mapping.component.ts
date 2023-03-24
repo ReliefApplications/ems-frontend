@@ -79,7 +79,9 @@ export class SafeSeriesMappingComponent
                   }
                 }
               }
-              fields.push(field);
+              if (field.name) {
+                fields.push(field);
+              }
               return fields;
             },
             []

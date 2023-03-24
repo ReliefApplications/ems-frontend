@@ -6,7 +6,7 @@
     <mat-chip
       *ngFor="let choice of selectedChoices"
       [selectable]="true"
-      [removable]="true"
+      [removable]="!choice.used"
       [value]="choice"
       (removed)="remove(choice)"
     >

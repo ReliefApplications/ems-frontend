@@ -67,6 +67,7 @@ export class SafeAggregationBuilderComponent
   private mappingFields = new BehaviorSubject<any[]>([]);
   public mappingFields$!: Observable<any[]>;
   public gridFields: any[] = [];
+  public someFieldsUsed = false;
   /**
    * Getter for the pipeline of the aggregation form
    *
@@ -129,6 +130,22 @@ export class SafeAggregationBuilderComponent
 
     // Fields query
     this.fields$ = this.fields.asObservable();
+    // Add used property to each field
+    this.someFieldsUsed = false;
+    this.fields$.subscribe((fields) => {
+      fields.forEach((field) => {
+        field['used'] = this.pipelineForm.value.some((x: any) => {
+          return (
+            x.form.groupBy?.find((y: any) => y.field?.includes(field.name)) || // group
+            x.form.field?.includes(field.name) || // sort & Unwind
+            x.form.filters?.find((y: any) => y.field?.includes(field.name)) // filters
+          );
+        });
+        if (field['used']) {
+          this.someFieldsUsed = true;
+        }
+      });
+    });
 
     // Meta selected fields query
     this.selectedFields$ = this.selectedFields.asObservable();

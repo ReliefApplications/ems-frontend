@@ -1,6 +1,10 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, UntypedFormControl } from '@angular/forms';
+import {
+  AbstractControl,
+  UntypedFormArray,
+  UntypedFormControl,
+} from '@angular/forms';
 import {
   MatLegacyAutocompleteSelectedEvent as MatAutocompleteSelectedEvent,
   MatLegacyAutocompleteTrigger as MatAutocompleteTrigger,
@@ -22,6 +26,7 @@ export class SafeTagboxComponent implements OnInit {
   @Input() public choices$!: Observable<any[]>;
   @Input() public displayKey = 'name';
   @Input() public valueKey = 'name';
+  @Input() public pipelineForm: UntypedFormArray = new UntypedFormArray([]);
   public availableChoices = new BehaviorSubject<any[]>([]);
   public selectedChoices: any[] = [];
   public filteredChoices?: Observable<any[]>;

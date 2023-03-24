@@ -9,6 +9,8 @@ import { SafeTagboxModule } from '../tagbox/tagbox.module';
 // import { SafeSeriesMappingModule } from './series-mapping/series-mapping.module';
 import { SafeGridModule } from '../core-grid/grid/grid.module';
 import { SafeSpinnerModule } from '../spinner/spinner.module';
+import { SafeAlertModule } from '../alert/alert.module';
+import { SafeIconModule } from '../icon/icon.module';
 
 /**
  * Aggregation Builder module.
@@ -27,6 +29,8 @@ import { SafeSpinnerModule } from '../spinner/spinner.module';
     // SafeSeriesMappingModule,
     SafeGridModule,
     SafeSpinnerModule,
+    SafeAlertModule,
+    SafeIconModule,
   ],
   exports: [SafeAggregationBuilderComponent],
 })

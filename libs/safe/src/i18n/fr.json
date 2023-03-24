@@ -339,6 +339,7 @@
 			"dataset": {
 				"select": "Sélectionner la source de données"
 			},
+			"deleleFieldsAlert": "Les champs utilisés ne peuvent pas être supprimés. Veuillez retirer les champs utilisés avant de les supprimer.",
 			"fieldName": "Nom du champ",
 			"groupBy": "Regrouper par",
 			"groupingRules": "Grouper par",
