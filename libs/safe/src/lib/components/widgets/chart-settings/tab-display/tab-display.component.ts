@@ -71,6 +71,7 @@ export class TabDisplayComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((series) => {
         this.series = series;
+        console.log(this.series);
       });
   }
 

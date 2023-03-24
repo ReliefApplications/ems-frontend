@@ -49,6 +49,7 @@ export class Chart {
     const axes = get(settings, 'axes', null);
     const stack = get(settings, 'stack', null);
     const grid = get(settings, 'grid', null);
+    const series = get(settings, 'series', null);
 
     // build form
     this.form = this.fb.group({
@@ -197,6 +198,11 @@ export class Chart {
           },
         ],
       }),
+      series: this.fb.array(
+        get(series, 'series', []).map((serie:any) =>
+          createSerieForm(serie)
+        )
+      ),
     });
 
     this.form.get('type')?.valueChanges.subscribe((value) => {
