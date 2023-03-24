@@ -6,7 +6,7 @@
         <mat-label class="mb-4">
           {{ 'components.widget.settings.map.edit.cluster.symbol' | translate }}
         </mat-label>
-        <safe-icon-picker formControlName="style"></safe-icon-picker>
+        <safe-icon-picker formControlName="style" [color]="formGroup.value.symbol.color"></safe-icon-picker>
       </mat-form-field>
     </div>
     <div class="flex flex-col">

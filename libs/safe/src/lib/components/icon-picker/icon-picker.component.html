@@ -1,23 +1,11 @@
-<mat-select
-  #trigger="cdkOverlayOrigin"
-  [formControl]="ngControl && $any(ngControl.control)"
-  (click)="onOpenSelect()"
-  (closed)="onCloseSelect()"
-  [required]="required"
-  (focusin)="onFocusIn()"
-  (focusout)="onFocusOut($event)"
-  cdkOverlayOrigin
->
-  <mat-select-trigger>bliblablo</mat-select-trigger>
-</mat-select>
-
-<!-- <div *ngIf="value">
+<div (click)="onOpenSelect()" #trigger="cdkOverlayOrigin" cdkOverlayOrigin>
   <i
+    *ngIf="value"
     [style.color]="color"
-    class="{{ value | safeIconDisplay : fontFamily }} w-10 h-10"
+    class="{{ value | safeIconDisplay : fontFamily }} mr-2"
   ></i
-  >{{ value | safeIconDisplay : fontFamily }}
-</div> -->
+  >{{ value }}
+</div>
 
 <ng-template
   cdkConnectedOverlay

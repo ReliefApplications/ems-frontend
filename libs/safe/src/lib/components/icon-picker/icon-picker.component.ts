@@ -21,6 +21,8 @@ import {
 } from '@angular/material/legacy-form-field';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
+type FormFieldValue = IconName | null;
+
 /**
  * Icon picker that loads the icon list with the given font family to display those icons as a grid
  */
@@ -36,27 +38,31 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
   ],
 })
 export class IconPickerComponent
-  implements ControlValueAccessor, MatFormFieldControl<IconName>, OnDestroy
+  implements
+    ControlValueAccessor,
+    MatFormFieldControl<FormFieldValue>,
+    OnDestroy
 {
   static nextId = 0;
 
   public icons: string[] = FA_ICONS;
-  @Input() color!: string;
+  private primaryColor!: string;
+  @Input() color: string = this.primaryColor;
   public showList = false;
 
-  @Output() selectionChange = new EventEmitter<string | null>();
+  @Output() selectionChange = new EventEmitter<FormFieldValue>();
 
   /**
    * Gets the value
    *
    * @returns the value
    */
-  @Input() get value(): string | null {
+  @Input() get value(): FormFieldValue {
     return this.ngControl.value;
   }
 
   /** Sets the value */
-  set value(val: string | null) {
+  set value(val: FormFieldValue) {
     this.onChange(val);
     this.stateChanges.next();
     this.selectionChange.emit(val);
@@ -191,14 +197,17 @@ export class IconPickerComponent
     @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl
   ) {
-    this.color = environment.theme.primary;
+    this.primaryColor = environment.theme.primary;
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
-      console.log(this.value);
-      this.ngControl.valueChanges?.subscribe((value) => {
-        console.log(value);
-      });
     }
+  }
+
+  ngOnInit(): void {
+    console.log(this.ngControl);
+    // this.ngControl.valueChanges?.subscribe((value) => {
+    //   this.value = value;
+    // });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -232,10 +241,10 @@ export class IconPickerComponent
   /**
    * Gets the value from the parent form control
    *
-   * @param icon Value set from the linked form control
+   * @param val Value set from the linked form control
    */
-  writeValue(icon: IconName): void {
-    this.value = icon;
+  writeValue(val: FormFieldValue): void {
+    this.value = val;
   }
 
   /**
@@ -265,7 +274,6 @@ export class IconPickerComponent
     this.showList = false;
     if (icon) {
       this.value = icon;
-      this.onChange(icon);
       this.onTouched();
     }
   }
@@ -274,10 +282,6 @@ export class IconPickerComponent
     if (!this.disabled) {
       this.showList = true;
     }
-  }
-
-  onCloseSelect() {
-    console.log('close');
   }
 
   /**
