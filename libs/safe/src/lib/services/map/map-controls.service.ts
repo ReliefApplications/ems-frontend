@@ -16,6 +16,7 @@ import * as Geocoding from 'esri-leaflet-geocoder';
 import { LegendDefinition } from '../../components/ui/map/interfaces/layer-legend.type';
 import { Layer } from '../../components/ui/map/layer';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/language';
+import { updateGeoManLayerPosition } from '../../components/ui/map/utils/get-map-features';
 
 /**
  * Shared map control service.
@@ -28,6 +29,7 @@ export class SafeMapControlsService {
   public measureControls: any = {};
   public fullscreenControl!: L.Control;
   public lang!: any;
+  public useGeomanTools = false;
   // === THEME ===
   private primaryColor = '';
   // === Time Dimension ===
@@ -112,7 +114,11 @@ export class SafeMapControlsService {
       });
       (this.searchControl as any)?.on('results', (data: any) => {
         // results.clearLayers();
+
         for (let i = data.results.length - 1; i >= 0; i--) {
+          if (this.useGeomanTools) {
+            updateGeoManLayerPosition(map, data.results[i]);
+          }
           const coordinates = L.latLng(data.results[i].latlng);
           const circle = L.circleMarker(coordinates, MARKER_OPTIONS);
           circle.addTo(map);
@@ -120,9 +126,9 @@ export class SafeMapControlsService {
             .setLatLng(coordinates)
             .setContent(
               `
-                <p>${data.results[i].properties.ShortLabel}</br>
-                <b>${'latitude: '}</b>${coordinates.lat}</br>
-                <b>${'longitude: '}</b>${coordinates.lng}</p>`
+                  <p>${data.results[i].properties.ShortLabel}</br>
+                  <b>${'latitude: '}</b>${coordinates.lat}</br>
+                  <b>${'longitude: '}</b>${coordinates.lng}</p>`
             );
           circle.bindPopup(popup);
           popup.on('remove', () => map.removeLayer(circle));

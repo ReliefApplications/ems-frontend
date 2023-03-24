@@ -39,7 +39,7 @@ import { SafeMapControlsService } from '../../../services/map/map-controls.servi
 // import 'leaflet';
 import * as L from 'leaflet';
 import { Layer } from './layer';
-import { getMapFeatures } from './utils/get-map-features';
+import { getMapFeature } from './utils/get-map-features';
 import { LayerProperties } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
 import { createCustomDivIcon } from './utils/create-div-icon';
@@ -112,7 +112,7 @@ export class MapComponent
       if (this.useGeomanTools) {
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: getMapFeatures(this.map),
+          content: getMapFeature(this.map),
         });
       }
     }
@@ -236,7 +236,7 @@ export class MapComponent
         'pm:change',
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: getMapFeatures(this.map),
+          content: getMapFeature(this.map),
         })
       );
 
@@ -252,9 +252,9 @@ export class MapComponent
     this.map.on('pm:remove', () => {
       const containsPointMarker = (feature: any) =>
         feature.geometry.type === 'Point';
-      const content = getMapFeatures(this.map);
+      const content = getMapFeature(this.map);
       // If no markers, we enable the point marker control again
-      if (!content?.features.some(containsPointMarker)) {
+      if (!content || !containsPointMarker(content)) {
         this.map.pm.Toolbar.setButtonDisabled('drawMarker', false);
       }
       this.mapEvent.emit({
@@ -284,6 +284,7 @@ export class MapComponent
 
   /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
+    this.mapControlsService.useGeomanTools = this.useGeomanTools;
     // Creates the map and adds all the controls we use.
     this.drawMap();
     /**
@@ -301,7 +302,7 @@ export class MapComponent
       if (this.useGeomanTools) {
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: getMapFeatures(this.map),
+          content: getMapFeature(this.map),
         });
       } else {
         this.mapEvent.emit({
