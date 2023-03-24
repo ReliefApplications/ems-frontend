@@ -99,7 +99,9 @@
       </ng-container>
       <!-- Layer popup -->
       <ng-container *ngSwitchCase="'popup'">
-        <safe-layer-popup></safe-layer-popup>
+        <safe-layer-popup
+          [formGroup]="$any(form.get('popupInfo'))"
+        ></safe-layer-popup>
       </ng-container>
       <!-- Layer fields -->
       <ng-container *ngSwitchCase="'fields'">
