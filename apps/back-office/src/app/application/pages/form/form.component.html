@@ -5,12 +5,13 @@
     <div class="flex items-center overflow-hidden">
       <!-- Page name and name edition -->
       <safe-editable-text
-        [text]="page ? (page.name || '') : step ? (step.name || '') : ''"
+        [text]="page ? page.name || '' : step ? step.name || '' : ''"
         [canEdit]="canEditName"
         (onChange)="saveName($event)"
-        (formActiveEvent)="formActive = $event">
+        (formActiveEvent)="formActive = $event"
+      >
         <h1 class="!m-0 overflow-hidden text-ellipsis">
-          {{ page ? (page.name || '') : step ? (step.name || '') : '' }}
+          {{ page ? page.name || '' : step ? step.name || '' : '' }}
         </h1>
       </safe-editable-text>
       <!-- Page access -->
@@ -36,7 +37,7 @@
       >
         {{
           'common.editObject'
-            | translate: { name: 'common.form.one' | translate }
+            | translate : { name: 'common.form.one' | translate }
         }}
       </safe-button>
     </div>

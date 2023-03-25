@@ -77,27 +77,6 @@ and your browser will pop up the page at localhost:8888. -->
 
 # Useful commands
 
-<!-- ## Compodoc
-
-The package.json contains commands to generate Angular documentation.
-
-Commands have to be executed once per project, and executed again after any modification of the related code.
-
-Subsequent command will generate the documentation:
-```
-npm run compodoc:<project>
-```
-
-If the command fails, check that compodoc is installed on your computer.
-You can execute following command for that:
-```
-npm i -g compodoc
-```
-
-A subfolder should be generated under *documentation* folder.
-
-You can drag and drop the index.html file of this subfolder directly in a browser to see the documentation of an angular project. -->
-
 ## Development server
 
 To serve a project, run:
@@ -120,23 +99,6 @@ npx nx run back-office:serve:oort-local
 
 will serve back-office, connecting to the deployed back-end for development.
 
-<!-- ### Running both front-office and back-office
-If you want to run the dev server of the back-office and front-office at the same time:
-* in the `back-office` project:
-    * in the `environment.ts` file, update the `frontOfficeUri` property to `http://localhost:4201/`
-* in the `front-office` project:
-    * in the `environment.ts` file, update the following properties:
-        - `redirectUri`: `'http://localhost:4201/'`
-        - `postLogoutRedirectUri`: `'http://localhost:4201/auth/'`
-        - `frontOfficeUri`: `'http://localhost:4201/'`
-    * in the `protractor.conf.js` file, update the `baseUrl` property to `http://localhost:4201/`
-* in the `backend` local repository, add `http://localhost:4201` to the list of `ALLOWED_ORIGINS` in your `.env` file
-* finally run:
-    ```
-    ng serve --project=back-office
-    ng serve --project=front-office --port 4201
-    ``` -->
-
 ## Code scaffolding
 
 Generate a component:
@@ -155,6 +117,24 @@ You can also use `npx nx generate directive|pipe|service|class|guard|interface|e
 ## Build
 
 Run `npx nx run <project>:build:<config>` to build a project. The build artifacts will be stored in the `dist/apps/` directory.
+
+## Prettify scss and html
+
+Run `npx prettier --write "**/*.{scss,html}"` to execute prettier and update all scss / html files locally.
+
+## Analyze bundle
+
+Start by building apps adding `--stats-json` flag. For example:
+
+```
+npx nx run back-office:build -- --stats-json
+```
+
+Then, run `webpack-bundle-analyzer` command to see the tree of your bundles:
+
+```
+npx webpack-bundle-analyzer dist/apps/back-office/stats.json
+```
 
 <!-- ## Build the web components
 

@@ -397,6 +397,7 @@
 			}
 		},
 		"application": {
+			"customStyling": "Custom Styling",
 			"dashboard": {
 				"empty": "No content available. Wait for your administrator to build some."
 			},
@@ -1350,7 +1351,9 @@
 				"dataSource": "Data Source",
 				"errors": {
 					"invalidSource": "The data source is invalid: please edit the settings."
-				}
+				},
+				"viewAsCards": "View as cards",
+				"viewAsGrid": "View as grid"
 			}
 		}
 	},

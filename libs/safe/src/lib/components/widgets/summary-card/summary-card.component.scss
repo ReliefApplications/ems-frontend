@@ -3,10 +3,10 @@
   grid-auto-rows: 200px;
   gap: 16px;
   padding: 16px;
-  min-height: 100%;
   grid-auto-flow: row;
   background-color: unset;
   overflow: auto;
+  max-height: 80vh;
 
   .k-card {
     border: none;
@@ -22,4 +22,9 @@
   right: 0;
   z-index: 1;
   color: #aeaeaf;
+}
+
+.summary-grid {
+  height: 100%;
+  width: 100%;
 }

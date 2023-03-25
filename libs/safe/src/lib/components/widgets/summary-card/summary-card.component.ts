@@ -32,10 +32,14 @@ const DEFAULT_PAGE_SIZE = 25;
   styleUrls: ['./summary-card.component.scss'],
 })
 export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
+  @Input() widget: any;
   @Input() header = true;
   @Input() export = true;
   @Input() settings: any = null;
 
+  public gridSettings: any = null;
+
+  public displayMode: 'cards' | 'grid' = 'cards';
   // === GRID ===
   public colsNumber = MAX_COL_SPAN;
 
@@ -110,6 +114,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       this.cards = this.settings.cards;
     }
     this.colsNumber = this.setColsNumber(window.innerWidth);
+    this.setupGridSettings();
   }
 
   ngAfterViewInit(): void {
@@ -224,6 +229,42 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
           }
         }
       });
+  }
+
+  /**
+   * mdr
+   */
+  private async setupGridSettings() {
+    const [card] = this.settings.cards;
+    if (!card) return;
+
+    this.gridLayoutService
+      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
+      .then((res) => {
+        const layouts = res.edges.map((edge) => edge.node);
+        if (layouts.length > 0) {
+          const layout = layouts[0] || null;
+          this.gridSettings = {
+            ...{ template: get(this.settings, 'template', null) }, //TO MODIFY
+            ...{ resource: card.resource },
+            ...{ layouts: layout.id },
+            ...{
+              actions: {
+                //default actions, might need to modify later
+                addRecord: false,
+                convert: true,
+                delete: true,
+                export: true,
+                history: true,
+                inlineEdition: true,
+                showDetails: true,
+                update: true,
+              },
+            },
+          };
+        }
+      });
+    return;
   }
 
   /**

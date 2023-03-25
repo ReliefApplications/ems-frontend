@@ -47,6 +47,9 @@
     class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
+    (goToNextStep)="goToNextStep.emit($event)"
+    (edit)="edit.emit($event)"
+    [widget]="widget"
   >
   </safe-summary-card>
 </ng-container>
