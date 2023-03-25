@@ -3,7 +3,7 @@
     settings.title
   }}</span>
 </kendo-tilelayout-item-header>
-<ng-container *ngIf="!hasError">
+<ng-container *ngIf="!hasError && (series$ | async) as series">
   <safe-button
     *ngIf="export"
     [isIcon]="true"

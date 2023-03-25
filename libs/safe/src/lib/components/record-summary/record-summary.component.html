@@ -10,7 +10,7 @@
     'components.form.summary.cache.load'
       | translate
         : {
-            date: (cacheDate | safeDate: 'short')
+            date: (cacheDate | safeDate : 'short')
           }
   }}</span>
 </div>
@@ -27,7 +27,7 @@
         | translate
           : {
               user: record.createdBy?.name || 'unknown',
-              date: (record.createdAt | safeDate: 'short')
+              date: (record.createdAt | safeDate : 'short')
             }
     }}</span>
     <span *ngIf="record.modifiedAt">{{
@@ -35,7 +35,7 @@
         | translate
           : {
               user: record.modifiedBy?.name || 'unknown',
-              date: (record.modifiedAt | safeDate: 'short')
+              date: (record.modifiedAt | safeDate : 'short')
             }
     }}</span>
   </div>

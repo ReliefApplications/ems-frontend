@@ -55,11 +55,11 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
-      </div>
+    </div>
     <safe-empty
-        class="m-auto py-6 px-0 bg-white"
-        *ngIf="fields.length === 0"
-        [title]="'components.resource.empty.calculatedFields' | translate"
-      ></safe-empty>
+      class="m-auto py-6 px-0 bg-white"
+      *ngIf="fields.length === 0"
+      [title]="'components.resource.empty.calculatedFields' | translate"
+    ></safe-empty>
   </div>
 </div>
