@@ -351,5 +351,5 @@ export const createChartWidgetForm = (id: any, value: any) =>
 export const createSeriesForm = (value: any) =>
   fb.group({
     serie: get<string | undefined>(value, 'serie', undefined),
-    color: get<string>(value, 'color', ''),
+    color: get<string | undefined>(value, 'color', undefined),
   });

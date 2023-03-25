@@ -198,6 +198,7 @@ export class SafeChartComponent
           ? { type: '100%' }
           : { type: 'normal' }
         : false,
+      series: get(this.settings, 'chart.series'),
     };
   }
 

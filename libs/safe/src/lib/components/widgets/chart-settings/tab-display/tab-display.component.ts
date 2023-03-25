@@ -7,7 +7,12 @@ import {
 } from '@angular/core';
 import { UntypedFormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  skip,
+  takeUntil,
+} from 'rxjs/operators';
 import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
 import { SafeChartComponent } from '../../chart/chart.component';
 import get from 'lodash/get';
@@ -70,10 +75,11 @@ export class TabDisplayComponent
 
   ngAfterViewInit(): void {
     this.chartComponent.series$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$), skip(1))
       .subscribe((series) => {
         const seriesFormArray: FormArray<any> = this.fb.array([]);
-        const seriesSettings = this.chartForm.get(series)?.value || [];
+        const seriesSettings = this.chartForm.get('series')?.value || [];
+        console.log(seriesSettings);
         for (const serie of series) {
           const serieSettings = seriesSettings.find(
             (x: any) => x.serie === get(serie, 'name')
@@ -88,6 +94,7 @@ export class TabDisplayComponent
             );
           }
         }
+        console.log(seriesFormArray.value);
         this.chartForm.setControl('series', seriesFormArray);
       });
   }
