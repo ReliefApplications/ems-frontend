@@ -14,11 +14,12 @@ import { takeUntil } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
 import { UploadApplicationStyleMutationResponse } from './graphql/mutations';
 import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 /** Default css style example to initialize the form and editor */
-const DEFAULT_STYLE = 'app-application {\n    color: red !important;\n}';
+const DEFAULT_STYLE = '';
 
+/** Component that allow custom styling to the application using free scss editor */
 @Component({
   selector: 'app-custom-style',
   standalone: true,
@@ -28,12 +29,11 @@ const DEFAULT_STYLE = 'app-application {\n    color: red !important;\n}';
     ReactiveFormsModule,
     MonacoEditorModule,
     SafeButtonModule,
+    TranslateModule,
   ],
   templateUrl: './custom-style.component.html',
   styleUrls: ['./custom-style.component.scss'],
 })
-
-/** Component that allow custom styling to the application using free scss editor */
 export class CustomStyleComponent
   extends SafeUnsubscribeComponent
   implements OnInit
@@ -127,6 +127,19 @@ export class CustomStyleComponent
           type: '',
         })
       );
+    }
+  }
+
+  /**
+   * On initialization of editor, format code
+   *
+   * @param editor monaco editor used for scss edition
+   */
+  public initEditor(editor: any): void {
+    if (editor) {
+      setTimeout(() => {
+        editor.getAction('editor.action.formatDocument').run();
+      }, 100);
     }
   }
 }
