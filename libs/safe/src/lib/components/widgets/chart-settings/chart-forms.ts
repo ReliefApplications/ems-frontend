@@ -343,10 +343,13 @@ export const createChartWidgetForm = (id: any, value: any) =>
   });
 
 /**
+ * Create chart serie form group
  *
- * @param value
+ * @param value chart serie
+ * @returns chart serie form group
  */
 export const createSeriesForm = (value: any) =>
   fb.group({
-    serieColor: null,
+    serie: get<string | undefined>(value, 'serie', undefined),
+    color: get<string>(value, 'color', ''),
   });

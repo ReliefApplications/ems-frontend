@@ -5,15 +5,13 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import {
-  UntypedFormArray,
-  UntypedFormGroup,
-  UntypedFormBuilder,
-} from '@angular/forms';
+import { UntypedFormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
 import { SafeChartComponent } from '../../chart/chart.component';
+import get from 'lodash/get';
+import { createSeriesForm } from '../chart-forms';
 
 /**
  * Display tab of the chart settings modal.
@@ -38,8 +36,6 @@ export class TabDisplayComponent
     28,
   ];
 
-  public series: any;
-
   /** @returns the form for the chart */
   public get chartForm(): UntypedFormGroup {
     return this.formGroup.get('chart') as UntypedFormGroup;
@@ -50,9 +46,9 @@ export class TabDisplayComponent
   /**
    * Constructor of the display tab of the chart settings modal.
    *
-   * @param fb
+   * @param fb Angular form builder
    */
-  constructor(public fb: UntypedFormBuilder) {
+  constructor(public fb: FormBuilder) {
     super();
   }
 
@@ -76,24 +72,24 @@ export class TabDisplayComponent
     this.chartComponent.series$
       .pipe(takeUntil(this.destroy$))
       .subscribe((series) => {
-        this.series = series;
-        console.log(this.series);
-
-        const seriesForm = this.fb.group({
-          serieColor: null,
-        });
-        this.seriesFormArray.push(seriesForm);
+        const seriesFormArray: FormArray<any> = this.fb.array([]);
+        const seriesSettings = this.chartForm.get(series)?.value || [];
+        for (const serie of series) {
+          const serieSettings = seriesSettings.find(
+            (x: any) => x.serie === get(serie, 'name')
+          );
+          if (serieSettings) {
+            seriesFormArray.push(createSeriesForm(serieSettings));
+          } else {
+            seriesFormArray.push(
+              createSeriesForm({
+                serie: get(serie, 'name'),
+              })
+            );
+          }
+        }
+        this.chartForm.setControl('series', seriesFormArray);
       });
-
-    console.log(this.chartForm.get('series'));
-    console.log(this.chartForm.get('series')?.value);
-  }
-
-  /**
-   *
-   */
-  get seriesFormArray() {
-    return this.chartForm.controls['series'] as UntypedFormArray;
   }
 
   /**

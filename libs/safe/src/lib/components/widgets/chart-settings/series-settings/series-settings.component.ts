@@ -1,11 +1,5 @@
-import {
-  Component,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  Input,
-} from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
 /**
  *
@@ -15,24 +9,45 @@ import { UntypedFormGroup } from '@angular/forms';
   templateUrl: './series-settings.component.html',
   styleUrls: ['./series-settings.component.css'],
 })
-export class SafeSeriesSettingsComponent implements OnChanges, OnInit {
-  @Input() formGroup!: UntypedFormGroup;
-  /**
-   *
-   * @param fb
-   */
-  constructor() {}
+export class SafeSeriesSettingsComponent implements OnInit, OnChanges {
+  @Input() formArray!: FormArray;
+  public formGroup?: FormGroup;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-  }
+  selectedSerie = new FormControl<string | undefined>(undefined);
 
   ngOnInit(): void {
-    console.log(this.formGroup);
+    this.selectedSerie.valueChanges.subscribe((value) => {
+      if (this.formArray.value.length > 0) {
+        this.formGroup = this.formArray.controls.find(
+          (x) => x.value.serie === value
+        ) as FormGroup;
+      }
+    });
   }
 
-  /**
-   *
-   */
-  testing() {}
+  ngOnChanges(): void {
+    if (this.formArray.value.length > 0) {
+      if (!this.selectedSerie.value) {
+        this.formGroup = this.formArray.at(0) as FormGroup;
+        this.selectedSerie.setValue(this.formGroup.value.serie, {
+          emitEvent: false,
+        });
+      } else {
+        const index = (this.formArray.value as any[]).indexOf(
+          (x: any) => x.serie === this.selectedSerie
+        );
+        if (index >= 0) {
+          this.formGroup = this.formArray.at(index) as FormGroup;
+        } else {
+          this.formGroup = this.formArray.at(0) as FormGroup;
+          this.selectedSerie.setValue(this.formGroup.value.serie, {
+            emitEvent: false,
+          });
+        }
+      }
+    } else {
+      this.formGroup = undefined;
+      this.selectedSerie.setValue(undefined, { emitEvent: false });
+    }
+  }
 }
