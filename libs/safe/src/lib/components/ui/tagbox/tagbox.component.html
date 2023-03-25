@@ -11,7 +11,12 @@
       (removed)="remove(choice)"
     >
       {{ choice[displayKey] }}
-      <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
+      <safe-icon
+        *ngIf="!choice.used"
+        matChipRemove
+        icon="cancel"
+        [size]="18"
+      ></safe-icon>
     </mat-chip>
     <!-- Search text control -->
     <input
@@ -38,4 +43,13 @@
       {{ choice[displayKey] }}
     </mat-option>
   </mat-autocomplete>
+  <safe-icon
+    matSuffix
+    class="cursor-pointer"
+    icon="info"
+    variant="grey"
+    [matTooltip]="
+      'components.aggregationBuilder.tooltip.selectedFields' | translate
+    "
+  ></safe-icon>
 </mat-form-field>

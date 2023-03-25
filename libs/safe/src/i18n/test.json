@@ -339,7 +339,6 @@
 			"dataset": {
 				"select": "******"
 			},
-			"deleleFieldsAlert": "******",
 			"fieldName": "******",
 			"groupBy": "******",
 			"groupingRules": "******",
@@ -378,6 +377,7 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
 			}
@@ -1038,7 +1038,8 @@
 					"aggregation": {
 						"invalid": "******"
 					}
-				}
+				},
+				"other": "******"
 			},
 			"expand": "******",
 			"grid": {

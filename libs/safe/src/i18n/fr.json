@@ -339,7 +339,6 @@
 			"dataset": {
 				"select": "Sélectionner la source de données"
 			},
-			"deleleFieldsAlert": "Les champs utilisés ne peuvent pas être supprimés. Veuillez retirer les champs utilisés avant de les supprimer.",
 			"fieldName": "Nom du champ",
 			"groupBy": "Regrouper par",
 			"groupingRules": "Grouper par",
@@ -378,6 +377,7 @@
 				"custom": "Définit une fonction ou une expression d'agrégation personnalisée en JavaScript.",
 				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
 				"group": "Regroupe les documents mis en entrée par l'expression 'id' qui a été spécifiée et qui sort un document pour chaque regroupement.",
+				"selectedFields": "Seuls les champs non utilisés peuvent être supprimés.",
 				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.",
 				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
 			}
@@ -1044,7 +1044,8 @@
 					"aggregation": {
 						"invalid": "Agrégation invalide"
 					}
-				}
+				},
+				"other": "Autre"
 			},
 			"expand": "Étendre",
 			"grid": {

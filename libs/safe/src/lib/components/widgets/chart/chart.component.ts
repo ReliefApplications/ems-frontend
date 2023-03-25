@@ -8,11 +8,12 @@ import {
 import { SafeLineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { SafePieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
 import { SafeBarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component';
-import { uniq, get, groupBy, isEqual, isNil } from 'lodash';
+import { uniq, get, groupBy, isEqual } from 'lodash';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Default file name for chart exports
@@ -74,8 +75,12 @@ export class SafeChartComponent
    * Chart widget using KendoUI.
    *
    * @param aggregationService Shared aggregation service
+   * @param translate Angular translate service
    */
-  constructor(private aggregationService: SafeAggregationService) {
+  constructor(
+    private aggregationService: SafeAggregationService,
+    private translate: TranslateService
+  ) {
     super();
   }
 
@@ -226,15 +231,8 @@ export class SafeChartComponent
             const aggregationData = JSON.parse(
               JSON.stringify(data.recordsAggregation)
             );
-            // Check if any of the elements has a series values that is null or undefined
-            const hasInvalidSeriesValue = aggregationData.some((x: any) =>
-              isNil(x.series)
-            );
-            // If so, ignore the series, and only use the category/value
-            if (
-              get(this.settings, 'chart.mapping.series', null) &&
-              !hasInvalidSeriesValue
-            ) {
+            // If series
+            if (get(this.settings, 'chart.mapping.series', null)) {
               const groups = groupBy(aggregationData, 'series');
               const categories = uniq(
                 aggregationData.map((x: any) => x.category)
@@ -251,13 +249,16 @@ export class SafeChartComponent
                       }
                   );
                   return {
-                    label: key,
+                    label:
+                      key ||
+                      this.translate.instant('components.widget.chart.other'),
                     name: key,
                     data: returnData,
                   };
                 })
               );
             } else {
+              // Group under same serie
               this.series.next([
                 {
                   data: aggregationData,

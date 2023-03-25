@@ -1,17 +1,12 @@
 <safe-spinner *ngIf="loading"></safe-spinner>
 <ng-container *ngIf="!loading">
-  <safe-alert class="delete-fields-alert" *ngIf="someFieldsUsed">
-    <safe-icon icon="info"></safe-icon>
-    {{ 'components.aggregationBuilder.deleleFieldsAlert' | translate }}
-  </safe-alert>
   <div class="flex">
     <!-- Selection of fields -->
     <safe-tagbox
       class="flex flex-1"
       [choices$]="fields$"
-      [parentControl]="aggregationForm.controls.sourceFields"
+      [formControl]="$any(aggregationForm.get('sourceFields'))"
       [label]="'components.aggregationBuilder.sourceFields' | translate"
-      [pipelineForm]="pipelineForm"
     ></safe-tagbox>
   </div>
   <!-- Pipeline builder -->
