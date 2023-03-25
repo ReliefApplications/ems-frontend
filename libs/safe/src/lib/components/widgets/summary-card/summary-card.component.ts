@@ -39,7 +39,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
 
   public gridSettings: any = null;
 
-  public displayMode = 'card';
+  public displayMode: 'cards' | 'grid' = 'cards';
   // === GRID ===
   public colsNumber = MAX_COL_SPAN;
 
