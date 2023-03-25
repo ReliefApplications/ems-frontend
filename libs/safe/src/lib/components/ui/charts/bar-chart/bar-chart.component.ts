@@ -72,11 +72,9 @@ export class SafeBarChartComponent implements OnChanges {
 
     this.chartData.datasets = this.series.map((x, i) => {
       const serie = series.find((serie: any) => serie.serie === x.name);
-      const color = get(
-        serie,
-        'color',
-        get(this.options, `palette[${i}]`, undefined)
-      );
+      const color =
+        get(serie, 'color', null) ||
+        get(this.options, `palette[${i}]`, undefined);
       return {
         ...x,
         borderRadius: 8,
