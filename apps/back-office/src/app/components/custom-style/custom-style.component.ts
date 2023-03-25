@@ -127,6 +127,7 @@ export class CustomStyleComponent
           type: '',
         })
       );
+      this.formControl.markAsPristine();
     }
   }
 
