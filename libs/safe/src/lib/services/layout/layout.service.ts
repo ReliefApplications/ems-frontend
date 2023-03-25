@@ -36,6 +36,7 @@ export class SafeLayoutService {
    * @param container Sidenav container.
    */
   setRightSidenav(container: any): void {
+    console.log('call');
     this.rightSidenav.next(container);
   }
 }

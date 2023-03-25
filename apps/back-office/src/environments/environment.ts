@@ -49,6 +49,7 @@ export const environment = {
     'column-chart',
     'pie-chart',
     'polar-chart',
+    'radar-chart',
     'grid',
     'text',
     'map',
