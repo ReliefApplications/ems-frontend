@@ -377,6 +377,7 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
 			}
@@ -1037,7 +1038,8 @@
 					"aggregation": {
 						"invalid": "******"
 					}
-				}
+				},
+				"other": "******"
 			},
 			"expand": "******",
 			"grid": {
