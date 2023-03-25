@@ -1,0 +1,146 @@
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { SafeButtonModule } from '@oort-front/safe';
+import {
+  Application,
+  SafeApplicationService,
+  SafeSnackBarService,
+  SafeUnsubscribeComponent,
+} from '@oort-front/safe';
+import { firstValueFrom } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { Apollo } from 'apollo-angular';
+import { UploadApplicationStyleMutationResponse } from './graphql/mutations';
+import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+/** Default css style example to initialize the form and editor */
+const DEFAULT_STYLE = '';
+
+/** Component that allow custom styling to the application using free scss editor */
+@Component({
+  selector: 'app-custom-style',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MonacoEditorModule,
+    SafeButtonModule,
+    TranslateModule,
+  ],
+  templateUrl: './custom-style.component.html',
+  styleUrls: ['./custom-style.component.scss'],
+})
+export class CustomStyleComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
+  public formControl = new FormControl(DEFAULT_STYLE);
+  public applicationId?: string;
+  @Output() style = new EventEmitter<string>();
+  @Output() cancel = new EventEmitter();
+  public editorOptions = {
+    theme: 'vs-dark',
+    language: 'scss',
+    fixedOverflowWidgets: true,
+  };
+  private styleApplied: HTMLStyleElement;
+
+  /**
+   * Creates an instance of CustomStyleComponent, form and updates.
+   *
+   * @param applicationService Shared application service
+   * @param snackBar Shared snackbar service
+   * @param apollo Apollo service
+   * @param translate Angular translate service
+   */
+  constructor(
+    private applicationService: SafeApplicationService,
+    private snackBar: SafeSnackBarService,
+    private apollo: Apollo,
+    private translate: TranslateService
+  ) {
+    super();
+    this.styleApplied = document.createElement('style');
+    // Updates the style when the value changes
+    this.formControl.valueChanges.subscribe((value: any) => {
+      this.styleApplied.innerText = value;
+      document.getElementsByTagName('body')[0].appendChild(this.styleApplied);
+      this.style.emit(value);
+    });
+  }
+
+  ngOnInit(): void {
+    if (this.applicationService.customStyle) {
+      this.styleApplied = this.applicationService.customStyle;
+      this.formControl.setValue(this.applicationService.customStyle.innerText);
+    } else {
+      this.applicationService.customStyle = this.styleApplied;
+    }
+
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.applicationId = application.id;
+        }
+      });
+  }
+
+  /** When clicking on the close button */
+  onClose(): void {
+    this.cancel.emit(true);
+  }
+
+  /** Save application custom css styling */
+  async onSave(): Promise<void> {
+    const file = new File(
+      [this.formControl.value as string],
+      'customStyle.scss',
+      {
+        type: 'scss',
+      }
+    );
+
+    const res = await firstValueFrom(
+      this.apollo.mutate<UploadApplicationStyleMutationResponse>({
+        mutation: UPLOAD_APPLICATION_STYLE,
+        variables: {
+          file,
+          application: this.applicationId,
+        },
+        context: {
+          useMultipart: true,
+        },
+      })
+    );
+    if (res.errors) {
+      this.snackBar.openSnackBar(res.errors[0].message, { error: true });
+      return;
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectUpdated', {
+          value: this.translate.instant('components.application.customStyling'),
+          type: '',
+        })
+      );
+      this.formControl.markAsPristine();
+    }
+  }
+
+  /**
+   * On initialization of editor, format code
+   *
+   * @param editor monaco editor used for scss edition
+   */
+  public initEditor(editor: any): void {
+    if (editor) {
+      setTimeout(() => {
+        editor.getAction('editor.action.formatDocument').run();
+      }, 100);
+    }
+  }
+}

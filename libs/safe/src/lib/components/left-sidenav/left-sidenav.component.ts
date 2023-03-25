@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-
 /**
  * The left side navigator used in the main layout
  */
