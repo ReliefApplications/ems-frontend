@@ -13,6 +13,7 @@ import { SafeAggregationService } from '../../../services/aggregation/aggregatio
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Default file name for chart exports
@@ -74,8 +75,12 @@ export class SafeChartComponent
    * Chart widget using KendoUI.
    *
    * @param aggregationService Shared aggregation service
+   * @param translate Angular translate service
    */
-  constructor(private aggregationService: SafeAggregationService) {
+  constructor(
+    private aggregationService: SafeAggregationService,
+    private translate: TranslateService
+  ) {
     super();
   }
 
@@ -226,6 +231,7 @@ export class SafeChartComponent
             const aggregationData = JSON.parse(
               JSON.stringify(data.recordsAggregation)
             );
+            // If series
             if (get(this.settings, 'chart.mapping.series', null)) {
               const groups = groupBy(aggregationData, 'series');
               const categories = uniq(
@@ -243,13 +249,16 @@ export class SafeChartComponent
                       }
                   );
                   return {
-                    label: key,
+                    label:
+                      key ||
+                      this.translate.instant('components.widget.chart.other'),
                     name: key,
                     data: returnData,
                   };
                 })
               );
             } else {
+              // Group under same serie
               this.series.next([
                 {
                   data: aggregationData,
