@@ -14,6 +14,8 @@ export class SafeSeriesSettingsComponent implements OnInit, OnChanges {
   public formGroup?: FormGroup;
 
   public fillTypes = ['solid', 'gradient'];
+  public interpolationTypes = ['linear', 'cubic', 'step'];
+  public stepInterpolationTypes = ['before', 'after', 'middle'];
 
   selectedSerie = new FormControl<string | undefined>(undefined);
 

@@ -361,5 +361,13 @@ export const createSerieForm = (type: string | null, value: any) =>
       ['bar', 'column', 'line'].includes(type) && {
         color: get<string | undefined>(value, 'color', undefined),
         fill: get<string | undefined>(value, 'fill', undefined),
+        ...(['line'].includes(type) && {
+          interpolation: get<string | undefined>(
+            value,
+            'interpolation',
+            undefined
+          ),
+          stepped: get<string | undefined>(value, 'stepped', undefined),
+        }),
       }),
   });

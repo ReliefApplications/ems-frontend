@@ -24,6 +24,12 @@ interface ChartLegend {
   position: 'top' | 'bottom' | 'left' | 'right';
 }
 
+/** Interpolation modes */
+type Interpolation = 'linear' | 'cubic' | 'step';
+
+/** Step interpolation models */
+type StepInterpolation = 'before' | 'after' | 'middle';
+
 /**
  * Uses chart.js to render the data as a line chart
  */
@@ -106,6 +112,12 @@ export class SafeLineChartComponent implements OnChanges {
           gradient?.addColorStop(0, color.slice(0, -3) + ' 0.05)');
         }
       }
+      // Get interpolation mode
+      const interpolation = get<Interpolation>(
+        serie,
+        'interpolation',
+        'linear'
+      );
 
       return {
         ...x,
@@ -120,7 +132,10 @@ export class SafeLineChartComponent implements OnChanges {
         pointBorderWidth: 2,
         pointHoverBorderColor: color,
         pointHoverBorderWidth: 2,
-        tension: 0.4,
+        ...(interpolation === 'cubic' && { tension: 0.4 }),
+        ...(interpolation === 'step' && {
+          stepped: get<StepInterpolation>(serie, 'stepped', 'before'),
+        }),
         fill: !!fill,
       };
     });

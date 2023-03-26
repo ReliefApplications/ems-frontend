@@ -10,8 +10,8 @@
     </mat-select>
   </mat-form-field>
   <div *ngIf="formGroup" [formGroup]="formGroup">
-    <div class="flex flex-row">
-      <div class="flex flex-col flex-1" *ngIf="formGroup.get('color')">
+    <div class="flex flex-row justify-between">
+      <div class="flex flex-col" *ngIf="formGroup.get('color')">
         <!-- todo(translate) -->
         <span class="text-gray-500 mb-1 text-xs">Color</span>
         <kendo-colorpicker formControlName="color"></kendo-colorpicker>
@@ -22,6 +22,42 @@
           <!-- todo(translate) -->
           <mat-option>Auto</mat-option>
           <mat-option *ngFor="let type of fillTypes" [value]="type">
+            {{ type }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <!-- Interpolation (line charts) -->
+    <div class="flex flex-row justify-between">
+      <mat-form-field
+        *ngIf="formGroup.get('interpolation')"
+        appearance="outline"
+      >
+        <!-- todo(translate) -->
+        <mat-label>Interpolation</mat-label>
+        <mat-select formControlName="interpolation">
+          <!-- todo(translate) -->
+          <mat-option>Auto</mat-option>
+          <mat-option *ngFor="let type of interpolationTypes" [value]="type">
+            {{ type }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        *ngIf="
+          formGroup.value.interpolation === 'step' && formGroup.get('stepped')
+        "
+        appearance="outline"
+      >
+        <!-- todo(translate) -->
+        <mat-label>Step interpolation</mat-label>
+        <mat-select formControlName="stepped">
+          <!-- todo(translate) -->
+          <mat-option>Auto</mat-option>
+          <mat-option
+            *ngFor="let type of stepInterpolationTypes"
+            [value]="type"
+          >
             {{ type }}
           </mat-option>
         </mat-select>
