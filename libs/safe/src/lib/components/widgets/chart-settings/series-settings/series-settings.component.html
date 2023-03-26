@@ -8,9 +8,9 @@
     </mat-select>
   </mat-form-field>
   <div *ngIf="formGroup" [formGroup]="formGroup">
-    <div class="flex flex-col">
-        <span class="text-gray-500 mb-1 text-xs">Color</span>
-        <kendo-colorpicker formControlName="color"></kendo-colorpicker>
+    <div class="flex flex-col" *ngIf="formGroup.get('color')">
+      <span class="text-gray-500 mb-1 text-xs">Color</span>
+      <kendo-colorpicker formControlName="color"></kendo-colorpicker>
     </div>
   </div>
 </div>

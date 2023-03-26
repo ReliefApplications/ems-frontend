@@ -188,14 +188,23 @@ export const createChartForm = (value: any) => {
       ],
     }),
     series: fb.array(
-      get(value, 'series', []).map((serie: any) => createSeriesForm(serie))
+      get<any[]>(value, 'series', []).map((serie: any) =>
+        createSerieForm(get(value, 'type', null), serie)
+      )
     ),
   });
 
   formGroup.get('type')?.valueChanges.subscribe((value) => {
+    // Update available mapping controls
     const mapping = formGroup.get('mapping');
-    // const aggregation = formGroup.get('mapping') as FormGroup;
     formGroup.setControl('mapping', createMappingForm(mapping?.value, value));
+    // Update series controls when chart type change
+    const seriesFormArray = fb.array(
+      formGroup.value.series?.map((serie: any) =>
+        createSerieForm(get(value, 'type', null), serie)
+      ) || []
+    );
+    formGroup.setControl('series', seriesFormArray);
   });
 
   formGroup.get('aggregationId')?.valueChanges.subscribe(() => {
@@ -320,10 +329,6 @@ export const createChartForm = (value: any) => {
     }
   });
 
-  formGroup.get('series')?.valueChanges.subscribe((value) => {
-    console.log(value);
-  });
-
   return formGroup;
 };
 
@@ -345,11 +350,15 @@ export const createChartWidgetForm = (id: any, value: any) =>
 /**
  * Create chart serie form group
  *
+ * @param type type of chart
  * @param value chart serie
  * @returns chart serie form group
  */
-export const createSeriesForm = (value: any) =>
+export const createSerieForm = (type: string | null, value: any) =>
   fb.group({
     serie: get<string | undefined>(value, 'serie', undefined),
-    color: get<string | undefined>(value, 'color', undefined),
+    ...(type &&
+      ['bar', 'column', 'line'].includes(type) && {
+        color: get<string | undefined>(value, 'color', undefined),
+      }),
   });

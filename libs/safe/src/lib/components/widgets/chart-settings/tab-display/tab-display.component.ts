@@ -16,7 +16,7 @@ import {
 import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
 import { SafeChartComponent } from '../../chart/chart.component';
 import get from 'lodash/get';
-import { createSeriesForm } from '../chart-forms';
+import { createSerieForm } from '../chart-forms';
 
 /**
  * Display tab of the chart settings modal.
@@ -79,23 +79,25 @@ export class TabDisplayComponent
       .subscribe((series) => {
         const seriesFormArray: FormArray<any> = this.fb.array([]);
         const seriesSettings = this.chartForm.get('series')?.value || [];
-        console.log(seriesSettings);
         for (const serie of series) {
           const serieSettings = seriesSettings.find(
             (x: any) => x.serie === get(serie, 'name')
           );
           if (serieSettings) {
-            seriesFormArray.push(createSeriesForm(serieSettings));
+            seriesFormArray.push(
+              createSerieForm(this.chartForm.value.type, serieSettings)
+            );
           } else {
             seriesFormArray.push(
-              createSeriesForm({
+              createSerieForm(this.chartForm.value.type, {
                 serie: get(serie, 'name'),
               })
             );
           }
         }
-        console.log(seriesFormArray.value);
-        this.chartForm.setControl('series', seriesFormArray);
+        this.chartForm.setControl('series', seriesFormArray, {
+          emitEvent: false,
+        });
       });
   }
 
