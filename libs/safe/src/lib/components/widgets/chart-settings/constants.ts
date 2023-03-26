@@ -1,31 +1,32 @@
-import { Pie } from './charts/pie';
-
 /** List of all the widget types of chart */
 export const CHART_TYPES = [
   {
     name: 'donut',
     icon: '/assets/donut.svg',
-    class: Pie,
   },
   {
     name: 'column',
     icon: '/assets/column.svg',
-    class: Pie,
   },
   {
     name: 'line',
     icon: '/assets/line.svg',
-    class: Pie,
   },
   {
     name: 'pie',
     icon: '/assets/pie.svg',
-    class: Pie,
+  },
+  {
+    name: 'polar',
+    icon: '/assets/pie.svg',
   },
   {
     name: 'bar',
     icon: '/assets/bar.svg',
-    class: Pie,
+  },
+  {
+    name: 'radar',
+    icon: '/assets/pie.svg',
   },
 ];
 

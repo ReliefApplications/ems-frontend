@@ -37,19 +37,4 @@
       ></safe-tab-display>
     </ng-template>
   </mat-tab>
-  <!-- Preview -->
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <safe-icon
-        icon="preview"
-        [size]="24"
-        matTooltip="{{ 'common.preview' | translate }}"
-        matTooltipPosition="right"
-      ></safe-icon>
-      <span>{{ 'common.preview' | translate }}</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <safe-tab-preview [formGroup]="formGroup"></safe-tab-preview>
-    </ng-template>
-  </mat-tab>
 </mat-tab-group>

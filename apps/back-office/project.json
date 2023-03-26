@@ -43,6 +43,10 @@
             "glob": "**/*",
             "input": "node_modules/leaflet/dist/images/",
             "output": "/"
+          },
+          {
+            "input": "node_modules/monaco-editor",
+            "output": "/assets/monaco/"
           }
         ],
         "styles": [

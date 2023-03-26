@@ -13,6 +13,7 @@ import {
   SafeIconModule,
   SafeModalModule,
   SafeEditableTextModule,
+  FullScreenModule,
 } from '@oort-front/safe';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -52,6 +53,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     SafeAlertModule,
     SafeModalModule,
     SafeEditableTextModule,
+    FullScreenModule,
   ],
   exports: [DashboardComponent],
 })

@@ -46,54 +46,24 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="flex gap-x-2 flex-wrap">
-          <!-- Schedule -->
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'models.pullJob.schedule' | translate }}</mat-label>
-            <input
-              type="text"
-              [placeholder]="
-                'components.pullJob.modal.placeholder.schedule' | translate
-              "
-              matInput
-              readonly
-              value="{{
-                formGroup.get('schedule')?.invalid
-                  ? ('components.pullJob.modal.placeholder.schedule'
-                    | translate)
-                  : (formGroup.value.schedule | safeReadableCron)
-              }}"
-            />
-            <safe-icon
-              icon="edit"
-              class="cursor-pointer"
-              variant="grey"
-              matSuffix
-              (click)="onEditCronExpression()"
-              [matTooltip]="
-                'components.pullJob.modal.hint.schedule' | translate
-              "
-            ></safe-icon>
-            <mat-error *ngIf="formGroup.get('schedule')?.errors">
-              {{ 'components.pullJob.modal.errors.schedule' | translate }}
-            </mat-error>
-          </mat-form-field>
-          <!-- API to use -->
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{
-              'common.apiConfiguration.one' | translate
-            }}</mat-label>
-            <safe-graphql-select
-              valueField="id"
-              textField="name"
-              [required]="true"
-              [query]="apiConfigurationsQuery"
-              formControlName="apiConfiguration"
-              [selectedElements]="[defaultApiConfiguration]"
-            >
-            </safe-graphql-select>
-          </mat-form-field>
-        </div>
+        <!-- Schedule -->
+        <safe-cron-expression-control
+          class="flex"
+          formControlName="schedule"
+        ></safe-cron-expression-control>
+        <!-- API to use -->
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
+          <safe-graphql-select
+            valueField="id"
+            textField="name"
+            [required]="true"
+            [query]="apiConfigurationsQuery"
+            formControlName="apiConfiguration"
+            [selectedElements]="[defaultApiConfiguration]"
+          >
+          </safe-graphql-select>
+        </mat-form-field>
         <div class="flex gap-x-2 flex-wrap" *ngIf="!isHardcoded">
           <!-- Url to pull -->
           <mat-form-field appearance="outline" class="flex-1">

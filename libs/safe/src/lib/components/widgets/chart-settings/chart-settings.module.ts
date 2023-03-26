@@ -24,7 +24,6 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
 import { SafePaletteControlModule } from '../../palette-control/palette-control.module';
 import { TabMainModule } from './tab-main/tab-main.module';
 import { TabDisplayModule } from './tab-display/tab-display.module';
-import { TabPreviewModule } from './tab-preview/tab-preview.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 
 /** Module for the chart settings component */
@@ -56,7 +55,6 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     SafePaletteControlModule,
     TabMainModule,
     TabDisplayModule,
-    TabPreviewModule,
     MatTooltipModule,
   ],
   exports: [SafeChartSettingsComponent],

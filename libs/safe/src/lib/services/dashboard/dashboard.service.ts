@@ -34,7 +34,7 @@ export class SafeDashboardService {
    */
   constructor(@Inject('environment') environment: any, private apollo: Apollo) {
     this.availableWidgets = WIDGET_TYPES.filter((widget) =>
-      get(environment, 'availableWidgets', []).includes(widget.component)
+      get(environment, 'availableWidgets', []).includes(widget.id)
     );
   }
 

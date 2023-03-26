@@ -373,26 +373,17 @@ mat-header-row {
 }
 
 .mat-header-cell {
-  border-bottom: 1px solid #d8d8d8 !important;
-  color: #767373;
+  @apply text-gray-500 border-b border-solid border-zinc-300 #{!important};
 }
 
 .mat-row {
   .mat-cell {
-    border-bottom: 1px solid #f2f3f5 !important;
-    color: #3f3c3c;
+    @apply text-gray-600 border-b border-solid border-zinc-100 #{!important};
   }
 }
 
 .mat-spinner {
   margin: auto;
-}
-
-.action-button {
-  position: fixed !important;
-  bottom: 32px;
-  right: 32px;
-  z-index: 2000;
 }
 
 *:focus,
@@ -487,7 +478,7 @@ body {
   height: 40px;
   position: relative;
   z-index: 1001;
-  background-color: white;
+  @apply bg-white;
   color: black;
   text-align: left;
   line-height: 40px;
