@@ -596,16 +596,39 @@
           </kendo-grid-column>
         </ng-container>
       </ng-container>
+      <!-- Geospatial -->
+      <kendo-grid-column
+        *ngIf="field.type === 'JSON' && field.meta.type === 'geospatial'"
+        [field]="field.name"
+        [filterable]="true"
+        [title]="field.title"
+        [editor]="field.editor"
+        [editable]="!field.disabled"
+        [width]="field.width"
+        [hidden]="field.hidden"
+        [minResizableWidth]="50"
+        class="no-padding"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div
+            class="textbox-container"
+            [style]="getStyle(dataItem, field.name)"
+          >
+            {{
+              applyFieldFormat(getPropertyValue(dataItem, field.name), field)
+            }}
+          </div>
+        </ng-template>
+      </kendo-grid-column>
       <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner / users ) -->
       <kendo-grid-column
         *ngIf="
           field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)
         "
         [field]="field.name"
-        [filterable]="true"
+        [filterable]="false"
         [title]="field.title"
-        [editor]="field.editor"
-        [editable]="!field.disabled"
+        [editable]="false"
         [width]="field.width"
         [hidden]="field.hidden"
         [minResizableWidth]="50"
@@ -705,7 +728,8 @@
         *ngIf="
           field.type === 'JSON' &&
           !multiSelectTypes.includes(field.meta.type) &&
-          field.meta.type !== 'file'
+          field.meta.type !== 'file' &&
+          field.meta.type !== 'geospatial'
         "
       >
         <ng-container
