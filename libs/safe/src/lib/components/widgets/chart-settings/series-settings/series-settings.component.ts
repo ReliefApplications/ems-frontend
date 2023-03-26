@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
 /**
- *
+ * Series Display Settings component
  */
 @Component({
   selector: 'safe-series-settings',
@@ -12,6 +12,8 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 export class SafeSeriesSettingsComponent implements OnInit, OnChanges {
   @Input() formArray!: FormArray;
   public formGroup?: FormGroup;
+
+  public fillTypes = ['solid', 'gradient'];
 
   selectedSerie = new FormControl<string | undefined>(undefined);
 

@@ -201,7 +201,7 @@ export const createChartForm = (value: any) => {
     // Update series controls when chart type change
     const seriesFormArray = fb.array(
       formGroup.value.series?.map((serie: any) =>
-        createSerieForm(get(value, 'type', null), serie)
+        createSerieForm(value, serie)
       ) || []
     );
     formGroup.setControl('series', seriesFormArray);
@@ -360,5 +360,6 @@ export const createSerieForm = (type: string | null, value: any) =>
     ...(type &&
       ['bar', 'column', 'line'].includes(type) && {
         color: get<string | undefined>(value, 'color', undefined),
+        fill: get<string | undefined>(value, 'fill', undefined),
       }),
   });
