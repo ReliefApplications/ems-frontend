@@ -1,2 +1,0 @@
-favicon.ico
-assets/logo.png

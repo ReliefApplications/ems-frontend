@@ -26,6 +26,7 @@ export * from './lib/services/paginator-translate'; // todo: update
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
+export * from './lib/directives/fullscreen/public-api';
 
 // === GUARDS ===
 export * from './lib/guards/permission.guard';

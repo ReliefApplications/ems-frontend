@@ -1,8 +1,0 @@
-<ng-container *ngIf="!loading && form && canCreateRecords">
-  <safe-form [form]="form" (save)="onComplete($event)"></safe-form>
-  <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
-    <safe-button category="secondary" (click)="clearForm()"
-      >New record</safe-button
-    >
-  </ng-container>
-</ng-container>

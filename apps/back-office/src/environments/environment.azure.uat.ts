@@ -33,5 +33,14 @@ export const environment = {
   esriApiKey:
     'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
   theme,
-  availableWidgets: ['chart', 'grid', 'editor', 'summaryCard'],
+  availableWidgets: [
+    'donut-chart',
+    'line-chart',
+    'bar-chart',
+    'column-chart',
+    'pie-chart',
+    'grid',
+    'text',
+    'summaryCard',
+  ],
 };

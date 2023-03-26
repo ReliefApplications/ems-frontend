@@ -72,6 +72,14 @@
 >
   <h1>{{ 'pages.application.settings.actions' | translate }}</h1>
   <div class="flex gap-2 flex-wrap">
+    <!-- Styling -->
+    <safe-button
+      category="secondary"
+      variant="primary"
+      (click)="onOpenStyle()"
+    >
+      {{ 'components.application.customStyling' | translate }}
+    </safe-button>
     <safe-button
       icon="file_copy"
       category="tertiary"

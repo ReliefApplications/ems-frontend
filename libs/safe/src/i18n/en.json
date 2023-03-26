@@ -377,6 +377,7 @@
 				"custom": "Defines a custom aggregation function or expression in JavaScript.",
 				"filter": "Returns an array with only those elements that match the condition.",
 				"group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document.",
+				"selectedFields": "Only unused fields can removed.",
 				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.",
 				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
 			}
@@ -396,6 +397,10 @@
 			}
 		},
 		"application": {
+			"customStyling": "Custom Styling",
+			"dashboard": {
+				"empty": "No content available. Wait for your administrator to build some."
+			},
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the application {{name}}?"
 			},
@@ -1033,7 +1038,8 @@
 					"aggregation": {
 						"invalid": "Invalid aggregation"
 					}
-				}
+				},
+				"other": "Other"
 			},
 			"expand": "Expand",
 			"grid": {
@@ -1107,6 +1113,15 @@
 			"settings": {
 				"chart": {
 					"axes": "Axes",
+					"grid": {
+						"title": "Gridlines",
+						"x": {
+							"display": "Display horizontal gridlines"
+						},
+						"y": {
+							"display": "Display vertical gridlines"
+						}
+					},
 					"hideLegend": "Hide legend",
 					"labels": {
 						"percentage": "Percentage",
@@ -1132,9 +1147,16 @@
 					"size": "Size",
 					"style": "Style",
 					"text": "Text",
+					"title": {
+						"color": "Title color",
+						"format": "Title format"
+					},
 					"type": "Chart Type",
 					"xAxis": "X Axis",
 					"yAxis": "Y Axis"
+				},
+				"close": {
+					"confirmationMessage": "Some changes will be lost when closing edition. Do you want to continue?"
 				},
 				"grid": {
 					"actions": {
@@ -1330,7 +1352,9 @@
 				"dataSource": "Data Source",
 				"errors": {
 					"invalidSource": "The data source is invalid: please edit the settings."
-				}
+				},
+				"viewAsCards": "View as cards",
+				"viewAsGrid": "View as grid"
 			}
 		}
 	},
@@ -1704,6 +1728,12 @@
 			"recent": "Recent applications",
 			"title": "My applications"
 		},
+		"dashboard": {
+			"update": {
+				"exit": "Exit without saving changes",
+				"exitMessage": "There are unsaved changes on the page. Are you sure you want to exit?"
+			}
+		},
 		"formBuilder": {
 			"errors": {
 				"choices": {
@@ -1737,7 +1767,12 @@
 		},
 		"referenceData": {
 			"csv": "CSV input",
-			"fields": "Fields",
+			"fields": {
+				"fetch": "Fetch fields",
+				"missingConfig": "Can't fetch fields. Missing configuration: {{config}}",
+				"noFields": "No fields found",
+				"title": "Field"
+			},
 			"graphQLFilter": "GraphQL query parameters",
 			"path": "Path",
 			"placeholder": {

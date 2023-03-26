@@ -10,6 +10,13 @@
     [title]="title"
     [settings]="adminNavItems"
   ></safe-app-application-toolbar>
+  <!-- Empty indicator -->
+  <safe-empty
+    class="m-auto py-6 px-0 bg-white"
+    *ngIf="empty"
+    icon="dashboard"
+    [title]="'components.application.dashboard.empty' | translate"
+  ></safe-empty>
 </ng-template>
 <!--Need the nav variable, don't remove let-nav, used in layout-->
 <ng-template #leftSidenav let-nav>

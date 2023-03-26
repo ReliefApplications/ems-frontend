@@ -377,6 +377,7 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
 			}
@@ -396,6 +397,10 @@
 			}
 		},
 		"application": {
+			"customStyling": "******",
+			"dashboard": {
+				"empty": "******"
+			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
 			},
@@ -1033,7 +1038,8 @@
 					"aggregation": {
 						"invalid": "******"
 					}
-				}
+				},
+				"other": "******"
 			},
 			"expand": "******",
 			"grid": {
@@ -1107,6 +1113,15 @@
 			"settings": {
 				"chart": {
 					"axes": "******",
+					"grid": {
+						"title": "******",
+						"x": {
+							"display": "******"
+						},
+						"y": {
+							"display": "******"
+						}
+					},
 					"hideLegend": "******",
 					"labels": {
 						"percentage": "******",
@@ -1132,9 +1147,16 @@
 					"size": "******",
 					"style": "******",
 					"text": "******",
+					"title": {
+						"color": "******",
+						"format": "******"
+					},
 					"type": "******",
 					"xAxis": "******",
 					"yAxis": "******"
+				},
+				"close": {
+					"confirmationMessage": "******"
 				},
 				"grid": {
 					"actions": {
@@ -1330,7 +1352,9 @@
 				"dataSource": "******",
 				"errors": {
 					"invalidSource": "******"
-				}
+				},
+				"viewAsCards": "******",
+				"viewAsGrid": "******"
 			}
 		}
 	},
@@ -1704,6 +1728,12 @@
 			"recent": "******",
 			"title": "******"
 		},
+		"dashboard": {
+			"update": {
+				"exit": "******",
+				"exitMessage": "******"
+			}
+		},
 		"formBuilder": {
 			"errors": {
 				"choices": {
@@ -1737,7 +1767,12 @@
 		},
 		"referenceData": {
 			"csv": "******",
-			"fields": "******",
+			"fields": {
+				"fetch": "******",
+				"missingConfig": "****** {{config}}",
+				"noFields": "******",
+				"title": "******"
+			},
 			"graphQLFilter": "******",
 			"path": "******",
 			"placeholder": {

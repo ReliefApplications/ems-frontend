@@ -48,6 +48,10 @@ export class DashboardComponent
   /** Roles of the user */
   private roles: Role[] = [];
 
+  /** @returns True if applications is empty */
+  get empty(): boolean {
+    return this.applications.length === 0;
+  }
   /**
    * Main component of Front-Office navigation.
    *
@@ -105,13 +109,6 @@ export class DashboardComponent
             this.applicationService.loadApplication(this.appID);
             this.roles = user.roles || [];
             this.permissions = user.permissions || [];
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant(
-                'common.notifications.platformAccessNotGranted'
-              ),
-              { error: true }
-            );
           }
         }
       });

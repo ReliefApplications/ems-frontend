@@ -37,43 +37,11 @@
       <safe-divider></safe-divider>
       <!-- Schedule builder -->
       <h3>{{ 'models.customNotification.schedule' | translate }}</h3>
-      <div class="flex flex-col">
-        <!-- Show readable value of the schedule -->
-        <safe-alert
-          *ngIf="formGroup.get('schedule')?.valid"
-          variant="primary"
-          class="mb-6"
-        >
-          <safe-icon icon="schedule"></safe-icon>
-          {{ formGroup.value.schedule | safeReadableCron }}
-        </safe-alert>
-        <!-- Schedule -->
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{
-            'models.customNotification.schedule' | translate
-          }}</mat-label>
-          <input
-            type="text"
-            [placeholder]="
-              'components.customNotifications.hint.schedule' | translate
-            "
-            matInput
-            formControlName="schedule"
-          />
-          <safe-icon
-            icon="info_outline"
-            class="cursor-pointer"
-            variant="grey"
-            matSuffix
-            [matTooltip]="
-              'components.customNotifications.hint.schedule' | translate
-            "
-          ></safe-icon>
-          <mat-error *ngIf="formGroup.get('schedule')?.errors">
-            {{ 'components.customNotifications.errors.schedule' | translate }}
-          </mat-error>
-        </mat-form-field>
-      </div>
+      <!-- Schedule -->
+      <safe-cron-expression-control
+        class="flex"
+        formControlName="schedule"
+      ></safe-cron-expression-control>
       <safe-divider></safe-divider>
       <!-- Dataset selection -->
       <h3>{{ 'components.customNotifications.edit.dataset' | translate }}</h3>

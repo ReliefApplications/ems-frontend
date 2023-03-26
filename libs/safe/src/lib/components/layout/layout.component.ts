@@ -191,14 +191,17 @@ export class SafeLayoutComponent
 
     this.layoutService.rightSidenav$.subscribe((view) => {
       if (view && this.rightSidenav) {
-        // this is necessary to prevent have more than one history component at the same time.
+        // avoid to have multiple right sidenav components at same time
         this.layoutService.setRightSidenav(null);
         this.showSidenav = true;
         const componentRef: ComponentRef<any> =
           this.rightSidenav.createComponent(view.component);
-        for (const [key, value] of Object.entries(view.inputs)) {
-          componentRef.instance[key] = value;
+        if (view.inputs) {
+          for (const [key, value] of Object.entries(view.inputs)) {
+            componentRef.instance[key] = value;
+          }
         }
+
         componentRef.instance.cancel.subscribe(() => {
           componentRef.destroy();
           this.layoutService.setRightSidenav(null);

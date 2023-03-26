@@ -1,8 +1,7 @@
 :host {
-  background-color: white;
   padding: 8px;
   border-radius: 4px;
-  @apply shadow-lg;
+  @apply shadow-lg bg-white;
   display: flex;
   justify-content: space-between;
   gap: 8px;

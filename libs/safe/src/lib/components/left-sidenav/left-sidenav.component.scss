@@ -57,17 +57,6 @@
   cursor: move;
 }
 
-.add-page-container {
-  border-top: 1px solid rgba(0, 0, 0, 0.2);
-  display: flex;
-  justify-content: space-around;
-
-  // Fixes the add-page at the sidenav bottom
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-}
-
 .app-sidenav-add-page {
   // Subtracts topbar, sub-topbar, header and add-page height
   max-height: calc(100vh - 64px - 60px - 48px - 84px);

@@ -1,4 +1,6 @@
 <ng-container
+  safeFullScreen
+  [(isFullScreenMode)]="isFullScreen"
   *safeSkeleton="
     loading;
     repeat: 1;
@@ -13,13 +15,21 @@
         [text]="dashboard.name"
         [canEdit]="canEditName"
         (onChange)="saveName($event)"
-        (formActiveEvent)="formActive = $event">
+        (formActiveEvent)="formActive = $event"
+      >
         <h1 class="!m-0 overflow-hidden text-ellipsis">
           {{ dashboard.name }}
         </h1>
       </safe-editable-text>
 
       <div class="flex items-center gap-1" *ngIf="!formActive">
+        <safe-button
+          variant="grey"
+          [isIcon]="true"
+          icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
+          (click)="isFullScreen = !isFullScreen"
+        >
+        </safe-button>
         <safe-access
           [access]="dashboard.permissions"
           [application]="applicationId"

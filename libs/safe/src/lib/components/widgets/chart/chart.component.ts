@@ -1,11 +1,19 @@
-import { Component, Input, OnChanges, ViewChild } from '@angular/core';
-import { SafeLineChartComponent } from '../../ui/line-chart/line-chart.component';
-import { SafePieDonutChartComponent } from '../../ui/pie-donut-chart/pie-donut-chart.component';
-import { SafeBarChartComponent } from '../../ui/bar-chart/bar-chart.component';
-import { uniq, get, groupBy } from 'lodash';
+import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+import { SafeLineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
+import { SafePieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
+import { SafeBarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component';
+import { uniq, get, groupBy, isEqual } from 'lodash';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Default file name for chart exports
@@ -26,9 +34,11 @@ export class SafeChartComponent
 {
   // === DATA ===
   public loading = true;
-  public series: any[] = [];
   public options: any = null;
   private dataQuery: any;
+
+  private series = new BehaviorSubject<any[]>([]);
+  public series$ = this.series.asObservable();
 
   public lastUpdate = '';
   public hasError = false;
@@ -65,42 +75,65 @@ export class SafeChartComponent
    * Chart widget using KendoUI.
    *
    * @param aggregationService Shared aggregation service
+   * @param translate Angular translate service
    */
-  constructor(private aggregationService: SafeAggregationService) {
+  constructor(
+    private aggregationService: SafeAggregationService,
+    private translate: TranslateService
+  ) {
     super();
   }
 
-  /** Detect changes of the settings to reload the data. */
-  ngOnChanges(): void {
-    this.loading = true;
-    if (this.settings.resource) {
-      this.aggregationService
-        .getAggregations(this.settings.resource, {
-          ids: [get(this.settings, 'chart.aggregationId', null)],
-          first: 1,
-        })
-        .then((res) => {
-          const aggregation = res.edges[0]?.node || null;
-          if (aggregation) {
-            this.dataQuery = this.aggregationService.aggregationDataQuery(
-              this.settings.resource,
-              aggregation.id || '',
-              get(this.settings, 'chart.mapping', null)
-            );
-            if (this.dataQuery) {
-              this.getOptions();
-              this.getData();
+  ngOnChanges(changes: SimpleChanges): void {
+    const previousDatasource = {
+      resource: get(changes, 'settings.previousValue.resource'),
+      chart: {
+        aggregationId: get(
+          changes,
+          'settings.previousValue.chart.aggregationId'
+        ),
+      },
+    };
+    const currentDatasource = {
+      resource: get(changes, 'settings.currentValue.resource'),
+      chart: {
+        aggregationId: get(
+          changes,
+          'settings.currentValue.chart.aggregationId'
+        ),
+      },
+    };
+    if (!isEqual(previousDatasource, currentDatasource)) {
+      this.loading = true;
+      if (this.settings.resource) {
+        this.aggregationService
+          .getAggregations(this.settings.resource, {
+            ids: [get(this.settings, 'chart.aggregationId', null)],
+            first: 1,
+          })
+          .then((res) => {
+            const aggregation = res.edges[0]?.node || null;
+            if (aggregation) {
+              this.dataQuery = this.aggregationService.aggregationDataQuery(
+                this.settings.resource,
+                aggregation.id || '',
+                get(this.settings, 'chart.mapping', null)
+              );
+              if (this.dataQuery) {
+                this.getData();
+              } else {
+                this.loading = false;
+              }
             } else {
               this.loading = false;
             }
-          } else {
-            this.loading = false;
-          }
-        })
-        .catch(() => (this.loading = false));
-    } else {
-      this.loading = false;
+          })
+          .catch(() => (this.loading = false));
+      } else {
+        this.loading = false;
+      }
     }
+    this.getOptions();
   }
 
   /**
@@ -147,6 +180,14 @@ export class SafeChartComponent
             : null,
         },
       },
+      grid: {
+        x: {
+          display: get(this.settings, 'chart.grid.x.display', true),
+        },
+        y: {
+          display: get(this.settings, 'chart.grid.y.display', true),
+        },
+      },
       labels: {
         showCategory: get(this.settings, 'chart.labels.showCategory', false),
         showValue: get(this.settings, 'chart.labels.showValue', false),
@@ -157,6 +198,7 @@ export class SafeChartComponent
           ? { type: '100%' }
           : { type: 'normal' }
         : false,
+      series: get(this.settings, 'chart.series'),
     };
   }
 
@@ -168,7 +210,7 @@ export class SafeChartComponent
         if (errors) {
           this.loading = false;
           this.hasError = true;
-          this.series = [];
+          this.series.next([]);
         } else {
           this.hasError = false;
           const today = new Date();
@@ -177,43 +219,55 @@ export class SafeChartComponent
             ':' +
             ('0' + today.getMinutes()).slice(-2);
           if (
-            ['pie', 'donut', 'line', 'bar', 'column'].includes(
-              this.settings.chart.type
-            )
+            [
+              'pie',
+              'donut',
+              'radar',
+              'line',
+              'bar',
+              'column',
+              'polar',
+            ].includes(this.settings.chart.type)
           ) {
             const aggregationData = JSON.parse(
               JSON.stringify(data.recordsAggregation)
             );
+            // If series
             if (get(this.settings, 'chart.mapping.series', null)) {
               const groups = groupBy(aggregationData, 'series');
               const categories = uniq(
                 aggregationData.map((x: any) => x.category)
               );
-              this.series = Object.keys(groups).map((key) => {
-                const rawData = groups[key];
-                const returnData = Array.from(
-                  categories,
-                  (category) =>
-                    rawData.find((x) => x.category === category) || {
-                      category,
-                      field: null,
-                    }
-                );
-                return {
-                  label: key,
-                  name: key,
-                  data: returnData,
-                };
-              });
+              this.series.next(
+                Object.keys(groups).map((key) => {
+                  const rawData = groups[key];
+                  const returnData = Array.from(
+                    categories,
+                    (category) =>
+                      rawData.find((x) => x.category === category) || {
+                        category,
+                        field: null,
+                      }
+                  );
+                  return {
+                    label:
+                      key ||
+                      this.translate.instant('components.widget.chart.other'),
+                    name: key,
+                    data: returnData,
+                  };
+                })
+              );
             } else {
-              this.series = [
+              // Group under same serie
+              this.series.next([
                 {
                   data: aggregationData,
                 },
-              ];
+              ]);
             }
           } else {
-            this.series = data.recordsAggregation;
+            this.series.next(data.recordsAggregation);
           }
           this.loading = loading;
         }

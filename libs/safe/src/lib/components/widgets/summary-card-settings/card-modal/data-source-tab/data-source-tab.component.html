@@ -45,9 +45,7 @@
           category="tertiary"
           variant="primary"
           (click)="addAggregation()"
-          >{{
-            'components.aggregation.add.title' | translate
-          }}</safe-button
+          >{{ 'components.aggregation.add.title' | translate }}</safe-button
         >
       </div>
     </ng-container>
@@ -74,7 +72,10 @@
         variant="danger"
         [isIcon]="true"
         icon="close"
-        (click)="form.get('layout')?.setValue(null); form.patchValue({ isAggregation: true })"
+        (click)="
+          form.get('layout')?.setValue(null);
+          form.patchValue({ isAggregation: true })
+        "
       ></safe-button>
     </mat-form-field>
     <h2>

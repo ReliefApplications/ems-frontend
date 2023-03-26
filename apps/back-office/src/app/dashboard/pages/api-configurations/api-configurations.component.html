@@ -69,7 +69,7 @@
       category="secondary"
       variant="primary"
       (click)="onAdd()"
-      *ngIf="'create' | able: 'ApiConfiguration'"
+      *ngIf="'create' | able : 'ApiConfiguration'"
     >
       {{ 'pages.apiConfigurations.create' | translate }}
     </safe-button>
