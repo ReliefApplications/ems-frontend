@@ -13,6 +13,7 @@ import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { SafeRecordModalComponent } from './record-modal.component';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeModalModule } from '../ui/modal/modal.module';
+import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
 
 /**
  * SafeRecordModalModule is a class used to manage all the modules and components
@@ -34,6 +35,7 @@ import { SafeModalModule } from '../ui/modal/modal.module';
     TranslateModule,
     SafeDateModule,
     SafeModalModule,
+    SafeSpinnerModule,
   ],
   exports: [SafeRecordModalComponent],
 })
