@@ -36,18 +36,22 @@ export class SafeSeriesMappingComponent
    * Sets the available fields.
    */
   ngOnInit(): void {
+    this.setControlListeners();
+  }
+
+  ngOnChanges(): void {
+    this.setControlListeners();
+  }
+
+  private setControlListeners(): void {
     this.controlNames = Object.keys(
       (this.formGroup as UntypedFormGroup).controls
     );
-    // this.fields$.subscribe((fields: any[]) => {
-    //   this.availableFields = [...fields];
-    // });
     // Remove fields from other controls list when selected
     merge(
       ...this.controlNames.map(
         (controlName) => this.formGroup.get(controlName)?.valueChanges || 0
       )
-      // this.fields$
     )
       .pipe(startWith(null), delay(100))
       .pipe(takeUntil(this.destroy$))

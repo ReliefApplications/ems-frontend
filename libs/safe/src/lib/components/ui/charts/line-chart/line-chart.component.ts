@@ -75,8 +75,12 @@ export class SafeLineChartComponent implements OnChanges {
 
   ngOnChanges(): void {
     this.showValueLabels = get(this.options, 'labels.valueType', false);
+    const series = get(this.options, 'series', []);
     this.chartData.datasets = this.series.map((x, i) => {
-      const color = get(this.options, `palette[${i}]`, undefined);
+      const serie = series.find((serie: any) => serie.serie === x.name);
+      const color =
+        get(serie, 'color', null) ||
+        get(this.options, `palette[${i}]`, undefined);
 
       // finds min and max values from x.data
       const min = Math.min(...x.data.map((y: any) => y.field ?? Infinity));

@@ -309,19 +309,20 @@
           </div>
         </mat-expansion-panel>
         <!-- === SERIES AND STACKS PARAMETERS === -->
-        <mat-expansion-panel
-          formGroupName="stack"
-          *ngIf="
-            ['bar', 'column'].includes(type.name) &&
-            chartForm.value.mapping.series
-          "
-        >
+        <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
               {{ 'components.widget.settings.chart.series.title' | translate }}
             </mat-panel-title>
           </mat-expansion-panel-header>
-          <div class="flex flex-col gap-2">
+          <div
+            class="flex flex-col gap-2 mb-6"
+            formGroupName="stack"
+            *ngIf="
+              ['bar', 'column'].includes(type.name) &&
+              chartForm.value.mapping.series
+            "
+          >
             <mat-slide-toggle formControlName="enable">{{
               'components.widget.settings.chart.series.stack.enable' | translate
             }}</mat-slide-toggle>
@@ -330,6 +331,8 @@
                 | translate
             }}</mat-slide-toggle>
           </div>
+          <safe-series-settings [formArray]="$any(formGroup.get('chart.series'))">
+          </safe-series-settings>
         </mat-expansion-panel>
       </mat-accordion>
     </div>
