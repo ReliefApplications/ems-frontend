@@ -43,6 +43,18 @@ import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../utils/cleanRecord';
+import { CommonModule } from '@angular/common';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { SafeButtonModule } from '../ui/button/button.module';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { SafeIconModule } from '../ui/icon/icon.module';
+import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
+import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
+import { SafeFormActionsModule } from '../form-actions/form-actions.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * Interface of Dialog data.
@@ -63,9 +75,24 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
  * Component that displays a form in a modal
  */
 @Component({
+  standalone: true,
   selector: 'safe-form-modal',
   templateUrl: './form-modal.component.html',
   styleUrls: ['./form-modal.component.scss'],
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTabsModule,
+    SafeButtonModule,
+    SafeIconModule,
+    SafeRecordHistoryModalModule,
+    SafeRecordSummaryModule,
+    SafeFormActionsModule,
+    TranslateModule,
+    SafeModalModule,
+  ],
 })
 export class SafeFormModalComponent implements OnInit {
   // === DATA ===
