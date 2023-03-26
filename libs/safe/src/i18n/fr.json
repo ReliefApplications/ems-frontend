@@ -379,6 +379,7 @@
 				"custom": "Définit une fonction ou une expression d'agrégation personnalisée en JavaScript.",
 				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
 				"group": "Regroupe les documents mis en entrée par l'expression 'id' qui a été spécifiée et qui sort un document pour chaque regroupement.",
+				"selectedFields": "Seuls les champs non utilisés peuvent être supprimés.",
 				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.",
 				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
 			}
@@ -398,6 +399,7 @@
 			}
 		},
 		"application": {
+			"customStyling": "Style personnalisé",
 			"dashboard": {
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée."
 			},
@@ -1061,7 +1063,8 @@
 					"aggregation": {
 						"invalid": "Agrégation invalide"
 					}
-				}
+				},
+				"other": "Autre"
 			},
 			"expand": "Étendre",
 			"grid": {
@@ -1136,6 +1139,15 @@
 			"settings": {
 				"chart": {
 					"axes": "Axes",
+					"grid": {
+						"title": "Grille",
+						"x": {
+							"display": "Afficher les lignes horizontales"
+						},
+						"y": {
+							"display": "Afficher les lignes verticales"
+						}
+					},
 					"hideLegend": "Masquer la légende",
 					"labels": {
 						"percentage": "Pourcentage",
@@ -1161,6 +1173,10 @@
 					"size": "Taille",
 					"style": "Style",
 					"text": "Texte",
+					"title": {
+						"color": "Couleur",
+						"format": "Format"
+					},
 					"type": "Graphique",
 					"xAxis": "Axe X",
 					"yAxis": "Axe Y"
@@ -1439,7 +1455,9 @@
 				"dataSource": "Source",
 				"errors": {
 					"invalidSource": "La source de données est invalide : veuillez modifier les paramètres."
-				}
+				},
+				"viewAsCards": "Afficher en cartes",
+				"viewAsGrid": "Afficher en grille"
 			}
 		}
 	},
@@ -1812,6 +1830,12 @@
 			"goTo": "Aller vers la liste d'applications",
 			"recent": "Applications récentes",
 			"title": "Mes applications"
+		},
+		"dashboard": {
+			"update": {
+				"exit": "Quitter sans sauvegarder les changements",
+				"exitMessage": "Il y a des changements non sauvegardés dans la page, voulez-vous vraiment quitter cette page ?"
+			}
 		},
 		"formBuilder": {
 			"errors": {

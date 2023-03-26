@@ -73,7 +73,7 @@ export class SafeRecordHistoryComponent
   public displayedColumns: string[] = ['position'];
   public filtersDate = { startDate: '', endDate: '' };
   public sortedFields: any[] = [];
-  public filterField: string | null = null;
+  public filterFields: string[] = [];
 
   // Refresh content of the history
   @Input() refresh$: Subject<boolean> = new Subject<boolean>();
@@ -291,13 +291,13 @@ export class SafeRecordHistoryComponent
    * Triggers when the selected date and field filters are changed
    * and filters the history accordingly
    *
-   * @param filterField the name of the field being filtered, if any
+   * @param fields selected fields
    */
-  applyFilter(filterField?: string): void {
+  applyFilter(fields?: any): void {
     // undefined => function called from date change
-    // null => 'All fields' selected
+    // empty => 'All fields' selected
     // other => Field name for filter
-    if (filterField !== undefined) this.filterField = filterField || null;
+    if (fields) this.filterFields = fields;
 
     const startDate = this.filtersDate.startDate
       ? new Date(this.filtersDate.startDate)
@@ -319,16 +319,18 @@ export class SafeRecordHistoryComponent
     });
 
     // filtering by field
-    if (this.filterField !== null) {
+    if (this.filterFields.length > 0) {
       this.filterHistory = this.filterHistory
         .filter(
           (item) =>
-            !!item.changes.find((change) => this.filterField === change.field)
+            !!item.changes.find((change) =>
+              this.filterFields.includes(change.field)
+            )
         )
         .map((item) => {
           const newItem = Object.assign({}, item);
-          newItem.changes = item.changes.filter(
-            (change) => change.field === this.filterField
+          newItem.changes = item.changes.filter((change) =>
+            this.filterFields.includes(change.field)
           );
           return newItem;
         });
@@ -348,7 +350,7 @@ export class SafeRecordHistoryComponent
       to: `${new Date(this.filtersDate.endDate).getTime()}`,
       lng: this.translate.currentLang,
       dateLocale: this.dateFormat.currentLang,
-      ...(this.filterField && { field: this.filterField }),
+      ...(this.filterFields && { fields: this.filterFields.join(',') }),
     }).toString();
     this.downloadService.getFile(
       `${path}?${queryString}`,

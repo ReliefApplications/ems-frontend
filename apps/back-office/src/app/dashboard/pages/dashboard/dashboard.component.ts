@@ -5,6 +5,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,6 +18,8 @@ import {
   SafeAuthService,
   Application,
   SafeUnsubscribeComponent,
+  SafeWidgetGridComponent,
+  SafeConfirmService,
 } from '@oort-front/safe';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
@@ -32,7 +35,8 @@ import {
   GET_DASHBOARD_BY_ID,
 } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 /**
  * Dashboard page.
@@ -46,6 +50,7 @@ export class DashboardComponent
   extends SafeUnsubscribeComponent
   implements OnInit, OnDestroy
 {
+  public isFullScreen = false;
   // === DATA ===
   public id = '';
   public applicationId?: string;
@@ -67,6 +72,9 @@ export class DashboardComponent
   public showAppMenu = false;
   public applications: Application[] = [];
 
+  @ViewChild(SafeWidgetGridComponent)
+  widgetGridComponent!: SafeWidgetGridComponent;
+
   /**
    * Dashboard page
    *
@@ -80,6 +88,7 @@ export class DashboardComponent
    * @param dashboardService Shared dashboard service
    * @param translateService Angular translate service
    * @param authService Shared authentication service
+   * @param confirmService Shared confirm service
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -91,7 +100,8 @@ export class DashboardComponent
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService,
     private translateService: TranslateService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    private confirmService: SafeConfirmService
   ) {
     super();
   }
@@ -160,6 +170,35 @@ export class DashboardComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.dashboardService.closeDashboard();
+  }
+
+  /**
+   * Show modal confirmation before leave the page if has changes on form
+   *
+   * @returns boolean of observable of boolean
+   */
+  canDeactivate(): Observable<boolean> | boolean {
+    if (!this.widgetGridComponent.canDeactivate) {
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translateService.instant('pages.dashboard.update.exit'),
+        content: this.translateService.instant(
+          'pages.dashboard.update.exitMessage'
+        ),
+        confirmText: this.translateService.instant(
+          'components.confirmModal.confirm'
+        ),
+        confirmColor: 'primary',
+      });
+      return dialogRef.afterClosed().pipe(
+        map((confirm) => {
+          if (confirm) {
+            return true;
+          }
+          return false;
+        })
+      );
+    }
+    return true;
   }
 
   /**

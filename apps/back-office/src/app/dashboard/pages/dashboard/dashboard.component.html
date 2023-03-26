@@ -1,4 +1,6 @@
 <ng-container
+  safeFullScreen
+  [(isFullScreenMode)]="isFullScreen"
   *safeSkeleton="
     loading;
     repeat: 1;
@@ -21,6 +23,13 @@
       </safe-editable-text>
 
       <div class="flex items-center gap-1" *ngIf="!formActive">
+        <safe-button
+          variant="grey"
+          [isIcon]="true"
+          icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
+          (click)="isFullScreen = !isFullScreen"
+        >
+        </safe-button>
         <safe-access
           [access]="dashboard.permissions"
           [application]="applicationId"

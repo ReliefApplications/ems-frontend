@@ -1,6 +1,10 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, UntypedFormControl } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  UntypedFormControl,
+} from '@angular/forms';
 import {
   MatLegacyAutocompleteSelectedEvent as MatAutocompleteSelectedEvent,
   MatLegacyAutocompleteTrigger as MatAutocompleteTrigger,
@@ -37,14 +41,14 @@ export class SafeTagboxComponent implements OnInit {
   public choicesEmpty = false;
 
   // === OUTPUT CONTROL ===
-  @Input() parentControl!: AbstractControl;
+  @Input() formControl!: FormControl;
 
   ngOnInit(): void {
     this.choices$.subscribe((choices: any[]) => {
       this.choicesEmpty = choices.length === 0;
       this.selectedChoices = this.choicesEmpty
         ? []
-        : this.parentControl.value
+        : this.formControl.value
             .map((value: string) =>
               choices.find((choice) => value === choice[this.valueKey])
             )
@@ -158,7 +162,7 @@ export class SafeTagboxComponent implements OnInit {
       this.selectedChoices.push(
         this.currentChoices.find((x) => x[this.displayKey] === value)
       );
-      this.parentControl.setValue(
+      this.formControl.setValue(
         this.selectedChoices.map((x) => x[this.valueKey])
       );
       this.availableChoices.next(
@@ -186,7 +190,7 @@ export class SafeTagboxComponent implements OnInit {
         this.selectedChoices[index],
       ]);
       this.selectedChoices.splice(index, 1);
-      this.parentControl.setValue(
+      this.formControl.setValue(
         this.selectedChoices.map((x) => x[this.valueKey])
       );
     }
@@ -204,7 +208,7 @@ export class SafeTagboxComponent implements OnInit {
         (x) => x[this.valueKey] === event.option.value[this.valueKey]
       )
     );
-    this.parentControl.setValue(
+    this.formControl.setValue(
       this.selectedChoices.map((x) => x[this.valueKey])
     );
     this.availableChoices.next(

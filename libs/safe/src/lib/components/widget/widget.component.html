@@ -1,22 +1,16 @@
 <!-- CHART -->
 <ng-container *ngIf="widget.component === 'chart'">
   <safe-chart
+    #widgetContent
     class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
   ></safe-chart>
 </ng-container>
-<!-- SCHEDULER -->
-<!-- <ng-container *ngIf="widget.component === 'scheduler'">
-  <safe-scheduler
-    class="flex-1 h-full w-full"
-    [header]="header"
-    [settings]="widget.settings"
-  ></safe-scheduler>
-</ng-container> -->
 <!-- GRID -->
 <ng-container *ngIf="widget.component === 'grid'">
   <safe-grid-widget
+    #widgetContent
     class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
@@ -29,6 +23,7 @@
 <!-- MAP -->
 <ng-container *ngIf="widget.component === 'map'">
   <safe-map-widget
+    #widgetContent
     class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
@@ -37,6 +32,7 @@
 <!-- TEXT EDITOR -->
 <ng-container *ngIf="widget.component === 'editor'">
   <safe-editor
+    #widgetContent
     class="flex-1 h-full w-full"
     [header]="header"
     [title]="widget.settings.title"
@@ -47,9 +43,13 @@
 <!-- SUMMARY CARD -->
 <ng-container *ngIf="widget.component === 'summaryCard'">
   <safe-summary-card
+    #widgetContent
     class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
+    (goToNextStep)="goToNextStep.emit($event)"
+    (edit)="edit.emit($event)"
+    [widget]="widget"
   >
   </safe-summary-card>
 </ng-container>
