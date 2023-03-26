@@ -17,7 +17,7 @@ import {
   FeatureProperties,
   LayerStyle,
 } from './interfaces/layer-settings.type';
-import { IconName } from './const/fa-icons';
+import { IconName } from '../../icon-picker/icon-picker.const';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { LegendDefinition } from './interfaces/layer-legend.type';
 import { SafeRestService } from '../../../services/rest/rest.service';
@@ -85,7 +85,7 @@ export const DEFAULT_LAYER_STYLE = {
     minOpacity: 0.5,
     maxZoom: 18,
   },
-  icon: 'leaflet_default',
+  icon: 'location-dot',
 } as Required<LayerStyle>;
 
 /** Minimum cluster size in pixel */
@@ -347,7 +347,7 @@ export class Layer {
                 fillOpacity: layerInfo.opacity ?? 1,
                 borderOpacity: layerInfo.opacity ?? 1,
                 fillColor: layerInfo.style?.color ?? 'purple',
-                icon: layerInfo.style?.icon ?? 'leaflet_default',
+                icon: layerInfo.style?.icon ?? 'location-dot',
                 iconSize: layerInfo.style?.size ?? 24,
               },
             },
@@ -600,7 +600,7 @@ export class Layer {
           zoomToBoundsOnClick: false,
           iconCreateFunction: (cluster) => {
             const iconProperties = {
-              icon: this.firstStyle.icon as IconName | 'leaflet_default',
+              icon: this.firstStyle.icon as IconName | 'location-dot',
               color: this.firstStyle.fillColor,
               size:
                 (cluster.getChildCount() / 50) *
@@ -674,7 +674,7 @@ export class Layer {
         const items: {
           label: string;
           color: string;
-          icon?: IconName | 'leaflet_default';
+          icon?: IconName | 'location-dot';
         }[] = [];
 
         features.forEach((feature) => {

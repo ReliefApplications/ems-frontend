@@ -36,6 +36,7 @@
     {{ 'components.widget.settings.map.edit.cluster.cluster' | translate }}
   </safe-button> -->
   <safe-button
+    *ngIf="form.get('layerDefinition.featureReduction')?.enabled"
     icon="map"
     [attr.data-selected]="currentTab === 'aggregation'"
     (click)="currentTab = 'aggregation'"
@@ -95,7 +96,9 @@
       </ng-container>
       <!-- Layer aggregations -->
       <ng-container *ngSwitchCase="'aggregation'">
-        <safe-layer-aggregation></safe-layer-aggregation>
+        <safe-layer-aggregation
+          [formGroup]="$any(form.get('layerDefinition.featureReduction'))"
+        ></safe-layer-aggregation>
       </ng-container>
       <!-- Layer popup -->
       <ng-container *ngSwitchCase="'popup'">

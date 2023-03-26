@@ -1,4 +1,4 @@
-import { IconName } from '../components/ui/map/const/fa-icons';
+import { IconName } from '../components/icon-picker/icon-picker.const';
 /** List of available layer types in layer editor */
 export enum LayerTypes {
   POLYGON = 'polygon',
@@ -36,7 +36,7 @@ export interface Layer {
         symbol?: {
           color?: string;
           size?: number;
-          icon?: IconName | 'leaflet_default';
+          icon?: IconName | 'location-dot';
         };
       };
     };

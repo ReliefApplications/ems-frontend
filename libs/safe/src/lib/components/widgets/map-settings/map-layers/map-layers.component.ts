@@ -5,7 +5,7 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { IconName } from '../../../ui/map/const/fa-icons';
+import { IconName } from '../../../icon-picker/icon-picker.const';
 import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.component';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 import { Apollo } from 'apollo-angular';
@@ -24,7 +24,7 @@ export interface MapLayerI {
   style: {
     color: string;
     size: number;
-    icon: IconName | 'leaflet_default';
+    icon: IconName | 'location-dot';
   };
   datasource: {
     origin: 'resource' | 'refData';

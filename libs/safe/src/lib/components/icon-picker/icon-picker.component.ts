@@ -1,5 +1,27 @@
-import { Component, HostListener, Inject, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  Inject,
+  Input,
+  OnDestroy,
+  Optional,
+  Output,
+  Self,
+} from '@angular/core';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { FA_ICONS, IconName } from './icon-picker.const';
+import {
+  MatLegacyFormField as MatFormField,
+  MatLegacyFormFieldControl as MatFormFieldControl,
+  MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
+} from '@angular/material/legacy-form-field';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+
+type FormFieldValue = IconName | null;
 
 /**
  * Icon picker that loads the icon list with the given font family to display those icons as a grid
@@ -10,41 +32,147 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   styleUrls: ['./icon-picker.component.scss'],
   providers: [
     {
-      provide: NG_VALUE_ACCESSOR,
+      provide: MatFormFieldControl,
       useExisting: IconPickerComponent,
-      multi: true,
     },
   ],
 })
-export class IconPickerComponent implements ControlValueAccessor {
-  private iconListData!: string[];
-  public filteredIconList!: string[];
-  public selectedIcon!: string;
-  public primaryColor!: string;
-  public displayIconList = false;
+export class IconPickerComponent
+  implements
+    ControlValueAccessor,
+    MatFormFieldControl<FormFieldValue>,
+    OnDestroy
+{
+  static nextId = 0;
 
-  onChange!: (value: string) => void;
-  onTouched!: () => void;
+  public icons: string[] = FA_ICONS;
+  private primaryColor!: string;
+  @Input() color: string = this.primaryColor;
+  public showList = false;
+
+  @Output() selectionChange = new EventEmitter<FormFieldValue>();
 
   /**
-   * Icon list data
+   * Gets the value
+   *
+   * @returns the value
    */
-  @Input() set iconList(iconListData: string[]) {
-    // @TODO Takes some time to display the picker because of the list size
-    // Maybe implement on scroll load feature??
-    if (iconListData) {
-      this.iconListData = iconListData;
-      this.filteredIconList = iconListData;
-    }
+  @Input() get value(): FormFieldValue {
+    return this.ngControl.value;
   }
+
+  /** Sets the value */
+  set value(val: FormFieldValue) {
+    this.onChange(val);
+    this.stateChanges.next();
+    this.selectionChange.emit(val);
+  }
+
   @Input() fontFamily = 'fa';
+
+  public stateChanges = new Subject<void>();
+  @HostBinding()
+  id = `safe-icon-picker-${IconPickerComponent.nextId++}`;
+
+  /**
+   * Gets the placeholder for the select
+   *
+   * @returns the placeholder
+   */
+  @Input() get placeholder() {
+    return this.ePlaceholder;
+  }
+
+  /**
+   * Sets the placeholder
+   */
+  set placeholder(plh) {
+    this.ePlaceholder = plh;
+    this.stateChanges.next();
+  }
+  private ePlaceholder = '';
+  public focused = false;
+  public touched = false;
+
+  /**
+   * Gets the empty status
+   *
+   * @returns if an option is selected
+   */
+  get empty() {
+    // return !this.selected.value;
+    return !this.ngControl.control?.value;
+  }
+
+  /**
+   * Indicates whether the label should be in the floating position
+   *
+   * @returns whether the label should be in the floating position
+   */
+  @HostBinding('class.floating')
+  get shouldLabelFloat() {
+    return this.focused || !this.empty;
+  }
+
+  /**
+   * Indicates whether the field is required
+   *
+   * @returns whether the field is required
+   */
+  @Input()
+  get required() {
+    return this.isRequired;
+  }
+
+  /**
+   * Sets whether the field is required
+   */
+  set required(req) {
+    this.isRequired = coerceBooleanProperty(req);
+    this.stateChanges.next();
+  }
+  private isRequired = false;
+
+  /**
+   * Indicates whether the field is disabled
+   *
+   * @returns whether the field is disabled
+   */
+  @Input()
+  get disabled(): boolean {
+    return this.ngControl.disabled || false;
+  }
+
+  /** Sets whether the field is disabled */
+  set disabled(value: boolean) {
+    const isDisabled = coerceBooleanProperty(value);
+    if (isDisabled) this.ngControl.control?.disable();
+    else this.ngControl.control?.enable();
+    this.stateChanges.next();
+  }
+
+  /**
+   * Indicates whether the input is in an error state
+   *
+   * @returns whether the input is in an error state
+   */
+  get errorState(): boolean {
+    return (this.ngControl.invalid && this.touched) || false;
+    // return this.ngControl.invalid && this.touched;
+    // return this.selected.invalid && this.touched;
+  }
+
+  public controlType = 'safe-icon-picker';
+
+  // eslint-disable-next-line @angular-eslint/no-input-rename
+  @Input('aria-describedby') userAriaDescribedBy!: string;
 
   /**
    * On click display the grid icon list
    */
   @HostListener('click')
   onClick() {
-    this.displayIconList = true;
+    this.showList = true;
   }
 
   /**
@@ -52,27 +180,64 @@ export class IconPickerComponent implements ControlValueAccessor {
    */
   @HostListener('document:keydown.escape')
   onEsc() {
-    this.displayIconList = false;
-    // Reset icon shown in list after exit
-    this.filteredIconList = this.iconListData;
+    this.showList = false;
   }
 
   /**
    * Component for the layer styling
    *
    * @param environment platform environment
+   * @param elementRef shared element ref service
+   * @param formField MatFormField
+   * @param ngControl form control shared service
    */
-  constructor(@Inject('environment') environment: any) {
+  constructor(
+    @Inject('environment') environment: any,
+    private elementRef: ElementRef<HTMLElement>,
+    @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
+    @Optional() @Self() public ngControl: NgControl
+  ) {
     this.primaryColor = environment.theme.primary;
+    if (this.ngControl != null) {
+      this.ngControl.valueAccessor = this;
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onTouched = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  onChange = (_: any) => {};
+
+  /**
+   * Sets element ids that should be used for the aria-describedby attribute of your control
+   *
+   * @param ids id array
+   */
+  setDescribedByIds(ids: string[]) {
+    const controlElement =
+      this.elementRef.nativeElement.querySelector('.safe-icon-picker');
+    if (!controlElement) return;
+    controlElement.setAttribute('aria-describedby', ids.join(' '));
+  }
+
+  /**
+   * Handles mouse click on container
+   *
+   * @param event Mouse event
+   */
+  onContainerClick(event: MouseEvent) {
+    if ((event.target as Element).tagName.toLowerCase() !== 'input') {
+      this.elementRef.nativeElement.querySelector('input')?.focus();
+    }
   }
 
   /**
    * Gets the value from the parent form control
    *
-   * @param icon Value set from the linked form control
+   * @param val Value set from the linked form control
    */
-  writeValue(icon: string): void {
-    this.selectedIcon = icon;
+  writeValue(val: FormFieldValue): void {
+    this.value = val;
   }
 
   /**
@@ -98,21 +263,51 @@ export class IconPickerComponent implements ControlValueAccessor {
    *
    * @param icon Icon value
    */
-  public setIcon(icon: string) {
-    this.selectedIcon = icon;
-    this.onChange(icon);
-    this.onTouched();
+  public setIcon(icon?: string) {
+    this.showList = false;
+    if (icon) {
+      this.value = icon;
+      this.onTouched();
+    }
   }
 
   /**
-   * Filters the icon list by the given search value
-   *
-   * @param event Input event value
+   * Open selection of icon
    */
-  public filterIconList(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.filteredIconList = this.iconListData.filter((icon: string) =>
-      icon.toLowerCase().includes(filterValue.toLowerCase())
-    );
+  onOpenSelect(): void {
+    if (!this.disabled) {
+      this.showList = true;
+    }
+  }
+
+  /**
+   * Handles focus on input
+   */
+  onFocusIn() {
+    if (!this.focused) {
+      this.focused = true;
+      this.stateChanges.next();
+    }
+  }
+
+  /**
+   * Handles lost focus on input
+   *
+   * @param event The focus event
+   */
+  onFocusOut(event: FocusEvent) {
+    if (
+      this.focused &&
+      !this.elementRef.nativeElement.contains(event.relatedTarget as Element)
+    ) {
+      this.touched = true;
+      this.focused = false;
+      this.onTouched();
+      this.stateChanges.next();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.stateChanges.complete();
   }
 }
