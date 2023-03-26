@@ -1,3 +1,19 @@
+# [2.0.0-beta.4](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.3...v2.0.0-beta.4) (2023-03-26)
+
+
+### Bug Fixes
+
+* empty fields & disable deleting used fields ([8c83fdf](https://github.com/ReliefApplications/oort-frontend/commit/8c83fdf944db6f786f080fcf90c7c9ebbeac36de))
+* errors with selection of fields in aggregation builder ([7b53120](https://github.com/ReliefApplications/oort-frontend/commit/7b531208905e6fc47b9badb3c9f47e0939c3f7e3)), closes [fix/AB#59603](https://github.com/fix/AB/issues/59603)
+* undefined or null labels in charts ([eda357f](https://github.com/ReliefApplications/oort-frontend/commit/eda357f275063c870ca9f8830e732da957381a5d))
+
+
+### Features
+
+* add possibility to see line / bar / column charts as gradients ([15c67cd](https://github.com/ReliefApplications/oort-frontend/commit/15c67cd2d81a38d0089d6e24c215bb58e43830c5))
+* allow multiple line interpolations in charts ([6b30215](https://github.com/ReliefApplications/oort-frontend/commit/6b30215a8e134adba406b8636a8d41a538023382))
+* can now save settings per serie in charts ([2958298](https://github.com/ReliefApplications/oort-frontend/commit/2958298c273979c01eb3b27ce83877a5df41e471)), closes [Ab#59837](https://github.com/Ab/issues/59837)
+
 # [2.0.0-beta.3](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2023-03-25)
 
 
