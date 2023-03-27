@@ -16,6 +16,7 @@ export class SafeGridRowActionsComponent {
     delete: false,
     history: false,
     convert: false,
+    remove: false,
   };
   @Output() action = new EventEmitter();
 
@@ -23,6 +24,7 @@ export class SafeGridRowActionsComponent {
   get display(): boolean {
     return (
       this.actions.history ||
+      this.actions.remove ||
       (this.item.canDelete && this.actions.delete) ||
       (this.item.canUpdate && (this.actions.update || this.actions.convert))
     );
