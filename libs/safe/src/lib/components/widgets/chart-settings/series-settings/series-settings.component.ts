@@ -27,6 +27,9 @@ export class SafeSeriesSettingsComponent implements OnInit, OnChanges {
         ) as FormGroup;
       }
     });
+    console.log(this.formGroup);
+    console.log(this.formGroup?.value);
+    console.log(this.formGroup?.get('fill'));
   }
 
   ngOnChanges(): void {

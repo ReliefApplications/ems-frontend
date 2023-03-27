@@ -16,7 +16,7 @@ import {
 import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
 import { SafeChartComponent } from '../../chart/chart.component';
 import get from 'lodash/get';
-import { createSerieForm } from '../chart-forms';
+import { createSerieForm} from '../chart-forms';
 
 /**
  * Display tab of the chart settings modal.
@@ -79,26 +79,42 @@ export class TabDisplayComponent
       .subscribe((series) => {
         const seriesFormArray: FormArray<any> = this.fb.array([]);
         const seriesSettings = this.chartForm.get('series')?.value || [];
+
+        const categories: any = []
+        
         for (const serie of series) {
           const serieSettings = seriesSettings.find(
             (x: any) => x.serie === get(serie, 'name')
           );
           if (serieSettings) {
+            if(['pie', 'polar', 'donut','radar'].includes(this.chartForm.value.type)){
+              serie['data'].forEach((element:any) => {
+                categories.push(element);
+              })
+            }
             seriesFormArray.push(
-              createSerieForm(this.chartForm.value.type, serieSettings)
+              createSerieForm(this.chartForm.value.type, serieSettings, categories)
             );
           } else {
+            if(['pie', 'polar', 'donut','radar'].includes(this.chartForm.value.type)){
+              serie['data'].forEach((element:any) => {
+                categories.push(element);
+              })
+            }
             seriesFormArray.push(
               createSerieForm(this.chartForm.value.type, {
                 serie: get(serie, 'name'),
-              })
+              }, categories)
             );
           }
         }
+        console.log(seriesFormArray);
         this.chartForm.setControl('series', seriesFormArray, {
           emitEvent: false,
         });
       });
+
+    console.log(this.formGroup.get('chart.series')); 
   }
 
   /**
