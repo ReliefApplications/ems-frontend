@@ -29,7 +29,7 @@ export class HeatmapSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.heatmapForm = this.formBuilder.group({
-      //colorGradient: [],
+      colorGradient: [this.selectedGradient],
       radius: [25],
       blur: [15],
       minOpacity: [1.0],
@@ -51,5 +51,6 @@ export class HeatmapSettingsComponent implements OnInit {
 
   selectGradient(gradient: any) {
     this.selectedGradient = gradient;
+    this.heatmapForm.controls.colorGradient.setValue(this.selectedGradient);
   }
 }
