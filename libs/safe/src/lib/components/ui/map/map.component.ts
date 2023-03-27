@@ -40,7 +40,7 @@ import { SafeMapControlsService } from '../../../services/map/map-controls.servi
 import * as L from 'leaflet';
 import { Layer } from './layer';
 import { getMapFeatures } from './utils/get-map-features';
-import { LayerProperties } from './interfaces/layer-settings.type';
+import { LayerFormData } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/language';
@@ -104,8 +104,8 @@ export class MapComponent
   /** Update layer options setters */
   @Input() set updateLayerOptions(layerWithOptions: {
     layer: any;
-    options: LayerProperties;
-    icon?: L.DivIcon;
+    options: Pick<LayerFormData, 'visibility' | 'opacity' | 'layerDefinition'>;
+    icon?: any;
   }) {
     if (layerWithOptions) {
       Layer.applyOptionsToLayer(
@@ -715,8 +715,11 @@ export class MapComponent
     } else {
       deleteLayer(layers);
     }
-
     this.map.removeControl(this.layerControl);
+    // Reset related properties
+    this.layers = [];
+    this.layersTree = [];
+    this.layerControl = undefined;
   }
   //   /**
   //  * Function used to apply options

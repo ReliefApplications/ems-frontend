@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Observable, filter, map } from 'rxjs';
-import { LayerProperties } from '../../components/ui/map/interfaces/layer-settings.type';
-import { Layer } from '../../models/layer.model';
+import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
+import { LayerModel } from '../../models/layer.model';
 import {
   AddLayerMutationResponse,
   ADD_LAYER,
@@ -38,7 +38,7 @@ export class SafeMapLayersService {
    * @param layer Layer to add
    * @returns An observable with the new layer data formatted for the application form
    */
-  public addLayer(layer: LayerProperties): Observable<Layer | undefined> {
+  public addLayer(layer: LayerFormData): Observable<LayerModel | undefined> {
     return this.apollo
       .mutate<AddLayerMutationResponse>({
         mutation: ADD_LAYER,
@@ -64,7 +64,7 @@ export class SafeMapLayersService {
    * @param layer Layer data to save
    * @returns An observable with the edited layer data formatted for the application form
    */
-  public editLayer(layer: LayerProperties): Observable<Layer | undefined> {
+  public editLayer(layer: LayerFormData): Observable<LayerModel | undefined> {
     return this.apollo
       .mutate<EditLayerMutationResponse>({
         mutation: EDIT_LAYER,
@@ -107,7 +107,7 @@ export class SafeMapLayersService {
    * @param layerId Layer id
    * @returns Observable of layer
    */
-  public getLayerById(layerId: string): Observable<Layer> {
+  public getLayerById(layerId: string): Observable<LayerModel> {
     return this.apollo
       .query<GetLayerByIdQueryResponse>({
         query: GET_LAYER_BY_ID,
@@ -131,7 +131,7 @@ export class SafeMapLayersService {
    *
    * @returns Observable of layer
    */
-  public getLayers(): Observable<Layer[]> {
+  public getLayers(): Observable<LayerModel[]> {
     return this.apollo
       .query<GetLayersQueryResponse>({
         query: GET_LAYERS,

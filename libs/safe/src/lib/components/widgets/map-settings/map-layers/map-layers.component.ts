@@ -106,8 +106,6 @@ export class MapLayersComponent
     });
     dialogRef.afterClosed().subscribe((id) => {
       if (id) {
-        this.layers.setValue(this.layers.value.concat(id));
-        // this.layers.push(createLayerForm(layer));
         this.onEditLayer(id);
       }
     });

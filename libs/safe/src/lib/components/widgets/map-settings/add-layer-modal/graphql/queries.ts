@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Layer } from '../../../../../models/layer.model';
+import { LayerModel } from '../../../../../models/layer.model';
 
 // === GET LAYERS ===
 /** Graphql request for getting layers */
@@ -14,5 +14,5 @@ export const GET_LAYERS = gql`
 
 /** Model for GetLayersQueryResponse object */
 export interface GetLayersQueryResponse {
-  layers: Layer[];
+  layers: LayerModel[];
 }

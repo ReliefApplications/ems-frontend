@@ -14,7 +14,7 @@ import {
   popupElement,
   popupElementType,
 } from './map-layer/layer-popup/layer-popup.interface';
-import { LayerProperties } from '../../ui/map/interfaces/layer-settings.type';
+import { LayerFormData } from '../../ui/map/interfaces/layer-settings.type';
 import { LayerModel } from '../../../models/layer.model';
 import { IconName } from '../../icon-picker/icon-picker.const';
 
@@ -68,7 +68,7 @@ export const createLayerForm = (value?: LayerModel) =>
  */
 const createLayerDataSourceForm = (value?: any): FormGroup =>
   fb.group({
-    origin: new FormControl<LayerProperties['datasource']['origin']>(
+    origin: new FormControl<LayerFormData['datasource']['origin']>(
       get(value, 'datasource.source', 'resource'),
       Validators.required
     ),

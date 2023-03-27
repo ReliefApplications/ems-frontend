@@ -58,7 +58,7 @@ type LayerNode = {
 };
 
 /** Layer documents interface declaration */
-export interface LayerProperties {
+export interface LayerFormData {
   id: string;
   name: string;
   visibility: boolean;
@@ -100,12 +100,12 @@ export type LayerStyle = {
   borderColor?: string;
   borderWidth?: number;
   borderOpacity?: number;
-  // for markers, the fillColor represents marker color
-  fillColor?: string;
   fillOpacity?: number;
-  icon?: IconName | 'leaflet_default';
-  iconSize?: number;
-
+  symbol?: {
+    color: string;
+    icon: IconName | 'leaflet_default';
+    size: number;
+  };
   heatmap?: {
     max: number;
     radius: number;

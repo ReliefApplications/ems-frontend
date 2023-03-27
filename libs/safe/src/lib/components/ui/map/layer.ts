@@ -13,7 +13,10 @@ import {
   LayerStyle,
 } from './interfaces/layer-settings.type';
 import { IconName } from '../../icon-picker/icon-picker.const';
-import { createCustomDivIcon } from './utils/create-div-icon';
+import {
+  createCustomDivIcon,
+  DEFAULT_MARKER_ICON_OPTIONS,
+} from './utils/create-div-icon';
 import { LegendDefinition } from './interfaces/layer-legend.type';
 import { SafeRestService } from '../../../services/rest/rest.service';
 import {
@@ -35,6 +38,10 @@ import { LayerModel } from '../../../models/layer.model';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 type ChildLayer = { object: Layer; layer?: L.Layer };
+
+/**
+ * Data structure from where to create layer
+ */
 interface MergedLayerInfo extends LayerModel {
   geojson: {
     features: any[];
@@ -49,9 +56,10 @@ export const EMPTY_FEATURE_COLLECTION: GeoJSON = {
 
 /** Default layer properties */
 export const DEFAULT_LAYER_PROPERTIES = {
-  visibilityRange: [1, 18],
+  minZoom: 1,
+  maxZoom: 18,
   opacity: 1,
-  visibleByDefault: true,
+  visibility: true,
   legend: {
     display: false,
   },
@@ -67,11 +75,9 @@ export const DEFAULT_LAYER_FILTER: LayerFilter = {
 export const DEFAULT_LAYER_STYLE = {
   // TODO: Get primary color from theme
   borderColor: '#0b55d6',
-  fillColor: '#0b55d6',
-  borderOpacity: 1,
-  fillOpacity: 1,
   borderWidth: 2,
-  iconSize: 20,
+  fillOpacity: 1,
+  borderOpacity: 1,
   heatmap: {
     gradient: {
       0: '#08d1d1',
@@ -86,7 +92,11 @@ export const DEFAULT_LAYER_STYLE = {
     minOpacity: 0.5,
     maxZoom: 18,
   },
-  icon: 'location-dot',
+  symbol: {
+    color: '#0b55d6',
+    icon: 'location-dot',
+    size: 24,
+  },
 } as Required<LayerStyle>;
 
 /** Minimum cluster size in pixel */
@@ -179,13 +189,13 @@ export class Layer {
    * @param map current map
    * @param layer layer to edit
    * @param options options to apply
-   * @param icon custom icon
+   * @param iconProperties custom icon properties
    */
   public static applyOptionsToLayer(
     map: L.Map,
     layer: any,
     options: any,
-    icon?: any
+    iconProperties?: any
   ) {
     if (layer?.children) {
       this.applyOptionsToLayer(map, layer.children, options);
@@ -193,7 +203,13 @@ export class Layer {
       const layers = get(layer, '_layers', [layer]);
       for (const layerKey in layers) {
         if (layers[layerKey]) {
-          if (icon && layers[layerKey] instanceof L.Marker) {
+          if (iconProperties && layers[layerKey] instanceof L.Marker) {
+            const icon = createCustomDivIcon({
+              icon: iconProperties.style,
+              color: iconProperties.color || DEFAULT_MARKER_ICON_OPTIONS.color,
+              size: iconProperties.size || DEFAULT_MARKER_ICON_OPTIONS.size,
+              opacity: options.opacity || DEFAULT_MARKER_ICON_OPTIONS.opacity,
+            });
             layers[layerKey].setIcon(icon);
             layers[layerKey].options = {
               ...layers[layerKey].options,
@@ -204,11 +220,10 @@ export class Layer {
           }
           map.removeLayer(layers[layerKey]);
           if (
-            layers[layerKey].options.visible &&
+            layers[layerKey].options.visibility &&
             !(
-              layers[layerKey].options.visibilityRange &&
-              (map.getZoom() > options.visibilityRange[1] ||
-                map.getZoom() < options.visibilityRange[0])
+              map.getZoom() > layers[layerKey].options.maxZoom ||
+              map.getZoom() < layers[layerKey].options.minZoom
             )
           ) {
             map.addLayer(layers[layerKey]);
@@ -302,36 +317,18 @@ export class Layer {
           condition: 'and',
           filters: [
             {
-              filter: {
-                condition: 'and',
-                filters: [],
-              },
-              style: {
-                borderColor: 'black',
-                borderWidth: 1,
-                fillOpacity: layerInfo.opacity ?? 1,
-                borderOpacity: layerInfo.opacity ?? 1,
-                fillColor:
-                  layerInfo.layerDefinition?.drawingInfo?.renderer?.symbol
-                    ?.color ?? 'purple',
-                icon:
-                  layerInfo.layerDefinition?.drawingInfo?.renderer?.symbol
-                    ?.icon ?? 'location-dot',
-                iconSize:
-                  layerInfo.layerDefinition?.drawingInfo?.renderer?.symbol
-                    ?.size ?? 24,
-              },
+              field: 'name',
+              operator: 'neq',
+              value: 'Point 1',
             },
           ],
         },
         properties: {
           // None of this data is available yet
-          visibilityRange: [
-            layerInfo.layerDefinition?.minZoom ?? 2,
-            layerInfo.layerDefinition?.maxZoom ?? 18,
-          ],
+          minZoom: layerInfo.layerDefinition?.minZoom ?? 2,
+          maxZoom: layerInfo.layerDefinition?.maxZoom ?? 18,
           opacity: layerInfo?.opacity ?? 1,
-          visibleByDefault: layerInfo.visibility ?? true,
+          visibility: layerInfo.visibility ?? true,
           legend: {
             display: true,
             field: 'name',
@@ -348,15 +345,12 @@ export class Layer {
               borderWidth: 1,
               fillOpacity: layerInfo.opacity ?? 1,
               borderOpacity: layerInfo.opacity ?? 1,
-              fillColor:
-                layerInfo.layerDefinition?.drawingInfo?.renderer?.symbol
-                  ?.color ?? 'purple',
-              icon:
-                layerInfo.layerDefinition?.drawingInfo?.renderer?.symbol
-                  ?.icon ?? 'leaflet_default',
-              iconSize:
-                layerInfo.layerDefinition?.drawingInfo?.renderer?.symbol
-                  ?.size ?? 24,
+              symbol: layerInfo.layerDefinition?.drawingInfo?.renderer
+                ?.symbol ?? {
+                color: '#0b55d6',
+                icon: 'location-dot',
+                size: 24,
+              },
             },
           },
         ],
@@ -547,7 +541,7 @@ export class Layer {
           // Setting circle relevant style
           circle.setStyle({
             color: style.borderColor,
-            fillColor: style.fillColor,
+            fillColor: style.symbol.color,
             fillOpacity: style.fillOpacity,
             opacity: style.borderOpacity,
             weight: style.borderWidth,
@@ -559,9 +553,9 @@ export class Layer {
         // If not a circle, create a marker
         return new L.Marker(latlng).setIcon(
           createCustomDivIcon({
-            icon: style.icon,
-            color: style.fillColor,
-            size: style.iconSize,
+            icon: style.symbol.icon,
+            color: style.symbol.color,
+            size: style.symbol.size,
             opacity: style.fillOpacity,
           })
         );
@@ -571,7 +565,7 @@ export class Layer {
         const style = this.getFeatureStyle(feature);
 
         return {
-          fillColor: style.fillColor,
+          fillColor: style.symbol.color,
           fillOpacity: style.fillOpacity,
           color: style.borderColor,
           opacity: style.borderOpacity,
@@ -693,8 +687,8 @@ export class Layer {
             const style = this.getFeatureStyle(feature);
             items.push({
               label: labelField ? feature.properties?.[labelField] ?? '' : '',
-              color: style.fillColor,
-              icon: isPoint ? style.icon : undefined,
+              color: style.symbol.color,
+              icon: isPoint ? style.symbol.icon : undefined,
             });
           }
         });

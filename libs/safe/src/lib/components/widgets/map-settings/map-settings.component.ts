@@ -17,7 +17,7 @@ import {
 } from '../../ui/map/interfaces/map.interface';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { Layer } from '../../../models/layer.model';
+import { LayerModel } from '../../../models/layer.model';
 import { MapLayerComponent } from './map-layer/map-layer.component';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
@@ -45,7 +45,7 @@ export class SafeMapSettingsComponent
 
   // === WIDGET ===
   @Input() tile: any;
-  public openedLayer?: Layer;
+  public openedLayer?: LayerModel;
 
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
@@ -227,7 +227,7 @@ export class SafeMapSettingsComponent
    *
    * @param layer layer to open
    */
-  onEditLayer(layer?: Layer): void {
+  onEditLayer(layer?: LayerModel): void {
     console.log(layer);
     this.openedLayer = layer;
     // We initialize the map settings to default value once we display the map layer editor
