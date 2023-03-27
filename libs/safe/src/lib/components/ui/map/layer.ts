@@ -12,7 +12,7 @@ import {
   GeoJSON,
   LayerStyle,
 } from './interfaces/layer-settings.type';
-import { IconName } from './const/fa-icons';
+import { IconName } from '../../icon-picker/icon-picker.const';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { LegendDefinition } from './interfaces/layer-legend.type';
 import { SafeRestService } from '../../../services/rest/rest.service';
@@ -31,10 +31,16 @@ import {
   GET_LAYERS,
 } from '../../../services/map/graphql/queries';
 import { Apollo } from 'apollo-angular';
+import { LayerModel } from '../../../models/layer.model';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 type ChildLayer = { object: Layer; layer?: L.Layer };
-
+interface MergedLayerInfo extends LayerModel {
+  geojson: {
+    features: any[];
+    type: string;
+  };
+}
 /** GeoJSON with no features */
 export const EMPTY_FEATURE_COLLECTION: GeoJSON = {
   type: 'FeatureCollection',
@@ -80,7 +86,7 @@ export const DEFAULT_LAYER_STYLE = {
     minOpacity: 0.5,
     maxZoom: 18,
   },
-  icon: 'leaflet_default',
+  icon: 'location-dot',
 } as Required<LayerStyle>;
 
 /** Minimum cluster size in pixel */
@@ -240,31 +246,30 @@ export class Layer {
             )
           ),
           // Then go layer by layer to create the layerSettings object
-          mergeMap((layerInfo: any) => {
-            // No type yet, set to Polygon by default
-            const capitalizeType = layerInfo.type
-              ? layerInfo.type.replace(/^./g, layerInfo.type[0].toUpperCase())
-              : 'Point';
+          mergeMap((layerInfo: LayerModel) => {
             // Get the current layerInfo plus it's geojson
             return forkJoin({
               layer: of(layerInfo),
               geojson: restService.get(
                 `${
                   restService.apiUrl
-                }/gis/feature?type=${capitalizeType}&tolerance=${0.9}&highquality=${true}`
+                }/gis/feature?type=Point&tolerance=${0.9}&highquality=${true}`
               ),
             });
           }),
           // Destructure layer information to have all data at the same level
-          map((mergedLayerInfo) => ({
-            ...mergedLayerInfo.layer,
-            geojson: mergedLayerInfo.geojson,
-          })),
+          map(
+            (mergedLayerInfo) =>
+              ({
+                ...mergedLayerInfo.layer,
+                geojson: mergedLayerInfo.geojson,
+              } as MergedLayerInfo)
+          ),
           // Get them into an array after all pipes are done
           toArray(),
           // And set those layers into the children of our hardcoded layer group
           // @TODO it would be mapped later onto it's current layer type
-          map((mergedLayerInfo: any[]) => {
+          map((mergedLayerInfo: MergedLayerInfo[]) => {
             return {
               name: 'group layers',
               type: 'group',
@@ -282,20 +287,7 @@ export class Layer {
    * @param mergedLayerInfo layer settings saved from the layer editor
    * @returns LayerSettingsI array
    */
-  private static getLayerSettings(
-    mergedLayerInfo: {
-      name: string;
-      id: string;
-      geojson: any;
-      // These properties dont have to be like that, they are just as example
-      type?: any;
-      visibilityRangeStart?: number;
-      visibilityRangeEnd?: number;
-      opacity?: number;
-      defaultVisibility?: boolean;
-      style?: any;
-    }[]
-  ): any[] {
+  private static getLayerSettings(mergedLayerInfo: MergedLayerInfo[]): any[] {
     return mergedLayerInfo.map((layerInfo) =>
       // @TODO As we complete the layer editor we will have to set those new values in these function
       // instead of the hardcoded ones
@@ -303,27 +295,43 @@ export class Layer {
         // Currently we only have name and id in the graphql endpoint for each layer metadata
         name: layerInfo.name,
         id: layerInfo.id,
-        type: layerInfo.type ?? 'feature',
+        type: 'feature',
         // The geojson previously fetched from the REST
         geojson: layerInfo.geojson,
         filter: {
           condition: 'and',
           filters: [
             {
-              field: 'name',
-              operator: 'neq',
-              value: 'Point 1',
+              filter: {
+                condition: 'and',
+                filters: [],
+              },
+              style: {
+                borderColor: 'black',
+                borderWidth: 1,
+                fillOpacity: layerInfo.opacity ?? 1,
+                borderOpacity: layerInfo.opacity ?? 1,
+                fillColor:
+                  layerInfo.layerDefinition?.drawingInfo?.renderer?.symbol
+                    ?.color ?? 'purple',
+                icon:
+                  layerInfo.layerDefinition?.drawingInfo?.renderer?.symbol
+                    ?.icon ?? 'location-dot',
+                iconSize:
+                  layerInfo.layerDefinition?.drawingInfo?.renderer?.symbol
+                    ?.size ?? 24,
+              },
             },
           ],
         },
         properties: {
           // None of this data is available yet
           visibilityRange: [
-            layerInfo.visibilityRangeStart ?? 2,
-            layerInfo.visibilityRangeEnd ?? 18,
+            layerInfo.layerDefinition?.minZoom ?? 2,
+            layerInfo.layerDefinition?.maxZoom ?? 18,
           ],
-          opacity: layerInfo.opacity ?? 1,
-          visibleByDefault: layerInfo.defaultVisibility ?? true,
+          opacity: layerInfo?.opacity ?? 1,
+          visibleByDefault: layerInfo.visibility ?? true,
           legend: {
             display: true,
             field: 'name',
@@ -340,9 +348,15 @@ export class Layer {
               borderWidth: 1,
               fillOpacity: layerInfo.opacity ?? 1,
               borderOpacity: layerInfo.opacity ?? 1,
-              fillColor: layerInfo.style?.color ?? 'purple',
-              icon: layerInfo.style?.icon ?? 'leaflet_default',
-              iconSize: layerInfo.style?.size ?? 24,
+              fillColor:
+                layerInfo.layerDefinition?.drawingInfo?.renderer?.symbol
+                  ?.color ?? 'purple',
+              icon:
+                layerInfo.layerDefinition?.drawingInfo?.renderer?.symbol
+                  ?.icon ?? 'leaflet_default',
+              iconSize:
+                layerInfo.layerDefinition?.drawingInfo?.renderer?.symbol
+                  ?.size ?? 24,
             },
           },
         ],
@@ -592,7 +606,7 @@ export class Layer {
           zoomToBoundsOnClick: false,
           iconCreateFunction: (cluster) => {
             const iconProperties = {
-              icon: this.firstStyle.icon as IconName | 'leaflet_default',
+              icon: this.firstStyle.icon as IconName | 'location-dot',
               color: this.firstStyle.fillColor,
               size:
                 (cluster.getChildCount() / 50) *
@@ -666,7 +680,7 @@ export class Layer {
         const items: {
           label: string;
           color: string;
-          icon?: IconName | 'leaflet_default';
+          icon?: IconName | 'location-dot';
         }[] = [];
 
         features.forEach((feature) => {

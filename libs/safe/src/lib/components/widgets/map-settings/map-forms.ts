@@ -15,7 +15,8 @@ import {
   popupElementType,
 } from './map-layer/layer-popup/layer-popup.interface';
 import { LayerProperties } from '../../ui/map/interfaces/layer-settings.type';
-import { Layer } from '../../../models/layer.model';
+import { LayerModel } from '../../../models/layer.model';
+import { IconName } from '../../icon-picker/icon-picker.const';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -46,7 +47,7 @@ const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
  * @param value layer value ( optional )
  * @returns new form group
  */
-export const createLayerForm = (value?: Layer) =>
+export const createLayerForm = (value?: LayerModel) =>
   fb.group({
     // Layer properties
     id: [get(value, 'id', null)],
@@ -54,14 +55,6 @@ export const createLayerForm = (value?: Layer) =>
     visibility: [get(value, 'visibility', true), Validators.required],
     opacity: [get(value, 'opacity', 1), Validators.required],
     layerDefinition: createLayerDefinitionForm(get(value, 'layerDefinition')),
-    // Layer style
-    // style: fb.group({
-    //   color: [get(value, 'style.color', '#0090d1')],
-    //   size: [get(value, 'style.size', 24)],
-    //   icon: new FormControl<MapLayerI['style']['icon']>(
-    //     get(value, 'style.icon', 'leaflet_default')
-    //   ),
-    // }),
     popupInfo: createPopupInfoForm(get(value, 'popupInfo')),
     // Layer datasource
     datasource: createLayerDataSourceForm(value),
@@ -91,17 +84,29 @@ const createLayerDataSourceForm = (value?: any): FormGroup =>
  * @param value layer definition
  * @returns layer definition form group
  */
-const createLayerDefinitionForm = (value?: any): FormGroup =>
-  fb.group({
+const createLayerDefinitionForm = (value?: any): FormGroup => {
+  const formGroup = fb.group({
     minZoom: [get(value, 'minZoom', 2), Validators.required],
     maxZoom: [get(value, 'maxZoom', 18), Validators.required],
     drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
-    ...(get(value, 'featureReduction') && {
-      featureReduction: createLayerFeatureReductionForm(
-        get(value, 'featureReduction')
-      ),
-    }),
+    featureReduction: createLayerFeatureReductionForm(
+      get(value, 'featureReduction')
+    ),
   });
+  const rendererType = formGroup.value.drawingInfo.renderer.type;
+  // Add more conditions there to disabled aggregation
+  if (rendererType === 'heatmap') {
+    formGroup.get('featureReduction')?.disable();
+  }
+  formGroup.get('drawingInfo.renderer.type')?.valueChanges.subscribe((type) => {
+    if (type === 'heatmap') {
+      formGroup.get('featureReduction')?.disable();
+    } else {
+      formGroup.get('featureReduction')?.enable();
+    }
+  });
+  return formGroup;
+};
 
 /**
  * Create layer feature reduction form
@@ -124,6 +129,14 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup =>
   fb.group({
     renderer: fb.group({
       type: [get(value, 'type', 'simple'), Validators.required],
+      symbol: fb.group({
+        color: [get(value, 'symbol.color', ''), Validators.required],
+        type: 'fa',
+        size: [get(value, 'symbol.size', 24)],
+        style: new FormControl<IconName>(
+          get(value, 'symbol.style', 'location-dot')
+        ),
+      }),
     }),
   });
 
@@ -178,7 +191,7 @@ export const createPopupElementForm = (value: popupElement): FormGroup => {
 export const createClusterForm = (value?: any): FormGroup =>
   fb.group({
     overrideSymbol: [get(value, 'overrideSymbol', false), Validators.required],
-    symbol: [get(value, 'symbol ', 'leaflet_default')],
+    symbol: [get(value, 'symbol ', 'location-dot')],
     radius: [get(value, 'radius', 80), Validators.required],
     sizeRangeStart: [get(value, 'sizeRangeStart', 2), Validators.required],
     sizeRangeEnd: [get(value, 'sizeRangeEnd', 8)],

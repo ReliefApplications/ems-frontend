@@ -1,3 +1,4 @@
+import { IconName } from '../components/icon-picker/icon-picker.const';
 /** List of available layer types in layer editor */
 export enum LayerTypes {
   POLYGON = 'polygon',
@@ -20,15 +21,27 @@ export enum BackendLayerTypes {
 /**
  * Backend layer model
  */
-export interface Layer {
+export interface LayerModel {
   id: string;
   name: string;
-  sublayers?: Layer[];
+  sublayers?: LayerModel[];
   visibility: boolean;
-  layerType: string;
-  layerDefinition: {
-    featureReduction: any;
-    drawingInfo: any;
+  opacity: boolean;
+  layerDefinition?: {
+    minZoom?: number;
+    maxZoom?: number;
+    featureReduction?: any;
+    // Symbol
+    drawingInfo?: {
+      renderer?: {
+        type?: string;
+        symbol?: {
+          color?: string;
+          size?: number;
+          icon?: IconName | 'location-dot';
+        };
+      };
+    };
   };
   popupInfo: {
     popupElements: string;

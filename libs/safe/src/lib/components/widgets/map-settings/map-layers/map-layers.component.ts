@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.component';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
-import { Layer } from '../../../../models/layer.model';
+import { LayerModel } from '../../../../models/layer.model';
 
 /**
  * Layers configuration component of Map Widget.
@@ -24,7 +24,7 @@ export class MapLayersComponent
   @Input() form!: UntypedFormGroup;
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter();
-  @Output() editLayer = new EventEmitter<Layer>();
+  @Output() editLayer = new EventEmitter<LayerModel>();
 
   /** @returns the form array for the map layers */
   get layers() {
@@ -32,7 +32,7 @@ export class MapLayersComponent
   }
 
   // Table
-  public mapLayers: MatTableDataSource<Layer> = new MatTableDataSource();
+  public mapLayers: MatTableDataSource<LayerModel> = new MatTableDataSource();
   public displayedColumns = ['name', 'actions'];
 
   /**
@@ -50,19 +50,9 @@ export class MapLayersComponent
 
   ngOnInit(): void {
     // this.mapLayers.data = this.layers.value;
-    this.layers?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        // If less layers, we just filter current ones from our layer list
-        if (value.length < this.layers.value.length) {
-          this.mapLayers.data = this.mapLayers.data.filter((x) =>
-            this.layers.value.includes(x.id)
-          );
-          //If more layers, then we would get the new layer info and update our current layers array
-        } else if (value.length > this.layers.value.length) {
-          this.fetchLayerById(value[this.layers.value.length - 1]);
-        }
-      });
+    this.layers?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.fetchLayers();
+    });
     this.fetchLayers();
   }
 
@@ -79,25 +69,13 @@ export class MapLayersComponent
   }
 
   /**
-   * Fetch stored layer by id in the DB
-   *
-   * @param layerId layer id
-   */
-  private fetchLayerById(layerId: string): void {
-    this.mapLayersService.getLayerById(layerId).subscribe({
-      next: (layer) => {
-        this.mapLayers.data.push(layer);
-      },
-    });
-  }
-
-  /**
    * Removes a layer from the form array
    *
    * @param index Index of the layer to remove
    */
   public onDeleteLayer(index: number) {
-    this.layers.setValue(this.layers.value.splice(index, 1));
+    this.layers.value.splice(index, 1);
+    this.layers.setValue(this.layers.value);
   }
 
   /** Opens a modal to add a new layer */
@@ -116,7 +94,7 @@ export class MapLayersComponent
     //     });
     //   }
     // });
-    this.editLayer.emit({} as Layer);
+    this.editLayer.emit({} as LayerModel);
   }
 
   /**
@@ -141,26 +119,25 @@ export class MapLayersComponent
    * @param id id of layer to edit
    */
   public onEditLayer(id: string) {
-    const layer = this.mapLayers.data.find((layer) => layer.id === id);
-    // this.mapLayersService.getLayerById(id).subscribe((layer) => {
-    this.editLayer.emit(layer);
-    // const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
-    //   this.dialog.open(SafeEditLayerModalComponent, {
-    //     disableClose: true,
-    //     data: layer,
-    //   });
+    this.mapLayersService.getLayerById(id).subscribe((layer) => {
+      this.editLayer.emit(layer);
+      // const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
+      //   this.dialog.open(SafeEditLayerModalComponent, {
+      //     disableClose: true,
+      //     data: layer,
+      //   });
 
-    // dialogRef.afterClosed().subscribe((editedLayer) => {
-    //   if (editedLayer) {
-    //     this.mapLayersService.editLayer(editedLayer).subscribe((res) => {
-    //       if (res) {
-    //         // this.layers.at(index).patchValue(res);
-    //         this.fetchLayers();
-    //       }
-    //     });
-    //   }
-    // });
-    // });
+      // dialogRef.afterClosed().subscribe((editedLayer) => {
+      //   if (editedLayer) {
+      //     this.mapLayersService.editLayer(editedLayer).subscribe((res) => {
+      //       if (res) {
+      //         // this.layers.at(index).patchValue(res);
+      //         this.fetchLayers();
+      //       }
+      //     });
+      //   }
+      // });
+    });
   }
 
   /**
@@ -168,7 +145,7 @@ export class MapLayersComponent
    *
    * @param e Event emitted when a layer is reordered
    */
-  public onListDrop(e: CdkDragDrop<Layer[]>) {
+  public onListDrop(e: CdkDragDrop<LayerModel[]>) {
     let layerIds = this.layers.value;
     const movedElement = layerIds[e.previousIndex];
     layerIds = layerIds.splice(e.previousIndex, 1, movedElement);

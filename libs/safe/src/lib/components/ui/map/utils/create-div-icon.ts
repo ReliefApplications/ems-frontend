@@ -1,4 +1,4 @@
-import { IconName } from '../const/fa-icons';
+import { IconName } from '../../../icon-picker/icon-picker.const';
 import * as L from 'leaflet';
 
 export type MarkerIconOptions = {

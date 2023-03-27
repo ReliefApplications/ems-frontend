@@ -1,6 +1,6 @@
 import { Geometry, FeatureCollection, Feature } from 'geojson';
+import { IconName } from '../../../icon-picker/icon-picker.const';
 import { popupElement } from '../../../widgets/map-settings/map-layer/layer-popup/layer-popup.interface';
-import { IconName } from '../const/fa-icons';
 
 export type GeoJSON =
   | Geometry
@@ -59,8 +59,8 @@ type LayerNode = {
 
 /** Layer documents interface declaration */
 export interface LayerProperties {
-  id: string | null;
-  name: string | null;
+  id: string;
+  name: string;
   visibility: boolean;
   opacity: number;
   layerDefinition: {
@@ -68,8 +68,17 @@ export interface LayerProperties {
     maxZoom: number;
     drawingInfo: {
       renderer: {
-        type: string;
+        type: 'simple' | 'heatmap';
+        symbol: {
+          color: string;
+          type: string;
+          size: number;
+          style: IconName;
+        };
       };
+    };
+    featureReduction: {
+      type: any;
     };
   };
   popupInfo: {
@@ -79,10 +88,10 @@ export interface LayerProperties {
   };
   datasource: {
     origin: 'resource' | 'refData';
-    resource: null;
-    layout: null;
-    aggregation: null;
-    refData: null;
+    resource: any;
+    layout: any;
+    aggregation: any;
+    refData: any;
   };
 }
 
