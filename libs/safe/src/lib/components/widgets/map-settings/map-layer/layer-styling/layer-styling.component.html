@@ -25,6 +25,5 @@
 </ng-template>
 
 <ng-template #heatmapRenderer>
-<!-- todo(gis): add more items there -->
-<div>heatmap</div>
+  <safe-heatmap-renderer [formGroup]="$any(formGroup.get('renderer'))"></safe-heatmap-renderer>
 </ng-template>

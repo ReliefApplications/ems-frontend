@@ -1,8 +1,8 @@
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
   Component,
   ElementRef,
   HostBinding,
-  HostListener,
   Inject,
   Input,
   OnDestroy,
@@ -10,42 +10,35 @@ import {
   Self,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { FA_ICONS, IconName } from './icon-picker.const';
 import {
   MatLegacyFormField as MatFormField,
   MatLegacyFormFieldControl as MatFormFieldControl,
   MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
 } from '@angular/material/legacy-form-field';
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { Subject } from 'rxjs';
 
-type FormFieldValue = IconName | null;
+export type Gradient = { color: string; ratio: number }[];
 
-/**
- * Icon picker that loads the icon list with the given font family to display those icons as a grid
- */
+type FormFieldValue = Gradient | null;
+
 @Component({
-  selector: 'safe-icon-picker',
-  templateUrl: './icon-picker.component.html',
-  styleUrls: ['./icon-picker.component.scss'],
+  selector: 'safe-gradient-picker',
+  templateUrl: './gradient-picker.component.html',
+  styleUrls: ['./gradient-picker.component.scss'],
   providers: [
     {
       provide: MatFormFieldControl,
-      useExisting: IconPickerComponent,
+      useExisting: GradientPickerComponent,
     },
   ],
 })
-export class IconPickerComponent
+export class GradientPickerComponent
   implements
     ControlValueAccessor,
     MatFormFieldControl<FormFieldValue>,
     OnDestroy
 {
   static nextId = 0;
-
-  public icons: string[] = FA_ICONS;
-  private primaryColor!: string;
-  @Input() color: string = this.primaryColor;
   public showList = false;
 
   /**
@@ -63,11 +56,9 @@ export class IconPickerComponent
     this.stateChanges.next();
   }
 
-  @Input() fontFamily = 'fa';
-
   public stateChanges = new Subject<void>();
   @HostBinding()
-  id = `safe-icon-picker-${IconPickerComponent.nextId++}`;
+  id = `safe-gradient-picker-${GradientPickerComponent.nextId++}`;
 
   /**
    * Gets the placeholder for the select
@@ -157,42 +148,24 @@ export class IconPickerComponent
     // return this.selected.invalid && this.touched;
   }
 
-  public controlType = 'safe-icon-picker';
+  public controlType = 'safe-gradient-picker';
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
   /**
-   * On click display the grid icon list
-   */
-  @HostListener('click')
-  onClick() {
-    this.showList = true;
-  }
-
-  /**
-   * On escape close the grid icon list
-   */
-  @HostListener('document:keydown.escape')
-  onEsc() {
-    this.showList = false;
-  }
-
-  /**
-   * Icon picker component
+   * Gradient picker component
    *
-   * @param environment platform environment
    * @param elementRef shared element ref service
    * @param formField MatFormField
    * @param ngControl form control shared service
    */
   constructor(
-    @Inject('environment') environment: any,
     private elementRef: ElementRef<HTMLElement>,
     @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl
   ) {
-    this.primaryColor = environment.theme.primary;
+    console.log('there');
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
@@ -209,8 +182,9 @@ export class IconPickerComponent
    * @param ids id array
    */
   setDescribedByIds(ids: string[]) {
-    const controlElement =
-      this.elementRef.nativeElement.querySelector('.safe-icon-picker');
+    const controlElement = this.elementRef.nativeElement.querySelector(
+      '.safe-gradient-picker'
+    );
     if (!controlElement) return;
     controlElement.setAttribute('aria-describedby', ids.join(' '));
   }
@@ -232,6 +206,7 @@ export class IconPickerComponent
    * @param val Value set from the linked form control
    */
   writeValue(val: FormFieldValue): void {
+    console.log('write');
     this.value = val;
   }
 
@@ -251,19 +226,6 @@ export class IconPickerComponent
    */
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
-  }
-
-  /**
-   * Updates the parent form with the given icon
-   *
-   * @param icon Icon value
-   */
-  public setIcon(icon?: string) {
-    this.showList = false;
-    if (icon) {
-      this.value = icon;
-      this.onTouched();
-    }
   }
 
   /**
@@ -304,5 +266,18 @@ export class IconPickerComponent
 
   ngOnDestroy(): void {
     this.stateChanges.complete();
+  }
+
+  /**
+   * Updates the parent form with the given gradient
+   *
+   * @param gradient Gradient value
+   */
+  public setGradient(gradient: Gradient) {
+    this.showList = false;
+    if (gradient) {
+      this.value = gradient;
+      this.onTouched();
+    }
   }
 }
