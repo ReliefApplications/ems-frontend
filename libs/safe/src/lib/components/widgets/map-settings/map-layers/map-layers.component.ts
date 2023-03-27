@@ -49,14 +49,19 @@ export class MapLayersComponent
   }
 
   ngOnInit(): void {
+    this.updateLayerList();
+    this.layers?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.updateLayerList());
+  }
+
+  /**
+   * Update layer list for Layers tab
+   */
+  private updateLayerList(): void {
     this.mapLayers.data = this.mapLayersService.currentLayers.filter((x) =>
       this.layers.value.includes(x.id)
     );
-    this.layers?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.mapLayers.data = this.mapLayersService.currentLayers.filter((x) =>
-        this.layers.value.includes(x.id)
-      );
-    });
   }
 
   /**
