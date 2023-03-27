@@ -5,6 +5,9 @@ import { GradientPickerPopupComponent } from './gradient-picker-popup/gradient-p
 import { OverlayModule } from '@angular/cdk/overlay';
 import { GradientPipe } from '../../pipes/gradient/gradient.pipe';
 
+/**
+ * Gradient picker module.
+ */
 @NgModule({
   declarations: [GradientPickerComponent, GradientPickerPopupComponent],
   imports: [CommonModule, OverlayModule, GradientPipe],

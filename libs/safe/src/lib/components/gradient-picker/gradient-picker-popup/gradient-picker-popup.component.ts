@@ -1,6 +1,10 @@
 import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { Gradient } from '../gradient-picker.component';
 
+/**
+ * Available gradients
+ * todo: pass as input
+ */
 const GRADIENTS: Gradient[] = [
   [
     {
@@ -28,6 +32,9 @@ const GRADIENTS: Gradient[] = [
   ],
 ];
 
+/**
+ * Gradient control popup
+ */
 @Component({
   selector: 'safe-gradient-picker-popup',
   templateUrl: './gradient-picker-popup.component.html',

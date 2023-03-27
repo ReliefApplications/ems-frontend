@@ -6,6 +6,9 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { GradientPickerModule } from '../../../../../gradient-picker/gradient-picker.module';
 
+/**
+ * Layer Heatmap renderer component
+ */
 @Component({
   selector: 'safe-heatmap-renderer',
   standalone: true,

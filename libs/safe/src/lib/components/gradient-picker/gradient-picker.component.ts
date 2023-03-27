@@ -21,6 +21,9 @@ export type Gradient = { color: string; ratio: number }[];
 
 type FormFieldValue = Gradient | null;
 
+/**
+ * Gradient picker component.
+ */
 @Component({
   selector: 'safe-gradient-picker',
   templateUrl: './gradient-picker.component.html',
