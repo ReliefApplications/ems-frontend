@@ -1,0 +1,109 @@
+<div
+    *ngIf="!isEditing"
+    style="
+        background-color: white;
+        display: flex;
+        max-width: 250px;
+        flex-direction: row;
+        border: groove 1px grey;
+        padding: 10px 6px;">
+    <div
+        style="
+            width: 200px;
+            height: 20px;
+            border: solid 1px black;
+            margin-right: 10px;
+            background-image: linear-gradient(to right, blue, red);
+
+        "></div>
+    <mat-icon (click)="onEdit()">edit</mat-icon>
+</div>
+
+<div
+    *ngIf="isEditing"
+    style="
+        display: flex;
+        background-color: white;
+        max-width: fit-content;
+        border: groove 1px grey;
+        padding: 10px">
+    <form [formGroup]="heatmapForm">
+
+        <div class="form-group">
+          <label style="text-align: center;">Color Gradient</label>
+          <!-- Add your instagram story inspired color gradient selector -->
+          <div
+        style="
+            width: 200px;
+            height: 20px;
+            border: solid 1px black;
+            margin-top: 10px;
+            margin-right: 5px;
+            margin-bottom: 10px;
+        "
+        [ngStyle]="{ background: 'linear-gradient(to right, ' + selectedGradient.start + ', ' + selectedGradient.end + ')' }"></div>
+          <div class="gradient-options">
+            <div class="gradient-option" *ngFor="let gradient of gradients" [ngStyle]="{ background: 'linear-gradient(to bottom, ' + gradient.start + ', ' + gradient.end + ')' }" (click)="selectGradient(gradient)"></div>
+          </div>
+        </div>
+
+        <div class="form-group"
+            style="display: flex;
+                flex-direction: column;">
+            <mat-label style="margin-bottom: 8px;">Radius</mat-label>
+            <mat-form-field appearance="fill" style="max-height: 60px">
+                <input matInput type="number" formControlName="radius">
+            </mat-form-field>
+        </div>
+
+        <div
+            class="form-group"
+            style="
+                display: flex;
+                flex-direction: column;
+                width: 200px;
+                justify-content: center;">
+          <label>Blur</label>
+          <mat-slider [min]="1" [max]="100" value="heatmapForm.controls.blur">
+            <input matInput formControlName="blur" matSliderThumb>
+          </mat-slider>
+        </div>
+        <div class="form-group"
+        style="
+                display: flex;
+                flex-direction: column;
+                width: 200px">
+          <label>Min Opacity</label>
+          <mat-slider [min]="0" [max]="1" [step]="0.1"  value="heatmapForm.controls.minOpacity">
+            <input matInput formControlName="minOpacity" matSliderThumb>
+          </mat-slider>
+        </div>
+        <div class="form-group"
+        style="
+                display: flex;
+                flex-direction: column;
+                width: 200px">
+          <label>Max Point Intensity</label>
+          <mat-slider [min]="0" [max]="1" [step]="0.1"  value="heatmapForm.controls.maxPointIntensity">
+            <input matInput formControlName="maxPointIntensity" matSliderThumb>
+          </mat-slider>
+        </div>
+        <div class="form-group"
+        style="
+                display: flex;
+                flex-direction: column;
+                width: 200px">
+          <label>Max Zoom</label>
+          <mat-slider [min]="1" [max]="10" value="heatmapForm.controls.maxZoom">
+            <input matInput formControlName="maxZoom" matSliderThumb>
+          </mat-slider>
+        </div>
+        <div style="display: flex;
+        justify-content: center;
+        align-items: center;">
+            <button (click)="onSubmit()" mat-raised-button color="primary">Apply</button>
+        </div>
+        
+      </form>
+      
+</div>

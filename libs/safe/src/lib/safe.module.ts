@@ -43,10 +43,12 @@ import { SafeViewsModule } from './views/views.module';
 import { SafeEditableTextModule } from './components/editable-text/editable-text.module';
 import { CronExpressionControlModule } from './components/cron-expression-control/cron-expression-control.module';
 import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
+import { HeatmapSettingsModule } from './components/widgets/heatmap-settings/heatmap-settings.module';
 
 /** Main module for the safe project */
 @NgModule({
   exports: [
+    HeatmapSettingsModule,
     SafeLayoutModule,
     SafeAccessModule,
     SafeFormModule,
