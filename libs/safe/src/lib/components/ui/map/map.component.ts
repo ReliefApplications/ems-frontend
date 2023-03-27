@@ -46,7 +46,7 @@ import { createCustomDivIcon } from './utils/create-div-icon';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/language';
 import { ArcgisService } from '../../../services/map/arcgis.service';
 import { SafeRestService } from '../../../services/rest/rest.service';
-import { Apollo } from 'apollo-angular';
+import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 
 /**
  * Cleans the settings object from null values
@@ -159,7 +159,7 @@ export class MapComponent
    * @param mapControlsService Map controls handler service
    * @param arcgisService Shared arcgis service
    * @param restService SafeRestService
-   * @param apollo Apollo
+   * @param mapLayersService SafeMapLayersService
    */
   constructor(
     @Inject('environment') environment: any,
@@ -167,7 +167,7 @@ export class MapComponent
     private mapControlsService: SafeMapControlsService,
     private arcgisService: ArcgisService,
     private restService: SafeRestService,
-    private apollo: Apollo
+    private mapLayersService: SafeMapLayersService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -647,7 +647,11 @@ export class MapComponent
     };
 
     const layers = [
-      await Layer.createLayerFrom(layerIds, this.restService, this.apollo),
+      await Layer.createLayerFrom(
+        layerIds,
+        this.restService,
+        this.mapLayersService
+      ),
     ];
 
     // Add each layer to the tree

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { Observable, filter, map } from 'rxjs';
+import { Observable, filter, map, tap } from 'rxjs';
 import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
 import { LayerModel } from '../../models/layer.model';
 import {
@@ -32,6 +32,8 @@ export class SafeMapLayersService {
    */
   constructor(private apollo: Apollo) {}
 
+  // Layers saved in the database
+  currentLayers: LayerModel[] = [];
   /**
    * Save a new layer in the DB
    *
@@ -139,6 +141,9 @@ export class SafeMapLayersService {
       })
       .pipe(
         filter((response) => !!response.data),
+        // We are creating/destroying components in order to use the same map view for the layer edition and the map settings view
+        // So we have to use service properties in order to not keep loading same queries when creating/destroying component views
+        tap((response) => (this.currentLayers = response.data.layers)),
         map((response) => {
           if (response.errors) {
             throw new Error(response.errors[0].message);

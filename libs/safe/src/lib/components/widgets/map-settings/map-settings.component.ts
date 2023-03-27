@@ -267,6 +267,8 @@ export class SafeMapSettingsComponent
           next: (result) => {
             if (result) {
               this.tileForm?.get('layers')?.value.push(result.id);
+              // If a new layer is created, update the current loaded layer list
+              this.fetchLayers();
             }
             // Redirect to main layers list
             this.openTab('layers');
@@ -278,5 +280,12 @@ export class SafeMapSettingsComponent
       // Redirect to main layers list
       this.openTab('layers');
     }
+  }
+
+  /**
+   * Fetch stored layers in the DB
+   */
+  private fetchLayers(): void {
+    this.mapLayersService.getLayers().subscribe();
   }
 }

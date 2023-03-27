@@ -49,22 +49,13 @@ export class MapLayersComponent
   }
 
   ngOnInit(): void {
-    // this.mapLayers.data = this.layers.value;
+    this.mapLayers.data = this.mapLayersService.currentLayers.filter((x) =>
+      this.layers.value.includes(x.id)
+    );
     this.layers?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.fetchLayers();
-    });
-    this.fetchLayers();
-  }
-
-  /**
-   * Fetch stored layers in the DB
-   */
-  private fetchLayers(): void {
-    this.mapLayersService.getLayers().subscribe({
-      next: (layers) =>
-        (this.mapLayers.data = layers.filter((x) =>
-          this.layers.value.includes(x.id)
-        )),
+      this.mapLayers.data = this.mapLayersService.currentLayers.filter((x) =>
+        this.layers.value.includes(x.id)
+      );
     });
   }
 

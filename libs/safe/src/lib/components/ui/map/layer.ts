@@ -29,13 +29,9 @@ import {
   switchMap,
   toArray,
 } from 'rxjs';
-import {
-  GetLayersQueryResponse,
-  GET_LAYERS,
-} from '../../../services/map/graphql/queries';
-import { Apollo } from 'apollo-angular';
 import { LayerModel } from '../../../models/layer.model';
 import { geoJSONLayer } from './leaflet.layer';
+import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 type ChildLayer = { object: Layer; layer?: L.Layer };
@@ -239,60 +235,58 @@ export class Layer {
    *
    * @param layerIds layer settings saved from the layer editor
    * @param restService rest service to get the geojson
-   * @param apollo Apollo
+   * @param mapLayersService MapLayersService
    * @returns Observable of LayerSettingsI
    */
   public static async createLayerFrom(
     layerIds: string[],
     restService: SafeRestService,
-    apollo: Apollo
+    mapLayersService: SafeMapLayersService
   ): Promise<Layer> {
+    // If current layers exists, we will use those values,
+    // otherwise we will make the API call
+    const layerSourceData$ = !mapLayersService.currentLayers.length
+      ? mapLayersService.getLayers()
+      : of(mapLayersService.currentLayers);
+
     const formattedLayerSettings = await lastValueFrom(
-      apollo
-        .query<GetLayersQueryResponse>({
-          query: GET_LAYERS,
+      layerSourceData$.pipe(
+        // Get the layer info from the layers where the id is included in the given layerIds
+        switchMap((layers) =>
+          from(layers.filter((layer) => layerIds.includes(layer.id)))
+        ),
+        // Then go layer by layer to create the layerSettings object
+        mergeMap((layerInfo: LayerModel) => {
+          // Get the current layerInfo plus it's geojson
+          return forkJoin({
+            layer: of(layerInfo),
+            geojson: restService.get(
+              `${
+                restService.apiUrl
+              }/gis/feature?type=Point&tolerance=${0.9}&highquality=${true}`
+            ),
+          });
+        }),
+        // Destructure layer information to have all data at the same level
+        map(
+          (mergedLayerInfo) =>
+            ({
+              ...mergedLayerInfo.layer,
+              geojson: mergedLayerInfo.geojson,
+            } as MergedLayerInfo)
+        ),
+        // Get them into an array after all pipes are done
+        toArray(),
+        // And set those layers into the children of our hardcoded layer group
+        // @TODO it would be mapped later onto it's current layer type
+        map((mergedLayerInfo: MergedLayerInfo[]) => {
+          return {
+            name: 'group layers',
+            type: 'group',
+            children: this.getLayerSettings(mergedLayerInfo),
+          };
         })
-        .pipe(
-          // Get the layer info from the layers where the id is included in the given layerIds
-          switchMap((response) =>
-            from(
-              response.data.layers.filter((layer) =>
-                layerIds.includes(layer.id)
-              )
-            )
-          ),
-          // Then go layer by layer to create the layerSettings object
-          mergeMap((layerInfo: LayerModel) => {
-            // Get the current layerInfo plus it's geojson
-            return forkJoin({
-              layer: of(layerInfo),
-              geojson: restService.get(
-                `${
-                  restService.apiUrl
-                }/gis/feature?type=Point&tolerance=${0.9}&highquality=${true}`
-              ),
-            });
-          }),
-          // Destructure layer information to have all data at the same level
-          map(
-            (mergedLayerInfo) =>
-              ({
-                ...mergedLayerInfo.layer,
-                geojson: mergedLayerInfo.geojson,
-              } as MergedLayerInfo)
-          ),
-          // Get them into an array after all pipes are done
-          toArray(),
-          // And set those layers into the children of our hardcoded layer group
-          // @TODO it would be mapped later onto it's current layer type
-          map((mergedLayerInfo: MergedLayerInfo[]) => {
-            return {
-              name: 'group layers',
-              type: 'group',
-              children: this.getLayerSettings(mergedLayerInfo),
-            };
-          })
-        )
+      )
     );
     return new Layer(formattedLayerSettings);
   }
