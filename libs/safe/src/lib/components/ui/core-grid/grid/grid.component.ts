@@ -18,6 +18,7 @@ import {
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
+import { MapModalComponent } from '../map-modal/map-modal.component';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   EXPORT_SETTINGS,
@@ -808,5 +809,33 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.loadingRecords)
       return this.translate.instant('components.widget.grid.loading.records');
     return this.translate.instant('kendo.grid.noRecords');
+  }
+
+  /**
+   * Opens the modal for
+   *
+   * @param dataItem the current item that we clicked
+   * @param field zed
+   */
+  public onOpenPopup(dataItem: any, field: any) {
+    const markerToZoomOn = this.getPropertyValue(dataItem, field.name)?.geometry
+      ?.coordinates;
+    const markersCoords: [number, number][] = [];
+    this.data.data.forEach((item) =>
+      markersCoords.push(
+        this.getPropertyValue(item, field.name)?.geometry?.coordinates
+      )
+    );
+    const dialogRef = this.dialog.open(MapModalComponent, {
+      height: '800px',
+      width: '800px',
+      data: {
+        markers: markersCoords,
+        defaultPosition: markerToZoomOn ? markerToZoomOn : [45, 45],
+        defaultZoom: 10,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(() => console.log('map displayed'));
   }
 }

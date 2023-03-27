@@ -617,6 +617,7 @@
             {{
               applyFieldFormat(getPropertyValue(dataItem, field.name), field)
             }}
+            <button kendoButton id="testButton" (click)="onOpenPopup(dataItem, field)"> Display map </button>
           </div>
         </ng-template>
       </kendo-grid-column>
