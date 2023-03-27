@@ -6,15 +6,10 @@ import 'leaflet.markercluster';
 import { Feature, FeatureCollection, Geometry } from 'geojson';
 import { get } from 'lodash';
 import {
-  LayerSettingsI,
   LayerType,
-  LayerProperties,
   LayerFilter,
-  LayerStyling,
   LayerLabel,
-  LayerPopup,
   GeoJSON,
-  FeatureProperties,
   LayerStyle,
 } from './interfaces/layer-settings.type';
 import { IconName } from './const/fa-icons';
@@ -47,7 +42,7 @@ export const EMPTY_FEATURE_COLLECTION: GeoJSON = {
 };
 
 /** Default layer properties */
-export const DEFAULT_LAYER_PROPERTIES: LayerProperties = {
+export const DEFAULT_LAYER_PROPERTIES = {
   visibilityRange: [1, 18],
   opacity: 1,
   visibleByDefault: true,
@@ -113,7 +108,7 @@ const GEOMETRY_TYPES = [
  * @returns true if the feature satisfies the filter
  */
 const featureSatisfiesFilter = (
-  feature: Feature<Geometry, FeatureProperties>,
+  feature: Feature<Geometry>,
   filter: LayerFilter
 ): boolean => {
   // Check if the filter is a simple filter
@@ -123,7 +118,7 @@ const featureSatisfiesFilter = (
   } else {
     // Filter is a simple filter
     const { field, operator, value } = filter;
-    const featureValue = feature.properties[field];
+    const featureValue = feature.properties?.[field];
 
     switch (operator) {
       case 'eq':
@@ -163,11 +158,11 @@ export class Layer {
   // Properties for the layer, if layer type is not 'group'
   private datasource: any | null = null; // TODO: define datasource
   private geojson: GeoJSON | null = null;
-  private properties: LayerProperties | null = null;
+  private properties: any | null = null;
   private filter: LayerFilter | null = null;
-  private styling: LayerStyling | null = null;
+  private styling: any | null = null;
   private label: LayerLabel | null = null;
-  private popup: LayerPopup | null = null; // TODO: define popup
+  private popup: any | null = null; // TODO: define popup
 
   // Layer fields, extracted from geojson
   private fields: { [key in string]: FieldTypes } = {};
@@ -278,7 +273,7 @@ export class Layer {
           })
         )
     );
-    return new Layer(formattedLayerSettings as LayerSettingsI);
+    return new Layer(formattedLayerSettings);
   }
 
   /**
@@ -300,71 +295,70 @@ export class Layer {
       defaultVisibility?: boolean;
       style?: any;
     }[]
-  ): LayerSettingsI[] {
-    return mergedLayerInfo.map(
-      (layerInfo) =>
-        // @TODO As we complete the layer editor we will have to set those new values in these function
-        // instead of the hardcoded ones
-        ({
-          // Currently we only have name and id in the graphql endpoint for each layer metadata
-          name: layerInfo.name,
-          id: layerInfo.id,
-          type: layerInfo.type ?? 'feature',
-          // The geojson previously fetched from the REST
-          geojson: layerInfo.geojson,
-          filter: {
-            condition: 'and',
-            filters: [
-              {
-                field: 'name',
-                operator: 'neq',
-                value: 'Point 1',
-              },
-            ],
-          },
-          properties: {
-            // None of this data is available yet
-            visibilityRange: [
-              layerInfo.visibilityRangeStart ?? 2,
-              layerInfo.visibilityRangeEnd ?? 18,
-            ],
-            opacity: layerInfo.opacity ?? 1,
-            visibleByDefault: layerInfo.defaultVisibility ?? true,
-            legend: {
-              display: true,
-              field: 'name',
-            },
-          },
-          styling: [
+  ): any[] {
+    return mergedLayerInfo.map((layerInfo) =>
+      // @TODO As we complete the layer editor we will have to set those new values in these function
+      // instead of the hardcoded ones
+      ({
+        // Currently we only have name and id in the graphql endpoint for each layer metadata
+        name: layerInfo.name,
+        id: layerInfo.id,
+        type: layerInfo.type ?? 'feature',
+        // The geojson previously fetched from the REST
+        geojson: layerInfo.geojson,
+        filter: {
+          condition: 'and',
+          filters: [
             {
-              filter: {
-                condition: 'and',
-                filters: [],
-              },
-              style: {
-                borderColor: 'black',
-                borderWidth: 1,
-                fillOpacity: layerInfo.opacity ?? 1,
-                borderOpacity: layerInfo.opacity ?? 1,
-                fillColor: layerInfo.style?.color ?? 'purple',
-                icon: layerInfo.style?.icon ?? 'leaflet_default',
-                iconSize: layerInfo.style?.size ?? 24,
-              },
+              field: 'name',
+              operator: 'neq',
+              value: 'Point 1',
             },
           ],
-          labels: {
+        },
+        properties: {
+          // None of this data is available yet
+          visibilityRange: [
+            layerInfo.visibilityRangeStart ?? 2,
+            layerInfo.visibilityRangeEnd ?? 18,
+          ],
+          opacity: layerInfo.opacity ?? 1,
+          visibleByDefault: layerInfo.defaultVisibility ?? true,
+          legend: {
+            display: true,
+            field: 'name',
+          },
+        },
+        styling: [
+          {
             filter: {
               condition: 'and',
               filters: [],
             },
-            label: '{{name}}',
             style: {
-              color: '#000000',
-              fontSize: 12,
-              fontWeight: 'normal',
+              borderColor: 'black',
+              borderWidth: 1,
+              fillOpacity: layerInfo.opacity ?? 1,
+              borderOpacity: layerInfo.opacity ?? 1,
+              fillColor: layerInfo.style?.color ?? 'purple',
+              icon: layerInfo.style?.icon ?? 'leaflet_default',
+              iconSize: layerInfo.style?.size ?? 24,
             },
           },
-        } as LayerSettingsI)
+        ],
+        labels: {
+          filter: {
+            condition: 'and',
+            filters: [],
+          },
+          label: '{{name}}',
+          style: {
+            color: '#000000',
+            fontSize: 12,
+            fontWeight: 'normal',
+          },
+        },
+      })
     );
   }
 
@@ -416,7 +410,7 @@ export class Layer {
    *
    * @param settings The settings for the layer
    */
-  constructor(settings: LayerSettingsI) {
+  constructor(settings: any) {
     if (settings) {
       this.setConfig(settings);
     } else {
@@ -429,7 +423,7 @@ export class Layer {
    *
    * @param settings LayerSettings
    */
-  private setConfig(settings: LayerSettingsI) {
+  private setConfig(settings: any) {
     this.name = settings.name;
     this.type = settings.type as LayerType;
 
@@ -445,7 +439,7 @@ export class Layer {
       this.setFields();
     } else if (settings.children) {
       // Group layer, add children
-      this.children = settings.children?.map((child) => ({
+      this.children = settings.children?.map((child: any) => ({
         object: new Layer(child),
       }));
     }
@@ -480,8 +474,8 @@ export class Layer {
 
     // If the geojson is a feature, add the property fields to the fields object
     if (geojson.type === 'Feature') {
-      Object.keys(geojson.properties).forEach((key) => {
-        fields[key] = getFieldType(key, geojson.properties[key]);
+      Object.keys(geojson.properties ?? []).forEach((key) => {
+        fields[key] = getFieldType(key, geojson.properties?.[key]);
       });
       return;
     }
@@ -489,8 +483,8 @@ export class Layer {
     // If the geojson is a feature collection, do the same for each feature
     if (geojson.type === 'FeatureCollection') {
       geojson.features.forEach((feature) => {
-        Object.keys(feature.properties).forEach((key) => {
-          fields[key] = getFieldType(key, feature.properties[key]);
+        Object.keys(feature.properties ?? []).forEach((key) => {
+          fields[key] = getFieldType(key, feature.properties?.[key]);
         });
       });
     }
@@ -503,15 +497,13 @@ export class Layer {
    * @param feature Feature to get the style for
    * @returns the style for the feature
    */
-  private getFeatureStyle(
-    feature: Feature<Geometry, FeatureProperties>
-  ): Required<LayerStyle> {
+  private getFeatureStyle(feature: Feature<Geometry>): Required<LayerStyle> {
     // if the feature has a style property, use it
-    const featureStyle = feature.properties.style;
+    const featureStyle = feature.properties?.style;
     if (featureStyle) return { ...DEFAULT_LAYER_STYLE, ...featureStyle };
 
     const style = this.styling?.find(
-      (s) => featureSatisfiesFilter(feature, s.filter) && s.style
+      (s: any) => featureSatisfiesFilter(feature, s.filter) && s.style
     );
 
     // If no style is found, return the default style
@@ -529,7 +521,7 @@ export class Layer {
     const data = this.data;
 
     // options used for parsing geojson to leaflet layer
-    const geoJSONopts: L.GeoJSONOptions<FeatureProperties> = {
+    const geoJSONopts: L.GeoJSONOptions<any> = {
       pointToLayer: (feature, latlng) => {
         const style = this.getFeatureStyle(feature);
 
@@ -560,7 +552,7 @@ export class Layer {
           })
         );
       },
-      style: (feature: Feature<Geometry, FeatureProperties> | undefined) => {
+      style: (feature: Feature<Geometry> | undefined) => {
         if (!feature) return {};
         const style = this.getFeatureStyle(feature);
 
@@ -630,7 +622,7 @@ export class Layer {
             'Impossible to create a heatmap from this data, geojson type is not FeatureCollection'
           );
         const heatArray: any[] = [];
-        const collection: FeatureCollection<Geometry, FeatureProperties> = data;
+        const collection: FeatureCollection<Geometry> = data;
 
         collection.features.forEach((feature) => {
           if (feature.geometry.type === 'Point') {
@@ -686,7 +678,7 @@ export class Layer {
               : (feature as any).type === 'Point';
             const style = this.getFeatureStyle(feature);
             items.push({
-              label: labelField ? feature.properties[labelField] ?? '' : '',
+              label: labelField ? feature.properties?.[labelField] ?? '' : '',
               color: style.fillColor,
               icon: isPoint ? style.icon : undefined,
             });

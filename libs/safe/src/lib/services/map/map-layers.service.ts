@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Observable, filter, map } from 'rxjs';
+import { LayerProperties } from '../../components/ui/map/interfaces/layer-settings.type';
 import { Layer } from '../../models/layer.model';
 import {
   AddLayerMutationResponse,
@@ -10,7 +11,12 @@ import {
   DeleteLayerMutationResponse,
   DELETE_LAYER,
 } from './graphql/mutations';
-import { GetLayerByIdQueryResponse, GET_LAYER_BY_ID } from './graphql/queries';
+import {
+  GetLayerByIdQueryResponse,
+  GetLayersQueryResponse,
+  GET_LAYERS,
+  GET_LAYER_BY_ID,
+} from './graphql/queries';
 
 /**
  * Shared map layer service
@@ -32,12 +38,12 @@ export class SafeMapLayersService {
    * @param layer Layer to add
    * @returns An observable with the new layer data formatted for the application form
    */
-  public addLayer(layer: Layer): Observable<Layer | undefined> {
+  public addLayer(layer: LayerProperties): Observable<Layer | undefined> {
     return this.apollo
       .mutate<AddLayerMutationResponse>({
         mutation: ADD_LAYER,
         variables: {
-          title: layer.title,
+          name: layer.name,
           sublayers: [],
         },
       })
@@ -58,14 +64,14 @@ export class SafeMapLayersService {
    * @param layer Layer data to save
    * @returns An observable with the edited layer data formatted for the application form
    */
-  public editLayer(layer: Layer): Observable<Layer | undefined> {
+  public editLayer(layer: LayerProperties): Observable<Layer | undefined> {
     return this.apollo
       .mutate<EditLayerMutationResponse>({
         mutation: EDIT_LAYER,
         variables: {
           id: layer.id,
           parent: layer.id,
-          title: layer.title,
+          name: layer.name,
           sublayers: [],
         },
       })
@@ -116,6 +122,28 @@ export class SafeMapLayersService {
             throw new Error(response.errors[0].message);
           }
           return response.data.layer;
+        })
+      );
+  }
+
+  /**
+   * Get the layers
+   *
+   * @returns Observable of layer
+   */
+  public getLayers(): Observable<Layer[]> {
+    return this.apollo
+      .query<GetLayersQueryResponse>({
+        query: GET_LAYERS,
+        variables: {},
+      })
+      .pipe(
+        filter((response) => !!response.data),
+        map((response) => {
+          if (response.errors) {
+            throw new Error(response.errors[0].message);
+          }
+          return response.data.layers;
         })
       );
   }

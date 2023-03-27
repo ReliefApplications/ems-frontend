@@ -18,6 +18,11 @@ import {
   MapEvent,
   MapEventType,
 } from '../../../ui/map/interfaces/map.interface';
+import { LayerProperties } from '../../../ui/map/interfaces/layer-settings.type';
+import {
+  BaseLayerTree,
+  LayerActionOnMap,
+} from '../../../ui/map/interfaces/map-layers.interface';
 
 /**
  *
@@ -33,7 +38,7 @@ export class MapLayerComponent
 {
   @Input() layer?: Layer;
   @Input() mapComponent!: MapComponent | undefined;
-  @Output() layerToSave = new EventEmitter<Layer>();
+  @Output() layerToSave = new EventEmitter<LayerProperties>();
 
   @ViewChild('layerNavigationTemplate')
   layerNavigationTemplate!: TemplateRef<any>;
@@ -72,6 +77,23 @@ export class MapLayerComponent
   ngOnInit(): void {
     this.form = createLayerForm(this.layer);
     this.currentZoom = this.mapComponent?.map.getZoom();
+    if (this.mapComponent) {
+      // const layer = L.tileLayer(
+      //   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      //   {
+      //     attribution:
+      //       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      //   }
+      // );
+      // const baseLayer: BaseLayerTree = {
+      //   label: this.form.get('name')?.value ?? '',
+      //   layer,
+      // };
+      // this.mapComponent.addOrDeleteLayer = {
+      //   layerData: baseLayer,
+      //   isDelete: false,
+      // };
+    }
     this.setUpEditLayerListeners();
   }
 
@@ -116,7 +138,8 @@ export class MapLayerComponent
    * Send the current form value to save
    */
   onSubmit() {
-    this.layerToSave.emit(this.form.getRawValue() as Layer);
+    console.log(this.form.getRawValue());
+    this.layerToSave.emit(this.form.getRawValue() as LayerProperties);
   }
 
   /**
