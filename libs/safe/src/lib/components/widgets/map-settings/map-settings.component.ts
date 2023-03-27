@@ -228,7 +228,6 @@ export class SafeMapSettingsComponent
    * @param layer layer to open
    */
   onEditLayer(layer?: LayerModel): void {
-    console.log(layer);
     this.openedLayer = layer;
     // We initialize the map settings to default value once we display the map layer editor
     (this.mapComponent as MapComponent).settingsConfig = {

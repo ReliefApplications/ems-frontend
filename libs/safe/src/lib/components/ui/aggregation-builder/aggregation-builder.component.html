@@ -5,7 +5,7 @@
     <safe-tagbox
       class="flex flex-1"
       [choices$]="fields$"
-      [parentControl]="aggregationForm.controls.sourceFields"
+      [formControl]="$any(aggregationForm.get('sourceFields'))"
       [label]="'components.aggregationBuilder.sourceFields' | translate"
     ></safe-tagbox>
   </div>

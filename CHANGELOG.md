@@ -1,3 +1,45 @@
+# [2.0.0-beta.4](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.3...v2.0.0-beta.4) (2023-03-26)
+
+
+### Bug Fixes
+
+* empty fields & disable deleting used fields ([8c83fdf](https://github.com/ReliefApplications/oort-frontend/commit/8c83fdf944db6f786f080fcf90c7c9ebbeac36de))
+* errors with selection of fields in aggregation builder ([7b53120](https://github.com/ReliefApplications/oort-frontend/commit/7b531208905e6fc47b9badb3c9f47e0939c3f7e3)), closes [fix/AB#59603](https://github.com/fix/AB/issues/59603)
+* undefined or null labels in charts ([eda357f](https://github.com/ReliefApplications/oort-frontend/commit/eda357f275063c870ca9f8830e732da957381a5d))
+
+
+### Features
+
+* add possibility to see line / bar / column charts as gradients ([15c67cd](https://github.com/ReliefApplications/oort-frontend/commit/15c67cd2d81a38d0089d6e24c215bb58e43830c5))
+* allow multiple line interpolations in charts ([6b30215](https://github.com/ReliefApplications/oort-frontend/commit/6b30215a8e134adba406b8636a8d41a538023382))
+* can now save settings per serie in charts ([2958298](https://github.com/ReliefApplications/oort-frontend/commit/2958298c273979c01eb3b27ce83877a5df41e471)), closes [Ab#59837](https://github.com/Ab/issues/59837)
+
+# [2.0.0-beta.3](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2023-03-25)
+
+
+### Bug Fixes
+
+* could not load any route due to incorrect routing import ([953cca3](https://github.com/ReliefApplications/oort-frontend/commit/953cca3bfe95945fb643d4bb43904e7661ac9fd9))
+* fullscreen directive would show error message on page leave ([bdf189d](https://github.com/ReliefApplications/oort-frontend/commit/bdf189da070c6344254c07f6af129b98f85011be))
+* incorrect scrollbar for summary cards ([e60494c](https://github.com/ReliefApplications/oort-frontend/commit/e60494c523f9d7ff9fcacb43ca93553b7e597efa)), closes [fix/AB#59926](https://github.com/fix/AB/issues/59926)
+
+
+### Features
+
+* add fullscreen directive ([f46bc61](https://github.com/ReliefApplications/oort-frontend/commit/f46bc613f2b53db708a391ce3cf5c5f52256accc))
+* add polar chart ([b9afcb3](https://github.com/ReliefApplications/oort-frontend/commit/b9afcb37fa5e1a9393cf20ac4b2297ef5fcba994)), closes [feat/AB#59512](https://github.com/feat/AB/issues/59512)
+* add radar chart ([862950e](https://github.com/ReliefApplications/oort-frontend/commit/862950ef290b0ccfbb102fd7757e0b1e3c5e54f4))
+* add scss editor in applications ([7bc48dc](https://github.com/ReliefApplications/oort-frontend/commit/7bc48dc20eacb5836132e741b9d40939f09b75f1)), closes [feat/AB#59633](https://github.com/feat/AB/issues/59633)
+* can now export multiple fields in history ([d305ee3](https://github.com/ReliefApplications/oort-frontend/commit/d305ee3215b4afd95a36e87ebbe2186909619e40))
+* can toggle visibility of gridlines in charts ([726759b](https://github.com/ReliefApplications/oort-frontend/commit/726759b84d9482667d9f60bdf3d1522190b6a047)), closes [feat/AB#59422](https://github.com/feat/AB/issues/59422)
+* dashboard now indicates if changes were not saved ([22ed685](https://github.com/ReliefApplications/oort-frontend/commit/22ed68581ed66e9b6c839eec04b4de587a1c5cee))
+* dynamic cards can now be transformed into grids ([adfc321](https://github.com/ReliefApplications/oort-frontend/commit/adfc3217eded1a3706f0beba38fe8787511543a6)), closes [Ab#59618](https://github.com/Ab/issues/59618)
+
+
+### Performance Improvements
+
+* add bundle analyzer ([0021fb3](https://github.com/ReliefApplications/oort-frontend/commit/0021fb3a7f06126c484c8dc3781d72be7716a295))
+
 # [2.0.0-alpha.1](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.10...v2.0.0-alpha.1) (2023-03-21)
 
 

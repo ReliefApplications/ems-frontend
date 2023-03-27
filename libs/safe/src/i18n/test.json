@@ -379,6 +379,7 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
 			}
@@ -398,6 +399,7 @@
 			}
 		},
 		"application": {
+			"customStyling": "******",
 			"dashboard": {
 				"empty": "******"
 			},
@@ -1055,7 +1057,8 @@
 					"aggregation": {
 						"invalid": "******"
 					}
-				}
+				},
+				"other": "******"
 			},
 			"expand": "******",
 			"grid": {
@@ -1129,6 +1132,15 @@
 			"settings": {
 				"chart": {
 					"axes": "******",
+					"grid": {
+						"title": "******",
+						"x": {
+							"display": "******"
+						},
+						"y": {
+							"display": "******"
+						}
+					},
 					"hideLegend": "******",
 					"labels": {
 						"percentage": "******",
@@ -1154,6 +1166,10 @@
 					"size": "******",
 					"style": "******",
 					"text": "******",
+					"title": {
+						"color": "******",
+						"format": "******"
+					},
 					"type": "******",
 					"xAxis": "******",
 					"yAxis": "******"
@@ -1436,7 +1452,9 @@
 				"dataSource": "******",
 				"errors": {
 					"invalidSource": "******"
-				}
+				},
+				"viewAsCards": "******",
+				"viewAsGrid": "******"
 			}
 		}
 	},
@@ -1809,6 +1827,12 @@
 			"goTo": "******",
 			"recent": "******",
 			"title": "******"
+		},
+		"dashboard": {
+			"update": {
+				"exit": "******",
+				"exitMessage": "******"
+			}
 		},
 		"formBuilder": {
 			"errors": {

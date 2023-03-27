@@ -20,7 +20,6 @@ import {
   status,
   authType,
   cronValidator,
-  CronExpressionControlComponent,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -428,15 +427,5 @@ export class EditPullJobModalComponent implements OnInit {
     this.applications.next(this.cachedApplications);
     this.applicationsPageInfo = data.applications.pageInfo;
     this.applicationsLoading = loading;
-  }
-
-  /** Opens the cron expression component modal */
-  public onEditCronExpression(): void {
-    this.dialog.open(CronExpressionControlComponent, {
-      autoFocus: false,
-      data: {
-        control: this.formGroup.controls.schedule,
-      },
-    });
   }
 }

@@ -6,6 +6,7 @@ import {
   ChartData,
   ChartOptions,
   ChartType,
+  ChartArea,
 } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
@@ -13,17 +14,7 @@ import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plug
 import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
-
-/**
- * Interface containing the settings of the chart title
- */
-interface ChartTitle {
-  visible: boolean;
-  text: string;
-  position: 'top' | 'bottom';
-  font: string;
-  color: string;
-}
+import { ChartTitle } from '../interfaces';
 
 /**
  * Interface containing the settings of the chart legend
@@ -32,6 +23,12 @@ interface ChartLegend {
   visible: boolean;
   position: 'top' | 'bottom' | 'left' | 'right';
 }
+
+/** Interpolation modes */
+type Interpolation = 'linear' | 'cubic' | 'step';
+
+/** Step interpolation models */
+type StepInterpolation = 'before' | 'after' | 'middle';
 
 /**
  * Uses chart.js to render the data as a line chart
@@ -62,7 +59,7 @@ export class SafeLineChartComponent implements OnChanges {
     axes: null,
   };
 
-  @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   public chartOptions: ChartConfiguration['options'] = {
     responsive: true,
@@ -85,18 +82,47 @@ export class SafeLineChartComponent implements OnChanges {
 
   ngOnChanges(): void {
     this.showValueLabels = get(this.options, 'labels.valueType', false);
+    const series = get(this.options, 'series', []);
     this.chartData.datasets = this.series.map((x, i) => {
-      const color = get(this.options, `palette[${i}]`, undefined);
-
-      // finds min and max values from x.data
+      // Get serie settings
+      const serie = series.find((serie: any) => serie.serie === x.name);
+      // Get color
+      const color: any =
+        get(serie, 'color', null) ||
+        get(this.options, `palette[${i}]`, undefined);
+      // Find min and max values from x.data
       const min = Math.min(...x.data.map((y: any) => y.field ?? Infinity));
       const max = Math.max(...x.data.map((y: any) => y.field ?? -Infinity));
       if (min < this.min) this.min = min;
       if (max > this.max) this.max = max;
+      // Get fill type
+      const fill = get(serie, 'fill', null);
+      let gradient: CanvasGradient | undefined;
+      if (fill === 'gradient') {
+        const chartArea = this.chart?.chart?.chartArea as ChartArea;
+        const ctx = this.chart?.chart?.canvas.getContext('2d');
+        gradient = ctx?.createLinearGradient(
+          0,
+          chartArea.bottom,
+          0,
+          chartArea.top
+        );
+        if (color) {
+          gradient?.addColorStop(1, color);
+          gradient?.addColorStop(0, color.slice(0, -3) + ' 0.05)');
+        }
+      }
+      // Get interpolation mode
+      const interpolation = get<Interpolation>(
+        serie,
+        'interpolation',
+        'linear'
+      );
+
       return {
         ...x,
         color,
-        backgroundColor: color,
+        backgroundColor: gradient || color,
         borderColor: color,
         pointRadius: 5,
         pointHoverRadius: 8,
@@ -106,7 +132,11 @@ export class SafeLineChartComponent implements OnChanges {
         pointBorderWidth: 2,
         pointHoverBorderColor: color,
         pointHoverBorderWidth: 2,
-        tension: 0.4,
+        ...(interpolation === 'cubic' && { tension: 0.4 }),
+        ...(interpolation === 'step' && {
+          stepped: get<StepInterpolation>(serie, 'stepped', 'before'),
+        }),
+        fill: !!fill,
       };
     });
     this.setOptions();
@@ -121,12 +151,16 @@ export class SafeLineChartComponent implements OnChanges {
 
     const titleText = get(this.title, 'text', '');
     const titleColor = get(this.title, 'color', undefined);
-    const titleVisible = get(this.title, 'visible', false);
+    const titleVisible = titleText !== '';
+
     // log min an max
     this.chartOptions = {
       ...this.chartOptions,
       scales: {
         x: {
+          grid: {
+            display: get(this.options, 'grid.x.display', true),
+          },
           ticks: {
             autoSkip: false,
             maxRotation: 90,
@@ -134,6 +168,9 @@ export class SafeLineChartComponent implements OnChanges {
           },
         },
         y: {
+          grid: {
+            display: get(this.options, 'grid.y.display', true),
+          },
           min: this.min - 0.1 * this.min,
           max: this.max + 0.1 * this.max,
         },

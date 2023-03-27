@@ -43,6 +43,7 @@ import { SafeViewsModule } from './views/views.module';
 import { SafeEditableTextModule } from './components/editable-text/editable-text.module';
 import { CronExpressionControlModule } from './components/cron-expression-control/cron-expression-control.module';
 import { MapModule } from './components/ui/map';
+import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -73,7 +74,6 @@ import { MapModule } from './components/ui/map';
     SafeEditLayoutModalModule,
     SafeSnackbarSpinnerModule,
     SafeSkeletonTableModule,
-    SafeSkeletonModule,
     SafeUserSummaryModule,
     SafeEditableTextModule,
     CronExpressionControlModule,
@@ -90,6 +90,9 @@ import { MapModule } from './components/ui/map';
     SafeEmptyModule,
     SafeDividerModule,
     SafeLeftSidenavModule,
+    // === Directives
+    SafeSkeletonModule,
+    FullScreenModule,
     // === UTILS COMPONENTS ===
     SafeUnsubscribeModule,
     // === VIEWS ===

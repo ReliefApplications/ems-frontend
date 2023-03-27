@@ -1,17 +1,16 @@
 // In the future, maybe relocate this to a Map cl
 
-import { FeatureCollection } from 'geojson';
+import { Feature } from 'geojson';
 import * as L from 'leaflet';
 
 /**
- * Gets the map features as a GeoJSON FeatureCollection.
+ * Gets the map feature as a GeoJSON.
  *
  * @param map current map
- * @returns GeoJSON FeatureCollection
+ * @returns GeoJSON Feature
  */
-export const getMapFeatures = (map: any): FeatureCollection => ({
-  type: 'FeatureCollection',
-  features: map.pm.getGeomanLayers().map((l: any) => {
+export const getMapFeature = (map: any): Feature =>
+  map.pm.getGeomanLayers().map((l: any) => {
     const json = l.toGeoJSON();
     json.options = l.options;
     // Adds radius property to circles,
@@ -37,5 +36,34 @@ export const getMapFeatures = (map: any): FeatureCollection => ({
       }
     }
     return json;
-  }),
-});
+  })[0];
+
+/**
+ * Update Geoman layer position by type
+ *
+ * @param map Map on which geoman tools are set
+ * @param data layer data
+ * @param layerType geoman layer type
+ */
+export const updateGeoManLayerPosition = (
+  map: L.Map,
+  data: any,
+  layerType: string = 'Marker'
+) => {
+  const layers = (map as any).pm.getGeomanLayers();
+  // If the layer was previously added we remove it
+  if (layers.length) {
+    layers.forEach((l: any) => {
+      map.removeLayer(l);
+    });
+  }
+  // We automatically add the marker there
+  if (layerType === 'Marker') {
+    (map as any).pm.enableDraw(layerType, { snappable: false });
+
+    (map as any).pm.Draw[layerType]._createMarker({
+      latlng: data.latlng,
+    });
+    (map as any).pm.disableDraw(layerType);
+  }
+};

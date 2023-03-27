@@ -1,6 +1,8 @@
-// This is needed for compilation of surveyjs-widgets with strict option enabled.
+// This is needed for compilation of some packages with strict option enabled.
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../typings/surveyjs-widgets/index.d.ts" />
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="../../typings/extract-files/index.d.ts" />
 
 import { Apollo } from 'apollo-angular';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';

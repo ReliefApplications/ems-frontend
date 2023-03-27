@@ -6,7 +6,7 @@
     "check-i18n": "node .scripts/check-i18n",
     "semantic-release": "semantic-release",
     "prepare": "husky install",
-    "ng": "node --max_old_space_size=4096 ./node_modules/.bin/ng"
+    "lint": "npx nx run-many --target=lint --projects=safe,front-office,back-office"
   },
   "private": true,
   "dependencies": {
@@ -86,9 +86,11 @@
     "leaflet.heat": "^0.2.0",
     "leaflet.markercluster": "^1.5.3",
     "localforage": "^1.10.0",
+    "monaco-editor": "^0.34.1",
     "ng2-charts": "^4.1.1",
     "ngx-cron-editor": "^0.7.6",
     "proj4": "^2.9.0",
+    "ngx-monaco-editor-v2": "^15.0.1",
     "rxjs": "~7.8.0",
     "subscriptions-transport-ws": "^0.9.18",
     "survey-angular": "1.9.71",
@@ -163,7 +165,8 @@
     "ts-jest": "28.0.5",
     "ts-node": "10.9.1",
     "typescript": "~4.8.2",
-    "webpack": "^5.64.0"
+    "webpack": "^5.64.0",
+    "webpack-bundle-analyzer": "^4.8.0"
   },
   "repository": {
     "type": "git",

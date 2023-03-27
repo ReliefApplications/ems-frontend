@@ -39,7 +39,7 @@ import { SafeMapControlsService } from '../../../services/map/map-controls.servi
 // import 'leaflet';
 import * as L from 'leaflet';
 import { Layer } from './layer';
-import { getMapFeatures } from './utils/get-map-features';
+import { getMapFeature } from './utils/get-map-features';
 import { LayerFormData } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
 import { createCustomDivIcon } from './utils/create-div-icon';
@@ -64,12 +64,6 @@ const cleanSettingsFromNulls = (settings: MapConstructorSettings) => {
     }
   });
 };
-
-/**
- * Id of default webmap
- * todo(gis): remove
- */
-const defaultWebMap = 'a8c3c531be1a4615b03c45b6353ab2c8';
 
 /** Component for the map widget */
 @Component({
@@ -118,7 +112,7 @@ export class MapComponent
       if (this.useGeomanTools) {
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: getMapFeatures(this.map),
+          content: getMapFeature(this.map),
         });
       }
     }
@@ -143,7 +137,6 @@ export class MapComponent
       },
     },
     controls: DefaultMapControls,
-    arcGisWebMap: defaultWebMap,
   };
   private arcGisWebMap: any;
 
@@ -219,9 +212,13 @@ export class MapComponent
 
   /** Set geoman listeners */
   private setUpPmListeners() {
+    // By default all drawn layer types have this property to false except for markers and circleMarkers
+    // https://github.com/geoman-io/leaflet-geoman#draw-mode
+    // We will enable this one for all layer types(including Markers) in order to auto blur when one marker is set
+    this.map.pm.setGlobalOptions({ continueDrawing: false });
     // updates question value on adding new shape
     this.map.on('pm:create', (l: any) => {
-      if (l.shape === 'Marker')
+      if (l.shape === 'Marker') {
         l.layer.setIcon(
           createCustomDivIcon({
             icon: 'leaflet_default',
@@ -230,13 +227,16 @@ export class MapComponent
             size: 24,
           })
         );
+        // If we add a Marker, we will disable the control to set new markers(currently we want to add just one)
+        this.map.pm.Toolbar.setButtonDisabled('drawMarker', true);
+      }
 
       // subscribe to changes on the created layers
       l.layer.on(
         'pm:change',
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: getMapFeatures(this.map),
+          content: getMapFeature(this.map),
         })
       );
 
@@ -249,13 +249,19 @@ export class MapComponent
     });
 
     // updates question value on removing shapes
-    this.map.on(
-      'pm:remove',
+    this.map.on('pm:remove', () => {
+      const containsPointMarker = (feature: any) =>
+        feature.geometry.type === 'Point';
+      const content = getMapFeature(this.map);
+      // If no markers, we enable the point marker control again
+      if (!content || !containsPointMarker(content)) {
+        this.map.pm.Toolbar.setButtonDisabled('drawMarker', false);
+      }
       this.mapEvent.emit({
         type: MapEventType.MAP_CHANGE,
-        content: getMapFeatures(this.map),
-      })
-    );
+        content,
+      });
+    });
 
     // set language
     const setLang = (lang: string) => {
@@ -278,6 +284,7 @@ export class MapComponent
 
   /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
+    this.mapControlsService.useGeomanTools = this.useGeomanTools;
     // Creates the map and adds all the controls we use.
     this.drawMap();
     /**
@@ -295,7 +302,7 @@ export class MapComponent
       if (this.useGeomanTools) {
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
-          content: getMapFeatures(this.map),
+          content: getMapFeature(this.map),
         });
       } else {
         this.mapEvent.emit({
@@ -337,11 +344,7 @@ export class MapComponent
     const worldCopyJump = get(this.settingsConfig, 'worldCopyJump', true);
     const zoomControl = get(this.settingsConfig, 'zoomControl', false);
     const controls = get(this.settingsConfig, 'controls', DefaultMapControls);
-    const arcGisWebMap = get(
-      this.settingsConfig,
-      'arcGisWebMap',
-      defaultWebMap
-    );
+    const arcGisWebMap = get(this.settingsConfig, 'arcGisWebMap');
     /**
      * TODO implement layer loading for the layers returned from the settings
      *
@@ -407,8 +410,10 @@ export class MapComponent
       initialState.viewpoint.zoom
     );
 
-    //set webmap
-    this.setWebmap(arcGisWebMap);
+    if (arcGisWebMap) {
+      //set webmap
+      this.setWebmap(arcGisWebMap);
+    }
 
     // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
     this.setBasemap(basemap);

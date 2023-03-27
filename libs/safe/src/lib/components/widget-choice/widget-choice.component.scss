@@ -17,7 +17,7 @@
     width: 196px;
     cursor: pointer;
     border-radius: 8px;
-    background-color: white;
+    @apply bg-white;
     border: 1px solid #2f383e33;
 
     img {
