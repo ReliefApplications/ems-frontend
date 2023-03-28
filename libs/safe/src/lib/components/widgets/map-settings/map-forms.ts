@@ -5,17 +5,17 @@ import {
   Validators,
 } from '@angular/forms';
 import get from 'lodash/get';
-import { MapLayerI } from './map-layers/map-layers.component';
 import {
   MapControls,
   DefaultMapControls,
   MapConstructorSettings,
 } from '../../ui/map/interfaces/map.interface';
-import { Layer } from '../../../models/layer.model';
 import {
   popupElement,
   popupElementType,
 } from './map-layer/layer-popup/layer-popup.interface';
+import { LayerFormData } from '../../ui/map/interfaces/layer-settings.type';
+import { LayerModel } from '../../../models/layer.model';
 import { IconName } from '../../icon-picker/icon-picker.const';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
@@ -59,25 +59,35 @@ const DEFAULT_GRADIENT = [
  * @param value layer value ( optional )
  * @returns new form group
  */
-export const createLayerForm = (value?: Layer) =>
+export const createLayerForm = (value?: LayerModel) =>
   fb.group({
     // Layer properties
     id: [get(value, 'id', null)],
-    title: [get(value, 'title', null), Validators.required],
+    name: [get(value, 'name', null), Validators.required],
     visibility: [get(value, 'visibility', true), Validators.required],
     opacity: [get(value, 'opacity', 1), Validators.required],
     layerDefinition: createLayerDefinitionForm(get(value, 'layerDefinition')),
     popupInfo: createPopupInfoForm(get(value, 'popupInfo')),
-    datasource: fb.group({
-      origin: new FormControl<MapLayerI['datasource']['origin']>(
-        get(value, 'datasource.source', 'resource'),
-        Validators.required
-      ),
-      resource: [get(value, 'datasource.resource', null)],
-      layout: [get(value, 'datasource.layout', null)],
-      aggregation: [get(value, 'datasource.aggregation', null)],
-      refData: [get(value, 'datasource.refData', null)],
-    }),
+    // Layer datasource
+    datasource: createLayerDataSourceForm(value),
+  });
+
+/**
+ * Create layer data source form group
+ *
+ * @param value layer data
+ * @returns layer data source form group
+ */
+const createLayerDataSourceForm = (value?: any): FormGroup =>
+  fb.group({
+    origin: new FormControl<LayerFormData['datasource']['origin']>(
+      get(value, 'datasource.source', 'resource'),
+      Validators.required
+    ),
+    resource: [get(value, 'datasource.resource', null)],
+    layout: [get(value, 'datasource.layout', null)],
+    aggregation: [get(value, 'datasource.aggregation', null)],
+    refData: [get(value, 'datasource.refData', null)],
   });
 
 /**
