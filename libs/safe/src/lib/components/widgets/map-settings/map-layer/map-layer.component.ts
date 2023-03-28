@@ -12,7 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { LayerModel } from '../../../../models/layer.model';
 import { createLayerForm, LayerFormT } from '../map-forms';
-import { takeUntil } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { MapComponent } from '../../../ui/map/map.component';
 import {
@@ -23,8 +23,9 @@ import { LayerFormData } from '../../../ui/map/interfaces/layer-settings.type';
 import { OverlayLayerTree } from '../../../ui/map/interfaces/map-layers.interface';
 import * as L from 'leaflet';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
+
 /**
- *
+ * Map layer editor.
  */
 @Component({
   selector: 'safe-map-layer',
@@ -62,10 +63,11 @@ export class MapLayerComponent
   private currentLayer!: L.Layer;
 
   /**
-   * Class constructor
+   * Map layer editor.
    *
-   * @param confirmService SafeConfirmService
-   * @param translate TranslateService
+   * @param confirmService Shared confirm service.
+   * @param translate Angular translate service.
+   * @param mapLayersService Shared map layer Service.
    */
   constructor(
     private confirmService: SafeConfirmService,
@@ -130,14 +132,10 @@ export class MapLayerComponent
    */
   private setUpEditLayerListeners() {
     // Those listeners would handle any change for layer into the map component reference
-    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.updateLayerOptions();
-    });
-    this.form
-      .get('type')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        console.log(value);
+    this.form.valueChanges
+      .pipe(takeUntil(this.destroy$), debounceTime(1000))
+      .subscribe(() => {
+        this.updateLayerOptions();
       });
 
     this.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
