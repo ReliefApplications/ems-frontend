@@ -15,7 +15,7 @@ import {
   MapEvent,
   MapEventType,
 } from '../../ui/map/interfaces/map.interface';
-import { map, switchMap, takeUntil } from 'rxjs';
+import { takeUntil, tap } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { LayerModel } from '../../../models/layer.model';
 import { MapLayerComponent } from './map-layer/map-layer.component';
@@ -299,17 +299,12 @@ export class SafeMapSettingsComponent
         this.mapLayersService
           .addLayer(layerData)
           .pipe(
-            switchMap((result) =>
+            tap((result) => {
               // Update our current layer list after the new one is added
-              // And return the new one to the subscription
-              this.mapLayersService
-                .getLayers()
-                .pipe(
-                  map((layers) =>
-                    layers.find((layer) => layer.id === result?.id)
-                  )
-                )
-            )
+              if (result) {
+                this.mapLayersService.currentLayers.push(result);
+              }
+            })
           )
           .subscribe({
             next: (result) => {
