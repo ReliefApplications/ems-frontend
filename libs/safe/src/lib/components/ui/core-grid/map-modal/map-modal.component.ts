@@ -1,39 +1,44 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, Inject } from '@angular/core';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
 import * as L from 'leaflet';
+import { SafeModalModule } from '../../modal/modal.module';
 
 /**
- * Data used to create the map inside the modal
+ * Dialog data interface
  */
-interface MapData {
-  markers: [number, number][]; //markers coordinates
+interface DialogData {
+  markers: [number, number][];
   defaultZoom: number;
   defaultPosition: [number, number];
 }
+
 /**
- * Component for the map modal
+ * Modal to show markers in a map
  */
 @Component({
+  standalone: true,
+  imports: [CommonModule, SafeModalModule],
   selector: 'safe-map-modal',
   templateUrl: './map-modal.component.html',
   styleUrls: ['./map-modal.component.scss'],
 })
-export class MapModalComponent implements OnInit {
+export class MapModalComponent implements AfterViewInit {
   /**
-   * Displays a map associated to a geospatial question in a modal dialog
+   * Modal to show markers in a map
    *
    * @param dialogRef Reference to the dialog
-   * @param data The data used in the map
+   * @param data Dialog data
    */
   constructor(
     public dialogRef: MatDialogRef<MapModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: MapData
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     const markers: L.LatLngExpression[] = this.data.markers.map((location) =>
       L.latLng(location)
     );
@@ -48,8 +53,5 @@ export class MapModalComponent implements OnInit {
     markers.forEach((marker) => {
       L.marker(marker).addTo(map);
     });
-    setTimeout(function () {
-      window.dispatchEvent(new Event('resize'));
-    }, 1000);
   }
 }

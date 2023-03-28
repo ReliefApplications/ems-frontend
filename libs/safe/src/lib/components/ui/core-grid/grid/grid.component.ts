@@ -812,12 +812,12 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   /**
-   * Opens the modal for
+   * Open map around clicked item
    *
-   * @param dataItem the current item that we clicked
-   * @param field zed
+   * @param dataItem Clicked item
+   * @param field geometry field
    */
-  public onOpenPopup(dataItem: any, field: any) {
+  public onOpenMapModal(dataItem: any, field: any) {
     let markerToZoomOn = this.getPropertyValue(dataItem, field.name)?.geometry
       ?.coordinates;
     let markersCoords: [number, number][] = [];
@@ -828,16 +828,12 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     );
     markerToZoomOn = [markerToZoomOn[1], markerToZoomOn[0]];
     markersCoords = markersCoords.map((coords) => [coords[1], coords[0]]); // We invert the coords beacause they are stored weirdly
-    const dialogRef = this.dialog.open(MapModalComponent, {
-      height: '800px',
-      width: '800px',
+    this.dialog.open(MapModalComponent, {
       data: {
         markers: markersCoords,
         defaultPosition: markerToZoomOn ? markerToZoomOn : [45, 45],
         defaultZoom: 10,
       },
     });
-
-    dialogRef.afterClosed().subscribe(() => console.log('map displayed'));
   }
 }
