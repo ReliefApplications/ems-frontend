@@ -1066,7 +1066,6 @@
 					"detail": "Open detail",
 					"history": "Show history"
 				},
-				"displayMap": "Display map",
 				"errors": {
 					"invalid": {
 						"backoffice": "Invalid grid configuration",
@@ -1119,6 +1118,7 @@
 				},
 				"openSettings": "Open settings",
 				"tooltip": {
+					"displayMap": "Display map",
 					"saved": "Changes saved",
 					"unsaved": "Click on save button to upload changes",
 					"uploadFailed": "Record not saved. Click to see more details"

@@ -1066,7 +1066,6 @@
 					"detail": "******",
 					"history": "******"
 				},
-				"displayMap": "******",
 				"errors": {
 					"invalid": {
 						"backoffice": "******",
@@ -1119,6 +1118,7 @@
 				},
 				"openSettings": "******",
 				"tooltip": {
+					"displayMap": "******",
 					"saved": "******",
 					"unsaved": "******",
 					"uploadFailed": "******"
