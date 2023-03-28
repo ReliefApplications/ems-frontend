@@ -1066,6 +1066,7 @@
 					"detail": "Open detail",
 					"history": "Show history"
 				},
+				"displayMap": "Display map",
 				"errors": {
 					"invalid": {
 						"backoffice": "Invalid grid configuration",

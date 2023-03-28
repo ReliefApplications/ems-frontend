@@ -6,15 +6,15 @@ import {
 import * as L from 'leaflet';
 
 /**
- *
+ * Data used to create the map inside the modal
  */
 interface MapData {
-  markers: [number, number][];
+  markers: [number, number][]; //markers coordinates
   defaultZoom: number;
   defaultPosition: [number, number];
 }
 /**
- *
+ * Component for the map modal
  */
 @Component({
   selector: 'safe-map-modal',
@@ -23,7 +23,7 @@ interface MapData {
 })
 export class MapModalComponent implements OnInit {
   /**
-   * default constructor for the modal
+   * Displays a map associated to a geospatial question in a modal dialog
    *
    * @param dialogRef Reference to the dialog
    * @param data The data used in the map

@@ -1072,6 +1072,7 @@
 					"detail": "Ouvrir le détail",
 					"history": "Voir l'historique"
 				},
+				"displayMap": "Afficher la carte",
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
 				"errors": {
 					"invalid": {
