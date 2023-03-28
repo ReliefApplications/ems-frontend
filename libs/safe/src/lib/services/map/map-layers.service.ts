@@ -14,7 +14,7 @@ import {
   toArray,
 } from 'rxjs';
 import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
-import { Layer, MergedLayerInfo } from '../../components/ui/map/layer';
+import { Layer, ExtendedLayerModel } from '../../components/ui/map/layer';
 import { LayerModel } from '../../models/layer.model';
 import { SafeRestService } from '../rest/rest.service';
 import {
@@ -176,7 +176,7 @@ export class SafeMapLayersService {
    * @param layerIds layer settings saved from the layer editor
    * @returns Observable of LayerSettingsI
    */
-  async createLayerFrom(layerIds: string[]): Promise<Layer> {
+  async createLayersFromIds(layerIds: string[]): Promise<Layer> {
     // If current layers exists, we will use those values,
     // otherwise we will make the API call
     const layerSourceData$ = !this.currentLayers.length
@@ -190,10 +190,10 @@ export class SafeMapLayersService {
           from(layers.filter((layer) => layerIds.includes(layer.id)))
         ),
         // Then go layer by layer to create the layerSettings object
-        mergeMap((layerInfo: LayerModel) => {
-          // Get the current layerInfo plus it's geojson
+        mergeMap((layer: LayerModel) => {
+          // Get the current layer plus it's geojson
           return forkJoin({
-            layer: of(layerInfo),
+            layer: of(layer),
             geojson: this.restService.get(
               `${
                 this.restService.apiUrl
@@ -203,21 +203,21 @@ export class SafeMapLayersService {
         }),
         // Destructure layer information to have all data at the same level
         map(
-          (mergedLayerInfo) =>
+          (layer) =>
             ({
-              ...mergedLayerInfo.layer,
-              geojson: mergedLayerInfo.geojson,
-            } as MergedLayerInfo)
+              ...layer.layer,
+              geojson: layer.geojson,
+            } as ExtendedLayerModel)
         ),
         // Get them into an array after all pipes are done
         toArray(),
         // And set those layers into the children of our hardcoded layer group
         // @TODO it would be mapped later onto it's current layer type
-        map((mergedLayerInfo: MergedLayerInfo[]) => {
+        map((layers: ExtendedLayerModel[]) => {
           return {
             name: '',
             type: 'group',
-            children: this.getLayerSettings(mergedLayerInfo),
+            children: layers.map((layer) => this.getLayerSettings(layer)),
           };
         })
       )
@@ -226,76 +226,98 @@ export class SafeMapLayersService {
   }
 
   /**
+   * Create layer from its definition
+   *
+   * @param layer Layer to get definition of.
+   * @returns Layer for map widget
+   */
+  async createLayerFromDefinition(layer: LayerModel) {
+    const res = await lastValueFrom(
+      forkJoin({
+        layer: of(layer),
+        geojson: this.restService.get(
+          `${
+            this.restService.apiUrl
+          }/gis/feature?type=Point&tolerance=${0.9}&highquality=${true}`
+        ),
+      })
+    );
+    return new Layer(
+      this.getLayerSettings({
+        ...res.layer,
+        geojson: res.geojson,
+      } as ExtendedLayerModel)
+    );
+  }
+
+  /**
    * Set the geojson to the given layer settings
    *
-   * @param mergedLayerInfo layer settings saved from the layer editor
+   * @param layer layer settings saved from the layer editor
    * @returns LayerSettingsI array
    */
-  private getLayerSettings(mergedLayerInfo: MergedLayerInfo[]): any[] {
-    return mergedLayerInfo.map((layerInfo) =>
-      // @TODO As we complete the layer editor we will have to set those new values in these function
-      // instead of the hardcoded ones
-      ({
-        // Currently we only have name and id in the graphql endpoint for each layer metadata
-        name: layerInfo.name,
-        id: layerInfo.id,
-        type: 'feature',
-        // The geojson previously fetched from the REST
-        geojson: layerInfo.geojson,
-        filter: {
-          condition: 'and',
-          filters: [
-            {
-              field: 'name',
-              operator: 'neq',
-              value: 'Point 1',
-            },
-          ],
-        },
-        properties: {
-          // None of this data is available yet
-          minZoom: layerInfo.layerDefinition?.minZoom ?? 2,
-          maxZoom: layerInfo.layerDefinition?.maxZoom ?? 18,
-          opacity: layerInfo?.opacity ?? 1,
-          visibility: layerInfo.visibility ?? true,
-          legend: {
-            display: true,
-            field: 'name',
-          },
-        },
-        styling: [
+  private getLayerSettings(layer: ExtendedLayerModel): any {
+    // @TODO As we complete the layer editor we will have to set those new values in these function
+    // instead of the hardcoded ones
+    return {
+      // Currently we only have name and id in the graphql endpoint for each layer metadata
+      name: layer.name,
+      id: layer.id,
+      type: 'feature',
+      // The geojson previously fetched from the REST
+      geojson: layer.geojson,
+      filter: {
+        condition: 'and',
+        filters: [
           {
-            filter: {
-              condition: 'and',
-              filters: [],
-            },
-            style: {
-              borderColor: 'black',
-              borderWidth: 1,
-              fillOpacity: layerInfo.opacity ?? 1,
-              borderOpacity: layerInfo.opacity ?? 1,
-              symbol: layerInfo.layerDefinition?.drawingInfo?.renderer
-                ?.symbol ?? {
-                color: '#0b55d6',
-                icon: 'location-dot',
-                size: 24,
-              },
-            },
+            field: 'name',
+            operator: 'neq',
+            value: 'Point 1',
           },
         ],
-        labels: {
+      },
+      properties: {
+        // None of this data is available yet
+        minZoom: layer.layerDefinition?.minZoom ?? 2,
+        maxZoom: layer.layerDefinition?.maxZoom ?? 18,
+        opacity: layer?.opacity ?? 1,
+        visibility: layer.visibility ?? true,
+        legend: {
+          display: true,
+          field: 'name',
+        },
+      },
+      styling: [
+        {
           filter: {
             condition: 'and',
             filters: [],
           },
-          label: '{{name}}',
           style: {
-            color: '#000000',
-            fontSize: 12,
-            fontWeight: 'normal',
+            borderColor: 'black',
+            borderWidth: 1,
+            fillOpacity: layer.opacity ?? 1,
+            borderOpacity: layer.opacity ?? 1,
+            symbol: layer.layerDefinition?.drawingInfo?.renderer?.symbol ?? {
+              color: '#0b55d6',
+              icon: 'location-dot',
+              size: 24,
+            },
           },
         },
-      })
-    );
+      ],
+      labels: {
+        filter: {
+          condition: 'and',
+          filters: [],
+        },
+        label: '{{name}}',
+        style: {
+          color: '#000000',
+          fontSize: 12,
+          fontWeight: 'normal',
+        },
+      },
+    };
   }
 }

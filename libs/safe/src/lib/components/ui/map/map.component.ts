@@ -647,7 +647,7 @@ export class MapComponent
       }
     };
 
-    const layers = [await this.mapLayersService.createLayerFrom(layerIds)];
+    const layers = [await this.mapLayersService.createLayersFromIds(layerIds)];
 
     // Add each layer to the tree
     layers.forEach((layer) => {

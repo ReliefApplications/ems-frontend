@@ -25,9 +25,9 @@ type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 type ChildLayer = { object: Layer; layer?: L.Layer };
 
 /**
- * Data structure from where to create layer
+ * Layer model with geojson features
  */
-export interface MergedLayerInfo extends LayerModel {
+export interface ExtendedLayerModel extends LayerModel {
   geojson: {
     features: any[];
     type: string;

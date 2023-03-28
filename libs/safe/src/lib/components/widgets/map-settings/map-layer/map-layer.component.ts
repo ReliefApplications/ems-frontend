@@ -22,6 +22,7 @@ import {
 import { LayerFormData } from '../../../ui/map/interfaces/layer-settings.type';
 import { OverlayLayerTree } from '../../../ui/map/interfaces/map-layers.interface';
 import * as L from 'leaflet';
+import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 /**
  *
  */
@@ -59,6 +60,7 @@ export class MapLayerComponent
   public form!: LayerFormT;
   public currentZoom!: number;
   private currentLayer!: L.Layer;
+
   /**
    * Class constructor
    *
@@ -67,7 +69,8 @@ export class MapLayerComponent
    */
   constructor(
     private confirmService: SafeConfirmService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private mapLayersService: SafeMapLayersService
   ) {
     super();
   }
@@ -85,29 +88,25 @@ export class MapLayerComponent
    * Set default layer for editor
    */
   private setUpLayer() {
-    this.currentLayer = L.geoJSON({
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        coordinates: [40.11348234228487, 23.758349944054757],
-        type: 'Point',
-      },
-    } as any);
-
-    const overlays: OverlayLayerTree = {
-      label: this.form.get('name')?.value || '',
-      layer: this.currentLayer,
-    };
-    if (this.mapComponent) {
-      this.mapComponent.addOrDeleteLayer = {
-        layerData: overlays,
-        isDelete: false,
-      };
-      //After the new layer for editing is set, update the options with the form value
-      setTimeout(() => {
-        this.updateLayerOptions();
-      }, 0);
-    }
+    this.mapLayersService
+      .createLayerFromDefinition(this.form.value as LayerModel)
+      .then((layer) => {
+        this.currentLayer = layer.getLayer();
+        const overlays: OverlayLayerTree = {
+          label: this.form.get('name')?.value || '',
+          layer: this.currentLayer,
+        };
+        if (this.mapComponent) {
+          this.mapComponent.addOrDeleteLayer = {
+            layerData: overlays,
+            isDelete: false,
+          };
+          //After the new layer for editing is set, update the options with the form value
+          setTimeout(() => {
+            this.updateLayerOptions();
+          }, 0);
+        }
+      });
   }
 
   /**
