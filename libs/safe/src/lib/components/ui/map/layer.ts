@@ -3,24 +3,25 @@ import * as L from 'leaflet';
 import 'leaflet.heat';
 import 'leaflet.markercluster';
 
-import { Feature, FeatureCollection, Geometry } from 'geojson';
+import { Feature, Geometry } from 'geojson';
 import { get, set } from 'lodash';
 import {
   LayerType,
   LayerFilter,
-  LayerLabel,
   GeoJSON,
   LayerStyle,
 } from './interfaces/layer-settings.type';
-import { IconName } from '../../icon-picker/icon-picker.const';
 import {
   createCustomDivIcon,
   DEFAULT_MARKER_ICON_OPTIONS,
 } from './utils/create-div-icon';
 import { LegendDefinition } from './interfaces/layer-legend.type';
-import { LayerDefinition, LayerModel } from '../../../models/layer.model';
+import {
+  LayerDefinition,
+  LayerModel,
+  LayerSymbol,
+} from '../../../models/layer.model';
 import { geoJSONLayer } from './leaflet.layer';
-import { Gradient } from '../../gradient-picker/gradient-picker.component';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -174,7 +175,7 @@ export class Layer implements LayerModel {
 
   // Visibility
   public visibility!: boolean;
-  public opacity!: boolean;
+  public opacity!: number;
 
   // Layer Definition
   public layerDefinition?: LayerDefinition;
@@ -306,6 +307,7 @@ export class Layer implements LayerModel {
     this.id = get(options, 'id', '');
     this.name = get(options, 'name', '');
     this.type = get<LayerType>(options, 'type', 'feature');
+    this.opacity = get(options, 'opacity', 1);
 
     if (options.type !== 'group') {
       // Not group layer, add other properties
@@ -401,55 +403,44 @@ export class Layer implements LayerModel {
     // data is the filtered geojson
     const data = this.data;
 
+    const symbol: LayerSymbol = {
+      style: get(
+        this.layerDefinition,
+        'drawingInfo.renderer.symbol.style',
+        'location-dot'
+      ),
+      color: get(
+        this.layerDefinition,
+        'drawingInfo.renderer.symbol.color',
+        'blue'
+      ),
+      size: get(this.layerDefinition, 'drawingInfo.renderer.symbol.symbol', 24),
+    };
+
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<any> = {
       pointToLayer: (feature, latlng) => {
-        // const style = this.getFeatureStyle(feature);
-
-        // circles are not supported by geojson
-        // we abstract them as markers with a radius property
-        if (feature.properties.radius) {
-          const circle = L.circle(latlng, feature.properties.radius);
-
-          // Setting circle relevant style
-          // circle.setStyle({
-          //   color: style.borderColor,
-          //   fillColor: style.symbol.color,
-          //   fillOpacity: style.fillOpacity,
-          //   opacity: style.borderOpacity,
-          //   weight: style.borderWidth,
-          // });
-
-          return circle;
-        }
-
-        const circle = L.circle(latlng, feature.properties.radius);
-
-        return circle;
-
-        // If not a circle, create a marker
-        // return new L.Marker(latlng)
-        //   .setIcon
-        // createCustomDivIcon({
-        //   icon: style.symbol.icon,
-        //   color: style.symbol.color,
-        //   size: style.symbol.size,
-        //   opacity: style.fillOpacity,
-        // })
-        // ();
+        return new L.Marker(latlng).setIcon(
+          createCustomDivIcon({
+            icon: symbol.style,
+            color: symbol.color,
+            size: symbol.size,
+            opacity: this.opacity,
+          })
+        );
       },
-      style: (feature: Feature<Geometry> | undefined) => {
-        if (!feature) return {};
-        // const style = this.getFeatureStyle(feature);
+      // style: (feature: Feature<Geometry> | undefined) => {
+      //   if (!feature) return {};
+      //   // const style = this.getFeatureStyle(feature);
 
-        return {
-          // fillColor: style.symbol.color,
-          // fillOpacity: style.fillOpacity,
-          // color: style.borderColor,
-          // opacity: style.borderOpacity,
-          // weight: style.borderWidth,
-        };
-      },
+      //   return {
+      //     // fillColor: style.symbol.color,
+      //     // fillOpacity: style.fillOpacity,
+      //     // color: style.borderColor,
+      //     // opacity: style.borderOpacity,
+      //     // weight: style.borderWidth,
+      //   };
+      // },
     };
 
     switch (this.type) {
@@ -516,6 +507,30 @@ export class Layer implements LayerModel {
                 console.log('cluster !!');
                 const clusterGroup = L.markerClusterGroup({
                   zoomToBoundsOnClick: false,
+                  iconCreateFunction: (cluster) => {
+                    const symbol: LayerSymbol = {
+                      style: 'location-dot',
+                      color: 'blue',
+                      size: 24,
+                    };
+                    const htmlTemplate = document.createElement('label');
+                    htmlTemplate.textContent = cluster
+                      .getChildCount()
+                      .toString();
+                    return createCustomDivIcon(
+                      {
+                        icon: symbol.style,
+                        color: symbol.color,
+                        size:
+                          (cluster.getChildCount() / 50) *
+                            (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
+                          MIN_CLUSTER_SIZE,
+                        opacity: this.opacity,
+                      },
+                      htmlTemplate,
+                      'leaflet-data-marker'
+                    );
+                  },
                 });
                 const clusterLayer = geoJSONLayer(data, geoJSONopts);
                 clusterGroup.addLayer(clusterLayer);

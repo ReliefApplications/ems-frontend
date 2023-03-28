@@ -19,6 +19,12 @@ export enum BackendLayerTypes {
   FEATURE_LAYER = 'FeatureLayer',
 }
 
+export type LayerSymbol = {
+  color: string;
+  size: number;
+  style: IconName;
+};
+
 export interface LayerDefinition {
   minZoom?: number;
   maxZoom?: number;
@@ -29,11 +35,7 @@ export interface LayerDefinition {
   drawingInfo?: {
     renderer?: {
       type?: string;
-      symbol?: {
-        color?: string;
-        size?: number;
-        icon?: IconName | 'location-dot';
-      };
+      symbol?: LayerSymbol;
       blur?: number;
       radius?: number;
       gradient?: Gradient;
@@ -49,7 +51,7 @@ export interface LayerModel {
   name: string;
   sublayers?: LayerModel[];
   visibility: boolean;
-  opacity: boolean;
+  opacity: number;
   layerDefinition?: LayerDefinition;
   popupInfo?: {
     popupElements: string;
