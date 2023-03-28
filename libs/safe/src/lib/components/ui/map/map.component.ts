@@ -106,8 +106,7 @@ export class MapComponent
       Layer.applyOptionsToLayer(
         this.map,
         layerWithOptions.layer,
-        layerWithOptions.options,
-        layerWithOptions.icon
+        layerWithOptions.options
       );
       this.map.removeControl(this.layerControl);
       // Layer edition takes one layer per edition, therefor we set the updated name as this to the control
@@ -674,8 +673,8 @@ export class MapComponent
    */
   private drawLayers(layers: any) {
     const drawLayer = (layer: any): any => {
-      if (layer.children) {
-        for (const child of layer.children) {
+      if (layer.sublayers) {
+        for (const child of layer.sublayers) {
           drawLayer(child);
         }
       } else {

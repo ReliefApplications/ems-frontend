@@ -1,3 +1,4 @@
+import { Gradient } from '../components/gradient-picker/gradient-picker.component';
 import { IconName } from '../components/icon-picker/icon-picker.const';
 /** List of available layer types in layer editor */
 export enum LayerTypes {
@@ -18,6 +19,28 @@ export enum BackendLayerTypes {
   FEATURE_LAYER = 'FeatureLayer',
 }
 
+export interface LayerDefinition {
+  minZoom?: number;
+  maxZoom?: number;
+  featureReduction?: {
+    type?: string;
+  };
+  // Symbol
+  drawingInfo?: {
+    renderer?: {
+      type?: string;
+      symbol?: {
+        color?: string;
+        size?: number;
+        icon?: IconName | 'location-dot';
+      };
+      blur?: number;
+      radius?: number;
+      gradient?: Gradient;
+    };
+  };
+}
+
 /**
  * Backend layer model
  */
@@ -27,22 +50,7 @@ export interface LayerModel {
   sublayers?: LayerModel[];
   visibility: boolean;
   opacity: boolean;
-  layerDefinition?: {
-    minZoom?: number;
-    maxZoom?: number;
-    featureReduction?: any;
-    // Symbol
-    drawingInfo?: {
-      renderer?: {
-        type?: string;
-        symbol?: {
-          color?: string;
-          size?: number;
-          icon?: IconName | 'location-dot';
-        };
-      };
-    };
-  };
+  layerDefinition?: LayerDefinition;
   popupInfo?: {
     popupElements: string;
     description: string;

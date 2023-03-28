@@ -23,6 +23,7 @@ import { LayerFormData } from '../../../ui/map/interfaces/layer-settings.type';
 import { OverlayLayerTree } from '../../../ui/map/interfaces/map-layers.interface';
 import * as L from 'leaflet';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
+import { Layer } from '../../../ui/map/layer';
 
 /**
  * Map layer editor.
@@ -37,6 +38,7 @@ export class MapLayerComponent
   implements OnInit, OnDestroy
 {
   @Input() layer?: LayerModel;
+  private _layer!: Layer;
   @Input() mapComponent!: MapComponent | undefined;
   @Output() layerToSave = new EventEmitter<LayerFormData>();
 
@@ -93,6 +95,7 @@ export class MapLayerComponent
     this.mapLayersService
       .createLayerFromDefinition(this.form.value as LayerModel)
       .then((layer) => {
+        this._layer = layer;
         this.currentLayer = layer.getLayer();
         const overlays: OverlayLayerTree = {
           label: this.form.get('name')?.value || '',
@@ -104,27 +107,11 @@ export class MapLayerComponent
             isDelete: false,
           };
           //After the new layer for editing is set, update the options with the form value
-          setTimeout(() => {
-            this.updateLayerOptions();
-          }, 0);
+          // setTimeout(() => {
+          //   this.updateLayerOptions();
+          // }, 0);
         }
       });
-  }
-
-  /**
-   * Update current layer options in the map
-   */
-  private updateLayerOptions() {
-    if (this.mapComponent) {
-      const { name, visibility, opacity, layerDefinition } = this.form.value;
-      this.mapComponent.updateLayerOptions = {
-        layer: this.currentLayer,
-        options: { name, visibility, opacity, ...layerDefinition },
-        ...(layerDefinition.drawingInfo.renderer.type === 'simple' && {
-          icon: layerDefinition.drawingInfo.renderer.symbol,
-        }),
-      };
-    }
   }
 
   /**
@@ -134,8 +121,13 @@ export class MapLayerComponent
     // Those listeners would handle any change for layer into the map component reference
     this.form.valueChanges
       .pipe(takeUntil(this.destroy$), debounceTime(1000))
-      .subscribe(() => {
-        this.updateLayerOptions();
+      .subscribe((value) => {
+        if (this.mapComponent) {
+          this.mapComponent.map.removeLayer(this.currentLayer);
+          this._layer.setConfig({ ...value, geojson: this._layer.geojson });
+          this.currentLayer = this._layer.getLayer(true);
+          this.mapComponent.map.addLayer(this.currentLayer);
+        }
       });
 
     this.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({

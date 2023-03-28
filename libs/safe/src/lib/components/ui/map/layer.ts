@@ -4,7 +4,7 @@ import 'leaflet.heat';
 import 'leaflet.markercluster';
 
 import { Feature, FeatureCollection, Geometry } from 'geojson';
-import { get } from 'lodash';
+import { get, set } from 'lodash';
 import {
   LayerType,
   LayerFilter,
@@ -18,8 +18,9 @@ import {
   DEFAULT_MARKER_ICON_OPTIONS,
 } from './utils/create-div-icon';
 import { LegendDefinition } from './interfaces/layer-legend.type';
-import { LayerModel } from '../../../models/layer.model';
+import { LayerDefinition, LayerModel } from '../../../models/layer.model';
 import { geoJSONLayer } from './leaflet.layer';
+import { Gradient } from '../../gradient-picker/gradient-picker.component';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -82,6 +83,24 @@ export const DEFAULT_LAYER_STYLE = {
     size: 24,
   },
 } as Required<LayerStyle>;
+
+/** Default gradient for heatmap */
+const DEFAULT_GRADIENT = [
+  {
+    color: 'blue',
+    ratio: 0,
+  },
+  {
+    color: 'red',
+    ratio: 1,
+  },
+];
+
+export const DEFAULT_HEATMAP = {
+  gradient: DEFAULT_GRADIENT,
+  blur: 15,
+  radius: 25,
+};
 
 /** Minimum cluster size in pixel */
 const MIN_CLUSTER_SIZE = 20;
@@ -158,29 +177,7 @@ export class Layer implements LayerModel {
   public opacity!: boolean;
 
   // Layer Definition
-  public layerDefinition?:
-    | {
-        minZoom?: number | undefined;
-        maxZoom?: number | undefined;
-        featureReduction?: any;
-        drawingInfo?:
-          | {
-              renderer?:
-                | {
-                    type?: string | undefined;
-                    symbol?:
-                      | {
-                          color?: string | undefined;
-                          size?: number | undefined;
-                          icon?: string | undefined;
-                        }
-                      | undefined;
-                  }
-                | undefined;
-            }
-          | undefined;
-      }
-    | undefined;
+  public layerDefinition?: LayerDefinition;
 
   // Popup info
   public popupInfo?: { popupElements: string; description: string } | undefined;
@@ -192,7 +189,7 @@ export class Layer implements LayerModel {
 
   // Properties for the layer, if layer type is not 'group'
   private datasource: any | null = null; // TODO: define datasource
-  private geojson: GeoJSON | null = null;
+  public geojson: GeoJSON | null = null;
   // private properties: any | null = null;
   private filter: LayerFilter | null = null;
   // private styling: any | null = null;
@@ -305,7 +302,7 @@ export class Layer implements LayerModel {
    *
    * @param options Layer options
    */
-  private setConfig(options: any) {
+  public setConfig(options: any) {
     this.id = get(options, 'id', '');
     this.name = get(options, 'name', '');
     this.type = get<LayerType>(options, 'type', 'feature');
@@ -318,6 +315,7 @@ export class Layer implements LayerModel {
       this.filter = get(options, 'filter', DEFAULT_LAYER_FILTER);
       // this.styling = options.styling || [];
       // this.label = options.labels || null;
+      this.layerDefinition = get(options, 'layerDefinition');
       this.popupInfo = get(options, 'popupInfo');
       this.setFields();
     } else if (options.sublayers) {
@@ -396,9 +394,9 @@ export class Layer implements LayerModel {
   // }
 
   /** @returns the leaflet layer from layer definition */
-  public getLayer(): L.Layer {
+  public getLayer(redraw?: boolean): L.Layer {
     // If layer has already been created, return it
-    if (this.layer) return this.layer;
+    if (this.layer && !redraw) return this.layer;
 
     // data is the filtered geojson
     const data = this.data;
@@ -463,71 +461,106 @@ export class Layer implements LayerModel {
         this.layer = new L.LayerGroup(layers);
         return this.layer;
 
-      case 'sketch':
-      case 'feature':
-        this.layer = geoJSONLayer(data, geoJSONopts);
-        return this.layer;
+      default:
+        switch (
+          get(this.layerDefinition, 'drawingInfo.renderer.type', 'simple')
+        ) {
+          case 'heatmap':
+            // check data type
+            if (data.type !== 'FeatureCollection')
+              throw new Error(
+                'Impossible to create a heatmap from this data, geojson type is not FeatureCollection'
+              );
+            const heatArray: any[] = [];
 
-      case 'cluster':
-        // gets the first style of the styling array
-        // would be nice to have it check that if every point
-        // in the cluster satisfies the same filter, then it
-        // uses that style for the entire cluster,
-        // but I can't find a way to add properties to the clusters' points
-        // console.log('ici !');
-        // const clusterGroup = L.markerClusterGroup({
-        //   zoomToBoundsOnClick: false,
-        //   iconCreateFunction: (cluster) => {
-        //     const iconProperties = {
-        //       icon: this.firstStyle.icon as IconName | 'location-dot',
-        //       color: this.firstStyle.fillColor,
-        //       size:
-        //         (cluster.getChildCount() / 50) *
-        //           (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
-        //         MIN_CLUSTER_SIZE,
-        //       opacity: this.firstStyle.fillOpacity,
-        //     };
-        //     // Use label as it's an inline element therefor does not take all available space
-        //     const htmlTemplate = document.createElement('label'); // todo(gis): better labels
-        //     htmlTemplate.textContent = cluster.getChildCount().toString();
-        //     return createCustomDivIcon(
-        //       iconProperties,
-        //       htmlTemplate,
-        //       'leaflet-data-marker'
-        //     );
-        //   },
-        // });
-        // const clusterLayer = geoJSONLayer(data, geoJSONopts);
-        // console.log(clusterLayer.legend);
-        // clusterGroup.addLayer(clusterLayer);
-        // this.layer = clusterGroup;
-        // return this.layer;
-        return new L.Layer();
+            data.features.forEach((feature: any) => {
+              // @TODO incorrect, it should be a feature, not a point
+              if (get(feature, 'type') === 'Point') {
+                heatArray.push([
+                  feature.coordinates[1], // lat
+                  feature.coordinates[0], // long
+                ]);
+              }
+            });
 
-      case 'heatmap':
-        // check data type
-        // if (data.type !== 'FeatureCollection')
-        //   throw new Error(
-        //     'Impossible to create a heatmap from this data, geojson type is not FeatureCollection'
-        //   );
-        // const heatArray: any[] = [];
-        // const collection: FeatureCollection<Geometry> = data;
+            const gradient = get(
+              this.layerDefinition,
+              'drawingInfo.renderer.gradient',
+              DEFAULT_HEATMAP.gradient
+            );
 
-        // collection.features.forEach((feature) => {
-        //   if (feature.geometry.type === 'Point') {
-        //     heatArray.push([
-        //       feature.geometry.coordinates[1], // lat
-        //       feature.geometry.coordinates[0], // long
-        //     ]);
-        //   }
-        // });
+            const heatmapOptions: L.HeatMapOptions = {
+              blur: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.blur',
+                DEFAULT_HEATMAP.blur
+              ),
+              radius: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.radius',
+                DEFAULT_HEATMAP.radius
+              ),
+              gradient: Object.keys(gradient).reduce((g, key) => {
+                const stop = get(gradient, key);
+                set(g, stop.ratio, stop.color);
+                return g;
+              }, {}),
+            };
 
-        // this.layer = L.heatLayer(heatArray, this.firstStyle.heatmap);
-        // return this.layer;
-        return new L.Layer();
+            this.layer = L.heatLayer(heatArray, heatmapOptions);
+            return this.layer;
+          default:
+            console.log(this.layerDefinition?.featureReduction?.type);
+            switch (get(this.layerDefinition, 'featureReduction.type')) {
+              case 'cluster':
+                console.log('cluster !!');
+                const clusterGroup = L.markerClusterGroup({
+                  zoomToBoundsOnClick: false,
+                });
+                const clusterLayer = geoJSONLayer(data, geoJSONopts);
+                clusterGroup.addLayer(clusterLayer);
+                this.layer = clusterGroup;
+                return this.layer;
+              default:
+                this.layer = geoJSONLayer(data, geoJSONopts);
+                return this.layer;
+            }
+        }
+
+      // gets the first style of the styling array
+      // would be nice to have it check that if every point
+      // in the cluster satisfies the same filter, then it
+      // uses that style for the entire cluster,
+      // but I can't find a way to add properties to the clusters' points
+      // console.log('ici !');
+      // const clusterGroup = L.markerClusterGroup({
+      //   zoomToBoundsOnClick: false,
+      //   iconCreateFunction: (cluster) => {
+      //     const iconProperties = {
+      //       icon: this.firstStyle.icon as IconName | 'location-dot',
+      //       color: this.firstStyle.fillColor,
+      //       size:
+      //         (cluster.getChildCount() / 50) *
+      //           (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
+      //         MIN_CLUSTER_SIZE,
+      //       opacity: this.firstStyle.fillOpacity,
+      //     };
+      //     // Use label as it's an inline element therefor does not take all available space
+      //     const htmlTemplate = document.createElement('label'); // todo(gis): better labels
+      //     htmlTemplate.textContent = cluster.getChildCount().toString();
+      //     return createCustomDivIcon(
+      //       iconProperties,
+      //       htmlTemplate,
+      //       'leaflet-data-marker'
+      //     );
+      //   },
+      // });
+      // const clusterLayer = geoJSONLayer(data, geoJSONopts);
+      // console.log(clusterLayer.legend);
+      // clusterGroup.addLayer(clusterLayer);
+      // this.layer = clusterGroup;
+      // return this.layer;
     }
-
-    // Check for icon property
   }
 
   /**
