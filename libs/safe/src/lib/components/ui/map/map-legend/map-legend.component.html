@@ -22,8 +22,8 @@
     <div class="max-h-80 overflow-y-auto p-2 flex flex-col gap-2">
       <div *ngFor="let layerLegend of layerLegends" class="mb-2">
         <h3 class="font-black mb-1">{{ layerLegend.layer }}</h3>
-        <!-- Features -->
-        <div
+        <div [innerHtml]="layerLegend.legend"></div>
+        <!-- <div
           *ngIf="layerLegend.legend.type === 'feature'"
           class="flex flex-col gap-1"
         >
@@ -31,14 +31,11 @@
             *ngFor="let item of layerLegend.legend.items"
             class="flex gap-3 items-center"
           >
-            <!-- Point -->
             <i
               *ngIf="item.icon && item.icon !== 'leaflet_default'"
               [style.color]="item.color"
               class="{{ item.icon | safeIconDisplay : 'fa' }}"
             ></i>
-
-            <!-- Polygon (or point with no icon provided) -->
             <div
               *ngIf="!item.icon || item.icon === 'leaflet_default'"
               class="w-6 h-6 rounded-sm"
@@ -47,13 +44,11 @@
             <span>{{ item.label }}</span>
           </div>
         </div>
-        <!-- Clusters -->
         <div
           *ngIf="layerLegend.legend.type === 'cluster'"
           class="flex flex-col gap-1"
         >
           <div class="grid grid-cols-2 w-fit gap-2 items-center">
-            <!-- todo(gis): sizes should not come from that, but should be calculated from the layer directly -->
             <ng-container *ngFor="let size of [30, 60, 80]; let i = index">
               <div class="w-full h-full flex items-center justify-center">
                 <i
@@ -73,7 +68,6 @@
             </ng-container>
           </div>
         </div>
-        <!-- Heatmap -->
         <div *ngIf="layerLegend.legend.type === 'heatmap'" class="flex gap-1">
           <div
             class="h-40 w-8"
@@ -89,7 +83,7 @@
               ◄ {{ 'components.widget.settings.map.legend.low' | translate }}
             </p>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

@@ -41,6 +41,18 @@ const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
   arcGisWebMap: null,
 };
 
+/** Default gradient for heatmap */
+const DEFAULT_GRADIENT = [
+  {
+    color: 'blue',
+    ratio: 0,
+  },
+  {
+    color: 'red',
+    ratio: 1,
+  },
+];
+
 /**
  * Create layer form from value
  *
@@ -88,13 +100,26 @@ const createLayerDefinitionForm = (value?: any): FormGroup => {
   if (rendererType === 'heatmap') {
     formGroup.get('featureReduction')?.disable();
   }
-  formGroup.get('drawingInfo.renderer.type')?.valueChanges.subscribe((type) => {
-    if (type === 'heatmap') {
-      formGroup.get('featureReduction')?.disable();
-    } else {
-      formGroup.get('featureReduction')?.enable();
-    }
-  });
+  const setTypeListeners = () => {
+    formGroup
+      .get('drawingInfo.renderer.type')
+      ?.valueChanges.subscribe((type) => {
+        if (type === 'heatmap') {
+          formGroup.get('featureReduction')?.disable();
+        } else {
+          formGroup.get('featureReduction')?.enable();
+        }
+        formGroup.setControl(
+          'drawingInfo',
+          createLayerDrawingInfoForm({
+            ...formGroup.get('drawingInfo'),
+            type,
+          })
+        );
+        setTypeListeners();
+      });
+  };
+  setTypeListeners();
   return formGroup;
 };
 
@@ -115,20 +140,33 @@ export const createLayerFeatureReductionForm = (value: any): FormGroup =>
  * @param value layer drawing info
  * @returns layer drawing info form
  */
-export const createLayerDrawingInfoForm = (value: any): FormGroup =>
-  fb.group({
+export const createLayerDrawingInfoForm = (value: any): FormGroup => {
+  const type = get(value, 'type', 'simple');
+  const formGroup = fb.group({
     renderer: fb.group({
-      type: [get(value, 'type', 'simple'), Validators.required],
-      symbol: fb.group({
-        color: [get(value, 'symbol.color', ''), Validators.required],
-        type: 'fa',
-        size: [get(value, 'symbol.size', 24)],
-        style: new FormControl<IconName>(
-          get(value, 'symbol.style', 'location-dot')
-        ),
+      type: [type, Validators.required],
+      ...(type === 'simple' && {
+        symbol: fb.group({
+          color: [get(value, 'symbol.color', ''), Validators.required],
+          type: 'fa',
+          size: [get(value, 'symbol.size', 24)],
+          style: new FormControl<IconName>(
+            get(value, 'symbol.style', 'location-dot')
+          ),
+        }),
+      }),
+      ...(type === 'heatmap' && {
+        gradient: [
+          get(value, 'gradient', DEFAULT_GRADIENT),
+          Validators.required,
+        ],
+        blur: [get<number>(value, 'blur', 15), Validators.required],
+        radius: [get<number>(value, 'radius', 25), Validators.required],
       }),
     }),
   });
+  return formGroup;
+};
 
 /**
  * Create popup info form group

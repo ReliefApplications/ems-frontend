@@ -36,6 +36,7 @@ import {
   GET_LAYERS,
 } from '../../../services/map/graphql/queries';
 import { Apollo } from 'apollo-angular';
+import { geoJSONLayer } from './leaflet.layer';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 type ChildLayer = { object: Layer; layer?: L.Layer };
@@ -587,7 +588,7 @@ export class Layer {
 
       case 'sketch':
       case 'feature':
-        this.layer = L.geoJSON(data, geoJSONopts);
+        this.layer = geoJSONLayer(data, geoJSONopts);
         return this.layer;
 
       case 'cluster':
@@ -596,6 +597,7 @@ export class Layer {
         // in the cluster satisfies the same filter, then it
         // uses that style for the entire cluster,
         // but I can't find a way to add properties to the clusters' points
+        console.log('ici !');
         const clusterGroup = L.markerClusterGroup({
           zoomToBoundsOnClick: false,
           iconCreateFunction: (cluster) => {
@@ -618,7 +620,8 @@ export class Layer {
             );
           },
         });
-        const clusterLayer = L.geoJSON(data, geoJSONopts);
+        const clusterLayer = geoJSONLayer(data, geoJSONopts);
+        console.log(clusterLayer.legend);
         clusterGroup.addLayer(clusterLayer);
         this.layer = clusterGroup;
         return this.layer;

@@ -40,6 +40,7 @@ const createFontAwesomeIcon = (properties: MarkerIconOptions) => {
 
   return span;
 };
+
 /**
  * Creates a new custom leaflet marker
  *
