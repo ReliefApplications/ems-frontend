@@ -15,7 +15,7 @@ import {
   MapEvent,
   MapEventType,
 } from '../../ui/map/interfaces/map.interface';
-import { takeUntil } from 'rxjs';
+import { map, switchMap, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { LayerModel } from '../../../models/layer.model';
 import { MapLayerComponent } from './map-layer/map-layer.component';
@@ -296,18 +296,31 @@ export class SafeMapSettingsComponent
           error: (err) => console.log(err),
         });
       } else {
-        this.mapLayersService.addLayer(layerData).subscribe({
-          next: (result) => {
-            if (result) {
-              this.updateLayersForm(result.id);
-              // If a new layer is created, update the current loaded layer list
-              this.fetchLayers();
-            }
-            // Redirect to main layers list
-            this.openTab('layers');
-          },
-          error: (err) => console.log(err),
-        });
+        this.mapLayersService
+          .addLayer(layerData)
+          .pipe(
+            switchMap((result) =>
+              // Update our current layer list after the new one is added
+              // And return the new one to the subscription
+              this.mapLayersService
+                .getLayers()
+                .pipe(
+                  map((layers) =>
+                    layers.find((layer) => layer.id === result?.id)
+                  )
+                )
+            )
+          )
+          .subscribe({
+            next: (result) => {
+              if (result) {
+                this.updateLayersForm(result.id);
+              }
+              // Redirect to main layers list
+              this.openTab('layers');
+            },
+            error: (err) => console.log(err),
+          });
       }
     } else {
       // Redirect to main layers list
@@ -331,11 +344,5 @@ export class SafeMapSettingsComponent
     this.tileForm?.get('layers')?.setValue(layers);
     this.tileForm?.markAsTouched();
     this.tileForm?.markAsDirty();
-  }
-  /**
-   * Fetch stored layers in the DB
-   */
-  private fetchLayers(): void {
-    this.mapLayersService.getLayers().subscribe();
   }
 }
