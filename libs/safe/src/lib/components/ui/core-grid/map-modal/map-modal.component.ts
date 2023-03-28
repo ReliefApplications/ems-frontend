@@ -37,7 +37,6 @@ export class MapModalComponent implements OnInit {
     const markers: L.LatLngExpression[] = this.data.markers.map((location) =>
       L.latLng(location)
     );
-    console.log(markers);
     const map = L.map('map').setView(
       this.data.defaultPosition,
       this.data.defaultZoom
