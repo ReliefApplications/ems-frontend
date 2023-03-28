@@ -1118,6 +1118,7 @@
 				},
 				"openSettings": "******",
 				"tooltip": {
+					"displayMap": "******",
 					"saved": "******",
 					"unsaved": "******",
 					"uploadFailed": "******"
