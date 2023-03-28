@@ -1,4 +1,4 @@
-import { FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { createMappingForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 
@@ -189,7 +189,7 @@ export const createChartForm = (value: any) => {
     }),
     series: fb.array(
       get<any[]>(value, 'series', []).map((serie: any) =>
-        createSerieForm(get(value, 'type', null), serie, [])
+        createSerieForm(get(value, 'type', null), serie)
       )
     ),
   });
@@ -201,7 +201,7 @@ export const createChartForm = (value: any) => {
     // Update series controls when chart type change
     const seriesFormArray = fb.array(
       formGroup.value.series?.map((serie: any) =>
-        createSerieForm(value, serie, [])
+        createSerieForm(value, serie)
       ) || []
     );
     formGroup.setControl('series', seriesFormArray);
@@ -348,43 +348,48 @@ export const createChartWidgetForm = (id: any, value: any) =>
   });
 
 /**
+ * Create chart serie category form group
+ *
+ * @param value chart serie category
+ * @returns chart serie category form group
+ */
+export const createCategoryForm = (value: any) => {
+  return fb.group({
+    category: get<string | undefined>(value, 'category', undefined),
+    color: get<string | undefined>(value, 'color', undefined),
+  });
+};
+
+/**
  * Create chart serie form group
  *
  * @param type type of chart
  * @param value chart serie
  * @returns chart serie form group
  */
-
-export const createCategoryForm = (value:any) => {
+export const createSerieForm = (type: string | null, value: any) => {
   return fb.group({
-    category: get<string | undefined>(value, 'category', undefined),
-    color: get<string | undefined>(value, 'color', undefined)
-  })
-}
-
-export const createSerieForm = (type: string | null, value: any, categories:any) => {
-  if(type && ['pie', 'polar', 'donut','radar'].includes(type)){
-    const CategoriesArray: FormArray<any> = fb.array([]);
-    categories.map((category:any) => {
-      CategoriesArray.push(createCategoryForm(category));
-    })
-    return CategoriesArray; 
-  }else{
-    return fb.group({
-      serie: get<string | undefined>(value, 'serie', undefined),
-      ...(type &&
-        ['bar', 'column', 'line'].includes(type) && {
-          color: get<string | undefined>(value, 'color', undefined),
-          fill: get<string | undefined>(value, 'fill', undefined),
-          ...(['line'].includes(type) && {
-            interpolation: get<string | undefined>(
-              value,
-              'interpolation',
-              undefined
-            ),
-            stepped: get<string | undefined>(value, 'stepped', undefined),
-          }),
+    serie: get<string | undefined>(value, 'serie', undefined),
+    ...(type &&
+      ['bar', 'column', 'line'].includes(type) && {
+        color: get<string | undefined>(value, 'color', undefined),
+        fill: get<string | undefined>(value, 'fill', undefined),
+        ...(['line'].includes(type) && {
+          interpolation: get<string | undefined>(
+            value,
+            'interpolation',
+            undefined
+          ),
+          stepped: get<string | undefined>(value, 'stepped', undefined),
         }),
-    });
-  }
-}
+      }),
+    ...(type &&
+      ['pie', 'polar', 'donut', 'radar'].includes(type) && {
+        categories: fb.array(
+          get(value, 'categories', []).map((category: any) =>
+            createCategoryForm(category)
+          )
+        ),
+      }),
+  });
+};

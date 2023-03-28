@@ -16,7 +16,7 @@ import {
 import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
 import { SafeChartComponent } from '../../chart/chart.component';
 import get from 'lodash/get';
-import { createSerieForm} from '../chart-forms';
+import { createSerieForm } from '../chart-forms';
 
 /**
  * Display tab of the chart settings modal.
@@ -80,31 +80,51 @@ export class TabDisplayComponent
         const seriesFormArray: FormArray<any> = this.fb.array([]);
         const seriesSettings = this.chartForm.get('series')?.value || [];
 
-        const categories: any = []
-        
         for (const serie of series) {
+          const useCategory = ['pie', 'polar', 'donut', 'radar'].includes(
+            this.chartForm.value.type
+          );
           const serieSettings = seriesSettings.find(
             (x: any) => x.serie === get(serie, 'name')
           );
           if (serieSettings) {
-            if(['pie', 'polar', 'donut','radar'].includes(this.chartForm.value.type)){
-              serie['data'].forEach((element:any) => {
-                categories.push(element);
-              })
+            const categories: any = [];
+            if (useCategory) {
+              // Get existing settings
+              const categoriesSettings = get(serieSettings, 'categories', []);
+              serie['data'].forEach((element: any) => {
+                // Try to find existing category settings
+                const categorySettings = categoriesSettings.find(
+                  (x: any) => x.category === element.category
+                );
+                // Use existing settings
+                if (categorySettings) {
+                  categories.push(categorySettings);
+                } else {
+                  // Else, push new category
+                  categories.push({ category: element.category });
+                }
+              });
             }
             seriesFormArray.push(
-              createSerieForm(this.chartForm.value.type, serieSettings, categories)
+              createSerieForm(this.chartForm.value.type, {
+                ...serieSettings,
+                categories,
+              })
             );
           } else {
-            if(['pie', 'polar', 'donut','radar'].includes(this.chartForm.value.type)){
-              serie['data'].forEach((element:any) => {
-                categories.push(element);
-              })
+            const categories: any = [];
+            if (useCategory) {
+              // Add one item per category
+              serie['data'].forEach((element: any) => {
+                categories.push({ category: element.category });
+              });
             }
             seriesFormArray.push(
               createSerieForm(this.chartForm.value.type, {
                 serie: get(serie, 'name'),
-              }, categories)
+                categories,
+              })
             );
           }
         }
@@ -114,7 +134,7 @@ export class TabDisplayComponent
         });
       });
 
-    console.log(this.formGroup.get('chart.series')); 
+    console.log(this.formGroup.get('chart.series'));
   }
 
   /**

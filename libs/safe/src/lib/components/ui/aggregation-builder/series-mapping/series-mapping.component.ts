@@ -43,6 +43,9 @@ export class SafeSeriesMappingComponent
     this.setControlListeners();
   }
 
+  /**
+   *
+   */
   private setControlListeners(): void {
     this.controlNames = Object.keys(
       (this.formGroup as UntypedFormGroup).controls
