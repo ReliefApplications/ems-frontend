@@ -6,41 +6,33 @@ import 'leaflet.markercluster';
 import { Feature, FeatureCollection, Geometry } from 'geojson';
 import { get } from 'lodash';
 import {
-  LayerSettingsI,
   LayerType,
-  LayerProperties,
   LayerFilter,
-  LayerStyling,
   LayerLabel,
-  LayerPopup,
   GeoJSON,
-  FeatureProperties,
   LayerStyle,
 } from './interfaces/layer-settings.type';
 import { IconName } from '../../icon-picker/icon-picker.const';
-import { createCustomDivIcon } from './utils/create-div-icon';
+import {
+  createCustomDivIcon,
+  DEFAULT_MARKER_ICON_OPTIONS,
+} from './utils/create-div-icon';
 import { LegendDefinition } from './interfaces/layer-legend.type';
-import { SafeRestService } from '../../../services/rest/rest.service';
-import {
-  forkJoin,
-  from,
-  lastValueFrom,
-  map,
-  mergeMap,
-  of,
-  switchMap,
-  toArray,
-} from 'rxjs';
-import {
-  GetLayersQueryResponse,
-  GET_LAYERS,
-} from '../../../services/map/graphql/queries';
-import { Apollo } from 'apollo-angular';
+import { LayerModel } from '../../../models/layer.model';
 import { geoJSONLayer } from './leaflet.layer';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 type ChildLayer = { object: Layer; layer?: L.Layer };
 
+/**
+ * Layer model with geojson features
+ */
+export interface ExtendedLayerModel extends LayerModel {
+  geojson: {
+    features: any[];
+    type: string;
+  };
+}
 /** GeoJSON with no features */
 export const EMPTY_FEATURE_COLLECTION: GeoJSON = {
   type: 'FeatureCollection',
@@ -48,10 +40,11 @@ export const EMPTY_FEATURE_COLLECTION: GeoJSON = {
 };
 
 /** Default layer properties */
-export const DEFAULT_LAYER_PROPERTIES: LayerProperties = {
-  visibilityRange: [1, 18],
+export const DEFAULT_LAYER_PROPERTIES = {
+  minZoom: 1,
+  maxZoom: 18,
   opacity: 1,
-  visibleByDefault: true,
+  visibility: true,
   legend: {
     display: false,
   },
@@ -67,11 +60,9 @@ export const DEFAULT_LAYER_FILTER: LayerFilter = {
 export const DEFAULT_LAYER_STYLE = {
   // TODO: Get primary color from theme
   borderColor: '#0b55d6',
-  fillColor: '#0b55d6',
-  borderOpacity: 1,
-  fillOpacity: 1,
   borderWidth: 2,
-  iconSize: 20,
+  fillOpacity: 1,
+  borderOpacity: 1,
   heatmap: {
     gradient: {
       0: '#08d1d1',
@@ -86,7 +77,11 @@ export const DEFAULT_LAYER_STYLE = {
     minOpacity: 0.5,
     maxZoom: 18,
   },
-  icon: 'location-dot',
+  symbol: {
+    color: '#0b55d6',
+    icon: 'location-dot',
+    size: 24,
+  },
 } as Required<LayerStyle>;
 
 /** Minimum cluster size in pixel */
@@ -114,7 +109,7 @@ const GEOMETRY_TYPES = [
  * @returns true if the feature satisfies the filter
  */
 const featureSatisfiesFilter = (
-  feature: Feature<Geometry, FeatureProperties>,
+  feature: Feature<Geometry>,
   filter: LayerFilter
 ): boolean => {
   // Check if the filter is a simple filter
@@ -124,7 +119,7 @@ const featureSatisfiesFilter = (
   } else {
     // Filter is a simple filter
     const { field, operator, value } = filter;
-    const featureValue = feature.properties[field];
+    const featureValue = feature.properties?.[field];
 
     switch (operator) {
       case 'eq':
@@ -157,6 +152,7 @@ export class Layer {
   // Global properties for the layer
   public name!: string;
   public type!: LayerType;
+  public id!: string;
 
   // Properties for the layer, if layer type is 'group'
   private children: ChildLayer[] = [];
@@ -164,11 +160,11 @@ export class Layer {
   // Properties for the layer, if layer type is not 'group'
   private datasource: any | null = null; // TODO: define datasource
   private geojson: GeoJSON | null = null;
-  private properties: LayerProperties | null = null;
+  private properties: any | null = null;
   private filter: LayerFilter | null = null;
-  private styling: LayerStyling | null = null;
+  private styling: any | null = null;
   private label: LayerLabel | null = null;
-  private popup: LayerPopup | null = null; // TODO: define popup
+  private popup: any | null = null; // TODO: define popup
 
   // Layer fields, extracted from geojson
   private fields: { [key in string]: FieldTypes } = {};
@@ -179,13 +175,13 @@ export class Layer {
    * @param map current map
    * @param layer layer to edit
    * @param options options to apply
-   * @param icon custom icon
+   * @param iconProperties custom icon properties
    */
   public static applyOptionsToLayer(
     map: L.Map,
     layer: any,
     options: any,
-    icon?: any
+    iconProperties?: any
   ) {
     if (layer?.children) {
       this.applyOptionsToLayer(map, layer.children, options);
@@ -193,7 +189,13 @@ export class Layer {
       const layers = get(layer, '_layers', [layer]);
       for (const layerKey in layers) {
         if (layers[layerKey]) {
-          if (icon && layers[layerKey] instanceof L.Marker) {
+          if (iconProperties && layers[layerKey] instanceof L.Marker) {
+            const icon = createCustomDivIcon({
+              icon: iconProperties.style,
+              color: iconProperties.color || DEFAULT_MARKER_ICON_OPTIONS.color,
+              size: iconProperties.size || DEFAULT_MARKER_ICON_OPTIONS.size,
+              opacity: options.opacity || DEFAULT_MARKER_ICON_OPTIONS.opacity,
+            });
             layers[layerKey].setIcon(icon);
             layers[layerKey].options = {
               ...layers[layerKey].options,
@@ -204,11 +206,10 @@ export class Layer {
           }
           map.removeLayer(layers[layerKey]);
           if (
-            layers[layerKey].options.visible &&
+            layers[layerKey].options.visibility &&
             !(
-              layers[layerKey].options.visibilityRange &&
-              (map.getZoom() > options.visibilityRange[1] ||
-                map.getZoom() < options.visibilityRange[0])
+              map.getZoom() > layers[layerKey].options.maxZoom ||
+              map.getZoom() < layers[layerKey].options.minZoom
             )
           ) {
             map.addLayer(layers[layerKey]);
@@ -216,157 +217,6 @@ export class Layer {
         }
       }
     }
-  }
-
-  /**
-   * Format given settings for Layer class
-   *
-   * @param layerIds layer settings saved from the layer editor
-   * @param restService rest service to get the geojson
-   * @param apollo Apollo
-   * @returns Observable of LayerSettingsI
-   */
-  public static async createLayerFrom(
-    layerIds: string[],
-    restService: SafeRestService,
-    apollo: Apollo
-  ): Promise<Layer> {
-    const formattedLayerSettings = await lastValueFrom(
-      apollo
-        .query<GetLayersQueryResponse>({
-          query: GET_LAYERS,
-        })
-        .pipe(
-          // Get the layer info from the layers where the id is included in the given layerIds
-          switchMap((response) =>
-            from(
-              response.data.layers.filter((layer) =>
-                layerIds.includes(layer.id)
-              )
-            )
-          ),
-          // Then go layer by layer to create the layerSettings object
-          mergeMap((layerInfo: any) => {
-            // No type yet, set to Polygon by default
-            const capitalizeType = layerInfo.type
-              ? layerInfo.type.replace(/^./g, layerInfo.type[0].toUpperCase())
-              : 'Point';
-            // Get the current layerInfo plus it's geojson
-            return forkJoin({
-              layer: of(layerInfo),
-              geojson: restService.get(
-                `${
-                  restService.apiUrl
-                }/gis/feature?type=${capitalizeType}&tolerance=${0.9}&highquality=${true}`
-              ),
-            });
-          }),
-          // Destructure layer information to have all data at the same level
-          map((mergedLayerInfo) => ({
-            ...mergedLayerInfo.layer,
-            geojson: mergedLayerInfo.geojson,
-          })),
-          // Get them into an array after all pipes are done
-          toArray(),
-          // And set those layers into the children of our hardcoded layer group
-          // @TODO it would be mapped later onto it's current layer type
-          map((mergedLayerInfo: any[]) => {
-            return {
-              name: 'group layers',
-              type: 'group',
-              children: this.getLayerSettings(mergedLayerInfo),
-            };
-          })
-        )
-    );
-    return new Layer(formattedLayerSettings as LayerSettingsI);
-  }
-
-  /**
-   * Set the geojson to the given layer settings
-   *
-   * @param mergedLayerInfo layer settings saved from the layer editor
-   * @returns LayerSettingsI array
-   */
-  private static getLayerSettings(
-    mergedLayerInfo: {
-      name: string;
-      id: string;
-      geojson: any;
-      // These properties dont have to be like that, they are just as example
-      type?: any;
-      visibilityRangeStart?: number;
-      visibilityRangeEnd?: number;
-      opacity?: number;
-      defaultVisibility?: boolean;
-      style?: any;
-    }[]
-  ): LayerSettingsI[] {
-    return mergedLayerInfo.map(
-      (layerInfo) =>
-        // @TODO As we complete the layer editor we will have to set those new values in these function
-        // instead of the hardcoded ones
-        ({
-          // Currently we only have name and id in the graphql endpoint for each layer metadata
-          name: layerInfo.name,
-          id: layerInfo.id,
-          type: layerInfo.type ?? 'feature',
-          // The geojson previously fetched from the REST
-          geojson: layerInfo.geojson,
-          filter: {
-            condition: 'and',
-            filters: [
-              {
-                field: 'name',
-                operator: 'neq',
-                value: 'Point 1',
-              },
-            ],
-          },
-          properties: {
-            // None of this data is available yet
-            visibilityRange: [
-              layerInfo.visibilityRangeStart ?? 2,
-              layerInfo.visibilityRangeEnd ?? 18,
-            ],
-            opacity: layerInfo.opacity ?? 1,
-            visibleByDefault: layerInfo.defaultVisibility ?? true,
-            legend: {
-              display: true,
-              field: 'name',
-            },
-          },
-          styling: [
-            {
-              filter: {
-                condition: 'and',
-                filters: [],
-              },
-              style: {
-                borderColor: 'black',
-                borderWidth: 1,
-                fillOpacity: layerInfo.opacity ?? 1,
-                borderOpacity: layerInfo.opacity ?? 1,
-                fillColor: layerInfo.style?.color ?? 'purple',
-                icon: layerInfo.style?.icon ?? 'location-dot',
-                iconSize: layerInfo.style?.size ?? 24,
-              },
-            },
-          ],
-          labels: {
-            filter: {
-              condition: 'and',
-              filters: [],
-            },
-            label: '{{name}}',
-            style: {
-              color: '#000000',
-              fontSize: 12,
-              fontWeight: 'normal',
-            },
-          },
-        } as LayerSettingsI)
-    );
   }
 
   /** @returns the children of the current layer */
@@ -417,7 +267,7 @@ export class Layer {
    *
    * @param settings The settings for the layer
    */
-  constructor(settings: LayerSettingsI) {
+  constructor(settings: any) {
     if (settings) {
       this.setConfig(settings);
     } else {
@@ -430,9 +280,10 @@ export class Layer {
    *
    * @param settings LayerSettings
    */
-  private setConfig(settings: LayerSettingsI) {
+  private setConfig(settings: any) {
     this.name = settings.name;
     this.type = settings.type as LayerType;
+    this.id = settings.id;
 
     if (settings.type !== 'group') {
       // Not group layer, add other properties
@@ -446,7 +297,7 @@ export class Layer {
       this.setFields();
     } else if (settings.children) {
       // Group layer, add children
-      this.children = settings.children?.map((child) => ({
+      this.children = settings.children?.map((child: any) => ({
         object: new Layer(child),
       }));
     }
@@ -481,8 +332,8 @@ export class Layer {
 
     // If the geojson is a feature, add the property fields to the fields object
     if (geojson.type === 'Feature') {
-      Object.keys(geojson.properties).forEach((key) => {
-        fields[key] = getFieldType(key, geojson.properties[key]);
+      Object.keys(geojson.properties ?? []).forEach((key) => {
+        fields[key] = getFieldType(key, geojson.properties?.[key]);
       });
       return;
     }
@@ -490,8 +341,8 @@ export class Layer {
     // If the geojson is a feature collection, do the same for each feature
     if (geojson.type === 'FeatureCollection') {
       geojson.features.forEach((feature) => {
-        Object.keys(feature.properties).forEach((key) => {
-          fields[key] = getFieldType(key, feature.properties[key]);
+        Object.keys(feature.properties ?? []).forEach((key) => {
+          fields[key] = getFieldType(key, feature.properties?.[key]);
         });
       });
     }
@@ -504,15 +355,13 @@ export class Layer {
    * @param feature Feature to get the style for
    * @returns the style for the feature
    */
-  private getFeatureStyle(
-    feature: Feature<Geometry, FeatureProperties>
-  ): Required<LayerStyle> {
+  private getFeatureStyle(feature: Feature<Geometry>): Required<LayerStyle> {
     // if the feature has a style property, use it
-    const featureStyle = feature.properties.style;
+    const featureStyle = feature.properties?.style;
     if (featureStyle) return { ...DEFAULT_LAYER_STYLE, ...featureStyle };
 
     const style = this.styling?.find(
-      (s) => featureSatisfiesFilter(feature, s.filter) && s.style
+      (s: any) => featureSatisfiesFilter(feature, s.filter) && s.style
     );
 
     // If no style is found, return the default style
@@ -530,7 +379,7 @@ export class Layer {
     const data = this.data;
 
     // options used for parsing geojson to leaflet layer
-    const geoJSONopts: L.GeoJSONOptions<FeatureProperties> = {
+    const geoJSONopts: L.GeoJSONOptions<any> = {
       pointToLayer: (feature, latlng) => {
         const style = this.getFeatureStyle(feature);
 
@@ -542,7 +391,7 @@ export class Layer {
           // Setting circle relevant style
           circle.setStyle({
             color: style.borderColor,
-            fillColor: style.fillColor,
+            fillColor: style.symbol.color,
             fillOpacity: style.fillOpacity,
             opacity: style.borderOpacity,
             weight: style.borderWidth,
@@ -554,19 +403,19 @@ export class Layer {
         // If not a circle, create a marker
         return new L.Marker(latlng).setIcon(
           createCustomDivIcon({
-            icon: style.icon,
-            color: style.fillColor,
-            size: style.iconSize,
+            icon: style.symbol.icon,
+            color: style.symbol.color,
+            size: style.symbol.size,
             opacity: style.fillOpacity,
           })
         );
       },
-      style: (feature: Feature<Geometry, FeatureProperties> | undefined) => {
+      style: (feature: Feature<Geometry> | undefined) => {
         if (!feature) return {};
         const style = this.getFeatureStyle(feature);
 
         return {
-          fillColor: style.fillColor,
+          fillColor: style.symbol.color,
           fillOpacity: style.fillOpacity,
           color: style.borderColor,
           opacity: style.borderOpacity,
@@ -633,7 +482,7 @@ export class Layer {
             'Impossible to create a heatmap from this data, geojson type is not FeatureCollection'
           );
         const heatArray: any[] = [];
-        const collection: FeatureCollection<Geometry, FeatureProperties> = data;
+        const collection: FeatureCollection<Geometry> = data;
 
         collection.features.forEach((feature) => {
           if (feature.geometry.type === 'Point') {
@@ -689,9 +538,9 @@ export class Layer {
               : (feature as any).type === 'Point';
             const style = this.getFeatureStyle(feature);
             items.push({
-              label: labelField ? feature.properties[labelField] ?? '' : '',
-              color: style.fillColor,
-              icon: isPoint ? style.icon : undefined,
+              label: labelField ? feature.properties?.[labelField] ?? '' : '',
+              color: style.symbol.color,
+              icon: isPoint ? style.symbol.icon : undefined,
             });
           }
         });

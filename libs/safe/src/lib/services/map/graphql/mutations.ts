@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Layer } from '../../../models/layer.model';
+import { LayerModel } from '../../../models/layer.model';
 
 // === ADD Layer ===
 /** Graphql request for adding a new layer */
@@ -14,7 +14,7 @@ export const ADD_LAYER = gql`
 
 /** Model for AddLayerMutationResponse object */
 export interface AddLayerMutationResponse {
-  addLayer: Layer;
+  addLayer: LayerModel;
 }
 
 // === DELETE LAYER ===
@@ -31,7 +31,7 @@ export const DELETE_LAYER = gql`
 
 /** Model for DeleteLayerMutationResponse object */
 export interface DeleteLayerMutationResponse {
-  deleteLayer: Layer;
+  deleteLayer: LayerModel;
 }
 
 // === EDIT LAYER ===
@@ -47,5 +47,5 @@ export const EDIT_LAYER = gql`
 
 /** Edit layer gql mutation response interface */
 export interface EditLayerMutationResponse {
-  editLayer: Layer;
+  editLayer: LayerModel;
 }

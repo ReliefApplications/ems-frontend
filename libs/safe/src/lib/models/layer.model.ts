@@ -18,13 +18,15 @@ export enum BackendLayerTypes {
   FEATURE_LAYER = 'FeatureLayer',
 }
 
-/** Layer documents interface declaration */
-export interface Layer {
+/**
+ * Backend layer model
+ */
+export interface LayerModel {
   id: string;
-  title: string;
+  name: string;
+  sublayers?: LayerModel[];
   visibility: boolean;
-  createdAt?: Date;
-  modifiedAt?: Date;
+  opacity: boolean;
   layerDefinition?: {
     minZoom?: number;
     maxZoom?: number;
@@ -41,17 +43,10 @@ export interface Layer {
       };
     };
   };
-  opacity: number;
-  // Layer datasource
-  datasource: {
-    origin: any;
-    resource: any;
-    layout: any;
-    aggregation: any;
-    refData: any;
+  popupInfo: {
+    popupElements: string;
+    description: string;
   };
-  popupInfo?: {
-    popupElements?: any[];
-    title?: string;
-  };
+  createdAt: Date;
+  updatedAt: Date;
 }

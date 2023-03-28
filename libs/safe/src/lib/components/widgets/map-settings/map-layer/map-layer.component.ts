@@ -6,21 +6,26 @@ import {
   OnInit,
   Output,
   EventEmitter,
+  OnDestroy,
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
-import { Layer } from '../../../../models/layer.model';
+import { LayerModel } from '../../../../models/layer.model';
 import { createLayerForm, LayerFormT } from '../map-forms';
-import { takeUntil } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { MapComponent } from '../../../ui/map/map.component';
 import {
   MapEvent,
   MapEventType,
 } from '../../../ui/map/interfaces/map.interface';
+import { LayerFormData } from '../../../ui/map/interfaces/layer-settings.type';
+import { OverlayLayerTree } from '../../../ui/map/interfaces/map-layers.interface';
+import * as L from 'leaflet';
+import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 
 /**
- *
+ * Map layer editor.
  */
 @Component({
   selector: 'safe-map-layer',
@@ -29,11 +34,11 @@ import {
 })
 export class MapLayerComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
-  @Input() layer?: Layer;
+  @Input() layer?: LayerModel;
   @Input() mapComponent!: MapComponent | undefined;
-  @Output() layerToSave = new EventEmitter<Layer>();
+  @Output() layerToSave = new EventEmitter<LayerFormData>();
 
   @ViewChild('layerNavigationTemplate')
   layerNavigationTemplate!: TemplateRef<any>;
@@ -55,16 +60,19 @@ export class MapLayerComponent
     | null = 'parameters';
   public form!: LayerFormT;
   public currentZoom!: number;
+  private currentLayer!: L.Layer;
 
   /**
-   * Class constructor
+   * Map layer editor.
    *
-   * @param confirmService SafeConfirmService
-   * @param translate TranslateService
+   * @param confirmService Shared confirm service.
+   * @param translate Angular translate service.
+   * @param mapLayersService Shared map layer Service.
    */
   constructor(
     private confirmService: SafeConfirmService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private mapLayersService: SafeMapLayersService
   ) {
     super();
   }
@@ -72,7 +80,51 @@ export class MapLayerComponent
   ngOnInit(): void {
     this.form = createLayerForm(this.layer);
     this.currentZoom = this.mapComponent?.map.getZoom();
+    if (this.mapComponent) {
+      this.setUpLayer();
+    }
     this.setUpEditLayerListeners();
+  }
+
+  /**
+   * Set default layer for editor
+   */
+  private setUpLayer() {
+    this.mapLayersService
+      .createLayerFromDefinition(this.form.value as LayerModel)
+      .then((layer) => {
+        this.currentLayer = layer.getLayer();
+        const overlays: OverlayLayerTree = {
+          label: this.form.get('name')?.value || '',
+          layer: this.currentLayer,
+        };
+        if (this.mapComponent) {
+          this.mapComponent.addOrDeleteLayer = {
+            layerData: overlays,
+            isDelete: false,
+          };
+          //After the new layer for editing is set, update the options with the form value
+          setTimeout(() => {
+            this.updateLayerOptions();
+          }, 0);
+        }
+      });
+  }
+
+  /**
+   * Update current layer options in the map
+   */
+  private updateLayerOptions() {
+    if (this.mapComponent) {
+      const { name, visibility, opacity, layerDefinition } = this.form.value;
+      this.mapComponent.updateLayerOptions = {
+        layer: this.currentLayer,
+        options: { name, visibility, opacity, ...layerDefinition },
+        ...(layerDefinition.drawingInfo.renderer.type === 'simple' && {
+          icon: layerDefinition.drawingInfo.renderer.symbol,
+        }),
+      };
+    }
   }
 
   /**
@@ -80,14 +132,10 @@ export class MapLayerComponent
    */
   private setUpEditLayerListeners() {
     // Those listeners would handle any change for layer into the map component reference
-    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      console.log(value);
-    });
-    this.form
-      .get('type')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        console.log(value);
+    this.form.valueChanges
+      .pipe(takeUntil(this.destroy$), debounceTime(1000))
+      .subscribe(() => {
+        this.updateLayerOptions();
       });
 
     this.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
@@ -116,7 +164,7 @@ export class MapLayerComponent
    * Send the current form value to save
    */
   onSubmit() {
-    this.layerToSave.emit(this.form.getRawValue() as Layer);
+    this.layerToSave.emit(this.form.getRawValue() as LayerFormData);
   }
 
   /**
@@ -140,6 +188,21 @@ export class MapLayerComponent
           this.layerToSave.emit(undefined);
         }
       });
+    }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    const overlays: OverlayLayerTree = {
+      label: this.form.get('name')?.value || '',
+      layer: this.currentLayer,
+    };
+    //Once we exit the layer editor, destroy the layer and related controls
+    if (this.mapComponent) {
+      this.mapComponent.addOrDeleteLayer = {
+        layerData: overlays,
+        isDelete: true,
+      };
     }
   }
 }
