@@ -22,7 +22,6 @@ import { LayerModel } from '../../../models/layer.model';
 import { geoJSONLayer } from './leaflet.layer';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
-type ChildLayer = { object: Layer; layer?: L.Layer };
 
 /**
  * Layer model with geojson features
@@ -145,26 +144,59 @@ const featureSatisfiesFilter = (
 };
 
 /** Objects represent a map layer */
-export class Layer {
+export class Layer implements LayerModel {
   // Map layer
   private layer: L.Layer | null = null;
 
   // Global properties for the layer
+  public id!: string;
   public name!: string;
   public type!: LayerType;
-  public id!: string;
+
+  // Visibility
+  public visibility!: boolean;
+  public opacity!: boolean;
+
+  // Layer Definition
+  public layerDefinition?:
+    | {
+        minZoom?: number | undefined;
+        maxZoom?: number | undefined;
+        featureReduction?: any;
+        drawingInfo?:
+          | {
+              renderer?:
+                | {
+                    type?: string | undefined;
+                    symbol?:
+                      | {
+                          color?: string | undefined;
+                          size?: number | undefined;
+                          icon?: string | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
+
+  // Popup info
+  public popupInfo?: { popupElements: string; description: string } | undefined;
+  public createdAt!: Date;
+  public updatedAt!: Date;
 
   // Properties for the layer, if layer type is 'group'
-  private children: ChildLayer[] = [];
+  public sublayers: Layer[] = [];
 
   // Properties for the layer, if layer type is not 'group'
   private datasource: any | null = null; // TODO: define datasource
   private geojson: GeoJSON | null = null;
-  private properties: any | null = null;
+  // private properties: any | null = null;
   private filter: LayerFilter | null = null;
-  private styling: any | null = null;
-  private label: LayerLabel | null = null;
-  private popup: any | null = null; // TODO: define popup
+  // private styling: any | null = null;
+  // private label: LayerLabel | null = null;
 
   // Layer fields, extracted from geojson
   private fields: { [key in string]: FieldTypes } = {};
@@ -221,7 +253,7 @@ export class Layer {
 
   /** @returns the children of the current layer */
   public getChildren() {
-    return this.children;
+    return this.sublayers;
   }
 
   /** @returns the filtered geojson data */
@@ -255,21 +287,14 @@ export class Layer {
     return EMPTY_FEATURE_COLLECTION;
   }
 
-  /** @returns the first style of the layer */
-  get firstStyle() {
-    return this.styling?.[0]?.style
-      ? { ...DEFAULT_LAYER_STYLE, ...this.styling[0].style }
-      : DEFAULT_LAYER_STYLE;
-  }
-
   /**
    * Constructor for the Layer class
    *
-   * @param settings The settings for the layer
+   * @param options Layer options
    */
-  constructor(settings: any) {
-    if (settings) {
-      this.setConfig(settings);
+  constructor(options: any) {
+    if (options) {
+      this.setConfig(options);
     } else {
       throw 'No settings provided';
     }
@@ -278,26 +303,26 @@ export class Layer {
   /**
    * Set config
    *
-   * @param settings LayerSettings
+   * @param options Layer options
    */
-  private setConfig(settings: any) {
-    this.name = settings.name;
-    this.type = settings.type as LayerType;
-    this.id = settings.id;
+  private setConfig(options: any) {
+    this.id = get(options, 'id', '');
+    this.name = get(options, 'name', '');
+    this.type = get<LayerType>(options, 'type', 'feature');
 
-    if (settings.type !== 'group') {
+    if (options.type !== 'group') {
       // Not group layer, add other properties
-      this.datasource = settings.datasource || null;
-      this.geojson = settings.geojson || EMPTY_FEATURE_COLLECTION;
-      this.properties = settings.properties || DEFAULT_LAYER_PROPERTIES;
-      this.filter = settings.filter || DEFAULT_LAYER_FILTER;
-      this.styling = settings.styling || [];
-      this.label = settings.labels || null;
-      this.popup = settings.popup || null;
+      this.datasource = get(options, 'datasource', null);
+      this.geojson = get(options, 'geojson', EMPTY_FEATURE_COLLECTION);
+      // this.properties = options.properties || DEFAULT_LAYER_PROPERTIES;
+      this.filter = get(options, 'filter', DEFAULT_LAYER_FILTER);
+      // this.styling = options.styling || [];
+      // this.label = options.labels || null;
+      this.popupInfo = get(options, 'popupInfo');
       this.setFields();
-    } else if (settings.children) {
-      // Group layer, add children
-      this.children = settings.children?.map((child: any) => ({
+    } else if (options.sublayers) {
+      // Group layer, add sublayers
+      this.sublayers = options.sublayers?.map((child: any) => ({
         object: new Layer(child),
       }));
     }
@@ -355,20 +380,20 @@ export class Layer {
    * @param feature Feature to get the style for
    * @returns the style for the feature
    */
-  private getFeatureStyle(feature: Feature<Geometry>): Required<LayerStyle> {
-    // if the feature has a style property, use it
-    const featureStyle = feature.properties?.style;
-    if (featureStyle) return { ...DEFAULT_LAYER_STYLE, ...featureStyle };
+  // private getFeatureStyle(feature: Feature<Geometry>): Required<LayerStyle> {
+  // if the feature has a style property, use it
+  // const featureStyle = feature.properties?.style;
+  // if (featureStyle) return { ...DEFAULT_LAYER_STYLE, ...featureStyle };
 
-    const style = this.styling?.find(
-      (s: any) => featureSatisfiesFilter(feature, s.filter) && s.style
-    );
+  // const style = this.styling?.find(
+  //   (s: any) => featureSatisfiesFilter(feature, s.filter) && s.style
+  // );
 
-    // If no style is found, return the default style
-    return style?.style
-      ? { ...DEFAULT_LAYER_STYLE, ...style?.style }
-      : DEFAULT_LAYER_STYLE;
-  }
+  // // If no style is found, return the default style
+  // return style?.style
+  //   ? { ...DEFAULT_LAYER_STYLE, ...style?.style }
+  //   : DEFAULT_LAYER_STYLE;
+  // }
 
   /** @returns the leaflet layer from layer definition */
   public getLayer(): L.Layer {
@@ -381,7 +406,7 @@ export class Layer {
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<any> = {
       pointToLayer: (feature, latlng) => {
-        const style = this.getFeatureStyle(feature);
+        // const style = this.getFeatureStyle(feature);
 
         // circles are not supported by geojson
         // we abstract them as markers with a radius property
@@ -389,47 +414,50 @@ export class Layer {
           const circle = L.circle(latlng, feature.properties.radius);
 
           // Setting circle relevant style
-          circle.setStyle({
-            color: style.borderColor,
-            fillColor: style.symbol.color,
-            fillOpacity: style.fillOpacity,
-            opacity: style.borderOpacity,
-            weight: style.borderWidth,
-          });
+          // circle.setStyle({
+          //   color: style.borderColor,
+          //   fillColor: style.symbol.color,
+          //   fillOpacity: style.fillOpacity,
+          //   opacity: style.borderOpacity,
+          //   weight: style.borderWidth,
+          // });
 
           return circle;
         }
 
+        const circle = L.circle(latlng, feature.properties.radius);
+
+        return circle;
+
         // If not a circle, create a marker
-        return new L.Marker(latlng).setIcon(
-          createCustomDivIcon({
-            icon: style.symbol.icon,
-            color: style.symbol.color,
-            size: style.symbol.size,
-            opacity: style.fillOpacity,
-          })
-        );
+        // return new L.Marker(latlng)
+        //   .setIcon
+        // createCustomDivIcon({
+        //   icon: style.symbol.icon,
+        //   color: style.symbol.color,
+        //   size: style.symbol.size,
+        //   opacity: style.fillOpacity,
+        // })
+        // ();
       },
       style: (feature: Feature<Geometry> | undefined) => {
         if (!feature) return {};
-        const style = this.getFeatureStyle(feature);
+        // const style = this.getFeatureStyle(feature);
 
         return {
-          fillColor: style.symbol.color,
-          fillOpacity: style.fillOpacity,
-          color: style.borderColor,
-          opacity: style.borderOpacity,
-          weight: style.borderWidth,
+          // fillColor: style.symbol.color,
+          // fillOpacity: style.fillOpacity,
+          // color: style.borderColor,
+          // opacity: style.borderOpacity,
+          // weight: style.borderWidth,
         };
       },
     };
 
     switch (this.type) {
       case 'group':
-        this.children.forEach(
-          (child) => (child.layer = child.object.getLayer())
-        );
-        const layers = this.children
+        this.sublayers.forEach((child) => (child.layer = child.getLayer()));
+        const layers = this.sublayers
           .map((child) => child.layer)
           .filter((layer) => layer !== undefined) as L.Layer[];
         this.layer = new L.LayerGroup(layers);
@@ -446,55 +474,57 @@ export class Layer {
         // in the cluster satisfies the same filter, then it
         // uses that style for the entire cluster,
         // but I can't find a way to add properties to the clusters' points
-        console.log('ici !');
-        const clusterGroup = L.markerClusterGroup({
-          zoomToBoundsOnClick: false,
-          iconCreateFunction: (cluster) => {
-            const iconProperties = {
-              icon: this.firstStyle.icon as IconName | 'location-dot',
-              color: this.firstStyle.fillColor,
-              size:
-                (cluster.getChildCount() / 50) *
-                  (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
-                MIN_CLUSTER_SIZE,
-              opacity: this.firstStyle.fillOpacity,
-            };
-            // Use label as it's an inline element therefor does not take all available space
-            const htmlTemplate = document.createElement('label'); // todo(gis): better labels
-            htmlTemplate.textContent = cluster.getChildCount().toString();
-            return createCustomDivIcon(
-              iconProperties,
-              htmlTemplate,
-              'leaflet-data-marker'
-            );
-          },
-        });
-        const clusterLayer = geoJSONLayer(data, geoJSONopts);
-        console.log(clusterLayer.legend);
-        clusterGroup.addLayer(clusterLayer);
-        this.layer = clusterGroup;
-        return this.layer;
+        // console.log('ici !');
+        // const clusterGroup = L.markerClusterGroup({
+        //   zoomToBoundsOnClick: false,
+        //   iconCreateFunction: (cluster) => {
+        //     const iconProperties = {
+        //       icon: this.firstStyle.icon as IconName | 'location-dot',
+        //       color: this.firstStyle.fillColor,
+        //       size:
+        //         (cluster.getChildCount() / 50) *
+        //           (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
+        //         MIN_CLUSTER_SIZE,
+        //       opacity: this.firstStyle.fillOpacity,
+        //     };
+        //     // Use label as it's an inline element therefor does not take all available space
+        //     const htmlTemplate = document.createElement('label'); // todo(gis): better labels
+        //     htmlTemplate.textContent = cluster.getChildCount().toString();
+        //     return createCustomDivIcon(
+        //       iconProperties,
+        //       htmlTemplate,
+        //       'leaflet-data-marker'
+        //     );
+        //   },
+        // });
+        // const clusterLayer = geoJSONLayer(data, geoJSONopts);
+        // console.log(clusterLayer.legend);
+        // clusterGroup.addLayer(clusterLayer);
+        // this.layer = clusterGroup;
+        // return this.layer;
+        return new L.Layer();
 
       case 'heatmap':
         // check data type
-        if (data.type !== 'FeatureCollection')
-          throw new Error(
-            'Impossible to create a heatmap from this data, geojson type is not FeatureCollection'
-          );
-        const heatArray: any[] = [];
-        const collection: FeatureCollection<Geometry> = data;
+        // if (data.type !== 'FeatureCollection')
+        //   throw new Error(
+        //     'Impossible to create a heatmap from this data, geojson type is not FeatureCollection'
+        //   );
+        // const heatArray: any[] = [];
+        // const collection: FeatureCollection<Geometry> = data;
 
-        collection.features.forEach((feature) => {
-          if (feature.geometry.type === 'Point') {
-            heatArray.push([
-              feature.geometry.coordinates[1], // lat
-              feature.geometry.coordinates[0], // long
-            ]);
-          }
-        });
+        // collection.features.forEach((feature) => {
+        //   if (feature.geometry.type === 'Point') {
+        //     heatArray.push([
+        //       feature.geometry.coordinates[1], // lat
+        //       feature.geometry.coordinates[0], // long
+        //     ]);
+        //   }
+        // });
 
-        this.layer = L.heatLayer(heatArray, this.firstStyle.heatmap);
-        return this.layer;
+        // this.layer = L.heatLayer(heatArray, this.firstStyle.heatmap);
+        // return this.layer;
+        return new L.Layer();
     }
 
     // Check for icon property
@@ -506,73 +536,74 @@ export class Layer {
    * @returns the legend definition
    */
   public getLegend(): LegendDefinition | null {
-    if (!this.properties?.legend || this.properties.legend.display === false)
-      return null;
+    return null;
+    // if (!this.properties?.legend || this.properties.legend.display === false)
+    //   return null;
 
-    const data = this.data;
-    const labelField = this.properties.legend.field;
+    // const data = this.data;
+    // const labelField = this.properties.legend.field;
 
-    switch (this.type) {
-      case 'group':
-        // Groups don't have legends
-        return null;
+    // switch (this.type) {
+    //   case 'group':
+    //     // Groups don't have legends
+    //     return null;
 
-      case 'sketch':
-      case 'feature':
-        // check if data is a FeatureCollection or a Feature
-        const features =
-          data.type === 'FeatureCollection' ? data.features : [data];
+    //   case 'sketch':
+    //   case 'feature':
+    //     // check if data is a FeatureCollection or a Feature
+    //     const features =
+    //       data.type === 'FeatureCollection' ? data.features : [data];
 
-        const items: {
-          label: string;
-          color: string;
-          icon?: IconName | 'location-dot';
-        }[] = [];
+    //     const items: {
+    //       label: string;
+    //       color: string;
+    //       icon?: IconName | 'location-dot';
+    //     }[] = [];
 
-        features.forEach((feature) => {
-          if ('properties' in feature) {
-            // check if feature is a point
-            // @TODO structure sent from backend follows the feature.type structure
-            const isPoint = feature.geometry?.type
-              ? feature.geometry.type === 'Point'
-              : (feature as any).type === 'Point';
-            const style = this.getFeatureStyle(feature);
-            items.push({
-              label: labelField ? feature.properties?.[labelField] ?? '' : '',
-              color: style.symbol.color,
-              icon: isPoint ? style.symbol.icon : undefined,
-            });
-          }
-        });
+    //     features.forEach((feature) => {
+    //       if ('properties' in feature) {
+    //         // check if feature is a point
+    //         // @TODO structure sent from backend follows the feature.type structure
+    //         const isPoint = feature.geometry?.type
+    //           ? feature.geometry.type === 'Point'
+    //           : (feature as any).type === 'Point';
+    //         const style = this.getFeatureStyle(feature);
+    //         items.push({
+    //           label: labelField ? feature.properties?.[labelField] ?? '' : '',
+    //           color: style.symbol.color,
+    //           icon: isPoint ? style.symbol.icon : undefined,
+    //         });
+    //       }
+    //     });
 
-        return {
-          type: 'feature',
-          items,
-        };
+    //     return {
+    //       type: 'feature',
+    //       items,
+    //     };
 
-      case 'cluster':
-        return {
-          type: 'cluster',
-          color: this.firstStyle.fillColor,
-          icon: this.firstStyle.icon,
-          min: MIN_CLUSTER_SIZE,
-          max: MAX_CLUSTER_SIZE,
-        };
-      case 'heatmap':
-        // transform gradient to array of objects
-        const gradient: { color: string; value: number }[] = [];
-        Object.keys(this.firstStyle.heatmap.gradient).forEach((key) => {
-          const nbr = parseFloat(key);
-          gradient.push({
-            color: this.firstStyle.heatmap.gradient[nbr],
-            value: parseFloat(key),
-          });
-        });
+    //   case 'cluster':
+    //     return {
+    //       type: 'cluster',
+    //       color: this.firstStyle.fillColor,
+    //       icon: this.firstStyle.icon,
+    //       min: MIN_CLUSTER_SIZE,
+    //       max: MAX_CLUSTER_SIZE,
+    //     };
+    //   case 'heatmap':
+    //     // transform gradient to array of objects
+    //     const gradient: { color: string; value: number }[] = [];
+    //     Object.keys(this.firstStyle.heatmap.gradient).forEach((key) => {
+    //       const nbr = parseFloat(key);
+    //       gradient.push({
+    //         color: this.firstStyle.heatmap.gradient[nbr],
+    //         value: parseFloat(key),
+    //       });
+    //     });
 
-        return {
-          type: 'heatmap',
-          gradient,
-        };
-    }
+    //     return {
+    //       type: 'heatmap',
+    //       gradient,
+    //     };
+    // }
   }
 }

@@ -43,7 +43,7 @@ export interface LayerModel {
       };
     };
   };
-  popupInfo: {
+  popupInfo?: {
     popupElements: string;
     description: string;
   };

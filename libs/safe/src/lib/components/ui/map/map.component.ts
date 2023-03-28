@@ -635,7 +635,9 @@ export class MapComponent
           selectAllCheckbox: true,
           children:
             children.length > 0
-              ? children.map((c) => parseTreeNode(c.object, c.layer))
+              ? children.map((sublayer) =>
+                  parseTreeNode(sublayer, sublayer.getLayer())
+                )
               : undefined,
         };
       } else {

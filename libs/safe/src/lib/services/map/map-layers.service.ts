@@ -217,7 +217,7 @@ export class SafeMapLayersService {
           return {
             name: '',
             type: 'group',
-            children: layers.map((layer) => this.getLayerSettings(layer)),
+            children: layers,
           };
         })
       )
@@ -242,12 +242,10 @@ export class SafeMapLayersService {
         ),
       })
     );
-    return new Layer(
-      this.getLayerSettings({
-        ...res.layer,
-        geojson: res.geojson,
-      } as ExtendedLayerModel)
-    );
+    return new Layer({
+      ...res.layer,
+      geojson: res.geojson,
+    } as ExtendedLayerModel);
   }
 
   /**
