@@ -115,10 +115,10 @@ export class MapLayerComponent
    */
   private updateLayerOptions() {
     if (this.mapComponent) {
-      const { visibility, opacity, layerDefinition } = this.form.value;
+      const { name, visibility, opacity, layerDefinition } = this.form.value;
       this.mapComponent.updateLayerOptions = {
         layer: this.currentLayer,
-        options: { visibility, opacity, ...layerDefinition },
+        options: { name, visibility, opacity, ...layerDefinition },
         ...(layerDefinition.drawingInfo.renderer.type === 'simple' && {
           icon: layerDefinition.drawingInfo.renderer.symbol,
         }),

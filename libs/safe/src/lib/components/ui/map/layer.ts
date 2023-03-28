@@ -18,20 +18,8 @@ import {
   DEFAULT_MARKER_ICON_OPTIONS,
 } from './utils/create-div-icon';
 import { LegendDefinition } from './interfaces/layer-legend.type';
-import { SafeRestService } from '../../../services/rest/rest.service';
-import {
-  forkJoin,
-  from,
-  lastValueFrom,
-  map,
-  mergeMap,
-  of,
-  switchMap,
-  toArray,
-} from 'rxjs';
 import { LayerModel } from '../../../models/layer.model';
 import { geoJSONLayer } from './leaflet.layer';
-import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 type ChildLayer = { object: Layer; layer?: L.Layer };
@@ -39,7 +27,7 @@ type ChildLayer = { object: Layer; layer?: L.Layer };
 /**
  * Data structure from where to create layer
  */
-interface MergedLayerInfo extends LayerModel {
+export interface MergedLayerInfo extends LayerModel {
   geojson: {
     features: any[];
     type: string;
@@ -164,6 +152,7 @@ export class Layer {
   // Global properties for the layer
   public name!: string;
   public type!: LayerType;
+  public id!: string;
 
   // Properties for the layer, if layer type is 'group'
   private children: ChildLayer[] = [];
@@ -230,141 +219,6 @@ export class Layer {
     }
   }
 
-  /**
-   * Format given settings for Layer class
-   *
-   * @param layerIds layer settings saved from the layer editor
-   * @param restService rest service to get the geojson
-   * @param mapLayersService MapLayersService
-   * @returns Observable of LayerSettingsI
-   */
-  public static async createLayerFrom(
-    layerIds: string[],
-    restService: SafeRestService,
-    mapLayersService: SafeMapLayersService
-  ): Promise<Layer> {
-    // If current layers exists, we will use those values,
-    // otherwise we will make the API call
-    const layerSourceData$ = !mapLayersService.currentLayers.length
-      ? mapLayersService.getLayers()
-      : of(mapLayersService.currentLayers);
-
-    const formattedLayerSettings = await lastValueFrom(
-      layerSourceData$.pipe(
-        // Get the layer info from the layers where the id is included in the given layerIds
-        switchMap((layers) =>
-          from(layers.filter((layer) => layerIds.includes(layer.id)))
-        ),
-        // Then go layer by layer to create the layerSettings object
-        mergeMap((layerInfo: LayerModel) => {
-          // Get the current layerInfo plus it's geojson
-          return forkJoin({
-            layer: of(layerInfo),
-            geojson: restService.get(
-              `${
-                restService.apiUrl
-              }/gis/feature?type=Point&tolerance=${0.9}&highquality=${true}`
-            ),
-          });
-        }),
-        // Destructure layer information to have all data at the same level
-        map(
-          (mergedLayerInfo) =>
-            ({
-              ...mergedLayerInfo.layer,
-              geojson: mergedLayerInfo.geojson,
-            } as MergedLayerInfo)
-        ),
-        // Get them into an array after all pipes are done
-        toArray(),
-        // And set those layers into the children of our hardcoded layer group
-        // @TODO it would be mapped later onto it's current layer type
-        map((mergedLayerInfo: MergedLayerInfo[]) => {
-          return {
-            name: 'group layers',
-            type: 'group',
-            children: this.getLayerSettings(mergedLayerInfo),
-          };
-        })
-      )
-    );
-    return new Layer(formattedLayerSettings);
-  }
-
-  /**
-   * Set the geojson to the given layer settings
-   *
-   * @param mergedLayerInfo layer settings saved from the layer editor
-   * @returns LayerSettingsI array
-   */
-  private static getLayerSettings(mergedLayerInfo: MergedLayerInfo[]): any[] {
-    return mergedLayerInfo.map((layerInfo) =>
-      // @TODO As we complete the layer editor we will have to set those new values in these function
-      // instead of the hardcoded ones
-      ({
-        // Currently we only have name and id in the graphql endpoint for each layer metadata
-        name: layerInfo.name,
-        id: layerInfo.id,
-        type: 'feature',
-        // The geojson previously fetched from the REST
-        geojson: layerInfo.geojson,
-        filter: {
-          condition: 'and',
-          filters: [
-            {
-              field: 'name',
-              operator: 'neq',
-              value: 'Point 1',
-            },
-          ],
-        },
-        properties: {
-          // None of this data is available yet
-          minZoom: layerInfo.layerDefinition?.minZoom ?? 2,
-          maxZoom: layerInfo.layerDefinition?.maxZoom ?? 18,
-          opacity: layerInfo?.opacity ?? 1,
-          visibility: layerInfo.visibility ?? true,
-          legend: {
-            display: true,
-            field: 'name',
-          },
-        },
-        styling: [
-          {
-            filter: {
-              condition: 'and',
-              filters: [],
-            },
-            style: {
-              borderColor: 'black',
-              borderWidth: 1,
-              fillOpacity: layerInfo.opacity ?? 1,
-              borderOpacity: layerInfo.opacity ?? 1,
-              symbol: layerInfo.layerDefinition?.drawingInfo?.renderer
-                ?.symbol ?? {
-                color: '#0b55d6',
-                icon: 'location-dot',
-                size: 24,
-              },
-            },
-          },
-        ],
-        labels: {
-          filter: {
-            condition: 'and',
-            filters: [],
-          },
-          label: '{{name}}',
-          style: {
-            color: '#000000',
-            fontSize: 12,
-            fontWeight: 'normal',
-          },
-        },
-      })
-    );
-  }
-
   /** @returns the children of the current layer */
   public getChildren() {
     return this.children;
@@ -429,6 +283,7 @@ export class Layer {
   private setConfig(settings: any) {
     this.name = settings.name;
     this.type = settings.type as LayerType;
+    this.id = settings.id;
 
     if (settings.type !== 'group') {
       // Not group layer, add other properties
