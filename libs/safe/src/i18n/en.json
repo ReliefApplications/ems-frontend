@@ -1118,6 +1118,7 @@
 				},
 				"openSettings": "Open settings",
 				"tooltip": {
+					"displayMap": "Display map",
 					"saved": "Changes saved",
 					"unsaved": "Click on save button to upload changes",
 					"uploadFailed": "Record not saved. Click to see more details"
