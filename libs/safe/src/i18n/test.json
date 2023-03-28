@@ -1319,6 +1319,16 @@
 						"longitude": "******"
 					},
 					"geospatial": {
+						"geoFields": {
+							"addressFields": "******",
+							"city": "******",
+							"coordinates": "******",
+							"country": "******",
+							"district": "******",
+							"region": "******",
+							"street": "******"
+						},
+						"geocodingError": "******",
 						"layersStyles": {
 							"fill": {
 								"color": "******",

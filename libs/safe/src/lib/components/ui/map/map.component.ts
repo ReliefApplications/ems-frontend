@@ -229,6 +229,10 @@ export class MapComponent
         );
         // If we add a Marker, we will disable the control to set new markers(currently we want to add just one)
         this.map.pm.Toolbar.setButtonDisabled('drawMarker', true);
+        this.mapEvent.emit({
+          type: MapEventType.CLICK,
+          content: l.marker._latlng,
+        });
       }
 
       // subscribe to changes on the created layers
@@ -249,7 +253,7 @@ export class MapComponent
     });
 
     // updates question value on removing shapes
-    this.map.on('pm:remove', () => {
+    this.map.on('pm:remove', (l: any) => {
       const containsPointMarker = (feature: any) =>
         feature.geometry.type === 'Point';
       const content = getMapFeature(this.map);
@@ -257,6 +261,10 @@ export class MapComponent
       if (!content || !containsPointMarker(content)) {
         this.map.pm.Toolbar.setButtonDisabled('drawMarker', false);
       }
+      this.mapEvent.emit({
+        type: MapEventType.REMOVE_LAYER,
+        content: { latlng: l._latlng },
+      });
       this.mapEvent.emit({
         type: MapEventType.MAP_CHANGE,
         content,

@@ -1,4 +1,6 @@
-import { Question } from 'survey-angular';
+import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
+import { Question, JsonMetadata } from 'survey-angular';
+import { SurveyPropertyEditorFactory } from 'survey-creator';
 import { GeospatialMapComponent } from '../../components/geospatial-map/geospatial-map.component';
 import { DomService } from '../../services/dom/dom.service';
 
@@ -24,15 +26,54 @@ export const init = (Survey: any, domService: DomService): void => {
       type: 'text',
     },
     category: 'Custom Questions',
+    /** Initiate the geospatial question component */
     onInit: (): void => {
-      Survey.Serializer.addProperty('geospatial', {
-        name: 'geometry',
-        type: 'dropdown',
-        category: 'general',
+      const serializer: JsonMetadata = Survey.Serializer;
+      serializer.addProperty('geospatial', {
+        name: 'useGeocoding',
+        category: 'Map Properties',
+        type: 'boolean',
+        visibleIndex: 1,
         required: true,
-        default: 'Point',
-        choices: ['Point'],
       });
+      serializer.addProperty('geospatial', {
+        name: 'geoFields',
+        category: 'Map Properties',
+        type: 'addressFieldsTagBox',
+        visibleIndex: 2,
+        dependsOn: ['useGeocoding'],
+        visibleIf: (obj: null | any) => !!obj && !!obj.useGeocoding,
+      });
+
+      // Tagbox
+      const addressEditor = {
+        render: (editor: any, htmlElement: HTMLElement) => {
+          const question = editor.object;
+          const tagbox = domService.appendComponentToBody(
+            MultiSelectComponent,
+            htmlElement
+          );
+          const instance: MultiSelectComponent = tagbox.instance;
+          instance.value = question.geoFields;
+          instance.data = [
+            'Street',
+            'City',
+            'Country',
+            'District',
+            'Region',
+            'Coordinates',
+          ];
+
+          instance.registerOnChange(
+            (event: any) => (question.geoFields = event)
+          );
+        },
+      };
+
+      SurveyPropertyEditorFactory.registerCustomEditor(
+        'addressFieldsTagBox',
+        addressEditor
+      );
     },
     onAfterRender: (question: Question, el: HTMLElement): void => {
       // hides the input element
@@ -45,6 +86,20 @@ export const init = (Survey: any, domService: DomService): void => {
 
       // inits the map with the value of the question
       if (question.value) instance.data = question.value;
+
+      // inits and keep updated the useGeocoding boolean
+      // to get and store the address of points on the map
+      instance.useGeocoding = question.useGeocoding;
+      question.registerFunctionOnPropertyValueChanged('useGeocoding', () => {
+        instance.useGeocoding = question.useGeocoding;
+      });
+
+      // inits and keep updated the geoFields array
+      // to know what address info to display
+      instance.geoFields = question.geoFields ?? [];
+      question.registerFunctionOnPropertyValueChanged('geoFields', () => {
+        instance.geoFields = question.geoFields;
+      });
 
       // updates the question value when the map changes
       instance.mapChange.subscribe((res) => {
