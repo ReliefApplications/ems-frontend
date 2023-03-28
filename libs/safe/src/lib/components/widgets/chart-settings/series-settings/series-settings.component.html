@@ -3,10 +3,20 @@
     <!-- todo(translate) -->
     <mat-label>Serie</mat-label>
     <mat-select [formControl]="selectedSerie">
-      <mat-option *ngFor="let serie of formArray.value" [value]="serie.serie">
-        <!-- todo(translate) -->
-        {{ serie.serie || 'Other' }}
-      </mat-option>
+      <!-- if are pie/polar/donut/radar then show categories-->
+      <ng-container *ngIf="['pie', 'polar', 'donut', 'radar'].includes(chartType)">
+        <mat-option *ngFor="let category of formArray.value[0].categories" [value]="category.category">
+          <!-- todo(translate) -->
+          {{ category.category || 'Other' }}
+        </mat-option>
+      </ng-container>
+      <!-- if are not pie/polar/donut/radar -->
+      <ng-container *ngIf="!['pie', 'polar', 'donut', 'radar'].includes(chartType)">
+        <mat-option *ngFor="let serie of formArray.value" [value]="serie.serie">
+          <!-- todo(translate) -->
+          {{ serie.serie || 'Other' }}
+        </mat-option>
+      </ng-container>
     </mat-select>
   </mat-form-field>
   <div *ngIf="formGroup" [formGroup]="formGroup">

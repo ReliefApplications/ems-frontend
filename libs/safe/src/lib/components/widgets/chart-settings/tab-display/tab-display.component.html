@@ -332,7 +332,7 @@
             }}</mat-slide-toggle>
             <safe-divider></safe-divider>
           </div>
-          <safe-series-settings [formArray]="$any(formGroup.get('chart.series'))">
+          <safe-series-settings [formArray]="$any(formGroup.get('chart.series'))" [chartType]="$any(formGroup.get('chart.type')?.value)">
           </safe-series-settings>
         </mat-expansion-panel>
       </mat-accordion>

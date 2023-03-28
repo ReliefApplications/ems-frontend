@@ -128,13 +128,11 @@ export class TabDisplayComponent
             );
           }
         }
-        console.log(seriesFormArray);
         this.chartForm.setControl('series', seriesFormArray, {
           emitEvent: false,
         });
       });
 
-    console.log(this.formGroup.get('chart.series'));
   }
 
   /**
