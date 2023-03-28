@@ -3,8 +3,10 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
@@ -24,7 +26,7 @@ import { LayerModel } from '../../../../models/layer.model';
 })
 export class MapLayersComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnChanges
 {
   @ViewChild('layerTable', { static: true }) layerTable!: MatTable<any>;
   @Input() layerIds!: string[];
@@ -54,6 +56,13 @@ export class MapLayersComponent
     this.updateLayerList();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.layerIds) {
+      this.layerIds = changes.layerIds.currentValue;
+      this.updateLayerList();
+    }
+  }
+
   /**
    * Update layer list for Layers tab
    */
@@ -69,8 +78,7 @@ export class MapLayersComponent
    * @param index Index of the layer to remove
    */
   public onDeleteLayer(index: number) {
-    const layerToDelete = this.layerIds.splice(index, 1)[0];
-    this.deleteLayer.emit(layerToDelete);
+    this.deleteLayer.emit(this.mapLayers.data[index].id);
   }
 
   /** Opens a modal to add a new layer */

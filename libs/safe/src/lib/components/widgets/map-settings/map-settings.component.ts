@@ -261,10 +261,7 @@ export class SafeMapSettingsComponent
    */
   onDeleteLayer(layerIdToDelete: string): void {
     // Update layer form
-    const layerIds = this.tileForm
-      ?.get('layers')
-      ?.value.filter((layerId: string) => layerId !== layerIdToDelete);
-    this.tileForm?.get('layers')?.setValue(layerIds);
+    this.updateLayersForm(layerIdToDelete, true);
     // Update map view
     this.mapSettings = {
       basemap: this.tileForm?.value.basemap,
@@ -322,9 +319,15 @@ export class SafeMapSettingsComponent
    * Add given layer id to the layers form
    *
    * @param newLayerId New layer to set in the layers form
+   * @param toDelete Is to delete or not
    */
-  private updateLayersForm(newLayerId: string) {
-    const layers = [...(this.tileForm?.get('layers')?.value ?? []), newLayerId];
+  private updateLayersForm(newLayerId: string, toDelete = false) {
+    let layers = [...(this.tileForm?.get('layers')?.value ?? []), newLayerId];
+    if (toDelete) {
+      layers = this.tileForm
+        ?.get('layers')
+        ?.value.filter((layerId: string) => layerId !== newLayerId);
+    }
     this.tileForm?.get('layers')?.setValue(layers);
     this.tileForm?.markAsTouched();
     this.tileForm?.markAsDirty();
