@@ -1,6 +1,6 @@
 import { Geometry, FeatureCollection, Feature } from 'geojson';
+import { PopupElement } from '../../../../models/layer.model';
 import { IconName } from '../../../icon-picker/icon-picker.const';
-import { popupElement } from '../../../widgets/map-settings/map-layer/layer-popup/layer-popup.interface';
 
 export type GeoJSON =
   | Geometry
@@ -84,7 +84,7 @@ export interface LayerFormData {
   popupInfo: {
     title: string;
     description: string;
-    popupElements: popupElement[];
+    popupElements: PopupElement[];
   };
   datasource: {
     origin: 'resource' | 'refData';

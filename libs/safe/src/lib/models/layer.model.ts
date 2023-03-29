@@ -43,6 +43,26 @@ export interface LayerDefinition {
   };
 }
 
+export interface PopupElementText {
+  type: 'text';
+  text?: string;
+}
+
+export interface PopupElementFields {
+  type: 'fields';
+  title?: string;
+  description?: string;
+  fields?: string[];
+}
+
+export type PopupElementType = 'text' | 'fields';
+
+export interface PopupElement
+  extends Omit<PopupElementText, 'type'>,
+    Omit<PopupElementFields, 'type'> {
+  type: PopupElementType;
+}
+
 /**
  * Backend layer model
  */
