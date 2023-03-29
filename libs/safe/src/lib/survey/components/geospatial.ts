@@ -92,6 +92,9 @@ export const init = (Survey: any, domService: DomService): void => {
       instance.useGeocoding = question.useGeocoding;
       question.registerFunctionOnPropertyValueChanged('useGeocoding', () => {
         instance.useGeocoding = question.useGeocoding;
+        // If we switch back and forth for useGeoCoding
+        // Update the geoFields with selected fields in question
+        instance.geoFields = question.useGeocoding ? question.geoFields : [];
       });
 
       // inits and keep updated the geoFields array

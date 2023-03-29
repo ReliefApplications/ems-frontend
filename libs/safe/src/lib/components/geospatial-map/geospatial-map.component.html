@@ -7,7 +7,7 @@
   ></safe-geo-fields>
   <safe-map
     (mapEvent)="handleMapEvent($event)"
-    [useGeoman]="{ tools: true, geocoding: useGeocoding }"
+    [useGeoman]="useGeoman"
     [mapSettings]="mapSettings"
     [addOrDeleteLayer]="layerToAddOrDelete$ | async"
     [updateLayerOptions]="updateLayer$ | async"

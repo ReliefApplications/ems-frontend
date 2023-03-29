@@ -51,6 +51,18 @@ export interface ReverseGeocodeResult {
 }
 
 /**
+ * Default geocoding value
+ */
+const DEFAULT_GEOCODING = {
+  Coordinates: { lat: 0, lng: 0 },
+  City: '',
+  Country: '',
+  District: '',
+  Region: '',
+  Street: '',
+} as const;
+
+/**
  * Component for displaying the input map
  * of the geo spatial type question.
  */
@@ -88,18 +100,30 @@ export class GeospatialMapComponent
     drawRectangle: false,
     drawPolygon: false,
   };
+  useGeoman = { tools: true, geocoding: false };
+  mapChangeData!: any;
 
   // Geocoding
-  @Input() useGeocoding = false;
+  /**
+   * Update geocoding related properties
+   */
+  @Input() set useGeocoding(useGeocodingValue: boolean) {
+    this.useGeoman = {
+      ...this.useGeoman,
+      geocoding: useGeocodingValue,
+    };
+    if (this.mapChangeData) {
+      if (!useGeocodingValue) {
+        delete this.mapChangeData.geocoding;
+      } else {
+        this.mapChangeData.geocoding = this.geocodingResult;
+      }
+      this.onMapChange(this.mapChangeData);
+    }
+  }
+
   @Input() geoFields: (keyof ReverseGeocodeResult)[] = [];
-  public geocodingResult: ReverseGeocodeResult = {
-    Coordinates: { lat: 0, lng: 0 },
-    City: '',
-    Country: '',
-    District: '',
-    Region: '',
-    Street: '',
-  };
+  public geocodingResult: ReverseGeocodeResult = DEFAULT_GEOCODING;
 
   // output
   private timeout: ReturnType<typeof setTimeout> | null = null;
@@ -157,7 +181,10 @@ export class GeospatialMapComponent
     console.log(this.data);
     //init layers from question value
     if (this.data) {
-      this.geocodingResult = this.data.geocoding;
+      this.mapChangeData = this.data;
+      if (this.data.geocoding) {
+        this.geocodingResult = this.data.geocoding;
+      }
       const newLayer = L.geoJSON(this.data, {
         // Circles are not supported by geojson
         // We abstract them as markers with a radius property
@@ -192,6 +219,7 @@ export class GeospatialMapComponent
    * @param mapChangeData map change event
    */
   private onMapChange(mapChangeData: any): void {
+    this.mapChangeData = mapChangeData;
     if (this.timeout) clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
       this.mapChange.emit(mapChangeData);
@@ -244,14 +272,7 @@ export class GeospatialMapComponent
       case MapEventType.GEOMAN_REMOVE:
         {
           // Reset geocodingResult on layer removal
-          this.geocodingResult = {
-            Coordinates: { lat: 0, lng: 0 },
-            City: '',
-            Country: '',
-            District: '',
-            Region: '',
-            Street: '',
-          };
+          this.geocodingResult = DEFAULT_GEOCODING;
           // Update our layer object with the geocoding each time changes
           this.onMapChange(event.content);
         }
