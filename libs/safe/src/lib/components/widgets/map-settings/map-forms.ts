@@ -10,12 +10,12 @@ import {
   DefaultMapControls,
   MapConstructorSettings,
 } from '../../ui/map/interfaces/map.interface';
-import {
-  popupElement,
-  popupElementType,
-} from './map-layer/layer-popup/layer-popup.interface';
 import { LayerFormData } from '../../ui/map/interfaces/layer-settings.type';
-import { LayerModel } from '../../../models/layer.model';
+import {
+  LayerModel,
+  PopupElement,
+  PopupElementType,
+} from '../../../models/layer.model';
 import { IconName } from '../../icon-picker/icon-picker.const';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
@@ -130,6 +130,15 @@ const createLayerDefinitionForm = (value?: any): FormGroup => {
       });
   };
   setTypeListeners();
+  formGroup.get('featureReduction.type')?.valueChanges.subscribe((type) => {
+    formGroup.setControl(
+      'featureReduction',
+      createLayerFeatureReductionForm({
+        ...formGroup.get('featureReduction')?.value,
+        type,
+      })
+    );
+  });
   return formGroup;
 };
 
@@ -139,10 +148,17 @@ const createLayerDefinitionForm = (value?: any): FormGroup => {
  * @param value layer feature reduction
  * @returns layer feature reduction form
  */
-export const createLayerFeatureReductionForm = (value: any): FormGroup =>
-  fb.group({
-    type: [get(value, 'type')],
+export const createLayerFeatureReductionForm = (value: any) => {
+  const type = get(value, 'type');
+  const formGroup = fb.group({
+    type: [type],
+    ...(type === 'cluster' && {
+      drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
+      clusterRadius: get(value, 'clusterRadius', 60),
+    }),
   });
+  return formGroup;
+};
 
 /**
  * Create layer drawing info form
@@ -190,7 +206,7 @@ export const createPopupInfoForm = (value: any): FormGroup =>
     title: get(value, 'title', ''),
     description: get(value, 'description', ''),
     popupElements: fb.array(
-      get(value, 'popupElements', []).map((element: popupElement) =>
+      get(value, 'popupElements', []).map((element: PopupElement) =>
         createPopupElementForm(element)
       )
     ),
@@ -202,8 +218,8 @@ export const createPopupInfoForm = (value: any): FormGroup =>
  * @param value popup element value
  * @returns popup element form group
  */
-export const createPopupElementForm = (value: popupElement): FormGroup => {
-  switch (get(value, 'type', 'fields') as popupElementType) {
+export const createPopupElementForm = (value: PopupElement): FormGroup => {
+  switch (get(value, 'type', 'fields') as PopupElementType) {
     case 'text': {
       return fb.group({
         type: 'text',

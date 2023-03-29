@@ -1307,6 +1307,10 @@
 							"visibilityRange": "******",
 							"zoom": "******"
 						},
+						"reduction": {
+							"noReduction": "******",
+							"reduction": "******"
+						},
 						"style": {
 							"color": "******",
 							"icon": "******",

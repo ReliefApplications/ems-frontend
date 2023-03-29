@@ -1,8 +1,11 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, Input } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
+import {
+  PopupElement,
+  PopupElementType,
+} from '../../../../../models/layer.model';
 import { createPopupElementForm } from '../../map-forms';
-import { popupElement, popupElementType } from './layer-popup.interface';
 
 /**
  * Map layer popup settings component.
@@ -25,7 +28,7 @@ export class LayerPopupComponent {
    *
    * @param event Event emitted when a layer is reordered
    */
-  public onListDrop(event: CdkDragDrop<popupElement[]>) {
+  public onListDrop(event: CdkDragDrop<PopupElement[]>) {
     moveItemInArray(
       this.popupElements.controls,
       event.previousIndex,
@@ -38,7 +41,7 @@ export class LayerPopupComponent {
    *
    * @param {popupElementType} type content type (text or field)
    */
-  public onAddElement(type: popupElementType): void {
+  public onAddElement(type: PopupElementType): void {
     this.popupElements.push(createPopupElementForm({ type }));
   }
 

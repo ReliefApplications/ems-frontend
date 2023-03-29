@@ -1314,6 +1314,10 @@
 							"visibilityRange": "Plage de visibilité",
 							"zoom": "Zoom"
 						},
+						"reduction": {
+							"noReduction": "Pas de réduction",
+							"reduction": "Réduction"
+						},
 						"style": {
 							"color": "Couleur",
 							"icon": "Symbole",
