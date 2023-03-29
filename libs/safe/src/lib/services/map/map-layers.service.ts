@@ -176,7 +176,7 @@ export class SafeMapLayersService {
    * @param layerIds layer settings saved from the layer editor
    * @returns Observable of LayerSettingsI
    */
-  async createLayersFromIds(layerIds: string[]): Promise<Layer> {
+  async createLayersFromIds(layerIds: string[]): Promise<Layer[]> {
     // If current layers exists, we will use those values,
     // otherwise we will make the API call
     const layerSourceData$ = !this.currentLayers.length
@@ -222,7 +222,8 @@ export class SafeMapLayersService {
         })
       )
     );
-    return new Layer(formattedLayerSettings);
+
+    return formattedLayerSettings.children.map((child) => new Layer(child));
   }
 
   /**
