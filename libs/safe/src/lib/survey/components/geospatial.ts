@@ -85,7 +85,7 @@ export const init = (Survey: any, domService: DomService): void => {
       const instance: GeospatialMapComponent = map.instance;
 
       // inits the map with the value of the question
-      if (question.value) instance.data = question.value;
+      if (question.defaultValue) instance.data = question.defaultValue;
 
       // inits and keep updated the useGeocoding boolean
       // to get and store the address of points on the map
@@ -104,7 +104,7 @@ export const init = (Survey: any, domService: DomService): void => {
       // updates the question value when the map changes
       instance.mapChange.subscribe((res) => {
         console.log(res);
-        question.value = res;
+        question.defaultValue = res;
       });
     },
   };

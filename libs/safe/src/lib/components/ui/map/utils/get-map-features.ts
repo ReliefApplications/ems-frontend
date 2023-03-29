@@ -2,6 +2,7 @@
 
 import { Feature } from 'geojson';
 import * as L from 'leaflet';
+import { ReverseGeocodeResult } from '../../../geospatial-map/geospatial-map.component';
 
 /**
  * Gets the map feature as a GeoJSON.
@@ -37,6 +38,25 @@ export const getMapFeature = (map: any): Feature =>
     }
     return json;
   })[0];
+
+/**
+ * Map the given geolocation to our ReverseGeocodeResult interface
+ *
+ * @param geolocationData Geolocation Data
+ * @returns ReverseGeoCodeResult
+ */
+export const mapGeolocationData = (
+  geolocationData: any
+): ReverseGeocodeResult => {
+  return {
+    Coordinates: geolocationData.latlng,
+    City: geolocationData.address.City,
+    Country: geolocationData.address.CntryName,
+    District: geolocationData.address.District,
+    Region: geolocationData.address.Region,
+    Street: geolocationData.address.ShortLabel,
+  };
+};
 
 /**
  * Update Geoman layer position by type

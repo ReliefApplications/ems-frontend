@@ -29,7 +29,7 @@ export class SafeMapControlsService {
   public measureControls: any = {};
   public fullscreenControl!: L.Control;
   public lang!: any;
-  public useGeomanTools = false;
+  public useGeoman: { tools: boolean; geocoding: boolean } | null = null;
   // === THEME ===
   private primaryColor = '';
   // === Time Dimension ===
@@ -116,7 +116,7 @@ export class SafeMapControlsService {
         // results.clearLayers();
 
         for (let i = data.results.length - 1; i >= 0; i--) {
-          if (this.useGeomanTools) {
+          if (this.useGeoman?.tools) {
             updateGeoManLayerPosition(map, data.results[i]);
           }
           const coordinates = L.latLng(data.results[i].latlng);

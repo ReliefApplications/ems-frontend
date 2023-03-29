@@ -2,7 +2,6 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
-  Inject,
   Input,
   Output,
 } from '@angular/core';
@@ -21,7 +20,6 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/public-api';
 
 // Leaflet
 import '@geoman-io/leaflet-geoman-free';
-import * as Geocoding from 'esri-leaflet-geocoder';
 import * as L from 'leaflet';
 // import { FeatureProperties } from '../ui/map/interfaces/layer-settings.type';
 // import { IconName } from '../ui/map/const/fa-icons';
@@ -31,8 +29,9 @@ import { CommonModule } from '@angular/common';
 import { MapModule } from '../ui/map/map.module';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
-import { isEqual } from 'lodash';
 import { SafeGeoFieldsModule } from './geo-fields/geo-fields.module';
+import { createCustomDivIcon } from '../ui/map/utils/create-div-icon';
+import { IconName } from '../icon-picker/icon-picker.const';
 
 // type StyleChange =
 //   typeof LayerStylingComponent.prototype.edit extends EventEmitter<infer T>
@@ -43,15 +42,12 @@ import { SafeGeoFieldsModule } from './geo-fields/geo-fields.module';
  * operation, used to save in the GeoJSON the address info
  */
 export interface ReverseGeocodeResult {
-  latlng: { lat: number; lng: number };
-  address: {
-    City: string;
-    CntryName: string;
-    District: string;
-    Region: string;
-    ShortLabel: string; // Street Info
-    [key: string]: string;
-  };
+  Coordinates: { lat: number; lng: number };
+  City: string;
+  Country: string;
+  District: string;
+  Region: string;
+  Street: string;
 }
 
 /**
@@ -70,7 +66,7 @@ export class GeospatialMapComponent
   extends SafeUnsubscribeComponent
   implements AfterViewInit
 {
-  @Input() data?: Feature | FeatureCollection;
+  @Input() data?: any;
   @Input() geometry = 'Point';
 
   // === MAP ===
@@ -94,10 +90,16 @@ export class GeospatialMapComponent
   };
 
   // Geocoding
-  private esriApiKey: string;
-  public geocodingResults: ReverseGeocodeResult[] = [];
-  @Input() useGeocoding = true;
-  @Input() geoFields: string[] = [];
+  @Input() useGeocoding = false;
+  @Input() geoFields: (keyof ReverseGeocodeResult)[] = [];
+  public geocodingResult: ReverseGeocodeResult = {
+    Coordinates: { lat: 0, lng: 0 },
+    City: '',
+    Country: '',
+    District: '',
+    Region: '',
+    Street: '',
+  };
 
   // output
   private timeout: ReturnType<typeof setTimeout> | null = null;
@@ -106,18 +108,9 @@ export class GeospatialMapComponent
   /**
    * Component for displaying the input map
    * of the geospatial type question.
-   *
-   * @param environment environment
-   * @param snackbarService SafeSnackBarService
-   * @param translate TranslateService
    */
-  constructor(
-    @Inject('environment') environment: any,
-    private snackbarService: SafeSnackBarService,
-    private translate: TranslateService
-  ) {
+  constructor() {
     super();
-    this.esriApiKey = environment.esriApiKey;
   }
 
   ngAfterViewInit(): void {
@@ -157,36 +150,40 @@ export class GeospatialMapComponent
     this.setDataLayers();
   }
 
-  /** Creates map */
+  /**
+   * Draw the question default value
+   */
   private setDataLayers(): void {
     console.log(this.data);
-    // init layers from question value
-    // if (this.data.features.length > 0) {
-    //   const newLayer = L.geoJSON(this.data, {
-    //     // Circles are not supported by geojson
-    //     // We abstract them as markers with a radius property
-    //     pointToLayer: (feature, latlng) => {
-    //       if (feature.properties.radius) {
-    //         return new L.Circle(latlng, feature.properties.radius);
-    //       } else {
-    //         const icon = createCustomDivIcon({
-    //           color: feature.properties.style?.fillColor || '#3388ff',
-    //           opacity: feature.properties.style?.fillOpacity || 1,
-    //           icon:
-    //             (feature.properties.style?.icon as IconName) ||
-    //             'leaflet_default',
-    //           size: feature.properties.style?.iconSize || 12,
-    //         });
-    //         return new L.Marker(latlng).setIcon(icon);
-    //       }
-    //     },
-    //   } as L.GeoJSONOptions<FeatureProperties>);
-    //   const baseLayer: BaseLayerTree = {
-    //     label: '',
-    //     layer: newLayer,
-    //   };
-    //   this.addOrDeleteLayer.next({ layerData: baseLayer, isDelete: false });
-    // }
+    //init layers from question value
+    if (this.data) {
+      this.geocodingResult = this.data.geocoding;
+      const newLayer = L.geoJSON(this.data, {
+        // Circles are not supported by geojson
+        // We abstract them as markers with a radius property
+        pointToLayer: (feature, latlng) => {
+          // Update geocoding result
+          if (feature.properties.radius) {
+            return new L.Circle(latlng, feature.properties.radius);
+          } else {
+            const icon = createCustomDivIcon({
+              color: feature.properties.style?.fillColor || '#3388ff',
+              opacity: feature.properties.style?.fillOpacity || 1,
+              icon:
+                (feature.properties.style?.icon as IconName) ||
+                'leaflet_default',
+              size: feature.properties.style?.iconSize || 24,
+            });
+            return new L.Marker(latlng).setIcon(icon);
+          }
+        },
+      });
+      const baseLayer: BaseLayerTree = {
+        label: '',
+        layer: newLayer,
+      };
+      this.addOrDeleteLayer.next({ layerData: baseLayer, isDelete: false });
+    }
   }
 
   /**
@@ -225,42 +222,6 @@ export class GeospatialMapComponent
   //     }
   //   }
   // }
-  /**
-   * Get the address of a given point on the map using the API
-   *
-   * @param {{lat: number, lng: number}} latlng coordinates of the point
-   * @param latlng.lat latitude
-   * @param latlng.lng longitude
-   * @returns A promise that resolves to void.
-   */
-  private getAddressOnClick(latlng: {
-    lat: number;
-    lng: number;
-  }): Promise<void> {
-    return new Promise((resolve) => {
-      (Geocoding as any)
-        .reverseGeocode({
-          apikey: this.esriApiKey,
-        })
-        .latlng(latlng)
-        .run((error: any, result: any) => {
-          if (error) {
-            this.snackbarService.openSnackBar(
-              this.translate.instant(
-                'components.widget.settings.map.geospatial.geocodingError'
-              ),
-              { error: true }
-            );
-            resolve();
-            return;
-          }
-          result.latlng.lat = latlng.lat;
-          result.latlng.lng = latlng.lng;
-          this.geocodingResults.push(result);
-          resolve();
-        });
-    });
-  }
 
   /**
    * Handle leaflet map event
@@ -276,15 +237,24 @@ export class GeospatialMapComponent
       case MapEventType.MAP_CHANGE:
         this.onMapChange(event.content);
         break;
-      case MapEventType.CLICK:
-        this.getAddressOnClick(event.content);
+      case MapEventType.GEOMAN_ADD:
+        this.geocodingResult = event.content.geocoding;
+        this.onMapChange(event.content);
         break;
-      case MapEventType.REMOVE_LAYER:
-        // Remove address info from the deleted marker from geocodingResults
-        this.geocodingResults = this.geocodingResults.filter(
-          // eslint-disable-next-line no-underscore-dangle
-          (r) => !isEqual(r.latlng, event.content.latlng)
-        );
+      case MapEventType.GEOMAN_REMOVE:
+        {
+          // Reset geocodingResult on layer removal
+          this.geocodingResult = {
+            Coordinates: { lat: 0, lng: 0 },
+            City: '',
+            Country: '',
+            District: '',
+            Region: '',
+            Street: '',
+          };
+          // Update our layer object with the geocoding each time changes
+          this.onMapChange(event.content);
+        }
         break;
       default:
         break;

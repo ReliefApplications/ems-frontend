@@ -1327,13 +1327,13 @@
 					},
 					"geospatial": {
 						"geoFields": {
-							"addressFields": "Adresse",
-							"city": "Ville",
-							"coordinates": "Coordonnées",
-							"country": "Pays",
-							"district": "District",
-							"region": "Région",
-							"street": "Rue"
+							"City": "Ville",
+							"Coordinates": "Coordonnées",
+							"Country": "Pays",
+							"District": "District",
+							"Region": "Région",
+							"Street": "Rue",
+							"addressFields": "Adresse"
 						},
 						"geocodingError": "Un problème est survenu lors de la récupération de l'adresse du point.",
 						"layersStyles": {

@@ -34,8 +34,8 @@ export enum MapEventType {
   MOVE_END,
   ZOOM_END,
   SELECTED_LAYER,
-  CLICK,
-  REMOVE_LAYER,
+  GEOMAN_ADD,
+  GEOMAN_REMOVE,
 }
 
 /** Map event interface */

@@ -1320,13 +1320,13 @@
 					},
 					"geospatial": {
 						"geoFields": {
-							"addressFields": "******",
-							"city": "******",
-							"coordinates": "******",
-							"country": "******",
-							"district": "******",
-							"region": "******",
-							"street": "******"
+							"City": "******",
+							"Coordinates": "******",
+							"Country": "******",
+							"District": "******",
+							"Region": "******",
+							"Street": "******",
+							"addressFields": "******"
 						},
 						"geocodingError": "******",
 						"layersStyles": {

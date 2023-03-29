@@ -3,11 +3,11 @@
   <safe-geo-fields
     class="flex flex-col flex-1"
     [geoFields]="geoFields"
-    [geocodingResults]="geocodingResults"
+    [geocodingResult]="geocodingResult"
   ></safe-geo-fields>
   <safe-map
     (mapEvent)="handleMapEvent($event)"
-    [useGeomanTools]="true"
+    [useGeoman]="{ tools: true, geocoding: useGeocoding }"
     [mapSettings]="mapSettings"
     [addOrDeleteLayer]="layerToAddOrDelete$ | async"
     [updateLayerOptions]="updateLayer$ | async"
@@ -15,7 +15,7 @@
     class="lg:flex-1 max-lg:min-w-full h-96 lg:min-h-full"
   ></safe-map>
   <!-- <safe-layer-styling
-    class="h-96 grow basis-72"
+    class="flex flex-col flex-1"
     *ngIf="selectedLayer"
     [selectedLayer]="selectedLayer"
     (close)="selectedLayer = undefined"

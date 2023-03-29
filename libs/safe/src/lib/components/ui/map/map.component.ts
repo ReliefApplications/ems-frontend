@@ -16,6 +16,7 @@ import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
 import 'leaflet-fullscreen';
 import 'esri-leaflet';
+import * as Geocoding from 'esri-leaflet-geocoder';
 import * as Vector from 'esri-leaflet-vector';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
@@ -38,13 +39,14 @@ import { SafeMapControlsService } from '../../../services/map/map-controls.servi
 // import 'leaflet';
 import * as L from 'leaflet';
 import { Layer } from './layer';
-import { getMapFeature } from './utils/get-map-features';
+import { getMapFeature, mapGeolocationData } from './utils/get-map-features';
 import { LayerFormData } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
 import { createCustomDivIcon } from './utils/create-div-icon';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/language';
 import { ArcgisService } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
+import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
 
 /**
  * Cleans the settings object from null values
@@ -75,7 +77,7 @@ export class MapComponent
   implements AfterViewInit
 {
   @Input() controls!: any;
-  @Input() useGeomanTools = false;
+  @Input() useGeoman: { tools: boolean; geocoding: boolean } | null = null;
   /** Map settings setter */
   @Input() set mapSettings(settings: MapConstructorSettings) {
     if (settings) {
@@ -116,7 +118,7 @@ export class MapComponent
       this.layerControl.addTo(this.map);
 
       // When using geoman tools we update the map status and it's layers always for each change
-      if (this.useGeomanTools) {
+      if (this.useGeoman?.tools) {
         this.mapEvent.emit({
           type: MapEventType.MAP_CHANGE,
           content: getMapFeature(this.map),
@@ -165,6 +167,7 @@ export class MapComponent
    * @param translate Angular translate service
    * @param mapControlsService Map controls handler service
    * @param arcgisService Shared arcgis service
+   * @param snackbarService SnarckbarService
    * @param mapLayersService SafeMapLayersService
    */
   constructor(
@@ -172,6 +175,7 @@ export class MapComponent
     private translate: TranslateService,
     private mapControlsService: SafeMapControlsService,
     private arcgisService: ArcgisService,
+    private snackbarService: SafeSnackBarService,
     private mapLayersService: SafeMapLayersService
   ) {
     super();
@@ -222,7 +226,7 @@ export class MapComponent
     // We will enable this one for all layer types(including Markers) in order to auto blur when one marker is set
     this.map.pm.setGlobalOptions({ continueDrawing: false });
     // updates question value on adding new shape
-    this.map.on('pm:create', (l: any) => {
+    this.map.on('pm:create', async (l: any) => {
       if (l.shape === 'Marker') {
         l.layer.setIcon(
           createCustomDivIcon({
@@ -234,10 +238,39 @@ export class MapComponent
         );
         // If we add a Marker, we will disable the control to set new markers(currently we want to add just one)
         this.map.pm.Toolbar.setButtonDisabled('drawMarker', true);
-        this.mapEvent.emit({
-          type: MapEventType.CLICK,
-          content: l.marker._latlng,
-        });
+        if (this.useGeoman?.geocoding) {
+          // Get the address of a given point on the map using the API
+          await new Promise((resolve) => {
+            (Geocoding as any)
+              .reverseGeocode({
+                apikey: this.esriApiKey,
+              })
+              .latlng(l.marker._latlng)
+              .run((error: any, result: any) => {
+                if (error) {
+                  this.snackbarService.openSnackBar(
+                    this.translate.instant(
+                      'components.widget.settings.map.geospatial.geocodingError'
+                    ),
+                    { error: true }
+                  );
+                  resolve;
+                  return;
+                }
+                result.latlng.lat = l.marker._latlng.lat;
+                result.latlng.lng = l.marker._latlng.lng;
+                console.log(result);
+                this.mapEvent.emit({
+                  type: MapEventType.GEOMAN_ADD,
+                  content: {
+                    ...getMapFeature(this.map),
+                    geocoding: mapGeolocationData(result),
+                  },
+                });
+                resolve;
+              });
+          });
+        }
       }
 
       // subscribe to changes on the created layers
@@ -258,7 +291,7 @@ export class MapComponent
     });
 
     // updates question value on removing shapes
-    this.map.on('pm:remove', (l: any) => {
+    this.map.on('pm:remove', () => {
       const containsPointMarker = (feature: any) =>
         feature.geometry.type === 'Point';
       const content = getMapFeature(this.map);
@@ -267,12 +300,8 @@ export class MapComponent
         this.map.pm.Toolbar.setButtonDisabled('drawMarker', false);
       }
       this.mapEvent.emit({
-        type: MapEventType.REMOVE_LAYER,
-        content: { latlng: l._latlng },
-      });
-      this.mapEvent.emit({
-        type: MapEventType.MAP_CHANGE,
-        content,
+        type: MapEventType.GEOMAN_REMOVE,
+        content: null,
       });
     });
 
@@ -297,14 +326,14 @@ export class MapComponent
 
   /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
-    this.mapControlsService.useGeomanTools = this.useGeomanTools;
+    this.mapControlsService.useGeoman = this.useGeoman;
     // Creates the map and adds all the controls we use.
     this.drawMap();
     /**
      * If Geoman tools are going to be used we will set up related listeners
      * Otherwise the map listeners for the user interaction with it
      */
-    if (this.useGeomanTools) {
+    if (this.useGeoman?.tools) {
       this.setUpPmListeners();
     } else {
       this.setUpMapListeners();
@@ -312,12 +341,7 @@ export class MapComponent
 
     setTimeout(() => {
       this.map.invalidateSize();
-      if (this.useGeomanTools) {
-        this.mapEvent.emit({
-          type: MapEventType.MAP_CHANGE,
-          content: getMapFeature(this.map),
-        });
-      } else {
+      if (!this.useGeoman?.tools) {
         this.mapEvent.emit({
           type: MapEventType.FIRST_LOAD,
           content: {
@@ -432,14 +456,14 @@ export class MapComponent
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
 
     if (this.controls) {
-      if (this.useGeomanTools) {
+      if (this.useGeoman?.tools) {
         this.map.pm.addControls(this.controls);
       } else {
         this.controls.forEach((control: any) => this.map.addControl(control));
       }
     }
 
-    if (!this.useGeomanTools) {
+    if (!this.useGeoman?.tools) {
       this.setMapControls(controls, true);
     }
   }

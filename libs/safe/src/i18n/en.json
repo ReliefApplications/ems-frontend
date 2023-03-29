@@ -1320,13 +1320,13 @@
 					},
 					"geospatial": {
 						"geoFields": {
-							"addressFields": "Address",
-							"city": "City",
-							"coordinates": "Coordinates",
-							"country": "Country",
-							"district": "District",
-							"region": "Region",
-							"street": "Street"
+							"City": "City",
+							"Coordinates": "Coordinates",
+							"Country": "Country",
+							"District": "District",
+							"Region": "Region",
+							"Street": "Street",
+							"addressFields": "Address"
 						},
 						"geocodingError": "Something went wrong while retrieving the address for the point.",
 						"layersStyles": {
