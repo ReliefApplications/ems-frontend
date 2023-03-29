@@ -11,7 +11,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeDividerModule } from '../../../../../ui/divider/divider.module';
 import { SafeButtonModule } from '../../../../../ui/button/button.module';
-import { popupElement } from '../layer-popup.interface';
+import { PopupElement } from '../../../../../../models/layer.model';
 
 /**
  * Popup fields element component.
@@ -53,7 +53,8 @@ export class FieldsElementComponent {
    *
    * @param event Event emitted when a layer is reordered
    */
-  public onListDrop(event: CdkDragDrop<popupElement[]>) {
+  public onListDrop(event: CdkDragDrop<PopupElement[]>) {
+    // todo(gis): change type there
     moveItemInArray(this.fields, event.previousIndex, event.currentIndex);
   }
 

@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
-import { createClusterForm } from '../../map-forms';
+import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 /** Layer cluster settings */
 @Component({
@@ -9,13 +8,6 @@ import { createClusterForm } from '../../map-forms';
   styleUrls: ['./layer-cluster.component.scss'],
 })
 export class LayerClusterComponent {
-  public form: UntypedFormGroup;
+  @Input() formGroup!: FormGroup;
   public expansivePanels = ['fields', 'label', 'popups'];
-
-  /**
-   * Creates an instance of LayerClusterComponent.
-   */
-  constructor() {
-    this.form = createClusterForm();
-  }
 }

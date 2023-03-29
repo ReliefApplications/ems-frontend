@@ -9,7 +9,6 @@ import {
   LayerType,
   LayerFilter,
   GeoJSON,
-  LayerStyle,
 } from './interfaces/layer-settings.type';
 import {
   createCustomDivIcon,
@@ -20,6 +19,7 @@ import {
   LayerDefinition,
   LayerModel,
   LayerSymbol,
+  PopupInfo,
 } from '../../../models/layer.model';
 import { geoJSONLayer } from './leaflet.layer';
 
@@ -56,34 +56,6 @@ export const DEFAULT_LAYER_FILTER: LayerFilter = {
   condition: 'and',
   filters: [],
 };
-
-/** Default layer style */
-export const DEFAULT_LAYER_STYLE = {
-  // TODO: Get primary color from theme
-  borderColor: '#0b55d6',
-  borderWidth: 2,
-  fillOpacity: 1,
-  borderOpacity: 1,
-  heatmap: {
-    gradient: {
-      0: '#08d1d1',
-      0.25: '#08d169',
-      0.5: '#deba07',
-      0.75: '#de6707',
-      1: '#de0715',
-    },
-    max: 1.0,
-    radius: 10,
-    blur: 15,
-    minOpacity: 0.5,
-    maxZoom: 18,
-  },
-  symbol: {
-    color: '#0b55d6',
-    icon: 'location-dot',
-    size: 24,
-  },
-} as Required<LayerStyle>;
 
 /** Default gradient for heatmap */
 const DEFAULT_GRADIENT = [
@@ -181,7 +153,7 @@ export class Layer implements LayerModel {
   public layerDefinition?: LayerDefinition;
 
   // Popup info
-  public popupInfo?: { popupElements: string; description: string } | undefined;
+  public popupInfo?: PopupInfo;
   public createdAt!: Date;
   public updatedAt!: Date;
 
@@ -414,7 +386,7 @@ export class Layer implements LayerModel {
         'drawingInfo.renderer.symbol.color',
         'blue'
       ),
-      size: get(this.layerDefinition, 'drawingInfo.renderer.symbol.symbol', 24),
+      size: get(this.layerDefinition, 'drawingInfo.renderer.symbol.size', 24),
     };
 
     // options used for parsing geojson to leaflet layer
@@ -501,26 +473,30 @@ export class Layer implements LayerModel {
             this.layer = L.heatLayer(heatArray, heatmapOptions);
             return this.layer;
           default:
-            console.log(this.layerDefinition?.featureReduction?.type);
             switch (get(this.layerDefinition, 'featureReduction.type')) {
               case 'cluster':
-                console.log('cluster !!');
+                const clusterSymbol: LayerSymbol = get(
+                  this.layerDefinition,
+                  'featureReduction.drawingInfo.renderer.symbol',
+                  symbol
+                );
+                console.log(clusterSymbol);
                 const clusterGroup = L.markerClusterGroup({
+                  maxClusterRadius: get(
+                    this.layerDefinition,
+                    'featureReduction.clusterRadius',
+                    80
+                  ),
                   zoomToBoundsOnClick: false,
                   iconCreateFunction: (cluster) => {
-                    const symbol: LayerSymbol = {
-                      style: 'location-dot',
-                      color: 'blue',
-                      size: 24,
-                    };
                     const htmlTemplate = document.createElement('label');
                     htmlTemplate.textContent = cluster
                       .getChildCount()
                       .toString();
                     return createCustomDivIcon(
                       {
-                        icon: symbol.style,
-                        color: symbol.color,
+                        icon: clusterSymbol.style,
+                        color: clusterSymbol.color,
                         size:
                           (cluster.getChildCount() / 50) *
                             (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
@@ -541,40 +517,6 @@ export class Layer implements LayerModel {
                 return this.layer;
             }
         }
-
-      // gets the first style of the styling array
-      // would be nice to have it check that if every point
-      // in the cluster satisfies the same filter, then it
-      // uses that style for the entire cluster,
-      // but I can't find a way to add properties to the clusters' points
-      // console.log('ici !');
-      // const clusterGroup = L.markerClusterGroup({
-      //   zoomToBoundsOnClick: false,
-      //   iconCreateFunction: (cluster) => {
-      //     const iconProperties = {
-      //       icon: this.firstStyle.icon as IconName | 'location-dot',
-      //       color: this.firstStyle.fillColor,
-      //       size:
-      //         (cluster.getChildCount() / 50) *
-      //           (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
-      //         MIN_CLUSTER_SIZE,
-      //       opacity: this.firstStyle.fillOpacity,
-      //     };
-      //     // Use label as it's an inline element therefor does not take all available space
-      //     const htmlTemplate = document.createElement('label'); // todo(gis): better labels
-      //     htmlTemplate.textContent = cluster.getChildCount().toString();
-      //     return createCustomDivIcon(
-      //       iconProperties,
-      //       htmlTemplate,
-      //       'leaflet-data-marker'
-      //     );
-      //   },
-      // });
-      // const clusterLayer = geoJSONLayer(data, geoJSONopts);
-      // console.log(clusterLayer.legend);
-      // clusterGroup.addLayer(clusterLayer);
-      // this.layer = clusterGroup;
-      // return this.layer;
     }
   }
 
