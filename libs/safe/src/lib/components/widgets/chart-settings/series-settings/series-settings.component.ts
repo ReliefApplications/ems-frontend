@@ -13,6 +13,7 @@ export class SafeSeriesSettingsComponent implements OnInit, OnChanges {
   @Input() formArray!: FormArray;
   @Input() chartType!: any;
   public formGroup?: FormGroup;
+  private formArraySaved!: FormArray;
 
   public fillTypes = ['solid', 'gradient'];
   public interpolationTypes = ['linear', 'cubic', 'step'];
@@ -21,25 +22,18 @@ export class SafeSeriesSettingsComponent implements OnInit, OnChanges {
   selectedSerie = new FormControl<string | undefined>(undefined);
 
   ngOnInit(): void {
+
     this.selectedSerie.valueChanges.subscribe((value) => {
       if (this.formArray.value.length > 0) {
         if(['pie', 'polar', 'donut', 'radar'].includes(this.chartType)){
-          let seriesFormArray = this.formArray.controls[0] as FormGroup
-          seriesFormArray = seriesFormArray.controls.categories as FormGroup
-          
-          let i = 0;
-          while(seriesFormArray.controls[i] != undefined){
-            if(seriesFormArray.controls[i].value.category === value){
-              this.formGroup = seriesFormArray.controls[i] as FormGroup;
-              break;
-            }
-            i++;
-          }
+          const categoriesFormArray = this.formArraySaved.at(0)?.get('categories') as FormArray;
+          this.formGroup = categoriesFormArray.controls.find(
+            (x) => x.value.category === value
+            ) as FormGroup;
         }else{
           this.formGroup = this.formArray.controls.find(
-            (x) => {
-              x.value.serie === value;
-            }) as FormGroup;
+            (x) => x.value.serie === value
+          ) as FormGroup;
         }
       }      
     });
@@ -48,13 +42,15 @@ export class SafeSeriesSettingsComponent implements OnInit, OnChanges {
   ngOnChanges(): void {
     if (this.formArray.value.length > 0) {
       if (!this.selectedSerie.value) {
+        console.log(this.formArray);
+        this.formArraySaved = this.formArray;
         if(['pie', 'polar', 'donut', 'radar'].includes(this.chartType)){
-          let seriesFormArray = this.formArray.controls[0] as FormGroup
-          seriesFormArray = seriesFormArray.controls.categories as FormGroup
-          this.formGroup = seriesFormArray.controls[0] as FormGroup;
+          const categoriesFormArray = this.formArray.at(0)?.get('categories') as FormArray;
+          this.formGroup = categoriesFormArray.at(0) as FormGroup;
           this.selectedSerie.setValue(this.formGroup.value.category, {
             emitEvent: false,
           });
+        
         }else{
           this.formGroup = this.formArray.at(0) as FormGroup;
           this.selectedSerie.setValue(this.formGroup.value.serie, {
@@ -63,20 +59,22 @@ export class SafeSeriesSettingsComponent implements OnInit, OnChanges {
         }
       } else {
         if(['pie', 'polar', 'donut', 'radar'].includes(this.chartType)){
-          let seriesFormArray = this.formArray.controls[0] as FormGroup
-          seriesFormArray = seriesFormArray.controls.categories as FormGroup
-          
-          const index = (seriesFormArray.value as any[]).indexOf(
+          console.log(this.formArraySaved);
+          const categoriesFormArray = this.formArraySaved.at(0)?.get('categories') as FormArray;
+            
+          const index = (categoriesFormArray.value as any[]).indexOf(
             (x:any) => x.category === this.selectedSerie
           );
+          
           if(index >= 0){
-            this.formGroup = seriesFormArray.controls[index] as FormGroup;
+            this.formGroup = categoriesFormArray.at(index) as FormGroup;
           }else{
-            this.formGroup = seriesFormArray.controls[0] as FormGroup;
+            this.formGroup = categoriesFormArray.at(0) as FormGroup;
             this.selectedSerie.setValue(this.formGroup.value.category, {
               emitEvent: false,
             });
           }
+
         }else{
           const index = (this.formArray.value as any[]).indexOf(
             (x: any) => x.serie === this.selectedSerie

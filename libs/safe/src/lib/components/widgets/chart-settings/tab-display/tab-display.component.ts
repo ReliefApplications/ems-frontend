@@ -133,6 +133,7 @@ export class TabDisplayComponent
         });
       });
 
+    console.log(this.formGroup.get('chart.series'));
   }
 
   /**

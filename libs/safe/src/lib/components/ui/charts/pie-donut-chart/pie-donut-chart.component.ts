@@ -64,6 +64,17 @@ export class SafePieDonutChartComponent implements OnChanges {
   };
 
   ngOnChanges(): void {
+    // const series = get(this.options, 'series', []);
+
+    // this.series[0]?.data?.map((x:any, i:any) => {
+    //   //get category
+    //   const category = series[0].categories.find((category: any) => x.category === category.category);
+    //   //get color
+    //   const color: any =
+    //     get(category, 'color', null) ||
+    //     get(this.options, `palette[${i}]`, undefined);
+
+    // },
     this.showCategoryLabel = get(this.options, 'labels.showCategory', false);
     if (get(this.options, 'labels.showValue', false))
       this.showValueLabels = get(this.options, 'labels.valueType', false);
@@ -72,14 +83,34 @@ export class SafePieDonutChartComponent implements OnChanges {
         (acc: number, curr: any) => acc + curr.field,
         0
       ) || 0;
+    
+    const series = get(this.options, 'series', []);
+    
+    let color: any = [];
+    //getting the array of colors
+    this.series.map((x) => {  
+      color = x.data.map(((val:any) => (
+        series[0].categories.find((y:any) => (
+          y.category === val.category
+        ))
+      ).color ))
+    })
 
+    for(let i = 0; i < color.length; i++){
+      if(!color[i]){
+        color[i] = get(this.options, `palette[${i}]`, 'undefined');
+      }
+    }
+
+    //console.log(color);
+        
     this.chartData.datasets = this.series.map((x) => ({
       ...x,
       ...(this.options.palette && {
-        backgroundColor: this.options.palette,
-        hoverBorderColor: this.options.palette,
-        hoverBackgroundColor: this.options.palette?.map((color: any) =>
-          addTransparency(color)
+        backgroundColor: color,
+        hoverBorderColor: color,
+        hoverBackgroundColor: color.map((c: any) =>
+          c ? addTransparency(c) : undefined
         ),
       }),
       hoverOffset: 4,
