@@ -1306,6 +1306,10 @@
 							"visibilityRange": "Visibility range",
 							"zoom": "Current zoom"
 						},
+						"reduction": {
+							"noReduction": "No reduction",
+							"reduction": "Reduction"
+						},
 						"style": {
 							"color": "Color",
 							"icon": "Icon",
