@@ -1312,6 +1312,14 @@
 							"icon": "******",
 							"size": "******",
 							"stylingType": "{{layerType}} ******"
+						},
+						"styling": {
+							"heatmapOptions": {
+								"blur": "******",
+								"gradient": "******",
+								"minOpacity": "******",
+								"radius": "******"
+							}
 						}
 					},
 					"errors": {

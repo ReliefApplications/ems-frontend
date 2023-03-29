@@ -172,6 +172,7 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup => {
         ],
         blur: [get<number>(value, 'blur', 15), Validators.required],
         radius: [get<number>(value, 'radius', 25), Validators.required],
+        minOpacity: [get<number>(value, 'minOpacity', 0), Validators.required],
       }),
     }),
   });
