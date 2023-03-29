@@ -15,9 +15,9 @@ import {
   MapEvent,
   MapEventType,
 } from '../../ui/map/interfaces/map.interface';
-import { takeUntil } from 'rxjs';
+import { takeUntil, tap } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { Layer } from '../../../models/layer.model';
+import { LayerModel } from '../../../models/layer.model';
 import { MapLayerComponent } from './map-layer/map-layer.component';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
@@ -36,7 +36,7 @@ export class SafeMapSettingsComponent
 {
   public currentTab: 'parameters' | 'layers' | 'layer' | null = 'parameters';
   public mapSettings!: MapConstructorSettings;
-
+  public layerIds: string[] = [];
   // === REACTIVE FORM ===
   tileForm: UntypedFormGroup | undefined;
 
@@ -45,7 +45,7 @@ export class SafeMapSettingsComponent
 
   // === WIDGET ===
   @Input() tile: any;
-  public openedLayer?: Layer;
+  public openedLayer?: LayerModel;
 
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
@@ -74,6 +74,7 @@ export class SafeMapSettingsComponent
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     this.tileForm = createMapWidgetFormGroup(this.tile.id, this.tile.settings);
+    this.layerIds = this.tileForm.get('layers')?.value;
     this.change.emit(this.tileForm);
 
     const defaultMapSettings: MapConstructorSettings = {
@@ -126,6 +127,12 @@ export class SafeMapSettingsComponent
           arcGisWebMap: value,
         } as MapConstructorSettings)
       );
+    this.tileForm
+      .get('layers')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((layerIds) => {
+        this.layerIds = layerIds;
+      });
   }
 
   /**
@@ -227,8 +234,7 @@ export class SafeMapSettingsComponent
    *
    * @param layer layer to open
    */
-  onEditLayer(layer?: Layer): void {
-    console.log(layer);
+  onEditLayer(layer?: LayerModel): void {
     this.openedLayer = layer;
     // We initialize the map settings to default value once we display the map layer editor
     (this.mapComponent as MapComponent).settingsConfig = {
@@ -249,6 +255,24 @@ export class SafeMapSettingsComponent
   }
 
   /**
+   * Delete given layer id from the layers form and updates map view
+   *
+   * @param layerIdToDelete Layer id to  delete
+   */
+  onDeleteLayer(layerIdToDelete: string): void {
+    // Update layer form
+    this.updateLayersForm(layerIdToDelete, true);
+    // Update map view
+    this.mapSettings = {
+      basemap: this.tileForm?.value.basemap,
+      initialState: this.tileForm?.get('initialState')?.value,
+      controls: this.tileForm?.value.controls,
+      arcGisWebMap: this.tileForm?.value.arcGisWebMap,
+      layers: this.tileForm?.value.layers,
+    };
+  }
+
+  /**
    * Add or edit existing layer
    *
    * @param layerData layer to save
@@ -257,27 +281,63 @@ export class SafeMapSettingsComponent
     if (layerData) {
       if (layerData.id) {
         this.mapLayersService.editLayer(layerData).subscribe({
-          next: () => {
-            // Redirect to main layers list
-            this.openTab('layers');
-          },
-          error: (err) => console.log(err),
-        });
-      } else {
-        this.mapLayersService.addLayer(layerData).subscribe({
           next: (result) => {
-            if (result) {
-              this.tileForm?.get('layers')?.value.push(result.id);
+            // We check if we are editing an already added layer to the tile form
+            // Or we are adding a new one from an existing layer
+            if (
+              result &&
+              !this.tileForm?.get('layers')?.value.includes(result.id)
+            ) {
+              this.updateLayersForm(result.id);
             }
             // Redirect to main layers list
             this.openTab('layers');
           },
           error: (err) => console.log(err),
         });
+      } else {
+        this.mapLayersService
+          .addLayer(layerData)
+          .pipe(
+            tap((result) => {
+              // Update our current layer list after the new one is added
+              if (result) {
+                this.mapLayersService.currentLayers.push(result);
+              }
+            })
+          )
+          .subscribe({
+            next: (result) => {
+              if (result) {
+                this.updateLayersForm(result.id);
+              }
+              // Redirect to main layers list
+              this.openTab('layers');
+            },
+            error: (err) => console.log(err),
+          });
       }
     } else {
       // Redirect to main layers list
       this.openTab('layers');
     }
+  }
+
+  /**
+   * Add given layer id to the layers form
+   *
+   * @param newLayerId New layer to set in the layers form
+   * @param toDelete Is to delete or not
+   */
+  private updateLayersForm(newLayerId: string, toDelete = false) {
+    let layers = [...(this.tileForm?.get('layers')?.value ?? []), newLayerId];
+    if (toDelete) {
+      layers = this.tileForm
+        ?.get('layers')
+        ?.value.filter((layerId: string) => layerId !== newLayerId);
+    }
+    this.tileForm?.get('layers')?.setValue(layers);
+    this.tileForm?.markAsTouched();
+    this.tileForm?.markAsDirty();
   }
 }

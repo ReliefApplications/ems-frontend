@@ -41,9 +41,10 @@
         <!-- MAP LAYERS -->
         <ng-container *ngSwitchCase="'layers'">
           <safe-map-layers
-            [form]="tileForm"
+            [layerIds]="layerIds"
             (close)="currentTab = null"
             (editLayer)="onEditLayer($event)"
+            (deleteLayer)="onDeleteLayer($event)"
           ></safe-map-layers>
         </ng-container>
         <ng-container *ngSwitchCase="'layer'">

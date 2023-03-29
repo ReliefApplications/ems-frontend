@@ -1,20 +1,11 @@
 import { Geometry, FeatureCollection, Feature } from 'geojson';
+import { PopupElement } from '../../../../models/layer.model';
 import { IconName } from '../../../icon-picker/icon-picker.const';
-
-export type FeatureProperties = {
-  // For circles
-  radius?: number;
-  // Feature level styles, they should be prioritized over the layer styles
-  style?: LayerStyle;
-
-  // any other properties
-  [key: string]: any;
-};
 
 export type GeoJSON =
   | Geometry
-  | Feature<Geometry, FeatureProperties>
-  | FeatureCollection<Geometry, FeatureProperties>;
+  | Feature<Geometry>
+  | FeatureCollection<Geometry>;
 
 // Assuming that data will be a valid geoJSON object,
 // the layer types are defined as follows:
@@ -50,48 +41,71 @@ export type LayerSettingsI = {
 type LayerGroup = {
   type: 'group';
   children: LayerSettingsI[];
-  geojson?: never;
-  datasource?: never;
-  properties?: never;
-  filter?: never;
-  styling?: never;
-  labels?: never;
-  popup?: never;
 };
 
 type LayerNode = {
   type: Omit<LayerType, 'group'>;
-  children?: never;
   geojson?: GeoJSON;
   // TODO: define datasource
   datasource?: any;
-  properties?: LayerProperties;
+  properties?: any;
   filter?: LayerFilter;
   // Not all styles are valid for all layer types but for simplicity,
   // if if a layer has an invalid style, it will simply be ignored
-  styling?: LayerStyling;
+  styling?: any;
   labels?: LayerLabel;
-  popup?: LayerPopup;
+  popup?: any;
 };
 
-// The styling property is an array of objects, each object
-// defining a style for a specific rule.
-export type LayerStyling = {
-  filter: LayerFilter;
-  style: LayerStyle;
-}[];
+/** Layer documents interface declaration */
+export interface LayerFormData {
+  id: string;
+  name: string;
+  visibility: boolean;
+  opacity: number;
+  layerDefinition: {
+    minZoom: number;
+    maxZoom: number;
+    drawingInfo: {
+      renderer: {
+        type: 'simple' | 'heatmap';
+        symbol: {
+          color: string;
+          type: string;
+          size: number;
+          style: IconName;
+        };
+      };
+    };
+    featureReduction: {
+      type: any;
+    };
+  };
+  popupInfo: {
+    title: string;
+    description: string;
+    popupElements: PopupElement[];
+  };
+  datasource: {
+    origin: 'resource' | 'refData';
+    resource: any;
+    layout: any;
+    aggregation: any;
+    refData: any;
+  };
+}
 
 // The style object is defined as follows:
 export type LayerStyle = {
   borderColor?: string;
   borderWidth?: number;
   borderOpacity?: number;
-  // for markers, the fillColor represents marker color
-  fillColor?: string;
   fillOpacity?: number;
-  icon?: IconName | 'leaflet_default';
-  iconSize?: number;
-
+  symbol?: {
+    color: string;
+    icon: IconName | 'leaflet_default';
+    size: number;
+  };
   heatmap?: {
     max: number;
     radius: number;
@@ -105,16 +119,6 @@ export type LayerStyle = {
   };
 };
 
-export type LayerProperties = {
-  visibleByDefault: boolean;
-  opacity: number;
-  visibilityRange: [number, number];
-  legend: {
-    display: boolean;
-    field?: string;
-  };
-};
-
 export type LayerLabel = {
   // Defined as a string, can use placeholders, like {field.field_name}
   label: string;
@@ -125,22 +129,6 @@ export type LayerLabel = {
   };
   filter: LayerFilter;
 };
-
-// The popup can either be a string with placeholders
-// or an array of fields to display in the popup as a table
-export type LayerPopup = {
-  display: boolean;
-  title: string;
-} & (
-  | {
-      type: 'table';
-      fields: string[];
-    }
-  | {
-      type: 'template';
-      template: string;
-    }
-);
 
 export type LayerFilter =
   | {

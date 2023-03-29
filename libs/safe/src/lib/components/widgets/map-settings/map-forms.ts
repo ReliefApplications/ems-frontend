@@ -5,17 +5,17 @@ import {
   Validators,
 } from '@angular/forms';
 import get from 'lodash/get';
-import { MapLayerI } from './map-layers/map-layers.component';
 import {
   MapControls,
   DefaultMapControls,
   MapConstructorSettings,
 } from '../../ui/map/interfaces/map.interface';
-import { Layer } from '../../../models/layer.model';
+import { LayerFormData } from '../../ui/map/interfaces/layer-settings.type';
 import {
-  popupElement,
-  popupElementType,
-} from './map-layer/layer-popup/layer-popup.interface';
+  LayerModel,
+  PopupElement,
+  PopupElementType,
+} from '../../../models/layer.model';
 import { IconName } from '../../icon-picker/icon-picker.const';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
@@ -41,31 +41,53 @@ const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
   arcGisWebMap: null,
 };
 
+/** Default gradient for heatmap */
+const DEFAULT_GRADIENT = [
+  {
+    color: 'blue',
+    ratio: 0,
+  },
+  {
+    color: 'red',
+    ratio: 1,
+  },
+];
+
 /**
  * Create layer form from value
  *
  * @param value layer value ( optional )
  * @returns new form group
  */
-export const createLayerForm = (value?: Layer) =>
+export const createLayerForm = (value?: LayerModel) =>
   fb.group({
     // Layer properties
     id: [get(value, 'id', null)],
-    title: [get(value, 'title', null), Validators.required],
+    name: [get(value, 'name', null), Validators.required],
     visibility: [get(value, 'visibility', true), Validators.required],
     opacity: [get(value, 'opacity', 1), Validators.required],
     layerDefinition: createLayerDefinitionForm(get(value, 'layerDefinition')),
     popupInfo: createPopupInfoForm(get(value, 'popupInfo')),
-    datasource: fb.group({
-      origin: new FormControl<MapLayerI['datasource']['origin']>(
-        get(value, 'datasource.source', 'resource'),
-        Validators.required
-      ),
-      resource: [get(value, 'datasource.resource', null)],
-      layout: [get(value, 'datasource.layout', null)],
-      aggregation: [get(value, 'datasource.aggregation', null)],
-      refData: [get(value, 'datasource.refData', null)],
-    }),
+    // Layer datasource
+    datasource: createLayerDataSourceForm(value),
+  });
+
+/**
+ * Create layer data source form group
+ *
+ * @param value layer data
+ * @returns layer data source form group
+ */
+const createLayerDataSourceForm = (value?: any): FormGroup =>
+  fb.group({
+    origin: new FormControl<LayerFormData['datasource']['origin']>(
+      get(value, 'datasource.source', 'resource'),
+      Validators.required
+    ),
+    resource: [get(value, 'datasource.resource', null)],
+    layout: [get(value, 'datasource.layout', null)],
+    aggregation: [get(value, 'datasource.aggregation', null)],
+    refData: [get(value, 'datasource.refData', null)],
   });
 
 /**
@@ -88,13 +110,26 @@ const createLayerDefinitionForm = (value?: any): FormGroup => {
   if (rendererType === 'heatmap') {
     formGroup.get('featureReduction')?.disable();
   }
-  formGroup.get('drawingInfo.renderer.type')?.valueChanges.subscribe((type) => {
-    if (type === 'heatmap') {
-      formGroup.get('featureReduction')?.disable();
-    } else {
-      formGroup.get('featureReduction')?.enable();
-    }
-  });
+  const setTypeListeners = () => {
+    formGroup
+      .get('drawingInfo.renderer.type')
+      ?.valueChanges.subscribe((type) => {
+        if (type === 'heatmap') {
+          formGroup.get('featureReduction')?.disable();
+        } else {
+          formGroup.get('featureReduction')?.enable();
+        }
+        formGroup.setControl(
+          'drawingInfo',
+          createLayerDrawingInfoForm({
+            ...formGroup.get('drawingInfo'),
+            type,
+          })
+        );
+        setTypeListeners();
+      });
+  };
+  setTypeListeners();
   return formGroup;
 };
 
@@ -116,20 +151,33 @@ export const createLayerFeatureReductionForm = (value: any): FormGroup =>
  * @param value layer drawing info
  * @returns layer drawing info form
  */
-export const createLayerDrawingInfoForm = (value: any): FormGroup =>
-  fb.group({
+export const createLayerDrawingInfoForm = (value: any): FormGroup => {
+  const type = get(value, 'type', 'simple');
+  const formGroup = fb.group({
     renderer: fb.group({
-      type: [get(value, 'type', 'simple'), Validators.required],
-      symbol: fb.group({
-        color: [get(value, 'symbol.color', ''), Validators.required],
-        type: 'fa',
-        size: [get(value, 'symbol.size', 24)],
-        style: new FormControl<IconName>(
-          get(value, 'symbol.style', 'location-dot')
-        ),
+      type: [type, Validators.required],
+      ...(type === 'simple' && {
+        symbol: fb.group({
+          color: [get(value, 'symbol.color', ''), Validators.required],
+          type: 'fa',
+          size: [get(value, 'symbol.size', 24)],
+          style: new FormControl<IconName>(
+            get(value, 'symbol.style', 'location-dot')
+          ),
+        }),
+      }),
+      ...(type === 'heatmap' && {
+        gradient: [
+          get(value, 'gradient', DEFAULT_GRADIENT),
+          Validators.required,
+        ],
+        blur: [get<number>(value, 'blur', 15), Validators.required],
+        radius: [get<number>(value, 'radius', 25), Validators.required],
       }),
     }),
   });
+  return formGroup;
+};
 
 /**
  * Create popup info form group
@@ -142,7 +190,7 @@ export const createPopupInfoForm = (value: any): FormGroup =>
     title: get(value, 'title', ''),
     description: get(value, 'description', ''),
     popupElements: fb.array(
-      get(value, 'popupElements', []).map((element: popupElement) =>
+      get(value, 'popupElements', []).map((element: PopupElement) =>
         createPopupElementForm(element)
       )
     ),
@@ -154,8 +202,8 @@ export const createPopupInfoForm = (value: any): FormGroup =>
  * @param value popup element value
  * @returns popup element form group
  */
-export const createPopupElementForm = (value: popupElement): FormGroup => {
-  switch (get(value, 'type', 'fields') as popupElementType) {
+export const createPopupElementForm = (value: PopupElement): FormGroup => {
+  switch (get(value, 'type', 'fields') as PopupElementType) {
     case 'text': {
       return fb.group({
         type: 'text',

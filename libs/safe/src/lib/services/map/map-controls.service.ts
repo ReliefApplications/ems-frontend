@@ -262,7 +262,9 @@ export class SafeMapControlsService {
             // check if layer is visible
             if (!map.hasLayer(layer.getLayer())) return;
 
-            const legend = layer.getLegend();
+            console.log(layer.getLayer());
+            const legend = (layer.getLayer() as any).legend;
+            console.log(legend);
             if (legend) {
               layerLegends.push({
                 layer: layer.name,
