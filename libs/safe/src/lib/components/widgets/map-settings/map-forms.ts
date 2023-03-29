@@ -130,6 +130,15 @@ const createLayerDefinitionForm = (value?: any): FormGroup => {
       });
   };
   setTypeListeners();
+  formGroup.get('featureReduction.type')?.valueChanges.subscribe((type) => {
+    formGroup.setControl(
+      'featureReduction',
+      createLayerFeatureReductionForm({
+        ...formGroup.get('featureReduction')?.value,
+        type,
+      })
+    );
+  });
   return formGroup;
 };
 
@@ -139,11 +148,17 @@ const createLayerDefinitionForm = (value?: any): FormGroup => {
  * @param value layer feature reduction
  * @returns layer feature reduction form
  */
-export const createLayerFeatureReductionForm = (value: any): FormGroup =>
-  fb.group({
-    type: [get(value, 'type')],
-    drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
+export const createLayerFeatureReductionForm = (value: any) => {
+  const type = get(value, 'type');
+  const formGroup = fb.group({
+    type: [type],
+    ...(type === 'cluster' && {
+      drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
+      clusterRadius: get(value, 'clusterRadius', 60),
+    }),
   });
+  return formGroup;
+};
 
 /**
  * Create layer drawing info form

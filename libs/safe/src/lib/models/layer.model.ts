@@ -1,16 +1,5 @@
 import { Gradient } from '../components/gradient-picker/gradient-picker.component';
 import { IconName } from '../components/icon-picker/icon-picker.const';
-/** List of available layer types in layer editor */
-export enum LayerTypes {
-  POLYGON = 'polygon',
-  POINT = 'point',
-  HEATMAP = 'heatmap',
-  CLUSTER = 'cluster',
-}
-/**
- * Layer types as an array of values
- */
-export const LAYER_TYPES: LayerTypes[] = Object.values(LayerTypes);
 
 /**
  * Layer types for backend
@@ -25,22 +14,28 @@ export type LayerSymbol = {
   style: IconName;
 };
 
+export interface DrawingInfo {
+  renderer?: {
+    type?: string;
+    symbol?: LayerSymbol;
+    blur?: number;
+    radius?: number;
+    gradient?: Gradient;
+  };
+}
+
+export interface FeatureReduction {
+  type: 'cluster';
+  drawingInfo?: DrawingInfo;
+  clusterRadius?: number;
+}
+
 export interface LayerDefinition {
   minZoom?: number;
   maxZoom?: number;
-  featureReduction?: {
-    type?: string;
-  };
+  featureReduction?: FeatureReduction;
   // Symbol
-  drawingInfo?: {
-    renderer?: {
-      type?: string;
-      symbol?: LayerSymbol;
-      blur?: number;
-      radius?: number;
-      gradient?: Gradient;
-    };
-  };
+  drawingInfo?: DrawingInfo;
 }
 
 export interface PopupElementText {
@@ -63,6 +58,12 @@ export interface PopupElement
   type: PopupElementType;
 }
 
+export interface PopupInfo {
+  title?: string;
+  description?: string;
+  popupElements?: PopupElement[];
+}
+
 /**
  * Backend layer model
  */
@@ -73,10 +74,7 @@ export interface LayerModel {
   visibility: boolean;
   opacity: number;
   layerDefinition?: LayerDefinition;
-  popupInfo?: {
-    popupElements: string;
-    description: string;
-  };
+  popupInfo?: PopupInfo;
   createdAt: Date;
   updatedAt: Date;
 }

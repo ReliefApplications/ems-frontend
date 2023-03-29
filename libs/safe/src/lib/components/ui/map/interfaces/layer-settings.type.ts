@@ -95,30 +95,6 @@ export interface LayerFormData {
   };
 }
 
-// The style object is defined as follows:
-export type LayerStyle = {
-  borderColor?: string;
-  borderWidth?: number;
-  borderOpacity?: number;
-  fillOpacity?: number;
-  symbol?: {
-    color: string;
-    icon: IconName | 'leaflet_default';
-    size: number;
-  };
-  heatmap?: {
-    max: number;
-    radius: number;
-    blur: number;
-    minOpacity: number;
-    maxZoom: number;
-    // The gradient is an object with keys from 0 to this.max
-    gradient: {
-      [key: number]: string;
-    };
-  };
-};
-
 export type LayerLabel = {
   // Defined as a string, can use placeholders, like {field.field_name}
   label: string;

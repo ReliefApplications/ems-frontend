@@ -17,7 +17,5 @@
 </div>
 
 <ng-template #clusterRenderer>
-  <safe-simple-renderer
-    [formGroup]="$any(formGroup.get('drawingInfo.renderer'))"
-  ></safe-simple-renderer>
+  <safe-layer-cluster [formGroup]="formGroup"></safe-layer-cluster>
 </ng-template>

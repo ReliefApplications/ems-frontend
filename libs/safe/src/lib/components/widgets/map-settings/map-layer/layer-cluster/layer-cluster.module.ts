@@ -10,6 +10,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 import { IconPickerModule } from '../../../../icon-picker/icon-picker.module';
 import { SafeDividerModule } from '../../../../ui/divider/divider.module';
+import { SimpleRendererComponent } from '../layer-styling/simple-renderer/simple-renderer.component';
 
 /**
  * layer cluster settings module.
@@ -28,6 +29,7 @@ import { SafeDividerModule } from '../../../../ui/divider/divider.module';
     MatSlideToggleModule,
     IconPickerModule,
     SafeDividerModule,
+    SimpleRendererComponent,
   ],
   exports: [LayerClusterComponent],
 })
