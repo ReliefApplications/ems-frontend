@@ -74,7 +74,7 @@ export const DEFAULT_HEATMAP = {
   gradient: DEFAULT_GRADIENT,
   blur: 15,
   radius: 25,
-  minOpacity: 0.5,
+  minOpacity: 0.4,
 };
 
 /** Minimum cluster size in pixel */
@@ -370,7 +370,7 @@ export class Layer implements LayerModel {
   // }
 
   /**
-   * rege
+   * Get leaflet layer from layer definition
    *
    * @param redraw wether the layer should be redrawn
    * @returns the leaflet layer from layer definition
