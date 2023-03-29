@@ -17,6 +17,7 @@
 </div>
 
 <ng-template #clusterRenderer>
-<!-- todo(gis): add more items there -->
-<div>cluster</div>
+  <safe-simple-renderer
+    [formGroup]="$any(formGroup.get('drawingInfo.renderer'))"
+  ></safe-simple-renderer>
 </ng-template>

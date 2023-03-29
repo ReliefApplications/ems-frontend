@@ -107,6 +107,7 @@ const createLayerDefinitionForm = (value?: any): FormGroup => {
 export const createLayerFeatureReductionForm = (value: any): FormGroup =>
   fb.group({
     type: [get(value, 'type')],
+    drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
   });
 
 /**

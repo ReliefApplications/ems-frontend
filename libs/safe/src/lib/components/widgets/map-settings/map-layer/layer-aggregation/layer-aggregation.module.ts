@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { SimpleRendererComponent } from '../layer-styling/simple-renderer/simple-renderer.component';
 
 /**
  * Map layer aggregation settings module.
@@ -18,6 +19,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
     TranslateModule,
     MatSelectModule,
     MatFormFieldModule,
+    SimpleRendererComponent,
   ],
   exports: [LayerAggregationComponent],
 })
