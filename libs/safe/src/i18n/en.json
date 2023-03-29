@@ -1316,6 +1316,14 @@
 							"icon": "Icon",
 							"size": "Size",
 							"stylingType": "{{layerType}} styling"
+						},
+						"styling": {
+							"heatmapOptions": {
+								"blur": "Blur",
+								"gradient": "Gradient",
+								"minOpacity": "Minimum opacity",
+								"radius": "Radius"
+							}
 						}
 					},
 					"errors": {

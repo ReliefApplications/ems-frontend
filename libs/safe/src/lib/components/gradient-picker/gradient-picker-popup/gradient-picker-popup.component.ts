@@ -30,6 +30,80 @@ const GRADIENTS: Gradient[] = [
       ratio: 1,
     },
   ],
+  [
+    {
+      color: 'blue',
+      ratio: 0,
+    },
+    {
+      color: 'green',
+      ratio: 0.25,
+    },
+    {
+      color: 'yellow',
+      ratio: 0.5,
+    },
+    {
+      color: 'orange',
+      ratio: 0.75,
+    },
+    {
+      color: 'red',
+      ratio: 1,
+    },
+  ],
+  [
+    {
+      color: 'white',
+      ratio: 0,
+    },
+    {
+      color: 'lightgrey',
+      ratio: 0.25,
+    },
+    {
+      color: 'grey',
+      ratio: 0.5,
+    },
+    {
+      color: 'darkgrey',
+      ratio: 0.75,
+    },
+    {
+      color: 'black',
+      ratio: 1,
+    },
+  ],
+  [
+    {
+      color: 'red',
+      ratio: 0,
+    },
+    {
+      color: 'orange',
+      ratio: 0.1667,
+    },
+    {
+      color: 'yellow',
+      ratio: 0.3333,
+    },
+    {
+      color: 'green',
+      ratio: 0.5,
+    },
+    {
+      color: 'blue',
+      ratio: 0.6667,
+    },
+    {
+      color: 'indigo',
+      ratio: 0.8333,
+    },
+    {
+      color: 'violet',
+      ratio: 1,
+    },
+  ],
 ];
 
 /**

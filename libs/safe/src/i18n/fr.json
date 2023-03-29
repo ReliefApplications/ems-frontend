@@ -1323,6 +1323,14 @@
 							"icon": "Symbole",
 							"size": "Taille",
 							"stylingType": "Style de {{layerType}}"
+						},
+						"styling": {
+							"heatmapOptions": {
+								"blur": "Flou",
+								"gradient": "Gradient",
+								"minOpacity": "Opacité minimum",
+								"radius": "Rayon"
+							}
 						}
 					},
 					"errors": {

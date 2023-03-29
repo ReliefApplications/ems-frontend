@@ -21,6 +21,7 @@ export interface DrawingInfo {
     blur?: number;
     radius?: number;
     gradient?: Gradient;
+    minOpacity?: number;
   };
 }
 

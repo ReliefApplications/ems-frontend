@@ -69,10 +69,12 @@ const DEFAULT_GRADIENT = [
   },
 ];
 
+/** Default heatmap parameters */
 export const DEFAULT_HEATMAP = {
   gradient: DEFAULT_GRADIENT,
   blur: 15,
   radius: 25,
+  minOpacity: 0.4,
 };
 
 /** Minimum cluster size in pixel */
@@ -367,7 +369,12 @@ export class Layer implements LayerModel {
   //   : DEFAULT_LAYER_STYLE;
   // }
 
-  /** @returns the leaflet layer from layer definition */
+  /**
+   * Get leaflet layer from layer definition
+   *
+   * @param redraw wether the layer should be redrawn
+   * @returns the leaflet layer from layer definition
+   */
   public getLayer(redraw?: boolean): L.Layer {
     // If layer has already been created, return it
     if (this.layer && !redraw) return this.layer;
@@ -462,6 +469,11 @@ export class Layer implements LayerModel {
                 this.layerDefinition,
                 'drawingInfo.renderer.radius',
                 DEFAULT_HEATMAP.radius
+              ),
+              minOpacity: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.minOpacity',
+                DEFAULT_HEATMAP.minOpacity
               ),
               gradient: Object.keys(gradient).reduce((g, key) => {
                 const stop = get(gradient, key);
