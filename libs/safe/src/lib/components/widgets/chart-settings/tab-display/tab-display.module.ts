@@ -27,7 +27,6 @@ import { SeriesSettingsModule } from '../series-settings/series-settings.module'
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 
-
 /**
  * Display tab of chart settings modal.
  */

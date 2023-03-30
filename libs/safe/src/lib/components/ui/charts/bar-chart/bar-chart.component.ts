@@ -180,7 +180,7 @@ export class SafeBarChartComponent implements OnChanges {
         },
         colors: {
           enabled: true,
-        }
+        },
       },
     };
 

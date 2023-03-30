@@ -197,10 +197,10 @@ export class SafeLineChartComponent implements OnChanges {
           color: titleColor,
           font: fontOptions,
         },
-        colors:{
+        colors: {
           enabled: true,
-          forceOverride: true
-        }
+          forceOverride: true,
+        },
       },
     } as ChartOptions;
 

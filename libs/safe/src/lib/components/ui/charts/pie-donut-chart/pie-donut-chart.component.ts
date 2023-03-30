@@ -123,7 +123,7 @@ export class SafePieDonutChartComponent implements OnChanges {
         },
         colors: {
           enabled: true,
-        }
+        },
       },
     };
 
