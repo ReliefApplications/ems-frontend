@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { merge } from 'rxjs';
 import { startWith, delay } from 'rxjs/operators';
@@ -15,7 +15,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class SafeSeriesMappingComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnChanges
 {
   // === DATA ===
   @Input() availableFields: any[] = [];
@@ -31,10 +31,6 @@ export class SafeSeriesMappingComponent
     super();
   }
 
-  /**
-   * Gets the control names from the inputs.
-   * Sets the available fields.
-   */
   ngOnInit(): void {
     this.setControlListeners();
   }
@@ -44,7 +40,8 @@ export class SafeSeriesMappingComponent
   }
 
   /**
-   *
+   * Gets the control names from the inputs.
+   * Sets the available fields.
    */
   private setControlListeners(): void {
     this.controlNames = Object.keys(
