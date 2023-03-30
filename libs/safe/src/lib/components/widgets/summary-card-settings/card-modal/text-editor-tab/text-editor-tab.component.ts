@@ -37,5 +37,48 @@ export class SafeTextEditorTabComponent implements OnChanges {
     const keys = dataKeys.concat(calcKeys);
     // Setup editor auto completor
     this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
+    this.allowScrolling();
+  }
+
+  /**
+   * Allows scrolling within the TinyMCE autocompleter container, and prevents the autocompleter from closing when clicking on the scrollbar.
+   *  This function sets a timeout to give TinyMCE some time to render its elements before trying to access them.
+   */
+  private allowScrolling() {
+    setTimeout(function () {
+      //not ideal but trying this for now, there is half a second of vulnerability
+      const autoCompleterContainer = document.querySelector('.tox-tinymce-aux');
+      if (!autoCompleterContainer) return;
+
+      const hasClickedOnScrollbar = (
+        mouseX: number,
+        autoCompleterElement: HTMLElement
+      ) => {
+        if (!autoCompleterElement) return false;
+        const scrollbarSize = 11; //size of the scrollbar, this is a bit squishy
+        const autoCompleterWidth =
+          autoCompleterElement.clientWidth - scrollbarSize;
+        if (autoCompleterWidth <= mouseX) {
+          return true;
+        }
+        return false;
+      };
+
+      autoCompleterContainer.addEventListener('mousedown', function (event) {
+        const autoCompleterElement =
+          document.querySelector('.tox-autocompleter');
+        if (!autoCompleterElement) return;
+        const autoCompleterOffset =
+          autoCompleterElement.getBoundingClientRect();
+        if (!autoCompleterOffset) return;
+        const mouseX = (event as MouseEvent).pageX - autoCompleterOffset.left;
+
+        if (
+          hasClickedOnScrollbar(mouseX, autoCompleterElement as HTMLElement)
+        ) {
+          event.stopPropagation();
+        }
+      });
+    }, 300);
   }
 }
