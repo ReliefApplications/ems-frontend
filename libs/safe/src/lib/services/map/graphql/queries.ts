@@ -8,6 +8,50 @@ export const GET_LAYER_BY_ID = gql`
     layer(id: $id) {
       id
       name
+      visibility
+      opacity
+      layerDefinition {
+        minZoom
+        maxZoom
+        featureReduction {
+          type
+          clusterRadius
+          drawingInfo {
+            renderer {
+              type
+              symbol {
+                color
+                size
+                style
+              }
+            }
+          }
+        }
+        drawingInfo {
+          renderer {
+            type
+            symbol {
+              color
+              size
+              style
+            }
+            blur
+            radius
+            gradient
+            minOpacity
+          }
+        }
+      }
+      popupInfo {
+        title
+        description
+        popupElements {
+          type
+          title
+          description
+          fields
+        }
+      }
     }
   }
 `;
