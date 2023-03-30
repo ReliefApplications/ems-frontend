@@ -1292,6 +1292,9 @@
 							"symbol": "******"
 						},
 						"datasource": {
+							"geoField": "******",
+							"latitudeField": "******",
+							"longitudeField": "******",
 							"origin": "******"
 						},
 						"fields": "******",

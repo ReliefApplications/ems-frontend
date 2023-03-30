@@ -182,7 +182,7 @@ export class MapLayerComponent
    * Send the current form value to save
    */
   onSubmit() {
-    this.layerToSave.emit(this.form.getRawValue() as LayerFormData);
+    this.layerToSave.emit(this.form.value as LayerFormData);
   }
 
   /**

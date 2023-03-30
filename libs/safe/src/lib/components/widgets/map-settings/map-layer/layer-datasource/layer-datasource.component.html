@@ -134,6 +134,27 @@
         >
         </safe-graphql-select>
       </mat-form-field>
+
+      <!-- Fields selection-->
+      <ng-container *ngIf="form.get('datasource.origin')?.value === 'resource'">
+        <mat-label>{{
+          'components.widget.settings.map.edit.fields' | translate
+        }}</mat-label>
+        <ul>
+          <li *ngFor="let field of fields">
+            <mat-checkbox
+              [color]="'primary'"
+              [value]="field"
+              [formControlName]="field"
+            >
+              {{
+                'components.widget.settings.map.edit.datasource.' + field
+                  | translate
+              }}
+            </mat-checkbox>
+          </li>
+        </ul>
+      </ng-container>
     </div>
   </form>
 </ng-container>

@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { pairwise, takeUntil } from 'rxjs';
+import { merge, pairwise, takeUntil } from 'rxjs';
 import { Resource } from '../../../../../models/resource.model';
 import { ReferenceData } from '../../../../../models/reference-data.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
@@ -33,6 +33,7 @@ import { SafeEditLayoutModalComponent } from '../../../../grid-layout/edit-layou
 import { SafeGridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';
 import { SafeAggregationService } from '../../../../../services/aggregation/aggregation.service';
 import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
+import { FormControl } from '@angular/forms';
 
 /** Default items per resources query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -64,6 +65,7 @@ export class LayerDatasourceComponent
   // Aggregation and layout
   public aggregation: Aggregation | null = null;
   public layout: Layout | null = null;
+  fields = ['geoField', 'latitudeField', 'longitudeField'] as const;
 
   // Output
   @Output() fieldsChange = new EventEmitter<any>();
@@ -134,6 +136,28 @@ export class LayerDatasourceComponent
         });
     }
 
+    // If form has a refData, fetch it
+    const refDataID = this.form.get('datasource.refData')?.value;
+    if (refDataID) {
+      this.apollo
+        .query<GetReferenceDataQueryResponse>({
+          query: GET_REFERENCE_DATA,
+          variables: {
+            id: refDataID,
+          },
+        })
+        .subscribe(({ data }) => {
+          this.refData = data.referenceData;
+        });
+    }
+
+    this.setLayerDataSourceListeners();
+  }
+
+  /**
+   * Initialize layer datasource form listeners
+   */
+  private setLayerDataSourceListeners() {
     // Listen to origin changes
     this.form
       .get('datasource.origin')
@@ -160,21 +184,6 @@ export class LayerDatasourceComponent
         this.fieldsChange.emit([]);
       });
 
-    // If form has a refData, fetch it
-    const refDataID = this.form.get('datasource.refData')?.value;
-    if (refDataID) {
-      this.apollo
-        .query<GetReferenceDataQueryResponse>({
-          query: GET_REFERENCE_DATA,
-          variables: {
-            id: refDataID,
-          },
-        })
-        .subscribe(({ data }) => {
-          this.refData = data.referenceData;
-        });
-    }
-
     // Listen to refData changes
     this.form
       .get('datasource.refData')
@@ -193,7 +202,7 @@ export class LayerDatasourceComponent
         this.refData =
           this.refDataSelect?.elements
             .getValue()
-            .find((x) => x.id === refDataID) || null;
+            .find((x) => x.id === currRefDataId) || null;
         this.emitFields('refData');
       });
 
@@ -228,6 +237,44 @@ export class LayerDatasourceComponent
           // We trigger the dataSourceChange event
         } else if (prevAggregationId && !currAggregationId) {
           this.dataSourceChange.emit();
+        }
+      });
+
+    // Listen to geoField changes
+    this.form
+      .get('datasource.geoField')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          // If geoField has value, disable latitude and longitude fields
+          this.form
+            .get('datasource.latitudeField')
+            ?.disable({ emitEvent: false });
+          this.form
+            .get('datasource.longitudeField')
+            ?.disable({ emitEvent: false });
+        } else {
+          this.form
+            .get('datasource.latitudeField')
+            ?.enable({ emitEvent: false });
+          this.form
+            .get('datasource.longitudeField')
+            ?.enable({ emitEvent: false });
+        }
+      });
+
+    // Listen to longitudeField and latitudeField changes
+    merge(
+      (this.form.get('datasource.latitudeField') as FormControl).valueChanges,
+      (this.form.get('datasource.longitudeField') as FormControl).valueChanges
+    )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          // If any of these fields has value, disable geo field
+          this.form.get('datasource.geoField')?.disable({ emitEvent: false });
+        } else {
+          this.form.get('datasource.geoField')?.enable({ emitEvent: false });
         }
       });
   }

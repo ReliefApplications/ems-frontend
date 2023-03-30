@@ -1299,6 +1299,9 @@
 							"symbol": "Style de symboles"
 						},
 						"datasource": {
+							"geoField": "Geo Champ",
+							"latitudeField": "Latitude Champ",
+							"longitudeField": "Longitude Champ",
 							"origin": "Origine"
 						},
 						"fields": "Champs",

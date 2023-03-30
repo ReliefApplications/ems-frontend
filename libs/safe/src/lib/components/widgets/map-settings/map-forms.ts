@@ -88,6 +88,9 @@ const createLayerDataSourceForm = (value?: any): FormGroup =>
     layout: [get(value, 'datasource.layout', null)],
     aggregation: [get(value, 'datasource.aggregation', null)],
     refData: [get(value, 'datasource.refData', null)],
+    geoField: [get(value, 'datasource.geoField', null)],
+    latitudeField: [get(value, 'datasource.latitudeField', null)],
+    longitudeField: [get(value, 'datasource.longitudeField', null)],
   });
 
 /**
