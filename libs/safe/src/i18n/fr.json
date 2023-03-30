@@ -1291,7 +1291,10 @@
 						"display": {
 							"dataSource": "Afficher le lien vers la source de données",
 							"header": "Titre",
-							"title": "Affichage"
+							"title": "Affichage",
+							"tooltips": {
+								"dataSource": "Ajoute un bouton pour afficher la grille de la mise en page"
+							}
 						},
 						"preview": {},
 						"textEditor": {

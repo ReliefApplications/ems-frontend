@@ -1284,7 +1284,10 @@
 						"display": {
 							"dataSource": "Show link to data source",
 							"header": "Header",
-							"title": "Display"
+							"title": "Display",
+							"tooltips": {
+								"dataSource": "Adds a button to display the grid of the layout"
+							}
 						},
 						"textEditor": {
 							"title": "Text editor"

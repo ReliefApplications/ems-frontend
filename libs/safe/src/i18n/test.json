@@ -1284,7 +1284,10 @@
 						"display": {
 							"dataSource": "******",
 							"header": "******",
-							"title": "******"
+							"title": "******",
+							"tooltips": {
+								"dataSource": "******"
+							}
 						},
 						"textEditor": {
 							"title": "******"
