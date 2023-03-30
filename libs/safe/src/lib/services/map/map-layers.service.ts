@@ -229,9 +229,16 @@ export class SafeMapLayersService {
    * Create layer from its definition
    *
    * @param layer Layer to get definition of.
+   * @param datasource Datasource object containing type and id
+   * @param datasource.type Data source type
+   * @param datasource.id Data source id
    * @returns Layer for map widget
    */
-  async createLayerFromDefinition(layer: LayerModel) {
+  async createLayerFromDefinition(
+    layer: LayerModel,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    datasource?: { type: 'layout' | 'aggregation' | 'refData'; id: string }
+  ) {
     const res = await lastValueFrom(
       forkJoin({
         layer: of(layer),

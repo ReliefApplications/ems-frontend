@@ -78,7 +78,10 @@
       </ng-container>
       <!-- Layer datasource -->
       <ng-container *ngSwitchCase="'datasource'">
-        <safe-layer-datasource [form]="form"></safe-layer-datasource>
+        <safe-layer-datasource
+          (dataSourceChange)="setUpLayer($event)"
+          [form]="form"
+        ></safe-layer-datasource>
       </ng-container>
       <!-- Layer styling -->
       <ng-container *ngSwitchCase="'styling'">

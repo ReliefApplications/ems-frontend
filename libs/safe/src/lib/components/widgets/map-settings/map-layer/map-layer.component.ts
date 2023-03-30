@@ -102,24 +102,44 @@ export class MapLayerComponent
 
   /**
    * Set default layer for editor
+   *
+   * @param datasource Datasource object containing type and id
+   * @param datasource.type Data source type
+   * @param datasource.id Data source id
    */
-  private setUpLayer() {
+  setUpLayer(datasource?: {
+    type: 'layout' | 'aggregation' | 'refData';
+    id: string;
+  }) {
     this.mapLayersService
-      .createLayerFromDefinition(this.form.value as LayerModel)
+      .createLayerFromDefinition(this.form.value as LayerModel, datasource)
       .then((layer) => {
+        // If a layer is already loaded we delete it
+        if (this.currentLayer) {
+          this.updateMapLayer(true);
+        }
         this._layer = layer;
         this.currentLayer = layer.getLayer();
-        if (this.mapComponent) {
-          this.mapComponent.addOrDeleteLayer = {
-            layerData: this.overlays,
-            isDelete: false,
-          };
-          //After the new layer for editing is set, update the options with the form value
-          // setTimeout(() => {
-          //   this.updateLayerOptions();
-          // }, 0);
-        }
+        this.updateMapLayer(false);
+        //After the new layer for editing is set, update the options with the form value
+        // setTimeout(() => {
+        //   this.updateLayerOptions();
+        // }, 0);
       });
+  }
+
+  /**
+   * Update map layer
+   *
+   * @param isDelete Delete or add layer from map
+   */
+  private updateMapLayer(isDelete: boolean) {
+    if (this.mapComponent) {
+      this.mapComponent.addOrDeleteLayer = {
+        layerData: this.overlays,
+        isDelete,
+      };
+    }
   }
 
   /**
@@ -130,18 +150,10 @@ export class MapLayerComponent
     this.form.valueChanges
       .pipe(takeUntil(this.destroy$), debounceTime(1000))
       .subscribe((value) => {
-        if (this.mapComponent) {
-          this.mapComponent.addOrDeleteLayer = {
-            layerData: this.overlays,
-            isDelete: true,
-          };
-          this._layer.setConfig({ ...value, geojson: this._layer.geojson });
-          this.currentLayer = this._layer.getLayer(true);
-          this.mapComponent.addOrDeleteLayer = {
-            layerData: this.overlays,
-            isDelete: false,
-          };
-        }
+        this.updateMapLayer(true);
+        this._layer.setConfig({ ...value, geojson: this._layer.geojson });
+        this.currentLayer = this._layer.getLayer(true);
+        this.updateMapLayer(false);
       });
 
     this.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
@@ -200,12 +212,7 @@ export class MapLayerComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     //Once we exit the layer editor, destroy the layer and related controls
-    if (this.mapComponent) {
-      this.mapComponent.addOrDeleteLayer = {
-        layerData: this.overlays,
-        isDelete: true,
-      };
-    }
+    this.updateMapLayer(true);
   }
 }
 

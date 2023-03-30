@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { takeUntil } from 'rxjs';
+import { pairwise, takeUntil } from 'rxjs';
 import { Resource } from '../../../../../models/resource.model';
 import { ReferenceData } from '../../../../../models/reference-data.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
@@ -67,6 +67,10 @@ export class LayerDatasourceComponent
 
   // Output
   @Output() fieldsChange = new EventEmitter<any>();
+  @Output() dataSourceChange = new EventEmitter<{
+    type: 'layout' | 'aggregation' | 'refData';
+    id: string;
+  }>();
 
   /**
    * Component for the layer datasource selection tab
@@ -135,8 +139,6 @@ export class LayerDatasourceComponent
       .get('datasource.origin')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        this.resource = null;
-        this.refData = null;
         this.form.get('datasource.resource')?.setValue(null);
         this.form.get('datasource.refData')?.setValue(null);
         this.fieldsChange.emit([]);
@@ -151,7 +153,6 @@ export class LayerDatasourceComponent
           this.resourceSelect?.elements
             .getValue()
             .find((x) => x.id === resourceID) || null;
-
         this.form.get('datasource.layout')?.setValue(null);
         this.form.get('datasource.aggregation')?.setValue(null);
         this.layout = null;
@@ -177,13 +178,57 @@ export class LayerDatasourceComponent
     // Listen to refData changes
     this.form
       .get('datasource.refData')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((refDataID) => {
+      ?.valueChanges.pipe(pairwise(), takeUntil(this.destroy$))
+      .subscribe(([prevRefDataId, currRefDataId]) => {
+        if (currRefDataId) {
+          this.dataSourceChange.emit({
+            type: 'refData',
+            id: currRefDataId,
+          });
+          // If there was a refData and now we delete it
+          // We trigger the dataSourceChange event
+        } else if (prevRefDataId && !currRefDataId) {
+          this.dataSourceChange.emit();
+        }
         this.refData =
           this.refDataSelect?.elements
             .getValue()
             .find((x) => x.id === refDataID) || null;
         this.emitFields('refData');
+      });
+
+    // Listen to layout changes
+    this.form
+      .get('datasource.layout')
+      ?.valueChanges.pipe(pairwise(), takeUntil(this.destroy$))
+      .subscribe(([prevLayoutId, currLayoutId]) => {
+        if (currLayoutId) {
+          this.dataSourceChange.emit({
+            type: 'layout',
+            id: currLayoutId,
+          });
+          // If there was a layout and now we delete it
+          // We trigger the dataSourceChange event
+        } else if (prevLayoutId && !currLayoutId) {
+          this.dataSourceChange.emit();
+        }
+      });
+
+    // Listen to aggregation changes
+    this.form
+      .get('datasource.aggregation')
+      ?.valueChanges.pipe(pairwise(), takeUntil(this.destroy$))
+      .subscribe(([prevAggregationId, currAggregationId]) => {
+        if (currAggregationId) {
+          this.dataSourceChange.emit({
+            type: 'aggregation',
+            id: currAggregationId,
+          });
+          // If there was a aggregation and now we delete it
+          // We trigger the dataSourceChange event
+        } else if (prevAggregationId && !currAggregationId) {
+          this.dataSourceChange.emit();
+        }
       });
   }
 
@@ -259,6 +304,12 @@ export class LayerDatasourceComponent
           .editLayout(this.layout, value, this.resource?.id)
           .subscribe((res: any) => {
             this.layout = res.data?.editLayout || null;
+
+            this.dataSourceChange.emit({
+              type: 'layout',
+              id: this.layout?.id as string,
+            });
+
             this.emitFields('layout');
           });
       }
@@ -282,6 +333,10 @@ export class LayerDatasourceComponent
           .editAggregation(this.aggregation, value, this.resource?.id)
           .subscribe((res) => {
             this.aggregation = res.data?.editAggregation || null;
+            this.dataSourceChange.emit({
+              type: 'aggregation',
+              id: this.aggregation?.id as string,
+            });
             this.emitFields('aggregation');
           });
       }
