@@ -65,6 +65,18 @@ export class MapLayerComponent
   private currentLayer!: L.Layer;
 
   /**
+   * Get the overlay tree object of the current map
+   *
+   * @returns OverlayLayerTree
+   */
+  private get overlays(): OverlayLayerTree {
+    return {
+      label: this.form.get('name')?.value || '',
+      layer: this.currentLayer,
+    };
+  }
+
+  /**
    * Map layer editor.
    *
    * @param confirmService Shared confirm service.
@@ -97,13 +109,9 @@ export class MapLayerComponent
       .then((layer) => {
         this._layer = layer;
         this.currentLayer = layer.getLayer();
-        const overlays: OverlayLayerTree = {
-          label: this.form.get('name')?.value || '',
-          layer: this.currentLayer,
-        };
         if (this.mapComponent) {
           this.mapComponent.addOrDeleteLayer = {
-            layerData: overlays,
+            layerData: this.overlays,
             isDelete: false,
           };
           //After the new layer for editing is set, update the options with the form value
@@ -123,10 +131,16 @@ export class MapLayerComponent
       .pipe(takeUntil(this.destroy$), debounceTime(1000))
       .subscribe((value) => {
         if (this.mapComponent) {
-          this.mapComponent.map.removeLayer(this.currentLayer);
+          this.mapComponent.addOrDeleteLayer = {
+            layerData: this.overlays,
+            isDelete: true,
+          };
           this._layer.setConfig({ ...value, geojson: this._layer.geojson });
           this.currentLayer = this._layer.getLayer(true);
-          this.mapComponent.map.addLayer(this.currentLayer);
+          this.mapComponent.addOrDeleteLayer = {
+            layerData: this.overlays,
+            isDelete: false,
+          };
         }
       });
 
@@ -185,14 +199,10 @@ export class MapLayerComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    const overlays: OverlayLayerTree = {
-      label: this.form.get('name')?.value || '',
-      layer: this.currentLayer,
-    };
     //Once we exit the layer editor, destroy the layer and related controls
     if (this.mapComponent) {
       this.mapComponent.addOrDeleteLayer = {
-        layerData: overlays,
+        layerData: this.overlays,
         isDelete: true,
       };
     }
