@@ -135,7 +135,7 @@ const replaceRecordFields = (
                 new Date(value).toLocaleString().split(',')[0],
                 field
               ) +
-              +'</span>';
+              '</span>';
             break;
           case 'datetime':
             const date = new Date(parseInt(value, 10));
