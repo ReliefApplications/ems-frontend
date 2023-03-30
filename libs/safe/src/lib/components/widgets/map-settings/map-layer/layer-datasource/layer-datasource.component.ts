@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { merge, pairwise, takeUntil } from 'rxjs';
+import { pairwise, takeUntil } from 'rxjs';
 import { Resource } from '../../../../../models/resource.model';
 import { ReferenceData } from '../../../../../models/reference-data.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
@@ -33,7 +33,8 @@ import { SafeEditLayoutModalComponent } from '../../../../grid-layout/edit-layou
 import { SafeGridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';
 import { SafeAggregationService } from '../../../../../services/aggregation/aggregation.service';
 import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
-import { FormControl } from '@angular/forms';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { DataSourceChangeEvent } from './layer-datasource.interfaces';
 
 /** Default items per resources query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -65,14 +66,29 @@ export class LayerDatasourceComponent
   // Aggregation and layout
   public aggregation: Aggregation | null = null;
   public layout: Layout | null = null;
-  fields = ['geoField', 'latitudeField', 'longitudeField'] as const;
+  fieldList = ['geoField', 'latitudeField', 'longitudeField'] as const;
+
+  /**
+   * Get fields from datasource
+   *
+   * @returns fields of datasource
+   */
+  get fieldData() {
+    // If the field form is disabled it will return an undefined value for it
+    // Because we are extracting these properties from value, not rawValue()
+    const { geoField, latitudeField, longitudeField } = this.form.get(
+      'datasource'
+    )?.value as any;
+    return {
+      geoField,
+      latitudeField,
+      longitudeField,
+    };
+  }
 
   // Output
   @Output() fieldsChange = new EventEmitter<any>();
-  @Output() dataSourceChange = new EventEmitter<{
-    type: 'layout' | 'aggregation' | 'refData';
-    id: string;
-  }>();
+  @Output() dataSourceChange = new EventEmitter<DataSourceChangeEvent>();
 
   /**
    * Component for the layer datasource selection tab
@@ -191,14 +207,17 @@ export class LayerDatasourceComponent
       .subscribe(([prevRefDataId, currRefDataId]) => {
         if (currRefDataId) {
           this.dataSourceChange.emit({
+            origin: 'reference',
             type: 'refData',
             id: currRefDataId,
+            ...this.fieldData,
           });
           // If there was a refData and now we delete it
           // We trigger the dataSourceChange event
         } else if (prevRefDataId && !currRefDataId) {
           this.dataSourceChange.emit();
         }
+
         this.refData =
           this.refDataSelect?.elements
             .getValue()
@@ -213,8 +232,10 @@ export class LayerDatasourceComponent
       .subscribe(([prevLayoutId, currLayoutId]) => {
         if (currLayoutId) {
           this.dataSourceChange.emit({
+            origin: 'resource',
             type: 'layout',
             id: currLayoutId,
+            ...this.fieldData,
           });
           // If there was a layout and now we delete it
           // We trigger the dataSourceChange event
@@ -230,51 +251,15 @@ export class LayerDatasourceComponent
       .subscribe(([prevAggregationId, currAggregationId]) => {
         if (currAggregationId) {
           this.dataSourceChange.emit({
+            origin: 'resource',
             type: 'aggregation',
             id: currAggregationId,
+            ...this.fieldData,
           });
           // If there was a aggregation and now we delete it
           // We trigger the dataSourceChange event
         } else if (prevAggregationId && !currAggregationId) {
           this.dataSourceChange.emit();
-        }
-      });
-
-    // Listen to geoField changes
-    this.form
-      .get('datasource.geoField')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
-          // If geoField has value, disable latitude and longitude fields
-          this.form
-            .get('datasource.latitudeField')
-            ?.disable({ emitEvent: false });
-          this.form
-            .get('datasource.longitudeField')
-            ?.disable({ emitEvent: false });
-        } else {
-          this.form
-            .get('datasource.latitudeField')
-            ?.enable({ emitEvent: false });
-          this.form
-            .get('datasource.longitudeField')
-            ?.enable({ emitEvent: false });
-        }
-      });
-
-    // Listen to longitudeField and latitudeField changes
-    merge(
-      (this.form.get('datasource.latitudeField') as FormControl).valueChanges,
-      (this.form.get('datasource.longitudeField') as FormControl).valueChanges
-    )
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
-          // If any of these fields has value, disable geo field
-          this.form.get('datasource.geoField')?.disable({ emitEvent: false });
-        } else {
-          this.form.get('datasource.geoField')?.enable({ emitEvent: false });
         }
       });
   }
@@ -353,8 +338,10 @@ export class LayerDatasourceComponent
             this.layout = res.data?.editLayout || null;
 
             this.dataSourceChange.emit({
+              origin: 'resource',
               type: 'layout',
               id: this.layout?.id as string,
+              ...this.fieldData,
             });
 
             this.emitFields('layout');
@@ -381,8 +368,10 @@ export class LayerDatasourceComponent
           .subscribe((res) => {
             this.aggregation = res.data?.editAggregation || null;
             this.dataSourceChange.emit({
+              origin: 'resource',
               type: 'aggregation',
               id: this.aggregation?.id as string,
+              ...this.fieldData,
             });
             this.emitFields('aggregation');
           });
@@ -409,6 +398,37 @@ export class LayerDatasourceComponent
       case 'refData':
         this.fieldsChange.emit(get(this.refData, 'fields', []));
         break;
+    }
+  }
+
+  /**
+   * Disable/enable fields from datasource by the given checkbox selection
+   *
+   * @param event Checkbox event
+   */
+  updateFieldsFormProperties(event: MatCheckboxChange) {
+    if (event.source.value === 'geoField') {
+      // If geoField has value, disable latitude and longitude fields
+      if (event.checked) {
+        this.form
+          .get('datasource.latitudeField')
+          ?.disable({ emitEvent: false });
+        this.form
+          .get('datasource.longitudeField')
+          ?.disable({ emitEvent: false });
+      } else {
+        this.form.get('datasource.latitudeField')?.enable({ emitEvent: false });
+        this.form
+          .get('datasource.longitudeField')
+          ?.enable({ emitEvent: false });
+      }
+    } else {
+      if (event.checked) {
+        // If any of these fields has value, disable geo field
+        this.form.get('datasource.geoField')?.disable({ emitEvent: false });
+      } else {
+        this.form.get('datasource.geoField')?.enable({ emitEvent: false });
+      }
     }
   }
 }

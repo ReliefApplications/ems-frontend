@@ -141,11 +141,12 @@
           'components.widget.settings.map.edit.fields' | translate
         }}</mat-label>
         <ul>
-          <li *ngFor="let field of fields">
+          <li *ngFor="let field of fieldList">
             <mat-checkbox
               [color]="'primary'"
               [value]="field"
-              [formControlName]="field"
+              (change)="updateFieldsFormProperties($event)"
+              [disabled]="form.get('datasource.' + field)?.disabled"
             >
               {{
                 'components.widget.settings.map.edit.datasource.' + field

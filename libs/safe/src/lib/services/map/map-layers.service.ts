@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import {
@@ -15,6 +16,7 @@ import {
 } from 'rxjs';
 import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
 import { Layer, ExtendedLayerModel } from '../../components/ui/map/layer';
+import { DataSourceChangeEvent } from '../../components/widgets/map-settings/map-layer/layer-datasource/layer-datasource.interfaces';
 import { LayerModel } from '../../models/layer.model';
 import { SafeRestService } from '../rest/rest.service';
 import {
@@ -195,9 +197,7 @@ export class SafeMapLayersService {
           return forkJoin({
             layer: of(layer),
             geojson: this.restService.get(
-              `${
-                this.restService.apiUrl
-              }/gis/feature?type=Point&tolerance=${0.9}&highquality=${true}`
+              `${this.restService.apiUrl}/gis/feature`
             ),
           });
         }),
@@ -229,23 +229,26 @@ export class SafeMapLayersService {
    * Create layer from its definition
    *
    * @param layer Layer to get definition of.
-   * @param datasource Datasource object containing type and id
-   * @param datasource.type Data source type
-   * @param datasource.id Data source id
+   * @param datasource Datasource object containing type, id and fields
    * @returns Layer for map widget
    */
   async createLayerFromDefinition(
     layer: LayerModel,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    datasource?: { type: 'layout' | 'aggregation' | 'refData'; id: string }
+    datasource: DataSourceChangeEvent
   ) {
+    const params = new HttpParams()
+      .set('geoField', datasource.geoField)
+      .set('latitudeField', datasource.latitudeField)
+      .set('longitudeField', datasource.longitudeField)
+      .set(datasource.origin, true)
+      .set(datasource.type, datasource.id);
+
     const res = await lastValueFrom(
       forkJoin({
         layer: of(layer),
         geojson: this.restService.get(
-          `${
-            this.restService.apiUrl
-          }/gis/feature?type=Point&tolerance=${0.9}&highquality=${true}`
+          `${this.restService.apiUrl}/gis/feature`,
+          { params }
         ),
       })
     );

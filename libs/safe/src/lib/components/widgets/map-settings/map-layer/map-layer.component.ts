@@ -24,6 +24,8 @@ import { OverlayLayerTree } from '../../../ui/map/interfaces/map-layers.interfac
 import * as L from 'leaflet';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 import { Layer } from '../../../ui/map/layer';
+import { DataSourceChangeEvent } from './layer-datasource/layer-datasource.interfaces';
+import { FormControl } from '@angular/forms';
 
 /**
  * Map layer editor.
@@ -95,7 +97,35 @@ export class MapLayerComponent
     this.form = createLayerForm(this.layer);
     this.currentZoom = this.mapComponent?.map.getZoom();
     if (this.mapComponent) {
-      this.setUpLayer();
+      const {
+        origin,
+        latitudeField,
+        longitudeField,
+        geoField,
+        aggregation,
+        layout,
+        refData,
+      } = (this.form.get('datasource') as FormControl).value;
+
+      const datasource: DataSourceChangeEvent = {
+        origin,
+        latitudeField,
+        longitudeField,
+        geoField,
+        id: aggregation ?? layout ?? refData,
+        type: aggregation ? 'aggregation' : layout ? 'layout' : 'refData',
+      };
+      // Check current layer's datasource in order to draw a layer or not
+      if (
+        !(
+          datasource.origin === 'resource' &&
+          !datasource.geoField &&
+          !datasource.latitudeField &&
+          !datasource.longitudeField
+        )
+      ) {
+        this.setUpLayer(datasource);
+      }
     }
     this.setUpEditLayerListeners();
   }
@@ -107,10 +137,12 @@ export class MapLayerComponent
    * @param datasource.type Data source type
    * @param datasource.id Data source id
    */
-  setUpLayer(datasource?: {
-    type: 'layout' | 'aggregation' | 'refData';
-    id: string;
-  }) {
+  setUpLayer(datasource: DataSourceChangeEvent) {
+    //If datasource has been removed from the form while a layer was set in the map, remove the current layer
+    if (!datasource && this.currentLayer) {
+      this.updateMapLayer(true);
+      return;
+    }
     this.mapLayersService
       .createLayerFromDefinition(this.form.value as LayerModel, datasource)
       .then((layer) => {
@@ -182,7 +214,7 @@ export class MapLayerComponent
    * Send the current form value to save
    */
   onSubmit() {
-    this.layerToSave.emit(this.form.value as LayerFormData);
+    this.layerToSave.emit(this.form.getRawValue() as LayerFormData);
   }
 
   /**
@@ -211,8 +243,10 @@ export class MapLayerComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    //Once we exit the layer editor, destroy the layer and related controls
-    this.updateMapLayer(true);
+    //Once we exit the layer editor, destroy the layer and related controls if exist
+    if (this.currentLayer) {
+      this.updateMapLayer(true);
+    }
   }
 }
 
