@@ -1134,7 +1134,10 @@
 					"orientation": "******",
 					"palette": {
 						"enable": "******",
-						"title": "******"
+						"title": "******",
+						"tooltip": {
+							"help": "******"
+						}
 					},
 					"position": "******",
 					"series": {

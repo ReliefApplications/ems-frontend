@@ -1141,7 +1141,10 @@
 					"orientation": "Orientation",
 					"palette": {
 						"enable": "Configurer la palette",
-						"title": "Palette de couleurs"
+						"title": "Palette de couleurs",
+						"tooltip": {
+							"help": "todo(translation)"
+						}
 					},
 					"position": "Position",
 					"series": {

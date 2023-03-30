@@ -15,6 +15,7 @@ import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 import { ChartTitle } from '../interfaces';
+import { Chart, Colors } from 'chart.js';
 
 /**
  * Interface containing the settings of the chart legend
@@ -81,6 +82,7 @@ export class SafeLineChartComponent implements OnChanges {
   };
 
   ngOnChanges(): void {
+    Chart.register(Colors);
     this.showValueLabels = get(this.options, 'labels.valueType', false);
     const series = get(this.options, 'series', []);
     this.chartData.datasets = this.series.map((x, i) => {
@@ -195,6 +197,10 @@ export class SafeLineChartComponent implements OnChanges {
           color: titleColor,
           font: fontOptions,
         },
+        colors:{
+          enabled: true,
+          forceOverride: true
+        }
       },
     } as ChartOptions;
 

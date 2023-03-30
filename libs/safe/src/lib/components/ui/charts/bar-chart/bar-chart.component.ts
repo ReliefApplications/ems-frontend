@@ -178,6 +178,9 @@ export class SafeBarChartComponent implements OnChanges {
           color: titleColor,
           font: fontOptions,
         },
+        colors: {
+          enabled: true,
+        }
       },
     };
 

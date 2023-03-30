@@ -1134,7 +1134,10 @@
 					"orientation": "Orientation",
 					"palette": {
 						"enable": "Use Custom Palette",
-						"title": "Color palette"
+						"title": "Color palette",
+						"tooltip": {
+							"help": "If no color is defined for a specific element, the palette will provide color"
+						}
 					},
 					"position": "Position",
 					"series": {

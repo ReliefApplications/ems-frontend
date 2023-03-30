@@ -154,13 +154,23 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="flex flex-col gap-2">
-            <mat-slide-toggle formControlName="enabled">{{
-              'components.widget.settings.chart.palette.enable' | translate
-            }}</mat-slide-toggle>
+            <div class="flex gap-2">
+              <mat-slide-toggle formControlName="enabled">
+                  {{ 'components.widget.settings.chart.palette.enable' | translate }}
+              </mat-slide-toggle>
+              <safe-icon
+                  icon="help"
+                  [size]="24"
+                  [matTooltip]="
+                  'components.widget.settings.chart.palette.tooltip.help' | translate
+                  "
+                  matTooltipPosition="right" 
+              ></safe-icon>
+            </div>
             <safe-palette-control
               formControlName="value"
             ></safe-palette-control>
-          </div>
+          </div>  
         </mat-expansion-panel>
         <!-- === LABELS === -->
         <mat-expansion-panel formGroupName="labels">

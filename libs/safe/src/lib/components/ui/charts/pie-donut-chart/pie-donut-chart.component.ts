@@ -121,6 +121,9 @@ export class SafePieDonutChartComponent implements OnChanges {
           color: titleColor,
           font: fontOptions,
         },
+        colors: {
+          enabled: true,
+        }
       },
     };
 

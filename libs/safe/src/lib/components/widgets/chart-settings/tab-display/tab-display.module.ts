@@ -25,6 +25,8 @@ import { SafeChartModule } from '../../chart/chart.module';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { SeriesSettingsModule } from '../series-settings/series-settings.module';
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
+import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+
 
 /**
  * Display tab of chart settings modal.
@@ -58,6 +60,7 @@ import { SafeDividerModule } from '../../../ui/divider/divider.module';
     InputsModule,
     SeriesSettingsModule,
     SafeDividerModule,
+    MatTooltipModule,
   ],
   exports: [TabDisplayComponent],
 })
