@@ -352,7 +352,7 @@ export class MapComponent
     const arcGisWebMap = get(
       this.settingsConfig,
       'arcGisWebMap',
-      'e322b877a98847d79692a3c7bf45e5cf'
+      'a8c3c531be1a4615b03c45b6353ab2c8'
     );
     const layers = get(this.settingsConfig, 'layers', []);
 
