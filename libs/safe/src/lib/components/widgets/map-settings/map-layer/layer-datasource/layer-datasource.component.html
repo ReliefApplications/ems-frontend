@@ -136,25 +136,51 @@
       </mat-form-field>
 
       <!-- Fields selection-->
-      <ng-container *ngIf="form.get('datasource.origin')?.value === 'resource'">
-        <mat-label>{{
-          'components.widget.settings.map.edit.fields' | translate
-        }}</mat-label>
-        <ul>
-          <li *ngFor="let field of fieldList">
-            <mat-checkbox
-              [color]="'primary'"
-              [value]="field"
-              (change)="updateFieldsFormProperties($event)"
-              [disabled]="form.get('datasource.' + field)?.disabled"
-            >
-              {{
-                'components.widget.settings.map.edit.datasource.' + field
-                  | translate
-              }}
-            </mat-checkbox>
-          </li>
-        </ul>
+      <ng-container
+        *ngIf="
+          (form.get('datasource.origin')?.value === 'resource' &&
+            (form.get('datasource.layout')?.value ||
+              form.get('datasource.aggregation')?.value)) ||
+          (form.get('datasource.origin')?.value === 'reference' &&
+            form.get('datasource.refData')?.value)
+        "
+      >
+        <!-- Geo Field -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{
+            'components.widget.settings.map.edit.datasource.geoField'
+              | translate
+          }}</mat-label>
+          <mat-select formControlName="geoField">
+            <mat-option *ngFor="let record of records" [value]="record.name">{{
+              record.name ?? (record.translation | translate)
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- Latitude Field -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{
+            'components.widget.settings.map.edit.datasource.latitudeField'
+              | translate
+          }}</mat-label>
+          <mat-select formControlName="latitudeField">
+            <mat-option *ngFor="let record of records" [value]="record.name">{{
+              record.name ?? (record.translation | translate)
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- Longitude Field -->
+        <mat-form-field appearance="outline">
+          <mat-label>{{
+            'components.widget.settings.map.edit.datasource.longitudeField'
+              | translate
+          }}</mat-label>
+          <mat-select formControlName="longitudeField">
+            <mat-option *ngFor="let record of records" [value]="record.name">{{
+              record.name ?? (record.translation | translate)
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </ng-container>
     </div>
   </form>

@@ -171,6 +171,9 @@ export class MapLayerComponent
         layerData: this.overlays,
         isDelete,
       };
+      if (isDelete) {
+        this.currentLayer = undefined as unknown as L.Layer;
+      }
     }
   }
 
@@ -182,10 +185,12 @@ export class MapLayerComponent
     this.form.valueChanges
       .pipe(takeUntil(this.destroy$), debounceTime(1000))
       .subscribe((value) => {
-        this.updateMapLayer(true);
-        this._layer.setConfig({ ...value, geojson: this._layer.geojson });
-        this.currentLayer = this._layer.getLayer(true);
-        this.updateMapLayer(false);
+        if (this.currentLayer) {
+          this.updateMapLayer(true);
+          this._layer.setConfig({ ...value, geojson: this._layer.geojson });
+          this.currentLayer = this._layer.getLayer(true);
+          this.updateMapLayer(false);
+        }
       });
 
     this.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({

@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { pairwise, takeUntil } from 'rxjs';
+import { combineLatest, pairwise, takeUntil } from 'rxjs';
 import { Resource } from '../../../../../models/resource.model';
 import { ReferenceData } from '../../../../../models/reference-data.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
@@ -33,11 +33,16 @@ import { SafeEditLayoutModalComponent } from '../../../../grid-layout/edit-layou
 import { SafeGridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';
 import { SafeAggregationService } from '../../../../../services/aggregation/aggregation.service';
 import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { DataSourceChangeEvent } from './layer-datasource.interfaces';
+import { FormControl } from '@angular/forms';
 
 /** Default items per resources query, for pagination */
 const ITEMS_PER_PAGE = 10;
+
+/**
+ * Default selection to clean record value
+ */
+const DEFAULT_RECORD = { translation: 'common.field.none', name: null };
 
 /** Component for the layer datasource selection tab */
 @Component({
@@ -50,6 +55,7 @@ export class LayerDatasourceComponent
   implements OnInit
 {
   @Input() form!: LayerFormT;
+  @Output() dataSourceChange = new EventEmitter<DataSourceChangeEvent>();
 
   // Resource
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
@@ -66,7 +72,6 @@ export class LayerDatasourceComponent
   // Aggregation and layout
   public aggregation: Aggregation | null = null;
   public layout: Layout | null = null;
-  fieldList = ['geoField', 'latitudeField', 'longitudeField'] as const;
 
   /**
    * Get fields from datasource
@@ -85,10 +90,7 @@ export class LayerDatasourceComponent
       longitudeField,
     };
   }
-
-  // Output
-  @Output() fieldsChange = new EventEmitter<any>();
-  @Output() dataSourceChange = new EventEmitter<DataSourceChangeEvent>();
+  records: any[] = [];
 
   /**
    * Component for the layer datasource selection tab
@@ -144,10 +146,19 @@ export class LayerDatasourceComponent
 
           if (layoutID) {
             this.layout = data.resource.layouts?.edges[0]?.node || null;
+            this.records = [
+              DEFAULT_RECORD,
+              ...(data.resource.layouts?.edges[0]?.node.query.fields ?? []),
+            ];
           }
           if (aggregationID) {
             this.aggregation =
               data.resource.aggregations?.edges[0]?.node || null;
+            this.records = [
+              DEFAULT_RECORD,
+              ...(data.resource.aggregations?.edges[0]?.node.sourceFields ??
+                []),
+            ];
           }
         });
     }
@@ -181,7 +192,6 @@ export class LayerDatasourceComponent
       .subscribe(() => {
         this.form.get('datasource.resource')?.setValue(null);
         this.form.get('datasource.refData')?.setValue(null);
-        this.fieldsChange.emit([]);
       });
 
     // Listen to resource changes
@@ -197,71 +207,108 @@ export class LayerDatasourceComponent
         this.form.get('datasource.aggregation')?.setValue(null);
         this.layout = null;
         this.aggregation = null;
-        this.fieldsChange.emit([]);
       });
 
     // Listen to refData changes
     this.form
       .get('datasource.refData')
-      ?.valueChanges.pipe(pairwise(), takeUntil(this.destroy$))
-      .subscribe(([prevRefDataId, currRefDataId]) => {
-        if (currRefDataId) {
-          this.dataSourceChange.emit({
-            origin: 'reference',
-            type: 'refData',
-            id: currRefDataId,
-            ...this.fieldData,
-          });
-          // If there was a refData and now we delete it
-          // We trigger the dataSourceChange event
-        } else if (prevRefDataId && !currRefDataId) {
-          this.dataSourceChange.emit();
-        }
-
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((refDataId) => {
+        this.resetFieldsForm();
         this.refData =
           this.refDataSelect?.elements
             .getValue()
-            .find((x) => x.id === currRefDataId) || null;
-        this.emitFields('refData');
+            .find((x) => x.id === refDataId) || null;
       });
 
     // Listen to layout changes
     this.form
       .get('datasource.layout')
-      ?.valueChanges.pipe(pairwise(), takeUntil(this.destroy$))
-      .subscribe(([prevLayoutId, currLayoutId]) => {
-        if (currLayoutId) {
-          this.dataSourceChange.emit({
-            origin: 'resource',
-            type: 'layout',
-            id: currLayoutId,
-            ...this.fieldData,
-          });
-          // If there was a layout and now we delete it
-          // We trigger the dataSourceChange event
-        } else if (prevLayoutId && !currLayoutId) {
-          this.dataSourceChange.emit();
-        }
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.resetFieldsForm();
       });
 
     // Listen to aggregation changes
     this.form
       .get('datasource.aggregation')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.resetFieldsForm();
+      });
+
+    // Listen to geoField changes
+    this.form
+      .get('datasource.geoField')
       ?.valueChanges.pipe(pairwise(), takeUntil(this.destroy$))
-      .subscribe(([prevAggregationId, currAggregationId]) => {
-        if (currAggregationId) {
+      .subscribe(([prevValue, currValue]) => {
+        if (currValue) {
+          // If geoField has value, disable latitude and longitude fields
+          this.form
+            .get('datasource.latitudeField')
+            ?.disable({ emitEvent: false });
+          this.form
+            .get('datasource.longitudeField')
+            ?.disable({ emitEvent: false });
+
           this.dataSourceChange.emit({
             origin: 'resource',
-            type: 'aggregation',
-            id: currAggregationId,
+            type: 'layout',
+            id: this.form.get('datasource.layout')?.value,
             ...this.fieldData,
           });
-          // If there was a aggregation and now we delete it
-          // We trigger the dataSourceChange event
-        } else if (prevAggregationId && !currAggregationId) {
+        } else if (prevValue && !currValue) {
+          this.form
+            .get('datasource.latitudeField')
+            ?.enable({ emitEvent: false });
+          this.form
+            .get('datasource.longitudeField')
+            ?.enable({ emitEvent: false });
+          // No value is set, then remove the current layer
           this.dataSourceChange.emit();
         }
       });
+
+    // Listen to longitudeField and latitudeField changes
+    combineLatest({
+      latitude: (this.form.get('datasource.latitudeField') as FormControl)
+        .valueChanges,
+      longitude: (this.form.get('datasource.longitudeField') as FormControl)
+        .valueChanges,
+    })
+      .pipe(pairwise(), takeUntil(this.destroy$))
+      .subscribe(([prevValue, currValue]) => {
+        if (currValue.latitude || currValue.longitude) {
+          // If any of these fields has value, disable geo field
+          this.form.get('datasource.geoField')?.disable({ emitEvent: false });
+
+          this.dataSourceChange.emit({
+            origin: 'resource',
+            type: this.layout ? 'layout' : 'aggregation',
+            id: this.form.get('datasource.layout')?.value,
+            ...this.fieldData,
+          });
+        } else if (
+          (prevValue.latitude || prevValue.longitude) &&
+          !currValue.latitude &&
+          !currValue.longitude
+        ) {
+          this.form.get('datasource.geoField')?.enable({ emitEvent: false });
+          // No value is set, then remove the current layer
+          this.dataSourceChange.emit();
+        }
+      });
+  }
+
+  /**
+   * Method to reset fields form value
+   * If more fields are added in the future just place it here
+   */
+  private resetFieldsForm() {
+    // Reset any value set in those fields
+    this.form.get('datasource.geoField')?.setValue(null);
+    this.form.get('datasource.latitudeField')?.setValue(null);
+    this.form.get('datasource.longitudeField')?.setValue(null);
   }
 
   /**
@@ -294,13 +341,17 @@ export class LayerDatasourceComponent
         hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value) {
-        this.form.get('datasource.layout')?.setValue(value.id);
-        this.layout = value;
-        this.emitFields('layout');
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.form.get('datasource.layout')?.setValue(value.id);
+          this.aggregation = null;
+          this.layout = value;
+          this.records = [DEFAULT_RECORD, ...value.query.fields];
+        }
+      });
   }
 
   /** Opens modal for aggregation selection/creation */
@@ -311,13 +362,17 @@ export class LayerDatasourceComponent
         resource: this.resource,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value) {
-        this.form.get('datasource.aggregation')?.setValue(value.id);
-        this.aggregation = value;
-        this.emitFields('aggregation');
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.form.get('datasource.aggregation')?.setValue(value.id);
+          this.layout = null;
+          this.aggregation = value;
+          this.records = [DEFAULT_RECORD, ...value.sourceFields];
+        }
+      });
   }
 
   /**
@@ -330,24 +385,36 @@ export class LayerDatasourceComponent
         layout: this.layout,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value && this.layout) {
-        this.gridLayoutService
-          .editLayout(this.layout, value, this.resource?.id)
-          .subscribe((res: any) => {
-            this.layout = res.data?.editLayout || null;
-
-            this.dataSourceChange.emit({
-              origin: 'resource',
-              type: 'layout',
-              id: this.layout?.id as string,
-              ...this.fieldData,
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value && this.layout) {
+          this.gridLayoutService
+            .editLayout(this.layout, value, this.resource?.id)
+            .subscribe((res: any) => {
+              this.layout = res.data?.editLayout || null;
+              this.records = [
+                DEFAULT_RECORD,
+                ...(res.data?.editLayout?.query.fields ?? []),
+              ];
+              // If any of the fields contains a value we will trigger the layer update
+              if (
+                !Object.keys(this.fieldData).every(
+                  (key) =>
+                    this.fieldData[key as keyof typeof this.fieldData] === null
+                )
+              ) {
+                this.dataSourceChange.emit({
+                  origin: 'resource',
+                  type: 'layout',
+                  id: this.layout?.id as string,
+                  ...this.fieldData,
+                });
+              }
             });
-
-            this.emitFields('layout');
-          });
-      }
-    });
+        }
+      });
   }
 
   /**
@@ -361,74 +428,35 @@ export class LayerDatasourceComponent
         aggregation: this.aggregation,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
-      if (value && this.aggregation) {
-        this.aggregationService
-          .editAggregation(this.aggregation, value, this.resource?.id)
-          .subscribe((res) => {
-            this.aggregation = res.data?.editAggregation || null;
-            this.dataSourceChange.emit({
-              origin: 'resource',
-              type: 'aggregation',
-              id: this.aggregation?.id as string,
-              ...this.fieldData,
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value && this.aggregation) {
+          this.aggregationService
+            .editAggregation(this.aggregation, value, this.resource?.id)
+            .subscribe((res) => {
+              this.aggregation = res.data?.editAggregation || null;
+              this.records = [
+                DEFAULT_RECORD,
+                ...(res.data?.editAggregation?.sourceFields ?? []),
+              ];
+              // If any of the fields contains a value we will trigger the layer update
+              if (
+                !Object.keys(this.fieldData).every(
+                  (key) =>
+                    this.fieldData[key as keyof typeof this.fieldData] === null
+                )
+              ) {
+                this.dataSourceChange.emit({
+                  origin: 'resource',
+                  type: 'aggregation',
+                  id: this.aggregation?.id as string,
+                  ...this.fieldData,
+                });
+              }
             });
-            this.emitFields('aggregation');
-          });
-      }
-    });
-  }
-
-  /**
-   * Emits fields from selected datasource
-   *
-   * @param type Type of datasource
-   */
-  public emitFields(type?: 'layout' | 'aggregation' | 'refData'): void {
-    if (!type) this.fieldsChange.emit([]);
-
-    switch (type) {
-      case 'layout':
-        this.fieldsChange.emit(get(this.layout, 'query.fields', []));
-        break;
-      case 'aggregation':
-        // TODO: get fields from aggregation
-        this.fieldsChange.emit([]);
-        break;
-      case 'refData':
-        this.fieldsChange.emit(get(this.refData, 'fields', []));
-        break;
-    }
-  }
-
-  /**
-   * Disable/enable fields from datasource by the given checkbox selection
-   *
-   * @param event Checkbox event
-   */
-  updateFieldsFormProperties(event: MatCheckboxChange) {
-    if (event.source.value === 'geoField') {
-      // If geoField has value, disable latitude and longitude fields
-      if (event.checked) {
-        this.form
-          .get('datasource.latitudeField')
-          ?.disable({ emitEvent: false });
-        this.form
-          .get('datasource.longitudeField')
-          ?.disable({ emitEvent: false });
-      } else {
-        this.form.get('datasource.latitudeField')?.enable({ emitEvent: false });
-        this.form
-          .get('datasource.longitudeField')
-          ?.enable({ emitEvent: false });
-      }
-    } else {
-      if (event.checked) {
-        // If any of these fields has value, disable geo field
-        this.form.get('datasource.geoField')?.disable({ emitEvent: false });
-      } else {
-        this.form.get('datasource.geoField')?.enable({ emitEvent: false });
-      }
-    }
+        }
+      });
   }
 }

@@ -9,7 +9,6 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeGraphQLSelectModule } from '../../../../graphql-select/graphql-select.module';
 import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeDividerModule } from '../../../../ui/divider/divider.module';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /** Module for the LayerDatasourceComponent */
 @NgModule({
@@ -25,7 +24,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     SafeGraphQLSelectModule,
     SafeButtonModule,
     SafeDividerModule,
-    MatCheckboxModule,
   ],
   exports: [LayerDatasourceComponent],
 })
