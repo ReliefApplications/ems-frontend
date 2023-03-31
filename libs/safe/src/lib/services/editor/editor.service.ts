@@ -72,6 +72,7 @@ export class SafeEditorService {
    * @param keys list of keys
    */
   addCalcAndKeysAutoCompleter(editor: RawEditorSettings, keys: string[]) {
+    this.allowScrolling();
     editor.setup = (e: Editor) => {
       e.ui.registry.addAutocompleter('keys_data_and_calc', {
         ch: '{',
@@ -79,7 +80,6 @@ export class SafeEditorService {
         onAction: (autocompleteApi, rng, value) => {
           e.selection.setRng(rng);
           e.insertContent(value);
-          this.allowScrolling();
           autocompleteApi.hide();
         },
         fetch: async (pattern: string) =>
@@ -92,12 +92,16 @@ export class SafeEditorService {
   /**
    * Allows scrolling within the TinyMCE autocompleter container, and prevents the autocompleter from closing when clicking on the scrollbar.
    *  This function sets a timeout to give TinyMCE some time to render its elements before trying to access them.
+   * The editor still closes when a value is successfully selected.
    */
   private allowScrolling() {
-    const autoCompleterContainer = document.querySelector('.tox-tinymce-aux');
-    if (!autoCompleterContainer) return;
-    autoCompleterContainer.addEventListener('mousedown', function (event) {
-      event.stopPropagation();
-    });
+    setTimeout(function () {
+      const autoCompleterContainer = document.querySelector('.tox-tinymce-aux');
+      console.log(autoCompleterContainer);
+      if (!autoCompleterContainer) return;
+      autoCompleterContainer.addEventListener('mousedown', function (event) {
+        event.stopPropagation();
+      });
+    }, 300);
   }
 }
