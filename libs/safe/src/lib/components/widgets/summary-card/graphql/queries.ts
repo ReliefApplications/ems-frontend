@@ -72,3 +72,21 @@ export const GET_RESOURCE_METADATA = gql`
 export interface GetResourceMetadataQueryResponse {
   resource: Resource;
 }
+
+
+// === GET USER ===
+export const USER_FIELDS = gql`
+  fragment UserFields on User {
+    username
+  }
+`;
+/** Graphql request for getting users (optionnally by a list of application ids) */
+export const GET_USER = gql`
+  query GetUser($id: ID!) {
+    user(id: $id) {
+      ...UserFields
+    }
+  }
+  ${USER_FIELDS}
+`;
+

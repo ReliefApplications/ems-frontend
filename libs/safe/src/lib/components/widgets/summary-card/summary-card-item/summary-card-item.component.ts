@@ -13,6 +13,7 @@ import { SafeResourceGridModalComponent } from '../../../search-resource-grid-mo
 import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
+  GET_USER,
 } from '../graphql/queries';
 import { clone, get } from 'lodash';
 import {
@@ -186,7 +187,45 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
           },
         })
         .subscribe((res) => {
-          const record: any = get(res.data, `${queryName}.edges[0].node`, null);
+          const record: any = get(res.data, `${queryName}.edges[0].node`, null);          
+          //get users from record.users
+          if(record.users){
+            let recordUserName: any[] = [];
+            record.users.forEach((val:any) => {
+              this.apollo
+              .query<any>({
+                query:GET_USER,
+                variables:{
+                  id: val
+                }
+              }).subscribe((res) => {
+                console.log(res.data.user.username);
+                recordUserName.push(res.data.user.username);
+              })
+            })
+            console.log(recordUserName);
+            record.users = recordUserName;
+          }
+          //get owner from record.owner
+          console.log(record.owner);
+          if(record.owner){
+            let recordUserName: any[] = [];
+            record.owner.forEach((val:any) => {
+              this.apollo
+              .query<any>({
+                query:GET_USER,
+                variables:{
+                  id: val
+                }
+              }).subscribe((res) => {
+                console.log(res.data.user.username);
+                recordUserName.push(res.data.user.username);
+              })
+            })
+            console.log(recordUserName);
+            record.owner = recordUserName;
+          }
+          console.log(record);
           this.fieldsValue = { ...record };
         });
     }
