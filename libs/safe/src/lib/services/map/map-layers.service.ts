@@ -58,12 +58,14 @@ export class SafeMapLayersService {
    * @returns An observable with the new layer data formatted for the application form
    */
   public addLayer(layer: LayerFormData): Observable<LayerModel | undefined> {
+    const newLayer = { ...layer };
+    delete newLayer.id;
+    delete newLayer.datasource.origin;
     return this.apollo
       .mutate<AddLayerMutationResponse>({
         mutation: ADD_LAYER,
         variables: {
-          name: layer.name,
-          sublayers: [],
+          layer: newLayer,
         },
       })
       .pipe(
@@ -84,14 +86,15 @@ export class SafeMapLayersService {
    * @returns An observable with the edited layer data formatted for the application form
    */
   public editLayer(layer: LayerFormData): Observable<LayerModel | undefined> {
+    const newLayer = { ...layer };
+    delete newLayer.id;
+    delete newLayer.datasource.origin;
     return this.apollo
       .mutate<EditLayerMutationResponse>({
         mutation: EDIT_LAYER,
         variables: {
           id: layer.id,
-          parent: layer.id,
-          name: layer.name,
-          sublayers: [],
+          layer: newLayer,
         },
       })
       .pipe(

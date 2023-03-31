@@ -4,8 +4,8 @@ import { LayerModel } from '../../../models/layer.model';
 // === ADD Layer ===
 /** Graphql request for adding a new layer */
 export const ADD_LAYER = gql`
-  mutation addLayer($name: String!, $sublayers: [ID]) {
-    addLayer(name: $name, sublayers: $sublayers) {
+  mutation addLayer($layer: LayerInputType!) {
+    addLayer(layer: $layer) {
       id
       name
     }
@@ -37,8 +37,8 @@ export interface DeleteLayerMutationResponse {
 // === EDIT LAYER ===
 /** Edit layer gql mutation definition */
 export const EDIT_LAYER = gql`
-  mutation editLayer($id: ID!, $parent: ID, $name: String!, $sublayers: [ID]) {
-    editLayer(id: $id, parent: $parent, name: $name, sublayers: $sublayers) {
+  mutation editLayer($id: ID!, $layer: LayerInputType!) {
+    editLayer(id: $id, layer: $layer) {
       id
       name
     }

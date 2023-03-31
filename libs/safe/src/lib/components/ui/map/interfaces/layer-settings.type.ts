@@ -59,7 +59,7 @@ type LayerNode = {
 
 /** Layer documents interface declaration */
 export interface LayerFormData {
-  id: string;
+  id?: string;
   name: string;
   visibility: boolean;
   opacity: number;
@@ -87,7 +87,7 @@ export interface LayerFormData {
     popupElements: PopupElement[];
   };
   datasource: {
-    origin: 'resource' | 'refData';
+    origin?: 'resource' | 'refData';
     resource: any;
     layout: any;
     aggregation: any;

@@ -177,7 +177,6 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup => {
       ...(type === 'simple' && {
         symbol: fb.group({
           color: [get(value, 'symbol.color', ''), Validators.required],
-          type: 'fa',
           size: [get(value, 'symbol.size', 24)],
           style: new FormControl<IconName>(
             get(value, 'symbol.style', 'location-dot')
