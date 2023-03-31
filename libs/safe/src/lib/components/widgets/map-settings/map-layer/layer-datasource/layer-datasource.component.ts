@@ -35,6 +35,8 @@ import { SafeAggregationService } from '../../../../../services/aggregation/aggr
 import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 import { DataSourceChangeEvent } from './layer-datasource.interfaces';
 import { FormControl } from '@angular/forms';
+import { QueryBuilderService } from '../../../../../services/query-builder/query-builder.service';
+import { AggregationBuilderService } from '../../../../../services/aggregation-builder/aggregation-builder.service';
 
 /** Default items per resources query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -98,12 +100,16 @@ export class LayerDatasourceComponent
    * @param apollo Apollo service
    * @param dialog Material dialog service
    * @param gridLayoutService Shared layout service
+   * @param aggregationBuilder Aggregation builder service
+   * @param queryBuilder Query builder service
    * @param aggregationService Shared aggregation service
    */
   constructor(
     private apollo: Apollo,
     private dialog: MatDialog,
     private gridLayoutService: SafeGridLayoutService,
+    private aggregationBuilder: AggregationBuilderService,
+    private queryBuilder: QueryBuilderService,
     private aggregationService: SafeAggregationService
   ) {
     super();
@@ -154,11 +160,8 @@ export class LayerDatasourceComponent
           if (aggregationID) {
             this.aggregation =
               data.resource.aggregations?.edges[0]?.node || null;
-            this.records = [
-              DEFAULT_RECORD,
-              ...(data.resource.aggregations?.edges[0]?.node.sourceFields ??
-                []),
-            ];
+            const fieldsForSelector = this.getFieldsForSelector();
+            this.records = [DEFAULT_RECORD, ...fieldsForSelector];
           }
         });
     }
@@ -253,8 +256,10 @@ export class LayerDatasourceComponent
 
           this.dataSourceChange.emit({
             origin: 'resource',
-            type: 'layout',
-            id: this.form.get('datasource.layout')?.value,
+            type: this.layout ? 'layout' : 'aggregation',
+            id: this.form.get(
+              this.layout ? 'datasource.layout' : 'datasource.aggregation'
+            )?.value,
             ...this.fieldData,
           });
         } else if (prevValue && !currValue) {
@@ -285,7 +290,9 @@ export class LayerDatasourceComponent
           this.dataSourceChange.emit({
             origin: 'resource',
             type: this.layout ? 'layout' : 'aggregation',
-            id: this.form.get('datasource.layout')?.value,
+            id: this.form.get(
+              this.layout ? 'datasource.layout' : 'datasource.aggregation'
+            )?.value,
             ...this.fieldData,
           });
         } else if (
@@ -370,9 +377,63 @@ export class LayerDatasourceComponent
           this.form.get('datasource.aggregation')?.setValue(value.id);
           this.layout = null;
           this.aggregation = value;
-          this.records = [DEFAULT_RECORD, ...value.sourceFields];
+          const fieldsForSelector = this.getFieldsForSelector();
+          this.records = [DEFAULT_RECORD, ...fieldsForSelector];
         }
       });
+  }
+
+  // @TODO Copied method from tab-main.component, this one should be refactored in the needed places
+  // eslint-disable-next-line jsdoc/require-returns
+  /**
+   * Set available series fields, from resource fields and aggregation definition.
+   */
+  private getAvailableSeriesFields(): any[] {
+    return this.queryBuilder
+      .getFields(this.resource?.queryName as string)
+      .filter(
+        (field: any) =>
+          !(
+            field.name.includes('_id') &&
+            (field.type.name === 'ID' ||
+              (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
+          )
+      );
+  }
+
+  /**
+   * Get fields for the selector form
+   *
+   * @returns the fields array
+   */
+  getFieldsForSelector(): any[] {
+    //@TODO this part should be refactored
+    // Get fields
+    const fields = this.getAvailableSeriesFields();
+    const selectedFields = this.aggregation?.sourceFields
+      .map((x: string) => {
+        const field = fields.find((y) => x === y.name);
+        if (!field) return null;
+        if (field.type.kind !== 'SCALAR') {
+          Object.assign(field, {
+            fields: this.queryBuilder
+              .getFieldsFromType(
+                field.type.kind === 'OBJECT'
+                  ? field.type.name
+                  : field.type.ofType.name
+              )
+              .filter((y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR'),
+          });
+        }
+        return field;
+      })
+      // @TODO To be improved - Get only the JSON type fields for this case
+      .filter((x: any) => x !== null && x.type.name === 'JSON');
+
+    return this.aggregationBuilder.fieldsAfter(
+      selectedFields,
+      this.aggregation?.pipeline
+    );
   }
 
   /**
@@ -437,10 +498,8 @@ export class LayerDatasourceComponent
             .editAggregation(this.aggregation, value, this.resource?.id)
             .subscribe((res) => {
               this.aggregation = res.data?.editAggregation || null;
-              this.records = [
-                DEFAULT_RECORD,
-                ...(res.data?.editAggregation?.sourceFields ?? []),
-              ];
+              const fieldsForSelector = this.getFieldsForSelector();
+              this.records = [DEFAULT_RECORD, ...fieldsForSelector];
               // If any of the fields contains a value we will trigger the layer update
               if (
                 !Object.keys(this.fieldData).every(
