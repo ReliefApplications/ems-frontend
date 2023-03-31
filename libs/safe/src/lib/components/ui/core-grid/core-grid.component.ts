@@ -108,6 +108,7 @@ export class SafeCoreGridComponent
   @Input() selectedRows: string[] = [];
   @Input() selectable = true;
   @Output() selectionChange = new EventEmitter();
+  @Output() removeRowIds = new EventEmitter<string[]>();
 
   /** @returns list of selected items in the grid */
   get selectedItems(): any[] {
@@ -258,6 +259,7 @@ export class SafeCoreGridComponent
     convert: false,
     export: this.showExport,
     showDetails: true,
+    remove: false,
   };
 
   public editable = false;
@@ -328,6 +330,7 @@ export class SafeCoreGridComponent
       convert: get(this.settings, 'actions.convert', false),
       export: get(this.settings, 'actions.export', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
+      remove: get(this.settings, 'actions.remove', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
@@ -798,6 +801,15 @@ export class SafeCoreGridComponent
         }
         break;
       }
+      case 'remove': {
+        if (event.item) {
+          this.onRemoveRow([event.item]);
+        }
+        if (event.items && event.items.length > 0) {
+          this.onRemoveRow(event.items);
+        }
+        break;
+      }
       case 'resetLayout': {
         this.resetDefaultLayout();
         break;
@@ -1260,5 +1272,19 @@ export class SafeCoreGridComponent
    */
   resetDefaultLayout(): void {
     this.defaultLayoutReset.emit();
+  }
+
+  /**
+   * Remove (not deleting) the selected records from the grid
+   *
+   * @param items  items to remove
+   */
+  private onRemoveRow(items: any[]): void {
+    const selected: string[] = items.map((x) => x.id);
+    this.gridData.data = this.gridData.data.filter(
+      (x) => !selected.includes(x.id)
+    );
+    this.items = [...this.gridData.data];
+    this.removeRowIds.emit(selected);
   }
 }

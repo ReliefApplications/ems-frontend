@@ -156,6 +156,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     convert: false,
     export: false,
     showDetails: false,
+    remove: false,
   };
   @Input() hasDetails = true;
   @Output() action = new EventEmitter();

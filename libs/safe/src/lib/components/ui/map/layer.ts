@@ -492,7 +492,6 @@ export class Layer implements LayerModel {
                   'featureReduction.drawingInfo.renderer.symbol',
                   symbol
                 );
-                console.log(clusterSymbol);
                 const clusterGroup = L.markerClusterGroup({
                   maxClusterRadius: get(
                     this.layerDefinition,

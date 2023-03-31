@@ -68,4 +68,5 @@ export interface QuestionResource
   staticValue: string;
   customFilter: string;
   displayAsGrid: boolean;
+  remove?: boolean;
 }

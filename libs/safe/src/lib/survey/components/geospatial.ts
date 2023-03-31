@@ -48,7 +48,6 @@ export const init = (Survey: any, domService: DomService): void => {
 
       // updates the question value when the map changes
       instance.mapChange.subscribe((res) => {
-        console.log(res);
         question.value = res;
       });
     },

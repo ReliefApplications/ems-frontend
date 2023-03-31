@@ -45,6 +45,7 @@ import { createCustomDivIcon } from './utils/create-div-icon';
 import { AVAILABLE_GEOMAN_LANGUAGES } from './const/language';
 import { ArcgisService } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
+import { flatten } from 'lodash';
 
 /**
  * Cleans the settings object from null values
@@ -348,7 +349,11 @@ export class MapComponent
     const worldCopyJump = get(this.settingsConfig, 'worldCopyJump', true);
     const zoomControl = get(this.settingsConfig, 'zoomControl', false);
     const controls = get(this.settingsConfig, 'controls', DefaultMapControls);
-    const arcGisWebMap = get(this.settingsConfig, 'arcGisWebMap');
+    const arcGisWebMap = get(
+      this.settingsConfig,
+      'arcGisWebMap',
+      'a8c3c531be1a4615b03c45b6353ab2c8'
+    );
     const layers = get(this.settingsConfig, 'layers', []);
 
     return {
@@ -401,23 +406,37 @@ export class MapComponent
       initialState.viewpoint.zoom
     );
 
+    const promises: Promise<{
+      basemaps?: L.Control.Layers.TreeObject[];
+      layers?: L.Control.Layers.TreeObject[];
+    }>[] = [];
+
     if (arcGisWebMap) {
       //set webmap
-      this.setWebmap(arcGisWebMap);
+      promises.push(this.setWebmap(arcGisWebMap));
+    } else {
+      promises.push(this.setBasemap(basemap));
     }
-
-    // TODO: see if fixable, issue is that it does not work if leaflet not put in html imports
-    this.setBasemap(basemap);
 
     if (layers?.length) {
-      this.setUpLayers(layers);
+      promises.push(this.getLayers(layers));
       // Add legend control
-      this.mapControlsService.getLegendControl(
-        this.map,
-        this.layers,
-        this.extractSettings().controls.legend
-      );
+      // this.mapControlsService.getLegendControl(
+      //   this.map,
+      //   this.layers,
+      //   this.extractSettings().controls.legend
+      // );
     }
+
+    Promise.all(promises).then((trees) => {
+      const basemaps: L.Control.Layers.TreeObject[][] = [];
+      const layers: L.Control.Layers.TreeObject[][] = [];
+      for (const tree of trees) {
+        tree.basemaps && basemaps.push(tree.basemaps);
+        tree.layers && layers.push(tree.layers);
+      }
+      this.setLayersControl(flatten(basemaps), flatten(layers));
+    });
 
     // Add zoom control
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
@@ -554,9 +573,9 @@ export class MapComponent
         this.layers = [];
         this.layersTree = [];
         // If the number of layers if positive, we'll add them
-        if (layers?.length) {
-          this.setUpLayers(layers);
-        }
+        // if (layers?.length) {
+        //   this.setUpLayers(layers);
+        // }
       }
 
       const currentCenter = this.map.getCenter();
@@ -578,31 +597,37 @@ export class MapComponent
   }
 
   /**
+   * Setup layers control from loaded basemaps and layers
+   *
+   * @param basemaps loaded basemaps
+   * @param layers loaded layers
+   */
+  private setLayersControl(
+    basemaps: L.Control.Layers.TreeObject[],
+    layers: L.Control.Layers.TreeObject[]
+  ) {
+    this.baseTree = {
+      label: 'Base Maps',
+      children: basemaps,
+      collapsed: true,
+    };
+    this.layersTree = layers;
+    // Add control to the map layers
+    this.layerControl = L.control.layers.tree(
+      this.baseTree,
+      this.layersTree as any
+    );
+    if (this.extractSettings().controls.layer) {
+      this.layerControl.addTo(this.map);
+    }
+  }
+
+  /**
    * Setup and draw layers on map and sets the baseTree.
    *
    * @param layerIds layerIds from saved edit layer info
    */
-  private async setUpLayers(layerIds: string[]) {
-    this.layersTree = [];
-
-    this.basemap = L.tileLayer(
-      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }
-    ).addTo(this.map);
-    this.baseTree = {
-      label: 'Base Maps',
-      children: [
-        {
-          label: 'OSM',
-          layer: this.basemap,
-        },
-      ],
-      collapsed: true,
-    };
-
+  private async getLayers(layerIds: string[]) {
     /**
      * Parses a layer into a tree node
      *
@@ -647,23 +672,16 @@ export class MapComponent
         };
       }
     };
-
-    const layers = await this.mapLayersService.createLayersFromIds(layerIds);
-
-    // Add each layer to the tree
-    layers.forEach((layer) => {
-      this.layersTree.push(parseTreeNode(layer));
+    return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
+      this.mapLayersService.createLayersFromIds(layerIds).then((layers) => {
+        const layersTree: any[] = [];
+        // Add each layer to the tree
+        layers.forEach((layer) => {
+          layersTree.push(parseTreeNode(layer));
+        });
+        resolve({ layers: layersTree });
+      });
     });
-
-    // Add control to the map layers
-    this.layerControl = L.control.layers.tree(
-      this.baseTree,
-      this.layersTree as any
-    );
-
-    if (this.extractSettings().controls.layer) {
-      this.layerControl.addTo(this.map);
-    }
   }
 
   /**
@@ -904,25 +922,42 @@ export class MapComponent
    * Set the basemap.
    *
    * @param basemap String containing the id (name) of the basemap
+   * @returns basemaps as promise
    */
-  public setBasemap(basemap: any) {
-    // @TODO when switching between basemaps the related layers and controls to the previous map are there
-    if (this.basemap) {
-      this.basemap.remove();
-    }
+  public setBasemap(
+    basemap: any
+  ): Promise<{ basemaps: L.Control.Layers.TreeObject[] }> {
     const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
-    this.basemap = Vector.vectorBasemapLayer(basemapName, {
-      apiKey: this.esriApiKey,
-    }).addTo(this.map);
+    return new Promise((resolve) => {
+      resolve({
+        basemaps: [
+          {
+            label: basemapName,
+            layer: Vector.vectorBasemapLayer(basemapName, {
+              apiKey: this.esriApiKey,
+            }),
+          },
+        ],
+      });
+    });
+    // @TODO when switching between basemaps the related layers and controls to the previous map are there
+    // if (this.basemap) {
+    //   this.basemap.remove();
+    // }
+    // const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
+    // this.basemap = Vector.vectorBasemapLayer(basemapName, {
+    //   apiKey: this.esriApiKey,
+    // }).addTo(this.map);
   }
 
   /**
    * Set the webmap.
    *
    * @param webmap String containing the id (name) of the webmap
+   * @returns loaded basemaps and layers as Promise
    */
   public setWebmap(webmap: any) {
     this.arcGisWebMap = webmap;
-    this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
+    return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
   }
 }
