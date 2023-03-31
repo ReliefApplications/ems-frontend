@@ -31,10 +31,6 @@ export class SafeSeriesMappingComponent
     super();
   }
 
-  /**
-   * Gets the control names from the inputs.
-   * Sets the available fields.
-   */
   ngOnInit(): void {
     this.setControlListeners();
   }

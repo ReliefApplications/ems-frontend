@@ -1192,6 +1192,7 @@
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
 						"inline": "Modifier par ligne",
+						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
