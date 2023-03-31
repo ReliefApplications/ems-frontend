@@ -224,7 +224,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
             })
             console.log(recordUserName);
             record.owner = recordUserName;
-          }
+          } 
           console.log(record);
           this.fieldsValue = { ...record };
         });
