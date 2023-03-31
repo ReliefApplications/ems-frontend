@@ -97,11 +97,10 @@ export class SafeEditorService {
   private allowScrolling() {
     setTimeout(function () {
       const autoCompleterContainer = document.querySelector('.tox-tinymce-aux');
-      console.log(autoCompleterContainer);
       if (!autoCompleterContainer) return;
       autoCompleterContainer.addEventListener('mousedown', function (event) {
         event.stopPropagation();
       });
-    }, 300);
+    }, 500);
   }
 }
