@@ -145,6 +145,7 @@ export class SafeChooseRecordModalComponent
         convert: false,
         update: false,
         inlineEdition: false,
+        remove: false,
       },
     };
   }

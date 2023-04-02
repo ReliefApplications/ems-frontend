@@ -1118,6 +1118,7 @@
 				},
 				"openSettings": "Open settings",
 				"tooltip": {
+					"displayMap": "Display map",
 					"saved": "Changes saved",
 					"unsaved": "Click on save button to upload changes",
 					"uploadFailed": "Record not saved. Click to see more details"
@@ -1184,6 +1185,7 @@
 						"delete": "Delete records",
 						"export": "Export records",
 						"inline": "Inline edition",
+						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",
 						"title": "Enabled actions",
@@ -1306,11 +1308,23 @@
 							"visibilityRange": "Visibility range",
 							"zoom": "Current zoom"
 						},
+						"reduction": {
+							"noReduction": "No reduction",
+							"reduction": "Reduction"
+						},
 						"style": {
 							"color": "Color",
 							"icon": "Icon",
 							"size": "Size",
 							"stylingType": "{{layerType}} styling"
+						},
+						"styling": {
+							"heatmapOptions": {
+								"blur": "Blur",
+								"gradient": "Gradient",
+								"minOpacity": "Minimum opacity",
+								"radius": "Radius"
+							}
 						}
 					},
 					"errors": {

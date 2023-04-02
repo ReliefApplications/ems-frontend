@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { takeUntil } from 'rxjs';
 import { Resource } from '../../../../../models/resource.model';
@@ -23,7 +16,6 @@ import {
   GET_REFERENCE_DATAS,
   GET_REFERENCE_DATA,
 } from '../../graphql/queries';
-import { LayerFormT } from '../../map-forms';
 import { SafeGraphQLSelectComponent } from '../../../../graphql-select/graphql-select.component';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { AddLayoutModalComponent } from '../../../../grid-layout/add-layout-modal/add-layout-modal.component';
@@ -33,6 +25,9 @@ import { SafeEditLayoutModalComponent } from '../../../../grid-layout/edit-layou
 import { SafeGridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';
 import { SafeAggregationService } from '../../../../../services/aggregation/aggregation.service';
 import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
+import { FormControl, FormGroup } from '@angular/forms';
+import { AggregationBuilderService } from '../../../../../services/aggregation-builder/aggregation-builder.service';
+import { QueryBuilderService } from '../../../../../services/query-builder/query-builder.service';
 
 /** Default items per resources query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -47,7 +42,8 @@ export class LayerDatasourceComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  @Input() form!: LayerFormT;
+  @Input() formGroup!: FormGroup;
+  public origin!: FormControl<string | null>;
 
   // Resource
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
@@ -65,8 +61,8 @@ export class LayerDatasourceComponent
   public aggregation: Aggregation | null = null;
   public layout: Layout | null = null;
 
-  // Output
-  @Output() fieldsChange = new EventEmitter<any>();
+  // todo(gis): type
+  public fields: any[] = [];
 
   /**
    * Component for the layer datasource selection tab
@@ -75,17 +71,31 @@ export class LayerDatasourceComponent
    * @param dialog Material dialog service
    * @param gridLayoutService Shared layout service
    * @param aggregationService Shared aggregation service
+   * @param queryBuilder Query builder service
+   * @param aggregationBuilder Aggregation builder service
    */
   constructor(
     private apollo: Apollo,
     private dialog: MatDialog,
     private gridLayoutService: SafeGridLayoutService,
-    private aggregationService: SafeAggregationService
+    private aggregationService: SafeAggregationService,
+    private queryBuilder: QueryBuilderService,
+    private aggregationBuilder: AggregationBuilderService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    // Set origin form control
+    if (this.formGroup.value.resource) {
+      this.origin = new FormControl('resource');
+    } else {
+      if (this.formGroup.value.refData) {
+        this.origin = new FormControl('refData');
+      } else {
+        this.origin = new FormControl();
+      }
+    }
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
@@ -104,10 +114,10 @@ export class LayerDatasourceComponent
     );
 
     // If the form has a resource, fetch it
-    const resourceID = this.form.get('datasource.resource')?.value;
+    const resourceID = this.formGroup.value.resource;
     if (resourceID) {
-      const layoutID = this.form.value.datasource?.layout;
-      const aggregationID = this.form.value.datasource?.aggregation;
+      const layoutID = this.formGroup.value.layout;
+      const aggregationID = this.formGroup.value.aggregation;
       this.apollo
         .query<GetResourceQueryResponse>({
           query: GET_RESOURCE,
@@ -121,30 +131,30 @@ export class LayerDatasourceComponent
           this.resource = data.resource;
 
           if (layoutID) {
-            this.layout = data.resource.layouts?.edges[0]?.node || null;
-          }
-          if (aggregationID) {
-            this.aggregation =
-              data.resource.aggregations?.edges[0]?.node || null;
+            console.log(data.resource.layouts?.edges[0].node);
+            this.layout = get(data, 'resource.layouts.edges[0].node', null);
+            console.log(this.layout);
+            this.fields = get(this.layout, 'query.fields', []);
+          } else {
+            if (aggregationID) {
+              this.aggregation =
+                data.resource.aggregations?.edges[0]?.node || null;
+              this.fields = this.getAggregationFields();
+            }
           }
         });
     }
 
     // Listen to origin changes
-    this.form
-      .get('datasource.origin')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.resource = null;
-        this.refData = null;
-        this.form.get('datasource.resource')?.setValue(null);
-        this.form.get('datasource.refData')?.setValue(null);
-        this.fieldsChange.emit([]);
-      });
+    this.origin.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.resource = null;
+      this.refData = null;
+      this.formGroup.patchValue({ resource: null, refData: null });
+    });
 
     // Listen to resource changes
-    this.form
-      .get('datasource.resource')
+    this.formGroup
+      .get('resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((resourceID) => {
         this.resource =
@@ -152,15 +162,14 @@ export class LayerDatasourceComponent
             .getValue()
             .find((x) => x.id === resourceID) || null;
 
-        this.form.get('datasource.layout')?.setValue(null);
-        this.form.get('datasource.aggregation')?.setValue(null);
+        this.formGroup.get('layout')?.setValue(null);
+        this.formGroup.get('aggregation')?.setValue(null);
         this.layout = null;
         this.aggregation = null;
-        this.fieldsChange.emit([]);
       });
 
     // If form has a refData, fetch it
-    const refDataID = this.form.get('datasource.refData')?.value;
+    const refDataID = this.formGroup.get('refData')?.value;
     if (refDataID) {
       this.apollo
         .query<GetReferenceDataQueryResponse>({
@@ -175,15 +184,14 @@ export class LayerDatasourceComponent
     }
 
     // Listen to refData changes
-    this.form
-      .get('datasource.refData')
+    this.formGroup
+      .get('refData')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((refDataID) => {
         this.refData =
           this.refDataSelect?.elements
             .getValue()
             .find((x) => x.id === refDataID) || null;
-        this.emitFields('refData');
       });
   }
 
@@ -219,9 +227,9 @@ export class LayerDatasourceComponent
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.form.get('datasource.layout')?.setValue(value.id);
+        this.formGroup.get('layout')?.setValue(value.id);
         this.layout = value;
-        this.emitFields('layout');
+        this.fields = get(this.layout, 'query.fields', []);
       }
     });
   }
@@ -236,9 +244,9 @@ export class LayerDatasourceComponent
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.form.get('datasource.aggregation')?.setValue(value.id);
+        this.formGroup.get('aggregation')?.setValue(value.id);
         this.aggregation = value;
-        this.emitFields('aggregation');
+        this.fields = this.getAggregationFields();
       }
     });
   }
@@ -258,8 +266,8 @@ export class LayerDatasourceComponent
         this.gridLayoutService
           .editLayout(this.layout, value, this.resource?.id)
           .subscribe((res: any) => {
-            this.layout = res.data?.editLayout || null;
-            this.emitFields('layout');
+            this.layout = get(res, 'data.editLayout', null);
+            this.fields = get(this.layout, 'query.fields', []);
           });
       }
     });
@@ -281,32 +289,63 @@ export class LayerDatasourceComponent
         this.aggregationService
           .editAggregation(this.aggregation, value, this.resource?.id)
           .subscribe((res) => {
-            this.aggregation = res.data?.editAggregation || null;
-            this.emitFields('aggregation');
+            this.aggregation = get(res, 'data.editAggregation', null);
+            this.fields = this.getAggregationFields();
           });
       }
     });
   }
 
   /**
-   * Emits fields from selected datasource
+   * Get fields from aggregation
    *
-   * @param type Type of datasource
+   * @returns aggregation fields
    */
-  public emitFields(type?: 'layout' | 'aggregation' | 'refData'): void {
-    if (!type) this.fieldsChange.emit([]);
+  private getAggregationFields() {
+    //@TODO this part should be refactored
+    // Get fields
+    const fields = this.getAvailableSeriesFields();
+    const selectedFields = this.aggregation?.sourceFields
+      .map((x: string) => {
+        const field = fields.find((y) => x === y.name);
+        if (!field) return null;
+        if (field.type.kind !== 'SCALAR') {
+          Object.assign(field, {
+            fields: this.queryBuilder
+              .getFieldsFromType(
+                field.type.kind === 'OBJECT'
+                  ? field.type.name
+                  : field.type.ofType.name
+              )
+              .filter((y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR'),
+          });
+        }
+        return field;
+      })
+      // @TODO To be improved - Get only the JSON type fields for this case
+      .filter((x: any) => x !== null && x.type.name === 'JSON');
 
-    switch (type) {
-      case 'layout':
-        this.fieldsChange.emit(get(this.layout, 'query.fields', []));
-        break;
-      case 'aggregation':
-        // TODO: get fields from aggregation
-        this.fieldsChange.emit([]);
-        break;
-      case 'refData':
-        this.fieldsChange.emit(get(this.refData, 'fields', []));
-        break;
-    }
+    return this.aggregationBuilder.fieldsAfter(
+      selectedFields,
+      this.aggregation?.pipeline
+    );
+  }
+
+  // @TODO Copied method from tab-main.component, this one should be refactored in the needed places
+  // eslint-disable-next-line jsdoc/require-returns
+  /**
+   * Set available series fields, from resource fields and aggregation definition.
+   */
+  private getAvailableSeriesFields(): any[] {
+    return this.queryBuilder
+      .getFields(this.resource?.queryName as string)
+      .filter(
+        (field: any) =>
+          !(
+            field.name.includes('_id') &&
+            (field.type.name === 'ID' ||
+              (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
+          )
+      );
   }
 }

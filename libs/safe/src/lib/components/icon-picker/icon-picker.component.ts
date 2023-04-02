@@ -1,14 +1,12 @@
 import {
   Component,
   ElementRef,
-  EventEmitter,
   HostBinding,
   HostListener,
   Inject,
   Input,
   OnDestroy,
   Optional,
-  Output,
   Self,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
@@ -50,8 +48,6 @@ export class IconPickerComponent
   @Input() color: string = this.primaryColor;
   public showList = false;
 
-  @Output() selectionChange = new EventEmitter<FormFieldValue>();
-
   /**
    * Gets the value
    *
@@ -65,7 +61,6 @@ export class IconPickerComponent
   set value(val: FormFieldValue) {
     this.onChange(val);
     this.stateChanges.next();
-    this.selectionChange.emit(val);
   }
 
   @Input() fontFamily = 'fa';
@@ -184,7 +179,7 @@ export class IconPickerComponent
   }
 
   /**
-   * Component for the layer styling
+   * Icon picker component
    *
    * @param environment platform environment
    * @param elementRef shared element ref service

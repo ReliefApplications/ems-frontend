@@ -1125,6 +1125,7 @@
 				},
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
+					"displayMap": "Afficher la carte",
 					"saved": "Changements sauvegardés",
 					"unsaved": "Cliquez sur sauvegarder pour enregistrer les changements",
 					"uploadFailed": "L'enregistrement a échoué. Cliquez pour obtenir plus de détails"
@@ -1191,6 +1192,7 @@
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
 						"inline": "Modifier par ligne",
+						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
@@ -1313,11 +1315,23 @@
 							"visibilityRange": "Plage de visibilité",
 							"zoom": "Zoom"
 						},
+						"reduction": {
+							"noReduction": "Pas de réduction",
+							"reduction": "Réduction"
+						},
 						"style": {
 							"color": "Couleur",
 							"icon": "Symbole",
 							"size": "Taille",
 							"stylingType": "Style de {{layerType}}"
+						},
+						"styling": {
+							"heatmapOptions": {
+								"blur": "Flou",
+								"gradient": "Gradient",
+								"minOpacity": "Opacité minimum",
+								"radius": "Rayon"
+							}
 						}
 					},
 					"errors": {

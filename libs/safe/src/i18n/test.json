@@ -1118,6 +1118,7 @@
 				},
 				"openSettings": "******",
 				"tooltip": {
+					"displayMap": "******",
 					"saved": "******",
 					"unsaved": "******",
 					"uploadFailed": "******"
@@ -1184,6 +1185,7 @@
 						"delete": "******",
 						"export": "******",
 						"inline": "******",
+						"remove": "******",
 						"show": "******",
 						"showDetails": "******",
 						"title": "******",
@@ -1306,11 +1308,23 @@
 							"visibilityRange": "******",
 							"zoom": "******"
 						},
+						"reduction": {
+							"noReduction": "******",
+							"reduction": "******"
+						},
 						"style": {
 							"color": "******",
 							"icon": "******",
 							"size": "******",
 							"stylingType": "{{layerType}} ******"
+						},
+						"styling": {
+							"heatmapOptions": {
+								"blur": "******",
+								"gradient": "******",
+								"minOpacity": "******",
+								"radius": "******"
+							}
 						}
 					},
 					"errors": {

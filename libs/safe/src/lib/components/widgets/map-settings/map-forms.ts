@@ -5,17 +5,16 @@ import {
   Validators,
 } from '@angular/forms';
 import get from 'lodash/get';
-import { MapLayerI } from './map-layers/map-layers.component';
 import {
   MapControls,
   DefaultMapControls,
   MapConstructorSettings,
 } from '../../ui/map/interfaces/map.interface';
-import { Layer } from '../../../models/layer.model';
 import {
-  popupElement,
-  popupElementType,
-} from './map-layer/layer-popup/layer-popup.interface';
+  LayerModel,
+  PopupElement,
+  PopupElementType,
+} from '../../../models/layer.model';
 import { IconName } from '../../icon-picker/icon-picker.const';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
@@ -41,32 +40,101 @@ const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
   arcGisWebMap: null,
 };
 
+/** Default gradient for heatmap */
+const DEFAULT_GRADIENT = [
+  {
+    color: 'blue',
+    ratio: 0,
+  },
+  {
+    color: 'red',
+    ratio: 1,
+  },
+];
+
 /**
  * Create layer form from value
  *
  * @param value layer value ( optional )
  * @returns new form group
  */
-export const createLayerForm = (value?: Layer) =>
+export const createLayerForm = (value?: LayerModel) =>
   fb.group({
     // Layer properties
     id: [get(value, 'id', null)],
-    title: [get(value, 'title', null), Validators.required],
+    name: [get(value, 'name', null), Validators.required],
     visibility: [get(value, 'visibility', true), Validators.required],
     opacity: [get(value, 'opacity', 1), Validators.required],
     layerDefinition: createLayerDefinitionForm(get(value, 'layerDefinition')),
     popupInfo: createPopupInfoForm(get(value, 'popupInfo')),
-    datasource: fb.group({
-      origin: new FormControl<MapLayerI['datasource']['origin']>(
-        get(value, 'datasource.source', 'resource'),
-        Validators.required
-      ),
-      resource: [get(value, 'datasource.resource', null)],
-      layout: [get(value, 'datasource.layout', null)],
-      aggregation: [get(value, 'datasource.aggregation', null)],
-      refData: [get(value, 'datasource.refData', null)],
-    }),
+    // Layer datasource
+    datasource: createLayerDataSourceForm(get(value, 'datasource')),
   });
+
+/**
+ * Create layer data source form group
+ *
+ * @param value layer data
+ * @returns layer data source form group
+ */
+const createLayerDataSourceForm = (value?: any): FormGroup => {
+  const getCanSeeFields = (value: any) => {
+    return (
+      (get(value, 'resource') || get(value, 'refData')) &&
+      (get(value, 'layout') || get(value, 'aggregation'))
+    );
+  };
+  const canSeeFields = getCanSeeFields(value);
+  const formGroup = fb.group({
+    resource: [get(value, 'resource', null)],
+    layout: [get(value, 'layout', null)],
+    aggregation: [get(value, 'aggregation', null)],
+    refData: [get(value, 'refData', null)],
+    geoField: [
+      {
+        value: get(value, 'geoField', null),
+        disabled:
+          !canSeeFields ||
+          get(value, 'latitudeField') ||
+          get(value, 'longitudeField'),
+      },
+    ],
+    latitudeField: [
+      {
+        value: get(value, 'latitudeField', null),
+        disabled: !canSeeFields || get(value, 'geoField'),
+      },
+    ],
+    longitudeField: [
+      {
+        value: get(value, 'longitudeField', null),
+        disabled: !canSeeFields || get(value, 'geoField'),
+      },
+    ],
+  });
+  formGroup.valueChanges.subscribe((value) => {
+    const canSeeFields = getCanSeeFields(value);
+    if (canSeeFields) {
+      if (value.geoField) {
+        formGroup.get('latitudeField')?.disable({ emitEvent: false });
+        formGroup.get('longitudeField')?.disable({ emitEvent: false });
+      } else {
+        if (value.latitudeField || value.longitudeField) {
+          formGroup.get('geoField')?.disable({ emitEvent: false });
+        } else {
+          formGroup.get('geoField')?.enable({ emitEvent: false });
+          formGroup.get('latitudeField')?.enable({ emitEvent: false });
+          formGroup.get('longitudeField')?.enable({ emitEvent: false });
+        }
+      }
+    } else {
+      formGroup.get('geoField')?.disable({ emitEvent: false });
+      formGroup.get('latitudeField')?.disable({ emitEvent: false });
+      formGroup.get('longitudeField')?.disable({ emitEvent: false });
+    }
+  });
+  return formGroup;
+};
 
 /**
  * Create layer definition form group
@@ -88,12 +156,34 @@ const createLayerDefinitionForm = (value?: any): FormGroup => {
   if (rendererType === 'heatmap') {
     formGroup.get('featureReduction')?.disable();
   }
-  formGroup.get('drawingInfo.renderer.type')?.valueChanges.subscribe((type) => {
-    if (type === 'heatmap') {
-      formGroup.get('featureReduction')?.disable();
-    } else {
-      formGroup.get('featureReduction')?.enable();
-    }
+  const setTypeListeners = () => {
+    formGroup
+      .get('drawingInfo.renderer.type')
+      ?.valueChanges.subscribe((type) => {
+        if (type === 'heatmap') {
+          formGroup.get('featureReduction')?.disable();
+        } else {
+          formGroup.get('featureReduction')?.enable();
+        }
+        formGroup.setControl(
+          'drawingInfo',
+          createLayerDrawingInfoForm({
+            ...formGroup.get('drawingInfo'),
+            type,
+          })
+        );
+        setTypeListeners();
+      });
+  };
+  setTypeListeners();
+  formGroup.get('featureReduction.type')?.valueChanges.subscribe((type) => {
+    formGroup.setControl(
+      'featureReduction',
+      createLayerFeatureReductionForm({
+        ...formGroup.get('featureReduction')?.value,
+        type,
+      })
+    );
   });
   return formGroup;
 };
@@ -104,10 +194,17 @@ const createLayerDefinitionForm = (value?: any): FormGroup => {
  * @param value layer feature reduction
  * @returns layer feature reduction form
  */
-export const createLayerFeatureReductionForm = (value: any): FormGroup =>
-  fb.group({
-    type: [get(value, 'type')],
+export const createLayerFeatureReductionForm = (value: any) => {
+  const type = get(value, 'type');
+  const formGroup = fb.group({
+    type: [type],
+    ...(type === 'cluster' && {
+      drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
+      clusterRadius: get(value, 'clusterRadius', 60),
+    }),
   });
+  return formGroup;
+};
 
 /**
  * Create layer drawing info form
@@ -115,20 +212,39 @@ export const createLayerFeatureReductionForm = (value: any): FormGroup =>
  * @param value layer drawing info
  * @returns layer drawing info form
  */
-export const createLayerDrawingInfoForm = (value: any): FormGroup =>
-  fb.group({
+export const createLayerDrawingInfoForm = (value: any): FormGroup => {
+  const type = get(value, 'type', 'simple');
+  const formGroup = fb.group({
     renderer: fb.group({
-      type: [get(value, 'type', 'simple'), Validators.required],
-      symbol: fb.group({
-        color: [get(value, 'symbol.color', ''), Validators.required],
-        type: 'fa',
-        size: [get(value, 'symbol.size', 24)],
-        style: new FormControl<IconName>(
-          get(value, 'symbol.style', 'location-dot')
-        ),
+      type: [type, Validators.required],
+      ...(type === 'simple' && {
+        symbol: fb.group({
+          color: [get(value, 'renderer.symbol.color', ''), Validators.required],
+          size: [get(value, 'renderer.symbol.size', 24)],
+          style: new FormControl<IconName>(
+            get(value, 'renderer.symbol.style', 'location-dot')
+          ),
+        }),
+      }),
+      ...(type === 'heatmap' && {
+        gradient: [
+          get(value, 'gradient', DEFAULT_GRADIENT),
+          Validators.required,
+        ],
+        blur: [get<number>(value, 'renderer.blur', 15), Validators.required],
+        radius: [
+          get<number>(value, 'renderer.radius', 25),
+          Validators.required,
+        ],
+        minOpacity: [
+          get<number>(value, 'renderer.minOpacity', 0.4),
+          Validators.required,
+        ],
       }),
     }),
   });
+  return formGroup;
+};
 
 /**
  * Create popup info form group
@@ -141,7 +257,7 @@ export const createPopupInfoForm = (value: any): FormGroup =>
     title: get(value, 'title', ''),
     description: get(value, 'description', ''),
     popupElements: fb.array(
-      get(value, 'popupElements', []).map((element: popupElement) =>
+      get(value, 'popupElements', []).map((element: PopupElement) =>
         createPopupElementForm(element)
       )
     ),
@@ -153,8 +269,8 @@ export const createPopupInfoForm = (value: any): FormGroup =>
  * @param value popup element value
  * @returns popup element form group
  */
-export const createPopupElementForm = (value: popupElement): FormGroup => {
-  switch (get(value, 'type', 'fields') as popupElementType) {
+export const createPopupElementForm = (value: PopupElement): FormGroup => {
+  switch (get(value, 'type', 'fields') as PopupElementType) {
     case 'text': {
       return fb.group({
         type: 'text',

@@ -78,7 +78,9 @@
       </ng-container>
       <!-- Layer datasource -->
       <ng-container *ngSwitchCase="'datasource'">
-        <safe-layer-datasource [form]="form"></safe-layer-datasource>
+        <safe-layer-datasource
+          [formGroup]="$any(form.get('datasource'))"
+        ></safe-layer-datasource>
       </ng-container>
       <!-- Layer styling -->
       <ng-container *ngSwitchCase="'styling'">

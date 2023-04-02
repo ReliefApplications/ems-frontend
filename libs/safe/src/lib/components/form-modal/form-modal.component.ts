@@ -55,6 +55,7 @@ import { SafeRecordHistoryModalModule } from '../record-history-modal/record-his
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
+import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
 
 /**
  * Interface of Dialog data.
@@ -92,6 +93,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     SafeFormActionsModule,
     TranslateModule,
     SafeModalModule,
+    SafeSpinnerModule,
   ],
 })
 export class SafeFormModalComponent implements OnInit {

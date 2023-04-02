@@ -1,3 +1,11 @@
+# [2.0.0-beta.5](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.4...v2.0.0-beta.5) (2023-03-31)
+
+
+### Bug Fixes
+
+* date fields would not appear correctly in summary cards ([ed3d960](https://github.com/ReliefApplications/oort-frontend/commit/ed3d96091ab5257a5f70865f178ac7dc2d432ad5)), closes [fix-2.0.x/AB#60045](https://github.com/fix-2.0.x/AB/issues/60045)
+* incorrect display of time fields in summary cards ([30a0785](https://github.com/ReliefApplications/oort-frontend/commit/30a078578c36ac59bdbe7ab6d68b117891f3a5ca))
+
 # [2.0.0-alpha.2](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-alpha.1...v2.0.0-alpha.2) (2023-03-26)
 
 

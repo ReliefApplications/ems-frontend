@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { SimpleRendererComponent } from './simple-renderer/simple-renderer.component';
+import { HeatmapRendererComponent } from './heatmap-renderer/heatmap-renderer.component';
 
 /**
  * Layer styling module.
@@ -20,6 +21,7 @@ import { SimpleRendererComponent } from './simple-renderer/simple-renderer.compo
     MatSelectModule,
     MatFormFieldModule,
     SimpleRendererComponent,
+    HeatmapRendererComponent,
   ],
   exports: [LayerStylingComponent],
 })

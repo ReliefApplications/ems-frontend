@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Layer } from '../../../models/layer.model';
+import { LayerModel } from '../../../models/layer.model';
 
 // === GET LAYER BY ID ===
 /** Graphql request for getting layer data by its id */
@@ -8,6 +8,59 @@ export const GET_LAYER_BY_ID = gql`
     layer(id: $id) {
       id
       name
+      visibility
+      opacity
+      datasource {
+        resource
+        refData
+        layout
+        aggregation
+        geoField
+        latitudeField
+        longitudeField
+      }
+      layerDefinition {
+        minZoom
+        maxZoom
+        featureReduction {
+          type
+          clusterRadius
+          drawingInfo {
+            renderer {
+              type
+              symbol {
+                color
+                size
+                style
+              }
+            }
+          }
+        }
+        drawingInfo {
+          renderer {
+            type
+            symbol {
+              color
+              size
+              style
+            }
+            blur
+            radius
+            gradient
+            minOpacity
+          }
+        }
+      }
+      popupInfo {
+        title
+        description
+        popupElements {
+          type
+          title
+          description
+          fields
+        }
+      }
     }
   }
 `;
@@ -25,10 +78,10 @@ export const GET_LAYERS = gql`
 
 /** Model for GetLayerByIdQueryResponse object */
 export interface GetLayerByIdQueryResponse {
-  layer: Layer;
+  layer: LayerModel;
 }
 
 /** Model for GetLayersQueryResponse object */
 export interface GetLayersQueryResponse {
-  layers: Layer[];
+  layers: LayerModel[];
 }

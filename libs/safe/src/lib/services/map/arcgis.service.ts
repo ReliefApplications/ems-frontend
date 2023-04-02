@@ -24,6 +24,8 @@ import * as L from 'leaflet';
 const arcgisProj =
   '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs';
 
+type TreeObject = { label: string; layer: L.Layer };
+
 /**
  * Shared ArcGIS service map.
  */
@@ -33,9 +35,6 @@ const arcgisProj =
 export class ArcgisService {
   private esriApiKey!: string;
   private session!: ApiKeyManager;
-
-  private layers: any[] = [];
-  private baseMaps: any[] = [];
 
   /**
    * Shared ArcGIS service map
@@ -56,14 +55,24 @@ export class ArcgisService {
    *
    * @param {L.Map} map to add the webmap
    * @param {string} id webmap id
+   * @returns basemaps and layers
    */
-  public loadWebMap(map: L.Map, id: string): void {
-    getItemData(id, {
-      authentication: this.session,
-    }).then((webMap: any) => {
-      this.setDefaultView(map, webMap);
-      this.loadBaseMap(map, webMap);
-      this.loadOperationalLayers(map, webMap);
+  public loadWebMap(
+    map: L.Map,
+    id: string
+  ): Promise<{ basemaps: TreeObject[]; layers: TreeObject[] }> {
+    return new Promise((resolve) => {
+      getItemData(id, {
+        authentication: this.session,
+      }).then((webMap: any) => {
+        this.setDefaultView(map, webMap);
+        Promise.all([
+          this.loadBaseMap(map, webMap),
+          this.loadOperationalLayers(map, webMap),
+        ]).then(([basemaps, layers]) => {
+          resolve({ basemaps, layers });
+        });
+      });
     });
   }
 
@@ -90,14 +99,14 @@ export class ArcgisService {
   }
 
   /**
-   * Load basemaps from the webamp
+   * Load basemaps from the webmap
    *
    * @param {L.Map} map to add the webmap
    * @param {*} webMap webmap loaded
    */
-  private async loadBaseMap(map: L.Map, webMap: any): Promise<void> {
+  private async loadBaseMap(map: L.Map, webMap: any): Promise<TreeObject[]> {
     // BaseMaps
-    this.baseMaps = [];
+    const baseMaps: TreeObject[] = [];
     const baseMapLayers: L.Layer[] = [];
     for (const layer of webMap.baseMap.baseMapLayers) {
       const opacity = get(layer, 'opacity', 1);
@@ -155,10 +164,11 @@ export class ArcgisService {
 
     // Display baseMap layer
     const baseMapLayerGroup = L.layerGroup(baseMapLayers).addTo(map);
-    this.baseMaps.push({
+    baseMaps.push({
       label: webMap.baseMap.title,
       layer: baseMapLayerGroup,
     });
+    return baseMaps;
   }
 
   /**
@@ -167,12 +177,15 @@ export class ArcgisService {
    * @param {L.Map} map to add the webmap
    * @param {*} webMap webmap loaded
    */
-  private async loadOperationalLayers(map: L.Map, webMap: any): Promise<void> {
-    this.layers = [];
+  private async loadOperationalLayers(
+    map: L.Map,
+    webMap: any
+  ): Promise<TreeObject[]> {
+    const layers: TreeObject[] = [];
     for (const layer of webMap.operationalLayers) {
-      await this.addLayer(map, layer, this.layers);
+      await this.addLayer(map, layer, layers);
     }
-    // this.setLayerControl(map);
+    return layers;
   }
 
   /**

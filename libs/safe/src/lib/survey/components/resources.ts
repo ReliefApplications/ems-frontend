@@ -12,6 +12,8 @@ import { SafeResourceDropdownComponent } from '../../components/resource-dropdow
 import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { DomService } from '../../services/dom/dom.service';
 import { buildSearchButton, buildAddButton } from './utils';
+import { QuestionResource } from '../types';
+import { SurveyModel } from 'survey-angular';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
@@ -735,7 +737,7 @@ export const init = (
         question.prefillWithCurrentRecord = false;
       }
     },
-    onAfterRender: (question: any, el: any): void => {
+    onAfterRender: (question: QuestionResource, el: any): void => {
       // hide tagbox if grid view is enable
       if (question.displayAsGrid) {
         const element = el.getElementsByTagName('select')[0].parentElement;
@@ -745,9 +747,14 @@ export const init = (
       if (question.resource) {
         const parentElement = el.querySelector('.safe-qst-content');
         if (parentElement) {
-          buildRecordsGrid(question, parentElement.firstChild);
-
-          if (question.survey.mode !== 'display') {
+          const instance: SafeCoreGridComponent =
+            buildRecordsGrid(question, parentElement.firstChild) || undefined;
+          instance.removeRowIds.subscribe((ids) => {
+            question.value = question.value.filter(
+              (id: string) => !ids.includes(id)
+            );
+          });
+          if ((question.survey as SurveyModel).mode !== 'display') {
             el.parentElement.querySelector('#actionsButtons')?.remove();
             const actionsButtons = document.createElement('div');
             actionsButtons.id = 'actionsButtons';
@@ -885,6 +892,7 @@ export const init = (
           convert: question.convert,
           update: question.update,
           inlineEdition: question.inlineEdition,
+          remove: true,
         },
       });
     }

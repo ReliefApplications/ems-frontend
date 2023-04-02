@@ -1,15 +1,5 @@
+import { Gradient } from '../components/gradient-picker/gradient-picker.component';
 import { IconName } from '../components/icon-picker/icon-picker.const';
-/** List of available layer types in layer editor */
-export enum LayerTypes {
-  POLYGON = 'polygon',
-  POINT = 'point',
-  HEATMAP = 'heatmap',
-  CLUSTER = 'cluster',
-}
-/**
- * Layer types as an array of values
- */
-export const LAYER_TYPES: LayerTypes[] = Object.values(LayerTypes);
 
 /**
  * Layer types for backend
@@ -18,40 +8,85 @@ export enum BackendLayerTypes {
   FEATURE_LAYER = 'FeatureLayer',
 }
 
-/** Layer documents interface declaration */
-export interface Layer {
+export type LayerSymbol = {
+  color: string;
+  size: number;
+  style: IconName;
+};
+
+export interface DrawingInfo {
+  renderer?: {
+    type?: string;
+    symbol?: LayerSymbol;
+    blur?: number;
+    radius?: number;
+    gradient?: Gradient;
+    minOpacity?: number;
+  };
+}
+
+export interface FeatureReduction {
+  type: 'cluster';
+  drawingInfo?: DrawingInfo;
+  clusterRadius?: number;
+}
+
+export interface LayerDefinition {
+  minZoom?: number;
+  maxZoom?: number;
+  featureReduction?: FeatureReduction;
+  // Symbol
+  drawingInfo?: DrawingInfo;
+}
+
+export interface PopupElementText {
+  type: 'text';
+  text?: string;
+}
+
+export interface PopupElementFields {
+  type: 'fields';
+  title?: string;
+  description?: string;
+  fields?: string[];
+}
+
+export type PopupElementType = 'text' | 'fields';
+
+export interface PopupElement
+  extends Omit<PopupElementText, 'type'>,
+    Omit<PopupElementFields, 'type'> {
+  type: PopupElementType;
+}
+
+export interface PopupInfo {
+  title?: string;
+  description?: string;
+  popupElements?: PopupElement[];
+}
+
+export interface LayerDatasource {
+  resource?: string;
+  refData?: string;
+  layout?: string;
+  aggregation?: string;
+  geoField?: string;
+  latitudeField?: string;
+  longitudeField?: string;
+}
+
+/**
+ * Backend layer model
+ */
+export interface LayerModel {
   id: string;
-  title: string;
+  name: string;
+  sublayers?: LayerModel[];
   visibility: boolean;
-  createdAt?: Date;
-  modifiedAt?: Date;
-  layerDefinition?: {
-    minZoom?: number;
-    maxZoom?: number;
-    featureReduction?: any;
-    // Symbol
-    drawingInfo?: {
-      renderer?: {
-        type?: string;
-        symbol?: {
-          color?: string;
-          size?: number;
-          icon?: IconName | 'location-dot';
-        };
-      };
-    };
-  };
   opacity: number;
-  // Layer datasource
-  datasource: {
-    origin: any;
-    resource: any;
-    layout: any;
-    aggregation: any;
-    refData: any;
-  };
-  popupInfo?: {
-    popupElements?: any[];
-    title?: string;
-  };
+  layerDefinition?: LayerDefinition;
+  popupInfo?: PopupInfo;
+  datasource?: LayerDatasource;
+  createdAt: Date;
+  updatedAt: Date;
 }
