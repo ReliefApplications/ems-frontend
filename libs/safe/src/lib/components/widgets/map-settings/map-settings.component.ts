@@ -249,7 +249,6 @@ export class SafeMapSettingsComponent
         },
       },
       controls: DefaultMapControls,
-      arcGisWebMap: 'a8c3c531be1a4615b03c45b6353ab2c8',
     };
     this.openTab('layer');
   }

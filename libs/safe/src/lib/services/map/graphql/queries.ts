@@ -10,6 +10,15 @@ export const GET_LAYER_BY_ID = gql`
       name
       visibility
       opacity
+      datasource {
+        resource
+        refData
+        layout
+        aggregation
+        geoField
+        latitudeField
+        longitudeField
+      }
       layerDefinition {
         minZoom
         maxZoom

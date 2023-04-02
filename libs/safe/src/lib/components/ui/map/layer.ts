@@ -26,15 +26,6 @@ import { geoJSONLayer } from './leaflet.layer';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
-/**
- * Layer model with geojson features
- */
-export interface ExtendedLayerModel extends LayerModel {
-  geojson: {
-    features: any[];
-    type: string;
-  };
-}
 /** GeoJSON with no features */
 export const EMPTY_FEATURE_COLLECTION: GeoJSON = {
   type: 'FeatureCollection',

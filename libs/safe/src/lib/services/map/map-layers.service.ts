@@ -3,19 +3,16 @@ import { Apollo } from 'apollo-angular';
 import {
   filter,
   forkJoin,
-  from,
   lastValueFrom,
   map,
   mergeMap,
   Observable,
   of,
-  switchMap,
   tap,
-  toArray,
 } from 'rxjs';
 import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
-import { Layer, ExtendedLayerModel } from '../../components/ui/map/layer';
-import { LayerModel } from '../../models/layer.model';
+import { Layer, EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
+import { LayerDatasource, LayerModel } from '../../models/layer.model';
 import { SafeRestService } from '../rest/rest.service';
 import {
   AddLayerMutationResponse,
@@ -177,58 +174,52 @@ export class SafeMapLayersService {
 
   /**
    * Format given settings for Layer class
+   * todo(gis): extended model is useless
    *
    * @param layerIds layer settings saved from the layer editor
    * @returns Observable of LayerSettingsI
    */
   async createLayersFromIds(layerIds: string[]): Promise<Layer[]> {
-    // If current layers exists, we will use those values,
-    // otherwise we will make the API call
-    const layerSourceData$ = !this.currentLayers.length
-      ? this.getLayers()
-      : of(this.currentLayers);
-
-    const formattedLayerSettings = await lastValueFrom(
-      layerSourceData$.pipe(
-        // Get the layer info from the layers where the id is included in the given layerIds
-        switchMap((layers) =>
-          from(layers.filter((layer) => layerIds.includes(layer.id)))
-        ),
-        // Then go layer by layer to create the layerSettings object
-        mergeMap((layer: LayerModel) => {
-          // Get the current layer plus it's geojson
-          return forkJoin({
-            layer: of(layer),
-            geojson: this.restService.get(
-              `${
-                this.restService.apiUrl
-              }/gis/feature?type=Point&tolerance=${0.9}&highquality=${true}`
-            ),
-          });
-        }),
-        // Destructure layer information to have all data at the same level
-        map(
-          (layer) =>
-            ({
-              ...layer.layer,
-              geojson: layer.geojson,
-            } as ExtendedLayerModel)
-        ),
-        // Get them into an array after all pipes are done
-        toArray(),
-        // And set those layers into the children of our hardcoded layer group
-        // @TODO it would be mapped later onto it's current layer type
-        map((layers: ExtendedLayerModel[]) => {
-          return {
-            name: '',
-            type: 'group',
-            children: layers,
-          };
-        })
-      )
-    );
-
-    return formattedLayerSettings.children.map((child) => new Layer(child));
+    const promises: Promise<Layer>[] = [];
+    for (const id of layerIds) {
+      promises.push(
+        lastValueFrom(
+          this.getLayerById(id).pipe(
+            mergeMap((layer: LayerModel) => {
+              console.log(layer.datasource);
+              if (this.isDatasourceValid(layer.datasource)) {
+                const params = new HttpParams({
+                  fromObject: omitBy(layer.datasource, isNil),
+                });
+                // Get the current layer + its geojson
+                return forkJoin({
+                  layer: of(layer),
+                  geojson: this.restService.get(
+                    `${this.restService.apiUrl}/gis/feature`,
+                    { params }
+                  ),
+                });
+              } else {
+                return of({
+                  layer,
+                  geojson: EMPTY_FEATURE_COLLECTION,
+                });
+              }
+            }),
+            map(
+              (layer: { layer: LayerModel; geojson: any }) =>
+                new Layer({ ...layer.layer, geojson: layer.geojson })
+            )
+          )
+        )
+      );
+    }
+    return Promise.all(promises);
+    // return {
+    //   name: '',
+    //   type: 'group',
+    //   children: layers,
+    // };
   }
 
   /**
@@ -238,7 +229,7 @@ export class SafeMapLayersService {
    * @returns Layer for map widget
    */
   async createLayerFromDefinition(layer: LayerModel) {
-    if (layer.datasource) {
+    if (this.isDatasourceValid(layer.datasource)) {
       const params = new HttpParams({
         fromObject: omitBy(layer.datasource, isNil),
       });
@@ -254,9 +245,18 @@ export class SafeMapLayersService {
       return new Layer({
         ...res.layer,
         geojson: res.geojson,
-      } as ExtendedLayerModel);
+      });
     } else {
       return new Layer(layer);
     }
   }
+
+  private isDatasourceValid = (value: LayerDatasource | undefined) => {
+    return (
+      value &&
+      (value.resource || value.refData) &&
+      (value.aggregation || value.layout) &&
+      (value.geoField || (value.latitudeField && value.longitudeField))
+    );
+  };
 }

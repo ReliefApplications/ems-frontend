@@ -67,9 +67,10 @@ export class MapLayersComponent
    * Update layer list for Layers tab
    */
   private updateLayerList(): void {
-    this.mapLayers.data = this.mapLayersService.currentLayers?.filter((x) =>
-      this.layerIds.includes(x.id)
-    );
+    // todo: add filtering
+    this.mapLayersService.getLayers().subscribe((layers) => {
+      this.mapLayers.data = layers.filter((x) => this.layerIds.includes(x.id));
+    });
   }
 
   /**

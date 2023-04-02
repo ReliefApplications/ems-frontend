@@ -65,6 +65,18 @@ export class MapLayerComponent
   private currentLayer!: L.Layer;
 
   /**
+   * Get the overlay tree object of the current map
+   *
+   * @returns OverlayLayerTree
+   */
+  private get overlays(): OverlayLayerTree {
+    return {
+      label: this.form.get('name')?.value || '',
+      layer: this.currentLayer,
+    };
+  }
+
+  /**
    * Map layer editor.
    *
    * @param confirmService Shared confirm service.
@@ -92,28 +104,31 @@ export class MapLayerComponent
    * Set default layer for editor
    */
   private setUpLayer() {
+    console.log('setup');
     this.mapLayersService
       .createLayerFromDefinition(this.form.value as LayerModel)
       .then((layer) => {
         if (layer) {
           this._layer = layer;
           this.currentLayer = layer.getLayer();
-          const overlays: OverlayLayerTree = {
-            label: this.form.get('name')?.value || '',
-            layer: this.currentLayer,
-          };
-          if (this.mapComponent) {
-            this.mapComponent.addOrDeleteLayer = {
-              layerData: overlays,
-              isDelete: false,
-            };
-            //After the new layer for editing is set, update the options with the form value
-            // setTimeout(() => {
-            //   this.updateLayerOptions();
-            // }, 0);
-          }
+          this.updateMapLayer();
         }
       });
+  }
+
+  /**
+   * Update map layer
+   */
+  private updateMapLayer(options: { delete: boolean } = { delete: false }) {
+    if (this.mapComponent) {
+      this.mapComponent.addOrDeleteLayer = {
+        layerData: this.overlays,
+        isDelete: options.delete,
+      };
+      if (options.delete) {
+        this.currentLayer = undefined as unknown as L.Layer;
+      }
+    }
   }
 
   /**
@@ -124,12 +139,18 @@ export class MapLayerComponent
     this.form.valueChanges
       .pipe(takeUntil(this.destroy$), debounceTime(1000))
       .subscribe((value) => {
-        if (this.mapComponent) {
-          this.mapComponent.map.removeLayer(this.currentLayer);
-          this._layer.setConfig({ ...value, geojson: this._layer.geojson });
-          this.currentLayer = this._layer.getLayer(true);
-          this.mapComponent.map.addLayer(this.currentLayer);
-        }
+        this.updateMapLayer({ delete: true });
+        this._layer.setConfig({ ...value, geojson: this._layer.geojson });
+        this.currentLayer = this._layer.getLayer(true);
+        this.updateMapLayer();
+      });
+
+    this.form
+      .get('datasource')
+      ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(1000))
+      .subscribe(() => {
+        this.updateMapLayer({ delete: true });
+        this.setUpLayer();
       });
 
     this.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({

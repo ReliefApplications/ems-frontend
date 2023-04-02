@@ -114,10 +114,10 @@ export class LayerDatasourceComponent
     );
 
     // If the form has a resource, fetch it
-    const resourceID = this.formGroup.get('resource')?.value;
+    const resourceID = this.formGroup.value.resource;
     if (resourceID) {
-      const layoutID = this.formGroup.value.datasource?.layout;
-      const aggregationID = this.formGroup.value.datasource?.aggregation;
+      const layoutID = this.formGroup.value.layout;
+      const aggregationID = this.formGroup.value.aggregation;
       this.apollo
         .query<GetResourceQueryResponse>({
           query: GET_RESOURCE,
@@ -131,13 +131,16 @@ export class LayerDatasourceComponent
           this.resource = data.resource;
 
           if (layoutID) {
-            this.layout = data.resource.layouts?.edges[0]?.node || null;
+            console.log(data.resource.layouts?.edges[0].node);
+            this.layout = get(data, 'resource.layouts.edges[0].node', null);
+            console.log(this.layout);
             this.fields = get(this.layout, 'query.fields', []);
-          }
-          if (aggregationID) {
-            this.aggregation =
-              data.resource.aggregations?.edges[0]?.node || null;
-            this.fields = this.getAggregationFields();
+          } else {
+            if (aggregationID) {
+              this.aggregation =
+                data.resource.aggregations?.edges[0]?.node || null;
+              this.fields = this.getAggregationFields();
+            }
           }
         });
     }

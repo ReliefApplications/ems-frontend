@@ -219,10 +219,10 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup => {
       type: [type, Validators.required],
       ...(type === 'simple' && {
         symbol: fb.group({
-          color: [get(value, 'symbol.color', ''), Validators.required],
-          size: [get(value, 'symbol.size', 24)],
+          color: [get(value, 'renderer.symbol.color', ''), Validators.required],
+          size: [get(value, 'renderer.symbol.size', 24)],
           style: new FormControl<IconName>(
-            get(value, 'symbol.style', 'location-dot')
+            get(value, 'renderer.symbol.style', 'location-dot')
           ),
         }),
       }),
@@ -231,10 +231,13 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup => {
           get(value, 'gradient', DEFAULT_GRADIENT),
           Validators.required,
         ],
-        blur: [get<number>(value, 'blur', 15), Validators.required],
-        radius: [get<number>(value, 'radius', 25), Validators.required],
+        blur: [get<number>(value, 'renderer.blur', 15), Validators.required],
+        radius: [
+          get<number>(value, 'renderer.radius', 25),
+          Validators.required,
+        ],
         minOpacity: [
-          get<number>(value, 'minOpacity', 0.4),
+          get<number>(value, 'renderer.minOpacity', 0.4),
           Validators.required,
         ],
       }),

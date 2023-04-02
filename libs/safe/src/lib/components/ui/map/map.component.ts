@@ -349,11 +349,7 @@ export class MapComponent
     const worldCopyJump = get(this.settingsConfig, 'worldCopyJump', true);
     const zoomControl = get(this.settingsConfig, 'zoomControl', false);
     const controls = get(this.settingsConfig, 'controls', DefaultMapControls);
-    const arcGisWebMap = get(
-      this.settingsConfig,
-      'arcGisWebMap',
-      'a8c3c531be1a4615b03c45b6353ab2c8'
-    );
+    const arcGisWebMap = get(this.settingsConfig, 'arcGisWebMap', undefined);
     const layers = get(this.settingsConfig, 'layers', []);
 
     return {
@@ -415,7 +411,7 @@ export class MapComponent
       //set webmap
       promises.push(this.setWebmap(arcGisWebMap));
     } else {
-      promises.push(this.setBasemap(basemap));
+      promises.push(this.setBasemap(this.map, basemap));
     }
 
     if (layers?.length) {
@@ -429,6 +425,8 @@ export class MapComponent
     }
 
     Promise.all(promises).then((trees) => {
+      console.log('la!');
+      console.log(trees);
       const basemaps: L.Control.Layers.TreeObject[][] = [];
       const layers: L.Control.Layers.TreeObject[][] = [];
       for (const tree of trees) {
@@ -545,7 +543,7 @@ export class MapComponent
         const currentBasemap = this.basemap?.options?.key;
         const newBaseMap = get(BASEMAP_LAYERS, basemap);
         if (newBaseMap !== currentBasemap) {
-          this.setBasemap(basemap);
+          this.setBasemap(this.map, basemap);
         }
       }
 
@@ -925,30 +923,25 @@ export class MapComponent
    * @returns basemaps as promise
    */
   public setBasemap(
+    map: L.Map,
     basemap: any
   ): Promise<{ basemaps: L.Control.Layers.TreeObject[] }> {
     const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
-    return new Promise((resolve) => {
-      resolve({
-        basemaps: [
-          {
-            label: basemapName,
-            layer: Vector.vectorBasemapLayer(basemapName, {
-              apiKey: this.esriApiKey,
-            }),
-          },
-        ],
-      });
+    return Promise.resolve({
+      basemaps: [
+        {
+          label: basemapName,
+          layer: Vector.vectorBasemapLayer(basemapName, {
+            apiKey: this.esriApiKey,
+          }).addTo(map),
+        },
+      ],
     });
-    // @TODO when switching between basemaps the related layers and controls to the previous map are there
-    // if (this.basemap) {
-    //   this.basemap.remove();
-    // }
-    // const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
-    // this.basemap = Vector.vectorBasemapLayer(basemapName, {
-    //   apiKey: this.esriApiKey,
-    // }).addTo(this.map);
   }
+  // @TODO when switching between basemaps the related layers and controls to the previous map are there
+  // if (this.basemap) {
+  //   this.basemap.remove();
+  // }
 
   /**
    * Set the webmap.
