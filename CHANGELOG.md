@@ -1,3 +1,19 @@
+# [2.0.0-alpha.3](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-alpha.2...v2.0.0-alpha.3) (2023-04-02)
+
+
+### Bug Fixes
+
+* arcgis layers now appear in layer control ([6d08d72](https://github.com/ReliefApplications/oort-frontend/commit/6d08d726f400cb631b5e0270ed2e973771b17f5f))
+* date fields would not appear correctly in summary cards ([ed3d960](https://github.com/ReliefApplications/oort-frontend/commit/ed3d96091ab5257a5f70865f178ac7dc2d432ad5)), closes [fix-2.0.x/AB#60045](https://github.com/fix-2.0.x/AB/issues/60045)
+* incorrect display of time fields in summary cards ([30a0785](https://github.com/ReliefApplications/oort-frontend/commit/30a078578c36ac59bdbe7ab6d68b117891f3a5ca))
+* unionBy causing type issue in update-queries method ([b1dff4a](https://github.com/ReliefApplications/oort-frontend/commit/b1dff4a375b66d2bd8e4e7fe44a3e585d68051b9))
+
+
+### Features
+
+* add heatmap to map-forms ([ca9af30](https://github.com/ReliefApplications/oort-frontend/commit/ca9af30fde313787eb0b942741641bd6e54bf353))
+* see markers from grid when opening geospatial question ([7231a50](https://github.com/ReliefApplications/oort-frontend/commit/7231a5013dd67302b6cfa495bb474c8d46a5cef8)), closes [Feat/ab#60047](https://github.com/Feat/ab/issues/60047)
+
 # [2.0.0-beta.5](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.4...v2.0.0-beta.5) (2023-03-31)
 
 
