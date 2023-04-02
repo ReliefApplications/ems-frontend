@@ -1,3 +1,10 @@
+# [2.0.0-alpha.4](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) (2023-04-02)
+
+
+### Bug Fixes
+
+* incorrect devops pipelines ([d4f31c9](https://github.com/ReliefApplications/oort-frontend/commit/d4f31c98d018eb974cf1e407d01eff9cc1b369b2))
+
 # [2.0.0-alpha.3](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-alpha.2...v2.0.0-alpha.3) (2023-04-02)
 
 
