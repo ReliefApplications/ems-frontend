@@ -106,7 +106,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
 
-    const structure = JSON.parse(this.form.structure || '');
+    const structure = JSON.parse(this.form.structure || '{}');
 
     if (structure && !structure.completedHtml)
       structure.completedHtml = `<h3>${this.translate.instant(

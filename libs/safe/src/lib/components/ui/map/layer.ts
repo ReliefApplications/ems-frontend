@@ -16,6 +16,7 @@ import {
 } from './utils/create-div-icon';
 import { LegendDefinition } from './interfaces/layer-legend.type';
 import {
+  LayerDatasource,
   LayerDefinition,
   LayerModel,
   LayerSymbol,
@@ -162,8 +163,8 @@ export class Layer implements LayerModel {
   // Properties for the layer, if layer type is 'group'
   public sublayers: Layer[] = [];
 
-  // Properties for the layer, if layer type is not 'group'
-  private datasource: any | null = null; // TODO: define datasource
+  // Layer datasource
+  public datasource?: LayerDatasource;
   public geojson: GeoJSON | null = null;
   // private properties: any | null = null;
   private filter: LayerFilter | null = null;

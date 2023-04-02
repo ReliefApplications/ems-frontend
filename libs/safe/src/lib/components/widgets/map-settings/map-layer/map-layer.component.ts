@@ -95,21 +95,23 @@ export class MapLayerComponent
     this.mapLayersService
       .createLayerFromDefinition(this.form.value as LayerModel)
       .then((layer) => {
-        this._layer = layer;
-        this.currentLayer = layer.getLayer();
-        const overlays: OverlayLayerTree = {
-          label: this.form.get('name')?.value || '',
-          layer: this.currentLayer,
-        };
-        if (this.mapComponent) {
-          this.mapComponent.addOrDeleteLayer = {
-            layerData: overlays,
-            isDelete: false,
+        if (layer) {
+          this._layer = layer;
+          this.currentLayer = layer.getLayer();
+          const overlays: OverlayLayerTree = {
+            label: this.form.get('name')?.value || '',
+            layer: this.currentLayer,
           };
-          //After the new layer for editing is set, update the options with the form value
-          // setTimeout(() => {
-          //   this.updateLayerOptions();
-          // }, 0);
+          if (this.mapComponent) {
+            this.mapComponent.addOrDeleteLayer = {
+              layerData: overlays,
+              isDelete: false,
+            };
+            //After the new layer for editing is set, update the options with the form value
+            // setTimeout(() => {
+            //   this.updateLayerOptions();
+            // }, 0);
+          }
         }
       });
   }

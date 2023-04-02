@@ -10,7 +10,6 @@ import {
   DefaultMapControls,
   MapConstructorSettings,
 } from '../../ui/map/interfaces/map.interface';
-import { LayerFormData } from '../../ui/map/interfaces/layer-settings.type';
 import {
   LayerModel,
   PopupElement,
@@ -69,7 +68,7 @@ export const createLayerForm = (value?: LayerModel) =>
     layerDefinition: createLayerDefinitionForm(get(value, 'layerDefinition')),
     popupInfo: createPopupInfoForm(get(value, 'popupInfo')),
     // Layer datasource
-    datasource: createLayerDataSourceForm(value),
+    datasource: createLayerDataSourceForm(get(value, 'datasource')),
   });
 
 /**
@@ -78,17 +77,64 @@ export const createLayerForm = (value?: LayerModel) =>
  * @param value layer data
  * @returns layer data source form group
  */
-const createLayerDataSourceForm = (value?: any): FormGroup =>
-  fb.group({
-    origin: new FormControl<LayerFormData['datasource']['origin']>(
-      get(value, 'datasource.source', 'resource'),
-      Validators.required
-    ),
-    resource: [get(value, 'datasource.resource', null)],
-    layout: [get(value, 'datasource.layout', null)],
-    aggregation: [get(value, 'datasource.aggregation', null)],
-    refData: [get(value, 'datasource.refData', null)],
+const createLayerDataSourceForm = (value?: any): FormGroup => {
+  const getCanSeeFields = (value: any) => {
+    return (
+      (get(value, 'resource') || get(value, 'refData')) &&
+      (get(value, 'layout') || get(value, 'aggregation'))
+    );
+  };
+  const canSeeFields = getCanSeeFields(value);
+  const formGroup = fb.group({
+    resource: [get(value, 'resource', null)],
+    layout: [get(value, 'layout', null)],
+    aggregation: [get(value, 'aggregation', null)],
+    refData: [get(value, 'refData', null)],
+    geoField: [
+      {
+        value: get(value, 'geoField', null),
+        disabled:
+          !canSeeFields ||
+          get(value, 'latitudeField') ||
+          get(value, 'longitudeField'),
+      },
+    ],
+    latitudeField: [
+      {
+        value: get(value, 'latitudeField', null),
+        disabled: !canSeeFields || get(value, 'geoField'),
+      },
+    ],
+    longitudeField: [
+      {
+        value: get(value, 'longitudeField', null),
+        disabled: !canSeeFields || get(value, 'geoField'),
+      },
+    ],
   });
+  formGroup.valueChanges.subscribe((value) => {
+    const canSeeFields = getCanSeeFields(value);
+    if (canSeeFields) {
+      if (value.geoField) {
+        formGroup.get('latitudeField')?.disable({ emitEvent: false });
+        formGroup.get('longitudeField')?.disable({ emitEvent: false });
+      } else {
+        if (value.latitudeField || value.longitudeField) {
+          formGroup.get('geoField')?.disable({ emitEvent: false });
+        } else {
+          formGroup.get('geoField')?.enable({ emitEvent: false });
+          formGroup.get('latitudeField')?.enable({ emitEvent: false });
+          formGroup.get('longitudeField')?.enable({ emitEvent: false });
+        }
+      }
+    } else {
+      formGroup.get('geoField')?.disable({ emitEvent: false });
+      formGroup.get('latitudeField')?.disable({ emitEvent: false });
+      formGroup.get('longitudeField')?.disable({ emitEvent: false });
+    }
+  });
+  return formGroup;
+};
 
 /**
  * Create layer definition form group

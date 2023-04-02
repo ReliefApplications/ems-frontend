@@ -31,6 +31,8 @@ import {
   GET_LAYERS,
   GET_LAYER_BY_ID,
 } from './graphql/queries';
+import { HttpParams } from '@angular/common/http';
+import { omitBy, isNil } from 'lodash';
 
 /**
  * Shared map layer service
@@ -236,90 +238,25 @@ export class SafeMapLayersService {
    * @returns Layer for map widget
    */
   async createLayerFromDefinition(layer: LayerModel) {
-    const res = await lastValueFrom(
-      forkJoin({
-        layer: of(layer),
-        geojson: this.restService.get(
-          `${
-            this.restService.apiUrl
-          }/gis/feature?type=Point&tolerance=${0.9}&highquality=${true}`
-        ),
-      })
-    );
-    return new Layer({
-      ...res.layer,
-      geojson: res.geojson,
-    } as ExtendedLayerModel);
-  }
-
-  /**
-   * Set the geojson to the given layer settings
-   *
-   * @param layer layer settings saved from the layer editor
-   * @returns LayerSettingsI array
-   */
-  private getLayerSettings(layer: ExtendedLayerModel): any {
-    // @TODO As we complete the layer editor we will have to set those new values in these function
-    // instead of the hardcoded ones
-    return {
-      // Currently we only have name and id in the graphql endpoint for each layer metadata
-      name: layer.name,
-      id: layer.id,
-      type: 'feature',
-      // The geojson previously fetched from the REST
-      geojson: layer.geojson,
-      filter: {
-        condition: 'and',
-        filters: [
-          {
-            field: 'name',
-            operator: 'neq',
-            value: 'Point 1',
-          },
-        ],
-      },
-      properties: {
-        // None of this data is available yet
-        minZoom: layer.layerDefinition?.minZoom ?? 2,
-        maxZoom: layer.layerDefinition?.maxZoom ?? 18,
-        opacity: layer?.opacity ?? 1,
-        visibility: layer.visibility ?? true,
-        legend: {
-          display: true,
-          field: 'name',
-        },
-      },
-      styling: [
-        {
-          filter: {
-            condition: 'and',
-            filters: [],
-          },
-          style: {
-            borderColor: 'black',
-            borderWidth: 1,
-            fillOpacity: layer.opacity ?? 1,
-            borderOpacity: layer.opacity ?? 1,
-            symbol: layer.layerDefinition?.drawingInfo?.renderer?.symbol ?? {
-              color: '#0b55d6',
-              icon: 'location-dot',
-              size: 24,
-            },
-          },
-        },
-      ],
-      labels: {
-        filter: {
-          condition: 'and',
-          filters: [],
-        },
-        label: '{{name}}',
-        style: {
-          color: '#000000',
-          fontSize: 12,
-          fontWeight: 'normal',
-        },
-      },
-    };
+    if (layer.datasource) {
+      const params = new HttpParams({
+        fromObject: omitBy(layer.datasource, isNil),
+      });
+      const res = await lastValueFrom(
+        forkJoin({
+          layer: of(layer),
+          geojson: this.restService.get(
+            `${this.restService.apiUrl}/gis/feature`,
+            { params }
+          ),
+        })
+      );
+      return new Layer({
+        ...res.layer,
+        geojson: res.geojson,
+      } as ExtendedLayerModel);
+    } else {
+      return new Layer(layer);
+    }
   }
 }

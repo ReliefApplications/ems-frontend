@@ -65,6 +65,16 @@ export interface PopupInfo {
   popupElements?: PopupElement[];
 }
 
+export interface LayerDatasource {
+  resource?: string;
+  refData?: string;
+  layout?: string;
+  aggregation?: string;
+  geoField?: string;
+  latitudeField?: string;
+  longitudeField?: string;
+}
+
 /**
  * Backend layer model
  */
@@ -76,6 +86,7 @@ export interface LayerModel {
   opacity: number;
   layerDefinition?: LayerDefinition;
   popupInfo?: PopupInfo;
+  datasource?: LayerDatasource;
   createdAt: Date;
   updatedAt: Date;
 }
