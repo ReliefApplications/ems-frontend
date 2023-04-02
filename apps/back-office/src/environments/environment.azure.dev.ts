@@ -39,6 +39,7 @@ export const environment = {
     'pie-chart',
     'grid',
     'text',
+    'map',
     'summaryCard',
   ],
 };
