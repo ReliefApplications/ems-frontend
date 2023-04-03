@@ -8,6 +8,7 @@ import {
   SafeApplicationService,
   SafeSnackBarService,
   SafeUnsubscribeComponent,
+  SafeConfirmService,
 } from '@oort-front/safe';
 import { firstValueFrom } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -48,6 +49,7 @@ export class CustomStyleComponent
     fixedOverflowWidgets: true,
   };
   private styleApplied: HTMLStyleElement;
+  private savedStyle = '';
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
@@ -56,17 +58,20 @@ export class CustomStyleComponent
    * @param snackBar Shared snackbar service
    * @param apollo Apollo service
    * @param translate Angular translate service
+   * @param confirmService Shared confirmation service
    */
   constructor(
     private applicationService: SafeApplicationService,
     private snackBar: SafeSnackBarService,
     private apollo: Apollo,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private confirmService: SafeConfirmService
   ) {
     super();
     this.styleApplied = document.createElement('style');
     // Updates the style when the value changes
     this.formControl.valueChanges.subscribe((value: any) => {
+      this.applicationService.customStyleEdited = true;
       this.styleApplied.innerText = value;
       document.getElementsByTagName('body')[0].appendChild(this.styleApplied);
       this.style.emit(value);
@@ -75,8 +80,10 @@ export class CustomStyleComponent
 
   ngOnInit(): void {
     if (this.applicationService.customStyle) {
+      this.savedStyle = this.applicationService.customStyle.innerText;
       this.styleApplied = this.applicationService.customStyle;
-      this.formControl.setValue(this.applicationService.customStyle.innerText);
+      this.formControl.setValue(this.styleApplied.innerText);
+      this.formControl.markAsPristine();
     } else {
       this.applicationService.customStyle = this.styleApplied;
     }
@@ -92,7 +99,26 @@ export class CustomStyleComponent
 
   /** When clicking on the close button */
   onClose(): void {
-    this.cancel.emit(true);
+    if (this.formControl.pristine) {
+      this.cancel.emit(true);
+    } else {
+      /** If not saved changes, confirm before close */
+      const confirmDialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('components.form.update.exit'),
+        content: this.translate.instant(
+          'components.widget.settings.close.confirmationMessage'
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'warn',
+      });
+      confirmDialogRef.afterClosed().subscribe((confirm) => {
+        if (confirm) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.applicationService.customStyle!.innerText = this.savedStyle;
+          this.cancel.emit(true);
+        }
+      });
+    }
   }
 
   /** Save application custom css styling */
@@ -128,6 +154,8 @@ export class CustomStyleComponent
         })
       );
       this.formControl.markAsPristine();
+      this.applicationService.customStyleEdited = false;
+      this.applicationService.customStyle = this.styleApplied;
     }
   }
 
@@ -139,7 +167,13 @@ export class CustomStyleComponent
   public initEditor(editor: any): void {
     if (editor) {
       setTimeout(() => {
-        editor.getAction('editor.action.formatDocument').run();
+        editor
+          .getAction('editor.action.formatDocument')
+          .run()
+          .finally(() => {
+            this.formControl.markAsPristine();
+            this.applicationService.customStyleEdited = false;
+          });
       }, 100);
     }
   }

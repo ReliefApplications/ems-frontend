@@ -9,7 +9,8 @@ import {
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import get from 'lodash/get';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 /**
  * Main component of Application view.
@@ -219,6 +220,33 @@ export class ApplicationComponent
     this.applicationService.reorderPages(
       event.filter((x: any) => x.id).map((x: any) => x.id)
     );
+  }
+
+  /**
+   * Show modal confirmation before leave the page if has changes on custom styling
+   *
+   * @returns boolean of observable of boolean
+   */
+  canDeactivate(): Observable<boolean> | boolean {
+    if (this.applicationService.customStyleEdited) {
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('components.form.update.exit'),
+        content: this.translate.instant(
+          'components.widget.settings.close.confirmationMessage'
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'primary',
+      });
+      return dialogRef.afterClosed().pipe(
+        map((confirm) => {
+          if (confirm) {
+            return true;
+          }
+          return false;
+        })
+      );
+    }
+    return true;
   }
 
   override ngOnDestroy(): void {
