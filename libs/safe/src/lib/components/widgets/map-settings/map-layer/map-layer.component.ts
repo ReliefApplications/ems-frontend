@@ -118,6 +118,9 @@ export class MapLayerComponent
 
   /**
    * Update map layer
+   *
+   * @param options
+   * @param options.delete
    */
   private updateMapLayer(options: { delete: boolean } = { delete: false }) {
     if (this.mapComponent) {

@@ -23,9 +23,9 @@ import '@geoman-io/leaflet-geoman-free';
 import * as L from 'leaflet';
 // import { FeatureProperties } from '../ui/map/interfaces/layer-settings.type';
 
-import { IconName } from '../icon-picker/icon-picker.const'
+import { IconName } from '../icon-picker/icon-picker.const';
 // import { LayerStylingComponent } from './layer-styling/layer-styling.component';
- import { createCustomDivIcon } from '../ui/map/utils/create-div-icon';
+import { createCustomDivIcon } from '../ui/map/utils/create-div-icon';
 import { CommonModule } from '@angular/common';
 import { MapModule } from '../ui/map/map.module';
 
