@@ -22,9 +22,10 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/public-api';
 import '@geoman-io/leaflet-geoman-free';
 import * as L from 'leaflet';
 // import { FeatureProperties } from '../ui/map/interfaces/layer-settings.type';
-// import { IconName } from '../ui/map/const/fa-icons';
+
+import { IconName } from '../icon-picker/icon-picker.const'
 // import { LayerStylingComponent } from './layer-styling/layer-styling.component';
-// import { createCustomDivIcon } from '../ui/map/utils/create-div-icon';
+ import { createCustomDivIcon } from '../ui/map/utils/create-div-icon';
 import { CommonModule } from '@angular/common';
 import { MapModule } from '../ui/map/map.module';
 
@@ -121,34 +122,34 @@ export class GeospatialMapComponent
 
   /** Creates map */
   private setDataLayers(): void {
-    console.log(this.data);
-    // init layers from question value
-    // if (this.data.features.length > 0) {
-    //   const newLayer = L.geoJSON(this.data, {
-    //     // Circles are not supported by geojson
-    //     // We abstract them as markers with a radius property
-    //     pointToLayer: (feature, latlng) => {
-    //       if (feature.properties.radius) {
-    //         return new L.Circle(latlng, feature.properties.radius);
-    //       } else {
-    //         const icon = createCustomDivIcon({
-    //           color: feature.properties.style?.fillColor || '#3388ff',
-    //           opacity: feature.properties.style?.fillOpacity || 1,
-    //           icon:
-    //             (feature.properties.style?.icon as IconName) ||
-    //             'leaflet_default',
-    //           size: feature.properties.style?.iconSize || 12,
-    //         });
-    //         return new L.Marker(latlng).setIcon(icon);
-    //       }
-    //     },
-    //   } as L.GeoJSONOptions<FeatureProperties>);
-    //   const baseLayer: BaseLayerTree = {
-    //     label: '',
-    //     layer: newLayer,
-    //   };
-    //   this.addOrDeleteLayer.next({ layerData: baseLayer, isDelete: false });
-    // }
+    //init layers from question value
+    const geospatialData = this.data as any;
+    if (geospatialData.geometry.coordinates.length > 0) {
+      const newLayer = L.geoJSON(this.data, {
+        // Circles are not supported by geojson
+        // We abstract them as markers with a radius property
+        pointToLayer: (feature, latlng) => {
+          if (feature.properties.radius) {
+            return new L.Circle(latlng, feature.properties.radius);
+          } else {
+            const icon = createCustomDivIcon({
+              color: feature.properties.style?.fillColor || '#3388ff',
+              opacity: feature.properties.style?.fillOpacity || 1,
+              icon:
+                (feature.properties.style?.icon as IconName) ||
+                'leaflet_default',
+              size: feature.properties.style?.iconSize || 12,
+            });
+            return new L.Marker(latlng).setIcon(icon);
+          }
+        },
+      } as L.GeoJSONOptions);
+      const baseLayer: BaseLayerTree = {
+        label: '',
+        layer: newLayer,
+      };
+      this.addOrDeleteLayer.next({ layerData: baseLayer, isDelete: false });
+    }
   }
 
   /**
