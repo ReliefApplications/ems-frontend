@@ -1330,7 +1330,10 @@
 						"display": {
 							"dataSource": "Afficher le lien vers la source de données",
 							"header": "Titre",
-							"title": "Affichage"
+							"title": "Affichage",
+							"tooltip": {
+								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
+							}
 						},
 						"preview": {},
 						"textEditor": {

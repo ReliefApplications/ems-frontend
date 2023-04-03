@@ -1323,7 +1323,10 @@
 						"display": {
 							"dataSource": "Show link to data source",
 							"header": "Header",
-							"title": "Display"
+							"title": "Display",
+							"tooltip": {
+								"datasource": "Add a button in widget's header to view card's data source"
+							}
 						},
 						"textEditor": {
 							"title": "Text editor"
