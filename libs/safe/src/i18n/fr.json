@@ -136,7 +136,7 @@
 			"accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
 			"alreadyExists": "Cet objet {{type}} {{value}} existe déjà dans cette application.",
 			"copiedToClipboard": "Copié !",
-			"dataNotRecovered": "todo(translation)",
+			"dataNotRecovered": "Échec de la récupération des données",
 			"dataRecovered": "Les données ont été récupérées !",
 			"email": {
 				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
@@ -183,11 +183,11 @@
 			"objectNotDuplicated": "L'objet de type {{type}} n'a pas pu être dupliqué. {{error}}",
 			"objectNotFound": "{{name}} n'a pas été trouvé.",
 			"objectNotInvited": "L'invitation vers {{name}} a échoué.",
-			"objectNotReordered": "todo(translation)",
-			"objectNotRestored": "todo(translation)",
+			"objectNotReordered": "{{type}} pas réorganisé. {{error}}",
+			"objectNotRestored": "{{type}} non restauré. {{error}}",
 			"objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
 			"objectReordered": "L'objet de type {{type}} a été réorganisé.",
-			"objectRestored": "todo(translation)",
+			"objectRestored": "{{type}} restauré.",
 			"objectUpdated": "{{value}} {{type}} a été modifié.",
 			"platformAccessNotGranted": "Vous n'avez pas d'accès valide à cette plateforme.",
 			"readAll": "Tout marqué comme lu",
@@ -416,12 +416,12 @@
 					"confirmationMessage": "Voulez-vous vraiment supprimer la page {{name}}?"
 				},
 				"notReordered": {
-					"plural": "todo(translation)",
-					"singular": "todo(translation)"
+					"plural": "Les pages n'ont pas été réorganisées. {{error}}",
+					"singular": "La page n'a pas été réorganisée. {{error}}"
 				},
 				"reordered": {
-					"plural": "todo(translation)",
-					"singular": "todo(translation)"
+					"plural": "Les pages ont été réorganisées avec succès.",
+					"singular": "La page a été réorganisée avec succès."
 				}
 			},
 			"positionAttribute": {
@@ -1038,20 +1038,20 @@
 				"description": "Sélectionner des utilisateurs existants, inviter de nouveaux utilisateurs ou en importer depuis un fichier Excel"
 			},
 			"onDelete": {
-				"plural": "todo(translation)",
-				"singular": "todo(translation)"
+				"plural": "Les utilisateurs ont été correctement supprimés.",
+				"singular": "L'utilisateur a été correctement supprimé."
 			},
 			"onInvite": {
-				"plural": "todo(translation)",
-				"singular": "todo(translation)"
+				"plural": "Les utilisateurs ont été invités.",
+				"singular": "L'utilisateur a été invité."
 			},
 			"onNotDelete": {
-				"plural": "todo(translation)",
-				"singular": "todo(translation)"
+				"plural": "Les utilisateurs n'ont pas été supprimés. {{error}}",
+				"singular": "L'utilisateur a été supprimé. {{error}}"
 			},
 			"onNotInvite": {
-				"plural": "todo(translation)",
-				"singular": "todo(translation)"
+				"plural": "Les utilisateurs n'ont pas été invités. {{error}}",
+				"singular": "L'utilisateur n'a pas été invité. {{error}}"
 			},
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page d'utilisateurs"
@@ -1165,6 +1165,15 @@
 					},
 					"position": "Position",
 					"series": {
+						"settings": {
+							"auto": "Auto",
+							"color": "Couleur",
+							"fill": "Remplir",
+							"interpolation": "Interpolation",
+							"other": "Autre",
+							"serie": "Série",
+							"stepInterpolation": "Interpolation pas à pas"
+						},
 						"stack": {
 							"enable": "Empiler les séries",
 							"usePercentage": "Utiliser des pourcentages"
@@ -1283,7 +1292,7 @@
 					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
 					"edit": {
-						"aggregation": "@TODO",
+						"aggregation": "Agrégation",
 						"cluster": {
 							"cluster": "Cluster",
 							"clusterSettings": "Paramètres de groupes",
@@ -1303,12 +1312,12 @@
 							"origin": "Origine"
 						},
 						"fields": "Champs",
-						"filter": "@TODO",
-						"labels": "@TODO",
+						"filter": "Filtre",
+						"labels": "Étiquettes",
 						"layerDatasource": "Source de données de la couche",
 						"layerProperties": "Propriétés",
 						"layerStyling": "Styles",
-						"popup": "@TODO",
+						"popup": "Surgir",
 						"properties": {
 							"defaultVisibility": "Visible par défaut",
 							"opacity": "Opacité",
@@ -1363,6 +1372,11 @@
 						"add": "Ajouter un nouveau calque",
 						"chooseLayer": "Choisir un calque existant",
 						"createLayer": "Créer un nouveau calque",
+						"dataSource": {
+							"geoField": "GeoField",
+							"latitude": "Latitude",
+							"longitude": "Longitude"
+						},
 						"edit": "Mettre à jour le calque {{name}}",
 						"online": {
 							"info": "Charger des couches depuis arcGIS online",
@@ -1412,7 +1426,7 @@
 						"longitude": "Longitude du centre de la carte",
 						"setByMap": "Utiliser la vue actuelle",
 						"title": "Affichage par défaut",
-						"webmap": "todo(translation)",
+						"webmap": "WebMap",
 						"zoom": "Zoom par défaut"
 					},
 					"tooltip": {
@@ -1652,7 +1666,7 @@
 			"id": "ID de l'application",
 			"new": "Nouvelle application",
 			"notifications": {
-				"notPublished": "todo(translation)",
+				"notPublished": "Candidature non publiée.",
 				"published": "L'application {{value}} a été publiée.",
 				"updated": "Application modifiée."
 			},
@@ -1719,7 +1733,7 @@
 			"notifications": {
 				"conversionIncomplete": "Il n'y a pas de correspondance entre le(s) enregistrement(s) sélectionné(s) et certains champs de ce formulaire.",
 				"rowsAdded": "{{length}} ligne(s) ont été ajoutées à {{field}} dans l'enregistrement {{value}}.",
-				"rowsNotAdded": "todo(translation)",
+				"rowsNotAdded": "Erreur lors de l'ajout de ligne(s).",
 				"uploadSuccessful": "Enregistrements importés avec succès"
 			},
 			"restore": "Restaurer"
@@ -1879,7 +1893,7 @@
 		},
 		"profile": {
 			"notifications": {
-				"notUpdated": "todo(translation)",
+				"notUpdated": "Erreur lors de l'enregistrement des préférences.",
 				"updated": "Préférences sauvegardées."
 			},
 			"title": "Votre profil"

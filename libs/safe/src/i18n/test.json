@@ -1158,6 +1158,15 @@
 					},
 					"position": "******",
 					"series": {
+						"settings": {
+							"auto": "******",
+							"color": "******",
+							"fill": "******",
+							"interpolation": "******",
+							"other": "******",
+							"serie": "******",
+							"stepInterpolation": "******"
+						},
 						"stack": {
 							"enable": "******",
 							"usePercentage": "******"
@@ -1356,6 +1365,11 @@
 						"add": "******",
 						"chooseLayer": "******",
 						"createLayer": "******",
+						"dataSource": {
+							"geoField": "******",
+							"latitude": "******",
+							"longitude": "******"
+						},
 						"edit": "****** {{name}}",
 						"online": {
 							"info": "******",
