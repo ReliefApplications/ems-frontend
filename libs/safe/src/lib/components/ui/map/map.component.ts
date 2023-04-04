@@ -18,7 +18,7 @@ import 'leaflet-fullscreen';
 import 'esri-leaflet';
 import * as Vector from 'esri-leaflet-vector';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs';
+//import { takeUntil } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import {
   OverlayLayerTree,
@@ -41,8 +41,8 @@ import { Layer } from './layer';
 import { getMapFeature } from './utils/get-map-features';
 import { LayerFormData } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
-import { createCustomDivIcon } from './utils/create-div-icon';
-import { AVAILABLE_GEOMAN_LANGUAGES } from './const/language';
+//import { createCustomDivIcon } from './utils/create-div-icon';
+//import { AVAILABLE_GEOMAN_LANGUAGES } from './const/language';
 import { ArcgisService } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { flatten } from 'lodash';
@@ -76,7 +76,7 @@ export class MapComponent
   implements AfterViewInit
 {
   @Input() controls!: any;
-  @Input() useGeomanTools = false;
+  //@Input() useGeomanTools = false;
   /** Map settings setter */
   @Input() set mapSettings(settings: MapConstructorSettings) {
     if (settings) {
@@ -116,12 +116,12 @@ export class MapComponent
       this.layerControl.addTo(this.map);
 
       // When using geoman tools we update the map status and it's layers always for each change
-      if (this.useGeomanTools) {
-        this.mapEvent.emit({
-          type: MapEventType.MAP_CHANGE,
-          content: getMapFeature(this.map),
-        });
-      }
+      // if (this.useGeomanTools) {
+      //   this.mapEvent.emit({
+      //     type: MapEventType.MAP_CHANGE,
+      //     content: getMapFeature(this.map),
+      //   });
+      // }
     }
   }
 
@@ -179,146 +179,146 @@ export class MapComponent
     this.mapId = uuidv4();
   }
 
-  /** Set map listeners */
-  private setUpMapListeners() {
-    // Set event listener to log map bounds when zooming, moving and resizing screen.
-    this.map.on('moveend', () => {
-      // If searched address marker exists, if we move, the item should disappear
-      if (this.mapControlsService.addressMarker) {
-        this.map.removeLayer(this.mapControlsService.addressMarker);
-        this.mapControlsService.addressMarker = null;
-      }
-      this.mapEvent.emit({
-        type: MapEventType.MOVE_END,
-        content: { bounds: this.map.getBounds(), center: this.map.getCenter() },
-      });
-    });
+  // /** Set map listeners */
+  // private setUpMapListeners() {
+  //   // Set event listener to log map bounds when zooming, moving and resizing screen.
+  //   this.map.on('moveend', () => {
+  //     // If searched address marker exists, if we move, the item should disappear
+  //     if (this.mapControlsService.addressMarker) {
+  //       this.map.removeLayer(this.mapControlsService.addressMarker);
+  //       this.mapControlsService.addressMarker = null;
+  //     }
+  //     this.mapEvent.emit({
+  //       type: MapEventType.MOVE_END,
+  //       content: { bounds: this.map.getBounds(), center: this.map.getCenter() },
+  //     });
+  //   });
 
-    this.map.on('zoomend', () => {
-      this.mapEvent.emit({
-        type: MapEventType.ZOOM_END,
-        content: { zoom: this.map.getZoom() },
-      });
-    });
+  //   this.map.on('zoomend', () => {
+  //     this.mapEvent.emit({
+  //       type: MapEventType.ZOOM_END,
+  //       content: { zoom: this.map.getZoom() },
+  //     });
+  //   });
 
-    // Listen for language change
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((event) => {
-        if (event.lang !== this.mapControlsService.lang) {
-          this.mapControlsService.getMeasureControl(
-            this.map,
-            this.extractSettings().controls.measure
-          );
-          this.mapControlsService.getFullScreenControl(this.map);
-        }
-      });
-  }
+  //   // Listen for language change
+  //   this.translate.onLangChange
+  //     .pipe(takeUntil(this.destroy$))
+  //     .subscribe((event) => {
+  //       if (event.lang !== this.mapControlsService.lang) {
+  //         this.mapControlsService.getMeasureControl(
+  //           this.map,
+  //           this.extractSettings().controls.measure
+  //         );
+  //         this.mapControlsService.getFullScreenControl(this.map);
+  //       }
+  //     });
+  // }
 
   /** Set geoman listeners */
-  private setUpPmListeners() {
-    // By default all drawn layer types have this property to false except for markers and circleMarkers
-    // https://github.com/geoman-io/leaflet-geoman#draw-mode
-    // We will enable this one for all layer types(including Markers) in order to auto blur when one marker is set
-    this.map.pm.setGlobalOptions({ continueDrawing: false });
-    // updates question value on adding new shape
-    this.map.on('pm:create', (l: any) => {
-      if (l.shape === 'Marker') {
-        l.layer.setIcon(
-          createCustomDivIcon({
-            icon: 'leaflet_default',
-            color: '#3388ff',
-            opacity: 1,
-            size: 24,
-          })
-        );
-        // If we add a Marker, we will disable the control to set new markers(currently we want to add just one)
-        this.map.pm.Toolbar.setButtonDisabled('drawMarker', true);
-      }
+  // private setUpPmListeners() {
+  //   // By default all drawn layer types have this property to false except for markers and circleMarkers
+  //   // https://github.com/geoman-io/leaflet-geoman#draw-mode
+  //   // We will enable this one for all layer types(including Markers) in order to auto blur when one marker is set
+  //   this.map.pm.setGlobalOptions({ continueDrawing: false });
+  //   // updates question value on adding new shape
+  //   this.map.on('pm:create', (l: any) => {
+  //     if (l.shape === 'Marker') {
+  //       l.layer.setIcon(
+  //         createCustomDivIcon({
+  //           icon: 'leaflet_default',
+  //           color: '#3388ff',
+  //           opacity: 1,
+  //           size: 24,
+  //         })
+  //       );
+  //       // If we add a Marker, we will disable the control to set new markers(currently we want to add just one)
+  //       this.map.pm.Toolbar.setButtonDisabled('drawMarker', true);
+  //     }
 
-      // subscribe to changes on the created layers
-      l.layer.on(
-        'pm:change',
-        this.mapEvent.emit({
-          type: MapEventType.MAP_CHANGE,
-          content: getMapFeature(this.map),
-        })
-      );
+  //     // subscribe to changes on the created layers
+  //     l.layer.on(
+  //       'pm:change',
+  //       this.mapEvent.emit({
+  //         type: MapEventType.MAP_CHANGE,
+  //         content: getMapFeature(this.map),
+  //       })
+  //     );
 
-      l.layer.on('click', (e: any) => {
-        this.mapEvent.emit({
-          type: MapEventType.SELECTED_LAYER,
-          content: { layer: e.target },
-        });
-      });
-    });
+  //     l.layer.on('click', (e: any) => {
+  //       this.mapEvent.emit({
+  //         type: MapEventType.SELECTED_LAYER,
+  //         content: { layer: e.target },
+  //       });
+  //     });
+  //   });
 
-    // updates question value on removing shapes
-    this.map.on('pm:remove', () => {
-      const containsPointMarker = (feature: any) =>
-        feature.geometry.type === 'Point';
-      const content = getMapFeature(this.map);
-      // If no markers, we enable the point marker control again
-      if (!content || !containsPointMarker(content)) {
-        this.map.pm.Toolbar.setButtonDisabled('drawMarker', false);
-      }
-      this.mapEvent.emit({
-        type: MapEventType.MAP_CHANGE,
-        content,
-      });
-    });
+  //   // updates question value on removing shapes
+  //   this.map.on('pm:remove', () => {
+  //     const containsPointMarker = (feature: any) =>
+  //       feature.geometry.type === 'Point';
+  //     const content = getMapFeature(this.map);
+  //     // If no markers, we enable the point marker control again
+  //     if (!content || !containsPointMarker(content)) {
+  //       this.map.pm.Toolbar.setButtonDisabled('drawMarker', false);
+  //     }
+  //     this.mapEvent.emit({
+  //       type: MapEventType.MAP_CHANGE,
+  //       content,
+  //     });
+  //   });
 
-    // set language
-    const setLang = (lang: string) => {
-      if (AVAILABLE_GEOMAN_LANGUAGES.includes(lang)) {
-        this.map.pm.setLang(lang);
-      } else {
-        console.warn(`Language "${lang}" not supported by geoman`);
-        this.map.pm.setLang('en');
-      }
-    };
+  //   // set language
+  //   const setLang = (lang: string) => {
+  //     if (AVAILABLE_GEOMAN_LANGUAGES.includes(lang)) {
+  //       this.map.pm.setLang(lang);
+  //     } else {
+  //       console.warn(`Language "${lang}" not supported by geoman`);
+  //       this.map.pm.setLang('en');
+  //     }
+  //   };
 
-    setLang(this.translate.currentLang || 'en');
+  //   setLang(this.translate.currentLang || 'en');
 
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((event) => {
-        setLang(event.lang);
-      });
-  }
+  //   this.translate.onLangChange
+  //     .pipe(takeUntil(this.destroy$))
+  //     .subscribe((event) => {
+  //       setLang(event.lang);
+  //     });
+  // }
 
   /** Once template is ready, build the map. */
   ngAfterViewInit(): void {
-    this.mapControlsService.useGeomanTools = this.useGeomanTools;
+    //this.mapControlsService.useGeomanTools = this.useGeomanTools;
     // Creates the map and adds all the controls we use.
     this.drawMap();
     /**
      * If Geoman tools are going to be used we will set up related listeners
      * Otherwise the map listeners for the user interaction with it
      */
-    if (this.useGeomanTools) {
-      this.setUpPmListeners();
-    } else {
-      this.setUpMapListeners();
-    }
+    // if (this.useGeomanTools) {
+    //   this.setUpPmListeners();
+    // } else {
+    //   this.setUpMapListeners();
+    // }
 
     setTimeout(() => {
       this.map.invalidateSize();
-      if (this.useGeomanTools) {
-        this.mapEvent.emit({
-          type: MapEventType.MAP_CHANGE,
-          content: getMapFeature(this.map),
-        });
-      } else {
-        this.mapEvent.emit({
-          type: MapEventType.FIRST_LOAD,
-          content: {
-            bounds: this.map.getBounds(),
-            center: this.map.getCenter(),
-            zoom: this.map.getZoom(),
-          },
-        });
-      }
+      // if (this.useGeomanTools) {
+      this.mapEvent.emit({
+        type: MapEventType.MAP_CHANGE,
+        content: getMapFeature(this.map),
+      });
+      // } else {
+      //   this.mapEvent.emit({
+      //     type: MapEventType.FIRST_LOAD,
+      //     content: {
+      //       bounds: this.map.getBounds(),
+      //       center: this.map.getCenter(),
+      //       zoom: this.map.getZoom(),
+      //     },
+      //   });
+      //}
     }, 100);
   }
 
@@ -378,7 +378,7 @@ export class MapComponent
       zoomControl,
       arcGisWebMap,
       layers,
-      controls,
+      //controls,
     } = this.extractSettings();
 
     // Create leaflet map
@@ -440,16 +440,17 @@ export class MapComponent
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
 
     if (this.controls) {
-      if (this.useGeomanTools) {
-        this.map.pm.addControls(this.controls);
-      } else {
-        this.controls.forEach((control: any) => this.map.addControl(control));
-      }
+      this.map.pm.addControls(this.controls);
+      // if (this.useGeomanTools) {
+      //   this.map.pm.addControls(this.controls);
+      // } else {
+      //   this.controls.forEach((control: any) => this.map.addControl(control));
+      // }
     }
 
-    if (!this.useGeomanTools) {
-      this.setMapControls(controls, true);
-    }
+    // if (!this.useGeomanTools) {
+    //   this.setMapControls(controls, true);
+    // }
   }
 
   /**
@@ -919,7 +920,7 @@ export class MapComponent
   /**
    * Set the basemap.
    *
-   * @param map
+   * @param map map
    * @param basemap String containing the id (name) of the basemap
    * @returns basemaps as promise
    */
