@@ -1,12 +1,14 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
 
 /**
  * Fields interface
  */
-interface Fields {
+export interface Fields {
   label: string;
   name: string;
   type: string;
+  [key: string]: string;
 }
 /**
  * Map layer fields settings component.
@@ -16,15 +18,23 @@ interface Fields {
   templateUrl: './layer-fields.component.html',
   styleUrls: ['./layer-fields.component.scss'],
 })
-export class LayerFieldsComponent {
-  // todo(gis): remove test data
-  @Input() fields: Fields[] = [
-    {
-      label: 'test',
-      name: 'test',
-      type: 'test',
-    },
-  ];
+export class LayerFieldsComponent implements OnInit {
+  public fields!: Fields[];
+
+  /**
+   * Creates an instance of LayerFieldsComponent.
+   *
+   * @param mapLayersService Shared map layer Service.
+   */
+  constructor(private mapLayersService: SafeMapLayersService) {}
+
+  ngOnInit(): void {
+    // Listen to fields changes
+    this.mapLayersService.fields$.subscribe((value) => {
+      this.fields = value;
+    });
+  }
+
   /**
    * Save value of the input
    *

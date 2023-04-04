@@ -1,11 +1,13 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import {
   PopupElement,
   PopupElementType,
 } from '../../../../../models/layer.model';
+import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
 import { createPopupElementForm } from '../../map-forms';
+import { Fields } from '../layer-fields/layer-fields.component';
 
 /**
  * Map layer popup settings component.
@@ -15,12 +17,27 @@ import { createPopupElementForm } from '../../map-forms';
   templateUrl: './layer-popup.component.html',
   styleUrls: ['./layer-popup.component.scss'],
 })
-export class LayerPopupComponent {
+export class LayerPopupComponent implements OnInit {
   @Input() formGroup!: FormGroup;
+  public fields!: Fields[];
 
   /** @returns popup elements as form array */
   get popupElements(): FormArray {
     return this.formGroup.get('popupElements') as FormArray;
+  }
+
+  /**
+   * Creates an instance of LayerPopupComponent.
+   *
+   * @param mapLayersService Shared map layer Service.
+   */
+  constructor(private mapLayersService: SafeMapLayersService) {}
+
+  ngOnInit(): void {
+    // Listen to fields changes
+    this.mapLayersService.fields$.subscribe((value) => {
+      this.fields = value;
+    });
   }
 
   /**
@@ -39,7 +56,7 @@ export class LayerPopupComponent {
   /**
    * Add a new content block text or field block)
    *
-   * @param {popupElementType} type content type (text or field)
+   * @param type content type (text or field)
    */
   public onAddElement(type: PopupElementType): void {
     this.popupElements.push(createPopupElementForm({ type }));

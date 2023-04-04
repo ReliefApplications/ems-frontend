@@ -80,6 +80,7 @@
       <ng-container *ngSwitchCase="'datasource'">
         <safe-layer-datasource
           [formGroup]="$any(form.get('datasource'))"
+          [resourceQuery]="resource"
         ></safe-layer-datasource>
       </ng-container>
       <!-- Layer styling -->

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,6 +12,8 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeDividerModule } from '../../../../../ui/divider/divider.module';
 import { SafeButtonModule } from '../../../../../ui/button/button.module';
 import { PopupElement } from '../../../../../../models/layer.model';
+import { Fields } from '../../layer-fields/layer-fields.component';
+import { SafeMapLayersService } from '../../../../../../services/map/map-layers.service';
 
 /**
  * Popup fields element component.
@@ -33,20 +35,23 @@ import { PopupElement } from '../../../../../../models/layer.model';
   templateUrl: './fields-element.component.html',
   styleUrls: ['./fields-element.component.scss'],
 })
-export class FieldsElementComponent {
-  public fields = [
-    {
-      name: 'field1',
-    },
-    {
-      name: 'field2',
-    },
-    {
-      name: 'field3',
-    },
-  ];
-
+export class FieldsElementComponent implements OnInit {
+  public fields!: Fields[];
   @Input() formGroup!: FormGroup;
+
+  /**
+   * Creates an instance of FieldsElementComponent.
+   *
+   * @param mapLayersService Shared map layer Service.
+   */
+  constructor(private mapLayersService: SafeMapLayersService) {}
+
+  ngOnInit(): void {
+    // Listen to fields changes
+    this.mapLayersService.fields$.subscribe((value) => {
+      this.fields = value;
+    });
+  }
 
   /**
    * Handles the event emitted when a layer is reordered
