@@ -919,6 +919,7 @@ export class MapComponent
   /**
    * Set the basemap.
    *
+   * @param map Leaflet map
    * @param basemap String containing the id (name) of the basemap
    * @returns basemaps as promise
    */

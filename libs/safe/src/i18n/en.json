@@ -1158,6 +1158,15 @@
 					},
 					"position": "Position",
 					"series": {
+						"settings": {
+							"auto": "Auto",
+							"color": "Color",
+							"fill": "Fill",
+							"interpolation": "Interpolation",
+							"other": "Other",
+							"serie": "Serie",
+							"stepInterpolation": "Step interpolation"
+						},
 						"stack": {
 							"enable": "Plot series",
 							"usePercentage": "Use percentage"
@@ -1356,6 +1365,11 @@
 						"add": "Add new layer",
 						"chooseLayer": "Choose a layer",
 						"createLayer": "Create a new layer",
+						"dataSource": {
+							"geoField": "GeoField",
+							"latitude": "Latitude",
+							"longitude": "Longitude"
+						},
 						"edit": "Update layer {{name}}",
 						"online": {
 							"info": "Search for online layers in arcGIS online",
@@ -1373,8 +1387,24 @@
 							"size": "Size",
 							"title": "Marker layers"
 						},
+						"popup": {
+							"addField": "Add field",
+							"description": "Description",
+							"fields": "Fields",
+							"fieldsElements": {
+								"description": "Description",
+								"title": "Title"
+							},
+							"popup": "Popup",
+							"popupElements": "Popup elements",
+							"text": "Text",
+							"title": "Title"
+						},
 						"remove": "Remove layer",
 						"selectLayer": "Select existing layer",
+						"styling": {
+							"style": "Style"
+						},
 						"types": {
 							"cluster": "cluster",
 							"heatmap": "heatmap",

@@ -1,12 +1,11 @@
-<!-- todo(gis): translate -->
 <ng-container [formGroup]="formGroup">
   <div class="flex flex-col">
     <mat-form-field appearance="outline">
-      <mat-label>Title</mat-label>
+      <mat-label>{{ 'components.widget.settings.map.layers.popup.fieldsElements.title' | translate }}</mat-label>
       <input matInput formControlName="title" type="string" />
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>Description</mat-label>
+      <mat-label>{{ 'components.widget.settings.map.layers.popup.fieldsElements.description' | translate }}</mat-label>
       <input matInput formControlName="description" type="string" />
     </mat-form-field>
   </div>

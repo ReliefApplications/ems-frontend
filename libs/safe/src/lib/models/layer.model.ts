@@ -14,6 +14,9 @@ export type LayerSymbol = {
   style: IconName;
 };
 
+/**
+ * Layer Drawing info interface
+ */
 export interface DrawingInfo {
   renderer?: {
     type?: string;
@@ -25,12 +28,18 @@ export interface DrawingInfo {
   };
 }
 
+/**
+ * Layer Feature Reduction interface
+ */
 export interface FeatureReduction {
   type: 'cluster';
   drawingInfo?: DrawingInfo;
   clusterRadius?: number;
 }
 
+/**
+ * Layer Definition interface
+ */
 export interface LayerDefinition {
   minZoom?: number;
   maxZoom?: number;
@@ -39,11 +48,17 @@ export interface LayerDefinition {
   drawingInfo?: DrawingInfo;
 }
 
+/**
+ * Layer Popup Text element interface
+ */
 export interface PopupElementText {
   type: 'text';
   text?: string;
 }
 
+/**
+ * Layer Popup Fields element interface
+ */
 export interface PopupElementFields {
   type: 'fields';
   title?: string;
@@ -51,20 +66,30 @@ export interface PopupElementFields {
   fields?: string[];
 }
 
+/** Possible types of Popup element */
 export type PopupElementType = 'text' | 'fields';
 
+/**
+ * Layer Popup element interface
+ */
 export interface PopupElement
   extends Omit<PopupElementText, 'type'>,
     Omit<PopupElementFields, 'type'> {
   type: PopupElementType;
 }
 
+/**
+ * Layer Popup info interface
+ */
 export interface PopupInfo {
   title?: string;
   description?: string;
   popupElements?: PopupElement[];
 }
 
+/**
+ * Layer Datasource interface
+ */
 export interface LayerDatasource {
   resource?: string;
   refData?: string;

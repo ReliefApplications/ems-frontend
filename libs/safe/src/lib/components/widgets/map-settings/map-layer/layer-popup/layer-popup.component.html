@@ -1,21 +1,18 @@
 <div class="flex flex-col">
-  <!-- todo(gis): translate -->
-  <h2>Popup</h2>
+  {{ 'components.widget.settings.map.layers.popup.popup' | translate }}
   <div [formGroup]="formGroup">
-    <!-- todo(gis): translate -->
     <div class="flex flex-col">
       <mat-form-field appearance="outline">
-        <mat-label>title</mat-label>
+        <mat-label>{{ 'components.widget.settings.map.layers.popup.title' | translate }}</mat-label>
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>description</mat-label>
+        <mat-label>{{ 'components.widget.settings.map.layers.popup.description' | translate }}</mat-label>
         <input matInput formControlName="description" type="string" />
       </mat-form-field>
     </div>
     <safe-divider></safe-divider>
-    <!-- todo(gis): translate -->
-    <h3>Popup elements</h3>
+    <h3>{{ 'components.widget.settings.map.layers.popup.popupElements' | translate }}</h3>
     <div
       formArrayName="popupElements"
       cdkDropList
@@ -65,20 +62,17 @@
       </mat-expansion-panel>
     </div>
     <!-- Add new block -->
-    <!-- todo(gis): translate -->
     <safe-button
       category="secondary"
       variant="primary"
       [matMenuTriggerFor]="contentOptions"
       class="self-center mt-4"
     >
-      Add field
+    {{ 'components.widget.settings.map.layers.popup.addField' | translate }}
     </safe-button>
     <mat-menu #contentOptions="matMenu">
-      <!-- todo(gis): translate -->
-      <a mat-menu-item (click)="onAddElement('fields')"> Fields </a>
-      <!-- todo(gis): translate -->
-      <a mat-menu-item (click)="onAddElement('text')"> Text </a>
+      <a mat-menu-item (click)="onAddElement('fields')"> {{ 'components.widget.settings.map.layers.popup.fields' | translate }} </a>
+      <a mat-menu-item (click)="onAddElement('text')"> {{ 'components.widget.settings.map.layers.popup.text' | translate }} </a>
     </mat-menu>
   </div>
 </div>

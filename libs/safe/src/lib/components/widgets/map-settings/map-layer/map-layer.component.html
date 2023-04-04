@@ -13,13 +13,12 @@
   >
     {{ 'components.widget.settings.map.edit.layerDatasource' | translate }}
   </safe-button>
-  <!-- todo(gis): translate -->
   <safe-button
     icon="storage"
     [attr.data-selected]="currentTab === 'styling'"
     (click)="currentTab = 'styling'"
   >
-    Styling
+    {{ 'components.widget.settings.map.edit.layerStyling' | translate }}
   </safe-button>
   <!-- <safe-button
     icon="map"
