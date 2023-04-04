@@ -1387,8 +1387,24 @@
 							"size": "******",
 							"title": "******"
 						},
+						"popup": {
+							"addField": "******",
+							"description": "******",
+							"fields": "******",
+							"fieldsElements": {
+								"description": "******",
+								"title": "******"
+							},
+							"popup": "******",
+							"popupElements": "******",
+							"text": "******",
+							"title": "******"
+						},
 						"remove": "******",
 						"selectLayer": "******",
+						"styling": {
+							"style": "******"
+						},
 						"types": {
 							"cluster": "******",
 							"heatmap": "******",

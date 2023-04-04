@@ -1387,8 +1387,24 @@
 							"size": "Size",
 							"title": "Marker layers"
 						},
+						"popup": {
+							"addField": "Add field",
+							"description": "Description",
+							"fields": "Fields",
+							"fieldsElements": {
+								"description": "Description",
+								"title": "Title"
+							},
+							"popup": "Popup",
+							"popupElements": "Popup elements",
+							"text": "Text",
+							"title": "Title"
+						},
 						"remove": "Remove layer",
 						"selectLayer": "Select existing layer",
+						"styling": {
+							"style": "Style"
+						},
 						"types": {
 							"cluster": "cluster",
 							"heatmap": "heatmap",

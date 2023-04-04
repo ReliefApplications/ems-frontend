@@ -1394,8 +1394,24 @@
 							"size": "Taille",
 							"title": "Marqueurs"
 						},
+						"popup": {
+							"addField": "Ajouter le champ",
+							"description": "Description",
+							"fields": "Des champs",
+							"fieldsElements": {
+								"description": "Description",
+								"title": "Titre"
+							},
+							"popup": "Popup",
+							"popupElements": "Éléments de popup",
+							"text": "Texte",
+							"title": "Titre"
+						},
 						"remove": "Supprimer le calque",
 						"selectLayer": "Sélectionner un calque",
+						"styling": {
+							"style": "Style"
+						},
 						"types": {
 							"cluster": "Groupes",
 							"heatmap": "Carte de chaleur",
