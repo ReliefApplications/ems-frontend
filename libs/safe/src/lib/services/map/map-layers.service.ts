@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import {
+  catchError,
   filter,
   forkJoin,
   lastValueFrom,
@@ -296,10 +297,9 @@ export class SafeMapLayersService {
                 // Get the current layer + its geojson
                 return forkJoin({
                   layer: of(layer),
-                  geojson: this.restService.get(
-                    `${this.restService.apiUrl}/gis/feature`,
-                    { params }
-                  ),
+                  geojson: this.restService
+                    .get(`${this.restService.apiUrl}/gis/feature`, { params })
+                    .pipe(catchError(() => of(EMPTY_FEATURE_COLLECTION))),
                 });
               } else {
                 return of({
@@ -338,10 +338,9 @@ export class SafeMapLayersService {
       const res = await lastValueFrom(
         forkJoin({
           layer: of(layer),
-          geojson: this.restService.get(
-            `${this.restService.apiUrl}/gis/feature`,
-            { params }
-          ),
+          geojson: this.restService
+            .get(`${this.restService.apiUrl}/gis/feature`, { params })
+            .pipe(catchError(() => of(EMPTY_FEATURE_COLLECTION))),
         })
       );
       return new Layer({
