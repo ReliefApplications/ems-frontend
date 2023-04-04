@@ -183,7 +183,7 @@
 			"objectNotDuplicated": "L'objet de type {{type}} n'a pas pu être dupliqué. {{error}}",
 			"objectNotFound": "{{name}} n'a pas été trouvé.",
 			"objectNotInvited": "L'invitation vers {{name}} a échoué.",
-			"objectNotReordered": "{{type}} pas réorganisé. {{error}}",
+			"objectNotReordered": "{{type}} n'a pas été réorganisé {{error}}",
 			"objectNotRestored": "{{type}} non restauré. {{error}}",
 			"objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
 			"objectReordered": "L'objet de type {{type}} a été réorganisé.",
@@ -1317,7 +1317,7 @@
 						"layerDatasource": "Source de données de la couche",
 						"layerProperties": "Propriétés",
 						"layerStyling": "Styles",
-						"popup": "Surgir",
+						"popup": "Popup",
 						"properties": {
 							"defaultVisibility": "Visible par défaut",
 							"opacity": "Opacité",
@@ -1395,9 +1395,9 @@
 							"title": "Marqueurs"
 						},
 						"popup": {
-							"addField": "Ajouter le champ",
+							"addField": "Ajouter un champ",
 							"description": "Description",
-							"fields": "Des champs",
+							"fields": "Champs",
 							"fieldsElements": {
 								"description": "Description",
 								"title": "Titre"
@@ -1682,7 +1682,7 @@
 			"id": "ID de l'application",
 			"new": "Nouvelle application",
 			"notifications": {
-				"notPublished": "Candidature non publiée.",
+				"notPublished": "L'application n'a pas pu être publiée.",
 				"published": "L'application {{value}} a été publiée.",
 				"updated": "Application modifiée."
 			},

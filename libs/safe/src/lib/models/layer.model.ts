@@ -15,7 +15,7 @@ export type LayerSymbol = {
 };
 
 /**
- *
+ * Layer Drawing info interface
  */
 export interface DrawingInfo {
   renderer?: {
@@ -29,7 +29,7 @@ export interface DrawingInfo {
 }
 
 /**
- *
+ * Layer Feature Reduction interface
  */
 export interface FeatureReduction {
   type: 'cluster';
@@ -38,7 +38,7 @@ export interface FeatureReduction {
 }
 
 /**
- *
+ * Layer Definition interface
  */
 export interface LayerDefinition {
   minZoom?: number;
@@ -49,7 +49,7 @@ export interface LayerDefinition {
 }
 
 /**
- *
+ * Layer Popup Text element interface
  */
 export interface PopupElementText {
   type: 'text';
@@ -57,7 +57,7 @@ export interface PopupElementText {
 }
 
 /**
- *
+ * Layer Popup Fields element interface
  */
 export interface PopupElementFields {
   type: 'fields';
@@ -66,10 +66,11 @@ export interface PopupElementFields {
   fields?: string[];
 }
 
+/** Possible types of Popup element */
 export type PopupElementType = 'text' | 'fields';
 
 /**
- *
+ * Layer Popup element interface
  */
 export interface PopupElement
   extends Omit<PopupElementText, 'type'>,
@@ -78,7 +79,7 @@ export interface PopupElement
 }
 
 /**
- *
+ * Layer Popup info interface
  */
 export interface PopupInfo {
   title?: string;
@@ -87,7 +88,7 @@ export interface PopupInfo {
 }
 
 /**
- *
+ * Layer Datasource interface
  */
 export interface LayerDatasource {
   resource?: string;
