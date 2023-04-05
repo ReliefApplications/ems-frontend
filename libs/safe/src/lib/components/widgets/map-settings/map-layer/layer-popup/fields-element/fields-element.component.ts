@@ -1,12 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  CdkDragDrop,
-  DragDropModule,
-  moveItemInArray,
-} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeDividerModule } from '../../../../../ui/divider/divider.module';
@@ -52,6 +48,7 @@ export class FieldsElementComponent {
    *
    * @param event Event emitted when a layer is reordered
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public onListDrop(event: CdkDragDrop<PopupElement[]>) {
     // todo(gis): change type there
     // moveItemInArray(this.fields, event.previousIndex, event.currentIndex);
@@ -62,6 +59,7 @@ export class FieldsElementComponent {
    *
    * @param {number} index item index
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public onRemoveField(index: number): void {
     // this.fields = this.fields.splice(index, 1);
   }

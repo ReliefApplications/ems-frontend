@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
 import { Observable } from 'rxjs';
 
@@ -35,6 +35,7 @@ export class LayerFieldsComponent {
    * @param event event of the input.
    * @param index index of the field.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   saveLabel(event: string, index: number): void {
     // if (event && this.fields[index]) {
     //   this.fields[index].label = event;
