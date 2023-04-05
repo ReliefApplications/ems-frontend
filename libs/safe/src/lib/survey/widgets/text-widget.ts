@@ -165,10 +165,8 @@ export const init = (Survey: any, domService: DomService): void => {
             const domElem = (button.hostView as EmbeddedViewRef<any>)
               .rootNodes[0] as HTMLElement;
             domElem.onclick = () => {
-              pickerInstance.value = null as any;
               question.value = null;
-              const display = el.style.display;
-              el.style.display = display;
+              pickerInstance.writeValue(null as any);
             };
           }
         } else {
