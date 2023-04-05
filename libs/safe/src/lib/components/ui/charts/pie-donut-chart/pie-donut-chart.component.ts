@@ -8,7 +8,7 @@ import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 import { ChartTitle } from '../interfaces';
-import { DEFAULT_PALETTE } from '../../../widgets/chart-settings/chart-forms';
+import { DEFAULT_PALETTE } from '../const/palette';
 
 /**
  * Interface containing the settings of the chart legend
