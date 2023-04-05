@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SafeDrawerPositionerDirective } from './directives/drawer-positioner/drawer-positioner.directive';
+import { SafeFilterBuilderModule } from './filter-builder-modal/filter-builder.module';
 
 /** Cron expression control module. */
 @NgModule({
@@ -18,6 +19,7 @@ import { SafeDrawerPositionerDirective } from './directives/drawer-positioner/dr
     MatFormFieldModule,
     MatSelectModule,
     ReactiveFormsModule,
+    SafeFilterBuilderModule,
   ],
   exports: [SafeDashboardFilterComponent],
   providers: [SafeDrawerPositionerDirective],
