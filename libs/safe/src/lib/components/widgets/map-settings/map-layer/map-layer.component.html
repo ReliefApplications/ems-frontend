@@ -1,68 +1,70 @@
 <ng-template #layerNavigationTemplate>
-  <safe-button
-    icon="map"
-    [attr.data-selected]="currentTab === 'parameters'"
-    (click)="currentTab = 'parameters'"
-  >
-    {{ 'components.widget.settings.map.edit.layerProperties' | translate }}
-  </safe-button>
-  <safe-button
-    icon="storage"
-    [attr.data-selected]="currentTab === 'datasource'"
-    (click)="currentTab = 'datasource'"
-  >
-    {{ 'components.widget.settings.map.edit.layerDatasource' | translate }}
-  </safe-button>
-  <safe-button
-    icon="storage"
-    [attr.data-selected]="currentTab === 'styling'"
-    (click)="currentTab = 'styling'"
-  >
-    {{ 'components.widget.settings.map.edit.layerStyling' | translate }}
-  </safe-button>
-  <!-- <safe-button
-    icon="map"
-    [attr.data-selected]="currentTab === 'filter'"
-    (click)="currentTab = 'filter'"
-  >
-    {{ 'components.widget.settings.map.edit.filter' | translate }}
-  </safe-button> -->
-  <!-- <safe-button
-    icon="map"
-    [attr.data-selected]="currentTab === 'cluster'"
-    (click)="currentTab = 'cluster'"
-  >
-    {{ 'components.widget.settings.map.edit.cluster.cluster' | translate }}
-  </safe-button> -->
-  <safe-button
-    *ngIf="form.get('layerDefinition.featureReduction')?.enabled"
-    icon="map"
-    [attr.data-selected]="currentTab === 'aggregation'"
-    (click)="currentTab = 'aggregation'"
-  >
-    {{ 'components.widget.settings.map.edit.aggregation' | translate }}
-  </safe-button>
-  <safe-button
-    icon="map"
-    [attr.data-selected]="currentTab === 'popup'"
-    (click)="currentTab = 'popup'"
-  >
-    {{ 'components.widget.settings.map.edit.popup' | translate }}
-  </safe-button>
-  <safe-button
-    icon="map"
-    [attr.data-selected]="currentTab === 'fields'"
-    (click)="currentTab = 'fields'"
-  >
-    {{ 'components.widget.settings.map.edit.fields' | translate }}
-  </safe-button>
-  <!-- <safe-button
-    icon="map"
-    [attr.data-selected]="currentTab === 'labels'"
-    (click)="currentTab = 'labels'"
-  >
-    {{ 'components.widget.settings.map.edit.labels' | translate }}
-  </safe-button> -->
+  <div class="tabs">
+    <safe-button
+      icon="map"
+      [attr.data-selected]="currentTab === 'parameters'"
+      (click)="currentTab = 'parameters'"
+    >
+      {{ 'components.widget.settings.map.edit.layerProperties' | translate }}
+    </safe-button>
+    <safe-button
+      icon="storage"
+      [attr.data-selected]="currentTab === 'datasource'"
+      (click)="currentTab = 'datasource'"
+    >
+      {{ 'components.widget.settings.map.edit.layerDatasource' | translate }}
+    </safe-button>
+    <safe-button
+      icon="storage"
+      [attr.data-selected]="currentTab === 'styling'"
+      (click)="currentTab = 'styling'"
+    >
+      {{ 'components.widget.settings.map.edit.layerStyling' | translate }}
+    </safe-button>
+    <!-- <safe-button
+      icon="map"
+      [attr.data-selected]="currentTab === 'filter'"
+      (click)="currentTab = 'filter'"
+    >
+      {{ 'components.widget.settings.map.edit.filter' | translate }}
+    </safe-button> -->
+    <!-- <safe-button
+      icon="map"
+      [attr.data-selected]="currentTab === 'cluster'"
+      (click)="currentTab = 'cluster'"
+    >
+      {{ 'components.widget.settings.map.edit.cluster.cluster' | translate }}
+    </safe-button> -->
+    <safe-button
+      *ngIf="form.get('layerDefinition.featureReduction')?.enabled"
+      icon="map"
+      [attr.data-selected]="currentTab === 'aggregation'"
+      (click)="currentTab = 'aggregation'"
+    >
+      {{ 'components.widget.settings.map.edit.aggregation' | translate }}
+    </safe-button>
+    <safe-button
+      icon="map"
+      [attr.data-selected]="currentTab === 'popup'"
+      (click)="currentTab = 'popup'"
+    >
+      {{ 'components.widget.settings.map.edit.popup' | translate }}
+    </safe-button>
+    <safe-button
+      icon="map"
+      [attr.data-selected]="currentTab === 'fields'"
+      (click)="currentTab = 'fields'"
+    >
+      {{ 'components.widget.settings.map.edit.fields' | translate }}
+    </safe-button>
+    <!-- <safe-button
+      icon="map"
+      [attr.data-selected]="currentTab === 'labels'"
+      (click)="currentTab = 'labels'"
+    >
+      {{ 'components.widget.settings.map.edit.labels' | translate }}
+    </safe-button> -->
+  </div>
 </ng-template>
 
 <ng-template #layerSettingsTemplate>
