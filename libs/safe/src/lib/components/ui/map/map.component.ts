@@ -46,6 +46,7 @@ import { AVAILABLE_GEOMAN_LANGUAGES } from './const/language';
 import { ArcgisService } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { flatten } from 'lodash';
+import { legendControl } from '@oort-front/leaflet';
 
 /**
  * Cleans the settings object from null values
@@ -432,6 +433,7 @@ export class MapComponent
         tree.layers && layers.push(tree.layers);
       }
       this.setLayersControl(flatten(basemaps), flatten(layers));
+      legendControl().addTo(this.map);
     });
 
     // Add zoom control
