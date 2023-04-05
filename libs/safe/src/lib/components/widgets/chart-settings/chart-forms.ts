@@ -6,7 +6,7 @@ import { createMappingForm } from '../../ui/aggregation-builder/aggregation-buil
 const fb = new FormBuilder();
 
 /** Default list of colors for series */
-const DEFAULT_PALETTE = [
+export const DEFAULT_PALETTE = [
   '#ff6358',
   '#ffd246',
   '#78d237',

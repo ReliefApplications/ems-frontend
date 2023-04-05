@@ -8,6 +8,7 @@ import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 import { ChartTitle } from '../interfaces';
+import { DEFAULT_PALETTE } from '../../../widgets/chart-settings/chart-forms';
 
 /**
  * Interface containing the settings of the chart legend
@@ -46,7 +47,7 @@ export class SafePieDonutChartComponent implements OnChanges {
   @Input() series: any[] = [];
 
   @Input() options: any = {
-    palette: [],
+    palette: DEFAULT_PALETTE,
   };
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
@@ -73,15 +74,15 @@ export class SafePieDonutChartComponent implements OnChanges {
         0
       ) || 0;
 
+    const palette = get(this.options, 'palette') || DEFAULT_PALETTE;
+
     this.chartData.datasets = this.series.map((x) => ({
       ...x,
-      ...(this.options.palette && {
-        backgroundColor: this.options.palette,
-        hoverBorderColor: this.options.palette,
-        hoverBackgroundColor: this.options.palette?.map((color: any) =>
-          addTransparency(color)
-        ),
-      }),
+      backgroundColor: palette,
+      hoverBorderColor: palette,
+      hoverBackgroundColor: palette?.map((color: any) =>
+        addTransparency(color)
+      ),
       hoverOffset: 4,
     }));
     this.chartData.labels = flatten(
