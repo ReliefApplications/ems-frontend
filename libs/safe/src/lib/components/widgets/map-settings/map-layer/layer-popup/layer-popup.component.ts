@@ -5,7 +5,10 @@ import {
   PopupElement,
   PopupElementType,
 } from '../../../../../models/layer.model';
+import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
 import { createPopupElementForm } from '../../map-forms';
+import { Fields } from '../layer-fields/layer-fields.component';
+import { Observable } from 'rxjs';
 
 /**
  * Map layer popup settings component.
@@ -17,11 +20,19 @@ import { createPopupElementForm } from '../../map-forms';
 })
 export class LayerPopupComponent {
   @Input() formGroup!: FormGroup;
+  @Input() fields$!: Observable<Fields[]>;
 
   /** @returns popup elements as form array */
   get popupElements(): FormArray {
     return this.formGroup.get('popupElements') as FormArray;
   }
+
+  /**
+   * Creates an instance of LayerPopupComponent.
+   *
+   * @param mapLayersService Shared map layer Service.
+   */
+  constructor(private mapLayersService: SafeMapLayersService) {}
 
   /**
    * Handles the event emitted when a layer is reordered
@@ -39,7 +50,7 @@ export class LayerPopupComponent {
   /**
    * Add a new content block text or field block)
    *
-   * @param {popupElementType} type content type (text or field)
+   * @param type content type (text or field)
    */
   public onAddElement(type: PopupElementType): void {
     this.popupElements.push(createPopupElementForm({ type }));

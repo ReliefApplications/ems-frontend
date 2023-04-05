@@ -121,7 +121,6 @@ export class GeospatialMapComponent
 
   /** Creates map */
   private setDataLayers(): void {
-    console.log(this.data);
     // init layers from question value
     // if (this.data.features.length > 0) {
     //   const newLayer = L.geoJSON(this.data, {
@@ -194,7 +193,6 @@ export class GeospatialMapComponent
    * @param event leaflet map event
    */
   public handleMapEvent(event: MapEvent) {
-    console.log(this.selectedLayer);
     switch (event.type) {
       case MapEventType.SELECTED_LAYER:
         this.selectedLayer = event.content.layer;

@@ -168,7 +168,6 @@ export class GradientPickerComponent
     @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl
   ) {
-    console.log('there');
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
@@ -209,7 +208,6 @@ export class GradientPickerComponent
    * @param val Value set from the linked form control
    */
   writeValue(val: FormFieldValue): void {
-    console.log('write');
     this.value = val;
   }
 

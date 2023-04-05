@@ -12,7 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { LayerModel } from '../../../../models/layer.model';
 import { createLayerForm, LayerFormT } from '../map-forms';
-import { debounceTime, takeUntil } from 'rxjs';
+import { debounceTime, takeUntil, BehaviorSubject } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { MapComponent } from '../../../ui/map/map.component';
 import {
@@ -24,6 +24,10 @@ import { OverlayLayerTree } from '../../../ui/map/interfaces/map-layers.interfac
 import * as L from 'leaflet';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 import { Layer } from '../../../ui/map/layer';
+import { Apollo } from 'apollo-angular';
+import { GetResourceQueryResponse, GET_RESOURCE } from '../graphql/queries';
+import { Fields } from './layer-fields/layer-fields.component';
+import { get } from 'lodash';
 
 /**
  * Map layer editor.
@@ -48,6 +52,10 @@ export class MapLayerComponent
   @ViewChild('layerSettingsTemplate')
   layerSettingsTemplate!: TemplateRef<any>;
 
+  public resource: BehaviorSubject<GetResourceQueryResponse | null> =
+    new BehaviorSubject<GetResourceQueryResponse | null>(null);
+  public fields = new BehaviorSubject<Fields[]>([]);
+  public fields$ = this.fields.asObservable();
   // === MAP ===
   public currentTab:
     | 'parameters'
@@ -82,11 +90,13 @@ export class MapLayerComponent
    * @param confirmService Shared confirm service.
    * @param translate Angular translate service.
    * @param mapLayersService Shared map layer Service.
+   * @param apollo Apollo service
    */
   constructor(
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
-    private mapLayersService: SafeMapLayersService
+    private mapLayersService: SafeMapLayersService,
+    private apollo: Apollo
   ) {
     super();
   }
@@ -98,13 +108,13 @@ export class MapLayerComponent
       this.setUpLayer();
     }
     this.setUpEditLayerListeners();
+    this.getResource();
   }
 
   /**
    * Set default layer for editor
    */
   private setUpLayer() {
-    console.log('setup');
     this.mapLayersService
       .createLayerFromDefinition(this.form.value as LayerModel)
       .then((layer) => {
@@ -154,6 +164,7 @@ export class MapLayerComponent
       .subscribe(() => {
         this.updateMapLayer({ delete: true });
         this.setUpLayer();
+        this.getResource();
       });
 
     this.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
@@ -206,6 +217,47 @@ export class MapLayerComponent
           this.layerToSave.emit(undefined);
         }
       });
+    }
+  }
+
+  /** If the form has a resource, fetch it */
+  getResource(): void {
+    const resourceID = this.form.get('datasource')?.value.resource;
+    if (resourceID) {
+      const layoutID = this.form.get('datasource')?.value.layout;
+      const aggregationID = this.form.get('datasource')?.value.aggregation;
+      this.apollo
+        .query<GetResourceQueryResponse>({
+          query: GET_RESOURCE,
+          variables: {
+            id: resourceID,
+            layout: layoutID ? [layoutID] : [],
+            aggregation: aggregationID ? [aggregationID] : [],
+          },
+        })
+        .pipe(takeUntil(this.destroy$), debounceTime(1000))
+        .subscribe(({ data }) => {
+          this.resource.next(data);
+          // Update fields
+          if (layoutID) {
+            const layout = get(data, 'resource.layouts.edges[0].node', null);
+            this.fields.next(this.mapLayersService.getQueryFields(layout));
+          } else {
+            if (aggregationID) {
+              const aggregation = get(
+                data,
+                'resource.aggregations.edges[0].node',
+                null
+              );
+              this.fields.next(
+                this.mapLayersService.getAggregationFields(
+                  data.resource,
+                  aggregation
+                )
+              );
+            }
+          }
+        });
     }
   }
 

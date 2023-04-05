@@ -14,7 +14,12 @@ import {
 import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
 import { Layer, EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
 import { LayerDatasource, LayerModel } from '../../models/layer.model';
+import { Resource } from '../../models/resource.model';
 import { SafeRestService } from '../rest/rest.service';
+import { QueryBuilderService } from '../query-builder/query-builder.service';
+import { AggregationBuilderService } from '../aggregation-builder/aggregation-builder.service';
+import { Aggregation } from '../../models/aggregation.model';
+import { Layout } from '../../models/layout.model';
 import {
   AddLayerMutationResponse,
   ADD_LAYER,
@@ -30,7 +35,7 @@ import {
   GET_LAYER_BY_ID,
 } from './graphql/queries';
 import { HttpParams } from '@angular/common/http';
-import { omitBy, isNil } from 'lodash';
+import { omitBy, isNil, get } from 'lodash';
 
 /**
  * Shared map layer service
@@ -44,8 +49,15 @@ export class SafeMapLayersService {
    *
    * @param apollo Apollo client instance
    * @param restService SafeRestService
+   * @param queryBuilder Query builder service
+   * @param aggregationBuilder Aggregation builder service
    */
-  constructor(private apollo: Apollo, private restService: SafeRestService) {}
+  constructor(
+    private apollo: Apollo,
+    private restService: SafeRestService,
+    private queryBuilder: QueryBuilderService,
+    private aggregationBuilder: AggregationBuilderService
+  ) {}
 
   // Layers saved in the database
   currentLayers: LayerModel[] = [];
@@ -168,6 +180,76 @@ export class SafeMapLayersService {
           }
           return response.data.layers;
         })
+      );
+  }
+
+  /**
+   * Set fields from query or use default value
+   *
+   * @param layout A layout to get the query
+   * @returns query fields
+   */
+  public getQueryFields(layout: Layout | null) {
+    return get(layout, 'query.fields', []);
+  }
+
+  /**
+   * Get fields from aggregation
+   *
+   * @param resource A resource
+   * @param aggregation A aggregation
+   * @returns aggregation fields
+   */
+  public getAggregationFields(
+    resource: Resource | null,
+    aggregation: Aggregation | null
+  ) {
+    //@TODO this part should be refactored
+    // Get fields
+    const fields = this.getAvailableSeriesFields(resource);
+    const selectedFields = aggregation?.sourceFields
+      .map((x: string) => {
+        const field = fields.find((y) => x === y.name);
+        if (!field) return null;
+        if (field.type.kind !== 'SCALAR') {
+          Object.assign(field, {
+            fields: this.queryBuilder
+              .getFieldsFromType(
+                field.type.kind === 'OBJECT'
+                  ? field.type.name
+                  : field.type.ofType.name
+              )
+              .filter((y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR'),
+          });
+        }
+        return field;
+        // this.fields.next(field);
+      })
+      // @TODO To be improved - Get only the JSON type fields for this case
+      .filter((x: any) => x !== null && x.type.name === 'JSON');
+    return this.aggregationBuilder.fieldsAfter(
+      selectedFields,
+      aggregation?.pipeline
+    );
+  }
+
+  // @TODO Copied method from tab-main.component, this one should be refactored in the needed places
+  // eslint-disable-next-line jsdoc/require-returns
+  /**
+   * Set available series fields, from resource fields and aggregation definition.
+   *
+   * @param resource A resource
+   */
+  private getAvailableSeriesFields(resource: Resource | null): any[] {
+    return this.queryBuilder
+      .getFields(resource?.queryName as string)
+      .filter(
+        (field: any) =>
+          !(
+            field.name.includes('_id') &&
+            (field.type.name === 'ID' ||
+              (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
+          )
       );
   }
 

@@ -11,7 +11,7 @@
   </div>
   <safe-divider></safe-divider>
   <div cdkDropList (cdkDropListDropped)="onListDrop($event)">
-    <div *ngFor="let field of fields; let index = index" cdkDrag class="flex flex-row items-center">
+    <div *ngFor="let field of fields$ | async; let index = index" cdkDrag class="flex flex-row items-center">
       <safe-button
         cdkDragHandle
         [isIcon]="true"

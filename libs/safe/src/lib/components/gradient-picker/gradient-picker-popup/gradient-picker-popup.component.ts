@@ -142,7 +142,6 @@ export class GradientPickerPopupComponent {
    * @param gradient gradient name
    */
   select(gradient: Gradient): void {
-    console.log('select');
     this.close.emit(gradient);
     this.show = false;
   }

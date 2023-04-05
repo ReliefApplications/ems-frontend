@@ -3,16 +3,24 @@
   <div [formGroup]="formGroup">
     <div class="flex flex-col">
       <mat-form-field appearance="outline">
-        <mat-label>{{ 'components.widget.settings.map.layers.popup.title' | translate }}</mat-label>
+        <mat-label>{{
+          'components.widget.settings.map.layers.popup.title' | translate
+        }}</mat-label>
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>{{ 'components.widget.settings.map.layers.popup.description' | translate }}</mat-label>
+        <mat-label>{{
+          'components.widget.settings.map.layers.popup.description' | translate
+        }}</mat-label>
         <input matInput formControlName="description" type="string" />
       </mat-form-field>
     </div>
     <safe-divider></safe-divider>
-    <h3>{{ 'components.widget.settings.map.layers.popup.popupElements' | translate }}</h3>
+    <h3>
+      {{
+        'components.widget.settings.map.layers.popup.popupElements' | translate
+      }}
+    </h3>
     <div
       formArrayName="popupElements"
       cdkDropList
@@ -53,10 +61,12 @@
           <safe-fields-element
             *ngIf="item.value.type === 'fields'"
             [formGroup]="$any(item)"
+            [fields$]="fields$"
           ></safe-fields-element>
           <safe-text-element
             *ngIf="item.value.type === 'text'"
             [formGroup]="$any(item)"
+            [fields$]="fields$"
           ></safe-text-element>
         </div>
       </mat-expansion-panel>
@@ -68,11 +78,15 @@
       [matMenuTriggerFor]="contentOptions"
       class="self-center mt-4"
     >
-    {{ 'components.widget.settings.map.layers.popup.addField' | translate }}
+      {{ 'components.widget.settings.map.layers.popup.addField' | translate }}
     </safe-button>
     <mat-menu #contentOptions="matMenu">
-      <a mat-menu-item (click)="onAddElement('fields')"> {{ 'components.widget.settings.map.layers.popup.fields' | translate }} </a>
-      <a mat-menu-item (click)="onAddElement('text')"> {{ 'components.widget.settings.map.layers.popup.text' | translate }} </a>
+      <a mat-menu-item (click)="onAddElement('fields')">
+        {{ 'components.widget.settings.map.layers.popup.fields' | translate }}
+      </a>
+      <a mat-menu-item (click)="onAddElement('text')">
+        {{ 'components.widget.settings.map.layers.popup.text' | translate }}
+      </a>
     </mat-menu>
   </div>
 </div>
