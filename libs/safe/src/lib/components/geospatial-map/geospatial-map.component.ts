@@ -168,7 +168,6 @@ export class GeospatialMapComponent
         setLang(event.lang);
       });
   }
-
   ngAfterViewInit(): void {
     this.mapSettings = {
       initialState: {
@@ -293,5 +292,18 @@ export class GeospatialMapComponent
       default:
         break;
     }
+  }
+
+  /**
+   * handle leaflet map ready event
+   *
+   * @param event controls
+   */
+  public handleDrawReadyEvent(event: any) {
+    this.handleMapEvent({
+      type: MapEventType.MAP_CHANGE,
+      content: getMapFeature(this.mapComponent?.map),
+    });
+    this.mapComponent?.map.pm.addControls(event);
   }
 }
