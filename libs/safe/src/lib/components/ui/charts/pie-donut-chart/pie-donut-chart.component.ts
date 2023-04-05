@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import { Plugin, ChartConfiguration, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
-import { get, flatten } from 'lodash';
+import { get, flatten, isEqual, isNil } from 'lodash';
 import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plugin';
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
@@ -9,6 +9,7 @@ import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 import { ChartTitle } from '../interfaces';
 import { DEFAULT_PALETTE } from '../const/palette';
+import { getColor } from '../utils/color.util';
 
 /**
  * Interface containing the settings of the chart legend
@@ -74,17 +75,43 @@ export class SafePieDonutChartComponent implements OnChanges {
         0
       ) || 0;
 
+    const series = get(this.options, 'series', []);
     const palette = get(this.options, 'palette') || DEFAULT_PALETTE;
 
-    this.chartData.datasets = this.series.map((x) => ({
-      ...x,
-      backgroundColor: palette,
-      hoverBorderColor: palette,
-      hoverBackgroundColor: palette?.map((color: any) =>
+    this.chartData.datasets = this.series.map((x) => {
+      // Get serie settings
+      const serie = series.find(
+        (serie: any) =>
+          isEqual(serie.serie, x.name) || (isNil(serie.serie) && isNil(x.name))
+      );
+      const categories = get(serie, 'categories', []);
+      const data = get(x, 'data', []).reduce((data: any[], item: any) => {
+        data.push(item);
+        return data;
+      }, []);
+      const colors = get(x, 'data', []).reduce(
+        (colors: any[], item: any, i: number) => {
+          colors.push(
+            get(
+              categories.find((c: any) => c.category === item.category),
+              'color'
+            ) || getColor(palette, i)
+          );
+          return colors;
+        },
+        []
+      );
+      const transparentColors = colors.map((color: string) =>
         addTransparency(color)
-      ),
-      hoverOffset: 4,
-    }));
+      );
+      return {
+        data,
+        backgroundColor: colors,
+        hoverBorderColor: colors,
+        hoverBackgroundColor: transparentColors,
+        hoverOffset: 4,
+      };
+    });
     this.chartData.labels = flatten(
       this.series.map((x) => x.data.map((y: any) => y.category))
     );

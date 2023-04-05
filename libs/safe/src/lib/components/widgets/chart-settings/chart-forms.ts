@@ -325,6 +325,19 @@ export const createChartWidgetForm = (id: any, value: any) =>
   });
 
 /**
+ * Create chart serie category form group
+ *
+ * @param value chart serie category
+ * @returns chart serie category form group
+ */
+export const createCategoryForm = (value: any) => {
+  return fb.group({
+    category: get<string | undefined>(value, 'category', undefined),
+    color: get<string | undefined>(value, 'color', undefined),
+  });
+};
+
+/**
  * Create chart serie form group
  *
  * @param type type of chart
@@ -346,5 +359,13 @@ export const createSerieForm = (type: string | null, value: any) =>
           ),
           stepped: get<string | undefined>(value, 'stepped', undefined),
         }),
+      }),
+    ...(type &&
+      ['pie', 'polar', 'donut', 'radar'].includes(type) && {
+        categories: fb.array(
+          get(value, 'categories', []).map((category: any) =>
+            createCategoryForm(category)
+          )
+        ),
       }),
   });
