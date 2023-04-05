@@ -7,6 +7,7 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { Fields } from '../../layer-fields/layer-fields.component';
 import { getDataKeys } from './utils/keys';
 import { SafeMapLayersService } from '../../../../../../services/map/map-layers.service';
+import { Observable } from 'rxjs';
 
 /**
  * Popup text element component.
@@ -23,7 +24,7 @@ import { SafeMapLayersService } from '../../../../../../services/map/map-layers.
 })
 export class TextElementComponent implements OnInit {
   @Input() formGroup!: FormGroup;
-  public fields!: Fields[];
+  @Input() fields$!: Observable<Fields[]>;
 
   /** tinymce editor */
   public editor: any = POPUP_EDITOR_CONFIG;
@@ -46,9 +47,8 @@ export class TextElementComponent implements OnInit {
 
   ngOnInit(): void {
     // Listen to fields changes
-    this.mapLayersService.fields$.subscribe((value) => {
-      this.fields = value;
-      const keys = [...getDataKeys(this.fields)];
+    this.fields$.subscribe((value) => {
+      const keys = [...getDataKeys(value)];
       this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
     });
   }

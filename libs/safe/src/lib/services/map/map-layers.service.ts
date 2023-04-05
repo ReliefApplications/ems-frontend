@@ -10,7 +10,6 @@ import {
   Observable,
   of,
   tap,
-  BehaviorSubject,
 } from 'rxjs';
 import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
 import { Layer, EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
@@ -37,7 +36,6 @@ import {
 } from './graphql/queries';
 import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
-import { Fields } from '../../components/widgets/map-settings/map-layer/layer-fields/layer-fields.component';
 
 /**
  * Shared map layer service
@@ -46,19 +44,6 @@ import { Fields } from '../../components/widgets/map-settings/map-layer/layer-fi
   providedIn: 'root',
 })
 export class SafeMapLayersService {
-  /** Current datasource fields */
-  private fields = new BehaviorSubject<Fields[]>([
-    {
-      label: 'test',
-      name: 'test',
-      type: 'test',
-    } as Fields,
-  ]);
-  /** @returns Current datasource fields as observable */
-  get fields$(): Observable<Fields[]> {
-    return this.fields.asObservable();
-  }
-
   /**
    * Class constructor
    *
@@ -202,16 +187,10 @@ export class SafeMapLayersService {
    * Set fields from query or use default value
    *
    * @param layout A layout to get the query
+   * @returns query fields
    */
-  public setQueryFields(layout: Layout | null): void {
-    const fields = get(layout, 'query.fields', [
-      {
-        label: 'test',
-        name: 'test',
-        type: 'test',
-      } as Fields,
-    ]);
-    this.fields.next(fields);
+  public getQueryFields(layout: Layout | null) {
+    return get(layout, 'query.fields', []);
   }
 
   /**
@@ -219,11 +198,12 @@ export class SafeMapLayersService {
    *
    * @param resource A resource
    * @param aggregation A aggregation
+   * @returns aggregation fields
    */
   public getAggregationFields(
     resource: Resource | null,
     aggregation: Aggregation | null
-  ): void {
+  ) {
     //@TODO this part should be refactored
     // Get fields
     const fields = this.getAvailableSeriesFields(resource);
@@ -247,9 +227,9 @@ export class SafeMapLayersService {
       })
       // @TODO To be improved - Get only the JSON type fields for this case
       .filter((x: any) => x !== null && x.type.name === 'JSON');
-
-    this.fields.next(
-      this.aggregationBuilder.fieldsAfter(selectedFields, aggregation?.pipeline)
+    return this.aggregationBuilder.fieldsAfter(
+      selectedFields,
+      aggregation?.pipeline
     );
   }
 

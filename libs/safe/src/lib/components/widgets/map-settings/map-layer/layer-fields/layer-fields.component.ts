@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
+import { Observable } from 'rxjs';
 
 /**
  * Fields interface
@@ -18,8 +19,8 @@ export interface Fields {
   templateUrl: './layer-fields.component.html',
   styleUrls: ['./layer-fields.component.scss'],
 })
-export class LayerFieldsComponent implements OnInit {
-  public fields!: Fields[];
+export class LayerFieldsComponent {
+  @Input() fields$!: Observable<Fields[]>;
 
   /**
    * Creates an instance of LayerFieldsComponent.
@@ -28,13 +29,6 @@ export class LayerFieldsComponent implements OnInit {
    */
   constructor(private mapLayersService: SafeMapLayersService) {}
 
-  ngOnInit(): void {
-    // Listen to fields changes
-    this.mapLayersService.fields$.subscribe((value) => {
-      this.fields = value;
-    });
-  }
-
   /**
    * Save value of the input
    *
@@ -42,8 +36,8 @@ export class LayerFieldsComponent implements OnInit {
    * @param index index of the field.
    */
   saveLabel(event: string, index: number): void {
-    if (event && this.fields[index]) {
-      this.fields[index].label = event;
-    }
+    // if (event && this.fields[index]) {
+    //   this.fields[index].label = event;
+    // }
   }
 }

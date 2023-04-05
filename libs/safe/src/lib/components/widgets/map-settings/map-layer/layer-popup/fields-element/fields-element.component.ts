@@ -14,6 +14,7 @@ import { SafeButtonModule } from '../../../../../ui/button/button.module';
 import { PopupElement } from '../../../../../../models/layer.model';
 import { Fields } from '../../layer-fields/layer-fields.component';
 import { SafeMapLayersService } from '../../../../../../services/map/map-layers.service';
+import { Observable } from 'rxjs';
 
 /**
  * Popup fields element component.
@@ -35,8 +36,8 @@ import { SafeMapLayersService } from '../../../../../../services/map/map-layers.
   templateUrl: './fields-element.component.html',
   styleUrls: ['./fields-element.component.scss'],
 })
-export class FieldsElementComponent implements OnInit {
-  public fields!: Fields[];
+export class FieldsElementComponent {
+  @Input() fields$!: Observable<Fields[]>;
   @Input() formGroup!: FormGroup;
 
   /**
@@ -46,13 +47,6 @@ export class FieldsElementComponent implements OnInit {
    */
   constructor(private mapLayersService: SafeMapLayersService) {}
 
-  ngOnInit(): void {
-    // Listen to fields changes
-    this.mapLayersService.fields$.subscribe((value) => {
-      this.fields = value;
-    });
-  }
-
   /**
    * Handles the event emitted when a layer is reordered
    *
@@ -60,7 +54,7 @@ export class FieldsElementComponent implements OnInit {
    */
   public onListDrop(event: CdkDragDrop<PopupElement[]>) {
     // todo(gis): change type there
-    moveItemInArray(this.fields, event.previousIndex, event.currentIndex);
+    // moveItemInArray(this.fields, event.previousIndex, event.currentIndex);
   }
 
   /**
@@ -69,6 +63,6 @@ export class FieldsElementComponent implements OnInit {
    * @param {number} index item index
    */
   public onRemoveField(index: number): void {
-    this.fields = this.fields.splice(index, 1);
+    // this.fields = this.fields.splice(index, 1);
   }
 }

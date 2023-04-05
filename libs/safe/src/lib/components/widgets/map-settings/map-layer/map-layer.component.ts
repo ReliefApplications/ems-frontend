@@ -54,13 +54,8 @@ export class MapLayerComponent
 
   public resource: BehaviorSubject<GetResourceQueryResponse | null> =
     new BehaviorSubject<GetResourceQueryResponse | null>(null);
-  public fields: Fields[] = [
-    {
-      label: 'test',
-      name: 'test',
-      type: 'test',
-    },
-  ];
+  public fields = new BehaviorSubject<Fields[]>([]);
+  public fields$ = this.fields.asObservable();
   // === MAP ===
   public currentTab:
     | 'parameters'
@@ -246,14 +241,16 @@ export class MapLayerComponent
           // Update fields
           if (layoutID) {
             const layout = get(data, 'resource.layouts.edges[0].node', null);
-            this.mapLayersService.setQueryFields(layout);
+            this.fields.next(this.mapLayersService.getQueryFields(layout));
           } else {
             if (aggregationID) {
               const aggregation =
                 data.resource.aggregations?.edges[0]?.node || null;
-              this.mapLayersService.getAggregationFields(
-                data.resource,
-                aggregation
+              this.fields.next(
+                this.mapLayersService.getAggregationFields(
+                  data.resource,
+                  aggregation
+                )
               );
             }
           }

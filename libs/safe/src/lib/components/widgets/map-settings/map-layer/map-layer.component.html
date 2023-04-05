@@ -80,6 +80,8 @@
         <safe-layer-datasource
           [formGroup]="$any(form.get('datasource'))"
           [resourceQuery]="resource"
+          [fields$]="fields$"
+          (fields)="fields.next($event)"
         ></safe-layer-datasource>
       </ng-container>
       <!-- Layer styling -->
@@ -106,11 +108,12 @@
       <ng-container *ngSwitchCase="'popup'">
         <safe-layer-popup
           [formGroup]="$any(form.get('popupInfo'))"
+          [fields$]="fields$"
         ></safe-layer-popup>
       </ng-container>
       <!-- Layer fields -->
       <ng-container *ngSwitchCase="'fields'">
-        <safe-layer-fields></safe-layer-fields>
+        <safe-layer-fields [fields$]="fields$"></safe-layer-fields>
       </ng-container>
       <!-- Layer labels -->
       <ng-container *ngSwitchCase="'labels'">

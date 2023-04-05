@@ -1,6 +1,13 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { takeUntil, BehaviorSubject } from 'rxjs';
+import { takeUntil, BehaviorSubject, Observable } from 'rxjs';
 import { Resource } from '../../../../../models/resource.model';
 import { ReferenceData } from '../../../../../models/reference-data.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
@@ -26,6 +33,7 @@ import { SafeAggregationService } from '../../../../../services/aggregation/aggr
 import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
+import { Fields } from '../layer-fields/layer-fields.component';
 
 /** Default items per resources query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -60,8 +68,8 @@ export class LayerDatasourceComponent
   public aggregation: Aggregation | null = null;
   public layout: Layout | null = null;
 
-  // todo(gis): type
-  public fields: any[] = [];
+  @Input() fields$!: Observable<Fields[]>;
+  @Output() fields: EventEmitter<Fields[]> = new EventEmitter<Fields[]>();
 
   /**
    * Component for the layer datasource selection tab
@@ -130,11 +138,6 @@ export class LayerDatasourceComponent
         }
       });
     }
-
-    // Listen to fields changes
-    this.mapLayersService.fields$.subscribe((value) => {
-      this.fields = value;
-    });
 
     // Listen to origin changes
     this.origin.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
@@ -220,7 +223,7 @@ export class LayerDatasourceComponent
       if (value) {
         this.formGroup.get('layout')?.setValue(value.id);
         this.layout = value;
-        this.mapLayersService.setQueryFields(this.layout);
+        this.fields.emit(this.mapLayersService.getQueryFields(this.layout));
       }
     });
   }
@@ -237,9 +240,11 @@ export class LayerDatasourceComponent
       if (value) {
         this.formGroup.get('aggregation')?.setValue(value.id);
         this.aggregation = value;
-        this.mapLayersService.getAggregationFields(
-          this.resource,
-          this.aggregation
+        this.fields.emit(
+          this.mapLayersService.getAggregationFields(
+            this.resource,
+            this.aggregation
+          )
         );
       }
     });
@@ -261,7 +266,7 @@ export class LayerDatasourceComponent
           .editLayout(this.layout, value, this.resource?.id)
           .subscribe((res: any) => {
             this.layout = get(res, 'data.editLayout', null);
-            this.mapLayersService.setQueryFields(this.layout);
+            this.fields.emit(this.mapLayersService.getQueryFields(this.layout));
           });
       }
     });
@@ -284,9 +289,11 @@ export class LayerDatasourceComponent
           .editAggregation(this.aggregation, value, this.resource?.id)
           .subscribe((res) => {
             this.aggregation = get(res, 'data.editAggregation', null);
-            this.mapLayersService.getAggregationFields(
-              this.resource,
-              this.aggregation
+            this.fields.emit(
+              this.mapLayersService.getAggregationFields(
+                this.resource,
+                this.aggregation
+              )
             );
           });
       }

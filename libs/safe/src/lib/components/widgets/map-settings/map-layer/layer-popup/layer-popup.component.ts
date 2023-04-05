@@ -8,6 +8,7 @@ import {
 import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
 import { createPopupElementForm } from '../../map-forms';
 import { Fields } from '../layer-fields/layer-fields.component';
+import { Observable } from 'rxjs';
 
 /**
  * Map layer popup settings component.
@@ -17,9 +18,9 @@ import { Fields } from '../layer-fields/layer-fields.component';
   templateUrl: './layer-popup.component.html',
   styleUrls: ['./layer-popup.component.scss'],
 })
-export class LayerPopupComponent implements OnInit {
+export class LayerPopupComponent {
   @Input() formGroup!: FormGroup;
-  public fields!: Fields[];
+  @Input() fields$!: Observable<Fields[]>;
 
   /** @returns popup elements as form array */
   get popupElements(): FormArray {
@@ -32,13 +33,6 @@ export class LayerPopupComponent implements OnInit {
    * @param mapLayersService Shared map layer Service.
    */
   constructor(private mapLayersService: SafeMapLayersService) {}
-
-  ngOnInit(): void {
-    // Listen to fields changes
-    this.mapLayersService.fields$.subscribe((value) => {
-      this.fields = value;
-    });
-  }
 
   /**
    * Handles the event emitted when a layer is reordered
