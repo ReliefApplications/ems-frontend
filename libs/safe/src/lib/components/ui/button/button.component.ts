@@ -32,8 +32,6 @@ export class SafeButtonComponent {
 
   @Input() ariaLabel = '';
 
-  @Input() text = '';
-
   public emittedEventSubject: Subject<string> = new Subject();
 
   /**

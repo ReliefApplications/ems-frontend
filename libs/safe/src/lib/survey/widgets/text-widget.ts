@@ -315,12 +315,6 @@ export const init = (Survey: any, domService: DomService): void => {
     | null => {
     switch (inputType) {
       case 'date':
-        const button = domService.appendComponentToBody(
-          SafeButtonComponent,
-          element
-        );
-        const buttonInstance: SafeButtonComponent = button.instance;
-        buttonInstance.text = 'Supprimer'; // TODO: translate
         const datePicker = domService.appendComponentToBody(
           DatePickerComponent,
           element
