@@ -103,3 +103,13 @@ export const POPUP_EDITOR_CONFIG: RawEditorSettings = {
     'keyboardnav', // the default keyboard navigation tab
   ],
 };
+
+/** Inline Editor tinymce configuration. */
+export const INLINE_EDITOR_CONFIG: RawEditorSettings = {
+  menubar: false,
+  inline: true,
+  toolbar: '',
+  plugins: '',
+  height: 50,
+  content_style: 'p { margin: 0 !important; }',
+};

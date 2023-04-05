@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,7 +11,7 @@ import { PopupElement } from '../../../../../../models/layer.model';
 import { Fields } from '../../layer-fields/layer-fields.component';
 import { SafeMapLayersService } from '../../../../../../services/map/map-layers.service';
 import { Observable } from 'rxjs';
-
+import { SafeEditorControlComponent } from '../../../../../editor-control/editor-control.component';
 /**
  * Popup fields element component.
  */
@@ -28,13 +28,23 @@ import { Observable } from 'rxjs';
     MatInputModule,
     SafeDividerModule,
     SafeButtonModule,
+    SafeEditorControlComponent,
   ],
   templateUrl: './fields-element.component.html',
   styleUrls: ['./fields-element.component.scss'],
 })
-export class FieldsElementComponent {
+export class FieldsElementComponent implements OnInit {
   @Input() fields$!: Observable<Fields[]>;
   @Input() formGroup!: FormGroup;
+
+  public keys: string[] = [];
+
+  ngOnInit(): void {
+    // Listen to fields changes
+    this.fields$.subscribe((value) => {
+      this.keys = value.map((field) => field.name);
+    });
+  }
 
   /**
    * Creates an instance of FieldsElementComponent.

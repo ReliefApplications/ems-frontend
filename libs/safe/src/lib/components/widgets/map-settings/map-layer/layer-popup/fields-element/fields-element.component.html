@@ -1,17 +1,33 @@
 <ng-container [formGroup]="formGroup">
   <div class="flex flex-col">
     <mat-form-field appearance="outline">
-      <mat-label>{{ 'components.widget.settings.map.layers.popup.fieldsElements.title' | translate }}</mat-label>
-      <input matInput formControlName="title" type="string" />
+      <mat-label>{{
+        'components.widget.settings.map.layers.popup.fieldsElements.title'
+          | translate
+      }}</mat-label>
+      <safe-editor-control
+        formControlName="title"
+        [autocompleteKeys]="keys"
+      ></safe-editor-control>
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>{{ 'components.widget.settings.map.layers.popup.fieldsElements.description' | translate }}</mat-label>
-      <input matInput formControlName="description" type="string" />
+      <mat-label>{{
+        'components.widget.settings.map.layers.popup.fieldsElements.description'
+          | translate
+      }}</mat-label>
+      <safe-editor-control
+        formControlName="description"
+        [autocompleteKeys]="keys"
+      ></safe-editor-control>
     </mat-form-field>
   </div>
   <safe-divider></safe-divider>
   <div cdkDropList (cdkDropListDropped)="onListDrop($event)">
-    <div *ngFor="let field of fields$ | async; let index = index" cdkDrag class="flex flex-row items-center">
+    <div
+      *ngFor="let field of fields$ | async; let index = index"
+      cdkDrag
+      class="flex flex-row items-center"
+    >
       <safe-button
         cdkDragHandle
         [isIcon]="true"
