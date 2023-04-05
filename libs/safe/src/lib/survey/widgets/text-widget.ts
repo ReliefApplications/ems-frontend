@@ -157,6 +157,19 @@ export const init = (Survey: any, domService: DomService): void => {
               }
             });
             el.style.display = 'none';
+            const button = domService.appendComponentToBody(
+              SafeButtonComponent,
+              el.parentElement
+            );
+            // we override the css of the component
+            const domElem = (button.hostView as EmbeddedViewRef<any>)
+              .rootNodes[0] as HTMLElement;
+            domElem.onclick = () => {
+              pickerInstance.value = null as any;
+              question.value = null;
+              const display = el.style.display;
+              el.style.display = display;
+            };
           }
         } else {
           el.style.display = 'initial';
