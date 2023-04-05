@@ -425,8 +425,6 @@ export class MapComponent
     }
 
     Promise.all(promises).then((trees) => {
-      console.log('la!');
-      console.log(trees);
       const basemaps: L.Control.Layers.TreeObject[][] = [];
       const layers: L.Control.Layers.TreeObject[][] = [];
       for (const tree of trees) {

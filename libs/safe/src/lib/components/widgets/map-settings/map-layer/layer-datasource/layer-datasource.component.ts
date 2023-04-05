@@ -127,12 +127,14 @@ export class LayerDatasourceComponent
         if (data) {
           this.resource = data.resource;
           if (layoutID) {
-            console.log(data.resource.layouts?.edges[0].node);
             this.layout = get(data, 'resource.layouts.edges[0].node', null);
           } else {
             if (aggregationID) {
-              this.aggregation =
-                data.resource.aggregations?.edges[0]?.node || null;
+              this.aggregation = get(
+                data,
+                'resource.aggregations.edges[0].node',
+                null
+              );
             }
           }
         }

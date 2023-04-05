@@ -115,7 +115,6 @@ export class MapLayerComponent
    * Set default layer for editor
    */
   private setUpLayer() {
-    console.log('setup');
     this.mapLayersService
       .createLayerFromDefinition(this.form.value as LayerModel)
       .then((layer) => {
@@ -165,6 +164,7 @@ export class MapLayerComponent
       .subscribe(() => {
         this.updateMapLayer({ delete: true });
         this.setUpLayer();
+        this.getResource();
       });
 
     this.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
@@ -231,8 +231,8 @@ export class MapLayerComponent
           query: GET_RESOURCE,
           variables: {
             id: resourceID,
-            layout: layoutID ? [layoutID] : undefined,
-            aggregation: aggregationID ? [aggregationID] : undefined,
+            layout: layoutID ? [layoutID] : [],
+            aggregation: aggregationID ? [aggregationID] : [],
           },
         })
         .pipe(takeUntil(this.destroy$), debounceTime(1000))
@@ -244,8 +244,11 @@ export class MapLayerComponent
             this.fields.next(this.mapLayersService.getQueryFields(layout));
           } else {
             if (aggregationID) {
-              const aggregation =
-                data.resource.aggregations?.edges[0]?.node || null;
+              const aggregation = get(
+                data,
+                'resource.aggregations.edges[0].node',
+                null
+              );
               this.fields.next(
                 this.mapLayersService.getAggregationFields(
                   data.resource,
