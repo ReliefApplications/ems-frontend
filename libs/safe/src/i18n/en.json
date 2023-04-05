@@ -1151,6 +1151,9 @@
 						"color": "Title color",
 						"format": "Title format"
 					},
+					"tooltip": {
+						"palette": "Palette provides default colors to chart elements if not manually set."
+					},
 					"type": "Chart Type",
 					"xAxis": "X Axis",
 					"yAxis": "Y Axis"

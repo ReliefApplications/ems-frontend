@@ -14,6 +14,8 @@ import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 import { ChartTitle } from '../interfaces';
+import { DEFAULT_PALETTE } from '../const/palette';
+import { getColor } from '../utils/color.util';
 
 /**
  * Interface of chart legend.
@@ -49,7 +51,7 @@ export class SafeBarChartComponent implements OnChanges {
   @Input() series: any[] = [];
 
   @Input() options: any = {
-    palette: [],
+    palette: DEFAULT_PALETTE,
     stack: false,
   };
 
@@ -76,14 +78,13 @@ export class SafeBarChartComponent implements OnChanges {
       this.showValueLabels = get(this.options, 'labels.valueType', false);
     if (this.usePercentage) this.normalizeDataset();
     const series = get(this.options, 'series', []);
+    const palette = get(this.options, 'palette') || DEFAULT_PALETTE;
 
     this.chartData.datasets = this.series.map((x, i) => {
       // Get serie settings
       const serie = series.find((serie: any) => serie.serie === x.name);
       // Get color
-      const color: any =
-        get(serie, 'color', null) ||
-        get(this.options, `palette[${i}]`, undefined);
+      const color: any = get(serie, 'color', null) || getColor(palette, i);
       // Get fill type
       const fill = get(serie, 'fill', null);
       let gradient: CanvasGradient | undefined;

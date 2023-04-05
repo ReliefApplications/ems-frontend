@@ -1158,6 +1158,9 @@
 						"color": "Couleur",
 						"format": "Format"
 					},
+					"tooltip": {
+						"palette": "Les couleurs de la palette sont appliquées par défaut aux éléments du graphqiue, mais peuvent être manuellement changées pour chaque série et catégorie."
+					},
 					"type": "Graphique",
 					"xAxis": "Axe X",
 					"yAxis": "Axe Y"

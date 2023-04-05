@@ -15,8 +15,8 @@ import {
 } from 'rxjs/operators';
 import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
 import { SafeChartComponent } from '../../chart/chart.component';
-import get from 'lodash/get';
 import { createSerieForm } from '../chart-forms';
+import { isEqual, isNil, get } from 'lodash';
 
 /**
  * Display tab of the chart settings modal.
@@ -77,20 +77,55 @@ export class TabDisplayComponent
     this.chartComponent.series$
       .pipe(takeUntil(this.destroy$), skip(1))
       .subscribe((series) => {
+        const useCategory = ['pie', 'polar', 'donut', 'radar'].includes(
+          this.chartForm.value.type
+        );
         const seriesFormArray: FormArray<any> = this.fb.array([]);
         const seriesSettings = this.chartForm.get('series')?.value || [];
         for (const serie of series) {
           const serieSettings = seriesSettings.find(
-            (x: any) => x.serie === get(serie, 'name')
+            (x: any) =>
+              isEqual(x.serie, get(serie, 'name')) ||
+              isNil(x.serie) ||
+              isNil(get(serie, 'name'))
           );
           if (serieSettings) {
+            const categories: any[] = [];
+            if (useCategory) {
+              // Get existing settings
+              const categoriesSettings = get(serieSettings, 'categories', []);
+              serie['data'].forEach((element: any) => {
+                // Try to find existing category settings
+                const categorySettings = categoriesSettings.find(
+                  (x: any) => x.category === element.category
+                );
+                // Use existing settings
+                if (categorySettings) {
+                  categories.push(categorySettings);
+                } else {
+                  // Else, push new category
+                  categories.push({ category: element.category });
+                }
+              });
+            }
             seriesFormArray.push(
-              createSerieForm(this.chartForm.value.type, serieSettings)
+              createSerieForm(this.chartForm.value.type, {
+                ...serieSettings,
+                categories,
+              })
             );
           } else {
+            const categories: any = [];
+            if (useCategory) {
+              // Add one item per category
+              serie['data'].forEach((element: any) => {
+                categories.push({ category: element.category });
+              });
+            }
             seriesFormArray.push(
               createSerieForm(this.chartForm.value.type, {
                 serie: get(serie, 'name'),
+                categories,
               })
             );
           }

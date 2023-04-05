@@ -6,6 +6,7 @@ import { ColorPickerModule } from '@progress/kendo-angular-inputs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { CategoriesSettingsModule } from './categories-settings/categories-settings.module';
 
 /**
  * Chart Series Settings module
@@ -20,6 +21,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
     ColorPickerModule,
     MatFormFieldModule,
     MatSelectModule,
+    CategoriesSettingsModule,
   ],
   exports: [SafeSeriesSettingsComponent],
 })
