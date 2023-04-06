@@ -11,6 +11,7 @@ import { SafeButtonComponent } from '../../components/ui/button/button.component
 import { ButtonSize } from '../../components/ui/button/button-size.enum';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Question, QuestionText } from '../types';
+import { SafeIconComponent } from '../../components/ui/icon/icon.component';
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 
@@ -128,7 +129,42 @@ export const init = (Survey: any, domService: DomService): void => {
             question.inputType as DateInputFormat,
             el.parentElement
           );
+
           if (pickerInstance) {
+            // create button that clears the date picker
+            const button = document.createElement('button');
+            button.classList.add(
+              'grid',
+              'place-items-center',
+              'bg-transparent',
+              'border-none',
+              'outline-none',
+              'hidden',
+              'min-w-0',
+              'px-2'
+            );
+
+            const icon = domService.appendComponentToBody(
+              SafeIconComponent,
+              button
+            );
+
+            // add the button to the DOM
+            el.parentElement?.appendChild(button);
+
+            const iconInstance: SafeIconComponent = icon.instance;
+            iconInstance.icon = 'close';
+            iconInstance.variant = 'grey';
+
+            pickerInstance.registerOnChange((value: Date | null) => {
+              if (value) {
+                question.value = setDateValue(value, question.inputType);
+                // show the clear button
+                button.classList.remove('hidden');
+              } else {
+                question.value = null;
+              }
+            });
             if (question.value) {
               pickerInstance.value = getDateDisplay(
                 question.value,
@@ -149,25 +185,19 @@ export const init = (Survey: any, domService: DomService): void => {
             }
             pickerInstance.readonly = question.isReadOnly;
             pickerInstance.disabled = question.isReadOnly;
-            pickerInstance.registerOnChange((value: Date | null) => {
-              if (value) {
-                question.value = setDateValue(value, question.inputType);
-              } else {
-                question.value = null;
-              }
-            });
+
             el.style.display = 'none';
-            const button = domService.appendComponentToBody(
-              SafeButtonComponent,
-              el.parentElement
-            );
-            // we override the css of the component
-            const domElem = (button.hostView as EmbeddedViewRef<any>)
-              .rootNodes[0] as HTMLElement;
-            domElem.onclick = () => {
+            el.parentElement?.classList.add('flex', 'flex-row');
+
+            button.onclick = () => {
               question.value = null;
+              button.classList.add('hidden');
               pickerInstance.writeValue(null as any);
             };
+
+            // Positioning the button inside the picker
+            el.parentElement?.classList.add('relative');
+            button.classList.add('absolute', 'right-7', 'z-10');
           }
         } else {
           el.style.display = 'initial';
