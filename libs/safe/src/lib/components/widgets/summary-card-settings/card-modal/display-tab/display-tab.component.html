@@ -17,14 +17,21 @@
       </mat-form-field>
     </div>
     <mat-divider class="space-divider"></mat-divider>
-    <mat-slide-toggle
-      formControlName="showDataSourceLink"
-      class="slide-toggle-field"
-    >
+    <mat-slide-toggle formControlName="showDataSourceLink">
       {{
         'components.widget.settings.summaryCard.card.display.dataSource'
           | translate
       }}
+      <safe-icon
+        icon="info_outline"
+        variant="grey"
+        [inline]="true"
+        [size]="18"
+        [matTooltip]="
+          'components.widget.settings.summaryCard.card.display.tooltip.datasource'
+            | translate
+        "
+      ></safe-icon>
     </mat-slide-toggle>
   </div>
 </form>

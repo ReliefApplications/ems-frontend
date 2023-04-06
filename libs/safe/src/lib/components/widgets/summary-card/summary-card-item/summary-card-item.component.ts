@@ -135,7 +135,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
       }
     } else if (typeof this.card.layout === 'object') {
       this.layout = this.card.layout;
-      this.styles = get(this.card.layout, 'style', []);
+      this.styles = get(this.card.layout, 'query.style', []);
     }
     this.loading = false;
   }
