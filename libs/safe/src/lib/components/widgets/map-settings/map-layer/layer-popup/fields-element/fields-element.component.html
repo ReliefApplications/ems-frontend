@@ -7,8 +7,15 @@
       }}</mat-label>
       <safe-editor-control
         formControlName="title"
-        [autocompleteKeys]="keys"
+        [editorConfig]="editorConfig"
       ></safe-editor-control>
+      <safe-icon
+        icon="info"
+        class="cursor-pointer"
+        variant="grey"
+        matSuffix
+        [matTooltip]="'components.widget.settings.map.layers.popup.tooltip.text' | translate"
+      ></safe-icon>
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>{{
@@ -17,8 +24,15 @@
       }}</mat-label>
       <safe-editor-control
         formControlName="description"
-        [autocompleteKeys]="keys"
+        [editorConfig]="editorConfig"
       ></safe-editor-control>
+      <safe-icon
+        icon="info"
+        class="cursor-pointer"
+        variant="grey"
+        matSuffix
+        [matTooltip]="'components.widget.settings.map.layers.popup.tooltip.text' | translate"
+      ></safe-icon>
     </mat-form-field>
   </div>
   <safe-divider></safe-divider>

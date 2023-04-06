@@ -25,10 +25,8 @@ import {
   EditorModule,
   TINYMCE_SCRIPT_SRC,
 } from '@tinymce/tinymce-angular';
-// import { POPUP_EDITOR_CONFIG as INLINE_EDITOR_CONFIG } from '../../const/tinymce.const';
-import { INLINE_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
-import { Editor } from 'tinymce';
+import { RawEditorSettings } from 'tinymce';
 
 /** Component for using TinyMCE editor with formControl */
 @Component({
@@ -55,12 +53,11 @@ export class SafeEditorControlComponent
 {
   static nextId = 0;
 
-  @Input() autocompleteKeys: string[] = [];
   @ViewChild('editor') editor!: EditorComponent;
   public editorContent = '';
 
   /** tinymce editor */
-  public editorConfig = INLINE_EDITOR_CONFIG;
+  @Input() editorConfig!: RawEditorSettings;
 
   /**
    * Gets the value
@@ -188,30 +185,15 @@ export class SafeEditorControlComponent
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
+  }
+
+  ngOnChanges(): void {
     // Set the editor base url based on the environment file
     this.editorConfig.base_url = this.editorService.url;
 
     // Set the editor language
     this.editorConfig.language = this.editorService.language;
-  }
-
-  ngOnChanges(): void {
-    const keys = this.autocompleteKeys.map((x) => `{${x}}`);
-    this.editorConfig.setup = (e: Editor) => {
-      e.ui.registry.addAutocompleter('editor-control-keys', {
-        ch: '{',
-        minChars: 0,
-        onAction: (autocompleteApi, rng, value) => {
-          e.selection.setRng(rng);
-          e.insertContent(value);
-          autocompleteApi.hide();
-        },
-        fetch: async (pattern: string) =>
-          keys
-            .filter((key) => key.includes(pattern))
-            .map((key) => ({ value: key, text: key })),
-      });
-    };
+    this.editorContent = this.value || '';
   }
 
   ngAfterViewInit(): void {

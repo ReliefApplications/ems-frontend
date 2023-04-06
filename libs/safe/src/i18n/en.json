@@ -1398,7 +1398,10 @@
 							"popup": "Popup",
 							"popupElements": "Popup elements",
 							"text": "Text",
-							"title": "Title"
+							"title": "Title",
+							"tooltip": {
+								"text": "Type '{' to start using fields from the datasource"
+							}
 						},
 						"remove": "Remove layer",
 						"selectLayer": "Select existing layer",

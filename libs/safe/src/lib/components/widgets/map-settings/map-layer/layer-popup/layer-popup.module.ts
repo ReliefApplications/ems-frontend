@@ -12,6 +12,9 @@ import { SafeDividerModule } from '../../../../ui/divider/divider.module';
 import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { FieldsElementComponent } from './fields-element/fields-element.component';
 import { TextElementComponent } from './text-element/text-element.component';
+import { SafeIconModule } from '../../../../ui/icon/icon.module';
+import { SafeEditorControlComponent } from '../../../../editor-control/editor-control.component';
+import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 
 /**
  * Map layer properties popup module.
@@ -30,8 +33,11 @@ import { TextElementComponent } from './text-element/text-element.component';
     MatInputModule,
     MatMenuModule,
     SafeButtonModule,
+    SafeIconModule,
     FieldsElementComponent,
     TextElementComponent,
+    SafeEditorControlComponent,
+    MatTooltipModule,
   ],
   exports: [LayerPopupComponent],
 })
