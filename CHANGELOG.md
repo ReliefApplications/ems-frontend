@@ -1,3 +1,31 @@
+# [2.0.0-beta.6](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2023-04-06)
+
+
+### Bug Fixes
+
+* add tooltip in summary card display settings, to better indicate purpose of 'link to data source' option ([75ca7d5](https://github.com/ReliefApplications/oort-frontend/commit/75ca7d53488789abcaf8c286d04b9e85090100a9))
+* aggregations selection would take entire width on grid widgets ([1173c9d](https://github.com/ReliefApplications/oort-frontend/commit/1173c9d52490c1829b9b49456ae0100d64595336))
+* autocompletion in summary cards not working with aggregations ([7545c4e](https://github.com/ReliefApplications/oort-frontend/commit/7545c4e5eb39d9ee7acd84ca11f1fa966c72d7b2)), closes [Fix/ab#60118](https://github.com/Fix/ab/issues/60118)
+* clear date picker on surveys ([50fc735](https://github.com/ReliefApplications/oort-frontend/commit/50fc735f309aa806253bcb2153de3b8d27310cbf))
+* color palette was incorrectly working ([1186045](https://github.com/ReliefApplications/oort-frontend/commit/11860451ed6d10b388932c16f73f5a5ae3162480))
+* confirmation modal would appear below other modals, if opened from other dialog ([4277e6a](https://github.com/ReliefApplications/oort-frontend/commit/4277e6a7d330921a3a6370b1f0d45dc4c76970e5))
+* incorrect devops pipelines ([d4f31c9](https://github.com/ReliefApplications/oort-frontend/commit/d4f31c98d018eb974cf1e407d01eff9cc1b369b2))
+* inject btn in datepicker & edit safe-button ([7b9f28e](https://github.com/ReliefApplications/oort-frontend/commit/7b9f28e0e3786df64ed2b2c3801f1d609e8c0935))
+* now possible to delete values of date / time fields in forms ([ba19583](https://github.com/ReliefApplications/oort-frontend/commit/ba195834358c1bd9515156bd7ac940f20a92ba4c))
+* styling not applying if datasource was layout ([d572947](https://github.com/ReliefApplications/oort-frontend/commit/d57294759fae97f4de1f02db1e598b448c85912a))
+* summary cards preventing scrollbar to be clicked when selecting placeholder ([dd630cd](https://github.com/ReliefApplications/oort-frontend/commit/dd630cd9735feadc19a15d7e4b46b46895ae4d44)), closes [Fix/ab#60033](https://github.com/Fix/ab/issues/60033)
+* unionBy typing issue would cause build failure ([79311e5](https://github.com/ReliefApplications/oort-frontend/commit/79311e5eff003e43a16543a21e0738c8536bef82))
+
+
+### Features
+
+* can set options per category in charts ([b055112](https://github.com/ReliefApplications/oort-frontend/commit/b055112648aaad02f92e63d1775749670a7f6442))
+
+
+### Performance Improvements
+
+* prevent custom styling of applications to be closed without saving + keep active when navigating in app ([ee5b128](https://github.com/ReliefApplications/oort-frontend/commit/ee5b128fd3314d5ec3cb27107801e93f96451b21)), closes [feat/AB#60921](https://github.com/feat/AB/issues/60921)
+
 # [2.0.0-beta.5](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.4...v2.0.0-beta.5) (2023-03-31)
 
 
