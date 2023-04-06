@@ -44,6 +44,7 @@ import { ArcgisService } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { flatten } from 'lodash';
 import { takeUntil } from 'rxjs';
+import { legendControl } from '@oort-front/leaflet';
 
 /**
  * Cleans the settings object from null values
@@ -338,8 +339,6 @@ export class MapComponent
     }
 
     Promise.all(promises).then((trees) => {
-      console.log('la!');
-      console.log(trees);
       const basemaps: L.Control.Layers.TreeObject[][] = [];
       const layers: L.Control.Layers.TreeObject[][] = [];
       for (const tree of trees) {
@@ -347,6 +346,7 @@ export class MapComponent
         tree.layers && layers.push(tree.layers);
       }
       this.setLayersControl(flatten(basemaps), flatten(layers));
+      legendControl().addTo(this.map);
     });
 
     // Add zoom control
@@ -827,7 +827,7 @@ export class MapComponent
   /**
    * Set the basemap.
    *
-   * @param map map
+   * @param map Leaflet map
    * @param basemap String containing the id (name) of the basemap
    * @returns basemaps as promise
    */

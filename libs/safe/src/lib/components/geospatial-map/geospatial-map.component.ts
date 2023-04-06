@@ -281,7 +281,6 @@ export class GeospatialMapComponent
    * @param event leaflet map event
    */
   public handleMapEvent(event: MapEvent) {
-    console.log(this.selectedLayer);
     switch (event.type) {
       case MapEventType.SELECTED_LAYER:
         this.selectedLayer = event.content.layer;

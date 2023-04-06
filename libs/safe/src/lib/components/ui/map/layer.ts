@@ -22,7 +22,6 @@ import {
   LayerSymbol,
   PopupInfo,
 } from '../../../models/layer.model';
-import { geoJSONLayer } from './leaflet.layer';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -511,12 +510,12 @@ export class Layer implements LayerModel {
                     );
                   },
                 });
-                const clusterLayer = geoJSONLayer(data, geoJSONopts);
+                const clusterLayer = L.geoJSON(data, geoJSONopts);
                 clusterGroup.addLayer(clusterLayer);
                 this.layer = clusterGroup;
                 return this.layer;
               default:
-                this.layer = geoJSONLayer(data, geoJSONopts);
+                this.layer = L.geoJSON(data, geoJSONopts);
                 return this.layer;
             }
         }

@@ -136,10 +136,9 @@
     <!-- Fields selection -->
     <ng-container *ngIf="formGroup.get('geoField')?.enabled">
       <mat-form-field appearance="outline">
-        <!-- todo(translate) -->
-        <mat-label>GeoField</mat-label>
+        <mat-label>{{ 'components.widget.settings.map.layers.dataSource.geoField' | translate }}</mat-label>
         <mat-select formControlName="geoField">
-          <mat-option *ngFor="let field of fields" [value]="field.name">{{
+          <mat-option *ngFor="let field of fields$ | async" [value]="field.name">{{
             field.name
           }}</mat-option>
         </mat-select>
@@ -159,10 +158,9 @@
       <div class="flex flex-row justify-between gap-2 flex-wrap">
         <!-- Latitude Field -->
         <mat-form-field appearance="outline" class="flex-1">
-          <!-- todo(translate) -->
-          <mat-label>Latitude</mat-label>
+          <mat-label>{{ 'components.widget.settings.map.layers.dataSource.latitude' | translate }}</mat-label>
           <mat-select formControlName="latitudeField">
-            <mat-option *ngFor="let field of fields" [value]="field.name">{{
+            <mat-option *ngFor="let field of fields$ | async" [value]="field.name">{{
               field.name
             }}</mat-option>
           </mat-select>
@@ -179,10 +177,9 @@
         </mat-form-field>
         <!-- Longitude Field -->
         <mat-form-field appearance="outline" class="flex-1">
-          <!-- todo(translate) -->
-          <mat-label>Longitude</mat-label>
+          <mat-label>{{ 'components.widget.settings.map.layers.dataSource.longitude' | translate }}</mat-label>
           <mat-select formControlName="longitudeField">
-            <mat-option *ngFor="let field of fields" [value]="field.name">{{
+            <mat-option *ngFor="let field of fields$ | async" [value]="field.name">{{
               field.name
             }}</mat-option>
           </mat-select>

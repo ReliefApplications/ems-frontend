@@ -1,67 +1,82 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   HostBinding,
   Inject,
   Input,
+  OnChanges,
   OnDestroy,
   Optional,
   Self,
+  ViewChild,
 } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
 import {
   MatLegacyFormField as MatFormField,
   MatLegacyFormFieldControl as MatFormFieldControl,
   MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
 } from '@angular/material/legacy-form-field';
 import { Subject } from 'rxjs';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import {
+  EditorComponent,
+  EditorModule,
+  TINYMCE_SCRIPT_SRC,
+} from '@tinymce/tinymce-angular';
+import { SafeEditorService } from '../../services/editor/editor.service';
+import { RawEditorSettings } from 'tinymce';
 
-export type Gradient = { color: string; ratio: number }[];
-
-type FormFieldValue = Gradient | null;
-
-/**
- * Gradient picker component.
- */
+/** Component for using TinyMCE editor with formControl */
 @Component({
-  selector: 'safe-gradient-picker',
-  templateUrl: './gradient-picker.component.html',
-  styleUrls: ['./gradient-picker.component.scss'],
+  selector: 'safe-editor-control',
+  standalone: true,
+  imports: [CommonModule, EditorModule, FormsModule],
+  templateUrl: './editor-control.component.html',
+  styleUrls: ['./editor-control.component.scss'],
   providers: [
     {
       provide: MatFormFieldControl,
-      useExisting: GradientPickerComponent,
+      useExisting: SafeEditorControlComponent,
     },
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
   ],
 })
-export class GradientPickerComponent
+export class SafeEditorControlComponent
   implements
     ControlValueAccessor,
-    MatFormFieldControl<FormFieldValue>,
-    OnDestroy
+    MatFormFieldControl<string | null>,
+    OnDestroy,
+    AfterViewInit,
+    OnChanges
 {
   static nextId = 0;
-  public showList = false;
+
+  @ViewChild('editor') editor!: EditorComponent;
+  public editorContent = '';
+
+  /** tinymce editor */
+  @Input() editorConfig!: RawEditorSettings;
 
   /**
    * Gets the value
    *
    * @returns the value
    */
-  @Input() get value(): FormFieldValue {
+  @Input() get value(): string | null {
     return this.ngControl.value;
   }
 
   /** Sets the value */
-  set value(val: FormFieldValue) {
+  set value(val: string | null) {
     this.onChange(val);
     this.stateChanges.next();
   }
 
   public stateChanges = new Subject<void>();
   @HostBinding()
-  id = `safe-gradient-picker-${GradientPickerComponent.nextId++}`;
+  id = `safe-editor-control-${SafeEditorControlComponent.nextId++}`;
 
   /**
    * Gets the placeholder for the select
@@ -89,7 +104,6 @@ export class GradientPickerComponent
    * @returns if an option is selected
    */
   get empty() {
-    // return !this.selected.value;
     return !this.ngControl.control?.value;
   }
 
@@ -147,23 +161,23 @@ export class GradientPickerComponent
    */
   get errorState(): boolean {
     return (this.ngControl.invalid && this.touched) || false;
-    // return this.ngControl.invalid && this.touched;
-    // return this.selected.invalid && this.touched;
   }
 
-  public controlType = 'safe-gradient-picker';
+  public controlType = 'safe-editor-control';
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
   /**
-   * Gradient picker component
+   * Component for using TinyMCE editor with formControl
    *
+   * @param editorService editor service
    * @param elementRef shared element ref service
    * @param formField MatFormField
    * @param ngControl form control shared service
    */
   constructor(
+    private editorService: SafeEditorService,
     private elementRef: ElementRef<HTMLElement>,
     @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl
@@ -171,6 +185,26 @@ export class GradientPickerComponent
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
+  }
+
+  ngOnChanges(): void {
+    // Set the editor base url based on the environment file
+    this.editorConfig.base_url = this.editorService.url;
+
+    // Set the editor language
+    this.editorConfig.language = this.editorService.language;
+    this.editorContent = this.value || '';
+  }
+
+  ngAfterViewInit(): void {
+    this.editor.onFocusIn.subscribe(() => {
+      this.onFocusIn();
+    });
+
+    this.editor.onFocusOut.subscribe((e) => {
+      this.onFocusOut(e.event);
+    });
+    // this.editor.onInit.subscribe(() => {});
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -185,7 +219,7 @@ export class GradientPickerComponent
    */
   setDescribedByIds(ids: string[]) {
     const controlElement = this.elementRef.nativeElement.querySelector(
-      '.safe-gradient-picker'
+      '.safe-editor-control'
     );
     if (!controlElement) return;
     controlElement.setAttribute('aria-describedby', ids.join(' '));
@@ -193,13 +227,9 @@ export class GradientPickerComponent
 
   /**
    * Handles mouse click on container
-   *
-   * @param event Mouse event
    */
-  onContainerClick(event: MouseEvent) {
-    if ((event.target as Element).tagName.toLowerCase() !== 'input') {
-      this.elementRef.nativeElement.querySelector('input')?.focus();
-    }
+  onContainerClick() {
+    if (this.editor) this.editor.editor.focus();
   }
 
   /**
@@ -207,7 +237,7 @@ export class GradientPickerComponent
    *
    * @param val Value set from the linked form control
    */
-  writeValue(val: FormFieldValue): void {
+  writeValue(val: string | null): void {
     this.value = val;
   }
 
@@ -227,15 +257,6 @@ export class GradientPickerComponent
    */
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
-  }
-
-  /**
-   * Open selection of icon
-   */
-  onOpenSelect(): void {
-    if (!this.disabled) {
-      this.showList = true;
-    }
   }
 
   /**
@@ -269,16 +290,14 @@ export class GradientPickerComponent
     this.stateChanges.complete();
   }
 
-  /**
-   * Updates the parent form with the given gradient
-   *
-   * @param gradient Gradient value
-   */
-  public setGradient(gradient: Gradient) {
-    this.showList = false;
-    if (gradient) {
-      this.value = gradient;
-      this.onTouched();
-    }
+  /** Updates the value when the editor content changes */
+  public onEditorContentChange() {
+    this.onTouched();
+    const rawHtml = this.editor.editor.getContent();
+    const parser = new DOMParser();
+    const parsedHtml = parser.parseFromString(rawHtml, 'text/html');
+    this.value = parsedHtml.body.textContent;
+    // remove the first 3 and last 4 characters to remove the <p> tags
+    // this.value = this.editor.editor.getContent();
   }
 }

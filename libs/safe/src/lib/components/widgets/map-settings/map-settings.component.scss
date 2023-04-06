@@ -4,6 +4,7 @@
   mat-drawer {
     ::ng-deep safe-button {
       @apply w-full rounded-sm text-neutral-500;
+      text-align-last: start;
       ::ng-deep {
         .mat-button-wrapper {
           @apply flex items-center p-1.5;

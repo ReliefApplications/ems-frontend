@@ -1,18 +1,47 @@
-<!-- todo(gis): translate -->
 <ng-container [formGroup]="formGroup">
   <div class="flex flex-col">
     <mat-form-field appearance="outline">
-      <mat-label>Title</mat-label>
-      <input matInput formControlName="title" type="string" />
+      <mat-label>{{
+        'components.widget.settings.map.layers.popup.fieldsElements.title'
+          | translate
+      }}</mat-label>
+      <safe-editor-control
+        formControlName="title"
+        [editorConfig]="editorConfig"
+      ></safe-editor-control>
+      <safe-icon
+        icon="info"
+        class="cursor-pointer"
+        variant="grey"
+        matSuffix
+        [matTooltip]="'components.widget.settings.map.layers.popup.tooltip.text' | translate"
+      ></safe-icon>
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>Description</mat-label>
-      <input matInput formControlName="description" type="string" />
+      <mat-label>{{
+        'components.widget.settings.map.layers.popup.fieldsElements.description'
+          | translate
+      }}</mat-label>
+      <safe-editor-control
+        formControlName="description"
+        [editorConfig]="editorConfig"
+      ></safe-editor-control>
+      <safe-icon
+        icon="info"
+        class="cursor-pointer"
+        variant="grey"
+        matSuffix
+        [matTooltip]="'components.widget.settings.map.layers.popup.tooltip.text' | translate"
+      ></safe-icon>
     </mat-form-field>
   </div>
   <safe-divider></safe-divider>
   <div cdkDropList (cdkDropListDropped)="onListDrop($event)">
-    <div *ngFor="let field of fields; let index = index" cdkDrag class="flex flex-row items-center">
+    <div
+      *ngFor="let field of fields$ | async; let index = index"
+      cdkDrag
+      class="flex flex-row items-center"
+    >
       <safe-button
         cdkDragHandle
         [isIcon]="true"

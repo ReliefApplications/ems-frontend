@@ -1,5 +1,5 @@
 <safe-editable-text
-  *ngFor="let field of fields; index as i"
+  *ngFor="let field of fields$ | async; index as i"
   [text]="field.label"
   [canEdit]="true"
   (onChange)="saveLabel($event, i)"

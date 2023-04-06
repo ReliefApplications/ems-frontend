@@ -1158,6 +1158,15 @@
 					},
 					"position": "******",
 					"series": {
+						"settings": {
+							"auto": "******",
+							"color": "******",
+							"fill": "******",
+							"interpolation": "******",
+							"other": "******",
+							"serie": "******",
+							"stepInterpolation": "******"
+						},
 						"stack": {
 							"enable": "******",
 							"usePercentage": "******"
@@ -1356,6 +1365,11 @@
 						"add": "******",
 						"chooseLayer": "******",
 						"createLayer": "******",
+						"dataSource": {
+							"geoField": "******",
+							"latitude": "******",
+							"longitude": "******"
+						},
 						"edit": "****** {{name}}",
 						"online": {
 							"info": "******",
@@ -1373,8 +1387,27 @@
 							"size": "******",
 							"title": "******"
 						},
+						"popup": {
+							"addField": "******",
+							"description": "******",
+							"fields": "******",
+							"fieldsElements": {
+								"description": "******",
+								"title": "******"
+							},
+							"popup": "******",
+							"popupElements": "******",
+							"text": "******",
+							"title": "******",
+							"tooltip": {
+								"text": "******"
+							}
+						},
 						"remove": "******",
 						"selectLayer": "******",
+						"styling": {
+							"style": "******"
+						},
 						"types": {
 							"cluster": "******",
 							"heatmap": "******",

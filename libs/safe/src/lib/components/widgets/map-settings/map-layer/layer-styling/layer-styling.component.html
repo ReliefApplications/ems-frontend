@@ -1,8 +1,7 @@
 <div [formGroup]="formGroup">
   <div formGroupName="renderer">
     <mat-form-field appearance="outline">
-      <!-- todo(gis): translate -->
-      <mat-label>Style</mat-label>
+      <mat-label>{{ 'components.widget.settings.map.layers.styling.style' | translate }}</mat-label>
       <mat-select formControlName="type">
         <mat-option *ngFor="let type of rendererTypes" [value]="type"
           >{{ type }}
