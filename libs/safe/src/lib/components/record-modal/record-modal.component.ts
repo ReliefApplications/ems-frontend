@@ -314,15 +314,18 @@ export class SafeRecordModalComponent implements AfterViewInit {
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;
-    const dialogRef = this.confirmService.openConfirmModal({
-      title: this.translate.instant('components.record.recovery.title'),
-      content: this.translate.instant(
-        'components.record.recovery.confirmationMessage',
-        { date: formatDate }
-      ),
-      confirmText: this.translate.instant('components.confirmModal.confirm'),
-      confirmColor: 'primary',
-    });
+    const dialogRef = this.confirmService.openConfirmModal(
+      {
+        title: this.translate.instant('components.record.recovery.title'),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'primary',
+      },
+      this.dialog
+    );
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.apollo

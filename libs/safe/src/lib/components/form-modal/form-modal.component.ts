@@ -325,26 +325,31 @@ export class SafeFormModalComponent implements OnInit {
     survey.data = data;
     // Displays confirmation modal.
     if (this.data.askForConfirm) {
-      const dialogRef = this.confirmService.openConfirmModal({
-        title: this.translate.instant('common.updateObject', {
-          name:
-            rowsSelected > 1
-              ? this.translate.instant('common.row.few')
-              : this.translate.instant('common.row.one'),
-        }),
-        content: this.translate.instant(
-          'components.form.updateRow.confirmationMessage',
-          {
-            quantity: rowsSelected,
-            rowText:
+      const dialogRef = this.confirmService.openConfirmModal(
+        {
+          title: this.translate.instant('common.updateObject', {
+            name:
               rowsSelected > 1
                 ? this.translate.instant('common.row.few')
                 : this.translate.instant('common.row.one'),
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
-      });
+          }),
+          content: this.translate.instant(
+            'components.form.updateRow.confirmationMessage',
+            {
+              quantity: rowsSelected,
+              rowText:
+                rowsSelected > 1
+                  ? this.translate.instant('common.row.few')
+                  : this.translate.instant('common.row.one'),
+            }
+          ),
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
+          confirmColor: 'primary',
+        },
+        this.dialog
+      );
       dialogRef.afterClosed().subscribe(async (value) => {
         if (value) {
           await this.onUpdate(survey);
@@ -787,15 +792,18 @@ export class SafeFormModalComponent implements OnInit {
     const formatDate = `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()}`;
-    const dialogRef = this.confirmService.openConfirmModal({
-      title: this.translate.instant('components.record.recovery.title'),
-      content: this.translate.instant(
-        'components.record.recovery.confirmationMessage',
-        { date: formatDate }
-      ),
-      confirmText: this.translate.instant('components.confirmModal.confirm'),
-      confirmColor: 'primary',
-    });
+    const dialogRef = this.confirmService.openConfirmModal(
+      {
+        title: this.translate.instant('components.record.recovery.title'),
+        content: this.translate.instant(
+          'components.record.recovery.confirmationMessage',
+          { date: formatDate }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'primary',
+      },
+      this.dialog
+    );
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.apollo
