@@ -7,39 +7,27 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Feature, FeatureCollection } from 'geojson';
-import { BehaviorSubject } from 'rxjs';
-import {
-  BaseLayerTree,
-  LayerActionOnMap,
-} from '../ui/map/interfaces/map-layers.interface';
 import {
   MapConstructorSettings,
   MapEvent,
   MapEventType,
 } from '../ui/map/interfaces/map.interface';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/public-api';
-
 // Leaflet
 import '@geoman-io/leaflet-geoman-free';
 import * as L from 'leaflet';
-// import { FeatureProperties } from '../ui/map/interfaces/layer-settings.type';
-
-import { IconName } from '../icon-picker/icon-picker.const';
-// import { LayerStylingComponent } from './layer-styling/layer-styling.component';
 import { createCustomDivIcon } from '../ui/map/utils/create-div-icon';
 import { CommonModule } from '@angular/common';
 import { MapModule } from '../ui/map/map.module';
 
 import { MapComponent } from '../ui/map';
 import { AVAILABLE_GEOMAN_LANGUAGES } from '../ui/map/const/language';
-import { getMapFeature } from '../ui/map/utils/get-map-features';
+import {
+  getMapFeature,
+  updateGeoManLayerPosition,
+} from '../ui/map/utils/get-map-features';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
-
-// type StyleChange =
-//   typeof LayerStylingComponent.prototype.edit extends EventEmitter<infer T>
-//     ? T
-//     : never;
 
 /**
  * Component for displaying the input map
@@ -60,11 +48,6 @@ export class GeospatialMapComponent
   @Input() geometry = 'Point';
   // === MAP ===
   public mapSettings!: MapConstructorSettings;
-  private addOrDeleteLayer: BehaviorSubject<LayerActionOnMap | null> =
-    new BehaviorSubject<LayerActionOnMap | null>(null);
-  public layerToAddOrDelete$ = this.addOrDeleteLayer.asObservable();
-  private updateLayer: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  public updateLayer$ = this.updateLayer.asObservable();
 
   // Layer to edit
   public selectedLayer: any;
@@ -88,7 +71,7 @@ export class GeospatialMapComponent
    * Component for displaying the input map
    * of the geospatial type question.
    *
-   * @param translate
+   * @param translate Angular translate service
    */
   constructor(private translate: TranslateService) {
     super();
@@ -116,13 +99,12 @@ export class GeospatialMapComponent
       }
 
       // subscribe to changes on the created layers
-      l.layer.on(
-        'pm:change',
+      l.layer.on('pm:change', () => {
         this.handleMapEvent({
           type: MapEventType.MAP_CHANGE,
           content: getMapFeature(this.mapComponent?.map),
-        })
-      );
+        });
+      });
 
       l.layer.on('click', (e: any) => {
         this.handleMapEvent({
@@ -168,6 +150,7 @@ export class GeospatialMapComponent
         setLang(event.lang);
       });
   }
+
   ngAfterViewInit(): void {
     this.mapSettings = {
       initialState: {
@@ -190,19 +173,8 @@ export class GeospatialMapComponent
         search: true,
       },
     };
-    const layer = L.tileLayer(
-      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }
-    );
-    const baseLayer: BaseLayerTree = {
-      label: '',
-      layer,
-    };
+    this.mapComponent?.map.pm.addControls(this.controls);
     this.setUpPmListeners();
-    this.addOrDeleteLayer.next({ layerData: baseLayer, isDelete: false });
     this.setDataLayers();
   }
 
@@ -211,31 +183,40 @@ export class GeospatialMapComponent
     //init layers from question value
     const geospatialData = this.data as any;
     if (geospatialData.geometry.coordinates.length > 0) {
-      const newLayer = L.geoJSON(this.data, {
-        // Circles are not supported by geojson
-        // We abstract them as markers with a radius property
-        pointToLayer: (feature, latlng) => {
-          if (feature.properties.radius) {
-            return new L.Circle(latlng, feature.properties.radius);
-          } else {
-            const icon = createCustomDivIcon({
-              color: feature.properties.style?.fillColor || '#3388ff',
-              opacity: feature.properties.style?.fillOpacity || 1,
-              icon:
-                (feature.properties.style?.icon as IconName) ||
-                'leaflet_default',
-              size: feature.properties.style?.iconSize || 12,
-            });
-            return new L.Marker(latlng).setIcon(icon);
-          }
-        },
-      } as L.GeoJSONOptions);
-      const baseLayer: BaseLayerTree = {
-        label: '',
-        layer: newLayer,
-      };
-      this.addOrDeleteLayer.next({ layerData: baseLayer, isDelete: false });
+      const latlng = L.latLng([
+        geospatialData.geometry.coordinates[1],
+        geospatialData.geometry.coordinates[0],
+      ]);
+      updateGeoManLayerPosition(this.mapComponent?.map, { latlng });
     }
+
+    // const geospatialData = this.data as any;
+    // if (geospatialData.geometry.coordinates.length > 0) {
+    //   const newLayer = L.geoJSON(this.data, {
+    //     // Circles are not supported by geojson
+    //     // We abstract them as markers with a radius property
+    //     pointToLayer: (feature, latlng) => {
+    //       if (feature.properties.radius) {
+    //         return new L.Circle(latlng, feature.properties.radius);
+    //       } else {
+    //         const icon = createCustomDivIcon({
+    //           color: feature.properties.style?.fillColor || '#3388ff',
+    //           opacity: feature.properties.style?.fillOpacity || 1,
+    //           icon:
+    //             (feature.properties.style?.icon as IconName) ||
+    //             'leaflet_default',
+    //           size: feature.properties.style?.iconSize || 12,
+    //         });
+    //         return new L.Marker(latlng).setIcon(icon);
+    //       }
+    //     },
+    //   } as L.GeoJSONOptions);
+    //   const baseLayer: BaseLayerTree = {
+    //     label: '',
+    //     layer: newLayer,
+    //   };
+    //   this.addOrDeleteLayer.next({ layerData: baseLayer, isDelete: false });
+    // }
   }
 
   /**
@@ -291,18 +272,5 @@ export class GeospatialMapComponent
       default:
         break;
     }
-  }
-
-  /**
-   * handle leaflet map ready event
-   *
-   * @param event controls
-   */
-  public handleDrawReadyEvent(event: any) {
-    this.handleMapEvent({
-      type: MapEventType.MAP_CHANGE,
-      content: getMapFeature(this.mapComponent?.map),
-    });
-    this.mapComponent?.map.pm.addControls(event);
   }
 }

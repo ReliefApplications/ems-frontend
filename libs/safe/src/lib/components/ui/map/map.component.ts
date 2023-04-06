@@ -74,7 +74,6 @@ export class MapComponent
   extends SafeUnsubscribeComponent
   implements AfterViewInit
 {
-  @Input() controls!: any;
   /** Map settings setter */
   @Input() set mapSettings(settings: MapConstructorSettings) {
     if (settings) {
@@ -144,8 +143,6 @@ export class MapComponent
     controls: DefaultMapControls,
   };
   private arcGisWebMap: any;
-
-  @Output() drawReady: EventEmitter<any> = new EventEmitter<any>();
 
   // === MARKERS ===
   private baseTree!: L.Control.Layers.TreeObject;
@@ -351,12 +348,6 @@ export class MapComponent
 
     // Add zoom control
     L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
-
-    this.drawReady.emit(this.controls);
-
-    if (this.controls) {
-      this.controls.forEach((control: any) => this.map.addControl(control));
-    }
     this.setMapControls(controls, true);
   }
 
