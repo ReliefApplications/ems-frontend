@@ -269,7 +269,6 @@ export class SafeMapLayersService {
         lastValueFrom(
           this.getLayerById(id).pipe(
             mergeMap((layer: LayerModel) => {
-              console.log(layer.datasource);
               if (this.isDatasourceValid(layer.datasource)) {
                 const params = new HttpParams({
                   fromObject: omitBy(layer.datasource, isNil),

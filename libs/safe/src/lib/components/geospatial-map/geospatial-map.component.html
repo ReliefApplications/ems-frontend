@@ -1,11 +1,7 @@
 <div class="flex gap-4">
   <safe-map
     (mapEvent)="handleMapEvent($event)"
-    [useGeomanTools]="true"
     [mapSettings]="mapSettings"
-    [addOrDeleteLayer]="layerToAddOrDelete$ | async"
-    [updateLayerOptions]="updateLayer$ | async"
-    [controls]="controls"
     class="grow basis-full h-96"
   ></safe-map>
   <!-- <safe-layer-styling
