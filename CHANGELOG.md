@@ -1,3 +1,10 @@
+# [2.0.0-beta.7](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.6...v2.0.0-beta.7) (2023-04-06)
+
+
+### Bug Fixes
+
+* some confirmation modals would appear below the modal that opened them ([920cc2b](https://github.com/ReliefApplications/oort-frontend/commit/920cc2b4eca44593e1cc85acc7ad66a8b7a4ff79))
+
 # [2.0.0-beta.6](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2023-04-06)
 
 
