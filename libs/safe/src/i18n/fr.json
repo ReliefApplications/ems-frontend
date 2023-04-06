@@ -1405,7 +1405,10 @@
 							"popup": "Popup",
 							"popupElements": "Éléments de popup",
 							"text": "Texte",
-							"title": "Titre"
+							"title": "Titre",
+							"tooltip": {
+								"text": "Tapez '{' pour utiliser les champs de la source de données"
+							}
 						},
 						"remove": "Supprimer le calque",
 						"selectLayer": "Sélectionner un calque",

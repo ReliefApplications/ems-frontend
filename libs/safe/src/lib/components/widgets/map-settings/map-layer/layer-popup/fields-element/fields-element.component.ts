@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -10,7 +10,13 @@ import { SafeButtonModule } from '../../../../../ui/button/button.module';
 import { PopupElement } from '../../../../../../models/layer.model';
 import { Fields } from '../../layer-fields/layer-fields.component';
 import { SafeMapLayersService } from '../../../../../../services/map/map-layers.service';
-import { Observable } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
+import { SafeEditorControlComponent } from '../../../../../editor-control/editor-control.component';
+import { INLINE_EDITOR_CONFIG } from '../../../../../../const/tinymce.const';
+import { SafeEditorService } from '../../../../../../services/editor/editor.service';
+import { SafeIconModule } from '../../../../../ui/icon/icon.module';
+import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { SafeUnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Popup fields element component.
@@ -28,20 +34,46 @@ import { Observable } from 'rxjs';
     MatInputModule,
     SafeDividerModule,
     SafeButtonModule,
+    SafeEditorControlComponent,
+    SafeIconModule,
+    MatTooltipModule,
   ],
   templateUrl: './fields-element.component.html',
   styleUrls: ['./fields-element.component.scss'],
 })
-export class FieldsElementComponent {
+export class FieldsElementComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() fields$!: Observable<Fields[]>;
   @Input() formGroup!: FormGroup;
+
+  public keys: string[] = [];
+  public editorConfig = INLINE_EDITOR_CONFIG;
+
+  ngOnInit(): void {
+    // Listen to fields changes
+    this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      this.keys = value.map((field) => `{{${field.name}}}`);
+      this.editorService.addCalcAndKeysAutoCompleter(
+        this.editorConfig,
+        this.keys
+      );
+    });
+  }
 
   /**
    * Creates an instance of FieldsElementComponent.
    *
-   * @param mapLayersService Shared map layer Service.
+   * @param mapLayersService Shared map layer service.
+   * @param editorService Shared tinymce editor service.
    */
-  constructor(private mapLayersService: SafeMapLayersService) {}
+  constructor(
+    private mapLayersService: SafeMapLayersService,
+    private editorService: SafeEditorService
+  ) {
+    super();
+  }
 
   /**
    * Handles the event emitted when a layer is reordered

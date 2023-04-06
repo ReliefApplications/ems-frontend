@@ -1398,7 +1398,10 @@
 							"popup": "******",
 							"popupElements": "******",
 							"text": "******",
-							"title": "******"
+							"title": "******",
+							"tooltip": {
+								"text": "******"
+							}
 						},
 						"remove": "******",
 						"selectLayer": "******",

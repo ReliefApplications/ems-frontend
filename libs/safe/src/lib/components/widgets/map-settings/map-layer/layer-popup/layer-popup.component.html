@@ -6,13 +6,39 @@
         <mat-label>{{
           'components.widget.settings.map.layers.popup.title' | translate
         }}</mat-label>
-        <input matInput formControlName="title" type="string" />
+        <safe-editor-control
+          formControlName="title"
+          [editorConfig]="editorConfig"
+        ></safe-editor-control>
+        <safe-icon
+          icon="info"
+          class="cursor-pointer"
+          variant="grey"
+          matSuffix
+          [matTooltip]="
+            'components.widget.settings.map.layers.popup.tooltip.text'
+              | translate
+          "
+        ></safe-icon>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>{{
           'components.widget.settings.map.layers.popup.description' | translate
         }}</mat-label>
-        <input matInput formControlName="description" type="string" />
+        <safe-editor-control
+          formControlName="description"
+          [editorConfig]="editorConfig"
+        ></safe-editor-control>
+        <safe-icon
+          icon="info"
+          class="cursor-pointer"
+          variant="grey"
+          matSuffix
+          [matTooltip]="
+            'components.widget.settings.map.layers.popup.tooltip.text'
+              | translate
+          "
+        ></safe-icon>
       </mat-form-field>
     </div>
     <safe-divider></safe-divider>

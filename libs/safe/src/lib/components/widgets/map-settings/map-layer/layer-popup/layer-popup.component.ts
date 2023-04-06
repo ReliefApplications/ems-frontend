@@ -8,7 +8,10 @@ import {
 import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
 import { createPopupElementForm } from '../../map-forms';
 import { Fields } from '../layer-fields/layer-fields.component';
-import { Observable } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
+import { INLINE_EDITOR_CONFIG } from '../../../../../const/tinymce.const';
+import { SafeEditorService } from '../../../../../services/editor/editor.service';
+import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Map layer popup settings component.
@@ -18,9 +21,12 @@ import { Observable } from 'rxjs';
   templateUrl: './layer-popup.component.html',
   styleUrls: ['./layer-popup.component.scss'],
 })
-export class LayerPopupComponent {
+export class LayerPopupComponent extends SafeUnsubscribeComponent {
   @Input() formGroup!: FormGroup;
   @Input() fields$!: Observable<Fields[]>;
+
+  public keys: string[] = [];
+  public editorConfig = INLINE_EDITOR_CONFIG;
 
   /** @returns popup elements as form array */
   get popupElements(): FormArray {
@@ -31,8 +37,25 @@ export class LayerPopupComponent {
    * Creates an instance of LayerPopupComponent.
    *
    * @param mapLayersService Shared map layer Service.
+   * @param editorService Shared tinymce editor service.
    */
-  constructor(private mapLayersService: SafeMapLayersService) {}
+  constructor(
+    private mapLayersService: SafeMapLayersService,
+    private editorService: SafeEditorService
+  ) {
+    super();
+  }
+
+  ngOnInit(): void {
+    // Listen to fields changes
+    this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      this.keys = value.map((field) => `{{${field.name}}}`);
+      this.editorService.addCalcAndKeysAutoCompleter(
+        this.editorConfig,
+        this.keys
+      );
+    });
+  }
 
   /**
    * Handles the event emitted when a layer is reordered
