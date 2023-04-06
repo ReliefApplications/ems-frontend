@@ -79,5 +79,11 @@
         </mat-select>
       </mat-form-field>
     </div>
+    <!-- Categories -->
+    <safe-categories-settings
+      *ngIf="formGroup.get('categories')"
+      [formArray]="$any(formGroup.get('categories'))"
+    >
+    </safe-categories-settings>
   </div>
 </div>

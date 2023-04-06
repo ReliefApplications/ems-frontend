@@ -15,6 +15,8 @@ import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 import { ChartTitle } from '../interfaces';
+import { DEFAULT_PALETTE } from '../const/palette';
+import { getColor } from '../utils/color.util';
 
 /**
  * Interface containing the settings of the chart legend
@@ -55,7 +57,7 @@ export class SafeLineChartComponent implements OnChanges {
   @Input() series: any[] = [];
 
   @Input() options: any = {
-    palette: [],
+    palette: DEFAULT_PALETTE,
     axes: null,
   };
 
@@ -83,13 +85,12 @@ export class SafeLineChartComponent implements OnChanges {
   ngOnChanges(): void {
     this.showValueLabels = get(this.options, 'labels.valueType', false);
     const series = get(this.options, 'series', []);
+    const palette = get(this.options, 'palette') || DEFAULT_PALETTE;
     this.chartData.datasets = this.series.map((x, i) => {
       // Get serie settings
       const serie = series.find((serie: any) => serie.serie === x.name);
       // Get color
-      const color: any =
-        get(serie, 'color', null) ||
-        get(this.options, `palette[${i}]`, undefined);
+      const color: any = get(serie, 'color', null) || getColor(palette, i);
       // Find min and max values from x.data
       const min = Math.min(...x.data.map((y: any) => y.field ?? Infinity));
       const max = Math.max(...x.data.map((y: any) => y.field ?? -Infinity));

@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
+import { CategoriesSettingsModule } from './categories-settings/categories-settings.module';
 
 /**
  * Chart Series Settings module
@@ -22,6 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatFormFieldModule,
     MatSelectModule,
     TranslateModule,
+    CategoriesSettingsModule,
   ],
   exports: [SafeSeriesSettingsComponent],
 })

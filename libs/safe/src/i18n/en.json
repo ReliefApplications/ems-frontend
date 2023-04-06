@@ -1180,6 +1180,9 @@
 						"color": "Title color",
 						"format": "Title format"
 					},
+					"tooltip": {
+						"palette": "Palette provides default colors to chart elements if not manually set."
+					},
 					"type": "Chart Type",
 					"xAxis": "X Axis",
 					"yAxis": "Y Axis"
@@ -1469,7 +1472,10 @@
 						"display": {
 							"dataSource": "Show link to data source",
 							"header": "Header",
-							"title": "Display"
+							"title": "Display",
+							"tooltip": {
+								"datasource": "Add a button in widget's header to view card's data source"
+							}
 						},
 						"textEditor": {
 							"title": "Text editor"
