@@ -89,23 +89,7 @@
         [formGroup]="filterFormGroup"
       >
         <safe-button (click)="onEditFilter()">Edit filter</safe-button>
-        <ng-container *ngFor="let filter of filters">
-          <div class="dashboard-filter-content-filter-wrapper">
-            <mat-form-field class="m-auto" appearance="fill">
-              <mat-label class="capitalize">{{ filter.name }}</mat-label>
-              <mat-select
-                [formControlName]="filter.name"
-                [multiple]="filter.multiple"
-              >
-                <mat-option
-                  *ngFor="let option of filter.choices"
-                  [value]="option"
-                  >{{ option }}</mat-option
-                >
-              </mat-select>
-            </mat-form-field>
-          </div>
-        </ng-container>
+        <div #formContainer></div>
       </form>
     </div>
   </div>

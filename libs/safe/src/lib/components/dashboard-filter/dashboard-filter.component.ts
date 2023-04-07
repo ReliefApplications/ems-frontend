@@ -5,12 +5,13 @@ import {
   HostListener,
   Inject,
   Input,
-  OnInit,
+  ViewChild,
 } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeFilterBuilderComponent } from './filter-builder-modal/filter-builder.component';
+import * as Survey from 'survey-angular';
 
 /**
  *
@@ -20,9 +21,11 @@ import { SafeFilterBuilderComponent } from './filter-builder-modal/filter-builde
   templateUrl: './dashboard-filter.component.html',
   styleUrls: ['./dashboard-filter.component.scss'],
 })
-export class SafeDashboardFilterComponent implements OnInit, AfterViewInit {
+export class SafeDashboardFilterComponent implements AfterViewInit {
   @Input() position: FilterPosition = FilterPosition.LEFT;
-  public filters: any[] = [];
+  public survey: Survey.Model = new Survey.Model();
+  public surveyJson: any = {};
+  @ViewChild('formContainer') formContainer!: ElementRef;
 
   public positionList = [
     FilterPosition.LEFT,
@@ -71,12 +74,6 @@ export class SafeDashboardFilterComponent implements OnInit, AfterViewInit {
     this.isDrawerOpen = false;
   }
 
-  ngOnInit(): void {
-    if (this.filters) {
-      this.setupFormGroup();
-    }
-  }
-
   // We need the set the fix values first as we do not know the number of filters the component is going to receive
   // And because the drawerPositioner directive makes the element fixed
   ngAfterViewInit(): void {
@@ -107,25 +104,26 @@ export class SafeDashboardFilterComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(SafeFilterBuilderComponent, {
       height: '100%',
       width: '100%',
+      data: { surveyJson: this.surveyJson },
     });
-    dialogRef.afterClosed().subscribe((questions) => {
-      console.log('filter modal closed', questions);
-      this.filters = questions;
-      this.setupFormGroup();
-    });
-  }
+    dialogRef.afterClosed().subscribe((surveyJson) => {
+      Survey.StylesManager.applyTheme();
+      this.surveyJson = surveyJson;
+      this.survey = new Survey.Model(this.surveyJson);
+      this.survey.showCompletedPage = false;
+      this.survey.showNavigationButtons = false;
 
-  /**
-   * Sets up the formGroup from filters
-   */
-  public setupFormGroup() {
-    let controlsObj = {};
-    this.filters.forEach((filterData) => {
-      controlsObj = {
-        ...controlsObj,
-        [filterData.name]: new FormControl(),
-      };
+      const survey = this.survey;
+
+      this.survey.onValueChanged.add(function () {
+        // loop through all questions in the survey
+        survey.getAllQuestions().forEach(function (question) {
+          // retrieve the current value of the question and log it to the console
+          console.log(question.name + ': ' + question.value);
+        });
+      });
+
+      this.survey.render(this.formContainer.nativeElement);
     });
-    this.filterFormGroup = new FormGroup(controlsObj);
   }
 }
