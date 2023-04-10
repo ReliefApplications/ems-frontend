@@ -1428,6 +1428,7 @@
 					},
 					"properties": {
 						"basemap": "******",
+						"contentArcGIS": "******",
 						"controls": {
 							"download": "******",
 							"layer": "******",

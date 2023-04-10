@@ -5,6 +5,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ColorPickerModule } from '@progress/kendo-angular-inputs';
 import { TranslateModule } from '@ngx-translate/core';
 
+/**
+ *
+ */
 @NgModule({
   declarations: [CategoriesSettingsComponent],
   imports: [

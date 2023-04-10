@@ -1435,6 +1435,7 @@
 					},
 					"properties": {
 						"basemap": "Fond de carte",
+						"contentArcGIS": "todo(translation)",
 						"controls": {
 							"download": "Télécharger",
 							"layer": "Couches",

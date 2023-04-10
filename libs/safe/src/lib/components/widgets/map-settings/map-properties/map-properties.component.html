@@ -19,21 +19,27 @@
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
       <safe-divider></safe-divider>
-      <!-- Basemap -->
-      <mat-form-field appearance="outline" class="p-0">
+      <div class="flex flex-col flex-1">
         <mat-label>{{
-          'components.widget.settings.map.properties.basemap' | translate
+          'components.widget.settings.map.properties.contentArcGIS' | translate
         }}</mat-label>
-        <mat-select formControlName="basemap" placeholder="OSM">
-          <mat-option *ngFor="let map of baseMaps" [value]="map">
-            {{ map }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <safe-divider></safe-divider>
-      <!-- Webmap selection -->
-      <safe-webmap-select formControlName="arcGisWebMap"></safe-webmap-select>
-      <safe-divider></safe-divider>
+        <!-- Basemap -->
+        <div class="mt-2 mb-2">
+          <mat-form-field appearance="outline" class="p-0">
+            <mat-label>{{
+              'components.widget.settings.map.properties.basemap' | translate
+            }}</mat-label>
+            <mat-select formControlName="basemap" placeholder="OSM">
+              <mat-option *ngFor="let map of baseMaps" [value]="map">
+                {{ map }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!-- Webmap selection -->
+        <safe-webmap-select formControlName="arcGisWebMap"></safe-webmap-select>
+        <safe-divider></safe-divider>
+      </div> 
       <!-- Default view -->
       <div class="w-full" formGroupName="initialState">
         <div class="flex flex-col flex-1" formGroupName="viewpoint">
