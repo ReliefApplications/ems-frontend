@@ -89,57 +89,62 @@ export class SafeLineChartComponent implements OnChanges {
     this.chartData.datasets = this.series.map((x, i) => {
       // Get serie settings
       const serie = series.find((serie: any) => serie.serie === x.name);
-      // Get color
-      const color: any = get(serie, 'color', null) || getColor(palette, i);
-      // Find min and max values from x.data
-      const min = Math.min(...x.data.map((y: any) => y.field ?? Infinity));
-      const max = Math.max(...x.data.map((y: any) => y.field ?? -Infinity));
-      if (min < this.min) this.min = min;
-      if (max > this.max) this.max = max;
-      // Get fill type
-      const fill = get(serie, 'fill', null);
-      let gradient: CanvasGradient | undefined;
-      if (fill === 'gradient') {
-        const chartArea = this.chart?.chart?.chartArea as ChartArea;
-        const ctx = this.chart?.chart?.canvas.getContext('2d');
-        gradient = ctx?.createLinearGradient(
-          0,
-          chartArea.bottom,
-          0,
-          chartArea.top
-        );
-        if (color) {
-          gradient?.addColorStop(1, color);
-          gradient?.addColorStop(0, color.slice(0, -3) + ' 0.05)');
+      //if the serie is enabled, get the data
+      if (serie.enable != false) {
+        // Get color
+        const color: any = get(serie, 'color', null) || getColor(palette, i);
+        // Find min and max values from x.data
+        const min = Math.min(...x.data.map((y: any) => y.field ?? Infinity));
+        const max = Math.max(...x.data.map((y: any) => y.field ?? -Infinity));
+        if (min < this.min) this.min = min;
+        if (max > this.max) this.max = max;
+        // Get fill type
+        const fill = get(serie, 'fill', null);
+        let gradient: CanvasGradient | undefined;
+        if (fill === 'gradient') {
+          const chartArea = this.chart?.chart?.chartArea as ChartArea;
+          const ctx = this.chart?.chart?.canvas.getContext('2d');
+          gradient = ctx?.createLinearGradient(
+            0,
+            chartArea.bottom,
+            0,
+            chartArea.top
+          );
+          if (color) {
+            gradient?.addColorStop(1, color);
+            gradient?.addColorStop(0, color.slice(0, -3) + ' 0.05)');
+          }
         }
-      }
-      // Get interpolation mode
-      const interpolation = get<Interpolation>(
-        serie,
-        'interpolation',
-        'linear'
-      );
+        // Get interpolation mode
+        const interpolation = get<Interpolation>(
+          serie,
+          'interpolation',
+          'linear'
+        );
 
-      return {
-        ...x,
-        color,
-        backgroundColor: gradient || color,
-        borderColor: color,
-        pointRadius: 5,
-        pointHoverRadius: 8,
-        pointBackgroundColor: color,
-        pointHoverBackgroundColor: color ? addTransparency(color) : undefined,
-        pointBorderColor: color,
-        pointBorderWidth: 2,
-        pointHoverBorderColor: color,
-        pointHoverBorderWidth: 2,
-        ...(interpolation === 'cubic' && { tension: 0.4 }),
-        ...(interpolation === 'step' && {
-          stepped: get<StepInterpolation>(serie, 'stepped', 'before'),
-        }),
-        fill: !!fill,
-      };
+        return {
+          ...x,
+          color,
+          backgroundColor: gradient || color,
+          borderColor: color,
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          pointBackgroundColor: color,
+          pointHoverBackgroundColor: color ? addTransparency(color) : undefined,
+          pointBorderColor: color,
+          pointBorderWidth: 2,
+          pointHoverBorderColor: color,
+          pointHoverBorderWidth: 2,
+          ...(interpolation === 'cubic' && { tension: 0.4 }),
+          ...(interpolation === 'step' && {
+            stepped: get<StepInterpolation>(serie, 'stepped', 'before'),
+          }),
+          fill: !!fill,
+        };
+      }
     });
+    //remove the hidden series
+    this.chartData.datasets = this.chartData.datasets.filter(Boolean);
     this.setOptions();
     this.chart?.update();
   }

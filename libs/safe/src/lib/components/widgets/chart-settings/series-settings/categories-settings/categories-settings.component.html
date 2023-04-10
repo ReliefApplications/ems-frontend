@@ -6,7 +6,9 @@
       [formGroup]="$any(control)"
       class="flex items-center justify-between p-2 rounded-lg border border-gray-300"
     >
-      <div>{{ control.value.category }}</div>
+      <div>
+        <mat-slide-toggle formControlName="enable">{{ control.value.category }}</mat-slide-toggle>
+      </div>
       <div class="flex flex-col">
         <!-- todo(translate) -->
         <span class="text-gray-500 mb-1 text-xs">Color</span>

@@ -104,6 +104,16 @@ export class SafePieDonutChartComponent implements OnChanges {
       const transparentColors = colors.map((color: string) =>
         addTransparency(color)
       );
+
+      //disable values from categories that are hidded
+      categories.map((val: any) => {
+        const i = data.findIndex((el: any) => el.category === val.category);
+        if (val.enable == false) {
+          data.splice(i, 1);
+          colors.splice(i, 1);
+          transparentColors.splice(i, 1);
+        }
+      });
       return {
         data,
         backgroundColor: colors,
@@ -112,9 +122,26 @@ export class SafePieDonutChartComponent implements OnChanges {
         hoverOffset: 4,
       };
     });
-    this.chartData.labels = flatten(
-      this.series.map((x) => x.data.map((y: any) => y.category))
+
+    const arrayLabels = this.series.map((x) =>
+      x.data.map((y: any) => y.category)
     );
+    //disable labels from categories that are hidded
+    this.series.map((x) => {
+      const serie = series.find(
+        (serie: any) =>
+          isEqual(serie.serie, x.name) || (isNil(serie.serie) && isNil(x.name))
+      );
+      const categories = get(serie, 'categories', []);
+      categories.map((y: any) => {
+        const i = arrayLabels[0].indexOf(y.category);
+        if (y.enable == false) {
+          arrayLabels[0].splice(i, 1);
+        }
+      });
+    });
+    this.chartData.labels = flatten(arrayLabels);
+
     this.setOptions();
     this.chart?.update();
   }

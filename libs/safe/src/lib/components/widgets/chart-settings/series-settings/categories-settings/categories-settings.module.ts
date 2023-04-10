@@ -4,7 +4,11 @@ import { CategoriesSettingsComponent } from './categories-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ColorPickerModule } from '@progress/kendo-angular-inputs';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 
+/**
+ *
+ */
 @NgModule({
   declarations: [CategoriesSettingsComponent],
   imports: [
@@ -13,6 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     ColorPickerModule,
     TranslateModule,
+    MatSlideToggleModule,
   ],
   exports: [CategoriesSettingsComponent],
 })

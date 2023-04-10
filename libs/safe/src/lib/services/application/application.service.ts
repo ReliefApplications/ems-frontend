@@ -168,6 +168,7 @@ export class SafeApplicationService {
    * @param translate Angular translate service
    * @param restService Shared rest service.
    * @param downloadService Shared download service
+   * @param layoutService
    */
   constructor(
     @Inject('environment') environment: any,

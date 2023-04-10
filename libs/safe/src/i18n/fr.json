@@ -1145,6 +1145,7 @@
 					},
 					"position": "Position",
 					"series": {
+						"showSerie": "Afficher la serie",
 						"stack": {
 							"enable": "Empiler les séries",
 							"usePercentage": "Utiliser des pourcentages"
