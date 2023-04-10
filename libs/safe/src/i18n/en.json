@@ -1112,7 +1112,10 @@
 			},
 			"settings": {
 				"chart": {
+					"auto": "auto",
 					"axes": "Axes",
+					"categories": "Categories",
+					"color": "Color",
 					"grid": {
 						"title": "Gridlines",
 						"x": {
@@ -1132,12 +1135,17 @@
 					},
 					"legend": "Legend",
 					"orientation": "Orientation",
+					"other": "Other",
 					"palette": {
 						"enable": "Use Custom Palette",
 						"title": "Color palette"
 					},
 					"position": "Position",
 					"series": {
+						"interpolation": {
+							"step": "Step interpolation",
+							"title": "Interpolation"
+						},
 						"stack": {
 							"enable": "Plot series",
 							"usePercentage": "Use percentage"
