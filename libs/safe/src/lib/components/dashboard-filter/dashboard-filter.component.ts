@@ -102,8 +102,9 @@ export class SafeDashboardFilterComponent implements AfterViewInit {
    */
   public onEditFilter() {
     const dialogRef = this.dialog.open(SafeFilterBuilderComponent, {
-      height: '100%',
+      height: '90%',
       width: '100%',
+      panelClass: 'edit-filters-modal',
       data: { surveyJson: this.surveyJson },
     });
     dialogRef.afterClosed().subscribe((surveyJson) => {
@@ -115,9 +116,9 @@ export class SafeDashboardFilterComponent implements AfterViewInit {
 
       const survey = this.survey;
 
-      this.survey.onValueChanged.add(function () {
+      this.survey.onValueChanged.add(() => {
         // loop through all questions in the survey
-        survey.getAllQuestions().forEach(function (question) {
+        survey.getAllQuestions().forEach((question) => {
           // retrieve the current value of the question and log it to the console
           console.log(question.name + ': ' + question.value);
         });

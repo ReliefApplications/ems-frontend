@@ -18,12 +18,62 @@ interface DialogData {
  * Commented types are not yet implemented.
  */
 const QUESTION_TYPES = [
+  'text',
   'checkbox',
   'radiogroup',
   'dropdown',
   'tagbox',
+  'comment',
+  // 'rating',
+  // 'ranking',
+  // 'imagepicker',
   'boolean',
+  'image',
+  'html',
+  // 'signaturepad',
+  'expression',
+  'matrix',
+  'matrixdropdown',
+  'matrixdynamic',
+  'multipletext',
+  'panel',
+  'paneldynamic',
 ];
+
+/**
+ * Allowed properties for a core question in a child form.
+ */
+const CORE_QUESTION_ALLOWED_PROPERTIES = [
+  'width',
+  'maxWidth',
+  'minWidth',
+  'startWithNewLine',
+  'indent',
+  'page',
+  'titleLocation',
+  'descriptionLocation',
+  'state',
+  'defaultValue',
+  'defaultValueExpression',
+  'relatedName',
+  'addRecord',
+  'addTemplate',
+  'Search resource table',
+  'visible',
+  'readOnly',
+  'isRequired',
+  'placeHolder',
+  'enableIf',
+  'visibleIf',
+  'tooltip',
+  'referenceData',
+  'referenceDataDisplayField',
+  'referenceDataFilterFilterFromQuestion',
+  'referenceDataFilterForeignField',
+  'referenceDataFilterFilterCondition',
+  'referenceDataFilterLocalField',
+];
+
 /**
  * Filter builder component
  */
@@ -71,7 +121,20 @@ export class SafeFilterBuilderComponent implements OnInit {
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'none';
     this.surveyCreator.haveCommercialLicense = true;
+    this.surveyCreator.survey.showQuestionNumbers = 'off';
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
+
+    // Block core fields edition
+    this.surveyCreator.onShowingProperty.add((sender: any, opt: any) => {
+      const obj = opt.obj;
+      if (!obj || !obj.page) {
+        return;
+      }
+      // If it is a core field
+      if (!CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
+        opt.canShow = false;
+      }
+    });
   }
 
   /**

@@ -65,3 +65,9 @@
     @extend .dashboard-filter-x-axis;
   }
 }
+
+::ng-deep .edit-filters-modal {
+  mat-dialog-container {
+    margin: auto;
+  }
+}
