@@ -1,0 +1,91 @@
+<safe-modal size="medium" [closable]="true">
+  <h2>{{ 'models.dashboard.context.datasource.title' | translate }}</h2>
+
+  <ng-container *ngIf="form">
+    <form
+      [formGroup]="form"
+      class="flex justify-between gap-x-2 w-full md:flex-row flex-col m-2"
+    >
+      <!-- Origin -->
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>{{
+          'models.dashboard.context.origin' | translate
+        }}</mat-label>
+        <mat-select formControlName="origin">
+          <mat-option value="resource">{{
+            'common.resource.one' | translate
+          }}</mat-option>
+          <mat-option value="refData">{{
+            'common.referenceData.one' | translate
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Resource selection -->
+      <mat-form-field
+        appearance="outline"
+        class="grow"
+        *ngIf="form.get('origin')?.value === 'resource'"
+      >
+        <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
+
+        <safe-graphql-select
+          *ngIf="resourcesQuery"
+          valueField="id"
+          textField="name"
+          [query]="resourcesQuery"
+          formControlName="resource"
+          [selectedElements]="[resource]"
+          (searchChange)="onResourceSearchChange($event)"
+          [filterable]="true"
+        >
+        </safe-graphql-select>
+      </mat-form-field>
+
+      <!-- Reference data selection  -->
+      <mat-form-field
+        appearance="outline"
+        class="grow"
+        *ngIf="form.get('origin')?.value === 'refData'"
+      >
+        <mat-label>{{ 'common.referenceData.one' | translate }}</mat-label>
+        <safe-graphql-select
+          *ngIf="refDatasQuery"
+          valueField="id"
+          textField="name"
+          [query]="refDatasQuery"
+          formControlName="refData"
+          [selectedElements]="[refData]"
+        >
+        </safe-graphql-select>
+      </mat-form-field>
+
+      <!-- Field selection -->
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>{{
+          'models.dashboard.context.displayField' | translate
+        }}</mat-label>
+        <mat-select formControlName="displayField">
+          <mat-option *ngFor="let field of availableFields" [value]="field">
+            {{ field }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+    <safe-button
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      cdkFocusInitial
+      [disabled]="!form.valid || !!form.get('displayField')?.disabled"
+      class="ml-auto"
+    >
+      {{
+        (data
+          ? 'models.dashboard.context.datasource.update'
+          : 'models.dashboard.context.datasource.set'
+        ) | translate
+      }}
+    </safe-button>
+  </ng-container>
+</safe-modal>

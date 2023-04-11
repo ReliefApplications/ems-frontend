@@ -246,7 +246,7 @@ export class SafeReferenceDataService {
    * @param referenceData reference data to query items of
    * @returns list of items
    */
-  private async fetchItems(referenceData: ReferenceData): Promise<any[]> {
+  public async fetchItems(referenceData: ReferenceData): Promise<any[]> {
     const cacheKey = referenceData.id || '';
     // Initialization
     let items: any;
