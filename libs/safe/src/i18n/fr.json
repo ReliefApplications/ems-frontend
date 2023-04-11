@@ -182,7 +182,7 @@
 			"objectNotDuplicated": "L'objet de type {{type}} n'a pas pu être dupliqué. {{error}}",
 			"objectNotFound": "{{name}} n'a pas été trouvé.",
 			"objectNotInvited": "L'invitation vers {{name}} a échoué.",
-			"objectNotReordered": "{{type}} pas réorganisé. {{error}}",
+			"objectNotReordered": "{{type}} non réorganisé. {{error}}",
 			"objectNotRestored": "{{type}} non restauré. {{error}}",
 			"objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
 			"objectReordered": "L'objet de type {{type}} a été réorganisé.",
