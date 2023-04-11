@@ -1138,6 +1138,7 @@
 					},
 					"position": "Position",
 					"series": {
+						"showSerie": "Show serie",
 						"stack": {
 							"enable": "Plot series",
 							"usePercentage": "Use percentage"
@@ -1150,6 +1151,9 @@
 					"title": {
 						"color": "Title color",
 						"format": "Title format"
+					},
+					"tooltip": {
+						"palette": "Palette provides default colors to chart elements if not manually set."
 					},
 					"type": "Chart Type",
 					"xAxis": "X Axis",
@@ -1165,6 +1169,7 @@
 						"delete": "Delete records",
 						"export": "Export records",
 						"inline": "Inline edition",
+						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",
 						"title": "Enabled actions",
@@ -1322,7 +1327,10 @@
 						"display": {
 							"dataSource": "Show link to data source",
 							"header": "Header",
-							"title": "Display"
+							"title": "Display",
+							"tooltip": {
+								"datasource": "Add a button in widget's header to view card's data source"
+							}
 						},
 						"textEditor": {
 							"title": "Text editor"

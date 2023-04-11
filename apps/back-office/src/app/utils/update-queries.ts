@@ -60,7 +60,8 @@ export const updateQueryUniqueValues = <T>(
       currentDataContent[0],
       uniqueComparatorProperty
     );
-    response = unionBy(previousDataContent, currentDataContent, refPath);
+    // todo: type issue
+    response = unionBy(previousDataContent, currentDataContent, refPath as any);
   }
   return response;
 };

@@ -86,6 +86,7 @@ import {
   UPDATE_CUSTOM_NOTIFICATION,
 } from '../application-notifications/graphql/mutations';
 import { SafeRestService } from '../rest/rest.service';
+import { SafeLayoutService } from '../layout/layout.service';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -112,6 +113,7 @@ export class SafeApplicationService {
 
   /** Application custom style */
   public customStyle?: HTMLStyleElement;
+  public customStyleEdited = false;
 
   /** @returns Path to download application users */
   get usersDownloadPath(): string {
@@ -166,6 +168,7 @@ export class SafeApplicationService {
    * @param translate Angular translate service
    * @param restService Shared rest service.
    * @param downloadService Shared download service
+   * @param layoutService Shared layout service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -175,7 +178,8 @@ export class SafeApplicationService {
     private router: Router,
     private translate: TranslateService,
     private restService: SafeRestService,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private layoutService: SafeLayoutService
   ) {
     this.environment = environment;
   }
@@ -202,6 +206,7 @@ export class SafeApplicationService {
         this.application.next(data.application);
         const application = this.application.getValue();
         this.getCustomStyle();
+        this.customStyleEdited = false;
         if (data.application.locked) {
           if (!application?.lockedByUser) {
             this.snackBar.openSnackBar(
@@ -256,6 +261,7 @@ export class SafeApplicationService {
     if (this.customStyle) {
       document.getElementsByTagName('body')[0].removeChild(this.customStyle);
       this.customStyle = undefined;
+      this.layoutService.closeRightSidenav = true;
     }
     const application = this.application.getValue();
     this.application.next(null);

@@ -1138,6 +1138,7 @@
 					},
 					"position": "******",
 					"series": {
+						"showSerie": "******",
 						"stack": {
 							"enable": "******",
 							"usePercentage": "******"
@@ -1150,6 +1151,9 @@
 					"title": {
 						"color": "******",
 						"format": "******"
+					},
+					"tooltip": {
+						"palette": "******"
 					},
 					"type": "******",
 					"xAxis": "******",
@@ -1165,6 +1169,7 @@
 						"delete": "******",
 						"export": "******",
 						"inline": "******",
+						"remove": "******",
 						"show": "******",
 						"showDetails": "******",
 						"title": "******",
@@ -1322,7 +1327,10 @@
 						"display": {
 							"dataSource": "******",
 							"header": "******",
-							"title": "******"
+							"title": "******",
+							"tooltip": {
+								"datasource": "******"
+							}
 						},
 						"textEditor": {
 							"title": "******"

@@ -135,10 +135,10 @@ const replaceRecordFields = (
                 new Date(value).toLocaleString().split(',')[0],
                 field
               ) +
-              +'</span>';
+              '</span>';
             break;
           case 'datetime':
-            const date = new Date(parseInt(value, 10));
+            const date = new Date(value);
             const hour =
               date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
             const minutes =
@@ -146,6 +146,7 @@ const replaceRecordFields = (
                 ? '0' + date.getMinutes()
                 : date.getMinutes();
             const time = date.getHours() >= 12 ? 'PM' : 'AM';
+
             convertedValue =
               `<span style='${style}'>` +
               applyLayoutFormat(

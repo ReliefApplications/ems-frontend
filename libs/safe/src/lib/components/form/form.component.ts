@@ -84,7 +84,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
    * @param restService This is a service that allows you to make http requests.
    * @param authService This is the service that handles authentication.
-   * @param layoutService This is the service that will be used to create the layout of the form.
+   * @param layoutService Shared layout service
    * @param formBuilderService This is the service that will be used to build forms.
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service used to translate text

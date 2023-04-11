@@ -1145,6 +1145,7 @@
 					},
 					"position": "Position",
 					"series": {
+						"showSerie": "Afficher la serie",
 						"stack": {
 							"enable": "Empiler les séries",
 							"usePercentage": "Utiliser des pourcentages"
@@ -1157,6 +1158,9 @@
 					"title": {
 						"color": "Couleur",
 						"format": "Format"
+					},
+					"tooltip": {
+						"palette": "Les couleurs de la palette sont appliquées par défaut aux éléments du graphqiue, mais peuvent être manuellement changées pour chaque série et catégorie."
 					},
 					"type": "Graphique",
 					"xAxis": "Axe X",
@@ -1172,6 +1176,7 @@
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
 						"inline": "Modifier par ligne",
+						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
@@ -1329,7 +1334,10 @@
 						"display": {
 							"dataSource": "Afficher le lien vers la source de données",
 							"header": "Titre",
-							"title": "Affichage"
+							"title": "Affichage",
+							"tooltip": {
+								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
+							}
 						},
 						"preview": {},
 						"textEditor": {
