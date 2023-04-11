@@ -143,6 +143,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
           index,
           event.currentIndex
         );
+        this.selectedFields[event.currentIndex].hidden = false;
         this.form.insert(
           event.currentIndex,
           addNewField(this.selectedFields[event.currentIndex], true)
