@@ -27,6 +27,5 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSlideToggleModule,
     TranslateModule,
   ],
-  exports: [SafeSeriesSettingsComponent],
 })
 export class SeriesSettingsModule {}
