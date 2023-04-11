@@ -61,5 +61,11 @@ export class EditTemplateModalComponent implements OnInit {
       subject: [get(this.data, 'content.subject', null), Validators.required],
       body: [get(this.data, 'content.body', ''), Validators.required],
     });
+    // Set autocomplete from fields for template tinymc editor
+    const fields = get(this.data, 'fields', []);
+    if (fields.length) {
+      const keys = (fields as any[]).map((field) => `{{${field.label}}}`);
+      this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
+    }
   }
 }

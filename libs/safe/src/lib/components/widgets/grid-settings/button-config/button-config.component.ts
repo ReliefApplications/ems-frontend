@@ -408,6 +408,9 @@ export class ButtonConfigComponent
   /** Opens modal for adding a new email template */
   public addEmailTemplate() {
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
+      data: {
+        fields: this.formGroup.value.bodyFields,
+      },
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe((value) => {

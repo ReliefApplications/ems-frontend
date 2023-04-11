@@ -9,7 +9,7 @@ import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { FIELD_EDITOR_CONFIG } from '../../const/tinymce.const';
+import { INLINE_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
 import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
 /**
@@ -35,7 +35,7 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
   public resourceFields: any[] = [];
 
   /** tinymce editor */
-  public editor: any = FIELD_EDITOR_CONFIG;
+  public editorConfig: any = INLINE_EDITOR_CONFIG;
 
   /**
    * Modal to edit Calculated field.
@@ -56,9 +56,9 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
     private translate: TranslateService
   ) {
     // Set the editor base url based on the environment file
-    this.editor.base_url = editorService.url;
+    this.editorConfig.base_url = editorService.url;
     // Set the editor language
-    this.editor.language = editorService.language;
+    this.editorConfig.language = editorService.language;
   }
 
   ngOnInit(): void {
@@ -77,7 +77,7 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
       ...getInfoKeys(),
       ...getDataKeys(this.resourceFields),
     ];
-    this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
+    this.editorService.addCalcAndKeysAutoCompleter(this.editorConfig, keys);
   }
 
   /**

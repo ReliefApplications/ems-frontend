@@ -6,8 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeModalModule } from '../ui/modal/modal.module';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-
+import { SafeEditorControlComponent } from '../editor-control/editor-control.component';
 /**
  * Modal to edit Calculated field settings.
  */
@@ -21,11 +20,8 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
     MatInputModule,
     MatSelectModule,
     SafeModalModule,
-    EditorModule,
+    SafeEditorControlComponent,
   ],
   exports: [SafeEditCalculatedFieldModalComponent],
-  providers: [
-    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
-  ],
 })
 export class SafeEditCalculatedFieldModalModule {}
