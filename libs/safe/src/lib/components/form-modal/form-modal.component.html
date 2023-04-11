@@ -32,10 +32,11 @@
       </mat-tab-group>
     </div>
   </ng-container>
-  <mat-dialog-content
-    class="grow max-h-full"
-    #formContainer
-  ></mat-dialog-content>
+  <mat-dialog-content class="grow max-h-full" #formContainer>
+    <div *ngIf="loading" class="h-full flex">
+      <safe-spinner class="m-auto block"></safe-spinner>
+    </div>
+  </mat-dialog-content>
   <mat-dialog-actions align="end">
     <safe-button (click)="onClose()" variant="danger">{{
       'common.cancel' | translate

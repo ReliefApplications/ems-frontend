@@ -377,6 +377,7 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
 			}
@@ -396,6 +397,7 @@
 			}
 		},
 		"application": {
+			"customStyling": "******",
 			"dashboard": {
 				"empty": "******"
 			},
@@ -1036,7 +1038,8 @@
 					"aggregation": {
 						"invalid": "******"
 					}
-				}
+				},
+				"other": "******"
 			},
 			"expand": "******",
 			"grid": {
@@ -1109,7 +1112,10 @@
 			},
 			"settings": {
 				"chart": {
+					"auto": "******",
 					"axes": "******",
+					"categories": "******",
+					"color": "******",
 					"grid": {
 						"title": "******",
 						"x": {
@@ -1129,12 +1135,18 @@
 					},
 					"legend": "******",
 					"orientation": "******",
+					"other": "******",
 					"palette": {
 						"enable": "******",
 						"title": "******"
 					},
 					"position": "******",
 					"series": {
+						"interpolation": {
+							"step": "******",
+							"title": "******"
+						},
+						"showSerie": "******",
 						"stack": {
 							"enable": "******",
 							"usePercentage": "******"
@@ -1147,6 +1159,9 @@
 					"title": {
 						"color": "******",
 						"format": "******"
+					},
+					"tooltip": {
+						"palette": "******"
 					},
 					"type": "******",
 					"xAxis": "******",
@@ -1162,6 +1177,7 @@
 						"delete": "******",
 						"export": "******",
 						"inline": "******",
+						"remove": "******",
 						"show": "******",
 						"showDetails": "******",
 						"title": "******",
@@ -1319,7 +1335,10 @@
 						"display": {
 							"dataSource": "******",
 							"header": "******",
-							"title": "******"
+							"title": "******",
+							"tooltip": {
+								"datasource": "******"
+							}
 						},
 						"textEditor": {
 							"title": "******"
@@ -1349,7 +1368,9 @@
 				"dataSource": "******",
 				"errors": {
 					"invalidSource": "******"
-				}
+				},
+				"viewAsCards": "******",
+				"viewAsGrid": "******"
 			}
 		}
 	},

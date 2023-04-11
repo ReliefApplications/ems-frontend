@@ -136,7 +136,7 @@ export class SafeLayoutComponent
    * @param router The Angular Router service
    * @param authService This is the service that handles authentication
    * @param notificationService This is the service that handles the notifications.
-   * @param layoutService This is the service that handles the layout of the application.
+   * @param layoutService Shared layout service
    * @param confirmService This is the service that is used to display a confirm window.
    * @param dialog This is the dialog service provided by Angular Material
    * @param translate This is the Angular service that translates text
@@ -191,14 +191,17 @@ export class SafeLayoutComponent
 
     this.layoutService.rightSidenav$.subscribe((view) => {
       if (view && this.rightSidenav) {
-        // this is necessary to prevent have more than one history component at the same time.
+        // avoid to have multiple right sidenav components at same time
         this.layoutService.setRightSidenav(null);
         this.showSidenav = true;
         const componentRef: ComponentRef<any> =
           this.rightSidenav.createComponent(view.component);
-        for (const [key, value] of Object.entries(view.inputs)) {
-          componentRef.instance[key] = value;
+        if (view.inputs) {
+          for (const [key, value] of Object.entries(view.inputs)) {
+            componentRef.instance[key] = value;
+          }
         }
+
         componentRef.instance.cancel.subscribe(() => {
           componentRef.destroy();
           this.layoutService.setRightSidenav(null);

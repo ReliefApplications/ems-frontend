@@ -135,7 +135,7 @@
 			"accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
 			"alreadyExists": "Cet objet {{type}} {{value}} existe déjà dans cette application.",
 			"copiedToClipboard": "Copié !",
-			"dataNotRecovered": "todo(translation)",
+			"dataNotRecovered": "Échec de la récupération des données",
 			"dataRecovered": "Les données ont été récupérées !",
 			"email": {
 				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
@@ -182,11 +182,11 @@
 			"objectNotDuplicated": "L'objet de type {{type}} n'a pas pu être dupliqué. {{error}}",
 			"objectNotFound": "{{name}} n'a pas été trouvé.",
 			"objectNotInvited": "L'invitation vers {{name}} a échoué.",
-			"objectNotReordered": "todo(translation)",
-			"objectNotRestored": "todo(translation)",
+			"objectNotReordered": "{{type}} non réorganisé. {{error}}",
+			"objectNotRestored": "{{type}} non restauré. {{error}}",
 			"objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
 			"objectReordered": "L'objet de type {{type}} a été réorganisé.",
-			"objectRestored": "todo(translation)",
+			"objectRestored": "{{type}} restauré.",
 			"objectUpdated": "{{value}} {{type}} a été modifié.",
 			"platformAccessNotGranted": "Vous n'avez pas d'accès valide à cette plateforme.",
 			"readAll": "Tout marqué comme lu",
@@ -377,6 +377,7 @@
 				"custom": "Définit une fonction ou une expression d'agrégation personnalisée en JavaScript.",
 				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
 				"group": "Regroupe les documents mis en entrée par l'expression 'id' qui a été spécifiée et qui sort un document pour chaque regroupement.",
+				"selectedFields": "Seuls les champs non utilisés peuvent être supprimés.",
 				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.",
 				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
 			}
@@ -396,6 +397,7 @@
 			}
 		},
 		"application": {
+			"customStyling": "Style personnalisé",
 			"dashboard": {
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée."
 			},
@@ -412,12 +414,12 @@
 					"confirmationMessage": "Voulez-vous vraiment supprimer la page {{name}}?"
 				},
 				"notReordered": {
-					"plural": "todo(translation)",
-					"singular": "todo(translation)"
+					"plural": "Les pages n'ont pas été réorganisées. {{error}}",
+					"singular": "La page n'a pas été réorganisée. {{error}}"
 				},
 				"reordered": {
-					"plural": "todo(translation)",
-					"singular": "todo(translation)"
+					"plural": "Les pages ont été réorganisées avec succès.",
+					"singular": "La page a été réorganisée avec succès."
 				}
 			},
 			"positionAttribute": {
@@ -1017,20 +1019,20 @@
 				"description": "Sélectionner des utilisateurs existants, inviter de nouveaux utilisateurs ou en importer depuis un fichier Excel"
 			},
 			"onDelete": {
-				"plural": "todo(translation)",
-				"singular": "todo(translation)"
+				"plural": "Les utilisateurs ont été correctement supprimés.",
+				"singular": "L'utilisateur a été correctement supprimé."
 			},
 			"onInvite": {
-				"plural": "todo(translation)",
-				"singular": "todo(translation)"
+				"plural": "Les utilisateurs ont été invités.",
+				"singular": "L'utilisateur a été invité."
 			},
 			"onNotDelete": {
-				"plural": "todo(translation)",
-				"singular": "todo(translation)"
+				"plural": "Les utilisateurs n'ont pas été supprimés. {{error}}",
+				"singular": "L'utilisateur a été supprimé. {{error}}"
 			},
 			"onNotInvite": {
-				"plural": "todo(translation)",
-				"singular": "todo(translation)"
+				"plural": "Les utilisateurs n'ont pas été invités. {{error}}",
+				"singular": "L'utilisateur n'a pas été invité. {{error}}"
 			},
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page d'utilisateurs"
@@ -1042,7 +1044,8 @@
 					"aggregation": {
 						"invalid": "Agrégation invalide"
 					}
-				}
+				},
+				"other": "Autre"
 			},
 			"expand": "Étendre",
 			"grid": {
@@ -1116,7 +1119,10 @@
 			},
 			"settings": {
 				"chart": {
+					"auto": "auto",
 					"axes": "Axes",
+					"categories": "Catégories",
+					"color": "Couleur",
 					"grid": {
 						"title": "Grille",
 						"x": {
@@ -1136,12 +1142,18 @@
 					},
 					"legend": "Légende",
 					"orientation": "Orientation",
+					"other": "Autre",
 					"palette": {
 						"enable": "Configurer la palette",
 						"title": "Palette de couleurs"
 					},
 					"position": "Position",
 					"series": {
+						"interpolation": {
+							"step": "Étape d'interpolation",
+							"title": "Interpolation"
+						},
+						"showSerie": "Afficher la serie",
 						"stack": {
 							"enable": "Empiler les séries",
 							"usePercentage": "Utiliser des pourcentages"
@@ -1154,6 +1166,9 @@
 					"title": {
 						"color": "Couleur",
 						"format": "Format"
+					},
+					"tooltip": {
+						"palette": "Les couleurs de la palette sont appliquées par défaut aux éléments du graphqiue, mais peuvent être manuellement changées pour chaque série et catégorie."
 					},
 					"type": "Graphique",
 					"xAxis": "Axe X",
@@ -1169,6 +1184,7 @@
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
 						"inline": "Modifier par ligne",
+						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
@@ -1326,7 +1342,10 @@
 						"display": {
 							"dataSource": "Afficher le lien vers la source de données",
 							"header": "Titre",
-							"title": "Affichage"
+							"title": "Affichage",
+							"tooltip": {
+								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
+							}
 						},
 						"preview": {},
 						"textEditor": {
@@ -1357,7 +1376,9 @@
 				"dataSource": "Source",
 				"errors": {
 					"invalidSource": "La source de données est invalide : veuillez modifier les paramètres."
-				}
+				},
+				"viewAsCards": "Afficher en cartes",
+				"viewAsGrid": "Afficher en grille"
 			}
 		}
 	},
@@ -1533,7 +1554,7 @@
 			"id": "ID de l'application",
 			"new": "Nouvelle application",
 			"notifications": {
-				"notPublished": "todo(translation)",
+				"notPublished": "Candidature non publiée.",
 				"published": "L'application {{value}} a été publiée.",
 				"updated": "Application modifiée."
 			},
@@ -1612,7 +1633,7 @@
 			"notifications": {
 				"conversionIncomplete": "Il n'y a pas de correspondance entre le(s) enregistrement(s) sélectionné(s) et certains champs de ce formulaire.",
 				"rowsAdded": "{{length}} ligne(s) ont été ajoutées à {{field}} dans l'enregistrement {{value}}.",
-				"rowsNotAdded": "todo(translation)",
+				"rowsNotAdded": "Erreur lors de l'ajout de ligne(s).",
 				"uploadSuccessful": "Enregistrements importés avec succès"
 			},
 			"restore": "Restaurer"
@@ -1772,7 +1793,7 @@
 		},
 		"profile": {
 			"notifications": {
-				"notUpdated": "todo(translation)",
+				"notUpdated": "Erreur lors de l'enregistrement des préférences.",
 				"updated": "Préférences sauvegardées."
 			},
 			"title": "Votre profil"

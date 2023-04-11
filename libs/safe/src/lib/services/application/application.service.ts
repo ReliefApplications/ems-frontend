@@ -6,6 +6,7 @@ import { Role } from '../../models/user.model';
 import { Page, ContentType } from '../../models/page.model';
 import { Application } from '../../models/application.model';
 import { Channel } from '../../models/channel.model';
+import { HttpHeaders } from '@angular/common/http';
 import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import {
   AddPageMutationResponse,
@@ -84,6 +85,8 @@ import {
   UpdateCustomNotificationMutationResponse,
   UPDATE_CUSTOM_NOTIFICATION,
 } from '../application-notifications/graphql/mutations';
+import { SafeRestService } from '../rest/rest.service';
+import { SafeLayoutService } from '../layout/layout.service';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -107,6 +110,10 @@ export class SafeApplicationService {
   private lockSubscription?: Subscription;
   /** Current environment */
   private environment: any;
+
+  /** Application custom style */
+  public customStyle?: HTMLStyleElement;
+  public customStyleEdited = false;
 
   /** @returns Path to download application users */
   get usersDownloadPath(): string {
@@ -159,7 +166,9 @@ export class SafeApplicationService {
    * @param authService Shared authentication service
    * @param router Angular router
    * @param translate Angular translate service
+   * @param restService Shared rest service.
    * @param downloadService Shared download service
+   * @param layoutService Shared layout service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -168,7 +177,9 @@ export class SafeApplicationService {
     private authService: SafeAuthService,
     private router: Router,
     private translate: TranslateService,
-    private downloadService: SafeDownloadService
+    private restService: SafeRestService,
+    private downloadService: SafeDownloadService,
+    private layoutService: SafeLayoutService
   ) {
     this.environment = environment;
   }
@@ -194,6 +205,8 @@ export class SafeApplicationService {
           this.authService.extendAbilityForApplication(data.application);
         this.application.next(data.application);
         const application = this.application.getValue();
+        this.getCustomStyle();
+        this.customStyleEdited = false;
         if (data.application.locked) {
           if (!application?.lockedByUser) {
             this.snackBar.openSnackBar(
@@ -245,6 +258,11 @@ export class SafeApplicationService {
    * Leaves application and unsubscribe to application changes.
    */
   leaveApplication(): void {
+    if (this.customStyle) {
+      document.getElementsByTagName('body')[0].removeChild(this.customStyle);
+      this.customStyle = undefined;
+      this.layoutService.closeRightSidenav = true;
+    }
     const application = this.application.getValue();
     this.application.next(null);
     this.applicationSubscription?.unsubscribe();
@@ -1808,5 +1826,30 @@ export class SafeApplicationService {
           if (callback) callback(res);
         });
     }
+  }
+
+  /** Check if open application has custom style to apply */
+  getCustomStyle(): void {
+    const application = this.application.getValue();
+    const path = `style/application/${application?.id}`;
+    const headers = new HttpHeaders({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      'Content-Type': 'application/json',
+    });
+    this.restService.get(path, { responseType: 'blob', headers }).subscribe({
+      next: async (res) => {
+        if (res.type === 'application/octet-stream') {
+          const styleFromFile = await res.text();
+          this.customStyle = document.createElement('style');
+          this.customStyle.innerText = styleFromFile;
+          document
+            .getElementsByTagName('body')[0]
+            .appendChild(this.customStyle);
+        }
+      },
+      error: (err) => {
+        this.snackBar.openSnackBar(err.message, { error: true });
+      },
+    });
   }
 }

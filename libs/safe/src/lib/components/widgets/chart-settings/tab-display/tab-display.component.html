@@ -1,82 +1,30 @@
-<form [formGroup]="formGroup">
-  <div class="flex flex-col" formGroupName="chart">
-    <h2>{{ 'common.display' | translate }}</h2>
-    <mat-accordion class="collapsible-form-group">
-      <!-- === LEGEND === -->
-      <mat-expansion-panel formGroupName="legend">
-        <mat-expansion-panel-header>
-          <mat-panel-title>{{
-            'components.widget.settings.chart.legend' | translate
-          }}</mat-panel-title>
-        </mat-expansion-panel-header>
-        <div>
-          <mat-form-field appearance="outline">
-            <mat-label>{{
-              'components.widget.settings.chart.position' | translate
-            }}</mat-label>
-            <mat-select formControlName="position">
-              <mat-select-trigger>
-                {{ chartForm.value.legend.position }}
-              </mat-select-trigger>
-              <mat-option value="none">{{
-                'components.widget.settings.chart.hideLegend' | translate
-              }}</mat-option>
-              <mat-option
-                *ngFor="let position of legendPositions"
-                value="{{ position.value }}"
-              >
-                <div class="flex">
-                  <span class="flex w-full items-center justify-between"
-                    >{{ position.value }}
-                    <safe-icon
-                      [inline]="true"
-                      icon="{{ position.icon }}"
-                    ></safe-icon>
-                  </span>
-                </div>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </mat-expansion-panel>
-      <!-- === TITLE === -->
-      <mat-expansion-panel formGroupName="title">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{ 'common.title' | translate }}
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class="flex flex-col gap-2">
-          <!-- Text -->
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{
-              'components.widget.settings.chart.text' | translate
-            }}</mat-label>
-            <input matInput formControlName="text" />
-          </mat-form-field>
-          <div class="flex gap-2 items-center">
-            <!-- Font size -->
-            <mat-form-field appearance="outline" class="flex-1">
-              <mat-label>{{
-                'components.widget.settings.chart.size' | translate
-              }}</mat-label>
-              <mat-select formControlName="size">
-                <mat-option *ngFor="let size of sizes" [value]="size">
-                  {{ size }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <!-- Position -->
-            <mat-form-field appearance="outline" class="flex-1">
+<div>
+  <h2>{{ 'common.display' | translate }}</h2>
+  <form [formGroup]="formGroup" class="flex flex-row h-full">
+    <!-- Chart options -->
+    <div class="flex flex-1 flex-col" formGroupName="chart">
+      <mat-accordion class="collapsible-form-group">
+        <!-- === LEGEND === -->
+        <mat-expansion-panel formGroupName="legend">
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{
+              'components.widget.settings.chart.legend' | translate
+            }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <div>
+            <mat-form-field appearance="outline">
               <mat-label>{{
                 'components.widget.settings.chart.position' | translate
               }}</mat-label>
               <mat-select formControlName="position">
                 <mat-select-trigger>
-                  {{ chartForm.value.title.position }}
+                  {{ chartForm.value.legend.position }}
                 </mat-select-trigger>
+                <mat-option value="none">{{
+                  'components.widget.settings.chart.hideLegend' | translate
+                }}</mat-option>
                 <mat-option
-                  *ngFor="let position of titlePositions"
+                  *ngFor="let position of legendPositions"
                   value="{{ position.value }}"
                 >
                   <div class="flex">
@@ -92,234 +40,324 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="flex gap-2 items-center">
-            <!-- Format -->
-            <div class="flex-1 flex flex-col">
-              <span class="text-gray-500 mb-1 text-xs">{{
-                'components.widget.settings.chart.title.format' | translate
-              }}</span>
-              <div class="flex">
-                <ng-container *ngIf="chartForm.get('title.bold'); let control">
-                  <safe-button
-                    icon="format_bold"
-                    (click)="onToggleStyle('title.bold')"
-                    [category]="control.value ? 'secondary' : 'tertiary'"
-                    [variant]="control.value && 'primary'"
-                    [disabled]="control.disabled"
-                  ></safe-button>
-                </ng-container>
-                <ng-container
-                  *ngIf="chartForm.get('title.italic'); let control"
-                >
-                  <safe-button
-                    icon="format_italic"
-                    (click)="onToggleStyle('title.italic')"
-                    [category]="control.value ? 'secondary' : 'tertiary'"
-                    [variant]="control.value && 'primary'"
-                    [disabled]="control.disabled"
-                  ></safe-button>
-                </ng-container>
-                <ng-container
-                  *ngIf="chartForm.get('title.underline'); let control"
-                >
-                  <safe-button
-                    (click)="onToggleStyle('title.underline')"
-                    icon="format_underline"
-                    [category]="control.value ? 'secondary' : 'tertiary'"
-                    [variant]="control.value && 'primary'"
-                    [disabled]="control.disabled"
-                  ></safe-button>
-                </ng-container>
+        </mat-expansion-panel>
+        <!-- === TITLE === -->
+        <mat-expansion-panel formGroupName="title">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ 'common.title' | translate }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="flex flex-col gap-2">
+            <!-- Text -->
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>{{
+                'components.widget.settings.chart.text' | translate
+              }}</mat-label>
+              <input matInput formControlName="text" />
+            </mat-form-field>
+            <div class="flex gap-2 items-center">
+              <!-- Font size -->
+              <mat-form-field appearance="outline" class="flex-1">
+                <mat-label>{{
+                  'components.widget.settings.chart.size' | translate
+                }}</mat-label>
+                <mat-select formControlName="size">
+                  <mat-option *ngFor="let size of sizes" [value]="size">
+                    {{ size }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <!-- Position -->
+              <mat-form-field appearance="outline" class="flex-1">
+                <mat-label>{{
+                  'components.widget.settings.chart.position' | translate
+                }}</mat-label>
+                <mat-select formControlName="position">
+                  <mat-select-trigger>
+                    {{ chartForm.value.title.position }}
+                  </mat-select-trigger>
+                  <mat-option
+                    *ngFor="let position of titlePositions"
+                    value="{{ position.value }}"
+                  >
+                    <div class="flex">
+                      <span class="flex w-full items-center justify-between"
+                        >{{ position.value }}
+                        <safe-icon
+                          [inline]="true"
+                          icon="{{ position.icon }}"
+                        ></safe-icon>
+                      </span>
+                    </div>
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="flex gap-2 items-center">
+              <!-- Format -->
+              <div class="flex-1 flex flex-col">
+                <span class="text-gray-500 mb-1 text-xs">{{
+                  'components.widget.settings.chart.title.format' | translate
+                }}</span>
+                <div class="flex">
+                  <ng-container
+                    *ngIf="chartForm.get('title.bold'); let control"
+                  >
+                    <safe-button
+                      icon="format_bold"
+                      (click)="onToggleStyle('title.bold')"
+                      [category]="control.value ? 'secondary' : 'tertiary'"
+                      [variant]="control.value && 'primary'"
+                      [disabled]="control.disabled"
+                    ></safe-button>
+                  </ng-container>
+                  <ng-container
+                    *ngIf="chartForm.get('title.italic'); let control"
+                  >
+                    <safe-button
+                      icon="format_italic"
+                      (click)="onToggleStyle('title.italic')"
+                      [category]="control.value ? 'secondary' : 'tertiary'"
+                      [variant]="control.value && 'primary'"
+                      [disabled]="control.disabled"
+                    ></safe-button>
+                  </ng-container>
+                  <ng-container
+                    *ngIf="chartForm.get('title.underline'); let control"
+                  >
+                    <safe-button
+                      (click)="onToggleStyle('title.underline')"
+                      icon="format_underline"
+                      [category]="control.value ? 'secondary' : 'tertiary'"
+                      [variant]="control.value && 'primary'"
+                      [disabled]="control.disabled"
+                    ></safe-button>
+                  </ng-container>
+                </div>
+              </div>
+              <!-- Color -->
+              <div class="flex-1 flex flex-col">
+                <span class="text-gray-500 mb-1 text-xs">{{
+                  'components.widget.settings.chart.title.color' | translate
+                }}</span>
+                <kendo-colorpicker formControlName="color"></kendo-colorpicker>
               </div>
             </div>
-            <!-- Color -->
-            <div class="flex-1 flex flex-col">
-              <span class="text-gray-500 mb-1 text-xs">{{
-                'components.widget.settings.chart.title.color' | translate
-              }}</span>
-              <kendo-colorpicker formControlName="color"></kendo-colorpicker>
-            </div>
           </div>
-        </div>
-      </mat-expansion-panel>
-      <!-- === PALETTE -->
-      <mat-expansion-panel formGroupName="palette">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{ 'components.widget.settings.chart.palette.title' | translate }}
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class="flex flex-col gap-2">
-          <mat-slide-toggle formControlName="enabled">{{
-            'components.widget.settings.chart.palette.enable' | translate
-          }}</mat-slide-toggle>
-          <safe-palette-control formControlName="value"></safe-palette-control>
-        </div>
-      </mat-expansion-panel>
-      <!-- === LABELS === -->
-      <mat-expansion-panel formGroupName="labels">
-        <mat-expansion-panel-header>
-          <mat-panel-title>{{
-            'components.widget.settings.chart.labels.title' | translate
-          }}</mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class="flex flex-col gap-2">
-          <mat-slide-toggle
-            formControlName="showCategory"
-            *ngIf="type.name === 'donut' || type.name === 'pie'"
-            >{{
-              'components.widget.settings.chart.labels.showCategory' | translate
-            }}</mat-slide-toggle
+        </mat-expansion-panel>
+        <!-- === PALETTE -->
+        <mat-expansion-panel formGroupName="palette">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ 'components.widget.settings.chart.palette.title' | translate }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="flex flex-col gap-2">
+            <mat-slide-toggle formControlName="enabled"
+              >{{ 'components.widget.settings.chart.palette.enable' | translate
+              }}<safe-icon
+                class="ml-2"
+                variant="grey"
+                [inline]="true"
+                [size]="18"
+                icon="info_outline"
+                [matTooltip]="
+                'components.widget.settings.chart.tooltip.palette' | translate
+                "
+              ></safe-icon
+            ></mat-slide-toggle>
+            <safe-palette-control
+              formControlName="value"
+            ></safe-palette-control>
+          </div>
+        </mat-expansion-panel>
+        <!-- === LABELS === -->
+        <mat-expansion-panel formGroupName="labels">
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{
+              'components.widget.settings.chart.labels.title' | translate
+            }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="flex flex-col gap-2">
+            <mat-slide-toggle
+              formControlName="showCategory"
+              *ngIf="type.name === 'donut' || type.name === 'pie'"
+              >{{
+                'components.widget.settings.chart.labels.showCategory'
+                  | translate
+              }}</mat-slide-toggle
+            >
+            <mat-slide-toggle formControlName="showValue">{{
+              'components.widget.settings.chart.labels.showValue' | translate
+            }}</mat-slide-toggle>
+            <mat-form-field
+              appearance="outline"
+              *ngIf="
+                chartForm.value.labels.showValue &&
+                (['donut', 'pie'].includes(type.name) ||
+                  (['bar', 'column'].includes(type.name) &&
+                    chartForm.value.mapping.series))
+              "
+            >
+              <mat-label>{{
+                'components.widget.settings.chart.labels.valueType' | translate
+              }}</mat-label>
+              <mat-select formControlName="valueType">
+                <mat-option value="value">{{
+                  'common.value.one' | translate
+                }}</mat-option>
+                <mat-option value="percentage">{{
+                  'components.widget.settings.chart.labels.percentage'
+                    | translate
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-expansion-panel>
+        <!-- === AXES PARAMETERS === -->
+        <mat-expansion-panel
+          formGroupName="axes"
+          *ngIf="['bar', 'column'].includes(type.name)"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ 'components.widget.settings.chart.axes' | translate }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <!-- === X AXIS PARAMETERS === -->
+          <ng-container formGroupName="x" *ngIf="['bar'].includes(type.name)">
+            <h3>
+              {{ 'components.widget.settings.chart.xAxis' | translate }}
+            </h3>
+            <div class="axis-container">
+              <mat-slide-toggle formControlName="enableMin"></mat-slide-toggle>
+              <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{
+                  'components.aggregationBuilder.operators.min' | translate
+                }}</mat-label>
+                <input
+                  matInput
+                  formControlName="min"
+                  type="number"
+                  [placeholder]="'common.auto' | translate"
+                />
+              </mat-form-field>
+            </div>
+            <div class="axis-container">
+              <mat-slide-toggle formControlName="enableMax"></mat-slide-toggle>
+              <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{
+                  'components.aggregationBuilder.operators.max' | translate
+                }}</mat-label>
+                <input
+                  matInput
+                  formControlName="max"
+                  type="number"
+                  [placeholder]="'common.auto' | translate"
+                />
+              </mat-form-field>
+            </div>
+          </ng-container>
+          <!-- === Y AXIS PARAMETERS === -->
+          <ng-container
+            formGroupName="y"
+            *ngIf="['column'].includes(type.name)"
           >
-          <mat-slide-toggle formControlName="showValue">{{
-            'components.widget.settings.chart.labels.showValue' | translate
-          }}</mat-slide-toggle>
-          <mat-form-field
-            appearance="outline"
+            <h3>
+              {{ 'components.widget.settings.chart.yAxis' | translate }}
+            </h3>
+            <div class="axis-container">
+              <mat-slide-toggle formControlName="enableMin"></mat-slide-toggle>
+              <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{
+                  'components.aggregationBuilder.operators.min' | translate
+                }}</mat-label>
+                <input
+                  matInput
+                  formControlName="min"
+                  type="number"
+                  [placeholder]="'common.auto' | translate"
+                />
+              </mat-form-field>
+            </div>
+            <div class="axis-container">
+              <mat-slide-toggle formControlName="enableMax"></mat-slide-toggle>
+              <mat-form-field appearance="outline" floatLabel="always">
+                <mat-label>{{
+                  'components.aggregationBuilder.operators.max' | translate
+                }}</mat-label>
+                <input
+                  matInput
+                  formControlName="max"
+                  type="number"
+                  [placeholder]="'common.auto' | translate"
+                />
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+        <!-- === DISPLAY GRIDS === -->
+        <mat-expansion-panel
+          formGroupName="grid"
+          *ngIf="['bar', 'column', 'line'].includes(type.name)"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{
+              'components.widget.settings.chart.grid.title' | translate
+            }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="flex flex-col gap-2" formGroupName="x">
+            <mat-slide-toggle formControlName="display">{{
+              'components.widget.settings.chart.grid.x.display' | translate
+            }}</mat-slide-toggle>
+          </div>
+          <div class="flex flex-col gap-2" formGroupName="y">
+            <mat-slide-toggle formControlName="display">{{
+              'components.widget.settings.chart.grid.y.display' | translate
+            }}</mat-slide-toggle>
+          </div>
+        </mat-expansion-panel>
+        <!-- === SERIES AND STACKS PARAMETERS === -->
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ 'components.widget.settings.chart.series.title' | translate }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div
+            class="flex flex-col gap-2 mb-6"
+            formGroupName="stack"
             *ngIf="
-              chartForm.value.labels.showValue &&
-              (['donut', 'pie'].includes(type.name) ||
-                (['bar', 'column'].includes(type.name) &&
-                  chartForm.value.mapping.series))
+              ['bar', 'column'].includes(type.name) &&
+              chartForm.value.mapping.series
             "
           >
-            <mat-label>{{
-              'components.widget.settings.chart.labels.valueType' | translate
-            }}</mat-label>
-            <mat-select formControlName="valueType">
-              <mat-option value="value">{{
-                'common.value.one' | translate
-              }}</mat-option>
-              <mat-option value="percentage">{{
-                'components.widget.settings.chart.labels.percentage' | translate
-              }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </mat-expansion-panel>
-      <!-- === AXES PARAMETERS === -->
-      <mat-expansion-panel
-        formGroupName="axes"
-        *ngIf="['bar', 'column'].includes(type.name)"
+            <mat-slide-toggle formControlName="enable">{{
+              'components.widget.settings.chart.series.stack.enable' | translate
+            }}</mat-slide-toggle>
+            <mat-slide-toggle formControlName="usePercentage">{{
+              'components.widget.settings.chart.series.stack.usePercentage'
+                | translate
+            }}</mat-slide-toggle>
+            <safe-divider></safe-divider>
+          </div>
+          <safe-series-settings
+            [formArray]="$any(formGroup.get('chart.series'))"
+          >
+          </safe-series-settings>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    <!-- Chart preview -->
+    <div class="flex flex-1 flex-col h-96">
+      <safe-chart
+        class="h-full"
+        [header]="false"
+        [export]="false"
+        [settings]="chartSettings"
       >
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{ 'components.widget.settings.chart.axes' | translate }}
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <!-- === X AXIS PARAMETERS === -->
-        <ng-container formGroupName="x" *ngIf="['bar'].includes(type.name)">
-          <h3>
-            {{ 'components.widget.settings.chart.xAxis' | translate }}
-          </h3>
-          <div class="axis-container">
-            <mat-slide-toggle formControlName="enableMin"></mat-slide-toggle>
-            <mat-form-field appearance="outline" floatLabel="always">
-              <mat-label>{{
-                'components.aggregationBuilder.operators.min' | translate
-              }}</mat-label>
-              <input
-                matInput
-                formControlName="min"
-                type="number"
-                [placeholder]="'common.auto' | translate"
-              />
-            </mat-form-field>
-          </div>
-          <div class="axis-container">
-            <mat-slide-toggle formControlName="enableMax"></mat-slide-toggle>
-            <mat-form-field appearance="outline" floatLabel="always">
-              <mat-label>{{
-                'components.aggregationBuilder.operators.max' | translate
-              }}</mat-label>
-              <input
-                matInput
-                formControlName="max"
-                type="number"
-                [placeholder]="'common.auto' | translate"
-              />
-            </mat-form-field>
-          </div>
-        </ng-container>
-        <!-- === Y AXIS PARAMETERS === -->
-        <ng-container formGroupName="y" *ngIf="['column'].includes(type.name)">
-          <h3>
-            {{ 'components.widget.settings.chart.yAxis' | translate }}
-          </h3>
-          <div class="axis-container">
-            <mat-slide-toggle formControlName="enableMin"></mat-slide-toggle>
-            <mat-form-field appearance="outline" floatLabel="always">
-              <mat-label>{{
-                'components.aggregationBuilder.operators.min' | translate
-              }}</mat-label>
-              <input
-                matInput
-                formControlName="min"
-                type="number"
-                [placeholder]="'common.auto' | translate"
-              />
-            </mat-form-field>
-          </div>
-          <div class="axis-container">
-            <mat-slide-toggle formControlName="enableMax"></mat-slide-toggle>
-            <mat-form-field appearance="outline" floatLabel="always">
-              <mat-label>{{
-                'components.aggregationBuilder.operators.max' | translate
-              }}</mat-label>
-              <input
-                matInput
-                formControlName="max"
-                type="number"
-                [placeholder]="'common.auto' | translate"
-              />
-            </mat-form-field>
-          </div>
-        </ng-container>
-      </mat-expansion-panel>
-      <!-- === DISPLAY GRIDS === -->
-      <mat-expansion-panel
-        formGroupName="grid"
-        *ngIf="['bar', 'column', 'line'].includes(type.name)"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title>{{
-            'components.widget.settings.chart.grid.title' | translate
-          }}</mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class="flex flex-col gap-2" formGroupName="x">
-          <mat-slide-toggle formControlName="display">{{
-            'components.widget.settings.chart.grid.x.display' | translate
-          }}</mat-slide-toggle>
-        </div>
-        <div class="flex flex-col gap-2" formGroupName="y">
-          <mat-slide-toggle formControlName="display">{{
-            'components.widget.settings.chart.grid.y.display' | translate
-          }}</mat-slide-toggle>
-        </div>
-      </mat-expansion-panel>
-      <!-- === SERIES AND STACKS PARAMETERS === -->
-      <mat-expansion-panel
-        formGroupName="stack"
-        *ngIf="
-          ['bar', 'column'].includes(type.name) &&
-          chartForm.value.mapping.series
-        "
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{ 'components.widget.settings.chart.series.title' | translate }}
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class="flex flex-col gap-2">
-          <mat-slide-toggle formControlName="enable">{{
-            'components.widget.settings.chart.series.stack.enable' | translate
-          }}</mat-slide-toggle>
-          <mat-slide-toggle formControlName="usePercentage">{{
-            'components.widget.settings.chart.series.stack.usePercentage'
-              | translate
-          }}</mat-slide-toggle>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </div>
-</form>
+      </safe-chart>
+    </div>
+  </form>
+</div>

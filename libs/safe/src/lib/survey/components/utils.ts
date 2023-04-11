@@ -92,8 +92,9 @@ export const buildAddButton = (
         panelClass: 'full-screen-modal',
         autoFocus: false,
       });
-      dialogRef.afterClosed().subscribe(({ data }: any) => {
-        if (data) {
+      dialogRef.afterClosed().subscribe((result: any) => {
+        if (result) {
+          const { data } = result;
           // TODO: call reload method
           // if (question.displayAsGrid && gridComponent) {
           //   gridComponent.availableRecords.push({

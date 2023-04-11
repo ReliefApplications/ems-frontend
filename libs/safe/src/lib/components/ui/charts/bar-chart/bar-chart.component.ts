@@ -1,6 +1,12 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import get from 'lodash/get';
-import { ChartConfiguration, ChartData, ChartType, Plugin } from 'chart.js';
+import {
+  ChartArea,
+  ChartConfiguration,
+  ChartData,
+  ChartType,
+  Plugin,
+} from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plugin';
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
@@ -8,6 +14,9 @@ import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 import { ChartTitle } from '../interfaces';
+import { DEFAULT_PALETTE } from '../const/palette';
+import { getColor } from '../utils/color.util';
+import { isEqual, isNil } from 'lodash';
 
 /**
  * Interface of chart legend.
@@ -43,7 +52,7 @@ export class SafeBarChartComponent implements OnChanges {
   @Input() series: any[] = [];
 
   @Input() options: any = {
-    palette: [],
+    palette: DEFAULT_PALETTE,
     stack: false,
   };
 
@@ -64,21 +73,57 @@ export class SafeBarChartComponent implements OnChanges {
   };
 
   ngOnChanges(): void {
+    const isBar = this.orientation === 'horizontal';
     this.usePercentage = get(this.options, 'stack', {}).type === '100%';
     if (get(this.options, 'labels.showValue', false))
       this.showValueLabels = get(this.options, 'labels.valueType', false);
     if (this.usePercentage) this.normalizeDataset();
-
-    this.chartData.datasets = this.series.map((x, i) => {
-      const color = get(this.options, `palette[${i}]`, undefined);
-      return {
-        ...x,
-        borderRadius: 8,
-        backgroundColor: color,
-        hoverBackgroundColor: color ? addTransparency(color) : undefined,
-      };
-    });
-
+    const series = get(this.options, 'series', []);
+    const palette = get(this.options, 'palette') || DEFAULT_PALETTE;
+    // Build series and filter out the hidden series
+    this.chartData.datasets = this.series
+      .map((x, i) => {
+        // Get serie settings
+        const serie = series.find(
+          (serie: any) =>
+            isEqual(serie.serie, x.name) ||
+            (isNil(serie.serie) && isNil(x.name))
+        );
+        // if the serie is visible, get the data
+        if (get(serie, 'visible', true)) {
+          // Get color
+          const color: any = get(serie, 'color', null) || getColor(palette, i);
+          // Get fill type
+          const fill = get(serie, 'fill', null);
+          let gradient: CanvasGradient | undefined;
+          if (fill === 'gradient') {
+            const chartArea = this.chart?.chart?.chartArea as ChartArea;
+            const ctx = this.chart?.chart?.canvas.getContext('2d');
+            gradient = ctx?.createLinearGradient(
+              isBar ? chartArea.left : 0,
+              isBar ? 0 : chartArea.bottom,
+              isBar ? chartArea.right : 0,
+              isBar ? 0 : chartArea.top
+            );
+            if (color) {
+              gradient?.addColorStop(1, color);
+              gradient?.addColorStop(0, color.slice(0, -3) + ' 0.05)');
+            }
+          }
+          return {
+            ...x,
+            borderRadius: 8,
+            backgroundColor: gradient || color,
+            color,
+            borderColor: color,
+            pointBorderColor: color,
+            hoverBackgroundColor: color ? addTransparency(color) : undefined,
+          };
+        } else {
+          return;
+        }
+      })
+      .filter(Boolean);
     this.setOptions();
     this.chart?.update();
   }
@@ -132,6 +177,7 @@ export class SafeBarChartComponent implements OnChanges {
           labels: {
             // borderRadius: 4,
             // useBorderRadius: true,
+            color: '#000',
             usePointStyle: true,
             pointStyle: 'rectRounded',
           },

@@ -12,6 +12,7 @@ import {
   SafeSnackBarService,
   SafeAuthService,
   SafeUnsubscribeComponent,
+  SafeLayoutService,
 } from '@oort-front/safe';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
@@ -23,6 +24,7 @@ import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/materia
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
+import { CustomStyleComponent } from '../../../components/custom-style/custom-style.component';
 
 /**
  * Application settings page component.
@@ -55,6 +57,7 @@ export class SettingsComponent
    * @param confirmService Shared confirm service
    * @param dialog Material dialog service
    * @param translate Angular translate service
+   * @param layoutService Shared layout service
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -65,7 +68,8 @@ export class SettingsComponent
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     public dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private layoutService: SafeLayoutService
   ) {
     super();
   }
@@ -184,5 +188,13 @@ export class SettingsComponent
         }
       });
     }
+  }
+
+  /** Opens right sidenav with custom css editor */
+  onOpenStyle(): void {
+    this.layoutService.setRightSidenav({
+      component: CustomStyleComponent,
+    });
+    this.layoutService.closeRightSidenav = false;
   }
 }

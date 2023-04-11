@@ -17,6 +17,7 @@ const DEFAULT_GRID_SETTINGS = {
     convert: false,
     update: false,
     inlineEdition: false,
+    remove: false,
   },
 };
 

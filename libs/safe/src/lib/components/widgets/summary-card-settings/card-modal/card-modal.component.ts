@@ -275,8 +275,8 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
         if (res.data?.recordsAggregation) {
           this.customAggregation = res.data.recordsAggregation;
           // @TODO: Figure out fields' types from aggregation
-          this.fields = this.customAggregation[0]
-            ? Object.keys(this.customAggregation[0]).map((f) => ({
+          this.fields = this.customAggregation.items[0]
+            ? Object.keys(this.customAggregation.items[0]).map((f) => ({
                 name: f,
                 editor: 'text',
               }))

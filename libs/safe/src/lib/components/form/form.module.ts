@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeFormComponent } from './form.component';
-import { SafeFormModalModule } from '../form-modal/form-modal.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeButtonModule } from '../ui/button/button.module';
@@ -17,7 +16,6 @@ import { SafeIconModule } from '../ui/icon/icon.module';
   declarations: [SafeFormComponent],
   imports: [
     CommonModule,
-    SafeFormModalModule,
     MatTabsModule,
     SafeButtonModule,
     SafeIconModule,

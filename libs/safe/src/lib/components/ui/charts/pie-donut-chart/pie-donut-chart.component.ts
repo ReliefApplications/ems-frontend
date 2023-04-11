@@ -1,13 +1,15 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import { Plugin, ChartConfiguration, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
-import { get, flatten } from 'lodash';
+import { get, flatten, isEqual, isNil } from 'lodash';
 import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plugin';
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 import { ChartTitle } from '../interfaces';
+import { DEFAULT_PALETTE } from '../const/palette';
+import { getColor } from '../utils/color.util';
 
 /**
  * Interface containing the settings of the chart legend
@@ -46,7 +48,7 @@ export class SafePieDonutChartComponent implements OnChanges {
   @Input() series: any[] = [];
 
   @Input() options: any = {
-    palette: [],
+    palette: DEFAULT_PALETTE,
   };
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
@@ -73,19 +75,63 @@ export class SafePieDonutChartComponent implements OnChanges {
         0
       ) || 0;
 
-    this.chartData.datasets = this.series.map((x) => ({
-      ...x,
-      ...(this.options.palette && {
-        backgroundColor: this.options.palette,
-        hoverBorderColor: this.options.palette,
-        hoverBackgroundColor: this.options.palette?.map((color: any) =>
-          addTransparency(color)
-        ),
-      }),
-      hoverOffset: 4,
-    }));
+    const series = get(this.options, 'series', []);
+    const palette = get(this.options, 'palette') || DEFAULT_PALETTE;
+
+    // Build series and filter out the hidden series
+    this.chartData.datasets = this.series
+      .map((x) => {
+        // Get serie settings
+        const serie = series.find(
+          (serie: any) =>
+            isEqual(serie.serie, x.name) ||
+            (isNil(serie.serie) && isNil(x.name))
+        );
+        // if the serie is visible, get the data
+        if (get(serie, 'visible', true)) {
+          const categories = get(serie, 'categories', []);
+          const data: any[] =
+            get(x, 'data', []).reduce((data: any[], item: any) => {
+              console.log(
+                get(
+                  categories.find((c: any) => c.category === item.category),
+                  'visible',
+                  true
+                )
+              );
+              get(
+                categories.find((c: any) => c.category === item.category),
+                'visible',
+                true
+              ) && data.push(item);
+              return data;
+            }, []) || [];
+          const colors = data.reduce((colors: any[], item: any, i: number) => {
+            colors.push(
+              get(
+                categories.find((c: any) => c.category === item.category),
+                'color'
+              ) || getColor(palette, i)
+            );
+            return colors;
+          }, []);
+          const transparentColors = colors.map((color: string) =>
+            addTransparency(color)
+          );
+          return {
+            ...x,
+            data,
+            backgroundColor: colors,
+            hoverBorderColor: colors,
+            hoverBackgroundColor: transparentColors,
+            hoverOffset: 4,
+          };
+        }
+      })
+      .filter(Boolean);
+    console.log(this.chartData.datasets);
     this.chartData.labels = flatten(
-      this.series.map((x) => x.data.map((y: any) => y.category))
+      this.chartData.datasets.map((x) => x.data.map((y: any) => y.category))
     );
     this.setOptions();
     this.chart?.update();

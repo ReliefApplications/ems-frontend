@@ -77,6 +77,9 @@ export class SafePipelineComponent
           (field: any) => field.type.kind === 'SCALAR'
         );
       }
+      this.fieldsPerStage[index] = this.fieldsPerStage[index].filter(
+        (field: any) => field.name
+      );
     }
   }
 

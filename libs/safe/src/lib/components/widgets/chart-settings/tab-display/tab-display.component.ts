@@ -1,8 +1,22 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { UntypedFormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  skip,
+  takeUntil,
+} from 'rxjs/operators';
 import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
+import { SafeChartComponent } from '../../chart/chart.component';
+import { createSerieForm } from '../chart-forms';
+import { isEqual, isNil, get } from 'lodash';
 
 /**
  * Display tab of the chart settings modal.
@@ -14,10 +28,11 @@ import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
 })
 export class TabDisplayComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, AfterViewInit
 {
   @Input() formGroup!: UntypedFormGroup;
   @Input() type: any;
+  public chartSettings: any;
 
   public legendPositions = LEGEND_POSITIONS;
   public titlePositions = TITLE_POSITIONS;
@@ -31,10 +46,14 @@ export class TabDisplayComponent
     return this.formGroup.get('chart') as UntypedFormGroup;
   }
 
+  @ViewChild(SafeChartComponent) chartComponent!: SafeChartComponent;
+
   /**
    * Constructor of the display tab of the chart settings modal.
+   *
+   * @param fb Angular form builder
    */
-  constructor() {
+  constructor(public fb: FormBuilder) {
     super();
   }
 
@@ -44,6 +63,77 @@ export class TabDisplayComponent
     sizeControl?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.onToggleStyle(''));
+    // Set the chart settings and add delay to avoid changes to be too frequent
+    this.chartSettings = this.formGroup.value;
+    this.formGroup.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe((value) => {
+        this.chartSettings = value;
+      });
+  }
+
+  ngAfterViewInit(): void {
+    this.chartComponent.series$
+      .pipe(takeUntil(this.destroy$), skip(1))
+      .subscribe((series) => {
+        const useCategory = ['pie', 'polar', 'donut', 'radar'].includes(
+          this.chartForm.value.type
+        );
+        const seriesFormArray: FormArray<any> = this.fb.array([]);
+        const seriesSettings = this.chartForm.get('series')?.value || [];
+        for (const serie of series) {
+          const serieSettings = seriesSettings.find(
+            (x: any) =>
+              isEqual(x.serie, get(serie, 'name')) ||
+              isNil(x.serie) ||
+              isNil(get(serie, 'name'))
+          );
+          if (serieSettings) {
+            const categories: any[] = [];
+            if (useCategory) {
+              // Get existing settings
+              const categoriesSettings = get(serieSettings, 'categories', []);
+              serie['data'].forEach((element: any) => {
+                // Try to find existing category settings
+                const categorySettings = categoriesSettings.find(
+                  (x: any) => x.category === element.category
+                );
+                // Use existing settings
+                if (categorySettings) {
+                  categories.push(categorySettings);
+                } else {
+                  // Else, push new category
+                  categories.push({ category: element.category });
+                }
+              });
+            }
+            seriesFormArray.push(
+              createSerieForm(this.chartForm.value.type, {
+                ...serieSettings,
+                categories,
+              })
+            );
+          } else {
+            const categories: any = [];
+            if (useCategory) {
+              // Add one item per category
+              serie['data'].forEach((element: any) => {
+                categories.push({ category: element.category });
+              });
+            }
+            seriesFormArray.push(
+              createSerieForm(this.chartForm.value.type, {
+                serie: get(serie, 'name'),
+                categories,
+              })
+            );
+          }
+        }
+        this.chartForm.setControl('series', seriesFormArray, {
+          emitEvent: false,
+        });
+      });
   }
 
   /**

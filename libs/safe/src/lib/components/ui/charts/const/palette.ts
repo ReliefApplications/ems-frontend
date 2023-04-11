@@ -1,0 +1,23 @@
+/** Default list of colors for series */
+export const DEFAULT_PALETTE = [
+  '#ff6358',
+  '#ffd246',
+  '#78d237',
+  '#28b4c8',
+  '#2d73f5',
+  '#aa46be',
+  '#FF8A82',
+  '#FFDD74',
+  '#9ADD69',
+  '#5EC7D6',
+  '#6296F8',
+  '#BF74CE',
+  '#BF4A42',
+  '#BF9E35',
+  '#5A9E29',
+  '#1E8796',
+  '#2256B8',
+  '#80358F',
+  '#FFB1AC',
+  '#FFE9A3',
+];

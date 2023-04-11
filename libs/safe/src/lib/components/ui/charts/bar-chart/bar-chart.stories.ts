@@ -51,7 +51,6 @@ DEFAULT.storyName = 'Default';
 DEFAULT.args = {
   legend: { visible: true, position: 'bottom' },
   title: {
-    visible: true,
     text: 'title',
     position: 'bottom',
     font: '',

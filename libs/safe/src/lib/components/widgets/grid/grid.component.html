@@ -75,7 +75,7 @@
 <ng-template #layoutsTemplate>
   <ng-container *ngIf="layouts.length > 1">
     <kendo-dropdownlist
-      class="m-auto"
+      class="m-auto w-auto"
       [data]="layouts"
       textField="name"
       valueField="id"
@@ -90,7 +90,7 @@
 <ng-template #aggregationsTemplate>
   <ng-container *ngIf="aggregations.length > 1">
     <kendo-dropdownlist
-      class="m-auto"
+      class="m-auto w-auto"
       [data]="aggregations"
       textField="name"
       valueField="id"
