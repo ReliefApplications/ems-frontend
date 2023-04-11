@@ -1138,6 +1138,7 @@
 					},
 					"position": "******",
 					"series": {
+						"showSerie": "******",
 						"stack": {
 							"enable": "******",
 							"usePercentage": "******"
