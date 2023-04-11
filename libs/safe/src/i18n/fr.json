@@ -377,6 +377,7 @@
 				"custom": "Définit une fonction ou une expression d'agrégation personnalisée en JavaScript.",
 				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
 				"group": "Regroupe les documents mis en entrée par l'expression 'id' qui a été spécifiée et qui sort un document pour chaque regroupement.",
+				"selectedFields": "Seuls les champs non utilisés peuvent être supprimés.",
 				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.",
 				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
 			}
@@ -396,6 +397,7 @@
 			}
 		},
 		"application": {
+			"customStyling": "Style personnalisé",
 			"dashboard": {
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée."
 			},
@@ -1042,7 +1044,8 @@
 					"aggregation": {
 						"invalid": "Agrégation invalide"
 					}
-				}
+				},
+				"other": "Autre"
 			},
 			"expand": "Étendre",
 			"grid": {
@@ -1155,6 +1158,9 @@
 						"color": "Couleur",
 						"format": "Format"
 					},
+					"tooltip": {
+						"palette": "Les couleurs de la palette sont appliquées par défaut aux éléments du graphqiue, mais peuvent être manuellement changées pour chaque série et catégorie."
+					},
 					"type": "Graphique",
 					"xAxis": "Axe X",
 					"yAxis": "Axe Y"
@@ -1169,6 +1175,7 @@
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
 						"inline": "Modifier par ligne",
+						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
@@ -1326,7 +1333,10 @@
 						"display": {
 							"dataSource": "Afficher le lien vers la source de données",
 							"header": "Titre",
-							"title": "Affichage"
+							"title": "Affichage",
+							"tooltip": {
+								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
+							}
 						},
 						"preview": {},
 						"textEditor": {
@@ -1357,7 +1367,9 @@
 				"dataSource": "Source",
 				"errors": {
 					"invalidSource": "La source de données est invalide : veuillez modifier les paramètres."
-				}
+				},
+				"viewAsCards": "Afficher en cartes",
+				"viewAsGrid": "Afficher en grille"
 			}
 		}
 	},

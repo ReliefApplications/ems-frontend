@@ -377,6 +377,7 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
 			}
@@ -396,6 +397,7 @@
 			}
 		},
 		"application": {
+			"customStyling": "******",
 			"dashboard": {
 				"empty": "******"
 			},
@@ -1036,7 +1038,8 @@
 					"aggregation": {
 						"invalid": "******"
 					}
-				}
+				},
+				"other": "******"
 			},
 			"expand": "******",
 			"grid": {
@@ -1148,6 +1151,9 @@
 						"color": "******",
 						"format": "******"
 					},
+					"tooltip": {
+						"palette": "******"
+					},
 					"type": "******",
 					"xAxis": "******",
 					"yAxis": "******"
@@ -1162,6 +1168,7 @@
 						"delete": "******",
 						"export": "******",
 						"inline": "******",
+						"remove": "******",
 						"show": "******",
 						"showDetails": "******",
 						"title": "******",
@@ -1319,7 +1326,10 @@
 						"display": {
 							"dataSource": "******",
 							"header": "******",
-							"title": "******"
+							"title": "******",
+							"tooltip": {
+								"datasource": "******"
+							}
 						},
 						"textEditor": {
 							"title": "******"
@@ -1349,7 +1359,9 @@
 				"dataSource": "******",
 				"errors": {
 					"invalidSource": "******"
-				}
+				},
+				"viewAsCards": "******",
+				"viewAsGrid": "******"
 			}
 		}
 	},

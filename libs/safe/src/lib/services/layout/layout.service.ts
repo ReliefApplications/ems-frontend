@@ -10,6 +10,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class SafeLayoutService {
+  /** Close right sidenav opened when navigating */
+  public closeRightSidenav = true;
   /** Current right sidenav */
   private rightSidenav = new BehaviorSubject<any>(null);
   /** @returns Current right sidenav as observable */
@@ -26,7 +28,9 @@ export class SafeLayoutService {
   constructor(private router: Router) {
     // If the router detects a change, we close the sidenav
     this.router.events.subscribe(() => {
-      this.rightSidenav.next(null);
+      if (this.closeRightSidenav) {
+        this.rightSidenav.next(null);
+      }
     });
   }
 

@@ -1,17 +1,12 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  Validators,
-} from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
 import { MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/legacy-chips';
 import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
-import get from 'lodash/get';
 import { scrollFactory } from '../../../utils/scroll-factory';
 import { codesFactory } from '../../distribution-lists/components/edit-distribution-list-modal/edit-distribution-list-modal.component';
-import { Chart } from './charts/chart';
+import { createChartWidgetForm } from './chart-forms';
 import { CHART_TYPES } from './constants';
 
 /**
@@ -44,7 +39,6 @@ export class SafeChartSettingsComponent implements OnInit {
 
   // === DATA ===
   public types = CHART_TYPES;
-  public chart?: Chart;
   public type: any;
 
   // === DISPLAY PREVIEW ===
@@ -59,34 +53,10 @@ export class SafeChartSettingsComponent implements OnInit {
   /** Stores the selected tab */
   public selectedTab = 0;
 
-  /**
-   * Constructor for the chart settings component
-   *
-   * @param formBuilder The formBuilder service
-   */
-  constructor(private formBuilder: UntypedFormBuilder) {}
-
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    const tileSettings = this.tile.settings;
-    const chartSettings = tileSettings.chart;
-    if (chartSettings.type) {
-      this.type = this.types.find((x) => x.name === chartSettings.type);
-      const chartClass = this.types.find((x) => x.name === chartSettings.type);
-      if (chartClass) {
-        this.chart = new chartClass.class(chartSettings);
-      }
-    } else {
-      this.type = null;
-      this.chart = new Chart(tileSettings);
-    }
-    this.formGroup = this.formBuilder.group({
-      id: this.tile.id,
-      title: [get(tileSettings, 'title', ''), Validators.required],
-      chart: this.chart?.form,
-      resource: [get(tileSettings, 'resource', null), Validators.required],
-      // aggregation: [null, Validators.required],
-    });
+    this.formGroup = createChartWidgetForm(this.tile.id, this.tile.settings);
+    this.type = this.types.find((x) => x.name === this.chartForm.value.type);
     this.change.emit(this.formGroup);
 
     this.formGroup?.valueChanges.subscribe(() => {
@@ -95,7 +65,6 @@ export class SafeChartSettingsComponent implements OnInit {
 
     this.chartForm.controls.type.valueChanges.subscribe((value) => {
       this.type = this.types.find((x) => x.name === value);
-      // this.reload.next(true);
     });
   }
 
