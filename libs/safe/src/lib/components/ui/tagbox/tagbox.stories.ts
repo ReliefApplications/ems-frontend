@@ -170,7 +170,7 @@ DEFAULT.args = {
   choices$: new BehaviorSubject(DEFAULT_FIELDS).asObservable().pipe(delay(500)),
   availableChoices: new BehaviorSubject<any>([]),
   selectedChoices: [],
-  parentControl: new UntypedFormControl([]),
+  // parentControl: new UntypedFormControl([]),
   inputControl: new UntypedFormControl(),
 };
 
@@ -181,5 +181,5 @@ export const INITIAL_SOURCE = TEMPLATE.bind({});
 INITIAL_SOURCE.storyName = 'Initial source';
 INITIAL_SOURCE.args = {
   ...DEFAULT.args,
-  parentControl: new UntypedFormControl(['follow', 'date']),
+  // parentControl: new UntypedFormControl(['follow', 'date']),
 };

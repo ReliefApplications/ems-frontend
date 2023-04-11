@@ -1,5 +1,14 @@
 <!-- todo(translate) -->
-<h2>Categories</h2>
+<h2>
+  Categories<safe-icon
+    class="ml-2"
+    variant="grey"
+    [inline]="true"
+    [size]="18"
+    icon="info_outline"
+    matTooltip="Toggle categories to hide/show them"
+  ></safe-icon>
+</h2>
 <div class="flex flex-col gap-1 max-h-60 overflow-auto">
   <ng-container *ngFor="let control of formArray.controls">
     <div
@@ -7,7 +16,9 @@
       class="flex items-center justify-between p-2 rounded-lg border border-gray-300"
     >
       <div>
-        <mat-slide-toggle formControlName="enable">{{ control.value.category }}</mat-slide-toggle>
+        <mat-slide-toggle formControlName="visible">{{
+          control.value.category
+        }}</mat-slide-toggle>
       </div>
       <div class="flex flex-col">
         <!-- todo(translate) -->

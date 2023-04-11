@@ -42,7 +42,7 @@ export class SafeTileDataComponent implements AfterViewInit {
    * @param data The dialog data
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
-   * @param dialog
+   * @param dialog Material dialog service
    */
   constructor(
     public dialogRef: MatDialogRef<SafeTileDataComponent>,
