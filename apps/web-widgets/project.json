@@ -21,8 +21,12 @@
             "input": "libs/safe/src/i18n/",
             "output": "/assets/i18n/"
           },
+          {
+            "glob": "**/*",
+            "input": "assets/",
+            "output": "/assets/"
+          },
           "apps/web-widgets/src/favicon.ico",
-          "apps/web-widgets/src/assets",
           {
             "glob": "**/*",
             "input": "node_modules/tinymce",
@@ -81,9 +85,7 @@
             }
           ],
           "stylePreprocessorOptions": {
-            "includePaths": [
-              "apps/safe/src/lib/style/themes/default"
-            ]
+            "includePaths": ["apps/safe/src/lib/style/themes/default"]
           },
           "fileReplacements": [
             {
@@ -101,9 +103,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": [
-              "apps/safe/src/lib/style/themes/default"
-            ]
+            "includePaths": ["apps/safe/src/lib/style/themes/default"]
           }
         }
       },

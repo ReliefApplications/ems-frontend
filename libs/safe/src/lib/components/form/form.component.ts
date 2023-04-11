@@ -84,7 +84,7 @@ export class SafeFormComponent
    * @param apollo This is the Apollo client that is used to make GraphQL requests.
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
    * @param authService This is the service that handles authentication.
-   * @param layoutService This is the service that will be used to create the layout of the form.
+   * @param layoutService Shared layout service
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formService This is the service that will handle forms.
    * @param translate This is the service used to translate text

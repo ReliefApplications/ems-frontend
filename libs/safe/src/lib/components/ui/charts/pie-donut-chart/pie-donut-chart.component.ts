@@ -78,42 +78,60 @@ export class SafePieDonutChartComponent implements OnChanges {
     const series = get(this.options, 'series', []);
     const palette = get(this.options, 'palette') || DEFAULT_PALETTE;
 
-    this.chartData.datasets = this.series.map((x) => {
-      // Get serie settings
-      const serie = series.find(
-        (serie: any) =>
-          isEqual(serie.serie, x.name) || (isNil(serie.serie) && isNil(x.name))
-      );
-      const categories = get(serie, 'categories', []);
-      const data = get(x, 'data', []).reduce((data: any[], item: any) => {
-        data.push(item);
-        return data;
-      }, []);
-      const colors = get(x, 'data', []).reduce(
-        (colors: any[], item: any, i: number) => {
-          colors.push(
-            get(
-              categories.find((c: any) => c.category === item.category),
-              'color'
-            ) || getColor(palette, i)
+    // Build series and filter out the hidden series
+    this.chartData.datasets = this.series
+      .map((x) => {
+        // Get serie settings
+        const serie = series.find(
+          (serie: any) =>
+            isEqual(serie.serie, x.name) ||
+            (isNil(serie.serie) && isNil(x.name))
+        );
+        // if the serie is visible, get the data
+        if (get(serie, 'visible', true)) {
+          const categories = get(serie, 'categories', []);
+          const data: any[] =
+            get(x, 'data', []).reduce((data: any[], item: any) => {
+              console.log(
+                get(
+                  categories.find((c: any) => c.category === item.category),
+                  'visible',
+                  true
+                )
+              );
+              get(
+                categories.find((c: any) => c.category === item.category),
+                'visible',
+                true
+              ) && data.push(item);
+              return data;
+            }, []) || [];
+          const colors = data.reduce((colors: any[], item: any, i: number) => {
+            colors.push(
+              get(
+                categories.find((c: any) => c.category === item.category),
+                'color'
+              ) || getColor(palette, i)
+            );
+            return colors;
+          }, []);
+          const transparentColors = colors.map((color: string) =>
+            addTransparency(color)
           );
-          return colors;
-        },
-        []
-      );
-      const transparentColors = colors.map((color: string) =>
-        addTransparency(color)
-      );
-      return {
-        data,
-        backgroundColor: colors,
-        hoverBorderColor: colors,
-        hoverBackgroundColor: transparentColors,
-        hoverOffset: 4,
-      };
-    });
+          return {
+            ...x,
+            data,
+            backgroundColor: colors,
+            hoverBorderColor: colors,
+            hoverBackgroundColor: transparentColors,
+            hoverOffset: 4,
+          };
+        }
+      })
+      .filter(Boolean);
+    console.log(this.chartData.datasets);
     this.chartData.labels = flatten(
-      this.series.map((x) => x.data.map((y: any) => y.category))
+      this.chartData.datasets.map((x) => x.data.map((y: any) => y.category))
     );
     this.setOptions();
     this.chart?.update();
