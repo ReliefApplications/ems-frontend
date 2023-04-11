@@ -1153,6 +1153,7 @@
 							"step": "Étape d'interpolation",
 							"title": "Interpolation"
 						},
+						"showSerie": "Afficher la serie",
 						"stack": {
 							"enable": "Empiler les séries",
 							"usePercentage": "Utiliser des pourcentages"

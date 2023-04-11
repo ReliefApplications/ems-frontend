@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { CategoriesSettingsModule } from './categories-settings/categories-settings.module';
+import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -23,8 +24,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatFormFieldModule,
     MatSelectModule,
     CategoriesSettingsModule,
+    MatSlideToggleModule,
     TranslateModule,
   ],
-  exports: [SafeSeriesSettingsComponent],
 })
 export class SeriesSettingsModule {}
