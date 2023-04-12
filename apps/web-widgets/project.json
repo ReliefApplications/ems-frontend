@@ -21,8 +21,12 @@
             "input": "libs/safe/src/i18n/",
             "output": "/assets/i18n/"
           },
+          {
+            "glob": "**/*",
+            "input": "assets/",
+            "output": "/assets/"
+          },
           "apps/web-widgets/src/favicon.ico",
-          "apps/web-widgets/src/assets",
           {
             "glob": "**/*",
             "input": "node_modules/tinymce",

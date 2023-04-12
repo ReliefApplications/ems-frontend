@@ -8,6 +8,8 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
 import { CategoriesSettingsModule } from './categories-settings/categories-settings.module';
+import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Chart Series Settings module
@@ -24,6 +26,8 @@ import { CategoriesSettingsModule } from './categories-settings/categories-setti
     MatSelectModule,
     TranslateModule,
     CategoriesSettingsModule,
+    MatSlideToggleModule,
+    TranslateModule,
   ],
   exports: [SafeSeriesSettingsComponent],
 })
