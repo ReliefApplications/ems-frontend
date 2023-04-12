@@ -44,7 +44,9 @@ import { ArcgisService } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { flatten } from 'lodash';
 import { takeUntil } from 'rxjs';
-import { legendControl, HeatmapLayer, ClusterLayer } from '@oort-front/leaflet';
+import { legendControl } from '@oort-front/leaflet';
+import { HeatmapLayer } from './map-layers/heatmap-layer';
+import { ClusterLayer } from './map-layers/cluster-layer';
 
 /**
  * Cleans the settings object from null values
@@ -346,7 +348,19 @@ export class MapComponent
       legendControl(
         {},
         //this.layers.map((layer) => layer.getLayer())
-        [new HeatmapLayer(), new ClusterLayer()] //JUST TEST, TO BE MODIFIED
+        [
+          new HeatmapLayer([
+            {
+              color: 'blue',
+              ratio: 0,
+            },
+            {
+              color: 'red',
+              ratio: 1,
+            },
+          ]),
+          new ClusterLayer('red', 'dragon'),
+        ] //JUST TEST, TO BE MODIFIED
       ).addTo(this.map);
     });
 

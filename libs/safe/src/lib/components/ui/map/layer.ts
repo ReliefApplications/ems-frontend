@@ -92,7 +92,7 @@ const GEOMETRY_TYPES = [
  * @param filter Filter to apply
  * @returns true if the feature satisfies the filter
  */
-const featureSatisfiesFilter = (
+export const featureSatisfiesFilter = (
   feature: Feature<Geometry>,
   filter: LayerFilter
 ): boolean => {

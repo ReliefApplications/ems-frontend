@@ -41,8 +41,9 @@ class LegendControl extends L.Control {
     L.DomEvent.disableScrollPropagation(container).disableClickPropagation(
       container
     );
-
-    container.innerHTML = 'legend control';
+    container.style.backgroundColor = 'white';
+    container.style.width = '300';
+    container.innerHTML = 'Legend control';
 
     this.layers.forEach(
       (layer) =>
