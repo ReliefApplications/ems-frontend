@@ -346,7 +346,7 @@ export class MapComponent
       legendControl(
         {},
         //this.layers.map((layer) => layer.getLayer())
-        [new HeatmapLayer(), new ClusterLayer()]
+        [new HeatmapLayer(), new ClusterLayer()] //JUST TEST, TO BE MODIFIED
       ).addTo(this.map);
     });
 
