@@ -4,8 +4,11 @@
   <ng-container *ngIf="form">
     <form
       [formGroup]="form"
-      class="flex justify-between gap-x-2 w-full md:flex-row flex-col m-2"
+      class="flex justify-between gap-x-2 w-full flex-col m-2"
     >
+      <safe-alert class="mb-6">
+        {{ 'models.dashboard.context.datasource.alert' | translate }}
+      </safe-alert>
       <!-- Origin -->
       <mat-form-field appearance="outline" class="grow">
         <mat-label>{{
@@ -70,6 +73,13 @@
             {{ field }}
           </mat-option>
         </mat-select>
+        <safe-icon
+          icon="info"
+          class="cursor-pointer"
+          variant="grey"
+          matSuffix
+          [matTooltip]="'models.dashboard.context.datasource.info' | translate"
+        ></safe-icon>
       </mat-form-field>
     </form>
     <safe-button

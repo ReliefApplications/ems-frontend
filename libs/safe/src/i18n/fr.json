@@ -1575,14 +1575,16 @@
 		"dashboard": {
 			"context": {
 				"datasource": {
+					"alert": "Sélectionnez une source de données, afin de définir une page par enregistrement de la source de données. Vous pouvez également définir un modèle qui sera chargé par défaut si aucune page spécifique n'est créée pour un enregistrement.",
+					"info": "Indiquez le champ qui serait utiliser pour sélectionner les enregistrements.",
 					"set": "Définir la source de données contextuelle",
-					"title": "Source de données de contexte",
+					"title": "Source de données contextuelle",
 					"update": "Mettre à jour la source de données contextuelle"
 				},
 				"displayField": "Champ d'affichage",
 				"edition": {
 					"element": "Vous éditez la page qui sera affichée pour l'élément sélectionné.",
-					"template": "Vous éditez le modèle de base de la page. Il sera utilisé par défaut si aucune vue n'a été créée pour l'élément à charger."
+					"template": "Vous éditez le modèle de base de la page. Il sera utilisé par défaut si aucune vue n'a été créée pour l'élément à charger"
 				},
 				"origin": "Origine du contexte",
 				"refData": {
