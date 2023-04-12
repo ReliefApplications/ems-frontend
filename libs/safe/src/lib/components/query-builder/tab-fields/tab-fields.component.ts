@@ -12,7 +12,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
-import { FIELD_EDITOR_CONFIG } from '../../../const/tinymce.const';
+import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { SafeEditorService } from '../../../services/editor/editor.service';
 import {
   getCalcKeys,
@@ -43,7 +43,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   public searchSelected = '';
 
   /** tinymce editor */
-  public editor: any = FIELD_EDITOR_CONFIG;
+  public editor: any = INLINE_EDITOR_CONFIG;
 
   @Input() showLimit = false;
 

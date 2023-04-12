@@ -11,6 +11,7 @@ import {
 import { SafeEditorService } from '../../../../services/editor/editor.service';
 import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
 import get from 'lodash/get';
+import { getDataKeys } from '../../../edit-calculated-field-modal/utils/keys';
 
 /** Model for the data input */
 interface DialogData {
@@ -64,7 +65,12 @@ export class EditTemplateModalComponent implements OnInit {
     // Set autocomplete from fields for template tinymc editor
     const fields = get(this.data, 'fields', []);
     if (fields.length) {
-      const keys = (fields as any[]).map((field) => `{{${field.label}}}`);
+      const keys = [
+        '{{now}}',
+        '{{today}}',
+        '{{dataset}}',
+        ...getDataKeys(fields),
+      ];
       this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
     }
   }

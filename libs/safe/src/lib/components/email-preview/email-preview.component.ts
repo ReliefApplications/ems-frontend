@@ -6,6 +6,8 @@ import {
 } from '@angular/material/legacy-dialog';
 import { EMAIL_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
+import { getDataKeys } from '../widgets/summary-card/parser/utils';
+import { Field } from '../../services/query-builder/query-builder.service';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {
@@ -13,6 +15,7 @@ interface DialogData {
   html: string;
   subject: string;
   to: string[];
+  fields?: Field[];
 }
 
 /**
@@ -61,5 +64,14 @@ export class SafeEmailPreviewComponent implements OnInit {
       html: this.data.html,
       files: [[]],
     });
+    if (this.data.fields) {
+      const keys = [
+        '{{now}}',
+        '{{today}}',
+        '{{dataset}}',
+        ...getDataKeys(this.data.fields),
+      ];
+      this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
+    }
   }
 }

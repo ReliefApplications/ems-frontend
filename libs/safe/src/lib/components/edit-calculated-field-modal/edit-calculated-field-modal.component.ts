@@ -35,7 +35,7 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
   public resourceFields: any[] = [];
 
   /** tinymce editor */
-  public editorConfig: any = INLINE_EDITOR_CONFIG;
+  public editor: any = INLINE_EDITOR_CONFIG;
 
   /**
    * Modal to edit Calculated field.
@@ -56,9 +56,9 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
     private translate: TranslateService
   ) {
     // Set the editor base url based on the environment file
-    this.editorConfig.base_url = editorService.url;
+    this.editor.base_url = editorService.url;
     // Set the editor language
-    this.editorConfig.language = editorService.language;
+    this.editor.language = editorService.language;
   }
 
   ngOnInit(): void {
@@ -77,7 +77,7 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
       ...getInfoKeys(),
       ...getDataKeys(this.resourceFields),
     ];
-    this.editorService.addCalcAndKeysAutoCompleter(this.editorConfig, keys);
+    this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
   }
 
   /**

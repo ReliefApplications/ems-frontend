@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import {
+  FormArray,
   UntypedFormArray,
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -408,8 +409,13 @@ export class ButtonConfigComponent
   /** Opens modal for adding a new email template */
   public addEmailTemplate() {
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
+      // Set fields for placeholder autocomplete in tinymc editor
       data: {
-        fields: this.formGroup.value.bodyFields,
+        fields: (this.formGroup.get('bodyFields') as FormArray)?.controls
+          .filter((control) => !!control.get('name')?.value)
+          .map((control) => ({
+            name: control.get('name')?.value,
+          })),
       },
       disableClose: true,
     });

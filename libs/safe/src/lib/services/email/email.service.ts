@@ -220,7 +220,8 @@ export class SafeEmailService {
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
           const dialogRef = this.dialog.open(SafeEmailPreviewComponent, {
-            data: res,
+            // Fields for editor placeholder autocomplete
+            data: { ...res, fields: this.getFields(query.fields) },
             autoFocus: false,
             disableClose: true,
             width: '100%',
