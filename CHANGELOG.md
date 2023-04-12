@@ -1,3 +1,19 @@
+# [2.0.0-beta.8](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.7...v2.0.0-beta.8) (2023-04-12)
+
+
+### Bug Fixes
+
+* remove background on surveyjs forms ([9b64cce](https://github.com/ReliefApplications/oort-frontend/commit/9b64cce300fb6e8ee2714b686ddfb94174f82691))
+* series settings would not compile anymore ([d3e4b88](https://github.com/ReliefApplications/oort-frontend/commit/d3e4b88cbd2b069ed5d2a9d7e00ba94229234a61))
+* storybook breaking due to component API change ([1484c89](https://github.com/ReliefApplications/oort-frontend/commit/1484c890a5f41dcacb04526d20a26da555fc448d))
+
+
+### Features
+
+* add possibility to have one dashboard per record ([a3e527f](https://github.com/ReliefApplications/oort-frontend/commit/a3e527f906a444d0d9a87237ee9d02d69bc4a6dc)), closes [feat/AB#59620](https://github.com/feat/AB/issues/59620)
+* can now hide / show series and categories ([93f3e3f](https://github.com/ReliefApplications/oort-frontend/commit/93f3e3f85826fc7c654464602681bcf4e0054d25)), closes [feat/AB#61106](https://github.com/feat/AB/issues/61106)
+* dashboards with context ([424b5ac](https://github.com/ReliefApplications/oort-frontend/commit/424b5ac96e0c905b2f2e44195af8106ac37affcb))
+
 # [2.0.0-beta.7](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.6...v2.0.0-beta.7) (2023-04-06)
 
 
