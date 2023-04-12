@@ -88,12 +88,14 @@ export class SafeFormBuilderService {
       for (const f of fields.filter((x) => !x.automated)) {
         const accessible = !!f.canSee;
         const editable = !!f.canUpdate;
-        const hidden: boolean = (f.canSee !== undefined && !f.canSee) || false;
         const disabled: boolean =
           (f.canUpdate !== undefined && !f.canUpdate) || false;
         const question = survey.getQuestionByName(f.name);
         if (question) {
-          question.visible = !hidden && accessible;
+          //If no visibleIf question preset then we update the visibility for it
+          if (!question.visibleIf) {
+            question.visible = accessible;
+          }
           question.readOnly = disabled || !editable;
         }
       }
