@@ -1,4 +1,3 @@
-import { Apollo } from 'apollo-angular';
 import { Record } from '../models/record.model';
 import { SafeAuthService } from '../services/auth/auth.service';
 
@@ -8,13 +7,11 @@ import { SafeAuthService } from '../services/auth/auth.service';
  *
  * @param survey Survey instance
  * @param authService Shared auth service
- * @param apollo Apollo client
  * @param record Current record
  */
 const addCustomFunctions = (
   survey: any,
   authService: SafeAuthService,
-  apollo: Apollo,
   record?: Record | undefined
 ): void => {
   survey.FunctionFactory.Instance.register('createdAt', () =>
