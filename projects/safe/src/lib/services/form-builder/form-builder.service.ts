@@ -92,11 +92,12 @@ export class SafeFormBuilderService {
           (f.canUpdate !== undefined && !f.canUpdate) || false;
         const question = survey.getQuestionByName(f.name);
         if (question) {
-          //If no visibleIf question preset then we update the visibility for it
-          if (!question.visibleIf) {
-            question.visible = accessible;
+          //If is not accessible for the current user, we will delete the question from the current survey instance
+          if (!accessible) {
+            question.delete();
+          } else {
+            question.readOnly = disabled || !editable;
           }
-          question.readOnly = disabled || !editable;
         }
       }
     }
