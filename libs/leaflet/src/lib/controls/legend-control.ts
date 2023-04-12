@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 /** Interface for legend control options */
 interface LegendControlOptions extends L.ControlOptions {
   container?: HTMLElement;
+  layers?: L.Layer[];
 }
 
 /**
@@ -13,14 +14,17 @@ class LegendControl extends L.Control {
     position: 'bottomright',
   };
   private _map!: L.Map;
+  public layers: L.Layer[] | [];
 
   /**
    * Custom leaflet legend control
    *
    * @param options legend control options
+   * @param layers layers of the map
    */
-  constructor(options?: LegendControlOptions) {
+  constructor(options?: LegendControlOptions, layers?: L.Layer[]) {
     super(options);
+    this.layers = layers ? layers : [];
   }
 
   /**
@@ -40,6 +44,12 @@ class LegendControl extends L.Control {
 
     container.innerHTML = 'legend control';
 
+    this.layers.forEach(
+      (layer) =>
+        (container.innerHTML =
+          container.innerHTML + '<br>' + (layer as any).legend)
+    );
+
     // if (this._layers.length) {
     //   this._load();
     // }
@@ -51,8 +61,12 @@ class LegendControl extends L.Control {
  * Generate a new legend control
  *
  * @param options legend control options
+ * @param layers layers to be displayed
  * @returns legend control
  */
-export const legendControl = (options?: LegendControlOptions) => {
-  return new LegendControl(options);
+export const legendControl = (
+  options?: LegendControlOptions,
+  layers?: L.Layer[]
+) => {
+  return new LegendControl(options, layers);
 };

@@ -44,7 +44,7 @@ import { ArcgisService } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { flatten } from 'lodash';
 import { takeUntil } from 'rxjs';
-import { legendControl } from '@oort-front/leaflet';
+import { legendControl, HeatmapLayer, ClusterLayer } from '@oort-front/leaflet';
 
 /**
  * Cleans the settings object from null values
@@ -343,7 +343,11 @@ export class MapComponent
         tree.layers && layers.push(tree.layers);
       }
       this.setLayersControl(flatten(basemaps), flatten(layers));
-      legendControl().addTo(this.map);
+      legendControl(
+        {},
+        //this.layers.map((layer) => layer.getLayer())
+        [new HeatmapLayer(), new ClusterLayer()]
+      ).addTo(this.map);
     });
 
     // Add zoom control
