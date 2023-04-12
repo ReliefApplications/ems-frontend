@@ -10,7 +10,7 @@ import {
  * Data passed to initialize the filter builder
  */
 interface DialogData {
-  surveyJson: any;
+  surveyStructure: any;
 }
 
 /**
@@ -110,14 +110,14 @@ export class SafeFilterBuilderComponent implements OnInit {
       generateValidJSON: true,
       showTranslationTab: false,
       questionTypes: QUESTION_TYPES,
-      customQuestionTypes: [],
+      customQuestionTypes: [], // doesn't work to remove the custom questions
     };
     this.setCustomTheme();
     this.surveyCreator = new SurveyCreator.SurveyCreator(
       'surveyCreatorContainer',
       creatorOptions
     );
-    this.surveyCreator.JSON = this.data?.surveyJson;
+    this.surveyCreator.text = this.data?.surveyStructure;
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'none';
     this.surveyCreator.haveCommercialLicense = true;
@@ -146,9 +146,9 @@ export class SafeFilterBuilderComponent implements OnInit {
   }
 
   /**
-   * Custom SurveyJS method, save the form when edited.
+   * Custom SurveyJS method, save the survey when edited.
    */
   saveMySurvey = () => {
-    this.dialogRef.close(this.surveyCreator.JSON);
+    this.dialogRef.close(this.surveyCreator);
   };
 }

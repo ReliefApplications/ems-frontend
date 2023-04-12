@@ -88,8 +88,10 @@
         class="flex w-full flex-wrap"
         [formGroup]="filterFormGroup"
       >
-        <safe-button (click)="onEditFilter()">Edit filter</safe-button>
-        <div #formContainer></div>
+        <safe-button (click)="onEditFilter()">
+          {{ 'components.application.dashboard.editFilter' | translate }}
+        </safe-button>
+        <div #surveyCreatorContainer></div>
       </form>
     </div>
   </div>
