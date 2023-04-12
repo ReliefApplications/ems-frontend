@@ -1580,6 +1580,10 @@
 					"update": "Mettre à jour la source de données contextuelle"
 				},
 				"displayField": "Champ d'affichage",
+				"edition": {
+					"element": "Vous éditez la page qui sera affichée pour l'élément sélectionné.",
+					"template": "Vous éditez le modèle de base de la page. Il sera utilisé par défaut si aucune vue n'a été créée pour l'élément à charger."
+				},
 				"origin": "Origine du contexte",
 				"refData": {
 					"element": "Élément"

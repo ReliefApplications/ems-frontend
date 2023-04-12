@@ -9,8 +9,10 @@
     shape: 'rectangle'
   "
 >
+  <!-- Dashboard options -->
   <ng-container *ngIf="dashboard">
     <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+      <!-- Dashboard title -->
       <safe-editable-text
         [text]="dashboard.name"
         [canEdit]="canEditName"
@@ -23,6 +25,7 @@
       </safe-editable-text>
 
       <div class="flex items-center gap-1" *ngIf="!formActive">
+        <!-- Fullscreen -->
         <safe-button
           variant="grey"
           [isIcon]="true"
@@ -30,6 +33,7 @@
           (click)="isFullScreen = !isFullScreen"
         >
         </safe-button>
+        <!-- Access -->
         <safe-access
           [access]="dashboard.permissions"
           [application]="applicationId"
@@ -44,6 +48,7 @@
           "
         >
         </safe-access>
+        <!-- Context -->
         <safe-button
           variant="grey"
           [isIcon]="true"
@@ -57,6 +62,7 @@
           "
         >
         </safe-button>
+        <!-- More options -->
         <safe-button
           variant="grey"
           [isIcon]="true"
@@ -99,10 +105,24 @@
         </ng-template>
       </div>
     </div>
+    <ng-container *ngIf="dashboard.page?.context">
+      <!-- todo(translate) -->
+      <safe-alert *ngIf="!contextRecord" class="mb-4"
+        ><safe-icon icon="info"></safe-icon
+        >{{
+          'models.dashboard.context.edition.template' | translate
+        }}</safe-alert
+      >
+      <safe-alert *ngIf="contextRecord" class="mb-4"
+        ><safe-icon icon="info"></safe-icon
+        >{{
+          'models.dashboard.context.edition.element' | translate
+        }}</safe-alert
+      >
+    </ng-container>
     <span>
-      <!-- Selection of record -->
+      <!-- Selection of record, to see dashboard per record -->
       <mat-form-field
-        [formGroup]="contextForm"
         appearance="outline"
         *ngIf="
           dashboard.page &&
@@ -114,7 +134,7 @@
         <mat-label>{{ 'common.record.one' | translate }}</mat-label>
         <safe-graphql-select
           [query]="recordsQuery"
-          formControlName="record"
+          [formControl]="contextId"
           path="records"
           valueField="id"
           textField="data.{{ dashboard.page.context.displayField }}"
@@ -125,7 +145,6 @@
 
       <!-- Selection of element from reference data -->
       <mat-form-field
-        [formGroup]="contextForm"
         appearance="outline"
         *ngIf="
           dashboard.page &&
@@ -136,7 +155,7 @@
         <mat-label>{{
           'models.dashboard.context.refData.element' | translate
         }}</mat-label>
-        <mat-select formControlName="element">
+        <mat-select [formControl]="contextId">
           <mat-option
             *ngFor="let element of refDataElements"
             [value]="element[refDataValueField]"
@@ -148,6 +167,7 @@
     </span>
   </ng-container>
 </ng-container>
+<!-- Widgets -->
 <safe-widget-grid
   [loading]="loading"
   [widgets]="tiles"

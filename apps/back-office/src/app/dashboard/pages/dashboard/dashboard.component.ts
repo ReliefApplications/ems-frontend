@@ -46,21 +46,8 @@ import { map, takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ContextDatasourceComponent } from './components/context-datasource/context-datasource.component';
 import { firstValueFrom } from 'rxjs';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
-
-/**
- * Create a new the context form.
- *
- * @returns The form group
- */
-const createContextForm = () =>
-  new FormGroup({
-    record: new FormControl<null | string>(null, [Validators.required]),
-    element: new FormControl<null | string | number>(null, [
-      Validators.required,
-    ]),
-  });
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -105,7 +92,7 @@ export class DashboardComponent
   // === CONTEXT ===
   public refDataElements: any[] = [];
   public recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
-  public contextForm = createContextForm();
+  public contextId = new FormControl<string | number | null>(null);
   public refDataValueField = '';
   public contextRecord: Record | null = null;
 
@@ -201,16 +188,13 @@ export class DashboardComponent
         });
     });
 
-    (['element', 'record'] as const).forEach((origin) => {
-      this.contextForm
-        .get(origin)
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe((value) => {
-          if (value) {
-            this.handleContextChange(origin, value);
-          }
-        });
-    });
+    this.contextId.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.handleContextChange(value);
+        }
+      });
   }
 
   /**
@@ -630,17 +614,21 @@ export class DashboardComponent
   /**
    * Handle dashboard context change.
    *
-   * @param type Determines if the context is an element or a record
    * @param value id of the element or record
    */
-  private async handleContextChange(
-    type: 'element' | 'record',
-    value: string | number
-  ) {
-    if (!this.dashboard?.page?.id) return;
+  private async handleContextChange(value: string | number) {
+    if (!this.dashboard?.page?.id || !this.dashboard.page.context) return;
 
     // Check if there is a dashboard with the same context
     const dashboardsWithContext = this.dashboard?.page?.contentWithContext;
+    let type: 'record' | 'element';
+    if ('resource' in this.dashboard.page.context) {
+      // Resource
+      type = 'record';
+    } else {
+      // Ref Data
+      type = 'element';
+    }
     const dashboardWithContext = dashboardsWithContext?.find((d) => {
       if (type === 'element') return 'element' in d && d.element === value;
       else if (type === 'record') return 'record' in d && d.record === value;
@@ -674,14 +662,10 @@ export class DashboardComponent
     if (!dContext) return;
 
     // If it has updated the form
-    if ('element' in dContext)
-      this.contextForm.patchValue({
-        element: dContext.element,
-      });
-    else if ('record' in dContext) {
-      this.contextForm.patchValue({
-        record: dContext.record,
-      });
+    if ('element' in dContext) {
+      this.contextId.setValue(dContext.element);
+    } else if ('record' in dContext) {
+      this.contextId.setValue(dContext.record);
 
       // Get record by id
       firstValueFrom(

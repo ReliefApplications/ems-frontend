@@ -1572,6 +1572,10 @@
 					"update": "******"
 				},
 				"displayField": "******",
+				"edition": {
+					"element": "******",
+					"template": "******"
+				},
 				"origin": "******",
 				"refData": {
 					"element": "******"
