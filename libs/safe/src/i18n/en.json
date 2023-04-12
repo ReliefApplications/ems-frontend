@@ -1567,6 +1567,8 @@
 		"dashboard": {
 			"context": {
 				"datasource": {
+					"alert": "Select a datasource, in order to set one page per record of the datasource. You can also set a template, which would be loaded by default if no specific page is created for a record.",
+					"info": "Indicate the field that would be use to select records",
 					"set": "Set context datasource",
 					"title": "Context datasource",
 					"update": "Update context datasource"
