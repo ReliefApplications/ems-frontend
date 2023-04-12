@@ -18,7 +18,7 @@ steps:
 - script: |
     npm install
     npx nx run front-office:build:azure-dev
-    npx run back-office:build:azure-dev
+    npx nx run back-office:build:azure-dev
   displayName: 'npm install and build the apps'
 
 - task: ArchiveFiles@2

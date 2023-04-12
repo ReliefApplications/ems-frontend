@@ -195,5 +195,6 @@ export class SettingsComponent
     this.layoutService.setRightSidenav({
       component: CustomStyleComponent,
     });
+    this.layoutService.closeRightSidenav = false;
   }
 }

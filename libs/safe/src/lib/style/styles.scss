@@ -23,6 +23,7 @@
   --primary-color: #{rgb($primary_500)};
   --secondary-color: #{rgb($primary_500)};
   --progress-buttons-color: #{rgb($primary_500)};
+  --header-background-color: transparent;
   // --primary-text-color: #676a6c;
   // --secondary-text-color: #a7a7a7;
   // --inverted-text-color: #ffffff;
@@ -404,11 +405,6 @@ mat-header-row {
     text-overflow: ellipsis;
     margin: 0;
   }
-}
-
-.mat-column-_actions,
-.mat-column-actions {
-  max-width: 64px;
 }
 
 .mat-chip {

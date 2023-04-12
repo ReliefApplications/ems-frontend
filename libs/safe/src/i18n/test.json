@@ -1113,7 +1113,10 @@
 			},
 			"settings": {
 				"chart": {
+					"auto": "******",
 					"axes": "******",
+					"categories": "******",
+					"color": "******",
 					"grid": {
 						"title": "******",
 						"x": {
@@ -1133,12 +1136,18 @@
 					},
 					"legend": "******",
 					"orientation": "******",
+					"other": "******",
 					"palette": {
 						"enable": "******",
 						"title": "******"
 					},
 					"position": "******",
 					"series": {
+						"interpolation": {
+							"step": "******",
+							"title": "******"
+						},
+						"showSerie": "******",
 						"stack": {
 							"enable": "******",
 							"usePercentage": "******"
@@ -1151,6 +1160,9 @@
 					"title": {
 						"color": "******",
 						"format": "******"
+					},
+					"tooltip": {
+						"palette": "******"
 					},
 					"type": "******",
 					"xAxis": "******",
@@ -1166,6 +1178,7 @@
 						"delete": "******",
 						"export": "******",
 						"inline": "******",
+						"remove": "******",
 						"show": "******",
 						"showDetails": "******",
 						"title": "******",
@@ -1323,7 +1336,10 @@
 						"display": {
 							"dataSource": "******",
 							"header": "******",
-							"title": "******"
+							"title": "******",
+							"tooltip": {
+								"datasource": "******"
+							}
 						},
 						"textEditor": {
 							"title": "******"
@@ -1550,6 +1566,22 @@
 			"type": "******"
 		},
 		"dashboard": {
+			"context": {
+				"datasource": {
+					"set": "******",
+					"title": "******",
+					"update": "******"
+				},
+				"displayField": "******",
+				"edition": {
+					"element": "******",
+					"template": "******"
+				},
+				"origin": "******",
+				"refData": {
+					"element": "******"
+				}
+			},
 			"share": "******"
 		},
 		"form": {

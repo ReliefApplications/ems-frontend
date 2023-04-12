@@ -61,5 +61,5 @@ export const initCustomSurvey = (
   // set localization
   initLocalization(Survey);
   // load internal functions
-  addCustomFunctions(Survey, authService, apollo);
+  addCustomFunctions(Survey, authService);
 };

@@ -1,10 +1,15 @@
 import { Inject, Injectable } from '@angular/core';
 import { Dashboard, WIDGET_TYPES } from '../../models/dashboard.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { PageContextT } from '../../models/page.model';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import {
   EDIT_DASHBOARD,
   EditDashboardMutationResponse,
+  EditPageContextMutationResponse,
+  UPDATE_PAGE_CONTEXT,
+  CreateDashboardWithContextMutationResponse,
+  CREATE_DASHBOARD_WITH_CONTEXT,
 } from './graphql/mutations';
 import get from 'lodash/get';
 
@@ -164,5 +169,65 @@ export class SafeDashboardService {
     return availableTile && availableTile.settingsTemplate
       ? availableTile.settingsTemplate
       : null;
+  }
+
+  /**
+   * Updates the context of the page.
+   *
+   * @param context The new context of the page
+   * @returns promise the mutation result
+   */
+  public updateContext(context: PageContextT) {
+    const dashboard = this.dashboard.getValue();
+    if (!dashboard?.page?.id) return;
+
+    const res = firstValueFrom(
+      this.apollo.mutate<EditPageContextMutationResponse>({
+        mutation: UPDATE_PAGE_CONTEXT,
+        variables: {
+          id: dashboard.page.id,
+          context,
+        },
+      })
+    );
+
+    res.then(({ data }) => {
+      if (data) {
+        this.dashboard.next({
+          ...dashboard,
+          page: {
+            ...dashboard.page,
+            context,
+            contentWithContext: data.editPageContext.contentWithContext,
+          },
+        });
+      }
+    });
+
+    return res;
+  }
+
+  /**
+   * Duplicates a dashboard and adds context to it.
+   *
+   * @param page Page to copy content from
+   * @param context The type of context to be added to the dashboard
+   * @param id The id of the context to be added to the dashboard
+   * @returns The newly created dashboard
+   */
+  public createDashboardWithContext(
+    page: string,
+    context: 'element' | 'record',
+    id: string | number
+  ) {
+    return firstValueFrom(
+      this.apollo.mutate<CreateDashboardWithContextMutationResponse>({
+        mutation: CREATE_DASHBOARD_WITH_CONTEXT,
+        variables: {
+          page,
+          [context]: id,
+        },
+      })
+    );
   }
 }

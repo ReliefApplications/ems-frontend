@@ -26,18 +26,15 @@ import {
   EDIT_RECORD,
   AddRecordMutationResponse,
   ADD_RECORD,
-  UploadFileMutationResponse,
-  UPLOAD_FILE,
   EDIT_RECORDS,
   EditRecordsMutationResponse,
 } from './graphql/mutations';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
-import { SafeRestService } from '../../services/rest/rest.service';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable, takeUntil } from 'rxjs';
 import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
@@ -55,6 +52,9 @@ import { SafeRecordHistoryModalModule } from '../record-history-modal/record-his
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
+import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { SafeFormService } from '../../services/form/form.service';
 
 /**
  * Interface of Dialog data.
@@ -92,9 +92,13 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     SafeFormActionsModule,
     TranslateModule,
     SafeModalModule,
+    SafeSpinnerModule,
   ],
 })
-export class SafeFormModalComponent implements OnInit {
+export class SafeFormModalComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public saving = false;
@@ -131,9 +135,9 @@ export class SafeFormModalComponent implements OnInit {
    * @param dialogRef This is the reference to the dialog.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
    * @param snackBar This is the service that allows you to display a snackbar.
-   * @param restService This is the service that is used to make http requests.
    * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
+   * @param formService This is the service that will handle forms.
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular Service to execute code inside Angular environment
@@ -144,17 +148,20 @@ export class SafeFormModalComponent implements OnInit {
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private restService: SafeRestService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
+    private formService: SafeFormService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private ngZone: NgZone
-  ) {}
+  ) {
+    super();
+  }
 
   async ngOnInit(): Promise<void> {
-    this.data = { ...DEFAULT_DIALOG_DATA, ...this.data };
+    this.setFormListeners();
 
+    this.data = { ...DEFAULT_DIALOG_DATA, ...this.data };
     Survey.StylesManager.applyTheme();
 
     this.isMultiEdition = Array.isArray(this.data.recordId);
@@ -184,7 +191,6 @@ export class SafeFormModalComponent implements OnInit {
         })
       );
     }
-
     if (!this.data.recordId || this.data.template) {
       promises.push(
         firstValueFrom(
@@ -221,8 +227,8 @@ export class SafeFormModalComponent implements OnInit {
       );
     }
     await Promise.all(promises);
+
     this.initSurvey();
-    this.loading = false;
   }
 
   /**
@@ -231,50 +237,42 @@ export class SafeFormModalComponent implements OnInit {
   private initSurvey(): void {
     this.survey = this.formBuilderService.createSurvey(
       this.form?.structure || '',
+      this.pages,
       this.form?.metadata,
       this.record
     );
-    this.survey.onClearFiles.add((survey: Survey.SurveyModel, options: any) =>
-      this.onClearFiles(survey, options)
+    // After the survey is created we add common callback to survey events
+    this.formBuilderService.addEventsCallBacksToSurvey(
+      this.survey,
+      this.pages,
+      this.temporaryFilesStorage
     );
-    this.survey.onUploadFiles.add((survey: Survey.SurveyModel, options: any) =>
-      this.onUploadFiles(survey, options)
-    );
-    this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>
-      this.onDownloadFile(survey, options)
-    );
-    this.survey.onUpdateQuestionCssClasses.add(
-      (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
-    );
-    this.survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
-      survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
-      this.selectedTabIndex = survey.currentPageNo;
-    });
-    this.survey.onPageVisibleChanged.add(() => {
-      this.setPages();
-    });
-    this.survey.onSettingQuestionErrors.add(() => {
-      this.setPages();
-    });
+
     if (this.data.recordId && this.record) {
-      addCustomFunctions(Survey, this.authService, this.apollo, this.record);
+      addCustomFunctions(Survey, this.authService, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
     }
+    this.survey.onComplete.add(this.onComplete);
     if (this.storedMergedData) {
       this.survey.data = {
         ...this.survey.data,
         ...omitBy(this.storedMergedData, isNil),
       };
     }
-    this.survey.showNavigationButtons = false;
-    this.survey.focusFirstQuestionAutomatic = false;
     this.survey.render(this.formContainer.nativeElement);
     // this.survey.render(this.containerId);
-    this.setPages();
-    this.survey.onComplete.add(this.onComplete);
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    setTimeout(() => {}, 100);
+    this.loading = false;
+  }
+
+  /**
+   * Set needed listeners for the component
+   */
+  private setFormListeners() {
+    this.formBuilderService.selectedPageIndex
+      .asObservable()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((pageIndex: number) => (this.selectedTabIndex = pageIndex));
   }
 
   /**
@@ -305,44 +303,34 @@ export class SafeFormModalComponent implements OnInit {
       : 1;
 
     /** we can send to backend empty data if they are not required */
-    const questions = survey.getAllQuestions();
-    const data = survey.data;
-    for (const field in questions) {
-      if (questions[field]) {
-        const key = questions[field].getValueName();
-        if (!data[key]) {
-          if (questions[field].getType() !== 'boolean') {
-            data[key] = null;
-          }
-          if (questions[field].readOnly || !questions[field].visible) {
-            delete data[key];
-          }
-        }
-      }
-    }
-    survey.data = data;
+    this.formService.setEmptyQuestions(survey);
     // Displays confirmation modal.
     if (this.data.askForConfirm) {
-      const dialogRef = this.confirmService.openConfirmModal({
-        title: this.translate.instant('common.updateObject', {
-          name:
-            rowsSelected > 1
-              ? this.translate.instant('common.row.few')
-              : this.translate.instant('common.row.one'),
-        }),
-        content: this.translate.instant(
-          'components.form.updateRow.confirmationMessage',
-          {
-            quantity: rowsSelected,
-            rowText:
+      const dialogRef = this.confirmService.openConfirmModal(
+        {
+          title: this.translate.instant('common.updateObject', {
+            name:
               rowsSelected > 1
                 ? this.translate.instant('common.row.few')
                 : this.translate.instant('common.row.one'),
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
-      });
+          }),
+          content: this.translate.instant(
+            'components.form.updateRow.confirmationMessage',
+            {
+              quantity: rowsSelected,
+              rowText:
+                rowsSelected > 1
+                  ? this.translate.instant('common.row.few')
+                  : this.translate.instant('common.row.one'),
+            }
+          ),
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
+          confirmColor: 'primary',
+        },
+        this.dialog
+      );
       dialogRef.afterClosed().subscribe(async (value) => {
         if (value) {
           await this.onUpdate(survey);
@@ -362,15 +350,18 @@ export class SafeFormModalComponent implements OnInit {
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
+    await this.formService.uploadFiles(
+      survey,
+      this.temporaryFilesStorage,
+      this.form?.id
+    );
     if (this.data.recordId) {
-      await this.uploadFiles(survey);
       if (this.isMultiEdition) {
         this.updateMultipleData(this.data.recordId, survey);
       } else {
         this.updateData(this.data.recordId, survey);
       }
     } else {
-      await this.uploadFiles(survey);
       this.apollo
         .mutate<AddRecordMutationResponse>({
           mutation: ADD_RECORD,
@@ -501,102 +492,6 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   /**
-   * Upload asynchronously files to create questions in the form
-   *
-   * @param survey The form in which the files will be updated
-   */
-  private async uploadFiles(survey: any): Promise<void> {
-    const data = survey.data;
-    const questionsToUpload = Object.keys(this.temporaryFilesStorage);
-    for (const name of questionsToUpload) {
-      const files = this.temporaryFilesStorage[name];
-      for (const [index, file] of files.entries()) {
-        const res = await firstValueFrom(
-          this.apollo.mutate<UploadFileMutationResponse>({
-            mutation: UPLOAD_FILE,
-            variables: {
-              file,
-              form: this.form?.id,
-            },
-            context: {
-              useMultipart: true,
-            },
-          })
-        );
-        if (res.errors) {
-          this.snackBar.openSnackBar(res.errors[0].message, { error: true });
-          return;
-        } else {
-          data[name][index].content = res.data?.uploadFile;
-        }
-      }
-    }
-  }
-
-  /**
-   * Handles the clearing of files
-   *
-   * @param survey The form in which there used to be files
-   * @param options Options regarding the files
-   */
-  private onClearFiles(survey: Survey.SurveyModel, options: any): void {
-    options.callback('success');
-  }
-
-  /**
-   * Handles the uploading of files event
-   *
-   * @param survey The survey to which the files were uploaded
-   * @param options Options regarding the upload
-   */
-  private onUploadFiles(survey: Survey.SurveyModel, options: any): void {
-    if (this.temporaryFilesStorage[options.name] !== undefined) {
-      this.temporaryFilesStorage[options.name].concat(options.files);
-    } else {
-      this.temporaryFilesStorage[options.name] = options.files;
-    }
-    let content: any[] = [];
-    options.files.forEach((file: any) => {
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        content = content.concat([
-          {
-            name: file.name,
-            type: file.type,
-            content: fileReader.result,
-            file,
-          },
-        ]);
-        if (content.length === options.files.length) {
-          options.callback(
-            'success',
-            content.map((fileContent) => ({
-              file: fileContent.file,
-              content: fileContent.content,
-            }))
-          );
-        }
-      };
-      fileReader.readAsDataURL(file);
-    });
-  }
-
-  /**
-   * Set the pages of the form
-   */
-  private setPages(): void {
-    const pages = [];
-    if (this.survey) {
-      for (const page of this.survey.pages) {
-        if (page.isVisible) {
-          pages.push(page);
-        }
-      }
-    }
-    this.pages.next(pages);
-  }
-
-  /**
    * Handles the show page event
    *
    * @param i The index of the page
@@ -606,45 +501,6 @@ export class SafeFormModalComponent implements OnInit {
       this.survey.currentPageNo = i;
     }
     this.selectedTabIndex = i;
-  }
-
-  /**
-   * Handles the downloading of a file event
-   *
-   * @param survey The survey from which the files were downloaded
-   * @param options Options regarding the download
-   */
-  private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
-    if (
-      options.content.indexOf('base64') !== -1 ||
-      options.content.indexOf('http') !== -1
-    ) {
-      options.callback('success', options.content);
-    } else {
-      const xhr = new XMLHttpRequest();
-      xhr.open(
-        'GET',
-        `${this.restService.apiUrl}/download/file/${options.content}`
-      );
-      xhr.setRequestHeader(
-        'Authorization',
-        `Bearer ${localStorage.getItem('idtoken')}`
-      );
-      xhr.onloadstart = () => {
-        xhr.responseType = 'blob';
-      };
-      xhr.onload = () => {
-        const file = new File([xhr.response], options.fileValue.name, {
-          type: options.fileValue.type,
-        });
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          options.callback('success', e.target?.result);
-        };
-        reader.readAsDataURL(file);
-      };
-      xhr.send();
-    }
   }
 
   /**
@@ -723,16 +579,6 @@ export class SafeFormModalComponent implements OnInit {
   }
 
   /**
-   * Add custom CSS classes to the survey elements.
-   *
-   * @param options survey options.
-   */
-  private onSetCustomCss(options: any): void {
-    const classes = options.cssClasses;
-    classes.content += 'safe-qst-content';
-  }
-
-  /**
    * Closes the modal without sending any data.
    */
   onClose(): void {
@@ -779,21 +625,8 @@ export class SafeFormModalComponent implements OnInit {
    * @param record The record whose data we need to recover
    * @param version The version to recover
    */
-  private confirmRevertDialog(record: any, version: any): void {
-    // eslint-disable-next-line radix
-    const date = new Date(parseInt(version.createdAt, 0));
-    const formatDate = `${date.getDate()}/${
-      date.getMonth() + 1
-    }/${date.getFullYear()}`;
-    const dialogRef = this.confirmService.openConfirmModal({
-      title: this.translate.instant('components.record.recovery.title'),
-      content: this.translate.instant(
-        'components.record.recovery.confirmationMessage',
-        { date: formatDate }
-      ),
-      confirmText: this.translate.instant('components.confirmModal.confirm'),
-      confirmColor: 'primary',
-    });
+  private confirmRevertDialog(record: any, version: any) {
+    const dialogRef = this.formService.createRevertDialog(version);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.apollo

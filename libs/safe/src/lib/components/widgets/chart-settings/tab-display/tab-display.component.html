@@ -154,9 +154,19 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="flex flex-col gap-2">
-            <mat-slide-toggle formControlName="enabled">{{
-              'components.widget.settings.chart.palette.enable' | translate
-            }}</mat-slide-toggle>
+            <mat-slide-toggle formControlName="enabled"
+              >{{ 'components.widget.settings.chart.palette.enable' | translate
+              }}<safe-icon
+                class="ml-2"
+                variant="grey"
+                [inline]="true"
+                [size]="18"
+                icon="info_outline"
+                [matTooltip]="
+                'components.widget.settings.chart.tooltip.palette' | translate
+                "
+              ></safe-icon
+            ></mat-slide-toggle>
             <safe-palette-control
               formControlName="value"
             ></safe-palette-control>
@@ -332,7 +342,9 @@
             }}</mat-slide-toggle>
             <safe-divider></safe-divider>
           </div>
-          <safe-series-settings [formArray]="$any(formGroup.get('chart.series'))">
+          <safe-series-settings
+            [formArray]="$any(formGroup.get('chart.series'))"
+          >
           </safe-series-settings>
         </mat-expansion-panel>
       </mat-accordion>

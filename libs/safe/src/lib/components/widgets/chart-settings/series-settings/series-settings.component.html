@@ -1,26 +1,44 @@
 <div *ngIf="formArray.value.length >= 0">
-  <mat-form-field *ngIf="formArray.value.length > 0" appearance="outline">
-    <!-- todo(translate) -->
-    <mat-label>Serie</mat-label>
-    <mat-select [formControl]="selectedSerie">
-      <mat-option *ngFor="let serie of formArray.value" [value]="serie.serie">
-        <!-- todo(translate) -->
-        {{ serie.serie || 'Other' }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div class="flex flex-row justify-between">
+    <!-- Serie selection -->
+    <mat-form-field *ngIf="formArray.value.length > 0" appearance="outline">
+      <mat-label>
+        {{ 'components.widget.settings.chart.series.title' | translate }}
+      </mat-label>
+      <mat-select [formControl]="selectedSerie">
+        <mat-option *ngFor="let serie of formArray.value" [value]="serie.serie">
+          {{
+            serie.serie || 'components.widget.settings.chart.other' | translate
+          }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- Serie Visibility -->
+    <div
+      *ngIf="formGroup"
+      [formGroup]="formGroup"
+      class="flex flex-row justify-between mb-5"
+    >
+      <mat-slide-toggle formControlName="visible">{{
+        'components.widget.settings.chart.series.showSerie' | translate
+      }}</mat-slide-toggle>
+      <br />
+    </div>
+  </div>
   <div *ngIf="formGroup" [formGroup]="formGroup">
     <div class="flex flex-row justify-between">
       <div class="flex flex-col" *ngIf="formGroup.get('color')">
-        <!-- todo(translate) -->
-        <span class="text-gray-500 mb-1 text-xs">Color</span>
+        <span class="text-gray-500 mb-1 text-xs">
+          {{ 'components.widget.settings.chart.color' | translate }}
+        </span>
         <kendo-colorpicker formControlName="color"></kendo-colorpicker>
       </div>
       <mat-form-field *ngIf="formGroup.get('fill')" appearance="outline">
         <mat-label>Fill</mat-label>
         <mat-select formControlName="fill">
-          <!-- todo(translate) -->
-          <mat-option>Auto</mat-option>
+          <mat-option>
+            {{ 'components.widget.settings.chart.auto' | translate }}
+          </mat-option>
           <mat-option *ngFor="let type of fillTypes" [value]="type">
             {{ type }}
           </mat-option>
@@ -33,11 +51,16 @@
         *ngIf="formGroup.get('interpolation')"
         appearance="outline"
       >
-        <!-- todo(translate) -->
-        <mat-label>Interpolation</mat-label>
+        <mat-label>
+          {{
+            'components.widget.settings.chart.series.interpolation.title'
+              | translate
+          }}
+        </mat-label>
         <mat-select formControlName="interpolation">
-          <!-- todo(translate) -->
-          <mat-option>Auto</mat-option>
+          <mat-option>
+            {{ 'components.widget.settings.chart.auto' | translate }}
+          </mat-option>
           <mat-option *ngFor="let type of interpolationTypes" [value]="type">
             {{ type }}
           </mat-option>
@@ -49,11 +72,16 @@
         "
         appearance="outline"
       >
-        <!-- todo(translate) -->
-        <mat-label>Step interpolation</mat-label>
+        <mat-label>
+          {{
+            'components.widget.settings.chart.series.interpolation.step'
+              | translate
+          }}
+        </mat-label>
         <mat-select formControlName="stepped">
-          <!-- todo(translate) -->
-          <mat-option>Auto</mat-option>
+          <mat-option>
+            {{ 'components.widget.settings.chart.auto' | translate }}
+          </mat-option>
           <mat-option
             *ngFor="let type of stepInterpolationTypes"
             [value]="type"
@@ -63,5 +91,11 @@
         </mat-select>
       </mat-form-field>
     </div>
+    <!-- Categories -->
+    <safe-categories-settings
+      *ngIf="formGroup.get('categories')"
+      [formArray]="$any(formGroup.get('categories'))"
+    >
+    </safe-categories-settings>
   </div>
 </div>

@@ -21,6 +21,7 @@ export interface GridSettings {
     convert?: boolean;
     update?: boolean;
     inlineEdition?: boolean;
+    remove?: boolean;
   };
   // showDetails?: boolean;
   // showExport?: boolean;

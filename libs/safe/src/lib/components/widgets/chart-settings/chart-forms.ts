@@ -1,33 +1,10 @@
 import { FormBuilder, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { createMappingForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
+import { DEFAULT_PALETTE } from '../../ui/charts/const/palette';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
-
-/** Default list of colors for series */
-const DEFAULT_PALETTE = [
-  '#ff6358',
-  '#ffd246',
-  '#78d237',
-  '#28b4c8',
-  '#2d73f5',
-  '#aa46be',
-  '#FF8A82',
-  '#FFDD74',
-  '#9ADD69',
-  '#5EC7D6',
-  '#6296F8',
-  '#BF74CE',
-  '#BF4A42',
-  '#BF9E35',
-  '#5A9E29',
-  '#1E8796',
-  '#2256B8',
-  '#80358F',
-  '#FFB1AC',
-  '#FFE9A3',
-];
 
 /**
  * Create chart form group
@@ -348,6 +325,20 @@ export const createChartWidgetForm = (id: any, value: any) =>
   });
 
 /**
+ * Create chart serie category form group
+ *
+ * @param value chart serie category
+ * @returns chart serie category form group
+ */
+export const createCategoryForm = (value: any) => {
+  return fb.group({
+    category: get<string | undefined>(value, 'category', undefined),
+    color: get<string | undefined>(value, 'color', undefined),
+    visible: [get(value, 'visible', true)],
+  });
+};
+
+/**
  * Create chart serie form group
  *
  * @param type type of chart
@@ -357,6 +348,7 @@ export const createChartWidgetForm = (id: any, value: any) =>
 export const createSerieForm = (type: string | null, value: any) =>
   fb.group({
     serie: get<string | undefined>(value, 'serie', undefined),
+    visible: [get(value, 'visible', true)],
     ...(type &&
       ['bar', 'column', 'line'].includes(type) && {
         color: get<string | undefined>(value, 'color', undefined),
@@ -369,5 +361,13 @@ export const createSerieForm = (type: string | null, value: any) =>
           ),
           stepped: get<string | undefined>(value, 'stepped', undefined),
         }),
+      }),
+    ...(type &&
+      ['pie', 'polar', 'donut', 'radar'].includes(type) && {
+        categories: fb.array(
+          get(value, 'categories', []).map((category: any) =>
+            createCategoryForm(category)
+          )
+        ),
       }),
   });
