@@ -1,10 +1,8 @@
 module.exports = {
   core: { builder: 'webpack5' },
-  stories: [
-    '../**/*.stories.mdx',
-    '../**/*.stories.@(js|jsx|ts|tsx)',
-  ],
+  stories: ['../**/*.stories.mdx', '../**/*.stories.@(js|jsx|ts|tsx)'],
   addons: ['@storybook/addon-essentials'],
+  staticDirs: [{ from: '../../../assets', to: '/assets' }],
   // webpackFinal: async (config, { configType }) => {
   //   // `configType` has a value of 'DEVELOPMENT' or 'PRODUCTION'
   //   // You can change the configuration based on that.

@@ -1,6 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { FormArray } from '@angular/forms';
 
+/**
+ * Chart serie: categories setting component.
+ */
 @Component({
   selector: 'safe-categories-settings',
   templateUrl: './categories-settings.component.html',

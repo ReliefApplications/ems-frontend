@@ -1132,7 +1132,10 @@
 			},
 			"settings": {
 				"chart": {
+					"auto": "auto",
 					"axes": "Axes",
+					"categories": "Categories",
+					"color": "Color",
 					"grid": {
 						"title": "Gridlines",
 						"x": {
@@ -1152,21 +1155,18 @@
 					},
 					"legend": "Legend",
 					"orientation": "Orientation",
+					"other": "Other",
 					"palette": {
 						"enable": "Use Custom Palette",
 						"title": "Color palette"
 					},
 					"position": "Position",
 					"series": {
-						"settings": {
-							"auto": "Auto",
-							"color": "Color",
-							"fill": "Fill",
-							"interpolation": "Interpolation",
-							"other": "Other",
-							"serie": "Serie",
-							"stepInterpolation": "Step interpolation"
+						"interpolation": {
+							"step": "Step interpolation",
+							"title": "Interpolation"
 						},
+						"showSerie": "Show serie",
 						"stack": {
 							"enable": "Plot series",
 							"usePercentage": "Use percentage"
@@ -1702,6 +1702,22 @@
 			"type": "Notification type"
 		},
 		"dashboard": {
+			"context": {
+				"datasource": {
+					"set": "Set context datasource",
+					"title": "Context datasource",
+					"update": "Update context datasource"
+				},
+				"displayField": "Display field",
+				"edition": {
+					"element": "You are editing the view for selected element.",
+					"template": "You are editing template of the page. It will be loaded by default if no specific view is created for a record."
+				},
+				"origin": "Context origin",
+				"refData": {
+					"element": "Element"
+				}
+			},
 			"share": "Share Dashboard"
 		},
 		"form": {

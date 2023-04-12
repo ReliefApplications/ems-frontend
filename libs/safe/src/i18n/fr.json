@@ -183,7 +183,7 @@
 			"objectNotDuplicated": "L'objet de type {{type}} n'a pas pu être dupliqué. {{error}}",
 			"objectNotFound": "{{name}} n'a pas été trouvé.",
 			"objectNotInvited": "L'invitation vers {{name}} a échoué.",
-			"objectNotReordered": "{{type}} n'a pas été réorganisé {{error}}",
+			"objectNotReordered": "{{type}} non réorganisé. {{error}}",
 			"objectNotRestored": "{{type}} non restauré. {{error}}",
 			"objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
 			"objectReordered": "L'objet de type {{type}} a été réorganisé.",
@@ -1139,7 +1139,10 @@
 			},
 			"settings": {
 				"chart": {
+					"auto": "auto",
 					"axes": "Axes",
+					"categories": "Catégories",
+					"color": "Couleur",
 					"grid": {
 						"title": "Grille",
 						"x": {
@@ -1159,21 +1162,18 @@
 					},
 					"legend": "Légende",
 					"orientation": "Orientation",
+					"other": "Autre",
 					"palette": {
 						"enable": "Configurer la palette",
 						"title": "Palette de couleurs"
 					},
 					"position": "Position",
 					"series": {
-						"settings": {
-							"auto": "Auto",
-							"color": "Couleur",
-							"fill": "Remplir",
-							"interpolation": "Interpolation",
-							"other": "Autre",
-							"serie": "Série",
-							"stepInterpolation": "Interpolation pas à pas"
+						"interpolation": {
+							"step": "Étape d'interpolation",
+							"title": "Interpolation"
 						},
+						"showSerie": "Afficher la serie",
 						"stack": {
 							"enable": "Empiler les séries",
 							"usePercentage": "Utiliser des pourcentages"
@@ -1710,6 +1710,22 @@
 			"type": "Type"
 		},
 		"dashboard": {
+			"context": {
+				"datasource": {
+					"set": "Définir la source de données contextuelle",
+					"title": "Source de données de contexte",
+					"update": "Mettre à jour la source de données contextuelle"
+				},
+				"displayField": "Champ d'affichage",
+				"edition": {
+					"element": "Vous éditez la page qui sera affichée pour l'élément sélectionné.",
+					"template": "Vous éditez le modèle de base de la page. Il sera utilisé par défaut si aucune vue n'a été créée pour l'élément à charger."
+				},
+				"origin": "Origine du contexte",
+				"refData": {
+					"element": "Élément"
+				}
+			},
 			"share": "Partager le tableau de bord"
 		},
 		"form": {

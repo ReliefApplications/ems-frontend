@@ -21,8 +21,12 @@
             "input": "libs/safe/src/i18n/",
             "output": "/assets/i18n/"
           },
+          {
+            "glob": "**/*",
+            "input": "assets/",
+            "output": "/assets/"
+          },
           "apps/back-office/src/favicon.ico",
-          "apps/back-office/src/assets",
           "apps/back-office/src/web.config",
           {
             "glob": "**/*",
