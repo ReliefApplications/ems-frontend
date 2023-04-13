@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SpinnerSize } from './spinner-size.enum';
 import { SpinnerVariant } from './spinner-variant.enum';
 import { SafeSpinnerComponent } from './spinner.component';
@@ -37,18 +37,18 @@ export default {
  * @param args Arguments used by the component
  * @returns Returns an object used as the stories template
  */
-const TEMPLATE: Story<SafeSpinnerComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeSpinnerComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
-/**
- * Sets the template as the default state of the component
- */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  size: SpinnerSize.MEDIUM,
-  variant: SpinnerVariant.DEFAULT,
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+
+  args: {
+    size: SpinnerSize.MEDIUM,
+    variant: SpinnerVariant.DEFAULT,
+  },
 };

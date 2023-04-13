@@ -1,5 +1,5 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeAddFieldStageComponent } from './add-field-stage.component';
 import { SafePipelineModule } from '../pipeline.module';
 import { StorybookTranslateModule } from '../../../../storybook-translate/storybook-translate-module';
@@ -69,7 +69,7 @@ const fb = new UntypedFormBuilder();
  *
  * @returns the template
  */
-const TEMPLATE: Story<SafeAddFieldStageComponent> = () => ({
+const TEMPLATE: StoryFn<SafeAddFieldStageComponent> = () => ({
   template:
     '<safe-add-field-stage [form]=form [fields]=fields [operators]=operators></safe-add-field-stage>',
   props: {
@@ -80,7 +80,8 @@ const TEMPLATE: Story<SafeAddFieldStageComponent> = () => ({
   },
 });
 
-/** Exports a default template */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {};
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+  args: {},
+};
