@@ -48,7 +48,6 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
-import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
@@ -87,7 +86,6 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     MatTabsModule,
     SafeButtonModule,
     SafeIconModule,
-    SafeRecordHistoryModalModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,

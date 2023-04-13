@@ -9,6 +9,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { getLanguageNativeName } from '../../utils/languages';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /** Preferences Dialog Data */
 interface PreferencesDialogData {
@@ -19,6 +25,16 @@ interface PreferencesDialogData {
  * Preferences Modal.
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatTabsModule,
+    SafeModalModule,
+  ],
   selector: 'safe-preferences-modal',
   templateUrl: './preferences-modal.component.html',
   styleUrls: ['./preferences-modal.component.scss'],

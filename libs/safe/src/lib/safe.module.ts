@@ -12,9 +12,6 @@ import { SafeUsersModule } from './components/users/users.module';
 import { SafeRolesModule } from './components/roles/roles.module';
 import { SafeConvertModalModule } from './components/convert-modal/convert-modal.module';
 import { SafeRecordHistoryModule } from './components/record-history/record-history.module';
-import { SafeRecordModalModule } from './components/record-modal/record-modal.module';
-import { SafeStatusModalModule } from './components/status-modal/status-modal.module';
-import { SafeSearchResourceGridModalModule } from './components/search-resource-grid-modal/search-resource-grid-modal.module';
 import { SafeButtonModule } from './components/ui/button/button.module';
 import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
 import { SafeWorkflowStepperModule } from './components/workflow-stepper/workflow-stepper.module';
@@ -56,13 +53,10 @@ import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
     SafeGridSettingsModule,
     SafeMapSettingsModule,
     SafeWidgetGridModule,
-    SafeStatusModalModule,
     SafeUsersModule,
     SafeRolesModule,
     SafeConvertModalModule,
     SafeRecordHistoryModule,
-    SafeRecordModalModule,
-    SafeSearchResourceGridModalModule,
     SafeButtonModule,
     SafeContentChoiceModule,
     SafeWorkflowStepperModule,

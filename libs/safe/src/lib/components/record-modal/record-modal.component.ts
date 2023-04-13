@@ -32,6 +32,19 @@ import { TranslateService } from '@ngx-translate/core';
 import isEqual from 'lodash/isEqual';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormService } from '../../services/form/form.service';
+import { CommonModule } from '@angular/common';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
+import { SafeButtonModule } from '../ui/button/button.module';
+import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
+import { SafeFormActionsModule } from '../form-actions/form-actions.module';
+import { SafeDateModule } from '../../pipes/date/date.module';
+import { SafeModalModule } from '../ui/modal/modal.module';
+import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -47,6 +60,22 @@ interface DialogData {
  * Component used to display a modal to modify a record
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatTabsModule,
+    MatGridListModule,
+    MatIconModule,
+    MatButtonModule,
+    SafeButtonModule,
+    SafeRecordSummaryModule,
+    SafeFormActionsModule,
+    TranslateModule,
+    SafeDateModule,
+    SafeModalModule,
+    SafeSpinnerModule,
+  ],
   selector: 'safe-record-modal',
   templateUrl: './record-modal.component.html',
   styleUrls: ['./record-modal.component.scss'],
