@@ -1,5 +1,5 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeExpressionsComponent } from './expressions.component';
 import { SafePipelineModule } from '../pipeline.module';
 import { StorybookTranslateModule } from '../../../../storybook-translate/storybook-translate-module';
@@ -77,7 +77,7 @@ const fb = new UntypedFormBuilder();
  *
  * @returns story template
  */
-const TEMPLATE: Story<SafeExpressionsComponent> = () => ({
+const TEMPLATE: StoryFn<SafeExpressionsComponent> = () => ({
   template:
     '<safe-expressions [form]=form [fields]=fields [operators]=operators></safe-expressions>',
   props: {
@@ -91,9 +91,8 @@ const TEMPLATE: Story<SafeExpressionsComponent> = () => ({
   },
 });
 
-/**
- * Default story.
- */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {};
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+  args: {},
+};

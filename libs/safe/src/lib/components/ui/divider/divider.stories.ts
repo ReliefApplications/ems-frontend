@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { DividerOrientation } from './divider-orientation.enum';
 import { DividerPosition } from './divider-position.enum';
 import { SafeDividerComponent } from './divider.component';
@@ -38,7 +38,7 @@ export default {
  * @param args template arguments
  * @returns template
  */
-const TEMPLATE: Story<SafeDividerComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeDividerComponent> = (args) => ({
   template:
     '<div><div class="h-4"></div><safe-divider [text]="text" [position]="position"></safe-divider><div class="h-4"></div></div>',
   props: {
@@ -46,13 +46,16 @@ const TEMPLATE: Story<SafeDividerComponent> = (args) => ({
   },
 });
 
-/** Default template */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+};
 
-/** Template with text */
-export const WITH_TEXT = TEMPLATE.bind({});
-WITH_TEXT.storyName = 'With Text';
-WITH_TEXT.args = {
-  text: 'Inner',
+export const WITH_TEXT = {
+  render: TEMPLATE,
+  name: 'With Text',
+
+  args: {
+    text: 'Inner',
+  },
 };

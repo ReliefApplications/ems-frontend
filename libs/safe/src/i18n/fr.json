@@ -1712,8 +1712,10 @@
 		"dashboard": {
 			"context": {
 				"datasource": {
+					"alert": "Sélectionnez une source de données, afin de définir une page par enregistrement de la source de données. Vous pouvez également définir un modèle qui sera chargé par défaut si aucune page spécifique n'est créée pour un enregistrement.",
+					"info": "Indiquez le champ à utiliser lors de la sélection des enregistrements.",
 					"set": "Définir la source de données contextuelle",
-					"title": "Source de données de contexte",
+					"title": "Source de données contextuelle",
 					"update": "Mettre à jour la source de données contextuelle"
 				},
 				"displayField": "Champ d'affichage",
