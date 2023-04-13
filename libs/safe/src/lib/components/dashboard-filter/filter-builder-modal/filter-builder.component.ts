@@ -134,7 +134,7 @@ export class SafeFilterBuilderComponent
     );
     this.surveyCreator.text = this.data?.surveyStructure;
     this.surveyCreator.showToolbox = 'right';
-    this.surveyCreator.showPropertyGrid = 'none';
+    this.surveyCreator.showPropertyGrid = 'right';
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.survey.showQuestionNumbers = 'off';
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
