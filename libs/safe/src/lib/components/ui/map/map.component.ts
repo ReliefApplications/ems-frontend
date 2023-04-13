@@ -47,6 +47,9 @@ import { takeUntil } from 'rxjs';
 import { legendControl } from '@oort-front/leaflet';
 import { HeatmapLayer } from './map-layers/heatmap-layer';
 import { ClusterLayer } from './map-layers/cluster-layer';
+import { FeatureLayer } from './map-layers/feature-layer';
+// import { SketchLayer } from './map-layers/sketch-layer';
+// import { GroupLayer } from './map-layers/group-layer';
 
 /**
  * Cleans the settings object from null values
@@ -360,8 +363,14 @@ export class MapComponent
             },
           ]),
           new ClusterLayer('red', 'dragon'),
+          new FeatureLayer(
+            { style: '', symbol: { icon: 'dragon', color: 'teal' } },
+            '',
+            ''
+          ),
         ] //JUST TEST, TO BE MODIFIED
       ).addTo(this.map);
+      console.log(layers);
     });
 
     // Add zoom control

@@ -36,9 +36,10 @@ export class ClusterLayer extends L.Layer {
    */
   get legend() {
     return (
-      'Cluster layer' +
+      'Cluster layer <div class="flex flex-col gap-2">' +
       this.createClusterIcon(this.min) +
-      this.createClusterIcon(this.max)
+      this.createClusterIcon(this.max) +
+      '</div>'
     );
   }
 
@@ -55,7 +56,7 @@ export class ClusterLayer extends L.Layer {
     }px;" class="${this.pipe.transform(
       this.icon,
       this.fontFamily
-    )}"></i>${size} </li>
+    )}"></i><span class="text-base px-1">${size}</span> </li>
     `;
   }
 }

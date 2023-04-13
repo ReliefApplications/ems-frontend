@@ -28,7 +28,7 @@ export class HeatmapLayer extends L.Layer {
       (value) =>
         (legend =
           legend +
-          `<li class="flex items-center"><div style="background-color: ${value.color}" class="w-6 h-4"></div> <p>${value.ratio}</p></li>`)
+          `<li class="flex items-center py-0.5 px-1"><i style="background-color: ${value.color}" class="w-4 h-4 rounded-full"></i> <span class="text-base px-1">${value.ratio}</span></li>`)
     );
     return legend;
   }

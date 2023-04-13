@@ -3,7 +3,7 @@ import * as L from 'leaflet';
 /**
  * Custom class for heatmap layers
  */
-export class HeatmapLayer extends L.Layer {
+export class GroupLayer extends L.Layer {
   /**
    * Custom legend for the group layers
    *
