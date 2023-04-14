@@ -11,6 +11,12 @@ import { SafeButtonComponent } from '../../components/ui/button/button.component
 import { ButtonSize } from '../../components/ui/button/button-size.enum';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Question, QuestionText } from '../types';
+import { TextBoxComponent } from '@progress/kendo-angular-inputs';
+
+/** Regex for the pattern "today()+[number of days to add]" */
+const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
+/** Regex for the pattern "today()-[number of days to subtract]" */
+const REGEX_MINUS = new RegExp('today\\(\\)\\-\\d+');
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 
@@ -77,27 +83,49 @@ export const init = (Survey: any, domService: DomService): void => {
       const dateEditor = {
         render: (editor: any, htmlElement: HTMLElement) => {
           const question = editor.object as QuestionText;
+          console.log('question', question.getType());
           const updatePickerInstance = () => {
             htmlElement.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
-            const pickerInstance = createPickerInstance(
-              question.inputType as DateInputFormat,
-              htmlElement
-            );
-            if (pickerInstance) {
-              if (question[editor.property.name as keyof QuestionText]) {
-                pickerInstance.value = getDateDisplay(
-                  question[editor.property.name as keyof QuestionText],
-                  question.inputType
-                );
-              }
-              pickerInstance.registerOnChange((value: Date | null) => {
-                if (value) {
-                  editor.onChanged(setDateValue(value, question.inputType));
-                } else {
-                  editor.onChanged(null);
+            // if (question.inputType === 'date') {
+            //   const textBoxInstance = createInputExpressionInstance(
+            //     question.inputType as DateInputFormat,
+            //     htmlElement
+            //   );
+            //   if (textBoxInstance) {
+            //     if (question[editor.property.name as keyof QuestionText]) {
+            //       textBoxInstance.value = getDateDisplay(
+            //         question[editor.property.name as keyof QuestionText],
+            //         question.inputType
+            //       ).toString();
+            //       console.log('question value: ', question.value);
+            //     }
+            //     textBoxInstance.readonly = question.isReadOnly;
+            //     textBoxInstance.disabled = question.isReadOnly;
+            //     textBoxInstance.registerOnChange(() => {
+            //       console.log('registerOnChange test'); // console when editing question Date min and Date max
+            //     });
+            //   }
+            // } else {
+              const pickerInstance = createPickerInstance(
+                question.inputType as DateInputFormat,
+                htmlElement
+              );
+              if (pickerInstance) {
+                if (question[editor.property.name as keyof QuestionText]) {
+                  pickerInstance.value = getDateDisplay(
+                    question[editor.property.name as keyof QuestionText],
+                    question.inputType
+                  );
                 }
-              });
-            }
+                pickerInstance.registerOnChange((value: Date | null) => {
+                  if (value) {
+                    editor.onChanged(setDateValue(value, question.inputType));
+                  } else {
+                    editor.onChanged(null);
+                  }
+                });
+              }
+            // }
           };
           question.registerFunctionOnPropertyValueChanged(
             'inputType',
@@ -120,7 +148,7 @@ export const init = (Survey: any, domService: DomService): void => {
       const updateTextInput = () => {
         el.parentElement?.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
         if (
-          ['date', 'datetime', 'datetime-local', 'time'].includes(
+          ['datetime', 'datetime-local', 'time'].includes(
             question.inputType
           )
         ) {
@@ -155,6 +183,27 @@ export const init = (Survey: any, domService: DomService): void => {
               } else {
                 question.value = null;
               }
+            });
+            el.style.display = 'none';
+          }
+        } else if ('date' === question.inputType) {
+          const textBoxInstance = createInputExpressionInstance(
+            question.inputType as DateInputFormat,
+            el.parentElement
+          );
+          if (textBoxInstance) {
+            console.log('question: ', question);
+            if (question.value) {
+              textBoxInstance.value = getDateDisplay(
+                question.value,
+                question.inputType
+              ).toString();
+              console.log('question value: ', question.value);
+            }
+            textBoxInstance.readonly = question.isReadOnly;
+            textBoxInstance.disabled = question.isReadOnly;
+            textBoxInstance.registerOnChange(() => {
+              console.log('registerOnChange test'); // console when editing Default value ( survey trigger and question data)
             });
             el.style.display = 'none';
           }
@@ -285,6 +334,21 @@ export const init = (Survey: any, domService: DomService): void => {
     }
   };
 
+  const createInputExpressionInstance = (
+    inputType: DateInputFormat,
+    element: any
+  ): TextBoxComponent | null => {
+    if (inputType === 'date') {
+      const textBox = domService.appendComponentToBody(
+        TextBoxComponent,
+        element
+      );
+      const textBoxInstance: TextBoxComponent = textBox.instance;
+      return textBoxInstance;
+    }
+    return null;
+  }
+
   /**
    * It creates a date, datetime or time picker instance based on the input type
    *
@@ -308,6 +372,7 @@ export const init = (Survey: any, domService: DomService): void => {
         );
         const datePickerInstance: DatePickerComponent = datePicker.instance;
         datePickerInstance.format = 'dd/MM/yyyy';
+        // datePickerInstance.title = 'Testing custom date component';
         return datePickerInstance;
       case 'datetime':
       case 'datetime-local':
