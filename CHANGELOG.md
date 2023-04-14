@@ -1,3 +1,18 @@
+# [2.0.0-beta.9](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.8...v2.0.0-beta.9) (2023-04-14)
+
+
+### Bug Fixes
+
+* AB[#57872](https://github.com/ReliefApplications/oort-frontend/issues/57872) add isnull / isnotnull to available operators for boolean fields ([1338eea](https://github.com/ReliefApplications/oort-frontend/commit/1338eea7ea6b70fed3ff80fcab75e7b124d360a3))
+* delete questions from surveyjs if not accessible ([f3785e6](https://github.com/ReliefApplications/oort-frontend/commit/f3785e69b51be23e95e51c9ccad1478c81976b92)), closes [bugfix/AB#35551_SA-HQ-and-all-RO-R4](https://github.com/bugfix/AB/issues/35551_SA-HQ-and-all-RO-R4)
+* edit labels of fields in layouts ([4f096e6](https://github.com/ReliefApplications/oort-frontend/commit/4f096e68e17e53b583052df4568b706e9b4e10dd))
+* labels of fields could not be edited ([d114125](https://github.com/ReliefApplications/oort-frontend/commit/d1141254a2caebeb5f09fcee9e456281517b6f81)), closes [fix/AB#61701](https://github.com/fix/AB/issues/61701)
+
+
+### Performance Improvements
+
+* migrate to storybook 7 ([fa18efd](https://github.com/ReliefApplications/oort-frontend/commit/fa18efd1ec3067e6e790f5a7057627a5ee3565df))
+
 ## [1.3.11](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.10...v1.3.11) (2023-04-14)
 
 
