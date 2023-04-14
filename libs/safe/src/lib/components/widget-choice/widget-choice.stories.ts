@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeWidgetChoiceComponent } from './widget-choice.component';
 import { SafeWidgetChoiceModule } from './widget-choice.module';
 import { IWidgetType, WIDGET_TYPES } from '../../models/dashboard.model';
@@ -32,24 +32,28 @@ export default {
  * @param args Parameters
  * @returns A story component
  */
-const TEMPLATE: Story<SafeWidgetChoiceComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeWidgetChoiceComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
-/** Export a story component */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  floating: false,
-  widgetTypes: WIDGET_TYPES as IWidgetType[],
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+
+  args: {
+    floating: false,
+    widgetTypes: WIDGET_TYPES as IWidgetType[],
+  },
 };
 
-/** Export a story component */
-export const FLOATING = TEMPLATE.bind({});
-FLOATING.storyName = 'Floating';
-FLOATING.args = {
-  ...DEFAULT.args,
-  floating: true,
+export const FLOATING = {
+  render: TEMPLATE,
+  name: 'Floating',
+
+  args: {
+    ...DEFAULT.args,
+    floating: true,
+  },
 };

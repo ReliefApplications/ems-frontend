@@ -1,5 +1,5 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { BehaviorSubject } from 'rxjs';
 import { SafeSeriesMappingComponent } from './series-mapping.component';
 import { SafeSeriesMappingModule } from './series-mapping.module';
@@ -151,7 +151,7 @@ const DEFAULT_FIELDS = [
  *
  * @returns story template
  */
-const TEMPLATE: Story<SafeSeriesMappingComponent> = () => ({
+const TEMPLATE: StoryFn<SafeSeriesMappingComponent> = () => ({
   template:
     '<safe-series-mapping [fields$]=fields$ [mappingForm]=mappingForm></safe-series-mapping>',
   props: {
@@ -168,12 +168,12 @@ const TEMPLATE: Story<SafeSeriesMappingComponent> = () => ({
   },
 });
 
-/**
- * Default template.
- */
-export const INITIAL_SOURCE = TEMPLATE.bind({});
-INITIAL_SOURCE.storyName = 'Initial source';
-INITIAL_SOURCE.args = {
-  controlNames: ['category', 'field'],
-  availableFields: [],
+export const INITIAL_SOURCE = {
+  render: TEMPLATE,
+  name: 'Initial source',
+
+  args: {
+    controlNames: ['category', 'field'],
+    availableFields: [],
+  },
 };
