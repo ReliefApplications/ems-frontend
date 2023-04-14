@@ -60,32 +60,37 @@ export class FeatureLayer extends L.Layer {
     let legend = 'FEATURE LAYER';
     const features =
       this.data.type === 'FeatureCollection' ? this.data.features : [this.data];
-
-    features.forEach((feature: any) => {
-      if ('properties' in feature) {
-        // check if feature is a point
-        // @TODO structure sent from backend follows the feature.type structure
-        const isPoint = feature.geometry?.type
-          ? feature.geometry.type === 'Point'
-          : (feature as any).type === 'Point';
-        const style = this.getFeatureStyle(feature);
-        items.push({
-          label: this.labelField
-            ? feature.properties?.[this.labelField] ?? ''
-            : '',
-          color: style.symbol.color,
-          icon: isPoint ? style.symbol.icon : undefined,
-        });
-        legend =
-          legend +
-          `<li class="flex items-center">
+    console.log('entering', legend);
+    try {
+      features.forEach((feature: any) => {
+        if ('properties' in feature) {
+          // check if feature is a point
+          // @TODO structure sent from backend follows the feature.type structure
+          const isPoint = feature.geometry?.type
+            ? feature.geometry.type === 'Point'
+            : (feature as any).type === 'Point';
+          const style = this.getFeatureStyle(feature);
+          items.push({
+            label: this.labelField
+              ? feature.properties?.[this.labelField] ?? ''
+              : '',
+            color: style.symbol.color,
+            icon: isPoint ? style.symbol.icon : undefined,
+          });
+          legend =
+            legend +
+            `<li class="flex items-center">
         <i style="color: ${style.symbol.color};" class="${this.pipe.transform(
-            style.symbol.icon,
-            this.fontFamily
-          )}"></i></li>
+              style.symbol.icon,
+              this.fontFamily
+            )}"></i></li>
         `;
-      }
-    });
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    }
+    console.log('legend', legend);
     return legend;
   }
 

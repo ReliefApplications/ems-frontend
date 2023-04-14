@@ -44,12 +44,7 @@ import { ArcgisService } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { flatten } from 'lodash';
 import { takeUntil } from 'rxjs';
-import { legendControl } from '@oort-front/leaflet';
-import { HeatmapLayer } from './map-layers/heatmap-layer';
-import { ClusterLayer } from './map-layers/cluster-layer';
-import { FeatureLayer } from './map-layers/feature-layer';
-// import { SketchLayer } from './map-layers/sketch-layer';
-// import { GroupLayer } from './map-layers/group-layer';
+import { legendControl } from './controls/legend-control';
 
 /**
  * Cleans the settings object from null values
@@ -349,9 +344,8 @@ export class MapComponent
       }
       this.setLayersControl(flatten(basemaps), flatten(layers));
       legendControl(
-        {},
-        //this.layers.map((layer) => layer.getLayer())
-        [
+        { layers: this.layers }
+        /*[
           new HeatmapLayer([
             {
               color: 'blue',
@@ -368,9 +362,8 @@ export class MapComponent
             '',
             ''
           ),
-        ] //JUST TEST, TO BE MODIFIED
+        ]*/ //JUST TEST, TO BE MODIFIED
       ).addTo(this.map);
-      console.log(layers);
     });
 
     // Add zoom control
