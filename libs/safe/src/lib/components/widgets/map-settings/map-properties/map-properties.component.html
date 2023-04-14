@@ -37,6 +37,16 @@
           </mat-form-field>
         </div>
         <!-- Webmap selection -->
+        <!-- <safe-graphql-select
+          valueField="id"
+          textField="name"
+          [query]="resourcesQuery"
+          formControlName="arcGisWebMap"
+          [selectedElements]="[resource]"
+          (searchChange)="onResourceSearchChange($event)"
+          [filterable]="true"
+        >
+        </safe-graphql-select> -->
         <safe-webmap-select formControlName="arcGisWebMap"></safe-webmap-select>
         <safe-divider></safe-divider>
       </div> 

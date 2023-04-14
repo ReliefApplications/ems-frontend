@@ -14,6 +14,8 @@ import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 import { MapControlsModule } from './map-controls/map-controls.module';
 import { WebmapSelectComponent } from './webmap-select/webmap-select.component';
+import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
+
 
 /**
  * Module of Map Properties of Map Widget.
@@ -36,6 +38,7 @@ import { WebmapSelectComponent } from './webmap-select/webmap-select.component';
     MatCheckboxModule,
     MapControlsModule,
     WebmapSelectComponent,
+    SafeGraphQLSelectModule
   ],
   exports: [MapPropertiesComponent],
 })

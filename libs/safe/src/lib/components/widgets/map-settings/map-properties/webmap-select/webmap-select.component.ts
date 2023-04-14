@@ -17,6 +17,14 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { CommonModule } from '@angular/common';
+import { Observable, startWith, map, of, Subject } from 'rxjs';
+import {
+  MatLegacyFormFieldControl as MatFormFieldControl,
+} from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { setTime } from '@progress/kendo-angular-dateinputs/util';
+
 
 /**
  * Control value accessor
@@ -32,16 +40,28 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
  */
 @Component({
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule, TranslateModule, MatSelectModule],
+  imports: [CommonModule, MatFormFieldModule, TranslateModule, MatSelectModule, MatInputModule, FormsModule, ReactiveFormsModule],
   selector: 'safe-webmap-select',
   templateUrl: './webmap-select.component.html',
   styleUrls: ['./webmap-select.component.scss'],
-  providers: [CONTROL_VALUE_ACCESSOR],
+  providers: [
+    CONTROL_VALUE_ACCESSOR,
+    {
+      provide: MatFormFieldControl,
+      useExisting: WebmapSelectComponent,
+    },
+  ],
 })
 export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
   @Input() formControl!: UntypedFormControl;
 
   @Input() formControlName!: string;
+
+  @Input() placeholder!: string;
+
+  filteredOptions$!: Observable<any[]>;
+  optionsSubject = new Subject<any>();
+  public searchValue = new UntypedFormControl('');
 
   private onTouched!: any;
   private onChanged!: any;
@@ -65,7 +85,22 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    */
   ngOnInit(): void {
     this.search();
+    this.filteredOptions$ = this.optionsSubject.asObservable();
+    setTimeout(() => {
+      this.optionsSubject.next(this.items);
+    },1000);
+    this.searchValue.valueChanges.subscribe((value:any) => {
+      this.optionsSubject.next(this.filter(value));
+    });
   }
+
+  filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    const teste = this.items.filter((item) => item.title.toLowerCase().includes(filterValue));
+    console.log(teste);
+    return teste;
+  }
+
 
   /**
    * Register change of the select

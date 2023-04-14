@@ -8,8 +8,10 @@
     (selectionChange)="selectionOnChange($event)"
     (openedChange)="onOpenSelect($event)"
     [value]="value"
+    [placeholder]="placeholder"
   >
-    <mat-option *ngFor="let item of items" [value]="item.id">
+    <input matInput [formControl]="searchValue" type="text" />
+    <mat-option *ngFor="let item of filteredOptions$ | async" [value]="item.id">
       {{ item.title }}
     </mat-option>
   </mat-select>

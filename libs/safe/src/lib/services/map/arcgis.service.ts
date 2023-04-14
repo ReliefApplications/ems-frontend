@@ -181,8 +181,11 @@ export class ArcgisService {
     map: L.Map,
     webMap: any
   ): Promise<TreeObject[]> {
+    console.log("aqui123");
+    console.log(webMap.operationalLayers);
     const layers: TreeObject[] = [];
     for (const layer of webMap.operationalLayers) {
+      console.log(layer);
       await this.addLayer(map, layer, layers);
     }
     return layers;
