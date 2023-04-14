@@ -106,9 +106,6 @@ export class SafeQueryBuilderComponent
       this.availableFields = this.queryBuilder
         .getFieldsFromType(this.form?.value.type)
         .filter((x) => this.canExpand || x.type.kind !== 'LIST');
-      this.availableFields.forEach((field) => {
-        field.hide = false;
-      });
       if (this.form?.get('filter')) {
         this.form?.setControl(
           'filter',
@@ -133,9 +130,6 @@ export class SafeQueryBuilderComponent
           this.availableFields = this.queryBuilder.getFields(
             this.form?.value.name
           );
-          this.availableFields.forEach((field) => {
-            field.hide = false;
-          });
           this.form?.setControl(
             'filter',
             createFilterGroup(this.form?.value.filter)
@@ -148,9 +142,6 @@ export class SafeQueryBuilderComponent
           if (value !== this.form?.value.name) {
             if (this.allQueries.find((x) => x === value)) {
               this.availableFields = this.queryBuilder.getFields(value);
-              this.availableFields.forEach((field) => {
-                field.hide = false;
-              });
               this.form?.setControl('filter', createFilterGroup(null));
               this.form?.setControl(
                 'fields',

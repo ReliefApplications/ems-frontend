@@ -50,11 +50,29 @@ export class SafeEditLayoutModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const fields: any = {};
+
+    this.data.layout?.query.fields.forEach((field: any) => {
+      const fieldName = field.name;
+      for (const key of Object.keys(this.data.layout?.display.fields)) {
+        if (key === fieldName) {
+          Object.defineProperty(fields, fieldName, {
+            value: this.data.layout?.display.fields[fieldName],
+            writable: true,
+          });
+        }
+      }
+    });
+
+    if (this.data.layout?.display.fields !== undefined) {
+      this.data.layout.display.fields = fields;
+    }
     this.form = this.formBuilder.group({
       name: [this.data.layout?.name, Validators.required],
       query: createQueryForm(this.data.layout?.query),
       display: createDisplayForm(this.data.layout?.display),
     });
+
     this.layoutPreviewData = {
       form: this.form,
       defaultLayout: this.data.layout?.display,
