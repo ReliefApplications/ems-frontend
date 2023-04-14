@@ -1,3 +1,35 @@
+# [2.0.0-beta.9](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.8...v2.0.0-beta.9) (2023-04-14)
+
+
+### Bug Fixes
+
+* AB[#57872](https://github.com/ReliefApplications/oort-frontend/issues/57872) add isnull / isnotnull to available operators for boolean fields ([1338eea](https://github.com/ReliefApplications/oort-frontend/commit/1338eea7ea6b70fed3ff80fcab75e7b124d360a3))
+* delete questions from surveyjs if not accessible ([f3785e6](https://github.com/ReliefApplications/oort-frontend/commit/f3785e69b51be23e95e51c9ccad1478c81976b92)), closes [bugfix/AB#35551_SA-HQ-and-all-RO-R4](https://github.com/bugfix/AB/issues/35551_SA-HQ-and-all-RO-R4)
+* edit labels of fields in layouts ([4f096e6](https://github.com/ReliefApplications/oort-frontend/commit/4f096e68e17e53b583052df4568b706e9b4e10dd))
+* labels of fields could not be edited ([d114125](https://github.com/ReliefApplications/oort-frontend/commit/d1141254a2caebeb5f09fcee9e456281517b6f81)), closes [fix/AB#61701](https://github.com/fix/AB/issues/61701)
+
+
+### Performance Improvements
+
+* migrate to storybook 7 ([fa18efd](https://github.com/ReliefApplications/oort-frontend/commit/fa18efd1ec3067e6e790f5a7057627a5ee3565df))
+
+# [2.0.0-alpha.6](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) (2023-04-12)
+
+
+### Bug Fixes
+
+* remove background on surveyjs forms ([9b64cce](https://github.com/ReliefApplications/oort-frontend/commit/9b64cce300fb6e8ee2714b686ddfb94174f82691))
+* series settings would not compile anymore ([d3e4b88](https://github.com/ReliefApplications/oort-frontend/commit/d3e4b88cbd2b069ed5d2a9d7e00ba94229234a61))
+* some confirmation modals would appear below the modal that opened them ([920cc2b](https://github.com/ReliefApplications/oort-frontend/commit/920cc2b4eca44593e1cc85acc7ad66a8b7a4ff79))
+* storybook breaking due to component API change ([1484c89](https://github.com/ReliefApplications/oort-frontend/commit/1484c890a5f41dcacb04526d20a26da555fc448d))
+
+
+### Features
+
+* add possibility to have one dashboard per record ([a3e527f](https://github.com/ReliefApplications/oort-frontend/commit/a3e527f906a444d0d9a87237ee9d02d69bc4a6dc)), closes [feat/AB#59620](https://github.com/feat/AB/issues/59620)
+* can now hide / show series and categories ([93f3e3f](https://github.com/ReliefApplications/oort-frontend/commit/93f3e3f85826fc7c654464602681bcf4e0054d25)), closes [feat/AB#61106](https://github.com/feat/AB/issues/61106)
+* dashboards with context ([424b5ac](https://github.com/ReliefApplications/oort-frontend/commit/424b5ac96e0c905b2f2e44195af8106ac37affcb))
+
 # [2.0.0-beta.8](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.7...v2.0.0-beta.8) (2023-04-12)
 
 
@@ -20,6 +52,64 @@
 ### Bug Fixes
 
 * some confirmation modals would appear below the modal that opened them ([920cc2b](https://github.com/ReliefApplications/oort-frontend/commit/920cc2b4eca44593e1cc85acc7ad66a8b7a4ff79))
+
+# [2.0.0-beta.6](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2023-04-06)
+
+
+### Bug Fixes
+
+* add tooltip in summary card display settings, to better indicate purpose of 'link to data source' option ([75ca7d5](https://github.com/ReliefApplications/oort-frontend/commit/75ca7d53488789abcaf8c286d04b9e85090100a9))
+* aggregations selection would take entire width on grid widgets ([1173c9d](https://github.com/ReliefApplications/oort-frontend/commit/1173c9d52490c1829b9b49456ae0100d64595336))
+* autocompletion in summary cards not working with aggregations ([7545c4e](https://github.com/ReliefApplications/oort-frontend/commit/7545c4e5eb39d9ee7acd84ca11f1fa966c72d7b2)), closes [Fix/ab#60118](https://github.com/Fix/ab/issues/60118)
+* clear date picker on surveys ([50fc735](https://github.com/ReliefApplications/oort-frontend/commit/50fc735f309aa806253bcb2153de3b8d27310cbf))
+* color palette was incorrectly working ([1186045](https://github.com/ReliefApplications/oort-frontend/commit/11860451ed6d10b388932c16f73f5a5ae3162480))
+* confirmation modal would appear below other modals, if opened from other dialog ([4277e6a](https://github.com/ReliefApplications/oort-frontend/commit/4277e6a7d330921a3a6370b1f0d45dc4c76970e5))
+* incorrect devops pipelines ([d4f31c9](https://github.com/ReliefApplications/oort-frontend/commit/d4f31c98d018eb974cf1e407d01eff9cc1b369b2))
+* inject btn in datepicker & edit safe-button ([7b9f28e](https://github.com/ReliefApplications/oort-frontend/commit/7b9f28e0e3786df64ed2b2c3801f1d609e8c0935))
+* now possible to delete values of date / time fields in forms ([ba19583](https://github.com/ReliefApplications/oort-frontend/commit/ba195834358c1bd9515156bd7ac940f20a92ba4c))
+* styling not applying if datasource was layout ([d572947](https://github.com/ReliefApplications/oort-frontend/commit/d57294759fae97f4de1f02db1e598b448c85912a))
+* summary cards preventing scrollbar to be clicked when selecting placeholder ([dd630cd](https://github.com/ReliefApplications/oort-frontend/commit/dd630cd9735feadc19a15d7e4b46b46895ae4d44)), closes [Fix/ab#60033](https://github.com/Fix/ab/issues/60033)
+* unionBy typing issue would cause build failure ([79311e5](https://github.com/ReliefApplications/oort-frontend/commit/79311e5eff003e43a16543a21e0738c8536bef82))
+
+
+### Features
+
+* can set options per category in charts ([b055112](https://github.com/ReliefApplications/oort-frontend/commit/b055112648aaad02f92e63d1775749670a7f6442))
+
+
+### Performance Improvements
+
+* prevent custom styling of applications to be closed without saving + keep active when navigating in app ([ee5b128](https://github.com/ReliefApplications/oort-frontend/commit/ee5b128fd3314d5ec3cb27107801e93f96451b21)), closes [feat/AB#60921](https://github.com/feat/AB/issues/60921)
+
+# [2.0.0-alpha.5](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2023-04-06)
+
+
+### Bug Fixes
+
+* add tooltip in summary card display settings, to better indicate purpose of 'link to data source' option ([75ca7d5](https://github.com/ReliefApplications/oort-frontend/commit/75ca7d53488789abcaf8c286d04b9e85090100a9))
+* aggregations selection would take entire width on grid widgets ([1173c9d](https://github.com/ReliefApplications/oort-frontend/commit/1173c9d52490c1829b9b49456ae0100d64595336))
+* autocompletion in summary cards not working with aggregations ([7545c4e](https://github.com/ReliefApplications/oort-frontend/commit/7545c4e5eb39d9ee7acd84ca11f1fa966c72d7b2)), closes [Fix/ab#60118](https://github.com/Fix/ab/issues/60118)
+* clear date picker on surveys ([50fc735](https://github.com/ReliefApplications/oort-frontend/commit/50fc735f309aa806253bcb2153de3b8d27310cbf))
+* color palette was incorrectly working ([1186045](https://github.com/ReliefApplications/oort-frontend/commit/11860451ed6d10b388932c16f73f5a5ae3162480))
+* confirmation modal would appear below other modals, if opened from other dialog ([4277e6a](https://github.com/ReliefApplications/oort-frontend/commit/4277e6a7d330921a3a6370b1f0d45dc4c76970e5))
+* inject btn in datepicker & edit safe-button ([7b9f28e](https://github.com/ReliefApplications/oort-frontend/commit/7b9f28e0e3786df64ed2b2c3801f1d609e8c0935))
+* now possible to delete values of date / time fields in forms ([ba19583](https://github.com/ReliefApplications/oort-frontend/commit/ba195834358c1bd9515156bd7ac940f20a92ba4c))
+* some layers would break the map when loading due to incorrect API call ([35a50a0](https://github.com/ReliefApplications/oort-frontend/commit/35a50a0800caf0e3370dd8f36f3a2afdd162aa98))
+* some layers would break the map when loading due to incorrect API call ([d305963](https://github.com/ReliefApplications/oort-frontend/commit/d30596359ced6b2f39c4b8180607c0a99c069d52))
+* styling not applying if datasource was layout ([d572947](https://github.com/ReliefApplications/oort-frontend/commit/d57294759fae97f4de1f02db1e598b448c85912a))
+* summary cards preventing scrollbar to be clicked when selecting placeholder ([dd630cd](https://github.com/ReliefApplications/oort-frontend/commit/dd630cd9735feadc19a15d7e4b46b46895ae4d44)), closes [Fix/ab#60033](https://github.com/Fix/ab/issues/60033)
+* unionBy typing issue would cause build failure ([79311e5](https://github.com/ReliefApplications/oort-frontend/commit/79311e5eff003e43a16543a21e0738c8536bef82))
+
+
+### Features
+
+* add new control for tinymce editor, usable in mat form fields ([984ba1d](https://github.com/ReliefApplications/oort-frontend/commit/984ba1d8f5feecf381d601b063f8d7eca045bc0a)), closes [refactor/AB#61059](https://github.com/refactor/AB/issues/61059)
+* can set options per category in charts ([b055112](https://github.com/ReliefApplications/oort-frontend/commit/b055112648aaad02f92e63d1775749670a7f6442))
+
+
+### Performance Improvements
+
+* prevent custom styling of applications to be closed without saving + keep active when navigating in app ([ee5b128](https://github.com/ReliefApplications/oort-frontend/commit/ee5b128fd3314d5ec3cb27107801e93f96451b21)), closes [feat/AB#60921](https://github.com/feat/AB/issues/60921)
 
 # [2.0.0-beta.6](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2023-04-06)
 
