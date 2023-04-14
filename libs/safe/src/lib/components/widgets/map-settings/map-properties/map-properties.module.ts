@@ -16,7 +16,6 @@ import { MapControlsModule } from './map-controls/map-controls.module';
 import { WebmapSelectComponent } from './webmap-select/webmap-select.component';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 
-
 /**
  * Module of Map Properties of Map Widget.
  */
@@ -38,7 +37,7 @@ import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.
     MatCheckboxModule,
     MapControlsModule,
     WebmapSelectComponent,
-    SafeGraphQLSelectModule
+    SafeGraphQLSelectModule,
   ],
   exports: [MapPropertiesComponent],
 })

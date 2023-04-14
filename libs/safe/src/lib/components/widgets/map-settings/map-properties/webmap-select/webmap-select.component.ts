@@ -17,14 +17,10 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { CommonModule } from '@angular/common';
-import { Observable, startWith, map, of, Subject } from 'rxjs';
-import {
-  MatLegacyFormFieldControl as MatFormFieldControl,
-} from '@angular/material/legacy-form-field';
+import { Observable, Subject } from 'rxjs';
+import { MatLegacyFormFieldControl as MatFormFieldControl } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { setTime } from '@progress/kendo-angular-dateinputs/util';
-
 
 /**
  * Control value accessor
@@ -40,7 +36,15 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
  */
 @Component({
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule, TranslateModule, MatSelectModule, MatInputModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    TranslateModule,
+    MatSelectModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
   selector: 'safe-webmap-select',
   templateUrl: './webmap-select.component.html',
   styleUrls: ['./webmap-select.component.scss'],
@@ -88,19 +92,24 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
     this.filteredOptions$ = this.optionsSubject.asObservable();
     setTimeout(() => {
       this.optionsSubject.next(this.items);
-    },1000);
-    this.searchValue.valueChanges.subscribe((value:any) => {
+    }, 1000);
+    this.searchValue.valueChanges.subscribe((value: any) => {
       this.optionsSubject.next(this.filter(value));
     });
   }
 
+  /**
+   *
+   * @param value
+   */
   filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-    const teste = this.items.filter((item) => item.title.toLowerCase().includes(filterValue));
+    const teste = this.items.filter((item) =>
+      item.title.toLowerCase().includes(filterValue)
+    );
     console.log(teste);
     return teste;
   }
-
 
   /**
    * Register change of the select
