@@ -111,7 +111,7 @@ export const FIELD_TYPES = [
   {
     editor: 'boolean',
     defaultOperator: 'eq',
-    operators: ['eq', 'neq'],
+    operators: ['eq', 'neq', 'isnull', 'isnotnull'],
   },
   {
     editor: 'numeric',
