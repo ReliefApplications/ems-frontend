@@ -1704,6 +1704,8 @@
 		"dashboard": {
 			"context": {
 				"datasource": {
+					"alert": "******",
+					"info": "******",
 					"set": "******",
 					"title": "******",
 					"update": "******"

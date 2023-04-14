@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeAddApplicationComponent } from './add-application.component';
 import { SafeApplicationsSummaryModule } from '../../applications-summary.module';
 import { StorybookTranslateModule } from '../../../../components/storybook-translate/storybook-translate-module';
@@ -21,13 +21,14 @@ export default {
  * @param args the properties of the instance of of SafeAddApplicationComponent
  * @returns the template
  */
-const TEMPLATE: Story<SafeAddApplicationComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeAddApplicationComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
-/** Exports a default template */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {};
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+  args: {},
+};

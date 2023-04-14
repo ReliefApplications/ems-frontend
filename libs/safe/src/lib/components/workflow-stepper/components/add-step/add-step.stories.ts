@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeAddStepComponent } from './add-step.component';
 import { SafeWorkflowStepperModule } from '../../workflow-stepper.module';
 import { StorybookTranslateModule } from '../../../../components/storybook-translate/storybook-translate-module';
@@ -21,13 +21,14 @@ export default {
  * @param args Properties
  * @returns A story component
  */
-const TEMPLATE: Story<SafeAddStepComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeAddStepComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
-/** Story component */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {};
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+  args: {},
+};
