@@ -54,6 +54,7 @@
     "@progress/kendo-angular-toolbar": "^11.2.0",
     "@progress/kendo-angular-treeview": "^11.2.0",
     "@progress/kendo-angular-upload": "^11.2.0",
+    "@progress/kendo-angular-listbox": "^11.2.0",
     "@progress/kendo-data-query": "^1.6.0",
     "@progress/kendo-date-math": "^1.5.10",
     "@progress/kendo-drawing": "^1.17.3",
