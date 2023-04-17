@@ -8,22 +8,24 @@
   <mat-label>{{ 'common.value.one' | translate }}</mat-label>
   <input
     matInput
-    matTooltip="YYYY/MM/DD"
-    matTooltipPosition="above"
+
     [formControl]="control"
     type="text"
     placeholder="YYYY/MM/DD"
   />
+  <!-- matTooltip="YYYY/MM/DD"
+  matTooltipPosition="above" -->
 </mat-form-field>
 <safe-button
   [isIcon]="true"
   icon="change_circle_outline"
   variant="primary"
   (click)="changeEditor()"
-  [matTooltip]="
-    (useExpression
-      ? 'components.queryBuilder.tooltip.filter.date.usePicker'
-      : 'components.queryBuilder.tooltip.filter.date.useExpression'
-    ) | translate
-  "
+
 ></safe-button>
+<!-- [matTooltip]="
+(useExpression
+  ? 'components.queryBuilder.tooltip.filter.date.usePicker'
+  : 'components.queryBuilder.tooltip.filter.date.useExpression'
+) | translate
+" -->
