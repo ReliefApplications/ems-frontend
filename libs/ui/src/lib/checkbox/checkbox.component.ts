@@ -24,7 +24,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   styleUrls: ['./checkbox.component.scss'],
   providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class CheckboxComponent<T> implements ControlValueAccessor {
+export class CheckboxComponent implements ControlValueAccessor {
   @Input() checked = false;
   @Input() indeterminate = false;
   @Input() id = '';
@@ -32,7 +32,7 @@ export class CheckboxComponent<T> implements ControlValueAccessor {
   @Input() label = '';
   @Input() ariaLabel = '';
   @Input() description = '';
-  @Output() valueChange: EventEmitter<T> = new EventEmitter<T>();
+  @Output() valueChange: EventEmitter<any> = new EventEmitter<any>();
 
   selected!: string;
   disabled = false;
@@ -44,7 +44,7 @@ export class CheckboxComponent<T> implements ControlValueAccessor {
    *
    * @param value from checkbox
    */
-  onChange(value: T) {
+  onChange(value: any) {
     this.valueChange.emit(value);
   }
   /**

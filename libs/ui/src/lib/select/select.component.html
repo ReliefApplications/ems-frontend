@@ -2,7 +2,7 @@
   <label
     id="listbox-label{{ label }}"
     class="block text-sm font-medium leading-6 text-gray-900"
-    >{{ label | translate | label }}</label
+    >{{ (label | translate) ?? label }}</label
   >
   <div class="relative mt-2">
     <button
@@ -58,7 +58,7 @@
           From: "opacity-100"
           To: "opacity-0"
       -->
-      <ng-template ></ng-template>
+    <ng-template></ng-template>
     <ul
       class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
       tabindex="-1"
@@ -74,7 +74,7 @@
       <ng-container *ngFor="let item of selectItems; let i = index">
         <li
           class="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9"
-          [id]="{{label}}-option-{{i}}"
+          id="{{ label }}-option-{{ i }}"
           role="option"
         >
           <div class="flex items-center">

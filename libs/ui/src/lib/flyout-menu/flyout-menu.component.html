@@ -5,7 +5,7 @@
     class="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
     [aria-expanded]="displayMenu"
   >
-    <span>{{ menuLabel | translate | menuLabel }}</span>
+    <span>{{ (menuLabel | translate) ?? menuLabel }}</span>
     <svg
       class="h-5 w-5"
       viewBox="0 0 20 20"
@@ -50,7 +50,7 @@
             href="{{ item.link }}"
             (click)="triggerAction(item)"
             class="block p-2 hover:text-indigo-600"
-            >{{(item.label | translate) | item.label}}</a
+            >{{ (item.label | translate) ?? item.label }}</a
           >
         </ng-container>
       </div>
