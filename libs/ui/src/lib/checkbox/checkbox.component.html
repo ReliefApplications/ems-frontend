@@ -1,1 +1,23 @@
-<p>checkox works!</p>
+<div class="relative flex items-start">
+  <div class="flex h-6 items-center">
+    <input
+      id="{{ id }}"
+      aria-describedby="{{ name }}-description"
+      aria-label="{{ ariaLabel }}"
+      name="{{ name }}"
+      type="checkbox"
+      [checked]="checked"
+      [indeterminate]="indeterminate"
+      (change)="onChange($event.target.value)"
+      class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+    />
+  </div>
+  <div class="ml-3 text-sm leading-6">
+    <label for="{{ name }}" class="font-medium text-gray-900">{{
+      (label | translate) ?? label
+    }}</label>
+    <p id="{{ name }}-description" class="text-gray-500">
+      {{ (description | translate) ?? description }}
+    </p>
+  </div>
+</div>

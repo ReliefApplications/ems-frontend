@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CheckboxComponent } from './checkbox.component';
 
-describe('CheckoxComponent', () => {
-  let component: CheckboxComponent;
-  let fixture: ComponentFixture<CheckboxComponent>;
+describe('CheckboxComponent', () => {
+  let component: CheckboxComponent<any>;
+  let fixture: ComponentFixture<CheckboxComponent<any>>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

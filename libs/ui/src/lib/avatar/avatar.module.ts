@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AvatarComponent } from './avatar.component';
 
 /**
- *
+ * UI Avatar Module
  */
 @NgModule({
   declarations: [AvatarComponent],
