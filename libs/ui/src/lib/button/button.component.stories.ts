@@ -20,7 +20,7 @@ export default {
     console.log(props);
     return {
       props,
-      template: `<ui-button>${label}</ui-button>`,
+      template: `<ui-button [icon]=${props.icon} [category]=${props.category}>${label}</ui-button>`,
       userDefinedTemplate: true,
     };
   },
