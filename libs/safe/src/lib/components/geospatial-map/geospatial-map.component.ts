@@ -149,6 +149,12 @@ export class GeospatialMapComponent
       });
     });
 
+    (this.mapComponent?.searchControl as any)?.on('results', (data: any) => {
+      console.log('search');
+      console.log(data);
+    });
+    console.log(this.mapComponent?.searchControl);
+
     // set language
     const setLang = (lang: string) => {
       if (AVAILABLE_GEOMAN_LANGUAGES.includes(lang)) {

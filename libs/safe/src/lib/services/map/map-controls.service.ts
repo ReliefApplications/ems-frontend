@@ -16,7 +16,6 @@ import * as Geocoding from 'esri-leaflet-geocoder';
 import { LegendDefinition } from '../../components/ui/map/interfaces/layer-legend.type';
 import { Layer } from '../../components/ui/map/layer';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/language';
-import { updateGeoManLayerPosition } from '../../components/ui/map/utils/get-map-features';
 
 /**
  * Shared map control service.
@@ -29,7 +28,6 @@ export class SafeMapControlsService {
   public measureControls: any = {};
   public fullscreenControl!: L.Control;
   public lang!: any;
-  public useGeomanTools = false;
   // === THEME ===
   private primaryColor = '';
   // === Time Dimension ===
@@ -90,63 +88,53 @@ export class SafeMapControlsService {
    *
    * @param map current map
    * @param apiKey arcgis api key
-   * @param addControl flag that indicates if should add or remove the control
    */
-  public getSearchbarControl(
-    map: L.Map,
-    apiKey: string,
-    addControl: boolean
-  ): void {
-    if (addControl && !this.searchControl) {
-      this.searchControl = Geocoding.geosearch({
-        position: 'topleft',
-        placeholder: 'Enter an address or place e.g. 1 York St',
-        useMapBounds: false,
-        providers: [
-          Geocoding.arcgisOnlineProvider({
-            apikey: apiKey,
-            nearby: {
-              lat: -33.8688,
-              lng: 151.2093,
-            },
-          }),
-        ],
-      });
-      (this.searchControl as any)?.on('results', (data: any) => {
-        // results.clearLayers();
+  public getSearchbarControl(map: L.Map, apiKey: string) {
+    const control = Geocoding.geosearch({
+      position: 'topleft',
+      // todo(gis): translate
+      placeholder: 'Enter an address or place e.g. 1 York St',
+      useMapBounds: false,
+      providers: [
+        Geocoding.arcgisOnlineProvider({
+          apikey: apiKey,
+          nearby: {
+            lat: -33.8688,
+            lng: 151.2093,
+          },
+        }),
+      ],
+    });
+    (control as any)?.on('results', (data: any) => {
+      // results.clearLayers();
 
-        for (let i = data.results.length - 1; i >= 0; i--) {
-          if (this.useGeomanTools) {
-            updateGeoManLayerPosition(map, data.results[i]);
-          }
-          const coordinates = L.latLng(data.results[i].latlng);
-          const circle = L.circleMarker(coordinates, MARKER_OPTIONS);
-          circle.addTo(map);
-          const popup = L.popup()
-            .setLatLng(coordinates)
-            .setContent(
-              `
-                  <p>${data.results[i].properties.ShortLabel}</br>
-                  <b>${'latitude: '}</b>${coordinates.lat}</br>
-                  <b>${'longitude: '}</b>${coordinates.lng}</p>`
-            );
-          circle.bindPopup(popup);
-          popup.on('remove', () => map.removeLayer(circle));
-          circle.openPopup();
-          // Use setTimeout to prevent the marker to be removed while
-          // the map moves to the searched address and is re-centred
-          setTimeout(() => {
-            this.addressMarker = circle;
-          }, 1000);
-        }
-      });
-      (this.searchControl as any)?.addTo(map);
-    } else {
-      if (this.searchControl) {
-        this.searchControl.remove();
-        this.searchControl = null;
+      for (let i = data.results.length - 1; i >= 0; i--) {
+        // if (this.useGeomanTools) {
+        //   updateGeoManLayerPosition(map, data.results[i]);
+        // }
+        const coordinates = L.latLng(data.results[i].latlng);
+        const circle = L.circleMarker(coordinates, MARKER_OPTIONS);
+        circle.addTo(map);
+        const popup = L.popup()
+          .setLatLng(coordinates)
+          .setContent(
+            `
+                <p>${data.results[i].properties.ShortLabel}</br>
+                <b>${'latitude: '}</b>${coordinates.lat}</br>
+                <b>${'longitude: '}</b>${coordinates.lng}</p>`
+          );
+        circle.bindPopup(popup);
+        popup.on('remove', () => map.removeLayer(circle));
+        circle.openPopup();
+        // Use setTimeout to prevent the marker to be removed while
+        // the map moves to the searched address and is re-centred
+        setTimeout(() => {
+          this.addressMarker = circle;
+        }, 1000);
       }
-    }
+    });
+    (control as any)?.addTo(map);
+    return control;
   }
 
   /**

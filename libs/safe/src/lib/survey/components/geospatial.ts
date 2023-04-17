@@ -57,12 +57,8 @@ export const init = (Survey: any, domService: DomService): void => {
           const instance: GeofieldsListboxComponent = listbox.instance;
           instance.selectedFields = question.geoFields || [];
           instance.selectionChange.subscribe((fields) => {
-            // console.log(fields);
             question.geoFields = fields || [];
           });
-          // instance.registerOnChange(
-          //   (event: any) => (question.geoFields = event)
-          // );
         },
       };
       SurveyPropertyEditorFactory.registerCustomEditor(

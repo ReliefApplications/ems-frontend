@@ -111,14 +111,6 @@ export class MapComponent
       // If multiple layers, we will have to iterate over children property until we match given layer ids with the ids in the overlaysTree to update name
       this.layerControl._overlaysTree.label = layerWithOptions.options.name;
       this.layerControl.addTo(this.map);
-
-      // When using geoman tools we update the map status and it's layers always for each change
-      // if (this.useGeomanTools) {
-      //   this.mapEvent.emit({
-      //     type: MapEventType.MAP_CHANGE,
-      //     content: getMapFeature(this.map),
-      //   });
-      // }
     }
   }
 
@@ -148,6 +140,11 @@ export class MapComponent
   private baseTree!: L.Control.Layers.TreeObject;
   private layersTree: L.Control.Layers.TreeObject[] = [];
   private layerControl: any;
+
+  // === Controls ===
+  // Search
+  public searchControl?: L.Control;
+  @Output() search = new EventEmitter();
 
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
@@ -364,11 +361,23 @@ export class MapComponent
       controls.measure ?? false
     );
     // Add leaflet geosearch control
-    this.mapControlsService.getSearchbarControl(
-      this.map,
-      this.esriApiKey,
-      controls.search ?? false
-    );
+    if (controls.search) {
+      if (!this.searchControl) {
+        this.searchControl = this.mapControlsService.getSearchbarControl(
+          this.map,
+          this.esriApiKey
+        );
+        (this.searchControl as any)?.on('results', (data: any) => {
+          if (data.result.length > 0) {
+            this.search.emit(data.result[0]);
+          }
+        });
+      }
+    } else {
+      this.searchControl?.remove();
+      this.searchControl = undefined;
+    }
+
     // Add TimeDimension control
     this.mapControlsService.setTimeDimension(
       this.map,
