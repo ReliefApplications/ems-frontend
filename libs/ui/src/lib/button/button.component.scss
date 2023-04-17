@@ -1,0 +1,19 @@
+.ui-button__primary {
+  @apply rounded-md text-sm font-medium text-indigo-600 shadow-sm hover:bg-indigo-100;
+}
+.ui-button__secondary {
+  @apply rounded-md bg-indigo-600 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600;
+}
+.ui-button__tertiary {
+  @apply rounded-md bg-white text-sm font-medium text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50;
+}
+
+.button-small {
+  @apply px-2.5 py-1.5;
+}
+.button-medium {
+  @apply px-3 py-2;
+}
+.button-large {
+  @apply px-3.5 py-2.5;
+}

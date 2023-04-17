@@ -1,7 +1,20 @@
 <button
   (click)="triggerAction()"
   type="button"
-  class="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+  [ngClass]="{
+    'ui-button__primary': category === buttonCategory.PRIMARY,
+    'ui-button__secondary': category === buttonCategory.SECONDARY,
+    'ui-button__tertiary': category === buttonCategory.TERTIARY,
+    'button-small': size === buttonSize.SMALL,
+    'button-medium': size === buttonSize.MEDIUM,
+    'button-large': size === buttonSize.LARGE,
+    'inline-flex items-center gap-x-2': icon
+  }"
+  [class.safe-btn-success]="variant === 'success'"
+  [class.safe-btn-grey]="variant === 'grey'"
+  [class.mat-icon-button]="isIcon"
+  [disabled]="disabled"
+  (click)="emittedEventSubject.next('click')"
 >
   <ng-template #prefixIconTmpl></ng-template>
   <ng-content></ng-content>
