@@ -168,7 +168,6 @@ export class ArcgisService {
       label: webMap.baseMap.title,
       layer: baseMapLayerGroup,
     });
-    console.log(baseMapLayerGroup);
     return baseMaps;
   }
 
@@ -226,11 +225,7 @@ export class ArcgisService {
     }
     switch (layer.layerType) {
       case 'VectorTileLayer': {
-        console.log('\n');
         console.log(layer);
-        console.log('\n');
-        layer.addTo(map);
-        console.log('123');
         break;
       }
       case 'GroupLayer': {
