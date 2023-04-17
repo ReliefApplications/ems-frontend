@@ -6,7 +6,6 @@ import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { SafeEmailPreviewModule } from '../../email-preview/email-preview.module';
-import { EmailTemplateModalModule } from '../../email-template-modal/email-template-modal.module';
 import { SafeAggregationGridModule } from '../../aggregation/aggregation-grid/aggregation-grid.module';
 
 /** Module for grid widget component */
@@ -19,7 +18,6 @@ import { SafeAggregationGridModule } from '../../aggregation/aggregation-grid/ag
     LayoutModule,
     DropDownListModule,
     SafeEmailPreviewModule,
-    EmailTemplateModalModule,
     SafeAggregationGridModule,
   ],
   exports: [SafeGridWidgetComponent],

@@ -10,7 +10,6 @@ import { SafeMapSettingsModule } from './components/widgets/map-settings/map-set
 import { SafeWidgetGridModule } from './components/widget-grid/widget-grid.module';
 import { SafeUsersModule } from './components/users/users.module';
 import { SafeRolesModule } from './components/roles/roles.module';
-import { SafeConvertModalModule } from './components/convert-modal/convert-modal.module';
 import { SafeRecordHistoryModule } from './components/record-history/record-history.module';
 import { SafeButtonModule } from './components/ui/button/button.module';
 import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
@@ -19,7 +18,6 @@ import { SafeApplicationsSummaryModule } from './components/applications-summary
 import { SafeSearchMenuModule } from './components/search-menu/search-menu.module';
 import { SafeAggregationBuilderModule } from './components/ui/aggregation-builder/aggregation-builder.module';
 import { SafeTagboxModule } from './components/ui/tagbox/tagbox.module';
-import { SafeEditLayoutModalModule } from './components/grid-layout/edit-layout-modal/edit-layout-modal.module';
 import { SafeSnackbarSpinnerModule } from './components/snackbar-spinner/snackbar-spinner.module';
 import { SafeSkeletonTableModule } from './components/skeleton/skeleton-table/skeleton-table.module';
 import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
@@ -55,7 +53,6 @@ import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
     SafeWidgetGridModule,
     SafeUsersModule,
     SafeRolesModule,
-    SafeConvertModalModule,
     SafeRecordHistoryModule,
     SafeButtonModule,
     SafeContentChoiceModule,
@@ -64,7 +61,6 @@ import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
     SafeSearchMenuModule,
     SafeAggregationBuilderModule,
     SafeTagboxModule,
-    SafeEditLayoutModalModule,
     SafeSnackbarSpinnerModule,
     SafeSkeletonTableModule,
     SafeUserSummaryModule,

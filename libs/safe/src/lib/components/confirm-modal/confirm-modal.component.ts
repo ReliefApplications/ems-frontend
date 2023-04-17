@@ -2,6 +2,10 @@ import { Component, Inject } from '@angular/core';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
+import { CommonModule } from '@angular/common';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * This interface describes the structure of the data to be displayed in the modal
@@ -18,6 +22,8 @@ interface DialogData {
  * This component is used to make a general confirmation modal, adapting to different cases
  */
 @Component({
+  standalone: true,
+  imports: [CommonModule, MatDialogModule, MatButtonModule, SafeModalModule],
   selector: 'safe-confirm-modal',
   templateUrl: './confirm-modal.component.html',
   styleUrls: ['./confirm-modal.component.scss'],

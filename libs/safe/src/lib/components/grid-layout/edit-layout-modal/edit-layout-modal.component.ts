@@ -13,6 +13,13 @@ import {
   createDisplayForm,
   createQueryForm,
 } from '../../query-builder/query-builder-forms';
+import { CommonModule } from '@angular/common';
+import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
+import { SafeModalModule } from '../../ui/modal/modal.module';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -26,6 +33,17 @@ interface DialogData {
  * Component used to display modals regarding layouts
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    SafeQueryBuilderModule,
+    SafeCoreGridModule,
+    SafeModalModule,
+  ],
   selector: 'safe-edit-layout-modal',
   templateUrl: './edit-layout-modal.component.html',
   styleUrls: ['./edit-layout-modal.component.scss'],

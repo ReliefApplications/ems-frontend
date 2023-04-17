@@ -15,6 +15,15 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import { UntypedFormControl } from '@angular/forms';
 import { SafeGraphQLSelectComponent } from '../../graphql-select/graphql-select.component';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { SafeButtonModule } from '../../ui/button/button.module';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { SafeModalModule } from '../../ui/modal/modal.module';
+import { SafeGraphQLSelectModule } from '../../../components/graphql-select/graphql-select.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 /**
  * Data needed for the dialog, should contain an aggregations array, a form and a resource
@@ -30,6 +39,18 @@ interface DialogData {
  * Result of the action will be added to the component list that triggered the modal.
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    TranslateModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    SafeButtonModule,
+    SafeModalModule,
+    SafeGraphQLSelectModule,
+    ReactiveFormsModule,
+  ],
   selector: 'safe-add-aggregation-modal',
   templateUrl: './add-aggregation-modal.component.html',
   styleUrls: ['./add-aggregation-modal.component.scss'],

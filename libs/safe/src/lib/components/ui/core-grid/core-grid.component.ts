@@ -6,7 +6,6 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
-  ViewChild,
 } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
@@ -49,7 +48,6 @@ import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
 import { SafeGridService } from '../../../services/grid/grid.service';
 import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
-import { SafeGridComponent } from './grid/grid.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDatePipe } from '../../../pipes/date/date.pipe';
 import { SafeDateTranslateService } from '../../../services/date-translate/date-translate.service';
@@ -90,9 +88,9 @@ export class SafeCoreGridComponent
   @Input() defaultLayout: GridLayout = {};
 
   /** @returns current grid layout */
-  get layout(): any {
-    return this.grid?.layout;
-  }
+  // get layout(): any {
+  // return this.grid?.layout;
+  // }
 
   /**
    * Gets whether the grid settings are loading.
@@ -131,8 +129,8 @@ export class SafeCoreGridComponent
   @Output() rowSelected: EventEmitter<any> = new EventEmitter<any>();
 
   // === TEMPLATE REFERENCE TO GRID ===
-  @ViewChild(SafeGridComponent)
-  private grid?: SafeGridComponent;
+  // @ViewChild(SafeGridComponent)
+  // private grid?: SafeGridComponent;
 
   // === DATA ===
   @Input() widget: any;
@@ -1117,7 +1115,7 @@ export class SafeCoreGridComponent
     }
 
     // Builds the request body with all the useful data
-    const currentLayout = this.layout;
+    // const currentLayout = this.layout;
     const body = {
       ids,
       filter:
@@ -1135,32 +1133,32 @@ export class SafeCoreGridComponent
       fileName: this.fileName,
       email: e.email,
       // we only export visible fields ( not hidden )
-      ...(e.fields === 'visible' && {
-        fields: Object.values(currentLayout.fields)
-          .filter((x: any) => !x.hidden)
-          .sort((a: any, b: any) => a.order - b.order)
-          .map((x: any) => ({
-            name: x.field,
-            title: x.title,
-            subFields: x.subFields.map((y: any) => ({
-              name: y.name,
-              title: y.title,
-            })),
-          })),
-      }),
+      // ...(e.fields === 'visible' && {
+      // fields: Object.values(currentLayout.fields)
+      // .filter((x: any) => !x.hidden)
+      // .sort((a: any, b: any) => a.order - b.order)
+      // .map((x: any) => ({
+      //   name: x.field,
+      //   title: x.title,
+      //   subFields: x.subFields.map((y: any) => ({
+      //     name: y.name,
+      //     title: y.title,
+      //   })),
+      // })),
+      // }),
       // we export ALL fields of the grid ( including hidden columns )
-      ...(e.fields === 'all' && {
-        fields: Object.values(currentLayout.fields)
-          .sort((a: any, b: any) => a.order - b.order)
-          .map((x: any) => ({
-            name: x.field,
-            title: x.title,
-            subFields: x.subFields.map((y: any) => ({
-              name: y.name,
-              title: y.title,
-            })),
-          })),
-      }),
+      //   ...(e.fields === 'all' && {
+      //     fields: Object.values(currentLayout.fields)
+      //       .sort((a: any, b: any) => a.order - b.order)
+      //       .map((x: any) => ({
+      //         name: x.field,
+      //         title: x.title,
+      //         subFields: x.subFields.map((y: any) => ({
+      //           name: y.name,
+      //           title: y.title,
+      //         })),
+      //       })),
+      //   }),
     };
 
     // Builds and make the request
@@ -1253,7 +1251,7 @@ export class SafeCoreGridComponent
    * Saves the current layout of the grid as default layout
    */
   saveDefaultLayout(): void {
-    this.defaultLayoutChanged.emit(this.layout);
+    // this.defaultLayoutChanged.emit(this.layout);
     this.hasLayoutChanges = false;
   }
 
@@ -1261,7 +1259,7 @@ export class SafeCoreGridComponent
    * Saves the current layout of the grid as local layout for this user
    */
   saveLocalLayout(): void {
-    this.layoutChanged.emit(this.layout);
+    // this.layoutChanged.emit(this.layout);
     if (!this.hasLayoutChanges) {
       this.hasLayoutChanges = true;
     }
