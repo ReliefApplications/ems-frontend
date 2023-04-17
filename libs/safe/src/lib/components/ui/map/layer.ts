@@ -22,6 +22,11 @@ import {
   LayerSymbol,
   PopupInfo,
 } from '../../../models/layer.model';
+import { HeatmapLayer } from './map-layers/heatmap-layer';
+import { ClusterLayer } from './map-layers/cluster-layer';
+import { FeatureLayer } from './map-layers/feature-layer';
+import { GroupLayer } from './map-layers/group-layer';
+import { SketchLayer } from './map-layers/sketch-layer';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -131,7 +136,14 @@ export const featureSatisfiesFilter = (
 /** Objects represent a map layer */
 export class Layer implements LayerModel {
   // Map layer
-  private layer: L.Layer | null = null;
+  private layer:
+    | HeatmapLayer
+    | ClusterLayer
+    | FeatureLayer
+    | GroupLayer
+    | SketchLayer
+    | L.Layer //To be removed when HeatLayer and default case for getLayer() are correctly implemented
+    | null = null;
 
   // Global properties for the layer
   public id!: string;
@@ -366,7 +378,15 @@ export class Layer implements LayerModel {
    * @param redraw wether the layer should be redrawn
    * @returns the leaflet layer from layer definition
    */
-  public getLayer(redraw?: boolean): L.Layer {
+  public getLayer(
+    redraw?: boolean
+  ):
+    | HeatmapLayer
+    | ClusterLayer
+    | FeatureLayer
+    | GroupLayer
+    | SketchLayer
+    | L.Layer {
     // If layer has already been created, return it
     if (this.layer && !redraw) return this.layer;
 
@@ -415,11 +435,13 @@ export class Layer implements LayerModel {
 
     switch (this.type) {
       case 'group':
-        this.sublayers.forEach((child) => (child.layer = child.getLayer()));
+        this.sublayers.forEach(
+          (child) => (child.layer = child.getLayer() as FeatureLayer)
+        );
         const layers = this.sublayers
           .map((child) => child.layer)
           .filter((layer) => layer !== undefined) as L.Layer[];
-        this.layer = new L.LayerGroup(layers);
+        this.layer = new GroupLayer(layers);
         return this.layer;
 
       default:
@@ -509,9 +531,15 @@ export class Layer implements LayerModel {
                       'leaflet-data-marker'
                     );
                   },
-                });
+                }) as ClusterLayer;
                 const clusterLayer = L.geoJSON(data, geoJSONopts);
                 clusterGroup.addLayer(clusterLayer);
+                clusterGroup.setLegend(
+                  clusterSymbol.color,
+                  clusterSymbol.style,
+                  MIN_CLUSTER_SIZE,
+                  MAX_CLUSTER_SIZE
+                );
                 this.layer = clusterGroup;
                 return this.layer;
               default:

@@ -45,6 +45,7 @@ import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { flatten } from 'lodash';
 import { takeUntil } from 'rxjs';
 import { legendControl } from './controls/legend-control';
+import { FeatureLayer } from './map-layers/feature-layer';
 
 /**
  * Cleans the settings object from null values
@@ -554,7 +555,7 @@ export class MapComponent
      */
     const parseTreeNode = (
       layer: Layer,
-      leafletLayer?: L.Layer
+      leafletLayer?: FeatureLayer
     ): OverlayLayerTree => {
       // Add to the layers array
       this.layers.push(layer);
@@ -577,7 +578,7 @@ export class MapComponent
           children:
             children.length > 0
               ? children.map((sublayer) =>
-                  parseTreeNode(sublayer, sublayer.getLayer())
+                  parseTreeNode(sublayer, sublayer.getLayer() as FeatureLayer)
                 )
               : undefined,
         };

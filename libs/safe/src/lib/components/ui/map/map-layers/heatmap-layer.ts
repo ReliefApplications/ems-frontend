@@ -5,14 +5,14 @@ import { Gradient } from '../../../gradient-picker/gradient-picker.component';
  * Custom class for heatmap layers
  */
 export class HeatmapLayer extends L.Layer {
-  private gradient: Gradient;
+  private gradient: Gradient | undefined;
 
   /**
    * Class for heatmap layers, extends the default leaflet layer
    *
    * @param gradient Gradient of the heatmap
    */
-  constructor(gradient: Gradient) {
+  constructor(gradient?: Gradient) {
     super();
     this.gradient = gradient;
   }
@@ -24,7 +24,7 @@ export class HeatmapLayer extends L.Layer {
    */
   get legend() {
     let legend = 'Heatmap layer';
-    this.gradient.forEach(
+    this.gradient?.forEach(
       (value) =>
         (legend =
           legend +

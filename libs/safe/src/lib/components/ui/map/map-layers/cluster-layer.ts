@@ -4,7 +4,7 @@ import { SafeIconDisplayPipe } from '../../../../pipes/icon-display/icon-display
 /**
  * Custom class for heatmap layers
  */
-export class ClusterLayer extends L.Layer {
+export class ClusterLayer extends L.MarkerClusterGroup {
   private color: string;
   private icon: string;
   private min: number;
@@ -29,6 +29,23 @@ export class ClusterLayer extends L.Layer {
     this.fontFamily = 'fa';
     this.pipe = new SafeIconDisplayPipe();
   }
+
+  /**
+   * Method to set up the layers
+   *
+   * @param color Color of the cluster icon
+   * @param icon Symbol of the cluster icon
+   * @param min Minimum size of the cluster
+   * @param max Maximum size of the cluster
+   */
+  setLegend(color: string, icon: string, min: number, max: number) {
+    this.color = color ? color : '';
+    this.icon = icon ? icon : '';
+    this.min = min ? min : 4;
+    this.max = max ? max : 8;
+    this.fontFamily = 'fa';
+  }
+
   /**
    * Legend for cluster
    *
