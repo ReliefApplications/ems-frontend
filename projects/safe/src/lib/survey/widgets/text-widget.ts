@@ -11,7 +11,8 @@ import { SafeButtonComponent } from '../../components/ui/button/button.component
 import { ButtonSize } from '../../components/ui/button/button-size.enum';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Question, QuestionText } from '../types';
-import { TextBoxComponent } from '@progress/kendo-angular-inputs';
+import { DateFilterEditorComponent } from '../../components/query-builder/date-filter-editor/date-filter-editor.component';
+import { FormControl } from '@angular/forms';
 
 /** Regex for the pattern "today()+[number of days to add]" */
 const REGEX_PLUS = new RegExp('today\\(\\)\\+\\d+');
@@ -83,49 +84,27 @@ export const init = (Survey: any, domService: DomService): void => {
       const dateEditor = {
         render: (editor: any, htmlElement: HTMLElement) => {
           const question = editor.object as QuestionText;
-          console.log('question', question.getType());
           const updatePickerInstance = () => {
             htmlElement.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
-            // if (question.inputType === 'date') {
-            //   const textBoxInstance = createInputExpressionInstance(
-            //     question.inputType as DateInputFormat,
-            //     htmlElement
-            //   );
-            //   if (textBoxInstance) {
-            //     if (question[editor.property.name as keyof QuestionText]) {
-            //       textBoxInstance.value = getDateDisplay(
-            //         question[editor.property.name as keyof QuestionText],
-            //         question.inputType
-            //       ).toString();
-            //       console.log('question value: ', question.value);
-            //     }
-            //     textBoxInstance.readonly = question.isReadOnly;
-            //     textBoxInstance.disabled = question.isReadOnly;
-            //     textBoxInstance.registerOnChange(() => {
-            //       console.log('registerOnChange test'); // console when editing question Date min and Date max
-            //     });
-            //   }
-            // } else {
-              const pickerInstance = createPickerInstance(
-                question.inputType as DateInputFormat,
-                htmlElement
-              );
-              if (pickerInstance) {
-                if (question[editor.property.name as keyof QuestionText]) {
-                  pickerInstance.value = getDateDisplay(
-                    question[editor.property.name as keyof QuestionText],
-                    question.inputType
-                  );
-                }
-                pickerInstance.registerOnChange((value: Date | null) => {
-                  if (value) {
-                    editor.onChanged(setDateValue(value, question.inputType));
-                  } else {
-                    editor.onChanged(null);
-                  }
-                });
+            const pickerInstance = createPickerInstance(
+              question.inputType as DateInputFormat,
+              htmlElement
+            );
+            if (pickerInstance) {
+              if (question[editor.property.name as keyof QuestionText]) {
+                pickerInstance.value = getDateDisplay(
+                  question[editor.property.name as keyof QuestionText],
+                  question.inputType
+                );
               }
-            // }
+              pickerInstance.registerOnChange((value: Date | null) => {
+                if (value) {
+                  editor.onChanged(setDateValue(value, question.inputType));
+                } else {
+                  editor.onChanged(null);
+                }
+              });
+            }
           };
           question.registerFunctionOnPropertyValueChanged(
             'inputType',
@@ -188,22 +167,21 @@ export const init = (Survey: any, domService: DomService): void => {
           }
         } else if ('date' === question.inputType) {
           const textBoxInstance = createInputExpressionInstance(
-            question.inputType as DateInputFormat,
             el.parentElement
           );
           if (textBoxInstance) {
-            console.log('question: ', question);
             if (question.value) {
-              textBoxInstance.value = getDateDisplay(
-                question.value,
-                question.inputType
-              ).toString();
-              console.log('question value: ', question.value);
+              textBoxInstance.setValue(
+                getDateFromInputExpression(question.value)
+              );
             }
-            textBoxInstance.readonly = question.isReadOnly;
-            textBoxInstance.disabled = question.isReadOnly;
-            textBoxInstance.registerOnChange(() => {
-              console.log('registerOnChange test'); // console when editing Default value ( survey trigger and question data)
+            if (question.isReadOnly) {
+              textBoxInstance.disable();
+            }
+            textBoxInstance.valueChanges.subscribe((value) => {
+              if (value) {
+                question.value = getDateFromInputExpression(value);
+              }
             });
             el.style.display = 'none';
           }
@@ -334,20 +312,43 @@ export const init = (Survey: any, domService: DomService): void => {
     }
   };
 
-  const createInputExpressionInstance = (
-    inputType: DateInputFormat,
-    element: any
-  ): TextBoxComponent | null => {
-    if (inputType === 'date') {
-      const textBox = domService.appendComponentToBody(
-        TextBoxComponent,
-        element
-      );
-      const textBoxInstance: TextBoxComponent = textBox.instance;
-      return textBoxInstance;
+  const createInputExpressionInstance = (element: any): FormControl => {
+    const textBox = domService.appendComponentToBody(
+      DateFilterEditorComponent,
+      element
+    );
+    const textBoxInstance: DateFilterEditorComponent = textBox.instance;
+    textBoxInstance.control = new FormControl();
+    return textBoxInstance.control;
+  };
+
+  /**
+   * Gets from input date value the correct date.
+   *
+   * @param value input date value
+   * @returns calculated day, beginning of day, and ending of day
+   */
+  const getDateFromInputExpression = (value: any): Date => {
+    // today's date
+    let date: Date;
+    if (value === 'today()') {
+      date = new Date();
+      // today + number of days
+    } else if (REGEX_PLUS.test(value)) {
+      const difference = parseInt(value.split('+')[1], 10);
+      date = new Date();
+      date.setDate(date.getDate() + difference);
+      // today - number of days
+    } else if (REGEX_MINUS.test(value)) {
+      const difference = -parseInt(value.split('-')[1], 10);
+      date = new Date();
+      date.setDate(date.getDate() + difference);
+      // classic date
+    } else {
+      date = new Date(value);
     }
-    return null;
-  }
+    return date;
+  };
 
   /**
    * It creates a date, datetime or time picker instance based on the input type
