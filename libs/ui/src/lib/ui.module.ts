@@ -1,32 +1,24 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FlyoutMenuComponent } from './flyout-menu/flyout-menu.component';
-import { AvatarComponent } from './avatar/avatar.component';
-import { SelectComponent } from './select/select.component';
-import { CheckboxComponent } from './checkbox/checkbox.component';
-import { ButtonComponent } from './button/button.component';
-import { IconComponent } from './icon/icon.component';
+import { AvatarModule } from './avatar/avatar.module';
+import { ButtonModule } from './button/button.module';
+import { CheckboxModule } from './checkbox/checkbox.module';
+import { FlyoutMenuModule } from './flyout-menu/flyout-menu.module';
+import { IconModule } from './icon/icon.module';
+import { SelectModule } from './select/select.module';
 
 /**
  * UI Library Module
  */
 @NgModule({
   imports: [CommonModule],
-  declarations: [
-    FlyoutMenuComponent,
-    AvatarComponent,
-    SelectComponent,
-    CheckboxComponent,
-    ButtonComponent,
-    IconComponent,
-  ],
   exports: [
-    FlyoutMenuComponent,
-    AvatarComponent,
-    SelectComponent,
-    CheckboxComponent,
-    ButtonComponent,
-    IconComponent,
+    AvatarModule,
+    ButtonModule,
+    CheckboxModule,
+    FlyoutMenuModule,
+    IconModule,
+    SelectModule,
   ],
 })
 export class UiModule {}

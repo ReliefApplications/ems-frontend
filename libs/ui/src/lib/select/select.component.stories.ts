@@ -1,13 +1,14 @@
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { SelectComponent } from './select.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { StorybookTranslateModule } from '../../storybook-translate.module';
+import { SelectModule } from './select.module';
 
 export default {
   title: 'SelectComponent',
   component: SelectComponent,
   decorators: [
     moduleMetadata({
-      imports: [TranslateModule],
+      imports: [SelectModule, StorybookTranslateModule],
     }),
   ],
 } as Meta<SelectComponent>;

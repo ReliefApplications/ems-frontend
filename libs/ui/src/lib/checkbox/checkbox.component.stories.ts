@@ -1,13 +1,14 @@
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { CheckboxComponent } from './checkbox.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { StorybookTranslateModule } from '../../storybook-translate.module';
+import { CheckboxModule } from './checkbox.module';
 
 export default {
   title: 'CheckboxComponent',
   component: CheckboxComponent,
   decorators: [
     moduleMetadata({
-      imports: [TranslateModule],
+      imports: [CheckboxModule, StorybookTranslateModule],
     }),
   ],
 } as Meta<CheckboxComponent>;

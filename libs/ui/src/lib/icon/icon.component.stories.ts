@@ -1,13 +1,14 @@
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { IconComponent } from './icon.component';
 import { IconVariant } from './enums/icon-variant.enum';
+import { IconModule } from './icon.module';
 
 export default {
   title: 'IconComponent',
   component: IconComponent,
   decorators: [
     moduleMetadata({
-      imports: [],
+      imports: [IconModule],
     }),
   ],
 } as Meta<IconComponent>;

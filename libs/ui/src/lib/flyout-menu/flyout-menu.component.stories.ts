@@ -1,13 +1,16 @@
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { FlyoutMenuComponent } from './flyout-menu.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { StorybookTranslateModule } from '../../storybook-translate.module';
+import { FlyoutMenuModule } from './flyout-menu.module';
 
 export default {
   title: 'FlyoutMenuComponent',
   component: FlyoutMenuComponent,
   decorators: [
     moduleMetadata({
-      imports: [TranslateModule],
+      imports: [
+        FlyoutMenuModule,
+        StorybookTranslateModule],
     }),
   ],
 } as Meta<FlyoutMenuComponent>;
