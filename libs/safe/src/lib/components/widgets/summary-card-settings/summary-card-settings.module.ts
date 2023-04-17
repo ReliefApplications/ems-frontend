@@ -14,7 +14,6 @@ import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-m
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeAddCardModule } from './add-card/add-card.module';
-import { SafeCardModalModule } from './card-modal/card-modal.module';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SummaryCardItemModule } from '../summary-card/summary-card-item/summary-card-item.module';
 
@@ -37,7 +36,6 @@ import { SummaryCardItemModule } from '../summary-card/summary-card-item/summary
     MatIconModule,
     MatDividerModule,
     SafeAddCardModule,
-    SafeCardModalModule,
     MatButtonModule,
     SummaryCardItemModule,
   ],
