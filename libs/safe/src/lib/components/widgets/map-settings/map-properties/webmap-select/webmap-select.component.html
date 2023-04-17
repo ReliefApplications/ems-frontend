@@ -10,7 +10,16 @@
     [value]="value"
     [placeholder]="placeholder"
   >
-    <input matInput [formControl]="searchValue" type="text" />
+      <mat-form-field appearance="fill" class="!w-full -mb-5">
+        <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
+        <input matInput [formControl]="searchValue" type="text" (keydown)="$event.stopPropagation()"/>
+        <safe-button
+          matSuffix
+          [isIcon]="true"
+          icon="close"
+          (click)="searchValue.setValue('')"
+        ></safe-button>
+      </mat-form-field>
     <mat-option *ngFor="let item of filteredOptions$ | async" [value]="item.id">
       {{ item.title }}
     </mat-option>

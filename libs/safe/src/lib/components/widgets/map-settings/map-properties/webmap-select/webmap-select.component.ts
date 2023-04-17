@@ -21,7 +21,7 @@ import { Observable, Subject } from 'rxjs';
 import { MatLegacyFormFieldControl as MatFormFieldControl } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { SafeButtonModule } from '../../../../ui/button/button.module';
 /**
  * Control value accessor
  */
@@ -44,6 +44,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
+    SafeButtonModule,
   ],
   selector: 'safe-webmap-select',
   templateUrl: './webmap-select.component.html',
@@ -88,11 +89,8 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    * Subscribe to settings changes to update map.
    */
   ngOnInit(): void {
-    this.search();
     this.filteredOptions$ = this.optionsSubject.asObservable();
-    setTimeout(() => {
-      this.optionsSubject.next(this.items);
-    }, 1000);
+    this.search();
     this.searchValue.valueChanges.subscribe((value: any) => {
       this.optionsSubject.next(this.filter(value));
     });
@@ -104,11 +102,9 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    */
   filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-    const teste = this.items.filter((item) =>
+    return this.items.filter((item) =>
       item.title.toLowerCase().includes(filterValue)
     );
-    console.log(teste);
-    return teste;
   }
 
   /**
@@ -160,6 +156,7 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
       }
       this.items = this.items.concat(search.results);
       this.loading = false;
+      this.optionsSubject.next(this.items);
     });
   }
 

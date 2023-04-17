@@ -134,6 +134,7 @@ export class ArcgisService {
             opacity,
           });
           vectorTileLayer.label = layer.title;
+          console.log(vectorTileLayer);
           baseMapLayers.push(vectorTileLayer);
           break;
         }
@@ -161,13 +162,13 @@ export class ArcgisService {
         }
       }
     }
-
     // Display baseMap layer
     const baseMapLayerGroup = L.layerGroup(baseMapLayers).addTo(map);
     baseMaps.push({
       label: webMap.baseMap.title,
       layer: baseMapLayerGroup,
     });
+    console.log(baseMapLayerGroup);
     return baseMaps;
   }
 
@@ -181,10 +182,9 @@ export class ArcgisService {
     map: L.Map,
     webMap: any
   ): Promise<TreeObject[]> {
-    console.log('aqui123');
-    console.log(webMap.operationalLayers);
+    console.log(webMap);
     const layers: TreeObject[] = [];
-    for (const layer of webMap.operationalLayers) {
+    for (const layer of webMap.baseMap.baseMapLayers) {
       console.log(layer);
       await this.addLayer(map, layer, layers);
     }
@@ -224,8 +224,15 @@ export class ArcgisService {
         Math.log(591657550.5 / minScale) / Math.log(2) + 1
       );
     }
-
     switch (layer.layerType) {
+      case 'VectorTileLayer': {
+        console.log('\n');
+        console.log(layer);
+        console.log('\n');
+        layer.addTo(map);
+        console.log('123');
+        break;
+      }
       case 'GroupLayer': {
         const children: any[] = [];
         const promises: Promise<any>[] = [];
