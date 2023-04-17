@@ -1,0 +1,8 @@
+<div class="flex flex-col w-full">
+  <h2>Address</h2>
+  <div class="flex flex-col flex-1">
+    <ng-container *ngFor="let field of fields">
+      <input [value]="geoResult[field]" readonly />
+    </ng-container>
+  </div>
+</div>

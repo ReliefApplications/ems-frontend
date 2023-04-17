@@ -28,6 +28,20 @@ import {
 } from '../ui/map/utils/get-map-features';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
+import { GeospatialFieldsComponent } from './geospatial-fields/geospatial-fields.component';
+import { ReverseGeocodeResult } from './geospatial-map.interface';
+
+/**
+ * Default geocoding value
+ */
+const DEFAULT_GEOCODING = {
+  Coordinates: { lat: 0, lng: 0 },
+  City: '',
+  Country: '',
+  District: '',
+  Region: '',
+  Street: '',
+} as const;
 
 /**
  * Component for displaying the input map
@@ -38,7 +52,7 @@ import { takeUntil } from 'rxjs';
   selector: 'safe-geospatial-map',
   templateUrl: './geospatial-map.component.html',
   styleUrls: ['./geospatial-map.component.scss'],
-  imports: [CommonModule, MapModule],
+  imports: [CommonModule, MapModule, GeospatialFieldsComponent],
 })
 export class GeospatialMapComponent
   extends SafeUnsubscribeComponent
@@ -46,6 +60,9 @@ export class GeospatialMapComponent
 {
   @Input() data?: Feature | FeatureCollection;
   @Input() geometry = 'Point';
+  @Input() fields: (keyof ReverseGeocodeResult)[] = [];
+  public geoResult: ReverseGeocodeResult = DEFAULT_GEOCODING;
+
   // === MAP ===
   public mapSettings!: MapConstructorSettings;
 

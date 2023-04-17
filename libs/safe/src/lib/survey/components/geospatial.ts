@@ -56,7 +56,10 @@ export const init = (Survey: any, domService: DomService): void => {
           );
           const instance: GeofieldsListboxComponent = listbox.instance;
           instance.selectedFields = question.geoFields || [];
-
+          instance.selectionChange.subscribe((fields) => {
+            // console.log(fields);
+            question.geoFields = fields || [];
+          });
           // instance.registerOnChange(
           //   (event: any) => (question.geoFields = event)
           // );
@@ -78,6 +81,14 @@ export const init = (Survey: any, domService: DomService): void => {
 
       // inits the map with the value of the question
       if (question.value) instance.data = question.value;
+
+      // Set geo fields
+      instance.fields = question.geoFields || [];
+
+      // Listen to change on geofields
+      question.registerFunctionOnPropertyValueChanged('geoFields', () => {
+        instance.fields = question.geoFields;
+      });
 
       // updates the question value when the map changes
       instance.mapChange.subscribe((res) => {

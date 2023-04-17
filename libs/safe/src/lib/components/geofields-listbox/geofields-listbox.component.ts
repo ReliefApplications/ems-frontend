@@ -1,14 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ListBoxModule,
   ListBoxToolbarConfig,
 } from '@progress/kendo-angular-listbox';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'safe-geofields-listbox',
   standalone: true,
-  imports: [CommonModule, ListBoxModule],
+  imports: [CommonModule, ListBoxModule, FormsModule, ReactiveFormsModule],
   templateUrl: './geofields-listbox.component.html',
   styleUrls: ['./geofields-listbox.component.scss'],
 })
@@ -33,4 +34,9 @@ export class GeofieldsListboxComponent {
       'transferAllTo',
     ],
   };
+  @Output() selectionChange = new EventEmitter();
+
+  handleActionClick(): void {
+    this.selectionChange.emit(this.selectedFields);
+  }
 }

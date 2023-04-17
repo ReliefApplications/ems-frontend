@@ -1,8 +1,14 @@
-<div class="flex gap-4">
+<div class="flex flew-wrap gap-2 flex-col lg:flex-row lg:h-full">
+  <safe-geospatial-fields
+    class="flex-1"
+    [fields]="fields"
+    [geoResult]="geoResult"
+  >
+  </safe-geospatial-fields>
   <safe-map
     (mapEvent)="handleMapEvent($event)"
     [mapSettings]="mapSettings"
-    class="grow basis-full h-96"
+    class="lg:flex-1 max-lg:min-w-full h-96 lg:min-h-full"
   ></safe-map>
   <!-- <safe-layer-styling
     class="h-96 grow basis-72"
