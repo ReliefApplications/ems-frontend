@@ -10,7 +10,6 @@ import { ButtonIconPosition } from './enums/button-icon-position.enum';
   styleUrls: ['./button.component.scss'],
 })
 export class ButtonComponent {
-  @Input() label = '';
   @Input() icon = '';
   @Input() iconPosition: ButtonIconPosition = ButtonIconPosition.PREFIX;
   buttonIconPosition = ButtonIconPosition;
