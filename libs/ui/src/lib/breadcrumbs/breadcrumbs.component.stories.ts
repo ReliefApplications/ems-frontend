@@ -7,7 +7,7 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [],
-    })
+    }),
   ],
 } as Meta<BreadcrumbsComponent>;
 
@@ -15,7 +15,9 @@ const Template: Story<BreadcrumbsComponent> = (args: BreadcrumbsComponent) => ({
   props: args,
 });
 
-
 export const Primary = Template.bind({});
 Primary.args = {
-}
+  path: [],
+  seperator: '>',
+  display: 'simple',
+};
