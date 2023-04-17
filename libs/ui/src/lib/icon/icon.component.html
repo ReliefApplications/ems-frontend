@@ -1,0 +1,31 @@
+<ng-container *ngIf="icon.endsWith('_outline'); else angularMaterialIconTmpl">
+  <span
+    [style.inline]="inline"
+    [style.color]="color"
+    [class.safe-icon-success]="variant === 'success'"
+    [class.safe-icon-light]="variant === 'light'"
+    [class.safe-icon-grey]="variant === 'grey'"
+    [style.font-size]="fontSize"
+    [style.width]="fontSize"
+    [style.height]="fontSize"
+    [style.line-height]="fontSize"
+    class="material-icons-outlined"
+  >
+    {{ icon }}
+  </span>
+</ng-container>
+<ng-template #angularMaterialIconTmpl>
+  <i
+    [style.inline]="inline"
+    [style.color]="color"
+    [class.safe-icon-success]="variant === 'success'"
+    [class.safe-icon-light]="variant === 'light'"
+    [class.safe-icon-grey]="variant === 'grey'"
+    [style.font-size]="fontSize"
+    [style.width]="fontSize"
+    [style.height]="fontSize"
+    [style.line-height]="fontSize"
+    class="material-icons"
+    >{{ icon }}</i
+  >
+</ng-template>

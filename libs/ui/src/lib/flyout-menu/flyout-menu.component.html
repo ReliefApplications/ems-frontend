@@ -1,0 +1,59 @@
+<div class="relative">
+  <button
+    [cdkMenuTriggerFor]="menu"
+    type="button"
+    class="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
+    [aria-expanded]="displayMenu"
+  >
+    <span>{{ (menuLabel | translate) ?? menuLabel }}</span>
+    <svg
+      class="h-5 w-5"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path
+        fill-rule="evenodd"
+        d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+        clip-rule="evenodd"
+      />
+    </svg>
+  </button>
+
+  <!--
+        Flyout menu, show/hide based on flyout menu state.
+    
+        Entering: "transition ease-out duration-200"
+          From: "opacity-0 translate-y-1"
+          To: "opacity-100 translate-y-0"
+        Leaving: "transition ease-in duration-150"
+          From: "opacity-100 translate-y-0"
+          To: "opacity-0 translate-y-1"
+      -->
+  <ng-template #menu>
+    <div
+      cdkMenu
+      #menuElement
+      [ngClass]="{
+        'transition ease-out duration-200 opacity-0 translate-y-1':
+          menuElement.closed,
+        'transition ease-in duration-150 opacity-100 translate-y-0':
+          !menuElement.closed
+      }"
+      class="absolute left-1/2 z-10 mt-5 flex w-screen max-w-min -translate-x-1/2 px-4"
+    >
+      <div
+        class="w-56 shrink rounded-xl bg-white p-4 text-sm font-semibold leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"
+      >
+        <ng-container *ngFor="let item of menuItems">
+          <a
+            href="{{ item.link }}"
+            (click)="triggerAction(item)"
+            class="block p-2 hover:text-indigo-600"
+            >{{ (item.label | translate) ?? item.label }}</a
+          >
+        </ng-container>
+      </div>
+    </div>
+  </ng-template>
+</div>
