@@ -56,15 +56,6 @@ export const init = (Survey: any, domService: DomService): void => {
           );
           const instance: GeofieldsListboxComponent = listbox.instance;
           instance.selectedFields = question.geoFields || [];
-          // instance.data = [
-          //   'Street',
-          //   'City',
-          //   'Country',
-          //   'District',
-          //   'Region',
-          //   'Coordinates',
-          // ];
-          // instance.
 
           // instance.registerOnChange(
           //   (event: any) => (question.geoFields = event)

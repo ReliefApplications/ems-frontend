@@ -1,6 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ListBoxModule } from '@progress/kendo-angular-listbox';
+import {
+  ListBoxModule,
+  ListBoxToolbarConfig,
+} from '@progress/kendo-angular-listbox';
 
 @Component({
   selector: 'safe-geofields-listbox',
@@ -10,6 +13,24 @@ import { ListBoxModule } from '@progress/kendo-angular-listbox';
   styleUrls: ['./geofields-listbox.component.scss'],
 })
 export class GeofieldsListboxComponent {
-  public availableFields: string[] = ['Country'];
+  public availableFields: string[] = [
+    'Country',
+    'Street',
+    'City',
+    'District',
+    'Region',
+    'Coordinates',
+  ];
   @Input() selectedFields: string[] = [];
+  public toolbarSettings: ListBoxToolbarConfig = {
+    position: 'right',
+    tools: [
+      'moveUp',
+      'moveDown',
+      'transferFrom',
+      'transferTo',
+      'transferAllFrom',
+      'transferAllTo',
+    ],
+  };
 }
