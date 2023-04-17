@@ -1,6 +1,5 @@
 import { moduleMetadata, Meta, StoryObj } from '@storybook/angular';
 import { ButtonComponent } from './button.component';
-import { ButtonIconPosition } from './enums/button-icon-position.enum';
 import { ButtonModule } from './button.module';
 import { ButtonCategory } from './enums/button-category.enum';
 import { ButtonSize } from './enums/button-size.enum';

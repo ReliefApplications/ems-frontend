@@ -8,9 +8,7 @@ export default {
   component: FlyoutMenuComponent,
   decorators: [
     moduleMetadata({
-      imports: [
-        FlyoutMenuModule,
-        StorybookTranslateModule],
+      imports: [FlyoutMenuModule, StorybookTranslateModule],
     }),
   ],
 } as Meta<FlyoutMenuComponent>;
