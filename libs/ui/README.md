@@ -15,6 +15,9 @@ To work on this library we recommend to install [Nx Console](https://nx.dev/core
 Once installed, the developer can create a new component through it by clicking in the extension and selecting the generate angular component option
 ![generate component](assets/component-generate.png)
 
+Reference for [Tailwind components](https://tailwindui.com/components)<br> You'll need to sign in with your Relief Applications email account<br>
+Reference for [Angular CDK APIs](https://material.angular.io/cdk/categories)<br>There are classes and built in logic that could be useful in order to power the library's Tailwind components behavior without the need of writing the logic from scratch(modal display, dropdowns, menus etc.)
+
 ## Create a new component
 
 First, select the option shown in the image above, the developer would see some parameters to set when creating this new component such as these:
