@@ -1,6 +1,5 @@
-import { moduleMetadata, StoryFn, Meta, StoryObj } from '@storybook/angular';
+import { moduleMetadata, Meta, StoryObj } from '@storybook/angular';
 import { ButtonComponent } from './button.component';
-import { ButtonIconPosition } from './enums/button-icon-position.enum';
 import { ButtonModule } from './button.module';
 
 type StoryType = ButtonComponent & { label?: string };
