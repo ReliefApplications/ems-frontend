@@ -1,7 +1,7 @@
 <nav
   [ngClass]="{
-    flex: display === BreadcrumbsTypes.SIMPLE,
-    flex: display === BreadcrumbsTypes.CONTAINED,
+    'flex': display === BreadcrumbsTypes.SIMPLE,
+    'flex': display === BreadcrumbsTypes.CONTAINED,
     'flex border-b border-gray-200 bg-white': display === BreadcrumbsTypes.FULL
   }"
   aria-label="Breadcrumb"
@@ -46,7 +46,7 @@
           <div *ngSwitchCase="BreadcrumbsTypes.SIMPLE">
             <!-- Check the separator style and adapt accordingly -->
             <div [ngSwitch]="separator">
-              <div *ngSwitchCase="BreadcrumbsSeparators.SLASH">
+              <div *ngSwitchCase="BreadcrumbsSeparators.CHEVRON">
                 <svg
                   *ngIf="!f"
                   class="h-5 w-5 flex-shrink-0 text-gray-400"
@@ -61,7 +61,7 @@
                   />
                 </svg>
               </div>
-              <div *ngSwitchCase="BreadcrumbsSeparators.CHEVRON">
+              <div *ngSwitchCase="BreadcrumbsSeparators.SLASH">
                 <svg
                   *ngIf="!f"
                   class="h-5 w-5 flex-shrink-0 text-gray-300"
