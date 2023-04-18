@@ -12,14 +12,15 @@ import { AvatarVariant } from './enums/avatar-variant.enum';
 })
 export class AvatarComponent {
   @Input() size: AvatarSize = AvatarSize.MEDIUM;
+  @Input() variant: AvatarVariant | string = AvatarVariant.DEFAULT;
   @Input() icon = '';
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  @Input() action: any = () => {};
   @Input() shape: any = '';
   @Input() initials: any = '';
-  @Input() variant: AvatarVariant | string = AvatarVariant.DEFAULT;
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  @Input() action: any = () => {};
 
   avatarSize = AvatarSize;
+  avatarVariant = AvatarVariant;
   /**
    * Triggers any action given on click avatar element
    */

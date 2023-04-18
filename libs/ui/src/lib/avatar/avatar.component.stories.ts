@@ -2,6 +2,7 @@ import { moduleMetadata, StoryObj, Meta } from '@storybook/angular';
 import { AvatarComponent } from './avatar.component';
 import { AvatarSize } from './enums/avatar-size.enum';
 import { AvatarModule } from './avatar.module';
+import { AvatarVariant } from './enums/avatar-variant.enum';
 
 export default {
   title: 'AvatarComponent',
@@ -67,16 +68,114 @@ export const PrimaryAvatarLarge: StoryObj<AvatarComponent> = {
   },
 };
 
-// const Template: StoryFn<AvatarComponent> = (args: AvatarComponent) => ({
-//   props: args,
-// });
+/**
+ * Success small spinner story
+ */
+export const SuccessSpinnerSmall: StoryObj<AvatarComponent> = {
+  args: {
+    ...smallAvatar,
+    variant: AvatarVariant.SUCCESS,
+  },
+};
+/**
+ * Success medium spinner story
+ */
+export const SuccessSpinnerMedium: StoryObj<AvatarComponent> = {
+  args: {
+    ...mediumAvatar,
+    variant: AvatarVariant.SUCCESS,
+  },
+};
+/**
+ * Success large spinner story
+ */
+export const SuccessSpinnerLarge: StoryObj<AvatarComponent> = {
+  args: {
+    ...largeAvatar,
+    variant: AvatarVariant.SUCCESS,
+  },
+};
 
-// export const Primary = Template.bind({});
-// Primary.args = {
-//   size: AvatarSize.MEDIUM,
-//   icon: '',
-//   variant: AvatarVariant.DEFAULT,
-//   action: () => {
-//     console.log('Action triggered!');
-//   },
-// };
+/**
+ * Danger small spinner story
+ */
+export const DangerSpinnerSmall: StoryObj<AvatarComponent> = {
+  args: {
+    ...smallAvatar,
+    variant: AvatarVariant.DANGER,
+  },
+};
+/**
+ * Danger medium spinner story
+ */
+export const DangerSpinnerMedium: StoryObj<AvatarComponent> = {
+  args: {
+    ...mediumAvatar,
+    variant: AvatarVariant.DANGER,
+  },
+};
+/**
+ * Danger large spinner story
+ */
+export const DangerSpinnerLarge: StoryObj<AvatarComponent> = {
+  args: {
+    ...largeAvatar,
+    variant: AvatarVariant.DANGER,
+  },
+};
+
+/**
+ * Grey small spinner story
+ */
+export const GreySpinnerSmall: StoryObj<AvatarComponent> = {
+  args: {
+    ...smallAvatar,
+    variant: AvatarVariant.GREY,
+  },
+};
+/**
+ * Grey medium spinner story
+ */
+export const GreySpinnerMedium: StoryObj<AvatarComponent> = {
+  args: {
+    ...mediumAvatar,
+    variant: AvatarVariant.GREY,
+  },
+};
+/**
+ * Grey large spinner story
+ */
+export const GreySpinnerLarge: StoryObj<AvatarComponent> = {
+  args: {
+    ...largeAvatar,
+    variant: AvatarVariant.GREY,
+  },
+};
+
+/**
+ * Light small spinner story
+ */
+export const LightSpinnerSmall: StoryObj<AvatarComponent> = {
+  args: {
+    ...smallAvatar,
+    variant: AvatarVariant.LIGHT,
+  },
+};
+/**
+ * Light medium spinner story
+ */
+export const LightSpinnerMedium: StoryObj<AvatarComponent> = {
+  args: {
+    ...mediumAvatar,
+    variant: AvatarVariant.LIGHT,
+  },
+};
+/**
+ * Light large spinner story
+ */
+export const LightSpinnerLarge: StoryObj<AvatarComponent> = {
+  args: {
+    ...largeAvatar,
+    variant: AvatarVariant.LIGHT,
+  },
+};
