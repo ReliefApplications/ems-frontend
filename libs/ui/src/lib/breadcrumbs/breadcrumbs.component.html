@@ -1,11 +1,14 @@
+<!-- If display is simple -->
 <nav
   *ngIf="display === BreadcrumbsTypes.SIMPLE"
   class="flex"
   aria-label="Breadcrumb"
 >
   <ol role="list" class="flex items-center space-x-4">
+    <!-- For each breadcrumb in the breadcrumbs list -->
     <li *ngFor="let breadcrumb of breadcrumbs; let i = index">
       <div class="flex items-center">
+        <!-- If it is not the first breadcrump, display APPROPRIATE seperator -->
         <svg
           *ngIf="!(i === 0) && seperator === BreadcrumbsSeperators.CHEVRON"
           class="h-5 w-5 flex-shrink-0 text-gray-400"
@@ -28,39 +31,30 @@
         >
           <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
         </svg>
-        <!-- <a
-          href="#"
-          class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
-          >{{ pth }}</a
-        > -->
         <!-- Breadcrumb link -->
         <a
           *ngIf="breadcrumb.key || breadcrumb.text"
-          href={{breadcrumb.uri}}
+          href="{{ breadcrumb.uri }}"
           class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
         >
-          <span>{{
-            breadcrumb.key ? (breadcrumb.key) : breadcrumb.text
-          }}</span>
+          <span>{{ breadcrumb.key ? breadcrumb.key : breadcrumb.text }}</span>
         </a>
-        <!-- Loading indicator if text not set
-  <kendo-skeleton
-    *ngIf="!breadcrumb.key && !breadcrumb.text"
-    width="3em"
-  ></kendo-skeleton> -->
       </div>
     </li>
   </ol>
 </nav>
 
+<!-- If display is contained -->
 <nav
   *ngIf="display === BreadcrumbsTypes.CONTAINED"
   class="flex"
   aria-label="Breadcrumb"
 >
   <ol role="list" class="flex space-x-4 rounded-md bg-white px-6 shadow">
+    <!-- For each breadcrumb in the breadcrumbs list -->
     <li *ngFor="let breadcrumb of breadcrumbs; let i = index" class="flex">
       <div class="flex items-center">
+        <!-- If it is not the first breadcrump, display seperator -->
         <svg
           *ngIf="!(i === 0)"
           class="h-full w-6 flex-shrink-0 text-gray-200"
@@ -71,26 +65,20 @@
         >
           <path d="M.293 0l22 22-22 22h1.414l22-22-22-22H.293z" />
         </svg>
-        <!-- <a
-          href="#"
-          class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
-          >{{ pth }}</a
-        > -->
         <!-- Breadcrumb link -->
         <a
           *ngIf="breadcrumb.key || breadcrumb.text"
-          href={{breadcrumb.uri}}
+          href="{{ breadcrumb.uri }}"
           class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
         >
-          <span>{{
-            breadcrumb.key ? (breadcrumb.key) : breadcrumb.text
-          }}</span>
+          <span>{{ breadcrumb.key ? breadcrumb.key : breadcrumb.text }}</span>
         </a>
       </div>
     </li>
   </ol>
 </nav>
 
+<!-- If display is full -->
 <nav
   *ngIf="display === BreadcrumbsTypes.FULL"
   class="flex border-b border-gray-200 bg-white"
@@ -100,8 +88,10 @@
     role="list"
     class="mx-auto flex w-full max-w-screen-xl space-x-4 px-4 sm:px-6 lg:px-8"
   >
+    <!-- For each breadcrumb in the breadcrumbs list -->
     <li *ngFor="let breadcrumb of breadcrumbs; let i = index" class="flex">
       <div class="flex items-center">
+        <!-- If it is not the first breadcrump, display seperator -->
         <svg
           *ngIf="!(i === 0)"
           class="h-full w-6 flex-shrink-0 text-gray-200"
@@ -112,20 +102,13 @@
         >
           <path d="M.293 0l22 22-22 22h1.414l22-22-22-22H.293z" />
         </svg>
-        <!-- <a
-          href="#"
-          class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
-          >{{ pth }}</a
-        > -->
         <!-- Breadcrumb link -->
         <a
           *ngIf="breadcrumb.key || breadcrumb.text"
-          href={{breadcrumb.uri}}
+          href="{{ breadcrumb.uri }}"
           class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
         >
-          <span>{{
-            breadcrumb.key ? (breadcrumb.key) : breadcrumb.text
-          }}</span>
+          <span>{{ breadcrumb.key ? breadcrumb.key : breadcrumb.text }}</span>
         </a>
       </div>
     </li>
