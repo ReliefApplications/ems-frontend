@@ -107,9 +107,9 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     private aggregationService: SafeAggregationService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     if (this.settings.isDynamic) {
-      this.setupDynamicCards();
+      await this.setupDynamicCards();
     } else {
       this.cards = this.settings.cards;
     }
@@ -154,8 +154,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     const [card] = this.settings.cards;
     if (!card) return;
 
-    if (card.isAggregation) this.getCardsFromAggregation(card);
-    else this.createDynamicQueryFromLayout(card);
+    if (card.isAggregation) await this.getCardsFromAggregation(card);
+    else await this.createDynamicQueryFromLayout(card);
   }
 
   /**
@@ -237,33 +237,61 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   private async setupGridSettings() {
     const [card] = this.settings.cards;
     if (!card) return;
-
-    this.gridLayoutService
-      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
-      .then((res) => {
-        const layouts = res.edges.map((edge) => edge.node);
-        if (layouts.length > 0) {
-          const layout = layouts[0] || null;
-          this.gridSettings = {
-            ...{ template: get(this.settings, 'template', null) }, //TO MODIFY
-            ...{ resource: card.resource },
-            ...{ layouts: layout.id },
-            ...{
-              actions: {
-                //default actions, might need to modify later
-                addRecord: false,
-                convert: true,
-                delete: true,
-                export: true,
-                history: true,
-                inlineEdition: true,
-                showDetails: true,
-                update: true,
+    if (card.layout) {
+      this.gridLayoutService
+        .getLayouts(card.resource, { ids: [card.layout], first: 1 })
+        .then((res) => {
+          const layouts = res.edges.map((edge) => edge.node);
+          if (layouts.length > 0) {
+            const layout = layouts[0] || null;
+            this.gridSettings = {
+              ...{ template: get(this.settings, 'template', null) }, //TO MODIFY
+              ...{ resource: card.resource },
+              ...{ layouts: layout.id },
+              ...{
+                actions: {
+                  //default actions, might need to modify later
+                  addRecord: false,
+                  convert: true,
+                  delete: true,
+                  export: true,
+                  history: true,
+                  inlineEdition: true,
+                  showDetails: true,
+                  update: true,
+                },
               },
-            },
-          };
-        }
-      });
+            };
+          }
+        });
+    } else if (card.aggregation) {
+      this.aggregationService
+        .getAggregations(card.resource, { ids: [card.aggregation], first: 1 })
+        .then((res) => {
+          const aggregations = res.edges.map((edge) => edge.node);
+          if (aggregations.length > 0) {
+            const aggregation = aggregations[0] || null;
+            this.gridSettings = {
+              // ...{ template: get(this.settings, 'template', null) }, //TO MODIFY
+              ...{ resource: card.resource },
+              ...{ aggregations: aggregation.id },
+              ...{
+                actions: {
+                  //default actions, might need to modify later
+                  addRecord: false,
+                  convert: true,
+                  delete: true,
+                  export: true,
+                  history: true,
+                  inlineEdition: true,
+                  showDetails: true,
+                  update: true,
+                },
+              },
+            };
+          }
+        });
+    }
     return;
   }
 
@@ -273,15 +301,17 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * @param card Card settings
    */
   private async getCardsFromAggregation(card: any) {
-    this.aggregationService
-      .aggregationDataQuery(card.resource, card.aggregation)
-      ?.subscribe((res) => {
-        if (!res.data) return;
-        this.cards = res.data.recordsAggregation.map((x: any) => ({
-          ...this.settings.cards[0],
-          cardAggregationData: x,
-        }));
-      });
+    const res = await firstValueFrom(
+      this.aggregationService.aggregationDataQuery(
+        card.resource,
+        card.aggregation
+      )
+    );
+    if (!res.data) return;
+    this.cards = res.data.recordsAggregation.items.map((x: any) => ({
+      ...this.settings.cards[0],
+      cardAggregationData: x,
+    }));
   }
 
   /**

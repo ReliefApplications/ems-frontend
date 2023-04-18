@@ -23,7 +23,7 @@
   </kendo-tilelayout-item-header>
   <ng-container *ngIf="displayMode === 'cards' || settings.isDynamic === false">
     <safe-button
-      *ngIf="export && (displayMode === 'cards' || settings.isDynamic === false)"
+      *ngIf="export && cards && (displayMode === 'cards' || settings.isDynamic === false)"
       [isIcon]="true"
       icon="get_app"
       class="export-button"
@@ -50,8 +50,7 @@
     </kendo-pdf-export>
   </ng-container>
 </div>
-
-<ng-container *ngIf="displayMode === 'grid' && settings.isDynamic === true">
+<ng-container *ngIf="displayMode === 'grid' && settings.isDynamic === true && gridSettings">
   <div class="summary-grid">
     <safe-grid-widget
       class="flex-auto max-h-full w-full"

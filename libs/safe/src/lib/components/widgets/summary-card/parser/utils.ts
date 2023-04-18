@@ -217,7 +217,7 @@ const replaceRecordFields = (
         `${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`,
         'gi'
       );
-      formattedHtml = formattedHtml.replace(regex, convertedValue);
+      formattedHtml = formattedHtml?.replace(regex, convertedValue);
     }
   }
   return formattedHtml;

@@ -210,12 +210,12 @@ export class SafeGridWidgetComponent implements OnInit {
                 (a, b) =>
                   aggregations.indexOf(a.id) - aggregations.indexOf(b.id)
               );
+            this.aggregation = this.aggregations[0] || null;
             if (!this.aggregation) {
               this.status = {
                 error: true,
               };
             }
-            this.aggregation = this.aggregations[0] || null;
           });
         return;
       }
