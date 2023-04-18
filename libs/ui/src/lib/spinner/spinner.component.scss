@@ -25,5 +25,9 @@
 }
 
 .spinner-grey {
+  @apply fill-neutral-400;
+}
+
+.spinner-light {
   @apply fill-white;
 }

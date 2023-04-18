@@ -3,6 +3,7 @@ import { SpinnerComponent } from './spinner.component';
 import { SpinnerModule } from './spinner.module';
 import { Size } from '../shared/size.enum';
 import { Variant } from '../shared/variant.enum';
+import { Category } from '../shared/category.enum';
 
 export default {
   title: 'SpinnerComponent',
@@ -15,8 +16,10 @@ export default {
   render: (args) => {
     return {
       args,
-      template: `<ui-spinner [size]="'${args.size ?? ''}'" [variant]="'${
-        args.variant ?? ''
+      template: `<ui-spinner [category]="'${
+        args.category ?? Category.PRIMARY
+      }'" [size]="'${args.size ?? Size.MEDIUM}'" [variant]="'${
+        args.variant ?? Variant.DEFAULT
       }'"></ui-spinner>`,
       userDefinedTemplate: true,
     };
@@ -153,5 +156,33 @@ export const GreySpinnerLarge: StoryObj<SpinnerComponent> = {
   args: {
     ...largeSpinner,
     variant: Variant.GREY,
+  },
+};
+
+/**
+ * Light small spinner story
+ */
+export const LightSpinnerSmall: StoryObj<SpinnerComponent> = {
+  args: {
+    ...smallSpinner,
+    variant: Variant.LIGHT,
+  },
+};
+/**
+ * Light medium spinner story
+ */
+export const LightSpinnerMedium: StoryObj<SpinnerComponent> = {
+  args: {
+    ...mediumSpinner,
+    variant: Variant.LIGHT,
+  },
+};
+/**
+ * Light large spinner story
+ */
+export const LightSpinnerLarge: StoryObj<SpinnerComponent> = {
+  args: {
+    ...largeSpinner,
+    variant: Variant.LIGHT,
   },
 };

@@ -12,5 +12,5 @@ export * from './lib/spinner/spinner.module';
 // === ENUMS === //
 export * from './lib/shared/size.enum';
 export * from './lib/shared/variant.enum';
-export * from './lib/button/enums/button-category.enum';
+export * from './lib/shared/category.enum';
 export * from './lib/button/enums/button-icon-position.enum';

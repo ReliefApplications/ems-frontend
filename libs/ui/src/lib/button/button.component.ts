@@ -1,6 +1,6 @@
 import { Component, HostBinding, Input } from '@angular/core';
 import { ButtonIconPosition } from './enums/button-icon-position.enum';
-import { ButtonCategory } from './enums/button-category.enum';
+import { Category } from '../shared/category.enum';
 import { Variant } from '../shared/variant.enum';
 import { Subject } from 'rxjs';
 import { Size } from '../shared/size.enum';
@@ -16,7 +16,7 @@ import { Size } from '../shared/size.enum';
 export class ButtonComponent {
   @Input() icon = '';
   @Input() iconPosition: ButtonIconPosition = ButtonIconPosition.PREFIX;
-  @Input() category: ButtonCategory = ButtonCategory.PRIMARY;
+  @Input() category: Category = Category.PRIMARY;
   @Input() size: Size = Size.MEDIUM;
   @Input() variant: Variant = Variant.DEFAULT;
   @Input() loading = false;
@@ -25,9 +25,25 @@ export class ButtonComponent {
   disabled = false;
 
   buttonIconPosition = ButtonIconPosition;
-  buttonCategory = ButtonCategory;
+  buttonCategory = Category;
   buttonSize = Size;
   buttonVariant = Variant;
 
   public emittedEventSubject: Subject<string> = new Subject();
+
+  /**
+   * Map icon size as number for Size enum
+   *
+   * @returns size as number
+   */
+  get iconSize(): number {
+    switch (this.size) {
+      case Size.SMALL:
+        return 18;
+      case Size.LARGE:
+        return 24;
+      default:
+        return 21;
+    }
+  }
 }
