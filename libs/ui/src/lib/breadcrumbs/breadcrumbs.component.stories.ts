@@ -1,9 +1,7 @@
 import { moduleMetadata, Story, Meta } from '@storybook/angular';
-import {
-  BreadcrumbDisplay,
-  BreadcrumbSeperator,
-  BreadcrumbsComponent,
-} from './breadcrumbs.component';
+import { BreadcrumbsComponent } from './breadcrumbs.component';
+import { BreadcrumbDisplay } from './enums/breadcrumb-display.enum';
+import { BreadcrumbSeparator } from './enums/breadcrumb-separator.enum';
 
 export default {
   title: 'BreadcrumbsComponent',
@@ -35,6 +33,6 @@ Primary.args = {
       uri: '#',
     },
   ],
-  seperator: BreadcrumbSeperator.CHEVRON,
+  separator: BreadcrumbSeparator.CHEVRON,
   display: BreadcrumbDisplay.SIMPLE,
 };

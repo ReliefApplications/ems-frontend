@@ -1,3 +1,73 @@
+<!-- Defining the template -->
+<!-- <ng-template 
+   ngFor let-breadcrumb [ngForOf]="breadcrumbs" 
+   let-i="index" 
+   let-f="first"
+   #breadcrumbTemplate>
+ 
+</ng-template> -->
+
+<!-- Separator switch cases -->
+<!-- <div [ngSwitch]="separator">
+  <ng-template [ngSwitchCase]="BreadcrumbsSeparators.CHEVRON" #separatorTemplate>
+    <svg
+      *ngIf="!f"
+      class="h-5 w-5 flex-shrink-0 text-gray-400"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path
+        fill-rule="evenodd"
+        d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+        clip-rule="evenodd"
+      />
+    </svg>
+  </ng-template>
+  <ng-template [ngSwitchCase]="BreadcrumbsSeparators.SLASH" #separatorTemplate>
+    <svg
+      *ngIf="!f"
+      class="h-5 w-5 flex-shrink-0 text-gray-300"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      aria-hidden="true"
+    >
+      <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
+    </svg>
+  </ng-template>
+  <ng-template ngSwitchDefault #separatorTemplate>
+      <svg
+        *ngIf="!f"
+        class="h-5 w-5 flex-shrink-0 text-gray-400"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+          clip-rule="evenodd"
+        />
+      </svg>
+  </ng-template>
+</div> -->
+
+
+<!-- <div [ngSwitch]="display">
+  <ng-template [ngSwitchCase]="BreadcrumbsTypes.SIMPLE" #displayTemplate>
+    <div>One</div>
+  </ng-template>
+  <ng-template [ngSwitchCase]="BreadcrumbsTypes.CONTAINED" #displayTemplate>
+    <div>Two</div>
+  </ng-template>
+  <ng-template [ngSwitchCase]="BreadcrumbsTypes.FULL" #displayTemplate>
+    <div>Three</div>
+  </ng-template>
+  <ng-template ngSwitchDefault #displayTemplate>
+    <div>This is default</div>
+  </ng-template>
+</div> -->
+
 <!-- If display is simple -->
 <nav
   *ngIf="display === BreadcrumbsTypes.SIMPLE"
@@ -6,11 +76,11 @@
 >
   <ol role="list" class="flex items-center space-x-4">
     <!-- For each breadcrumb in the breadcrumbs list -->
-    <li *ngFor="let breadcrumb of breadcrumbs; let i = index">
+    <li *ngFor="let breadcrumb of breadcrumbs; let f = first">
       <div class="flex items-center">
-        <!-- If it is not the first breadcrump, display APPROPRIATE seperator -->
+        <!-- If it is not the first breadcrumb, display APPROPRIATE separator -->
         <svg
-          *ngIf="!(i === 0) && seperator === BreadcrumbsSeperators.CHEVRON"
+          *ngIf="!f && separator === BreadcrumbsSeparators.CHEVRON"
           class="h-5 w-5 flex-shrink-0 text-gray-400"
           viewBox="0 0 20 20"
           fill="currentColor"
@@ -23,7 +93,7 @@
           />
         </svg>
         <svg
-          *ngIf="!(i === 0) && seperator === BreadcrumbsSeperators.SLASH"
+          *ngIf="!f&& separator === BreadcrumbsSeparators.SLASH"
           class="h-5 w-5 flex-shrink-0 text-gray-300"
           fill="currentColor"
           viewBox="0 0 20 20"
@@ -52,11 +122,11 @@
 >
   <ol role="list" class="flex space-x-4 rounded-md bg-white px-6 shadow">
     <!-- For each breadcrumb in the breadcrumbs list -->
-    <li *ngFor="let breadcrumb of breadcrumbs; let i = index" class="flex">
+    <li *ngFor="let breadcrumb of breadcrumbs; let f = first" class="flex">
       <div class="flex items-center">
-        <!-- If it is not the first breadcrump, display seperator -->
+        <!-- If it is not the first breadcrumb, display separator -->
         <svg
-          *ngIf="!(i === 0)"
+          *ngIf="!f"
           class="h-full w-6 flex-shrink-0 text-gray-200"
           viewBox="0 0 24 44"
           preserveAspectRatio="none"
@@ -89,11 +159,11 @@
     class="mx-auto flex w-full max-w-screen-xl space-x-4 px-4 sm:px-6 lg:px-8"
   >
     <!-- For each breadcrumb in the breadcrumbs list -->
-    <li *ngFor="let breadcrumb of breadcrumbs; let i = index" class="flex">
+    <li *ngFor="let breadcrumb of breadcrumbs; let f = first" class="flex">
       <div class="flex items-center">
-        <!-- If it is not the first breadcrump, display seperator -->
+        <!-- If it is not the first breadcrumb, display separator -->
         <svg
-          *ngIf="!(i === 0)"
+          *ngIf="!f"
           class="h-full w-6 flex-shrink-0 text-gray-200"
           viewBox="0 0 24 44"
           preserveAspectRatio="none"
