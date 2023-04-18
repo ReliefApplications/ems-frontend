@@ -1,5 +1,15 @@
+<safe-aggregation-grid
+  *ngIf="sourceType === 'aggregation' && aggregation"
+  [resourceId]="resourceId"
+  [aggregation]="aggregation"
+  [selectable]="true"
+  [selectedRows]="selectedRows"
+  (selectionChange)="onSelectionChange($event)"
+  style="height: 600px"
+></safe-aggregation-grid>
+
 <safe-core-grid
-  *ngIf="settings"
+  *ngIf="sourceType === 'layout' && settings"
   [settings]="settings"
   [multiSelect]="false"
   [selectable]="true"

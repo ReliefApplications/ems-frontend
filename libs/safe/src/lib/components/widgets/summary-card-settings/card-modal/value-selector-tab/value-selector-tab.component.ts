@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
+import { Aggregation } from '../../../../../models/aggregation.model';
 
 /**
  * Component used in the card-modal-settings for selecting the record data.
@@ -12,6 +13,9 @@ import { UntypedFormGroup } from '@angular/forms';
 export class SafeValueSelectorTabComponent implements OnInit {
   @Input() form!: UntypedFormGroup;
   @Input() settings: any;
+  @Input() resourceId!: string;
+  @Input() aggregation?: Aggregation;
+  @Input() sourceType!: 'layout' | 'aggregation';
 
   public selectedRows: string[] = [];
 

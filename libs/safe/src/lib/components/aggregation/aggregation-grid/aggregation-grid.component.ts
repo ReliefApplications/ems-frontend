@@ -1,5 +1,17 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import {
+  GridDataResult,
+  PageChangeEvent,
+  SelectionEvent,
+} from '@progress/kendo-angular-grid';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GetAggregationDataQueryResponse } from '../../../services/aggregation/graphql/queries';
 import { Aggregation } from '../../../models/aggregation.model';
@@ -47,6 +59,10 @@ export class SafeAggregationGridComponent
   @Input() resourceId!: string;
   @Input() aggregation!: Aggregation;
   @Input() widget!: any;
+  @Input() selectable = false;
+  @Input() selectedRows: string[] = [];
+
+  @Output() selectionChange = new EventEmitter();
 
   /** @returns The column menu */
   get columnMenu(): { columnChooser: boolean; filter: boolean } {
@@ -276,6 +292,21 @@ export class SafeAggregationGridComponent
         },
       })
       .then((results) => this.updateValues(results.data, results.loading));
+  }
+
+  /**
+   * Handle selection change event.
+   *
+   * @param selection Selection event.
+   */
+  public onSelectionChange(selection: SelectionEvent): void {
+    // TODO: Create selection logic when decided what can be saved
+    // from the aggregation record since he doesn't have an id
+    // const deselectedRows = selection.deselectedRows || [];
+    // const selectedRows = selection.selectedRows || [];
+    // if (deselectedRows.length > 0) { }
+    // if (selectedRows.length > 0) { }
+    this.selectionChange.emit(selection);
   }
 
   /**

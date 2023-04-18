@@ -34,7 +34,7 @@
         <!-- Selection of record -->
         <mat-tab
           *ngIf="
-            !form.get('isDynamic')?.value && !form.get('isAggregation')?.value
+            !form.get('isDynamic')?.value
           "
         >
           <ng-template mat-tab-label>
@@ -46,9 +46,18 @@
           </ng-template>
           <ng-template matTabContent>
             <safe-value-selector-tab
+              *ngIf="selectedLayout"
               [form]="form"
               [settings]="selectedLayout"
+              [sourceType]="'layout'"
             ></safe-value-selector-tab>
+            <safe-value-selector-tab
+              *ngIf="selectedAggregation"
+              [form]="form"
+              [aggregation]="selectedAggregation"
+              [resourceId]="selectedResource?.id ?? form.value.resource"
+              [sourceType]="'aggregation'"
+          ></safe-value-selector-tab>
           </ng-template>
         </mat-tab>
         <!-- Card display settings -->
