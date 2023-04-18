@@ -9,7 +9,7 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./breadcrumbs.component.scss'],
 })
 export class BreadcrumbsComponent {
-  @Input() path: string[] = [];
+  @Input() breadcrumbs: Breadcrumb[] = [];
   @Input() seperator: BreadcrumbSeperator = BreadcrumbSeperator.CHEVRON;
   @Input() display: BreadcrumbDisplay = BreadcrumbDisplay.SIMPLE;
 
@@ -24,4 +24,12 @@ export enum BreadcrumbDisplay {
 export enum BreadcrumbSeperator {
   CHEVRON,
   SLASH,
+}
+/** Interface of breadcrumb */
+export interface Breadcrumb {
+  alias?: string;
+  uri: string;
+  text?: string;
+  key?: string;
+  queryParams?: any;
 }

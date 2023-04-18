@@ -21,7 +21,20 @@ const Template: Story<BreadcrumbsComponent> = (args: BreadcrumbsComponent) => ({
 
 export const Primary = Template.bind({});
 Primary.args = {
-  path: ['test1', 'test2', 'test3'],
+  breadcrumbs: [
+    {
+      text: 'item 0',
+      uri: '#',
+    },
+    {
+      text: 'item 1',
+      uri: '#',
+    },
+    {
+      text: 'item 2',
+      uri: '#',
+    },
+  ],
   seperator: BreadcrumbSeperator.CHEVRON,
   display: BreadcrumbDisplay.SIMPLE,
 };
