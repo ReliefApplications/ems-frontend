@@ -1,5 +1,9 @@
 import { moduleMetadata, Story, Meta } from '@storybook/angular';
-import { BreadcrumbsComponent } from './breadcrumbs.component';
+import {
+  BreadcrumbDisplay,
+  BreadcrumbSeperator,
+  BreadcrumbsComponent,
+} from './breadcrumbs.component';
 
 export default {
   title: 'BreadcrumbsComponent',
@@ -17,7 +21,7 @@ const Template: Story<BreadcrumbsComponent> = (args: BreadcrumbsComponent) => ({
 
 export const Primary = Template.bind({});
 Primary.args = {
-  path: [],
-  seperator: '>',
-  display: 'simple',
+  path: ['test1', 'test2', 'test3'],
+  seperator: BreadcrumbSeperator.CHEVRON,
+  display: BreadcrumbDisplay.SIMPLE,
 };

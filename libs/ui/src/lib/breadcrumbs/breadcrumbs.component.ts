@@ -10,6 +10,18 @@ import { Component, Input } from '@angular/core';
 })
 export class BreadcrumbsComponent {
   @Input() path: string[] = [];
-  @Input() seperator = '>';
-  @Input() display = '';
+  @Input() seperator: BreadcrumbSeperator = BreadcrumbSeperator.CHEVRON;
+  @Input() display: BreadcrumbDisplay = BreadcrumbDisplay.SIMPLE;
+
+  BreadcrumbsTypes = BreadcrumbDisplay;
+  BreadcrumbsSeperators = BreadcrumbSeperator;
+}
+export enum BreadcrumbDisplay {
+  SIMPLE,
+  CONTAINED,
+  FULL,
+}
+export enum BreadcrumbSeperator {
+  CHEVRON,
+  SLASH,
 }

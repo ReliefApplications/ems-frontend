@@ -1,9 +1,13 @@
-<nav *ngIf="display === 'simple'" class="flex" aria-label="Breadcrumb">
+<nav
+  *ngIf="display === BreadcrumbsTypes.SIMPLE"
+  class="flex"
+  aria-label="Breadcrumb"
+>
   <ol role="list" class="flex items-center space-x-4">
     <li *ngFor="let pth of path">
       <div class="flex items-center">
         <svg
-          *ngIf="!(path.indexOf(pth, 0) === 0) && seperator === '>'"
+          *ngIf="!(path.indexOf(pth, 0) === 0) && seperator === BreadcrumbsSeperators.CHEVRON"
           class="h-5 w-5 flex-shrink-0 text-gray-400"
           viewBox="0 0 20 20"
           fill="currentColor"
@@ -16,7 +20,7 @@
           />
         </svg>
         <svg
-          *ngIf="!(path.indexOf(pth, 0) === 0) && seperator === '/'"
+          *ngIf="!(path.indexOf(pth, 0) === 0) && seperator === BreadcrumbsSeperators.SLASH"
           class="h-5 w-5 flex-shrink-0 text-gray-300"
           fill="currentColor"
           viewBox="0 0 20 20"
@@ -34,12 +38,16 @@
   </ol>
 </nav>
 
-<nav *ngIf="display === 'contained'" class="flex" aria-label="Breadcrumb">
+<nav
+  *ngIf="display === BreadcrumbsTypes.CONTAINED"
+  class="flex"
+  aria-label="Breadcrumb"
+>
   <ol role="list" class="flex space-x-4 rounded-md bg-white px-6 shadow">
     <li *ngFor="let pth of path" class="flex">
       <div class="flex items-center">
         <svg
-          *ngIf="!(path.indexOf(pth, 0) === 0) && seperator === '>'"
+          *ngIf="!(path.indexOf(pth, 0) === 0)"
           class="h-full w-6 flex-shrink-0 text-gray-200"
           viewBox="0 0 24 44"
           preserveAspectRatio="none"
@@ -48,15 +56,36 @@
         >
           <path d="M.293 0l22 22-22 22h1.414l22-22-22-22H.293z" />
         </svg>
+        <a
+          href="#"
+          class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+          >{{ pth }}</a
+        >
+      </div>
+    </li>
+  </ol>
+</nav>
+
+<nav
+  *ngIf="display === BreadcrumbsTypes.FULL"
+  class="flex border-b border-gray-200 bg-white"
+  aria-label="Breadcrumb"
+>
+  <ol
+    role="list"
+    class="mx-auto flex w-full max-w-screen-xl space-x-4 px-4 sm:px-6 lg:px-8"
+  >
+    <li *ngFor="let pth of path" class="flex">
+      <div class="flex items-center">
         <svg
-          *ngIf="!(path.indexOf(pth, 0) === 0) && seperator === '/'"
-          class="h-full w-6 flex-shrink-0 items-center text-gray-200"
+          *ngIf="!(path.indexOf(pth, 0) === 0)"
+          class="h-full w-6 flex-shrink-0 text-gray-200"
           viewBox="0 0 24 44"
           preserveAspectRatio="none"
           fill="currentColor"
           aria-hidden="true"
         >
-          <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
+          <path d="M.293 0l22 22-22 22h1.414l22-22-22-22H.293z" />
         </svg>
         <a
           href="#"
