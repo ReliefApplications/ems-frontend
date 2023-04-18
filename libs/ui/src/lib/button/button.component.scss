@@ -1,11 +1,11 @@
 .ui-button__primary {
-  @apply rounded-md text-sm font-medium text-indigo-600 shadow-sm hover:bg-indigo-100;
+  @apply rounded-md text-sm font-medium shadow-sm;
 }
 .ui-button__secondary {
-  @apply rounded-md bg-indigo-600 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600;
+  @apply rounded-md text-sm font-medium shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
 }
 .ui-button__tertiary {
-  @apply rounded-md bg-white text-sm font-medium text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50;
+  @apply rounded-md bg-white text-sm font-medium shadow-sm ring-1 ring-inset ring-gray-300;
 }
 
 .button-small {
@@ -16,4 +16,60 @@
 }
 .button-large {
   @apply px-3.5 py-2.5;
+}
+
+.button-primary {
+  &:not(:disabled) {
+    &.ui-button__primary {
+      @apply text-primary-400 hover:bg-primary-50;
+    }
+    &.ui-button__secondary {
+      @apply bg-primary-400 text-white hover:bg-primary-500 focus-visible:outline-primary-600;
+    }
+    &.ui-button__tertiary {
+      @apply border-primary-400 text-primary-400 hover:bg-primary-50;
+    }
+  }
+}
+
+.button-success {
+  &:not(:disabled) {
+    &.ui-button__primary {
+      @apply text-green-400 hover:bg-green-50;
+    }
+    &.ui-button__secondary {
+      @apply bg-green-400 text-white hover:bg-green-500 focus-visible:outline-green-600;
+    }
+    &.ui-button__tertiary {
+      @apply border-green-400 text-green-400 hover:bg-green-50;
+    }
+  }
+}
+
+.button-danger {
+  &:not(:disabled) {
+    &.ui-button__primary {
+      @apply text-red-400 hover:bg-red-50;
+    }
+    &.ui-button__secondary {
+      @apply bg-red-400 text-white hover:bg-red-500 focus-visible:outline-red-600;
+    }
+    &.ui-button__tertiary {
+      @apply border-red-400 text-red-400 hover:bg-red-50;
+    }
+  }
+}
+
+.button-grey {
+  &:not(:disabled) {
+    &.ui-button__primary {
+      @apply text-neutral-400 hover:bg-neutral-100;
+    }
+    &.ui-button__secondary {
+      @apply bg-neutral-400 text-white hover:bg-neutral-500 focus-visible:outline-neutral-600;
+    }
+    &.ui-button__tertiary {
+      @apply border-neutral-400 text-neutral-400 hover:bg-neutral-100;
+    }
+  }
 }

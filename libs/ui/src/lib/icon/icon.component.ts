@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { IconVariant } from './enums/icon-variant.enum';
+import { Variant } from '../shared/variant.enum';
 
 /**
  * UI Icon Component
@@ -12,7 +12,7 @@ import { IconVariant } from './enums/icon-variant.enum';
 export class IconComponent {
   @Input() icon = '';
   @Input() inline = false;
-  @Input() variant: IconVariant | string = IconVariant.DEFAULT;
+  @Input() variant: Variant = Variant.DEFAULT;
   @Input() size = 24;
 
   /**
@@ -31,10 +31,10 @@ export class IconComponent {
    */
   get color(): string {
     switch (this.variant) {
-      case IconVariant.PRIMARY: {
+      case Variant.PRIMARY: {
         return 'primary';
       }
-      case IconVariant.DANGER: {
+      case Variant.DANGER: {
         return 'warn';
       }
       default: {

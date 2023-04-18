@@ -1,7 +1,7 @@
 /**
- * Button variant enum.
+ * Variant enum.
  */
-export enum ButtonVariant {
+export enum Variant {
   DEFAULT = 'default',
   PRIMARY = 'primary',
   SUCCESS = 'success',

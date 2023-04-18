@@ -1,6 +1,6 @@
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { AvatarComponent } from './avatar.component';
-import { AvatarSize } from './enums/avatar-size.enum';
+import { Size } from '../shared/size.enum';
 import { AvatarModule } from './avatar.module';
 
 export default {
@@ -19,7 +19,7 @@ const Template: StoryFn<AvatarComponent> = (args: AvatarComponent) => ({
 
 export const Primary = Template.bind({});
 Primary.args = {
-  size: AvatarSize.MEDIUM,
+  size: Size.MEDIUM,
   icon: '',
   action: () => {
     console.log('Action triggered!');

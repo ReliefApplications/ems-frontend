@@ -1,5 +1,4 @@
 <button
-  (click)="triggerAction()"
   type="button"
   [ngClass]="{
     'ui-button__primary': category === buttonCategory.PRIMARY,
@@ -8,28 +7,22 @@
     'button-small': size === buttonSize.SMALL,
     'button-medium': size === buttonSize.MEDIUM,
     'button-large': size === buttonSize.LARGE,
-    'inline-flex items-center gap-x-2': icon
+    'button-primary': variant === buttonVariant.PRIMARY,
+    'button-danger': variant === buttonVariant.DANGER,
+    'button-grey': variant === buttonVariant.GREY,
+    'button-success': variant === buttonVariant.SUCCESS,
+    'inline-flex items-center gap-x-2': icon || loading
   }"
-  [class.safe-btn-success]="variant === 'success'"
-  [class.safe-btn-grey]="variant === 'grey'"
   [class.mat-icon-button]="isIcon"
   [disabled]="disabled"
   (click)="emittedEventSubject.next('click')"
 >
-  <ng-template #prefixIconTmpl></ng-template>
-  <ng-content></ng-content>
-  <ng-template #suffixIconTmpl></ng-template>
-</button>
-
-<ng-container
-  *ngIf="
-    iconPosition === buttonIconPosition.PREFIX;
-    then prefixIconTmpl;
-    else suffixIconTmpl
-  "
->
   <ng-container *ngIf="icon">
     <svg
+      [ngClass]="{
+        'order-1': iconPosition === buttonIconPosition.PREFIX,
+        'order-2': iconPosition === buttonIconPosition.SUFFIX
+      }"
       class="-ml-0.5 h-5 w-5"
       viewBox="0 0 20 20"
       fill="currentColor"
@@ -42,4 +35,22 @@
       />
     </svg>
   </ng-container>
-</ng-container>
+  <ng-container *ngIf="loading">
+    <ui-spinner
+      [ngClass]="{
+        'order-1': iconPosition === buttonIconPosition.PREFIX,
+        'order-2': iconPosition === buttonIconPosition.SUFFIX
+      }"
+      [size]="size"
+      [variant]="variant"
+    ></ui-spinner>
+  </ng-container>
+  <span
+    [ngClass]="{
+      'order-1': iconPosition === buttonIconPosition.SUFFIX,
+      'order-2': iconPosition === buttonIconPosition.PREFIX
+    }"
+  >
+    <ng-content></ng-content>
+  </span>
+</button>

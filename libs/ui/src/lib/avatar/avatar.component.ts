@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AvatarSize } from './enums/avatar-size.enum';
+import { Size } from '../shared/size.enum';
 
 /**
  * UI Avatar Component
@@ -10,9 +10,9 @@ import { AvatarSize } from './enums/avatar-size.enum';
   styleUrls: ['./avatar.component.scss'],
 })
 export class AvatarComponent {
-  @Input() size: AvatarSize = AvatarSize.MEDIUM;
+  @Input() size: Size = Size.MEDIUM;
   @Input() icon = '';
-  avatarSize = AvatarSize;
+  avatarSize = Size;
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   @Input() action: any = () => {};
 
