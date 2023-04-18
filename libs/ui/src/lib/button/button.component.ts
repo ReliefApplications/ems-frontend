@@ -19,6 +19,7 @@ export class ButtonComponent {
   @Input() category: Category = Category.PRIMARY;
   @Input() size: Size = Size.MEDIUM;
   @Input() variant: Variant = Variant.DEFAULT;
+  @Input() isIcon = false;
   @Input() loading = false;
   @HostBinding('class.disabled')
   @Input()

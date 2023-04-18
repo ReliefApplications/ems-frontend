@@ -23,13 +23,13 @@ export default {
     console.log(props);
     return {
       props,
-      template: `<ui-button [loading]="${props.loading ?? false}" [size]="'${
-        props.size
-      }'" [icon]="'${props.icon ?? ''}'" [iconPosition]="'${
-        props.iconPosition ?? ''
-      }'" [category]=${props.category} [variant]="'${
-        props.variant ?? ''
-      }'">${label}</ui-button>`,
+      template: `<ui-button [isIcon]="${props.isIcon ?? false}" [loading]="${
+        props.loading ?? false
+      }" [size]="'${props.size}'" [icon]="'${
+        props.icon ?? ''
+      }'" [iconPosition]="'${props.iconPosition ?? ''}'" [category]=${
+        props.category
+      } [variant]="'${props.variant ?? ''}'">${label}</ui-button>`,
       userDefinedTemplate: true,
     };
   },
@@ -185,6 +185,44 @@ export const SecondaryMedium: StoryObj<StoryType> = {
 export const SecondaryLarge: StoryObj<StoryType> = {
   args: {
     ...secondaryButton,
+    size: Size.LARGE,
+    variant: Variant.PRIMARY,
+  },
+};
+
+/**
+ * Secondary small icon button primary variant story
+ */
+export const SecondarySmallIconButtonPrimaryVariant: StoryObj<StoryType> = {
+  args: {
+    ...secondaryButton,
+    isIcon: true,
+    icon: 'search_outline',
+    size: Size.SMALL,
+    variant: Variant.PRIMARY,
+  },
+};
+
+/**
+ * Secondary medium icon button primary variant story
+ */
+export const SecondaryMediumIconButtonPrimaryVariant: StoryObj<StoryType> = {
+  args: {
+    ...secondaryButton,
+    isIcon: true,
+    icon: 'search_outline',
+    variant: Variant.PRIMARY,
+  },
+};
+
+/**
+ * Secondary large icon button primary variant story
+ */
+export const SecondaryLargeIconButtonPrimaryVariant: StoryObj<StoryType> = {
+  args: {
+    ...secondaryButton,
+    isIcon: true,
+    icon: 'search_outline',
     size: Size.LARGE,
     variant: Variant.PRIMARY,
   },

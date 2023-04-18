@@ -1,20 +1,21 @@
 <button
   type="button"
   [ngClass]="{
-    'ui-button__primary': category === buttonCategory.PRIMARY,
-    'ui-button__secondary': category === buttonCategory.SECONDARY,
-    'ui-button__tertiary': category === buttonCategory.TERTIARY,
-    'button-small': size === buttonSize.SMALL,
-    'button-medium': size === buttonSize.MEDIUM,
-    'button-large': size === buttonSize.LARGE,
+    'ui-button': !isIcon,
+    'ui-button-icon': isIcon,
+    primary: category === buttonCategory.PRIMARY,
+    secondary: category === buttonCategory.SECONDARY,
+    tertiary: category === buttonCategory.TERTIARY,
+    small: size === buttonSize.SMALL,
+    medium: size === buttonSize.MEDIUM,
+    large: size === buttonSize.LARGE,
     'button-primary': variant === buttonVariant.PRIMARY,
     'button-danger': variant === buttonVariant.DANGER,
     'button-grey':
       variant === buttonVariant.GREY || variant === buttonVariant.LIGHT,
     'button-success': variant === buttonVariant.SUCCESS,
-    'inline-flex items-center gap-x-2': icon || loading
+    'inline-flex items-center gap-x-2': (icon || loading) && !isIcon
   }"
-  [class.mat-icon-button]="isIcon"
   [disabled]="disabled"
   (click)="emittedEventSubject.next('click')"
 >
@@ -49,6 +50,8 @@
       'order-2': iconPosition === buttonIconPosition.PREFIX
     }"
   >
-    <ng-content></ng-content>
+    <ng-container *ngIf="!isIcon">
+      <ng-content></ng-content>
+    </ng-container>
   </span>
 </button>

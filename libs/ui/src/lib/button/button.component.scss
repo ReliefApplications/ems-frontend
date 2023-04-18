@@ -1,32 +1,54 @@
-.ui-button__primary {
-  @apply rounded-md text-sm font-medium shadow-sm;
-}
-.ui-button__secondary {
-  @apply rounded-md text-sm font-medium shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
-}
-.ui-button__tertiary {
-  @apply rounded-md bg-white text-sm font-medium shadow-sm ring-1 ring-inset ring-gray-300;
+.ui-button {
+  &.primary {
+    @apply rounded-md text-sm font-medium shadow-sm;
+  }
+  &.secondary {
+    @apply rounded-md text-sm font-medium shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
+  }
+  &.tertiary {
+    @apply rounded-md bg-white text-sm font-medium shadow-sm ring-1 ring-inset ring-gray-300;
+  }
+  &.small {
+    @apply px-2.5 py-1.5;
+  }
+  &.medium {
+    @apply px-3 py-2;
+  }
+  &.large {
+    @apply px-3.5 py-2.5;
+  }
 }
 
-.button-small {
-  @apply px-2.5 py-1.5;
-}
-.button-medium {
-  @apply px-3 py-2;
-}
-.button-large {
-  @apply px-3.5 py-2.5;
+.ui-button-icon {
+  &.primary {
+    @apply rounded-full shadow-sm;
+  }
+  &.secondary {
+    @apply rounded-full shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
+  }
+  &.tertiary {
+    @apply bg-white rounded-full shadow-sm ring-1 ring-inset ring-gray-300;
+  }
+  &.small {
+    @apply p-1.5;
+  }
+  &.medium {
+    @apply p-2.5;
+  }
+  &.large {
+    @apply p-3.5;
+  }
 }
 
 .button-primary {
   &:not(:disabled) {
-    &.ui-button__primary {
+    &.primary {
       @apply text-primary-400 hover:bg-primary-50;
     }
-    &.ui-button__secondary {
+    &.secondary {
       @apply bg-primary-400 text-white hover:bg-primary-500 focus-visible:outline-primary-600;
     }
-    &.ui-button__tertiary {
+    &.tertiary {
       @apply border-primary-400 text-primary-400 hover:bg-primary-50;
     }
   }
@@ -34,13 +56,13 @@
 
 .button-success {
   &:not(:disabled) {
-    &.ui-button__primary {
+    &.primary {
       @apply text-green-400 hover:bg-green-50;
     }
-    &.ui-button__secondary {
+    &.secondary {
       @apply bg-green-400 text-white hover:bg-green-500 focus-visible:outline-green-600;
     }
-    &.ui-button__tertiary {
+    &.tertiary {
       @apply border-green-400 text-green-400 hover:bg-green-50;
     }
   }
@@ -48,13 +70,13 @@
 
 .button-danger {
   &:not(:disabled) {
-    &.ui-button__primary {
+    &.primary {
       @apply text-red-400 hover:bg-red-50;
     }
-    &.ui-button__secondary {
+    &.secondary {
       @apply bg-red-400 text-white hover:bg-red-500 focus-visible:outline-red-600;
     }
-    &.ui-button__tertiary {
+    &.tertiary {
       @apply border-red-400 text-red-400 hover:bg-red-50;
     }
   }
@@ -62,13 +84,13 @@
 
 .button-grey {
   &:not(:disabled) {
-    &.ui-button__primary {
+    &.primary {
       @apply text-neutral-400 hover:bg-neutral-100;
     }
-    &.ui-button__secondary {
+    &.secondary {
       @apply bg-neutral-400 text-white hover:bg-neutral-500 focus-visible:outline-neutral-600;
     }
-    &.ui-button__tertiary {
+    &.tertiary {
       @apply border-neutral-400 text-neutral-400 hover:bg-neutral-100;
     }
   }
