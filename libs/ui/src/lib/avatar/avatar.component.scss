@@ -7,3 +7,15 @@
 .avatar-large {
   @apply h-14 w-14;
 }
+.avatar-circle{
+  @apply rounded-full;
+}
+.avatar-rectangle{
+  @apply rounded-md;
+}
+.avatar-initials{
+  @apply inline-flex items-center justify-center;
+}
+.avatar-not-initials{
+  @apply block;
+}

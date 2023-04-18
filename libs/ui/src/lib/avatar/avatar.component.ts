@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input} from '@angular/core';
 import { AvatarSize } from './enums/avatar-size.enum';
 import { AvatarVariant } from './enums/avatar-variant.enum';
+import { AvatarShape } from './enums/avatar-shape.enum';
 
 /**
  * UI Avatar Component
@@ -10,17 +11,19 @@ import { AvatarVariant } from './enums/avatar-variant.enum';
   templateUrl: './avatar.component.html',
   styleUrls: ['./avatar.component.scss'],
 })
-export class AvatarComponent {
+export class AvatarComponent{
   @Input() size: AvatarSize = AvatarSize.MEDIUM;
   @Input() variant: AvatarVariant | string = AvatarVariant.DEFAULT;
-  @Input() icon = '';
-  @Input() shape: any = '';
-  @Input() initials: any = '';
+  @Input() image = '';
+  @Input() shape: AvatarShape = AvatarShape.CIRCLE;
+  @Input() initials: boolean = false;
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   @Input() action: any = () => {};
 
   avatarSize = AvatarSize;
+  avatarShape = AvatarShape;
   avatarVariant = AvatarVariant;
+
   /**
    * Triggers any action given on click avatar element
    */

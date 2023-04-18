@@ -4,7 +4,6 @@
 export enum AvatarVariant {
   DEFAULT = 'default',
   PRIMARY = 'primary',
-  SUCCESS = 'success',
-  DANGER = 'danger',
-  WARNING = 'warning',
+  SECONDARY = 'secondary',
+  TERTIARY = 'tertiary'
 }
