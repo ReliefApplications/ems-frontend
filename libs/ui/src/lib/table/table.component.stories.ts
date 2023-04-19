@@ -1,3 +1,4 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
 import { CdkTableModule } from '@angular/cdk/table';
 import { PagerModule } from '@progress/kendo-angular-pager';
@@ -16,7 +17,7 @@ export default {
   component: TableComponent,
   decorators: [
     moduleMetadata({
-      imports: [CdkTableModule, PagerModule],
+      imports: [CdkTableModule, PagerModule, BrowserAnimationsModule],
     }),
   ],
 } as Meta<TableComponent<MockedTable>>;
@@ -25,6 +26,102 @@ export default {
  * Mocked table data
  */
 const tableData = [
+  {
+    name: 'Name 1',
+    email: 'email@email.com',
+    phone: '111111111',
+    city: 'City 1',
+    active: false,
+    id: '1',
+  },
+  {
+    name: 'Name 3',
+    email: 'email@email.com',
+    phone: '333333333',
+    city: 'City 3',
+    active: true,
+    id: '3',
+  },
+  {
+    name: 'Name 2',
+    email: 'email@email.com',
+    phone: '222222222',
+    city: 'City 2',
+    active: true,
+    id: '2',
+  },
+  {
+    name: 'Name 4',
+    email: 'email@email.com',
+    phone: '444444444',
+    city: 'City 4',
+    active: false,
+    id: '4',
+  },
+  {
+    name: 'Name 5',
+    email: 'email@email.com',
+    phone: '555555555',
+    city: 'City 5',
+    active: false,
+    id: '5',
+  },
+  {
+    name: 'Name 6',
+    email: 'email@email.com',
+    phone: '666666666',
+    city: 'City 6',
+    active: true,
+    id: '6',
+  },
+  {
+    name: 'Name 1',
+    email: 'email@email.com',
+    phone: '111111111',
+    city: 'City 1',
+    active: false,
+    id: '1',
+  },
+  {
+    name: 'Name 3',
+    email: 'email@email.com',
+    phone: '333333333',
+    city: 'City 3',
+    active: true,
+    id: '3',
+  },
+  {
+    name: 'Name 2',
+    email: 'email@email.com',
+    phone: '222222222',
+    city: 'City 2',
+    active: true,
+    id: '2',
+  },
+  {
+    name: 'Name 4',
+    email: 'email@email.com',
+    phone: '444444444',
+    city: 'City 4',
+    active: false,
+    id: '4',
+  },
+  {
+    name: 'Name 5',
+    email: 'email@email.com',
+    phone: '555555555',
+    city: 'City 5',
+    active: false,
+    id: '5',
+  },
+  {
+    name: 'Name 6',
+    email: 'email@email.com',
+    phone: '666666666',
+    city: 'City 6',
+    active: true,
+    id: '6',
+  },
   {
     name: 'Name 1',
     email: 'email@email.com',

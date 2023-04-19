@@ -28,14 +28,15 @@ export class TableComponent<T extends object> implements OnDestroy {
   tableKeys: string[] = [];
 
   // Paginator properties
-  pageSize = 3;
+  pageSize = 5;
   skip = 0;
   totalItems = 0;
   contentId = 'content-1';
+  pageSizeValues = [5, 10, 15] as const;
 
   // Sort properties
   sortKey$ = new BehaviorSubject<keyof T>('id' as keyof T);
-  sortDirection$ = new BehaviorSubject<TableSort>(TableSort.ASC);
+  sortDirection$ = new BehaviorSubject<TableSort>(TableSort.DEFAULT);
   tableSort = TableSort;
 
   /**
@@ -80,7 +81,7 @@ export class TableComponent<T extends object> implements OnDestroy {
               if (sortDirection === TableSort.ASC) {
                 return compareValue;
               } else if (sortDirection === TableSort.DESC) {
-                return compareValue === 1 ? -1 : compareValue;
+                return compareValue === 1 ? -1 : 1;
               }
               return compareValue;
             });
@@ -108,8 +109,14 @@ export class TableComponent<T extends object> implements OnDestroy {
    * 3. DEFAULT
    *
    * @param key Column key from the table
+   * @param sortOnPageChange sortOnPageChange event trigger
    */
-  sortTableByKey(key: keyof T): void {
+  sortTableByKey(key: keyof T, sortOnPageChange: boolean = false): void {
+    // If a page change is done, we sort the new list with the current sorting value
+    if (sortOnPageChange) {
+      this.sortDirection$.next(this.sortDirection$.value);
+      return;
+    }
     if (this.sortKey$.value === key) {
       if (this.sortDirection$.value === TableSort.ASC) {
         this.sortDirection$.next(TableSort.DESC);
@@ -134,7 +141,7 @@ export class TableComponent<T extends object> implements OnDestroy {
     this.pageSize = event.take;
     this.setPageData();
     if (this.sortKey$.value) {
-      this.sortTableByKey(this.sortKey$.value);
+      this.sortTableByKey(this.sortKey$.value, true);
     }
   }
 
