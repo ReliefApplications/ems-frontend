@@ -1,4 +1,9 @@
-import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
+import {
+  moduleMetadata,
+  Meta,
+  StoryFn,
+  componentWrapperDecorator,
+} from '@storybook/angular';
 import { DividerComponent } from './divider.component';
 import { DividerModule } from './divider.module';
 import { DividerPosition } from './enums/divider-position.enum';
@@ -11,6 +16,9 @@ export default {
     moduleMetadata({
       imports: [DividerModule],
     }),
+    componentWrapperDecorator(
+      (story) => `<div class="h-screen">${story}</div>`
+    ),
   ],
 } as Meta<DividerComponent>;
 
