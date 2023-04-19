@@ -19,3 +19,18 @@
 .avatar-not-initials{
   @apply block;
 }
+.avatar-secondary-background{
+  @apply bg-gray-500;
+}
+.avatar-primary-text{
+  @apply text-gray-500;
+}
+.avatar-secondary-text{
+  @apply text-white;
+}
+.avatar-tertiary-text{
+  @apply text-gray-500;
+}
+.avatar-tertiary-border{
+  @apply border-gray-500 border-2;
+}

@@ -6,6 +6,7 @@ import { CheckboxModule } from './checkbox/checkbox.module';
 import { FlyoutMenuModule } from './flyout-menu/flyout-menu.module';
 import { IconModule } from './icon/icon.module';
 import { SelectModule } from './select/select.module';
+import { AvatarGroupModule } from './avatar-group/avatar-group.module';
 
 /**
  * UI Library Module
@@ -15,10 +16,11 @@ import { SelectModule } from './select/select.module';
   exports: [
     AvatarModule,
     ButtonModule,
+    AvatarGroupModule,
     CheckboxModule,
     FlyoutMenuModule,
     IconModule,
-    SelectModule,
+    SelectModule
   ],
 })
 export class UiModule {}

@@ -12,10 +12,10 @@ import { AvatarShape } from './enums/avatar-shape.enum';
   styleUrls: ['./avatar.component.scss'],
 })
 export class AvatarComponent{
-  @Input() size: AvatarSize = AvatarSize.MEDIUM;
-  @Input() variant: AvatarVariant | string = AvatarVariant.DEFAULT;
+  @Input() size: AvatarSize | string = AvatarSize.MEDIUM;
+  @Input() variant: AvatarVariant | string = AvatarVariant.PRIMARY;
   @Input() image = '';
-  @Input() shape: AvatarShape = AvatarShape.CIRCLE;
+  @Input() shape: AvatarShape | string = AvatarShape.CIRCLE;
   @Input() initials: boolean = false;
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   @Input() action: any = () => {};
