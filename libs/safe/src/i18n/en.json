@@ -714,6 +714,7 @@
 			},
 			"fields": {
 				"available": "Available fields",
+				"column": "Column width (px)",
 				"format": {
 					"info": "Left empty to ignore formatting",
 					"title": "Display format"

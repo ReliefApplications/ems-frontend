@@ -274,6 +274,7 @@ export class SafeEmailService {
               name: fullName,
               title,
               subFields,
+              width: f.width,
             };
           }
           default: {
@@ -281,6 +282,7 @@ export class SafeEmailService {
             return {
               name: fullName,
               title,
+              width: f.width,
             };
           }
         }

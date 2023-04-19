@@ -719,6 +719,7 @@
 			},
 			"fields": {
 				"available": "Champs disponibles",
+				"column": "Largeur de la colonne (px)",
 				"format": {
 					"info": "Laissez vide pour utiliser le mode classique",
 					"title": "Mode d'affichage"
