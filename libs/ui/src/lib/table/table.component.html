@@ -13,9 +13,19 @@
             cdk-header-cell
             *cdkHeaderCellDef
             scope="col"
-            class="py-3.5 pl-4 pr-3 capitalize text-left text-sm font-semibold text-gray-900 sm:pl-0"
+            class="py-3.5 pl-4 pr-3 capitalize cursor-pointer text-left text-sm font-semibold text-gray-900 sm:pl-0"
+            (click)="sortTableByKey(key)"
           >
             {{ key }}
+            <span
+              class=""
+              *ngIf="
+                sortKey$?.value === key &&
+                sortDirection$.value !== tableSort.DEFAULT
+              "
+            >
+              {{ sortDirection$?.value === tableSort.ASC ? '↥' : '↧' }}
+            </span>
           </th>
           <td
             cdk-cell
@@ -47,7 +57,7 @@
       [style.width.%]="100"
       [pageSize]="pageSize"
       [skip]="skip"
-      [total]="total"
+      [total]="totalItems"
       (pageChange)="onPageChange($event)"
     >
       <ng-template
