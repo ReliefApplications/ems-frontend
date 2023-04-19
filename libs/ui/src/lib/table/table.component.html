@@ -1,1 +1,72 @@
-<p>table works!</p>
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="-mx-4 mt-8 sm:-mx-0">
+    <!--TABLE CONTENT-->
+    <table
+      cdk-table
+      [dataSource]="pagedTableData"
+      [trackBy]="trackByName"
+      class="min-w-full divide-y divide-gray-300"
+    >
+      <ng-container *ngFor="let key of tableKeys">
+        <ng-container cdkColumnDef="{{ key }}">
+          <th
+            cdk-header-cell
+            *cdkHeaderCellDef
+            scope="col"
+            class="py-3.5 pl-4 pr-3 capitalize text-left text-sm font-semibold text-gray-900 sm:pl-0"
+          >
+            {{ key }}
+          </th>
+          <td
+            cdk-cell
+            *cdkCellDef="let element"
+            class="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0"
+          >
+            {{ element[key] }}
+            <dl class="font-normal lg:hidden">
+              <dt class="sr-only">Title</dt>
+              <dd class="mt-1 truncate text-gray-700">Front-end Developer</dd>
+              <dt class="sr-only sm:hidden">Email</dt>
+              <dd class="mt-1 truncate text-gray-500 sm:hidden">
+                lindsay.walton@example.com
+              </dd>
+            </dl>
+          </td>
+        </ng-container>
+      </ng-container>
+      <thead>
+        <tr cdk-header-row *cdkHeaderRowDef="tableKeys"></tr>
+      </thead>
+      <tbody>
+        <tr cdk-row *cdkRowDef="let row; columns: tableKeys"></tr>
+      </tbody>
+    </table>
+    <!-- PAGINATOR CONTENT-->
+    <kendo-datapager
+      [attr.aria-controls]="contentId"
+      [style.width.%]="100"
+      [pageSize]="pageSize"
+      [skip]="skip"
+      [total]="total"
+      (pageChange)="onPageChange($event)"
+    >
+      <ng-template
+        kendoDataPagerTemplate
+        let-totalPages="totalPages"
+        let-currentPage="currentPage"
+      >
+        <kendo-datapager-info></kendo-datapager-info>
+        <kendo-datapager-page-sizes
+          [pageSizes]="sizes"
+        ></kendo-datapager-page-sizes>
+        <div class="k-pager-numbers-wrap">
+          <kendo-datapager-prev-buttons></kendo-datapager-prev-buttons>
+          <kendo-datapager-numeric-buttons
+            [buttonCount]="3"
+          ></kendo-datapager-numeric-buttons>
+          <kendo-datapager-next-buttons></kendo-datapager-next-buttons>
+        </div>
+      </ng-template>
+    </kendo-datapager>
+  </div>
+</div>
