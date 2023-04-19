@@ -26,7 +26,6 @@ import { SafeAuthService } from '../../services/auth/auth.service';
 import { EDIT_RECORD, EditRecordMutationResponse } from './graphql/mutations';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
-import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import { BehaviorSubject, firstValueFrom, Observable, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import isEqual from 'lodash/isEqual';
@@ -286,7 +285,10 @@ export class SafeRecordModalComponent
   /**
    * Opens the history of the record in a modal.
    */
-  public onShowHistory(): void {
+  public async onShowHistory(): Promise<void> {
+    const { RecordHistoryModalComponent } = await import(
+      '../record-history-modal/record-history-modal.component'
+    );
     this.dialog.open(RecordHistoryModalComponent, {
       data: {
         id: this.record.id,

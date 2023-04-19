@@ -15,11 +15,8 @@ import {
 } from './graphql/queries';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
-import { AddLayoutModalComponent } from '../../../grid-layout/add-layout-modal/add-layout-modal.component';
 import { isEqual, get } from 'lodash';
-import { SafeEditLayoutModalComponent } from '../../../grid-layout/edit-layout-modal/edit-layout-modal.component';
 import { SafeGridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
-import { EditTemplateModalComponent } from '../../../templates/components/edit-template-modal/edit-template-modal.component';
 import { Template, TemplateTypeEnum } from '../../../../models/template.model';
 import { SafeApplicationService } from '../../../../services/application/application.service';
 import { DistributionList } from '../../../../models/distribution-list.model';
@@ -223,7 +220,10 @@ export class EditNotificationModalComponent
   }
 
   /** Opens modal for layout selection/creation */
-  public addLayout() {
+  public async addLayout() {
+    const { AddLayoutModalComponent } = await import(
+      '../../../grid-layout/add-layout-modal/add-layout-modal.component'
+    );
     const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
         resource: this.resource,
@@ -248,7 +248,10 @@ export class EditNotificationModalComponent
   /**
    * Edit chosen layout, in a modal. If saved, update it.
    */
-  public editLayout(): void {
+  public async editLayout(): Promise<void> {
+    const { SafeEditLayoutModalComponent } = await import(
+      '../../../grid-layout/edit-layout-modal/edit-layout-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
       disableClose: true,
       data: {
@@ -276,7 +279,10 @@ export class EditNotificationModalComponent
   }
 
   /** Opens modal for adding a new email template */
-  public addEmailTemplate() {
+  public async addEmailTemplate() {
+    const { EditTemplateModalComponent } = await import(
+      '../../../templates/components/edit-template-modal/edit-template-modal.component'
+    );
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       disableClose: true,
     });

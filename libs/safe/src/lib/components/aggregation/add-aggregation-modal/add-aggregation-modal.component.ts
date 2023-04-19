@@ -6,7 +6,6 @@ import {
 } from '@angular/material/legacy-dialog';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
-import { SafeEditAggregationModalComponent } from '../edit-aggregation-modal/edit-aggregation-modal.component';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import {
   GetResourceAggregationsResponse,
@@ -114,7 +113,10 @@ export class AddAggregationModalComponent implements OnInit {
   /**
    * Opens the panel to create a new aggregation.
    */
-  public onCreate(): void {
+  public async onCreate(): Promise<void> {
+    const { SafeEditAggregationModalComponent } = await import(
+      '../edit-aggregation-modal/edit-aggregation-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
       disableClose: true,
       data: {

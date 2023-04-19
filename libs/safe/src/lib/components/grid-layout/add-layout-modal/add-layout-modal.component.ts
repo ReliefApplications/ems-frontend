@@ -7,7 +7,6 @@ import {
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
-import { SafeEditLayoutModalComponent } from '../edit-layout-modal/edit-layout-modal.component';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   GetResourceLayoutsResponse,
@@ -122,7 +121,10 @@ export class AddLayoutModalComponent implements OnInit {
   /**
    * Opens the panel to create a new layout.
    */
-  public onCreate(): void {
+  public async onCreate(): Promise<void> {
+    const { SafeEditLayoutModalComponent } = await import(
+      '../edit-layout-modal/edit-layout-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
       disableClose: true,
       data: {

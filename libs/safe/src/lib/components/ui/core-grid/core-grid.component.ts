@@ -36,10 +36,7 @@ import {
   EDIT_RECORD,
 } from './graphql/mutations';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from './graphql/queries';
-import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
-import { SafeRecordModalComponent } from '../../record-modal/record-modal.component';
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
-import { SafeConvertModalComponent } from '../../convert-modal/convert-modal.component';
 import { Form } from '../../../models/form.model';
 import { Record } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
@@ -47,7 +44,6 @@ import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
 import { SafeGridService } from '../../../services/grid/grid.service';
-import { SafeResourceGridModalComponent } from '../../search-resource-grid-modal/search-resource-grid-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDatePipe } from '../../../pipes/date/date.pipe';
 import { SafeDateTranslateService } from '../../../services/date-translate/date-translate.service';
@@ -821,8 +817,11 @@ export class SafeCoreGridComponent
   /**
    * Displays an embedded form in a modal to add new record.
    */
-  private onAdd(): void {
+  private async onAdd(): Promise<void> {
     if (this.settings.template) {
+      const { SafeFormModalComponent } = await import(
+        '../../form-modal/form-modal.component'
+      );
       const dialogRef = this.dialog.open(SafeFormModalComponent, {
         disableClose: true,
         data: {
@@ -845,7 +844,7 @@ export class SafeCoreGridComponent
    * @param items single item or list of items to show details of
    * @param field field to show detail of ( related resource(s) )
    */
-  public onShowDetails(items: any | any[], field?: any): void {
+  public async onShowDetails(items: any | any[], field?: any): Promise<void> {
     const isArray = Array.isArray(items);
     if (isArray && items.length >= 2) {
       const idsFilter = {
@@ -854,6 +853,9 @@ export class SafeCoreGridComponent
         value: items.map((x: { id: any }) => x.id),
       };
       // for resources, open it inside the SafeResourceGrid
+      const { SafeResourceGridModalComponent } = await import(
+        '../../search-resource-grid-modal/search-resource-grid-modal.component'
+      );
       this.dialog.open(SafeResourceGridModalComponent, {
         data: {
           multiselect: false,
@@ -870,6 +872,9 @@ export class SafeCoreGridComponent
         },
       });
     } else {
+      const { SafeRecordModalComponent } = await import(
+        '../../record-modal/record-modal.component'
+      );
       const dialogRef = this.dialog.open(SafeRecordModalComponent, {
         data: {
           recordId: isArray ? items[0].id : items.id,
@@ -897,8 +902,11 @@ export class SafeCoreGridComponent
    *
    * @param items items to update.
    */
-  public onUpdate(items: any[]): void {
+  public async onUpdate(items: any[]): Promise<void> {
     const ids: string[] = items.map((x) => (x.id ? x.id : x));
+    const { SafeFormModalComponent } = await import(
+      '../../form-modal/form-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeFormModalComponent, {
       disableClose: true,
       data: {
@@ -975,8 +983,11 @@ export class SafeCoreGridComponent
    *
    * @param items items to convert to another form.
    */
-  public onConvert(items: any[]): void {
+  public async onConvert(items: any[]): Promise<void> {
     const rowsSelected = items.length;
+    const { SafeConvertModalComponent } = await import(
+      '../../convert-modal/convert-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeConvertModalComponent, {
       data: {
         title: `Convert record${rowsSelected > 1 ? 's' : ''}`,

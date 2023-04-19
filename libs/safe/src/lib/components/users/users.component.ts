@@ -12,7 +12,6 @@ import {
 } from './graphql/mutations';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { SelectionModel } from '@angular/cdk/collections';
-import { SafeInviteUsersComponent } from './components/invite-users/invite-users.component';
 import { SafeDownloadService } from '../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -89,7 +88,10 @@ export class SafeUsersComponent implements OnInit {
   /**
    * Show a dialog for inviting someone
    */
-  onInvite(): void {
+  async onInvite(): Promise<void> {
+    const { SafeInviteUsersComponent } = await import(
+      './components/invite-users/invite-users.component'
+    );
     const dialogRef = this.dialog.open(SafeInviteUsersComponent, {
       data: {
         roles: this.roles,

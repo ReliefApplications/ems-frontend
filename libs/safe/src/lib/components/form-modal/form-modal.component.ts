@@ -35,7 +35,6 @@ import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, firstValueFrom, Observable, takeUntil } from 'rxjs';
-import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
 import { TranslateService } from '@ngx-translate/core';
@@ -599,8 +598,11 @@ export class SafeFormModalComponent
   /**
    * Opens the history of the record in a modal.
    */
-  public onShowHistory(): void {
+  public async onShowHistory(): Promise<void> {
     if (this.record) {
+      const { RecordHistoryModalComponent } = await import(
+        '../record-history-modal/record-history-modal.component'
+      );
       this.dialog.open(RecordHistoryModalComponent, {
         data: {
           id: this.record.id,
