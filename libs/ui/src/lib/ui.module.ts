@@ -8,6 +8,7 @@ import { IconModule } from './icon/icon.module';
 import { SelectModule } from './select/select.module';
 import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
+import { TextareaModule } from './textarea/textarea.module';
 
 /**
  * UI Library Module
@@ -23,6 +24,7 @@ import { DividerModule } from './divider/divider.module';
     SelectModule,
     ToggleModule,
     DividerModule,
+    TextareaModule,
   ],
 })
 export class UiModule {}
