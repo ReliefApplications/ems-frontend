@@ -8,8 +8,11 @@ export * from './lib/flyout-menu/flyout-menu.module';
 export * from './lib/icon/icon.module';
 export * from './lib/select/select.module';
 export * from './lib/breadcrumbs/breadcrumbs.module';
+export * from './lib/divider/divider.module';
 
 // === ENUMS === //
+export * from './lib/divider/enums/divider-position.enum';
+export * from './lib/divider/enums/divider-orientation.enum';
 export * from './lib/breadcrumbs/enums/breadcrumb-display.enum';
 export * from './lib/breadcrumbs/enums/breadcrumb-separator.enum';
 
