@@ -4,28 +4,23 @@
         'avatar-group-bottom': stack === avatarGroupStack.BOTTOM
     }"
     class="isolate flex -space-x-2 overflow-hidden"
->
-    <ng-container *ngIf="stack==='top'">
+>   
+    <ui-avatar
+        *ngFor="let avatar of avatars.slice(0, limit)" 
+        [size]="avatar.size" 
+        [variant]="avatar.variant" 
+        [shape]="avatar.shape" 
+        [image]="avatar.image"
+        [initials]="avatar.initials"
+    >
+    </ui-avatar>
+    <ng-container *ngIf="avatars.slice(limit).length > 0">
         <ui-avatar
-            *ngFor="let avatar of arrayAvatars; let i=index" 
-            [size]="avatar.size" 
-            [variant]="avatar.variant" 
-            [shape]="avatar.shape" 
-            [image]="avatar.image"
-            [initials]="avatar.initials"
-            class="relative z-{{(arrayAvatars.length - i - 1) * 10}} !important"
-            >
-        </ui-avatar>
-    </ng-container>
-    <ng-container *ngIf="stack==='bottom'">
-        <ui-avatar
-            *ngFor="let avatar of arrayAvatars; let i=index" 
-            [size]="avatar.size" 
-            [variant]="avatar.variant" 
-            [shape]="avatar.shape" 
-            [image]="avatar.image"
-            [initials]="avatar.initials"
-            >
+            size="large" 
+            variant="secondary" 
+            shape="circle" 
+            [initials]="(avatars.slice(limit).length).toString()"
+        >
         </ui-avatar>
     </ng-container>
 </div>

@@ -6,8 +6,8 @@
     'avatar-large': size === avatarSize.LARGE,
     'avatar-circle': shape === avatarShape.CIRCLE,
     'avatar-rectangle': shape === avatarShape.RECTANGLE,
-    'avatar-initials': initials.toString() === 'true',
-    'avatar-not-initials': initials.toString() === 'false',
+    'avatar-initials': initials != '',
+    'avatar-not-initials': initials === '',
     'avatar-secondary-background': variant === avatarVariant.SECONDARY,
     'avatar-tertiary-border': variant === avatarVariant.TERTIARY
   }"
@@ -25,7 +25,7 @@
     />
   </ng-container>
   <ng-template #noIconTmpl>  
-    <ng-container *ngIf="initials.toString()==='true'">
+    <ng-container *ngIf="initials != ''">
       <span
         [ngClass]="{
           'avatar-primary-text': variant === avatarVariant.PRIMARY,
@@ -33,10 +33,10 @@
           'avatar-tertiary-text': variant === avatarVariant.TERTIARY
         }" 
         class="text-base font-medium leading-none">
-      TW</span>
+      {{ initials }}</span>
     </ng-container>
     
-    <ng-container *ngIf="initials.toString()==='false'">
+    <ng-container *ngIf="initials === ''">
       <svg
       class="h-full w-full text-gray-300"
       fill="currentColor"

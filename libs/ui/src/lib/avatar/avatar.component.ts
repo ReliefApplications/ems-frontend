@@ -16,7 +16,7 @@ export class AvatarComponent{
   @Input() variant: AvatarVariant | string = AvatarVariant.PRIMARY;
   @Input() image = '';
   @Input() shape: AvatarShape | string = AvatarShape.CIRCLE;
-  @Input() initials: boolean = false;
+  @Input() initials: string = '';
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   @Input() action: any = () => {};
 
