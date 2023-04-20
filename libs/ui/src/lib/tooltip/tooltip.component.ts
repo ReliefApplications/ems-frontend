@@ -8,6 +8,7 @@ import { TooltipExamplesPositions } from './enums/tooltip-example-positions.enum
 })
 export class TooltipComponent {
   @Input() position = '';
+  @Input() hint = '';
 
   TooltipPositionEnum = TooltipExamplesPositions;
 }
