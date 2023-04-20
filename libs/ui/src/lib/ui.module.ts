@@ -6,6 +6,7 @@ import { CheckboxModule } from './checkbox/checkbox.module';
 import { FlyoutMenuModule } from './flyout-menu/flyout-menu.module';
 import { IconModule } from './icon/icon.module';
 import { SelectModule } from './select/select.module';
+import { TooltipDirective } from './tooltip/tooltip.directive';
 
 /**
  * UI Library Module
@@ -19,6 +20,9 @@ import { SelectModule } from './select/select.module';
     FlyoutMenuModule,
     IconModule,
     SelectModule,
+  ],
+  declarations: [
+    TooltipDirective
   ],
 })
 export class UiModule {}
