@@ -1,7 +1,7 @@
 import {
   moduleMetadata,
   Meta,
-  StoryFn,
+  StoryObj,
   componentWrapperDecorator,
 } from '@storybook/angular';
 import { DividerComponent } from './divider.component';
@@ -10,8 +10,27 @@ import { DividerPosition } from './enums/divider-position.enum';
 import { DividerOrientation } from './enums/divider-orientation.enum';
 
 export default {
-  title: 'DividerComponent',
+  title: 'Divider',
   component: DividerComponent,
+  argTypes: {
+    position: {
+      options: DividerPosition,
+      control: {
+        type: 'select',
+      },
+    },
+    orientation: {
+      options: DividerOrientation,
+      control: {
+        type: 'select',
+      },
+    },
+    text: {
+      control: {
+        type: 'text',
+      },
+    },
+  },
   decorators: [
     moduleMetadata({
       imports: [DividerModule],
@@ -22,15 +41,19 @@ export default {
   ],
 } as Meta<DividerComponent>;
 
-/** Template divider */
-const Template: StoryFn<DividerComponent> = (args: DividerComponent) => ({
-  props: args,
-});
+/** Horizontal divider */
+export const Horizontal: StoryObj<DividerComponent> = {
+  args: {
+    position: DividerPosition.CENTER,
+    text: 'Test',
+    orientation: DividerOrientation.HORIZONTAL,
+  },
+};
 
-/** Primary divider */
-export const Primary = Template.bind({});
-Primary.args = {
-  position: DividerPosition.CENTER,
-  text: 'Test',
-  orientation: DividerOrientation.HORIZONTAL,
+/** Vertical divider */
+export const Vertical: StoryObj<DividerComponent> = {
+  args: {
+    position: DividerPosition.CENTER,
+    orientation: DividerOrientation.VERTICAL,
+  },
 };
