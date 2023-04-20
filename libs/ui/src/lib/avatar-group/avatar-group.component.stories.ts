@@ -1,12 +1,12 @@
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { AvatarGroupComponent } from './avatar-group.component';
-import { AvatarGroupStack } from './enums/avatar-group-stack.enum'
-import { AvatarGroupModule } from './avatar-group.module'
+import { AvatarGroupStack } from './enums/avatar-group-stack.enum';
+import { AvatarGroupModule } from './avatar-group.module';
 
 type MockedAvatarGroup = {
   size: string;
-  variant: string,
-  shape: string,
+  variant: string;
+  shape: string;
   image: string;
   initials: string;
 };
@@ -17,47 +17,52 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [AvatarGroupModule],
-    })
+    }),
   ],
 } as Meta<AvatarGroupComponent>;
 
-const avatarGroupData : MockedAvatarGroup[] = [
+const avatarGroupData: MockedAvatarGroup[] = [
   {
-    size:"large",
-    variant: "tertiary",
-    image:"",
-    shape:"circle",
+    size: 'large',
+    variant: 'tertiary',
+    image: '',
+    shape: 'circle',
     initials: 'JL',
   },
   {
-    size:"large",
-    variant: "tertiary",
-    image:"https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    shape:"circle",
+    size: 'large',
+    variant: 'tertiary',
+    image:
+      'https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    shape: 'circle',
     initials: 'PM',
   },
   {
-    size:"large",
-    variant: "secondary",
-    image:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80",
-    shape:"circle",
+    size: 'large',
+    variant: 'secondary',
+    image:
+      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80',
+    shape: 'circle',
     initials: '',
   },
   {
-    size:"large",
-    variant: "secondary",
-    image:"https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    shape:"rectangle",
+    size: 'large',
+    variant: 'secondary',
+    image:
+      'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    shape: 'rectangle',
     initials: '',
-  }
-]
+  },
+];
 
 const Template: StoryFn<AvatarGroupComponent> = (
   args: AvatarGroupComponent
 ) => ({
   props: args,
 });
-
+/**
+ * AvatarGroup with top stack, limit 2
+ */
 export const AvatarGroupTemplate = Template.bind({});
 AvatarGroupTemplate.args = {
   stack: AvatarGroupStack.TOP,
@@ -65,6 +70,9 @@ AvatarGroupTemplate.args = {
   avatars: avatarGroupData,
 };
 
+/**
+ * AvatarGroup with bottom stack, limit 1
+ */
 export const AvatarGroupTemplate2 = Template.bind({});
 AvatarGroupTemplate2.args = {
   stack: AvatarGroupStack.BOTTOM,
@@ -72,6 +80,9 @@ AvatarGroupTemplate2.args = {
   avatars: avatarGroupData,
 };
 
+/**
+ * AvatarGroup with bottom stack, limit 4
+ */
 export const AvatarGroupTemplate3 = Template.bind({});
 AvatarGroupTemplate3.args = {
   stack: AvatarGroupStack.BOTTOM,

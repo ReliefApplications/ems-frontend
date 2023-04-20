@@ -6,7 +6,7 @@
     'avatar-large': size === avatarSize.LARGE,
     'avatar-circle': shape === avatarShape.CIRCLE,
     'avatar-rectangle': shape === avatarShape.RECTANGLE,
-    'avatar-initials': initials != '',
+    'avatar-initials': initials !== '',
     'avatar-not-initials': initials === '',
     'avatar-secondary-background': variant === avatarVariant.SECONDARY,
     'avatar-tertiary-border': variant === avatarVariant.TERTIARY
@@ -25,7 +25,7 @@
     />
   </ng-container>
   <ng-template #noIconTmpl>  
-    <ng-container *ngIf="initials != ''">
+    <ng-container *ngIf="initials !== ''">
       <span
         [ngClass]="{
           'avatar-primary-text': variant === avatarVariant.PRIMARY,

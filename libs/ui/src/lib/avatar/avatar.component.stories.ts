@@ -16,8 +16,8 @@ export default {
   render: (args) => {
     return {
       args,
-      template: `<ui-avatar [size]="'${
-        args.size ?? AvatarSize.MEDIUM}'" 
+      template: `<ui-avatar
+        [size]="'${args.size ?? AvatarSize.MEDIUM}'" 
         [shape]="'${args.shape ?? AvatarShape.CIRCLE}'"
         [initials]="'${args.initials ?? false}'"
         [image]="'${args.image ?? ''}'"
@@ -58,7 +58,7 @@ export const PrimaryCircleAvatarSmall: StoryObj<AvatarComponent> = {
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
-    variant: AvatarVariant.PRIMARY
+    variant: AvatarVariant.PRIMARY,
   },
 };
 /**
@@ -70,7 +70,7 @@ export const PrimaryCircleAvatarMedium: StoryObj<AvatarComponent> = {
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
-    variant: AvatarVariant.PRIMARY
+    variant: AvatarVariant.PRIMARY,
   },
 };
 /**
@@ -82,7 +82,7 @@ export const PrimaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
-    variant: AvatarVariant.PRIMARY
+    variant: AvatarVariant.PRIMARY,
   },
 };
 /**
@@ -93,8 +93,9 @@ export const PrimaryCircleImageAvatarLarge: StoryObj<AvatarComponent> = {
     ...largeAvatar,
     shape: AvatarShape.CIRCLE,
     initials: '',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    variant: AvatarVariant.PRIMARY
+    image:
+      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    variant: AvatarVariant.PRIMARY,
   },
 };
 /**
@@ -106,7 +107,7 @@ export const SecondaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
-    variant: AvatarVariant.SECONDARY
+    variant: AvatarVariant.SECONDARY,
   },
 };
 /**
@@ -118,7 +119,7 @@ export const TertiaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
-    variant: AvatarVariant.TERTIARY
+    variant: AvatarVariant.TERTIARY,
   },
 };
 /**
@@ -130,7 +131,7 @@ export const PrimaryRectangleAvatarSmall: StoryObj<AvatarComponent> = {
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',
-    variant: AvatarVariant.PRIMARY
+    variant: AvatarVariant.PRIMARY,
   },
 };
 /**
@@ -142,7 +143,7 @@ export const PrimaryRectangleAvatarMedium: StoryObj<AvatarComponent> = {
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',
-    variant: AvatarVariant.PRIMARY
+    variant: AvatarVariant.PRIMARY,
   },
 };
 /**
@@ -154,7 +155,7 @@ export const PrimaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',
-    variant: AvatarVariant.PRIMARY
+    variant: AvatarVariant.PRIMARY,
   },
 };
 /**
@@ -165,8 +166,9 @@ export const PrimaryRectangleImageAvatarLarge: StoryObj<AvatarComponent> = {
     ...largeAvatar,
     shape: AvatarShape.RECTANGLE,
     initials: '',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    variant: AvatarVariant.PRIMARY
+    image:
+      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    variant: AvatarVariant.PRIMARY,
   },
 };
 /**
@@ -178,7 +180,7 @@ export const SecondaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',
-    variant: AvatarVariant.SECONDARY
+    variant: AvatarVariant.SECONDARY,
   },
 };
 /**
@@ -190,6 +192,6 @@ export const TertiaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',
-    variant: AvatarVariant.TERTIARY
+    variant: AvatarVariant.TERTIARY,
   },
 };

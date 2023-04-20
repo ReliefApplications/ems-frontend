@@ -1,8 +1,7 @@
 /**
- * Avatar shape enum.
+ * Avatar stack enum.
  */
 export enum AvatarGroupStack {
-    TOP = 'top',
-    BOTTOM = 'bottom'
-  }
-  
+  TOP = 'top',
+  BOTTOM = 'bottom',
+}

@@ -20,7 +20,7 @@ import { AvatarGroupModule } from './avatar-group/avatar-group.module';
     CheckboxModule,
     FlyoutMenuModule,
     IconModule,
-    SelectModule
+    SelectModule,
   ],
 })
 export class UiModule {}

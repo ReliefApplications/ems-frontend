@@ -4,5 +4,5 @@
 export enum AvatarVariant {
   PRIMARY = 'primary',
   SECONDARY = 'secondary',
-  TERTIARY = 'tertiary'
+  TERTIARY = 'tertiary',
 }
