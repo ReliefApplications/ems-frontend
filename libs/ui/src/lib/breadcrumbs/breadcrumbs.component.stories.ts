@@ -1,98 +1,113 @@
-import { moduleMetadata, Story, Meta } from '@storybook/angular';
+import { moduleMetadata, Meta, StoryObj } from '@storybook/angular';
 import { BreadcrumbsComponent } from './breadcrumbs.component';
 import { BreadcrumbDisplay } from './enums/breadcrumb-display.enum';
 import { BreadcrumbSeparator } from './enums/breadcrumb-separator.enum';
+import { BreadcrumbsModule } from './breadcrumbs.module';
 
 export default {
-  title: 'BreadcrumbsComponent',
+  title: 'Breadcrumbs',
   component: BreadcrumbsComponent,
+  argTypes: {
+    separator: {
+      options: BreadcrumbSeparator,
+      control: 'select',
+    },
+    display: {
+      options: BreadcrumbDisplay,
+      control: 'select',
+    },
+  },
   decorators: [
     moduleMetadata({
-      imports: [],
+      imports: [BreadcrumbsModule],
     }),
   ],
 } as Meta<BreadcrumbsComponent>;
 
-const Template: Story<BreadcrumbsComponent> = (args: BreadcrumbsComponent) => ({
-  props: args,
-});
-
-export const SimpleChevron = Template.bind({});
-SimpleChevron.args = {
-  breadcrumbs: [
-    {
-      text: 'item 0',
-      uri: '#',
-    },
-    {
-      text: 'item 1',
-      uri: '#',
-    },
-    {
-      text: 'item 2',
-      uri: '#',
-    },
-  ],
-  separator: BreadcrumbSeparator.CHEVRON,
-  display: BreadcrumbDisplay.SIMPLE,
+/** Simple Chevron story */
+export const SimpleChevron: StoryObj<BreadcrumbsComponent> = {
+  args: {
+    breadcrumbs: [
+      {
+        text: 'item 0',
+        uri: '#',
+      },
+      {
+        text: 'item 1',
+        uri: '#',
+      },
+      {
+        text: 'item 2',
+        uri: '#',
+      },
+    ],
+    separator: BreadcrumbSeparator.CHEVRON,
+    display: BreadcrumbDisplay.SIMPLE,
+  },
 };
 
-export const SimpleSlash = Template.bind({});
-SimpleSlash.args = {
-  breadcrumbs: [
-    {
-      text: 'item 0',
-      uri: '#',
-    },
-    {
-      text: 'item 1',
-      uri: '#',
-    },
-    {
-      text: 'item 2',
-      uri: '#',
-    },
-  ],
-  separator: BreadcrumbSeparator.SLASH,
-  display: BreadcrumbDisplay.SIMPLE,
+/** Simple slash story */
+export const SimpleSlash: StoryObj<BreadcrumbsComponent> = {
+  args: {
+    breadcrumbs: [
+      {
+        text: 'item 0',
+        uri: '#',
+      },
+      {
+        text: 'item 1',
+        uri: '#',
+      },
+      {
+        text: 'item 2',
+        uri: '#',
+      },
+    ],
+    separator: BreadcrumbSeparator.SLASH,
+    display: BreadcrumbDisplay.SIMPLE,
+  },
 };
 
-export const Contained = Template.bind({});
-Contained.args = {
-  breadcrumbs: [
-    {
-      text: 'item 0',
-      uri: '#',
-    },
-    {
-      text: 'item 1',
-      uri: '#',
-    },
-    {
-      text: 'item 2',
-      uri: '#',
-    },
-  ],
-  separator: BreadcrumbSeparator.CHEVRON,
-  display: BreadcrumbDisplay.CONTAINED,
+/** Container story */
+export const Contained: StoryObj<BreadcrumbsComponent> = {
+  args: {
+    breadcrumbs: [
+      {
+        text: 'item 0',
+        uri: '#',
+      },
+      {
+        text: 'item 1',
+        uri: '#',
+      },
+      {
+        text: 'item 2',
+        uri: '#',
+      },
+    ],
+    separator: BreadcrumbSeparator.CHEVRON,
+    display: BreadcrumbDisplay.CONTAINED,
+  },
 };
 
-export const Full = Template.bind({});
-Full.args = {
-  breadcrumbs: [
-    {
-      text: 'item 0',
-      uri: '#',
-    },
-    {
-      text: 'item 1',
-      uri: '#',
-    },
-    {
-      text: 'item 2',
-      uri: '#',
-    },
-  ],
-  separator: BreadcrumbSeparator.CHEVRON,
-  display: BreadcrumbDisplay.FULL,
+/** Full width story */
+export const Full: StoryObj<BreadcrumbsComponent> = {
+  args: {
+    breadcrumbs: [
+      {
+        text: 'item 0',
+        uri: '#',
+      },
+      {
+        text: 'item 1',
+        uri: '#',
+      },
+      {
+        text: 'item 2',
+        uri: '#',
+      },
+    ],
+    separator: BreadcrumbSeparator.CHEVRON,
+    display: BreadcrumbDisplay.FULL,
+  },
 };

@@ -2,7 +2,7 @@
  * Enumeration of possible display styles
  */
 export enum BreadcrumbDisplay {
-  SIMPLE,
-  CONTAINED,
-  FULL,
+  SIMPLE = 'simple',
+  CONTAINED = 'contained',
+  FULL = 'full',
 }
