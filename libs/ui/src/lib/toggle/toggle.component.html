@@ -12,12 +12,7 @@
     aria-describedby="toggle-description"
     [attr.aria-checked]="enabled"
     class="toggle-button"
-    [ngClass]="{
-      'button-simple': type === toggleTypes.SIMPLE,
-      'button-short': type === toggleTypes.SHORT,
-      'bg-gray-200': !enabled && type === toggleTypes.SIMPLE,
-      'bg-indigo-600': enabled && type === toggleTypes.SIMPLE
-    }"
+    [ngClass]="toggleClasses"
     (click)="triggerAction()"
   >
     <span
@@ -28,7 +23,7 @@
         'translate-x-0': !enabled && type === toggleTypes.SIMPLE,
         'translate-x-5': enabled && type === toggleTypes.SIMPLE
       }"
-      class="pointer-events-none bg-white"
+      class="pointer-events-none"
     >
       <!-- ICON -->
       <ng-container *ngIf="icon">
@@ -50,7 +45,7 @@
 <ng-template #shortToggleTemplate>
   <span
     aria-hidden="true"
-    [ngClass]="{ 'bg-gray-200': !enabled, 'bg-indigo-600': enabled }"
+    [ngClass]="shortToggleClasses"
     class="short-color"
   >
   </span>
@@ -86,7 +81,7 @@
 </ng-template>
 
 <ng-template #iconTemplate>
-  <!-- ICON WHEN TOGGLE DISABLED -->
+  <!-- ICON FOR SIMPLE TOGGLES -->
   <span class="icon" aria-hidden="true">
     <ui-icon
       [icon]="enabled ? icon.enableIcon : icon.disableIcon"
