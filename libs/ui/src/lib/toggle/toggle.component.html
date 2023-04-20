@@ -1,26 +1,34 @@
-<div class="flex items-center" >
+<div class="flex items-center">
   <!-- LABEL LEFT -->
   <ng-container *ngIf="label && label.position === 'left'">
     <ng-container *ngTemplateOutlet="labelTemplate"></ng-container>
   </ng-container>
 
   <!-- TOGGLE -->
-  <button type="button" role="switch" aria-labelledby="custom-label" aria-describedby="custom-description"
-    (click)="triggerAction()" [attr.aria-checked]="enabled" class="toggle-button"
-    [class.bg-gray-200]="!enabled && type === toggleTypes.SIMPLE"
-    [class.bg-indigo-600]="enabled && type === toggleTypes.SIMPLE"
+  <button
+    type="button"
+    role="switch"
+    aria-labelledby="toggle-label"
+    aria-describedby="toggle-description"
+    [attr.aria-checked]="enabled"
+    class="toggle-button"
     [ngClass]="{
       'button-simple': type === toggleTypes.SIMPLE,
-      'button-short': type === toggleTypes.SHORT
+      'button-short': type === toggleTypes.SHORT,
+      'bg-gray-200': !enabled && type === toggleTypes.SIMPLE,
+      'bg-indigo-600': enabled && type === toggleTypes.SIMPLE
     }"
+    (click)="triggerAction()"
   >
-    <span aria-hidden="true" class="pointer-events-none bg-white"
-      [class.translate-x-0]="!enabled && type === toggleTypes.SIMPLE"
-      [class.translate-x-5]="enabled && type === toggleTypes.SIMPLE"
+    <span
+      aria-hidden="true"
       [ngClass]="{
         'span-simple': type === toggleTypes.SIMPLE,
-        'span-short': type === toggleTypes.SHORT
+        'span-short': type === toggleTypes.SHORT,
+        'translate-x-0': !enabled && type === toggleTypes.SIMPLE,
+        'translate-x-5': enabled && type === toggleTypes.SIMPLE
       }"
+      class="pointer-events-none bg-white"
     >
       <!-- ICON -->
       <ng-container *ngIf="icon">
@@ -40,50 +48,48 @@
 </div>
 
 <ng-template #shortToggleTemplate>
-  <span aria-hidden="true" class="short-color"
-    [class.bg-gray-200]="!enabled"
-    [class.bg-indigo-600]="enabled"
+  <span
+    aria-hidden="true"
+    [ngClass]="{ 'bg-gray-200': !enabled, 'bg-indigo-600': enabled }"
+    class="short-color"
   >
   </span>
-  <span aria-hidden="true" class="short-translate"
-    [class.translate-x-0]="!enabled"
-    [class.translate-x-5]="enabled"
+  <span
+    aria-hidden="true"
+    [ngClass]="{ 'translate-x-0': !enabled, 'translate-x-5': enabled }"
+    class="short-translate"
   >
   </span>
 </ng-template>
 
 <ng-template #labelTemplate>
-  <span class="flex flex-col flex-wrap whitespace-pre-wrap text-sm"
-    [class.ml-4]="label.position === 'right'"
-    [class.mr-4]="label.position === 'left'"
+  <span
+    [ngClass]="{
+      'ml-4': label.position === 'right',
+      'mr-4': label.position === 'left'
+    }"
+    class="flex flex-col flex-wrap whitespace-pre-wrap text-sm"
   >
     <!-- TEXT -->
-    <span class="font-medium leading-6 text-gray-900" id="custom-label">
-      {{label.text}}
+    <span class="font-medium leading-6 text-gray-900" id="toggle-label">
+      {{ label.text }}
     </span>
     <!-- DESCRIPTION -->
-    <span class="text-gray-500" id="custom-description" *ngIf="label.description">
-      {{label.description}}
+    <span
+      class="text-gray-500"
+      *ngIf="label.description"
+      id="toggle-description"
+    >
+      {{ label.description }}
     </span>
   </span>
 </ng-template>
 
 <ng-template #iconTemplate>
   <!-- ICON WHEN TOGGLE DISABLED -->
-  <span class="icon" aria-hidden="true"
-    [ngClass]="{ 'icon-visible': !enabled, 'icon-hidden': enabled }"
-  >
+  <span class="icon" aria-hidden="true">
     <ui-icon
-      [icon]="icon.disableIcon"
-      [size]="12"
-    ></ui-icon>
-  </span>
-  <!-- ICON WHEN TOGGLE ENABLED -->
-  <span class="icon" aria-hidden="true"
-    [ngClass]="{ 'icon-visible': enabled, 'icon-hidden': !enabled }"
-  >
-    <ui-icon
-      [icon]="icon.enableIcon"
+      [icon]="enabled ? icon.enableIcon : icon.disableIcon"
       [size]="12"
     ></ui-icon>
   </span>
