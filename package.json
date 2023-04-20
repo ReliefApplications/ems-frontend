@@ -58,6 +58,7 @@
     "@progress/kendo-licensing": "^1.3.0",
     "@progress/kendo-recurrence": "^1.0.3",
     "@progress/kendo-theme-default": "^6.0.3",
+    "@storybook/addon-console": "^1.2.3",
     "@tinymce/tinymce-angular": "^7.0.0",
     "angular-oauth2-oidc": "~13.0.1",
     "apollo-angular": "^4.2.0",
