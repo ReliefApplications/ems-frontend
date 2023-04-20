@@ -8,3 +8,7 @@ export * from './lib/flyout-menu/flyout-menu.module';
 export * from './lib/icon/icon.module';
 export * from './lib/select/select.module';
 export * from './lib/table/table.module';
+
+// === INTERFACES === //
+
+export * from './lib/table/interfaces/table-column.interface';

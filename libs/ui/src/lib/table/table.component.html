@@ -7,20 +7,21 @@
       [trackBy]="trackByName"
       class="min-w-full divide-y divide-gray-300"
     >
-      <ng-container *ngFor="let key of tableKeys">
-        <ng-container cdkColumnDef="{{ key }}">
+      <ng-container *ngFor="let column of columnDefinitionData">
+        <ng-container cdkColumnDef="{{ column.title }}">
           <th
             cdk-header-cell
             *cdkHeaderCellDef
             scope="col"
-            class="py-3.5 pl-4 pr-3 capitalize cursor-pointer text-left text-sm font-semibold text-gray-900 sm:pl-0"
-            (click)="sortTableByKey(key)"
+            [ngClass]="{ 'cursor-pointer': column.sortable }"
+            class="py-3.5 pl-4 pr-3 capitalize text-left text-sm font-normal text-neutral-400 sm:pl-0"
+            (click)="sortTableByKey(column)"
           >
-            {{ key }}
+            {{ column.title }}
             <span
               class=""
               *ngIf="
-                sortKey$?.value === key &&
+                sortKey$?.value.title === column.title &&
                 sortDirection$.value !== tableSort.DEFAULT
               "
             >
@@ -32,23 +33,29 @@
             *cdkCellDef="let element"
             class="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-0"
           >
-            {{ element[key] }}
-            <dl class="font-normal lg:hidden">
-              <dt class="sr-only">Title</dt>
-              <dd class="mt-1 truncate text-gray-700">Front-end Developer</dd>
-              <dt class="sr-only sm:hidden">Email</dt>
-              <dd class="mt-1 truncate text-gray-500 sm:hidden">
-                lindsay.walton@example.com
-              </dd>
-            </dl>
+            <ng-container *ngIf="column.template; else defaultDisplay">
+              <ng-container
+                *ngIf="isString(column.template); else templateRefTmpl"
+              >
+                <div [innerHTML]="column.template"></div>
+              </ng-container>
+              <ng-template #templateRefTmpl>
+                <ng-container
+                  *ngTemplateOutlet="column.template"
+                ></ng-container>
+              </ng-template>
+            </ng-container>
+            <ng-template #defaultDisplay>
+              {{ get(element, column.dataAccessor) }}
+            </ng-template>
           </td>
         </ng-container>
       </ng-container>
       <thead>
-        <tr cdk-header-row *cdkHeaderRowDef="tableKeys"></tr>
+        <tr cdk-header-row *cdkHeaderRowDef="columnDefinitionArray"></tr>
       </thead>
       <tbody>
-        <tr cdk-row *cdkRowDef="let row; columns: tableKeys"></tr>
+        <tr cdk-row *cdkRowDef="let row; columns: columnDefinitionArray"></tr>
       </tbody>
     </table>
     <!-- PAGINATOR CONTENT-->
@@ -65,8 +72,9 @@
         let-totalPages="totalPages"
         let-currentPage="currentPage"
       >
-        <kendo-datapager-info></kendo-datapager-info>
+        <kendo-datapager-info class="text-neutral-400"></kendo-datapager-info>
         <kendo-datapager-page-sizes
+          class="text-neutral-400"
           [pageSizes]="pageSizeValues"
         ></kendo-datapager-page-sizes>
         <div class="k-pager-numbers-wrap">

@@ -12,7 +12,16 @@ import { TableModule } from './table/table.module';
  * UI Library Module
  */
 @NgModule({
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    AvatarModule,
+    ButtonModule,
+    CheckboxModule,
+    FlyoutMenuModule,
+    IconModule,
+    SelectModule,
+    TableModule,
+  ],
   exports: [
     AvatarModule,
     ButtonModule,

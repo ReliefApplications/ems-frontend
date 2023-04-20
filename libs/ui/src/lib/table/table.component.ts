@@ -2,6 +2,8 @@ import { Component, Input, OnDestroy } from '@angular/core';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
 import { BehaviorSubject, Subject, combineLatest, takeUntil } from 'rxjs';
 import { TableSort } from './enums/table-sort-enum';
+import { TableColumnDefinition } from './interfaces/table-column.interface';
+import { get } from 'lodash';
 
 /**
  * UI Table component
@@ -13,19 +15,32 @@ import { TableSort } from './enums/table-sort-enum';
 })
 export class TableComponent<T extends object> implements OnDestroy {
   destroy$ = new Subject<void>();
+  get = get;
   @Input() trackByIdentifier: keyof T = 'id' as keyof T;
   /**
-   * Update table data and table column keys
+   * Set and update table data and column definition data
    */
-  @Input() set data(tableData: T[]) {
-    if (tableData) {
-      this.initializeTable(tableData);
+  @Input() set tableDefinition(data: {
+    tableData: T[];
+    columnDefinitionData: TableColumnDefinition[];
+  }) {
+    if (data.columnDefinitionData) {
+      this.columnDefinitionData = data.columnDefinitionData;
+      this.columnDefinitionArray = this.columnDefinitionData.map(
+        (colDef) => colDef.title
+      );
+    }
+    if (data.tableData) {
+      this.tableData = data.tableData;
+      this.initializeTable();
     }
   }
+
   // Table data display
   tableData: T[] = [];
   pagedTableData: T[] = [];
-  tableKeys: string[] = [];
+  columnDefinitionData: TableColumnDefinition[] = [];
+  columnDefinitionArray: string[] = [];
 
   // Paginator properties
   pageSize = 5;
@@ -35,18 +50,19 @@ export class TableComponent<T extends object> implements OnDestroy {
   pageSizeValues = [5, 10, 15] as const;
 
   // Sort properties
-  sortKey$ = new BehaviorSubject<keyof T>('id' as keyof T);
+  sortKey$ = new BehaviorSubject<{ title: string; dataAccessor: string }>({
+    title: '',
+    dataAccessor: '',
+  });
   sortDirection$ = new BehaviorSubject<TableSort>(TableSort.DEFAULT);
   tableSort = TableSort;
 
+  isString = (data: any) => typeof data === 'string';
+
   /**
    * Initialize all properties needed to render table
-   *
-   * @param tableData T
    */
-  private initializeTable(tableData: T[]) {
-    this.tableData = tableData;
-    this.tableKeys = Object.keys(this.tableData[0]);
+  private initializeTable() {
     this.totalItems = this.tableData.length;
     this.setPageData();
     this.setSortListeners();
@@ -62,7 +78,7 @@ export class TableComponent<T extends object> implements OnDestroy {
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: ([tableKey, sortDirection]) => {
+        next: ([column, sortDirection]) => {
           // Default value is the paginated one
           let sortedItems = this.tableData.slice(
             this.skip,
@@ -71,12 +87,15 @@ export class TableComponent<T extends object> implements OnDestroy {
           if (sortDirection !== TableSort.DEFAULT) {
             sortedItems = this.pagedTableData.sort((row1, row2) => {
               let compareValue = 0;
-              if (typeof row1[tableKey] === 'string') {
-                compareValue = (row1[tableKey] as string).localeCompare(
-                  row2[tableKey] as string
+              const row1Value = get(row1, column.dataAccessor);
+              const row2Value = get(row2, column.dataAccessor);
+
+              if (typeof row1Value === 'string') {
+                compareValue = (row1Value as string).localeCompare(
+                  row2Value as string
                 );
               } else {
-                compareValue = Number(row1[tableKey] > row2[tableKey]);
+                compareValue = Number(row1Value > row2Value);
               }
               if (sortDirection === TableSort.ASC) {
                 return compareValue;
@@ -86,7 +105,7 @@ export class TableComponent<T extends object> implements OnDestroy {
               return compareValue;
             });
           }
-          // Spread operator used to trigger table change detection and re render
+          // Spread operator used to trigger table change detection and re-render
           this.pagedTableData = [...sortedItems];
         },
       });
@@ -108,16 +127,22 @@ export class TableComponent<T extends object> implements OnDestroy {
    * 2. DESC
    * 3. DEFAULT
    *
-   * @param key Column key from the table
+   * @param column Column key from the table
    * @param sortOnPageChange sortOnPageChange event trigger
    */
-  sortTableByKey(key: keyof T, sortOnPageChange: boolean = false): void {
+  sortTableByKey(
+    column: TableColumnDefinition,
+    sortOnPageChange: boolean = false
+  ): void {
+    if (!column.sortable) {
+      return;
+    }
     // If a page change is done, we sort the new list with the current sorting value
     if (sortOnPageChange) {
       this.sortDirection$.next(this.sortDirection$.value);
       return;
     }
-    if (this.sortKey$.value === key) {
+    if (this.sortKey$.value.title === column.title) {
       if (this.sortDirection$.value === TableSort.ASC) {
         this.sortDirection$.next(TableSort.DESC);
       } else if (this.sortDirection$.value === TableSort.DESC) {
@@ -126,7 +151,10 @@ export class TableComponent<T extends object> implements OnDestroy {
         this.sortDirection$.next(TableSort.ASC);
       }
     } else {
-      this.sortKey$.next(key);
+      this.sortKey$.next({
+        title: column.title,
+        dataAccessor: column.dataAccessor,
+      });
       this.sortDirection$.next(TableSort.ASC);
     }
   }
@@ -140,8 +168,11 @@ export class TableComponent<T extends object> implements OnDestroy {
     this.skip = event.skip;
     this.pageSize = event.take;
     this.setPageData();
-    if (this.sortKey$.value) {
-      this.sortTableByKey(this.sortKey$.value, true);
+    if (this.sortKey$.value.title) {
+      this.sortTableByKey(
+        { title: this.sortKey$.value.title } as TableColumnDefinition,
+        true
+      );
     }
   }
 
