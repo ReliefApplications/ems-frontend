@@ -1,10 +1,14 @@
 import { Directive } from '@angular/core';
 
+/**
+ *
+ */
 @Directive({
-  selector: '[uiTooltip]'
+  selector: '[uiTooltip]',
 })
 export class TooltipDirective {
-
-  constructor() { }
-
+  /**
+   *
+   */
+  constructor() {}
 }
