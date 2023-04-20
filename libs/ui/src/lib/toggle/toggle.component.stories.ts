@@ -5,8 +5,28 @@ import { ToggleType } from './enums/toggle-type.enum';
 import { Variant } from '../shared/variant.enum';
 
 export default {
-  title: 'ToggleComponent',
+  title: 'Toggle',
   component: ToggleComponent,
+  argTypes: {
+    type: {
+      options: ToggleType,
+      control: {
+        type: 'select',
+      },
+    },
+    variant: {
+      options: Variant,
+      control: {
+        type: 'select',
+      },
+    },
+    icon: {
+      control: 'object',
+    },
+    label: {
+      control: 'object',
+    },
+  },
   decorators: [
     moduleMetadata({
       imports: [ToggleModule],
@@ -18,6 +38,7 @@ export default {
  * Template toggle
  *
  * @param {ToggleComponent} args args
+ * @returns ToggleComponent
  */
 const Template: StoryFn<ToggleComponent> = (args: ToggleComponent) => ({
   props: args,
