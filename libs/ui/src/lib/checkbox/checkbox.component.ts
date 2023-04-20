@@ -1,10 +1,13 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   Input,
   Output,
   Provider,
+  ViewChild,
   forwardRef,
+  ElementRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -24,7 +27,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   styleUrls: ['./checkbox.component.scss'],
   providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class CheckboxComponent implements ControlValueAccessor {
+export class CheckboxComponent implements ControlValueAccessor, AfterViewInit {
   @Input() checked = false;
   @Input() indeterminate = false;
   @Input() id = '';
@@ -34,35 +37,50 @@ export class CheckboxComponent implements ControlValueAccessor {
   @Input() description = '';
   @Output() valueChange: EventEmitter<any> = new EventEmitter<any>();
 
-  selected!: string;
+  selected!: boolean;
   disabled = false;
   private onTouched!: any;
   private onChanged!: any;
+
+  @ViewChild('checkBox') checkBox!: ElementRef<HTMLInputElement>;
+
+  ngAfterViewInit(): void {
+    console.log('this.checkBox', this.checkBox);
+    const nativeElem = this.checkBox.nativeElement;
+    nativeElem.checked = this.checked;
+    nativeElem.indeterminate = this.indeterminate;
+  }
 
   /**
    * Emit value of checkbox on change
    *
    * @param value from checkbox
    */
-  onChange(value: any) {
+  onChange(value: any, e: any) {
+    console.log('onChange', value, e); // wrong
+    console.log('this.checkBox', this.checkBox.nativeElement.checked); // correct
     this.valueChange.emit(value);
   }
+
   /**
    * Handles the selection of a content
    *
    * @param value The value of the selected content
    */
-  public onSelect(value: string): void {
+  public onSelect(value: boolean): void {
+    console.log('onSelect', value);
     this.onTouched();
     this.selected = value;
     this.onChanged(value);
   }
+ 
   /**
    * Write value of control.
    *
    * @param value new value
    */
-  public writeValue(value: string): void {
+  public writeValue(value: boolean): void {
+    console.log('writeValue', value);
     this.selected = value;
   }
 
