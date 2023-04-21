@@ -1,4 +1,4 @@
-import { moduleMetadata, Meta, StoryObj } from '@storybook/angular';
+import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
 import { SpinnerComponent } from './spinner.component';
 import { SpinnerModule } from './spinner.module';
 import { Size } from '../shared/size.enum';
@@ -13,16 +13,20 @@ export default {
       imports: [SpinnerModule],
     }),
   ],
-  render: (args) => {
-    return {
-      args,
-      template: `<ui-spinner [category]="'${
-        args.category ?? Category.PRIMARY
-      }'" [size]="'${args.size ?? Size.MEDIUM}'" [variant]="'${
-        args.variant ?? Variant.DEFAULT
-      }'"></ui-spinner>`,
-      userDefinedTemplate: true,
-    };
+  argTypes: {
+    category: {
+      options: Category,
+      control: {
+        type: 'select',
+      },
+    },
+    variant: {
+      options: Variant,
+      control: {
+        type: 'select',
+      },
+      defaultValue: Variant.DEFAULT,
+    },
   },
 } as Meta<SpinnerComponent>;
 
@@ -46,143 +50,30 @@ const largeSpinner = {
   size: Size.LARGE,
 };
 
-// SPINNERS //
 /**
- * Primary small spinner story
+ * Template spinner
+ *
+ * @param {SpinnerComponent} args args
+ * @returns SpinnerComponent
  */
-export const PrimarySpinnerSmall: StoryObj<SpinnerComponent> = {
-  args: {
-    ...smallSpinner,
-    variant: Variant.PRIMARY,
-  },
-};
-/**
- * Primary medium spinner story
- */
-export const PrimarySpinnerMedium: StoryObj<SpinnerComponent> = {
-  args: {
-    ...mediumSpinner,
-    variant: Variant.PRIMARY,
-  },
-};
-/**
- * Primary large spinner story
- */
-export const PrimarySpinnerLarge: StoryObj<SpinnerComponent> = {
-  args: {
-    ...largeSpinner,
-    variant: Variant.PRIMARY,
-  },
+const Template: StoryFn<SpinnerComponent> = (args: SpinnerComponent) => ({
+  props: args,
+});
+
+/** Small spinner */
+export const Small = Template.bind({});
+Small.args = {
+  ...smallSpinner,
 };
 
-/**
- * Success small spinner story
- */
-export const SuccessSpinnerSmall: StoryObj<SpinnerComponent> = {
-  args: {
-    ...smallSpinner,
-    variant: Variant.SUCCESS,
-  },
-};
-/**
- * Success medium spinner story
- */
-export const SuccessSpinnerMedium: StoryObj<SpinnerComponent> = {
-  args: {
-    ...mediumSpinner,
-    variant: Variant.SUCCESS,
-  },
-};
-/**
- * Success large spinner story
- */
-export const SuccessSpinnerLarge: StoryObj<SpinnerComponent> = {
-  args: {
-    ...largeSpinner,
-    variant: Variant.SUCCESS,
-  },
+/** Medium spinner */
+export const Medium = Template.bind({});
+Medium.args = {
+  ...mediumSpinner,
 };
 
-/**
- * Danger small spinner story
- */
-export const DangerSpinnerSmall: StoryObj<SpinnerComponent> = {
-  args: {
-    ...smallSpinner,
-    variant: Variant.DANGER,
-  },
-};
-/**
- * Danger medium spinner story
- */
-export const DangerSpinnerMedium: StoryObj<SpinnerComponent> = {
-  args: {
-    ...mediumSpinner,
-    variant: Variant.DANGER,
-  },
-};
-/**
- * Danger large spinner story
- */
-export const DangerSpinnerLarge: StoryObj<SpinnerComponent> = {
-  args: {
-    ...largeSpinner,
-    variant: Variant.DANGER,
-  },
-};
-
-/**
- * Grey small spinner story
- */
-export const GreySpinnerSmall: StoryObj<SpinnerComponent> = {
-  args: {
-    ...smallSpinner,
-    variant: Variant.GREY,
-  },
-};
-/**
- * Grey medium spinner story
- */
-export const GreySpinnerMedium: StoryObj<SpinnerComponent> = {
-  args: {
-    ...mediumSpinner,
-    variant: Variant.GREY,
-  },
-};
-/**
- * Grey large spinner story
- */
-export const GreySpinnerLarge: StoryObj<SpinnerComponent> = {
-  args: {
-    ...largeSpinner,
-    variant: Variant.GREY,
-  },
-};
-
-/**
- * Light small spinner story
- */
-export const LightSpinnerSmall: StoryObj<SpinnerComponent> = {
-  args: {
-    ...smallSpinner,
-    variant: Variant.LIGHT,
-  },
-};
-/**
- * Light medium spinner story
- */
-export const LightSpinnerMedium: StoryObj<SpinnerComponent> = {
-  args: {
-    ...mediumSpinner,
-    variant: Variant.LIGHT,
-  },
-};
-/**
- * Light large spinner story
- */
-export const LightSpinnerLarge: StoryObj<SpinnerComponent> = {
-  args: {
-    ...largeSpinner,
-    variant: Variant.LIGHT,
-  },
+/** Large spinner */
+export const Large = Template.bind({});
+Large.args = {
+  ...largeSpinner,
 };

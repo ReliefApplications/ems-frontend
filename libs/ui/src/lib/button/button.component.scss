@@ -41,57 +41,73 @@
 }
 
 .button-primary {
+  &.primary {
+    @apply text-primary-400;
+  }
   &:not(:disabled) {
-    &.primary {
-      @apply text-primary-400 hover:bg-primary-50;
-    }
-    &.secondary {
-      @apply bg-primary-400 text-white hover:bg-primary-500 focus-visible:outline-primary-600;
-    }
-    &.tertiary {
-      @apply border-primary-400 text-primary-400 hover:bg-primary-50;
-    }
+    @apply hover:bg-primary-50;
+  }
+  &.secondary {
+    @apply bg-primary-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-primary-500 focus-visible:outline-primary-600;
+  }
+  &.tertiary {
+    @apply border-primary-400 text-primary-400;
   }
 }
 
 .button-success {
+  &.primary {
+    @apply text-green-400;
+  }
   &:not(:disabled) {
-    &.primary {
-      @apply text-green-400 hover:bg-green-50;
-    }
-    &.secondary {
-      @apply bg-green-400 text-white hover:bg-green-500 focus-visible:outline-green-600;
-    }
-    &.tertiary {
-      @apply border-green-400 text-green-400 hover:bg-green-50;
-    }
+    @apply hover:bg-green-50;
+  }
+  &.secondary {
+    @apply bg-green-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-green-500 focus-visible:outline-green-600;
+  }
+  &.tertiary {
+    @apply border-green-400 text-green-400;
   }
 }
 
 .button-danger {
+  &.primary {
+    @apply text-red-400;
+  }
   &:not(:disabled) {
-    &.primary {
-      @apply text-red-400 hover:bg-red-50;
-    }
-    &.secondary {
-      @apply bg-red-400 text-white hover:bg-red-500 focus-visible:outline-red-600;
-    }
-    &.tertiary {
-      @apply border-red-400 text-red-400 hover:bg-red-50;
-    }
+    @apply hover:bg-red-50;
+  }
+  &.secondary {
+    @apply bg-red-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-red-500 focus-visible:outline-red-600;
+  }
+  &.tertiary {
+    @apply border-red-400 text-red-400;
   }
 }
 
 .button-grey {
+  &.primary {
+    @apply text-neutral-400;
+  }
   &:not(:disabled) {
-    &.primary {
-      @apply text-neutral-400 hover:bg-neutral-100;
-    }
-    &.secondary {
-      @apply bg-neutral-400 text-white hover:bg-neutral-500 focus-visible:outline-neutral-600;
-    }
-    &.tertiary {
-      @apply border-neutral-400 text-neutral-400 hover:bg-neutral-100;
-    }
+    @apply hover:bg-neutral-100;
+  }
+  &.secondary {
+    @apply bg-neutral-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-neutral-500 focus-visible:outline-neutral-600;
+  }
+  &.tertiary {
+    @apply border-neutral-400 text-neutral-400;
   }
 }

@@ -1,4 +1,9 @@
-import { moduleMetadata, Meta, StoryObj } from '@storybook/angular';
+import {
+  moduleMetadata,
+  Meta,
+  StoryFn,
+  componentWrapperDecorator,
+} from '@storybook/angular';
 import { ButtonComponent } from './button.component';
 import { ButtonModule } from './button.module';
 import { Category } from '../shared/category.enum';
@@ -17,21 +22,59 @@ export default {
     moduleMetadata({
       imports: [ButtonModule, IconModule, SpinnerModule],
     }),
+    componentWrapperDecorator((story) => {
+      story = story.replace(/></, '>Button label<');
+      return `<div class="h-96">${story}</div>`;
+    }),
   ],
-  render: (args) => {
-    const { label, ...props } = args;
-    console.log(props);
-    return {
-      props,
-      template: `<ui-button [isIcon]="${props.isIcon ?? false}" [loading]="${
-        props.loading ?? false
-      }" [size]="'${props.size}'" [icon]="'${
-        props.icon ?? ''
-      }'" [iconPosition]="'${props.iconPosition ?? ''}'" [category]=${
-        props.category
-      } [variant]="'${props.variant ?? ''}'">${label}</ui-button>`,
-      userDefinedTemplate: true,
-    };
+  argTypes: {
+    category: {
+      options: Category,
+      control: {
+        type: 'select',
+      },
+    },
+    variant: {
+      options: Variant,
+      control: {
+        type: 'select',
+      },
+      defaultValue: Variant.DEFAULT,
+    },
+    size: {
+      options: Size,
+      control: {
+        type: 'select',
+      },
+    },
+    iconPosition: {
+      options: ButtonIconPosition,
+      control: {
+        type: 'select',
+      },
+      defaultValue: ButtonIconPosition.PREFIX,
+    },
+    icon: {
+      control: 'text',
+    },
+    isIcon: {
+      control: {
+        type: 'boolean',
+      },
+      defaultValue: false,
+    },
+    loading: {
+      control: {
+        type: 'boolean',
+      },
+      defaultValue: false,
+    },
+    disabled: {
+      control: {
+        type: 'boolean',
+      },
+      defaultValue: false,
+    },
   },
 } as Meta<StoryType>;
 
@@ -61,314 +104,30 @@ const tertiaryButton = {
   size: Size.MEDIUM,
 };
 
-// PRIMARY BUTTONS //
 /**
- * Primary button story
+ * Template button
+ *
+ * @param {StoryType} args args
+ * @returns StoryType
  */
-export const Primary: StoryObj<StoryType> = {
-  args: primaryButton,
+const Template: StoryFn<StoryType> = (args: StoryType) => ({
+  props: args,
+});
+
+/** Primary button */
+export const Primary = Template.bind({});
+Primary.args = {
+  ...primaryButton,
 };
 
-/**
- * Primary button with icon suffix story
- */
-export const PrimaryWithIconSuffix: StoryObj<StoryType> = {
-  args: {
-    ...primaryButton,
-    icon: 'search_outline',
-    iconPosition: ButtonIconPosition.SUFFIX,
-  },
+/** Secondary button */
+export const Secondary = Template.bind({});
+Secondary.args = {
+  ...secondaryButton,
 };
 
-/**
- * Primary button primary variant story
- */
-export const PrimaryButtonPrimaryVariant: StoryObj<StoryType> = {
-  args: {
-    ...primaryButton,
-    variant: Variant.PRIMARY,
-  },
-};
-/**
- * Primary button danger variant story
- */
-export const PrimaryButtonDangerVariant: StoryObj<StoryType> = {
-  args: {
-    ...primaryButton,
-    variant: Variant.DANGER,
-  },
-};
-/**
- * Primary button success variant story
- */
-export const PrimaryButtonSuccessVariant: StoryObj<StoryType> = {
-  args: {
-    ...primaryButton,
-    variant: Variant.SUCCESS,
-  },
-};
-
-/**
- * Primary button grey variant story
- */
-export const PrimaryButtonGreyVariant: StoryObj<StoryType> = {
-  args: {
-    ...primaryButton,
-    variant: Variant.GREY,
-  },
-};
-
-/**
- * Primary button light variant story
- */
-export const PrimaryButtonLightVariant: StoryObj<StoryType> = {
-  args: {
-    ...primaryButton,
-    variant: Variant.LIGHT,
-  },
-};
-
-/**
- * Primary button with spinner suffix story
- */
-export const PrimaryWithSpinnerSuffix: StoryObj<StoryType> = {
-  args: {
-    ...primaryButton,
-    loading: true,
-    iconPosition: ButtonIconPosition.SUFFIX,
-    variant: Variant.DEFAULT,
-  },
-};
-
-// SECONDARY BUTTONS //
-/**
- * Secondary button story
- */
-export const Secondary: StoryObj<StoryType> = {
-  args: secondaryButton,
-};
-
-/**
- * Secondary button with icon story
- */
-export const SecondaryWithIcon: StoryObj<StoryType> = {
-  args: {
-    ...secondaryButton,
-    icon: 'search_outline',
-    variant: Variant.PRIMARY,
-  },
-};
-
-/**
- * Small button story
- */
-export const SecondarySmall: StoryObj<StoryType> = {
-  args: {
-    ...secondaryButton,
-    size: Size.SMALL,
-    variant: Variant.PRIMARY,
-  },
-};
-/**
- * Medium button story
- */
-export const SecondaryMedium: StoryObj<StoryType> = {
-  args: {
-    ...secondaryButton,
-    size: Size.MEDIUM,
-    variant: Variant.PRIMARY,
-  },
-};
-/**
- * Large button story
- */
-export const SecondaryLarge: StoryObj<StoryType> = {
-  args: {
-    ...secondaryButton,
-    size: Size.LARGE,
-    variant: Variant.PRIMARY,
-  },
-};
-
-/**
- * Secondary small icon button primary variant story
- */
-export const SecondarySmallIconButtonPrimaryVariant: StoryObj<StoryType> = {
-  args: {
-    ...secondaryButton,
-    isIcon: true,
-    icon: 'search_outline',
-    size: Size.SMALL,
-    variant: Variant.PRIMARY,
-  },
-};
-
-/**
- * Secondary medium icon button primary variant story
- */
-export const SecondaryMediumIconButtonPrimaryVariant: StoryObj<StoryType> = {
-  args: {
-    ...secondaryButton,
-    isIcon: true,
-    icon: 'search_outline',
-    variant: Variant.PRIMARY,
-  },
-};
-
-/**
- * Secondary large icon button primary variant story
- */
-export const SecondaryLargeIconButtonPrimaryVariant: StoryObj<StoryType> = {
-  args: {
-    ...secondaryButton,
-    isIcon: true,
-    icon: 'search_outline',
-    size: Size.LARGE,
-    variant: Variant.PRIMARY,
-  },
-};
-
-/**
- * Secondary button primary variant story
- */
-export const SecondaryButtonPrimaryVariant: StoryObj<StoryType> = {
-  args: {
-    ...secondaryButton,
-    variant: Variant.PRIMARY,
-  },
-};
-/**
- * Secondary button danger variant story
- */
-export const SecondaryButtonDangerVariant: StoryObj<StoryType> = {
-  args: {
-    ...secondaryButton,
-    variant: Variant.DANGER,
-  },
-};
-/**
- * Secondary button success variant story
- */
-export const SecondaryButtonSuccessVariant: StoryObj<StoryType> = {
-  args: {
-    ...secondaryButton,
-    variant: Variant.SUCCESS,
-  },
-};
-/**
- * Secondary button grey variant story
- */
-export const SecondaryButtonGreyVariant: StoryObj<StoryType> = {
-  args: {
-    ...secondaryButton,
-    variant: Variant.GREY,
-  },
-};
-
-/**
- * Secondary button light variant story
- */
-export const SecondaryButtonLightVariant: StoryObj<StoryType> = {
-  args: {
-    ...secondaryButton,
-    variant: Variant.LIGHT,
-  },
-};
-
-/**
- * Secondary button with spinner story
- */
-export const SecondaryWithSpinner: StoryObj<StoryType> = {
-  args: {
-    ...secondaryButton,
-    loading: true,
-    variant: Variant.DEFAULT,
-  },
-};
-
-/**
- * Secondary button with spinner story
- */
-export const SecondaryPrimaryVariantWithSpinner: StoryObj<StoryType> = {
-  args: {
-    ...secondaryButton,
-    loading: true,
-    variant: Variant.PRIMARY,
-  },
-};
-
-// TERTIARY BUTTONS //
-/**
- * Tertiary button story
- */
-export const Tertiary: StoryObj<StoryType> = {
-  args: tertiaryButton,
-};
-
-/**
- * Tertiary button with icon story
- */
-export const TertiaryWithIcon: StoryObj<StoryType> = {
-  args: {
-    ...tertiaryButton,
-    icon: 'search_outline',
-  },
-};
-
-/**
- * Tertiary button primary variant story
- */
-export const TertiaryButtonPrimaryVariant: StoryObj<StoryType> = {
-  args: {
-    ...tertiaryButton,
-    variant: Variant.PRIMARY,
-  },
-};
-/**
- * Tertiary button danger variant story
- */
-export const TertiaryButtonDangerVariant: StoryObj<StoryType> = {
-  args: {
-    ...tertiaryButton,
-    variant: Variant.DANGER,
-  },
-};
-/**
- * Tertiary button success variant story
- */
-export const TertiaryButtonSuccessVariant: StoryObj<StoryType> = {
-  args: {
-    ...tertiaryButton,
-    variant: Variant.SUCCESS,
-  },
-};
-/**
- * Tertiary button grey variant story
- */
-export const TertiaryButtonGreyVariant: StoryObj<StoryType> = {
-  args: {
-    ...tertiaryButton,
-    variant: Variant.GREY,
-  },
-};
-
-/**
- * Tertiary button light variant story
- */
-export const TertiaryButtonLightVariant: StoryObj<StoryType> = {
-  args: {
-    ...tertiaryButton,
-    variant: Variant.LIGHT,
-  },
-};
-
-/**
- * Tertiary button with spinner story
- */
-export const TertiaryWithSpinner: StoryObj<StoryType> = {
-  args: {
-    ...tertiaryButton,
-    loading: true,
-    variant: Variant.DEFAULT,
-  },
+/** Tertiary button */
+export const Tertiary = Template.bind({});
+Tertiary.args = {
+  ...tertiaryButton,
 };

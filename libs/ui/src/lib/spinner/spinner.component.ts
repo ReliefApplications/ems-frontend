@@ -19,4 +19,22 @@ export class SpinnerComponent {
   spinnerSize = Size;
   spinnerVariant = Variant;
   spinnerCategory = Category;
+
+  /** @returns general resolved classes and variant for spinner*/
+  get resolveSpinnerClasses(): string[] {
+    const classes = [];
+    classes.push('spinner-' + this.size);
+    classes.push(
+      this.category === Category.SECONDARY || this.variant === Variant.LIGHT
+        ? 'spinner-light'
+        : this.variant === Variant.DEFAULT || this.variant === Variant.PRIMARY
+        ? 'spinner-primary'
+        : this.variant == Variant.DANGER
+        ? 'spinner-danger'
+        : this.variant === Variant.GREY
+        ? 'spinner-grey'
+        : 'spinner-success'
+    );
+    return classes;
+  }
 }

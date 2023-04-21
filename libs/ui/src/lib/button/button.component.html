@@ -1,21 +1,6 @@
 <button
   type="button"
-  [ngClass]="{
-    'ui-button': !isIcon,
-    'ui-button-icon': isIcon,
-    primary: category === buttonCategory.PRIMARY,
-    secondary: category === buttonCategory.SECONDARY,
-    tertiary: category === buttonCategory.TERTIARY,
-    small: size === buttonSize.SMALL,
-    medium: size === buttonSize.MEDIUM,
-    large: size === buttonSize.LARGE,
-    'button-primary': variant === buttonVariant.PRIMARY,
-    'button-danger': variant === buttonVariant.DANGER,
-    'button-grey':
-      variant === buttonVariant.GREY || variant === buttonVariant.LIGHT,
-    'button-success': variant === buttonVariant.SUCCESS,
-    'inline-flex items-center gap-x-2': (icon || loading) && !isIcon
-  }"
+  [ngClass]="resolveButtonClasses"
   [disabled]="disabled"
   (click)="emittedEventSubject.next('click')"
 >

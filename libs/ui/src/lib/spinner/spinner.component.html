@@ -1,29 +1,7 @@
 <div role="status">
   <svg
     aria-hidden="true"
-    [ngClass]="{
-      'spinner-small': size === spinnerSize.SMALL,
-      'spinner-medium': size === spinnerSize.MEDIUM,
-      'spinner-large': size === spinnerSize.LARGE,
-      'spinner-default':
-        category !== spinnerCategory.SECONDARY &&
-        variant === spinnerVariant.DEFAULT,
-      'spinner-primary':
-        category !== spinnerCategory.SECONDARY &&
-        variant === spinnerVariant.PRIMARY,
-      'spinner-danger':
-        category !== spinnerCategory.SECONDARY &&
-        variant === spinnerVariant.DANGER,
-      'spinner-grey':
-        category !== spinnerCategory.SECONDARY &&
-        variant === spinnerVariant.GREY,
-      'spinner-light':
-        category === spinnerCategory.SECONDARY ||
-        variant === spinnerVariant.LIGHT,
-      'spinner-success':
-        category !== spinnerCategory.SECONDARY &&
-        variant === spinnerVariant.SUCCESS
-    }"
+    [ngClass]="resolveSpinnerClasses"
     class="animate-spin text-gray-300"
     viewBox="0 0 100 101"
     fill="none"

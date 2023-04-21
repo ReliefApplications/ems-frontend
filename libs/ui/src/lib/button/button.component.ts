@@ -47,4 +47,27 @@ export class ButtonComponent {
         return 21;
     }
   }
+
+  /** @returns general resolved classes and variant for button*/
+  get resolveButtonClasses(): string[] {
+    const classes = [];
+    classes.push(this.isIcon ? 'ui-button-icon' : 'ui-button');
+    classes.push(this.category);
+    classes.push(this.size);
+    classes.push(
+      'button-' +
+        (this.variant === Variant.DEFAULT
+          ? Variant.PRIMARY
+          : this.variant === Variant.LIGHT
+          ? Variant.GREY
+          : this.variant)
+    );
+    if ((this.icon || this.loading) && !this.isIcon) {
+      classes.push('inline-flex items-center gap-x-2');
+    }
+    if (this.disabled) {
+      classes.push('opacity-70');
+    }
+    return classes;
+  }
 }
