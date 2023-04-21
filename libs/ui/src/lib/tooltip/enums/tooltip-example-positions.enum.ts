@@ -1,11 +1,11 @@
 /** Enumeration for tooltip examples button positions */
 export enum TooltipExamplesPositions {
   TOP = 'top',
-  TOPLEFT = 'top-left',
-  TOPRIGHT = 'top-right',
+  TOP_LEFT = 'top-left',
+  TOP_RIGHT = 'top-right',
   RIGHT = 'right',
   LEFT = 'left',
   BOTTOM = 'bottom',
-  BOTTOMLEFT = 'bottom-left',
-  BOTTOMRIGHT = 'bottom-right',
+  BOTTOM_LEFT = 'bottom-left',
+  BOTTOM_RIGHT = 'bottom-right',
 }

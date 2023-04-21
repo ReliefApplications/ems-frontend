@@ -4,7 +4,7 @@ import { TooltipExamplesPositions } from './enums/tooltip-example-positions.enum
 import { TooltipModule } from './tooltip.module';
 
 export default {
-  title: 'TooltipComponent',
+  title: 'Tooltip',
   component: TooltipComponent,
   argTypes: {
     position: {
@@ -14,22 +14,19 @@ export default {
   },
   decorators: [
     moduleMetadata({
-      imports: [],
+      imports: [TooltipModule],
     }),
   ],
 } as Meta<TooltipComponent>;
 
 /**
  * Template for storybook's test of the directive
- * @param args
+ *
+ * @param args Tooltip component args
+ * @returns TooltipComponent
  */
 const Template: Story<TooltipComponent> = (args: TooltipComponent) => ({
   props: args,
-  moduleMetadata: {
-    // (3) don't forget it
-    imports: [TooltipModule],
-  },
-  enum: TooltipExamplesPositions,
 });
 
 /**
@@ -45,7 +42,7 @@ TopExample.args = {
  */
 export const TopLeftExample = Template.bind({});
 TopLeftExample.args = {
-  position: TooltipExamplesPositions.TOPLEFT,
+  position: TooltipExamplesPositions.TOP_LEFT,
   hint: 'test',
 };
 /**
@@ -53,7 +50,7 @@ TopLeftExample.args = {
  */
 export const TopRightExample = Template.bind({});
 TopRightExample.args = {
-  position: TooltipExamplesPositions.TOPRIGHT,
+  position: TooltipExamplesPositions.TOP_RIGHT,
   hint: 'test',
 };
 /**
@@ -69,7 +66,7 @@ BottomExample.args = {
  */
 export const BottomLeftExample = Template.bind({});
 BottomLeftExample.args = {
-  position: TooltipExamplesPositions.BOTTOMLEFT,
+  position: TooltipExamplesPositions.BOTTOM_LEFT,
   hint: 'test',
 };
 /**
@@ -77,7 +74,7 @@ BottomLeftExample.args = {
  */
 export const BottomRightExample = Template.bind({});
 BottomRightExample.args = {
-  position: TooltipExamplesPositions.BOTTOMRIGHT,
+  position: TooltipExamplesPositions.BOTTOM_RIGHT,
   hint: 'test',
 };
 /**

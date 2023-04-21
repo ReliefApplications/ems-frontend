@@ -9,6 +9,3 @@ export * from './lib/icon/icon.module';
 export * from './lib/select/select.module';
 export * from './lib/tooltip/tooltip.module';
 export * from './lib/ui.module';
-
-// === ENUMS === //
-export * from './lib/tooltip/enums/tooltip-example-positions.enum';

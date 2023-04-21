@@ -1,27 +1,10 @@
-<!-- Switch to display a button in the position given in argument -->
-<div [ngSwitch]='position'>
-  <div class='group flex relative justify-center' *ngSwitchCase="TooltipPositionEnum.TOP">
-    <button uiTooltip toolTipHint={{hint}} class="bg-gray-200 shadow-md hover:shadow-xl hover:bg-gray-300 p-2 rounded-md">Test tooltip</button>
-  </div>
-  <div class='flex items-start justify-start' *ngSwitchCase="TooltipPositionEnum.TOPLEFT">
-    <button uiTooltip toolTipHint={{hint}} class="bg-gray-200 shadow-md hover:shadow-xl hover:bg-gray-300 p-2 rounded-md">Test tooltip</button>
-  </div>
-  <div class='flex items-start justify-end' *ngSwitchCase="TooltipPositionEnum.TOPRIGHT">
-    <button uiTooltip toolTipHint={{hint}} class="bg-gray-200 shadow-md hover:shadow-xl hover:bg-gray-300 p-2 rounded-md">Test tooltip</button>
-  </div>
-  <div class ='flex h-100% items-end justify-center' *ngSwitchCase="TooltipPositionEnum.BOTTOM">
-    <button uiTooltip toolTipHint={{hint}} class="bg-gray-200 shadow-md hover:shadow-xl hover:bg-gray-300 p-2 rounded-md fixed bottom-0">Test tooltip</button>
-  </div>
-  <div class ='flex items-end justify-start' *ngSwitchCase="TooltipPositionEnum.BOTTOMLEFT">
-    <button uiTooltip toolTipHint={{hint}} class="bg-gray-200 shadow-md hover:shadow-xl hover:bg-gray-300 p-2 rounded-md fixed bottom-0">Test tooltip</button>
-  </div>
-  <div class ='flex items-end justify-end' *ngSwitchCase="TooltipPositionEnum.BOTTOMRIGHT">
-    <button uiTooltip toolTipHint={{hint}} class="bg-gray-200 shadow-md hover:shadow-xl hover:bg-gray-300 p-2 rounded-md fixed bottom-0">Test tooltip</button>
-  </div>
-  <div class ='flex items-center justify-start' *ngSwitchCase="TooltipPositionEnum.LEFT">
-    <button uiTooltip toolTipHint={{hint}} class="bg-gray-200 shadow-md hover:shadow-xl hover:bg-gray-300 p-2 rounded-md fixed bottom-2/4">Test tooltip</button>
-  </div>
-  <div class ='flex items-center justify-end' *ngSwitchCase="TooltipPositionEnum.RIGHT">
-    <button uiTooltip toolTipHint={{hint}} class="bg-gray-200 shadow-md hover:shadow-xl hover:bg-gray-300 p-2 rounded-md fixed bottom-2/4">Test tooltip</button>
-  </div>
+<!-- TEST ELEMENT FOR STORYBOOK-->
+<div [ngClass]="resolvePositionCases">
+  <button
+    [ngClass]="resolveButtonCases"
+    [uiTooltip]="hint"
+    class="bg-gray-200 shadow-md hover:shadow-xl hover:bg-gray-300 p-2 rounded-md"
+  >
+    Random content
+  </button>
 </div>
