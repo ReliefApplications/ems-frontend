@@ -59,14 +59,53 @@ export class TooltipDirective {
       this.renderer.addClass(this.elToolTip, cl);
     }
 
+    // Management of tooltip placement in the screen (including screen edges cases)
     const hostPos = this.elementRef.nativeElement.getBoundingClientRect();
-    // const tooltipPos = this.elToolTip.getBoundingClientRect();
+    const tooltipPos = this.elToolTip.getBoundingClientRect();
 
-    const top = hostPos.bottom + 10;
+    const top = hostPos.bottom;
     const left = hostPos.left;
-    console.log(hostPos.offset);
+    const tooltipWidth = tooltipPos.width;
+    const tooltipHeight = tooltipPos.height;
 
-    this.renderer.setStyle(this.elToolTip, 'top', `${top}px`);
-    this.renderer.setStyle(this.elToolTip, 'left', `${left}px`);
+    // Case where it is both on the bottom and on the right of the screen
+    if (
+      tooltipHeight + top > window.innerHeight &&
+      tooltipWidth + left > window.innerWidth
+    ) {
+      this.renderer.setStyle(
+        this.elToolTip,
+        'top',
+        `${hostPos.top - tooltipHeight}px`
+      );
+      this.renderer.setStyle(
+        this.elToolTip,
+        'left',
+        `${window.innerWidth - tooltipWidth}px`
+      );
+    }
+    //Bottom centered case (not to be placed first but after other allegations)
+    else if (tooltipHeight + top > window.innerHeight) {
+      this.renderer.setStyle(
+        this.elToolTip,
+        'top',
+        `${hostPos.top - tooltipHeight}px`
+      );
+      this.renderer.setStyle(this.elToolTip, 'left', `${left}px`);
+    }
+    //Right placed case
+    else if (tooltipWidth + left > window.innerWidth) {
+      this.renderer.setStyle(this.elToolTip, 'top', `${top}px`);
+      this.renderer.setStyle(
+        this.elToolTip,
+        'left',
+        `${window.innerWidth - tooltipWidth}px`
+      );
+    }
+    //Default working case
+    else {
+      this.renderer.setStyle(this.elToolTip, 'top', `${top}px`);
+      this.renderer.setStyle(this.elToolTip, 'left', `${left}px`);
+    }
   }
 }
