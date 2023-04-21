@@ -16,6 +16,7 @@ import { get } from 'lodash';
 export class TableComponent<T extends object> implements OnDestroy {
   destroy$ = new Subject<void>();
   get = get;
+  @Input() displayAsCard = false;
   @Input() trackByIdentifier: keyof T = 'id' as keyof T;
   /**
    * Set and update table data and column definition data

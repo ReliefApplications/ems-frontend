@@ -1,5 +1,11 @@
-<div class="px-4 sm:px-6 lg:px-8">
-  <div class="-mx-4 mt-8 sm:-mx-0">
+<div class="px-4 min-w-full py-2 align-middle sm:px-6 lg:px-8">
+  <div
+    [ngClass]="{
+      'shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg py-2 px-3':
+        displayAsCard
+    }"
+    class="-mx-4 mt-8 sm:-mx-0"
+  >
     <!--TABLE CONTENT-->
     <table
       cdk-table
@@ -37,7 +43,13 @@
               <ng-container
                 *ngIf="isString(column.template); else templateRefTmpl"
               >
-                <div [innerHTML]="column.template"></div>
+                <ng-container
+                  *uiTableTemplateResolver="
+                    column;
+                    context: this;
+                    element: element
+                  "
+                ></ng-container>
               </ng-container>
               <ng-template #templateRefTmpl>
                 <ng-container

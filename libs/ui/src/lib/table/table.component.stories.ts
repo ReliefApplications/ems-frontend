@@ -9,6 +9,7 @@ import {
 import { CdkTableModule } from '@angular/cdk/table';
 import { PagerModule } from '@progress/kendo-angular-pager';
 import { TableComponent } from './table.component';
+import { TableTemplateResolverDirective } from './table-template-resolver.directive';
 import { TableColumnDefinition } from './interfaces/table-column.interface';
 
 type MockedTable = {
@@ -25,12 +26,18 @@ export default {
   component: TableComponent,
   decorators: [
     moduleMetadata({
+      declarations: [TableTemplateResolverDirective],
       imports: [CdkTableModule, PagerModule, BrowserAnimationsModule],
     }),
     componentWrapperDecorator(
       (story) => `<div class="h-screen overflow-y-auto">${story}</div>`
     ),
   ],
+  argTypes: {
+    displayAsCard: {
+      control: 'boolean',
+    },
+  },
 } as Meta<TableComponent<MockedTable>>;
 
 /**
@@ -216,10 +223,10 @@ const columnDefinitionData: TableColumnDefinition[] = [
     dataAccessor: 'isValid',
     sortable: false,
     template: `<div class="flex items-center justify-end gap-x-2 sm:justify-start">
-    <div [ngClass]="{'text-rose-400 bg-rose-400/10': !get(element, dataAccessor), 'text-green-400 bg-green-400/10': get(element, dataAccessor)} class="flex-none rounded-full p-1">
+    <div [ngClass]="{'text-rose-400 bg-rose-400/10': !get(element, dataAccessor), 'text-green-400 bg-green-400/10': get(element, dataAccessor)}" class="flex-none rounded-full p-1">
       <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
     </div>
-    <div class="text-white sm:block">{{get(element, dataAccessor) ? 'Completed' : 'Error' }}</div>
+    <div class="text-neutral sm:block">{{get(element, dataAccessor) ? 'Completed' : 'Error' }}</div>
   </div>`,
   },
   {
