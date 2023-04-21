@@ -30,7 +30,6 @@ export class TextareaComponent implements ControlValueAccessor {
   @Input() label = '';
   @Input() placeholder = '';
   @Input() name!: string;
-  @Input() dataBind!: string;
 
   private onTouched!: any;
   private onChanged!: any;
