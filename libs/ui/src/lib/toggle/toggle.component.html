@@ -1,0 +1,91 @@
+<div class="flex items-center">
+  <!-- LABEL LEFT -->
+  <ng-container *ngIf="label && label.position === 'left'">
+    <ng-container *ngTemplateOutlet="labelTemplate"></ng-container>
+  </ng-container>
+
+  <!-- TOGGLE -->
+  <button
+    type="button"
+    role="switch"
+    aria-labelledby="toggle-label"
+    aria-describedby="toggle-description"
+    [attr.aria-checked]="enabled"
+    class="toggle-button"
+    [ngClass]="toggleClasses"
+    (click)="triggerAction()"
+  >
+    <span
+      aria-hidden="true"
+      [ngClass]="{
+        'span-simple': type === toggleTypes.SIMPLE,
+        'span-short': type === toggleTypes.SHORT,
+        'translate-x-0': !enabled && type === toggleTypes.SIMPLE,
+        'translate-x-5': enabled && type === toggleTypes.SIMPLE
+      }"
+      class="pointer-events-none"
+    >
+      <!-- ICON -->
+      <ng-container *ngIf="icon">
+        <ng-container *ngTemplateOutlet="iconTemplate"></ng-container>
+      </ng-container>
+    </span>
+
+    <ng-container *ngIf="type === toggleTypes.SHORT">
+      <ng-container *ngTemplateOutlet="shortToggleTemplate"></ng-container>
+    </ng-container>
+  </button>
+
+  <!-- LABEL RIGHT -->
+  <ng-container *ngIf="label && label.position === 'right'">
+    <ng-container *ngTemplateOutlet="labelTemplate"></ng-container>
+  </ng-container>
+</div>
+
+<ng-template #shortToggleTemplate>
+  <span
+    aria-hidden="true"
+    [ngClass]="shortToggleClasses"
+    class="short-color"
+  >
+  </span>
+  <span
+    aria-hidden="true"
+    [ngClass]="{ 'translate-x-0': !enabled, 'translate-x-5': enabled }"
+    class="short-translate"
+  >
+  </span>
+</ng-template>
+
+<ng-template #labelTemplate>
+  <span
+    [ngClass]="{
+      'ml-4': label.position === 'right',
+      'mr-4': label.position === 'left'
+    }"
+    class="flex flex-col flex-wrap whitespace-pre-wrap text-sm"
+  >
+    <!-- TEXT -->
+    <span class="font-medium leading-6 text-gray-900" id="toggle-label">
+      {{ label.text }}
+    </span>
+    <!-- DESCRIPTION -->
+    <span
+      class="text-gray-500"
+      *ngIf="label.description"
+      id="toggle-description"
+    >
+      {{ label.description }}
+    </span>
+  </span>
+</ng-template>
+
+<ng-template #iconTemplate>
+  <!-- ICON FOR SIMPLE TOGGLES -->
+  <span class="icon" aria-hidden="true">
+    <ui-icon
+      [icon]="enabled ? icon.enableIcon : icon.disableIcon"
+      [size]="12"
+    ></ui-icon>
+  </span>
+</ng-template>

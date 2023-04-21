@@ -7,6 +7,8 @@ import { FlyoutMenuModule } from './flyout-menu/flyout-menu.module';
 import { IconModule } from './icon/icon.module';
 import { SelectModule } from './select/select.module';
 import { SpinnerModule } from './spinner/spinner.module';
+import { ToggleModule } from './toggle/toggle.module';
+import { DividerModule } from './divider/divider.module';
 
 /**
  * UI Library Module
@@ -21,6 +23,8 @@ import { SpinnerModule } from './spinner/spinner.module';
     IconModule,
     SelectModule,
     SpinnerModule,
+    ToggleModule,
+    DividerModule,
   ],
 })
 export class UiModule {}

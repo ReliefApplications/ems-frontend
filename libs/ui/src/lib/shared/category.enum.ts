@@ -2,7 +2,7 @@
  * Category enum.
  */
 export enum Category {
-  PRIMARY,
-  SECONDARY,
-  TERTIARY,
+  PRIMARY = 'primary',
+  SECONDARY = 'secondary',
+  TERTIARY = 'tertiary',
 }
