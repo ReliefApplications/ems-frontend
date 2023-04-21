@@ -6,55 +6,39 @@ import { AvatarVariant } from './enums/avatar-variant.enum';
 import { AvatarShape } from './enums/avatar-shape.enum';
 
 export default {
-  title: 'AvatarComponent',
+  title: 'Avatar',
   component: AvatarComponent,
+  argTypes: {
+    size: {
+      options: AvatarSize,
+      control: 'select',
+    },
+    shape: {
+      options: AvatarShape,
+      control: 'select',
+    },
+    variant: {
+      options: AvatarVariant,
+      control: 'select',
+    },
+  },
   decorators: [
     moduleMetadata({
       imports: [AvatarModule],
     }),
   ],
-  render: (args) => {
-    return {
-      args,
-      template: `<ui-avatar
-        [size]="'${args.size ?? AvatarSize.MEDIUM}'" 
-        [shape]="'${args.shape ?? AvatarShape.CIRCLE}'"
-        [initials]="'${args.initials ?? false}'"
-        [image]="'${args.image ?? ''}'"
-        [variant]="'${args.variant ?? AvatarVariant.PRIMARY}'"
-        ></ui-avatar>`,
-      userDefinedTemplate: true,
-    };
-  },
 } as Meta<AvatarComponent>;
 
-// Common props for each avatar size //
-/**
- * Small avatar
- */
-const smallAvatar = {
-  size: AvatarSize.SMALL,
+/** Default inputs */
+export const Defaut: StoryObj<AvatarComponent> = {
+  args: {},
 };
-/**
- * Medium avatar
- */
-const mediumAvatar = {
-  size: AvatarSize.MEDIUM,
-};
-/**
- * Large avatar
- */
-const largeAvatar = {
-  size: AvatarSize.LARGE,
-};
-
-// AVATARS //
 /**
  * Primary small circle avatar story
  */
 export const PrimaryCircleAvatarSmall: StoryObj<AvatarComponent> = {
   args: {
-    ...smallAvatar,
+    size: AvatarSize.SMALL,
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
@@ -66,7 +50,7 @@ export const PrimaryCircleAvatarSmall: StoryObj<AvatarComponent> = {
  */
 export const PrimaryCircleAvatarMedium: StoryObj<AvatarComponent> = {
   args: {
-    ...mediumAvatar,
+    size: AvatarSize.MEDIUM,
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
@@ -78,7 +62,7 @@ export const PrimaryCircleAvatarMedium: StoryObj<AvatarComponent> = {
  */
 export const PrimaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    ...largeAvatar,
+    size: AvatarSize.LARGE,
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
@@ -90,7 +74,7 @@ export const PrimaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const PrimaryCircleImageAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    ...largeAvatar,
+    size: AvatarSize.LARGE,
     shape: AvatarShape.CIRCLE,
     initials: '',
     image:
@@ -103,7 +87,7 @@ export const PrimaryCircleImageAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const SecondaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    ...largeAvatar,
+    size: AvatarSize.LARGE,
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
@@ -115,7 +99,7 @@ export const SecondaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const TertiaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    ...largeAvatar,
+    size: AvatarSize.LARGE,
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
@@ -127,7 +111,7 @@ export const TertiaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const PrimaryRectangleAvatarSmall: StoryObj<AvatarComponent> = {
   args: {
-    ...smallAvatar,
+    size: AvatarSize.SMALL,
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',
@@ -139,7 +123,7 @@ export const PrimaryRectangleAvatarSmall: StoryObj<AvatarComponent> = {
  */
 export const PrimaryRectangleAvatarMedium: StoryObj<AvatarComponent> = {
   args: {
-    ...mediumAvatar,
+    size: AvatarSize.MEDIUM,
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',
@@ -151,7 +135,7 @@ export const PrimaryRectangleAvatarMedium: StoryObj<AvatarComponent> = {
  */
 export const PrimaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    ...largeAvatar,
+    size: AvatarSize.LARGE,
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',
@@ -163,7 +147,7 @@ export const PrimaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const PrimaryRectangleImageAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    ...largeAvatar,
+    size: AvatarSize.LARGE,
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image:
@@ -176,7 +160,7 @@ export const PrimaryRectangleImageAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const SecondaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    ...largeAvatar,
+    size: AvatarSize.LARGE,
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',
@@ -188,7 +172,7 @@ export const SecondaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const TertiaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    ...largeAvatar,
+    size: AvatarSize.LARGE,
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',

@@ -7,30 +7,30 @@
 .avatar-large {
   @apply h-14 w-14;
 }
-.avatar-circle{
+.avatar-circle {
   @apply rounded-full;
 }
-.avatar-rectangle{
+.avatar-rectangle {
   @apply rounded-md;
 }
-.avatar-initials{
+.avatar-initials {
   @apply inline-flex items-center justify-center;
 }
-.avatar-not-initials{
+.avatar-not-initials {
   @apply block;
 }
-.avatar-secondary-background{
+.avatar-secondary-background {
   @apply bg-gray-500;
 }
-.avatar-primary-text{
+.avatar-primary-text {
   @apply text-gray-500;
 }
-.avatar-secondary-text{
+.avatar-secondary-text {
   @apply text-white;
 }
-.avatar-tertiary-text{
+.avatar-tertiary-text {
   @apply text-gray-500;
 }
-.avatar-tertiary-border{
+.avatar-tertiary-border {
   @apply border-gray-500 border-2;
 }

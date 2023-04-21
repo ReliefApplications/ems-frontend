@@ -1,5 +1,4 @@
 <span
-  (click)="triggerAvatarAction()"
   [ngClass]="{
     'avatar-small': size === avatarSize.SMALL,
     'avatar-medium': size === avatarSize.MEDIUM,
@@ -8,10 +7,11 @@
     'avatar-rectangle': shape === avatarShape.RECTANGLE,
     'avatar-initials': initials !== '',
     'avatar-not-initials': initials === '',
-    'avatar-secondary-background': variant === avatarVariant.SECONDARY,
+    'bg-white': variant !== avatarVariant.SECONDARY,
+    'bg-gray-500': variant === avatarVariant.SECONDARY,
     'avatar-tertiary-border': variant === avatarVariant.TERTIARY
   }"
-  class="overflow-hidden"
+  class="overflow-hidden ring-2 ring-transparent"
 >
   <ng-container *ngIf="image; else noIconTmpl">
     <img
@@ -24,23 +24,25 @@
       alt=""
     />
   </ng-container>
-  <ng-template #noIconTmpl>  
+  <ng-template #noIconTmpl>
     <ng-container *ngIf="initials !== ''">
       <span
         [ngClass]="{
           'avatar-primary-text': variant === avatarVariant.PRIMARY,
           'avatar-secondary-text': variant === avatarVariant.SECONDARY,
           'avatar-tertiary-text': variant === avatarVariant.TERTIARY
-        }" 
-        class="text-base font-medium leading-none">
-      {{ initials }}</span>
+        }"
+        class="text-base font-medium leading-none"
+      >
+        {{ initials }}</span
+      >
     </ng-container>
-    
+
     <ng-container *ngIf="initials === ''">
       <svg
-      class="h-full w-full text-gray-300"
-      fill="currentColor"
-      viewBox="0 0 24 24"
+        class="h-full w-full text-gray-300"
+        fill="currentColor"
+        viewBox="0 0 24 24"
       >
         <path
           d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"

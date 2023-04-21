@@ -1,9 +1,10 @@
-import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
+import { moduleMetadata, Meta, StoryObj } from '@storybook/angular';
 import { AvatarGroupComponent } from './avatar-group.component';
-import { AvatarGroupStack } from './enums/avatar-group-stack.enum';
 import { AvatarGroupModule } from './avatar-group.module';
+import { AvatarShape } from '../avatar/enums/avatar-shape.enum';
+import { AvatarSize } from '../avatar/enums/avatar-size.enum';
 
-type MockedAvatarGroup = {
+type MockedAvatar = {
   size: string;
   variant: string;
   shape: string;
@@ -11,17 +12,9 @@ type MockedAvatarGroup = {
   initials: string;
 };
 
-export default {
-  title: 'AvatarGroupComponent',
-  component: AvatarGroupComponent,
-  decorators: [
-    moduleMetadata({
-      imports: [AvatarGroupModule],
-    }),
-  ],
-} as Meta<AvatarGroupComponent>;
+type StoryType = AvatarGroupComponent & { avatars?: any[] };
 
-const avatarGroupData: MockedAvatarGroup[] = [
+const avatars: MockedAvatar[] = [
   {
     size: 'large',
     variant: 'tertiary',
@@ -55,37 +48,68 @@ const avatarGroupData: MockedAvatarGroup[] = [
   },
 ];
 
-const Template: StoryFn<AvatarGroupComponent> = (
-  args: AvatarGroupComponent
-) => ({
-  props: args,
-});
+export default {
+  title: 'Avatar Group',
+  component: AvatarGroupComponent,
+  argTypes: {
+    shape: {
+      options: AvatarShape,
+      control: 'select',
+    },
+    size: {
+      options: AvatarSize,
+      control: 'select',
+    },
+    limit: {
+      control: 'number',
+    },
+  },
+  decorators: [
+    moduleMetadata({
+      imports: [AvatarGroupModule],
+    }),
+  ],
+  render: (args) => {
+    let avatarGroupContent = '';
+    for (const avatar of avatars) {
+      avatarGroupContent += `<ui-avatar variant=${avatar.variant} image="${avatar.image}" shape=${avatar.shape} initials=${avatar.initials}></ui-avatar>`;
+    }
+    return {
+      props: args,
+      template: `<ui-avatar-group shape=${args.shape} size=${args.size} limit=${args.limit}>${avatarGroupContent}
+      </ui-avatar-group>`,
+    };
+  },
+} as Meta<AvatarGroupComponent>;
+
 /**
  * AvatarGroup with top stack, limit 2
  */
-export const AvatarGroupTemplate = Template.bind({});
-AvatarGroupTemplate.args = {
-  stack: AvatarGroupStack.TOP,
-  limit: '2',
-  avatars: avatarGroupData,
+export const Default: StoryObj<StoryType> = {
+  args: {},
 };
+// AvatarGroupTemplate.args = {
+//   stack: AvatarGroupStack.TOP,
+//   limit: '2',
+//   avatars: avatarGroupData,
+// };
 
 /**
  * AvatarGroup with bottom stack, limit 1
  */
-export const AvatarGroupTemplate2 = Template.bind({});
-AvatarGroupTemplate2.args = {
-  stack: AvatarGroupStack.BOTTOM,
-  limit: '1',
-  avatars: avatarGroupData,
-};
+// export const AvatarGroupTemplate2 = Template.bind({});
+// AvatarGroupTemplate2.args = {
+//   stack: AvatarGroupStack.BOTTOM,
+//   limit: '1',
+//   avatars: avatarGroupData,
+// };
 
 /**
  * AvatarGroup with bottom stack, limit 4
  */
-export const AvatarGroupTemplate3 = Template.bind({});
-AvatarGroupTemplate3.args = {
-  stack: AvatarGroupStack.BOTTOM,
-  limit: '4',
-  avatars: avatarGroupData,
-};
+// export const AvatarGroupTemplate3 = Template.bind({});
+// AvatarGroupTemplate3.args = {
+//   stack: AvatarGroupStack.BOTTOM,
+//   limit: '4',
+//   avatars: avatarGroupData,
+// };

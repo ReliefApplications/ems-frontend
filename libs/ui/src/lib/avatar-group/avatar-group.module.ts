@@ -6,6 +6,6 @@ import { AvatarModule } from '../avatar/avatar.module';
 @NgModule({
   declarations: [AvatarGroupComponent],
   imports: [CommonModule, AvatarModule],
-  exports: [AvatarGroupComponent],
+  exports: [AvatarGroupComponent, AvatarModule],
 })
 export class AvatarGroupModule {}

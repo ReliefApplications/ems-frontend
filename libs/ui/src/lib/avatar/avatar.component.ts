@@ -12,24 +12,18 @@ import { AvatarShape } from './enums/avatar-shape.enum';
   styleUrls: ['./avatar.component.scss'],
 })
 export class AvatarComponent {
+  /** Size of avatar */
   @Input() size: AvatarSize | string = AvatarSize.MEDIUM;
+  /** Variant: defines the colors */
   @Input() variant: AvatarVariant | string = AvatarVariant.PRIMARY;
+  /** Avatar image */
   @Input() image = '';
+  /** Avatar shape */
   @Input() shape: AvatarShape | string = AvatarShape.CIRCLE;
+  /** short text */
   @Input() initials = '';
 
   avatarSize = AvatarSize;
   avatarShape = AvatarShape;
   avatarVariant = AvatarVariant;
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  @Input() action: any = () => {};
-  /**
-   * Triggers any action given on click avatar element
-   */
-  triggerAvatarAction() {
-    if (this.action) {
-      this.action();
-    }
-  }
 }
