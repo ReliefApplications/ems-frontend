@@ -1,13 +1,17 @@
 <div>
-    <label for="comment" class="block text-sm font-medium leading-6 text-gray-900">{{ label }}</label>
+    <ng-container *ngIf="label !== ''">
+        <label [for]="name" class="block text-sm font-medium leading-6 text-gray-900">{{ label }}</label>
+    </ng-container>
     <div class="mt-2">
-        <textarea 
-            rows="4" 
-            name="comment" 
-            id="comment" 
-            class="textarea-style"
+        <textarea
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="3"
+            cdkAutosizeMaxRows="5"
             [placeholder]="placeholder"
             [name]="name"
+            class="textarea-style"
+            (onchange)="onTextChange($event)"
             >
         {{ value }}</textarea>
     </div>

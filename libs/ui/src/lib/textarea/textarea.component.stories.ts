@@ -1,13 +1,13 @@
 import { moduleMetadata, StoryObj, Meta } from '@storybook/angular';
 import { TextareaComponent } from './textarea.component';
-import { TextAreaModule } from '@progress/kendo-angular-inputs';
+import { TextareaModule } from './textarea.module';
 
 export default {
   title: 'TextareaComponent',
   component: TextareaComponent,
   decorators: [
     moduleMetadata({
-      imports: [TextAreaModule],
+      imports: [TextareaModule],
     }),
   ],
   render: (args) => {
@@ -18,7 +18,6 @@ export default {
         [label]="'${args.label ?? ''}'"
         [placeholder]="'${args.placeholder ?? ''}'"
         [name]="'${args.name ?? ''}'"
-        [dataBind]="'${args.dataBind ?? ''}'"
         ></ui-textarea>`,
       userDefinedTemplate: true,
     };
@@ -31,6 +30,5 @@ export const TextArea: StoryObj<TextareaComponent> = {
     label: 'Message',
     placeholder: 'Type something',
     name: 'textarea',
-    dataBind: ''
   },
 };
