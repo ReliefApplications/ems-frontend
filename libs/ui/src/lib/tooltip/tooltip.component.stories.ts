@@ -96,3 +96,11 @@ RightExample.args = {
   position: TooltipExamplesPositions.RIGHT,
   hint: 'test',
 };
+/**
+ * Long text element
+ */
+export const LongTextExample = Template.bind({});
+LongTextExample.args = {
+  position: TooltipExamplesPositions.TOP,
+  hint: 'The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ...',
+};

@@ -18,11 +18,15 @@ export class TooltipDirective {
   elToolTip: any;
 
   classes = [
-    'opacity-60',
+    'opacity-50',
     'transition-opacity',
+    'delay-300',
     'bg-gray-800',
-    'px-1',
-    'text-sm',
+    'p-2',
+    'max-w-xs',
+    'whitespace-pre-wrap',
+    'text-xs',
+    'text-justify',
     'text-gray-100',
     'rounded-md',
     'absolute',
