@@ -6,6 +6,9 @@ import {
   HostListener,
 } from '@angular/core';
 
+/**
+ * Directive that allows to display a tooltip on a given html element
+ */
 @Directive({
   selector: '[uiTooltip]',
 })
@@ -15,7 +18,7 @@ export class TooltipDirective {
   elToolTip: any;
 
   classes = [
-    'opacity-100',
+    'opacity-60',
     'transition-opacity',
     'bg-gray-800',
     'px-1',
@@ -25,8 +28,16 @@ export class TooltipDirective {
     'absolute',
   ];
 
+  /**
+   * Constructor of the directive
+   * @param elementRef
+   * @param renderer
+   */
   constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
 
+  /**
+   * Function that listen for the user's mouse to enter the element where the directive is placed
+   */
   @HostListener('mouseenter')
   onMouseEnter() {
     if (!this.elToolTip) {
@@ -34,6 +45,9 @@ export class TooltipDirective {
     }
   }
 
+  /**
+   * Function that listen for the user's mouse to quit the element where the directive is placed
+   */
   @HostListener('mouseleave')
   onMouseLeave() {
     if (this.elToolTip) {
@@ -41,16 +55,22 @@ export class TooltipDirective {
     }
   }
 
+  /**
+   * Destroy the tooltip and stop its display
+   */
   removeHint() {
     for (const cl of this.classes) {
       this.renderer.removeClass(this.elToolTip, cl);
     }
-    this.renderer.removeClass(this.elToolTip, 'bg-gray-800');
     this.renderer.removeChild(document.body, this.elToolTip);
     this.elToolTip = null;
   }
 
+  /**
+   * Show the tooltip and place it on the screen accordingly to its width and height
+   */
   showHint() {
+    // Creation of the tooltip element
     this.elToolTip = this.renderer.createElement('span');
     const text = this.renderer.createText(this.toolTipHint);
     this.renderer.appendChild(this.elToolTip, text);
