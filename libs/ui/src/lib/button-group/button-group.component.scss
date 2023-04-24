@@ -1,0 +1,16 @@
+.first-button {
+  @apply rounded-l-md;
+}
+
+.last-button {
+  @apply rounded-r-md;
+}
+
+.button {
+  @apply relative inline-flex items-center bg-white px-3 py-2 ring-1
+    ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10 cursor-pointer;
+}
+
+.selected-button {
+  @apply bg-gray-300 ring-gray-300 z-10;
+}
