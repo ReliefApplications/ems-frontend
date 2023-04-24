@@ -106,31 +106,33 @@ export class SafeMapControlsService {
       ],
     });
     (control as any)?.on('results', (data: any) => {
+      console.log(data);
       // results.clearLayers();
-
-      for (let i = data.results.length - 1; i >= 0; i--) {
-        // if (this.useGeomanTools) {
-        //   updateGeoManLayerPosition(map, data.results[i]);
-        // }
-        const coordinates = L.latLng(data.results[i].latlng);
-        const circle = L.circleMarker(coordinates, MARKER_OPTIONS);
-        circle.addTo(map);
-        const popup = L.popup()
-          .setLatLng(coordinates)
-          .setContent(
-            `
-                <p>${data.results[i].properties.ShortLabel}</br>
-                <b>${'latitude: '}</b>${coordinates.lat}</br>
-                <b>${'longitude: '}</b>${coordinates.lng}</p>`
-          );
-        circle.bindPopup(popup);
-        popup.on('remove', () => map.removeLayer(circle));
-        circle.openPopup();
-        // Use setTimeout to prevent the marker to be removed while
-        // the map moves to the searched address and is re-centred
-        setTimeout(() => {
-          this.addressMarker = circle;
-        }, 1000);
+      if ((data.results || []).length > 0) {
+        for (let i = data.results.length - 1; i >= 0; i--) {
+          // if (this.useGeomanTools) {
+          //   updateGeoManLayerPosition(map, data.results[i]);
+          // }
+          const coordinates = L.latLng(data.results[i].latlng);
+          const circle = L.circleMarker(coordinates, MARKER_OPTIONS);
+          circle.addTo(map);
+          const popup = L.popup()
+            .setLatLng(coordinates)
+            .setContent(
+              `
+                  <p>${data.results[i].properties.ShortLabel}</br>
+                  <b>${'latitude: '}</b>${coordinates.lat}</br>
+                  <b>${'longitude: '}</b>${coordinates.lng}</p>`
+            );
+          circle.bindPopup(popup);
+          popup.on('remove', () => map.removeLayer(circle));
+          circle.openPopup();
+          // Use setTimeout to prevent the marker to be removed while
+          // the map moves to the searched address and is re-centred
+          setTimeout(() => {
+            this.addressMarker = circle;
+          }, 1000);
+        }
       }
     });
     (control as any)?.addTo(map);

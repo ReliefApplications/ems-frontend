@@ -29,18 +29,22 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { GeospatialFieldsComponent } from './geospatial-fields/geospatial-fields.component';
-import { ReverseGeocodeResult } from './geospatial-map.interface';
+import { GeoProperties } from './geospatial-map.interface';
+import { get } from 'lodash';
 
 /**
  * Default geocoding value
  */
-const DEFAULT_GEOCODING = {
-  Coordinates: { lat: 0, lng: 0 },
-  City: '',
-  Country: '',
-  District: '',
-  Region: '',
-  Street: '',
+const DEFAULT_GEOCODING: GeoProperties = {
+  coordinates: { lat: 0, lng: 0 },
+  city: '',
+  countryName: '',
+  countryCode: '',
+  district: '',
+  region: '',
+  subRegion: '',
+  street: '',
+  address: '',
 } as const;
 
 /**
@@ -60,8 +64,8 @@ export class GeospatialMapComponent
 {
   @Input() data?: Feature | FeatureCollection;
   @Input() geometry = 'Point';
-  @Input() fields: (keyof ReverseGeocodeResult)[] = [];
-  public geoResult: ReverseGeocodeResult = DEFAULT_GEOCODING;
+  @Input() fields: (keyof GeoProperties)[] = [];
+  public geoResult: GeoProperties = DEFAULT_GEOCODING;
 
   // === MAP ===
   public mapSettings!: MapConstructorSettings;
@@ -205,7 +209,7 @@ export class GeospatialMapComponent
   private setDataLayers(): void {
     //init layers from question value
     const geospatialData = this.data as any;
-    if (geospatialData.geometry.coordinates.length > 0) {
+    if (get(geospatialData, 'geometry.coordinates', []).length > 0) {
       const latlng = L.latLng([
         geospatialData.geometry.coordinates[1],
         geospatialData.geometry.coordinates[0],
@@ -296,4 +300,103 @@ export class GeospatialMapComponent
         break;
     }
   }
+
+  /**
+   * On search, transform the result into a readable one
+   *
+   * @param address searched address
+   */
+  onSearch(address: any): void {
+    if (address) {
+      this.geoResult = {
+        coordinates: get(address, 'latlng', DEFAULT_GEOCODING.coordinates),
+        city: get(address, 'properties.City', DEFAULT_GEOCODING.city),
+        countryName: get(
+          address,
+          'properties.CntryName',
+          DEFAULT_GEOCODING.countryName
+        ),
+        countryCode: get(
+          address,
+          'properties.Country',
+          DEFAULT_GEOCODING.countryCode
+        ),
+        district: get(
+          address,
+          'properties.District',
+          DEFAULT_GEOCODING.district
+        ),
+        region: get(address, 'properties.Region', DEFAULT_GEOCODING.region),
+        street: get(address, 'properties.StName', DEFAULT_GEOCODING.street),
+        subRegion: get(
+          address,
+          'properties.Subregion',
+          DEFAULT_GEOCODING.subRegion
+        ),
+        address: get(address, 'properties.StAddr', DEFAULT_GEOCODING.address),
+      };
+    }
+  }
 }
+
+// Example of a location
+// {
+//   "Loc_name": "World",
+//   "Status": "M",
+//   "Score": 100,
+//   "Match_addr": "Mont Saint-Michel",
+//   "LongLabel": "Mont Saint-Michel, Normandie, FRA",
+//   "ShortLabel": "Mont Saint-Michel",
+//   "Addr_type": "POI",
+//   "Type": "Island",
+//   "PlaceName": "Mont Saint-Michel",
+//   "Place_addr": "Normandie",
+//   "Phone": "",
+//   "URL": "",
+//   "Rank": 18.5,
+//   "AddBldg": "",
+//   "AddNum": "",
+//   "AddNumFrom": "",
+//   "AddNumTo": "",
+//   "AddRange": "",
+//   "Side": "",
+//   "StPreDir": "",
+//   "StPreType": "",
+//   "StName": "",
+//   "StType": "",
+//   "StDir": "",
+//   "BldgType": "",
+//   "BldgName": "",
+//   "LevelType": "",
+//   "LevelName": "",
+//   "UnitType": "",
+//   "UnitName": "",
+//   "SubAddr": "",
+//   "StAddr": "",
+//   "Block": "",
+//   "Sector": "",
+//   "Nbrhd": "",
+//   "District": "",
+//   "City": "",
+//   "MetroArea": "",
+//   "Subregion": "",
+//   "Region": "Normandie",
+//   "RegionAbbr": "",
+//   "Territory": "",
+//   "Zone": "",
+//   "Postal": "",
+//   "PostalExt": "",
+//   "Country": "FRA",
+//   "CntryName": "France",
+//   "LangCode": "FRE",
+//   "Distance": 17229755.71198649,
+//   "X": -1.511389999999949,
+//   "Y": 48.63603000000006,
+//   "DisplayX": -1.511389999999949,
+//   "DisplayY": 48.63603000000006,
+//   "Xmin": -3.011389999999949,
+//   "Xmax": -0.011389999999948941,
+//   "Ymin": 47.13603000000006,
+//   "Ymax": 50.13603000000006,
+//   "ExInfo": ""
+// }

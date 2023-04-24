@@ -368,8 +368,8 @@ export class MapComponent
           this.esriApiKey
         );
         (this.searchControl as any)?.on('results', (data: any) => {
-          if (data.result.length > 0) {
-            this.search.emit(data.result[0]);
+          if ((data.results || []).length > 0) {
+            this.search.emit(data.results[0]);
           }
         });
       }

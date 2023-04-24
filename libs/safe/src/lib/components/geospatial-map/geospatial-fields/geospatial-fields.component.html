@@ -1,12 +1,12 @@
 <div class="flex flex-col w-full">
   <div class="flex flex-col flex-1 gap-2">
     <ng-container *ngFor="let field of fields">
-      <ng-container *ngIf="field !== 'Coordinates'">
+      <ng-container *ngIf="field !== 'coordinates'">
         <kendo-label [text]="field">
           <kendo-textbox [value]="geoResult[field]"> </kendo-textbox>
         </kendo-label>
       </ng-container>
-      <ng-container *ngIf="field === 'Coordinates'">
+      <ng-container *ngIf="field === 'coordinates'">
         <div class="flex gap-2">
           <kendo-label text="Latitude">
             <kendo-numerictextbox [value]="geoResult[field].lat"> </kendo-numerictextbox>
