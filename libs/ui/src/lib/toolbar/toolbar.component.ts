@@ -10,7 +10,13 @@ import { Variant } from '../shared/variant.enum';
   styleUrls: ['./toolbar.component.scss'],
 })
 export class ToolbarComponent {
+  /**
+   * Hexadecimal string representing the color of the toolbar's background
+   */
   @Input() color = '';
+  /**
+   * Variant of the toolbar's text color
+   */
   @Input() variant: Variant = Variant.DARK;
 
   toolbarVariants = Variant;

@@ -7,11 +7,11 @@
   class="md:flex p-4 md:items-center md:justify-between"
 >
   <div class="flex-shrink-0 p-2">
-    <ng-content select="leftWingContent"></ng-content>
+    <ng-content select="leftContent"></ng-content>
   </div>
   <div class="min-w-0 flex-1">
     <h2 class="toolbar-header">
-      <ng-content select="headerText"></ng-content>
+      <ng-content select="headTitle"></ng-content>
     </h2>
   </div>
   <div class="mt-4 flex md:ml-4 md:mt-0 items-center">
@@ -19,6 +19,6 @@
       <ng-content select="userName"></ng-content>
       <ng-content select="userMail"></ng-content>
     </div>
-    <ng-content class="mr-2" select="rightWingContent"></ng-content>
+    <ng-content class="mr-2" select="rightContent"></ng-content>
   </div>
 </div>

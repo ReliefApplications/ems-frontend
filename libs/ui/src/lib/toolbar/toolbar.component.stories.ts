@@ -30,17 +30,17 @@ const Template: Story<ToolbarComponent> = (args: ToolbarComponent) => ({
   props: args,
   template: `
   <ui-toolbar [variant]="variant" [color]="color">
-  <ng-container ngProjectAs="leftWingContent">
+  <ng-container ngProjectAs="leftContent">
   <button
     class="bg-gray-200 text-gray-700 shadow-md hover:shadow-xl hover:bg-gray-300 p-2 rounded-md"
   >
     Test
   </button>
   </ng-container>
-  <div ngProjectAs="headerText">Back-office</div>
+  <div ngProjectAs="headTitle">Back-office</div>
   <div ngProjectAs="userName">Jean-Eudes</div>
   <div ngProjectAs="userMail">je@reliefapps.org</div>
-  <ng-container ngProjectAs="rightWingContent">
+  <ng-container ngProjectAs="rightContent">
   <button
     class="bg-gray-200 text-gray-700 shadow-md hover:shadow-xl hover:bg-gray-300 p-2 rounded-md"
   >
