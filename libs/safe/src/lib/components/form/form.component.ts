@@ -17,21 +17,19 @@ import {
   ADD_RECORD,
   EditRecordMutationResponse,
   EDIT_RECORD,
-  UploadFileMutationResponse,
-  UPLOAD_FILE,
 } from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
-import { SafeRestService } from '../../services/rest/rest.service';
+import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeLayoutService } from '../../services/layout/layout.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
-import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { SafeFormService } from '../../services/form/form.service';
 
 /**
  * This component is used to display forms
@@ -41,7 +39,10 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SafeFormComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   @Input() form!: Form;
   @Input() record?: Record;
   @Output() save: EventEmitter<{
@@ -82,54 +83,58 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param dialog This is the Angular Material Dialog service.
    * @param apollo This is the Apollo client that is used to make GraphQL requests.
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
-   * @param restService This is a service that allows you to make http requests.
    * @param authService This is the service that handles authentication.
-   * @param layoutService This is the service that will be used to create the layout of the form.
+   * @param layoutService Shared layout service
    * @param formBuilderService This is the service that will be used to build forms.
-   * @param confirmService This is the service that will be used to display confirm window.
+   * @param formService This is the service that will handle forms.
    * @param translate This is the service used to translate text
    */
   constructor(
     public dialog: MatDialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    private restService: SafeRestService,
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private formBuilderService: SafeFormBuilderService,
-    private confirmService: SafeConfirmService,
+    private formService: SafeFormService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    Survey.StylesManager.applyTheme();
+    this.setFormListeners();
 
-    addCustomFunctions(Survey, this.authService, this.apollo, this.record);
+    Survey.StylesManager.applyTheme();
+    addCustomFunctions(Survey, this.authService, this.record);
 
     const structure = JSON.parse(this.form.structure || '{}');
-
-    if (structure && !structure.completedHtml)
+    if (structure && !structure.completedHtml) {
       structure.completedHtml = `<h3>${this.translate.instant(
         'components.form.display.submissionMessage'
       )}</h3>`;
+    }
 
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
+      this.pages,
       this.form.metadata,
       this.record
     );
-    this.survey.onClearFiles.add((survey: Survey.SurveyModel, options: any) =>
-      this.onClearFiles(survey, options)
+    // After the survey is created we add common callback to survey events
+    this.formBuilderService.addEventsCallBacksToSurvey(
+      this.survey,
+      this.pages,
+      this.temporaryFilesStorage
     );
-    this.survey.onUploadFiles.add((survey: Survey.SurveyModel, options: any) =>
-      this.onUploadFiles(survey, options)
-    );
-    this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>
-      this.onDownloadFile(survey, options)
-    );
-    this.survey.onUpdateQuestionCssClasses.add(
-      (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
-    );
+
+    this.survey.showCompletedPage = false;
+    if (!this.record && !this.form.canCreateRecords) {
+      this.survey.mode = 'display';
+    }
+    this.survey.onValueChanged.add(this.valueChange.bind(this));
+    this.survey.onComplete.add(this.onComplete);
+
     // Unset readOnly fields if it's the record creation
     if (!this.record) {
       this.form.fields?.forEach((field) => {
@@ -138,7 +143,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
     }
-
     // Fetch cached data from local storage
     this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
     const storedData = localStorage.getItem(this.storageId);
@@ -173,26 +177,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     //   });
     // }
 
-    this.survey.focusFirstQuestionAutomatic = false;
-    this.survey.showNavigationButtons = false;
-    this.setPages();
-    this.survey.onComplete.add(this.onComplete);
-    this.survey.showCompletedPage = false;
-    if (!this.record && !this.form.canCreateRecords) {
-      this.survey.mode = 'display';
-    }
-    this.survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
-      survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
-      this.selectedTabIndex = survey.currentPageNo;
-    });
-    this.survey.onPageVisibleChanged.add(() => {
-      this.setPages();
-    });
-    this.survey.onSettingQuestionErrors.add(() => {
-      this.setPages();
-    });
-    this.survey.onValueChanged.add(this.valueChange.bind(this));
-
     // Sets default language as form language if it is in survey locales
     // const currentLang = this.usedLocales.find(
     //   (lang) => lang.value === this.translate.currentLang
@@ -205,7 +189,18 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     // }
   }
 
+  /**
+   * Set needed listeners for the component
+   */
+  private setFormListeners() {
+    this.formBuilderService.selectedPageIndex
+      .asObservable()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((pageIndex: number) => (this.selectedTabIndex = pageIndex));
+  }
+
   ngAfterViewInit(): void {
+    this.survey?.render(this.formContainer.nativeElement);
     // this.translate.onLangChange.subscribe(() => {
     //   const currentLang = this.usedLocales.find(
     //     (lang) => lang.value === this.translate.currentLang
@@ -222,9 +217,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     //     this.survey.render();
     //   }
     // });
-    this.survey.render(this.formContainer.nativeElement);
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    setTimeout(() => {}, 100);
   }
 
   /**
@@ -236,9 +228,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
     this.survey.render();
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    setTimeout(() => {}, 100);
-    this.surveyActive = true;
+    setTimeout(() => (this.surveyActive = true), 100);
   }
 
   /**
@@ -271,46 +261,13 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public onComplete = async () => {
     let mutation: any;
     this.surveyActive = false;
-    const surveyData = this.survey.data;
-    const questionsToUpload = Object.keys(this.temporaryFilesStorage);
-    for (const name of questionsToUpload) {
-      const files = this.temporaryFilesStorage[name];
-      for (const [index, file] of files.entries()) {
-        const res = await firstValueFrom(
-          this.apollo.mutate<UploadFileMutationResponse>({
-            mutation: UPLOAD_FILE,
-            variables: {
-              file,
-              form: this.form.id,
-            },
-            context: {
-              useMultipart: true,
-            },
-          })
-        );
-        if (res.errors) {
-          this.snackBar.openSnackBar(res.errors[0].message, { error: true });
-          return;
-        } else {
-          surveyData[name][index].content = res.data?.uploadFile;
-        }
-      }
-    }
-    const questions = this.survey.getAllQuestions();
-    for (const field in questions) {
-      if (questions[field]) {
-        const key = questions[field].getValueName();
-        if (!surveyData[key]) {
-          if (questions[field].getType() !== 'boolean') {
-            surveyData[key] = null;
-          }
-          if (questions[field].readOnly || !questions[field].visible) {
-            delete surveyData[key];
-          }
-        }
-      }
-    }
-    this.survey.data = surveyData;
+    await this.formService.uploadFiles(
+      this.survey,
+      this.temporaryFilesStorage,
+      this.form?.id
+    );
+    this.formService.setEmptyQuestions(this.survey);
+    // If is an already saved record, edit it
     if (this.record || this.form.uniqueRecord) {
       const recordId = this.record
         ? this.record.id
@@ -324,6 +281,7 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
             this.form.id !== this.record?.form?.id ? this.form.id : null,
         },
       });
+      // Else create a new one
     } else {
       mutation = this.apollo.mutate<AddRecordMutationResponse>({
         mutation: ADD_RECORD,
@@ -362,119 +320,6 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   /**
-   * Handles the clear files event
-   *
-   * @param survey The survey in which the files were cleared
-   * @param options Options regarding the clearing of the files
-   */
-  private onClearFiles(survey: Survey.SurveyModel, options: any): void {
-    options.callback('success');
-  }
-
-  /**
-   * Handles the upload of files event
-   *
-   * @param survey The survey to which the files were added
-   * @param options Options regarding the upload
-   */
-  private onUploadFiles(survey: Survey.SurveyModel, options: any): void {
-    if (this.temporaryFilesStorage[options.name] !== undefined) {
-      this.temporaryFilesStorage[options.name].concat(options.files);
-    } else {
-      this.temporaryFilesStorage[options.name] = options.files;
-    }
-    let content: any[] = [];
-    options.files.forEach((file: any) => {
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        content = content.concat([
-          {
-            name: file.name,
-            type: file.type,
-            content: fileReader.result,
-            file,
-          },
-        ]);
-        if (content.length === options.files.length) {
-          options.callback(
-            'success',
-            content.map((fileContent) => ({
-              file: fileContent.file,
-              content: fileContent.content,
-            }))
-          );
-        }
-      };
-      fileReader.readAsDataURL(file);
-    });
-  }
-
-  /**
-   * Handles the dowload of files event
-   *
-   * @param survey The survey from which the files were downloaded
-   * @param options Options regarding the download
-   */
-  private onDownloadFile(survey: Survey.SurveyModel, options: any): void {
-    if (
-      options.content.indexOf('base64') !== -1 ||
-      options.content.indexOf('http') !== -1
-    ) {
-      options.callback('success', options.content);
-      return;
-    } else {
-      const xhr = new XMLHttpRequest();
-      xhr.open(
-        'GET',
-        `${this.restService.apiUrl}/download/file/${options.content}`
-      );
-      xhr.setRequestHeader(
-        'Authorization',
-        `Bearer ${localStorage.getItem('idtoken')}`
-      );
-      xhr.onloadstart = () => {
-        xhr.responseType = 'blob';
-      };
-      xhr.onload = () => {
-        const file = new File([xhr.response], options.fileValue.name, {
-          type: options.fileValue.type,
-        });
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          options.callback('success', e.target?.result);
-        };
-        reader.readAsDataURL(file);
-      };
-      xhr.send();
-    }
-  }
-
-  /**
-   * Add custom CSS classes to the survey elements.
-   *
-   * @param options survey options.
-   */
-  private onSetCustomCss(options: any): void {
-    const classes = options.cssClasses;
-    classes.content += 'safe-qst-content';
-  }
-
-  /**
-   * Set the pages for the survey
-   */
-  private setPages(): void {
-    const pages = [];
-    if (this.survey) {
-      for (const page of this.survey.pages) {
-        if (page.isVisible) {
-          pages.push(page);
-        }
-      }
-    }
-    this.pages.next(pages);
-  }
-
-  /**
    * Handles the show page event
    *
    * @param i Index of the page
@@ -505,12 +350,22 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isFromCacheData = false;
     this.storageDate = undefined;
     this.survey.render();
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    setTimeout(() => {}, 100);
   }
 
-  ngOnDestroy(): void {
-    localStorage.removeItem(this.storageId);
+  /**
+   * Opens the history of the record on the right side of the screen.
+   */
+  public onShowHistory(): void {
+    if (this.record) {
+      this.layoutService.setRightSidenav({
+        component: SafeRecordHistoryComponent,
+        inputs: {
+          id: this.record.id,
+          revert: (version: any) =>
+            this.confirmRevertDialog(this.record, version),
+        },
+      });
+    }
   }
 
   /**
@@ -519,21 +374,8 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param record The record whose data we need to recover
    * @param version The version to recover
    */
-  private confirmRevertDialog(record: any, version: any): void {
-    // eslint-disable-next-line radix
-    const date = new Date(parseInt(version.createdAt, 0));
-    const formatDate = `${date.getDate()}/${
-      date.getMonth() + 1
-    }/${date.getFullYear()}`;
-    const dialogRef = this.confirmService.openConfirmModal({
-      title: this.translate.instant('components.record.recovery.title'),
-      content: this.translate.instant(
-        'components.record.recovery.confirmationMessage',
-        { date: formatDate }
-      ),
-      confirmText: this.translate.instant('components.confirmModal.confirm'),
-      confirmColor: 'primary',
-    });
+  private confirmRevertDialog(record: any, version: any) {
+    const dialogRef = this.formService.createRevertDialog(version);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.apollo
@@ -568,19 +410,9 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  /**
-   * Opens the history of the record on the right side of the screen.
-   */
-  public onShowHistory(): void {
-    if (this.record) {
-      this.layoutService.setRightSidenav({
-        component: SafeRecordHistoryComponent,
-        inputs: {
-          id: this.record.id,
-          revert: (version: any) =>
-            this.confirmRevertDialog(this.record, version),
-        },
-      });
-    }
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    localStorage.removeItem(this.storageId);
+    this.formBuilderService.selectedPageIndex.next(0);
   }
 }

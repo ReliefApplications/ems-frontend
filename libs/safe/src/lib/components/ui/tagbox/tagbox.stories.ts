@@ -1,5 +1,5 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeTagboxComponent } from './tagbox.component';
 import { SafeTagboxModule } from './tagbox.module';
 import { StorybookTranslateModule } from '../../storybook-translate/storybook-translate-module';
@@ -31,7 +31,7 @@ export default {
  * @param args Arguments used by the component
  * @returns Returns an object used as the stories template
  */
-const TEMPLATE: Story<SafeTagboxComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeTagboxComponent> = (args) => ({
   template:
     '<safe-tagbox [choices$]=choices$ [parentControl]=parentControl [label]=label></safe-tagbox>',
   props: {
@@ -160,26 +160,28 @@ const DEFAULT_FIELDS = [
   },
 ];
 
-/**
- * Sets the template as the default state of the component
- */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  label: 'Select fields',
-  choices$: new BehaviorSubject(DEFAULT_FIELDS).asObservable().pipe(delay(500)),
-  availableChoices: new BehaviorSubject<any>([]),
-  selectedChoices: [],
-  parentControl: new UntypedFormControl([]),
-  inputControl: new UntypedFormControl(),
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+
+  args: {
+    label: 'Select fields',
+    choices$: new BehaviorSubject(DEFAULT_FIELDS)
+      .asObservable()
+      .pipe(delay(500)),
+    availableChoices: new BehaviorSubject<any>([]),
+    selectedChoices: [],
+    // parentControl: new UntypedFormControl([]),
+    inputControl: new UntypedFormControl(),
+  },
 };
 
-/**
- * Sets the template as the initial source of the component
- */
-export const INITIAL_SOURCE = TEMPLATE.bind({});
-INITIAL_SOURCE.storyName = 'Initial source';
-INITIAL_SOURCE.args = {
-  ...DEFAULT.args,
-  parentControl: new UntypedFormControl(['follow', 'date']),
+export const INITIAL_SOURCE = {
+  render: TEMPLATE,
+  name: 'Initial source',
+
+  args: {
+    ...DEFAULT.args,
+    // parentControl: new UntypedFormControl(['follow', 'date']),
+  },
 };

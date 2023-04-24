@@ -16,6 +16,7 @@ import * as EsriCluster from 'esri-leaflet-cluster';
 import * as EsriRenderers from 'esri-leaflet-renderers';
 import * as Esri from 'esri-leaflet';
 import * as Vector from 'esri-leaflet-vector';
+import * as Geocoding from 'esri-leaflet-geocoder';
 import * as L from 'leaflet';
 
 /**
@@ -479,5 +480,23 @@ export class ArcgisService {
    */
   private httpGet(path: string): Promise<any> {
     return this.http.get(path + `?token=${this.esriApiKey}`).toPromise();
+  }
+
+  public reverseSearch(latlng: L.LatLng) {
+    return new Promise((resolve, reject) =>
+      (Geocoding as any)
+        .reverseGeocode({
+          apikey: this.esriApiKey,
+        })
+        .latlng(latlng)
+        .run((err: any, res: any) => {
+          if (res) {
+            resolve(res);
+          }
+          if (err) {
+            reject(err);
+          }
+        })
+    );
   }
 }

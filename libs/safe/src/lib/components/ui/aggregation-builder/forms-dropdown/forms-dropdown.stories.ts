@@ -1,5 +1,5 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { BehaviorSubject } from 'rxjs';
 import { SafeFormsDropdownComponent } from './forms-dropdown.component';
 import { SafeFormsDropdownModule } from './forms-dropdown.module';
@@ -32,7 +32,7 @@ export default {
  * @param args story arguments
  * @returns storybook template
  */
-const TEMPLATE: Story<SafeFormsDropdownComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeFormsDropdownComponent> = (args) => ({
   template:
     '<safe-forms-dropdown [forms$]=forms$ [sourceControl]=sourceControl></safe-forms-dropdown>',
   props: {
@@ -106,24 +106,24 @@ const DEFAULT_FORMS = [
   },
 ];
 
-/**
- * Default story.
- */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  forms$: new BehaviorSubject<Form[]>(DEFAULT_FORMS)
-    .asObservable()
-    .pipe(delay(500)),
-  sourceControl: new UntypedFormControl(''),
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+
+  args: {
+    forms$: new BehaviorSubject<Form[]>(DEFAULT_FORMS)
+      .asObservable()
+      .pipe(delay(500)),
+    sourceControl: new UntypedFormControl(''),
+  },
 };
 
-/**
- * Story with initial value.
- */
-export const INITIAL_SOURCE = TEMPLATE.bind({});
-INITIAL_SOURCE.storyName = 'Initial source';
-INITIAL_SOURCE.args = {
-  ...DEFAULT.args,
-  sourceControl: new UntypedFormControl('613b6c052921406adbfb54bd'),
+export const INITIAL_SOURCE = {
+  render: TEMPLATE,
+  name: 'Initial source',
+
+  args: {
+    ...DEFAULT.args,
+    sourceControl: new UntypedFormControl('613b6c052921406adbfb54bd'),
+  },
 };

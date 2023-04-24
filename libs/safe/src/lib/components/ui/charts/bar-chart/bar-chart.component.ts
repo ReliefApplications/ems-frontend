@@ -16,6 +16,7 @@ import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.p
 import { ChartTitle } from '../interfaces';
 import { DEFAULT_PALETTE } from '../const/palette';
 import { getColor } from '../utils/color.util';
+import { isEqual, isNil } from 'lodash';
 
 /**
  * Interface of chart legend.
@@ -79,40 +80,50 @@ export class SafeBarChartComponent implements OnChanges {
     if (this.usePercentage) this.normalizeDataset();
     const series = get(this.options, 'series', []);
     const palette = get(this.options, 'palette') || DEFAULT_PALETTE;
-
-    this.chartData.datasets = this.series.map((x, i) => {
-      // Get serie settings
-      const serie = series.find((serie: any) => serie.serie === x.name);
-      // Get color
-      const color: any = get(serie, 'color', null) || getColor(palette, i);
-      // Get fill type
-      const fill = get(serie, 'fill', null);
-      let gradient: CanvasGradient | undefined;
-      if (fill === 'gradient') {
-        const chartArea = this.chart?.chart?.chartArea as ChartArea;
-        const ctx = this.chart?.chart?.canvas.getContext('2d');
-        gradient = ctx?.createLinearGradient(
-          isBar ? chartArea.left : 0,
-          isBar ? 0 : chartArea.bottom,
-          isBar ? chartArea.right : 0,
-          isBar ? 0 : chartArea.top
+    // Build series and filter out the hidden series
+    this.chartData.datasets = this.series
+      .map((x, i) => {
+        // Get serie settings
+        const serie = series.find(
+          (serie: any) =>
+            isEqual(serie.serie, x.name) ||
+            (isNil(serie.serie) && isNil(x.name))
         );
-        if (color) {
-          gradient?.addColorStop(1, color);
-          gradient?.addColorStop(0, color.slice(0, -3) + ' 0.05)');
+        // if the serie is visible, get the data
+        if (get(serie, 'visible', true)) {
+          // Get color
+          const color: any = get(serie, 'color', null) || getColor(palette, i);
+          // Get fill type
+          const fill = get(serie, 'fill', null);
+          let gradient: CanvasGradient | undefined;
+          if (fill === 'gradient') {
+            const chartArea = this.chart?.chart?.chartArea as ChartArea;
+            const ctx = this.chart?.chart?.canvas.getContext('2d');
+            gradient = ctx?.createLinearGradient(
+              isBar ? chartArea.left : 0,
+              isBar ? 0 : chartArea.bottom,
+              isBar ? chartArea.right : 0,
+              isBar ? 0 : chartArea.top
+            );
+            if (color) {
+              gradient?.addColorStop(1, color);
+              gradient?.addColorStop(0, color.slice(0, -3) + ' 0.05)');
+            }
+          }
+          return {
+            ...x,
+            borderRadius: 8,
+            backgroundColor: gradient || color,
+            color,
+            borderColor: color,
+            pointBorderColor: color,
+            hoverBackgroundColor: color ? addTransparency(color) : undefined,
+          };
+        } else {
+          return;
         }
-      }
-      return {
-        ...x,
-        borderRadius: 8,
-        backgroundColor: gradient || color,
-        color,
-        borderColor: color,
-        pointBorderColor: color,
-        hoverBackgroundColor: color ? addTransparency(color) : undefined,
-      };
-    });
-
+      })
+      .filter(Boolean);
     this.setOptions();
     this.chart?.update();
   }

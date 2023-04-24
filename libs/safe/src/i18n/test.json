@@ -1132,7 +1132,10 @@
 			},
 			"settings": {
 				"chart": {
+					"auto": "******",
 					"axes": "******",
+					"categories": "******",
+					"color": "******",
 					"grid": {
 						"title": "******",
 						"x": {
@@ -1152,21 +1155,18 @@
 					},
 					"legend": "******",
 					"orientation": "******",
+					"other": "******",
 					"palette": {
 						"enable": "******",
 						"title": "******"
 					},
 					"position": "******",
 					"series": {
-						"settings": {
-							"auto": "******",
-							"color": "******",
-							"fill": "******",
-							"interpolation": "******",
-							"other": "******",
-							"serie": "******",
-							"stepInterpolation": "******"
+						"interpolation": {
+							"step": "******",
+							"title": "******"
 						},
+						"showSerie": "******",
 						"stack": {
 							"enable": "******",
 							"usePercentage": "******"
@@ -1702,6 +1702,24 @@
 			"type": "******"
 		},
 		"dashboard": {
+			"context": {
+				"datasource": {
+					"alert": "******",
+					"info": "******",
+					"set": "******",
+					"title": "******",
+					"update": "******"
+				},
+				"displayField": "******",
+				"edition": {
+					"element": "******",
+					"template": "******"
+				},
+				"origin": "******",
+				"refData": {
+					"element": "******"
+				}
+			},
 			"share": "******"
 		},
 		"form": {

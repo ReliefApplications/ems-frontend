@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeAvatarModule } from './avatar.module';
 import { SafeAvatarComponent } from './avatar.component';
 import { AvatarSize } from './avatar-size.enum';
@@ -44,29 +44,29 @@ export default {
  * @param args story arguments
  * @returns story template
  */
-const TEMPLATE_WITH_TEXT: Story<SafeAvatarComponent> = (args) => ({
+const TEMPLATE_WITH_TEXT: StoryFn<SafeAvatarComponent> = (args) => ({
   template: '<safe-avatar [icon]="icon">{{content}}</safe-avatar>',
   props: {
     ...args,
   },
 });
 
-/**
- * Default story.
- */
-export const DEFAULT = TEMPLATE_WITH_TEXT.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  size: AvatarSize.MEDIUM,
-  variant: AvatarVariant.DEFAULT,
+export const DEFAULT = {
+  render: TEMPLATE_WITH_TEXT,
+  name: 'Default',
+
+  args: {
+    size: AvatarSize.MEDIUM,
+    variant: AvatarVariant.DEFAULT,
+  },
 };
 
-/**
- * Story with Icon in avatar.
- */
-export const ICON = TEMPLATE_WITH_TEXT.bind({});
-ICON.storyName = 'With icon';
-ICON.args = {
-  ...DEFAULT.args,
-  icon: 'home',
+export const ICON = {
+  render: TEMPLATE_WITH_TEXT,
+  name: 'With icon',
+
+  args: {
+    ...DEFAULT.args,
+    icon: 'home',
+  },
 };

@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeRecordSummaryModule } from './record-summary.module';
 import { SafeRecordSummaryComponent } from './record-summary.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -33,48 +33,54 @@ export default {
  * @param args the properties of the instance of SafeRecordSummaryComponent
  * @returns the template
  */
-const TEMPLATE: Story<SafeRecordSummaryComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeRecordSummaryComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
-/** Exports a default template with mock properties */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  record: {
-    createdBy: {
-      name: 'Dummy',
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+
+  args: {
+    record: {
+      createdBy: {
+        name: 'Dummy',
+      },
+      createdAt: new Date(),
+      modifiedBy: {
+        name: 'Dummy',
+      },
+      modifiedAt: new Date(),
     },
-    createdAt: new Date(),
-    modifiedBy: {
-      name: 'Dummy',
-    },
-    modifiedAt: new Date(),
+    cacheDate: new Date(),
   },
-  cacheDate: new Date(),
 };
 
-/** Exports a template with properties that model information only stored in the cache */
-export const CACHE_ONLY = TEMPLATE.bind({});
-CACHE_ONLY.storyName = 'Cache only';
-CACHE_ONLY.args = {
-  cacheDate: new Date(),
+export const CACHE_ONLY = {
+  render: TEMPLATE,
+  name: 'Cache only',
+
+  args: {
+    cacheDate: new Date(),
+  },
 };
 
-/** Exports a template with properties that model information not stored in the cache */
-export const WITHOUT_CACHE = TEMPLATE.bind({});
-WITHOUT_CACHE.storyName = 'Without cache';
-WITHOUT_CACHE.args = {
-  record: {
-    createdBy: {
-      name: 'Dummy',
+export const WITHOUT_CACHE = {
+  render: TEMPLATE,
+  name: 'Without cache',
+
+  args: {
+    record: {
+      createdBy: {
+        name: 'Dummy',
+      },
+      createdAt: new Date(),
+      modifiedBy: {
+        name: 'Dummy',
+      },
+      modifiedAt: new Date(),
     },
-    createdAt: new Date(),
-    modifiedBy: {
-      name: 'Dummy',
-    },
-    modifiedAt: new Date(),
   },
 };

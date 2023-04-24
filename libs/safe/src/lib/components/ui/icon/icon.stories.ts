@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { IconVariant } from './icon-variant.enum';
 import { SafeIconComponent } from './icon.component';
 import { SafeIconModule } from './icon.module';
@@ -42,17 +42,17 @@ export default {
  * @param args Arguments used by the component
  * @returns Returns an object used as the stories template
  */
-const TEMPLATE: Story<SafeIconComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeIconComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
-/**
- * Sets the template as the default state of the component
- */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  icon: 'edit',
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+
+  args: {
+    icon: 'edit',
+  },
 };

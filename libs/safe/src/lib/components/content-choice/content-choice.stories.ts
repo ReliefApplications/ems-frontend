@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeContentChoiceComponent } from './content-choice.component';
 import { SafeContentChoiceModule } from './content-choice.module';
 import { CONTENT_TYPES } from '../../models/page.model';
@@ -24,7 +24,7 @@ export default {
  * @param args the properties of the instance of SafeContentChoiceComponent
  * @returns the template
  */
-const TEMPLATE: Story<SafeContentChoiceComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeContentChoiceComponent> = (args) => ({
   template:
     '<safe-content-choice [formControl]="type" [contentTypes]="contentTypes"></safe-content-choice>',
   props: {
@@ -33,9 +33,11 @@ const TEMPLATE: Story<SafeContentChoiceComponent> = (args) => ({
   },
 });
 
-/** Default template to export */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  contentTypes: CONTENT_TYPES,
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+
+  args: {
+    contentTypes: CONTENT_TYPES,
+  },
 };

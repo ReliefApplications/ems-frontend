@@ -1,4 +1,4 @@
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import {
   Component,
   EventEmitter,
@@ -20,6 +20,9 @@ import {
   SafeUnsubscribeComponent,
   SafeWidgetGridComponent,
   SafeConfirmService,
+  SafeReferenceDataService,
+  PageContextT,
+  Record,
 } from '@oort-front/safe';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
@@ -32,11 +35,22 @@ import {
 } from './graphql/mutations';
 import {
   GetDashboardByIdQueryResponse,
+  GetRecordByIdQueryResponse,
+  GetResourceRecordsQueryResponse,
   GET_DASHBOARD_BY_ID,
+  GET_RECORD_BY_ID,
+  GET_RESOURCE_RECORDS,
 } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { ContextDatasourceComponent } from './components/context-datasource/context-datasource.component';
+import { firstValueFrom } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { isEqual } from 'lodash';
+
+/** Default number of records fetched per page */
+const ITEMS_PER_PAGE = 10;
 
 /**
  * Dashboard page.
@@ -75,6 +89,13 @@ export class DashboardComponent
   @ViewChild(SafeWidgetGridComponent)
   widgetGridComponent!: SafeWidgetGridComponent;
 
+  // === CONTEXT ===
+  public refDataElements: any[] = [];
+  public recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
+  public contextId = new FormControl<string | number | null>(null);
+  public refDataValueField = '';
+  public contextRecord: Record | null = null;
+
   /**
    * Dashboard page
    *
@@ -89,6 +110,7 @@ export class DashboardComponent
    * @param translateService Angular translate service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
+   * @param refDataService Shared reference data service
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -101,7 +123,8 @@ export class DashboardComponent
     private dashboardService: SafeDashboardService,
     private translateService: TranslateService,
     private authService: SafeAuthService,
-    private confirmService: SafeConfirmService
+    private confirmService: SafeConfirmService,
+    private refDataService: SafeReferenceDataService
   ) {
     super();
   }
@@ -122,6 +145,8 @@ export class DashboardComponent
           next: ({ data, loading }) => {
             if (data.dashboard) {
               this.dashboard = data.dashboard;
+              this.initContext();
+              this.updateContextOptions();
               this.canEditName =
                 (this.dashboard?.page
                   ? this.dashboard?.page?.canUpdate
@@ -162,6 +187,14 @@ export class DashboardComponent
           },
         });
     });
+
+    this.contextId.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.handleContextChange(value);
+        }
+      });
   }
 
   /**
@@ -282,7 +315,7 @@ export class DashboardComponent
    * @param e move event.
    */
   onMove(e: any): void {
-    // Dups array, some times the arrays is write protected
+    // Duplicates array, some times the arrays is write protected
     this.tiles = this.tiles.slice();
     [this.tiles[e.oldIndex], this.tiles[e.newIndex]] = [
       this.tiles[e.newIndex],
@@ -506,5 +539,145 @@ export class DashboardComponent
       }
     );
     authSubscription.unsubscribe();
+  }
+
+  /** Opens modal for context dataset selection */
+  public async selectContextDatasource() {
+    const currContext =
+      (await firstValueFrom(this.dashboardService.dashboard$))?.page?.context ??
+      null;
+
+    const dialogRef = this.dialog.open(ContextDatasourceComponent, {
+      data: currContext,
+    });
+
+    dialogRef.afterClosed().subscribe(async (context: PageContextT | null) => {
+      if (context) {
+        if (isEqual(context, currContext)) return;
+
+        await this.dashboardService.updateContext(context);
+        this.dashboard = {
+          ...this.dashboard,
+          page: {
+            ...this.dashboard?.page,
+            context,
+          },
+        };
+
+        const newSource =
+          (currContext as any)?.resource !== (context as any).resource ||
+          (currContext as any)?.refData !== (context as any).refData;
+
+        const urlArr = this.router.url.split('/');
+
+        if (
+          newSource &&
+          this.dashboard?.page?.content &&
+          urlArr[urlArr.length - 1] !== this.dashboard.page.content
+        ) {
+          urlArr[urlArr.length - 1] = this.dashboard.page.content;
+          this.router.navigateByUrl(urlArr.join('/'));
+        } else this.updateContextOptions();
+      }
+    });
+  }
+
+  /**
+   * Update the context options.
+   * Loads elements from reference data or records from resource.
+   */
+  private updateContextOptions() {
+    const context = this.dashboard?.page?.context;
+    if (!context) return;
+
+    if ('resource' in context) {
+      this.recordsQuery =
+        this.apollo.watchQuery<GetResourceRecordsQueryResponse>({
+          query: GET_RESOURCE_RECORDS,
+          variables: {
+            first: ITEMS_PER_PAGE,
+            id: context.resource,
+          },
+        });
+    }
+
+    if ('refData' in context) {
+      this.refDataService.loadReferenceData(context.refData).then((refData) => {
+        this.refDataValueField = refData.valueField || '';
+        this.refDataService.fetchItems(refData).then((items) => {
+          this.refDataElements = items;
+        });
+      });
+    }
+  }
+
+  /**
+   * Handle dashboard context change.
+   *
+   * @param value id of the element or record
+   */
+  private async handleContextChange(value: string | number) {
+    if (!this.dashboard?.page?.id || !this.dashboard.page.context) return;
+
+    // Check if there is a dashboard with the same context
+    const dashboardsWithContext = this.dashboard?.page?.contentWithContext;
+    let type: 'record' | 'element';
+    if ('resource' in this.dashboard.page.context) {
+      // Resource
+      type = 'record';
+    } else {
+      // Ref Data
+      type = 'element';
+    }
+    const dashboardWithContext = dashboardsWithContext?.find((d) => {
+      if (type === 'element') return 'element' in d && d.element === value;
+      else if (type === 'record') return 'record' in d && d.record === value;
+      return false;
+    });
+
+    const urlArr = this.router.url.split('/');
+    if (dashboardWithContext) {
+      urlArr[urlArr.length - 1] = dashboardWithContext.content;
+      this.router.navigateByUrl(urlArr.join('/'));
+    } else {
+      const { data } = await this.dashboardService.createDashboardWithContext(
+        this.dashboard?.page?.id,
+        type,
+        value
+      );
+      if (!data?.addDashboardWithContext?.id) return;
+      urlArr[urlArr.length - 1] = data.addDashboardWithContext.id;
+      this.router.navigateByUrl(urlArr.join('/'));
+    }
+  }
+
+  /** Initializes the dashboard context;  */
+  private initContext() {
+    if (!this.dashboard?.page?.context || !this.dashboard?.id) return;
+    // Checks if the dashboard has context attached to it
+    const contentWithContext = this.dashboard?.page?.contentWithContext || [];
+    const id = this.dashboard.id;
+    const dContext = contentWithContext.find((c) => c.content === id);
+
+    if (!dContext) return;
+
+    // If it has updated the form
+    if ('element' in dContext) {
+      this.contextId.setValue(dContext.element);
+    } else if ('record' in dContext) {
+      this.contextId.setValue(dContext.record);
+
+      // Get record by id
+      firstValueFrom(
+        this.apollo.query<GetRecordByIdQueryResponse>({
+          query: GET_RECORD_BY_ID,
+          variables: {
+            id: dContext.record,
+          },
+        })
+      ).then(({ data }) => {
+        this.contextRecord = data.record;
+      });
+    }
   }
 }

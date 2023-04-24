@@ -1,6 +1,8 @@
-import { Question } from 'survey-angular';
+import { JsonMetadata, Question } from 'survey-angular';
 import { GeospatialMapComponent } from '../../components/geospatial-map/geospatial-map.component';
 import { DomService } from '../../services/dom/dom.service';
+import { SurveyPropertyEditorFactory } from 'survey-creator';
+import { GeofieldsListboxComponent } from '../../components/geofields-listbox/geofields-listbox.component';
 
 /**
  * Inits the geospatial component.
@@ -25,7 +27,9 @@ export const init = (Survey: any, domService: DomService): void => {
     },
     category: 'Custom Questions',
     onInit: (): void => {
-      Survey.Serializer.addProperty('geospatial', {
+      const serializer: JsonMetadata = Survey.Serializer;
+      // Geospatial type
+      serializer.addProperty('geospatial', {
         name: 'geometry',
         type: 'dropdown',
         category: 'general',
@@ -33,6 +37,34 @@ export const init = (Survey: any, domService: DomService): void => {
         default: 'Point',
         choices: ['Point'],
       });
+      // Display geofields
+      serializer.addProperty('geospatial', {
+        name: 'geoFields',
+        category: 'Map Properties',
+        type: 'listBox',
+        visibleIndex: 2,
+        // dependsOn: ['geometry'],
+        // visibleIf: (obj: null | any) => !!obj && obj.geometry === 'POINT',
+      });
+      // Tagbox
+      const listBoxEditor = {
+        render: (editor: any, htmlElement: HTMLElement) => {
+          const question = editor.object;
+          const listbox = domService.appendComponentToBody(
+            GeofieldsListboxComponent,
+            htmlElement
+          );
+          const instance: GeofieldsListboxComponent = listbox.instance;
+          instance.selectedFields = question.geoFields || [];
+          instance.selectionChange.subscribe((fields) => {
+            question.geoFields = fields || [];
+          });
+        },
+      };
+      SurveyPropertyEditorFactory.registerCustomEditor(
+        'listBox',
+        listBoxEditor
+      );
     },
     onAfterRender: (question: Question, el: HTMLElement): void => {
       // hides the input element
@@ -45,6 +77,14 @@ export const init = (Survey: any, domService: DomService): void => {
 
       // inits the map with the value of the question
       if (question.value) instance.data = question.value;
+
+      // Set geo fields
+      instance.fields = question.geoFields || [];
+
+      // Listen to change on geofields
+      question.registerFunctionOnPropertyValueChanged('geoFields', () => {
+        instance.fields = question.geoFields;
+      });
 
       // updates the question value when the map changes
       instance.mapChange.subscribe((res) => {

@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeStepComponent } from './step.component';
 import { SafeWorkflowStepperModule } from '../../workflow-stepper.module';
 import { ContentType } from '../../../../models/page.model';
@@ -27,20 +27,22 @@ export default {
  * @param args Properties
  * @returns A story component
  */
-const TEMPLATE: Story<SafeStepComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeStepComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
-/** Story component */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  step: {
-    name: 'Dashboard',
-    type: ContentType.dashboard,
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+
+  args: {
+    step: {
+      name: 'Dashboard',
+      type: ContentType.dashboard,
+    },
+    active: true,
+    canUpdate: true,
   },
-  active: true,
-  canUpdate: true,
 };

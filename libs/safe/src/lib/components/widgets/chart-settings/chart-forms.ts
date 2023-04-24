@@ -334,6 +334,7 @@ export const createCategoryForm = (value: any) => {
   return fb.group({
     category: get<string | undefined>(value, 'category', undefined),
     color: get<string | undefined>(value, 'color', undefined),
+    visible: [get(value, 'visible', true)],
   });
 };
 
@@ -347,6 +348,7 @@ export const createCategoryForm = (value: any) => {
 export const createSerieForm = (type: string | null, value: any) =>
   fb.group({
     serie: get<string | undefined>(value, 'serie', undefined),
+    visible: [get(value, 'visible', true)],
     ...(type &&
       ['bar', 'column', 'line'].includes(type) && {
         color: get<string | undefined>(value, 'color', undefined),

@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeApplicationsSummaryComponent } from './applications-summary.component';
 import { SafeApplicationsSummaryModule } from './applications-summary.module';
 import { status } from '../../models/form.model';
@@ -22,41 +22,43 @@ export default {
  * @param args the properties of the instance of SafeApplicationsSummaryComponent
  * @returns the template
  */
-const TEMPLATE: Story<SafeApplicationsSummaryComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeApplicationsSummaryComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
-/** Exports a default template with mock properties */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  canCreate: true,
-  applications: [
-    {
-      name: 'Dummy Application',
-      createdAt: new Date(),
-      status: status.active,
-    },
-    {
-      name: 'Dummy Application',
-      createdAt: new Date(),
-      status: status.pending,
-    },
-    {
-      name: 'Dummy Application',
-      createdAt: new Date(),
-      status: status.archived,
-    },
-    {
-      name: 'Dummy Application',
-      createdAt: new Date(),
-      status: status.active,
-    },
-    {
-      name: 'Dummy Application',
-      createdAt: new Date(),
-    },
-  ],
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+
+  args: {
+    canCreate: true,
+    applications: [
+      {
+        name: 'Dummy Application',
+        createdAt: new Date(),
+        status: status.active,
+      },
+      {
+        name: 'Dummy Application',
+        createdAt: new Date(),
+        status: status.pending,
+      },
+      {
+        name: 'Dummy Application',
+        createdAt: new Date(),
+        status: status.archived,
+      },
+      {
+        name: 'Dummy Application',
+        createdAt: new Date(),
+        status: status.active,
+      },
+      {
+        name: 'Dummy Application',
+        createdAt: new Date(),
+      },
+    ],
+  },
 };

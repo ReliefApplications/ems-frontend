@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeBadgeModule } from './badge.module';
 import { SafeBadgeComponent } from './badge.component';
 import { BadgeSize } from './badge-size.enum';
@@ -44,7 +44,7 @@ export default {
  * @param args story arguments
  * @returns story template
  */
-const TEMPLATE_WITH_TEXT: Story<SafeBadgeComponent> = (args) => ({
+const TEMPLATE_WITH_TEXT: StoryFn<SafeBadgeComponent> = (args) => ({
   template:
     '<safe-badge [icon]="icon" [size]="size" [variant]="variant">{{content}}</safe-badge>',
   props: {
@@ -52,22 +52,22 @@ const TEMPLATE_WITH_TEXT: Story<SafeBadgeComponent> = (args) => ({
   },
 });
 
-/**
- * Default story.
- */
-export const DEFAULT = TEMPLATE_WITH_TEXT.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  size: BadgeSize.MEDIUM,
-  variant: BadgeVariant.DEFAULT,
+export const DEFAULT = {
+  render: TEMPLATE_WITH_TEXT,
+  name: 'Default',
+
+  args: {
+    size: BadgeSize.MEDIUM,
+    variant: BadgeVariant.DEFAULT,
+  },
 };
 
-/**
- * Story with icon.
- */
-export const ICON = TEMPLATE_WITH_TEXT.bind({});
-ICON.storyName = 'With icon';
-ICON.args = {
-  ...DEFAULT.args,
-  icon: 'home',
+export const ICON = {
+  render: TEMPLATE_WITH_TEXT,
+  name: 'With icon',
+
+  args: {
+    ...DEFAULT.args,
+    icon: 'home',
+  },
 };
