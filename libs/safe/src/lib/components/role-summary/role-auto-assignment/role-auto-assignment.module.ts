@@ -7,7 +7,6 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { EditRoleAutoAssignmentModalModule } from './edit-role-auto-assignment-modal/edit-role-auto-assignment-modal.module';
 
 /**
  * Component for Auto assignment of role
@@ -23,7 +22,6 @@ import { EditRoleAutoAssignmentModalModule } from './edit-role-auto-assignment-m
     MatTableModule,
     SafeSkeletonTableModule,
     MatTooltipModule,
-    EditRoleAutoAssignmentModalModule,
   ],
   exports: [RoleAutoAssignmentComponent],
 })

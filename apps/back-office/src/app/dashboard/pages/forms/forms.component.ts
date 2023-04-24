@@ -16,7 +16,6 @@ import {
   AddFormMutationResponse,
   ADD_FORM,
 } from './graphql/mutations';
-import { AddFormModalComponent } from '../../../components/add-form-modal/add-form-modal.component';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
@@ -275,7 +274,10 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
    * Displays the AddForm modal.
    * Creates a new form on closed if result.
    */
-  onAdd(): void {
+  async onAdd(): Promise<void> {
+    const { AddFormModalComponent } = await import(
+      '../../../components/add-form-modal/add-form-modal.component'
+    );
     const dialogRef = this.dialog.open(AddFormModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

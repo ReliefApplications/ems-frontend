@@ -11,6 +11,14 @@ import {
 import { SafeEditorService } from '../../../../services/editor/editor.service';
 import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
 import get from 'lodash/get';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { TranslateModule } from '@ngx-translate/core';
+import { SafeModalModule } from '../../../ui/modal/modal.module';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 /** Model for the data input */
 interface DialogData {
@@ -21,6 +29,21 @@ interface DialogData {
 
 /** Component for editing a template */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    SafeModalModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    EditorModule,
+  ],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+  ],
   selector: 'safe-edit-template',
   templateUrl: './edit-template-modal.component.html',
   styleUrls: ['./edit-template-modal.component.scss'],

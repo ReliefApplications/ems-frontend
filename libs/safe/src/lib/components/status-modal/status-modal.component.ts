@@ -3,6 +3,11 @@ import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
   MatLegacyDialogRef as MatDialogRef,
 } from '@angular/material/legacy-dialog';
+import { CommonModule } from '@angular/common';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * Interface describing the structure of the data displayed in the modal
@@ -17,6 +22,14 @@ interface StatusDialogData {
  * This component is used to show a modal displaying the status of a component (on save, update etc.)
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    SafeModalModule,
+  ],
   selector: 'safe-status-modal',
   templateUrl: './status-modal.component.html',
   styleUrls: ['./status-modal.component.scss'],

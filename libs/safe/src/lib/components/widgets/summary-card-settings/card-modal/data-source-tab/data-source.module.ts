@@ -10,7 +10,6 @@ import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeGraphQLSelectModule } from '../../../../graphql-select/graphql-select.module';
-import { AddLayoutModalModule } from '../../../../grid-layout/add-layout-modal/add-layout-modal.module';
 import { SafeFormsDropdownModule } from '../../../../ui/aggregation-builder/public-api';
 import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
@@ -35,7 +34,6 @@ import { SafeDividerModule } from '../../../../ui/divider/divider.module';
     MatProgressSpinnerModule,
     SafeGraphQLSelectModule,
     SafeButtonModule,
-    AddLayoutModalModule,
     MatCheckboxModule,
     SafeDividerModule,
   ],

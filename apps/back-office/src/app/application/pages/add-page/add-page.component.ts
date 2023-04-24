@@ -15,7 +15,6 @@ import {
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
-import { AddFormModalComponent } from '../../../components/add-form-modal/add-form-modal.component';
 import { AddFormMutationResponse, ADD_FORM } from './graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
@@ -187,7 +186,10 @@ export class AddPageComponent
   /**
    * Add a new form.
    */
-  onAdd(): void {
+  async onAdd(): Promise<void> {
+    const { AddFormModalComponent } = await import(
+      '../../../components/add-form-modal/add-form-modal.component'
+    );
     const dialogRef = this.dialog.open(AddFormModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

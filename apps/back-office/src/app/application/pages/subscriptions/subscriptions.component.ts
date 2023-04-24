@@ -8,7 +8,6 @@ import {
   SafeApplicationService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
-import { SubscriptionModalComponent } from './components/subscription-modal/subscription-modal.component';
 import { takeUntil } from 'rxjs/operators';
 
 /**
@@ -69,7 +68,10 @@ export class SubscriptionsComponent
    * Display the AddSubscription modal.
    * Create a new subscription linked to this application on close.
    */
-  onAdd(): void {
+  async onAdd(): Promise<void> {
+    const { SubscriptionModalComponent } = await import(
+      './components/subscription-modal/subscription-modal.component'
+    );
     const dialogRef = this.dialog.open(SubscriptionModalComponent, {
       data: {
         channels: this.channels,
@@ -107,7 +109,10 @@ export class SubscriptionsComponent
    *
    * @param element subscription to edit
    */
-  onEdit(element: any): void {
+  async onEdit(element: any): Promise<void> {
+    const { SubscriptionModalComponent } = await import(
+      './components/subscription-modal/subscription-modal.component'
+    );
     const dialogRef = this.dialog.open(SubscriptionModalComponent, {
       data: {
         channels: this.channels,

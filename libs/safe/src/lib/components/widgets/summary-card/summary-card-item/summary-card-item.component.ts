@@ -9,7 +9,6 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
-import { SafeResourceGridModalComponent } from '../../../search-resource-grid-modal/search-resource-grid-modal.component';
 import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
@@ -209,8 +208,11 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /**
    * Open the dataSource modal.
    */
-  public openDataSource(): void {
+  public async openDataSource(): Promise<void> {
     if (this.layout?.query) {
+      const { SafeResourceGridModalComponent } = await import(
+        '../../../search-resource-grid-modal/search-resource-grid-modal.component'
+      );
       this.dialog.open(SafeResourceGridModalComponent, {
         data: {
           gridSettings: clone(this.layout.query),

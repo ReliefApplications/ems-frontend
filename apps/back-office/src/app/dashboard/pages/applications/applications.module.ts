@@ -24,7 +24,6 @@ import {
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
-import { DuplicateApplicationModalModule } from '../../../components/duplicate-application-modal/duplicate-application-modal.module';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
@@ -53,7 +52,6 @@ import { AbilityModule } from '@casl/angular';
     MatIconModule,
     MatChipsModule,
     SafeAccessModule,
-    DuplicateApplicationModalModule,
     MatDatepickerModule,
     MatNativeDateModule,
     SafeButtonModule,
