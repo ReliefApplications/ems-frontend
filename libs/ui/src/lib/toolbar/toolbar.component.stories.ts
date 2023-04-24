@@ -19,6 +19,12 @@ export default {
   ],
 } as Meta<ToolbarComponent>;
 
+/**
+ * Template for stroybook's test of the component
+ *
+ * @param args
+ * @returns ToolbarComponent
+ */
 const Template: Story<ToolbarComponent> = (args: ToolbarComponent) => ({
   props: args,
   template: `
@@ -48,13 +54,30 @@ const Template: Story<ToolbarComponent> = (args: ToolbarComponent) => ({
   </ui-toolbar>`,
 });
 
-export const Primary = Template.bind({});
-Primary.args = {
+/**
+ * Purple background light text version
+ *
+ */
+export const Purple_Light = Template.bind({});
+Purple_Light.args = {
   color: '#6f51ae',
   toolbarVariant: Variant.LIGHT,
 };
-export const Secondary = Template.bind({});
-Secondary.args = {
+/**
+ * Purple background dark text version
+ *
+ */
+export const Purple_Dark = Template.bind({});
+Purple_Dark.args = {
+  color: '#6f51ae',
+  toolbarVariant: Variant.DARK,
+};
+/**
+ * Green background dark text version
+ *
+ */
+export const Green_Dark = Template.bind({});
+Green_Dark.args = {
   color: '#ceded8',
   toolbarVariant: Variant.DARK,
 };

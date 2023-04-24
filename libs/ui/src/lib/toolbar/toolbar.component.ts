@@ -1,6 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { Variant } from '../shared/variant.enum';
 
+/**
+ * UI Toolbar component
+ */
 @Component({
   selector: 'ui-toolbar',
   templateUrl: './toolbar.component.html',
@@ -8,7 +11,7 @@ import { Variant } from '../shared/variant.enum';
 })
 export class ToolbarComponent {
   @Input() color = '';
-  @Input() toolbarVariant!: Variant;
+  @Input() toolbarVariant: Variant = Variant.DARK;
 
   toolbarVariants = Variant;
 }
