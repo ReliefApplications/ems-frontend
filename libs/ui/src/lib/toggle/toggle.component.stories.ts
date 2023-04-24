@@ -3,6 +3,7 @@ import { ToggleComponent } from './toggle.component';
 import { ToggleModule } from './toggle.module';
 import { ToggleType } from './enums/toggle-type.enum';
 import { Variant } from '../shared/variant.enum';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 export default {
   title: 'Toggle',
@@ -26,10 +27,13 @@ export default {
     label: {
       control: 'object',
     },
+    disabled: {
+      type: 'boolean',
+    },
   },
   decorators: [
     moduleMetadata({
-      imports: [ToggleModule],
+      imports: [ToggleModule, ReactiveFormsModule],
     }),
   ],
 } as Meta<ToggleComponent>;
@@ -44,6 +48,36 @@ const Template: StoryFn<ToggleComponent> = (args: ToggleComponent) => ({
   props: args,
 });
 
+/**
+ * Form control template toggle
+ *
+ * @param {ToggleComponent} args args
+ * @returns ToggleComponent
+ */
+const FormControlTemplate: StoryFn<ToggleComponent> = (
+  args: ToggleComponent
+) => {
+  const formGroup = new FormGroup({
+    toggle: new FormControl(true),
+  });
+  return {
+    component: ToggleComponent,
+    template: `
+      <form [formGroup]="formGroup">
+      <ui-toggle formControlName="toggle"></ui-toggle>
+        </form>
+        <br>
+        <p>value: {{formGroup.get('toggle').value}}</p>
+        <p>touched: {{formGroup.get('toggle').touched}}</p>
+        `,
+    props: {
+      ...args,
+      formGroup,
+    },
+  };
+};
+/** Form control toggle */
+export const FormToggle = FormControlTemplate.bind({});
 /** Primary toggle */
 export const Primary = Template.bind({});
 Primary.args = {
