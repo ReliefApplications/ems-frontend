@@ -3,18 +3,36 @@
         
         <ng-container *ngIf="orientation === radioOrientations.HORIZONTAL; else vertical">
             <div class="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0">
-                <div class="flex items-center" *ngFor="let radio of options">
-                    <input [id]="radio.name" [name]="radio.name" type="radio" checked class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                    <label [for]="radio.name" class="ml-3 block text-sm font-medium leading-6 text-gray-900">{{ radio.label }}</label>
+                <div class="flex items-center" [ariaLabel]="ariaLabelledby" *ngFor="let radio of options">
+                    <input 
+                        [id]="radio.value"
+                        [name]="name" 
+                        type="radio"  
+                        class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                        [required]="required"
+                        [disabled]="disabled"
+                        [value]="radio.value"
+                        checked
+                    >
+                    <label [for]="radio.value" class="ml-3 block text-sm font-medium leading-6 text-gray-900">{{ radio.label }}</label>
                 </div>
             </div>
         </ng-container>
         
         <ng-template #vertical>
             <div class="space-y-4">
-                <div class="flex items-center" *ngFor="let radio of options">
-                    <input [id]="radio.name" [name]="radio.name" type="radio" checked class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                    <label [for]="radio.name" class="ml-3 block text-sm font-medium leading-6 text-gray-900">{{ radio.label }}</label>
+                <div class="flex items-center" [ariaLabel]="ariaLabelledby" *ngFor="let radio of options">
+                    <input 
+                        [id]="radio.value"
+                        [name]="name" 
+                        type="radio" 
+                        class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                        [required]="required"
+                        [disabled]="disabled"
+                        [value]="radio.value"
+                        checked
+                    >
+                    <label [for]="radio.value" class="ml-3 block text-sm font-medium leading-6 text-gray-900">{{ radio.label }}</label>
                 </div>
             </div>
         </ng-template>

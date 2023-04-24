@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { RadioOrientation } from './enums/orientation.enum';
 
 @Component({
@@ -12,6 +12,9 @@ export class RadioComponent {
   @Input() required: boolean = false;
   @Input() ariaLabelledby: string = '';
   @Input() orientation: RadioOrientation = RadioOrientation.HORIZONTAL
+  @Input() name: string = '';
+  @Output() onSelectOption: EventEmitter<any> = new EventEmitter();
 
   public radioOrientations = RadioOrientation;
+
 }

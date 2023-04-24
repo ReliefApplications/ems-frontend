@@ -4,8 +4,8 @@ import { RadioModule } from './radio.module'
 import { RadioOrientation } from './enums/orientation.enum';
 
 type RadioOption = {
-  name: string;
   label: string;
+  value: string;
 }
 
 export default {
@@ -20,16 +20,16 @@ export default {
 
 const radioOptions: RadioOption[] = [
   {
-    name: "email",
-    label: "Email"
+    label: "Email",
+    value: "email"
   },
   {
-    name: "phone",
-    label: "Phone (SMS)"
+    label: "Phone (SMS)",
+    value: "sms"
   },
   {
-    name: "pushNotification",
-    label: "Push Notification"
+    label: "Push Notification",
+    value: "push"
   }
 ]
 
@@ -39,6 +39,7 @@ const Template: StoryFn<RadioComponent> = (args: RadioComponent) => ({
 
 export const RadioTemplate1 = Template.bind({});
 RadioTemplate1.args = {
+  name: "notification-method",
   disabled: false,
   required: true,
   orientation: RadioOrientation.HORIZONTAL,
