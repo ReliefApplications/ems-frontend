@@ -671,6 +671,12 @@
 			},
 			"readAll": "Mark all as read"
 		},
+		"paginator": {
+			"items": "items",
+			"itemsPerPage": "items per page",
+			"of": "of",
+			"page": "Page"
+		},
 		"preferences": {
 			"dateFormat": "Date and time format",
 			"language": "Language",

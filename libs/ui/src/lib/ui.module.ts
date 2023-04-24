@@ -6,12 +6,13 @@ import { CheckboxModule } from './checkbox/checkbox.module';
 import { FlyoutMenuModule } from './flyout-menu/flyout-menu.module';
 import { IconModule } from './icon/icon.module';
 import { SelectModule } from './select/select.module';
+import { PaginatorModule } from './paginator/paginator.module';
 
 /**
  * UI Library Module
  */
 @NgModule({
-  imports: [CommonModule],
+  imports: [CommonModule, PaginatorModule],
   exports: [
     AvatarModule,
     ButtonModule,
@@ -19,6 +20,7 @@ import { SelectModule } from './select/select.module';
     FlyoutMenuModule,
     IconModule,
     SelectModule,
+    PaginatorModule,
   ],
 })
 export class UiModule {}

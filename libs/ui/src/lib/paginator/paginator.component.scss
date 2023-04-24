@@ -1,0 +1,15 @@
+:host kendo-datapager {
+  @apply justify-end bg-white border-l-0 border-b-0 border-r-0 border-t;
+}
+
+:host ::ng-deep kendo-datapager-info {
+  @apply flex-grow-0;
+}
+
+:host ::ng-deep div.k-pager-numbers-wrap {
+  order: 2;
+}
+
+:host ::ng-deep .k-pager {
+  @apply border-0 focus:shadow-none;
+}
