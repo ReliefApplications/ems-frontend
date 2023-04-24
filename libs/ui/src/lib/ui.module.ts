@@ -7,6 +7,9 @@ import { FlyoutMenuModule } from './flyout-menu/flyout-menu.module';
 import { IconModule } from './icon/icon.module';
 import { SelectModule } from './select/select.module';
 import { TableModule } from './table/table.module';
+import { AvatarGroupModule } from './avatar-group/avatar-group.module';
+import { ToggleModule } from './toggle/toggle.module';
+import { DividerModule } from './divider/divider.module';
 
 /**
  * UI Library Module
@@ -16,20 +19,26 @@ import { TableModule } from './table/table.module';
     CommonModule,
     AvatarModule,
     ButtonModule,
+    AvatarGroupModule,
     CheckboxModule,
     FlyoutMenuModule,
     IconModule,
     SelectModule,
     TableModule,
+    ToggleModule,
+    DividerModule,
   ],
   exports: [
     AvatarModule,
     ButtonModule,
+    AvatarGroupModule,
     CheckboxModule,
     FlyoutMenuModule,
     IconModule,
     SelectModule,
     TableModule,
+    ToggleModule,
+    DividerModule,
   ],
 })
 export class UiModule {}

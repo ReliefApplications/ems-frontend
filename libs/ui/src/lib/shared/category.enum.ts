@@ -1,7 +1,7 @@
 /**
- * Avatar variant enum.
+ * Category enum.
  */
-export enum AvatarVariant {
+export enum Category {
   PRIMARY = 'primary',
   SECONDARY = 'secondary',
   TERTIARY = 'tertiary',
