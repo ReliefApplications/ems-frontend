@@ -17,7 +17,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
 }
 
 /**
- * Dev phase, à la cool
+ * Component to create a record for a resource question without directly saving it
  */
 @Component({
   selector: 'safe-resource-modal',

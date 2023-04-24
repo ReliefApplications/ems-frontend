@@ -12,6 +12,7 @@ import { SafeResourceDropdownComponent } from '../../components/resource-dropdow
 import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { DomService } from '../../services/dom/dom.service';
 import { buildSearchButton, buildAddButton } from './utils';
+import localForage from 'localforage';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
@@ -856,15 +857,37 @@ export const init = (
    * @param instance grid instance.
    * @param question survey question.
    */
-  const setGridInputs = (
+  const setGridInputs = async (
     instance: SafeCoreGridComponent,
     question: any
-  ): void => {
+  ) => {
     instance.multiSelect = true;
     const query = question.gridFieldsSettings || {};
+    const temporaryRecords: any[] = [];
+    const promises: any[] = [];
+    question.newCreatedRecords?.forEach((recordId: string) => {
+      const promise = new Promise<void>((resolve, reject) => {
+        localForage
+          .getItem(recordId)
+          .then((data: any) => {
+            if (data != null) {
+              // We ensure to make it only if such a record is found
+              temporaryRecords.push({ id: recordId, ...JSON.parse(data).data });
+            }
+            resolve();
+          })
+          .catch((error: any) => {
+            console.error(error); // Handle any errors that occur while getting the item
+            reject(error);
+          });
+      });
+      promises.push(promise);
+    });
+
     const settings = {
       query: {
         ...query,
+        temporaryRecords: temporaryRecords,
         filter: {
           logic: 'and',
           filters: [
@@ -889,6 +912,8 @@ export const init = (
       });
     }
     instance.settings = settings;
-    instance.configureGrid();
+    Promise.allSettled(promises).then(() => {
+      instance.configureGrid();
+    });
   };
 };

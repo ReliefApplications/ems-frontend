@@ -625,33 +625,42 @@ export class SafeCoreGridComponent
           this.status = {
             error: false,
           };
+          console.log(data, 'data', this.settings.query);
           for (const field in data) {
-            if (Object.prototype.hasOwnProperty.call(data, field)) {
-              const nodes =
-                data[field].edges.map((x: any) => ({
-                  ...x.node,
-                  _meta: {
-                    style: x.meta.style,
-                  },
-                })) || [];
-              this.totalCount = data[field].totalCount;
-              this.items = cloneData(nodes);
-              this.convertDateFields(this.items);
-              this.originalItems = cloneData(this.items);
-              this.loadItems();
-              for (const updatedItem of this.updatedItems) {
-                const item: any = this.items.find(
-                  (x) => x.id === updatedItem.id
-                );
-                if (item) {
-                  Object.assign(item, updatedItem);
-                  item.saved = false;
+            try {
+              if (Object.prototype.hasOwnProperty.call(data, field)) {
+                const nodes =
+                  data[field]?.edges.map((x: any) => ({
+                    ...x.node,
+                    _meta: {
+                      style: x.meta.style,
+                    },
+                  })) || [];
+                this.totalCount = data[field]?.totalCount;
+                this.items = cloneData(nodes);
+                this.convertDateFields(this.items);
+                this.originalItems = cloneData(this.items);
+                this.loadItems();
+                for (const updatedItem of this.updatedItems) {
+                  const item: any = this.items.find(
+                    (x) => x.id === updatedItem.id
+                  );
+                  if (item) {
+                    Object.assign(item, updatedItem);
+                    item.saved = false;
+                  }
                 }
+                // if (!this.readOnly) {
+                //   this.initSelectedRows();
+                // }
               }
-              // if (!this.readOnly) {
-              //   this.initSelectedRows();
-              // }
+            } catch (error) {
+              console.error(error, 'dats why');
             }
+          }
+          if (this.settings.query.temporaryRecords) {
+            //Handles temporary records for resources creation in forms
+            this.getTemporaryRecords();
           }
         },
         error: (err: any) => {
@@ -676,6 +685,19 @@ export class SafeCoreGridComponent
   }
 
   /**
+   * Loads temporary records for resources questions
+   */
+  public getTemporaryRecords() {
+    const ids = this.items.map((item) => item.id);
+    this.settings.query.temporaryRecords.forEach((record: any) => {
+      if (!ids.includes(record.id)) this.items.unshift(record);
+    });
+    this.totalCount =
+      this.totalCount + this.settings.query.temporaryRecords.length;
+    this.loadItems();
+  }
+
+  /**
    * Sets the list of items to display.
    */
   private loadItems(): void {
@@ -683,6 +705,11 @@ export class SafeCoreGridComponent
       data: this.items,
       total: this.totalCount,
     };
+    console.log(
+      'load items',
+      this.gridData,
+      this.settings?.query?.temporaryRecords
+    );
   }
 
   /**
