@@ -1567,6 +1567,8 @@
 		"dashboard": {
 			"context": {
 				"datasource": {
+					"alert": "******",
+					"info": "******",
 					"set": "******",
 					"title": "******",
 					"update": "******"
@@ -1588,7 +1590,8 @@
 			"create": "******",
 			"field": {
 				"label": "******",
-				"name": "******"
+				"name": "******",
+				"usedIn": "******"
 			},
 			"new": "******",
 			"notifications": {

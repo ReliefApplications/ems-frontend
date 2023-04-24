@@ -1,5 +1,5 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
 import { SafeWidgetGridComponent } from './widget-grid.component';
 import { SafeWidgetGridModule } from './widget-grid.module';
@@ -24,7 +24,7 @@ export default {
  * @param args Properties
  * @returns A story component
  */
-const TEMPLATE: Story<SafeWidgetGridComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeWidgetGridComponent> = (args) => ({
   props: {
     ...args,
     widgetTypes: WIDGET_TYPES,
@@ -68,18 +68,22 @@ const defaultWidgets = [
   },
 ];
 
-/** Export a story component */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  canUpdate: true,
-  widgets: defaultWidgets,
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+
+  args: {
+    canUpdate: true,
+    widgets: defaultWidgets,
+  },
 };
 
-/** Export a story component */
-export const EMPTY = TEMPLATE.bind({});
-EMPTY.storyName = 'Empty grid';
-EMPTY.args = {
-  canUpdate: true,
-  widgets: [],
+export const EMPTY = {
+  render: TEMPLATE,
+  name: 'Empty grid',
+
+  args: {
+    canUpdate: true,
+    widgets: [],
+  },
 };

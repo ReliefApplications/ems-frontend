@@ -31,6 +31,7 @@ export const RESOURCE_FIELDS = gql`
         multiSelect
         options
       }
+      usedIn
     }
     fields
   }

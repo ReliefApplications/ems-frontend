@@ -1,5 +1,5 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeGroupStageComponent } from './group-stage.component';
 import { SafePipelineModule } from '../pipeline.module';
 import { StorybookTranslateModule } from '../../../../storybook-translate/storybook-translate-module';
@@ -76,7 +76,7 @@ const fb = new UntypedFormBuilder();
  *
  * @returns story template
  */
-const TEMPLATE: Story<SafeGroupStageComponent> = () => ({
+const TEMPLATE: StoryFn<SafeGroupStageComponent> = () => ({
   template: '<safe-group-stage [form]=form [fields]=fields></safe-group-stage>',
   props: {
     // Need to pass formGroup there otherwise we get an error: https://github.com/storybookjs/storybook/discussions/15602
@@ -88,9 +88,8 @@ const TEMPLATE: Story<SafeGroupStageComponent> = () => ({
   },
 });
 
-/**
- * Default template.
- */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {};
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+  args: {},
+};

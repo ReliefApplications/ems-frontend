@@ -1,5 +1,5 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeMappingModalComponent } from './mapping-modal.component';
 import { SafeMappingModule } from '../mapping.module';
 import { StorybookTranslateModule } from '../../storybook-translate/storybook-translate-module';
@@ -58,13 +58,12 @@ export default {
  *
  * @returns story
  */
-const TEMPLATE: Story<SafeMappingModalComponent> = () => ({
+const TEMPLATE: StoryFn<SafeMappingModalComponent> = () => ({
   template: '<safe-mapping-modal></safe-mapping-modal>',
 });
 
-/**
- * Default story
- */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Full';
-DEFAULT.args = {};
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Full',
+  args: {},
+};
