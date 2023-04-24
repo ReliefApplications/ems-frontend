@@ -303,31 +303,26 @@ export class SafeFormModalComponent
     this.formService.setEmptyQuestions(survey);
     // Displays confirmation modal.
     if (this.data.askForConfirm) {
-      const dialogRef = this.confirmService.openConfirmModal(
-        {
-          title: this.translate.instant('common.updateObject', {
-            name:
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.updateObject', {
+          name:
+            rowsSelected > 1
+              ? this.translate.instant('common.row.few')
+              : this.translate.instant('common.row.one'),
+        }),
+        content: this.translate.instant(
+          'components.form.updateRow.confirmationMessage',
+          {
+            quantity: rowsSelected,
+            rowText:
               rowsSelected > 1
                 ? this.translate.instant('common.row.few')
                 : this.translate.instant('common.row.one'),
-          }),
-          content: this.translate.instant(
-            'components.form.updateRow.confirmationMessage',
-            {
-              quantity: rowsSelected,
-              rowText:
-                rowsSelected > 1
-                  ? this.translate.instant('common.row.few')
-                  : this.translate.instant('common.row.one'),
-            }
-          ),
-          confirmText: this.translate.instant(
-            'components.confirmModal.confirm'
-          ),
-          confirmColor: 'primary',
-        },
-        this.dialog
-      );
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'primary',
+      });
       dialogRef.afterClosed().subscribe(async (value) => {
         if (value) {
           await this.onUpdate(survey);
