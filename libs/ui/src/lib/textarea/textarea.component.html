@@ -4,6 +4,7 @@
     </ng-container>
     <div [ngClass]="{'mt-2': label}">
         <textarea
+            #myTextarea
             cdkTextareaAutosize
             #autosize="cdkTextareaAutosize"
             cdkAutosizeMinRows="3"
@@ -11,9 +12,10 @@
             [placeholder]="placeholder"
             [name]="name"
             class="textarea-style"
-            (onchange)="onTextChange($event)"
+            (input)="onTextChange(myTextarea.value)"
+            [value]="value"
             >
-        {{ value }}</textarea>
+        </textarea>
     </div>
 </div>
   

@@ -36,8 +36,8 @@ export class TextareaComponent
   @Input() name!: string;
 
   valueChange: EventEmitter<boolean> = new EventEmitter();
-  private onTouched!: () => void;
-  private onChanged!: (value: string) => void;
+  onTouched!: () => void;
+  onChanged!: (value: string) => void;
  
   @ViewChild('autosize') autosize!: CdkTextareaAutosize;
 
@@ -47,8 +47,8 @@ export class TextareaComponent
    * @param fn callback
    */
   public registerOnChange(fn: any): void {
-    console.log("registerOnchange");
     this.onChanged = fn;
+    console.log("registerOnChange");
   }
 
   /**
@@ -57,8 +57,8 @@ export class TextareaComponent
    * @param fn callback
    */
   public registerOnTouched(fn: any): void {
-    console.log("registerOnTouched");
     this.onTouched = fn;
+    console.log("registerOnTouched");
   }
 
   /**
@@ -78,9 +78,11 @@ export class TextareaComponent
    */
   onTextChange(e: any): void {
     this.value = e;
-    this.onTouched();
-    this.onChanged(this.value);
+    if (this.onTouched && this.onChanged) {
+      this.onTouched();
+      this.onChanged(this.value);
+    }
     this.valueChange.emit(this.value);
-    console.log("onTextChange = ", this.value);
+    console.log(this.value);
   }
 }

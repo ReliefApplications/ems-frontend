@@ -72,7 +72,7 @@ export const FormTextarea = FormControlTemplate.bind({});
 /** Primary textarea */
 export const Primary = Template.bind({});
 Primary.args = {
-  value: 'Hie',
+  value: 'Hi',
   label: 'Message',
   placeholder: 'Type something',
   name: 'textarea',
