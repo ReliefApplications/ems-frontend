@@ -20,7 +20,7 @@ Reference for [Angular CDK APIs](https://material.angular.io/cdk/categories)<br>
 
 ## Create a new component
 
-First, add a module for that new component to the library with this command `nx generate @schematics/angular:module --project=ui --module=ui --export=ui --name={component_name} --path=libs/ui/src/lib/{component_name} --flat` where `{component_name}` is the name of the new created component.
+First, add a module for that new component to the library with this command `nx generate @schematics/angular:module --project=ui --module=ui --name={component_name} --path=libs/ui/src/lib/{component_name} --flat` where `{component_name}` is the name of the new created component.
 
 After that, export the created module in the `index.ts` file in the `src` folder so it can be accessible from other libraries.
 
