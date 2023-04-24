@@ -44,7 +44,19 @@ export default {
  * @param {ToggleComponent} args args
  * @returns ToggleComponent
  */
-const Template: StoryFn<ToggleComponent> = (args: ToggleComponent) => {
+const Template: StoryFn<ToggleComponent> = (args: ToggleComponent) => ({
+  props: args,
+});
+
+/**
+ * Form control template toggle
+ *
+ * @param {ToggleComponent} args args
+ * @returns ToggleComponent
+ */
+const FormControlTemplate: StoryFn<ToggleComponent> = (
+  args: ToggleComponent
+) => {
   const formGroup = new FormGroup({
     toggle: new FormControl(true),
   });
@@ -54,8 +66,8 @@ const Template: StoryFn<ToggleComponent> = (args: ToggleComponent) => {
       <form [formGroup]="formGroup">
       <ui-toggle formControlName="toggle"></ui-toggle>
         </form>
-        <p>value: {{formGroup.get('toggle').value}}</p>
         <br>
+        <p>value: {{formGroup.get('toggle').value}}</p>
         <p>touched: {{formGroup.get('toggle').touched}}</p>
         `,
     props: {
@@ -64,7 +76,8 @@ const Template: StoryFn<ToggleComponent> = (args: ToggleComponent) => {
     },
   };
 };
-
+/** Form control toggle */
+export const FormToggle = FormControlTemplate.bind({});
 /** Primary toggle */
 export const Primary = Template.bind({});
 Primary.args = {
