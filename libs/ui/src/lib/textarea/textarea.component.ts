@@ -3,13 +3,11 @@ import {
   forwardRef,
   Input,
   Provider,
-  NgZone,
   ViewChild,
+  EventEmitter
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { take, takeUntil } from 'rxjs/operators';
-import { SafeUnsubscribeComponent } from '@oort-front/safe';
 
 /**
  * Control value accessor
@@ -30,7 +28,6 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class TextareaComponent
-  extends SafeUnsubscribeComponent
   implements ControlValueAccessor
 {
   @Input() value: any = '';
@@ -38,29 +35,11 @@ export class TextareaComponent
   @Input() placeholder = '';
   @Input() name!: string;
 
-  private onTouched!: any;
-  private onChanged!: any;
-
-  /**
-   * Textarea constructor
-   *
-   * @param _ngZone UI Change detection
-   */
-  constructor(private _ngZone: NgZone) {
-    super();
-  }
-
+  valueChange: EventEmitter<boolean> = new EventEmitter();
+  private onTouched!: () => void;
+  private onChanged!: (value: string) => void;
+ 
   @ViewChild('autosize') autosize!: CdkTextareaAutosize;
-
-  /**
-   * Callback resize for textarea
-   */
-  triggerResize() {
-    // Wait for changes to be applied, then trigger textarea resize.
-    this._ngZone.onStable
-      .pipe(take(1), takeUntil(this.destroy$))
-      .subscribe(() => this.autosize.resizeToFitContent(true));
-  }
 
   /**
    * Register change of the control
@@ -68,6 +47,7 @@ export class TextareaComponent
    * @param fn callback
    */
   public registerOnChange(fn: any): void {
+    console.log("registerOnchange");
     this.onChanged = fn;
   }
 
@@ -77,6 +57,7 @@ export class TextareaComponent
    * @param fn callback
    */
   public registerOnTouched(fn: any): void {
+    console.log("registerOnTouched");
     this.onTouched = fn;
   }
 
@@ -87,6 +68,7 @@ export class TextareaComponent
    */
   writeValue(value: string): void {
     this.value = value;
+    console.log("writeValue =", this.value);
   }
 
   /**
@@ -95,7 +77,10 @@ export class TextareaComponent
    * @param e new text
    */
   onTextChange(e: any): void {
-    this.onTouched();
     this.value = e;
+    this.onTouched();
+    this.onChanged(this.value);
+    this.valueChange.emit(this.value);
+    console.log("onTextChange = ", this.value);
   }
 }

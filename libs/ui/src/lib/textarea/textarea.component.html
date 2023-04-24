@@ -1,8 +1,8 @@
 <div>
-    <ng-container *ngIf="label !== ''">
+    <ng-container *ngIf="label">
         <label [for]="name" class="block text-sm font-medium leading-6 text-gray-900">{{ label }}</label>
     </ng-container>
-    <div class="mt-2">
+    <div [ngClass]="{'mt-2': label}">
         <textarea
             cdkTextareaAutosize
             #autosize="cdkTextareaAutosize"
