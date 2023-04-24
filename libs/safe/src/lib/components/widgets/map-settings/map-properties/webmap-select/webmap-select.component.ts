@@ -1,53 +1,49 @@
-import {
-  Component,
-  ViewChild,
-  Input,
-  Provider,
-  forwardRef,
-  OnInit,
-} from '@angular/core';
+import { Component, ViewChild, OnInit, Optional, Self } from '@angular/core';
 import { ArcgisService } from '../../../../../../lib/services/map/arcgis.service';
 import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import {
   ControlValueAccessor,
   UntypedFormControl,
-  NG_VALUE_ACCESSOR,
+  FormsModule,
+  ReactiveFormsModule,
+  NgControl,
 } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { CommonModule } from '@angular/common';
-
-/**
- * Control value accessor
- */
-const CONTROL_VALUE_ACCESSOR: Provider = {
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => WebmapSelectComponent),
-  multi: true,
-};
+import { SafeButtonModule } from '../../../../ui/button/button.module';
+import { BehaviorSubject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 
 /**
  *
  */
 @Component({
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule, TranslateModule, MatSelectModule],
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    TranslateModule,
+    MatSelectModule,
+    SafeButtonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+  ],
   selector: 'safe-webmap-select',
   templateUrl: './webmap-select.component.html',
   styleUrls: ['./webmap-select.component.scss'],
-  providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
-  @Input() formControl!: UntypedFormControl;
-
-  @Input() formControlName!: string;
+  public searchControl = new UntypedFormControl('');
 
   private onTouched!: any;
   private onChanged!: any;
 
   public value = '';
-  public items: any[] = [];
+  public items = new BehaviorSubject<any[]>([]);
+  public items$ = this.items.asObservable();
   private start = 1;
   private loading = true;
   private nextPage = true;
@@ -59,12 +55,31 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    *
    * @param arcgis service
    */
-  constructor(private arcgis: ArcgisService) {}
+  constructor(
+    private arcgis: ArcgisService,
+    @Optional() @Self() public ngControl: NgControl
+  ) {
+    if (this.ngControl != null) {
+      this.ngControl.valueAccessor = this;
+    }
+  }
+
   /**
    * Subscribe to settings changes to update map.
    */
   ngOnInit(): void {
+    if (this.ngControl.value) {
+      console.log(this.ngControl.value);
+    }
     this.search();
+    // this way we can wait for 0.5s before sending an update
+    this.searchControl.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value) => {
+        this.start = 0;
+        this.items.next([]);
+        this.search(value);
+      });
   }
 
   /**
@@ -75,6 +90,7 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
   public selectionOnChange(e: any) {
     this.value = e.value;
     this.onChanged(this.value);
+    console.log(this.value);
   }
 
   /**
@@ -102,21 +118,24 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    */
   writeValue(value: string): void {
     this.value = JSON.parse(JSON.stringify(value));
+    console.log(this.value);
   }
 
   /**
    * Search for webmap data in argcis-rest-request using arcgis service
    */
-  private search(): void {
-    this.arcgis.searchItems({ start: this.start }).then((search) => {
-      if (search.nextStart > this.start) {
-        this.start = search.nextStart;
-      } else {
-        this.nextPage = false;
-      }
-      this.items = this.items.concat(search.results);
-      this.loading = false;
-    });
+  private search(text?: string): void {
+    this.arcgis
+      .searchItems({ start: this.start, text, id: this.ngControl.value })
+      .then((search) => {
+        if (search.nextStart > this.start) {
+          this.start = search.nextStart;
+        } else {
+          this.nextPage = false;
+        }
+        this.items.next(this.items.getValue().concat(search.results));
+        this.loading = false;
+      });
   }
 
   /**

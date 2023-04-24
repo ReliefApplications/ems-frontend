@@ -82,16 +82,25 @@ export class ArcgisService {
    *
    * @param options parameter
    * @param options.start parameter
+   * @param options.text search string
+   * @param options.id current id
    * @returns searched items
    */
-  public searchItems(options: { start?: number }) {
+  public searchItems(options: { start?: number; text?: string; id?: string }) {
+    const query = new SearchQueryBuilder()
+      .startGroup()
+      .match('Web Map')
+      .in('type');
+    if (options.text) {
+      query.and().match(options.text).in('title');
+    }
+    query.endGroup();
+    if (options.id) {
+      query.or();
+      query.startGroup().match(options.id).in('id').endGroup();
+    }
     const filter: ISearchOptions = {
-      q: new SearchQueryBuilder()
-        .match('Web Map')
-        .in('type')
-        .and() // to search all web maps, just remove following 3 lines
-        //.match('org')
-        .in('access'),
+      q: query,
       start: options.start,
       authentication: this.session,
       // portal: arcgisUrl + '/sharing/rest',
