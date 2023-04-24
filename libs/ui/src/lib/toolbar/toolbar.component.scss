@@ -1,0 +1,12 @@
+.toolbar-variant-light {
+  @apply text-gray-200;
+}
+.toolbar-variant-dark {
+  @apply text-gray-900;
+}
+.toolbar-header {
+    @apply text-2xl font-semibold leading-7 sm:truncate sm:text-3xl sm:tracking-tight;
+}
+.toolbar-info {
+    @apply text-xs mr-2 font-medium text-end max-w-xl hidden md:block;
+}
