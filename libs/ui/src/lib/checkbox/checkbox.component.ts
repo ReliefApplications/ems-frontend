@@ -2,11 +2,11 @@ import {
   Component,
   EventEmitter,
   Input,
-  Output,
   Provider,
   forwardRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Variant } from '../shared/variant.enum';
 
 /** A provider for the ControlValueAccessor interface. */
 const CONTROL_VALUE_ACCESSOR: Provider = {
@@ -27,38 +27,33 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
 export class CheckboxComponent implements ControlValueAccessor {
   @Input() checked = false;
   @Input() indeterminate = false;
-  @Input() id = '';
+  @Input() ariaLabel = '';
   @Input() name = '';
   @Input() label = '';
-  @Input() ariaLabel = '';
   @Input() description = '';
-  @Output() valueChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Input() variant: Variant = Variant.DANGER;
 
-  selected!: boolean;
   disabled = false;
-  private onTouched!: any;
-  private onChanged!: any;
+  valueChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  onChange!: (value: boolean) => void;
+  onTouch!: () => void;
 
-  /**
-   * Emit value of checkbox on change, toggle the checked property and handle the indeterminate state
-   *
-   * @param value from checkbox
-   */
-  onChange(value: any) {
-    this.checked = !this.checked;
-    this.indeterminate = false;
-    this.valueChange.emit(value.checked);
+  /** @returns shot toggle classes and variant */
+  get checkboxClasses(): string {
+    return 'checkbox-' + this.variant;
   }
 
   /**
    * Handles the selection of a content
-   *
-   * @param value The value of the selected content
    */
-  public onSelect(value: boolean): void {
-    this.onTouched();
-    this.selected = value;
-    this.onChanged(value);
+  public onSelect() {
+    this.checked = !this.checked;
+    this.indeterminate = false;
+    if (this.onTouch && this.onChange) {
+      this.onTouch();
+      this.onChange(this.checked);
+    }
+    this.valueChange.emit(this.checked);
   }
 
   /**
@@ -67,7 +62,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    * @param value new value
    */
   public writeValue(value: boolean): void {
-    this.selected = value;
+    this.checked = value;
   }
 
   /**
@@ -76,7 +71,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    * @param fn callback function
    */
   public registerOnChange(fn: any): void {
-    this.onChanged = fn;
+    this.onChange = fn;
   }
 
   /**
@@ -85,7 +80,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    * @param fn callback function
    */
   public registerOnTouched(fn: any): void {
-    this.onTouched = fn;
+    this.onTouch = fn;
   }
 
   /**
