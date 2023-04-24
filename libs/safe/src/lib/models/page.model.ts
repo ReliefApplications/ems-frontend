@@ -20,6 +20,18 @@ export interface IContentType {
   focusColor: string;
 }
 
+/** Interface for the page context */
+export type PageContextT = (
+  | {
+      refData: string;
+    }
+  | {
+      resource: string;
+    }
+) & {
+  displayField: string;
+};
+
 /**
  * Available content types.
  */
@@ -63,4 +75,16 @@ export interface Page {
   canSee?: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
+  context?: PageContextT;
+  contentWithContext?: ((
+    | {
+        // The element string is the value for the value field of the refData
+        element: string;
+      }
+    | {
+        record: string;
+      }
+  ) & {
+    content: string;
+  })[];
 }

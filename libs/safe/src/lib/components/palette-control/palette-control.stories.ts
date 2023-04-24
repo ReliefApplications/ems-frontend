@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import {
   UntypedFormControl,
   FormsModule,
@@ -30,7 +30,7 @@ export default {
  * @param args story args
  * @returns story
  */
-const TEMPLATE: Story<SafePaletteControlComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafePaletteControlComponent> = (args) => ({
   // template:
   //   '<safe-palette-control [formControl]="palette"></safe-palette-control>',
   props: {
@@ -53,15 +53,19 @@ const COLORS = [
   '#FF0000',
 ];
 
-/** Default story */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.args = {
-  formControl: new UntypedFormControl(COLORS),
-  colors: COLORS,
+export const DEFAULT = {
+  render: TEMPLATE,
+
+  args: {
+    formControl: new UntypedFormControl(COLORS),
+    colors: COLORS,
+  },
 };
 
-/** Story with disabled state */
-export const DISABLED = TEMPLATE.bind({});
-DISABLED.args = {
-  formControl: new UntypedFormControl({ value: COLORS, disabled: true }),
+export const DISABLED = {
+  render: TEMPLATE,
+
+  args: {
+    formControl: new UntypedFormControl({ value: COLORS, disabled: true }),
+  },
 };

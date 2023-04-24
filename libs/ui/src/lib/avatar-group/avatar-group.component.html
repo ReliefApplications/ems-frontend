@@ -1,0 +1,23 @@
+<div
+  class="flex -space-x-2 overflow-hidden"
+  [ngClass]="{ isolate: stack === avatarGroupStack.TOP }"
+>
+  <!-- Reinject avatars in the group -->
+  <ui-avatar
+    *ngFor="let avatar of avatars.toArray().slice(0, limit)"
+    [image]="avatar.image"
+    [initials]="avatar.initials"
+    [variant]="avatar.variant"
+    [shape]="shape"
+    [size]="size"
+  ></ui-avatar>
+  <!-- Display remaining avatars, based on limit -->
+  <ui-avatar
+    *ngIf="avatars.toArray().slice(limit).length > 0"
+    [size]="size"
+    variant="secondary"
+    [shape]="shape"
+    [initials]="'+' + avatars.toArray().slice(limit).length.toString()"
+  >
+  </ui-avatar>
+</div>

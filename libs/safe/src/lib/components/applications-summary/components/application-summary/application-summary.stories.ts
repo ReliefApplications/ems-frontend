@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeApplicationSummaryComponent } from './application-summary.component';
 import { SafeApplicationsSummaryModule } from '../../applications-summary.module';
 import { status } from '../../../../models/form.model';
@@ -22,19 +22,21 @@ export default {
  * @param args the properties of the instance of SafeApplicationSummaryComponent
  * @returns the template
  */
-const TEMPLATE: Story<SafeApplicationSummaryComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeApplicationSummaryComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
-/** Exports a default template with mock properties */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  application: {
-    name: 'Dummy Application',
-    createdAt: new Date(),
-    status: status.active,
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+
+  args: {
+    application: {
+      name: 'Dummy Application',
+      createdAt: new Date(),
+      status: status.active,
+    },
   },
 };

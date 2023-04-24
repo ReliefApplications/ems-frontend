@@ -27,6 +27,7 @@ export class SafeSeriesSettingsComponent implements OnInit, OnChanges {
         ) as FormGroup;
       }
     });
+    console.log(this.formGroup?.value);
   }
 
   ngOnChanges(): void {
@@ -53,5 +54,6 @@ export class SafeSeriesSettingsComponent implements OnInit, OnChanges {
       this.formGroup = undefined;
       this.selectedSerie.setValue(undefined, { emitEvent: false });
     }
+    console.log(this.formGroup?.value);
   }
 }

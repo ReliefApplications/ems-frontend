@@ -1,10 +1,10 @@
 module.exports = {
-  core: { builder: 'webpack5' },
-  stories: [
-    '../**/*.stories.mdx',
-    '../**/*.stories.@(js|jsx|ts|tsx)',
-  ],
-  addons: ['@storybook/addon-essentials'],
+  stories: ['../**/*.stories.mdx', '../**/*.stories.@(js|jsx|ts|tsx)'],
+  addons: ['@storybook/addon-essentials', '@storybook/addon-mdx-gfm'],
+  staticDirs: [{
+    from: '../../../assets',
+    to: '/assets'
+  }]
   // webpackFinal: async (config, { configType }) => {
   //   // `configType` has a value of 'DEVELOPMENT' or 'PRODUCTION'
   //   // You can change the configuration based on that.
@@ -22,6 +22,15 @@ module.exports = {
   //   // Return the altered config
   //   return config;
   // },
+  ,
+
+  docs: {
+    autodocs: true
+  },
+  framework: {
+    name: '@storybook/angular',
+    options: {}
+  }
 };
 
 // To customize your webpack configuration you can use the webpackFinal field.

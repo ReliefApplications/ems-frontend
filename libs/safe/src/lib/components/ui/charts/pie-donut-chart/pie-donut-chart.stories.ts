@@ -1,7 +1,7 @@
 import {
   Meta,
   moduleMetadata,
-  Story,
+  StoryFn,
   componentWrapperDecorator,
 } from '@storybook/angular';
 import { SafePieDonutChartComponent } from './pie-donut-chart.component';
@@ -37,48 +37,48 @@ export default {
  * @param args Arguments used by the component
  * @returns Returns an object used as the stories template
  */
-const TEMPLATE: Story<SafePieDonutChartComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafePieDonutChartComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
-/**
- * Sets the template as the default state of the component
- */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  series: [
-    {
-      data: [
-        {
-          field: 2,
-          category: 'category 1',
-        },
-        {
-          field: 7,
-          category: 'category 2',
-        },
-        {
-          field: 19,
-          category: 'category 3',
-        },
-        {
-          field: 16,
-          category: 'category 4',
-        },
-      ],
-    },
-  ],
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+
+  args: {
+    series: [
+      {
+        data: [
+          {
+            field: 2,
+            category: 'category 1',
+          },
+          {
+            field: 7,
+            category: 'category 2',
+          },
+          {
+            field: 19,
+            category: 'category 3',
+          },
+          {
+            field: 16,
+            category: 'category 4',
+          },
+        ],
+      },
+    ],
+  },
 };
 
-/**
- * Doughnut story.
- */
-export const DOUGHNUT = TEMPLATE.bind({});
-DOUGHNUT.storyName = 'Doughnut';
-DOUGHNUT.args = {
-  ...DEFAULT.args,
-  chartType: 'doughnut',
+export const DOUGHNUT = {
+  render: TEMPLATE,
+  name: 'Doughnut',
+
+  args: {
+    ...DEFAULT.args,
+    chartType: 'doughnut',
+  },
 };

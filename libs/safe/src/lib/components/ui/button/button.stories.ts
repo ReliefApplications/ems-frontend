@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeButtonModule } from './button.module';
 import { SafeButtonComponent } from './button.component';
 import { ButtonCategory } from './button-category.enum';
@@ -69,7 +69,7 @@ export default {
  * @param args story arguments
  * @returns story template
  */
-const TEMPLATE_WITH_TEXT: Story<SafeButtonComponent> = (args) => ({
+const TEMPLATE_WITH_TEXT: StoryFn<SafeButtonComponent> = (args) => ({
   template: '<safe-button [icon]="icon">{{content}}</safe-button>',
   props: {
     ...args,
@@ -82,40 +82,38 @@ const TEMPLATE_WITH_TEXT: Story<SafeButtonComponent> = (args) => ({
  * @param args story arguments
  * @returns story template
  */
-const TEMPLATE_WITHOUT_TEXT: Story<SafeButtonComponent> = (args) => ({
+const TEMPLATE_WITHOUT_TEXT: StoryFn<SafeButtonComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
-/**
- * Default story
- */
-export const DEFAULT = TEMPLATE_WITH_TEXT.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  category: ButtonCategory.PRIMARY,
-  size: ButtonSize.MEDIUM,
-  variant: ButtonVariant.DEFAULT,
+export const DEFAULT = {
+  render: TEMPLATE_WITH_TEXT,
+  name: 'Icon only',
+
+  args: {
+    category: ButtonCategory.PRIMARY,
+    size: ButtonSize.MEDIUM,
+    variant: ButtonVariant.DEFAULT,
+  },
 };
 
-/**
- * Story with Icon and Text
- */
-export const ICON_AND_TEXT = TEMPLATE_WITH_TEXT.bind({});
-DEFAULT.storyName = 'Icon and text';
-ICON_AND_TEXT.args = {
-  ...DEFAULT.args,
-  icon: 'home',
+export const ICON_AND_TEXT = {
+  render: TEMPLATE_WITH_TEXT,
+
+  args: {
+    ...DEFAULT.args,
+    icon: 'home',
+  },
 };
 
-/**
- * Story with icon only
- */
-export const ICON = TEMPLATE_WITHOUT_TEXT.bind({});
-DEFAULT.storyName = 'Icon only';
-ICON.args = {
-  ...DEFAULT.args,
-  isIcon: true,
-  icon: 'home',
+export const ICON = {
+  render: TEMPLATE_WITHOUT_TEXT,
+
+  args: {
+    ...DEFAULT.args,
+    isIcon: true,
+    icon: 'home',
+  },
 };

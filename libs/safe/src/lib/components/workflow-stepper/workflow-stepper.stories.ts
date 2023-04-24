@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeWorkflowStepperComponent } from './workflow-stepper.component';
 import { SafeWorkflowStepperModule } from './workflow-stepper.module';
 import { ContentType } from '../../models/page.model';
@@ -27,33 +27,35 @@ export default {
  * @param args properties
  * @returns A story component
  */
-const TEMPLATE: Story<SafeWorkflowStepperComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeWorkflowStepperComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
-/** The story component */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  canUpdate: true,
-  steps: [
-    {
-      name: 'Dashboard 1',
-      type: ContentType.dashboard,
-    },
-    {
-      name: 'Form 1',
-      type: ContentType.form,
-    },
-    {
-      name: 'Dashboard 2',
-      type: ContentType.dashboard,
-    },
-    {
-      name: 'Form 2',
-      type: ContentType.form,
-    },
-  ],
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+
+  args: {
+    canUpdate: true,
+    steps: [
+      {
+        name: 'Dashboard 1',
+        type: ContentType.dashboard,
+      },
+      {
+        name: 'Form 1',
+        type: ContentType.form,
+      },
+      {
+        name: 'Dashboard 2',
+        type: ContentType.dashboard,
+      },
+      {
+        name: 'Form 2',
+        type: ContentType.form,
+      },
+    ],
+  },
 };

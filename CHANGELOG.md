@@ -1,3 +1,50 @@
+# [2.0.0-beta.9](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.8...v2.0.0-beta.9) (2023-04-14)
+
+
+### Bug Fixes
+
+* AB[#57872](https://github.com/ReliefApplications/oort-frontend/issues/57872) add isnull / isnotnull to available operators for boolean fields ([1338eea](https://github.com/ReliefApplications/oort-frontend/commit/1338eea7ea6b70fed3ff80fcab75e7b124d360a3))
+* delete questions from surveyjs if not accessible ([f3785e6](https://github.com/ReliefApplications/oort-frontend/commit/f3785e69b51be23e95e51c9ccad1478c81976b92)), closes [bugfix/AB#35551_SA-HQ-and-all-RO-R4](https://github.com/bugfix/AB/issues/35551_SA-HQ-and-all-RO-R4)
+* edit labels of fields in layouts ([4f096e6](https://github.com/ReliefApplications/oort-frontend/commit/4f096e68e17e53b583052df4568b706e9b4e10dd))
+* labels of fields could not be edited ([d114125](https://github.com/ReliefApplications/oort-frontend/commit/d1141254a2caebeb5f09fcee9e456281517b6f81)), closes [fix/AB#61701](https://github.com/fix/AB/issues/61701)
+
+
+### Performance Improvements
+
+* migrate to storybook 7 ([fa18efd](https://github.com/ReliefApplications/oort-frontend/commit/fa18efd1ec3067e6e790f5a7057627a5ee3565df))
+
+## [1.3.11](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.10...v1.3.11) (2023-04-14)
+
+
+### Bug Fixes
+
+* AB[#57872](https://github.com/ReliefApplications/oort-frontend/issues/57872) add isnull / isnotnull to available operators for boolean fields ([1338eea](https://github.com/ReliefApplications/oort-frontend/commit/1338eea7ea6b70fed3ff80fcab75e7b124d360a3))
+* delete questions from surveyjs if not accessible ([f3785e6](https://github.com/ReliefApplications/oort-frontend/commit/f3785e69b51be23e95e51c9ccad1478c81976b92)), closes [bugfix/AB#35551_SA-HQ-and-all-RO-R4](https://github.com/bugfix/AB/issues/35551_SA-HQ-and-all-RO-R4)
+* tagboxes and checkboxes fields of merged records could contain duplicates ([3f3beca](https://github.com/ReliefApplications/oort-frontend/commit/3f3beca89aebcdbb523bc9fa61f12ec84b094301))
+
+# [2.0.0-beta.8](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.7...v2.0.0-beta.8) (2023-04-12)
+
+
+### Bug Fixes
+
+* remove background on surveyjs forms ([9b64cce](https://github.com/ReliefApplications/oort-frontend/commit/9b64cce300fb6e8ee2714b686ddfb94174f82691))
+* series settings would not compile anymore ([d3e4b88](https://github.com/ReliefApplications/oort-frontend/commit/d3e4b88cbd2b069ed5d2a9d7e00ba94229234a61))
+* storybook breaking due to component API change ([1484c89](https://github.com/ReliefApplications/oort-frontend/commit/1484c890a5f41dcacb04526d20a26da555fc448d))
+
+
+### Features
+
+* add possibility to have one dashboard per record ([a3e527f](https://github.com/ReliefApplications/oort-frontend/commit/a3e527f906a444d0d9a87237ee9d02d69bc4a6dc)), closes [feat/AB#59620](https://github.com/feat/AB/issues/59620)
+* can now hide / show series and categories ([93f3e3f](https://github.com/ReliefApplications/oort-frontend/commit/93f3e3f85826fc7c654464602681bcf4e0054d25)), closes [feat/AB#61106](https://github.com/feat/AB/issues/61106)
+* dashboards with context ([424b5ac](https://github.com/ReliefApplications/oort-frontend/commit/424b5ac96e0c905b2f2e44195af8106ac37affcb))
+
+# [2.0.0-beta.7](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.6...v2.0.0-beta.7) (2023-04-06)
+
+
+### Bug Fixes
+
+* some confirmation modals would appear below the modal that opened them ([920cc2b](https://github.com/ReliefApplications/oort-frontend/commit/920cc2b4eca44593e1cc85acc7ad66a8b7a4ff79))
+
 # [2.0.0-beta.6](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2023-04-06)
 
 
