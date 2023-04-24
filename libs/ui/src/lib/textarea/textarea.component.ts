@@ -8,7 +8,8 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
+import { SafeUnsubscribeComponent } from '@oort-front/safe';
 
 /**
  * Control value accessor
@@ -19,13 +20,19 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   multi: true,
 };
 
+/**
+ * UI Textarea component
+ */
 @Component({
   selector: 'ui-textarea',
   templateUrl: './textarea.component.html',
   styleUrls: ['./textarea.component.scss'],
   providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class TextareaComponent implements ControlValueAccessor {
+export class TextareaComponent
+  extends SafeUnsubscribeComponent
+  implements ControlValueAccessor
+{
   @Input() value: any = '';
   @Input() label = '';
   @Input() placeholder = '';
@@ -34,14 +41,24 @@ export class TextareaComponent implements ControlValueAccessor {
   private onTouched!: any;
   private onChanged!: any;
 
-  constructor(private _ngZone: NgZone) {}
+  /**
+   * Textarea constructor
+   *
+   * @param _ngZone UI Change detection
+   */
+  constructor(private _ngZone: NgZone) {
+    super();
+  }
 
   @ViewChild('autosize') autosize!: CdkTextareaAutosize;
 
+  /**
+   * Callback resize for textarea
+   */
   triggerResize() {
     // Wait for changes to be applied, then trigger textarea resize.
     this._ngZone.onStable
-      .pipe(take(1))
+      .pipe(take(1), takeUntil(this.destroy$))
       .subscribe(() => this.autosize.resizeToFitContent(true));
   }
 
@@ -77,7 +94,6 @@ export class TextareaComponent implements ControlValueAccessor {
    *
    * @param e new text
    */
-
   onTextChange(e: any): void {
     this.onTouched();
     this.value = e;

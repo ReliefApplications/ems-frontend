@@ -24,6 +24,9 @@ export default {
   },
 } as Meta<TextareaComponent>;
 
+/**
+ * Textarea story object
+ */
 export const TextArea: StoryObj<TextareaComponent> = {
   args: {
     value: 'Hi',
