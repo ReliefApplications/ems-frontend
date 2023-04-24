@@ -9,7 +9,9 @@ export default {
   argTypes: {
     toolbarVariant: {
       options: Variant,
-      control: 'select',
+      control: {
+        type: 'select',
+      },
     },
   },
   decorators: [
@@ -20,7 +22,7 @@ export default {
 } as Meta<ToolbarComponent>;
 
 /**
- * Template for stroybook's test of the component
+ * Template for storybook's test of the component
  *
  * @param args
  * @returns ToolbarComponent
