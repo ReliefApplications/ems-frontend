@@ -1,13 +1,10 @@
 import {
-  AfterViewInit,
   Component,
   EventEmitter,
   Input,
   Output,
   Provider,
-  ViewChild,
   forwardRef,
-  ElementRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -27,7 +24,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   styleUrls: ['./checkbox.component.scss'],
   providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class CheckboxComponent implements ControlValueAccessor, AfterViewInit {
+export class CheckboxComponent implements ControlValueAccessor {
   @Input() checked = false;
   @Input() indeterminate = false;
   @Input() id = '';
@@ -35,31 +32,22 @@ export class CheckboxComponent implements ControlValueAccessor, AfterViewInit {
   @Input() label = '';
   @Input() ariaLabel = '';
   @Input() description = '';
-  @Output() valueChange: EventEmitter<any> = new EventEmitter<any>();
+  @Output() valueChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   selected!: boolean;
   disabled = false;
   private onTouched!: any;
   private onChanged!: any;
 
-  @ViewChild('checkBox') checkBox!: ElementRef<HTMLInputElement>;
-
-  ngAfterViewInit(): void {
-    console.log('this.checkBox', this.checkBox);
-    const nativeElem = this.checkBox.nativeElement;
-    nativeElem.checked = this.checked;
-    nativeElem.indeterminate = this.indeterminate;
-  }
-
   /**
-   * Emit value of checkbox on change
+   * Emit value of checkbox on change, toggle the checked property and handle the indeterminate state
    *
    * @param value from checkbox
    */
-  onChange(value: any, e: any) {
-    console.log('onChange', value, e); // wrong
-    console.log('this.checkBox', this.checkBox.nativeElement.checked); // correct
-    this.valueChange.emit(value);
+  onChange(value: any) {
+    this.checked = !this.checked;
+    this.indeterminate = false;
+    this.valueChange.emit(value.checked);
   }
 
   /**
@@ -68,19 +56,17 @@ export class CheckboxComponent implements ControlValueAccessor, AfterViewInit {
    * @param value The value of the selected content
    */
   public onSelect(value: boolean): void {
-    console.log('onSelect', value);
     this.onTouched();
     this.selected = value;
     this.onChanged(value);
   }
- 
+
   /**
    * Write value of control.
    *
    * @param value new value
    */
   public writeValue(value: boolean): void {
-    console.log('writeValue', value);
     this.selected = value;
   }
 
