@@ -1,4 +1,4 @@
-import { TemplateRef } from '@angular/core';
+import { Type } from '@angular/core';
 
 /**
  * Table column definition interface
@@ -6,6 +6,6 @@ import { TemplateRef } from '@angular/core';
 export interface TableColumnDefinition {
   title: string;
   dataAccessor: string;
-  template: TemplateRef<any> | string;
+  template: Type<any> | string;
   sortable: boolean;
 }

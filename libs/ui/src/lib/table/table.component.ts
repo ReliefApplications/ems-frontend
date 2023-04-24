@@ -58,8 +58,6 @@ export class TableComponent<T extends object> implements OnDestroy {
   sortDirection$ = new BehaviorSubject<TableSort>(TableSort.DEFAULT);
   tableSort = TableSort;
 
-  isString = (data: any) => typeof data === 'string';
-
   /**
    * Initialize all properties needed to render table
    */

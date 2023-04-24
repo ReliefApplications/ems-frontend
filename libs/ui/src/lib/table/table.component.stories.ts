@@ -11,6 +11,7 @@ import { PagerModule } from '@progress/kendo-angular-pager';
 import { TableComponent } from './table.component';
 import { TableTemplateResolverDirective } from './table-template-resolver.directive';
 import { TableColumnDefinition } from './interfaces/table-column.interface';
+import { ToggleModule } from '../toggle/toggle.module';
 
 type MockedTable = {
   name: string;
@@ -18,6 +19,7 @@ type MockedTable = {
   phone: { value: string };
   cityVal: string;
   isValid: boolean;
+  isToggle: boolean;
   id: string;
 };
 
@@ -50,6 +52,7 @@ const tableData: MockedTable[] = [
     phone: { value: '111111111' },
     cityVal: 'City 1',
     isValid: false,
+    isToggle: false,
     id: '1',
   },
   {
@@ -58,6 +61,7 @@ const tableData: MockedTable[] = [
     phone: { value: '333333333' },
     cityVal: 'City 3',
     isValid: true,
+    isToggle: true,
     id: '3',
   },
   {
@@ -66,6 +70,7 @@ const tableData: MockedTable[] = [
     phone: { value: '222222222' },
     cityVal: 'City 2',
     isValid: true,
+    isToggle: true,
     id: '2',
   },
   {
@@ -74,6 +79,7 @@ const tableData: MockedTable[] = [
     phone: { value: '444444444' },
     cityVal: 'City 4',
     isValid: false,
+    isToggle: false,
     id: '4',
   },
   {
@@ -82,6 +88,7 @@ const tableData: MockedTable[] = [
     phone: { value: '555555555' },
     cityVal: 'City 5',
     isValid: false,
+    isToggle: false,
     id: '5',
   },
   {
@@ -90,6 +97,7 @@ const tableData: MockedTable[] = [
     phone: { value: '666666666' },
     cityVal: 'City 6',
     isValid: true,
+    isToggle: false,
     id: '6',
   },
   {
@@ -98,6 +106,7 @@ const tableData: MockedTable[] = [
     phone: { value: '111111111' },
     cityVal: 'City 1',
     isValid: false,
+    isToggle: false,
     id: '1',
   },
   {
@@ -106,6 +115,7 @@ const tableData: MockedTable[] = [
     phone: { value: '333333333' },
     cityVal: 'City 3',
     isValid: true,
+    isToggle: false,
     id: '3',
   },
   {
@@ -114,6 +124,7 @@ const tableData: MockedTable[] = [
     phone: { value: '222222222' },
     cityVal: 'City 2',
     isValid: true,
+    isToggle: false,
     id: '2',
   },
   {
@@ -122,6 +133,7 @@ const tableData: MockedTable[] = [
     phone: { value: '444444444' },
     cityVal: 'City 4',
     isValid: false,
+    isToggle: false,
     id: '4',
   },
   {
@@ -130,6 +142,7 @@ const tableData: MockedTable[] = [
     phone: { value: '555555555' },
     cityVal: 'City 5',
     isValid: false,
+    isToggle: false,
     id: '5',
   },
   {
@@ -138,6 +151,7 @@ const tableData: MockedTable[] = [
     phone: { value: '666666666' },
     cityVal: 'City 6',
     isValid: true,
+    isToggle: false,
     id: '6',
   },
   {
@@ -146,6 +160,7 @@ const tableData: MockedTable[] = [
     phone: { value: '111111111' },
     cityVal: 'City 1',
     isValid: false,
+    isToggle: false,
     id: '1',
   },
   {
@@ -154,6 +169,7 @@ const tableData: MockedTable[] = [
     phone: { value: '333333333' },
     cityVal: 'City 3',
     isValid: true,
+    isToggle: false,
     id: '3',
   },
   {
@@ -162,6 +178,7 @@ const tableData: MockedTable[] = [
     phone: { value: '222222222' },
     cityVal: 'City 2',
     isValid: true,
+    isToggle: false,
     id: '2',
   },
   {
@@ -170,6 +187,7 @@ const tableData: MockedTable[] = [
     phone: { value: '444444444' },
     cityVal: 'City 4',
     isValid: false,
+    isToggle: false,
     id: '4',
   },
   {
@@ -178,6 +196,7 @@ const tableData: MockedTable[] = [
     phone: { value: '555555555' },
     cityVal: 'City 5',
     isValid: false,
+    isToggle: false,
     id: '5',
   },
   {
@@ -186,6 +205,7 @@ const tableData: MockedTable[] = [
     phone: { value: '666666666' },
     cityVal: 'City 6',
     isValid: true,
+    isToggle: false,
     id: '6',
   },
 ];
@@ -230,6 +250,12 @@ const columnDefinitionData: TableColumnDefinition[] = [
   </div>`,
   },
   {
+    title: 'TemplateRef',
+    dataAccessor: 'isValid',
+    sortable: false,
+    template: ToggleModule,
+  },
+  {
     title: 'id',
     dataAccessor: 'id',
     sortable: false,
@@ -249,8 +275,8 @@ const Template: StoryFn<TableComponent<MockedTable>> = (
   props: args,
 });
 
-/** Primary divider */
-export const Primary = Template.bind({});
-Primary.args = {
+/** Table component */
+export const Table = Template.bind({});
+Table.args = {
   tableDefinition: { tableData, columnDefinitionData },
 };

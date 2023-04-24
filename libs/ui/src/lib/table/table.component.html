@@ -41,21 +41,12 @@
           >
             <ng-container *ngIf="column.template; else defaultDisplay">
               <ng-container
-                *ngIf="isString(column.template); else templateRefTmpl"
-              >
-                <ng-container
-                  *uiTableTemplateResolver="
-                    column;
-                    context: this;
-                    element: element
-                  "
-                ></ng-container>
-              </ng-container>
-              <ng-template #templateRefTmpl>
-                <ng-container
-                  *ngTemplateOutlet="column.template"
-                ></ng-container>
-              </ng-template>
+                *uiTableTemplateResolver="
+                  column;
+                  context: this;
+                  element: element
+                "
+              ></ng-container>
             </ng-container>
             <ng-template #defaultDisplay>
               {{ get(element, column.dataAccessor) }}
