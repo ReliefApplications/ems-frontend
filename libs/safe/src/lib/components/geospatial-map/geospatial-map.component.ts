@@ -3,15 +3,12 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
 import { Feature, FeatureCollection } from 'geojson';
-import {
-  MapConstructorSettings,
-  MapEvent,
-  MapEventType,
-} from '../ui/map/interfaces/map.interface';
+import { MapConstructorSettings } from '../ui/map/interfaces/map.interface';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/public-api';
 // Leaflet
 import '@geoman-io/leaflet-geoman-free';
@@ -31,6 +28,8 @@ import { takeUntil } from 'rxjs';
 import { GeospatialFieldsComponent } from './geospatial-fields/geospatial-fields.component';
 import { GeoProperties } from './geospatial-map.interface';
 import { get } from 'lodash';
+import { ArcgisService } from '../../services/map/arcgis.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 /**
  * Default geocoding value
@@ -60,12 +59,14 @@ const DEFAULT_GEOCODING: GeoProperties = {
 })
 export class GeospatialMapComponent
   extends SafeUnsubscribeComponent
-  implements AfterViewInit
+  implements OnInit, AfterViewInit
 {
   @Input() data?: Feature | FeatureCollection;
   @Input() geometry = 'Point';
   @Input() fields: (keyof GeoProperties)[] = [];
   public geoResult: GeoProperties = DEFAULT_GEOCODING;
+
+  public geoForm!: FormGroup;
 
   // === MAP ===
   public mapSettings!: MapConstructorSettings;
@@ -93,89 +94,19 @@ export class GeospatialMapComponent
    * of the geospatial type question.
    *
    * @param translate Angular translate service
+   * @param arcgisService ArcGIS Service
+   * @param fb Angular form builder
    */
-  constructor(private translate: TranslateService) {
+  constructor(
+    private translate: TranslateService,
+    private arcgisService: ArcgisService,
+    private fb: FormBuilder
+  ) {
     super();
   }
 
-  /** Set geoman listeners */
-  private setUpPmListeners() {
-    // By default all drawn layer types have this property to false except for markers and circleMarkers
-    // https://github.com/geoman-io/leaflet-geoman#draw-mode
-    // We will enable this one for all layer types(including Markers) in order to auto blur when one marker is set
-    this.mapComponent?.map.pm.setGlobalOptions({ continueDrawing: false });
-    // updates question value on adding new shape
-    this.mapComponent?.map.on('pm:create', (l: any) => {
-      if (l.shape === 'Marker') {
-        l.layer.setIcon(
-          createCustomDivIcon({
-            icon: 'leaflet_default',
-            color: '#3388ff',
-            opacity: 1,
-            size: 24,
-          })
-        );
-        // If we add a Marker, we will disable the control to set new markers(currently we want to add just one)
-        this.mapComponent?.map.pm.Toolbar.setButtonDisabled('drawMarker', true);
-      }
-
-      // subscribe to changes on the created layers
-      l.layer.on('pm:change', () => {
-        this.handleMapEvent({
-          type: MapEventType.MAP_CHANGE,
-          content: getMapFeature(this.mapComponent?.map),
-        });
-      });
-
-      l.layer.on('click', (e: any) => {
-        this.handleMapEvent({
-          type: MapEventType.SELECTED_LAYER,
-          content: { layer: e.target },
-        });
-      });
-    });
-
-    // updates question value on removing shapes
-    this.mapComponent?.map.on('pm:remove', () => {
-      const containsPointMarker = (feature: any) =>
-        feature.geometry.type === 'Point';
-      const content = getMapFeature(this.mapComponent?.map);
-      // If no markers, we enable the point marker control again
-      if (!content || !containsPointMarker(content)) {
-        this.mapComponent?.map.pm.Toolbar.setButtonDisabled(
-          'drawMarker',
-          false
-        );
-      }
-      this.handleMapEvent({
-        type: MapEventType.MAP_CHANGE,
-        content,
-      });
-    });
-
-    (this.mapComponent?.searchControl as any)?.on('results', (data: any) => {
-      console.log('search');
-      console.log(data);
-    });
-    console.log(this.mapComponent?.searchControl);
-
-    // set language
-    const setLang = (lang: string) => {
-      if (AVAILABLE_GEOMAN_LANGUAGES.includes(lang)) {
-        this.mapComponent?.map.pm.setLang(lang);
-      } else {
-        console.warn(`Language "${lang}" not supported by geoman`);
-        this.mapComponent?.map.pm.setLang('en');
-      }
-    };
-
-    setLang(this.translate.currentLang || 'en');
-
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((event) => {
-        setLang(event.lang);
-      });
+  ngOnInit(): void {
+    this.setGeoForm();
   }
 
   ngAfterViewInit(): void {
@@ -203,6 +134,134 @@ export class GeospatialMapComponent
     this.mapComponent?.map.pm.addControls(this.controls);
     this.setUpPmListeners();
     this.setDataLayers();
+  }
+
+  /** Set geoman listeners */
+  private setUpPmListeners() {
+    // By default all drawn layer types have this property to false except for markers and circleMarkers
+    // https://github.com/geoman-io/leaflet-geoman#draw-mode
+    // We will enable this one for all layer types(including Markers) in order to auto blur when one marker is set
+    this.mapComponent?.map.pm.setGlobalOptions({ continueDrawing: false });
+    // updates question value on adding new shape
+    this.mapComponent?.map.on('pm:create', (l: any) => {
+      if (this.geometry === 'Point' && l.shape === 'Marker') {
+        l.layer.setIcon(
+          createCustomDivIcon({
+            icon: 'leaflet_default',
+            color: '#3388ff',
+            opacity: 1,
+            size: 24,
+          })
+        );
+        this.onReverseSearch(l.layer._latlng).then(() => {
+          this.mapChange.emit({
+            ...l.layer.toGeoJSON(),
+            properties: this.geoForm.value,
+          });
+        });
+        // If we add a Marker, we will disable the control to set new markers(currently we want to add just one)
+        this.mapComponent?.map.pm.Toolbar.setButtonDisabled('drawMarker', true);
+      }
+
+      // subscribe to drag changes on the created layers
+      l.layer.on('pm:dragend', (l: any) => {
+        if (this.geometry == 'Point' && l.shape === 'Marker') {
+          this.onReverseSearch(l.layer._latlng).then(() => {
+            this.mapChange.emit({
+              ...l.layer.toGeoJSON(),
+              properties: this.geoForm.value,
+            });
+          });
+        }
+      });
+
+      l.layer.on('pm:change', (l: any) => {
+        if (this.geometry == 'Point' && l.shape === 'Marker') {
+          this.mapChange.emit({
+            ...l.layer.toGeoJSON(),
+            properties: this.geoForm.value,
+          });
+        }
+      });
+    });
+
+    // updates question value on removing shapes
+    this.mapComponent?.map.on('pm:remove', () => {
+      const containsPointMarker = (feature: any) =>
+        feature.geometry.type === 'Point';
+      const content = getMapFeature(this.mapComponent?.map);
+      // If no markers, we enable the point marker control again
+      if (!content || !containsPointMarker(content)) {
+        this.mapComponent?.map.pm.Toolbar.setButtonDisabled(
+          'drawMarker',
+          false
+        );
+        this.mapChange.emit();
+      }
+    });
+
+    // set language
+    const setLang = (lang: string) => {
+      if (AVAILABLE_GEOMAN_LANGUAGES.includes(lang)) {
+        this.mapComponent?.map.pm.setLang(lang);
+      } else {
+        console.warn(`Language "${lang}" not supported by geoman`);
+        this.mapComponent?.map.pm.setLang('en');
+      }
+    };
+
+    setLang(this.translate.currentLang || 'en');
+
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event) => {
+        setLang(event.lang);
+      });
+  }
+
+  private setGeoForm(value?: any): void {
+    this.geoForm = this.fb.group({
+      coordinates: this.fb.group({
+        lat: get<number>(
+          value,
+          'coordinates.lat',
+          DEFAULT_GEOCODING.coordinates.lat
+        ),
+        lng: get<number>(
+          value,
+          'coordinates.lng',
+          DEFAULT_GEOCODING.coordinates.lng
+        ),
+      }),
+      city: get<string>(value, 'properties.City', DEFAULT_GEOCODING.city),
+      countryName: get<string>(
+        value,
+        'properties.CntryName',
+        DEFAULT_GEOCODING.countryName
+      ),
+      countryCode: get<string>(
+        value,
+        'properties.Country',
+        DEFAULT_GEOCODING.countryCode
+      ),
+      district: get<string>(
+        value,
+        'properties.District',
+        DEFAULT_GEOCODING.district
+      ),
+      region: get<string>(value, 'properties.Region', DEFAULT_GEOCODING.region),
+      street: get<string>(value, 'properties.StName', DEFAULT_GEOCODING.street),
+      subRegion: get<string>(
+        value,
+        'properties.Subregion',
+        DEFAULT_GEOCODING.subRegion
+      ),
+      address: get<string>(
+        value,
+        'properties.StAddr',
+        DEFAULT_GEOCODING.address
+      ),
+    });
   }
 
   /** Creates map */
@@ -247,18 +306,6 @@ export class GeospatialMapComponent
   }
 
   /**
-   * Handle map change events
-   *
-   * @param mapChangeData map change event
-   */
-  private onMapChange(mapChangeData: any): void {
-    if (this.timeout) clearTimeout(this.timeout);
-    this.timeout = setTimeout(() => {
-      this.mapChange.emit(mapChangeData);
-    }, 500);
-  }
-
-  /**
    * Updates the selected layer with the given options.
    *
    * @param options the options to update the layer with
@@ -284,58 +331,60 @@ export class GeospatialMapComponent
   // }
 
   /**
-   * Handle leaflet map event
-   *
-   * @param event leaflet map event
-   */
-  public handleMapEvent(event: MapEvent) {
-    switch (event.type) {
-      case MapEventType.SELECTED_LAYER:
-        this.selectedLayer = event.content.layer;
-        break;
-      case MapEventType.MAP_CHANGE:
-        this.onMapChange(event.content);
-        break;
-      default:
-        break;
-    }
-  }
-
-  /**
    * On search, transform the result into a readable one
    *
    * @param address searched address
    */
   onSearch(address: any): void {
     if (address) {
-      this.geoResult = {
-        coordinates: get(address, 'latlng', DEFAULT_GEOCODING.coordinates),
+      const value = {
+        coordinates: {
+          lat: get(
+            address,
+            'coordinates.lat',
+            DEFAULT_GEOCODING.coordinates.lat
+          ),
+          lng: get(
+            address,
+            'coordinates.lat',
+            DEFAULT_GEOCODING.coordinates.lng
+          ),
+        },
         city: get(address, 'properties.City', DEFAULT_GEOCODING.city),
         countryName: get(
           address,
           'properties.CntryName',
-          DEFAULT_GEOCODING.countryName
+          DEFAULT_GEOCODING.city
         ),
-        countryCode: get(
-          address,
-          'properties.Country',
-          DEFAULT_GEOCODING.countryCode
-        ),
-        district: get(
-          address,
-          'properties.District',
-          DEFAULT_GEOCODING.district
-        ),
-        region: get(address, 'properties.Region', DEFAULT_GEOCODING.region),
-        street: get(address, 'properties.StName', DEFAULT_GEOCODING.street),
-        subRegion: get(
-          address,
-          'properties.Subregion',
-          DEFAULT_GEOCODING.subRegion
-        ),
-        address: get(address, 'properties.StAddr', DEFAULT_GEOCODING.address),
+        countryCode: get(address, 'properties.Country', DEFAULT_GEOCODING.city),
+        district: get(address, 'properties.District', DEFAULT_GEOCODING.city),
+        region: get(address, 'properties.Region', DEFAULT_GEOCODING.city),
+        street: get(address, 'properties.StName', DEFAULT_GEOCODING.city),
+        subRegion: get(address, 'properties.Subregion', DEFAULT_GEOCODING.city),
+        address: get(address, 'properties.StAddr', DEFAULT_GEOCODING.city),
       };
+      this.geoForm.setValue(value);
     }
+  }
+
+  onReverseSearch(latlng: L.LatLng) {
+    return this.arcgisService.reverseSearch(latlng).then((res) => {
+      const value = {
+        coordinates: {
+          lat: get(res, 'latlng.lat', DEFAULT_GEOCODING.coordinates.lat),
+          lng: get(res, 'latlng.lat', DEFAULT_GEOCODING.coordinates.lng),
+        },
+        city: get(res, 'address.City', DEFAULT_GEOCODING.city),
+        countryName: get(res, 'address.CntryName', DEFAULT_GEOCODING.city),
+        countryCode: get(res, 'address.Country', DEFAULT_GEOCODING.city),
+        district: get(res, 'address.District', DEFAULT_GEOCODING.city),
+        region: get(res, 'address.Region', DEFAULT_GEOCODING.city),
+        street: get(res, 'address.StName', DEFAULT_GEOCODING.city),
+        subRegion: get(res, 'address.Subregion', DEFAULT_GEOCODING.city),
+        address: get(res, 'address.StAddr', DEFAULT_GEOCODING.city),
+      };
+      this.geoForm.setValue(value);
+    });
   }
 }
 

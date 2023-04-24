@@ -3,15 +3,16 @@
     *ngIf="fields.length > 0"
     class="flex-1"
     [fields]="fields"
-    [geoResult]="geoResult"
+    [geoForm]="geoForm"
   >
   </safe-geospatial-fields>
   <safe-map
-    (mapEvent)="handleMapEvent($event)"
     [mapSettings]="mapSettings"
     (search)="onSearch($event)"
     class="lg:flex-1 max-lg:min-w-full h-96 lg:min-h-full"
   ></safe-map>
+
+  <!-- (mapEvent)="handleMapEvent($event)" -->
   <!-- <safe-layer-styling
     class="h-96 grow basis-72"
     *ngIf="selectedLayer"

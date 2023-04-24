@@ -18,7 +18,6 @@ import {
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
 import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
-import { MapModalComponent } from '../map-modal/map-modal.component';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   EXPORT_SETTINGS,
@@ -306,6 +305,14 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
         return meta.choices.find((x: any) => x.value === value)?.text || value;
       }
     } else {
+      if (meta.type === 'geospatial') {
+        return [
+          get(value, 'properties.address'),
+          get(value, 'properties.countryName'),
+        ]
+          .filter((x) => x)
+          .join(', ');
+      }
       return value;
     }
   }
@@ -819,22 +826,33 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
    * @param field geometry field
    */
   public onOpenMapModal(dataItem: any, field: any) {
-    let markerToZoomOn = this.getPropertyValue(dataItem, field.name)?.geometry
-      ?.coordinates;
-    let markersCoords: [number, number][] = [];
-    this.data.data.forEach((item) =>
-      markersCoords.push(
-        this.getPropertyValue(item, field.name)?.geometry?.coordinates
-      )
-    );
-    markerToZoomOn = [markerToZoomOn[1], markerToZoomOn[0]];
-    markersCoords = markersCoords.map((coords) => [coords[1], coords[0]]); // We invert the coords beacause they are stored weirdly
-    this.dialog.open(MapModalComponent, {
-      data: {
-        markers: markersCoords,
-        defaultPosition: markerToZoomOn ? markerToZoomOn : [45, 45],
-        defaultZoom: 10,
-      },
+    console.log('there');
+    this.action.emit({
+      action: 'map',
+      item: dataItem,
+      field,
     });
+    // const layerDefinition = {
+    //   datasource: {
+
+    //   }
+    // }
+    // let markerToZoomOn = this.getPropertyValue(dataItem, field.name)?.geometry
+    //   ?.coordinates;
+    // let markersCoords: [number, number][] = [];
+    // this.data.data.forEach((item) =>
+    //   markersCoords.push(
+    //     this.getPropertyValue(item, field.name)?.geometry?.coordinates
+    //   )
+    // );
+    // markerToZoomOn = [markerToZoomOn[1], markerToZoomOn[0]];
+    // markersCoords = markersCoords.map((coords) => [coords[1], coords[0]]); // We invert the coords beacause they are stored weirdly
+    // this.dialog.open(MapModalComponent, {
+    //   data: {
+    //     markers: markersCoords,
+    //     defaultPosition: markerToZoomOn ? markerToZoomOn : [45, 45],
+    //     defaultZoom: 10,
+    //   },
+    // });
   }
 }

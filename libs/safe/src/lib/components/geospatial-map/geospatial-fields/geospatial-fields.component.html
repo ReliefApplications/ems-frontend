@@ -1,18 +1,18 @@
 <div class="flex flex-col w-full">
-  <div class="flex flex-col flex-1 gap-2">
+  <div class="flex flex-col flex-1 gap-2" [formGroup]="geoForm">
     <ng-container *ngFor="let field of fields">
       <ng-container *ngIf="field !== 'coordinates'">
         <kendo-label [text]="field">
-          <kendo-textbox [value]="geoResult[field]"> </kendo-textbox>
+          <kendo-textbox [formControlName]="field"> </kendo-textbox>
         </kendo-label>
       </ng-container>
       <ng-container *ngIf="field === 'coordinates'">
-        <div class="flex gap-2">
+        <div class="flex gap-2" formGroupName="coordinates">
           <kendo-label text="Latitude">
-            <kendo-numerictextbox [value]="geoResult[field].lat"> </kendo-numerictextbox>
+            <kendo-numerictextbox formControlName="lat"> </kendo-numerictextbox>
           </kendo-label>
           <kendo-label text="Longitude">
-            <kendo-numerictextbox [value]="geoResult[field].lng">
+            <kendo-numerictextbox formControlName="lng">
             </kendo-numerictextbox>
           </kendo-label>
         </div>

@@ -106,7 +106,6 @@ export class SafeMapControlsService {
       ],
     });
     (control as any)?.on('results', (data: any) => {
-      console.log(data);
       // results.clearLayers();
       if ((data.results || []).length > 0) {
         for (let i = data.results.length - 1; i >= 0; i--) {

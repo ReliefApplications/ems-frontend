@@ -590,6 +590,10 @@ export class MapComponent
     });
   }
 
+  public addLayer(layer: Layer): void {
+    layer.getLayer().addTo(this.map);
+  }
+
   /**
    * Draw given layers and adds the related controls
    *
