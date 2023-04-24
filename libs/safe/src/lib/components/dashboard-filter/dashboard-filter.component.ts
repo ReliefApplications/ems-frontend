@@ -53,7 +53,8 @@ export class SafeDashboardFilterComponent
   public filterFormGroup: FormGroup = new FormGroup({});
   public survey: Survey.Model = new Survey.Model();
   public surveyStructure: any = {};
-  @ViewChild('surveyCreatorContainer') surveyCreatorContainer!: ElementRef;
+  @ViewChild('dashboardSurveyCreatorContainer')
+  dashboardSurveyCreatorContainer!: ElementRef;
 
   public applicationId?: string;
 
@@ -141,7 +142,8 @@ export class SafeDashboardFilterComponent
    * Opens the modal to edit filters
    */
   public onEditFilter() {
-    const surveyStructure = this.surveyStructure.text ?? this.surveyStructure;
+    const surveyStructure =
+      this.surveyStructure.text ?? JSON.stringify(this.surveyStructure);
     const dialogRef = this.dialog.open(SafeFilterBuilderComponent, {
       height: '90%',
       width: '100%',
@@ -194,6 +196,6 @@ export class SafeDashboardFilterComponent
     this.survey = new Survey.Model(surveyStructure);
     this.survey.showCompletedPage = false;
     this.survey.showNavigationButtons = false;
-    this.survey.render(this.surveyCreatorContainer.nativeElement);
+    this.survey.render(this.dashboardSurveyCreatorContainer.nativeElement);
   }
 }

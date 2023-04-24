@@ -1,10 +1,17 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import * as SurveyCreator from 'survey-creator';
 import * as Survey from 'survey-angular';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
+import { SafeFormService } from '../../../services/form/form.service';
 
 /**
  * Data passed to initialize the filter builder
@@ -82,21 +89,30 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   templateUrl: './filter-builder.component.html',
   styleUrls: ['./filter-builder.component.scss'],
 })
-export class SafeFilterBuilderComponent implements OnInit {
+export class SafeFilterBuilderComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   surveyCreator!: SurveyCreator.SurveyCreator;
 
   /**
    * Dialog component to build the filter
    *
+   * @param formService Shared form service
    * @param dialogRef reference to the dialog component
    * @param data data passed to initialize the filter builder
    */
   constructor(
+    private formService: SafeFormService,
     private dialogRef: MatDialogRef<SafeFilterBuilderComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 
   ngOnInit(): void {
+    // Initialize survey creator instance without custom questions
+    this.formService.setSurveyCreatorInstance({ customQuestions: false });
+  }
+
+  ngAfterViewInit(): void {
     this.setFormBuilder();
   }
 
@@ -110,16 +126,15 @@ export class SafeFilterBuilderComponent implements OnInit {
       generateValidJSON: true,
       showTranslationTab: false,
       questionTypes: QUESTION_TYPES,
-      customQuestionTypes: [], // doesn't work to remove the custom questions
     };
     this.setCustomTheme();
     this.surveyCreator = new SurveyCreator.SurveyCreator(
-      'surveyCreatorContainer',
+      'dashboardSurveyCreatorContainer',
       creatorOptions
     );
     this.surveyCreator.text = this.data?.surveyStructure;
     this.surveyCreator.showToolbox = 'right';
-    this.surveyCreator.showPropertyGrid = 'none';
+    this.surveyCreator.showPropertyGrid = 'right';
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.survey.showQuestionNumbers = 'off';
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
@@ -151,4 +166,16 @@ export class SafeFilterBuilderComponent implements OnInit {
   saveMySurvey = () => {
     this.dialogRef.close(this.surveyCreator);
   };
+
+  /**
+   * Close modal
+   */
+  cancelSurveyCreation() {
+    this.dialogRef.close();
+  }
+
+  ngOnDestroy(): void {
+    //Once we destroy the dashboard filter survey, set the survey creator with the custom questions config
+    this.formService.setSurveyCreatorInstance();
+  }
 }
