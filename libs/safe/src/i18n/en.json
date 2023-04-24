@@ -1590,7 +1590,8 @@
 			"create": "Create a Form",
 			"field": {
 				"label": "Label",
-				"name": "Field name"
+				"name": "Field name",
+				"usedIn": "Used in"
 			},
 			"new": "New form",
 			"notifications": {
