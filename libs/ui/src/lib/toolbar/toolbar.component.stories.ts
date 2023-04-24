@@ -7,11 +7,9 @@ export default {
   title: 'Toolbar',
   component: ToolbarComponent,
   argTypes: {
-    toolbarVariant: {
+    variant: {
       options: Variant,
-      control: {
-        type: 'select',
-      },
+      control: 'select',
     },
   },
   decorators: [
@@ -25,12 +23,13 @@ export default {
  * Template for storybook's test of the component
  *
  * @param args
+ * Arguments of the story
  * @returns ToolbarComponent
  */
 const Template: Story<ToolbarComponent> = (args: ToolbarComponent) => ({
   props: args,
   template: `
-  <ui-toolbar [color]="color">
+  <ui-toolbar [variant]="variant" [color]="color">
   <ng-container ngProjectAs="leftWingContent">
   <button
     class="bg-gray-200 text-gray-700 shadow-md hover:shadow-xl hover:bg-gray-300 p-2 rounded-md"
@@ -63,7 +62,7 @@ const Template: Story<ToolbarComponent> = (args: ToolbarComponent) => ({
 export const Purple_Light = Template.bind({});
 Purple_Light.args = {
   color: '#6f51ae',
-  toolbarVariant: Variant.LIGHT,
+  variant: Variant.LIGHT,
 };
 /**
  * Purple background dark text version
@@ -72,7 +71,7 @@ Purple_Light.args = {
 export const Purple_Dark = Template.bind({});
 Purple_Dark.args = {
   color: '#6f51ae',
-  toolbarVariant: Variant.DARK,
+  variant: Variant.DARK,
 };
 /**
  * Green background dark text version
@@ -81,5 +80,5 @@ Purple_Dark.args = {
 export const Green_Dark = Template.bind({});
 Green_Dark.args = {
   color: '#ceded8',
-  toolbarVariant: Variant.DARK,
+  variant: Variant.DARK,
 };

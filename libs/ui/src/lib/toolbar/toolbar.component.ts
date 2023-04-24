@@ -11,7 +11,7 @@ import { Variant } from '../shared/variant.enum';
 })
 export class ToolbarComponent {
   @Input() color = '';
-  @Input() toolbarVariant: Variant = Variant.DARK;
+  @Input() variant: Variant = Variant.DARK;
 
   toolbarVariants = Variant;
 }
