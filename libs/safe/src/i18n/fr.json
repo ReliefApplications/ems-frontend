@@ -1598,7 +1598,8 @@
 			"create": "Créer un formulaire",
 			"field": {
 				"label": "Étiquette",
-				"name": "Nom du champ"
+				"name": "Nom du champ",
+				"usedIn": "Utilisé par"
 			},
 			"new": "Nouveau formulaire",
 			"notifications": {
