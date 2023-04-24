@@ -8,17 +8,17 @@ export default {
   component: TextareaComponent,
   argTypes: {
     value: {
-      control: 'text'
+      control: 'text',
     },
     label: {
-      control: 'text'
+      control: 'text',
     },
     name: {
-      control: 'text'
+      control: 'text',
     },
     placeholder: {
-      control: 'text'
-    }
+      control: 'text',
+    },
   },
   decorators: [
     moduleMetadata({
@@ -65,7 +65,6 @@ const FormControlTemplate: StoryFn<TextareaComponent> = (
     },
   };
 };
-
 
 /** Form control textarea */
 export const FormTextarea = FormControlTemplate.bind({});

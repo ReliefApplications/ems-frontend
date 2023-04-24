@@ -4,7 +4,7 @@ import {
   Input,
   Provider,
   ViewChild,
-  EventEmitter
+  EventEmitter,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
@@ -27,9 +27,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   styleUrls: ['./textarea.component.scss'],
   providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class TextareaComponent
-  implements ControlValueAccessor
-{
+export class TextareaComponent implements ControlValueAccessor {
   @Input() value: any = '';
   @Input() label = '';
   @Input() placeholder = '';
@@ -38,7 +36,7 @@ export class TextareaComponent
   valueChange: EventEmitter<boolean> = new EventEmitter();
   onTouched!: () => void;
   onChanged!: (value: string) => void;
- 
+
   @ViewChild('autosize') autosize!: CdkTextareaAutosize;
 
   /**
@@ -48,7 +46,7 @@ export class TextareaComponent
    */
   public registerOnChange(fn: any): void {
     this.onChanged = fn;
-    console.log("registerOnChange");
+    console.log('registerOnChange');
   }
 
   /**
@@ -58,7 +56,7 @@ export class TextareaComponent
    */
   public registerOnTouched(fn: any): void {
     this.onTouched = fn;
-    console.log("registerOnTouched");
+    console.log('registerOnTouched');
   }
 
   /**
@@ -68,7 +66,7 @@ export class TextareaComponent
    */
   writeValue(value: string): void {
     this.value = value;
-    console.log("writeValue =", this.value);
+    console.log('writeValue =', this.value);
   }
 
   /**
