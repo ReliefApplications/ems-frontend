@@ -1,8 +1,22 @@
 <div class="flex flex-col w-full">
-  <h2>Address</h2>
-  <div class="flex flex-col flex-1">
+  <div class="flex flex-col flex-1 gap-2">
     <ng-container *ngFor="let field of fields">
-      <input [value]="geoResult[field]" readonly />
+      <ng-container *ngIf="field !== 'Coordinates'">
+        <kendo-label [text]="field">
+          <kendo-textbox [value]="geoResult[field]"> </kendo-textbox>
+        </kendo-label>
+      </ng-container>
+      <ng-container *ngIf="field === 'Coordinates'">
+        <div class="flex gap-2">
+          <kendo-label text="Latitude">
+            <kendo-numerictextbox [value]="geoResult[field].lat"> </kendo-numerictextbox>
+          </kendo-label>
+          <kendo-label text="Longitude">
+            <kendo-numerictextbox [value]="geoResult[field].lng">
+            </kendo-numerictextbox>
+          </kendo-label>
+        </div>
+      </ng-container>
     </ng-container>
   </div>
 </div>
