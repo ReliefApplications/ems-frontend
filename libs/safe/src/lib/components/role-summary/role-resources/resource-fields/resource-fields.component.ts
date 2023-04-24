@@ -37,7 +37,6 @@ export class ResourceFieldsComponent implements OnInit {
   public displayedColumns: string[] = ['name', 'actions'];
 
   ngOnInit() {
-    console.log('init');
     this.fields.data = sortBy(
       this.resource.fields.map((field: any) => ({
         name: field.name,

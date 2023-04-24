@@ -13,6 +13,7 @@ import {
   createDisplayForm,
   createQueryForm,
 } from '../../query-builder/query-builder-forms';
+import { flattenDeep } from 'lodash';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -50,23 +51,6 @@ export class SafeEditLayoutModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const fields: any = {};
-
-    this.data.layout?.query.fields.forEach((field: any) => {
-      const fieldName = field.name;
-      for (const key of Object.keys(this.data.layout?.display.fields)) {
-        if (key === fieldName) {
-          Object.defineProperty(fields, fieldName, {
-            value: this.data.layout?.display.fields[fieldName],
-            writable: true,
-          });
-        }
-      }
-    });
-
-    if (this.data.layout?.display.fields !== undefined) {
-      this.data.layout.display.fields = fields;
-    }
     this.form = this.formBuilder.group({
       name: [this.data.layout?.name, Validators.required],
       query: createQueryForm(this.data.layout?.query),
@@ -77,6 +61,14 @@ export class SafeEditLayoutModalComponent implements OnInit {
       form: this.form,
       defaultLayout: this.data.layout?.display,
     };
+    // Remove fields from layout that are not part of the query
+    const fieldNames = this.getFieldNames(this.form.getRawValue().query.fields);
+    const layoutFields = this.layoutPreviewData.defaultLayout.fields;
+    for (const key in layoutFields) {
+      if (!fieldNames.includes(key)) {
+        delete layoutFields[key];
+      }
+    }
     this.form.get('display')?.valueChanges.subscribe((value: any) => {
       this.layoutPreviewData.defaultLayout = value;
     });
@@ -87,5 +79,24 @@ export class SafeEditLayoutModalComponent implements OnInit {
    */
   onSubmit(): void {
     this.dialogRef.close(this.form?.getRawValue());
+  }
+
+  /**
+   * Get field names
+   *
+   * @param fields list of fields
+   * @param prefix field name prefix
+   * @returns list of field names
+   */
+  private getFieldNames(fields: any[], prefix?: string): any[] {
+    return flattenDeep(
+      fields.map((f) => {
+        if (f.fields) {
+          return this.getFieldNames(f.fields, f.name);
+        } else {
+          return prefix ? `${prefix}.${f.name}` : f.name;
+        }
+      })
+    );
   }
 }

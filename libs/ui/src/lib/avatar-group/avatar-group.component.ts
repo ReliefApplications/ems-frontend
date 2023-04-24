@@ -6,7 +6,6 @@ import {
   ElementRef,
   QueryList,
   ContentChildren,
-  AfterContentInit,
 } from '@angular/core';
 import { AvatarGroupStack } from './enums/avatar-group-stack.enum';
 import { AvatarComponent } from '../avatar/avatar.component';
@@ -18,7 +17,7 @@ import { AvatarShape } from '../avatar/enums/avatar-shape.enum';
   templateUrl: './avatar-group.component.html',
   styleUrls: ['./avatar-group.component.scss'],
 })
-export class AvatarGroupComponent implements AfterViewInit, AfterContentInit {
+export class AvatarGroupComponent implements AfterViewInit {
   @Input() size: AvatarSize | string = AvatarSize.MEDIUM;
   @Input() shape: AvatarShape | string = AvatarShape.CIRCLE;
   @Input() stack: AvatarGroupStack | string = AvatarGroupStack.TOP;
@@ -38,14 +37,5 @@ export class AvatarGroupComponent implements AfterViewInit, AfterContentInit {
         this.renderer.setStyle(avatar, 'z-index', `${total_avatars - index}`);
       });
     }
-    console.log(this.avatars);
-    // this.avatars.
-    // for (const avatar of this.avatars) {
-    //   avatar.
-    // }
-  }
-
-  ngAfterContentInit(): void {
-    console.log(this.avatars);
   }
 }
