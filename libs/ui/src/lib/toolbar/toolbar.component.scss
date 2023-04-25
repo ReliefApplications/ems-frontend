@@ -8,5 +8,5 @@
     @apply text-2xl leading-7 whitespace-nowrap text-clip;
 }
 .toolbar-info {
-    @apply text-xs mr-2 font-medium text-end max-w-xl hidden md:block;
+    @apply text-xs mr-2 font-medium text-end max-w-xl hidden sm:block;
 }
