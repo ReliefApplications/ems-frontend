@@ -28,12 +28,46 @@ import { Aggregation } from '../../../../models/aggregation.model';
 import { Resource } from '../../../../models/resource.model';
 import get from 'lodash/get';
 import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
+import { CommonModule } from '@angular/common';
+import { SafeButtonModule } from '../../../ui/button/button.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import { SafeDataSourceTabModule } from './data-source-tab/data-source.module';
+import { SafeValueSelectorTabModule } from './value-selector-tab/value-selector.module';
+import { SafeDisplayTabModule } from './display-tab/display.module';
+import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
+import { SafePreviewTabModule } from './preview-tab/preview.module';
+import { SafeModalModule } from '../../../ui/modal/modal.module';
 
 /**
  * Card modal component.
  * Used as a Material Dialog.
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    SafeButtonModule,
+    TranslateModule,
+    MatTooltipModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTabsModule,
+    MatRadioModule,
+    SafeDataSourceTabModule,
+    SafeValueSelectorTabModule,
+    SafeDisplayTabModule,
+    SafeTextEditorTabModule,
+    SafePreviewTabModule,
+    SafeModalModule,
+  ],
   selector: 'safe-card-modal',
   templateUrl: './card-modal.component.html',
   styleUrls: ['./card-modal.component.scss'],

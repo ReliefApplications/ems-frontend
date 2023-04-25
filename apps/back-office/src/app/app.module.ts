@@ -59,6 +59,12 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 // Code editor component for Angular applications
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
+// Fullscreen
+import {
+  OverlayContainer,
+  FullscreenOverlayContainer,
+} from '@angular/cdk/overlay';
+
 /**
  * Initialize authentication in the platform.
  * Configuration in environment file.
@@ -167,6 +173,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     PopupService,
     ResizeBatchService,
     IconsService,
+    { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
   ],
   bootstrap: [AppComponent],
 })

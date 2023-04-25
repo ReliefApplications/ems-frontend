@@ -19,7 +19,6 @@ import {
   Form,
   SafeConfirmService,
   SafeBreadcrumbService,
-  SafeStatusModalComponent,
 } from '@oort-front/safe';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -198,10 +197,11 @@ export class FormBuilderComponent implements OnInit {
    *
    * @param structure form structure
    */
-  public onSave(structure: any): void {
+  public async onSave(structure: any): Promise<void> {
     if (!this.form?.id) {
       alert('not valid');
     } else {
+      const { SafeStatusModalComponent } = await import('@oort-front/safe');
       const statusModal = this.dialog.open(SafeStatusModalComponent, {
         disableClose: true,
         data: {
@@ -252,7 +252,8 @@ export class FormBuilderComponent implements OnInit {
    *
    * @param e new status
    */
-  public updateStatus(e: any): void {
+  public async updateStatus(e: any): Promise<void> {
+    const { SafeStatusModalComponent } = await import('@oort-front/safe');
     const statusModal = this.dialog.open(SafeStatusModalComponent, {
       disableClose: true,
       data: {
@@ -340,8 +341,9 @@ export class FormBuilderComponent implements OnInit {
    *
    * @param {string} formName new form name
    */
-  public saveName(formName: string): void {
+  public async saveName(formName: string): Promise<void> {
     if (formName && formName !== this.form?.name) {
+      const { SafeStatusModalComponent } = await import('@oort-front/safe');
       const statusModal = this.dialog.open(SafeStatusModalComponent, {
         disableClose: true,
         data: {
@@ -390,7 +392,8 @@ export class FormBuilderComponent implements OnInit {
    *
    * @param e new permissions
    */
-  saveAccess(e: any): void {
+  async saveAccess(e: any): Promise<void> {
+    const { SafeStatusModalComponent } = await import('@oort-front/safe');
     const statusModal = this.dialog.open(SafeStatusModalComponent, {
       disableClose: true,
       data: {

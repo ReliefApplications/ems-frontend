@@ -20,7 +20,6 @@ import { Router } from '@angular/router';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
-import { AddResourceModalComponent } from '../../../components/add-resource-modal/add-resource-modal.component';
 import {
   getCachedValues,
   updateQueryUniqueValues,
@@ -260,7 +259,10 @@ export class ResourcesComponent implements OnInit {
    * Displays the AddForm modal.
    * Creates a new form on closed if result.
    */
-  onAdd(): void {
+  async onAdd(): Promise<void> {
+    const { AddResourceModalComponent } = await import(
+      '../../../components/add-resource-modal/add-resource-modal.component'
+    );
     const dialogRef = this.dialog.open(AddResourceModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
