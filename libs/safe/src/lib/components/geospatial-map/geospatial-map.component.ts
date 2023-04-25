@@ -64,7 +64,6 @@ export class GeospatialMapComponent
   @Input() data?: Feature | FeatureCollection;
   @Input() geometry = 'Point';
   @Input() fields: (keyof GeoProperties)[] = [];
-  public geoResult: GeoProperties = DEFAULT_GEOCODING;
 
   public geoForm!: ReturnType<typeof this.buildGeoForm>;
 
@@ -216,6 +215,7 @@ export class GeospatialMapComponent
           'drawMarker',
           false
         );
+        this.geoForm.setValue(DEFAULT_GEOCODING);
         this.mapChange.emit();
       }
     });
@@ -408,12 +408,12 @@ export class GeospatialMapComponent
         },
         city: get(res, 'address.City', DEFAULT_GEOCODING.city),
         countryName: get(res, 'address.CntryName', DEFAULT_GEOCODING.city),
-        countryCode: get(res, 'address.Country', DEFAULT_GEOCODING.city),
+        countryCode: get(res, 'address.CountryCode', DEFAULT_GEOCODING.city),
         district: get(res, 'address.District', DEFAULT_GEOCODING.city),
         region: get(res, 'address.Region', DEFAULT_GEOCODING.city),
         street: get(res, 'address.StName', DEFAULT_GEOCODING.city),
         subRegion: get(res, 'address.Subregion', DEFAULT_GEOCODING.city),
-        address: get(res, 'address.StAddr', DEFAULT_GEOCODING.city),
+        address: get(res, 'address.Address', DEFAULT_GEOCODING.city),
       };
       this.geoForm.setValue(value, { emitEvent: false });
     });
