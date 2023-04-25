@@ -10,12 +10,13 @@ import { AvatarGroupModule } from './avatar-group/avatar-group.module';
 import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
 import { SliderModule } from './slider/slider.module';
+import { FormsModule } from '@angular/forms';
 
 /**
  * UI Library Module
  */
 @NgModule({
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   exports: [
     AvatarModule,
     ButtonModule,
@@ -27,6 +28,7 @@ import { SliderModule } from './slider/slider.module';
     ToggleModule,
     DividerModule,
     SliderModule,
+    FormsModule,
   ],
 })
 export class UiModule {}

@@ -1,4 +1,1 @@
-<div>
-  <input type="range" id="volume" name="volume" min={{minValue}} max={{maxValue}} />
-  <label for="volume">Volume</label>
-</div>
+  <input [(ngModel)]="value" id="slider" class="slider-class" type="range" min={{minValue}} max={{maxValue}} step="1" />
