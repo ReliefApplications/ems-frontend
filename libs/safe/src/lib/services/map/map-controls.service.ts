@@ -20,9 +20,7 @@ import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/langu
 /**
  * Shared map control service.
  */
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SafeMapControlsService {
   public addressMarker: any;
   public measureControls: any = {};
@@ -34,7 +32,6 @@ export class SafeMapControlsService {
   private timeDimensionLayer!: any | null;
   private timeDimensionControl!: L.Control | null;
   // === Map controls ===
-  private searchControl!: L.Control | null;
   private downloadControl!: L.Control | null;
   private legendControl!: L.Control | null;
 
