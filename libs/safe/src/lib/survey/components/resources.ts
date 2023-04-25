@@ -872,7 +872,13 @@ export const init = (
           .then((data: any) => {
             if (data != null) {
               // We ensure to make it only if such a record is found
-              temporaryRecords.push({ id: recordId, ...JSON.parse(data).data });
+              const parsedData = JSON.parse(data);
+              temporaryRecords.push({
+                id: recordId,
+                template: parsedData.template,
+                ...parsedData.data,
+                isTemporary: true,
+              });
             }
             resolve();
           })

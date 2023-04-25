@@ -3,7 +3,6 @@ import { SafeResourceGridModalComponent } from '../../components/search-resource
 import { UntypedFormGroup } from '@angular/forms';
 import { surveyLocalization } from 'survey-angular';
 import { SafeResourceModalComponent } from '../../components/resource-modal/resource-modal.component';
-import localForage from 'localforage';
 
 /**
  * Build the search button for resource and resources components
@@ -28,56 +27,28 @@ export const buildSearchButton = (
   searchButton.style.marginRight = '8px';
   if (fieldsSettingsForm) {
     searchButton.onclick = () => {
-      const temporaryRecords: any[] = [];
-      const promises: any[] = [];
-      question.newCreatedRecords?.forEach((recordId: string) => {
-        const promise = new Promise<void>((resolve, reject) => {
-          localForage
-            .getItem(recordId)
-            .then((data: any) => {
-              if (data != null) {
-                // We ensure to make it only if such a record is found
-                temporaryRecords.push({
-                  id: recordId,
-                  ...JSON.parse(data).data,
-                });
-              }
-              resolve();
-            })
-            .catch((error: any) => {
-              console.error(error); // Handle any errors that occur while getting the item
-              reject(error);
-            });
-        });
-        promises.push(promise);
+      const dialogRef = dialog.open(SafeResourceGridModalComponent, {
+        data: {
+          multiselect,
+          gridSettings: { ...fieldsSettingsForm },
+          selectedRows: Array.isArray(question.value)
+            ? question.value
+            : question.value
+            ? [question.value]
+            : [],
+          selectable: true,
+        },
+        panelClass: 'closable-dialog',
       });
-      Promise.allSettled(promises).then(() => {
-        const dialogRef = dialog.open(SafeResourceGridModalComponent, {
-          data: {
-            multiselect,
-            gridSettings: {
-              ...fieldsSettingsForm,
-              temporaryRecords: temporaryRecords,
-            },
-            selectedRows: Array.isArray(question.value)
-              ? question.value
-              : question.value
-              ? [question.value]
-              : [],
-            selectable: true,
-          },
-          panelClass: 'closable-dialog',
-        });
-        dialogRef.afterClosed().subscribe((rows: any[]) => {
-          if (!rows) {
-            return;
-          }
-          if (rows.length > 0) {
-            question.value = multiselect ? rows : rows[0];
-          } else {
-            question.value = null;
-          }
-        });
+      dialogRef.afterClosed().subscribe((rows: any[]) => {
+        if (!rows) {
+          return;
+        }
+        if (rows.length > 0) {
+          question.value = multiselect ? rows : rows[0];
+        } else {
+          question.value = null;
+        }
       });
     };
   }

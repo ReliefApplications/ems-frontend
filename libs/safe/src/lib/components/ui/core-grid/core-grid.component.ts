@@ -625,7 +625,6 @@ export class SafeCoreGridComponent
           this.status = {
             error: false,
           };
-          console.log(data, 'data', this.settings.query);
           for (const field in data) {
             try {
               if (Object.prototype.hasOwnProperty.call(data, field)) {
@@ -636,7 +635,7 @@ export class SafeCoreGridComponent
                       style: x.meta.style,
                     },
                   })) || [];
-                this.totalCount = data[field]?.totalCount;
+                this.totalCount = data[field] ? data[field].totalCount : 0;
                 this.items = cloneData(nodes);
                 this.convertDateFields(this.items);
                 this.originalItems = cloneData(this.items);
@@ -655,7 +654,7 @@ export class SafeCoreGridComponent
                 // }
               }
             } catch (error) {
-              console.error(error, 'dats why');
+              console.error(error);
             }
           }
           if (this.settings.query.temporaryRecords) {
@@ -705,11 +704,6 @@ export class SafeCoreGridComponent
       data: this.items,
       total: this.totalCount,
     };
-    console.log(
-      'load items',
-      this.gridData,
-      this.settings?.query?.temporaryRecords
-    );
   }
 
   /**
@@ -884,6 +878,20 @@ export class SafeCoreGridComponent
             name: this.queryBuilder.getQueryNameFromResourceName(field.type),
             template: null,
           },
+        },
+      });
+    } else if (
+      (!isArray && items.isTemporary) ||
+      (isArray && items[0].isTemporary)
+    ) {
+      //case for temporary records
+      this.dialog.open(SafeRecordModalComponent, {
+        data: {
+          isTemporary: true,
+          template: isArray ? items[0].template : items.template,
+          canUpdate: false,
+          compareTo: false,
+          temporaryRecordData: isArray ? items[0] : items,
         },
       });
     } else {

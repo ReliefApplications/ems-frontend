@@ -40,6 +40,8 @@ interface DialogData {
   compareTo?: any;
   canUpdate?: boolean;
   template?: string;
+  isTemporary?: boolean;
+  temporaryRecordData?: any;
 }
 
 /**
@@ -95,7 +97,8 @@ export class SafeRecordModalComponent implements AfterViewInit {
    */
   constructor(
     public dialogRef: MatDialogRef<SafeRecordModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(MAT_DIALOG_DATA)
+    public data: DialogData,
     private apollo: Apollo,
     public dialog: MatDialog,
     private restService: SafeRestService,
@@ -128,31 +131,43 @@ export class SafeRecordModalComponent implements AfterViewInit {
         })
       );
     }
+
+    if (this.data.isTemporary) {
+      this.modifiedAt = new Date();
+      this.record = { data: this.data.temporaryRecordData };
+    }
     // Fetch record data
-    promises.push(
-      firstValueFrom(
-        this.apollo.query<GetRecordByIdQueryResponse>({
-          query: GET_RECORD_BY_ID,
-          variables: {
-            id: this.data.recordId,
-          },
+    else {
+      promises.push(
+        firstValueFrom(
+          this.apollo.query<GetRecordByIdQueryResponse>({
+            query: GET_RECORD_BY_ID,
+            variables: {
+              id: this.data.recordId,
+            },
+          })
+        ).then(({ data }) => {
+          this.record = data.record;
+          this.modifiedAt = this.record.modifiedAt || null;
+          if (!this.data.template) {
+            this.form = this.record.form;
+          }
         })
-      ).then(({ data }) => {
-        this.record = data.record;
-        this.modifiedAt = this.record.modifiedAt || null;
-        if (!this.data.template) {
-          this.form = this.record.form;
-        }
-      })
-    );
+      );
+    }
     await Promise.all(promises);
     // INIT SURVEY
     addCustomFunctions(Survey, this.authService, this.apollo, this.record);
-    this.survey = this.formBuilderService.createSurvey(
-      this.form?.structure || '',
-      this.form?.metadata,
-      this.record
-    );
+    this.data.isTemporary
+      ? (this.survey = this.formBuilderService.createSurvey(
+          this.form?.structure || '',
+          this.form?.metadata,
+          this.record
+        ))
+      : (this.survey = this.formBuilderService.createSurvey(
+          this.form?.structure || '',
+          this.form?.metadata
+        ));
     this.survey.onDownloadFile.add((survey: Survey.SurveyModel, options: any) =>
       this.onDownloadFile(survey, options)
     );
