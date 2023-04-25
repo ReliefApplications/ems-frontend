@@ -4,7 +4,6 @@ import { DistributionListsComponent } from './distribution-lists.component';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
-import { EditDistributionListModalModule } from './components/edit-distribution-list-modal/edit-distribution-list-modal.module';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeButtonModule } from '../ui/button/button.module';
@@ -20,7 +19,6 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
     MatTableModule,
     TranslateModule,
     SafeSkeletonTableModule,
-    EditDistributionListModalModule,
     MatMenuModule,
     MatIconModule,
     SafeButtonModule,

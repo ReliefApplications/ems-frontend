@@ -1,12 +1,18 @@
-.safe-icon-success {
-  color: #63d168;
+.icon-primary {
+  @apply text-primary-400;
+}
+.icon-danger {
+  @apply text-red-400;
+}
+.icon-success {
+  @apply text-green-400;
 }
 
-.safe-icon-light {
+.icon-light {
   @apply text-white;
 }
 
-.safe-icon-grey {
+.icon-grey {
   @apply text-neutral-400;
 }
 

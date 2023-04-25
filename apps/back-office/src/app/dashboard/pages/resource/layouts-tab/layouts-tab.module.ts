@@ -9,7 +9,6 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
-  SafeEditLayoutModalModule,
   SafeDateModule,
   SafeSkeletonTableModule,
   SafeEmptyModule,
@@ -31,7 +30,6 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
     SafeButtonModule,
     MatTooltipModule,
     TranslateModule,
-    SafeEditLayoutModalModule,
     OverlayModule,
     SafeDateModule,
     SafeSkeletonTableModule,

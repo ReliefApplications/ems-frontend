@@ -9,7 +9,6 @@ import {
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { takeUntil } from 'rxjs/operators';
-import { PositionModalComponent } from './components/position-modal/position-modal.component';
 
 /**
  * Application position component.
@@ -62,7 +61,10 @@ export class PositionComponent
   /**
    * Add new position
    */
-  onAdd(): void {
+  async onAdd(): Promise<void> {
+    const { PositionModalComponent } = await import(
+      './components/position-modal/position-modal.component'
+    );
     const dialogRef = this.dialog.open(PositionModalComponent, {
       data: {
         add: true,
@@ -80,7 +82,10 @@ export class PositionComponent
    *
    * @param positionCategory position category to edit
    */
-  onEdit(positionCategory: PositionAttributeCategory): void {
+  async onEdit(positionCategory: PositionAttributeCategory): Promise<void> {
+    const { PositionModalComponent } = await import(
+      './components/position-modal/position-modal.component'
+    );
     const dialogRef = this.dialog.open(PositionModalComponent, {
       data: {
         edit: true,

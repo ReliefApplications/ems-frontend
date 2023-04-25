@@ -15,16 +15,25 @@ import {
 } from './graphql/queries';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
-import { AddLayoutModalComponent } from '../../../grid-layout/add-layout-modal/add-layout-modal.component';
 import { isEqual, get } from 'lodash';
-import { SafeEditLayoutModalComponent } from '../../../grid-layout/edit-layout-modal/edit-layout-modal.component';
 import { SafeGridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
-import { EditTemplateModalComponent } from '../../../templates/components/edit-template-modal/edit-template-modal.component';
 import { Template, TemplateTypeEnum } from '../../../../models/template.model';
 import { SafeApplicationService } from '../../../../services/application/application.service';
 import { DistributionList } from '../../../../models/distribution-list.model';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { SafeModalModule } from '../../../ui/modal/modal.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
+import { SafeDividerModule } from '../../../ui/divider/divider.module';
+import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
+import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
 
 /**
  * Dialog data interface
@@ -40,6 +49,22 @@ const ITEMS_PER_PAGE = 10;
  * Add / Edit custom notification modal component.
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    SafeModalModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatTooltipModule,
+    SafeReadableCronModule,
+    SafeDividerModule,
+    SafeGraphQLSelectModule,
+    MatRadioModule,
+    CronExpressionControlModule,
+  ],
   selector: 'safe-edit-notification-modal',
   templateUrl: './edit-notification-modal.component.html',
   styleUrls: ['./edit-notification-modal.component.scss'],
@@ -195,7 +220,10 @@ export class EditNotificationModalComponent
   }
 
   /** Opens modal for layout selection/creation */
-  public addLayout() {
+  public async addLayout() {
+    const { AddLayoutModalComponent } = await import(
+      '../../../grid-layout/add-layout-modal/add-layout-modal.component'
+    );
     const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
         resource: this.resource,
@@ -220,7 +248,10 @@ export class EditNotificationModalComponent
   /**
    * Edit chosen layout, in a modal. If saved, update it.
    */
-  public editLayout(): void {
+  public async editLayout(): Promise<void> {
+    const { SafeEditLayoutModalComponent } = await import(
+      '../../../grid-layout/edit-layout-modal/edit-layout-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
       disableClose: true,
       data: {
@@ -248,7 +279,10 @@ export class EditNotificationModalComponent
   }
 
   /** Opens modal for adding a new email template */
-  public addEmailTemplate() {
+  public async addEmailTemplate() {
+    const { EditTemplateModalComponent } = await import(
+      '../../../templates/components/edit-template-modal/edit-template-modal.component'
+    );
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       disableClose: true,
     });

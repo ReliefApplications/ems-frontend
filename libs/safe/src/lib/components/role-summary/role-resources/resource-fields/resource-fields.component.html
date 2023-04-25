@@ -1,5 +1,16 @@
 <!-- Header -->
-<h2>{{ 'common.field.few' | translate }}</h2>
+<div class="flex justify-between items-center">
+  <h2>{{ 'common.field.few' | translate }}</h2>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'models.form.field.usedIn' | translate }}</mat-label>
+    <mat-select [formControl]="filterId">
+      <mat-option>{{'common.filter.none' | translate }}</mat-option>
+      <mat-option *ngFor="let form of resource.forms" [value]="form.id">{{
+        form.name
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
 <!-- Content -->
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">

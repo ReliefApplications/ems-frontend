@@ -4,6 +4,16 @@ import {
   MatLegacyDialogRef as MatDialogRef,
 } from '@angular/material/legacy-dialog';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
+import { CommonModule } from '@angular/common';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
+import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
+import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
+import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * Dialog data interface of the component
@@ -19,6 +29,19 @@ interface DialogData {
  * Grid of records for resource / resources questions.
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    SafeResourceDropdownModule,
+    SafeApplicationDropdownModule,
+    SafeRecordDropdownModule,
+    SafeCoreGridModule,
+    TranslateModule,
+    SafeModalModule,
+  ],
   selector: 'safe-search-resource-grid-modal',
   templateUrl: './search-resource-grid-modal.component.html',
   styleUrls: ['./search-resource-grid-modal.component.scss'],

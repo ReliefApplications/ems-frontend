@@ -92,13 +92,6 @@ export class SafePieDonutChartComponent implements OnChanges {
           const categories = get(serie, 'categories', []);
           const data: any[] =
             get(x, 'data', []).reduce((data: any[], item: any) => {
-              console.log(
-                get(
-                  categories.find((c: any) => c.category === item.category),
-                  'visible',
-                  true
-                )
-              );
               get(
                 categories.find((c: any) => c.category === item.category),
                 'visible',
@@ -129,7 +122,6 @@ export class SafePieDonutChartComponent implements OnChanges {
         }
       })
       .filter(Boolean);
-    console.log(this.chartData.datasets);
     this.chartData.labels = flatten(
       this.chartData.datasets.map((x) => x.data.map((y: any) => y.category))
     );

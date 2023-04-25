@@ -22,7 +22,6 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeNotificationService } from '../../services/notification/notification.service';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SafePreferencesModalComponent } from '../preferences-modal/preferences-modal.component';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
@@ -284,7 +283,10 @@ export class SafeLayoutComponent
   /**
    * Opens the preferences modal and deals with the resulting form
    */
-  onOpenPreferences(): void {
+  async onOpenPreferences(): Promise<void> {
+    const { SafePreferencesModalComponent } = await import(
+      '../preferences-modal/preferences-modal.component'
+    );
     const dialogRef = this.dialog.open(SafePreferencesModalComponent, {
       data: {
         languages: this.languages,

@@ -22,7 +22,6 @@ import {
 } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
 import { takeUntil } from 'rxjs/operators';
 import {
   getCachedValues,
@@ -196,7 +195,10 @@ export class ReferenceDatasComponent
    * Displays the AddReferenceData modal.
    * Creates a new reference data on closed if result.
    */
-  onAdd(): void {
+  async onAdd(): Promise<void> {
+    const { AddReferenceDataComponent } = await import(
+      './add-reference-data/add-reference-data.component'
+    );
     const dialogRef = this.dialog.open(AddReferenceDataComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
