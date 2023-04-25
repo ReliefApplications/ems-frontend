@@ -17,7 +17,8 @@
     "baseUrl": ".",
     "paths": {
       "@oort-front/safe": ["libs/safe/src/index.ts"],
-      "@oort-front/ui": ["libs/ui/src/index.ts"]
+      "@oort-front/ui": ["libs/ui/src/index.ts"],
+      "@oort-front/leaflet": ["libs/leaflet/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
