@@ -1,19 +1,20 @@
 <div class="relative flex items-start">
   <div class="flex h-6 items-center">
-    <input #checkBox
+    <input
       [attr.aria-describedby]="name + '-description'"
       [attr.aria-label]="ariaLabel"
+      id="{{ name }}"
       name="{{ name }}"
       type="checkbox"
       [checked]="checked"
       [indeterminate]="indeterminate"
-      (click)="onSelect()"
+      [ngClass]="checkboxClasses"
       class="h-4 w-4 rounded border-gray-300"
-      [class]="checkboxClasses"
+      (click)="onSelect()"
     />
   </div>
   <div class="ml-3 text-sm leading-6">
-    <label for="checkbox" class="font-medium text-gray-900">
+    <label for="{{ name }}" class="font-medium text-gray-900">
       {{ label }}
     </label>
     <p id="{{ name }}-description" class="text-gray-500">

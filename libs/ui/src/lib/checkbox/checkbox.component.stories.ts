@@ -70,11 +70,12 @@ const FormControlTemplate: StoryFn<CheckboxComponent> = (
   const formGroup = new FormGroup({
     checkbox: new FormControl(false),
   });
+  args.label = 'Form control checkbox';
   return {
     component: CheckboxComponent,
     template: `
       <form [formGroup]="formGroup">
-      <ui-checkbox formControlName="checkbox"></ui-checkbox>
+      <ui-checkbox [label]="'${args.label}'" [variant]="'${args.variant}'" formControlName="checkbox"></ui-checkbox>
         </form>
         <br>
         <p>value: {{formGroup.get('checkbox').value}}</p>
