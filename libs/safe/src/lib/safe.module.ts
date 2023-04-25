@@ -38,6 +38,7 @@ import { SafeViewsModule } from './views/views.module';
 import { SafeEditableTextModule } from './components/editable-text/editable-text.module';
 import { CronExpressionControlModule } from './components/cron-expression-control/cron-expression-control.module';
 import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
+import { DashboardFilterModule } from './components/dashboard-filter/dashboard-filter.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -66,6 +67,7 @@ import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
     SafeUserSummaryModule,
     SafeEditableTextModule,
     CronExpressionControlModule,
+    DashboardFilterModule,
     // === Pipes ===
     SafeDateModule,
     SafeReadableCronModule,

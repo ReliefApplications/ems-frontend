@@ -78,7 +78,7 @@ export class SafeLayoutComponent
 
   public otherOffice = '';
   public environment: any;
-  public inApplication = false;
+  private inApplication = false;
 
   // === APP SEARCH ===
   public showAppMenu = false;

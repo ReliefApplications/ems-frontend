@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeDashboardFilterComponent } from './dashboard-filter.component';
+import { DashboardFilterComponent } from './dashboard-filter.component';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeDrawerPositionerDirective } from './directives/drawer-positioner/drawer-positioner.directive';
@@ -9,7 +9,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 
 /** Cron expression control module. */
 @NgModule({
-  declarations: [SafeDashboardFilterComponent, SafeDrawerPositionerDirective],
+  declarations: [DashboardFilterComponent, SafeDrawerPositionerDirective],
   imports: [
     CommonModule,
     SafeButtonModule,
@@ -17,7 +17,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     TranslateModule,
     MatTooltipModule,
   ],
-  exports: [SafeDashboardFilterComponent],
+  exports: [DashboardFilterComponent],
   providers: [SafeDrawerPositionerDirective],
 })
-export class SafeDashboardFilterModule {}
+export class DashboardFilterModule {}

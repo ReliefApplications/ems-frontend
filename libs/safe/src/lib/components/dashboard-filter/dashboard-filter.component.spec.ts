@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeDashboardFilterComponent } from './dashboard-filter.component';
+import { DashboardFilterComponent } from './dashboard-filter.component';
 
-describe('SafeDashboardFilterComponent', () => {
-  let component: SafeDashboardFilterComponent;
-  let fixture: ComponentFixture<SafeDashboardFilterComponent>;
+describe('DashboardFilterComponent', () => {
+  let component: DashboardFilterComponent;
+  let fixture: ComponentFixture<DashboardFilterComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SafeDashboardFilterComponent],
+      declarations: [DashboardFilterComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SafeDashboardFilterComponent);
+    fixture = TestBed.createComponent(DashboardFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -167,8 +167,6 @@ export class FilterBuilderModalComponent
     });
 
     // Set content
-    console.log(this.surveyCreator);
-    console.log(this.data?.surveyStructure);
     const survey = new Survey.SurveyModel(this.data?.surveyStructure || {});
     this.surveyCreator.JSON = survey.toJSON();
   }

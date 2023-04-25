@@ -19,7 +19,6 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
-import { SafeDashboardFilterModule } from '../../components/dashboard-filter/dashboard-filter.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
 
 /**
@@ -30,7 +29,6 @@ import { SafeIconModule } from '../ui/icon/icon.module';
   declarations: [SafeLayoutComponent],
   imports: [
     CommonModule,
-    SafeDashboardFilterModule,
     RouterModule,
     FormsModule,
     MatToolbarModule,

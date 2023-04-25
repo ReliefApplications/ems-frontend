@@ -21,6 +21,7 @@ import {
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
+import { ContextService } from '../../services/context/context.service';
 
 /**  Dashboard contextual filter component. */
 @Component({
@@ -28,7 +29,7 @@ import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
   templateUrl: './dashboard-filter.component.html',
   styleUrls: ['./dashboard-filter.component.scss'],
 })
-export class SafeDashboardFilterComponent
+export class DashboardFilterComponent
   extends SafeUnsubscribeComponent
   implements AfterViewInit, OnInit
 {
@@ -44,6 +45,7 @@ export class SafeDashboardFilterComponent
   public filterPosition = FilterPosition;
   public containerWidth!: string;
   public containerHeight!: string;
+  private value: any;
 
   // Survey
   public survey: Survey.Model = new Survey.Model();
@@ -69,12 +71,18 @@ export class SafeDashboardFilterComponent
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
     private snackBar: SafeSnackBarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private contextService: ContextService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.contextService.filter$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.value = value;
+      });
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
@@ -186,6 +194,9 @@ export class SafeDashboardFilterComponent
     Survey.StylesManager.applyTheme();
     const surveyStructure = this.surveyStructure.JSON ?? this.surveyStructure;
     this.survey = new Survey.Model(surveyStructure);
+    if (this.value) {
+      this.survey.data = this.value;
+    }
     this.survey.showCompletedPage = false;
     this.survey.showNavigationButtons = false;
     this.survey.render(this.dashboardSurveyCreatorContainer.nativeElement);
@@ -193,6 +204,6 @@ export class SafeDashboardFilterComponent
   }
 
   private onValueChange() {
-    console.log(this.survey.data);
+    this.contextService.filter.next(this.survey.data);
   }
 }

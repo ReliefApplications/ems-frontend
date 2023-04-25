@@ -500,6 +500,50 @@ export class DashboardComponent
     }
   }
 
+  toggleFiltering(): void {
+    if (this.dashboard) {
+      this.apollo
+        .mutate<EditDashboardMutationResponse>({
+          mutation: EDIT_DASHBOARD,
+          variables: {
+            id: this.id,
+            showFilter: !this.dashboard.showFilter,
+          },
+        })
+        .subscribe({
+          next: ({ data, errors }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translateService.instant(
+                  'common.notifications.objectNotUpdated',
+                  {
+                    type: this.translateService.instant('common.dashboard.one'),
+                    error: errors ? errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translateService.instant(
+                  'common.notifications.objectUpdated',
+                  {
+                    type: this.translateService.instant('common.dashboard.one'),
+                    value: '',
+                  }
+                )
+              );
+              this.dashboardService.openDashboard({
+                ...this.dashboard,
+                showFilter: data?.editDashboard.showFilter,
+              });
+            }
+          },
+          complete: () => (this.loading = false),
+        });
+    }
+  }
+
   /** Display the ShareUrl modal with the route to access the dashboard. */
   public async onShare(): Promise<void> {
     const url = `${window.origin}/share/${this.dashboard?.id}`;

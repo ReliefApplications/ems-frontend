@@ -8,8 +8,24 @@
   width: 240px;
 }
 
+.sidenav-container {
+  flex: 1;
+  display: flex;
+  position: unset;
+}
+
 .sidenav-content {
+  position: unset;
+  min-height: calc(100% - 64px);
+  height: unset;
   padding: 32px 24px;
+  margin: 0 !important;
+  flex: 1;
+  z-index: 2;
+}
+
+.mat-drawer-side {
+  position: relative;
 }
 
 .mat-drawer-end {
