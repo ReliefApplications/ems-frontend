@@ -6,13 +6,11 @@
     [geoForm]="geoForm"
   >
   </safe-geospatial-fields>
-  <div class="grow">
-    <safe-map
-      [mapSettings]="mapSettings"
-      (search)="onSearch($event)"
-      class="lg:flex-1 max-lg:min-w-full h-96 lg:min-h-full grow"
-    ></safe-map>
-  </div>
+  <safe-map
+    [mapSettings]="mapSettings"
+    (search)="onSearch($event)"
+    class="lg:flex-1 max-lg:min-w-full h-96 lg:min-h-full"
+  ></safe-map>
 
   <!-- (mapEvent)="handleMapEvent($event)" -->
   <!-- <safe-layer-styling

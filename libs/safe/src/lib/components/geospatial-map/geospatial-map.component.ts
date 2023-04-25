@@ -11,8 +11,8 @@ import { Feature, FeatureCollection } from 'geojson';
 import { MapConstructorSettings } from '../ui/map/interfaces/map.interface';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/public-api';
 // Leaflet
-import '@geoman-io/leaflet-geoman-free';
 import * as L from 'leaflet';
+import '@geoman-io/leaflet-geoman-free';
 import { createCustomDivIcon } from '../ui/map/utils/create-div-icon';
 import { CommonModule } from '@angular/common';
 import { MapModule } from '../ui/map/map.module';
@@ -389,7 +389,7 @@ export class GeospatialMapComponent
         subRegion: get(address, 'properties.Subregion', DEFAULT_GEOCODING.city),
         address: get(address, 'properties.StAddr', DEFAULT_GEOCODING.city),
       };
-      this.geoForm.setValue(value);
+      this.geoForm.setValue(value, { emitEvent: false });
     }
   }
 
