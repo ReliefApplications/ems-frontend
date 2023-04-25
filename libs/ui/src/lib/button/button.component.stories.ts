@@ -1,9 +1,4 @@
-import {
-  moduleMetadata,
-  Meta,
-  StoryFn,
-  componentWrapperDecorator,
-} from '@storybook/angular';
+import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
 import { ButtonComponent } from './button.component';
 import { ButtonModule } from './button.module';
 import { Category } from '../shared/category.enum';
@@ -16,15 +11,11 @@ import { SpinnerModule } from '../spinner/spinner.module';
 type StoryType = ButtonComponent & { label?: string };
 
 export default {
-  title: 'ButtonComponent',
+  title: 'Button',
   component: ButtonComponent,
   decorators: [
     moduleMetadata({
       imports: [ButtonModule, IconModule, SpinnerModule],
-    }),
-    componentWrapperDecorator((story) => {
-      story = story.replace(/></, '>Button label<');
-      return `<div class="h-96">${story}</div>`;
     }),
   ],
   argTypes: {
@@ -56,6 +47,10 @@ export default {
     },
     icon: {
       control: 'text',
+    },
+    label: {
+      control: 'text',
+      defaultValue: 'Button label',
     },
     isIcon: {
       control: {

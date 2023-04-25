@@ -15,12 +15,14 @@ import { Size } from '../shared/size.enum';
 })
 export class ButtonComponent {
   @Input() icon = '';
+  @Input() label = '';
   @Input() iconPosition: ButtonIconPosition = ButtonIconPosition.PREFIX;
   @Input() category: Category = Category.PRIMARY;
   @Input() size: Size = Size.MEDIUM;
   @Input() variant: Variant = Variant.DEFAULT;
   @Input() isIcon = false;
   @Input() loading = false;
+  @Input() buttonGroupClasses = '';
   @HostBinding('class.disabled')
   @Input()
   disabled = false;
@@ -52,6 +54,7 @@ export class ButtonComponent {
   get resolveButtonClasses(): string[] {
     const classes = [];
     classes.push(this.isIcon ? 'ui-button-icon' : 'ui-button');
+    classes.push(this.buttonGroupClasses ? this.buttonGroupClasses : '');
     classes.push(this.category);
     classes.push(this.size);
     classes.push(

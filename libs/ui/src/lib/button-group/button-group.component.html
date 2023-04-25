@@ -1,8 +1,15 @@
 <span class="isolate inline-flex rounded-md shadow-sm">
   <ui-button
     *ngFor="let button of values; let i = index;"
-    [icon]="button.icon"
-    [iconPosition]="button.iconPosition"
+    [icon]="button.icon ?? ''"
+    [label]="button.label ?? ''"
+    [iconPosition]="button.iconPosition ?? buttonIconPosition.PREFIX"
+    [size]="button.size ?? buttonSize.MEDIUM"
+    [variant]="button.variant ?? buttonVariant.DEFAULT"
+    [isIcon]="button.isIcon ?? false"
+    [loading]="button.loading ?? false"
+    [disabled]="button.disabled ?? false"
+    [buttonGroupClasses]="buttonGroupClasses(i)"
     (click)="onButtonClick(button)"
     class="button"
     [ngClass]="{
