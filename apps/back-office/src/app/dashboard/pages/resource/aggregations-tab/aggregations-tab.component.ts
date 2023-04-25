@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  SafeEditAggregationModalComponent,
   Aggregation,
   SafeAggregationService,
   SafeConfirmService,
@@ -152,7 +151,10 @@ export class AggregationsTabComponent implements OnInit {
   /**
    * Adds a new aggregation for the resource.
    */
-  onAddAggregation(): void {
+  async onAddAggregation(): Promise<void> {
+    const { SafeEditAggregationModalComponent } = await import(
+      '@oort-front/safe'
+    );
     const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
       disableClose: true,
       data: {
@@ -177,7 +179,10 @@ export class AggregationsTabComponent implements OnInit {
    *
    * @param aggregation Aggregation to edit
    */
-  onEditAggregation(aggregation: Aggregation): void {
+  async onEditAggregation(aggregation: Aggregation): Promise<void> {
+    const { SafeEditAggregationModalComponent } = await import(
+      '@oort-front/safe'
+    );
     const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
       disableClose: true,
       data: {

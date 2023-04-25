@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { SafeEditAccessComponent } from './edit-access/edit-access.component';
 
 /**
  * Component that is used to create the access management modals
@@ -33,7 +32,10 @@ export class SafeAccessComponent {
   /**
    * Function that on click displays the EditAccess modal. Once closed, emits the result if exists.
    */
-  onClick(): void {
+  async onClick(): Promise<void> {
+    const { SafeEditAccessComponent } = await import(
+      './edit-access/edit-access.component'
+    );
     const dialogRef = this.dialog.open(SafeEditAccessComponent, {
       data: {
         access: this.access,

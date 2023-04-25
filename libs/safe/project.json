@@ -33,9 +33,7 @@
         "configDir": "libs/safe/.storybook",
         "browserTarget": "safe:build-storybook",
         "compodoc": false,
-        "styles": [
-          "libs/safe/src/lib/style/styles.scss"
-        ],
+        "styles": ["libs/safe/src/lib/style/styles.scss"],
         "stylePreprocessorOptions": {
           "includePaths": ["libs/safe/src/lib/style/themes/default"]
         }
@@ -54,9 +52,7 @@
         "configDir": "libs/safe/.storybook",
         "browserTarget": "safe:build-storybook",
         "compodoc": false,
-        "styles": [
-          "libs/safe/src/lib/style/styles.scss"
-        ],
+        "styles": ["libs/safe/src/lib/style/styles.scss"],
         "stylePreprocessorOptions": {
           "includePaths": ["libs/safe/src/lib/style/themes/default"]
         }

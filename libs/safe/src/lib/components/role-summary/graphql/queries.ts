@@ -167,6 +167,10 @@ export interface GetResourcesQueryResponse {
 export const GET_RESOURCE = gql`
   query GetResources($id: ID!, $role: ID!) {
     resource(id: $id) {
+      forms {
+        id
+        name
+      }
       ...ResourceFields
     }
   }

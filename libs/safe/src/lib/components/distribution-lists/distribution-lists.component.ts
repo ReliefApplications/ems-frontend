@@ -3,8 +3,6 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
-import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
-import { EditDistributionListModalComponent } from './components/edit-distribution-list-modal/edit-distribution-list-modal.component';
 
 /**
  * Component to show the list of distribution lists of an application
@@ -43,7 +41,10 @@ export class DistributionListsComponent implements OnInit {
    *
    * @param distributionList the distribution list to modify.
    */
-  editDistributionList(distributionList: any): void {
+  async editDistributionList(distributionList: any): Promise<void> {
+    const { EditDistributionListModalComponent } = await import(
+      './components/edit-distribution-list-modal/edit-distribution-list-modal.component'
+    );
     const dialogRef = this.dialog.open(EditDistributionListModalComponent, {
       data: distributionList,
       disableClose: true,
@@ -62,7 +63,10 @@ export class DistributionListsComponent implements OnInit {
   /**
    * Open edit modal components and create new distribution list
    */
-  addDistributionList(): void {
+  async addDistributionList(): Promise<void> {
+    const { EditDistributionListModalComponent } = await import(
+      './components/edit-distribution-list-modal/edit-distribution-list-modal.component'
+    );
     const dialogRef = this.dialog.open(EditDistributionListModalComponent, {
       data: null,
       disableClose: true,
@@ -82,7 +86,10 @@ export class DistributionListsComponent implements OnInit {
    *
    * @param distributionList distribution list ot be deleted
    */
-  deleteDistributionList(distributionList: any): void {
+  async deleteDistributionList(distributionList: any): Promise<void> {
+    const { SafeConfirmModalComponent } = await import(
+      '../confirm-modal/confirm-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: this.translate.instant('common.deleteObject', {

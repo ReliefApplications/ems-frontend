@@ -401,6 +401,7 @@
 		"application": {
 			"customStyling": "******",
 			"dashboard": {
+				"editFilter": "******",
 				"empty": "******"
 			},
 			"delete": {
@@ -1727,7 +1728,8 @@
 			"create": "******",
 			"field": {
 				"label": "******",
-				"name": "******"
+				"name": "******",
+				"usedIn": "******"
 			},
 			"new": "******",
 			"notifications": {

@@ -78,19 +78,14 @@ export class SafeTileDataComponent implements AfterViewInit {
     if (this.tileForm?.pristine) {
       this.dialogRef.close();
     } else {
-      const confirmDialogRef = this.confirmService.openConfirmModal(
-        {
-          title: this.translate.instant('common.close'),
-          content: this.translate.instant(
-            'components.widget.settings.close.confirmationMessage'
-          ),
-          confirmText: this.translate.instant(
-            'components.confirmModal.confirm'
-          ),
-          confirmColor: 'warn',
-        },
-        this.dialog
-      );
+      const confirmDialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.close'),
+        content: this.translate.instant(
+          'components.widget.settings.close.confirmationMessage'
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'warn',
+      });
       confirmDialogRef.afterClosed().subscribe((value) => {
         if (value) {
           this.dialogRef.close();

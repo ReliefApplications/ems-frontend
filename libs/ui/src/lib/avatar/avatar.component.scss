@@ -1,0 +1,36 @@
+.avatar-small {
+  @apply h-6 w-6;
+}
+.avatar-medium {
+  @apply h-10 w-10;
+}
+.avatar-large {
+  @apply h-14 w-14;
+}
+.avatar-circle {
+  @apply rounded-full;
+}
+.avatar-rectangle {
+  @apply rounded-md;
+}
+.avatar-initials {
+  @apply inline-flex items-center justify-center;
+}
+.avatar-not-initials {
+  @apply block;
+}
+.avatar-secondary-background {
+  @apply bg-gray-500;
+}
+.avatar-primary-text {
+  @apply text-gray-500;
+}
+.avatar-secondary-text {
+  @apply text-white;
+}
+.avatar-tertiary-text {
+  @apply text-gray-500;
+}
+.avatar-tertiary-border {
+  @apply border-gray-500 border-2;
+}

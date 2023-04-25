@@ -16,9 +16,7 @@ import { QueryBuilderService } from '../../../../services/query-builder/query-bu
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
 import { DistributionList } from '../../../../models/distribution-list.model';
-import { EditDistributionListModalComponent } from '../../../distribution-lists/components/edit-distribution-list-modal/edit-distribution-list-modal.component';
 import { SafeApplicationService } from '../../../../services/application/application.service';
-import { EditTemplateModalComponent } from '../../../templates/components/edit-template-modal/edit-template-modal.component';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 /** List fo disabled fields */
@@ -385,7 +383,10 @@ export class ButtonConfigComponent
   }
 
   /** Open edit modal components and create new distribution list */
-  public addDistributionList() {
+  public async addDistributionList() {
+    const { EditDistributionListModalComponent } = await import(
+      '../../../distribution-lists/components/edit-distribution-list-modal/edit-distribution-list-modal.component'
+    );
     const dialogRef = this.dialog.open(EditDistributionListModalComponent, {
       data: null,
       disableClose: true,
@@ -406,7 +407,10 @@ export class ButtonConfigComponent
   }
 
   /** Opens modal for adding a new email template */
-  public addEmailTemplate() {
+  public async addEmailTemplate() {
+    const { EditTemplateModalComponent } = await import(
+      '../../../templates/components/edit-template-modal/edit-template-modal.component'
+    );
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       disableClose: true,
     });
