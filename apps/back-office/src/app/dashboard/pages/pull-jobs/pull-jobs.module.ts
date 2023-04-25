@@ -17,7 +17,6 @@ import {
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { EditPullJobModalModule } from './components/edit-pull-job-modal/edit-pull-job-modal.module';
 
 /** Pull Jobs page module. */
 @NgModule({
@@ -36,7 +35,6 @@ import { EditPullJobModalModule } from './components/edit-pull-job-modal/edit-pu
     MatChipsModule,
     SafeSkeletonTableModule,
     SafeIconModule,
-    EditPullJobModalModule,
     SafeCronParserModule,
     SafeDateModule,
   ],

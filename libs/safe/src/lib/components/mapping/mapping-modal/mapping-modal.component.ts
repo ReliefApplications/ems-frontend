@@ -5,6 +5,17 @@ import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
 import { createFormGroup, Mapping } from '../mapping-forms';
+import { CommonModule } from '@angular/common';
+import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { SafeButtonModule } from '../../ui/button/button.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { SafeModalModule } from '../../ui/modal/modal.module';
 
 /**
  * Interface for the data injected into the modal.
@@ -17,6 +28,21 @@ interface MappingDialogData {
  * Modal component to Create/Edit a mapping row.
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    TranslateModule,
+    MatTableModule,
+    MatMenuModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SafeButtonModule,
+    SafeModalModule,
+  ],
   selector: 'safe-mapping-modal',
   templateUrl: './mapping-modal.component.html',
   styleUrls: ['./mapping-modal.component.scss'],

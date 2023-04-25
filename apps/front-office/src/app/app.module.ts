@@ -67,6 +67,12 @@ import { MAT_LEGACY_TOOLTIP_DEFAULT_OPTIONS as MAT_TOOLTIP_DEFAULT_OPTIONS } fro
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 
+// Fullscreen
+import {
+  OverlayContainer,
+  FullscreenOverlayContainer,
+} from '@angular/cdk/overlay';
+
 /**
  * Initialize authentication in the platform.
  * Configuration in environment file.
@@ -168,6 +174,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     PopupService,
     ResizeBatchService,
     IconsService,
+    { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
   ],
   bootstrap: [AppComponent],
 })

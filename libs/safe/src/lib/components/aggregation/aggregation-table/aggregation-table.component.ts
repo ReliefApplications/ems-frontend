@@ -5,9 +5,7 @@ import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
 import { UntypedFormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { AddAggregationModalComponent } from '../add-aggregation-modal/add-aggregation-modal.component';
 import { Aggregation } from '../../../models/aggregation.model';
-import { SafeEditAggregationModalComponent } from '../edit-aggregation-modal/edit-aggregation-modal.component';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { get } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -101,7 +99,10 @@ export class AggregationTableComponent
   /**
    * Adds a new aggregation to the list.
    */
-  public onAdd(): void {
+  public async onAdd(): Promise<void> {
+    const { AddAggregationModalComponent } = await import(
+      '../add-aggregation-modal/add-aggregation-modal.component'
+    );
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
         hasAggregations:
@@ -131,7 +132,10 @@ export class AggregationTableComponent
    *
    * @param aggregation The aggregation to edit
    */
-  onEditAggregation(aggregation: Aggregation): void {
+  async onEditAggregation(aggregation: Aggregation): Promise<void> {
+    const { SafeEditAggregationModalComponent } = await import(
+      '../edit-aggregation-modal/edit-aggregation-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
       disableClose: true,
       data: {

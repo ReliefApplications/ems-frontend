@@ -3,6 +3,11 @@ import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
+import { CommonModule } from '@angular/common';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
+import { SafeModalModule } from '../../modal/modal.module';
 
 /** Model for the dialog data */
 interface DialogData {
@@ -15,6 +20,14 @@ interface DialogData {
 
 /** Component for the errors modal component */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    TranslateModule,
+    MatTableModule,
+    SafeModalModule,
+  ],
   selector: 'safe-errors-modal',
   templateUrl: './errors-modal.component.html',
   styleUrls: ['./errors-modal.component.scss'],

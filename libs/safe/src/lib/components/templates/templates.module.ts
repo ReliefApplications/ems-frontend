@@ -8,7 +8,6 @@ import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@ang
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
-import { EditTemplateModalModule } from './components/edit-template-modal/edit-template-modal.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
 
 /** Module for components related to templates */
@@ -23,7 +22,6 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
     MatIconModule,
     SafeButtonModule,
     SafeSkeletonTableModule,
-    EditTemplateModalModule,
     SafeDividerModule,
   ],
   exports: [SafeTemplatesComponent],

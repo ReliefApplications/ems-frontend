@@ -6,13 +6,9 @@ import { Resource } from '../../../../../models/resource.model';
 import { Layout } from '../../../../../models/layout.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { AddLayoutModalComponent } from '../../../../grid-layout/add-layout-modal/add-layout-modal.component';
-import { SafeEditLayoutModalComponent } from '../../../../grid-layout/edit-layout-modal/edit-layout-modal.component';
 import { SafeGridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';
 import { SafeAggregationService } from '../../../../../services/aggregation/aggregation.service';
 import { get } from 'lodash';
-import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
-import { AddAggregationModalComponent } from '../../../../aggregation/add-aggregation-modal/add-aggregation-modal.component';
 
 /**
  * How many resources.forms will be shown on the selector.
@@ -72,7 +68,10 @@ export class SafeDataSourceTabComponent implements OnInit {
   }
 
   /** Opens modal for layout selection/creation */
-  public addLayout() {
+  public async addLayout() {
+    const { AddLayoutModalComponent } = await import(
+      '../../../../grid-layout/add-layout-modal/add-layout-modal.component'
+    );
     const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
         resource: this.selectedResource,
@@ -94,7 +93,10 @@ export class SafeDataSourceTabComponent implements OnInit {
   /**
    * Edit chosen layout, in a modal. If saved, update it.
    */
-  public editLayout(): void {
+  public async editLayout(): Promise<void> {
+    const { SafeEditLayoutModalComponent } = await import(
+      '../../../../grid-layout/edit-layout-modal/edit-layout-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
       disableClose: true,
       data: {
@@ -115,7 +117,10 @@ export class SafeDataSourceTabComponent implements OnInit {
   /**
    * Adds a new aggregation for the resource.
    */
-  addAggregation(): void {
+  async addAggregation(): Promise<void> {
+    const { AddAggregationModalComponent } = await import(
+      '../../../../aggregation/add-aggregation-modal/add-aggregation-modal.component'
+    );
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
         hasAggregations:
@@ -138,7 +143,10 @@ export class SafeDataSourceTabComponent implements OnInit {
   /**
    * Edit chosen aggregation, in a modal. If saved, update it.
    */
-  public editAggregation(): void {
+  public async editAggregation(): Promise<void> {
+    const { SafeEditAggregationModalComponent } = await import(
+      '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
       disableClose: true,
       data: {
