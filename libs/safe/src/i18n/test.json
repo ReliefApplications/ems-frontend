@@ -399,6 +399,7 @@
 		"application": {
 			"customStyling": "******",
 			"dashboard": {
+				"editFilter": "******",
 				"empty": "******"
 			},
 			"delete": {

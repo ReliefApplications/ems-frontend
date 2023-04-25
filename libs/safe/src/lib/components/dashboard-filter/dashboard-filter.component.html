@@ -88,23 +88,10 @@
         class="flex w-full flex-wrap"
         [formGroup]="filterFormGroup"
       >
-        <ng-container *ngFor="let filter of filters">
-          <div class="dashboard-filter-content-filter-wrapper">
-            <mat-form-field class="m-auto" appearance="fill">
-              <mat-label class="capitalize">{{ filter.name }}</mat-label>
-              <mat-select
-                [formControlName]="filter.name"
-                [multiple]="filter.multiple"
-              >
-                <mat-option
-                  *ngFor="let option of filter.options"
-                  [value]="option"
-                  >{{ option }}</mat-option
-                >
-              </mat-select>
-            </mat-form-field>
-          </div>
-        </ng-container>
+        <safe-button (click)="onEditFilter()">
+          {{ 'components.application.dashboard.editFilter' | translate }}
+        </safe-button>
+        <div #dashboardSurveyCreatorContainer></div>
       </form>
     </div>
   </div>
