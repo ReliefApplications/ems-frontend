@@ -24,12 +24,12 @@ import {
   updateGeoManLayerPosition,
 } from '../ui/map/utils/get-map-features';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs';
 import { GeospatialFieldsComponent } from './geospatial-fields/geospatial-fields.component';
 import { GeoProperties } from './geospatial-map.interface';
 import { get } from 'lodash';
 import { ArcgisService } from '../../services/map/arcgis.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 
 /**
  * Default geocoding value
@@ -66,7 +66,7 @@ export class GeospatialMapComponent
   @Input() fields: (keyof GeoProperties)[] = [];
   public geoResult: GeoProperties = DEFAULT_GEOCODING;
 
-  public geoForm!: FormGroup;
+  public geoForm!: ReturnType<typeof this.buildGeoForm>;
 
   // === MAP ===
   public mapSettings!: MapConstructorSettings;
@@ -106,7 +106,7 @@ export class GeospatialMapComponent
   }
 
   ngOnInit(): void {
-    this.setGeoForm();
+    this.geoForm = this.buildGeoForm();
   }
 
   ngAfterViewInit(): void {
@@ -134,6 +134,26 @@ export class GeospatialMapComponent
     this.mapComponent?.map.pm.addControls(this.controls);
     this.setUpPmListeners();
     this.setDataLayers();
+
+    (['lat', 'lng'] as const).forEach((key) => {
+      this.geoForm
+        .get(`coordinates.${key}`)
+        ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(500))
+        .subscribe(() => {
+          const lat = this.geoForm.get('coordinates.lat')?.value;
+          const lng = this.geoForm.get('coordinates.lng')?.value;
+
+          if (lat && lng && this.mapComponent?.map) {
+            const latlng = L.latLng(lat, lng);
+
+            // update the marker position on the map
+            updateGeoManLayerPosition(this.mapComponent?.map, { latlng });
+
+            // updates the geospatial fields
+            this.onReverseSearch(latlng);
+          }
+        });
+    });
   }
 
   /** Set geoman listeners */
@@ -219,8 +239,14 @@ export class GeospatialMapComponent
       });
   }
 
-  private setGeoForm(value?: any): void {
-    this.geoForm = this.fb.group({
+  /**
+   * Builds the form for the geospatial question.
+   *
+   * @param value Value to set the form to
+   * @returns Form group
+   */
+  private buildGeoForm(value?: any) {
+    return this.fb.group({
       coordinates: this.fb.group({
         lat: get<number>(
           value,
@@ -367,12 +393,18 @@ export class GeospatialMapComponent
     }
   }
 
+  /**
+   * Handles reverse search using the arcgis service
+   *
+   * @param latlng the latlng to search for
+   * @returns a promise
+   */
   onReverseSearch(latlng: L.LatLng) {
     return this.arcgisService.reverseSearch(latlng).then((res) => {
       const value = {
         coordinates: {
           lat: get(res, 'latlng.lat', DEFAULT_GEOCODING.coordinates.lat),
-          lng: get(res, 'latlng.lat', DEFAULT_GEOCODING.coordinates.lng),
+          lng: get(res, 'latlng.lng', DEFAULT_GEOCODING.coordinates.lng),
         },
         city: get(res, 'address.City', DEFAULT_GEOCODING.city),
         countryName: get(res, 'address.CntryName', DEFAULT_GEOCODING.city),
@@ -383,7 +415,7 @@ export class GeospatialMapComponent
         subRegion: get(res, 'address.Subregion', DEFAULT_GEOCODING.city),
         address: get(res, 'address.StAddr', DEFAULT_GEOCODING.city),
       };
-      this.geoForm.setValue(value);
+      this.geoForm.setValue(value, { emitEvent: false });
     });
   }
 }
