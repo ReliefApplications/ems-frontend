@@ -3,9 +3,13 @@
     *ngFor="let button of values; let i = index;"
     [icon]="button.icon"
     [iconPosition]="button.iconPosition"
-    [ngClass]="buttonClass(i)"
-    class="button"
     (click)="onButtonClick(button)"
+    class="button"
+    [ngClass]="{
+      'rounded-l-md': i === 0,
+      'rounded-r-md': i === values.length - 1,
+      'bg-gray-300 ring-gray-300 z-10': button.selected
+    }"
   >
   </ui-button>
 </span>

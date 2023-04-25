@@ -27,26 +27,6 @@ export class ButtonGroupComponent implements OnInit {
   }
 
   /**
-   * Get button classes
-   *
-   * @param index button index
-   * @returns button scss style classes
-   */
-  public buttonClass(index: number): string[] {
-    const classes = [];
-    if (this.values.length > 1)
-      classes.push(
-        index === 0
-          ? 'first-button'
-          : index === this.values.length - 1
-          ? 'last-button'
-          : 'middle-button'
-      );
-    if (this.values[index].selected) classes.push('selected-button');
-    return classes;
-  }
-
-  /**
    * Handle button selection
    *
    * @param button selected button
