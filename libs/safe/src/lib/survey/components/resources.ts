@@ -889,7 +889,8 @@ export const init = (
       });
       promises.push(promise);
     });
-
+    const uuidRegExpr =
+      /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
     const settings = {
       query: {
         ...query,
@@ -900,7 +901,9 @@ export const init = (
             {
               field: 'ids',
               operator: 'eq',
-              value: question.value || [],
+              value:
+                question.value.filter((id: string) => !uuidRegExpr.test(id)) ||
+                [], //We exclude the temporary records by excluding id in UUID format
             },
           ],
         },
