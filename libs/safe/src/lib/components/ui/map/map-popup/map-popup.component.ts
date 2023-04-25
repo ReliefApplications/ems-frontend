@@ -1,57 +1,106 @@
 import {
-  AfterViewInit,
+  AfterContentInit,
   Component,
   EventEmitter,
   Input,
-  OnInit,
   Output,
 } from '@angular/core';
-import get from 'lodash/get';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Feature, Point } from 'geojson';
+import { BehaviorSubject, takeUntil } from 'rxjs';
+import { ButtonSize } from '../../../ui/button/button-size.enum';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { SafeButtonModule } from '../../button/button.module';
+import { SafeDividerModule } from '../../divider/divider.module';
 
-/**
- * Component for the popup of a marker on the map
- */
+/** Component for a popup that has information on multiple points */
 @Component({
   selector: 'safe-map-popup',
+  standalone: true,
+  imports: [CommonModule, TranslateModule, SafeButtonModule, SafeDividerModule],
   templateUrl: './map-popup.component.html',
   styleUrls: ['./map-popup.component.scss'],
 })
-export class MapPopupComponent implements OnInit, AfterViewInit {
-  @Input() fields: any[] = [];
-  @Input() data: any;
-  @Output() loaded = new EventEmitter();
+export class SafeMapPopupComponent
+  extends SafeUnsubscribeComponent
+  implements AfterContentInit
+{
+  @Input() points: Feature<Point>[] = [];
+  @Input() template = '';
 
-  public popupRows: { label: string; value: any }[] = [];
+  @Output() closePopup: EventEmitter<void> = new EventEmitter<void>();
+  @Output() zoomTo: EventEmitter<{ coordinates: number[] }> = new EventEmitter<{
+    coordinates: number[];
+  }>();
+  public currentHtml: SafeHtml = '';
+  public current = new BehaviorSubject<number>(0);
+  public buttonSize = ButtonSize;
 
-  ngOnInit(): void {
-    this.popupRows = this.setPopupContent(this.fields);
+  /** @returns current as an observable */
+  get current$() {
+    return this.current.asObservable();
   }
 
-  ngAfterViewInit(): void {
-    this.loaded.emit(true);
+  /** @returns the current value */
+  get currValue() {
+    return this.current.value;
   }
 
   /**
-   * Get the content to display.
+   * Component for a popup that has information on multiple points
    *
-   * @param fields list of available fiels
-   * @param prefix prefix to apply to field names
-   * @returns list of popup rows to display
+   * @param sanitizer The dom sanitizer, to sanitize the template
    */
-  private setPopupContent(fields: any[], prefix = ''): any[] {
-    let popupRows: { label: string; value: any }[] = [];
-    for (const field of fields) {
-      if (field.fields) {
-        popupRows = popupRows.concat(
-          this.setPopupContent(field.fields, prefix + field.name + '.')
-        );
-      } else {
-        const value = get(this.data, prefix + field.name, null);
-        if (value) {
-          popupRows.push({ label: field.label, value });
-        }
-      }
-    }
-    return popupRows;
+  constructor(private sanitizer: DomSanitizer) {
+    super();
+  }
+
+  ngAfterContentInit(): void {
+    this.setInnerHtml();
+    this.current$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.setInnerHtml();
+    });
+  }
+
+  /** Updates the html for the current point */
+  public setInnerHtml() {
+    const properties = this.points[this.currValue].properties;
+    const coordinates = this.points[this.currValue].geometry.coordinates;
+    const regex = /{{(.*?)}}/g;
+    // if no properties, return the template replacing all matches with empty string
+    // if there are properties, replace the matches with the corresponding property
+    const html = properties
+      ? this.template.replace(regex, (match) => {
+          const key = match.replace(/{{|}}/g, '');
+          let value;
+          if (!key.includes('coordinates')) {
+            value = properties[key];
+          } else {
+            // Popup service sets the coordinates as coordinates${index}
+            // This regex extracts the ${index} to set the related value from coordinates
+            const coordinateIndex = Number(
+              key.match(/[^(?<=coordinates)]*$/gi)?.[0]
+            );
+            value = coordinates[coordinateIndex ?? 0];
+          }
+
+          return value ? value : '';
+        })
+      : this.template.replace(regex, '');
+    const scriptRegex = /<script>(.*?)<\/script>/g;
+    // remove all script tags
+    const sanitizedHtml = html.replace(scriptRegex, '');
+    this.currentHtml = this.sanitizer.bypassSecurityTrustHtml(sanitizedHtml);
+  }
+
+  /**
+   * Emit event with current point coordinates
+   */
+  public zoomToCurrentFeature() {
+    this.zoomTo.emit({
+      coordinates: this.points[this.currValue].geometry.coordinates,
+    });
   }
 }

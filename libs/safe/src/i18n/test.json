@@ -1424,7 +1424,10 @@
 						"title": "******"
 					},
 					"popup": {
-						"label": "******"
+						"label": "******",
+						"location": "******",
+						"of": "{{current}} ****** {{total}}",
+						"zoomTo": "******"
 					},
 					"properties": {
 						"basemap": "******",

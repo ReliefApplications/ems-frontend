@@ -36,6 +36,7 @@ import {
 } from './graphql/queries';
 import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
+import { SafeMapPopupService } from '../../components/ui/map/map-popup/map-popup.service';
 
 /**
  * Shared map layer service
@@ -260,9 +261,13 @@ export class SafeMapLayersService {
    * todo(gis): extended model is useless
    *
    * @param layerIds layer settings saved from the layer editor
+   * @param popupService popup service
    * @returns Observable of LayerSettingsI
    */
-  async createLayersFromIds(layerIds: string[]): Promise<Layer[]> {
+  async createLayersFromIds(
+    layerIds: string[],
+    popupService: SafeMapPopupService
+  ): Promise<Layer[]> {
     const promises: Promise<Layer>[] = [];
     for (const id of layerIds) {
       promises.push(
@@ -289,7 +294,10 @@ export class SafeMapLayersService {
             }),
             map(
               (layer: { layer: LayerModel; geojson: any }) =>
-                new Layer({ ...layer.layer, geojson: layer.geojson })
+                new Layer(
+                  { ...layer.layer, geojson: layer.geojson },
+                  popupService
+                )
             )
           )
         )
@@ -307,9 +315,13 @@ export class SafeMapLayersService {
    * Create layer from its definition
    *
    * @param layer Layer to get definition of.
+   * @param popupService Shared popup service
    * @returns Layer for map widget
    */
-  async createLayerFromDefinition(layer: LayerModel) {
+  async createLayerFromDefinition(
+    layer: LayerModel,
+    popupService: SafeMapPopupService
+  ) {
     if (this.isDatasourceValid(layer.datasource)) {
       const params = new HttpParams({
         fromObject: omitBy(layer.datasource, isNil),
@@ -322,12 +334,15 @@ export class SafeMapLayersService {
             .pipe(catchError(() => of(EMPTY_FEATURE_COLLECTION))),
         })
       );
-      return new Layer({
-        ...res.layer,
-        geojson: res.geojson,
-      });
+      return new Layer(
+        {
+          ...res.layer,
+          geojson: res.geojson,
+        },
+        popupService
+      );
     } else {
-      return new Layer(layer);
+      return new Layer(layer, popupService);
     }
   }
 

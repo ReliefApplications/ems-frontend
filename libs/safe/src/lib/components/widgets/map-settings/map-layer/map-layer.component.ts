@@ -115,8 +115,12 @@ export class MapLayerComponent
    * Set default layer for editor
    */
   private setUpLayer() {
+    if (!this.mapComponent) return;
     this.mapLayersService
-      .createLayerFromDefinition(this.form.value as LayerModel)
+      .createLayerFromDefinition(
+        this.form.value as LayerModel,
+        this.mapComponent.mapPopupService
+      )
       .then((layer) => {
         if (layer) {
           this._layer = layer;

@@ -22,6 +22,8 @@ import {
   LayerSymbol,
   PopupInfo,
 } from '../../../models/layer.model';
+import { SafeMapPopupService } from './map-popup/map-popup.service';
+import { haversineDistance } from './utils/haversine';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -146,7 +148,11 @@ export class Layer implements LayerModel {
   public layerDefinition?: LayerDefinition;
 
   // Popup info
-  public popupInfo?: PopupInfo;
+  public popupInfo: PopupInfo = {
+    title: '',
+    description: '',
+    popupElements: [],
+  };
   public createdAt!: Date;
   public updatedAt!: Date;
 
@@ -254,8 +260,9 @@ export class Layer implements LayerModel {
    * Constructor for the Layer class
    *
    * @param options Layer options
+   * @param popupService Popup service
    */
-  constructor(options: any) {
+  constructor(options: any, private popupService: SafeMapPopupService) {
     if (options) {
       this.setConfig(options);
     } else {
@@ -288,7 +295,7 @@ export class Layer implements LayerModel {
     } else if (options.sublayers) {
       // Group layer, add sublayers
       this.sublayers = options.sublayers?.map((child: any) => ({
-        object: new Layer(child),
+        object: new Layer(child, this.popupService),
       }));
     }
   }
@@ -399,6 +406,23 @@ export class Layer implements LayerModel {
           })
         );
       },
+      onEachFeature: (feature: Feature<any>, layer: L.Layer) => {
+        // Add popup on click because we destroy popup component each time we remove it
+        // In order to destroy all event subscriptions and avoid memory leak
+        layer.addEventListener('click', () => {
+          const coordinates = {
+            lat: feature.geometry.coordinates[1],
+            lng: feature.geometry.coordinates[0],
+          };
+          // bind this to the popup service
+          this.popupService.setPopUp(
+            [feature],
+            coordinates,
+            this.popupInfo,
+            layer
+          );
+        });
+      },
       // style: (feature: Feature<Geometry> | undefined) => {
       //   if (!feature) return {};
       //   // const style = this.getFeatureStyle(feature);
@@ -473,7 +497,55 @@ export class Layer implements LayerModel {
               }, {}),
             };
 
-            this.layer = L.heatLayer(heatArray, heatmapOptions);
+            const layer = L.heatLayer(heatArray, heatmapOptions);
+
+            layer.onAdd = (map: L.Map) => {
+              // Leaflet.heat doesn't support click events, so we have to do it ourselves
+              map.on('click', (event: any) => {
+                const layerClass = event.originalEvent.target?.className;
+                // We are setting the click event in the whole map, so in order to trigger the popup for heatmap we filter the target from the heatmap
+                if (
+                  typeof layerClass === 'string' &&
+                  layerClass?.includes('heatmap')
+                ) {
+                  const zoom = map.getZoom();
+                  const radius = 1000 / zoom;
+                  const coordinates = {
+                    lat: event.latlng.lat,
+                    lng: event.latlng.lng,
+                  };
+                  // checks if the point is within the calculate radius
+                  const matchedPoints = data.features.filter((feature) => {
+                    if (
+                      feature.type === 'Feature' &&
+                      feature.geometry.type === 'Point'
+                    ) {
+                      const pointData = [
+                        feature.geometry.coordinates[1],
+                        feature.geometry.coordinates[0],
+                        get(feature, 'properties.weight', 1),
+                      ];
+                      const distance = haversineDistance(
+                        event.latlng.lat,
+                        event.latlng.lng,
+                        pointData[0],
+                        pointData[1]
+                      );
+                      return distance < radius;
+                    } else return false;
+                  });
+
+                  this.popupService.setPopUp(
+                    matchedPoints,
+                    coordinates,
+                    this.popupInfo
+                  );
+                }
+              });
+
+              return layer;
+            };
+            this.layer = layer;
             return this.layer;
           default:
             switch (get(this.layerDefinition, 'featureReduction.type')) {
@@ -510,6 +582,24 @@ export class Layer implements LayerModel {
                     );
                   },
                 });
+
+                // Set popup for all the cluster markers
+                clusterGroup.on('clusterclick', (event: any) => {
+                  const coordinates = {
+                    lat: event.latlng.lat,
+                    lng: event.latlng.lng,
+                  };
+                  const children = event.layer
+                    .getAllChildMarkers()
+                    .map((child: L.Marker) => child.feature);
+                  this.popupService.setPopUp(
+                    children,
+                    coordinates,
+                    this.popupInfo,
+                    event.layer
+                  );
+                });
+
                 const clusterLayer = L.geoJSON(data, geoJSONopts);
                 clusterGroup.addLayer(clusterLayer);
                 this.layer = clusterGroup;

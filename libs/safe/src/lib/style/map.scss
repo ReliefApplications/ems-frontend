@@ -35,3 +35,12 @@
       1px 1px 0 #000;
   }
 }
+
+// Popup
+::ng-deep .leaflet-popup-content-wrapper {
+  @apply p-0 overflow-hidden;
+
+  .leaflet-popup-content {
+    @apply m-0;
+  }
+}

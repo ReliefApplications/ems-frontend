@@ -34,6 +34,7 @@ export class MapModalComponent implements AfterViewInit {
    * Modal to show markers in a map
    *
    * @param dialogRef Reference to the dialog
+   * @param mapLayersService Service to create layers
    * @param data Dialog data
    */
   constructor(
@@ -43,26 +44,29 @@ export class MapModalComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    console.log('there');
+    const mapComponent = this.mapComponent;
+    if (!mapComponent) return;
     this.mapLayersService
-      .createLayerFromDefinition({
-        id: '',
-        name: '',
-        visibility: true,
-        opacity: 1,
-        datasource: this.data.datasource,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
+      .createLayerFromDefinition(
+        {
+          id: '',
+          name: '',
+          visibility: true,
+          opacity: 1,
+          datasource: this.data.datasource,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        mapComponent.mapPopupService
+      )
       .then((layer) => {
-        this.mapComponent?.addLayer(layer);
-        console.log(this.data.item);
+        mapComponent.addLayer(layer);
         const coordinates = get(
           this.data,
           `item[${this.data.datasource.geoField}].geometry.coordinates`,
           []
         );
-        this.mapComponent?.map.setView(coordinates.reverse(), 10);
+        mapComponent.map.setView(coordinates.reverse(), 10);
       });
   }
 }

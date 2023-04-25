@@ -1,6 +1,46 @@
-<div class="flex flex-col gap-0.5">
-  <span class="flex gap-y-0 gap-x-2" *ngFor="let row of popupRows">
-    <strong>{{ row.label }}:</strong>
-    {{ row.value }}
-  </span>
+<div class="w-60 safe-border-radius-inherit flex flex-col">
+  <header class="w-full pl-2 safe-popup-header h-full flex items-center">
+    <p class="m-0" *ngIf="points.length > 1">
+      ({{
+        'components.widget.settings.map.popup.of'
+          | translate : { total: points.length, current: currValue + 1 }
+      }})
+    </p>
+    <div class="flex ml-auto">
+      <ng-container *ngIf="points.length > 1">
+        <safe-button
+          [isIcon]="true"
+          icon="arrow_left"
+          [disabled]="currValue === 0"
+          (click)="current.next(currValue - 1)"
+        >
+        </safe-button>
+        <safe-button
+          [isIcon]="true"
+          icon="arrow_right"
+          [disabled]="currValue === points.length - 1"
+          (click)="current.next(currValue + 1)"
+        >
+        </safe-button>
+      </ng-container>
+      <safe-button
+        [size]="buttonSize.SMALL"
+        [isIcon]="true"
+        icon="close"
+        (click)="closePopup.emit()"
+      >
+      </safe-button>
+    </div>
+  </header>
+  <div class="max-h-60 p-2 overflow-y-auto">
+    <div [innerHTML]="currentHtml"></div>
+  </div>
+  <div class="pl-2 my-1">
+    <p
+      (click)="zoomToCurrentFeature()"
+      class="underline inline text-base text-primary-500 cursor-pointer"
+    >
+      {{ 'components.widget.settings.map.popup.zoomTo' | translate }}
+    </p>
+  </div>
 </div>
