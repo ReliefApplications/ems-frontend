@@ -9,6 +9,7 @@ import { SelectModule } from './select/select.module';
 import { AvatarGroupModule } from './avatar-group/avatar-group.module';
 import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
+import { AutocompleteModule } from './autocomplete/autocomplete.module';
 
 /**
  * UI Library Module
@@ -25,6 +26,7 @@ import { DividerModule } from './divider/divider.module';
     SelectModule,
     ToggleModule,
     DividerModule,
+    AutocompleteModule,
   ],
 })
 export class UiModule {}
