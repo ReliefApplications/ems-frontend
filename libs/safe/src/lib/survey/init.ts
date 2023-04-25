@@ -35,6 +35,7 @@ import { initLocalization } from './localization';
  * @param authService custom auth service
  * @param environment injected environment
  * @param referenceDataService Reference data service
+ * @param containsCustomQuestions If survey contains custom questions or not
  */
 export const initCustomSurvey = (
   Survey: any,
@@ -44,18 +45,29 @@ export const initCustomSurvey = (
   formBuilder: UntypedFormBuilder,
   authService: SafeAuthService,
   environment: any,
-  referenceDataService: SafeReferenceDataService
+  referenceDataService: SafeReferenceDataService,
+  containsCustomQuestions: boolean
 ): void => {
+  // If the survey created does not contain custom questions, we destroy previously set custom questions if so
+  if (!containsCustomQuestions) {
+    Survey.CustomWidgetCollection.Instance.clear();
+    Survey.ComponentCollection.Instance.clear();
+  }
+
   // load widgets (aka custom questions)
   SurveyJSWidgets.select2tagbox(Survey);
-  CommentWidget.init(Survey);
-  TextWidget.init(Survey, domService);
-  // load components (same as widgets, but with less configuration options)
-  ResourceComponent.init(Survey, domService, apollo, dialog, formBuilder);
-  ResourcesComponent.init(Survey, domService, apollo, dialog, formBuilder);
-  OwnerComponent.init(Survey, domService, apollo);
-  UsersComponent.init(Survey, domService, apollo);
-  GeospatialComponent.init(Survey, domService);
+
+  if (containsCustomQuestions) {
+    CommentWidget.init(Survey);
+    TextWidget.init(Survey, domService);
+    // load components (same as widgets, but with less configuration options)
+    ResourceComponent.init(Survey, domService, apollo, dialog, formBuilder);
+    ResourcesComponent.init(Survey, domService, apollo, dialog, formBuilder);
+    OwnerComponent.init(Survey, domService, apollo);
+    UsersComponent.init(Survey, domService, apollo);
+    GeospatialComponent.init(Survey, domService);
+  }
+
   // load global properties
   ReferenceDataProperties.init(Survey, domService, referenceDataService);
   TooltipProperty.init(Survey);

@@ -20,6 +20,14 @@ import {
 } from '@angular/material/legacy-dialog';
 import get from 'lodash/get';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { TranslateModule } from '@ngx-translate/core';
+import { SafeModalModule } from '../../../ui/modal/modal.module';
+import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 
 /** Model for the data input */
 interface DialogData {
@@ -48,6 +56,18 @@ export function codesFactory(): () => any {
  * Modal to edit distribution list
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    SafeModalModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    MatChipsModule,
+  ],
   selector: 'safe-edit-distribution-list-modal',
   templateUrl: './edit-distribution-list-modal.component.html',
   styleUrls: ['./edit-distribution-list-modal.component.scss'],

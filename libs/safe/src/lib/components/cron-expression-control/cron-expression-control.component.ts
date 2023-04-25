@@ -1,7 +1,6 @@
 import { Component, Optional, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { CronExpressionControlModalComponent } from './cron-expression-control-modal/cron-expression-control-modal.component';
 
 /**
  * Cron expression form control
@@ -80,7 +79,10 @@ export class CronExpressionControlComponent implements ControlValueAccessor {
   }
 
   /** Opens the cron expression component modal */
-  public onEdit(): void {
+  public async onEdit(): Promise<void> {
+    const { CronExpressionControlModalComponent } = await import(
+      './cron-expression-control-modal/cron-expression-control-modal.component'
+    );
     const dialogRef = this.dialog.open(CronExpressionControlModalComponent, {
       autoFocus: false,
       data: {

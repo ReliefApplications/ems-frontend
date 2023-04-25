@@ -1,8 +1,11 @@
-export interface ReverseGeocodeResult {
-  Coordinates: { lat: number; lng: number };
-  City: string;
-  Country: string;
-  District: string;
-  Region: string;
-  Street: string;
+export interface GeoProperties {
+  coordinates: { lat: number; lng: number };
+  city: string;
+  countryName: string;
+  countryCode: string;
+  district: string;
+  region: string;
+  street: string;
+  subRegion: string;
+  address: string;
 }

@@ -9,6 +9,12 @@ import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { TranslateModule } from '@ngx-translate/core';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /** Interface for the dialog data input */
 interface DialogData {
@@ -17,6 +23,16 @@ interface DialogData {
 
 /** Component for choosing an email template to send an email with */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    SafeModalModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule,
+  ],
   selector: 'safe-email-template-modal',
   templateUrl: './email-template-modal.component.html',
   styleUrls: ['./email-template-modal.component.scss'],

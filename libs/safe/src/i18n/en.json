@@ -401,6 +401,7 @@
 		"application": {
 			"customStyling": "Custom Styling",
 			"dashboard": {
+				"editFilter": "Edit filter",
 				"empty": "No content available. Wait for your administrator to build some."
 			},
 			"delete": {
@@ -1727,7 +1728,8 @@
 			"create": "Create a Form",
 			"field": {
 				"label": "Label",
-				"name": "Field name"
+				"name": "Field name",
+				"usedIn": "Used in"
 			},
 			"new": "New form",
 			"notifications": {

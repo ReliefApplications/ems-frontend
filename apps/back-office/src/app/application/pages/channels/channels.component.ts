@@ -11,8 +11,6 @@ import {
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { takeUntil } from 'rxjs/operators';
-import { AddChannelModalComponent } from './components/add-channel-modal/add-channel-modal.component';
-import { EditChannelModalComponent } from './components/edit-channel-modal/edit-channel-modal.component';
 
 /**
  * Channels page component.
@@ -83,7 +81,10 @@ export class ChannelsComponent
    * Display the AddChannel modal.
    * Create a new channel linked to this application on close.
    */
-  onAdd(): void {
+  async onAdd(): Promise<void> {
+    const { AddChannelModalComponent } = await import(
+      './components/add-channel-modal/add-channel-modal.component'
+    );
     const dialogRef = this.dialog.open(AddChannelModalComponent);
     dialogRef.afterClosed().subscribe((value: { title: string }) => {
       if (value) {
@@ -97,7 +98,10 @@ export class ChannelsComponent
    *
    * @param channel channel to edit
    */
-  onEdit(channel: Channel): void {
+  async onEdit(channel: Channel): Promise<void> {
+    const { EditChannelModalComponent } = await import(
+      './components/edit-channel-modal/edit-channel-modal.component'
+    );
     const dialogRef = this.dialog.open(EditChannelModalComponent, {
       data: {
         channel,

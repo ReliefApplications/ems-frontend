@@ -16,6 +16,7 @@ import * as EsriCluster from 'esri-leaflet-cluster';
 import * as EsriRenderers from 'esri-leaflet-renderers';
 import * as Esri from 'esri-leaflet';
 import * as Vector from 'esri-leaflet-vector';
+import * as Geocoding from 'esri-leaflet-geocoder';
 import * as L from 'leaflet';
 
 /**
@@ -81,16 +82,25 @@ export class ArcgisService {
    *
    * @param options parameter
    * @param options.start parameter
+   * @param options.text search string
+   * @param options.id current id
    * @returns searched items
    */
-  public searchItems(options: { start?: number }) {
+  public searchItems(options: { start?: number; text?: string; id?: string }) {
+    const query = new SearchQueryBuilder()
+      .startGroup()
+      .match('Web Map')
+      .in('type');
+    if (options.text) {
+      query.and().match(options.text).in('title');
+    }
+    query.endGroup();
+    if (options.id) {
+      query.or();
+      query.startGroup().match(options.id).in('id').endGroup();
+    }
     const filter: ISearchOptions = {
-      q: new SearchQueryBuilder()
-        .match('Web Map')
-        .in('type')
-        .and() // to search all web maps, just remove following 3 lines
-        //.match('org')
-        .in('access'),
+      q: query,
       start: options.start,
       authentication: this.session,
       // portal: arcgisUrl + '/sharing/rest',
@@ -479,5 +489,23 @@ export class ArcgisService {
    */
   private httpGet(path: string): Promise<any> {
     return this.http.get(path + `?token=${this.esriApiKey}`).toPromise();
+  }
+
+  public reverseSearch(latlng: L.LatLng) {
+    return new Promise((resolve, reject) =>
+      (Geocoding as any)
+        .reverseGeocode({
+          apikey: this.esriApiKey,
+        })
+        .latlng(latlng)
+        .run((err: any, res: any) => {
+          if (res) {
+            resolve(res);
+          }
+          if (err) {
+            reject(err);
+          }
+        })
+    );
   }
 }

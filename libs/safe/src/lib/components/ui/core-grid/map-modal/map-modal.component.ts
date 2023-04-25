@@ -1,19 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Inject } from '@angular/core';
+import { Component, Inject, AfterViewInit, ViewChild } from '@angular/core';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
-import * as L from 'leaflet';
 import { SafeModalModule } from '../../modal/modal.module';
+import { MapComponent, MapModule } from '../../map';
+import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
+import { LayerDatasource } from '../../../../models/layer.model';
+import get from 'lodash/get';
 
 /**
  * Dialog data interface
  */
 interface DialogData {
-  markers: [number, number][];
-  defaultZoom: number;
-  defaultPosition: [number, number];
+  item: any;
+  datasource: LayerDatasource;
 }
 
 /**
@@ -21,12 +23,13 @@ interface DialogData {
  */
 @Component({
   standalone: true,
-  imports: [CommonModule, SafeModalModule],
+  imports: [CommonModule, SafeModalModule, MapModule],
   selector: 'safe-map-modal',
   templateUrl: './map-modal.component.html',
   styleUrls: ['./map-modal.component.scss'],
 })
 export class MapModalComponent implements AfterViewInit {
+  @ViewChild(MapComponent) mapComponent?: MapComponent;
   /**
    * Modal to show markers in a map
    *
@@ -35,23 +38,31 @@ export class MapModalComponent implements AfterViewInit {
    */
   constructor(
     public dialogRef: MatDialogRef<MapModalComponent>,
+    private mapLayersService: SafeMapLayersService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 
   ngAfterViewInit(): void {
-    const markers: L.LatLngExpression[] = this.data.markers.map((location) =>
-      L.latLng(location)
-    );
-    const map = L.map('map').setView(
-      this.data.defaultPosition,
-      this.data.defaultZoom
-    );
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
-    markers.forEach((marker) => {
-      L.marker(marker).addTo(map);
-    });
+    console.log('there');
+    this.mapLayersService
+      .createLayerFromDefinition({
+        id: '',
+        name: '',
+        visibility: true,
+        opacity: 1,
+        datasource: this.data.datasource,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .then((layer) => {
+        this.mapComponent?.addLayer(layer);
+        console.log(this.data.item);
+        const coordinates = get(
+          this.data,
+          `item[${this.data.datasource.geoField}].geometry.coordinates`,
+          []
+        );
+        this.mapComponent?.map.setView(coordinates.reverse(), 10);
+      });
   }
 }

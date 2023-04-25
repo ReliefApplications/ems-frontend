@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
-import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,
@@ -139,8 +138,11 @@ export class SafeWidgetGridComponent implements OnInit {
    *
    * @param e widget to open.
    */
-  onExpandWidget(e: any): void {
+  async onExpandWidget(e: any): Promise<void> {
     const widget = this.widgets.find((x) => x.id === e.id);
+    const { SafeExpandedWidgetComponent } = await import(
+      './expanded-widget/expanded-widget.component'
+    );
     const dialogRef = this.dialog.open(SafeExpandedWidgetComponent, {
       data: {
         widget,

@@ -5,6 +5,7 @@ import {
   ListBoxToolbarConfig,
 } from '@progress/kendo-angular-listbox';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { GeoProperties } from '../../components/geospatial-map/geospatial-map.interface';
 
 @Component({
   selector: 'safe-geofields-listbox',
@@ -14,13 +15,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrls: ['./geofields-listbox.component.scss'],
 })
 export class GeofieldsListboxComponent {
-  public availableFields: string[] = [
-    'Country',
-    'Street',
-    'City',
-    'District',
-    'Region',
-    'Coordinates',
+  public availableFields: (keyof GeoProperties)[] = [
+    'coordinates',
+    'city',
+    'countryName',
+    'countryCode',
+    'district',
+    'region',
+    'street',
+    'subRegion',
+    'address',
   ];
   @Input() selectedFields: string[] = [];
   public toolbarSettings: ListBoxToolbarConfig = {

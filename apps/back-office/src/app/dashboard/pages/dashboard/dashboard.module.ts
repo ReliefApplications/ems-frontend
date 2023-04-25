@@ -15,6 +15,7 @@ import {
   SafeEditableTextModule,
   FullScreenModule,
   SafeGraphQLSelectModule,
+  DashboardFilterModule,
 } from '@oort-front/safe';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -61,6 +62,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
+    DashboardFilterModule,
   ],
   exports: [DashboardComponent],
 })
