@@ -1,10 +1,13 @@
+import { addons } from '@storybook/addons';
+import { FORCE_RE_RENDER } from '@storybook/core-events';
 import { moduleMetadata, Story, Meta } from '@storybook/angular';
-import { PaginatorComponent } from './paginator.component';
-import { PagerModule } from '@progress/kendo-angular-pager';
 import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PagerModule } from '@progress/kendo-angular-pager';
+import { TranslateModule } from '@ngx-translate/core';
+import { PaginatorComponent } from './paginator.component';
 import { UIPageChangeEvent } from './interfaces/paginator.interfaces';
 import { StorybookTranslateModule } from '../../storybook-translate.module';
-import { TranslateModule } from '@ngx-translate/core';
 
 export default {
   title: 'Paginator',
@@ -16,10 +19,27 @@ export default {
         PagerModule,
         StorybookTranslateModule,
         TranslateModule,
+        BrowserAnimationsModule,
       ],
     }),
   ],
 } as Meta<PaginatorComponent>;
+
+/**
+ * Total items for the paginator
+ */
+const itemsArray: number[] = [...Array(100).keys()];
+let pagedItems: number[] = itemsArray.filter((value) => value < 10);
+/**
+ * Custom method to update paged items for story testing
+ *
+ * @param event UIPageChangeEvent
+ */
+const pageChange = (event: UIPageChangeEvent) => {
+  console.log('UIPageChangeEvent: ', event);
+  pagedItems = [...itemsArray.slice(event.skip, event.skip + event.pageSize)];
+  addons.getChannel().emit(FORCE_RE_RENDER);
+};
 
 /**
  * Paginator template
@@ -28,22 +48,15 @@ export default {
  * @returns PaginatorComponent
  */
 const Template: Story<PaginatorComponent> = (args: PaginatorComponent) => {
-  const itemsArray: number[] = [];
-  for (let index = 0; index < 100; index++) {
-    itemsArray.push(index + 1);
-  }
-  let pagedItems: number[] = [];
-  const pageChange = (event: UIPageChangeEvent) => {
-    console.log(event);
-    pagedItems = itemsArray.slice(event.skip, event.skip + event.pageSize);
-  };
   return {
     component: PaginatorComponent,
     template: `
+    <div class="overflow-y-auto max-h-70">
       <ng-container *ngFor="let item of pagedItems">
-      <p>{{item}}</p>
+        <p>{{item}}</p>
       </ng-container>
-      <ui-paginator (pageChange)="pageChange($event)" [totalItems]="itemsArray.length" ></ui-paginator>
+    </div>
+    <ui-paginator (pageChange)="pageChange($event)" [totalItems]="itemsArray.length" ></ui-paginator>
         `,
     props: {
       ...args,

@@ -28,10 +28,10 @@ export class PaginatorComponent {
    * Update page data on page change
    *
    * @param event Page change event
-   * @param currentPage Current page index
    */
-  onPageChange(event: PageChangeEvent, currentPage: number): void {
-    console.log('current page:', currentPage);
+  onPageChange(event: PageChangeEvent): void {
+    // Current page has to be calculated, logic provided from their forums: https://www.telerik.com/forums/get-current-page
+    const currentPage = (event.skip + event.take) / event.take - 1;
     this.skip = event.skip;
     this.pageSize = event.take;
     this.pageChange.emit({
