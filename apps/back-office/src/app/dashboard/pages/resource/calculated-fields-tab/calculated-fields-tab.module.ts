@@ -7,11 +7,7 @@ import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-m
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  SafeButtonModule,
-  SafeEditCalculatedFieldModalModule,
-  SafeEmptyModule,
-} from '@oort-front/safe';
+import { SafeButtonModule, SafeEmptyModule } from '@oort-front/safe';
 import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component';
 
 /**
@@ -28,7 +24,6 @@ import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component'
     SafeButtonModule,
     MatTooltipModule,
     TranslateModule,
-    SafeEditCalculatedFieldModalModule,
     OverlayModule,
     SafeEmptyModule,
   ],

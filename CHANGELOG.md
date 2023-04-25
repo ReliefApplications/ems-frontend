@@ -1,3 +1,18 @@
+# [2.0.0-beta.10](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.9...v2.0.0-beta.10) (2023-04-25)
+
+
+### Bug Fixes
+
+* injecting fullscreen providers in app.module ([f8ba61a](https://github.com/ReliefApplications/oort-frontend/commit/f8ba61a8895b203eecd42ae3c0287a322e7ecd16))
+* removed fields from layout are now visible when adding them again ([9f61b17](https://github.com/ReliefApplications/oort-frontend/commit/9f61b1707c867d93ebb9f75ae52b2c71aa271ac5))
+* some modals would appear under other modals due to fullscreen overlay changes ([a849b0c](https://github.com/ReliefApplications/oort-frontend/commit/a849b0c6d43a2beeb6649b38e1bb2e52e37d7372)), closes [Fix/ab#61981](https://github.com/Fix/ab/issues/61981)
+
+
+### Features
+
+* add avatar group component ([bc952f9](https://github.com/ReliefApplications/oort-frontend/commit/bc952f9e1db5e9e87d4a6cd0ef6103979bbabbf3)), closes [feat/AB#61942](https://github.com/feat/AB/issues/61942)
+* can now filter fields by template when editing role access ([1a3c0bc](https://github.com/ReliefApplications/oort-frontend/commit/1a3c0bc0715cce1523578e8d0c420a443c4cb074))
+
 # [2.0.0-beta.9](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.8...v2.0.0-beta.9) (2023-04-14)
 
 

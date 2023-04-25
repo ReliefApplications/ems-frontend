@@ -20,6 +20,7 @@ import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@ang
 import { ResourceFieldsComponent } from './resource-fields/resource-fields.component';
 import { SafeRoleResourceFiltersComponent } from './resource-access-filters/resource-access-filters.component';
 import { SafeFilterModule } from '../../filter/filter.module';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 
 /**
  * Resources tab of Role Summary component.
@@ -50,6 +51,7 @@ import { SafeFilterModule } from '../../filter/filter.module';
     MatIconModule,
     MatProgressSpinnerModule,
     SafeFilterModule,
+    MatSelectModule,
   ],
   exports: [RoleResourcesComponent],
 })

@@ -5,7 +5,6 @@ import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
 import { clorophletForm, divisionForm } from '../../map-forms';
-import { MapClorophletDivisionComponent } from '../map-clorophlet-division/map-clorophlet-division.component';
 
 /** Interface of dialog data of the component */
 interface DialogData {
@@ -82,7 +81,10 @@ export class MapClorophletComponent {
    *
    * @param index index of division to edit
    */
-  public editDivision(index: number): void {
+  public async editDivision(index: number): Promise<void> {
+    const { MapClorophletDivisionComponent } = await import(
+      '../map-clorophlet-division/map-clorophlet-division.component'
+    );
     const dialogRef = this.dialog.open(MapClorophletDivisionComponent, {
       data: {
         value: this.divisions.at(index).value,

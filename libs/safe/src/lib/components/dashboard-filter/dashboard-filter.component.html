@@ -1,0 +1,109 @@
+<div
+  safeDrawerPositioner
+  [position]="position"
+  [minSizeOnClosed]="48"
+  [elementWidth]="containerWidth"
+  [elementHeight]="containerHeight"
+  [opened]="isDrawerOpen"
+  class="pointer-events-auto"
+>
+  <div
+    [ngClass]="{
+      'h-full':
+        position === filterPosition.LEFT || position === filterPosition.RIGHT,
+      'flex-col':
+        position === filterPosition.TOP || position === filterPosition.BOTTOM
+    }"
+    class="flex"
+  >
+    <header
+      [ngClass]="{
+        'order-1':
+          position === filterPosition.BOTTOM ||
+          position === filterPosition.RIGHT,
+        'order-2':
+          position === filterPosition.TOP || position === filterPosition.LEFT,
+        'w-12 h-full px-1 py-4 flex-col':
+          position === filterPosition.LEFT || position === filterPosition.RIGHT,
+        'w-full py-1 px-4 flex-row':
+          position === filterPosition.TOP || position === filterPosition.BOTTOM
+      }"
+      class="relative flex justify-between bg-primary-500 text-white"
+    >
+      <!-- Edition -->
+      <div class="flex-auto">
+        <safe-button
+          [isIcon]="true"
+          icon="edit"
+          (click)="onEditFilter()"
+          [matTooltip]="
+            'components.application.dashboard.editFilter' | translate
+          "
+        >
+        </safe-button>
+      </div>
+      <!-- Position -->
+      <div
+        [ngClass]="{
+          'flex-col':
+            position === filterPosition.LEFT ||
+            position === filterPosition.RIGHT
+        }"
+        class="flex flex-auto justify-end"
+      >
+        <ng-container *ngFor="let position of positionList">
+          <safe-button
+            matSuffix
+            [isIcon]="true"
+            icon="{{ position + '_panel_open' }}"
+            [fontSet]="'material-symbols-outlined'"
+            (click)="changeFilterPosition(position)"
+          ></safe-button>
+        </ng-container>
+      </div>
+      <!-- Toggle opened status -->
+      <div
+        [ngClass]="{
+          bottom: position === filterPosition.BOTTOM,
+          top: position === filterPosition.TOP,
+          right: position === filterPosition.RIGHT,
+          left: position === filterPosition.LEFT
+        }"
+        class="dashboard-filter-tab absolute h-10 py-2 px-3 flex bg-primary-500"
+        (click)="isDrawerOpen = !isDrawerOpen"
+      >
+        <safe-icon icon="view_stream" class="cursor-pointer"></safe-icon>
+      </div>
+    </header>
+    <div
+      [ngClass]="{
+        'order-1':
+          position === filterPosition.TOP || position === filterPosition.LEFT,
+        'order-2':
+          position === filterPosition.BOTTOM ||
+          position === filterPosition.RIGHT,
+        'w-full':
+          position === filterPosition.TOP || position === filterPosition.BOTTOM,
+        'h-full':
+          position === filterPosition.LEFT || position === filterPosition.RIGHT,
+        'flex-col':
+          position === filterPosition.LEFT || position === filterPosition.RIGHT
+      }"
+      class="dashboard-filter-content bg-white p-3"
+    >
+      <div #dashboardSurveyCreatorContainer></div>
+      <!-- <form
+        [ngClass]="{
+          'flex-col':
+            position === filterPosition.LEFT ||
+            position === filterPosition.RIGHT,
+          'hidden': !isDrawerOpen,
+          'flex': isDrawerOpen
+        }"
+        class="flex w-full flex-wrap no"
+      >
+        
+      </form> -->
+    </div>
+  </div>
+</div>

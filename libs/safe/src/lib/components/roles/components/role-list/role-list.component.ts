@@ -12,7 +12,6 @@ import { Role } from '../../../../models/user.model';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeApplicationService } from '../../../../services/application/application.service';
-import { SafeAddRoleComponent } from '../add-role/add-role.component';
 import {
   AddRoleMutationResponse,
   ADD_ROLE,
@@ -140,7 +139,10 @@ export class SafeRoleListComponent
   /**
    * Adds a role
    */
-  onAdd(): void {
+  async onAdd(): Promise<void> {
+    const { SafeAddRoleComponent } = await import(
+      '../add-role/add-role.component'
+    );
     const dialogRef = this.dialog.open(SafeAddRoleComponent, {
       data: { title: 'components.role.add.title' },
     });

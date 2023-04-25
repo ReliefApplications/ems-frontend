@@ -10,7 +10,6 @@ import {
   PublishMutationResponse,
   PublishNotificationMutationResponse,
 } from './graphql/mutations';
-import { SafeFormModalComponent } from '../../form-modal/form-modal.component';
 import {
   GetRecordDetailsQueryResponse,
   GET_RECORD_DETAILS,
@@ -32,7 +31,6 @@ import {
 } from '@angular/core';
 import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
 import { SafeWorkflowService } from '../../../services/workflow/workflow.service';
-import { SafeChooseRecordModalComponent } from '../../choose-record-modal/choose-record-modal.component';
 import { SafeAuthService } from '../../../services/auth/auth.service';
 import { SafeEmailService } from '../../../services/email/email.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -43,7 +41,6 @@ import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
-import { EmailTemplateModalComponent } from '../../email-template-modal/email-template-modal.component';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
@@ -366,6 +363,9 @@ export class SafeGridWidgetComponent implements OnInit {
           );
         } else {
           // select template
+          const { EmailTemplateModalComponent } = await import(
+            '../../email-template-modal/email-template-modal.component'
+          );
           const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
             data: {
               templates,
@@ -424,6 +424,9 @@ export class SafeGridWidgetComponent implements OnInit {
       );
 
       // Opens a modal containing the prefilled form.
+      const { SafeFormModalComponent } = await import(
+        '../../form-modal/form-modal.component'
+      );
       this.dialog.open(SafeFormModalComponent, {
         data: {
           template: options.prefillTargetForm,
@@ -515,6 +518,9 @@ export class SafeGridWidgetComponent implements OnInit {
       .subscribe(async (getForm) => {
         if (getForm.data.form) {
           const form = getForm.data.form;
+          const { SafeChooseRecordModalComponent } = await import(
+            '../../choose-record-modal/choose-record-modal.component'
+          );
           const dialogRef = this.dialog.open(SafeChooseRecordModalComponent, {
             data: {
               targetForm: form,
@@ -561,7 +567,7 @@ export class SafeGridWidgetComponent implements OnInit {
                       data,
                     },
                   })
-                  .subscribe((editRecord) => {
+                  .subscribe(async (editRecord) => {
                     if (editRecord.errors) {
                       this.snackBar.openSnackBar(
                         this.translate.instant(
@@ -582,6 +588,9 @@ export class SafeGridWidgetComponent implements OnInit {
                                 value: key,
                               }
                             )
+                          );
+                          const { SafeFormModalComponent } = await import(
+                            '../../form-modal/form-modal.component'
                           );
                           this.dialog.open(SafeFormModalComponent, {
                             disableClose: true,

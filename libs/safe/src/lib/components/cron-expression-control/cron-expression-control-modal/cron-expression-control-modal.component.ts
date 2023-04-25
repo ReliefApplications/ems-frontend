@@ -3,11 +3,33 @@ import { FormControl } from '@angular/forms';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import get from 'lodash/get';
 import { CronOptions } from 'ngx-cron-editor';
+import { CommonModule } from '@angular/common';
+import { CronEditorModule } from 'ngx-cron-editor';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SafeModalModule } from '../../ui/modal/modal.module';
+import { SafeReadableCronModule } from '../../../pipes/readable-cron/readable-cron.module';
+import { SafeAlertModule } from '../../ui/alert/alert.module';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 
 /**
  * Cron expression form control modal
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    CronEditorModule,
+    SafeModalModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SafeReadableCronModule,
+    SafeAlertModule,
+    MatFormFieldModule,
+    MatDialogModule,
+    MatInputModule,
+  ],
   selector: 'safe-cron-expression-control-modal',
   templateUrl: './cron-expression-control-modal.component.html',
   styleUrls: ['./cron-expression-control-modal.component.scss'],

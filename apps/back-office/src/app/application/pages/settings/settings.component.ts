@@ -19,7 +19,6 @@ import {
   DeleteApplicationMutationResponse,
   DELETE_APPLICATION,
 } from './graphql/mutations';
-import { DuplicateApplicationModalComponent } from '../../../components/duplicate-application-modal/duplicate-application-modal.component';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -103,7 +102,7 @@ export class SettingsComponent
   /**
    * Duplicate application.
    */
-  onDuplicate(): void {
+  async onDuplicate(): Promise<void> {
     if (this.locked && !this.lockedByUser) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectLocked', {
@@ -111,6 +110,9 @@ export class SettingsComponent
         })
       );
     } else {
+      const { DuplicateApplicationModalComponent } = await import(
+        '../../../components/duplicate-application-modal/duplicate-application-modal.component'
+      );
       this.dialog.open(DuplicateApplicationModalComponent, {
         data: {
           id: this.application?.id,

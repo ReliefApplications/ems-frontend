@@ -13,7 +13,6 @@ import {
   GetApiConfigurationsQueryResponse,
   GET_API_CONFIGURATIONS,
 } from './graphql/queries';
-import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
 import {
   AddApiConfigurationMutationResponse,
   ADD_API_CONFIGURATIION,
@@ -202,7 +201,10 @@ export class ApiConfigurationsComponent
    * Displays the AddApiConfiguration modal.
    * Creates a new apiConfiguration on closed if result.
    */
-  onAdd(): void {
+  async onAdd(): Promise<void> {
+    const { AddApiConfigurationComponent } = await import(
+      './components/add-api-configuration/add-api-configuration.component'
+    );
     const dialogRef = this.dialog.open(AddApiConfigurationComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {

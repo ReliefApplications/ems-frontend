@@ -35,7 +35,6 @@ import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, firstValueFrom, Observable, takeUntil } from 'rxjs';
-import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
 import { TranslateService } from '@ngx-translate/core';
@@ -48,13 +47,12 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
-import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
 import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { SafeFormService } from '../../services/form/form.service';
+import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 
 /**
  * Interface of Dialog data.
@@ -87,7 +85,6 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     MatTabsModule,
     SafeButtonModule,
     SafeIconModule,
-    SafeRecordHistoryModalModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,
@@ -137,7 +134,7 @@ export class SafeFormModalComponent
    * @param snackBar This is the service that allows you to display a snackbar.
    * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
-   * @param formService This is the service that will handle forms.
+   * @param formHelpersService This is the service that will handle forms.
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular Service to execute code inside Angular environment
@@ -150,7 +147,7 @@ export class SafeFormModalComponent
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
-    private formService: SafeFormService,
+    private formHelpersService: SafeFormHelpersService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private ngZone: NgZone
@@ -303,34 +300,29 @@ export class SafeFormModalComponent
       : 1;
 
     /** we can send to backend empty data if they are not required */
-    this.formService.setEmptyQuestions(survey);
+    this.formHelpersService.setEmptyQuestions(survey);
     // Displays confirmation modal.
     if (this.data.askForConfirm) {
-      const dialogRef = this.confirmService.openConfirmModal(
-        {
-          title: this.translate.instant('common.updateObject', {
-            name:
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.updateObject', {
+          name:
+            rowsSelected > 1
+              ? this.translate.instant('common.row.few')
+              : this.translate.instant('common.row.one'),
+        }),
+        content: this.translate.instant(
+          'components.form.updateRow.confirmationMessage',
+          {
+            quantity: rowsSelected,
+            rowText:
               rowsSelected > 1
                 ? this.translate.instant('common.row.few')
                 : this.translate.instant('common.row.one'),
-          }),
-          content: this.translate.instant(
-            'components.form.updateRow.confirmationMessage',
-            {
-              quantity: rowsSelected,
-              rowText:
-                rowsSelected > 1
-                  ? this.translate.instant('common.row.few')
-                  : this.translate.instant('common.row.one'),
-            }
-          ),
-          confirmText: this.translate.instant(
-            'components.confirmModal.confirm'
-          ),
-          confirmColor: 'primary',
-        },
-        this.dialog
-      );
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'primary',
+      });
       dialogRef.afterClosed().subscribe(async (value) => {
         if (value) {
           await this.onUpdate(survey);
@@ -350,7 +342,7 @@ export class SafeFormModalComponent
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
-    await this.formService.uploadFiles(
+    await this.formHelpersService.uploadFiles(
       survey,
       this.temporaryFilesStorage,
       this.form?.id
@@ -606,8 +598,11 @@ export class SafeFormModalComponent
   /**
    * Opens the history of the record in a modal.
    */
-  public onShowHistory(): void {
+  public async onShowHistory(): Promise<void> {
     if (this.record) {
+      const { RecordHistoryModalComponent } = await import(
+        '../record-history-modal/record-history-modal.component'
+      );
       this.dialog.open(RecordHistoryModalComponent, {
         data: {
           id: this.record.id,
@@ -626,7 +621,7 @@ export class SafeFormModalComponent
    * @param version The version to recover
    */
   private confirmRevertDialog(record: any, version: any) {
-    const dialogRef = this.formService.createRevertDialog(version);
+    const dialogRef = this.formHelpersService.createRevertDialog(version);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.apollo

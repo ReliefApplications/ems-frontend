@@ -21,7 +21,6 @@ import {
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { FilterComponent } from './filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { AddResourceModalModule } from '../../../components/add-resource-modal/add-resource-modal.module';
 
 /**
  * Resources page module.
@@ -46,7 +45,6 @@ import { AddResourceModalModule } from '../../../components/add-resource-modal/a
     MatPaginatorModule,
     ReactiveFormsModule,
     TranslateModule,
-    AddResourceModalModule,
     SafeSkeletonTableModule,
     SafeDateModule,
   ],

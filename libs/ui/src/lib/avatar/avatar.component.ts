@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Size } from '../shared/size.enum';
+import { AvatarVariant } from './enums/avatar-variant.enum';
+import { AvatarShape } from './enums/avatar-shape.enum';
 
 /**
  * UI Avatar Component
@@ -10,18 +12,18 @@ import { Size } from '../shared/size.enum';
   styleUrls: ['./avatar.component.scss'],
 })
 export class AvatarComponent {
-  @Input() size: Size = Size.MEDIUM;
-  @Input() icon = '';
-  avatarSize = Size;
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  @Input() action: any = () => {};
+  /** Size of avatar */
+  @Input() size: Size | string = Size.MEDIUM;
+  /** Variant: defines the colors */
+  @Input() variant: AvatarVariant | string = AvatarVariant.PRIMARY;
+  /** Avatar image */
+  @Input() image = '';
+  /** Avatar shape */
+  @Input() shape: AvatarShape | string = AvatarShape.CIRCLE;
+  /** short text */
+  @Input() initials = '';
 
-  /**
-   * Triggers any action given on click avatar element
-   */
-  triggerAvatarAction() {
-    if (this.action) {
-      this.action();
-    }
-  }
+  avatarSize = Size;
+  avatarShape = AvatarShape;
+  avatarVariant = AvatarVariant;
 }
