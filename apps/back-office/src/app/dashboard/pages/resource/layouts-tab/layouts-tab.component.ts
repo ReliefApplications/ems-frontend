@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  SafeEditLayoutModalComponent,
   Layout,
   SafeGridLayoutService,
   SafeConfirmService,
@@ -146,7 +145,8 @@ export class LayoutsTabComponent implements OnInit {
   /**
    * Adds a new layout for the resource.
    */
-  onAddLayout(): void {
+  async onAddLayout(): Promise<void> {
+    const { SafeEditLayoutModalComponent } = await import('@oort-front/safe');
     const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
       disableClose: true,
       data: {
@@ -171,7 +171,8 @@ export class LayoutsTabComponent implements OnInit {
    *
    * @param layout Layout to edit
    */
-  onEditLayout(layout: Layout): void {
+  async onEditLayout(layout: Layout): Promise<void> {
+    const { SafeEditLayoutModalComponent } = await import('@oort-front/safe');
     const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
       disableClose: true,
       data: {

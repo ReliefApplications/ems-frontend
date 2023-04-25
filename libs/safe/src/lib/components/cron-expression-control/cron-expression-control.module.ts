@@ -7,16 +7,12 @@ import { SafeModalModule } from '../ui/modal/modal.module';
 import { SafeReadableCronModule } from '../../pipes/readable-cron/readable-cron.module';
 import { SafeAlertModule } from '../ui/alert/alert.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { CronExpressionControlModalComponent } from './cron-expression-control-modal/cron-expression-control-modal.component';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 
 /** Cron expression control module. */
 @NgModule({
-  declarations: [
-    CronExpressionControlComponent,
-    CronExpressionControlModalComponent,
-  ],
+  declarations: [CronExpressionControlComponent],
   imports: [
     CommonModule,
     CronEditorModule,
@@ -29,9 +25,6 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
     MatDialogModule,
     MatInputModule,
   ],
-  exports: [
-    CronExpressionControlComponent,
-    CronExpressionControlModalComponent,
-  ],
+  exports: [CronExpressionControlComponent],
 })
 export class CronExpressionControlModule {}

@@ -5,7 +5,6 @@ import {
 } from '../graphql/queries';
 import { BehaviorSubject } from 'rxjs';
 import * as SurveyCreator from 'survey-creator';
-import { ConfigDisplayGridFieldsModalComponent } from '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
@@ -185,11 +184,15 @@ export const init = (
           btn.onclick = () => {
             const currentQuestion = editor.object;
             getResourceById({ id: currentQuestion.resource }).subscribe(
-              ({ data }) => {
+              async ({ data }) => {
                 if (data.resource && data.resource.name) {
                   const nameTrimmed = data.resource.name
                     .replace(/\s/g, '')
                     .toLowerCase();
+                  const { ConfigDisplayGridFieldsModalComponent } =
+                    await import(
+                      '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component'
+                    );
                   const dialogRef = dialog.open(
                     ConfigDisplayGridFieldsModalComponent,
                     {

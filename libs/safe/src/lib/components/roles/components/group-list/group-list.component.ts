@@ -14,7 +14,6 @@ import {
 import { GetGroupsQueryResponse, GET_GROUPS } from '../../graphql/queries';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
-import { SafeAddRoleComponent } from '../add-role/add-role.component';
 import { SafeSnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 import get from 'lodash/get';
 import { SafeRestService } from '../../../../services/rest/rest.service';
@@ -120,7 +119,10 @@ export class SafeGroupListComponent
   /**
    * Adds a role
    */
-  onAdd(): void {
+  async onAdd(): Promise<void> {
+    const { SafeAddRoleComponent } = await import(
+      '../add-role/add-role.component'
+    );
     const dialogRef = this.dialog.open(SafeAddRoleComponent, {
       data: { title: 'components.group.add.title' },
     });

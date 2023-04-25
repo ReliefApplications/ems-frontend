@@ -399,6 +399,7 @@
 		"application": {
 			"customStyling": "Style personnalisé",
 			"dashboard": {
+				"editFilter": "Modifier le filtre",
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée."
 			},
 			"delete": {
@@ -1598,7 +1599,8 @@
 			"create": "Créer un formulaire",
 			"field": {
 				"label": "Étiquette",
-				"name": "Nom du champ"
+				"name": "Nom du champ",
+				"usedIn": "Utilisé par"
 			},
 			"new": "Nouveau formulaire",
 			"notifications": {

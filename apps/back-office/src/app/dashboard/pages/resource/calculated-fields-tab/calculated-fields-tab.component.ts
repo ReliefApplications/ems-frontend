@@ -1,12 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  SafeEditCalculatedFieldModalComponent,
-  SafeConfirmModalComponent,
-  Resource,
-  SafeSnackBarService,
-} from '@oort-front/safe';
+import { Resource, SafeSnackBarService } from '@oort-front/safe';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
 import {
@@ -53,7 +48,10 @@ export class CalculatedFieldsTabComponent implements OnInit {
   /**
    * Adds a new Calculated field for the resource.
    */
-  onAddCalculatedField(): void {
+  async onAddCalculatedField(): Promise<void> {
+    const { SafeEditCalculatedFieldModalComponent } = await import(
+      '@oort-front/safe'
+    );
     const dialogRef = this.dialog.open(SafeEditCalculatedFieldModalComponent, {
       disableClose: true,
       data: {
@@ -112,7 +110,10 @@ export class CalculatedFieldsTabComponent implements OnInit {
    *
    * @param field Calculated field to edit
    */
-  onEditCalculatedField(field: any): void {
+  async onEditCalculatedField(field: any): Promise<void> {
+    const { SafeEditCalculatedFieldModalComponent } = await import(
+      '@oort-front/safe'
+    );
     const dialogRef = this.dialog.open(SafeEditCalculatedFieldModalComponent, {
       disableClose: true,
       data: {
@@ -171,7 +172,8 @@ export class CalculatedFieldsTabComponent implements OnInit {
    *
    * @param field Calculated field to delete
    */
-  onDeleteCalculatedField(field: any): void {
+  async onDeleteCalculatedField(field: any): Promise<void> {
+    const { SafeConfirmModalComponent } = await import('@oort-front/safe');
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: this.translate.instant('common.deleteObject', {
