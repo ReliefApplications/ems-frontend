@@ -3,6 +3,7 @@ import { CheckboxComponent } from './checkbox.component';
 import { CheckboxModule } from './checkbox.module';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Variant } from '../shared/variant.enum';
+import { IconModule } from '../icon/icon.module';
 
 export default {
   title: 'Checkbox',
@@ -29,21 +30,13 @@ export default {
       defaultValue: 'comments',
       control: { type: 'text' },
     },
-    label: {
-      defaultValue: 'A label',
-      control: { type: 'text' },
-    },
-    description: {
-      defaultValue: 'This is an description.',
-      control: { type: 'text' },
-    },
     disabled: {
       type: 'boolean',
     },
   },
   decorators: [
     moduleMetadata({
-      imports: [CheckboxModule, ReactiveFormsModule],
+      imports: [CheckboxModule, ReactiveFormsModule, IconModule],
     }),
   ],
 } as Meta<CheckboxComponent>;
@@ -54,9 +47,29 @@ export default {
  * @param {CheckboxComponent} args args
  * @returns CheckboxComponent
  */
-const Template: StoryFn<CheckboxComponent> = (args: CheckboxComponent) => ({
-  props: args,
-});
+const Template: StoryFn<CheckboxComponent> = (args: CheckboxComponent) => {
+  args.variant = Variant.DEFAULT;
+  return {
+    component: CheckboxComponent,
+    template: `
+      <ui-checkbox [variant]="'${args.variant}'">
+      <ng-container ngProjectAs="label">Checkbox text</ng-container>
+      <ng-container ngProjectAs="description">Description text text text.</ng-container>
+      <ng-container ngProjectAs="icon">
+      <ui-icon
+      [icon]="'info_outline'"
+      [inline]="true"
+      [size]="18"
+      [variant]="'grey'"
+    ></ui-icon>
+      </ng-container>
+      </ui-checkbox>
+        `,
+    props: {
+      ...args,
+    },
+  };
+};
 
 /**
  * Form control template checkbox
@@ -70,12 +83,14 @@ const FormControlTemplate: StoryFn<CheckboxComponent> = (
   const formGroup = new FormGroup({
     checkbox: new FormControl(false),
   });
-  args.label = 'Form control checkbox';
+  args.variant = Variant.DEFAULT;
   return {
     component: CheckboxComponent,
     template: `
       <form [formGroup]="formGroup">
-      <ui-checkbox [label]="'${args.label}'" [variant]="'${args.variant}'" formControlName="checkbox"></ui-checkbox>
+      <ui-checkbox [variant]="'${args.variant}'" formControlName="checkbox">
+      <ng-container ngProjectAs="label">Form control checkbox</ng-container>
+      </ui-checkbox>
         </form>
         <br>
         <p>value: {{formGroup.get('checkbox').value}}</p>
@@ -87,17 +102,8 @@ const FormControlTemplate: StoryFn<CheckboxComponent> = (
     },
   };
 };
-/** Form control checkbox */
-export const FormCheckbox = FormControlTemplate.bind({});
-
 /** Primary checkbox */
 export const Primary = Template.bind({});
-Primary.args = {
-  checked: true,
-  indeterminate: false,
-  name: '',
-  label: 'Checkbox text',
-  ariaLabel: '',
-  description: 'Description text text text.',
-  variant: Variant.PRIMARY,
-};
+
+/** Form control checkbox */
+export const FormCheckbox = FormControlTemplate.bind({});

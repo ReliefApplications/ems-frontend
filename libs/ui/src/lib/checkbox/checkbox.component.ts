@@ -29,8 +29,6 @@ export class CheckboxComponent implements ControlValueAccessor {
   @Input() indeterminate = false;
   @Input() ariaLabel = '';
   @Input() name = '';
-  @Input() label = '';
-  @Input() description = '';
   @Input() variant: Variant = Variant.DANGER;
 
   disabled = false;

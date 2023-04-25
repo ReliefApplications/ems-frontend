@@ -14,11 +14,12 @@
     />
   </div>
   <div class="ml-3 text-sm leading-6">
-    <label for="{{ name }}" class="font-medium text-gray-900">
-      {{ label }}
+    <label for="{{ name }}" class="font-medium mr-1 text-gray-900">
+      <ng-content select="label"></ng-content>
     </label>
+    <ng-content select="icon"></ng-content>
     <p id="{{ name }}-description" class="text-gray-500">
-      {{ description }}
+      <ng-content select="description"></ng-content>
     </p>
   </div>
 </div>
