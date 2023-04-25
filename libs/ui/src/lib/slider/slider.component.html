@@ -1,1 +1,24 @@
-  <input [(ngModel)]="value" id="slider" class="slider-class" type="range" min={{minValue}} max={{maxValue}} step="1" />
+<div class="py-5">
+  <span
+    [ngStyle]="{ left: bubbleStyle}"
+    [ngClass]="{
+      'block': bubbleToShow === true,
+      'hidden': bubbleToShow === false
+    }"
+    class="absolute p-2 bg-teal-400 -translate-x-2/4 -translate-y-full rounded-md text-white"
+    >{{ val }}</span
+  >
+  <input
+    [(ngModel)]="value"
+    name="slider"
+    style="--value:{{ val }}; --min:{{ minValue }}; --max:{{ maxValue }}"
+    class="w-full h-0.5 bg-gray-300 focus:bg-gray-400"
+    type="range"
+    min="{{ minValue }}"
+    max="{{ maxValue }}"
+    step="1"
+    (focus)="onFocusFunction()"
+    (blur)="onBlurFunction()"
+    (input)="onChangeFunction()"
+  />
+</div>

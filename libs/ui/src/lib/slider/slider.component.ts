@@ -23,7 +23,10 @@ export class SliderComponent implements ControlValueAccessor {
 
   ageControl = new FormControl();
 
-  val = -1;
+  bubbleStyle = '';
+  bubbleToShow = false;
+
+  val = this.minValue;
   external!: string;
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onChange: any = () => {};
@@ -48,5 +51,27 @@ export class SliderComponent implements ControlValueAccessor {
 
   registerOnTouched(fn: any) {
     this.onTouch = fn;
+  }
+
+  onFocusFunction() {
+    this.bubbleToShow = true;
+  }
+
+  onChangeFunction() {
+    const val = this.val;
+    const min = this.minValue;
+    const max = this.maxValue;
+    const newVal = Number(((val - min) * 100) / (max - min));
+
+    // Sorta magic numbers based on size of the native UI thumb
+    this.bubbleStyle = String(newVal) + '%';
+    console.log(this.bubbleStyle);
+    console.log(min);
+    console.log(max);
+    console.log(val);
+  }
+
+  onBlurFunction() {
+    this.bubbleToShow = false;
   }
 }

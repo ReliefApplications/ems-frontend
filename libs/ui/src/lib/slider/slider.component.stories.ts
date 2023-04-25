@@ -16,7 +16,7 @@ export default {
 const Template: Story<SliderComponent> = (args: SliderComponent) => ({
   props: args,
   template:
-    '<ui-slider [(ngModel)]="external" [minValue]="minValue" [maxValue]="maxValue" name="externalVal" #validations="ngModel"></ui-slider> external: {{external}}',
+    '<ui-slider [(ngModel)]="external" [minValue]="minValue" [maxValue]="maxValue" name="externalVal" #validations="ngModel"></ui-slider>',
 });
 
 export const Primary = Template.bind({});
