@@ -1,15 +1,21 @@
-import { Directive, ContentChildren, QueryList, AfterContentInit, Input, ElementRef } from '@angular/core';
+import {
+  Directive,
+  Renderer2,
+  AfterContentInit,
+  Input,
+  ElementRef,
+} from '@angular/core';
 
 @Directive({
-  selector: '[radio-group-directive]'
+  selector: '[uiRadioGroupDirective]',
 })
 export class RadioGroupDirective implements AfterContentInit {
-  @ContentChildren('radioInput') radioInputs!: QueryList<ElementRef>;
-  @Input('nameGroup') nameGroup!: string;
+  @Input() nameGroup!: string;
 
-  constructor() {}
+  constructor(private el: ElementRef, private renderer: Renderer2) {}
 
   ngAfterContentInit() {
-    this.radioInputs.forEach(input => input.nativeElement.setAttribute('name', this.nameGroup));
+    const getInput = this.el.nativeElement.querySelector('input');
+    this.renderer.setAttribute(getInput, 'name', this.nameGroup);
   }
 }

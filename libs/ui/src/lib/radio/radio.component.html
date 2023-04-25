@@ -1,41 +1,33 @@
-<div>
+<!-- <div>
     <fieldset class="mt-4">
         
         <ng-container *ngIf="orientation === radioOrientations.HORIZONTAL; else vertical">
             <div class="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0">
-                <div class="flex items-center" radio-group-directive [nameGroup]="name" [ariaLabel]="ariaLabelledby" *ngFor="let radio of options">
-                    <input
-                        #radioInput 
-                        [name]="name" 
-                        type="radio"  
-                        class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                        [required]="required"
-                        [disabled]="disabled"
-                        [value]="radio.value"
-                        checked
-                    >
-                    <label [for]="radio.value" class="ml-3 block text-sm font-medium leading-6 text-gray-900">{{ radio.label }}</label>
+                <div class="flex items-center" radio-group-directive [nameGroup]="name" [ariaLabel]="ariaLabelledby" *ngFor="let radio of options"> -->
+<input
+    #radioInput
+    type="radio"  
+    class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+    [required]="required"
+    [disabled]="disabled"
+    [value]="value"
+    [checked]="checked"
+    (change)="onOptionChange(value)"
+    [ariaLabel]="ariaLabelledby"
+>
+                    <!-- <label [for]="radio.value" class="ml-3 block text-sm font-medium leading-6 text-gray-900">{{ radio.label }}</label>
                 </div>
             </div>
-        </ng-container>
+        </ng-container> -->
         
-        <ng-template #vertical>
+        <!-- <ng-template #vertical>
             <div class="space-y-4">
-                <div class="flex items-center" radio-group-directive [nameGroup]="name" [ariaLabel]="ariaLabelledby" *ngFor="let radio of options">
-                    <input 
-                        #radioInput
-                        type="radio" 
-                        class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                        [required]="required"
-                        [disabled]="disabled"
-                        [value]="radio.value"
-                        checked
-                    >
-                    <label [for]="radio.value" class="ml-3 block text-sm font-medium leading-6 text-gray-900">{{ radio.label }}</label>
+                <div class="flex items-center" radio-group-directive [nameGroup]="name" [ariaLabel]="ariaLabelledby" *ngFor="let radio of options"> -->
+                    <!-- <label [for]="radio.value" class="ml-3 block text-sm font-medium leading-6 text-gray-900">{{ radio.label }}</label>
                 </div>
             </div>
         </ng-template>
 
     </fieldset>
 </div>
-  
+   -->

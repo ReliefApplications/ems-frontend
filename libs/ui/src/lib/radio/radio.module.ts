@@ -8,4 +8,4 @@ import { RadioGroupDirective } from './radio-group.directive';
   imports: [CommonModule],
   exports: [RadioComponent],
 })
-export class RadioModule { }
+export class RadioModule {}

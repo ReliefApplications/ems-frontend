@@ -26,7 +26,7 @@ import { RadioModule } from './radio/radio.module';
     SelectModule,
     ToggleModule,
     DividerModule,
-    RadioModule
+    RadioModule,
   ],
 })
 export class UiModule {}
