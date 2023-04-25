@@ -12,6 +12,12 @@ import { StorybookTranslateModule } from '../../storybook-translate.module';
 export default {
   title: 'Paginator',
   component: PaginatorComponent,
+  argTypes: {
+    disabled: {
+      defaultValue: false,
+      type: 'boolean',
+    },
+  },
   decorators: [
     moduleMetadata({
       imports: [
@@ -56,7 +62,7 @@ const Template: Story<PaginatorComponent> = (args: PaginatorComponent) => {
         <p>{{item}}</p>
       </ng-container>
     </div>
-    <ui-paginator (pageChange)="pageChange($event)" [totalItems]="itemsArray.length" ></ui-paginator>
+    <ui-paginator [disabled]="${args.disabled}" (pageChange)="pageChange($event)" [totalItems]="itemsArray.length" ></ui-paginator>
         `,
     props: {
       ...args,

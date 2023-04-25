@@ -1,36 +1,42 @@
 <!-- PAGINATOR CONTENT-->
-<kendo-datapager
-  [attr.aria-label]="ariaLabel"
-  [attr.aria-controls]="paginatorId"
-  [style.width.%]="100"
-  [pageSize]="pageSize"
-  [skip]="skip"
-  [total]="totalItems"
-  (pageChange)="onPageChange($event)"
->
-  <ng-template
-    kendoDataPagerTemplate
-    let-totalPages="totalPages"
-    let-currentPage="currentPage"
+<div class="w-full relative">
+  <div
+    [ngClass]="{ 'z-0': !disabled, 'z-10': disabled }"
+    class="absolute inset-0 bg-white opacity-50"
+  ></div>
+  <kendo-datapager
+    [attr.aria-label]="ariaLabel"
+    [attr.aria-controls]="paginatorId"
+    [style.width.%]="100"
+    [pageSize]="pageSize"
+    [skip]="skip"
+    [total]="totalItems"
+    (pageChange)="onPageChange($event)"
   >
-    <kendo-datapager-messages
-      page="{{ 'components.paginator.page' | translate }}"
-      of="{{ 'components.paginator.of' | translate }}"
-      items="{{ 'components.paginator.items' | translate }}"
-      itemsPerPage="{{ 'components.paginator.itemsPerPage' | translate }}"
+    <ng-template
+      kendoDataPagerTemplate
+      let-totalPages="totalPages"
+      let-currentPage="currentPage"
     >
-    </kendo-datapager-messages>
-    <kendo-datapager-info class="text-neutral-400"></kendo-datapager-info>
-    <kendo-datapager-page-sizes
-      class="text-neutral-400"
-      [pageSizes]="pageSizeOptions"
-    ></kendo-datapager-page-sizes>
-    <div class="k-pager-numbers-wrap">
-      <kendo-datapager-prev-buttons></kendo-datapager-prev-buttons>
-      <kendo-datapager-numeric-buttons
-        [buttonCount]="3"
-      ></kendo-datapager-numeric-buttons>
-      <kendo-datapager-next-buttons></kendo-datapager-next-buttons>
-    </div>
-  </ng-template>
-</kendo-datapager>
+      <kendo-datapager-messages
+        page="{{ 'components.paginator.page' | translate }}"
+        of="{{ 'components.paginator.of' | translate }}"
+        items="{{ 'components.paginator.items' | translate }}"
+        itemsPerPage="{{ 'components.paginator.itemsPerPage' | translate }}"
+      >
+      </kendo-datapager-messages>
+      <kendo-datapager-info class="text-neutral-400"></kendo-datapager-info>
+      <kendo-datapager-page-sizes
+        class="text-neutral-400"
+        [pageSizes]="pageSizeOptions"
+      ></kendo-datapager-page-sizes>
+      <div class="k-pager-numbers-wrap">
+        <kendo-datapager-prev-buttons></kendo-datapager-prev-buttons>
+        <kendo-datapager-numeric-buttons
+          [buttonCount]="3"
+        ></kendo-datapager-numeric-buttons>
+        <kendo-datapager-next-buttons></kendo-datapager-next-buttons>
+      </div>
+    </ng-template>
+  </kendo-datapager>
+</div>
