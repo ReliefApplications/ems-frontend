@@ -6,6 +6,7 @@ import { CheckboxModule } from './checkbox/checkbox.module';
 import { FlyoutMenuModule } from './flyout-menu/flyout-menu.module';
 import { IconModule } from './icon/icon.module';
 import { SelectModule } from './select/select.module';
+import { SpinnerModule } from './spinner/spinner.module';
 import { AvatarGroupModule } from './avatar-group/avatar-group.module';
 import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
@@ -24,6 +25,7 @@ import { ButtonGroupModule } from './button-group/button-group.module';
     FlyoutMenuModule,
     IconModule,
     SelectModule,
+    SpinnerModule,
     ToggleModule,
     DividerModule,
     ButtonGroupModule,

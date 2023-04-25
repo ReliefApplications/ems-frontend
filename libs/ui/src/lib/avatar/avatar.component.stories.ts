@@ -1,6 +1,6 @@
 import { moduleMetadata, StoryObj, Meta } from '@storybook/angular';
 import { AvatarComponent } from './avatar.component';
-import { AvatarSize } from './enums/avatar-size.enum';
+import { Size } from '../shared/size.enum';
 import { AvatarModule } from './avatar.module';
 import { AvatarVariant } from './enums/avatar-variant.enum';
 import { AvatarShape } from './enums/avatar-shape.enum';
@@ -10,7 +10,7 @@ export default {
   component: AvatarComponent,
   argTypes: {
     size: {
-      options: AvatarSize,
+      options: Size,
       control: 'select',
     },
     shape: {
@@ -38,7 +38,7 @@ export const Defaut: StoryObj<AvatarComponent> = {
  */
 export const PrimaryCircleAvatarSmall: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.SMALL,
+    size: Size.SMALL,
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
@@ -50,7 +50,7 @@ export const PrimaryCircleAvatarSmall: StoryObj<AvatarComponent> = {
  */
 export const PrimaryCircleAvatarMedium: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.MEDIUM,
+    size: Size.MEDIUM,
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
@@ -62,7 +62,7 @@ export const PrimaryCircleAvatarMedium: StoryObj<AvatarComponent> = {
  */
 export const PrimaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
+    size: Size.LARGE,
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
@@ -74,7 +74,7 @@ export const PrimaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const PrimaryCircleImageAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
+    size: Size.LARGE,
     shape: AvatarShape.CIRCLE,
     initials: '',
     image:
@@ -87,7 +87,7 @@ export const PrimaryCircleImageAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const SecondaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
+    size: Size.LARGE,
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
@@ -99,7 +99,7 @@ export const SecondaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const TertiaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
+    size: Size.LARGE,
     shape: AvatarShape.CIRCLE,
     initials: '',
     image: '',
@@ -111,7 +111,7 @@ export const TertiaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const PrimaryRectangleAvatarSmall: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.SMALL,
+    size: Size.SMALL,
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',
@@ -123,7 +123,7 @@ export const PrimaryRectangleAvatarSmall: StoryObj<AvatarComponent> = {
  */
 export const PrimaryRectangleAvatarMedium: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.MEDIUM,
+    size: Size.MEDIUM,
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',
@@ -135,7 +135,7 @@ export const PrimaryRectangleAvatarMedium: StoryObj<AvatarComponent> = {
  */
 export const PrimaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
+    size: Size.LARGE,
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',
@@ -147,7 +147,7 @@ export const PrimaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const PrimaryRectangleImageAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
+    size: Size.LARGE,
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image:
@@ -160,7 +160,7 @@ export const PrimaryRectangleImageAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const SecondaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
+    size: Size.LARGE,
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',
@@ -172,7 +172,7 @@ export const SecondaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const TertiaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
+    size: Size.LARGE,
     shape: AvatarShape.RECTANGLE,
     initials: '',
     image: '',
