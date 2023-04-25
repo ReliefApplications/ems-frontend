@@ -4,13 +4,19 @@ import { PagerModule } from '@progress/kendo-angular-pager';
 import { CommonModule } from '@angular/common';
 import { UIPageChangeEvent } from './interfaces/paginator.interfaces';
 import { StorybookTranslateModule } from '../../storybook-translate.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 export default {
   title: 'Paginator',
   component: PaginatorComponent,
   decorators: [
     moduleMetadata({
-      imports: [CommonModule, PagerModule, StorybookTranslateModule],
+      imports: [
+        CommonModule,
+        PagerModule,
+        StorybookTranslateModule,
+        TranslateModule,
+      ],
     }),
   ],
 } as Meta<PaginatorComponent>;

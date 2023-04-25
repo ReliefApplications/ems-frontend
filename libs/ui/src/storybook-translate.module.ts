@@ -28,7 +28,6 @@ export const httpTranslateLoader = (http: HttpClient) =>
         deps: [HttpClient],
       },
     }),
-    TranslateModule,
   ],
 })
 export class StorybookTranslateModule {

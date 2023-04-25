@@ -3,7 +3,7 @@
 }
 
 :host ::ng-deep kendo-datapager-info {
-  @apply flex-grow-0;
+  flex-grow: 0;
 }
 
 :host ::ng-deep div.k-pager-numbers-wrap {
