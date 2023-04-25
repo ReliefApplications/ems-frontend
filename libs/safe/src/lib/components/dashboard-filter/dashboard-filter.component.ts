@@ -3,15 +3,12 @@ import {
   Component,
   ElementRef,
   HostListener,
-  Inject,
   Input,
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { SafeFilterBuilderComponent } from './filter-builder-modal/filter-builder.component';
 import * as Survey from 'survey-angular';
 import { Apollo } from 'apollo-angular';
 import { SafeApplicationService } from '../../services/application/application.service';
@@ -36,7 +33,7 @@ export class SafeDashboardFilterComponent
   implements AfterViewInit, OnInit
 {
   // Filter
-  @Input() position: FilterPosition = FilterPosition.LEFT;
+  @Input() position: FilterPosition = FilterPosition.BOTTOM;
   public positionList = [
     FilterPosition.LEFT,
     FilterPosition.TOP,
@@ -44,13 +41,11 @@ export class SafeDashboardFilterComponent
     FilterPosition.RIGHT,
   ] as const;
   public isDrawerOpen = false;
-  public themeColor!: string;
   public filterPosition = FilterPosition;
   public containerWidth!: string;
   public containerHeight!: string;
 
   // Survey
-  public filterFormGroup: FormGroup = new FormGroup({});
   public survey: Survey.Model = new Survey.Model();
   public surveyStructure: any = {};
   @ViewChild('dashboardSurveyCreatorContainer')
@@ -61,7 +56,6 @@ export class SafeDashboardFilterComponent
   /**
    * Class constructor
    *
-   * @param environment environment
    * @param hostElement Host/Component Element
    * @param dialog The material dialog service
    * @param apollo Apollo client
@@ -70,7 +64,6 @@ export class SafeDashboardFilterComponent
    * @param translate Angular translate service
    */
   constructor(
-    @Inject('environment') environment: any,
     private hostElement: ElementRef,
     private dialog: MatDialog,
     private apollo: Apollo,
@@ -79,7 +72,6 @@ export class SafeDashboardFilterComponent
     private translate: TranslateService
   ) {
     super();
-    this.themeColor = environment.theme.primary;
   }
 
   ngOnInit(): void {
@@ -142,21 +134,21 @@ export class SafeDashboardFilterComponent
    * Opens the modal to edit filters
    */
   public onEditFilter() {
-    const surveyStructure =
-      this.surveyStructure.text ?? JSON.stringify(this.surveyStructure);
-    const dialogRef = this.dialog.open(SafeFilterBuilderComponent, {
-      height: '90%',
-      width: '100%',
-      panelClass: 'edit-filters-modal',
-      data: { surveyStructure },
-    });
-    dialogRef.afterClosed().subscribe((newStructure) => {
-      if (newStructure) {
-        this.surveyStructure = newStructure;
-        this.initSurvey();
-        this.saveFilter();
+    import('./filter-builder-modal/filter-builder-modal.component').then(
+      ({ FilterBuilderModalComponent }) => {
+        const dialogRef = this.dialog.open(FilterBuilderModalComponent, {
+          data: { surveyStructure: this.surveyStructure },
+          autoFocus: false,
+        });
+        dialogRef.afterClosed().subscribe((newStructure) => {
+          if (newStructure) {
+            this.surveyStructure = newStructure;
+            this.initSurvey();
+            this.saveFilter();
+          }
+        });
       }
-    });
+    );
   }
 
   /** Saves the application contextual filter using the editApplication mutation */
@@ -197,5 +189,10 @@ export class SafeDashboardFilterComponent
     this.survey.showCompletedPage = false;
     this.survey.showNavigationButtons = false;
     this.survey.render(this.dashboardSurveyCreatorContainer.nativeElement);
+    this.survey.onValueChanged.add(this.onValueChange.bind(this));
+  }
+
+  private onValueChange() {
+    console.log(this.survey.data);
   }
 }

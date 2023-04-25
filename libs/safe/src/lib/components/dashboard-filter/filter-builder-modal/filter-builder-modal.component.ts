@@ -12,6 +12,12 @@ import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
 import { SafeFormService } from '../../../services/form/form.service';
+import { CommonModule } from '@angular/common';
+import { SafeFormBuilderModule } from '../../form-builder/form-builder.module';
+import { SafeButtonModule } from '../../ui/button/button.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { SafeModalModule } from '../../ui/modal/modal.module';
 
 /**
  * Data passed to initialize the filter builder
@@ -35,14 +41,14 @@ const QUESTION_TYPES = [
   // 'ranking',
   // 'imagepicker',
   'boolean',
-  'image',
-  'html',
+  // 'image',
+  // 'html',
   // 'signaturepad',
-  'expression',
-  'matrix',
-  'matrixdropdown',
-  'matrixdynamic',
-  'multipletext',
+  // 'expression',
+  // 'matrix',
+  // 'matrixdropdown',
+  // 'matrixdynamic',
+  // 'multipletext',
   'panel',
   'paneldynamic',
 ];
@@ -85,11 +91,20 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
  * Filter builder component
  */
 @Component({
-  selector: 'safe-filter-builder',
-  templateUrl: './filter-builder.component.html',
-  styleUrls: ['./filter-builder.component.scss'],
+  standalone: true,
+  selector: 'safe-filter-builder-modal',
+  templateUrl: './filter-builder-modal.component.html',
+  styleUrls: ['./filter-builder-modal.component.scss'],
+  imports: [
+    CommonModule,
+    SafeFormBuilderModule,
+    SafeButtonModule,
+    TranslateModule,
+    MatTooltipModule,
+    SafeModalModule,
+  ],
 })
-export class SafeFilterBuilderComponent
+export class FilterBuilderModalComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
   surveyCreator!: SurveyCreator.SurveyCreator;
@@ -103,7 +118,7 @@ export class SafeFilterBuilderComponent
    */
   constructor(
     private formService: SafeFormService,
-    private dialogRef: MatDialogRef<SafeFilterBuilderComponent>,
+    private dialogRef: MatDialogRef<FilterBuilderModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 
@@ -132,7 +147,7 @@ export class SafeFilterBuilderComponent
       'dashboardSurveyCreatorContainer',
       creatorOptions
     );
-    this.surveyCreator.text = this.data?.surveyStructure;
+    // this.surveyCreator.text = '';
     this.surveyCreator.showToolbox = 'right';
     this.surveyCreator.showPropertyGrid = 'right';
     this.surveyCreator.haveCommercialLicense = true;
@@ -150,6 +165,12 @@ export class SafeFilterBuilderComponent
         opt.canShow = false;
       }
     });
+
+    // Set content
+    console.log(this.surveyCreator);
+    console.log(this.data?.surveyStructure);
+    const survey = new Survey.SurveyModel(this.data?.surveyStructure || {});
+    this.surveyCreator.JSON = survey.toJSON();
   }
 
   /**
@@ -166,13 +187,6 @@ export class SafeFilterBuilderComponent
   saveMySurvey = () => {
     this.dialogRef.close(this.surveyCreator);
   };
-
-  /**
-   * Close modal
-   */
-  cancelSurveyCreation() {
-    this.dialogRef.close();
-  }
 
   ngOnDestroy(): void {
     //Once we destroy the dashboard filter survey, set the survey creator with the custom questions config

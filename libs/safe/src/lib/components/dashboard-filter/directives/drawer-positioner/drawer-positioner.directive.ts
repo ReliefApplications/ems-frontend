@@ -62,6 +62,7 @@ export class SafeDrawerPositionerDirective
       this.setPosition(changes.position.currentValue);
     }
     if (changes.opened) {
+      console.log('opened');
       this.displayDrawer(changes.opened.currentValue);
     }
     // Width has to be set when the element is in horizontal(at the TOP or BOTTOM of the parent context) position

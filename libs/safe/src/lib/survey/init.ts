@@ -51,9 +51,12 @@ export const initCustomSurvey = (
   if (!containsCustomQuestions) {
     Survey.CustomWidgetCollection.Instance.clear();
     Survey.ComponentCollection.Instance.clear();
-  } else {
-    // load widgets (aka custom questions)
-    SurveyJSWidgets.select2tagbox(Survey);
+  }
+
+  // load widgets (aka custom questions)
+  SurveyJSWidgets.select2tagbox(Survey);
+
+  if (containsCustomQuestions) {
     CommentWidget.init(Survey);
     TextWidget.init(Survey, domService);
     // load components (same as widgets, but with less configuration options)
@@ -61,10 +64,10 @@ export const initCustomSurvey = (
     ResourcesComponent.init(Survey, domService, apollo, dialog, formBuilder);
     OwnerComponent.init(Survey, domService, apollo);
     UsersComponent.init(Survey, domService, apollo);
-    // load global properties
-    ReferenceDataProperties.init(Survey, domService, referenceDataService);
   }
 
+  // load global properties
+  ReferenceDataProperties.init(Survey, domService, referenceDataService);
   TooltipProperty.init(Survey);
   OtherProperties.init(Survey, environment);
   // set localization

@@ -7,25 +7,12 @@
   inset: 0;
 }
 
-.dashboard-filter-header {
-  color: white;
-  min-height: 3rem;
-}
-
-.dashboard-filter-content {
-  background-color: white;
-}
-
-.dashboard-filter-content-filter-wrapper {
-  display: flex;
-  flex: 1 0 33%;
-}
-
 .dashboard-filter-y-axis {
   margin-left: auto;
   margin-right: auto;
   left: 0;
   right: 0;
+  justify-content: center;
 }
 
 .dashboard-filter-x-axis {
@@ -37,7 +24,6 @@
 
 .dashboard-filter-tab {
   width: 80px;
-  justify-content: center;
   &.top {
     top: 40px;
     border-bottom-left-radius: 1rem;
@@ -54,21 +40,14 @@
     right: 0;
     border-bottom-left-radius: 1rem;
     border-top-left-radius: 1rem;
-    justify-content: start;
     @extend .dashboard-filter-x-axis;
+    justify-content: start;
   }
   &.left {
     left: 0;
     border-bottom-right-radius: 1rem;
     border-top-right-radius: 1rem;
-    justify-content: end;
     @extend .dashboard-filter-x-axis;
-  }
-}
-
-::ng-deep .edit-filters-modal {
-  mat-dialog-container {
-    margin: auto;
-    padding-top: 0;
+    justify-content: end;
   }
 }
