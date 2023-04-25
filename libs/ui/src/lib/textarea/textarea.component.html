@@ -4,15 +4,14 @@
     </ng-container>
     <div [ngClass]="{'mt-2': label}">
         <textarea
-            #myTextarea
             cdkTextareaAutosize
             #autosize="cdkTextareaAutosize"
-            cdkAutosizeMinRows="3"
-            cdkAutosizeMaxRows="5"
+            [cdkAutosizeMinRows]="minRowsNumber"
+            [cdkAutosizeMaxRows]="maxRows"
+            class="textarea-style"
             [placeholder]="placeholder"
             [name]="name"
-            class="textarea-style"
-            (input)="onTextChange(myTextarea.value)"
+            (input)="onTextChange($event)"
             [value]="value"
             >
         </textarea>

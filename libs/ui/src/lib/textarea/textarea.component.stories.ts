@@ -19,6 +19,12 @@ export default {
     placeholder: {
       control: 'text',
     },
+    minRows: {
+      type: 'number',
+    },
+    maxRows: {
+      type: 'number',
+    },
   },
   decorators: [
     moduleMetadata({
@@ -47,13 +53,14 @@ const FormControlTemplate: StoryFn<TextareaComponent> = (
   args: TextareaComponent
 ) => {
   const formGroup = new FormGroup({
-    textarea: new FormControl(true),
+    textarea: new FormControl('Default value'),
   });
+  args.label = 'Form control textarea';
   return {
     component: TextareaComponent,
     template: `
       <form [formGroup]="formGroup">
-      <ui-textarea formControlName="textarea"></ui-textarea>
+      <ui-textarea [placeholder]="'${args.placeholder}'" [label]="'${args.label}'" formControlName="textarea"></ui-textarea>
         </form>
         <br>
         <p>value: {{formGroup.get('textarea').value}}</p>
@@ -75,4 +82,5 @@ Primary.args = {
   label: 'Message',
   placeholder: 'Type something',
   name: 'textarea',
+  minRows: 15,
 };

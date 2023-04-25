@@ -8,6 +8,7 @@ export * from './lib/flyout-menu/flyout-menu.module';
 export * from './lib/icon/icon.module';
 export * from './lib/select/select.module';
 export * from './lib/toggle/toggle.module';
+export * from './lib/textarea/textarea.module';
 
 // === ENUMS === //
 export * from './lib/shared/size.enum';

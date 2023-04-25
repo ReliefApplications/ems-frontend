@@ -32,7 +32,25 @@ export class TextareaComponent implements ControlValueAccessor {
   @Input() label = '';
   @Input() placeholder = '';
   @Input() name!: string;
+  /**
+   * Set minimal rows for the textarea
+   *
+   * If the minimal rows given is greater than the current max row values, or no max row values was provided
+   * then we set the minimal rows to the max rows value
+   *
+   * @param rows row number
+   */
+  @Input() set minRows(rows: number) {
+    if (rows) {
+      this.minRowsNumber = rows;
+      if (rows > this.maxRows) {
+        this.maxRows = rows;
+      }
+    }
+  }
+  @Input() maxRows = 5;
 
+  minRowsNumber = 2;
   valueChange: EventEmitter<boolean> = new EventEmitter();
   onTouched!: () => void;
   onChanged!: (value: string) => void;
@@ -72,10 +90,10 @@ export class TextareaComponent implements ControlValueAccessor {
   /**
    * Detect text change
    *
-   * @param e new text
+   * @param e HTML event containing target
    */
-  onTextChange(e: any): void {
-    this.value = e;
+  onTextChange(e: Event): void {
+    this.value = (e.target as HTMLTextAreaElement).value;
     if (this.onTouched && this.onChanged) {
       this.onTouched();
       this.onChanged(this.value);
