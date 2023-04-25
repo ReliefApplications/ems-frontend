@@ -1,5 +1,5 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafePipelineComponent } from './pipeline.component';
 import { SafePipelineModule } from './pipeline.module';
 import { StorybookTranslateModule } from '../../../storybook-translate/storybook-translate-module';
@@ -128,7 +128,7 @@ const fb = new UntypedFormBuilder();
  *
  * @returns storybook template
  */
-const TEMPLATE: Story<SafePipelineComponent> = () => ({
+const TEMPLATE: StoryFn<SafePipelineComponent> = () => ({
   template:
     '<safe-pipeline [fields$]=fields$ [metaFields$]=metaFields$ [pipelineForm]="pipelineForm"></safe-pipeline>',
   props: {
@@ -158,9 +158,8 @@ const TEMPLATE: Story<SafePipelineComponent> = () => ({
   },
 });
 
-/**
- * Default story
- */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {};
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+  args: {},
+};

@@ -1,0 +1,53 @@
+<div
+  class="divider-container"
+  [ngClass]="{
+    'items-center': orientation === dividerOrientations.HORIZONTAL,
+    'vertical-right': position === dividerPositions.RIGHT,
+    'vertical-left': position === dividerPositions.LEFT
+  }"
+>
+  <div
+    [ngClass]="{
+      'orientation-horizontal': orientation === dividerOrientations.HORIZONTAL,
+      'orientation-vertical': orientation === dividerOrientations.VERTICAL
+    }"
+  >
+    <!-- DIVIDER -->
+    <div
+      class="inset-0 flex items-center"
+      aria-hidden="true"
+      [ngClass]="{
+        horizontal: orientation === dividerOrientations.HORIZONTAL,
+        vertical: orientation === dividerOrientations.VERTICAL
+      }"
+    >
+      <div
+        class="border-t border-gray-300"
+        [ngClass]="{
+          'w-full': orientation === dividerOrientations.HORIZONTAL,
+          'h-full': orientation === dividerOrientations.VERTICAL
+        }"
+      ></div>
+    </div>
+    <!-- TEXT -->
+    <div
+      class="flex whitespace-nowrap"
+      [ngClass]="{
+        'position-center':
+          position === dividerPositions.CENTER &&
+          orientation !== dividerOrientations.VERTICAL,
+        'position-left':
+          position === dividerPositions.LEFT &&
+          orientation !== dividerOrientations.VERTICAL,
+        'position-right':
+          position === dividerPositions.RIGHT &&
+          orientation !== dividerOrientations.VERTICAL,
+        'vertical-center': orientation === dividerOrientations.VERTICAL
+      }"
+    >
+      <span *ngIf="text" class="bg-white px-2 text-sm text-gray-500">
+        {{ text }}
+      </span>
+    </div>
+  </div>
+</div>

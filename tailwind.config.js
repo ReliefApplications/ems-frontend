@@ -5,6 +5,7 @@ module.exports = {
   content: [
     './apps/**/src/**/*.{html,ts}',
     './libs/safe/**/*.{html,ts,js,mjs}',
+    './libs/ui/**/*.{html,ts,js,mjs}',
   ],
   theme: {
     extend: {

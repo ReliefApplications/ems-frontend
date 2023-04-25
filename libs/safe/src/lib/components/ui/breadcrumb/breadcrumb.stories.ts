@@ -1,5 +1,5 @@
 import { RouterTestingModule } from '@angular/router/testing';
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { StorybookTranslateModule } from '../../storybook-translate/storybook-translate-module';
 import { SafeBreadcrumbComponent } from './breadcrumb.component';
 import { SafeBreadcrumbModule } from './breadcrumb.module';
@@ -24,30 +24,30 @@ export default {
  * @param args story arguments
  * @returns story template
  */
-const TEMPLATE: Story<SafeBreadcrumbComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeBreadcrumbComponent> = (args) => ({
   props: {
     ...args,
   },
 });
 
-/**
- * Default story.
- */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  breadcrumbs: [
-    {
-      text: 'item 0',
-      uri: '#',
-    },
-    {
-      text: 'item 1',
-      uri: '#',
-    },
-    {
-      text: 'item 2',
-      uri: '#',
-    },
-  ],
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
+
+  args: {
+    breadcrumbs: [
+      {
+        text: 'item 0',
+        uri: '#',
+      },
+      {
+        text: 'item 1',
+        uri: '#',
+      },
+      {
+        text: 'item 2',
+        uri: '#',
+      },
+    ],
+  },
 };

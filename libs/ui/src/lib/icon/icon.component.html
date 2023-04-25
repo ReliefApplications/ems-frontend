@@ -1,0 +1,48 @@
+<ng-container *ngIf="icon.endsWith('_outline'); else angularMaterialIconTmpl">
+  <span
+    [ngClass]="{
+      'icon-primary':
+        category !== iconCategory.SECONDARY && variant === iconVariant.PRIMARY,
+      'icon-success':
+        category !== iconCategory.SECONDARY && variant === iconVariant.SUCCESS,
+      'icon-light':
+        category === iconCategory.SECONDARY || variant === iconVariant.LIGHT,
+      'icon-grey':
+        category !== iconCategory.SECONDARY && variant === iconVariant.GREY,
+      'icon-danger':
+        category !== iconCategory.SECONDARY && variant === iconVariant.DANGER
+    }"
+    [style.inline]="inline"
+    [style.font-size]="fontSize"
+    [style.width]="fontSize"
+    [style.height]="fontSize"
+    [style.line-height]="fontSize"
+    class="material-icons-outlined"
+  >
+    {{ icon }}
+  </span>
+</ng-container>
+<!--@TODO Are we using Angular Material Icons?-->
+<ng-template #angularMaterialIconTmpl>
+  <i
+    [ngClass]="{
+      'icon-primary':
+        category !== iconCategory.SECONDARY && variant === iconVariant.PRIMARY,
+      'icon-success':
+        category !== iconCategory.SECONDARY && variant === iconVariant.SUCCESS,
+      'icon-light':
+        category === iconCategory.SECONDARY || variant === iconVariant.LIGHT,
+      'icon-grey':
+        category !== iconCategory.SECONDARY && variant === iconVariant.GREY,
+      'icon-danger':
+        category !== iconCategory.SECONDARY && variant === iconVariant.DANGER
+    }"
+    [style.inline]="inline"
+    [style.font-size]="fontSize"
+    [style.width]="fontSize"
+    [style.height]="fontSize"
+    [style.line-height]="fontSize"
+    class="material-icons"
+    >{{ icon }}</i
+  >
+</ng-template>

@@ -1,0 +1,87 @@
+🔎 checking possible migrations..
+Found builder webpack5, skipping
+
+🔎 found a 'eslintPlugin' migration:
+╭ Automigration detected ──────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│                                                                                                                                      │
+│   We've detected you are not using our eslint-plugin.                                                                                │
+│                                                                                                                                      │
+│   In order to have the best experience with Storybook and follow best practices, we advise you to install eslint-plugin-storybook.   │
+│                                                                                                                                      │
+│   More info: https://github.com/storybookjs/eslint-plugin-storybook#readme                                                           │
+│                                                                                                                                      │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+? Do you want to run the 'eslintPlugin' migration on your project? › (Y/n)✔ Do you want to run the 'eslintPlugin' migration on your project? … yes
+✅ Adding dependencies: eslint-plugin-storybook
+✅ Adding Storybook plugin to .eslintrc.json
+❌ error when running eslintPlugin migration
+SyntaxError: .eslintrc.json: Expected ',' or ']' after array element in JSON at position 623
+    at JSON.parse (<anonymous>)
+    at _readFile (/Users/antoinehurard/.npm/_npx/eb8bf615e50a412a/node_modules/jsonfile/index.js:25:16)
+    at async Object.run (/Users/antoinehurard/.npm/_npx/eb8bf615e50a412a/node_modules/@storybook/cli/dist/generate.js:121:142)
+    at async runFixes (/Users/antoinehurard/.npm/_npx/eb8bf615e50a412a/node_modules/@storybook/cli/dist/generate.js:322:1144)
+    at async automigrate (/Users/antoinehurard/.npm/_npx/eb8bf615e50a412a/node_modules/@storybook/cli/dist/generate.js:317:636)
+    at async Command.<anonymous> (/Users/antoinehurard/.npm/_npx/eb8bf615e50a412a/node_modules/@storybook/cli/dist/generate.js:431:2802)
+
+
+🔎 found a 'autodocsTrue' migration:
+╭ Automigration detected ────────────────────────────────────────────────────────────────────────────╮
+│                                                                                                    │
+│   We've changed the configuration of autodocs (previous docsPage), so now the value:               │
+│     - docs.autodocs: true -- means automatically create docs for every CSF file                    │
+│     - docs.autodocs: 'tag' -- means only create autodocs for CSF files with the 'autodocs' tag     │
+│     - docs.autodocs: false -- means never create autodocs                                          │
+│                                                                                                    │
+│   Based on your prior configuration,  we can set the `docs.autodocs` to keep your old behaviour:   │
+│                                                                                                    │
+│   docs: { autodocs: true }                                                                         │
+│                                                                                                    │
+│   More info: https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#autodocs-changes      │
+│                                                                                                    │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────╯
+? Do you want to run the 'autodocsTrue' migration on your project? › (Y/n)✔ Do you want to run the 'autodocsTrue' migration on your project? … yes
+✅ Setting 'docs.autodocs' to true in main.js
+✅ ran autodocsTrue migration
+
+🔎 found a 'addReact' migration:
+╭ Automigration detected ─────────────────────────────────────────────────────────────────────────────────────────╮
+│                                                                                                                 │
+│   We've detected that you're using @storybook/addon-essentials.                                                 │
+│                                                                                                                 │
+│   Starting in Storybook 7, we now require these peer dependencies to render docs:                               │
+│                                                                                                                 │
+│   - react                                                                                                       │
+│   - react-dom                                                                                                   │
+│                                                                                                                 │
+│   We can add these for you automatically as dev dependencies.                                                   │
+│                                                                                                                 │
+│   More info: https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#react-peer-dependencies-required   │
+│                                                                                                                 │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+? Do you want to run the 'addReact' migration on your project? › (Y/n)✔ Do you want to run the 'addReact' migration on your project? … yes
+✅ ran addReact migration
+
+╭ Migration check ran with failures ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│                                                                                                                                                               │
+│   Successful migrations:                                                                                                                                      │
+│                                                                                                                                                               │
+│   autodocsTrue, addReact                                                                                                                                      │
+│                                                                                                                                                               │
+│   Failed migrations:                                                                                                                                          │
+│                                                                                                                                                               │
+│   eslintPlugin:                                                                                                                                               │
+│   .eslintrc.json: Expected ',' or ']' after array element in JSON at position 623                                                                             │
+│                                                                                                                                                               │
+│   You can find the full logs in /Users/antoinehurard/Desktop/oort/oort-front/migration-storybook.log                                                          │
+│                                                                                                                                                               │
+│   ─────────────────────────────────────────────────                                                                                                           │
+│                                                                                                                                                               │
+│   If you'd like to run the migrations again, you can do so by running 'npx storybook@next automigrate'                                                        │
+│                                                                                                                                                               │
+│   The automigrations try to migrate common patterns in your project, but might not contain everything needed to migrate to the latest version of Storybook.   │
+│                                                                                                                                                               │
+│   Please check the changelog and migration guide for manual migrations and more information: https://storybook.js.org/migration-guides/7.0                    │
+│   And reach out on Discord if you need help: https://discord.gg/storybook                                                                                     │
+│                                                                                                                                                               │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+

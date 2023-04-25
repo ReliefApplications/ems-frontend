@@ -35,7 +35,6 @@ import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, firstValueFrom, Observable, takeUntil } from 'rxjs';
-import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
 import { TranslateService } from '@ngx-translate/core';
@@ -48,7 +47,6 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
-import { SafeRecordHistoryModalModule } from '../record-history-modal/record-history-modal.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
@@ -87,7 +85,6 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     MatTabsModule,
     SafeButtonModule,
     SafeIconModule,
-    SafeRecordHistoryModalModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,
@@ -306,31 +303,26 @@ export class SafeFormModalComponent
     this.formHelpersService.setEmptyQuestions(survey);
     // Displays confirmation modal.
     if (this.data.askForConfirm) {
-      const dialogRef = this.confirmService.openConfirmModal(
-        {
-          title: this.translate.instant('common.updateObject', {
-            name:
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant('common.updateObject', {
+          name:
+            rowsSelected > 1
+              ? this.translate.instant('common.row.few')
+              : this.translate.instant('common.row.one'),
+        }),
+        content: this.translate.instant(
+          'components.form.updateRow.confirmationMessage',
+          {
+            quantity: rowsSelected,
+            rowText:
               rowsSelected > 1
                 ? this.translate.instant('common.row.few')
                 : this.translate.instant('common.row.one'),
-          }),
-          content: this.translate.instant(
-            'components.form.updateRow.confirmationMessage',
-            {
-              quantity: rowsSelected,
-              rowText:
-                rowsSelected > 1
-                  ? this.translate.instant('common.row.few')
-                  : this.translate.instant('common.row.one'),
-            }
-          ),
-          confirmText: this.translate.instant(
-            'components.confirmModal.confirm'
-          ),
-          confirmColor: 'primary',
-        },
-        this.dialog
-      );
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmColor: 'primary',
+      });
       dialogRef.afterClosed().subscribe(async (value) => {
         if (value) {
           await this.onUpdate(survey);
@@ -606,8 +598,11 @@ export class SafeFormModalComponent
   /**
    * Opens the history of the record in a modal.
    */
-  public onShowHistory(): void {
+  public async onShowHistory(): Promise<void> {
     if (this.record) {
+      const { RecordHistoryModalComponent } = await import(
+        '../record-history-modal/record-history-modal.component'
+      );
       this.dialog.open(RecordHistoryModalComponent, {
         data: {
           id: this.record.id,

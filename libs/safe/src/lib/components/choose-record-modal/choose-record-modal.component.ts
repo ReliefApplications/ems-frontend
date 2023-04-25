@@ -15,6 +15,18 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
+import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
+import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
+import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.
@@ -42,6 +54,22 @@ interface IRecord {
  * Component used for the modals that allow the users to chose records
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    SafeResourceDropdownModule,
+    SafeApplicationDropdownModule,
+    SafeRecordDropdownModule,
+    SafeCoreGridModule,
+    TranslateModule,
+    SafeModalModule,
+  ],
   selector: 'safe-choose-record-modal',
   templateUrl: './choose-record-modal.component.html',
   styleUrls: ['./choose-record-modal.component.scss'],

@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SafeGridComponent } from './grid.component';
 import { SafeGridModule } from './grid.module';
@@ -27,7 +27,7 @@ export default {
  * @param args Properties of the component
  * @returns The template
  */
-const TEMPLATE: Story<SafeGridComponent> = (args) => ({
+const TEMPLATE: StoryFn<SafeGridComponent> = (args) => ({
   template: `<div style="height: 400px"><safe-grid
         [loading]="loading"
         [error]="error"
@@ -191,55 +191,65 @@ const DEFAULT_FIELDS = [
   },
 ];
 
-/** Export a template with mock properties */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Default';
-DEFAULT.args = {
-  fields: DEFAULT_FIELDS,
-  data: {
-    data: DEFAULT_DATA,
-    total: DEFAULT_DATA.length,
-  },
-  editable: true,
-};
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Default',
 
-/** Export an empty template with mock properties */
-export const EMPTY = TEMPLATE.bind({});
-EMPTY.storyName = 'Empty';
-EMPTY.args = {
-  fields: DEFAULT_FIELDS,
-  data: {
-    data: DEFAULT_DATA,
-    total: DEFAULT_DATA.length,
+  args: {
+    fields: DEFAULT_FIELDS,
+    data: {
+      data: DEFAULT_DATA,
+      total: DEFAULT_DATA.length,
+    },
+    editable: true,
   },
 };
 
-/** Export a template with invalid properties and an error */
-export const ERROR = TEMPLATE.bind({});
-ERROR.storyName = 'With error';
-ERROR.args = {
-  fields: DEFAULT_FIELDS,
-  data: {
-    data: [],
-    total: 0,
+export const EMPTY = {
+  render: TEMPLATE,
+  name: 'Empty',
+
+  args: {
+    fields: DEFAULT_FIELDS,
+    data: {
+      data: DEFAULT_DATA,
+      total: DEFAULT_DATA.length,
+    },
   },
 };
 
-/** Export a template with loading data */
-export const LOADING = TEMPLATE.bind({});
-LOADING.storyName = 'Loading';
-LOADING.args = {
-  ...DEFAULT.args,
+export const ERROR = {
+  render: TEMPLATE,
+  name: 'With error',
+
+  args: {
+    fields: DEFAULT_FIELDS,
+    data: {
+      data: [],
+      total: 0,
+    },
+  },
 };
 
-/** Export a template with a size fixed */
-export const FIXED = TEMPLATE.bind({});
-FIXED.storyName = 'Fixed size';
-FIXED.args = {
-  ...DEFAULT.args,
-  resizable: false,
-  reorderable: false,
-  sortable: false,
+export const LOADING = {
+  render: TEMPLATE,
+  name: 'Loading',
+
+  args: {
+    ...DEFAULT.args,
+  },
+};
+
+export const FIXED = {
+  render: TEMPLATE,
+  name: 'Fixed size',
+
+  args: {
+    ...DEFAULT.args,
+    resizable: false,
+    reorderable: false,
+    sortable: false,
+  },
 };
 
 /** Mock data for multi-select field */
@@ -252,73 +262,75 @@ const MULTI_SELECT_DATA = [
   },
 ];
 
-/** Export template with multi-select data */
-export const MULTI_SELECT_INPUTS = TEMPLATE.bind({});
-MULTI_SELECT_INPUTS.storyName = 'With multi select inputs';
-MULTI_SELECT_INPUTS.args = {
-  ...DEFAULT.args,
-  fields: [
-    {
-      title: 'Checkbox',
-      name: 'checkbox',
-      type: 'JSON',
-      editor: '',
-      meta: {
-        type: 'checkbox',
-        choices: [
-          {
-            value: 1,
-            text: 'Option 1',
-          },
-          {
-            value: 2,
-            text: 'Option 2',
-          },
-        ],
+export const MULTI_SELECT_INPUTS = {
+  render: TEMPLATE,
+  name: 'With multi select inputs',
+
+  args: {
+    ...DEFAULT.args,
+    fields: [
+      {
+        title: 'Checkbox',
+        name: 'checkbox',
+        type: 'JSON',
+        editor: '',
+        meta: {
+          type: 'checkbox',
+          choices: [
+            {
+              value: 1,
+              text: 'Option 1',
+            },
+            {
+              value: 2,
+              text: 'Option 2',
+            },
+          ],
+        },
       },
-    },
-    {
-      title: 'Tagbox',
-      name: 'tagbox',
-      type: 'JSON',
-      editor: '',
-      meta: {
-        type: 'tagbox',
-        choices: [
-          {
-            value: 1,
-            text: 'Option 1',
-          },
-          {
-            value: 2,
-            text: 'Option 2',
-          },
-        ],
+      {
+        title: 'Tagbox',
+        name: 'tagbox',
+        type: 'JSON',
+        editor: '',
+        meta: {
+          type: 'tagbox',
+          choices: [
+            {
+              value: 1,
+              text: 'Option 1',
+            },
+            {
+              value: 2,
+              text: 'Option 2',
+            },
+          ],
+        },
       },
-    },
-    {
-      title: 'Users',
-      name: 'users',
-      type: 'JSON',
-      editor: '',
-      meta: {
-        type: 'users',
-        choices: [
-          {
-            value: 1,
-            text: 'User 1',
-          },
-          {
-            value: 2,
-            text: 'User 2',
-          },
-        ],
+      {
+        title: 'Users',
+        name: 'users',
+        type: 'JSON',
+        editor: '',
+        meta: {
+          type: 'users',
+          choices: [
+            {
+              value: 1,
+              text: 'User 1',
+            },
+            {
+              value: 2,
+              text: 'User 2',
+            },
+          ],
+        },
       },
+    ],
+    data: {
+      data: MULTI_SELECT_DATA,
+      total: MULTI_SELECT_DATA.length,
     },
-  ],
-  data: {
-    data: MULTI_SELECT_DATA,
-    total: MULTI_SELECT_DATA.length,
   },
 };
 
@@ -356,115 +368,117 @@ const COMPLEX_DATA = [
   },
 ];
 
-/** Export template with more complex data */
-export const COMPLEX_INPUTS = TEMPLATE.bind({});
-COMPLEX_INPUTS.storyName = 'With complex inputs';
-COMPLEX_INPUTS.args = {
-  ...DEFAULT.args,
-  fields: [
-    {
-      title: 'Multiple text',
-      name: 'multipletext',
-      type: 'JSON',
-      meta: {
-        type: 'multipletext',
-        columns: [
-          {
-            label: 'First',
-            name: 'first',
-          },
-          {
-            label: 'Second',
-            name: 'second',
-          },
-        ],
+export const COMPLEX_INPUTS = {
+  render: TEMPLATE,
+  name: 'With complex inputs',
+
+  args: {
+    ...DEFAULT.args,
+    fields: [
+      {
+        title: 'Multiple text',
+        name: 'multipletext',
+        type: 'JSON',
+        meta: {
+          type: 'multipletext',
+          columns: [
+            {
+              label: 'First',
+              name: 'first',
+            },
+            {
+              label: 'Second',
+              name: 'second',
+            },
+          ],
+        },
       },
-    },
-    {
-      title: 'Matrix',
-      name: 'matrix',
-      type: 'JSON',
-      meta: {
-        type: 'matrix',
-        rows: [
-          {
-            label: '1st',
-            name: 'first',
-          },
-          {
-            label: '2nd',
-            name: 'second',
-          },
-        ],
-        columns: [
-          {
-            label: 'First',
-            name: 'first',
-          },
-          {
-            label: 'Second',
-            name: 'second',
-          },
-          {
-            label: 'Third',
-            name: 'third',
-          },
-        ],
+      {
+        title: 'Matrix',
+        name: 'matrix',
+        type: 'JSON',
+        meta: {
+          type: 'matrix',
+          rows: [
+            {
+              label: '1st',
+              name: 'first',
+            },
+            {
+              label: '2nd',
+              name: 'second',
+            },
+          ],
+          columns: [
+            {
+              label: 'First',
+              name: 'first',
+            },
+            {
+              label: 'Second',
+              name: 'second',
+            },
+            {
+              label: 'Third',
+              name: 'third',
+            },
+          ],
+        },
       },
-    },
-    {
-      title: 'Matrix Dropdown',
-      name: 'matrixdropdown',
-      type: 'JSON',
-      meta: {
-        type: 'matrixdropdown',
-        rows: [
-          {
-            label: '1st',
-            name: 'first',
-          },
-          {
-            label: '2nd',
-            name: 'second',
-          },
-        ],
-        columns: [
-          {
-            label: 'First',
-            name: 'first',
-            type: 'dropdown',
-          },
-          {
-            label: 'Second',
-            name: 'second',
-            type: 'radiogroup',
-          },
-        ],
+      {
+        title: 'Matrix Dropdown',
+        name: 'matrixdropdown',
+        type: 'JSON',
+        meta: {
+          type: 'matrixdropdown',
+          rows: [
+            {
+              label: '1st',
+              name: 'first',
+            },
+            {
+              label: '2nd',
+              name: 'second',
+            },
+          ],
+          columns: [
+            {
+              label: 'First',
+              name: 'first',
+              type: 'dropdown',
+            },
+            {
+              label: 'Second',
+              name: 'second',
+              type: 'radiogroup',
+            },
+          ],
+        },
       },
-    },
-    {
-      title: 'Matrix Dynamic',
-      name: 'matrixdynamic',
-      type: 'JSON',
-      meta: {
-        type: 'matrixdynamic',
-        columns: [
-          {
-            label: 'First',
-            name: 'first',
-            type: 'dropdown',
-          },
-          {
-            label: 'Second',
-            name: 'second',
-            type: 'radiogroup',
-          },
-        ],
+      {
+        title: 'Matrix Dynamic',
+        name: 'matrixdynamic',
+        type: 'JSON',
+        meta: {
+          type: 'matrixdynamic',
+          columns: [
+            {
+              label: 'First',
+              name: 'first',
+              type: 'dropdown',
+            },
+            {
+              label: 'Second',
+              name: 'second',
+              type: 'radiogroup',
+            },
+          ],
+        },
       },
+    ],
+    data: {
+      data: COMPLEX_DATA,
+      total: COMPLEX_DATA.length,
     },
-  ],
-  data: {
-    data: COMPLEX_DATA,
-    total: COMPLEX_DATA.length,
   },
 };

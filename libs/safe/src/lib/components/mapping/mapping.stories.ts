@@ -1,5 +1,5 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Meta, moduleMetadata, Story } from '@storybook/angular';
+import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeMappingComponent } from './mapping.component';
 import { SafeMappingModule } from './mapping.module';
 import { StorybookTranslateModule } from '../storybook-translate/storybook-translate-module';
@@ -44,7 +44,7 @@ const fb = new UntypedFormBuilder();
  *
  * @returns story
  */
-const TEMPLATE: Story<SafeMappingComponent> = () => ({
+const TEMPLATE: StoryFn<SafeMappingComponent> = () => ({
   template: '<safe-mapping [mappingForm]="mappingForm"></safe-mapping>',
   props: {
     // Need to pass formArray there otherwise we get an error: https://github.com/storybookjs/storybook/discussions/15602
@@ -65,19 +65,18 @@ const TEMPLATE: Story<SafeMappingComponent> = () => ({
   },
 });
 
-/**
- * Default story
- */
-export const DEFAULT = TEMPLATE.bind({});
-DEFAULT.storyName = 'Full';
-DEFAULT.args = {};
+export const DEFAULT = {
+  render: TEMPLATE,
+  name: 'Full',
+  args: {},
+};
 
 /**
  * Story template with no mapping
  *
  * @returns story
  */
-const TEMPLATE_EMPTY: Story<SafeMappingComponent> = () => ({
+const TEMPLATE_EMPTY: StoryFn<SafeMappingComponent> = () => ({
   template: '<safe-mapping [mappingForm]="mappingForm"></safe-mapping>',
   props: {
     // Need to pass formArray there otherwise we get an error: https://github.com/storybookjs/storybook/discussions/15602
@@ -85,7 +84,8 @@ const TEMPLATE_EMPTY: Story<SafeMappingComponent> = () => ({
   },
 });
 
-/** Story with no mapping */
-export const EMPTY = TEMPLATE_EMPTY.bind({});
-EMPTY.storyName = 'Empty';
-EMPTY.args = {};
+export const EMPTY = {
+  render: TEMPLATE_EMPTY,
+  name: 'Empty',
+  args: {},
+};

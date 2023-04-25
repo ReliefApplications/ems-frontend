@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { SafeTileDataComponent } from './menu/tile-data/tile-data.component';
 import { SafeDashboardService } from '../../../services/dashboard/dashboard.service';
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -71,8 +70,11 @@ export class SafeFloatingOptionsComponent implements OnInit {
    *
    * @param item action
    */
-  onClick(item: any): void {
+  async onClick(item: any): Promise<void> {
     if (item.name === 'Settings') {
+      const { SafeTileDataComponent } = await import(
+        './menu/tile-data/tile-data.component'
+      );
       const dialogRef = this.dialog.open(SafeTileDataComponent, {
         disableClose: true,
         data: {

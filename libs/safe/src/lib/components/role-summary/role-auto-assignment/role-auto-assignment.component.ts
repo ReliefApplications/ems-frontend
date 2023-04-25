@@ -12,7 +12,6 @@ import { SafeRestService } from '../../../services/rest/rest.service';
 import { getFilterGroupDisplay } from '../../../utils/filter/filter-display.helper';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { GetGroupsQueryResponse, GET_GROUPS } from '../graphql/queries';
-import { EditRoleAutoAssignmentModalComponent } from './edit-role-auto-assignment-modal/edit-role-auto-assignment-modal.component';
 
 /**
  * Component for Auto assignment of role
@@ -121,8 +120,11 @@ export class RoleAutoAssignmentComponent implements OnInit {
   /**
    * Add new assignment rule
    */
-  addRule(): void {
+  async addRule(): Promise<void> {
     const formGroup = createFilterGroup(null);
+    const { EditRoleAutoAssignmentModalComponent } = await import(
+      './edit-role-auto-assignment-modal/edit-role-auto-assignment-modal.component'
+    );
     const dialogRef = this.dialog.open(EditRoleAutoAssignmentModalComponent, {
       data: {
         formGroup,
@@ -160,8 +162,11 @@ export class RoleAutoAssignmentComponent implements OnInit {
    *
    * @param index rule index
    */
-  editRule(index: number): void {
+  async editRule(index: number): Promise<void> {
     const formGroup = createFilterGroup(this.formArray.at(index).value);
+    const { EditRoleAutoAssignmentModalComponent } = await import(
+      './edit-role-auto-assignment-modal/edit-role-auto-assignment-modal.component'
+    );
     const dialogRef = this.dialog.open(EditRoleAutoAssignmentModalComponent, {
       data: {
         formGroup,

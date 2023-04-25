@@ -8,8 +8,6 @@ import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy
 import { TranslateModule } from '@ngx-translate/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeDateModule } from '../../../pipes/date/date.module';
-import { AddAggregationModalModule } from '../add-aggregation-modal/add-aggregation-modal.module';
-import { SafeEditAggregationModalModule } from '../edit-aggregation-modal/edit-aggregation-modal.module';
 
 /** Module for aggregation table component */
 @NgModule({
@@ -22,8 +20,6 @@ import { SafeEditAggregationModalModule } from '../edit-aggregation-modal/edit-a
     MatIconModule,
     DragDropModule,
     SafeButtonModule,
-    AddAggregationModalModule,
-    SafeEditAggregationModalModule,
     SafeDateModule,
   ],
   exports: [AggregationTableComponent],
