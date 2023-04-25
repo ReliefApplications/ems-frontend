@@ -4,17 +4,17 @@
     'toolbar-variant-light': variant === toolbarVariants.LIGHT,
     'toolbar-variant-dark': variant === toolbarVariants.DARK
   }"
-  class="md:flex p-4 md:items-center md:justify-between"
+  class="flex p-4 items-center md:justify-between"
 >
-  <div class="flex-shrink-0 p-2">
+  <div class="flex-shrink-0 min-w-0 p-2">
     <ng-content select="leftContent"></ng-content>
   </div>
-  <div class="min-w-0 flex-1">
-    <h2 class="toolbar-header">
+  <div class="min-w-0 overflow-hidden flex-1">
+    <h1 class="toolbar-header">
       <ng-content select="headTitle"></ng-content>
-    </h2>
+    </h1>
   </div>
-  <div class="mt-4 flex md:ml-4 md:mt-0 items-center">
+  <div class="mt-0 flex md:ml-4 min-w-0 items-center">
     <div class="toolbar-info">
       <ng-content select="userName"></ng-content>
       <ng-content select="userMail"></ng-content>

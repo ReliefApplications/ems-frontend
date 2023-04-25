@@ -5,7 +5,7 @@
   @apply text-gray-900;
 }
 .toolbar-header {
-    @apply text-2xl font-semibold leading-7 sm:truncate sm:text-3xl sm:tracking-tight;
+    @apply text-2xl leading-7 whitespace-nowrap text-clip;
 }
 .toolbar-info {
     @apply text-xs mr-2 font-medium text-end max-w-xl hidden md:block;
