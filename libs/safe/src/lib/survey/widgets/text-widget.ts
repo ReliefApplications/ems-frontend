@@ -22,6 +22,8 @@ type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
  * @param domService Shared DOM service
  */
 export const init = (Survey: any, domService: DomService): void => {
+  let pickerRefArray: any[] = [];
+
   const widget = {
     name: 'text-widget',
     widgetIsLoaded: (): boolean => true,
@@ -80,6 +82,12 @@ export const init = (Survey: any, domService: DomService): void => {
           const question = editor.object as QuestionText;
           const updatePickerInstance = () => {
             htmlElement.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
+            if (pickerRefArray.length > 1) {
+              pickerRefArray.forEach((e) =>
+                domService.removeComponentFromBody(e)
+              );
+              pickerRefArray = [];
+            }
             const pickerInstance = createPickerInstance(
               question.inputType as DateInputFormat,
               htmlElement
@@ -120,6 +128,8 @@ export const init = (Survey: any, domService: DomService): void => {
       // add kendo date pickers for text inputs with dates types
       const updateTextInput = () => {
         el.parentElement?.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
+        pickerRefArray.forEach((e) => domService.removeComponentFromBody(e));
+        pickerRefArray = [];
         if (
           ['date', 'datetime', 'datetime-local', 'time'].includes(
             question.inputType
@@ -347,6 +357,7 @@ export const init = (Survey: any, domService: DomService): void => {
           DatePickerComponent,
           element
         );
+        pickerRefArray.push(datePicker);
         const datePickerInstance: DatePickerComponent = datePicker.instance;
         datePickerInstance.format = 'dd/MM/yyyy';
         return datePickerInstance;
@@ -356,6 +367,7 @@ export const init = (Survey: any, domService: DomService): void => {
           DateTimePickerComponent,
           element
         );
+        pickerRefArray.push(dateTimePicker);
         const dateTimePickerInstance: DateTimePickerComponent =
           dateTimePicker.instance;
         dateTimePickerInstance.format = 'dd/MM/yyyy HH:mm';
@@ -365,6 +377,7 @@ export const init = (Survey: any, domService: DomService): void => {
           TimePickerComponent,
           element
         );
+        pickerRefArray.push(timePicker);
         const timePickerInstance: TimePickerComponent = timePicker.instance;
         timePickerInstance.format = 'HH:mm';
         return timePickerInstance;
