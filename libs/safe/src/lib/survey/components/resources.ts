@@ -890,7 +890,10 @@ export const init = (
       promises.push(promise);
     });
     const uuidRegExpr =
-      /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
+      /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;
+    console.log(
+      question.value.filter((id: string) => !uuidRegExpr.test(id.toString()))
+    );
     const settings = {
       query: {
         ...query,
