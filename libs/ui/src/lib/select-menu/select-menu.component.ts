@@ -6,7 +6,11 @@ import {
   EventEmitter,
   TemplateRef,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormControl,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 
 /**
  *
@@ -36,8 +40,10 @@ export class SelectMenuComponent implements ControlValueAccessor {
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
   @Output() onSelectOption = new EventEmitter<any>();
 
+  selectionControl = new FormControl();
+
   //Values selected
-  val: string[] = [];
+  val!: any;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onChange: any = () => {};
@@ -48,7 +54,7 @@ export class SelectMenuComponent implements ControlValueAccessor {
   /**
    * Set value of control access value
    */
-  set value(val: string[]) {
+  set value(val: any) {
     if (val !== undefined && this.val !== val) {
       this.val = val;
       this.onChange(val);

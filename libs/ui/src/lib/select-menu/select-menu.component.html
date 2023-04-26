@@ -1,1 +1,20 @@
-<p>select-menu works!</p>
+<label class="example-listbox-label" id="example-language-label">
+  Preferred Language
+</label>
+<ul
+  cdkListbox
+  [cdkListboxMultiple]="multiselect === true"
+  [cdkListboxDisabled]="disabled === true"
+  [formControl]="selectionControl"
+  [(ngModel)]="value"
+  aria-labelledby="example-language-label"
+  class="example-listbox"
+>
+  <li
+    *ngFor="let option of options"
+    [cdkOption]="option"
+    class="example-option"
+  >
+    {{ option }}
+  </li>
+</ul>
