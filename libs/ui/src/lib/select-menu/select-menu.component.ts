@@ -33,6 +33,7 @@ export class SelectMenuComponent implements ControlValueAccessor {
   @Input() options: Array<any> = [];
   @Input() selectTriggerTemplate!: TemplateRef<any> | string;
   @Input() disabled = false;
+  @Input() required = false;
 
   //Outputs
   @Output() opened = new EventEmitter<boolean>();
@@ -41,6 +42,7 @@ export class SelectMenuComponent implements ControlValueAccessor {
   @Output() onSelectOption = new EventEmitter<any>();
 
   selectionControl = new FormControl();
+  listBoxFocused = false;
 
   //Values selected
   val!: any;
@@ -90,5 +92,32 @@ export class SelectMenuComponent implements ControlValueAccessor {
    */
   registerOnTouched(fn: any) {
     this.onTouch = fn;
+  }
+
+  // openListBox() {
+  //   this.opened.emit(true);
+  //   this.closed.emit(false);
+  //   this.listBoxFocused = true;
+  //   console.log('open');
+  // }
+
+  closeListBox() {
+    this.opened.emit(false);
+    this.closed.emit(true);
+    this.listBoxFocused = false;
+    console.log('close');
+  }
+
+  dealListBox() {
+    if (this.listBoxFocused) {
+      this.opened.emit(false);
+      this.closed.emit(true);
+      this.listBoxFocused = false;
+    } else {
+      this.opened.emit(true);
+      this.closed.emit(false);
+      this.listBoxFocused = true;
+    }
+    console.log('deal');
   }
 }

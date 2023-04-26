@@ -1,20 +1,34 @@
-<label class="example-listbox-label" id="example-language-label">
-  Preferred Language
-</label>
-<ul
-  cdkListbox
-  [cdkListboxMultiple]="multiselect === true"
-  [cdkListboxDisabled]="disabled === true"
-  [formControl]="selectionControl"
-  [(ngModel)]="value"
-  aria-labelledby="example-language-label"
-  class="example-listbox"
->
-  <li
-    *ngFor="let option of options"
-    [cdkOption]="option"
-    class="example-option"
+<div (blur)="closeListBox()">
+  <label
+    class="example-listbox-label"
+    (click)="dealListBox()"
+    id="example-language-label"
   >
-    {{ option }}
-  </li>
-</ul>
+    Preferred Language
+  </label>
+  <ul
+    cdkListbox
+    [cdkListboxMultiple]="multiselect === true"
+    [cdkListboxDisabled]="disabled === true"
+    [formControl]="selectionControl"
+    [(ngModel)]="value"
+    (blur)="closeListBox()"
+    aria-labelledby="example-language-label"
+    class="example-listbox"
+    [tabindex]="-1"
+  >
+    <li
+      [tabindex]="-1"
+      *ngFor="let option of options"
+      [ngClass]="{
+        hidden: listBoxFocused === false,
+        block: listBoxFocused === true
+      }"
+      [cdkOption]="option"
+      class="example-option"
+    >
+      {{ option }}
+    </li>
+  </ul>
+</div>
+<div>test</div>
