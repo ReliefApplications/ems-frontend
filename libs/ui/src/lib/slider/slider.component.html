@@ -1,11 +1,11 @@
-<div class="py-5">
+<div class="py-5 relative" id="sliderComponent">
   <span
-    [ngStyle]="{ left: bubbleStyle}"
+    [ngStyle]="{ left: bubbleStyle }"
     [ngClass]="{
-      'block': bubbleToShow === true,
-      'hidden': bubbleToShow === false
+      'block transition-all duration-300': bubbleToShow === true,
+      'hidden transition-all duration-300': bubbleToShow === false
     }"
-    class="absolute p-2 bg-teal-400 -translate-x-2/4 -translate-y-full rounded-md text-white"
+    class="absolute px-2 -translate-x-2/4 bg-teal-400 -translate-y-3/4 rounded-lg text-white"
     >{{ val }}</span
   >
   <input
@@ -16,9 +16,24 @@
     type="range"
     min="{{ minValue }}"
     max="{{ maxValue }}"
+    value="{{ minValue }}"
     step="1"
     (focus)="onFocusFunction()"
     (blur)="onBlurFunction()"
     (input)="onChangeFunction()"
   />
+  <div
+    [ngClass]="{
+      'block transition-all duration-300': ticksToShow === true,
+      'hidden transition-all duration-300': ticksToShow === false
+    }"
+    class="flex justify-between -translate-y-full unselectable hover:cursor-grab"
+  >
+    <div
+      *ngFor="let tick of createRange(maxValue - minValue + 1)"
+      class="ticks unselectable hover:cursor-grab"
+    >
+      |
+    </div>
+  </div>
 </div>

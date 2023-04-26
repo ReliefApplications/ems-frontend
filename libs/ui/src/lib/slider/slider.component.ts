@@ -25,6 +25,7 @@ export class SliderComponent implements ControlValueAccessor {
 
   bubbleStyle = '';
   bubbleToShow = false;
+  ticksToShow = false;
 
   val = this.minValue;
   external!: string;
@@ -55,6 +56,7 @@ export class SliderComponent implements ControlValueAccessor {
 
   onFocusFunction() {
     this.bubbleToShow = true;
+    this.ticksToShow = true;
   }
 
   onChangeFunction() {
@@ -65,13 +67,15 @@ export class SliderComponent implements ControlValueAccessor {
 
     // Sorta magic numbers based on size of the native UI thumb
     this.bubbleStyle = String(newVal) + '%';
-    console.log(this.bubbleStyle);
-    console.log(min);
-    console.log(max);
-    console.log(val);
   }
 
   onBlurFunction() {
     this.bubbleToShow = false;
+    this.ticksToShow = false;
+  }
+
+  createRange(number: number) {
+    // return new Array(number);
+    return new Array(number).fill(0).map((n, index) => index + 1);
   }
 }
