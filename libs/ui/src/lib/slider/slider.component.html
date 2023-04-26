@@ -27,11 +27,11 @@
       'block transition-all duration-300': ticksToShow === true,
       'hidden transition-all duration-300': ticksToShow === false
     }"
-    class="flex justify-between -translate-y-full unselectable hover:cursor-grab"
+    class="flex justify-between -translate-y-full non_selectable hover:cursor-grab"
   >
     <div
       *ngFor="let tick of createRange(maxValue - minValue + 1)"
-      class="ticks unselectable hover:cursor-grab"
+      class="ticks non_selectable hover:cursor-grab"
     >
       |
     </div>

@@ -4,6 +4,9 @@ import { SliderComponent } from './slider.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
+/**
+ * UI Slider Module
+ */
 @NgModule({
   declarations: [SliderComponent],
   imports: [CommonModule, BrowserModule, FormsModule],
