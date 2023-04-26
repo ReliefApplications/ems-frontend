@@ -198,7 +198,7 @@ export class SafeMapPopupService {
     const title = (title: string, popupTitle?: boolean) =>
       popupTitle
         ? `<h3 class="break-all m-0 font-bold text-xl">${title}</h3>`
-        : `<h3 class="break-all m-0 font-semibold">${title}</h3>`;
+        : `<h3 class="break-all m-0 font-medium">${title}</h3>`;
     const description = (description: string, popupTitle?: boolean) =>
       popupTitle
         ? `<p class="break-all m-0 text-gray-600 font-light text-sm">${description}</p>`
