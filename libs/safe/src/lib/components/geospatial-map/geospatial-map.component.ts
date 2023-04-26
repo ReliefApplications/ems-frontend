@@ -367,7 +367,13 @@ export class GeospatialMapComponent
     }
   }
 
-  onReverseSearch(latlng: L.LatLng) {
+  /**
+   * Handles reverse search using the arcgis service
+   *
+   * @param latlng the latlng to search for
+   * @returns a promise
+   */
+  private async onReverseSearch(latlng: L.LatLng) {
     return this.arcgisService.reverseSearch(latlng).then((res) => {
       const value = {
         coordinates: {

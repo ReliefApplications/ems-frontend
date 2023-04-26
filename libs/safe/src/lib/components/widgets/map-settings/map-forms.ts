@@ -252,7 +252,7 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup => {
  * @param value popup info value
  * @returns popup info form group
  */
-export const createPopupInfoForm = (value: any): FormGroup =>
+export const createPopupInfoForm = (value: any) =>
   fb.group({
     title: get(value, 'title', ''),
     description: get(value, 'description', ''),
@@ -283,6 +283,7 @@ export const createPopupElementForm = (value: PopupElement): FormGroup => {
         type: 'fields',
         title: get(value, 'title', ''),
         description: get(value, 'description', ''),
+        fields: fb.array(get(value, 'fields', []) ?? []),
       });
     }
   }

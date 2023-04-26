@@ -7,6 +7,7 @@ import {
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GeoProperties } from '../../components/geospatial-map/geospatial-map.interface';
 
+/** Component for the selection of the interest fields from geospatial question */
 @Component({
   selector: 'safe-geofields-listbox',
   standalone: true,
@@ -40,6 +41,7 @@ export class GeofieldsListboxComponent {
   };
   @Output() selectionChange = new EventEmitter();
 
+  /** Emits select fields on action click */
   handleActionClick(): void {
     this.selectionChange.emit(this.selectedFields);
   }

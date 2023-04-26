@@ -1,3 +1,4 @@
+/** Interface for the data from a geospatial question */
 export interface GeoProperties {
   coordinates: { lat: number; lng: number };
   city: string;

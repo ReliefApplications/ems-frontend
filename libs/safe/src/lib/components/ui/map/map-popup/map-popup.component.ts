@@ -29,6 +29,7 @@ export class SafeMapPopupComponent
 {
   @Input() points: Feature<Point>[] = [];
   @Input() template = '';
+  @Input() currZoom = 13;
 
   @Output() closePopup: EventEmitter<void> = new EventEmitter<void>();
   @Output() zoomTo: EventEmitter<{ coordinates: number[] }> = new EventEmitter<{

@@ -1,15 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeDividerModule } from '../../../../../ui/divider/divider.module';
 import { SafeButtonModule } from '../../../../../ui/button/button.module';
-import { PopupElement } from '../../../../../../models/layer.model';
 import { Fields } from '../../layer-fields/layer-fields.component';
-import { SafeMapLayersService } from '../../../../../../services/map/map-layers.service';
 import { Observable, takeUntil } from 'rxjs';
 import { SafeEditorControlComponent } from '../../../../../editor-control/editor-control.component';
 import { INLINE_EDITOR_CONFIG } from '../../../../../../const/tinymce.const';
@@ -17,7 +20,10 @@ import { SafeEditorService } from '../../../../../../services/editor/editor.serv
 import { SafeIconModule } from '../../../../../ui/icon/icon.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { SafeUnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
-
+import {
+  ListBoxModule,
+  ListBoxToolbarConfig,
+} from '@progress/kendo-angular-listbox';
 /**
  * Popup fields element component.
  */
@@ -29,7 +35,6 @@ import { SafeUnsubscribeComponent } from '../../../../../utils/unsubscribe/unsub
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    DragDropModule,
     MatFormFieldModule,
     MatInputModule,
     SafeDividerModule,
@@ -37,6 +42,7 @@ import { SafeUnsubscribeComponent } from '../../../../../utils/unsubscribe/unsub
     SafeEditorControlComponent,
     SafeIconModule,
     MatTooltipModule,
+    ListBoxModule,
   ],
   templateUrl: './fields-element.component.html',
   styleUrls: ['./fields-element.component.scss'],
@@ -48,51 +54,54 @@ export class FieldsElementComponent
   @Input() fields$!: Observable<Fields[]>;
   @Input() formGroup!: FormGroup;
 
-  public keys: string[] = [];
   public editorConfig = INLINE_EDITOR_CONFIG;
+
+  public availableFields: string[] = [];
+  public selectedFields: string[] = [];
+  public toolbarSettings: ListBoxToolbarConfig = {
+    position: 'right',
+    tools: [
+      'moveUp',
+      'moveDown',
+      'transferFrom',
+      'transferTo',
+      'transferAllFrom',
+      'transferAllTo',
+    ],
+  };
 
   ngOnInit(): void {
     // Listen to fields changes
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.keys = value.map((field) => `{{${field.name}}}`);
+      this.availableFields = value.map((field) => field.name);
       this.editorService.addCalcAndKeysAutoCompleter(
         this.editorConfig,
-        this.keys
+        this.availableFields.map((field) => `{{${field}}}`)
       );
+    });
+
+    // Get initial selected fields
+    this.selectedFields = this.formGroup.get('fields')?.value ?? [];
+    this.selectedFields.forEach((field: string) => {
+      const index = this.availableFields.indexOf(field);
+      if (index > -1) this.availableFields.splice(index, 1);
     });
   }
 
   /**
    * Creates an instance of FieldsElementComponent.
    *
-   * @param mapLayersService Shared map layer service.
    * @param editorService Shared tinymce editor service.
    */
-  constructor(
-    private mapLayersService: SafeMapLayersService,
-    private editorService: SafeEditorService
-  ) {
+  constructor(private editorService: SafeEditorService) {
     super();
   }
 
-  /**
-   * Handles the event emitted when a layer is reordered
-   *
-   * @param event Event emitted when a layer is reordered
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public onListDrop(event: CdkDragDrop<PopupElement[]>) {
-    // todo(gis): change type there
-    // moveItemInArray(this.fields, event.previousIndex, event.currentIndex);
-  }
-
-  /**
-   * Remove field from the array
-   *
-   * @param {number} index item index
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public onRemoveField(index: number): void {
-    // this.fields = this.fields.splice(index, 1);
+  /** Updates the element selected fields form value */
+  public handleActionClick() {
+    this.formGroup.setControl(
+      'fields',
+      new FormArray(this.selectedFields.map((x) => new FormControl(x)))
+    );
   }
 }

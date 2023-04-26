@@ -1,5 +1,4 @@
 import { Injectable, ComponentRef } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { Feature } from 'geojson';
 
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
@@ -14,16 +13,6 @@ import { PopupInfo } from '../../../../models/layer.model';
  */
 @Injectable()
 export class SafeMapPopupService {
-  private latitudeTag = this.translateService.instant(
-    'models.widget.map.latitude'
-  );
-  private longitudeTag = this.translateService.instant(
-    'models.widget.map.longitude'
-  );
-  private locationTag = this.translateService.instant(
-    'components.widget.settings.map.popup.location'
-  );
-
   // There would be an instance of map popup service for each map
   private map!: L.Map;
 
@@ -38,12 +27,8 @@ export class SafeMapPopupService {
    * Injects DomService and TranslateService instances to the service
    *
    * @param domService DomService
-   * @param translateService TranslateService
    */
-  constructor(
-    private domService: DomService,
-    private translateService: TranslateService
-  ) {}
+  constructor(private domService: DomService) {}
 
   /**
    * Set popup content for the given map and feature points
@@ -186,6 +171,11 @@ export class SafeMapPopupService {
     // set the points
     instance.points = featurePoints;
 
+    instance.currZoom = this.map.getZoom();
+    this.map.on('zoomend', (zoom) => {
+      instance.currZoom = zoom.target.getZoom();
+    });
+
     //Use the first feature point as model to generate the popup template for the rest of features
     instance.template = this.generatePopupContentTemplate(
       featurePoints[0],
@@ -205,59 +195,74 @@ export class SafeMapPopupService {
     feature: Feature<any>,
     popupInfo: PopupInfo
   ): string {
-    // @TODO: Define how to display multiple popup elements
-    // For now, using only the first element
-    const element = popupInfo.popupElements?.[0];
-    if (!element) return '';
-
-    // @TODO switch between popupInfo types 'fields' and 'text'
-    // For some reason, the 'fields' from are always null.
-
-    const title = (title: string) => `<h3 class="m-0 font-bold">${title}</h3>`;
-    const description = (description: string) =>
-      `<p class="m-0 mb-2 text-gray-600 font-light">${description}</p>`;
-    const separator = `<hr class="my-2" />`;
+    const title = (title: string, popupTitle?: boolean) =>
+      popupTitle
+        ? `<h3 class="break-all m-0 font-bold text-xl">${title}</h3>`
+        : `<h3 class="break-all m-0 font-semibold">${title}</h3>`;
+    const description = (description: string, popupTitle?: boolean) =>
+      popupTitle
+        ? `<p class="break-all m-0 text-gray-600 font-light text-sm">${description}</p>`
+        : `<p class="break-all m-0 mb-2 text-gray-600 font-light">${description}</p>`;
 
     // Templates use for the property name and the property value to be displayed
     const propertyNameTemplate = (propertyName: string) =>
-      `<p class="m-0 capitalize text-gray-400">${propertyName}</p>`;
+      `<p class="break-all m-0 capitalize text-gray-400">${propertyName}</p>`;
     const propertyValueTemplate = (property: any) =>
-      `<p class="m-0">{{${property}}}</p>`;
+      `<p class="m-0 break-all">{{${property}}}</p>`;
     // Template for the image
     const imageTemplate = (img: string) =>
       `<img src="{{${img}}}" class="flex-1" />`;
 
-    const containerStartTemplate = '<div class="safe-popup-content">';
+    const containerStartTemplate = '<div class="safe-popup-content px-2 my-4">';
     const containerEndTemplate = '</div>';
-    let contentGridTemplate = '';
-    let imageElement = '';
 
-    // Extract all the properties and set the name and value binding for the feature points of the popup with the given feature example in this method
-    for (const property in feature.properties) {
-      if (property) {
-        if (!property.toLowerCase().includes('img')) {
-          contentGridTemplate = `${contentGridTemplate} ${propertyNameTemplate(
-            property
-          )} ${propertyValueTemplate(property)}`;
-        } else {
-          imageElement = imageTemplate(property);
+    let template =
+      popupInfo.description || popupInfo.description
+        ? `<div class="w-full flex flex-col px-2 py-1" >${
+            popupInfo.title && title(popupInfo.title, true)
+          }${
+            popupInfo.description && description(popupInfo.description, true)
+          }</div>`
+        : '';
+
+    // We have a template per popup element
+    popupInfo.popupElements?.forEach((element) => {
+      if (element.type === 'fields') {
+        let imageElement = '';
+        let contentGridTemplate = '';
+        // Extract properties and check that fields were selected in the popup info
+        for (const property in feature.properties) {
+          if (property && element.fields?.includes(property)) {
+            if (!property.toLowerCase().includes('img')) {
+              contentGridTemplate = `${contentGridTemplate} ${propertyNameTemplate(
+                property
+              )} ${propertyValueTemplate(property)}`;
+            } else {
+              imageElement = imageTemplate(property);
+            }
+          }
+        }
+        template =
+          template +
+          '<div class="m-2 rounded-md border-gray-200 border shadow-md py-2 px-1">';
+
+        const elementHeader = `<div class="w-full flex flex-col ml-2" >${
+          element.title && title(element.title)
+        }${element.description && description(element.description)}</div>`;
+
+        template += `${elementHeader}${containerStartTemplate}${contentGridTemplate}${containerEndTemplate}${imageElement}</div>`;
+      } else if (element.type === 'text') {
+        if (element.text) {
+          const scriptRegex = /<script>(.*?)<\/script>/g;
+          // remove all script tags
+          const sanitizedHtml = element.text?.replace(scriptRegex, '') ?? '';
+          template =
+            template +
+            `<div class="m-2 rounded-md border-gray-200 border shadow-md px-1">${sanitizedHtml}</div>`;
         }
       }
-    }
+    });
 
-    // Create the template extract for the feature coordinates using their index as a suffix
-    const templateCoord = `
-    ${propertyNameTemplate(this.latitudeTag)}
-    ${propertyValueTemplate('coordinates1')}
-    ${propertyNameTemplate(this.longitudeTag)}
-    ${propertyValueTemplate('coordinates0')}
-    ${propertyNameTemplate(this.locationTag)}
-    <p class="m-0">({{coordinates1}}, {{coordinates0}})</p>
-    `;
-
-    contentGridTemplate = `${contentGridTemplate}${templateCoord}`;
-    return `${element.title && title(element.title)}${
-      element.description && description(element.description)
-    }${separator}${containerStartTemplate}${contentGridTemplate}${containerEndTemplate}${imageElement}`;
+    return template;
   }
 }

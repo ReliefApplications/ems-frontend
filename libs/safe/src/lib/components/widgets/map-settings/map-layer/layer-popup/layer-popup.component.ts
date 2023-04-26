@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import {
   PopupElement,
@@ -21,7 +21,10 @@ import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscr
   templateUrl: './layer-popup.component.html',
   styleUrls: ['./layer-popup.component.scss'],
 })
-export class LayerPopupComponent extends SafeUnsubscribeComponent {
+export class LayerPopupComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() formGroup!: FormGroup;
   @Input() fields$!: Observable<Fields[]>;
 
