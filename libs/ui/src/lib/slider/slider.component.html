@@ -1,4 +1,6 @@
+<!-- Component wrapper -->
 <div class="py-5 relative" id="sliderComponent">
+  <!-- Bubble -->
   <span
     [ngStyle]="{ left: bubbleStyle }"
     [ngClass]="{
@@ -8,6 +10,7 @@
     class="absolute px-2 -translate-x-2/4 bg-primary-400 -translate-y-3/4 rounded-lg text-white"
     >{{ val }}</span
   >
+  <!-- Actual input range -->
   <input
     [(ngModel)]="value"
     name="slider"
@@ -22,6 +25,7 @@
     (blur)="onBlurFunction()"
     (input)="onChangeFunction()"
   />
+  <!-- Ticks placement + appearance -->
   <div
     [ngClass]="{
       'block transition-all duration-300': ticksToShow === true,
@@ -29,6 +33,7 @@
     }"
     class="flex justify-between -translate-y-full non_selectable hover:cursor-grab"
   >
+    <!-- Ticks definition -->
     <div
       *ngFor="let tick of createRange(maxValue - minValue + 1)"
       class="ticks non_selectable hover:cursor-grab"
