@@ -24,7 +24,7 @@ First, add a module for that new component to the library with this command `nx 
 
 After that, export the created module in the `index.ts` file in the `src` folder so it can be accessible from other libraries.
 
-Once the module it's created, open the NX Console extension and select the option shown in the imags above. The developer would see some parameters to set when creating this new component such as these:<br>
+Once the module it's created, open the NX Console extension and select the option shown in the images above. The developer would see some parameters to set when creating this new component such as these:<br>
 ![component params](assets/component-params.png)
 
 Please set the following param as:
