@@ -5,14 +5,14 @@
       'block transition-all duration-300': bubbleToShow === true,
       'hidden transition-all duration-300': bubbleToShow === false
     }"
-    class="absolute px-2 -translate-x-2/4 bg-teal-400 -translate-y-3/4 rounded-lg text-white"
+    class="absolute px-2 -translate-x-2/4 bg-primary-400 -translate-y-3/4 rounded-lg text-white"
     >{{ val }}</span
   >
   <input
     [(ngModel)]="value"
     name="slider"
     style="--value:{{ val }}; --min:{{ minValue }}; --max:{{ maxValue }}"
-    class="w-full h-0.5 bg-gray-300 focus:bg-gray-400"
+    class="w-full h-0.5 bg-gray-300 focus:bg-gray-400 bg-gradient-to-r from-primary-400 to-primary-400"
     type="range"
     min="{{ minValue }}"
     max="{{ maxValue }}"

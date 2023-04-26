@@ -27,10 +27,28 @@ const Template: Story<SliderComponent> = (args: SliderComponent) => ({
 });
 
 /**
- * Classic slider version
+ * One to fourteen slider version
  */
-export const Primary = Template.bind({});
-Primary.args = {
+export const OneToFourteen = Template.bind({});
+OneToFourteen.args = {
   minValue: 1,
   maxValue: 14,
+};
+
+/**
+ * Zero to eighteen slider version
+ */
+export const ZeroToEighteen = Template.bind({});
+ZeroToEighteen.args = {
+  minValue: 0,
+  maxValue: 18,
+};
+
+/**
+ * Minus three to ten slider version
+ */
+export const MinusThreeToTen = Template.bind({});
+MinusThreeToTen.args = {
+  minValue: -3,
+  maxValue: 10,
 };

@@ -5,7 +5,7 @@ input[type='range'] {
   //Custom color background
   background-repeat: no-repeat;
   content: var(--value);
-  background-image: linear-gradient(to right, #1de9b6, #1de9b6);
+  // background-image: linear-gradient(to right, theme(colors.teal.400), theme(colors.teal.400));
   background-size: calc(
       100% * ((var(--value) - var(--min)) / (var(--max) - var(--min)))
     )
@@ -17,7 +17,7 @@ input[type='range']::-webkit-slider-thumb {
   height: 20px;
   width: 20px;
   //Forced to use here because I do not know a way to apply class directly in html to the thumb
-  @apply rounded-full bg-teal-400 cursor-grab active:cursor-grabbing shadow-md focus:bg-transparent transition-colors;
+  @apply rounded-full bg-primary-400 cursor-grab active:cursor-grabbing shadow-md focus:bg-transparent transition-colors;
 }
 
 // The thumb disappears when the component is on focus
