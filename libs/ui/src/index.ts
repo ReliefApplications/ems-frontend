@@ -4,7 +4,7 @@ export * from './lib/ui.module';
 export * from './lib/avatar/avatar.module';
 export * from './lib/button/button.module';
 export * from './lib/checkbox/checkbox.module';
-export * from './lib/flyout-menu/flyout-menu.module';
+export * from './lib/menu/menu.module';
 export * from './lib/icon/icon.module';
 export * from './lib/select/select.module';
 export * from './lib/avatar-group/avatar-group.module';
