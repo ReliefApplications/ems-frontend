@@ -35,7 +35,7 @@ export class RadioComponent implements ControlValueAccessor {
   onTouched!: () => void;
   onChanged!: (value: string) => void;
 
-  onOptionChange(val: any) {
+  onOptionChange(val: any): void {
     this.value = val;
     if (this.onTouched && this.onChanged) {
       this.onTouched();

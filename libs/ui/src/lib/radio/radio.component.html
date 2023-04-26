@@ -13,8 +13,14 @@
     [value]="value"
     [checked]="checked"
     (change)="onOptionChange(value)"
-    [ariaLabel]="ariaLabelledby"
 >
+<label for="{{ name }}" class="ml-3 block text-sm font-medium leading-6 text-gray-900">
+    <ng-content select="label"></ng-content>
+</label>
+<ng-content select="icon"></ng-content>
+<p id="{{ name }}-description" class="ml-3 block text-sm font-medium leading-6 text-gray-900">
+    <ng-content select="description"></ng-content>
+</p>
                     <!-- <label [for]="radio.value" class="ml-3 block text-sm font-medium leading-6 text-gray-900">{{ radio.label }}</label>
                 </div>
             </div>
