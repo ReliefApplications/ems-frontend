@@ -57,23 +57,29 @@ const radioOptions: RadioOption[] = [
 const Template: StoryFn<RadioComponent> = (args: RadioComponent) => {
   args.name = 'notification-method';
   let templateContent = `
-    <div class="space-y-4" [aria-labelledby]= "'${args.ariaLabelledby}'">
+    <div class="space-y-4" [uiRadioGroupDirective]="'${args.name}'">
   `;
   for (const op of radioOptions) {
     templateContent += `
-      <div class="flex items-center" uiRadioGroupDirective [nameGroup]="'${args.name}'">
-        <ui-radio 
-          [value]= "'${op.value}'"
-          >
-        </ui-radio>
+      <ui-radio 
+        [value]= "'${op.value}'"
+        >
         <ng-container ngProjectAs="label">${op.label}</ng-container>
-      </div>
+      </ui-radio>
     `;
   }
   templateContent += `
     </div>
   `;
-  console.log(templateContent);
+  // templateContent = `
+  //   <ui-radio
+  //   [value]= "'abc'"
+  //   [name]="'abc'"
+  //   [checked]="'true'"
+  //   >
+  //   <ng-container ngProjectAs="label">abc</ng-container>
+  //  </ui-radio>
+  // `
   return {
     component: RadioComponent,
     template: templateContent,
@@ -93,19 +99,19 @@ const FormControlTemplate: StoryFn<RadioComponent> = (args: RadioComponent) => {
   const formGroup = new FormGroup({
     radio: new FormControl('Default value'),
   });
+  console.log(formGroup);
   let templateContent = `
     <form [formGroup]="formGroup">
-      <div class="space-y-4" [aria-labelledby]= "'${args.ariaLabelledby}'">
+      <div class="space-y-4" [uiRadioGroupDirective]="'${args.name}'">
   `;
+  args.name = 'notification-method';
   for (const op of radioOptions) {
     templateContent += `
-        <div class="flex items-center" uiRadioGroupDirective [nameGroup]="'${args.name}'">
-          <ui-radio 
-            [value]= "'${op.value}'"
-            >
-          </ui-radio>
+        <ui-radio 
+          [value]= "'${op.value}'"
+          >
           <ng-container ngProjectAs="label">${op.label}</ng-container>
-       </div>
+        </ui-radio>
     `;
   }
   templateContent += `

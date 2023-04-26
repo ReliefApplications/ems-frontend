@@ -1,39 +1,19 @@
-<!-- <div>
-    <fieldset class="mt-4">
-        
-        <ng-container *ngIf="orientation === radioOrientations.HORIZONTAL; else vertical">
-            <div class="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0">
-                <div class="flex items-center" radio-group-directive [nameGroup]="name" [ariaLabel]="ariaLabelledby" *ngFor="let radio of options"> -->
-<input
-    #radioInput
+<div class="flex items-center">
+    <input
     type="radio"  
     class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
     [required]="required"
     [disabled]="disabled"
     [value]="value"
     [checked]="checked"
-    (change)="onOptionChange(value)"
->
-<label for="{{ name }}" class="ml-3 block text-sm font-medium leading-6 text-gray-900">
-    <ng-content select="label"></ng-content>
-</label>
-<ng-content select="icon"></ng-content>
-<p id="{{ name }}-description" class="ml-3 block text-sm font-medium leading-6 text-gray-900">
-    <ng-content select="description"></ng-content>
-</p>
-                    <!-- <label [for]="radio.value" class="ml-3 block text-sm font-medium leading-6 text-gray-900">{{ radio.label }}</label>
-                </div>
-            </div>
-        </ng-container> -->
-        
-        <!-- <ng-template #vertical>
-            <div class="space-y-4">
-                <div class="flex items-center" radio-group-directive [nameGroup]="name" [ariaLabel]="ariaLabelledby" *ngFor="let radio of options"> -->
-                    <!-- <label [for]="radio.value" class="ml-3 block text-sm font-medium leading-6 text-gray-900">{{ radio.label }}</label>
-                </div>
-            </div>
-        </ng-template>
-
-    </fieldset>
+    [name]="name"
+    [ariaLabel]="ariaLabelledby"
+    >
+    <label for="{{ name }}" class="ml-3 block text-sm font-medium leading-6 text-gray-900">
+        <ng-content select="label"></ng-content>
+    </label>
+    <ng-content select="icon"></ng-content>
+    <p id="{{ name }}-radio-description" class="ml-3 block text-sm font-medium leading-6 text-gray-900">
+        <ng-content select="description"></ng-content>
+    </p>
 </div>
-   -->
