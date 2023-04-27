@@ -8,6 +8,10 @@ const config: StorybookConfig = {
       from: '../../../assets',
       to: '/assets',
     },
+    {
+      from: '../../../libs/safe/src/i18n',
+      to: '/assets/i18n',
+    },
   ],
   framework: {
     name: '@storybook/angular',
