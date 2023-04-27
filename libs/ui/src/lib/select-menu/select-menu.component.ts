@@ -5,6 +5,7 @@ import {
   Output,
   EventEmitter,
   TemplateRef,
+  OnInit,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -27,11 +28,11 @@ import {
     },
   ],
 })
-export class SelectMenuComponent implements ControlValueAccessor {
+export class SelectMenuComponent implements OnInit, ControlValueAccessor {
   //Inputs
   @Input() multiselect = false;
   @Input() options: Array<any> = [];
-  @Input() selectTriggerTemplate!: TemplateRef<any> | string;
+  @Input() selectTriggerTemplate: TemplateRef<any> | string = '';
   @Input() disabled = false;
   @Input() required = false;
 
@@ -43,35 +44,36 @@ export class SelectMenuComponent implements ControlValueAccessor {
 
   selectionControl = new FormControl();
   listBoxFocused = false;
+  isTemplate = false;
 
-  //Values selected
-  val!: any;
+  onChange!: (value: number) => void;
+  onTouch!: () => void;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onChange: any = () => {};
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onTouch: any = () => {};
-
-  /**
-   * Set value of control access value
-   */
-  set value(val: any) {
-    if (val !== undefined && this.val !== val) {
-      this.val = val;
-      this.onChange(val);
-      this.onTouch(val);
+  ngOnInit() {
+    if (typeof this.selectTriggerTemplate === typeof TemplateRef<any>) {
+      this.isTemplate = true;
+    } else {
+      this.isTemplate = false;
     }
   }
 
   /**
+   * Set value of control access value
+   */
+  // set value(val: any) {
+  //   if (val !== undefined && this.val !== val) {
+  //     this.val = val;
+  //     this.onChange(val);
+  //     this.onTouch(val);
+  //   }
+  // }
+
+  /**
    * Actually change the value of value
-   *
-   * @param value
    * value to replace
    */
-  writeValue(value: any): void {
-    this.value = value;
+  writeValue(): void {
+    this.onChangeFunction();
   }
 
   /**
@@ -101,11 +103,24 @@ export class SelectMenuComponent implements ControlValueAccessor {
   //   console.log('open');
   // }
 
-  closeListBox() {
-    this.opened.emit(false);
-    this.closed.emit(true);
-    this.listBoxFocused = false;
-    console.log('close');
+  onChangeFunction() {
+    this.onSelectOption;
+    if (this.onChange && this.onTouch) {
+      this.onChange(this.selectionControl.value);
+      this.onTouch();
+    }
+  }
+
+  closeListBox(relatedTarget: any) {
+    if (relatedTarget === null) {
+      this.opened.emit(false);
+      this.closed.emit(true);
+      this.listBoxFocused = false;
+    } else if (relatedTarget.role !== 'option') {
+      this.opened.emit(false);
+      this.closed.emit(true);
+      this.listBoxFocused = false;
+    }
   }
 
   dealListBox() {

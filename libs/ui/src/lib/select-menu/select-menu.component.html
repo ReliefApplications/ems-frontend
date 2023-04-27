@@ -1,34 +1,45 @@
-<div (blur)="closeListBox()">
-  <label
-    class="example-listbox-label"
-    (click)="dealListBox()"
-    id="example-language-label"
-  >
-    Preferred Language
-  </label>
+<div (focusout)="closeListBox($event.relatedTarget)" tabindex="0">
+  <ng-container [ngSwitch]="isTemplate">
+    <ng-container *ngSwitchCase="true">
+      <!-- <ng-container
+        class="example-listbox-label"
+        (click)="dealListBox()"
+        id="example-language-label"
+        *ngTemplateOutlet="selectTriggerTemplate"
+      ></ng-container> -->
+    </ng-container>
+    <ng-container *ngSwitchCase="false">
+      <div
+        class="example-listbox-label"
+        (click)="dealListBox()"
+        id="example-language-label"
+      >
+        {{ selectTriggerTemplate }}
+      </div>
+    </ng-container>
+  </ng-container>
   <ul
     cdkListbox
-    [cdkListboxMultiple]="multiselect === true"
-    [cdkListboxDisabled]="disabled === true"
+    [cdkListboxMultiple]="multiselect"
+    [cdkListboxDisabled]="disabled"
     [formControl]="selectionControl"
-    [(ngModel)]="value"
-    (blur)="closeListBox()"
     aria-labelledby="example-language-label"
+    id="example-language-label"
     class="example-listbox"
-    [tabindex]="-1"
+    [tabindex]="0"
   >
     <li
-      [tabindex]="-1"
       *ngFor="let option of options"
       [ngClass]="{
-        hidden: listBoxFocused === false,
+        hidden: !listBoxFocused,
         block: listBoxFocused === true
       }"
       [cdkOption]="option"
       class="example-option"
+      (click)="onChangeFunction()"
+      [tabindex]="0"
     >
       {{ option }}
     </li>
   </ul>
 </div>
-<div>test</div>
