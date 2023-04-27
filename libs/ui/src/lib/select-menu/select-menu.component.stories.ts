@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SelectMenuComponent } from './select-menu.component';
 import { CdkListboxModule } from '@angular/cdk/listbox';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
   title: 'SelectMenu',
@@ -32,7 +33,12 @@ export default {
   },
   decorators: [
     moduleMetadata({
-      imports: [CommonModule, ReactiveFormsModule, CdkListboxModule],
+      imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        CdkListboxModule,
+        BrowserAnimationsModule,
+      ],
     }),
   ],
 } as Meta<SelectMenuComponent>;
@@ -82,6 +88,22 @@ const selectMenuTemplate = `<div [formGroup]="formGroup" class="py-5">
 <p *ngIf="isClosed"> Select Menu is closed </p>
 <p>selection (from event) : </p>
 <a *ngFor="let item of selection">{{item}}, </a>
+`;
+
+/**
+ *
+ */
+const selectMenuTemplateWithTrigger = `<div [formGroup]="formGroup" class="py-5">
+<ui-select-menu (opened)="openEvent($event)" (closed)="closeEvent($event)" (selectedOption)="selectEvent($event)" formControlName="selectMenu" [selectTriggerTemplate]="selectTriggerTemplateTest" [options]="options" [multiselect]="multiselect" [disabled]="disabled" name="externalVal"></ui-select-menu>
+</div>
+<br>
+<p>value: {{formGroup.get('selectMenu').value}}</p>
+<p>touched: {{formGroup.get('selectMenu').touched}}</p>
+<p *ngIf="isOpened"> Select Menu is opened </p>
+<p *ngIf="isClosed"> Select Menu is closed </p>
+<p>selection (from event) : </p>
+<a *ngFor="let item of selection">{{item}}, </a>
+<ng-template #selectTriggerTemplateTest><div class="text-red-600">Choose your language</div></ng-template>
 `;
 
 /**
@@ -235,10 +257,10 @@ const TemplateTemplateRefSelection: Story<SelectMenuComponent> = (
   args.multiselect = false;
   args.disabled = false;
   args.selectTriggerTemplate =
-    '<ng-template><div class="text-red-600">Choose your language</div></ng-template>';
+    '<ng-template #selectTriggerTemplate><div class="text-red-600">Choose your language</div></ng-template>';
   return {
     component: SelectMenuComponent,
-    template: selectMenuTemplate,
+    template: selectMenuTemplateWithTrigger,
     props: {
       ...args,
       formGroup,

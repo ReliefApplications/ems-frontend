@@ -43,16 +43,19 @@ export class SelectMenuComponent implements OnInit, ControlValueAccessor {
 
   selectionControl = new FormControl();
   listBoxFocused = false;
-  isTemplate = false;
+  triggerIsString = false;
 
   onChange!: (value: number) => void;
   onTouch!: () => void;
 
   ngOnInit() {
-    if (typeof this.selectTriggerTemplate === typeof TemplateRef<any>) {
-      this.isTemplate = true;
+    if (typeof this.selectTriggerTemplate === 'string') {
+      this.triggerIsString = true;
+      console.log(this.triggerIsString);
     } else {
-      this.isTemplate = false;
+      this.triggerIsString = false;
+      console.log(this.triggerIsString);
+      console.log(this.selectTriggerTemplate);
     }
   }
 

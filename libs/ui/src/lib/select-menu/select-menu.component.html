@@ -1,19 +1,16 @@
 <div (focusout)="closeListBox($event.relatedTarget)" tabindex="0">
-  <ng-container [ngSwitch]="isTemplate">
-    <ng-container *ngSwitchCase="true">
-      <!-- <ng-container
-        class="example-listbox-label"
-        (click)="dealListBox()"
-        id="example-language-label"
-        *ngTemplateOutlet="selectTriggerTemplate"
-      ></ng-container> -->
-    </ng-container>
+  <ng-container [ngSwitch]="triggerIsString">
     <ng-container *ngSwitchCase="false">
+      <div (click)="dealListBox()">
+        <div *ngTemplateOutlet="selectTriggerTemplate"></div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="true">
       <div
         class="example-listbox-label"
         (click)="dealListBox()"
         [ngClass]="{
-          'non_selectable': disabled
+          non_selectable: disabled
         }"
         id="example-language-label"
       >
