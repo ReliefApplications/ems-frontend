@@ -7,6 +7,8 @@ import {
   forwardRef,
   Provider,
   ContentChildren,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { RadioComponent } from './radio.component';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -20,6 +22,11 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   multi: true,
 };
 
+/**
+ * UI Radio group directive
+ *
+ * It groups all child radios into a group
+ */
 @Directive({
   selector: '[uiRadioGroupDirective]',
   providers: [CONTROL_VALUE_ACCESSOR],
@@ -29,13 +36,20 @@ export class RadioGroupDirective
 {
   @Input() uiRadioGroupDirective!: string;
   @ContentChildren(RadioComponent) radioComponents!: QueryList<RadioComponent>;
-  @Input() groupValue: any;
+  // If radio group with no form control is added we want to get radio selection as well
+  @Output() groupValueChange = new EventEmitter<any>();
+
+  private groupValue: any;
 
   onTouched!: () => void;
   onChanged!: (value: string) => void;
 
   ngAfterContentInit() {
     this.radioComponents.toArray().forEach((val: any) => {
+      if (!this.onTouched && !this.onChanged && val.checked) {
+        this.groupValue = val.value;
+        this.groupValueChange.emit(this.groupValue);
+      }
       val.name = this.uiRadioGroupDirective;
     });
   }
@@ -47,7 +61,6 @@ export class RadioGroupDirective
    */
   public registerOnChange(fn: any): void {
     this.onChanged = fn;
-    console.log('registerOnChange');
   }
 
   /**
@@ -57,7 +70,6 @@ export class RadioGroupDirective
    */
   public registerOnTouched(fn: any): void {
     this.onTouched = fn;
-    console.log('registerOnTouched');
   }
 
   /**
@@ -69,13 +81,18 @@ export class RadioGroupDirective
     this.groupValue = value;
   }
 
+  /**
+   * Handles the change event callback of radio button childs
+   *
+   * @param event Event on radio selection change
+   */
   @HostListener('change', ['$event']) onOptionChange(event: Event) {
-    const eventTarget = event.target as HTMLInputElement;
-    this.groupValue = eventTarget.value;
+    this.groupValue = (event.target as HTMLInputElement).value;
     if (this.onTouched && this.onChanged) {
-      console.log(this.groupValue);
-      this.onTouched();
       this.onChanged(this.groupValue);
+      this.onTouched();
+    } else {
+      this.groupValueChange.emit(this.groupValue);
     }
   }
 }

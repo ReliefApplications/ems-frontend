@@ -1,7 +1,8 @@
 <div class="flex items-center">
     <input
-    type="radio"  
-    class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+    type="radio"
+    [ngClass]="getVariant"
+    class="h-4 w-4 border-gray-300"
     [required]="required"
     [disabled]="disabled"
     [value]="value"

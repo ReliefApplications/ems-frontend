@@ -1,7 +1,10 @@
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
+import { addons } from '@storybook/addons';
+import { FORCE_RE_RENDER } from '@storybook/core-events';
 import { RadioComponent } from './radio.component';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RadioGroupDirective } from './radio-group.directive';
+import { Variant } from '../shared/variant.enum';
 
 type RadioOption = {
   label: string;
@@ -9,19 +12,19 @@ type RadioOption = {
 };
 
 export default {
-  title: 'RadioComponent',
+  title: 'Radio',
   component: RadioComponent,
   argTypes: {
-    value: {
-      control: 'text',
+    variant: {
+      options: Object.values(Variant),
+      control: {
+        type: 'select',
+      },
     },
     required: {
       control: 'boolean',
     },
     disabled: {
-      control: 'boolean',
-    },
-    checked: {
       control: 'boolean',
     },
   },
@@ -33,6 +36,9 @@ export default {
   ],
 } as Meta<RadioComponent>;
 
+/**
+ *
+ */
 const radioOptions: RadioOption[] = [
   {
     label: 'Email',
@@ -49,42 +55,43 @@ const radioOptions: RadioOption[] = [
 ];
 
 /**
- * Template radiogroup
+ * Form control for story testing
+ */
+const formControl = new FormControl();
+let selectedOption!: any;
+
+/**
+ * Function to test radio change callback when no form control is used
+ *
+ * @param radioSelectionChange Radio value
+ */
+const getRadioChangeSelection = (radioSelectionChange: any) => {
+  selectedOption = radioSelectionChange;
+  addons.getChannel().emit(FORCE_RE_RENDER);
+};
+
+/**
+ * Template radio group
  *
  * @param {RadioComponent} args args
  * @returns RadioComponent
  */
 const Template: StoryFn<RadioComponent> = (args: RadioComponent) => {
   args.name = 'notification-method';
-  let templateContent = `
-    <div class="space-y-4" [uiRadioGroupDirective]="'${args.name}'">
-  `;
-  for (const op of radioOptions) {
-    templateContent += `
-      <ui-radio 
-        [value]= "'${op.value}'"
-        >
-        <ng-container ngProjectAs="label">${op.label}</ng-container>
-      </ui-radio>
-    `;
-  }
-  templateContent += `
-    </div>
-  `;
-  // templateContent = `
-  //   <ui-radio
-  //   [value]= "'abc'"
-  //   [name]="'abc'"
-  //   [checked]="'true'"
-  //   >
-  //   <ng-container ngProjectAs="label">abc</ng-container>
-  //  </ui-radio>
-  // `
   return {
     component: RadioComponent,
-    template: templateContent,
+    template: `<div class="space-y-4" (groupValueChange)="getRadioChangeSelection($event)" [uiRadioGroupDirective]="'${args.name}'">
+    <ui-radio *ngFor="let option of radioOptions; let i = index" [checked]="i === 0" [disabled]="${args.disabled}" [variant]="'${args.variant}'" [value]="option.value">
+      <ng-container ngProjectAs="label">{{option.label}}</ng-container>
+    </ui-radio>
+    </div>
+    <br>
+    <p>value: {{selectedOption}}</p>`,
     props: {
       ...args,
+      radioOptions,
+      getRadioChangeSelection,
+      selectedOption,
     },
   };
 };
@@ -96,37 +103,23 @@ const Template: StoryFn<RadioComponent> = (args: RadioComponent) => {
  * @returns RadioComponent
  */
 const FormControlTemplate: StoryFn<RadioComponent> = (args: RadioComponent) => {
-  const formGroup = new FormGroup({
-    radio: new FormControl('Default value'),
-  });
-  console.log(formGroup);
-  let templateContent = `
-    <form [formGroup]="formGroup">
-      <div class="space-y-4" [uiRadioGroupDirective]="'${args.name}'">
-  `;
   args.name = 'notification-method';
-  for (const op of radioOptions) {
-    templateContent += `
-        <ui-radio 
-          [value]= "'${op.value}'"
-          >
-          <ng-container ngProjectAs="label">${op.label}</ng-container>
-        </ui-radio>
-    `;
-  }
-  templateContent += `
-      </div>
-    </form>
-    <br>
-    <p>value: {{formGroup.get('radio').value}}</p>
-    <p>touched: {{formGroup.get('radio').touched}}</p>
-  `;
   return {
     component: RadioComponent,
-    template: templateContent,
+    template: `
+    <div class="space-y-4" [formControl]="formControl" [uiRadioGroupDirective]="'${args.name}'">
+    <ui-radio *ngFor="let option of radioOptions" [disabled]="${args.disabled}" [variant]="'${args.variant}'" [value]="option.value" >
+      <ng-container ngProjectAs="label">{{option.label}}</ng-container>
+    </ui-radio>
+    </div>
+    <br>
+    <p>value: {{formControl.value}}</p>
+    <p>touched: {{formControl.touched}}</p>
+`,
     props: {
       ...args,
-      formGroup,
+      formControl,
+      radioOptions,
     },
   };
 };
