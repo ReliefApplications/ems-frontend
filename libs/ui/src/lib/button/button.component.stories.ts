@@ -1,4 +1,6 @@
 import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
+import { addons } from '@storybook/addons';
+import { FORCE_RE_RENDER } from '@storybook/core-events';
 import { ButtonComponent } from './button.component';
 import { ButtonModule } from './button.module';
 import { Category } from '../shared/category.enum';
@@ -126,3 +128,47 @@ export const Tertiary = Template.bind({});
 Tertiary.args = {
   ...tertiaryButton,
 };
+
+/**
+ * Callback to test the button group directive change event
+ *
+ * @param status Selected status from the buttons
+ */
+const updateStatus = (status: any) => {
+  currentStatus = status;
+  addons.getChannel().emit(FORCE_RE_RENDER);
+};
+
+/**
+ * Status array for story testing
+ */
+const statuses = ['Active', 'Pending', 'Archived'];
+let currentStatus = statuses[0];
+
+/**
+ * Template button group
+ *
+ * @param {ButtonComponent} args args
+ * @returns ButtonComponent
+ */
+const GroupTemplate: StoryFn<ButtonComponent> = (args: ButtonComponent) => {
+  return {
+    component: ButtonComponent,
+    template: `<div [uiButtonGroup]="currentStatus" (uiButtonGroupChange)="updateStatus($event)">
+    <ui-button [variant]="'${args.variant}'" *ngFor="let status of statuses" [value]="status">{{ status }}
+    </ui-button>
+    </div>
+    <br>
+    <p>value: {{currentStatus}}</p>
+    `,
+    props: {
+      ...args,
+      statuses,
+      updateStatus,
+      currentStatus,
+    },
+  };
+};
+
+/** Group button */
+export const ButtonGroup = GroupTemplate.bind({});

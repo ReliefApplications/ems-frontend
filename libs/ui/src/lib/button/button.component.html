@@ -2,6 +2,7 @@
   type="button"
   [ngClass]="resolveButtonClasses"
   [disabled]="disabled"
+  [value]="value"
   (click)="emittedEventSubject.next('click')"
 >
   <ng-container *ngIf="icon">
@@ -36,7 +37,7 @@
     }"
   >
     <ng-container *ngIf="!isIcon">
-      {{label}}
+      {{ label }}
       <ng-content></ng-content>
     </ng-container>
   </span>

@@ -10,7 +10,6 @@ import { SpinnerModule } from './spinner/spinner.module';
 import { AvatarGroupModule } from './avatar-group/avatar-group.module';
 import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
-import { ButtonGroupModule } from './button-group/button-group.module';
 
 /**
  * UI Library Module
@@ -28,7 +27,6 @@ import { ButtonGroupModule } from './button-group/button-group.module';
     SpinnerModule,
     ToggleModule,
     DividerModule,
-    ButtonGroupModule,
   ],
 })
 export class UiModule {}

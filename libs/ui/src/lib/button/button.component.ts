@@ -16,6 +16,7 @@ import { Size } from '../shared/size.enum';
 export class ButtonComponent {
   @Input() icon = '';
   @Input() label = '';
+  @Input() value: any = '';
   @Input() iconPosition: ButtonIconPosition = ButtonIconPosition.PREFIX;
   @Input() category: Category = Category.PRIMARY;
   @Input() size: Size = Size.MEDIUM;
