@@ -39,8 +39,7 @@ export class SelectMenuComponent implements OnInit, ControlValueAccessor {
   //Outputs
   @Output() opened = new EventEmitter<boolean>();
   @Output() closed = new EventEmitter<boolean>();
-  // eslint-disable-next-line @angular-eslint/no-output-on-prefix
-  @Output() onSelectOption = new EventEmitter<any>();
+  @Output() selectedOption = new EventEmitter<any[]>();
 
   selectionControl = new FormControl();
   listBoxFocused = false;
@@ -104,7 +103,7 @@ export class SelectMenuComponent implements OnInit, ControlValueAccessor {
   // }
 
   onChangeFunction() {
-    this.onSelectOption;
+    this.selectedOption.emit(this.selectionControl.value);
     if (this.onChange && this.onTouch) {
       this.onChange(this.selectionControl.value);
       this.onTouch();
@@ -128,11 +127,12 @@ export class SelectMenuComponent implements OnInit, ControlValueAccessor {
       this.opened.emit(false);
       this.closed.emit(true);
       this.listBoxFocused = false;
+    } else if (this.disabled) {
+      console.log('This toolbox is disabled.');
     } else {
       this.opened.emit(true);
       this.closed.emit(false);
       this.listBoxFocused = true;
     }
-    console.log('deal');
   }
 }

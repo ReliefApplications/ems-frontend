@@ -12,6 +12,9 @@
       <div
         class="example-listbox-label"
         (click)="dealListBox()"
+        [ngClass]="{
+          'non_selectable': disabled
+        }"
         id="example-language-label"
       >
         {{ selectTriggerTemplate }}
@@ -35,6 +38,7 @@
         block: listBoxFocused === true
       }"
       [cdkOption]="option"
+      [cdkOptionDisabled]="disabled"
       class="example-option"
       (click)="onChangeFunction()"
       [tabindex]="0"
