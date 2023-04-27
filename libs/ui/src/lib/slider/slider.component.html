@@ -1,44 +1,40 @@
 <!-- Component wrapper -->
-<div class="py-5 relative" id="sliderComponent">
+<div class="relative">
   <!-- Bubble -->
   <span
     [ngStyle]="{ left: bubbleStyle }"
     [ngClass]="{
-      'block transition-all duration-300': bubbleToShow === true,
-      'hidden transition-all duration-300': bubbleToShow === false
+      block: bubbleToShow,
+      hidden: !bubbleToShow
     }"
-    class="absolute px-2 -translate-x-2/4 bg-primary-400 -translate-y-3/4 rounded-lg text-white"
-    >{{ val }}</span
+    class="transition-all duration-200 absolute px-2 -translate-x-2/4 bg-primary-400 -translate-y-3/4 rounded-lg text-white"
+    >{{ currentValue }}</span
   >
   <!-- Actual input range -->
   <input
-    [(ngModel)]="value"
     name="slider"
-    style="--value:{{ val }}; --min:{{ minValue }}; --max:{{ maxValue }}"
+    style="--value:{{ currentValue }}; --min:{{ minValue }}; --max:{{
+      maxValue
+    }}"
     class="w-full h-0.5 bg-gray-300 focus:bg-gray-400 bg-gradient-to-r from-primary-400 to-primary-400"
     type="range"
     min="{{ minValue }}"
     max="{{ maxValue }}"
-    value="{{ minValue }}"
+    value="{{ currentValue }}"
     step="1"
     (focus)="onFocusFunction()"
     (blur)="onBlurFunction()"
-    (input)="onChangeFunction()"
+    (input)="onChangeFunction($event.target.value)"
   />
   <!-- Ticks placement + appearance -->
   <div
     [ngClass]="{
-      'block transition-all duration-300': ticksToShow === true,
-      'hidden transition-all duration-300': ticksToShow === false
+      flex: ticksToShow,
+      hidden: !ticksToShow
     }"
-    class="flex justify-between -translate-y-full non_selectable hover:cursor-grab"
+    class="block transition-all duration-200 justify-between -translate-y-full non_selectable hover:cursor-grab"
   >
     <!-- Ticks definition -->
-    <div
-      *ngFor="let tick of createRange(maxValue - minValue + 1)"
-      class="ticks non_selectable hover:cursor-grab"
-    >
-      |
-    </div>
+    <div *ngFor="let tick of range" class="ticks non_selectable">|</div>
   </div>
 </div>

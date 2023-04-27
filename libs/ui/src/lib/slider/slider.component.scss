@@ -5,7 +5,6 @@ input[type='range'] {
   //Custom color background
   background-repeat: no-repeat;
   content: var(--value);
-  // background-image: linear-gradient(to right, theme(colors.teal.400), theme(colors.teal.400));
   background-size: calc(
       100% * ((var(--value) - var(--min)) / (var(--max) - var(--min)))
     )
@@ -21,7 +20,7 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 // The thumb disappears when the component is on focus
-#sliderComponent:focus-within input[type='range']::-webkit-slider-thumb {
+div.relative:focus-within input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   height: 0px;
   width: 0px;
@@ -37,7 +36,7 @@ input[type='range']::-webkit-slider-runnable-track {
 .ticks {
   line-height: 1rem;
   font-size: 0.75rem;
-  transform: scale(2, 0.1666);
+  transform: scale(2, 0.3);
 }
 
 .non_selectable {

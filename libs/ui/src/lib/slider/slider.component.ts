@@ -1,4 +1,11 @@
-import { Component, forwardRef, Input } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 /**
@@ -16,7 +23,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     },
   ],
 })
-export class SliderComponent implements ControlValueAccessor {
+export class SliderComponent
+  implements OnInit, OnChanges, ControlValueAccessor
+{
   /**
    * Minimum value of the slider
    */
@@ -31,40 +40,39 @@ export class SliderComponent implements ControlValueAccessor {
   //In order to determine if bubble and ticks are to be shown
   bubbleToShow = false;
   ticksToShow = false;
-
+  // Slider range
+  range: number[] = [];
   //Value of the slider
-  val = this.minValue;
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onChange: any = () => {};
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onTouch: any = () => {};
+  currentValue = this.minValue;
+  onChange!: (value: number) => void;
+  onTouch!: () => void;
 
-  /**
-   * Set value of control access value
-   */
-  set value(val: number) {
-    if (val !== undefined && this.val !== val) {
-      this.val = val;
-      this.onChange(val);
-      this.onTouch(val);
+  ngOnInit(): void {
+    this.range = this.createRange();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.minValue = changes['minValue'].currentValue ?? this.minValue;
+    this.maxValue = changes['maxValue'].currentValue ?? this.maxValue;
+    //If one of these two changes, update slider range
+    if (changes['minValue']?.currentValue || changes['maxValue'].currentValue) {
+      this.createRange();
     }
   }
 
   /**
    * Actually change the value of value
    *
-   * @param value
-   * value to replace
+   * @param value value to replace
    */
   writeValue(value: any): void {
-    this.value = value;
+    this.onChangeFunction(value);
   }
 
   /**
    * Record on change
    *
-   * @param fn
-   * event that took place
+   * @param fn event that took place
    */
   registerOnChange(fn: any) {
     this.onChange = fn;
@@ -73,8 +81,7 @@ export class SliderComponent implements ControlValueAccessor {
   /**
    * Record on touch
    *
-   * @param fn
-   * event that took place
+   * @param fn event that took place
    */
   registerOnTouched(fn: any) {
     this.onTouch = fn;
@@ -90,13 +97,18 @@ export class SliderComponent implements ControlValueAccessor {
 
   /**
    * When value of input changes, calculates the position where the bubble is to go
+   *
+   * @param value The value from the slider
    */
-  onChangeFunction() {
-    const val = this.val;
+  onChangeFunction(value: number) {
+    this.currentValue = value;
     const min = this.minValue;
     const max = this.maxValue;
-    const newVal = Number(((val - min) * 100) / (max - min));
-
+    const newVal = Number(((value - min) * 100) / (max - min));
+    if (this.onChange && this.onTouch) {
+      this.onChange(value);
+      this.onTouch();
+    }
     // Sorta magic numbers based on size of the native UI thumb
     this.bubbleStyle = String(newVal) + '%';
   }
@@ -109,15 +121,14 @@ export class SliderComponent implements ControlValueAccessor {
     this.ticksToShow = false;
   }
 
-  // eslint-disable-next-line jsdoc/require-returns
   /**
    * Create a table from a certain range (in order to use a ngFor directive in html)
    *
-   * @param number
-   * The length of the array to be created
+   * @returns new array with given range
    */
-  createRange(number: number) {
-    // return new Array(number);
-    return new Array(number).fill(0).map((n, index) => index + 1);
+  createRange(): number[] {
+    return new Array(this.maxValue - this.minValue + 1)
+      .fill(0)
+      .map((n, index) => index + 1);
   }
 }
