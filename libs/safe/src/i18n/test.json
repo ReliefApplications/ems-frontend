@@ -691,6 +691,12 @@
 			},
 			"readAll": "******"
 		},
+		"paginator": {
+			"items": "******",
+			"itemsPerPage": "******",
+			"of": "******",
+			"page": "******"
+		},
 		"preferences": {
 			"dateFormat": "******",
 			"language": "******",

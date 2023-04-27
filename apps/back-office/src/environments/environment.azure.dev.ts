@@ -37,6 +37,8 @@ export const environment = {
     'bar-chart',
     'column-chart',
     'pie-chart',
+    'polar-chart',
+    'radar-chart',
     'grid',
     'text',
     'map',

@@ -133,6 +133,7 @@
     "@storybook/addon-mdx-gfm": "^7.0.5",
     "@storybook/angular": "^7.0.5",
     "@storybook/core-server": "^7.0.5",
+    "@types/color": "^3.0.3",
     "@types/extract-files": "^8.1.1",
     "@types/geojson": "^7946.0.10",
     "@types/jasmine": "~3.8.0",

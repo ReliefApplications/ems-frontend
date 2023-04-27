@@ -696,6 +696,12 @@
 			},
 			"readAll": "Tout marquer comme lu"
 		},
+		"paginator": {
+			"items": "@TODO",
+			"itemsPerPage": "@TODO",
+			"of": "@TODO",
+			"page": "@TODO"
+		},
 		"preferences": {
 			"dateFormat": "Format de date et heure",
 			"language": "Langage",
