@@ -30,7 +30,14 @@
       }"
       class="relative flex justify-between bg-primary-500 text-white"
     >
-      <div class="flex-auto">
+      <div
+        [ngClass]="{
+          'flex-col':
+            position === filterPosition.LEFT ||
+            position === filterPosition.RIGHT
+        }"
+        class="flex flex-auto"
+      >
         <!-- Edition -->
         <safe-button
           [isIcon]="true"
