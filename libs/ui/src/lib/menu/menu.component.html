@@ -1,15 +1,7 @@
-  <!--
-        Flyout menu, show/hide based on flyout menu state.
-    
-        Entering: ""
-          From: "opacity-0 translate-y-1"
-          To: "opacity-100 translate-y-0"
-        Leaving: "transition ease-in duration-150"
-          From: "opacity-100 translate-y-0"
-          To: "opacity-0 translate-y-1"
-      -->
 <ng-template>
-  <div class="z-10 flex w-screen max-w-min">
+  <div
+    class="z-10 opacity-0 translate-y-1 transition-all ease-in-out duration-150 flex w-screen max-w-min"
+  >
     <div
       (click)="closed.emit()"
       class="w-56 shrink bg-white text-sm font-normal leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"

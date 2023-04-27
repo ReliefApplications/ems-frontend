@@ -4,6 +4,7 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  Renderer2,
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
@@ -32,11 +33,13 @@ export class MenuTriggerForDirective {
    *
    * @param viewContainerRef ViewContainerRef
    * @param elementRef ElementRef
+   * @param renderer Renderer2
    * @param overlay Overlay
    */
   constructor(
     private viewContainerRef: ViewContainerRef,
     private elementRef: ElementRef,
+    private renderer: Renderer2,
     private overlay: Overlay
   ) {}
 
@@ -104,6 +107,10 @@ export class MenuTriggerForDirective {
     );
     // Attach it to our overlay
     this.overlayRef.attach(templatePortal);
+    // We add the needed classes to create the animation on menu display
+    setTimeout(() => {
+      this.applyMenuDisplayAnimation(true);
+    }, 0);
     // Subscribe to all actions that close the menu (outside click, item click, any other overlay detach)
     this.menuClosingActionsSubscription = this.menuClosingActions().subscribe(
       // If so, destroy menu
@@ -134,7 +141,29 @@ export class MenuTriggerForDirective {
     // Unsubscribe to our close action subscription
     this.menuClosingActionsSubscription.unsubscribe();
     this.isMenuOpen = false;
+    // We remove the needed classes to create the animation on menu close
+    this.applyMenuDisplayAnimation(false);
     // Detach the previously created overlay for the menu
-    this.overlayRef.detach();
+    setTimeout(() => {
+      this.overlayRef.detach();
+    }, 100);
+  }
+
+  /**
+   * Apply animation to displayed menu
+   *
+   * @param toDisplay If the menu is going to be displayed or not
+   */
+  private applyMenuDisplayAnimation(toDisplay: boolean) {
+    // The overlayElement is the immediate parent element containing the menu list,
+    // therefor we want the immediate child in where we would apply the classes
+    const menuList = this.overlayRef.overlayElement.querySelector('div');
+    if (toDisplay) {
+      this.renderer.addClass(menuList, 'translate-y-0');
+      this.renderer.addClass(menuList, 'opacity-100');
+    } else {
+      this.renderer.removeClass(menuList, 'translate-y-0');
+      this.renderer.removeClass(menuList, 'opacity-100');
+    }
   }
 }
