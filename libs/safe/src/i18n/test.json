@@ -402,7 +402,8 @@
 			"customStyling": "******",
 			"dashboard": {
 				"editFilter": "******",
-				"empty": "******"
+				"empty": "******",
+				"filterSettings": "******"
 			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"

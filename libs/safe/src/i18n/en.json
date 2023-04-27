@@ -402,7 +402,8 @@
 			"customStyling": "Custom Styling",
 			"dashboard": {
 				"editFilter": "Edit filter",
-				"empty": "No content available. Wait for your administrator to build some."
+				"empty": "No content available. Wait for your administrator to build some.",
+				"filterSettings": "Filter settings"
 			},
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the application {{name}}?"

@@ -402,7 +402,8 @@
 			"customStyling": "Style personnalisé",
 			"dashboard": {
 				"editFilter": "Modifier le filtre",
-				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée."
+				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée.",
+				"filterSettings": "Paramètres du filtre"
 			},
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer cette application ?"

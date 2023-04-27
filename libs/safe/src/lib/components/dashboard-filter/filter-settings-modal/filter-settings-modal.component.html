@@ -1,0 +1,13 @@
+<safe-modal [closable]="true">
+  <div class="flex flex-auto justify-end">
+    <ng-container *ngFor="let position of positionList">
+      <safe-button
+        matSuffix
+        [isIcon]="true"
+        icon="{{ position + '_panel_open' }}"
+        [fontSet]="'material-symbols-outlined'"
+        (click)="setDefaultPosition(position)"
+      ></safe-button>
+    </ng-container>
+  </div>
+</safe-modal>

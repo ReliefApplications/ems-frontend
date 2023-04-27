@@ -30,8 +30,8 @@
       }"
       class="relative flex justify-between bg-primary-500 text-white"
     >
-      <!-- Edition -->
       <div class="flex-auto">
+        <!-- Edition -->
         <safe-button
           [isIcon]="true"
           icon="edit"
@@ -41,7 +41,18 @@
           "
         >
         </safe-button>
+        <!-- Default position -->
+        <safe-button
+          [isIcon]="true"
+          icon="settings"
+          (click)="openSettings()"
+          [matTooltip]="
+            'components.application.dashboard.filterSettings' | translate
+          "
+        >
+        </safe-button>
       </div>
+
       <!-- Position -->
       <div
         [ngClass]="{

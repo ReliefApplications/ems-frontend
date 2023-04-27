@@ -500,6 +500,9 @@ export class DashboardComponent
     }
   }
 
+  /**
+   * Toggles the filter for the current dashboard.
+   */
   toggleFiltering(): void {
     if (this.dashboard) {
       this.apollo

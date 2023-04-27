@@ -17,6 +17,7 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.compo
 import { takeUntil } from 'rxjs/operators';
 import {
   EDIT_APPLICATION_FILTER,
+  EDIT_APPLICATION_FILTER_POSITION,
   EditApplicationMutationResponse,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
@@ -34,6 +35,7 @@ export class DashboardFilterComponent
   implements AfterViewInit, OnInit
 {
   // Filter
+  private defaultPosition: FilterPosition = FilterPosition.BOTTOM;
   @Input() position: FilterPosition = FilterPosition.BOTTOM;
   public positionList = [
     FilterPosition.LEFT,
@@ -64,6 +66,7 @@ export class DashboardFilterComponent
    * @param applicationService Shared application service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param contextService Context service
    */
   constructor(
     private hostElement: ElementRef,
@@ -91,6 +94,10 @@ export class DashboardFilterComponent
           if (application.contextualFilter) {
             this.surveyStructure = application.contextualFilter;
             this.initSurvey();
+          }
+          if (application.contextualFilterPosition) {
+            this.defaultPosition = application.contextualFilterPosition;
+            this.position = this.defaultPosition;
           }
         }
       });
@@ -189,6 +196,55 @@ export class DashboardFilterComponent
       });
   }
 
+  /**
+   * Opens the settings modal
+   */
+  public openSettings() {
+    import('./filter-settings-modal/filter-settings-modal.component').then(
+      ({ FilterSettingsModalComponent }) => {
+        const dialogRef = this.dialog.open(FilterSettingsModalComponent, {
+          data: { positionList: this.positionList },
+        });
+        dialogRef.afterClosed().subscribe((defaultPosition) => {
+          if (defaultPosition) {
+            this.defaultPosition = defaultPosition;
+            this.saveSettings();
+          }
+        });
+      }
+    );
+  }
+
+  /** Saves the filter settings */
+  private saveSettings(): void {
+    this.apollo
+      .mutate<EditApplicationMutationResponse>({
+        mutation: EDIT_APPLICATION_FILTER_POSITION,
+        variables: {
+          id: this.applicationId,
+          contextualFilterPosition: this.defaultPosition,
+        },
+      })
+      .subscribe(({ errors, data }) => {
+        if (errors) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.filter.one'),
+              error: errors ? errors[0].message : '',
+            }),
+            { error: true }
+          );
+        } else {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectUpdated', {
+              type: this.translate.instant('common.filter.one').toLowerCase(),
+              value: data?.editApplication.name ?? '',
+            })
+          );
+        }
+      });
+  }
+
   /** Render the survey using the saved structure */
   private initSurvey(): void {
     Survey.StylesManager.applyTheme();
@@ -199,10 +255,14 @@ export class DashboardFilterComponent
     }
     this.survey.showCompletedPage = false;
     this.survey.showNavigationButtons = false;
-    this.survey.render(this.dashboardSurveyCreatorContainer.nativeElement);
+    this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
     this.survey.onValueChanged.add(this.onValueChange.bind(this));
   }
 
+  /**
+   * Updates the filter in the context service with the latest survey data
+   * when a value changes.
+   */
   private onValueChange() {
     this.contextService.filter.next(this.survey.data);
   }
