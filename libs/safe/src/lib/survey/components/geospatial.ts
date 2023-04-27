@@ -58,8 +58,8 @@ export const init = (Survey: any, domService: DomService): void => {
             htmlElement
           );
           const instance: GeofieldsListboxComponent = listbox.instance;
-          instance.selectedFields = (question.geoFields || []).filter((x) =>
-            ALL_FIELDS.includes(x)
+          instance.selectedFields = (question.geoFields || []).filter(
+            (x: string) => (ALL_FIELDS as string[]).includes(x)
           );
           instance.selectionChange.subscribe((fields) => {
             question.geoFields = fields || [];
