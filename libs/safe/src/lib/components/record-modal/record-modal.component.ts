@@ -30,7 +30,7 @@ import { BehaviorSubject, firstValueFrom, Observable, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import isEqual from 'lodash/isEqual';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { SafeFormService } from '../../services/form/form.service';
+import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { CommonModule } from '@angular/common';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
@@ -121,7 +121,7 @@ export class SafeRecordModalComponent
    * @param authService This is the service that handles the authentication of the user
    * @param snackBar This is the service that allows you to display a snackbar message to the user.
    * @param formBuilderService This is the service that will be used to build forms.
-   * @param formService This is the service to handle forms.
+   * @param formHelpersService This is the service to handle forms.
    * @param translate This is the service that allows us to translate the text in the modal.
    */
   constructor(
@@ -132,7 +132,7 @@ export class SafeRecordModalComponent
     private authService: SafeAuthService,
     private snackBar: SafeSnackBarService,
     private formBuilderService: SafeFormBuilderService,
-    private formService: SafeFormService,
+    private formHelpersService: SafeFormHelpersService,
     private translate: TranslateService
   ) {
     super();
@@ -306,7 +306,7 @@ export class SafeRecordModalComponent
    * @param version The version to recover
    */
   private confirmRevertDialog(record: any, version: any) {
-    const dialogRef = this.formService.createRevertDialog(version);
+    const dialogRef = this.formHelpersService.createRevertDialog(version);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.apollo
