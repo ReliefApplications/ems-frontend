@@ -9,6 +9,7 @@ import { PaginatorModule } from './paginator/paginator.module';
 import { AvatarGroupModule } from './avatar-group/avatar-group.module';
 import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
+import { ExpansionPanelModule } from './expansion-panel/expansion-panel.module';
 
 /**
  * UI Library Module
@@ -25,6 +26,9 @@ import { DividerModule } from './divider/divider.module';
     PaginatorModule,
     ToggleModule,
     DividerModule,
+  ],
+  imports: [
+    ExpansionPanelModule
   ],
 })
 export class UiModule {}
