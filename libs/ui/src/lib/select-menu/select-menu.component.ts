@@ -44,11 +44,13 @@ export class SelectMenuComponent implements OnInit, ControlValueAccessor {
   selectionControl = new FormControl();
   listBoxFocused = false;
   triggerIsString = false;
+  displayTrigger = '';
 
   onChange!: (value: number) => void;
   onTouch!: () => void;
 
   ngOnInit() {
+    //See if the input selectTriggerTemplate is text or template
     if (typeof this.selectTriggerTemplate === 'string') {
       this.triggerIsString = true;
       console.log(this.triggerIsString);
@@ -57,6 +59,8 @@ export class SelectMenuComponent implements OnInit, ControlValueAccessor {
       console.log(this.triggerIsString);
       console.log(this.selectTriggerTemplate);
     }
+    //Initial value for selectionControl to avoid error in html ngIf
+    this.selectionControl.setValue([]);
   }
 
   /**
@@ -107,6 +111,17 @@ export class SelectMenuComponent implements OnInit, ControlValueAccessor {
 
   onChangeFunction() {
     this.selectedOption.emit(this.selectionControl.value);
+    if (this.selectionControl.value.length > 1) {
+      this.displayTrigger =
+        this.selectionControl.value[0] +
+        ' (+' +
+        (this.selectionControl.value.length - 1) +
+        ' others)';
+    } else if (this.selectionControl.value.length == 1) {
+      this.displayTrigger = this.selectionControl.value[0];
+    } else {
+      this.displayTrigger = '';
+    }
     if (this.onChange && this.onTouch) {
       this.onChange(this.selectionControl.value);
       this.onTouch();

@@ -103,7 +103,7 @@ const selectMenuTemplateWithTrigger = `<div [formGroup]="formGroup" class="py-5"
 <p *ngIf="isClosed"> Select Menu is closed </p>
 <p>selection (from event) : </p>
 <a *ngFor="let item of selection">{{item}}, </a>
-<ng-template #selectTriggerTemplateTest><div class="text-red-600">Choose your language</div></ng-template>
+<ng-template #selectTriggerTemplateTest><div class="text-red-600">I am a custom template</div></ng-template>
 `;
 
 /**
@@ -121,15 +121,15 @@ const TemplateStandaloneSelection: Story<SelectMenuComponent> = (
   args: SelectMenuComponent
 ) => {
   args.options = [
-    'french',
-    'english',
-    'japanese',
-    'javanese',
-    'polish',
-    'german',
-    'spanish',
-    'dutch',
-    'chinese',
+    'French',
+    'English',
+    'Japanese',
+    'Javanese',
+    'Polish',
+    'German',
+    'Spanish',
+    'Dutch',
+    'Chinese',
   ];
   args.multiselect = false;
   args.disabled = false;
@@ -162,15 +162,15 @@ const TemplateMultiSelection: Story<SelectMenuComponent> = (
   args: SelectMenuComponent
 ) => {
   args.options = [
-    'french',
-    'english',
-    'japanese',
-    'javanese',
-    'polish',
-    'german',
-    'spanish',
-    'dutch',
-    'chinese',
+    'French',
+    'English',
+    'Japanese',
+    'Javanese',
+    'Polish',
+    'German',
+    'Spanish',
+    'Dutch',
+    'Chinese',
   ];
   args.multiselect = true;
   args.disabled = false;
@@ -203,15 +203,15 @@ const TemplateDisabledSelection: Story<SelectMenuComponent> = (
   args: SelectMenuComponent
 ) => {
   args.options = [
-    'french',
-    'english',
-    'japanese',
-    'javanese',
-    'polish',
-    'german',
-    'spanish',
-    'dutch',
-    'chinese',
+    'French',
+    'English',
+    'Japanese',
+    'Javanese',
+    'Polish',
+    'German',
+    'Spanish',
+    'Dutch',
+    'Chinese',
   ];
   args.multiselect = false;
   args.disabled = true;
@@ -244,15 +244,15 @@ const TemplateTemplateRefSelection: Story<SelectMenuComponent> = (
   args: SelectMenuComponent
 ) => {
   args.options = [
-    'french',
-    'english',
-    'japanese',
-    'javanese',
-    'polish',
-    'german',
-    'spanish',
-    'dutch',
-    'chinese',
+    'French',
+    'English',
+    'Japanese',
+    'Javanese',
+    'Polish',
+    'German',
+    'Spanish',
+    'Dutch',
+    'Chinese',
   ];
   args.multiselect = false;
   args.disabled = false;
