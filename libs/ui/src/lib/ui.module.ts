@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { AvatarModule } from './avatar/avatar.module';
 import { ButtonModule } from './button/button.module';
 import { CheckboxModule } from './checkbox/checkbox.module';
@@ -15,7 +14,6 @@ import { DividerModule } from './divider/divider.module';
  * UI Library Module
  */
 @NgModule({
-  imports: [CommonModule, PaginatorModule],
   exports: [
     AvatarModule,
     ButtonModule,

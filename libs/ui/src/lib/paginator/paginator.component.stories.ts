@@ -4,7 +4,6 @@ import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PagerModule } from '@progress/kendo-angular-pager';
-import { TranslateModule } from '@ngx-translate/core';
 import { PaginatorComponent } from './paginator.component';
 import { UIPageChangeEvent } from './interfaces/paginator.interfaces';
 import { StorybookTranslateModule } from '../../storybook-translate.module';
@@ -24,7 +23,6 @@ export default {
         CommonModule,
         PagerModule,
         StorybookTranslateModule,
-        TranslateModule,
         BrowserAnimationsModule,
       ],
     }),

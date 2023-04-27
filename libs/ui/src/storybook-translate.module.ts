@@ -29,6 +29,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
       },
     }),
   ],
+  exports: [TranslateModule],
 })
 export class StorybookTranslateModule {
   /**
