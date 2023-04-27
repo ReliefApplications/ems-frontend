@@ -146,7 +146,11 @@ export class GeospatialMapComponent
             const latlng = L.latLng(lat, lng);
 
             // update the marker position on the map
-            updateGeoManLayerPosition(this.mapComponent?.map, { latlng });
+            updateGeoManLayerPosition(
+              this.mapComponent?.map,
+              { latlng },
+              this.selectedLayer
+            );
 
             // updates the geospatial fields
             this.onReverseSearch(latlng);
@@ -172,6 +176,7 @@ export class GeospatialMapComponent
             size: 24,
           })
         );
+        this.selectedLayer = l.layer;
         this.onReverseSearch(l.layer._latlng).then(() => {
           this.mapChange.emit({
             ...l.layer.toGeoJSON(),
@@ -206,6 +211,7 @@ export class GeospatialMapComponent
 
     // updates question value on removing shapes
     this.mapComponent?.map.on('pm:remove', () => {
+      this.selectedLayer = null;
       const containsPointMarker = (feature: any) =>
         feature.geometry.type === 'Point';
       const content = getMapFeature(this.mapComponent?.map);
@@ -365,16 +371,8 @@ export class GeospatialMapComponent
     if (address) {
       const value = {
         coordinates: {
-          lat: get(
-            address,
-            'coordinates.lat',
-            DEFAULT_GEOCODING.coordinates.lat
-          ),
-          lng: get(
-            address,
-            'coordinates.lat',
-            DEFAULT_GEOCODING.coordinates.lng
-          ),
+          lat: get(address, 'latlng.lat', DEFAULT_GEOCODING.coordinates.lat),
+          lng: get(address, 'latlng.lng', DEFAULT_GEOCODING.coordinates.lng),
         },
         city: get(address, 'properties.City', DEFAULT_GEOCODING.city),
         countryName: get(
@@ -389,6 +387,20 @@ export class GeospatialMapComponent
         subRegion: get(address, 'properties.Subregion', DEFAULT_GEOCODING.city),
         address: get(address, 'properties.StAddr', DEFAULT_GEOCODING.city),
       };
+      // update the marker position on the map
+      // if (this.selectedLayer) {
+      //   this.mapComponent?.map.removeLayer(this.selectedLayer);
+      // }
+      // (this.mapComponent?.map as any).pm.Draw['Marker']._createMarker({
+      //   latlng: [value.coordinates.lat, value.coordinates.lng],
+      // });
+      updateGeoManLayerPosition(
+        this.mapComponent?.map,
+        {
+          latlng: [value.coordinates.lat, value.coordinates.lng],
+        },
+        this.selectedLayer
+      );
       this.geoForm.setValue(value, { emitEvent: false });
     }
   }
@@ -420,7 +432,31 @@ export class GeospatialMapComponent
   }
 }
 
-// Example of a location
+// Result of a reverse search
+// AddNum: '';
+// Addr_type: 'Postal';
+// Address: '';
+// Block: '';
+// City: 'Ashland';
+// CntryName: 'United States';
+// CountryCode: 'USA';
+// District: '';
+// LongLabel: '67831, Ashland, KS, USA';
+// Match_addr: '67831, Ashland, Kansas';
+// MetroArea: '';
+// Neighborhood: '';
+// PlaceName: '67831';
+// Postal: '67831';
+// PostalExt: '';
+// Region: 'Kansas';
+// RegionAbbr: 'KS';
+// Sector: '';
+// ShortLabel: '67831';
+// Subregion: 'Clark County';
+// Territory: '';
+// Type: '';
+
+// Result of a search
 // {
 //   "Loc_name": "World",
 //   "Status": "M",

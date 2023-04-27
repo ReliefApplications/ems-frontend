@@ -500,6 +500,7 @@ export class ArcgisService {
         .latlng(latlng)
         .run((err: any, res: any) => {
           if (res) {
+            console.log(res);
             resolve(res);
           }
           if (err) {

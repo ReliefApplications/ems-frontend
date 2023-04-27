@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ListBoxModule,
@@ -7,6 +14,18 @@ import {
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GeoProperties } from '../../components/geospatial-map/geospatial-map.interface';
 
+export const ALL_FIELDS: (keyof GeoProperties)[] = [
+  'coordinates',
+  'city',
+  'countryName',
+  'countryCode',
+  'district',
+  'region',
+  // 'street',
+  'subRegion',
+  'address',
+];
+
 @Component({
   selector: 'safe-geofields-listbox',
   standalone: true,
@@ -14,19 +33,9 @@ import { GeoProperties } from '../../components/geospatial-map/geospatial-map.in
   templateUrl: './geofields-listbox.component.html',
   styleUrls: ['./geofields-listbox.component.scss'],
 })
-export class GeofieldsListboxComponent {
-  public availableFields: (keyof GeoProperties)[] = [
-    'coordinates',
-    'city',
-    'countryName',
-    'countryCode',
-    'district',
-    'region',
-    'street',
-    'subRegion',
-    'address',
-  ];
-  @Input() selectedFields: string[] = [];
+export class GeofieldsListboxComponent implements OnInit, OnChanges {
+  @Input() selectedFields: (keyof GeoProperties)[] = [];
+  public availableFields: (keyof GeoProperties)[] = ALL_FIELDS;
   public toolbarSettings: ListBoxToolbarConfig = {
     position: 'right',
     tools: [
@@ -39,6 +48,18 @@ export class GeofieldsListboxComponent {
     ],
   };
   @Output() selectionChange = new EventEmitter();
+
+  ngOnInit(): void {
+    this.availableFields = ALL_FIELDS.filter(
+      (x) => !this.selectedFields.includes(x)
+    );
+  }
+
+  ngOnChanges(): void {
+    this.availableFields = ALL_FIELDS.filter(
+      (x) => !this.selectedFields.includes(x)
+    );
+  }
 
   handleActionClick(): void {
     this.selectionChange.emit(this.selectedFields);

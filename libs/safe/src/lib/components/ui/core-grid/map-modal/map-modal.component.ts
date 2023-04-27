@@ -43,7 +43,6 @@ export class MapModalComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    console.log('there');
     this.mapLayersService
       .createLayerFromDefinition({
         id: '',
@@ -56,7 +55,6 @@ export class MapModalComponent implements AfterViewInit {
       })
       .then((layer) => {
         this.mapComponent?.addLayer(layer);
-        console.log(this.data.item);
         const coordinates = get(
           this.data,
           `item[${this.data.datasource.geoField}].geometry.coordinates`,

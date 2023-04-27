@@ -2,7 +2,10 @@ import { JsonMetadata, Question } from 'survey-angular';
 import { GeospatialMapComponent } from '../../components/geospatial-map/geospatial-map.component';
 import { DomService } from '../../services/dom/dom.service';
 import { SurveyPropertyEditorFactory } from 'survey-creator';
-import { GeofieldsListboxComponent } from '../../components/geofields-listbox/geofields-listbox.component';
+import {
+  ALL_FIELDS,
+  GeofieldsListboxComponent,
+} from '../../components/geofields-listbox/geofields-listbox.component';
 
 /**
  * Inits the geospatial component.
@@ -55,7 +58,9 @@ export const init = (Survey: any, domService: DomService): void => {
             htmlElement
           );
           const instance: GeofieldsListboxComponent = listbox.instance;
-          instance.selectedFields = question.geoFields || [];
+          instance.selectedFields = (question.geoFields || []).filter((x) =>
+            ALL_FIELDS.includes(x)
+          );
           instance.selectionChange.subscribe((fields) => {
             question.geoFields = fields || [];
           });

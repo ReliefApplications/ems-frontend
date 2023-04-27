@@ -832,7 +832,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
    * @param field geometry field
    */
   public onOpenMapModal(dataItem: any, field: any) {
-    console.log('there');
     this.action.emit({
       action: 'map',
       item: dataItem,
