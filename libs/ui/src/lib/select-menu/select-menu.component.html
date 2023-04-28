@@ -1,26 +1,32 @@
+<!-- Wrapper of the entire select menu, has focusout event -->
 <div class="relative" (focusout)="closeListBox($event.relatedTarget)" tabindex="0">
+  <!-- Trigger, label of the select menu, showed even when the select menu is closed -->
   <ng-container [ngSwitch]="triggerIsString">
+    <!-- In case there is a custom template in input -->
     <ng-container *ngSwitchCase="false">
       <div (click)="dealListBox()">
         <div *ngTemplateOutlet="selectTriggerTemplate"></div>
       </div>
     </ng-container>
+    <!-- If the input is a string -->
     <ng-container *ngSwitchCase="true">
+      <!-- Open/close the listBox on click + different classes in function of inputs -->
       <button
         class="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:leading-6"
         (click)="dealListBox()"
         [ngClass]="{
           'non_selectable bg-gray-300': disabled,
-          'focus:outline-none focus:ring-2 focus:ring-indigo-600': !disabled,
+          'focus:outline-none focus:ring-2 focus:ring-primary-600': !disabled,
           'corner_label' : displayTrigger.length > 0
         }"
-        id="example-language-label"
       >
+        <!-- Text of the trigger -->
         <span
           class="block truncate"
           [ngClass]="{ 'text-gray-500': disabled }"
           >{{ selectTriggerTemplate }}</span
         >
+        <!-- icon at right of the button -->
         <span
           class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
         >
@@ -37,18 +43,17 @@
             />
           </svg>
         </span>
+        <!-- Text showing selections -->
         <div class="block truncate text-sm">{{displayTrigger}}</div>
       </button>
     </ng-container>
   </ng-container>
+  <!-- Listbox showing when focus on the component, change in function of inputs -->
   <ul
     cdkListbox
     [cdkListboxMultiple]="multiselect"
     [cdkListboxDisabled]="disabled"
     [formControl]="selectionControl"
-    aria-labelledby="example-language-label"
-    aria-activedescendant="listbox-option-3"
-    id="example-language-label"
     class="absolute z-10 mt-1 max-h-36 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
     [ngClass]="{
       'transition ease-in duration-100 opacity-0': !listBoxFocused,
@@ -56,15 +61,17 @@
     }"
     [tabindex]="0"
   >
+    <!-- Element of the list -->
     <li
       *ngFor="let option of options"
       [cdkOption]="option"
       [cdkOptionDisabled]="disabled"
-      class="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9 hover:bg-indigo-600 hover:text-white"
+      class="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9 hover:bg-primary-600 hover:text-white"
       (click)="onChangeFunction()"
       [tabindex]="0"
     >
-      <span
+    <!-- Text, changes if selected -->  
+    <span
         class="font-normal block truncate"
         [ngClass]="{
           'font-semibold': selectionControl.value.includes(option),
@@ -72,6 +79,7 @@
         }"
         >{{ option }}</span
       >
+      <!-- Checkmark showed if the li element is selected -->
       <span
         *ngIf="selectionControl.value.includes(option)"
         class="absolute inset-y-0 right-0 flex items-center pr-4"

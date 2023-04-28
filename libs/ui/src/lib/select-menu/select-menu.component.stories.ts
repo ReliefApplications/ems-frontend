@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 export default {
   title: 'SelectMenu',
   component: SelectMenuComponent,
+  // Defines the controls
   argTypes: {
     selectTriggerTemplate: {
       defaultValue: 'Choose an option',
@@ -43,13 +44,15 @@ export default {
   ],
 } as Meta<SelectMenuComponent>;
 
+// Used to test outputs
 let isOpened = false;
 let isClosed = false;
 let selection: any[] = [];
 
 /**
+ * Used to test if emission of output "opened" works
  *
- * @param event
+ * @param event output
  */
 const openEvent = (event: any) => {
   isOpened = event;
@@ -57,8 +60,9 @@ const openEvent = (event: any) => {
   addons.getChannel().emit(FORCE_RE_RENDER);
 };
 /**
+ * Used to test if emission of output "closed" works
  *
- * @param event
+ * @param event output
  */
 const closeEvent = (event: any) => {
   isClosed = event;
@@ -66,8 +70,9 @@ const closeEvent = (event: any) => {
   addons.getChannel().emit(FORCE_RE_RENDER);
 };
 /**
+ * Used to test if emission of output "selectedOption" works
  *
- * @param event
+ * @param event output
  */
 const selectEvent = (event: any) => {
   selection = event;
@@ -76,7 +81,7 @@ const selectEvent = (event: any) => {
 };
 
 /**
- *
+ * Template used to render the stories (using a formGroup)
  */
 const selectMenuTemplate = `<div [formGroup]="formGroup" class="py-5">
 <ui-select-menu (opened)="openEvent($event)" (closed)="closeEvent($event)" (selectedOption)="selectEvent($event)" formControlName="selectMenu" [selectTriggerTemplate]="selectTriggerTemplate" [options]="options" [multiselect]="multiselect" [disabled]="disabled" name="externalVal"></ui-select-menu>
@@ -91,7 +96,7 @@ const selectMenuTemplate = `<div [formGroup]="formGroup" class="py-5">
 `;
 
 /**
- *
+ * Template used to render the stories (using a formGroup) and use of a ngTemplate as selectTriggerTemplate input
  */
 const selectMenuTemplateWithTrigger = `<div [formGroup]="formGroup" class="py-5">
 <ui-select-menu (opened)="openEvent($event)" (closed)="closeEvent($event)" (selectedOption)="selectEvent($event)" formControlName="selectMenu" [selectTriggerTemplate]="selectTriggerTemplateTest" [options]="options" [multiselect]="multiselect" [disabled]="disabled" name="externalVal"></ui-select-menu>
@@ -110,12 +115,14 @@ const selectMenuTemplateWithTrigger = `<div [formGroup]="formGroup" class="py-5"
  * Form group to test select-menu control value accessor
  */
 const formGroup = new FormGroup({
-  selectMenu: new FormControl(['test']),
+  selectMenu: new FormControl(['']),
 });
 
 /**
+ * Template for standalone selection select menu
  *
- * @param args
+ * @param args args
+ * @returns story of select menu component
  */
 const TemplateStandaloneSelection: Story<SelectMenuComponent> = (
   args: SelectMenuComponent
@@ -150,13 +157,15 @@ const TemplateStandaloneSelection: Story<SelectMenuComponent> = (
   };
 };
 /**
- *
+ * Actual export of standalone select story
  */
 export const StandaloneSelection = TemplateStandaloneSelection.bind({});
 
 /**
+ * Template for multi selection select menu
  *
- * @param args
+ * @param args args
+ * @returns story of select menu component
  */
 const TemplateMultiSelection: Story<SelectMenuComponent> = (
   args: SelectMenuComponent
@@ -191,13 +200,15 @@ const TemplateMultiSelection: Story<SelectMenuComponent> = (
   };
 };
 /**
- *
+ * Actual export of multi select story
  */
 export const MultiSelection = TemplateMultiSelection.bind({});
 
 /**
+ * Template for disabled selection select menu
  *
- * @param args
+ * @param args args
+ * @returns story of select menu component
  */
 const TemplateDisabledSelection: Story<SelectMenuComponent> = (
   args: SelectMenuComponent
@@ -232,13 +243,15 @@ const TemplateDisabledSelection: Story<SelectMenuComponent> = (
   };
 };
 /**
- *
+ * Actual export of disabled select story
  */
 export const DisabledSelection = TemplateDisabledSelection.bind({});
 
 /**
+ * Template for select menu using a ngTemplate as input
  *
- * @param args
+ * @param args args
+ * @returns story of select menu component
  */
 const TemplateTemplateRefSelection: Story<SelectMenuComponent> = (
   args: SelectMenuComponent
@@ -274,18 +287,25 @@ const TemplateTemplateRefSelection: Story<SelectMenuComponent> = (
   };
 };
 /**
- *
+ * Actual export of select story using ngTemplate as input
  */
 export const TemplateRefSelection = TemplateTemplateRefSelection.bind({});
 
 /**
+ * Date in order to test different objects in option list
+ */
+const testDate = new Date();
+
+/**
+ * Template for different objects selection select menu
  *
- * @param args
+ * @param args args
+ * @returns story of select menu component
  */
 const TemplateDifferentObjectsSelection: Story<SelectMenuComponent> = (
   args: SelectMenuComponent
 ) => {
-  args.options = [new Date(), 12, 'I am a string', 22.1, true];
+  args.options = [testDate, 12, 'I am a string', 22.1, true];
   args.multiselect = true;
   args.disabled = false;
   args.selectTriggerTemplate = 'Many different objects';
@@ -305,7 +325,7 @@ const TemplateDifferentObjectsSelection: Story<SelectMenuComponent> = (
   };
 };
 /**
- *
+ * Actual export of select story using many different objects as input
  */
 export const DifferentObjectsSelection = TemplateDifferentObjectsSelection.bind(
   {}
