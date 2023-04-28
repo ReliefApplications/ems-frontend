@@ -96,6 +96,22 @@ export class SliderComponent
   }
 
   /**
+   * When hover the component, show ticks (did not do in class cause would create conflicts with the focus thing)
+   */
+  onHoverFunction() {
+    this.ticksToShow = true;
+  }
+
+  /**
+   * When leaves hover the component, if bubble is not showing (no focus), strop displaying ticks
+   */
+  onHoverLeaveFunction() {
+    if (!this.bubbleToShow) {
+      this.ticksToShow = false;
+    }
+  }
+
+  /**
    * When value of input changes, calculates the position where the bubble is to go
    *
    * @param value The value from the slider
