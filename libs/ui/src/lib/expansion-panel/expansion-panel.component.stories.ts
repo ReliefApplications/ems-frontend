@@ -1,12 +1,13 @@
-import { moduleMetadata, Story, Meta, StoryFn } from '@storybook/angular';
+import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
 import { ExpansionPanelComponent } from './expansion-panel.component';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 type PanelOption = {
   title: string;
   expanded: boolean;
   text: string;
-}
+};
 
 export default {
   title: 'ExpansionPanelComponent',
@@ -27,8 +28,8 @@ export default {
   },
   decorators: [
     moduleMetadata({
-      imports: [CdkAccordionModule],
-    })
+      imports: [CdkAccordionModule, BrowserAnimationsModule],
+    }),
   ],
 } as Meta<ExpansionPanelComponent>;
 
@@ -39,32 +40,39 @@ const panelOptions: PanelOption[] = [
   {
     title: 'Item 1',
     expanded: false,
-    text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis \nexcepturi incidunt ipsum deleniti labore, tempore non nam doloribus blanditiis veritatis illo autem iure aliquid ullam rem tenetur deserunt velit culpa?"
+    text: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis excepturi incidunt ipsum deleniti labore, tempore non nam doloribus blanditiis veritatis illo autem iure aliquid ullam rem tenetur deserunt velit culpa?',
   },
   {
     title: 'Item 2',
     expanded: false,
-    text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis excepturi incidunt ipsum deleniti labore, tempore non nam doloribus blanditiis veritatis illo autem iure aliquid ullam rem tenetur deserunt velit culpa?"
+    text: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis excepturi incidunt ipsum deleniti labore, tempore non nam doloribus blanditiis veritatis illo autem iure aliquid ullam rem tenetur deserunt velit culpa?',
   },
   {
     title: 'Item 3',
     expanded: false,
-    text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis excepturi incidunt ipsum deleniti labore, tempore non nam doloribus blanditiis veritatis illo autem iure aliquid ullam rem tenetur deserunt velit culpa?"
+    text: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis excepturi incidunt ipsum deleniti labore, tempore non nam doloribus blanditiis veritatis illo autem iure aliquid ullam rem tenetur deserunt velit culpa?',
   },
 ];
-
-
-const Template: StoryFn<ExpansionPanelComponent> = (args: ExpansionPanelComponent) => {
+/**
+ * Template expansion panel group
+ *
+ * @param {ExpansionPanelComponent} args args
+ * @returns ExpansionPanelComponent
+ */
+const Template: StoryFn<ExpansionPanelComponent> = (
+  args: ExpansionPanelComponent
+) => {
   return {
     component: ExpansionPanelComponent,
     template: `
-      <cdk-accordion class="block max-w-500">
+      <cdk-accordion>
         <ui-expansion-panel 
           *ngFor="let panel of panelOptions; let i = index" 
           [disabled]="${args.disabled}" 
           [displayIcon]="'${args.displayIcon}'" 
           [expanded]="panel.expanded"
           [title]="panel.title"
+          [index]="i"
         >
           <ng-container ngProjectAs="text">{{panel.text}}</ng-container>
         </ui-expansion-panel>
@@ -72,11 +80,10 @@ const Template: StoryFn<ExpansionPanelComponent> = (args: ExpansionPanelComponen
     `,
     props: {
       ...args,
-      panelOptions
-    }
-  }
+      panelOptions,
+    },
+  };
 };
 
-
-/** Primary radio */
+/** Primary expansion panel */
 export const Primary = Template.bind({});

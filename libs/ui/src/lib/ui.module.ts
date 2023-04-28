@@ -27,8 +27,6 @@ import { ExpansionPanelModule } from './expansion-panel/expansion-panel.module';
     ToggleModule,
     DividerModule,
   ],
-  imports: [
-    ExpansionPanelModule
-  ],
+  imports: [ExpansionPanelModule],
 })
 export class UiModule {}
