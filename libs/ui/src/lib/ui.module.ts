@@ -9,6 +9,8 @@ import { PaginatorModule } from './paginator/paginator.module';
 import { AvatarGroupModule } from './avatar-group/avatar-group.module';
 import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
+import { DatePickerModule } from './date-picker/date-picker.module';
+import { DateRangeModule } from './date-range/date-range.module';
 
 /**
  * UI Library Module
@@ -25,6 +27,8 @@ import { DividerModule } from './divider/divider.module';
     PaginatorModule,
     ToggleModule,
     DividerModule,
+    DatePickerModule,
+    DateRangeModule,
   ],
 })
 export class UiModule {}
