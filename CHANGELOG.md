@@ -1,3 +1,12 @@
+## [1.3.11](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.10...v1.3.11) (2023-04-14)
+
+
+### Bug Fixes
+
+* AB[#57872](https://github.com/ReliefApplications/oort-frontend/issues/57872) add isnull / isnotnull to available operators for boolean fields ([1338eea](https://github.com/ReliefApplications/oort-frontend/commit/1338eea7ea6b70fed3ff80fcab75e7b124d360a3))
+* delete questions from surveyjs if not accessible ([f3785e6](https://github.com/ReliefApplications/oort-frontend/commit/f3785e69b51be23e95e51c9ccad1478c81976b92)), closes [bugfix/AB#35551_SA-HQ-and-all-RO-R4](https://github.com/bugfix/AB/issues/35551_SA-HQ-and-all-RO-R4)
+* tagboxes and checkboxes fields of merged records could contain duplicates ([3f3beca](https://github.com/ReliefApplications/oort-frontend/commit/3f3beca89aebcdbb523bc9fa61f12ec84b094301))
+
 ## [1.3.10](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.9...v1.3.10) (2023-02-21)
 
 
