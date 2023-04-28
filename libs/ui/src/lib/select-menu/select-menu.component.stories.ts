@@ -8,7 +8,7 @@ import { CdkListboxModule } from '@angular/cdk/listbox';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
-  title: 'SelectMenu',
+  title: 'Select Menu',
   component: SelectMenuComponent,
   // Defines the controls
   argTypes: {
@@ -49,28 +49,20 @@ export default {
 } as Meta<SelectMenuComponent>;
 
 // Used to test outputs
-let isOpened = false;
-let isClosed = false;
 let selection: any[] = [];
 
 /**
  * Used to test if emission of output "opened" works
- *
- * @param event output
  */
-const openEvent = (event: any) => {
-  isOpened = event;
-  console.log('isOpened : ' + isOpened);
+const openEvent = () => {
+  console.log('isOpened');
   addons.getChannel().emit(FORCE_RE_RENDER);
 };
 /**
  * Used to test if emission of output "closed" works
- *
- * @param event output
  */
-const closeEvent = (event: any) => {
-  isClosed = event;
-  console.log('isClosed : ' + isClosed);
+const closeEvent = () => {
+  console.log('isClosed');
   addons.getChannel().emit(FORCE_RE_RENDER);
 };
 /**
@@ -85,41 +77,71 @@ const selectEvent = (event: any) => {
 };
 
 /**
+ * Select with no custom template
+ */
+const selectTemplate = `<ui-select-menu 
+formControlName="selectMenu"
+(opened)="openEvent($event)" 
+(closed)="closeEvent($event)" 
+(selectedOption)="selectEvent($event)" 
+[label]="label" 
+[options]="options"
+[multiselect]="multiselect"
+[disabled]="disabled">
+</ui-select-menu>`;
+
+/**
+ * Custom template trigger to be placed between the select tag
+ */
+const customTriggerSelect =
+  '<ng-template #selectTriggerTemplate><div class="text-red-600">Choose your language</div></ng-template>';
+
+/**
+ * Select with the custom template trigger placed between the select tag
+ */
+const customTriggerSelectTemplate = `<ui-select-menu 
+formControlName="selectMenu"
+(opened)="openEvent($event)" 
+(closed)="closeEvent($event)" 
+(selectedOption)="selectEvent($event)" 
+[label]="label" 
+[options]="options"
+[multiselect]="multiselect"
+[disabled]="disabled">
+${customTriggerSelect}
+</ui-select-menu>`;
+
+/**
  * Template used to render the stories (using a formGroup)
  */
 const selectMenuTemplate = `<div [formGroup]="formGroup" class="py-5">
-<ui-select-menu (opened)="openEvent($event)" (closed)="closeEvent($event)" (selectedOption)="selectEvent($event)" formControlName="selectMenu" [selectTriggerTemplate]="selectTriggerTemplate" [options]="options" [multiselect]="multiselect" [disabled]="disabled" name="externalVal"></ui-select-menu>
+${selectTemplate}
 </div>
 <br>
 <p>value: {{formGroup.get('selectMenu').value}}</p>
 <p>touched: {{formGroup.get('selectMenu').touched}}</p>
-<p *ngIf="isOpened"> Select Menu is opened </p>
-<p *ngIf="isClosed"> Select Menu is closed </p>
-<p>selection (from event) : </p>
-<a *ngFor="let item of selection">{{item}}, </a>
+<p class="inline">selection (from event) : </p>
+<span *ngFor="let item of selection">{{item}}, </span>
 `;
 
 /**
  * Template used to render the stories (using a formGroup) and use of a ngTemplate as selectTriggerTemplate input
  */
-const selectMenuTemplateWithTrigger = `<div [formGroup]="formGroup" class="py-5">
-<ui-select-menu (opened)="openEvent($event)" (closed)="closeEvent($event)" (selectedOption)="selectEvent($event)" formControlName="selectMenu" [selectTriggerTemplate]="selectTriggerTemplateTest" [options]="options" [multiselect]="multiselect" [disabled]="disabled" name="externalVal"></ui-select-menu>
+const singleSelectMenuTemplateWithTrigger = `<div [formGroup]="formGroup" class="py-5">
+${customTriggerSelectTemplate}
 </div>
 <br>
 <p>value: {{formGroup.get('selectMenu').value}}</p>
 <p>touched: {{formGroup.get('selectMenu').touched}}</p>
-<p *ngIf="isOpened"> Select Menu is opened </p>
-<p *ngIf="isClosed"> Select Menu is closed </p>
-<p>selection (from event) : </p>
-<a *ngFor="let item of selection">{{item}}, </a>
-<ng-template #selectTriggerTemplateTest><div class="text-red-600">I am a custom template</div></ng-template>
+<p class="inline">selection (from event) : </p>
+<span *ngFor="let item of selection">{{item}}, </span>
 `;
 
 /**
  * Form group to test select-menu control value accessor
  */
 const formGroup = new FormGroup({
-  selectMenu: new FormControl(['']),
+  selectMenu: new FormControl(),
 });
 
 /**
@@ -144,15 +166,13 @@ const TemplateStandaloneSelection: Story<SelectMenuComponent> = (
   ];
   args.multiselect = false;
   args.disabled = false;
-  args.selectTriggerTemplate = 'Choose your language';
+  args.label = 'Choose your language';
   return {
     component: SelectMenuComponent,
     template: selectMenuTemplate,
     props: {
       ...args,
       formGroup,
-      isClosed,
-      isOpened,
       selection,
       selectEvent,
       openEvent,
@@ -187,15 +207,13 @@ const TemplateMultiSelection: Story<SelectMenuComponent> = (
   ];
   args.multiselect = true;
   args.disabled = false;
-  args.selectTriggerTemplate = 'Choose your language';
+  args.label = 'Choose your language';
   return {
     component: SelectMenuComponent,
     template: selectMenuTemplate,
     props: {
       ...args,
       formGroup,
-      isClosed,
-      isOpened,
       selection,
       selectEvent,
       openEvent,
@@ -228,17 +246,14 @@ const TemplateDisabledSelection: Story<SelectMenuComponent> = (
     'Dutch',
     'Chinese',
   ];
-  args.multiselect = false;
   args.disabled = true;
-  args.selectTriggerTemplate = 'Choose your language';
+  args.label = 'Choose your language';
   return {
     component: SelectMenuComponent,
     template: selectMenuTemplate,
     props: {
       ...args,
       formGroup,
-      isClosed,
-      isOpened,
       selection,
       selectEvent,
       openEvent,
@@ -273,16 +288,13 @@ const TemplateTemplateRefSelection: Story<SelectMenuComponent> = (
   ];
   args.multiselect = false;
   args.disabled = false;
-  args.selectTriggerTemplate =
-    '<ng-template #selectTriggerTemplate><div class="text-red-600">Choose your language</div></ng-template>';
+  args.label = 'Choose your language';
   return {
     component: SelectMenuComponent,
-    template: selectMenuTemplateWithTrigger,
+    template: singleSelectMenuTemplateWithTrigger,
     props: {
       ...args,
       formGroup,
-      isClosed,
-      isOpened,
       selection,
       selectEvent,
       openEvent,
@@ -312,15 +324,13 @@ const TemplateDifferentObjectsSelection: Story<SelectMenuComponent> = (
   args.options = [testDate, 12, 'I am a string', 22.1, true];
   args.multiselect = true;
   args.disabled = false;
-  args.selectTriggerTemplate = 'Many different objects';
+  args.label = 'Many different objects';
   return {
     component: SelectMenuComponent,
     template: selectMenuTemplate,
     props: {
       ...args,
       formGroup,
-      isClosed,
-      isOpened,
       selection,
       selectEvent,
       openEvent,

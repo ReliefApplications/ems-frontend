@@ -4,8 +4,7 @@ import {
   Input,
   Output,
   EventEmitter,
-  TemplateRef,
-  OnInit,
+  HostListener,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -28,8 +27,7 @@ import {
     },
   ],
 })
-export class SelectMenuComponent implements OnInit, ControlValueAccessor {
-  //Inputs
+export class SelectMenuComponent implements ControlValueAccessor {
   /**
    * Tells if the select menu should allow multi selection
    */
@@ -39,61 +37,62 @@ export class SelectMenuComponent implements OnInit, ControlValueAccessor {
    */
   @Input() options: Array<any> = [];
   /**
-   * Gives the template that will serve as a trigger (or a simple string if the pre-made trigger is to be used)
+   * Label placed in the selection
    */
-  @Input() selectTriggerTemplate: TemplateRef<any> | string = '';
+  @Input() label = '';
   /**
    * Tells if the select menu should be disabled
    */
   @Input() disabled = false;
-
-  //Outputs
   /**
-   * Emits true when the list is opened, false when closed
+   * Emits when the list is opened
    */
-  @Output() opened = new EventEmitter<boolean>();
+  @Output() opened = new EventEmitter<void>();
   /**
-   * Emits true when the list is closed, false when opened
+   * Emits when the list is closed
    */
-  @Output() closed = new EventEmitter<boolean>();
+  @Output() closed = new EventEmitter<void>();
   /**
    * Emits the list of the selected options
    */
   @Output() selectedOption = new EventEmitter<any[]>();
 
   // Form control to get the values selected
-  selectionControl = new FormControl();
+  selectionControl = new FormControl(new Array<any>());
   // True if the box is focused, false otherwise
   listBoxFocused = false;
-  // True if the trigger input is a string, false otherwise
-  triggerIsString = false;
   // Text to be displayed in the trigger when some selections are made
   displayTrigger = '';
 
   //Control access value functions
-  onChange!: (value: number) => void;
+  onChange!: (value: any) => void;
   onTouch!: () => void;
 
-  ngOnInit() {
-    //See if the input selectTriggerTemplate is text or template
-    if (typeof this.selectTriggerTemplate === 'string') {
-      this.triggerIsString = true;
-      console.log(this.triggerIsString);
-    } else {
-      this.triggerIsString = false;
-      console.log(this.triggerIsString);
-      console.log(this.selectTriggerTemplate);
+  /**
+   * Check the focusout to automatically close the select list
+   *
+   * @param event focusout event
+   */
+  @HostListener('focusout', ['$event'])
+  onFocusout(event: any) {
+    if (
+      event?.relatedTarget === null ||
+      event?.relatedTarget?.role !== 'option'
+    ) {
+      this.closeListBox();
     }
-    //Initial value for selectionControl to avoid error in html ngIf
-    this.selectionControl.setValue([]);
   }
 
   /**
-   * Actually change the value of value
-   * value to replace
+   * Write new value
+   *
+   * @param value value set from parent form control
    */
-  writeValue(): void {
-    this.onChangeFunction();
+  writeValue(value: any): void {
+    if (value) {
+      this.selectionControl.setValue([...value]);
+      this.setDisplayTriggerText();
+    }
   }
 
   /**
@@ -120,70 +119,69 @@ export class SelectMenuComponent implements OnInit, ControlValueAccessor {
    * Emit selectedOption output, change trigger text and deal with control access value when an element of the list is clicked
    */
   onChangeFunction() {
-    // Emit the list of values selected as an output
-    this.selectedOption.emit(this.selectionControl.value);
-    // Adapt the text to be displayed in the trigger
-    if (this.selectionControl.value.length > 2) {
-      this.displayTrigger =
-        this.selectionControl.value[0] +
-        ' (+' +
-        (this.selectionControl.value.length - 1) +
-        ' others)';
-    } else if (this.selectionControl.value.length == 2) {
-      this.displayTrigger =
-        this.selectionControl.value[0] +
-        ' (+' +
-        (this.selectionControl.value.length - 1) +
-        ' other)';
-    } else if (this.selectionControl.value.length == 1) {
-      this.displayTrigger = this.selectionControl.value[0];
-    } else {
-      this.displayTrigger = '';
+    if (this.selectionControl.value) {
+      // Emit the list of values selected as an output
+      this.selectedOption.emit(this.selectionControl.value ?? []);
+      this.setDisplayTriggerText();
+      // Manage control access value
+      if (this.onChange && this.onTouch) {
+        this.onChange(this.selectionControl.value);
+        this.onTouch();
+      }
     }
-    // Manage control access value
-    if (this.onChange && this.onTouch) {
-      this.onChange(this.selectionControl.value);
-      this.onTouch();
+    // If no multiselect, close list after selection
+    if (!this.multiselect) {
+      this.closeListBox();
+    }
+  }
+
+  /**
+   * Builds the text displayed from selected options
+   */
+  private setDisplayTriggerText() {
+    // Adapt the text to be displayed in the trigger
+    if (this.selectionControl?.value) {
+      if (this.selectionControl.value.length === 1) {
+        this.displayTrigger = this.selectionControl.value[0];
+      } else if (this.selectionControl.value.length >= 1) {
+        this.displayTrigger =
+          this.selectionControl.value[0] +
+          ' (+' +
+          (this.selectionControl.value.length - 1) +
+          ' others)';
+      } else {
+        this.displayTrigger = '';
+      }
     }
   }
 
   /**
    * Closes the listbox if a click is made outside of the component
-   *
-   * @param relatedTarget target where the click happened
    */
-  closeListBox(relatedTarget: any) {
+  private closeListBox() {
     //If the click was not made on one of the options or children of the component, close list box
-    if (relatedTarget === null) {
-      this.opened.emit(false);
-      this.closed.emit(true);
-      this.listBoxFocused = false;
-    } else if (relatedTarget.role !== 'option') {
-      this.opened.emit(false);
-      this.closed.emit(true);
-      this.listBoxFocused = false;
-    }
+    this.closed.emit();
+    this.listBoxFocused = false;
   }
 
   /**
    * Opens or closes the list when the trigger component is clicked (+ make the corresponding output emissions)
    */
   dealListBox() {
+    //Do nothing if the box is disabled
+    if (this.disabled) {
+      return;
+    }
     // Open the box + emit outputs
     if (this.listBoxFocused) {
-      this.opened.emit(false);
-      this.closed.emit(true);
-      this.listBoxFocused = false;
-    }
-    //Do nothing if the box is disabled
-    else if (this.disabled) {
-      console.log('This toolbox is disabled.');
+      this.closeListBox();
     }
     //Close the box + emit outputs
     else {
-      this.opened.emit(true);
-      this.closed.emit(false);
-      this.listBoxFocused = true;
+      if (!this.listBoxFocused) {
+        this.opened.emit();
+        this.listBoxFocused = true;
+      }
     }
   }
 }
