@@ -62,32 +62,10 @@
       </tbody>
     </table>
     <!-- PAGINATOR CONTENT-->
-    <kendo-datapager
-      [attr.aria-controls]="contentId"
-      [style.width.%]="100"
-      [pageSize]="pageSize"
-      [skip]="skip"
-      [total]="totalItems"
+    <ui-paginator
       (pageChange)="onPageChange($event)"
-    >
-      <ng-template
-        kendoDataPagerTemplate
-        let-totalPages="totalPages"
-        let-currentPage="currentPage"
-      >
-        <kendo-datapager-info class="text-neutral-400"></kendo-datapager-info>
-        <kendo-datapager-page-sizes
-          class="text-neutral-400"
-          [pageSizes]="pageSizeValues"
-        ></kendo-datapager-page-sizes>
-        <div class="k-pager-numbers-wrap">
-          <kendo-datapager-prev-buttons></kendo-datapager-prev-buttons>
-          <kendo-datapager-numeric-buttons
-            [buttonCount]="3"
-          ></kendo-datapager-numeric-buttons>
-          <kendo-datapager-next-buttons></kendo-datapager-next-buttons>
-        </div>
-      </ng-template>
-    </kendo-datapager>
+      [pageSize]="5"
+      [totalItems]="tableData.length"
+    ></ui-paginator>
   </div>
 </div>

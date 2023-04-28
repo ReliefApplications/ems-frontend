@@ -1,9 +1,16 @@
-import { Component, Input, OnDestroy } from '@angular/core';
-import { PageChangeEvent } from '@progress/kendo-angular-pager';
+import { get } from 'lodash';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
 import { BehaviorSubject, Subject, combineLatest, takeUntil } from 'rxjs';
 import { TableSort } from './enums/table-sort-enum';
 import { TableColumnDefinition } from './interfaces/table-column.interface';
-import { get } from 'lodash';
+import { PaginatorComponent } from '../paginator/paginator.component';
+import { UIPageChangeEvent } from '../paginator/interfaces/paginator.interfaces';
 
 /**
  * UI Table component
@@ -13,11 +20,15 @@ import { get } from 'lodash';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
-export class TableComponent<T extends object> implements OnDestroy {
+export class TableComponent<T extends object>
+  implements AfterViewInit, OnDestroy
+{
   destroy$ = new Subject<void>();
   get = get;
   @Input() displayAsCard = false;
   @Input() trackByIdentifier: keyof T = 'id' as keyof T;
+  @ViewChild(PaginatorComponent) paginatorComponent!: PaginatorComponent;
+
   /**
    * Set and update table data and column definition data
    */
@@ -33,7 +44,6 @@ export class TableComponent<T extends object> implements OnDestroy {
     }
     if (data.tableData) {
       this.tableData = data.tableData;
-      this.initializeTable();
     }
   }
 
@@ -43,13 +53,6 @@ export class TableComponent<T extends object> implements OnDestroy {
   columnDefinitionData: TableColumnDefinition[] = [];
   columnDefinitionArray: string[] = [];
 
-  // Paginator properties
-  pageSize = 5;
-  skip = 0;
-  totalItems = 0;
-  contentId = 'content-1';
-  pageSizeValues = [5, 10, 15] as const;
-
   // Sort properties
   sortKey$ = new BehaviorSubject<{ title: string; dataAccessor: string }>({
     title: '',
@@ -58,11 +61,14 @@ export class TableComponent<T extends object> implements OnDestroy {
   sortDirection$ = new BehaviorSubject<TableSort>(TableSort.DEFAULT);
   tableSort = TableSort;
 
+  ngAfterViewInit(): void {
+    this.initializeTable();
+  }
+
   /**
    * Initialize all properties needed to render table
    */
   private initializeTable() {
-    this.totalItems = this.tableData.length;
     this.setPageData();
     this.setSortListeners();
   }
@@ -80,8 +86,8 @@ export class TableComponent<T extends object> implements OnDestroy {
         next: ([column, sortDirection]) => {
           // Default value is the paginated one
           let sortedItems = this.tableData.slice(
-            this.skip,
-            this.skip + this.pageSize
+            this.paginatorComponent.skip,
+            this.paginatorComponent.skip + this.paginatorComponent.pageSize
           );
           if (sortDirection !== TableSort.DEFAULT) {
             sortedItems = this.pagedTableData.sort((row1, row2) => {
@@ -112,11 +118,15 @@ export class TableComponent<T extends object> implements OnDestroy {
 
   /**
    * Set table data content per page
+   *
+   * @param event UIPageChangeEvent
    */
-  private setPageData(): void {
+  private setPageData(event?: UIPageChangeEvent): void {
     this.pagedTableData = this.tableData.slice(
-      this.skip,
-      this.skip + this.pageSize
+      event ? event.skip : this.paginatorComponent.skip,
+      event
+        ? event.skip + event.pageSize
+        : this.paginatorComponent.skip + this.paginatorComponent.pageSize
     );
   }
 
@@ -161,15 +171,16 @@ export class TableComponent<T extends object> implements OnDestroy {
   /**
    * Update page data on page change
    *
-   * @param event Page change event
+   * @param event UIPageChangeEvent
    */
-  onPageChange(event: PageChangeEvent): void {
-    this.skip = event.skip;
-    this.pageSize = event.take;
-    this.setPageData();
+  onPageChange(event?: UIPageChangeEvent): void {
+    this.setPageData(event);
     if (this.sortKey$.value.title) {
       this.sortTableByKey(
-        { title: this.sortKey$.value.title } as TableColumnDefinition,
+        {
+          title: this.sortKey$.value.title,
+          sortable: true,
+        } as TableColumnDefinition,
         true
       );
     }

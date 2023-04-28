@@ -7,11 +7,12 @@ import {
   componentWrapperDecorator,
 } from '@storybook/angular';
 import { CdkTableModule } from '@angular/cdk/table';
-import { PagerModule } from '@progress/kendo-angular-pager';
 import { TableComponent } from './table.component';
 import { TableTemplateResolverDirective } from './table-template-resolver.directive';
 import { TableColumnDefinition } from './interfaces/table-column.interface';
 import { ToggleModule } from '../toggle/toggle.module';
+import { PaginatorModule } from '../paginator/paginator.module';
+import { StorybookTranslateModule } from '../../storybook-translate.module';
 
 type MockedTable = {
   name: string;
@@ -24,12 +25,17 @@ type MockedTable = {
 };
 
 export default {
-  title: 'TableComponent',
+  title: 'Table',
   component: TableComponent,
   decorators: [
     moduleMetadata({
       declarations: [TableTemplateResolverDirective],
-      imports: [CdkTableModule, PagerModule, BrowserAnimationsModule],
+      imports: [
+        CdkTableModule,
+        PaginatorModule,
+        BrowserAnimationsModule,
+        StorybookTranslateModule,
+      ],
     }),
     componentWrapperDecorator(
       (story) => `<div class="h-screen overflow-y-auto">${story}</div>`
