@@ -5,11 +5,11 @@ import { get, flatten, isEqual, isNil } from 'lodash';
 import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plugin';
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
-import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 import { ChartTitle } from '../interfaces';
 import { DEFAULT_PALETTE } from '../const/palette';
 import { getColor } from '../utils/color.util';
+import Color from 'color';
 
 /**
  * Interface containing the settings of the chart legend
@@ -109,7 +109,7 @@ export class SafePieDonutChartComponent implements OnChanges {
             return colors;
           }, []);
           const transparentColors = colors.map((color: string) =>
-            addTransparency(color)
+            Color.rgb(color).fade(0.7).toString()
           );
           return {
             ...x,
