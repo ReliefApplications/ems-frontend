@@ -38,6 +38,21 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../../utils/update-queries';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  SafeGraphQLSelectModule,
+  SafeModalModule,
+  SafeReadableCronModule,
+  CronExpressionControlModule,
+} from '@oort-front/safe';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -47,6 +62,23 @@ const DEFAULT_FIELDS = ['createdBy'];
 
 /** Pull job modal component */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    SafeModalModule,
+    SafeGraphQLSelectModule,
+    SafeReadableCronModule,
+    MatTooltipModule,
+    MatInputModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatExpansionModule,
+    MatChipsModule,
+    CronExpressionControlModule,
+  ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',
   styleUrls: ['./edit-pull-job-modal.component.scss'],

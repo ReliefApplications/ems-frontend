@@ -8,7 +8,6 @@ import { Application } from '../../models/application.model';
 import { CustomNotification } from '../../models/custom-notification.model';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
-import { EditNotificationModalComponent } from './components/edit-notification-modal/edit-notification-modal.component';
 import {
   GetCustomNotificationsQueryResponse,
   GET_CUSTOM_NOTIFICATIONS,
@@ -110,7 +109,10 @@ export class NotificationsComponent implements OnInit, OnDestroy {
    *
    * @param notification The notification to edit
    */
-  editNotification(notification: any): void {
+  async editNotification(notification: any): Promise<void> {
+    const { EditNotificationModalComponent } = await import(
+      './components/edit-notification-modal/edit-notification-modal.component'
+    );
     const dialogRef = this.dialog.open(EditNotificationModalComponent, {
       data: { notification },
       disableClose: true,
@@ -161,7 +163,10 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   /** Opens modal for adding a new notification */
-  addNotification(): void {
+  async addNotification(): Promise<void> {
+    const { EditNotificationModalComponent } = await import(
+      './components/edit-notification-modal/edit-notification-modal.component'
+    );
     const dialogRef = this.dialog.open(EditNotificationModalComponent, {
       disableClose: true,
       autoFocus: false,

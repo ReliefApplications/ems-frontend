@@ -13,7 +13,6 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { SafeAddUserComponent } from '../add-user/add-user.component';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -84,8 +83,11 @@ export class SafeInviteUsersComponent {
   /**
    * Opens a modal to invite a new user.
    */
-  onAdd(): void {
+  async onAdd(): Promise<void> {
     const invitedUsers = this.gridData.data.map((x) => x.email);
+    const { SafeAddUserComponent } = await import(
+      '../add-user/add-user.component'
+    );
     const dialogRef = this.dialog.open(SafeAddUserComponent, {
       data: {
         roles: this.data.roles,

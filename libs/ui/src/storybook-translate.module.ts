@@ -28,8 +28,8 @@ export const httpTranslateLoader = (http: HttpClient) =>
         deps: [HttpClient],
       },
     }),
-    TranslateModule,
   ],
+  exports: [TranslateModule],
 })
 export class StorybookTranslateModule {
   /**

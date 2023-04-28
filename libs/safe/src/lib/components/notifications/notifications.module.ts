@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationsComponent } from './notifications.component';
-import { EditNotificationModalModule } from './components/edit-notification-modal/edit-notification-modal.module';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { TranslateModule } from '@ngx-translate/core';
@@ -19,7 +18,6 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
   declarations: [NotificationsComponent],
   imports: [
     CommonModule,
-    EditNotificationModalModule,
     MatTableModule,
     MatMenuModule,
     TranslateModule,

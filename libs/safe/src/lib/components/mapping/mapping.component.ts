@@ -5,7 +5,6 @@ import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/materia
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { createFormGroup, Mapping, Mappings } from './mapping-forms';
-import { SafeMappingModalComponent } from './mapping-modal/mapping-modal.component';
 
 /**
  * Mapping component to handle all mapping grids.
@@ -49,7 +48,10 @@ export class SafeMappingComponent
    * @param element selected mapping row to edit.
    * @param index index of the mapping row to edit.
    */
-  onEdit(element: Mapping, index: number): void {
+  async onEdit(element: Mapping, index: number): Promise<void> {
+    const { SafeMappingModalComponent } = await import(
+      './mapping-modal/mapping-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeMappingModalComponent, {
       data: {
         mapping: element,
@@ -76,7 +78,10 @@ export class SafeMappingComponent
   /**
    * Open a modal to add a new mapping row.
    */
-  onAdd(): void {
+  async onAdd(): Promise<void> {
+    const { SafeMappingModalComponent } = await import(
+      './mapping-modal/mapping-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeMappingModalComponent, {
       data: {
         mapping: null,

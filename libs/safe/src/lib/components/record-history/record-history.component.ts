@@ -9,7 +9,6 @@ import {
 import { Record } from '../../models/record.model';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { SafeRecordModalComponent } from '../record-modal/record-modal.component';
 import { SafeDownloadService } from '../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
@@ -259,7 +258,10 @@ export class SafeRecordHistoryComponent
    *
    * @param version The version to revert
    */
-  onRevert(version: any): void {
+  async onRevert(version: any): Promise<void> {
+    const { SafeRecordModalComponent } = await import(
+      '../record-modal/record-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeRecordModalComponent, {
       data: {
         recordId: this.id,

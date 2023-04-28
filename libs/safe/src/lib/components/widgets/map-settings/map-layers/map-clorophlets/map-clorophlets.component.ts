@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { clorophletForm } from '../../map-forms';
-import { MapClorophletComponent } from '../map-clorophlet/map-clorophlet.component';
 
 /**
  * List of clorophlets in Map Settings
@@ -41,7 +40,10 @@ export class MapClorophletsComponent {
    *
    * @param index index of clorophlet to edit.
    */
-  public editClorophlet(index: number): void {
+  public async editClorophlet(index: number): Promise<void> {
+    const { MapClorophletComponent } = await import(
+      '../map-clorophlet/map-clorophlet.component'
+    );
     const dialogRef = this.dialog.open(MapClorophletComponent, {
       data: {
         value: this.clorophlets.at(index).value,

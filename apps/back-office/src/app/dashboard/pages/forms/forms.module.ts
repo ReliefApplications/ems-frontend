@@ -14,7 +14,6 @@ import {
   SafeDateModule,
   SafeDividerModule,
 } from '@oort-front/safe';
-import { AddFormModule } from '../../../components/add-form-modal/add-form-modal.module';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -45,7 +44,6 @@ import { AbilityModule } from '@casl/angular';
     MatMenuModule,
     MatIconModule,
     MatChipsModule,
-    AddFormModule,
     MatFormFieldModule,
     MatDatepickerModule,
     MatNativeDateModule,

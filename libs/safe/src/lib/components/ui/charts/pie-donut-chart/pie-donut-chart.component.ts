@@ -5,11 +5,11 @@ import { get, flatten, isEqual, isNil } from 'lodash';
 import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plugin';
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
-import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 import { ChartTitle } from '../interfaces';
 import { DEFAULT_PALETTE } from '../const/palette';
 import { getColor } from '../utils/color.util';
+import Color from 'color';
 
 /**
  * Interface containing the settings of the chart legend
@@ -92,13 +92,6 @@ export class SafePieDonutChartComponent implements OnChanges {
           const categories = get(serie, 'categories', []);
           const data: any[] =
             get(x, 'data', []).reduce((data: any[], item: any) => {
-              console.log(
-                get(
-                  categories.find((c: any) => c.category === item.category),
-                  'visible',
-                  true
-                )
-              );
               get(
                 categories.find((c: any) => c.category === item.category),
                 'visible',
@@ -116,7 +109,7 @@ export class SafePieDonutChartComponent implements OnChanges {
             return colors;
           }, []);
           const transparentColors = colors.map((color: string) =>
-            addTransparency(color)
+            Color.rgb(color).fade(0.7).toString()
           );
           return {
             ...x,
@@ -129,7 +122,6 @@ export class SafePieDonutChartComponent implements OnChanges {
         }
       })
       .filter(Boolean);
-    console.log(this.chartData.datasets);
     this.chartData.labels = flatten(
       this.chartData.datasets.map((x) => x.data.map((y: any) => y.category))
     );
