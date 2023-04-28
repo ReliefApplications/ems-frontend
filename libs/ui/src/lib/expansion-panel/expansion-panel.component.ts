@@ -1,4 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  AfterViewInit,
+  ViewChild,
+} from '@angular/core';
 import {
   trigger,
   state,
@@ -6,6 +13,7 @@ import {
   transition,
   animate,
 } from '@angular/animations';
+import { CdkAccordionItem } from '@angular/cdk/accordion';
 
 /**
  * UI ExpansionPanel component
@@ -39,13 +47,20 @@ import {
     ]),
   ],
 })
-export class ExpansionPanelComponent {
+export class ExpansionPanelComponent implements AfterViewInit {
   @Input() title = '';
   @Input() displayIcon = false;
   @Input() disabled = false;
   @Input() expanded = false;
   @Input() index = '0';
   @Output() closePanel = new EventEmitter<any>();
+  @ViewChild('accordionItem') accordionItem!: CdkAccordionItem;
+
+  ngAfterViewInit(): void {
+    if (this.expanded) {
+      this.accordionItem.toggle();
+    }
+  }
 
   /**
    * Function detects on close and emit
