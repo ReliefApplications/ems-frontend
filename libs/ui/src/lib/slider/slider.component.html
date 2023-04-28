@@ -24,7 +24,7 @@
     step="1"
     (focus)="onFocusFunction()"
     (blur)="onBlurFunction()"
-    (input)="onChangeFunction($event.target.value)"
+    (input)="onChangeFunction($event.target!)"
   />
   <!-- Ticks placement + appearance -->
   <div

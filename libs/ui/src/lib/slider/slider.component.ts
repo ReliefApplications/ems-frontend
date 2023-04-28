@@ -100,13 +100,15 @@ export class SliderComponent
    *
    * @param value The value from the slider
    */
-  onChangeFunction(value: number) {
-    this.currentValue = value;
+  onChangeFunction(value: EventTarget) {
+    this.currentValue = +(value as HTMLInputElement)?.value;
     const min = this.minValue;
     const max = this.maxValue;
-    const newVal = Number(((value - min) * 100) / (max - min));
+    const newVal = Number(
+      ((+(value as HTMLInputElement)?.value - min) * 100) / (max - min)
+    );
     if (this.onChange && this.onTouch) {
-      this.onChange(value);
+      this.onChange(+(value as HTMLInputElement)?.value);
       this.onTouch();
     }
     // Sorta magic numbers based on size of the native UI thumb
