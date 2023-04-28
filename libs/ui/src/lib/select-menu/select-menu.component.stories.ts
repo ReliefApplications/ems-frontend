@@ -15,18 +15,22 @@ export default {
     selectTriggerTemplate: {
       defaultValue: 'Choose an option',
       type: 'string',
+      control: { type: 'string' },
     },
     disabled: {
       defaultValue: false,
       type: 'boolean',
+      control: { type: 'boolean' },
     },
     required: {
       defaultValue: false,
       type: 'boolean',
+      control: { type: 'boolean' },
     },
     multiselect: {
       defaultValue: false,
       type: 'boolean',
+      control: { type: 'boolean' },
     },
     options: {
       defaultValue: ['first option', 'second option'],
