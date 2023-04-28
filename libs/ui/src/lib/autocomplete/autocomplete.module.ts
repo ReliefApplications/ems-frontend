@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AutocompleteComponent } from './autocomplete.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AutocompleteDirective } from './autocomplete.directive';
 
 /**
  * UI Autocomplete Module
  */
 @NgModule({
-  declarations: [AutocompleteComponent],
+  declarations: [AutocompleteDirective],
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  exports: [AutocompleteComponent],
+  exports: [AutocompleteDirective],
 })
 export class AutocompleteModule {}
