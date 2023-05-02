@@ -41,7 +41,7 @@ jobs:
         run: npm i
       # UI
       - name: Build Storybook UI - ${{ steps.get_version.outputs.version }}
-        run: npx nx run ui:build-storybook --outputPath=dist/ui
+        run: npx nx run ui:build-storybook --outputDir=dist/ui
       - name: Archive build Shared Library
         if: success()
         uses: actions/upload-artifact@v3
