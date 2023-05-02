@@ -13,6 +13,7 @@ export * from './lib/avatar-group/avatar-group.module';
 export * from './lib/toggle/toggle.module';
 export * from './lib/breadcrumbs/breadcrumbs.module';
 export * from './lib/divider/divider.module';
+export * from './lib/radio/radio.module';
 
 // === ENUMS === //
 export * from './lib/shared/size.enum';
