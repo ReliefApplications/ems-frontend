@@ -16,7 +16,7 @@ import { SpinnerModule } from '../spinner/spinner.module';
 type StoryType = ButtonComponent & { label?: string };
 
 export default {
-  title: 'ButtonComponent',
+  title: 'Button',
   component: ButtonComponent,
   decorators: [
     moduleMetadata({
