@@ -5,9 +5,9 @@ import { SafeEditorService } from '../../../../../../services/editor/editor.serv
 import { POPUP_EDITOR_CONFIG } from '../../../../../../const/tinymce.const';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { Fields } from '../../layer-fields/layer-fields.component';
-import { getDataKeys } from './utils/keys';
 import { SafeMapLayersService } from '../../../../../../services/map/map-layers.service';
-import { Observable } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Popup text element component.
@@ -22,7 +22,10 @@ import { Observable } from 'rxjs';
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
   ],
 })
-export class TextElementComponent implements OnInit {
+export class TextElementComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() formGroup!: FormGroup;
   @Input() fields$!: Observable<Fields[]>;
 
@@ -39,6 +42,7 @@ export class TextElementComponent implements OnInit {
     private editorService: SafeEditorService,
     private mapLayersService: SafeMapLayersService
   ) {
+    super();
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
@@ -47,8 +51,8 @@ export class TextElementComponent implements OnInit {
 
   ngOnInit(): void {
     // Listen to fields changes
-    this.fields$.subscribe((value) => {
-      const keys = [...getDataKeys(value)];
+    this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      const keys = value.map((field) => `{{${field.name}}}`);
       this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
     });
   }

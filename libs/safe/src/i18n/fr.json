@@ -1438,7 +1438,10 @@
 						"title": "Légende"
 					},
 					"popup": {
-						"label": "Champs affichés dans le popup"
+						"label": "Champs affichés dans le popup",
+						"location": "Emplacement",
+						"of": "{{current}} sur {{total}}",
+						"zoomTo": "Zoomer sur"
 					},
 					"properties": {
 						"basemap": "Fond de carte",

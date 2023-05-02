@@ -35,7 +35,6 @@ import { BASEMAP_LAYERS } from './const/baseMaps';
 import { timeDimensionGeoJSON } from './test/timedimension-test';
 import { SafeMapControlsService } from '../../../services/map/map-controls.service';
 
-// import 'leaflet';
 import * as L from 'leaflet';
 import { Layer } from './layer';
 import { LayerFormData } from './interfaces/layer-settings.type';
@@ -45,7 +44,7 @@ import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { flatten } from 'lodash';
 import { takeUntil } from 'rxjs';
 import { legendControl } from '@oort-front/leaflet';
-
+import { SafeMapPopupService } from './map-popup/map-popup.service';
 /**
  * Cleans the settings object from null values
  *
@@ -68,7 +67,7 @@ const cleanSettingsFromNulls = (settings: MapConstructorSettings) => {
   selector: 'safe-map',
   templateUrl: './map.component.html',
   styleUrls: ['../../../style/map.scss', './map.component.scss'],
-  providers: [SafeMapControlsService],
+  providers: [SafeMapControlsService, SafeMapPopupService],
 })
 export class MapComponent
   extends SafeUnsubscribeComponent
@@ -160,13 +159,15 @@ export class MapComponent
    * @param mapControlsService Map controls handler service
    * @param arcgisService Shared arcgis service
    * @param mapLayersService SafeMapLayersService
+   * @param mapPopupService The map popup handler service
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
     private mapControlsService: SafeMapControlsService,
     private arcgisService: ArcgisService,
-    private mapLayersService: SafeMapLayersService
+    private mapLayersService: SafeMapLayersService,
+    public mapPopupService: SafeMapPopupService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -309,6 +310,9 @@ export class MapComponent
       ),
       initialState.viewpoint.zoom
     );
+
+    // Set the needed map instance for it's popup service instance
+    this.mapPopupService.setMap = this.map;
 
     const promises: Promise<{
       basemaps?: L.Control.Layers.TreeObject[];
@@ -579,17 +583,24 @@ export class MapComponent
       }
     };
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
-      this.mapLayersService.createLayersFromIds(layerIds).then((layers) => {
-        const layersTree: any[] = [];
-        // Add each layer to the tree
-        layers.forEach((layer) => {
-          layersTree.push(parseTreeNode(layer));
+      this.mapLayersService
+        .createLayersFromIds(layerIds, this.mapPopupService)
+        .then((layers) => {
+          const layersTree: any[] = [];
+          // Add each layer to the tree
+          layers.forEach((layer) => {
+            layersTree.push(parseTreeNode(layer));
+          });
+          resolve({ layers: layersTree });
         });
-        resolve({ layers: layersTree });
-      });
     });
   }
 
+  /**
+   * Adds a layer to the map
+   *
+   * @param layer layer to be added to the map
+   */
   public addLayer(layer: Layer): void {
     layer.getLayer().addTo(this.map);
   }

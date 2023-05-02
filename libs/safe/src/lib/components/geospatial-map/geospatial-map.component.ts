@@ -411,7 +411,7 @@ export class GeospatialMapComponent
    * @param latlng the latlng to search for
    * @returns a promise
    */
-  onReverseSearch(latlng: L.LatLng) {
+  private async onReverseSearch(latlng: L.LatLng) {
     return this.arcgisService.reverseSearch(latlng).then((res) => {
       const value = {
         coordinates: {

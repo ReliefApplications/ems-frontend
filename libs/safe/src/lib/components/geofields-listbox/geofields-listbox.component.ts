@@ -14,6 +14,7 @@ import {
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GeoProperties } from '../../components/geospatial-map/geospatial-map.interface';
 
+/** All available fields */
 export const ALL_FIELDS: (keyof GeoProperties)[] = [
   'coordinates',
   'city',
@@ -26,6 +27,7 @@ export const ALL_FIELDS: (keyof GeoProperties)[] = [
   'address',
 ];
 
+/** Component for the selection of the interest fields from geospatial question */
 @Component({
   selector: 'safe-geofields-listbox',
   standalone: true,
@@ -61,6 +63,7 @@ export class GeofieldsListboxComponent implements OnInit, OnChanges {
     );
   }
 
+  /** Emits select fields on action click */
   handleActionClick(): void {
     this.selectionChange.emit(this.selectedFields);
   }

@@ -1,11 +1,10 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import {
   PopupElement,
   PopupElementType,
 } from '../../../../../models/layer.model';
-import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
 import { createPopupElementForm } from '../../map-forms';
 import { Fields } from '../layer-fields/layer-fields.component';
 import { Observable, takeUntil } from 'rxjs';
@@ -21,7 +20,10 @@ import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscr
   templateUrl: './layer-popup.component.html',
   styleUrls: ['./layer-popup.component.scss'],
 })
-export class LayerPopupComponent extends SafeUnsubscribeComponent {
+export class LayerPopupComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() formGroup!: FormGroup;
   @Input() fields$!: Observable<Fields[]>;
 
@@ -36,13 +38,9 @@ export class LayerPopupComponent extends SafeUnsubscribeComponent {
   /**
    * Creates an instance of LayerPopupComponent.
    *
-   * @param mapLayersService Shared map layer Service.
    * @param editorService Shared tinymce editor service.
    */
-  constructor(
-    private mapLayersService: SafeMapLayersService,
-    private editorService: SafeEditorService
-  ) {
+  constructor(private editorService: SafeEditorService) {
     super();
   }
 

@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MapPopupComponent } from './map-popup.component';
+import { SafeMapPopupComponent } from './map-popup.component';
 
-describe('MapPopupComponent', () => {
-  let component: MapPopupComponent;
-  let fixture: ComponentFixture<MapPopupComponent>;
+describe('SafeMapPopupComponent', () => {
+  let component: SafeMapPopupComponent;
+  let fixture: ComponentFixture<SafeMapPopupComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MapPopupComponent],
+      declarations: [SafeMapPopupComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MapPopupComponent);
+    fixture = TestBed.createComponent(SafeMapPopupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

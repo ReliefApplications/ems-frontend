@@ -1431,7 +1431,10 @@
 						"title": "Legend"
 					},
 					"popup": {
-						"label": "Fields displayed in the popup"
+						"label": "Fields displayed in the popup",
+						"location": "Location",
+						"of": "{{current}} of {{total}}",
+						"zoomTo": "Zoom to"
 					},
 					"properties": {
 						"basemap": "Base map",

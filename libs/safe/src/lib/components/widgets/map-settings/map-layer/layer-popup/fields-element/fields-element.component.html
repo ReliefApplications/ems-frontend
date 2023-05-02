@@ -14,7 +14,9 @@
         class="cursor-pointer"
         variant="grey"
         matSuffix
-        [matTooltip]="'components.widget.settings.map.layers.popup.tooltip.text' | translate"
+        [matTooltip]="
+          'components.widget.settings.map.layers.popup.tooltip.text' | translate
+        "
       ></safe-icon>
     </mat-form-field>
     <mat-form-field appearance="outline">
@@ -31,28 +33,29 @@
         class="cursor-pointer"
         variant="grey"
         matSuffix
-        [matTooltip]="'components.widget.settings.map.layers.popup.tooltip.text' | translate"
+        [matTooltip]="
+          'components.widget.settings.map.layers.popup.tooltip.text' | translate
+        "
       ></safe-icon>
     </mat-form-field>
   </div>
   <safe-divider></safe-divider>
-  <div cdkDropList (cdkDropListDropped)="onListDrop($event)">
-    <div
-      *ngFor="let field of fields$ | async; let index = index"
-      cdkDrag
-      class="flex flex-row items-center"
+  <div class="flex flex-row flex-wrap gap-2">
+    <kendo-listbox
+      class="h-72 flex-1"
+      kendoListBoxDataBinding
+      [data]="availableFields"
+      [connectedWith]="selected"
+      [toolbar]="toolbarSettings"
+      (actionClick)="handleActionClick()"
     >
-      <safe-button
-        cdkDragHandle
-        [isIcon]="true"
-        icon="drag_indicator"
-      ></safe-button>
-      <span class="flex-1">{{ field.name }}</span>
-      <safe-button
-        [isIcon]="true"
-        icon="close"
-        (click)="onRemoveField(index)"
-      ></safe-button>
-    </div>
+    </kendo-listbox>
+    <kendo-listbox
+      class="h-72 flex-1"
+      #selected
+      [data]="selectedFields"
+      [toolbar]="false"
+    >
+    </kendo-listbox>
   </div>
 </ng-container>
