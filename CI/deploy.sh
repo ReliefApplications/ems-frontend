@@ -7,7 +7,7 @@ CMD="'""echo '$SSH_PASS' | sudo -S mkdir -p $REMOTE_PATH""'"
 ssh -oStrictHostKeyChecking=no -o PubkeyAuthentication=yes $CONNECTION "'"$CMD"'"
 
 echo -e "Cleaning destination ..."
-CMD="'""cd $REMOTE_PATH && echo '$SSH_PASS' | sudo -S find . -type f ! -path "$(cat CI/exclude-list.txt)" -delete""'"
+CMD="'""cd $REMOTE_PATH && echo '$SSH_PASS' | sudo -S find . -type f ! -path '$(cat CI/exclude-list.txt)' -delete""'"
 ssh -oStrictHostKeyChecking=no -o PubkeyAuthentication=yes $CONNECTION "'"$CMD"'"
 
 echo -e "Synchronizing files ..."
