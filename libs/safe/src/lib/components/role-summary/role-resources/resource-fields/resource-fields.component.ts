@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { sortBy } from 'lodash';
+import { isEqual, sortBy } from 'lodash';
 import { Resource } from '../../../../models/resource.model';
 import { Role } from '../../../../models/user.model';
+import { FormControl } from '@angular/forms';
 
 type ResourceField = {
   name: string;
@@ -30,6 +31,8 @@ export class ResourceFieldsComponent implements OnInit {
     permission: 'canSee' | 'canUpdate';
   }>();
 
+  public filterId = new FormControl<string | null | undefined>(undefined);
+
   public fields = new MatTableDataSource<ResourceField[]>([]);
   public displayedColumns: string[] = ['name', 'actions'];
 
@@ -42,6 +45,42 @@ export class ResourceFieldsComponent implements OnInit {
       })),
       'name'
     );
+    this.filterId.valueChanges.subscribe((value) => {
+      this.filterByTemplate(value);
+    });
+  }
+
+  /**
+   * Filter list of fields by template id
+   *
+   * @param id template id
+   */
+  private filterByTemplate(id?: string | null) {
+    if (id) {
+      this.fields.data = sortBy(
+        this.resource.fields
+          .filter((field: any) =>
+            this.resource.metadata
+              ?.find((x) => x.name === field.name)
+              ?.usedIn?.find((formId) => isEqual(formId, id))
+          )
+          .map((field: any) => ({
+            name: field.name,
+            canSee: !!field.permissions?.canSee?.includes(this.role.id),
+            canUpdate: !!field.permissions?.canUpdate?.includes(this.role.id),
+          })),
+        'name'
+      );
+    } else {
+      this.fields.data = sortBy(
+        this.resource.fields.map((field: any) => ({
+          name: field.name,
+          canSee: !!field.permissions?.canSee?.includes(this.role.id),
+          canUpdate: !!field.permissions?.canUpdate?.includes(this.role.id),
+        })),
+        'name'
+      );
+    }
   }
 
   /**

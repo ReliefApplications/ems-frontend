@@ -12,6 +12,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { FIELD_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
 import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
+import { CommonModule } from '@angular/common';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { SafeModalModule } from '../ui/modal/modal.module';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 /**
  * Interface describing the structure of the data displayed in the dialog
  */
@@ -24,6 +31,20 @@ interface DialogData {
  * Modal to edit aggregation.
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    SafeModalModule,
+    EditorModule,
+  ],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+  ],
   selector: 'safe-edit-calculated-field-modal',
   templateUrl: './edit-calculated-field-modal.component.html',
   styleUrls: ['./edit-calculated-field-modal.component.scss'],

@@ -13,6 +13,14 @@ import {
   createDisplayForm,
   createQueryForm,
 } from '../../query-builder/query-builder-forms';
+import { CommonModule } from '@angular/common';
+import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
+import { SafeModalModule } from '../../ui/modal/modal.module';
+import { flattenDeep } from 'lodash';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -26,6 +34,17 @@ interface DialogData {
  * Component used to display modals regarding layouts
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    SafeQueryBuilderModule,
+    SafeCoreGridModule,
+    SafeModalModule,
+  ],
   selector: 'safe-edit-layout-modal',
   templateUrl: './edit-layout-modal.component.html',
   styleUrls: ['./edit-layout-modal.component.scss'],
@@ -55,10 +74,19 @@ export class SafeEditLayoutModalComponent implements OnInit {
       query: createQueryForm(this.data.layout?.query),
       display: createDisplayForm(this.data.layout?.display),
     });
+
     this.layoutPreviewData = {
       form: this.form,
       defaultLayout: this.data.layout?.display,
     };
+    // Remove fields from layout that are not part of the query
+    const fieldNames = this.getFieldNames(this.form.getRawValue().query.fields);
+    const layoutFields = this.layoutPreviewData.defaultLayout.fields;
+    for (const key in layoutFields) {
+      if (!fieldNames.includes(key)) {
+        delete layoutFields[key];
+      }
+    }
     this.form.get('display')?.valueChanges.subscribe((value: any) => {
       this.layoutPreviewData.defaultLayout = value;
     });
@@ -69,5 +97,24 @@ export class SafeEditLayoutModalComponent implements OnInit {
    */
   onSubmit(): void {
     this.dialogRef.close(this.form?.getRawValue());
+  }
+
+  /**
+   * Get field names
+   *
+   * @param fields list of fields
+   * @param prefix field name prefix
+   * @returns list of field names
+   */
+  private getFieldNames(fields: any[], prefix?: string): any[] {
+    return flattenDeep(
+      fields.map((f) => {
+        if (f.fields) {
+          return this.getFieldNames(f.fields, f.name);
+        } else {
+          return prefix ? `${prefix}.${f.name}` : f.name;
+        }
+      })
+    );
   }
 }

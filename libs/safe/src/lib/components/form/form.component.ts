@@ -29,7 +29,7 @@ import { SafeFormBuilderService } from '../../services/form-builder/form-builder
 import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { SafeFormService } from '../../services/form/form.service';
+import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 
 /**
  * This component is used to display forms
@@ -86,7 +86,7 @@ export class SafeFormComponent
    * @param authService This is the service that handles authentication.
    * @param layoutService Shared layout service
    * @param formBuilderService This is the service that will be used to build forms.
-   * @param formService This is the service that will handle forms.
+   * @param formHelpersService This is the service that will handle forms.
    * @param translate This is the service used to translate text
    */
   constructor(
@@ -96,7 +96,7 @@ export class SafeFormComponent
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private formBuilderService: SafeFormBuilderService,
-    private formService: SafeFormService,
+    private formHelpersService: SafeFormHelpersService,
     private translate: TranslateService
   ) {
     super();
@@ -261,12 +261,12 @@ export class SafeFormComponent
   public onComplete = async () => {
     let mutation: any;
     this.surveyActive = false;
-    await this.formService.uploadFiles(
+    await this.formHelpersService.uploadFiles(
       this.survey,
       this.temporaryFilesStorage,
       this.form?.id
     );
-    this.formService.setEmptyQuestions(this.survey);
+    this.formHelpersService.setEmptyQuestions(this.survey);
     // If is an already saved record, edit it
     if (this.record || this.form.uniqueRecord) {
       const recordId = this.record
@@ -375,7 +375,7 @@ export class SafeFormComponent
    * @param version The version to recover
    */
   private confirmRevertDialog(record: any, version: any) {
-    const dialogRef = this.formService.createRevertDialog(version);
+    const dialogRef = this.formHelpersService.createRevertDialog(version);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.apollo

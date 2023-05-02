@@ -19,7 +19,6 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from '../../graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from '../../graphql/queries';
-import { AddFormModalComponent } from '../../../../../components/add-form-modal/add-form-modal.component';
 import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import { ApolloQueryResult } from '@apollo/client';
 import {
@@ -187,7 +186,10 @@ export class AddStepComponent
   /**
    * Open add form component
    */
-  onAdd(): void {
+  async onAdd(): Promise<void> {
+    const { AddFormModalComponent } = await import(
+      '../../../../../components/add-form-modal/add-form-modal.component'
+    );
     const dialogRef = this.dialog.open(AddFormModalComponent);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
