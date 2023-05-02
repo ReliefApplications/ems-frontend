@@ -119,8 +119,6 @@ export class SafeMapSettingsComponent implements OnInit {
       this.tile.settings?.widgetDisplay
     );
 
-    console.log(this.tileForm);
-
     this.change.emit(this.tileForm);
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
