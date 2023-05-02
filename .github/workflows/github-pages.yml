@@ -63,7 +63,7 @@ jobs:
           name: ui_storybook
           path: dist/ui
       - name: Deploy to github pages Shared Library
-        uses: JamesIves/github-pages-deploy-action@4.4.1
+        uses: JamesIves/github-pages-deploy-action@4
         with:
           token: ${{ secrets.COMPODOC_GITHUB_PAGES_TOKEN }}
           repository-name: ReliefApplications/ReliefApplications.github.io
