@@ -3,10 +3,7 @@ name: Github Pages
 on:
   push:
     branches:
-      - next
-      - next-major
-      - beta
-      - alpha
+      - 2.0.x
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -27,6 +24,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Get package version
+        id: get_version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
       - name: Cache node modules
         uses: actions/cache@v3
         with:
@@ -38,110 +38,35 @@ jobs:
             ${{ runner.OS }}-
       - name: Install Dependencies
         run: npm i
-      # SAFE
-      - name: Build doc Shared Library
-        run: npm run compodoc:safe
+      # UI
+      - name: Build Storybook UI - ${{ steps.get_version.outputs.version }}
+        run: npx nx run ui:build-storybook --outputPath=dist/ui
       - name: Archive build Shared Library
         if: success()
         uses: actions/upload-artifact@v3
         with:
-          name: doc_safe
-          path: documentation/safe
-      # BACK-OFFICE
-      - name: Build doc Back-office
-        run: npm run compodoc:back
-      - name: Archive build Back-office
-        if: success()
-        uses: actions/upload-artifact@v3
-        with:
-          name: doc_back_office
-          path: documentation/back-office
-      # FRONT-OFFICE
-      - name: Build doc Front-office
-        run: npm run compodoc:front
-      - name: Archive build Front-office
-        if: success()
-        uses: actions/upload-artifact@v3
-        with:
-          name: doc_front_office
-          path: documentation/front-office
-      # WEB WIDGETS
-      - name: Build doc Web-widgets
-        run: npm run compodoc:widgets
-      - name: Archive build Front-office
-        if: success()
-        uses: actions/upload-artifact@v3
-        with:
-          name: doc_web_widgets
-          path: documentation/web-widgets
+          name: ui_storybook
+          path: dist/ui
 
-  deploy_safe_documentation:
-    name : Deploy OORT documentation 🚀
+  deploy_storybook:
+    name : Deploy OORT storybook 🚀
     runs-on: ubuntu-latest
     needs: build
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v6
-      - name: Download doc Shared Library
+      - name: Download storybook
         uses: actions/download-artifact@v1
         with:
-          name: doc_safe
-          path: documentation/safe
+          name: ui_storybook
+          path: dist/ui
       - name: Deploy to github pages Shared Library
         uses: JamesIves/github-pages-deploy-action@4.4.1
         with:
           token: ${{ secrets.COMPODOC_GITHUB_PAGES_TOKEN }}
           repository-name: ReliefApplications/ReliefApplications.github.io
           branch: master
-          folder: documentation/safe
-          target-folder: oort/frontend/${{ steps.branch-name.outputs.current_branch }}/shared-library
-          clean: true
-      # BACK-OFFICE
-      - name: Download doc Back-office
-        uses: actions/download-artifact@v1
-        with:
-          name: doc_back_office
-          path: documentation/back-office
-      - name: Deploy to github pages Back-office
-        uses: JamesIves/github-pages-deploy-action@4.4.1
-        with:
-          token: ${{ secrets.COMPODOC_GITHUB_PAGES_TOKEN }}
-          repository-name: ReliefApplications/ReliefApplications.github.io
-          branch: master
-          folder: documentation/back-office
-          target-folder: oort/frontend/${{ steps.branch-name.outputs.current_branch }}/back-office
-          clean: true
-      # FRONT-OFFICE
-      - name: Download doc Front-office
-        uses: actions/download-artifact@v1
-        with:
-          name: doc_front_office
-          path: documentation/front-office
-      - name: Deploy to github pages Front-office
-        uses: JamesIves/github-pages-deploy-action@4.4.1
-        with:
-          token: ${{ secrets.COMPODOC_GITHUB_PAGES_TOKEN }}
-          repository-name: ReliefApplications/ReliefApplications.github.io
-          branch: master
-          folder: documentation/front-office
-          target-folder: oort/frontend/${{ steps.branch-name.outputs.current_branch }}/front-office
-          clean: true
-      # WEB WIDGETS
-      - name: Download doc Web-widgets
-        uses: actions/download-artifact@v1
-        with:
-          name: doc_web_widgets
-          path: documentation/web-widgets
-      - name: Deploy to github pages Web-widgets
-        uses: JamesIves/github-pages-deploy-action@4.4.1
-        with:
-          token: ${{ secrets.COMPODOC_GITHUB_PAGES_TOKEN }}
-          repository-name: ReliefApplications/ReliefApplications.github.io
-          branch: master
-          folder: documentation/web-widgets
-          target-folder: oort/frontend/${{ steps.branch-name.outputs.current_branch }}/web-widgets
+          folder: dist/ui
+          target-folder: oort/frontend/${{ github.ref }}
           clean: true
