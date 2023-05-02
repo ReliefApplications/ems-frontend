@@ -3,7 +3,7 @@ name: Github Pages
 on:
   push:
     branches:
-      - 2.0.x
+      - tailwind
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
