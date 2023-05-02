@@ -31,7 +31,9 @@
           : widget.defaultCols
       "
       [rowSpan]="!canUpdate && widgets.length === 1 ? 4 : widget.defaultRows"
-      class="!shadow-2lg"
+      [class.shadow-2lg]="widget.settings.widgetDisplay?.showBorder ?? true"
+      [class.hide-border]="!(widget.settings.widgetDisplay?.showBorder ?? true)"
+      [class.hover:shadow-2lg]="isBackOffice"
     >
       <safe-floating-options
         *ngIf="canUpdate"

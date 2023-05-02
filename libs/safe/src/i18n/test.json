@@ -1680,6 +1680,10 @@
 				"confirmationMessage": "******",
 				"title": "******"
 			},
+			"display": {
+				"border": "******",
+				"title": "******"
+			},
 			"map": {
 				"defaultTitle": "******",
 				"latitude": "******",

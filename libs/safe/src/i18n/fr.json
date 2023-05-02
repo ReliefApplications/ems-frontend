@@ -1688,6 +1688,10 @@
 				"confirmationMessage": "Souhaitez-vous supprimer le widget ?",
 				"title": "Supprimer le widget"
 			},
+			"display": {
+				"border": "Afficher la bordure du widget",
+				"title": "Affichage des widgets"
+			},
 			"map": {
 				"defaultTitle": "Widget Carte",
 				"latitude": "Latitude",

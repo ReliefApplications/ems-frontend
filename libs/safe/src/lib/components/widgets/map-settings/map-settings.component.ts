@@ -4,6 +4,7 @@ import { UntypedFormGroup, UntypedFormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { debounceTime } from 'rxjs/operators';
 import { cloneDeep } from 'lodash';
+import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 
 /**
  * Filters an array of fields to only include fields that match the given paths.
@@ -113,7 +114,12 @@ export class SafeMapSettingsComponent implements OnInit {
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    this.tileForm = createMapWidgetFormGroup(this.tile.id, this.tile.settings);
+    this.tileForm = extendWidgetForm(
+      createMapWidgetFormGroup(this.tile.id, this.tile.settings),
+      this.tile.settings?.widgetDisplay
+    );
+
+    console.log(this.tileForm);
 
     this.change.emit(this.tileForm);
     this.tileForm?.valueChanges.subscribe(() => {
