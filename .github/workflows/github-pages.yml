@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - 2.0.x
-  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -69,5 +68,5 @@ jobs:
           repository-name: ReliefApplications/ReliefApplications.github.io
           branch: master
           folder: dist/ui
-          target-folder: oort/frontend/${{ github.ref }}
+          target-folder: oort/ui
           clean: true
