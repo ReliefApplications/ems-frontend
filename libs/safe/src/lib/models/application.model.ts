@@ -35,4 +35,5 @@ export interface Application {
   templates?: Template[];
   distributionLists?: DistributionList[];
   customNotifications?: Connection<CustomNotification>;
+  contextualFilter?: any;
 }

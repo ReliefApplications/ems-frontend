@@ -52,7 +52,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
 import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { SafeFormService } from '../../services/form/form.service';
+import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 
 /**
  * Interface of Dialog data.
@@ -134,7 +134,7 @@ export class SafeFormModalComponent
    * @param snackBar This is the service that allows you to display a snackbar.
    * @param authService This is the service that handles authentication.
    * @param formBuilderService This is the service that will be used to build forms.
-   * @param formService This is the service that will handle forms.
+   * @param formHelpersService This is the service that will handle forms.
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular Service to execute code inside Angular environment
@@ -147,7 +147,7 @@ export class SafeFormModalComponent
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
-    private formService: SafeFormService,
+    private formHelpersService: SafeFormHelpersService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private ngZone: NgZone
@@ -300,7 +300,7 @@ export class SafeFormModalComponent
       : 1;
 
     /** we can send to backend empty data if they are not required */
-    this.formService.setEmptyQuestions(survey);
+    this.formHelpersService.setEmptyQuestions(survey);
     // Displays confirmation modal.
     if (this.data.askForConfirm) {
       const dialogRef = this.confirmService.openConfirmModal({
@@ -342,7 +342,7 @@ export class SafeFormModalComponent
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
-    await this.formService.uploadFiles(
+    await this.formHelpersService.uploadFiles(
       survey,
       this.temporaryFilesStorage,
       this.form?.id
@@ -621,7 +621,7 @@ export class SafeFormModalComponent
    * @param version The version to recover
    */
   private confirmRevertDialog(record: any, version: any) {
-    const dialogRef = this.formService.createRevertDialog(version);
+    const dialogRef = this.formHelpersService.createRevertDialog(version);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.apollo
