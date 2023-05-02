@@ -7,6 +7,7 @@ export * from './lib/checkbox/checkbox.module';
 export * from './lib/menu/menu.module';
 export * from './lib/icon/icon.module';
 export * from './lib/select/select.module';
+export * from './lib/tooltip/tooltip.module';
 export * from './lib/spinner/spinner.module';
 export * from './lib/paginator/paginator.module';
 export * from './lib/avatar-group/avatar-group.module';
@@ -32,3 +33,6 @@ export * from './lib/toggle/interfaces/toggle-label.interface';
 export * from './lib/toggle/interfaces/toggle-icon.interface';
 export * from './lib/breadcrumbs/interfaces/breadcrumb.interface';
 export * from './lib/paginator/interfaces/paginator.interfaces';
+
+// === MODULE === //
+export * from './lib/ui.module';
