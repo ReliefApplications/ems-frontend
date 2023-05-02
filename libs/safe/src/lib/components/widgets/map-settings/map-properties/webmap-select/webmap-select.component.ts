@@ -68,9 +68,6 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    * Subscribe to settings changes to update map.
    */
   ngOnInit(): void {
-    if (this.ngControl.value) {
-      console.log(this.ngControl.value);
-    }
     this.search();
     // this way we can wait for 0.5s before sending an update
     this.searchControl.valueChanges
@@ -90,7 +87,6 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
   public selectionOnChange(e: any) {
     this.value = e.value;
     this.onChanged(this.value);
-    console.log(this.value);
   }
 
   /**
@@ -118,7 +114,6 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    */
   writeValue(value: string): void {
     this.value = JSON.parse(JSON.stringify(value));
-    console.log(this.value);
   }
 
   /**

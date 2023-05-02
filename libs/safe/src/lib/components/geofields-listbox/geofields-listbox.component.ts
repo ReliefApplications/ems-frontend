@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ListBoxModule,
@@ -6,6 +13,19 @@ import {
 } from '@progress/kendo-angular-listbox';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GeoProperties } from '../../components/geospatial-map/geospatial-map.interface';
+
+/** All available fields */
+export const ALL_FIELDS: (keyof GeoProperties)[] = [
+  'coordinates',
+  'city',
+  'countryName',
+  'countryCode',
+  'district',
+  'region',
+  // 'street',
+  'subRegion',
+  'address',
+];
 
 /** Component for the selection of the interest fields from geospatial question */
 @Component({
@@ -15,19 +35,9 @@ import { GeoProperties } from '../../components/geospatial-map/geospatial-map.in
   templateUrl: './geofields-listbox.component.html',
   styleUrls: ['./geofields-listbox.component.scss'],
 })
-export class GeofieldsListboxComponent {
-  public availableFields: (keyof GeoProperties)[] = [
-    'coordinates',
-    'city',
-    'countryName',
-    'countryCode',
-    'district',
-    'region',
-    'street',
-    'subRegion',
-    'address',
-  ];
-  @Input() selectedFields: string[] = [];
+export class GeofieldsListboxComponent implements OnInit, OnChanges {
+  @Input() selectedFields: (keyof GeoProperties)[] = [];
+  public availableFields: (keyof GeoProperties)[] = ALL_FIELDS;
   public toolbarSettings: ListBoxToolbarConfig = {
     position: 'right',
     tools: [
@@ -40,6 +50,18 @@ export class GeofieldsListboxComponent {
     ],
   };
   @Output() selectionChange = new EventEmitter();
+
+  ngOnInit(): void {
+    this.availableFields = ALL_FIELDS.filter(
+      (x) => !this.selectedFields.includes(x)
+    );
+  }
+
+  ngOnChanges(): void {
+    this.availableFields = ALL_FIELDS.filter(
+      (x) => !this.selectedFields.includes(x)
+    );
+  }
 
   /** Emits select fields on action click */
   handleActionClick(): void {

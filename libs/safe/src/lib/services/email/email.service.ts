@@ -3,7 +3,6 @@ import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { SafeSnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { HttpHeaders } from '@angular/common/http';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { SafeEmailPreviewComponent } from '../../components/email-preview/email-preview.component';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { prettifyLabel } from '../../utils/prettify';
 import { firstValueFrom, Observable } from 'rxjs';
@@ -213,12 +212,15 @@ export class SafeEmailService {
         { headers }
       )
       .subscribe({
-        next: (res) => {
+        next: async (res) => {
           snackBarRef.instance.data = {
             message: this.translate.instant('common.notifications.email.ready'),
             loading: false,
           };
           setTimeout(() => snackBarRef.dismiss(), 1000);
+          const { SafeEmailPreviewComponent } = await import(
+            '../../components/email-preview/email-preview.component'
+          );
           const dialogRef = this.dialog.open(SafeEmailPreviewComponent, {
             data: res,
             autoFocus: false,

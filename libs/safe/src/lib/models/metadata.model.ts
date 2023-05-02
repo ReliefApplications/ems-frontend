@@ -1,5 +1,5 @@
 /**
- * Model for Notification object
+ * Model for field metadata object
  */
 export interface Metadata {
   name: string;
@@ -13,4 +13,5 @@ export interface Metadata {
   filterable?: boolean;
   options?: { text: string; value: any }[];
   fields?: Metadata[];
+  usedIn?: string[];
 }

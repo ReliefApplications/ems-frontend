@@ -16,7 +16,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { SafeSearchMenuModule } from '../search-menu/search-menu.module';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { SafePreferencesModalModule } from '../preferences-modal/preferences-modal.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
@@ -46,7 +45,6 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     TranslateModule,
     SafeSearchMenuModule,
     OverlayModule,
-    SafePreferencesModalModule,
     SafeDateModule,
     SafeBreadcrumbModule,
     SafeIconModule,

@@ -7,6 +7,13 @@ import {
 import { Aggregation } from '../../../models/aggregation.model';
 import { Resource } from '../../../models/resource.model';
 import { createAggregationForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
+import { CommonModule } from '@angular/common';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { SafeModalModule } from '../../ui/modal/modal.module';
+import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -20,6 +27,17 @@ interface DialogData {
  * Modal to edit aggregation.
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    SafeModalModule,
+    SafeAggregationBuilderModule,
+  ],
   selector: 'safe-edit-aggregation-modal',
   templateUrl: './edit-aggregation-modal.component.html',
   styleUrls: ['./edit-aggregation-modal.component.scss'],

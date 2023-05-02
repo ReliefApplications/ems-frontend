@@ -11,8 +11,8 @@ import { Feature, FeatureCollection } from 'geojson';
 import { MapConstructorSettings } from '../ui/map/interfaces/map.interface';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/public-api';
 // Leaflet
-import '@geoman-io/leaflet-geoman-free';
 import * as L from 'leaflet';
+import '@geoman-io/leaflet-geoman-free';
 import { createCustomDivIcon } from '../ui/map/utils/create-div-icon';
 import { CommonModule } from '@angular/common';
 import { MapModule } from '../ui/map/map.module';
@@ -24,12 +24,12 @@ import {
   updateGeoManLayerPosition,
 } from '../ui/map/utils/get-map-features';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs';
 import { GeospatialFieldsComponent } from './geospatial-fields/geospatial-fields.component';
 import { GeoProperties } from './geospatial-map.interface';
 import { get } from 'lodash';
 import { ArcgisService } from '../../services/map/arcgis.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 
 /**
  * Default geocoding value
@@ -64,9 +64,8 @@ export class GeospatialMapComponent
   @Input() data?: Feature | FeatureCollection;
   @Input() geometry = 'Point';
   @Input() fields: (keyof GeoProperties)[] = [];
-  public geoResult: GeoProperties = DEFAULT_GEOCODING;
 
-  public geoForm!: FormGroup;
+  public geoForm!: ReturnType<typeof this.buildGeoForm>;
 
   // === MAP ===
   public mapSettings!: MapConstructorSettings;
@@ -106,7 +105,7 @@ export class GeospatialMapComponent
   }
 
   ngOnInit(): void {
-    this.setGeoForm();
+    this.geoForm = this.buildGeoForm();
   }
 
   ngAfterViewInit(): void {
@@ -134,6 +133,30 @@ export class GeospatialMapComponent
     this.mapComponent?.map.pm.addControls(this.controls);
     this.setUpPmListeners();
     this.setDataLayers();
+
+    (['lat', 'lng'] as const).forEach((key) => {
+      this.geoForm
+        .get(`coordinates.${key}`)
+        ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(500))
+        .subscribe(() => {
+          const lat = this.geoForm.get('coordinates.lat')?.value;
+          const lng = this.geoForm.get('coordinates.lng')?.value;
+
+          if (lat && lng && this.mapComponent?.map) {
+            const latlng = L.latLng(lat, lng);
+
+            // update the marker position on the map
+            updateGeoManLayerPosition(
+              this.mapComponent?.map,
+              { latlng },
+              this.selectedLayer
+            );
+
+            // updates the geospatial fields
+            this.onReverseSearch(latlng);
+          }
+        });
+    });
   }
 
   /** Set geoman listeners */
@@ -153,6 +176,7 @@ export class GeospatialMapComponent
             size: 24,
           })
         );
+        this.selectedLayer = l.layer;
         this.onReverseSearch(l.layer._latlng).then(() => {
           this.mapChange.emit({
             ...l.layer.toGeoJSON(),
@@ -187,6 +211,7 @@ export class GeospatialMapComponent
 
     // updates question value on removing shapes
     this.mapComponent?.map.on('pm:remove', () => {
+      this.selectedLayer = null;
       const containsPointMarker = (feature: any) =>
         feature.geometry.type === 'Point';
       const content = getMapFeature(this.mapComponent?.map);
@@ -196,6 +221,7 @@ export class GeospatialMapComponent
           'drawMarker',
           false
         );
+        this.geoForm.setValue(DEFAULT_GEOCODING);
         this.mapChange.emit();
       }
     });
@@ -219,8 +245,14 @@ export class GeospatialMapComponent
       });
   }
 
-  private setGeoForm(value?: any): void {
-    this.geoForm = this.fb.group({
+  /**
+   * Builds the form for the geospatial question.
+   *
+   * @param value Value to set the form to
+   * @returns Form group
+   */
+  private buildGeoForm(value?: any) {
+    return this.fb.group({
       coordinates: this.fb.group({
         lat: get<number>(
           value,
@@ -339,16 +371,8 @@ export class GeospatialMapComponent
     if (address) {
       const value = {
         coordinates: {
-          lat: get(
-            address,
-            'coordinates.lat',
-            DEFAULT_GEOCODING.coordinates.lat
-          ),
-          lng: get(
-            address,
-            'coordinates.lat',
-            DEFAULT_GEOCODING.coordinates.lng
-          ),
+          lat: get(address, 'latlng.lat', DEFAULT_GEOCODING.coordinates.lat),
+          lng: get(address, 'latlng.lng', DEFAULT_GEOCODING.coordinates.lng),
         },
         city: get(address, 'properties.City', DEFAULT_GEOCODING.city),
         countryName: get(
@@ -363,7 +387,21 @@ export class GeospatialMapComponent
         subRegion: get(address, 'properties.Subregion', DEFAULT_GEOCODING.city),
         address: get(address, 'properties.StAddr', DEFAULT_GEOCODING.city),
       };
-      this.geoForm.setValue(value);
+      // update the marker position on the map
+      // if (this.selectedLayer) {
+      //   this.mapComponent?.map.removeLayer(this.selectedLayer);
+      // }
+      // (this.mapComponent?.map as any).pm.Draw['Marker']._createMarker({
+      //   latlng: [value.coordinates.lat, value.coordinates.lng],
+      // });
+      updateGeoManLayerPosition(
+        this.mapComponent?.map,
+        {
+          latlng: [value.coordinates.lat, value.coordinates.lng],
+        },
+        this.selectedLayer
+      );
+      this.geoForm.setValue(value, { emitEvent: false });
     }
   }
 
@@ -378,23 +416,47 @@ export class GeospatialMapComponent
       const value = {
         coordinates: {
           lat: get(res, 'latlng.lat', DEFAULT_GEOCODING.coordinates.lat),
-          lng: get(res, 'latlng.lat', DEFAULT_GEOCODING.coordinates.lng),
+          lng: get(res, 'latlng.lng', DEFAULT_GEOCODING.coordinates.lng),
         },
         city: get(res, 'address.City', DEFAULT_GEOCODING.city),
         countryName: get(res, 'address.CntryName', DEFAULT_GEOCODING.city),
-        countryCode: get(res, 'address.Country', DEFAULT_GEOCODING.city),
+        countryCode: get(res, 'address.CountryCode', DEFAULT_GEOCODING.city),
         district: get(res, 'address.District', DEFAULT_GEOCODING.city),
         region: get(res, 'address.Region', DEFAULT_GEOCODING.city),
         street: get(res, 'address.StName', DEFAULT_GEOCODING.city),
         subRegion: get(res, 'address.Subregion', DEFAULT_GEOCODING.city),
-        address: get(res, 'address.StAddr', DEFAULT_GEOCODING.city),
+        address: get(res, 'address.Address', DEFAULT_GEOCODING.city),
       };
-      this.geoForm.setValue(value);
+      this.geoForm.setValue(value, { emitEvent: false });
     });
   }
 }
 
-// Example of a location
+// Result of a reverse search
+// AddNum: '';
+// Addr_type: 'Postal';
+// Address: '';
+// Block: '';
+// City: 'Ashland';
+// CntryName: 'United States';
+// CountryCode: 'USA';
+// District: '';
+// LongLabel: '67831, Ashland, KS, USA';
+// Match_addr: '67831, Ashland, Kansas';
+// MetroArea: '';
+// Neighborhood: '';
+// PlaceName: '67831';
+// Postal: '67831';
+// PostalExt: '';
+// Region: 'Kansas';
+// RegionAbbr: 'KS';
+// Sector: '';
+// ShortLabel: '67831';
+// Subregion: 'Clark County';
+// Territory: '';
+// Type: '';
+
+// Result of a search
 // {
 //   "Loc_name": "World",
 //   "Status": "M",

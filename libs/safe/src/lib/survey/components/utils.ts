@@ -1,6 +1,4 @@
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { SafeFormModalComponent } from '../../components/form-modal/form-modal.component';
-import { SafeResourceGridModalComponent } from '../../components/search-resource-grid-modal/search-resource-grid-modal.component';
 import { UntypedFormGroup } from '@angular/forms';
 import { surveyLocalization } from 'survey-angular';
 
@@ -26,7 +24,10 @@ export const buildSearchButton = (
   );
   searchButton.style.marginRight = '8px';
   if (fieldsSettingsForm) {
-    searchButton.onclick = () => {
+    searchButton.onclick = async () => {
+      const { SafeResourceGridModalComponent } = await import(
+        '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
+      );
       const dialogRef = dialog.open(SafeResourceGridModalComponent, {
         data: {
           multiselect,
@@ -76,7 +77,10 @@ export const buildAddButton = (
     question.survey.locale
   );
   if (question.addRecord && question.addTemplate) {
-    addButton.onclick = () => {
+    addButton.onclick = async () => {
+      const { SafeFormModalComponent } = await import(
+        '../../components/form-modal/form-modal.component'
+      );
       const dialogRef = dialog.open(SafeFormModalComponent, {
         disableClose: true,
         data: {

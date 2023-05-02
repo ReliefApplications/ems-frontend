@@ -26,12 +26,24 @@ import { SafeAuthService } from '../../services/auth/auth.service';
 import { EDIT_RECORD, EditRecordMutationResponse } from './graphql/mutations';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
-import { RecordHistoryModalComponent } from '../record-history-modal/record-history-modal.component';
 import { BehaviorSubject, firstValueFrom, Observable, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import isEqual from 'lodash/isEqual';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { SafeFormService } from '../../services/form/form.service';
+import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
+import { CommonModule } from '@angular/common';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
+import { SafeButtonModule } from '../ui/button/button.module';
+import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
+import { SafeFormActionsModule } from '../form-actions/form-actions.module';
+import { SafeDateModule } from '../../pipes/date/date.module';
+import { SafeModalModule } from '../ui/modal/modal.module';
+import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -47,6 +59,22 @@ interface DialogData {
  * Component used to display a modal to modify a record
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatTabsModule,
+    MatGridListModule,
+    MatIconModule,
+    MatButtonModule,
+    SafeButtonModule,
+    SafeRecordSummaryModule,
+    SafeFormActionsModule,
+    TranslateModule,
+    SafeDateModule,
+    SafeModalModule,
+    SafeSpinnerModule,
+  ],
   selector: 'safe-record-modal',
   templateUrl: './record-modal.component.html',
   styleUrls: ['./record-modal.component.scss'],
@@ -93,7 +121,7 @@ export class SafeRecordModalComponent
    * @param authService This is the service that handles the authentication of the user
    * @param snackBar This is the service that allows you to display a snackbar message to the user.
    * @param formBuilderService This is the service that will be used to build forms.
-   * @param formService This is the service to handle forms.
+   * @param formHelpersService This is the service to handle forms.
    * @param translate This is the service that allows us to translate the text in the modal.
    */
   constructor(
@@ -104,7 +132,7 @@ export class SafeRecordModalComponent
     private authService: SafeAuthService,
     private snackBar: SafeSnackBarService,
     private formBuilderService: SafeFormBuilderService,
-    private formService: SafeFormService,
+    private formHelpersService: SafeFormHelpersService,
     private translate: TranslateService
   ) {
     super();
@@ -257,7 +285,10 @@ export class SafeRecordModalComponent
   /**
    * Opens the history of the record in a modal.
    */
-  public onShowHistory(): void {
+  public async onShowHistory(): Promise<void> {
+    const { RecordHistoryModalComponent } = await import(
+      '../record-history-modal/record-history-modal.component'
+    );
     this.dialog.open(RecordHistoryModalComponent, {
       data: {
         id: this.record.id,
@@ -275,7 +306,7 @@ export class SafeRecordModalComponent
    * @param version The version to recover
    */
   private confirmRevertDialog(record: any, version: any) {
-    const dialogRef = this.formService.createRevertDialog(version);
+    const dialogRef = this.formHelpersService.createRevertDialog(version);
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.apollo

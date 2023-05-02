@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SubscriptionsComponent } from './subscriptions.component';
-import { SubscriptionModalComponent } from './components/subscription-modal/subscription-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
@@ -27,7 +26,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
  * Application subscriptions page module.
  */
 @NgModule({
-  declarations: [SubscriptionsComponent, SubscriptionModalComponent],
+  declarations: [SubscriptionsComponent],
   imports: [
     CommonModule,
     SubscriptionsRoutingModule,

@@ -19,8 +19,6 @@ import {
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
 import { cloneDeep, get } from 'lodash';
-import { SafeAddCardComponent } from './add-card/add-card.component';
-import { SafeCardModalComponent } from './card-modal/card-modal.component';
 
 /** Define max height of summary card */
 const MAX_ROW_SPAN = 4;
@@ -157,7 +155,10 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * Add a new card to the cards form array.
    * Open a modal before adding it.
    */
-  addCard() {
+  async addCard() {
+    const { SafeAddCardComponent } = await import(
+      './add-card/add-card.component'
+    );
     const dialogRef = this.dialog.open(SafeAddCardComponent, {
       data: { isDynamic: this.tileForm?.value.isDynamic },
     });
@@ -217,7 +218,10 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    *
    * @param index index of card to open
    */
-  openCard(index: number) {
+  async openCard(index: number) {
+    const { SafeCardModalComponent } = await import(
+      './card-modal/card-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeCardModalComponent, {
       disableClose: true,
       data: this.cards.at(index).value,

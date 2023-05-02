@@ -3,12 +3,10 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
-import { AddLayoutModalComponent } from '../add-layout-modal/add-layout-modal.component';
 import { UntypedFormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import get from 'lodash/get';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
-import { SafeEditLayoutModalComponent } from '../edit-layout-modal/edit-layout-modal.component';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 
@@ -101,7 +99,10 @@ export class LayoutTableComponent
   /**
    * Adds a new layout to the list.
    */
-  public onAdd(): void {
+  public async onAdd(): Promise<void> {
+    const { AddLayoutModalComponent } = await import(
+      '../add-layout-modal/add-layout-modal.component'
+    );
     const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
         hasLayouts:
@@ -128,7 +129,10 @@ export class LayoutTableComponent
    *
    * @param layout The layout to edit
    */
-  onEditLayout(layout: Layout): void {
+  async onEditLayout(layout: Layout): Promise<void> {
+    const { SafeEditLayoutModalComponent } = await import(
+      '../edit-layout-modal/edit-layout-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
       disableClose: true,
       data: {

@@ -401,6 +401,7 @@
 		"application": {
 			"customStyling": "******",
 			"dashboard": {
+				"editFilter": "******",
 				"empty": "******"
 			},
 			"delete": {
@@ -689,6 +690,12 @@
 				"ariaLabel": "******"
 			},
 			"readAll": "******"
+		},
+		"paginator": {
+			"items": "******",
+			"itemsPerPage": "******",
+			"of": "******",
+			"page": "******"
 		},
 		"preferences": {
 			"dateFormat": "******",
@@ -1730,7 +1737,8 @@
 			"create": "******",
 			"field": {
 				"label": "******",
-				"name": "******"
+				"name": "******",
+				"usedIn": "******"
 			},
 			"new": "******",
 			"notifications": {
