@@ -11,6 +11,7 @@ export * from './lib/spinner/spinner.module';
 export * from './lib/paginator/paginator.module';
 export * from './lib/avatar-group/avatar-group.module';
 export * from './lib/toggle/toggle.module';
+export * from './lib/textarea/textarea.module';
 export * from './lib/breadcrumbs/breadcrumbs.module';
 export * from './lib/divider/divider.module';
 export * from './lib/radio/radio.module';
