@@ -10,12 +10,10 @@ import {
   GET_RESOURCE,
   GET_RESOURCES,
 } from '../graphql/queries';
-import { AddAggregationModalComponent } from '../../../aggregation/add-aggregation-modal/add-aggregation-modal.component';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
-import { SafeEditAggregationModalComponent } from '../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
 import { get } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -164,7 +162,10 @@ export class TabMainComponent
   /**
    * Adds a new aggregation to the list.
    */
-  public addAggregation(): void {
+  public async addAggregation(): Promise<void> {
+    const { AddAggregationModalComponent } = await import(
+      '../../../aggregation/add-aggregation-modal/add-aggregation-modal.component'
+    );
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
         hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
@@ -184,7 +185,10 @@ export class TabMainComponent
   /**
    * Edit chosen aggregation, in a modal. If saved, update it.
    */
-  public editAggregation(): void {
+  public async editAggregation(): Promise<void> {
+    const { SafeEditAggregationModalComponent } = await import(
+      '../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
       disableClose: true,
       data: {

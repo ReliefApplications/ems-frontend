@@ -31,17 +31,11 @@ export class SafeConfirmService {
    * Open confirmation modal.
    *
    * @param data dialog data
-   * @param dialog Material dialog (required for components displayed in modals, as it could show confirmation modal below other modal otherwise)
    * @returns confirmation modal dialog ref
    */
   openConfirmModal(
-    data?: ConfirmDialogData,
-    dialog?: MatDialog
+    data?: ConfirmDialogData
   ): MatDialogRef<SafeConfirmModalComponent> {
-    if (dialog) {
-      return dialog.open(SafeConfirmModalComponent, { data });
-    } else {
-      return this.dialog.open(SafeConfirmModalComponent, { data });
-    }
+    return this.dialog.open(SafeConfirmModalComponent, { data });
   }
 }

@@ -13,8 +13,6 @@ import {
   SafeModalModule,
   SafeDividerModule,
 } from '@oort-front/safe';
-import { AddChannelModalComponent } from './components/add-channel-modal/add-channel-modal.component';
-import { EditChannelModalComponent } from './components/edit-channel-modal/edit-channel-modal.component';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
@@ -24,11 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
  * Channels page module.
  */
 @NgModule({
-  declarations: [
-    ChannelsComponent,
-    AddChannelModalComponent,
-    EditChannelModalComponent,
-  ],
+  declarations: [ChannelsComponent],
   imports: [
     CommonModule,
     ChannelsRoutingModule,

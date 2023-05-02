@@ -4,6 +4,9 @@ import {
   MatLegacyDialog as MatDialog,
   MatLegacyDialogRef as MatDialogRef,
 } from '@angular/material/legacy-dialog';
+import { CommonModule } from '@angular/common';
+import { SafeRecordHistoryModule } from '../record-history/record-history.module';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * This interface describes the structure of the data that will be displayed in the dialog modal
@@ -17,6 +20,8 @@ interface DialogData {
  * This component is used to display a modal with the history of a record
  */
 @Component({
+  standalone: true,
+  imports: [CommonModule, SafeRecordHistoryModule, SafeModalModule],
   selector: 'safe-history-modal',
   templateUrl: './record-history-modal.component.html',
   styleUrls: ['./record-history-modal.component.scss'],

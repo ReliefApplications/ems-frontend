@@ -211,4 +211,5 @@ export interface Dashboard {
   canDelete?: boolean;
   page?: Page;
   step?: Step;
+  showFilter?: boolean;
 }

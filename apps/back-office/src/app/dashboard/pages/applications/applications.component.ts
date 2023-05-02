@@ -20,11 +20,9 @@ import {
   EditApplicationMutationResponse,
   EDIT_APPLICATION,
 } from './graphql/mutations';
-import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Sort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
-import { DuplicateApplicationModalComponent } from '../../../components/duplicate-application-modal/duplicate-application-modal.component';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
@@ -391,7 +389,10 @@ export class ApplicationsComponent
    *
    * @param element application to preview.
    */
-  onPreview(element: Application): void {
+  async onPreview(element: Application): Promise<void> {
+    const { ChoseRoleComponent } = await import(
+      './components/chose-role/chose-role.component'
+    );
     const dialogRef = this.dialog.open(ChoseRoleComponent, {
       data: {
         application: element.id,
@@ -410,7 +411,10 @@ export class ApplicationsComponent
    *
    * @param application application to duplicate.
    */
-  onClone(application: Application): void {
+  async onClone(application: Application): Promise<void> {
+    const { DuplicateApplicationModalComponent } = await import(
+      '../../../components/duplicate-application-modal/duplicate-application-modal.component'
+    );
     const dialogRef = this.dialog.open(DuplicateApplicationModalComponent, {
       data: {
         id: application.id,

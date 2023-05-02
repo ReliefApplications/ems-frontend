@@ -24,7 +24,6 @@ import {
   PageContextT,
   Record,
 } from '@oort-front/safe';
-import { ShareUrlComponent } from './components/share-url/share-url.component';
 import {
   EditDashboardMutationResponse,
   EDIT_DASHBOARD,
@@ -44,7 +43,6 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { ContextDatasourceComponent } from './components/context-datasource/context-datasource.component';
 import { firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
@@ -502,9 +500,56 @@ export class DashboardComponent
     }
   }
 
+  toggleFiltering(): void {
+    if (this.dashboard) {
+      this.apollo
+        .mutate<EditDashboardMutationResponse>({
+          mutation: EDIT_DASHBOARD,
+          variables: {
+            id: this.id,
+            showFilter: !this.dashboard.showFilter,
+          },
+        })
+        .subscribe({
+          next: ({ data, errors }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translateService.instant(
+                  'common.notifications.objectNotUpdated',
+                  {
+                    type: this.translateService.instant('common.dashboard.one'),
+                    error: errors ? errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translateService.instant(
+                  'common.notifications.objectUpdated',
+                  {
+                    type: this.translateService.instant('common.dashboard.one'),
+                    value: '',
+                  }
+                )
+              );
+              this.dashboardService.openDashboard({
+                ...this.dashboard,
+                showFilter: data?.editDashboard.showFilter,
+              });
+            }
+          },
+          complete: () => (this.loading = false),
+        });
+    }
+  }
+
   /** Display the ShareUrl modal with the route to access the dashboard. */
-  public onShare(): void {
+  public async onShare(): Promise<void> {
     const url = `${window.origin}/share/${this.dashboard?.id}`;
+    const { ShareUrlComponent } = await import(
+      './components/share-url/share-url.component'
+    );
     const dialogRef = this.dialog.open(ShareUrlComponent, {
       data: {
         url,
@@ -547,6 +592,9 @@ export class DashboardComponent
       (await firstValueFrom(this.dashboardService.dashboard$))?.page?.context ??
       null;
 
+    const { ContextDatasourceComponent } = await import(
+      './components/context-datasource/context-datasource.component'
+    );
     const dialogRef = this.dialog.open(ContextDatasourceComponent, {
       data: currContext,
     });

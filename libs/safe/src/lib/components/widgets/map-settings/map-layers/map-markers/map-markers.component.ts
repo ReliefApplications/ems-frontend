@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { markerRuleForm } from '../../map-forms';
-import { MapMarkerRuleComponent } from '../map-marker-rule/map-marker-rule.component';
 
 /**
  * Component of Map widget marker rules.
@@ -55,7 +54,10 @@ export class MapMarkersComponent implements OnInit {
    *
    * @param index index of rule to edit.
    */
-  public editRule(index: number): void {
+  public async editRule(index: number): Promise<void> {
+    const { MapMarkerRuleComponent } = await import(
+      '../map-marker-rule/map-marker-rule.component'
+    );
     const dialogRef = this.dialog.open(MapMarkerRuleComponent, {
       data: {
         value: this.rules.at(index).value,

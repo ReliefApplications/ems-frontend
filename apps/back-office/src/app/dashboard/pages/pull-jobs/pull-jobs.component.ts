@@ -20,7 +20,6 @@ import {
 } from './graphql/mutations';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
-import { EditPullJobModalComponent } from './components/edit-pull-job-modal/edit-pull-job-modal.component';
 import { ApolloQueryResult } from '@apollo/client';
 import {
   getCachedValues,
@@ -149,7 +148,10 @@ export class PullJobsComponent
    * Displays the AddSubscription modal.
    * Creates the pull job on close.
    */
-  onAdd(): void {
+  async onAdd(): Promise<void> {
+    const { EditPullJobModalComponent } = await import(
+      './components/edit-pull-job-modal/edit-pull-job-modal.component'
+    );
     const dialogRef = this.dialog.open(EditPullJobModalComponent, {
       autoFocus: false,
       data: {
@@ -318,7 +320,10 @@ export class PullJobsComponent
    *
    * @param element pull job to edit.
    */
-  onEdit(element: any): void {
+  async onEdit(element: any): Promise<void> {
+    const { EditPullJobModalComponent } = await import(
+      './components/edit-pull-job-modal/edit-pull-job-modal.component'
+    );
     const dialogRef = this.dialog.open(EditPullJobModalComponent, {
       data: {
         channels: this.channels,

@@ -22,6 +22,8 @@ export class SafeButtonComponent {
 
   @Input() isIcon = false;
 
+  @Input() fontSet!: string;
+
   @HostBinding('class.disabled')
   @Input()
   disabled = false;
