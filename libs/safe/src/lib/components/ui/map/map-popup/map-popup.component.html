@@ -7,6 +7,7 @@
       }})
     </p>
     <div class="flex ml-auto">
+      <!-- Navigate between items -->
       <ng-container *ngIf="points.length > 1">
         <safe-button
           [isIcon]="true"
@@ -23,6 +24,7 @@
         >
         </safe-button>
       </ng-container>
+      <!-- Close popup -->
       <safe-button
         [size]="buttonSize.SMALL"
         [isIcon]="true"
@@ -36,9 +38,7 @@
     <div [innerHTML]="currentHtml"></div>
   </div>
   <div class="pl-2 my-1 flex">
-    <p
-      *ngIf="currZoom > 10"
-      (click)="zoomToCurrentFeature()"
+    <p (click)="zoomToCurrentFeature()"
       class="underline inline text-base text-primary-500 cursor-pointer ml-auto mr-2 w-fit mb-1 mt-0"
     >
       {{ 'components.widget.settings.map.popup.zoomTo' | translate }}

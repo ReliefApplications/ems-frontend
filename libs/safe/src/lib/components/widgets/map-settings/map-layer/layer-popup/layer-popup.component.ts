@@ -5,7 +5,6 @@ import {
   PopupElement,
   PopupElementType,
 } from '../../../../../models/layer.model';
-import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
 import { createPopupElementForm } from '../../map-forms';
 import { Fields } from '../layer-fields/layer-fields.component';
 import { Observable, takeUntil } from 'rxjs';
@@ -39,13 +38,9 @@ export class LayerPopupComponent
   /**
    * Creates an instance of LayerPopupComponent.
    *
-   * @param mapLayersService Shared map layer Service.
    * @param editorService Shared tinymce editor service.
    */
-  constructor(
-    private mapLayersService: SafeMapLayersService,
-    private editorService: SafeEditorService
-  ) {
+  constructor(private editorService: SafeEditorService) {
     super();
   }
 
