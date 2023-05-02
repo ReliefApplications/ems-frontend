@@ -79,12 +79,23 @@ export interface EditPageMutationResponse {
 // === EDIT DASHBOARD ===
 /** Edit dashboard gql mutation definition */
 export const EDIT_DASHBOARD = gql`
-  mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
-    editDashboard(id: $id, structure: $structure, name: $name) {
+  mutation editDashboard(
+    $id: ID!
+    $structure: JSON
+    $name: String
+    $showFilter: Boolean
+  ) {
+    editDashboard(
+      id: $id
+      structure: $structure
+      name: $name
+      showFilter: $showFilter
+    ) {
       id
       name
       structure
       modifiedAt
+      showFilter
       permissions {
         canSee {
           id

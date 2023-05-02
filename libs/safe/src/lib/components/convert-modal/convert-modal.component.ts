@@ -16,6 +16,17 @@ import {
 import { Form } from '../../models/form.model';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-list';
+import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { TranslateModule } from '@ngx-translate/core';
+import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
  * An interface to define the structure of the data displayed in the modal
@@ -30,6 +41,21 @@ interface DialogData {
  * This modal allows the user to configurate the convertion.
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatListModule,
+    MatProgressSpinnerModule,
+    TranslateModule,
+    SafeModalModule,
+  ],
   selector: 'safe-convert-modal',
   templateUrl: './convert-modal.component.html',
   styleUrls: ['./convert-modal.component.scss'],

@@ -30,8 +30,8 @@ module.exports = {
           100: 'rgb(var(--secondary-100) / <alpha-value>)', //lighter
           150: 'rgb(var(--secondary-150) / <alpha-value>)', //darker
           200: 'rgb(var(--secondary-200) / <alpha-value>)', //200
-        }
-      }
+        },
+      },
     },
   },
   plugins: [require('@tailwindcss/forms')],

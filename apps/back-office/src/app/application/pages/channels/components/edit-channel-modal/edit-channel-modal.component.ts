@@ -9,11 +9,47 @@ import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
 import { Channel } from '@oort-front/safe';
+import { CommonModule } from '@angular/common';
+import { ChannelsRoutingModule } from '../../channels-routing.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
+import {
+  SafeButtonModule,
+  SafeModalModule,
+  SafeDividerModule,
+} from '@oort-front/safe';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Edit channel component, act as modal.
  */
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    ChannelsRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatSelectModule,
+    SafeDividerModule,
+    SafeButtonModule,
+    MatButtonModule,
+    TranslateModule,
+    SafeModalModule,
+  ],
   selector: 'app-edit-channel-modal',
   templateUrl: './edit-channel-modal.component.html',
   styleUrls: ['./edit-channel-modal.component.scss'],

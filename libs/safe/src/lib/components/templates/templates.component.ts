@@ -1,8 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { EditTemplateModalComponent } from './components/edit-template-modal/edit-template-modal.component';
-import { SafeConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { TemplateTypeEnum } from '../../models/template.model';
@@ -44,7 +42,10 @@ export class SafeTemplatesComponent implements OnInit {
    *
    * @param template The template to edit
    */
-  editEmailTemplate(template: any): void {
+  async editEmailTemplate(template: any): Promise<void> {
+    const { EditTemplateModalComponent } = await import(
+      './components/edit-template-modal/edit-template-modal.component'
+    );
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       data: template,
       disableClose: true,
@@ -68,7 +69,10 @@ export class SafeTemplatesComponent implements OnInit {
    *
    * @param template template to be deleted
    */
-  deleteTemplate(template: any): void {
+  async deleteTemplate(template: any): Promise<void> {
+    const { SafeConfirmModalComponent } = await import(
+      '../confirm-modal/confirm-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: this.translate.instant('common.deleteObject', {
@@ -93,7 +97,10 @@ export class SafeTemplatesComponent implements OnInit {
   }
 
   /** Opens modal for adding a new email template */
-  addEmailTemplate(): void {
+  async addEmailTemplate(): Promise<void> {
+    const { EditTemplateModalComponent } = await import(
+      './components/edit-template-modal/edit-template-modal.component'
+    );
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       disableClose: true,
     });

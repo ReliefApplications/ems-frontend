@@ -73,6 +73,15 @@
         >
         </safe-button>
         <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="toggleFiltering()">
+            <mat-icon>tune</mat-icon>
+            <!-- todo(translate) -->
+            {{
+              dashboard.showFilter
+                ? 'Deactivate filtering'
+                : 'Activate filtering'
+            }}
+          </button>
           <button mat-menu-item (click)="onAppSelection()">
             <mat-icon>file_copy</mat-icon>
             {{ 'common.duplicate' | translate }}
@@ -178,3 +187,4 @@
   (goToNextStep)="goToNextStep.emit($event)"
   (add)="onAdd($event)"
 ></safe-widget-grid>
+<safe-dashboard-filter *ngIf="dashboard?.showFilter"></safe-dashboard-filter>

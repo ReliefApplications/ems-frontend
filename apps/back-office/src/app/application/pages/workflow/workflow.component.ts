@@ -124,7 +124,7 @@ export class WorkflowComponent
           } else {
             if (
               workflow.steps &&
-              workflow.steps.length > (this.workflow.steps?.length || [])
+              workflow.steps.length > (this.workflow.steps || []).length
             ) {
               this.activeStep = workflow.steps.length - 1;
             }

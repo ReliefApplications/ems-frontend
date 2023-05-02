@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeMappingComponent } from './mapping.component';
-import { SafeMappingModalComponent } from './mapping-modal/mapping-modal.component';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
@@ -17,7 +16,7 @@ import { SafeModalModule } from '../ui/modal/modal.module';
  * Mapping module
  */
 @NgModule({
-  declarations: [SafeMappingComponent, SafeMappingModalComponent],
+  declarations: [SafeMappingComponent],
   imports: [
     CommonModule,
     TranslateModule,
@@ -32,6 +31,6 @@ import { SafeModalModule } from '../ui/modal/modal.module';
     SafeButtonModule,
     SafeModalModule,
   ],
-  exports: [SafeMappingComponent, SafeMappingModalComponent],
+  exports: [SafeMappingComponent],
 })
 export class SafeMappingModule {}

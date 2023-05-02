@@ -17,7 +17,6 @@ import {
   RowArgs,
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
-import { SafeExpandedCommentComponent } from '../expanded-comment/expanded-comment.component';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   EXPORT_SETTINGS,
@@ -46,12 +45,9 @@ import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { SafeGridService } from '../../../../services/grid/grid.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { SafeExportComponent } from '../export/export.component';
 import { GridLayout } from '../models/grid-layout.model';
-import { SafeErrorsModalComponent } from '../errors-modal/errors-modal.component';
 import { get, intersection } from 'lodash';
 import { applyLayoutFormat } from '../../../widgets/summary-card/parser/utils';
-import { SafeTileDataComponent } from '../../../widget-grid/floating-options/menu/tile-data/tile-data.component';
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
@@ -652,7 +648,8 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   /**
    * Opens export modal.
    */
-  public onExport(): void {
+  public async onExport(): Promise<void> {
+    const { SafeExportComponent } = await import('../export/export.component');
     const dialogRef = this.dialog.open(SafeExportComponent, {
       data: {
         export: this.exportSettings,
@@ -684,7 +681,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
    * @param item Item to display data of.
    * @param field field name.
    */
-  public onExpandText(item: any, field: string): void {
+  public async onExpandText(item: any, field: string): Promise<void> {
+    const { SafeExpandedCommentComponent } = await import(
+      '../expanded-comment/expanded-comment.component'
+    );
     const dialogRef = this.dialog.open(SafeExpandedCommentComponent, {
       data: {
         title: field,
@@ -709,7 +709,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
    *
    * @param item The item of the grid
    */
-  public showErrors(item: any): void {
+  public async showErrors(item: any): Promise<void> {
+    const { SafeErrorsModalComponent } = await import(
+      '../errors-modal/errors-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeErrorsModalComponent, {
       data: {
         incrementalId: item.incrementalId,
@@ -727,7 +730,10 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   /**
    * Emit an event to open settings window
    */
-  public openSettings(): void {
+  public async openSettings(): Promise<void> {
+    const { SafeTileDataComponent } = await import(
+      '../../../widget-grid/floating-options/menu/tile-data/tile-data.component'
+    );
     const dialogRef = this.dialog.open(SafeTileDataComponent, {
       disableClose: true,
       data: {

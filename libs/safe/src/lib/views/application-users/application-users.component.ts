@@ -3,7 +3,6 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { Subject, takeUntil } from 'rxjs';
-import { SafeInviteUsersComponent } from '../../components/users/components/invite-users/invite-users.component';
 import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import { Role } from '../../models/user.model';
@@ -63,7 +62,10 @@ export class SafeApplicationUsersComponent
   /**
    * Show a dialog for inviting someone
    */
-  onInvite(): void {
+  async onInvite(): Promise<void> {
+    const { SafeInviteUsersComponent } = await import(
+      '../../components/users/components/invite-users/invite-users.component'
+    );
     const dialogRef = this.dialog.open(SafeInviteUsersComponent, {
       data: {
         roles: this.roles,
