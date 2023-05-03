@@ -12,6 +12,7 @@ import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
 import { TextareaModule } from './textarea/textarea.module';
 import { RadioModule } from './radio/radio.module';
+import { DialogModule } from './dialog/dialog.module';
 
 /**
  * UI Library Module
@@ -31,6 +32,9 @@ import { RadioModule } from './radio/radio.module';
     DividerModule,
     TextareaModule,
     RadioModule,
+  ],
+  imports: [
+    DialogModule
   ],
 })
 export class UiModule {}
