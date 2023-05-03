@@ -10,7 +10,7 @@ type PanelOption = {
 };
 
 export default {
-  title: 'ExpansionPanelComponent',
+  title: 'Expansion Panel',
   component: ExpansionPanelComponent,
   argTypes: {
     title: {
@@ -45,7 +45,7 @@ const panelOptions: PanelOption[] = [
   {
     title: 'Item 2',
     expanded: false,
-    text: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis excepturi incidunt ipsum deleniti labore, tempore non nam doloribus blanditiis veritatis illo autem iure aliquid ullam rem tenetur deserunt velit culpa?',
+    text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae ab harum eius, ullam, ex expedita animi nihil, et ut fugit commodi quam! Saepe, recusandae quo sapiente id quidem velit, beatae error distinctio asperiores nesciunt officiis iusto. Sed, aliquid labore pariatur, optio sequi recusandae blanditiis voluptas perferendis sint eveniet inventore harum porro nemo consequatur nesciunt quos delectus, id amet quae? Exercitationem ab debitis ipsum sapiente? A, culpa, quaerat assumenda amet nulla id, quod quia facilis tempora fugit aut provident natus omnis doloremque dolorem odit! Voluptatum assumenda, ipsum vel architecto possimus adipisci ipsam. Fugiat hic impedit rem voluptatem expedita architecto fugit.',
   },
   {
     title: 'Item 3',
@@ -53,6 +53,7 @@ const panelOptions: PanelOption[] = [
     text: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis excepturi incidunt ipsum deleniti labore, tempore non nam doloribus blanditiis veritatis illo autem iure aliquid ullam rem tenetur deserunt velit culpa?',
   },
 ];
+
 /**
  * Template expansion panel group
  *
@@ -62,17 +63,19 @@ const panelOptions: PanelOption[] = [
 const Template: StoryFn<ExpansionPanelComponent> = (
   args: ExpansionPanelComponent
 ) => {
+  args.displayIcon = true;
   return {
     component: ExpansionPanelComponent,
     template: `
       <cdk-accordion>
         <ui-expansion-panel 
-          *ngFor="let panel of panelOptions; let i = index" 
+          *ngFor="let panel of panelOptions; let i = index; let last = last" 
           [disabled]="${args.disabled}" 
-          [displayIcon]="'${args.displayIcon}'" 
+          [displayIcon]="${args.displayIcon}" 
           [expanded]="panel.expanded"
           [title]="panel.title"
           [index]="i"
+          [last]="last"
         >
           <ng-container ngProjectAs="text">{{panel.text}}</ng-container>
         </ui-expansion-panel>
@@ -85,5 +88,42 @@ const Template: StoryFn<ExpansionPanelComponent> = (
   };
 };
 
-/** Primary expansion panel */
-export const Primary = Template.bind({});
+/** Toggle expansion panel */
+export const TogglePanel = Template.bind({});
+
+/**
+ * Template multi expansion panel group
+ *
+ * @param {ExpansionPanelComponent} args args
+ * @returns ExpansionPanelComponent
+ */
+const TemplateMulti: StoryFn<ExpansionPanelComponent> = (
+  args: ExpansionPanelComponent
+) => {
+  args.displayIcon = true;
+  return {
+    component: ExpansionPanelComponent,
+    template: `
+      <cdk-accordion [multi]="true">
+        <ui-expansion-panel 
+          *ngFor="let panel of panelOptions; let i = index; let last = last" 
+          [disabled]="${args.disabled}" 
+          [displayIcon]="${args.displayIcon}" 
+          [expanded]="panel.expanded"
+          [title]="panel.title"
+          [index]="i"
+          [last]="last"
+        >
+          <ng-container ngProjectAs="text">{{panel.text}}</ng-container>
+        </ui-expansion-panel>
+      </cdk-accordion>
+    `,
+    props: {
+      ...args,
+      panelOptions,
+    },
+  };
+};
+
+/** Multi expansion panel */
+export const MultiPanel = TemplateMulti.bind({});

@@ -5,6 +5,8 @@ import {
   EventEmitter,
   AfterViewInit,
   ViewChild,
+  ElementRef,
+  Renderer2,
 } from '@angular/core';
 import {
   trigger,
@@ -16,7 +18,7 @@ import {
 import { CdkAccordionItem } from '@angular/cdk/accordion';
 
 /**
- * UI ExpansionPanel component
+ * UI Expansion Panel Component
  */
 @Component({
   selector: 'ui-expansion-panel',
@@ -24,14 +26,8 @@ import { CdkAccordionItem } from '@angular/cdk/accordion';
   styleUrls: ['./expansion-panel.component.scss'],
   animations: [
     trigger('contentExpansion', [
-      state(
-        'expanded',
-        style({ height: '*', opacity: 1, visibility: 'visible' })
-      ),
-      state(
-        'collapsed',
-        style({ height: '0px', opacity: 0, visibility: 'hidden' })
-      ),
+      state('expanded', style({ height: '*', opacity: 1 })),
+      state('collapsed', style({ height: '0px', opacity: 0 })),
       transition(
         'expanded <=> collapsed',
         animate('300ms cubic-bezier(.37,1.04,.68,.98)')
@@ -49,12 +45,21 @@ import { CdkAccordionItem } from '@angular/cdk/accordion';
 })
 export class ExpansionPanelComponent implements AfterViewInit {
   @Input() title = '';
-  @Input() displayIcon = false;
+  @Input() displayIcon = true;
   @Input() disabled = false;
   @Input() expanded = false;
   @Input() index = '0';
+  @Input() last = true;
   @Output() closePanel = new EventEmitter<any>();
+
   @ViewChild('accordionItem') accordionItem!: CdkAccordionItem;
+
+  /**
+   * UI Panel Expansion constructor
+   *
+   * @param renderer Renderer2
+   */
+  constructor(private renderer: Renderer2) {}
 
   ngAfterViewInit(): void {
     if (this.expanded) {
@@ -64,9 +69,24 @@ export class ExpansionPanelComponent implements AfterViewInit {
 
   /**
    * Function detects on close and emit
+   *
+   * @param contentContainer content container from the expansion panel
    */
-  onClosed() {
-    console.log('closed');
+  onClosed(contentContainer: ElementRef) {
+    setTimeout(() => {
+      this.renderer.addClass(contentContainer, 'hidden');
+    }, 100);
     this.closePanel.emit(true);
+  }
+
+  /**
+   * Function detects on open
+   * Method added in order to keep the animation on expansion panel closed as well
+   *
+   * @param contentContainer content container from the expansion panel
+   */
+  onOpened(contentContainer: ElementRef) {
+    this.renderer.removeClass(contentContainer, 'hidden');
+    this.renderer.addClass(contentContainer, 'block');
   }
 }

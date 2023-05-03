@@ -26,7 +26,7 @@ import { ExpansionPanelModule } from './expansion-panel/expansion-panel.module';
     PaginatorModule,
     ToggleModule,
     DividerModule,
+    ExpansionPanelModule,
   ],
-  imports: [ExpansionPanelModule],
 })
 export class UiModule {}
