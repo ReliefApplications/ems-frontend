@@ -11,7 +11,7 @@ input[type='range'] {
     100%;
 }
 
-div.normalBackgroundColorThumb input[type='range']::-webkit-slider-thumb {
+div input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   height: 15px;
   width: 15px;
@@ -20,7 +20,7 @@ div.normalBackgroundColorThumb input[type='range']::-webkit-slider-thumb {
   @apply z-50 rounded-full bg-primary-400 hover:cursor-grab active:cursor-grabbing shadow-md transition-colors;
 }
 
-div.minBackgroundColorThumb input[type='range']::-webkit-slider-thumb {
+div.min-value input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   height: 15px;
   width: 15px;
@@ -44,7 +44,7 @@ input[type='range']::-webkit-slider-runnable-track {
 }
 
 .ticks {
-  line-height: 1rem;
+  line-height: 1.2rem;
   font-size: 0.75rem;
   transform: scale(2, 0.3);
   position: relative;

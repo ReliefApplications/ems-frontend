@@ -1,6 +1,7 @@
 import {
   Component,
   forwardRef,
+  HostListener,
   Input,
   OnChanges,
   OnInit,
@@ -47,6 +48,22 @@ export class SliderComponent
   onChange!: (value: number) => void;
   onTouch!: () => void;
 
+  /**
+   * Listener for focusout event
+   */
+  @HostListener('focusout', [])
+  onFocusOut() {
+    this.hideSliderProperties();
+  }
+
+  /**
+   * Listener for focusin event
+   */
+  @HostListener('focusin', [])
+  onFocus() {
+    this.showSliderProperties();
+  }
+
   ngOnInit(): void {
     this.range = this.createRange();
   }
@@ -90,22 +107,30 @@ export class SliderComponent
   /**
    * When focus on the input range, show bubble and ticks
    */
-  onFocusFunction() {
+  showSliderProperties() {
     this.bubbleToShow = true;
     this.ticksToShow = true;
   }
 
   /**
+   * When the input range is not in focus anymore, stop showing the ticks and bubble
+   */
+  hideSliderProperties() {
+    this.bubbleToShow = false;
+    this.ticksToShow = false;
+  }
+
+  /**
    * When hover the component, show ticks (did not do in class cause would create conflicts with the focus thing)
    */
-  onHoverFunction() {
+  showTicks() {
     this.ticksToShow = true;
   }
 
   /**
    * When leaves hover the component, if bubble is not showing (no focus), strop displaying ticks
    */
-  onHoverLeaveFunction() {
+  hideTicks() {
     if (!this.bubbleToShow) {
       this.ticksToShow = false;
     }
@@ -117,26 +142,16 @@ export class SliderComponent
    * @param value The value from the slider
    */
   onChangeFunction(value: EventTarget) {
-    this.currentValue = +(value as HTMLInputElement)?.value;
+    this.currentValue = +((value as HTMLInputElement)?.value ?? value);
     const min = this.minValue;
     const max = this.maxValue;
-    const newVal = Number(
-      ((+(value as HTMLInputElement)?.value - min) * 100) / (max - min)
-    );
+    const newVal = Number(((this.currentValue - min) * 100) / (max - min));
     if (this.onChange && this.onTouch) {
-      this.onChange(+(value as HTMLInputElement)?.value);
+      this.onChange(this.currentValue);
       this.onTouch();
     }
     // Sorta magic numbers based on size of the native UI thumb
     this.bubbleStyle = String(newVal) + '%';
-  }
-
-  /**
-   * When the input range is not in focus anymore, stop showing the ticks and bubble
-   */
-  onBlurFunction() {
-    this.bubbleToShow = false;
-    this.ticksToShow = false;
   }
 
   /**

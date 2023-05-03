@@ -27,7 +27,7 @@ export default {
  *  Slider default template
  */
 const sliderTemplate = `<div [formGroup]="formGroup" class="py-5">
-<ui-slider formControlName="slider" [minValue]="minValue" [maxValue]="maxValue" name="externalVal"></ui-slider>
+<ui-slider formControlName="slider" [minValue]="minValue" [maxValue]="maxValue"></ui-slider>
 </div>
 <br>
 <p>value: {{formGroup.get('slider').value}}</p>
