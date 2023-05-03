@@ -46,8 +46,6 @@ export default {
   ],
 } as Meta<SelectMenuComponent>;
 
-// Used to test outputs
-let selection: any[] = [];
 /**
  * Options for select menu
  */
@@ -81,8 +79,7 @@ const closeEvent = () => {
  * @param event output
  */
 const selectEvent = (event: any) => {
-  selection = event;
-  console.log(selection);
+  console.log(event);
 };
 
 /**
@@ -132,8 +129,6 @@ ${selectTemplate}
 <br>
 <p>value: {{formGroup.get('selectMenu').value}}</p>
 <p>touched: {{formGroup.get('selectMenu').touched}}</p>
-<p class="inline">selection (from event) : </p>
-<span *ngFor="let item of selection">{{item}}, </span>
 `;
 
 /**
@@ -145,8 +140,6 @@ ${customTriggerSelectTemplate}
 <br>
 <p>value: {{formGroup.get('selectMenu').value}}</p>
 <p>touched: {{formGroup.get('selectMenu').touched}}</p>
-<p class="inline">selection (from event) : </p>
-<span *ngFor="let item of selection">{{item}}, </span>
 `;
 
 /**
@@ -175,7 +168,6 @@ const TemplateStandaloneSelection: Story<SelectMenuComponent> = (
     props: {
       ...args,
       formGroup,
-      selection,
       selectEvent,
       openEvent,
       closeEvent,
@@ -217,7 +209,6 @@ const TemplateStandaloneSelectionDefaultValue: Story<SelectMenuComponent> = (
     props: {
       ...args,
       formGroup,
-      selection,
       selectEvent,
       openEvent,
       closeEvent,
@@ -250,7 +241,6 @@ const TemplateMultiSelection: Story<SelectMenuComponent> = (
     props: {
       ...args,
       formGroup,
-      selection,
       selectEvent,
       openEvent,
       closeEvent,
@@ -280,7 +270,6 @@ const TemplateDisabledSelection: Story<SelectMenuComponent> = (
     props: {
       ...args,
       formGroup,
-      selection,
       selectEvent,
       openEvent,
       closeEvent,
@@ -311,7 +300,6 @@ const TemplateTemplateRefSelection: Story<SelectMenuComponent> = (
     props: {
       ...args,
       formGroup,
-      selection,
       selectEvent,
       openEvent,
       closeEvent,
@@ -347,7 +335,6 @@ const TemplateDifferentObjectsSelection: Story<SelectMenuComponent> = (
     props: {
       ...args,
       formGroup,
-      selection,
       selectEvent,
       openEvent,
       closeEvent,
