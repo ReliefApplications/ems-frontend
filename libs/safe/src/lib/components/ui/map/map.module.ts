@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { MapComponent } from './map.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapPopupComponent } from './map-popup/map-popup.component';
+import { MatSliderModule } from '@angular/material/slider';
 
 /** Module for the map UI component */
 @NgModule({
   declarations: [MapComponent, MapPopupComponent],
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, MatSliderModule],
   exports: [MapComponent],
 })
 export class MapModule {}

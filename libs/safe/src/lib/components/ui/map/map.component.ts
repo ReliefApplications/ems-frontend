@@ -16,6 +16,7 @@ import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
 import 'leaflet-fullscreen';
 import 'esri-leaflet';
+import { DomUtil } from 'leaflet';
 import * as Vector from 'esri-leaflet-vector';
 import { TranslateService } from '@ngx-translate/core';
 //import { takeUntil } from 'rxjs';
@@ -344,7 +345,19 @@ export class MapComponent
     });
 
     // Add zoom control
-    L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
+    //L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
+
+    const customZoomControl = L.Control.extend({
+      options: {
+        position: 'bottomleft',
+      },
+
+      onAdd: function () {
+        return DomUtil.get('zoom-slider-control');
+      },
+    });
+
+    this.map.addControl(new customZoomControl());
     this.setMapControls(controls, true);
   }
 
