@@ -1,19 +1,15 @@
 <div class="flex h-screen">
   <!-- SIDENAV CONTENT -->
-  <div class="flex-col w-64 border-r transition transform duration-500 delay-150 ease-in-out"
-    [ngClass]="{
-      'flex': showSidenav,
-      'hidden': !showSidenav,
-      '-translate-x-0': showSidenav,
-      '-translate-x-full': !showSidenav
-    }"
+  <div class="flex-col w-64 transition-all duration-500 delay-150 ease-in-out overflow-hidden"
     style="height: calc(100vh - 1em);  /* adjust for scrollbar height */"
+    [ngClass]="{
+      'border-r': showSidenav,
+      'border-none': !showSidenav,
+      'max-w-0': !showSidenav,
+      'max-w-xs': showSidenav
+    }"
   >
-    <div class="flex flex-col flex-grow pb-4 overflow-y-auto h-full transform duration-500 ease-in-out"
-      [ngStyle]="{
-        'transform': showSidenav ? 'translateX(0)' : 'translateX(-100%)'
-      }"
-    >
+  <div class="flex flex-col flex-grow pb-4 overflow-y-auto h-full">
       <ng-content select="sidenavContent"></ng-content>
     </div>
   </div>
