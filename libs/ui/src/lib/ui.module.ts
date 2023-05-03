@@ -13,6 +13,7 @@ import { DividerModule } from './divider/divider.module';
 import { TextareaModule } from './textarea/textarea.module';
 import { RadioModule } from './radio/radio.module';
 import { NavigationTabModule } from './navigation-tab/navigation-tab.module';
+import { TabModule } from './tab/tab.module';
 
 /**
  * UI Library Module
@@ -33,6 +34,7 @@ import { NavigationTabModule } from './navigation-tab/navigation-tab.module';
     TextareaModule,
     RadioModule,
     NavigationTabModule,
+    TabModule,
   ],
 })
 export class UiModule {}
