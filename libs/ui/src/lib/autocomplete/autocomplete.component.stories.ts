@@ -1,11 +1,11 @@
 import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
-import { AutocompleteComponent } from './autocomplete.component';
 import { AutocompleteModule } from './autocomplete.module';
 import { AutocompleteOptions } from './interfaces/autocomplete-options.interface';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { AutocompleteDirective } from './autocomplete.directive';
 
 /** Autocomplete options example */
-const options: AutocompleteOptions[] = [
+const SIMPLE_OPTIONS: AutocompleteOptions[] = [
   {
     label: 'A',
   },
@@ -20,130 +20,186 @@ const options: AutocompleteOptions[] = [
   },
 ];
 
+/** Autocomplete grouped options example */
+const GROUPED_OPTIONS: AutocompleteOptions[] = [
+  {
+    label: 'A',
+    children: [
+      {
+        label: 'option A 1',
+      },
+    ],
+  },
+  {
+    label: 'B',
+    children: [
+      {
+        label: 'B 1',
+      },
+      {
+        label: 'b',
+      },
+    ],
+  },
+  {
+    label: 'C',
+  },
+  {
+    label: 'D',
+    children: [
+      {
+        label: 'D 1',
+      },
+      {
+        label: 'D two',
+      },
+      {
+        label: 'D a b',
+      },
+    ],
+  },
+];
+
 export default {
   title: 'Autocomplete',
-  component: AutocompleteComponent,
-  argTypes: {
-    placeholder: {
-      control: 'text',
-    },
-    required: {
-      control: 'boolean',
-    },
-    options: {
-      control: 'array',
-    },
-    disabled: {
-      type: 'boolean',
-    },
-  },
   decorators: [
     moduleMetadata({
       imports: [AutocompleteModule, ReactiveFormsModule],
     }),
   ],
-} as Meta<AutocompleteComponent>;
+} as Meta<AutocompleteDirective>;
+
+/** Callback to test the autocomplete directive opened event */
+const openedAutocompletePanel = () => {
+  console.log('Opened autocomplete panel event');
+};
+
+/** Callback to test the autocomplete directive closed event */
+const closesAutocompletePanel = () => {
+  console.log('Closed autocomplete panel event');
+};
 
 /**
- * Template autocomplete
+ * Callback to test the autocomplete directive optionSelected event
  *
- * @param {AutocompleteComponent} args args
- * @returns AutocompleteComponent
+ * @param option Option selected
  */
-const Template: StoryFn<AutocompleteComponent> = (
-  args: AutocompleteComponent
-) => ({
-  props: args,
-});
+const selectedOption = (option: string) => {
+  console.log('Option selected: ', option);
+};
+
+/**
+ * Simple autocomplete template
+ *
+ * @param {AutocompleteDirective} args args
+ * @returns AutocompleteDirective
+ */
+const SimpleAutocompletePanelTemplate: StoryFn<AutocompleteDirective> = (
+  args: AutocompleteDirective
+) => {
+  args.options = SIMPLE_OPTIONS;
+  return {
+    template: `
+      <input
+        type="text"
+        placeholder="Select a value"
+        uiAutocomplete
+        [uiAutocompleteOptions]="options"
+        (opened)="openedAutocompletePanel()"
+        (closed)="closesAutocompletePanel()"
+        (optionSelected)="selectedOption($event)"
+        class="relative w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset sm:leading-6 focus:ring-2 focus:ring-inset"
+      >
+    `,
+    props: {
+      ...args,
+      openedAutocompletePanel,
+      closesAutocompletePanel,
+      selectedOption,
+    },
+  };
+};
+
+/** Autocomplete panel inject in a input with simples (not grouped) options */
+export const SimpleAutocompletePanel = SimpleAutocompletePanelTemplate.bind({});
+
+/**
+ * Grouped autocomplete template
+ *
+ * @param {AutocompleteDirective} args args
+ * @returns AutocompleteDirective
+ */
+const GroupedAutocompletePanelTemplate: StoryFn<AutocompleteDirective> = (
+  args: AutocompleteDirective
+) => {
+  args.options = GROUPED_OPTIONS;
+  return {
+    template: `
+      <input
+        type="text"
+        placeholder="Select a value"
+        uiAutocomplete
+        [uiAutocompleteOptions]="options"
+        (opened)="openedAutocompletePanel()"
+        (closed)="closesAutocompletePanel()"
+        (optionSelected)="selectedOption($event)"
+        class="relative w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset sm:leading-6 focus:ring-2 focus:ring-inset"
+      >
+    `,
+    props: {
+      ...args,
+      openedAutocompletePanel,
+      closesAutocompletePanel,
+      selectedOption,
+    },
+  };
+};
+
+/** Autocomplete panel inject in a input with grouped options */
+export const GroupedAutocompletePanel = GroupedAutocompletePanelTemplate.bind(
+  {}
+);
 
 /**
  * Form control template autocomplete
  *
- * @param {AutocompleteComponent} args args
- * @returns AutocompleteComponent
+ * @param {AutocompleteDirective} args args
+ * @returns AutocompleteDirective
  */
-const FormControlTemplate: StoryFn<AutocompleteComponent> = (
-  args: AutocompleteComponent
+const FormControlTemplate: StoryFn<AutocompleteDirective> = (
+  args: AutocompleteDirective
 ) => {
-  const formGroup = new FormGroup({
-    autocomplete: new FormControl(''),
-  });
-  args.options = options;
-  args.required = true;
-  args.placeholder = 'Select a value';
+  const formControl = new FormControl('');
+  args.options = SIMPLE_OPTIONS;
   return {
-    component: AutocompleteComponent,
     template: `
-      <form [formGroup]="formGroup">
-        <ui-autocomplete
-          [options]="options"
-          [required]="required"
-          [placeholder]="placeholder"
-          formControlName="autocomplete"
-        ></ui-autocomplete>
+      <form>
+        <input
+          matInput
+          type="text"
+          [formControl]="formControl"
+          placeholder="Select a value to the form group"
+          uiAutocomplete
+          [uiAutocompleteOptions]="options"
+          (opened)="openedAutocompletePanel()"
+          (closed)="closesAutocompletePanel()"
+          (optionSelected)="selectedOption($event)"
+          class="relative w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset sm:leading-6 focus:ring-2 focus:ring-inset"
+        >
       </form>
       <br>
-      <p>value: {{formGroup.get('autocomplete').value}}</p>
-      <p>touched: {{formGroup.get('autocomplete').touched}}</p>
+      <p>value: {{formControl.value}}</p>
+      <p>touched: {{formControl.touched}}</p>
     `,
     props: {
       ...args,
-      formGroup,
+      formControl,
+      openedAutocompletePanel,
+      closesAutocompletePanel,
+      selectedOption,
     },
   };
 };
 
 /** Form control autocomplete */
 export const FormAutocomplete = FormControlTemplate.bind({});
-
-/** Autocomplete with grouped options */
-export const GroupedOptions = Template.bind({});
-GroupedOptions.args = {
-  required: true,
-  options: [
-    {
-      label: 'A',
-      children: [
-        {
-          label: 'option A 1',
-        },
-      ],
-    },
-    {
-      label: 'B',
-      children: [
-        {
-          label: 'B 1',
-        },
-        {
-          label: 'b',
-        },
-      ],
-    },
-    {
-      label: 'C',
-    },
-    {
-      label: 'D',
-      children: [
-        {
-          label: 'D 1',
-        },
-        {
-          label: 'D two',
-        },
-        {
-          label: 'D a b',
-        },
-      ],
-    },
-  ],
-};
-
-/** Autocomplete with simple options */
-export const SimpleOptions = Template.bind({});
-SimpleOptions.args = {
-  placeholder: 'Select a value',
-  required: false,
-  options,
-};
