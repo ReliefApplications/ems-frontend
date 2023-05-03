@@ -5,6 +5,7 @@ import {
   Output,
   EventEmitter,
   HostListener,
+  TemplateRef,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -44,6 +45,11 @@ export class SelectMenuComponent implements ControlValueAccessor {
    * Tells if the select menu should be disabled
    */
   @Input() disabled = false;
+  /**
+   * Any custom template provided for display
+   */
+  @Input()
+  customTemplate!: TemplateRef<any>;
   /**
    * Emits when the list is opened
    */
@@ -90,7 +96,7 @@ export class SelectMenuComponent implements ControlValueAccessor {
    */
   writeValue(value: any): void {
     if (value) {
-      this.selectionControl.setValue([...value]);
+      this.selectionControl.setValue([...value], { emitEvent: false });
       this.setDisplayTriggerText();
     }
   }
@@ -139,18 +145,20 @@ export class SelectMenuComponent implements ControlValueAccessor {
    * Builds the text displayed from selected options
    */
   private setDisplayTriggerText() {
-    // Adapt the text to be displayed in the trigger
+    // Adapt the text to be displayed in the trigger if no custom template for display is provided
     if (this.selectionControl?.value) {
-      if (this.selectionControl.value.length === 1) {
-        this.displayTrigger = this.selectionControl.value[0];
-      } else if (this.selectionControl.value.length >= 1) {
-        this.displayTrigger =
-          this.selectionControl.value[0] +
-          ' (+' +
-          (this.selectionControl.value.length - 1) +
-          ' others)';
-      } else {
-        this.displayTrigger = '';
+      if (!this.customTemplate) {
+        if (this.selectionControl.value.length === 1) {
+          this.displayTrigger = this.selectionControl.value[0];
+        } else if (this.selectionControl.value.length >= 1) {
+          this.displayTrigger =
+            this.selectionControl.value[0] +
+            ' (+' +
+            (this.selectionControl.value.length - 1) +
+            ' others)';
+        } else {
+          this.displayTrigger = '';
+        }
       }
     }
   }

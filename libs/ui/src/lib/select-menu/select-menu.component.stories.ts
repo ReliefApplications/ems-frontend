@@ -1,5 +1,3 @@
-import { addons } from '@storybook/addons';
-import { FORCE_RE_RENDER } from '@storybook/core-events';
 import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -50,20 +48,32 @@ export default {
 
 // Used to test outputs
 let selection: any[] = [];
+/**
+ * Options for select menu
+ */
+const options = [
+  'French',
+  'English',
+  'Japanese',
+  'Javanese',
+  'Polish',
+  'German',
+  'Spanish',
+  'Dutch',
+  'Chinese',
+];
 
 /**
  * Used to test if emission of output "opened" works
  */
 const openEvent = () => {
   console.log('isOpened');
-  addons.getChannel().emit(FORCE_RE_RENDER);
 };
 /**
  * Used to test if emission of output "closed" works
  */
 const closeEvent = () => {
   console.log('isClosed');
-  addons.getChannel().emit(FORCE_RE_RENDER);
 };
 /**
  * Used to test if emission of output "selectedOption" works
@@ -73,7 +83,6 @@ const closeEvent = () => {
 const selectEvent = (event: any) => {
   selection = event;
   console.log(selection);
-  addons.getChannel().emit(FORCE_RE_RENDER);
 };
 
 /**
@@ -93,16 +102,9 @@ formControlName="selectMenu"
 /**
  * Custom template trigger to be placed between the select tag
  */
-const customTriggerSelect = `<selectTriggerTemplate>
-<ng-container *ngTemplateOutlet="otherTemplate"></ng-container>
-</selectTriggerTemplate>
-<ng-template #otherTemplate>
-<div class="text-red-600">
-{{formGroup.get('selectMenu').value?.[0]}}
-<span *ngIf="(formGroup.get('selectMenu').value?.length || 0) > 1" class="example-additional-selection">
-(+{{(formGroup.get('selectMenu').value?.length || 0) - 1}} {{formGroup.get('selectMenu').value?.length === 2 ? 'other' : 'others'}})
-</span>
-</div>
+const customTriggerSelect = `
+<ng-template #customTemplate>
+<span class="inline-flex items-center rounded-full bg-pink-50 px-2 py-1 text-xs font-medium text-pink-700 ring-1 ring-inset ring-pink-700/10">{{formGroup.get('selectMenu').value}}</span>
 </ng-template>`;
 
 /**
@@ -116,7 +118,8 @@ formControlName="selectMenu"
 [label]="label" 
 [options]="options"
 [multiselect]="multiselect"
-[disabled]="disabled">
+[disabled]="disabled"
+[customTemplate]="customTemplate">
 ${customTriggerSelect}
 </ui-select-menu>`;
 
@@ -162,17 +165,7 @@ const formGroup = new FormGroup({
 const TemplateStandaloneSelection: Story<SelectMenuComponent> = (
   args: SelectMenuComponent
 ) => {
-  args.options = [
-    'French',
-    'English',
-    'Japanese',
-    'Javanese',
-    'Polish',
-    'German',
-    'Spanish',
-    'Dutch',
-    'Chinese',
-  ];
+  args.options = options;
   args.multiselect = false;
   args.disabled = false;
   args.label = 'Choose your language';
@@ -203,20 +196,11 @@ export const StandaloneSelection = TemplateStandaloneSelection.bind({});
 const TemplateMultiSelection: Story<SelectMenuComponent> = (
   args: SelectMenuComponent
 ) => {
-  args.options = [
-    'French',
-    'English',
-    'Japanese',
-    'Javanese',
-    'Polish',
-    'German',
-    'Spanish',
-    'Dutch',
-    'Chinese',
-  ];
+  args.options = options;
   args.multiselect = true;
   args.disabled = false;
   args.label = 'Choose your language';
+  formGroup.get('selectMenu')?.setValue([options[0]]);
   return {
     component: SelectMenuComponent,
     template: selectMenuTemplate,
@@ -244,17 +228,7 @@ export const MultiSelection = TemplateMultiSelection.bind({});
 const TemplateDisabledSelection: Story<SelectMenuComponent> = (
   args: SelectMenuComponent
 ) => {
-  args.options = [
-    'French',
-    'English',
-    'Japanese',
-    'Javanese',
-    'Polish',
-    'German',
-    'Spanish',
-    'Dutch',
-    'Chinese',
-  ];
+  args.options = options;
   args.disabled = true;
   args.label = 'Choose your language';
   return {
@@ -284,17 +258,7 @@ export const DisabledSelection = TemplateDisabledSelection.bind({});
 const TemplateTemplateRefSelection: Story<SelectMenuComponent> = (
   args: SelectMenuComponent
 ) => {
-  args.options = [
-    'French',
-    'English',
-    'Japanese',
-    'Javanese',
-    'Polish',
-    'German',
-    'Spanish',
-    'Dutch',
-    'Chinese',
-  ];
+  args.options = options;
   args.multiselect = false;
   args.disabled = false;
   args.label = 'Choose your language';

@@ -1,5 +1,5 @@
 <!-- Wrapper of the entire select menu, has focusout event -->
-<div class="relative" tabindex="0">
+<div class="relative">
   <button
     class="relative w-full cursor-default rounded-md py-1.5 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 sm:leading-6"
     (click)="dealListBox()"
@@ -13,19 +13,18 @@
     <span
       class="block truncate text-sm"
       [ngClass]="{
-        corner_label: displayTrigger
+        corner_label: selectionControl?.value.length
       }"
       >{{ label }}</span
     >
-
-    <div class="customSelectTriggerTemplate">
-      <ng-content select="selectTriggerTemplate"></ng-content>
-    </div>
-    <div class="default">
-      <ng-container *ngIf="displayTrigger">
-        <span class="block truncate text-sm">{{ displayTrigger }}</span>
-      </ng-container>
-    </div>
+    <ng-container *ngIf="selectionControl?.value.length">
+      <ng-container [ngTemplateOutlet]="customTemplate"> </ng-container>
+      <div class="default">
+        <ng-container *ngIf="!customTemplate">
+          <span class="block truncate text-sm">{{ displayTrigger }}</span>
+        </ng-container>
+      </div>
+    </ng-container>
 
     <!-- icon at right of the button -->
     <span
@@ -56,7 +55,6 @@
     [ngClass]="{
       'opacity-100': listBoxFocused
     }"
-    [tabindex]="0"
   >
     <!-- Element of the list -->
     <li
@@ -68,7 +66,6 @@
       }"
       class="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9 hover:bg-primary-600 hover:text-white"
       (click)="onChangeFunction()"
-      [tabindex]="0"
     >
       <!-- Text, changes if selected -->
       <span class="font-normal block truncate">{{ option }}</span>
