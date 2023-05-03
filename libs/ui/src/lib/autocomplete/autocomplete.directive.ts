@@ -1,4 +1,14 @@
-import { Directive, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import {
+  Directive,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  ElementRef,
+  Renderer2,
+  HostListener,
+  AfterContentInit,
+} from '@angular/core';
 import { AutocompleteOptions } from './interfaces/autocomplete-options.interface';
 
 /**
@@ -7,8 +17,8 @@ import { AutocompleteOptions } from './interfaces/autocomplete-options.interface
 @Directive({
   selector: '[uiAutocomplete]',
 })
-export class AutocompleteDirective implements OnInit {
-  @Input('uiAutocompleteOptions') options: AutocompleteOptions[] = [];
+export class AutocompleteDirective implements OnInit, AfterContentInit {
+  @Input('uiAutocomplete') options: AutocompleteOptions[] = [];
 
   @Output() opened: EventEmitter<void> = new EventEmitter();
   @Output() closed: EventEmitter<void> = new EventEmitter();
@@ -19,51 +29,92 @@ export class AutocompleteDirective implements OnInit {
   private autocompletePanel!: HTMLUListElement;
   private selectedLabel?: string;
 
+  private autocompleteClasses = [
+    'z-10',
+    'p-1',
+    'max-h-60',
+    'w-full',
+    'overflow-auto',
+    'mt-2',
+    'rounded-md',
+    'bg-white',
+    'py-1',
+    'ring-1',
+    'ring-black',
+    'ring-opacity-5',
+    'focus:outline-none',
+    'sm:text-sm',
+    'py-1',
+    'hidden',
+  ] as const;
+
+  private autocompleteItemClasses = [
+    'text-gray-900',
+    'relative',
+    'pl-2',
+  ] as const;
+
+  /**
+   * UI Autocomplete directive
+   *
+   * @param el Element reference where the directive is attached
+   * @param renderer Renderer2
+   */
+  constructor(private el: ElementRef, private renderer: Renderer2) {
+    this.inputElement = el.nativeElement as HTMLInputElement;
+  }
+
+  /**
+   * Check the blur to automatically close the select list
+   */
+  @HostListener('blur', ['$event'])
+  onBlur() {
+    // Hide the autocomplete panel when clicking outside the input element
+    if (this.panelOpened) {
+      setTimeout(() => {
+        this.hideAutocompletePanel();
+        this.panelOpened = false;
+        this.closed.emit();
+      }, 100);
+    }
+  }
+
+  /**
+   * Check the click event into the input to automatically close the select list
+   */
+  @HostListener('click', ['$event'])
+  onClick() {
+    if (!this.panelOpened) {
+      this.showAutocompletePanel();
+      this.panelOpened = true;
+      this.opened.emit();
+    }
+  }
+
   ngOnInit(): void {
-    // Find the input element to attach the autocomplete panel to
-    this.inputElement = document.querySelector(
-      '[uiAutocomplete]'
-    ) as HTMLInputElement;
     // Create the autocomplete panel element
-    this.autocompletePanel = document.createElement('ul');
-    this.autocompletePanel.classList.add(
-      'z-10',
-      'p-1',
-      'max-h-60',
-      'w-full',
-      'overflow-auto',
-      'mt-2',
-      'rounded-md',
-      'bg-white',
-      'py-1',
-      'ring-1',
-      'ring-black',
-      'ring-opacity-5',
-      'focus:outline-none',
-      'sm:text-sm',
-      'py-1'
+    this.autocompletePanel = this.renderer.createElement('ul');
+    this.autocompleteClasses.forEach((auClass) => {
+      this.renderer.addClass(this.autocompletePanel, auClass);
+    });
+    this.renderer.appendChild(
+      this.inputElement.parentNode,
+      this.autocompletePanel
     );
 
     // Add a listener to the input element to show the autocomplete panel and filter the options
     this.inputElement.addEventListener('input', () => {
-      if (this.selectedLabel !== this.inputElement.value)
+      if (this.selectedLabel !== this.inputElement.value) {
         this.selectedLabel = undefined;
+      }
       this.setAutocompletePanel();
     });
+  }
 
-    // Hide the autocomplete panel when clicking outside the input element
-    document.addEventListener('click', (event) => {
-      if (!this.inputElement.contains(event.target as Node)) {
-        this.autocompletePanel.remove();
-        this.panelOpened = false;
-        this.closed.emit();
-      } else if (!this.panelOpened) {
-        // Or display the panel when clicking on it for the first time
-        this.panelOpened = true;
-        this.opened.emit();
-        this.setAutocompletePanel();
-      }
-    });
+  ngAfterContentInit(): void {
+    this.selectedLabel = this.inputElement.value ?? undefined;
+    // Create default autocomplete panel with all options
+    this.setAutocompletePanel();
   }
 
   /** Creates the autocomplete panel with the options list */
@@ -80,13 +131,22 @@ export class AutocompleteDirective implements OnInit {
 
     // Create the autocomplete panel items
     this.setAutocompletePanelItems(filteredOptions, this.autocompletePanel);
+  }
 
-    // Show the autocomplete panel
-    if (filteredOptions.length > 0) {
-      this.inputElement.parentNode?.appendChild(this.autocompletePanel);
-    } else {
-      this.autocompletePanel.remove();
-    }
+  /**
+   * Display the autocomplete panel
+   */
+  private showAutocompletePanel() {
+    this.renderer.removeClass(this.autocompletePanel, 'hidden');
+    this.renderer.addClass(this.autocompletePanel, 'block');
+  }
+
+  /**
+   * Hide the autocomplete panel
+   */
+  private hideAutocompletePanel() {
+    this.renderer.removeClass(this.autocompletePanel, 'block');
+    this.renderer.addClass(this.autocompletePanel, 'hidden');
   }
 
   /**
@@ -99,34 +159,38 @@ export class AutocompleteDirective implements OnInit {
     options: AutocompleteOptions[],
     parentElement: HTMLElement
   ): void {
-    options.forEach((option: AutocompleteOptions) => {
-      const listItem = document.createElement('li');
-      listItem.innerText = option.label;
-      listItem.classList.add('text-gray-900', 'relative', 'pl-2');
+    options.forEach((option: any) => {
+      const listItem = this.renderer.createElement('li');
+      this.renderer.setProperty(listItem, 'innerText', option.label);
+      this.autocompleteItemClasses.forEach((auiClass) => {
+        this.renderer.addClass(listItem, auiClass);
+      });
       // If options is not the group's parent allow click
       if (!option.children) {
-        listItem.classList.add('cursor-pointer', 'hover:bg-primary-100');
+        this.renderer.addClass(listItem, 'cursor-pointer');
+        this.renderer.addClass(listItem, 'hover:bg-primary-100');
       }
       // Highlight selected option
       if (this.selectedLabel === listItem.innerText) {
-        listItem.classList.add('bg-primary-200');
+        this.renderer.addClass(listItem, 'bg-primary-200');
       }
       listItem.addEventListener('click', () => {
         if (!option.children) {
           this.selectedLabel = option.label;
           this.optionSelected.emit(option.label);
-          this.inputElement.value = option.label;
+          this.renderer.setProperty(this.inputElement, 'value', option.label);
           this.inputElement.dispatchEvent(new Event('input'));
         }
       });
-      parentElement.appendChild(listItem);
+      this.renderer.appendChild(parentElement, listItem);
 
       // If the option has children, a nested ul element is created
       // and the createAutocompletePanelItems() is recursively called
       if (option.children && option.children.length > 0) {
-        const nestedList = document.createElement('ul');
-        nestedList.classList.add('pl-4', 'py-1');
-        listItem.appendChild(nestedList);
+        const nestedList = this.renderer.createElement('ul');
+        this.renderer.addClass(nestedList, 'pl-4');
+        this.renderer.addClass(nestedList, 'py-1');
+        this.renderer.appendChild(listItem, nestedList);
         this.setAutocompletePanelItems(option.children, nestedList);
       }
     });
