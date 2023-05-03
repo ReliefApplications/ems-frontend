@@ -93,8 +93,17 @@ formControlName="selectMenu"
 /**
  * Custom template trigger to be placed between the select tag
  */
-const customTriggerSelect =
-  '<ng-template #selectTriggerTemplate><div class="text-red-600">Choose your language</div></ng-template>';
+const customTriggerSelect = `<selectTriggerTemplate>
+<ng-container *ngTemplateOutlet="otherTemplate"></ng-container>
+</selectTriggerTemplate>
+<ng-template #otherTemplate>
+<div class="text-red-600">
+{{formGroup.get('selectMenu').value?.[0]}}
+<span *ngIf="(formGroup.get('selectMenu').value?.length || 0) > 1" class="example-additional-selection">
+(+{{(formGroup.get('selectMenu').value?.length || 0) - 1}} {{formGroup.get('selectMenu').value?.length === 2 ? 'other' : 'others'}})
+</span>
+</div>
+</ng-template>`;
 
 /**
  * Select with the custom template trigger placed between the select tag

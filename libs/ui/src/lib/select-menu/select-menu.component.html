@@ -17,9 +17,15 @@
       }"
       >{{ label }}</span
     >
-    <ng-container *ngIf="displayTrigger">
-      <span class="block truncate text-sm">{{ displayTrigger }}</span>
-    </ng-container>
+
+    <div class="customSelectTriggerTemplate">
+      <ng-content select="selectTriggerTemplate"></ng-content>
+    </div>
+    <div class="default">
+      <ng-container *ngIf="displayTrigger">
+        <span class="block truncate text-sm">{{ displayTrigger }}</span>
+      </ng-container>
+    </div>
 
     <!-- icon at right of the button -->
     <span

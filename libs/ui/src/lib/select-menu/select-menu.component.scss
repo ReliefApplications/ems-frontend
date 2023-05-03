@@ -11,3 +11,7 @@
 .corner_label {
   font-size: 0.5rem !important;
 }
+
+.customSelectTriggerTemplate:not(:empty) + .default {
+  display: none;
+}
