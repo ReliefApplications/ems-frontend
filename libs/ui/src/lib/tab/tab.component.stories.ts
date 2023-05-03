@@ -1,19 +1,28 @@
 import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { TabComponent } from './tab.component';
+import { CommonModule } from '@angular/common';
 
 export default {
   title: 'Tab',
   component: TabComponent,
   decorators: [
     moduleMetadata({
-      imports: [],
+      imports: [CommonModule],
     }),
   ],
 } as Meta<TabComponent>;
 
-const Template: Story<TabComponent> = (args: TabComponent) => ({
-  props: args,
-});
+const tabTemplate = '<ui-tab [label]="label"><div> Test </div><ui-tab>';
 
-export const Primary = Template.bind({});
-Primary.args = {};
+const Template: Story<TabComponent> = (args: TabComponent) => {
+  args.label = 'Label';
+  return {
+    component: TabComponent,
+    template: tabTemplate,
+    props: {
+      ...args,
+    },
+  };
+};
+
+export const Tab = Template.bind({});
