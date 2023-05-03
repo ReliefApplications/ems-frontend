@@ -12,7 +12,7 @@ export default {
   ],
 } as Meta<TabComponent>;
 
-const tabTemplate = '<ui-tab [label]="label"><div> Test </div><ui-tab>';
+const tabTemplate = '<ui-tab [label]="label"><div> Test </div></ui-tab>';
 
 const Template: Story<TabComponent> = (args: TabComponent) => {
   args.label = 'Label';
