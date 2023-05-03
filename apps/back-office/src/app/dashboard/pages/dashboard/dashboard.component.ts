@@ -46,6 +46,7 @@ import { Observable } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
+import localForage from 'localforage';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -202,6 +203,8 @@ export class DashboardComponent
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    localForage.removeItem(this.applicationId + 'contextualFilterPosition'); //remove temporary contextual filter data
+    localForage.removeItem(this.applicationId + 'contextualFilter');
     this.dashboardService.closeDashboard();
   }
 

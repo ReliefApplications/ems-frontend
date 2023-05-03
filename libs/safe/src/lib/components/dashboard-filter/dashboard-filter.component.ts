@@ -3,6 +3,7 @@ import {
   ElementRef,
   HostListener,
   Input,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -22,6 +23,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { ContextService } from '../../services/context/context.service';
+import localForage from 'localforage';
 
 /**  Dashboard contextual filter component. */
 @Component({
@@ -31,10 +33,9 @@ import { ContextService } from '../../services/context/context.service';
 })
 export class DashboardFilterComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   // Filter
-  private defaultPosition: FilterPosition = FilterPosition.BOTTOM;
   @Input() position: FilterPosition = FilterPosition.BOTTOM;
   public positionList = [
     FilterPosition.LEFT,
@@ -92,15 +93,27 @@ export class DashboardFilterComponent
       .subscribe((application: Application | null) => {
         if (application) {
           this.applicationId = application.id;
-          if (application.contextualFilter) {
-            this.surveyStructure = application.contextualFilter;
-            this.initSurvey();
-          }
-          if (application.contextualFilterPosition) {
-            this.defaultPosition = application.contextualFilterPosition;
-            this.position = this.defaultPosition;
-            console.log('initial pos', this.position);
-          }
+          localForage
+            .getItem(this.applicationId + 'contextualFilter')
+            .then((contextualFilter) => {
+              if (contextualFilter) {
+                this.surveyStructure = contextualFilter;
+              } else if (application.contextualFilter) {
+                this.surveyStructure = application.contextualFilter;
+                this.initSurvey();
+              }
+            });
+          localForage
+            .getItem(this.applicationId + 'contextualFilterPosition')
+            .then((contextualFilterPosition) => {
+              if (contextualFilterPosition) {
+                this.position = contextualFilterPosition as FilterPosition;
+                console.log('loaded from cache', this.position);
+              } else if (application.contextualFilterPosition) {
+                this.position = application.contextualFilterPosition;
+                console.log('initial pos', this.position);
+              }
+            });
         }
       });
     const parentRect =
@@ -153,6 +166,10 @@ export class DashboardFilterComponent
         dialogRef.afterClosed().subscribe((newStructure) => {
           if (newStructure) {
             this.surveyStructure = newStructure;
+            localForage.setItem(
+              this.applicationId + 'contextualFilter',
+              this.surveyStructure
+            );
             this.initSurvey();
             this.saveFilter();
           }
@@ -191,56 +208,6 @@ export class DashboardFilterComponent
       });
   }
 
-  /**
-   * Opens the settings modal
-   */
-  public openSettings() {
-    import('./filter-settings-modal/filter-settings-modal.component').then(
-      ({ FilterSettingsModalComponent }) => {
-        const dialogRef = this.dialog.open(FilterSettingsModalComponent, {
-          data: { positionList: this.positionList },
-        });
-        dialogRef.afterClosed().subscribe((defaultPosition) => {
-          if (defaultPosition) {
-            this.defaultPosition = defaultPosition;
-            this.saveSettings();
-          }
-        });
-      }
-    );
-  }
-
-  /** Saves the filter settings */
-  private saveSettings(): void {
-    this.apollo
-      .mutate<EditApplicationMutationResponse>({
-        mutation: EDIT_APPLICATION_FILTER_POSITION,
-        variables: {
-          id: this.applicationId,
-          contextualFilterPosition: this.defaultPosition,
-        },
-      })
-      .subscribe(({ errors, data }) => {
-        if (errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotUpdated', {
-              type: this.translate.instant('common.filter.one'),
-              error: errors ? errors[0].message : '',
-            }),
-            { error: true }
-          );
-        } else {
-          console.log('saving', this.defaultPosition);
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectUpdated', {
-              type: this.translate.instant('common.filter.one').toLowerCase(),
-              value: data?.editApplication.name ?? '',
-            })
-          );
-        }
-      });
-  }
-
   /** Render the survey using the saved structure */
   private initSurvey(): void {
     Survey.StylesManager.applyTheme();
@@ -254,6 +221,62 @@ export class DashboardFilterComponent
     this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
     this.survey.onValueChanged.add(this.onValueChange.bind(this));
     console.log('survey init,', this.survey.getAllQuestions());
+  }
+
+  /**
+   * Opens the settings modal
+   */
+  public openSettings() {
+    import('./filter-settings-modal/filter-settings-modal.component').then(
+      ({ FilterSettingsModalComponent }) => {
+        const dialogRef = this.dialog.open(FilterSettingsModalComponent, {
+          data: { positionList: this.positionList },
+        });
+        dialogRef.afterClosed().subscribe((defaultPosition) => {
+          if (defaultPosition) {
+            this.saveSettings(defaultPosition);
+          }
+        });
+      }
+    );
+  }
+
+  /**
+   *  Saves the filter settings
+   *
+   * @param defaultPosition default position for the filter to be registered
+   */
+  private saveSettings(defaultPosition: FilterPosition): void {
+    this.apollo
+      .mutate<EditApplicationMutationResponse>({
+        mutation: EDIT_APPLICATION_FILTER_POSITION,
+        variables: {
+          id: this.applicationId,
+          contextualFilterPosition: defaultPosition,
+        },
+      })
+      .subscribe(({ errors, data }) => {
+        if (errors) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.filter.one'),
+              error: errors ? errors[0].message : '',
+            }),
+            { error: true }
+          );
+        } else {
+          localForage.setItem(
+            this.applicationId + 'contextualFilterPosition',
+            defaultPosition
+          );
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectUpdated', {
+              type: this.translate.instant('common.filter.one').toLowerCase(),
+              value: data?.editApplication.name ?? '',
+            })
+          );
+        }
+      });
   }
 
   /**

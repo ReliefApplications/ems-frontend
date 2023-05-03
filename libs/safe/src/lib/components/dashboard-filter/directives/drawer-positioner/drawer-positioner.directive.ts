@@ -57,6 +57,7 @@ export class SafeDrawerPositionerDirective
       'transform ease-in-out .3s'
     );
     this.setPosition(this.position);
+    console.log(this.el.nativeElement.style);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -64,7 +65,7 @@ export class SafeDrawerPositionerDirective
       this.setPosition(changes.position.currentValue);
     }
     if (changes.opened) {
-      this.displayDrawer(changes.opened.currentValue);
+      //this.displayDrawer(changes.opened.currentValue); disabled for now as it messes things up
     }
     // Width has to be set when the element is in horizontal(at the TOP or BOTTOM of the parent context) position
     if (
@@ -125,6 +126,11 @@ export class SafeDrawerPositionerDirective
           'width',
           this.elementWidth
         );
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'max-height',
+          this.elementHeight
+        );
         break;
       // Set the width as it's in the horizontal side of the parent context, but also set the bottom property to 0
       case FilterPosition.BOTTOM:
@@ -138,6 +144,11 @@ export class SafeDrawerPositionerDirective
           this.el.nativeElement,
           'width',
           this.elementWidth
+        );
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'max-height',
+          this.elementHeight
         );
         break;
       // Set the height as it's in the vertical side of the parent context, fixed element is in the left of parent context by default
@@ -175,7 +186,7 @@ export class SafeDrawerPositionerDirective
       default:
         break;
     }
-    this.displayDrawer(this.opened);
+    //this.displayDrawer(this.opened);  disabled for now as it messes things up
   }
 
   /**
