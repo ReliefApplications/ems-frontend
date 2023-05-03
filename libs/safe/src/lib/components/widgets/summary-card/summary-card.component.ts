@@ -16,6 +16,7 @@ import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
 } from './graphql/queries';
+import { Layout } from '../../../models/layout.model';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -54,6 +55,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   public cards: any[] = [];
   private dataQuery?: QueryRef<any>;
 
+  private layout: Layout | null = null;
+  private fields: any[] = [];
   /**
    * Gets whether the cards that will be displayed
    * are from an aggregation
@@ -64,7 +67,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     return !!this.settings.cards[0]?.isAggregation;
   }
 
-  @ViewChild('pdf') pdfExport!: any;
+  @ViewChild('summaryCardGrid') summaryCardGrid!: any;
 
   /**
    * Get the summary card pdf name
@@ -119,7 +122,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.settings.isDynamic && !this.isAggregation) {
-      this.pdfExport.element.nativeElement.addEventListener(
+      this.summaryCardGrid.nativeElement.addEventListener(
         'scroll',
         (event: any) => this.loadOnScroll(event)
       );
@@ -159,6 +162,31 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Updates the cards from fetched custom query
+   *
+   * @param res Query result
+   */
+  private updateCards(res: any) {
+    if (!this.layout || !res?.data) return;
+    const layoutQueryName = this.layout.query.name;
+    const edges = res.data?.[layoutQueryName].edges;
+    if (!edges) return;
+
+    const newCards = edges.map((e: any) => ({
+      ...this.settings.cards[0],
+      record: e.node,
+      layout: this.layout,
+      metadata: this.fields,
+    }));
+
+    this.cards = [...this.cards, ...newCards];
+    this.pageInfo.hasNextPage =
+      get(res.data[layoutQueryName], 'totalCount', 0) > this.cards.length;
+
+    this.loading = res.loading;
+  }
+
+  /**
    * Gets the query for fetching the dynamic cards records from a card's settings
    *
    * @param card Card settings
@@ -179,12 +207,13 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       .then((res) => {
         const layouts = res.edges.map((edge) => edge.node);
         if (layouts.length > 0) {
-          const layoutQuery = layouts[0].query;
+          this.layout = layouts[0];
+          const layoutQuery = this.layout.query;
           const builtQuery = this.queryBuilder.buildQuery({
             query: layoutQuery,
           });
           const layoutFields = layoutQuery.fields;
-          const fields = get(metaRes, 'data.resource.metadata', []).map(
+          this.fields = get(metaRes, 'data.resource.metadata', []).map(
             (f: any) => {
               const layoutField = layoutFields.find(
                 (lf: any) => lf.name === f.name
@@ -208,24 +237,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
               fetchPolicy: 'network-only',
               nextFetchPolicy: 'cache-first',
             });
-            this.dataQuery.valueChanges.subscribe((res2) => {
-              const edges = res2.data?.[layoutQuery.name].edges;
-              if (!edges) return;
-
-              const newCards = edges.map((e: any) => ({
-                ...this.settings.cards[0],
-                record: e.node,
-                layout: layouts[0],
-                metadata: fields,
-              }));
-
-              this.cards = [...this.cards, ...newCards];
-              this.pageInfo.hasNextPage =
-                get(res2.data[layoutQuery.name], 'totalCount', 0) >
-                this.cards.length;
-
-              this.loading = res2.loading;
-            });
+            this.dataQuery.valueChanges.subscribe(this.updateCards.bind(this));
           }
         }
       });
@@ -296,12 +308,13 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        // TOCHECK
-        this.dataQuery?.fetchMore({
-          variables: {
-            skip: this.cards.length,
-          },
-        });
+        this.dataQuery
+          ?.fetchMore({
+            variables: {
+              skip: this.cards.length,
+            },
+          })
+          .then(this.updateCards.bind(this));
       }
     }
   }

@@ -1365,9 +1365,11 @@
 					"hint": {
 						"dynamic": "******"
 					},
+					"infiniteScroll": "******",
 					"options": {
 						"ariaLabel": "******"
 					},
+					"pagination": "******",
 					"static": "******"
 				}
 			},
