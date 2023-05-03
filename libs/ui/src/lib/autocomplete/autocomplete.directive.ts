@@ -15,6 +15,7 @@ import {
  */
 @Directive({
   selector: '[uiAutocomplete]',
+  exportAs: '[uiAutocomplete]',
 })
 export class AutocompleteDirective implements OnInit, AfterContentInit {
   @Input('uiAutocomplete') options: any[] = [];

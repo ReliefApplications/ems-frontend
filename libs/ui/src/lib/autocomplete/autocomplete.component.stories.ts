@@ -1,11 +1,15 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
 import { AutocompleteDirective } from './autocomplete.directive';
+import { AutocompleteComponent } from './autocomplete.component';
+import { IconModule } from '../icon/icon.module';
+
 
 /** Autocomplete options example */
 const SIMPLE_OPTIONS = [
   {
     label: 'A',
+    icon: 'edit'
   },
   {
     label: 'a B',
@@ -60,13 +64,14 @@ const GROUPED_OPTIONS = [
 
 export default {
   title: 'Autocomplete',
+  component: AutocompleteComponent,
   decorators: [
     moduleMetadata({
       declarations: [AutocompleteDirective],
-      imports: [ReactiveFormsModule],
+      imports: [ReactiveFormsModule, IconModule],
     }),
   ],
-} as Meta<AutocompleteDirective>;
+} as Meta<AutocompleteComponent>;
 
 /** Callback to test the autocomplete directive opened event */
 const openedAutocompletePanel = () => {
@@ -104,6 +109,7 @@ const SimpleAutocompletePanelTemplate: StoryFn<AutocompleteDirective> = (
 ) => {
   args.options = SIMPLE_OPTIONS;
   return {
+    component: AutocompleteComponent,
     template: `
       <input
         type="text"
@@ -115,6 +121,13 @@ const SimpleAutocompletePanelTemplate: StoryFn<AutocompleteDirective> = (
         (optionSelected)="selectedOption($event)"
         class="relative w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset sm:leading-6 focus:ring-2 focus:ring-inset"
       >
+      <ui-autocomplete [contentKey]="'icon'" [displayKey]="'label'" [options]="options">
+        <p>TEST</p>
+        <ui-icon
+          [icon]="'edit'"
+          [size]="12"
+        ></ui-icon>
+      </ui-autocomplete>
     `,
     props: {
       ...args,
