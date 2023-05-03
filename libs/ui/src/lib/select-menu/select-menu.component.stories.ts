@@ -324,49 +324,6 @@ const TemplateTemplateRefSelection: Story<SelectMenuComponent> = (
 export const TemplateRefSelection = TemplateTemplateRefSelection.bind({});
 
 /**
- * Template for select menu using a ngTemplate as input
- *
- * @param args args
- * @returns story of select menu component
- */
-const TemplateTemplateRefSelectionDefaultValue: Story<SelectMenuComponent> = (
-  args: SelectMenuComponent
-) => {
-  args.options = [
-    'French',
-    'English',
-    'Japanese',
-    'Javanese',
-    'Polish',
-    'German',
-    'Spanish',
-    'Dutch',
-    'Chinese',
-  ];
-  args.multiselect = false;
-  args.disabled = false;
-  args.label = 'Choose your language';
-  formGroup.get('selectMenu')?.setValue([args.options[0]]);
-  return {
-    component: SelectMenuComponent,
-    template: singleSelectMenuTemplateWithTrigger,
-    props: {
-      ...args,
-      formGroup,
-      selection,
-      selectEvent,
-      openEvent,
-      closeEvent,
-    },
-  };
-};
-/**
- * Actual export of select story using ngTemplate as input
- */
-export const TemplateRefSelectionDefaultValue =
-  TemplateTemplateRefSelectionDefaultValue.bind({});
-
-/**
  * Date in order to test different objects in option list
  */
 const testDate = new Date();
