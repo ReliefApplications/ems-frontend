@@ -1,10 +1,9 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
-import { AutocompleteOptions } from './interfaces/autocomplete-options.interface';
 import { AutocompleteDirective } from './autocomplete.directive';
 
 /** Autocomplete options example */
-const SIMPLE_OPTIONS: AutocompleteOptions[] = [
+const SIMPLE_OPTIONS = [
   {
     label: 'A',
   },
@@ -20,40 +19,40 @@ const SIMPLE_OPTIONS: AutocompleteOptions[] = [
 ];
 
 /** Autocomplete grouped options example */
-const GROUPED_OPTIONS: AutocompleteOptions[] = [
+const GROUPED_OPTIONS = [
   {
-    label: 'A',
-    children: [
+    optionName: 'A',
+    channels: [
       {
-        label: 'option A 1',
+        optionName: 'option A 1',
       },
     ],
   },
   {
-    label: 'B',
-    children: [
+    optionName: 'B',
+    channels: [
       {
-        label: 'B 1',
+        optionName: 'B 1',
       },
       {
-        label: 'b',
+        optionName: 'b',
       },
     ],
   },
   {
-    label: 'C',
+    optionName: 'C',
   },
   {
-    label: 'D',
-    children: [
+    optionName: 'D',
+    channels: [
       {
-        label: 'D 1',
+        optionName: 'D 1',
       },
       {
-        label: 'D two',
+        optionName: 'D two',
       },
       {
-        label: 'D a b',
+        optionName: 'D a b',
       },
     ],
   },
@@ -110,6 +109,7 @@ const SimpleAutocompletePanelTemplate: StoryFn<AutocompleteDirective> = (
         type="text"
         placeholder="Select a value"
         [uiAutocomplete]="options"
+        [displayKey]="'label'"
         (opened)="openedAutocompletePanel()"
         (closed)="closesAutocompletePanel()"
         (optionSelected)="selectedOption($event)"
@@ -144,6 +144,8 @@ const GroupedAutocompletePanelTemplate: StoryFn<AutocompleteDirective> = (
         type="text"
         placeholder="Select a value"
         [uiAutocomplete]="options"
+        [displayKey]="'optionName'"
+        [childrenKey]="'channels'"
         (opened)="openedAutocompletePanel()"
         (closed)="closesAutocompletePanel()"
         (optionSelected)="selectedOption($event)"
@@ -182,6 +184,7 @@ const FormControlTemplate: StoryFn<AutocompleteDirective> = (
           [formControl]="formControl"
           placeholder="Select a value to the form group"
           [uiAutocomplete]="options"
+          [displayKey]="'label'"
           (opened)="openedAutocompletePanel()"
           (closed)="closesAutocompletePanel()"
           (optionSelected)="selectedOption($event)"
