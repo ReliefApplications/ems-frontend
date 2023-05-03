@@ -55,7 +55,7 @@ export class DashboardFilterComponent
   public survey: Survey.Model = new Survey.Model();
   public surveyStructure: any = {};
   @ViewChild('dashboardSurveyCreatorContainer')
-  dashboardSurveyCreatorContainer!: ElementRef;
+  dashboardSurveyCreatorContainer!: ElementRef<HTMLElement>;
 
   public applicationId?: string;
 
@@ -98,6 +98,7 @@ export class DashboardFilterComponent
             .then((contextualFilter) => {
               if (contextualFilter) {
                 this.surveyStructure = contextualFilter;
+                this.initSurvey();
               } else if (application.contextualFilter) {
                 this.surveyStructure = application.contextualFilter;
                 this.initSurvey();
@@ -108,10 +109,8 @@ export class DashboardFilterComponent
             .then((contextualFilterPosition) => {
               if (contextualFilterPosition) {
                 this.position = contextualFilterPosition as FilterPosition;
-                console.log('loaded from cache', this.position);
               } else if (application.contextualFilterPosition) {
                 this.position = application.contextualFilterPosition;
-                console.log('initial pos', this.position);
               }
             });
         }
@@ -158,7 +157,6 @@ export class DashboardFilterComponent
   public onEditFilter() {
     import('./filter-builder-modal/filter-builder-modal.component').then(
       ({ FilterBuilderModalComponent }) => {
-        console.log('editing struct', this.surveyStructure);
         const dialogRef = this.dialog.open(FilterBuilderModalComponent, {
           data: { surveyStructure: this.surveyStructure },
           autoFocus: false,
@@ -220,7 +218,6 @@ export class DashboardFilterComponent
     this.survey.showNavigationButtons = false;
     this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
     this.survey.onValueChanged.add(this.onValueChange.bind(this));
-    console.log('survey init,', this.survey.getAllQuestions());
   }
 
   /**

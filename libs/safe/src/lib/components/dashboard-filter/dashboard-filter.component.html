@@ -7,6 +7,7 @@
   [elementLeftOffset]="containerLeftOffset"
   [elementTopOffset]="containerTopOffset"
   [opened]="isDrawerOpen"
+  [dashboardSurveyCreatorContainer]="dashboardSurveyCreatorContainer"
   class="pointer-events-auto"
 >
   <div
@@ -112,7 +113,10 @@
       }"
       class="dashboard-filter-content bg-white p-3"
     >
-      <div #dashboardSurveyCreatorContainer></div>
+      <div
+        #dashboardSurveyCreatorContainer
+        class="overflow-scroll"
+      ></div>
       <!-- <form
         [ngClass]="{
           'flex-col':
