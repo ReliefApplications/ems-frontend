@@ -7,15 +7,15 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [],
-    })
+    }),
   ],
 } as Meta<NavigationTabComponent>;
 
-const Template: Story<NavigationTabComponent> = (args: NavigationTabComponent) => ({
+const Template: Story<NavigationTabComponent> = (
+  args: NavigationTabComponent
+) => ({
   props: args,
 });
 
-
 export const Primary = Template.bind({});
-Primary.args = {
-}
+Primary.args = {};
