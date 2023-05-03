@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   HostListener,
@@ -32,7 +31,7 @@ import { ContextService } from '../../services/context/context.service';
 })
 export class DashboardFilterComponent
   extends SafeUnsubscribeComponent
-  implements AfterViewInit, OnInit
+  implements OnInit
 {
   // Filter
   private defaultPosition: FilterPosition = FilterPosition.BOTTOM;
@@ -47,6 +46,8 @@ export class DashboardFilterComponent
   public filterPosition = FilterPosition;
   public containerWidth!: string;
   public containerHeight!: string;
+  public containerTopOffset!: string;
+  public containerLeftOffset!: string;
   private value: any;
 
   // Survey
@@ -69,7 +70,7 @@ export class DashboardFilterComponent
    * @param contextService Context service
    */
   constructor(
-    private hostElement: ElementRef,
+    private hostElement: ElementRef<HTMLElement>,
     private dialog: MatDialog,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
@@ -98,9 +99,16 @@ export class DashboardFilterComponent
           if (application.contextualFilterPosition) {
             this.defaultPosition = application.contextualFilterPosition;
             this.position = this.defaultPosition;
+            console.log('initial pos', this.position);
           }
         }
       });
+    const parentRect =
+      this.hostElement.nativeElement.parentElement?.parentElement?.getBoundingClientRect(); //This is the sidenav container, not ideal solution
+    this.containerWidth = `${parentRect?.width}px`;
+    this.containerHeight = `${parentRect?.height}px`;
+    this.containerLeftOffset = `${parentRect?.x}px`;
+    this.containerTopOffset = `${parentRect?.y}px`;
   }
 
   /**
@@ -108,10 +116,10 @@ export class DashboardFilterComponent
    */
   @HostListener('window:resize', ['$event'])
   onResize() {
-    this.containerWidth =
-      this.hostElement.nativeElement?.offsetWidth.toString() + 'px';
-    this.containerHeight =
-      this.hostElement.nativeElement?.offsetHeight.toString() + 'px';
+    const parentRect =
+      this.hostElement.nativeElement.parentElement?.parentElement?.getBoundingClientRect(); //This is the sidenav container, not ideal solution
+    this.containerWidth = `${parentRect?.width}px`;
+    this.containerHeight = `${parentRect?.height}px`;
   }
 
   /**
@@ -120,20 +128,6 @@ export class DashboardFilterComponent
   @HostListener('document:keydown.escape', ['$event'])
   onEsc() {
     this.isDrawerOpen = false;
-  }
-
-  // We need the set the fix values first as we do not know the number of filters the component is going to receive
-  // And because the drawerPositioner directive makes the element fixed
-  ngAfterViewInit(): void {
-    // This settimeout is needed as this dashboard is currently placed inside a mat-drawer
-    // We have to set a minimum timeout fix to get the real width of the host component until mat-drawer fully opens
-    // If the dashboard filter is placed somewhere else that is not a mat-drawer this would not be needed
-    setTimeout(() => {
-      this.containerWidth =
-        this.hostElement.nativeElement?.offsetWidth.toString() + 'px';
-      this.containerHeight =
-        this.hostElement.nativeElement?.offsetHeight.toString() + 'px';
-    }, 0);
   }
 
   /**
@@ -151,6 +145,7 @@ export class DashboardFilterComponent
   public onEditFilter() {
     import('./filter-builder-modal/filter-builder-modal.component').then(
       ({ FilterBuilderModalComponent }) => {
+        console.log('editing struct', this.surveyStructure);
         const dialogRef = this.dialog.open(FilterBuilderModalComponent, {
           data: { surveyStructure: this.surveyStructure },
           autoFocus: false,
@@ -173,7 +168,7 @@ export class DashboardFilterComponent
         mutation: EDIT_APPLICATION_FILTER,
         variables: {
           id: this.applicationId,
-          contextualFilter: this.surveyStructure.text,
+          contextualFilter: this.surveyStructure,
         },
       })
       .subscribe(({ errors, data }) => {
@@ -235,6 +230,7 @@ export class DashboardFilterComponent
             { error: true }
           );
         } else {
+          console.log('saving', this.defaultPosition);
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectUpdated', {
               type: this.translate.instant('common.filter.one').toLowerCase(),
@@ -248,7 +244,7 @@ export class DashboardFilterComponent
   /** Render the survey using the saved structure */
   private initSurvey(): void {
     Survey.StylesManager.applyTheme();
-    const surveyStructure = this.surveyStructure.JSON ?? this.surveyStructure;
+    const surveyStructure = this.surveyStructure;
     this.survey = new Survey.Model(surveyStructure);
     if (this.value) {
       this.survey.data = this.value;
@@ -257,6 +253,7 @@ export class DashboardFilterComponent
     this.survey.showNavigationButtons = false;
     this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
     this.survey.onValueChanged.add(this.onValueChange.bind(this));
+    console.log('survey init,', this.survey.getAllQuestions());
   }
 
   /**

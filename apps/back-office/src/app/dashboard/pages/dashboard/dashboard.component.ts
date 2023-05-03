@@ -69,6 +69,7 @@ export class DashboardComponent
   public loading = true;
   public tiles: any[] = [];
   public dashboard?: Dashboard;
+  public showFilter?: boolean;
 
   // === GRID ===
   private generatedTiles = 0;
@@ -163,6 +164,7 @@ export class DashboardComponent
                 ? this.dashboard.step.workflow?.page?.application?.id
                 : '';
               this.loading = loading;
+              this.showFilter = this.dashboard.showFilter;
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
@@ -505,12 +507,13 @@ export class DashboardComponent
    */
   toggleFiltering(): void {
     if (this.dashboard) {
+      this.showFilter = !this.showFilter;
       this.apollo
         .mutate<EditDashboardMutationResponse>({
           mutation: EDIT_DASHBOARD,
           variables: {
             id: this.id,
-            showFilter: !this.dashboard.showFilter,
+            showFilter: this.showFilter,
           },
         })
         .subscribe({

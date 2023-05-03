@@ -24,6 +24,8 @@ export class SafeDrawerPositionerDirective
   @Input() elementWidth!: string;
   // The element height, as the directive host is positioned fixed, we need to set the height manually in order to match the parent element
   @Input() elementHeight!: string;
+  @Input() elementLeftOffset!: string;
+  @Input() elementTopOffset!: string;
   // The minimum amount of element size(in px) remaining visible when the element is collapsed
   @Input() minSizeOnClosed = 48;
   // If the element is open or not
@@ -96,15 +98,28 @@ export class SafeDrawerPositionerDirective
    * @param position Position to set
    */
   private setPosition(position: FilterPosition) {
+    this.renderer.setStyle(this.el.nativeElement, 'position', 'relative');
     // Reset drawer containers styles
     this.renderer.setStyle(this.el.nativeElement, 'height', 'max-content');
     this.renderer.setStyle(this.el.nativeElement, 'width', 'max-content');
     // Remove any positioning from the element first in order to not conflict with each position properties later
     this.renderer.removeStyle(this.el.nativeElement, 'right');
     this.renderer.removeStyle(this.el.nativeElement, 'bottom');
+    this.renderer.removeStyle(this.el.nativeElement, 'top');
+    this.renderer.removeStyle(this.el.nativeElement, 'left');
     switch (position) {
       // Set the width as it's in the horizontal side of the parent context, fixed element is in the top of parent context by default
       case FilterPosition.TOP:
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'top',
+          this.elementTopOffset
+        );
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'left',
+          this.elementLeftOffset
+        );
         this.renderer.setStyle(
           this.el.nativeElement,
           'width',
@@ -114,6 +129,11 @@ export class SafeDrawerPositionerDirective
       // Set the width as it's in the horizontal side of the parent context, but also set the bottom property to 0
       case FilterPosition.BOTTOM:
         this.renderer.setStyle(this.el.nativeElement, 'bottom', 0);
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'left',
+          this.elementLeftOffset
+        );
         this.renderer.setStyle(
           this.el.nativeElement,
           'width',
@@ -127,6 +147,16 @@ export class SafeDrawerPositionerDirective
           'height',
           this.elementHeight
         );
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'left',
+          this.elementLeftOffset
+        );
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'top',
+          this.elementTopOffset
+        );
         break;
       // Set the height as it's in the vertical side of the parent context, but also set the right property to 0
       case FilterPosition.RIGHT:
@@ -135,6 +165,11 @@ export class SafeDrawerPositionerDirective
           this.el.nativeElement,
           'height',
           this.elementHeight
+        );
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'top',
+          this.elementTopOffset
         );
         break;
       default:
@@ -153,7 +188,7 @@ export class SafeDrawerPositionerDirective
       case FilterPosition.TOP:
         // TOP has an especial behavior as the overflow for the top side of the parent if is not in the viewport, it would be visible
         // We will have to set the parent element as the container reference(e.g. setting transform property, but the positioned element would lose fixed behavior)
-        if (open) {
+        /*if (open) {
           this.el.nativeElement.style.transform = `translateY(0px)`;
           setTimeout(() => {
             this.renderer.setStyle(
@@ -178,7 +213,8 @@ export class SafeDrawerPositionerDirective
               'collapse'
             );
           }, 50);
-        }
+        }*/
+        this.translateY(open);
         break;
       case FilterPosition.BOTTOM:
         this.translateY(open, true);
@@ -210,6 +246,11 @@ export class SafeDrawerPositionerDirective
           ? Math.abs(this.minSizeOnClosed - this.el.nativeElement.clientHeight)
           : this.minSizeOnClosed - this.el.nativeElement.clientHeight
       }px)`;
+      console.log(
+        'translating by',
+        this.el.nativeElement.clientHeight,
+        this.el.nativeElement.clientWidth
+      );
     }
   }
 
@@ -229,6 +270,11 @@ export class SafeDrawerPositionerDirective
           ? Math.abs(this.minSizeOnClosed - this.el.nativeElement.clientWidth)
           : this.minSizeOnClosed - this.el.nativeElement.clientWidth
       }px)`;
+      console.log(
+        'translating by',
+        this.el.nativeElement.clientHeight,
+        this.el.nativeElement.clientWidth
+      );
     }
   }
 }

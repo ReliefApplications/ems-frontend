@@ -4,6 +4,8 @@
   [minSizeOnClosed]="48"
   [elementWidth]="containerWidth"
   [elementHeight]="containerHeight"
+  [elementLeftOffset]="containerLeftOffset"
+  [elementTopOffset]="containerTopOffset"
   [opened]="isDrawerOpen"
   class="pointer-events-auto"
 >
@@ -105,7 +107,8 @@
         'h-full':
           position === filterPosition.LEFT || position === filterPosition.RIGHT,
         'flex-col':
-          position === filterPosition.LEFT || position === filterPosition.RIGHT
+          position === filterPosition.LEFT || position === filterPosition.RIGHT,
+        hidden: isDrawerOpen
       }"
       class="dashboard-filter-content bg-white p-3"
     >
