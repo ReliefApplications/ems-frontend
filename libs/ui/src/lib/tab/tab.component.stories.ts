@@ -2,7 +2,7 @@ import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { TabComponent } from './tab.component';
 
 export default {
-  title: 'TabComponent',
+  title: 'Tab',
   component: TabComponent,
   decorators: [
     moduleMetadata({

@@ -2,7 +2,7 @@ import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { NavigationTabComponent } from './navigation-tab.component';
 
 export default {
-  title: 'NavigationTabComponent',
+  title: 'Navigation Tab',
   component: NavigationTabComponent,
   decorators: [
     moduleMetadata({
