@@ -37,5 +37,28 @@
 }
 
 mat-slider {
-  width: 200px;
+  transform: rotate(270deg);
+  position: absolute;
+  left: -50px;
+}
+
+::ng-deep .mat-ripple {
+  height: 0 !important;
+  width: 0 !important;
+}
+
+::ng-deep .mat-primary .mdc-slider__thumb-knob {
+  height: 2px !important;
+  width: 2px !important;
+  border-width: 8px !important;
+}
+
+::ng-deep .leaflet-verticalcenter {
+  position: absolute;
+  width: 100px !important;
+  z-index: 1000;
+  pointer-events: none;
+  top: 50%;
+  transform: translateY(-50%);
+  padding-top: 10px;
 }

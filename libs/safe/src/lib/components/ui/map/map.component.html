@@ -2,8 +2,13 @@
   <div [id]="mapId" class="group flex-1"></div>
 </div>
 
-<div id="zoom-slider-control">
-  <mat-slider [step]="1" [showTickMarks]="true" [max]="18" [min]="2">
-    <input matSliderThumb>
+<div id="zoom-slider-control" class="zoom-slider-control">
+  <mat-slider
+    [step]="1"
+    [showTickMarks]="true"
+    [max]="18"
+    [min]="2"
+  >
+    <input matSliderThumb />
   </mat-slider>
 </div>

@@ -347,17 +347,6 @@ export class MapComponent
     // Add zoom control
     //L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
 
-    const customZoomControl = L.Control.extend({
-      options: {
-        position: 'bottomleft',
-      },
-
-      onAdd: function () {
-        return DomUtil.get('zoom-slider-control');
-      },
-    });
-
-    this.map.addControl(new customZoomControl());
     this.setMapControls(controls, true);
   }
 
@@ -368,6 +357,37 @@ export class MapComponent
    * @param {boolean} [initMap=false] if initializing map to add the fixed controls
    */
   private setMapControls(controls: MapControls, initMap = false) {
+    // Create additional Control placeholders
+    function addControlPlaceholders(map: {
+      _controlCorners: any;
+      _controlContainer: any;
+    }) {
+      const corners = map._controlCorners,
+        l = 'leaflet-',
+        container = map._controlContainer;
+
+      function createCorner(vSide: string, hSide: string) {
+        const className = l + vSide + ' ' + l + hSide;
+
+        corners[vSide + hSide] = L.DomUtil.create('div', className, container);
+      }
+
+      createCorner('verticalcenter', 'left');
+      createCorner('verticalcenter', 'right');
+    }
+    addControlPlaceholders(this.map);
+
+    // Add custom zoom control
+    const customZoomControl = L.Control.extend({
+      options: {
+        position: 'verticalcenterleft',
+      },
+      onAdd: function () {
+        return DomUtil.get('zoom-slider-control');
+      },
+    });
+    this.map.addControl(new customZoomControl());
+
     // Add leaflet measure control
     this.mapControlsService.getMeasureControl(
       this.map,
@@ -420,6 +440,7 @@ export class MapComponent
         this.layerControl.remove();
       }
     }
+
     // If initializing map: add fixed controls
     if (initMap) {
       // Add leaflet fullscreen control
