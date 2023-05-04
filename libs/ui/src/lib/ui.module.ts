@@ -32,9 +32,8 @@ import { DialogModule } from './dialog/dialog.module';
     DividerModule,
     TextareaModule,
     RadioModule,
+    DialogModule,
   ],
-  imports: [
-    DialogModule
-  ],
+  imports: [],
 })
 export class UiModule {}
