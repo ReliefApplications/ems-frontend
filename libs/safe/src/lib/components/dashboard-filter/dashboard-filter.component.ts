@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -55,11 +56,12 @@ export class DashboardFilterComponent
   public surveyStructure: any = {};
   @ViewChild('dashboardSurveyCreatorContainer')
   dashboardSurveyCreatorContainer!: ElementRef<HTMLElement>;
+  public surveyAnswers: any[] = [];
 
   public applicationId?: string;
 
   /**
-   * Class constructor
+   * Dashboard contextual filter component
    *
    * @param hostElement Host/Component Element
    * @param dialog The material dialog service
@@ -68,6 +70,7 @@ export class DashboardFilterComponent
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param contextService Context service
+   * @param changeDetectorRef Change detector used to trigger html changes
    */
   constructor(
     private hostElement: ElementRef<HTMLElement>,
@@ -76,7 +79,8 @@ export class DashboardFilterComponent
     private applicationService: SafeApplicationService,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     super();
   }
@@ -283,5 +287,7 @@ export class DashboardFilterComponent
    */
   private onValueChange() {
     this.contextService.filter.next(this.survey.data);
+    this.surveyAnswers = Object.values(this.survey.data);
+    this.changeDetectorRef.detectChanges(); //Used to trigger html change
   }
 }

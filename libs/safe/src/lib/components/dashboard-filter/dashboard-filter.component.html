@@ -51,7 +51,7 @@
           "
         >
         </safe-button>
-        <!-- Default position -->
+        <!-- Settings -->
         <safe-button
           [isIcon]="true"
           icon="settings"
@@ -62,6 +62,16 @@
         >
         </safe-button>
       </div>
+      <!-- Quick filter -->
+      <ng-container
+        *ngIf="
+          position === filterPosition.TOP || position === filterPosition.BOTTOM
+        "
+      >
+        <ng-container *ngFor="let answer of surveyAnswers">
+          <safe-button class="z-20">{{ answer }}</safe-button>
+        </ng-container></ng-container
+      >
 
       <!-- Position -->
       <div
@@ -114,10 +124,7 @@
       }"
       class="dashboard-filter-content bg-white p-3"
     >
-      <div
-        #dashboardSurveyCreatorContainer
-        class="overflow-scroll"
-      ></div>
+      <div #dashboardSurveyCreatorContainer class="overflow-scroll"></div>
       <!-- <form
         [ngClass]="{
           'flex-col':
