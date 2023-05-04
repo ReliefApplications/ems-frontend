@@ -45,8 +45,6 @@
     [attr.id]="'accordion-body-' + index"
     [attr.aria-labelledby]="'accordion-header-' + index"
   >
-    <p class="mb-2 text-gray-500 dark:text-gray-400">
-      <ng-content select="text"></ng-content>
-    </p>
+    <ng-content></ng-content>
   </div>
 </cdk-accordion-item>
