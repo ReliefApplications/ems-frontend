@@ -377,13 +377,24 @@ export class MapComponent
     }
     addControlPlaceholders(this.map);
 
+    const mapHere = this.map;
     // Add custom zoom control
     const customZoomControl = L.Control.extend({
       options: {
         position: 'verticalcenterright',
       },
       onAdd: function () {
-        return DomUtil.get('zoom-slider-control');
+        const zoomSliderControl = DomUtil.get('zoom-slider-control');
+        // Disable dragging when user's cursor enters the element
+        zoomSliderControl?.addEventListener('mouseover', function () {
+          mapHere.dragging.disable();
+        });
+
+        // Re-enable dragging when user's cursor leaves the element
+        zoomSliderControl?.addEventListener('mouseout', function () {
+          mapHere.dragging.enable();
+        });
+        return zoomSliderControl;
       },
     });
     this.map.addControl(new customZoomControl());
