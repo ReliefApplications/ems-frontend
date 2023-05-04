@@ -41,7 +41,7 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
   private onTouched!: any;
   private onChanged!: any;
 
-  public value = '';
+  public value: string | null | undefined = '';
   public items = new BehaviorSubject<any[]>([]);
   public items$ = this.items.asObservable();
   private start = 1;
@@ -87,6 +87,7 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
   public selectionOnChange(e: any) {
     this.value = e.value;
     this.onChanged(this.value);
+    console.log(this.ngControl.value);
   }
 
   /**
@@ -112,8 +113,12 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    *
    * @param value id of webmap
    */
-  writeValue(value: string): void {
-    this.value = JSON.parse(JSON.stringify(value));
+  writeValue(value: string | null | undefined): void {
+    if (value) {
+      this.value = JSON.parse(JSON.stringify(value));
+    } else {
+      this.value = value;
+    }
   }
 
   /**

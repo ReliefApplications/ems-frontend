@@ -29,6 +29,16 @@
             {{ map }}
           </mat-option>
         </mat-select>
+        <!-- Remove value -->
+        <safe-button
+          matSuffix
+          (click)="
+            form.get('basemap')?.setValue(null); $event.stopPropagation()
+          "
+          [isIcon]="true"
+          icon="close"
+          variant="danger"
+        ></safe-button>
       </mat-form-field>
       <safe-divider></safe-divider>
       <!-- Webmap selection -->

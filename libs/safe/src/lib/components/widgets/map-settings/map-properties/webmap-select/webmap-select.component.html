@@ -8,6 +8,7 @@
     (selectionChange)="selectionOnChange($event)"
     (openedChange)="onOpenSelect($event)"
     [formControl]="ngControl && $any(ngControl.control)"
+    [value]="value"
   >
     <!-- Search -->
     <ng-container *ngTemplateOutlet="search"></ng-container>
@@ -16,6 +17,14 @@
       {{ item.title }}
     </mat-option>
   </mat-select>
+  <!-- Remove value -->
+  <safe-button
+    matSuffix
+    (click)="selectionOnChange({ value: null }); $event.stopPropagation()"
+    [isIcon]="true"
+    icon="close"
+    variant="danger"
+  ></safe-button>
 </mat-form-field>
 
 <!-- Search template -->
