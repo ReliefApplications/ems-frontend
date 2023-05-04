@@ -13,7 +13,11 @@ export default {
   ],
 } as Meta<NavigationTabComponent>;
 
-const navigationTabTemplate = `<ui-navigation-tab uiNavigationTab [selectedIndex]="1" [vertical]="false">
+const selectedIndexChangeEvent = (event: any) => {
+  console.log(event);
+};
+
+const navigationTabTemplate = `<ui-navigation-tab uiNavigationTab (selectedIndexChange)="selectedIndexChangeEvent($event)" [selectedIndex]="selectedIndex" [vertical]="vertical">
   <ui-tab label="First">First content</ui-tab>
   <ui-tab label="Second">Second content</ui-tab>
   <ui-tab label="Third">
@@ -30,9 +34,13 @@ const Template: Story<NavigationTabComponent> = (
     template: navigationTabTemplate,
     props: {
       ...args,
+      selectedIndexChangeEvent,
     },
   };
 };
 
 export const NavigationTab = Template.bind({});
-NavigationTab.args = {};
+NavigationTab.args = {
+  selectedIndex: 0,
+  vertical: false,
+};

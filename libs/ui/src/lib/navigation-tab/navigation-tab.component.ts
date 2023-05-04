@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'ui-navigation-tab',
@@ -8,4 +8,9 @@ import { Component, Input } from '@angular/core';
 export class NavigationTabComponent {
   @Input() selectedIndex = 0;
   @Input() vertical = false;
+  @Output() selectedIndexChange = new EventEmitter<number>();
+
+  selectedIndexChangeEvent(event: any) {
+    this.selectedIndexChange.emit(event);
+  }
 }

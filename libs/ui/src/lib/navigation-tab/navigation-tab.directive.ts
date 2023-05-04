@@ -14,7 +14,7 @@ import {
 export class NavigationTabDirective {
   @Input() selectedIndex = 0;
   @Input() vertical = false;
-  @Output() selectedIndexChange = new EventEmitter<number>();
+  @Output() selectedIndexChangeDirective = new EventEmitter<number>();
 
   content: any;
   // Distance from tooltip and the host element
@@ -22,18 +22,14 @@ export class NavigationTabDirective {
 
   // Default classes to render content
   classes = [
-    'opacity-50',
-    'transition-opacity',
-    'delay-300',
-    'bg-gray-800',
-    'p-2',
-    'max-w-xs',
-    'whitespace-pre-wrap',
-    'text-xs',
-    'text-justify',
-    'text-gray-100',
-    'rounded-md',
-    'absolute',
+    'transition',
+    'ease-in-out',
+    'delay-150',
+    'duration-300',
+    'block',
+    'py-4',
+    'hover:bg-indigo-500',
+    'hover:scale-110',
   ] as const;
 
   /**
@@ -47,10 +43,21 @@ export class NavigationTabDirective {
   ngOnInit() {
     const host = this.elementRef.nativeElement;
     const tabsWrapper = host?.children[0];
+
+    if (this.vertical) {
+      for (const tab of tabsWrapper.children) {
+        const tabButton = tab?.children[0]?.children[0];
+        this.renderer.removeClass(tabButton, 'border-b-2');
+        this.renderer.addClass(tabButton, 'border-r-2');
+      }
+    }
+
     const initialTabButton =
       tabsWrapper?.children[this.selectedIndex]?.children[0]?.children[0];
     // console.log(initialTabButton.parentElement.children[1].id);
-    // console.log(tabsWrapper.children[this.selectedIndex]);
+    // console.log(
+    //   tabsWrapper?.children[this.selectedIndex]?.children[0]?.children[0]
+    // );
     if (initialTabButton?.parentElement?.children[1]?.id === 'content') {
       this.showContent(initialTabButton);
     }
@@ -74,6 +81,24 @@ export class NavigationTabDirective {
    */
   showContent(target: any) {
     // NEED TO COPY
+    const currentTabSelected = target.parentElement.parentElement;
+    for (const tab of currentTabSelected.parentElement.children) {
+      if (tab.isSameNode(currentTabSelected)) {
+        this.selectedIndexChangeDirective.emit(
+          Array.prototype.indexOf.call(
+            currentTabSelected.parentElement.children,
+            tab
+          )
+        );
+        // console.log(
+        //   Array.prototype.indexOf.call(
+        //     currentTabSelected.parentElement.children,
+        //     tab
+        //   )
+        // );
+      }
+    }
+
     const wrappingDiv =
       target.parentElement.parentElement.parentElement.parentElement;
 
@@ -101,8 +126,15 @@ export class NavigationTabDirective {
     // console.log(this.content);
     // this.renderer.removeClass(this.content.children[0], 'hidden');
     // this.renderer.addClass(this.content.children[0], 'block');
-    this.renderer.addClass(this.content, 'block');
-    this.renderer.addClass(this.content, 'py-4');
+    for (const cl of this.classes) {
+      this.renderer.addClass(this.content, cl);
+    }
+    if (this.vertical) {
+      this.renderer.addClass(this.content, 'col-span-5');
+      this.renderer.addClass(this.content, 'px-4');
+    }
+    // this.renderer.addClass(this.content, 'block');
+    // this.renderer.addClass(this.content, 'py-4');
     this.renderer.appendChild(wrappingDiv, this.content);
     // console.log(this.content);
 

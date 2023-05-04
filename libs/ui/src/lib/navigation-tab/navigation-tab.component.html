@@ -2,9 +2,17 @@
   uiNavigationTab
   [selectedIndex]="selectedIndex"
   [vertical]="vertical"
-  
+  (selectedIndexChangeDirective)="selectedIndexChangeEvent($event)"
+  [ngClass]="{ 'grid grid-cols-6': vertical }"
 >
-  <div id="tabs" class="flex justify-around border-b border-gray-200">
+  <div
+    id="tabs"
+    class="justify-around border-gray-200"
+    [ngClass]="{
+      'flex-row border-r h-full col-span-1': vertical,
+      'flex border-b': !vertical
+    }"
+  >
     <ng-content></ng-content>
   </div>
 </div>
