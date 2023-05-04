@@ -1540,6 +1540,14 @@
 			"unlock": "Déverrouiller",
 			"unstick": "Désépingler"
 		},
+		"tilelayout": {
+			"component": {
+				"items": "articles",
+				"itemsPerPage": "Articles par page",
+				"of": "de",
+				"page": "Page"
+			}
+		},
 		"timepicker": {
 			"accept": "Accepter",
 			"acceptLabel": "Accepter",

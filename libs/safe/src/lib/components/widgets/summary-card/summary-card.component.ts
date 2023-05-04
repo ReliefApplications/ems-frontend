@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   HostListener,
   Input,
   OnInit,
@@ -17,6 +18,7 @@ import {
   GET_RESOURCE_METADATA,
 } from './graphql/queries';
 import { Layout } from '../../../models/layout.model';
+import { PageChangeEvent } from '@progress/kendo-angular-grid';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -45,14 +47,16 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   public colsNumber = MAX_COL_SPAN;
 
   // === DYNAMIC CARDS PAGINATION ===
-  private pageInfo = {
+  public pageInfo = {
     first: DEFAULT_PAGE_SIZE,
     skip: 0,
     hasNextPage: false,
+    totalCount: 0,
   };
   public loading = true;
 
   public cards: any[] = [];
+  private cachedCards: any[] = [];
   private dataQuery?: QueryRef<any>;
 
   private layout: Layout | null = null;
@@ -67,7 +71,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     return !!this.settings.cards[0]?.isAggregation;
   }
 
-  @ViewChild('summaryCardGrid') summaryCardGrid!: any;
+  @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
+  @ViewChild('pdf') pdf!: any;
 
   /**
    * Get the summary card pdf name
@@ -121,7 +126,11 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.settings.isDynamic && !this.isAggregation) {
+    if (
+      !this.settings.usePagination &&
+      this.settings.isDynamic &&
+      !this.isAggregation
+    ) {
       this.summaryCardGrid.nativeElement.addEventListener(
         'scroll',
         (event: any) => this.loadOnScroll(event)
@@ -179,9 +188,15 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       metadata: this.fields,
     }));
 
-    this.cards = [...this.cards, ...newCards];
-    this.pageInfo.hasNextPage =
-      get(res.data[layoutQueryName], 'totalCount', 0) > this.cards.length;
+    this.cachedCards = [...this.cachedCards, ...newCards];
+    this.cards = this.settings.usePagination
+      ? this.cachedCards.slice(
+          this.pageInfo.skip,
+          this.pageInfo.skip + this.pageInfo.first
+        )
+      : this.cachedCards;
+    this.pageInfo.totalCount = get(res.data[layoutQueryName], 'totalCount', 0);
+    this.pageInfo.hasNextPage = this.pageInfo.totalCount > this.cards.length;
 
     this.loading = res.loading;
   }
@@ -311,11 +326,41 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
         this.dataQuery
           ?.fetchMore({
             variables: {
-              skip: this.cards.length,
+              skip: this.cachedCards.length,
             },
           })
           .then(this.updateCards.bind(this));
       }
+    }
+  }
+
+  /**
+   * Triggered when the page changes.
+   *
+   * @param e Kendo paginator page change event
+   */
+  public onPageChange(e: PageChangeEvent) {
+    this.pageInfo.first = e.take;
+    this.pageInfo.skip = e.skip;
+
+    this.summaryCardGrid.nativeElement.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+
+    // Check if the data is already cached
+    if (this.cachedCards.length >= e.skip + e.take)
+      this.cards = this.cachedCards.slice(e.skip, e.skip + e.take);
+    else {
+      this.loading = true;
+      this.dataQuery
+        ?.fetchMore({
+          variables: {
+            skip: this.cachedCards.length,
+          },
+        })
+        .then(this.updateCards.bind(this));
     }
   }
 }

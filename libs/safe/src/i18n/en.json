@@ -1532,6 +1532,14 @@
 			"unlock": "Unlock",
 			"unstick": "Unstick"
 		},
+		"tilelayout": {
+			"component": {
+				"items": "items",
+				"itemsPerPage": "Items per page",
+				"of": "of",
+				"page": "Page"
+			}
+		},
 		"timepicker": {
 			"accept": "Accept",
 			"acceptLabel": "Accept",

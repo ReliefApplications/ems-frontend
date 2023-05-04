@@ -15,6 +15,15 @@
           'components.widget.settings.summaryCard.dynamic' | translate
         }}</mat-radio-button>
       </mat-radio-group>
+      <!--TODO: Move this into the widget display tab once AB#59610 is merged (https://github.com/ReliefApplications/oort-frontend/pull/1299)  -->
+      <mat-radio-group formControlName="usePagination">
+        <mat-radio-button [value]="false">{{
+          'components.widget.settings.summaryCard.infiniteScroll' | translate
+        }}</mat-radio-button>
+        <mat-radio-button [value]="true">{{
+          'components.widget.settings.summaryCard.pagination' | translate
+        }}</mat-radio-button>
+      </mat-radio-group>
       <safe-button
         (click)="addCard()"
         icon="add"
