@@ -58,5 +58,20 @@
         <safe-map-properties [form]="tileForm"></safe-map-properties>
       </ng-template>
     </mat-tab>
+    <!-- Widget display options -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon
+          icon="settings_overscan"
+          [size]="24"
+          matTooltip="{{ 'models.widget.display.title' | translate }}"
+          matTooltipPosition="right"
+        ></safe-icon>
+        <span>{{ 'models.widget.display.title' | translate }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <safe-display-settings [formGroup]="tileForm"></safe-display-settings>
+      </ng-template>
+    </mat-tab>
   </mat-tab-group>
 </ng-container>

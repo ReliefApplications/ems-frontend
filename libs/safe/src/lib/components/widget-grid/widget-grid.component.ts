@@ -2,6 +2,7 @@ import {
   Component,
   EventEmitter,
   HostListener,
+  Inject,
   Input,
   OnInit,
   Output,
@@ -65,6 +66,8 @@ export class SafeWidgetGridComponent implements OnInit {
     return !this.widgetComponents.some((x) => !x.canDeactivate);
   }
 
+  public isBackOffice = false;
+
   /**
    * Changes display when windows size changes.
    *
@@ -79,13 +82,17 @@ export class SafeWidgetGridComponent implements OnInit {
   /**
    * Constructor of the grid widget component
    *
+   * @param environment This is the environment in which we are running the application
    * @param dialog The material dialog service
    * @param dashboardService Shared dashboard service
    */
   constructor(
+    @Inject('environment') environment: any,
     public dialog: MatDialog,
     private dashboardService: SafeDashboardService
-  ) {}
+  ) {
+    if (environment.module === 'backoffice') this.isBackOffice = true;
+  }
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);

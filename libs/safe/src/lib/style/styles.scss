@@ -67,7 +67,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,
+      // A700: #ffffff,,,,,,,,,,
     ),
 );
 
@@ -473,7 +473,6 @@ body {
   height: 40px;
   position: relative;
   z-index: 1001;
-  @apply bg-white;
   color: black;
   text-align: left;
   line-height: 40px;
@@ -489,6 +488,10 @@ body {
     text-overflow: ellipsis;
     flex: 1;
     margin: unset;
+  }
+
+  .hide-border & {
+    border-bottom: none !important;
   }
 }
 
