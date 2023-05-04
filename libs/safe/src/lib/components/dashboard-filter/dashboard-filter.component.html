@@ -68,7 +68,7 @@
           position === filterPosition.TOP || position === filterPosition.BOTTOM
         "
       >
-        <ng-container *ngFor="let answer of surveyAnswers">
+        <ng-container *ngFor="let answer of surveyAnswers" class="flex flex-auto justify-center">
           <safe-button class="z-20">{{ answer }}</safe-button>
         </ng-container></ng-container
       >
