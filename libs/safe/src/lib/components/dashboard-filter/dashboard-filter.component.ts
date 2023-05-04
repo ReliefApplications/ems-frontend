@@ -2,7 +2,6 @@ import {
   Component,
   ElementRef,
   HostListener,
-  Input,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -36,7 +35,7 @@ export class DashboardFilterComponent
   implements OnInit, OnDestroy
 {
   // Filter
-  @Input() position: FilterPosition = FilterPosition.BOTTOM;
+  position!: FilterPosition;
   public positionList = [
     FilterPosition.LEFT,
     FilterPosition.TOP,
@@ -111,6 +110,8 @@ export class DashboardFilterComponent
                 this.position = contextualFilterPosition as FilterPosition;
               } else if (application.contextualFilterPosition) {
                 this.position = application.contextualFilterPosition;
+              } else {
+                this.position = FilterPosition.BOTTOM; //case where there are no default position set up
               }
             });
         }

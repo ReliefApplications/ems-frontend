@@ -109,7 +109,8 @@
           position === filterPosition.LEFT || position === filterPosition.RIGHT,
         'flex-col':
           position === filterPosition.LEFT || position === filterPosition.RIGHT,
-        hidden: isDrawerOpen
+        'animate-fadeOut': !isDrawerOpen,
+        'animate-fadeIn': isDrawerOpen
       }"
       class="dashboard-filter-content bg-white p-3"
     >

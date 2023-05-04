@@ -65,12 +65,8 @@ export class SafeDrawerPositionerDirective
     if (changes.position?.currentValue) {
       this.setPosition(changes.position.currentValue);
     }
-    console.log(changes.opened, 'changes');
-    if (
-      changes.opened &&
-      changes.opened.currentValue != changes.opened.previousValue
-    ) {
-      //this.displayDrawer(changes.opened.currentValue);
+    if (changes.opened?.currentValue !== changes.opened?.previousValue) {
+      this.displayDrawer(changes.opened.currentValue);
     }
     // Width has to be set when the element is in horizontal(at the TOP or BOTTOM of the parent context) position
     if (
@@ -200,6 +196,7 @@ export class SafeDrawerPositionerDirective
       default:
         break;
     }
+    setTimeout(() => this.displayDrawer(this.opened), 0); //Waiting to acquire the right client size
   }
 
   /**
@@ -230,17 +227,17 @@ export class SafeDrawerPositionerDirective
    * Open animation for Y axis
    *
    * @param open Is element open
-   * @param isAbsoluteValue Has to use absolute value(for BOTTOM)
+   * @param translateToTheBottom Has to use absolute value(for BOTTOM)
    */
-  private translateY(open: boolean, isAbsoluteValue: boolean = false) {
+  private translateY(open: boolean, translateToTheBottom: boolean = false) {
     if (open) {
-      this.el.nativeElement.style.transform = `translateY(0px)`;
+      this.el.nativeElement.style.transform = `translateY(0)`;
     } else {
       // If close we would translate the element out leaving the minSizeOnClosed value visible
+      const heightToTranslate =
+        this.minSizeOnClosed - this.el.nativeElement.clientHeight;
       this.el.nativeElement.style.transform = `translateY(${
-        isAbsoluteValue
-          ? Math.abs(this.minSizeOnClosed - this.el.nativeElement.clientHeight)
-          : this.minSizeOnClosed - this.el.nativeElement.clientHeight
+        translateToTheBottom ? -heightToTranslate : heightToTranslate
       }px)`;
     }
   }
@@ -249,17 +246,17 @@ export class SafeDrawerPositionerDirective
    * Open animation for X axis
    *
    * @param open Is element open
-   * @param isAbsoluteValue Has to use absolute value(for RIGHT)
+   * @param translateToTheRight Has to use absolute value(for RIGHT)
    */
-  private translateX(open: boolean, isAbsoluteValue: boolean = false) {
+  private translateX(open: boolean, translateToTheRight: boolean = false) {
     if (open) {
       this.el.nativeElement.style.transform = `translateX(0px)`;
     } else {
       // If close we would translate the element out leaving the minSizeOnClosed value visible
+      const widthToTranslate =
+        this.minSizeOnClosed - this.el.nativeElement.clientWidth;
       this.el.nativeElement.style.transform = `translateX(${
-        isAbsoluteValue
-          ? Math.abs(this.minSizeOnClosed - this.el.nativeElement.clientWidth)
-          : this.minSizeOnClosed - this.el.nativeElement.clientWidth
+        translateToTheRight ? -widthToTranslate : widthToTranslate
       }px)`;
     }
   }
