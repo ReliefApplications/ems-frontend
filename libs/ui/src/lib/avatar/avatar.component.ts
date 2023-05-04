@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AvatarSize } from './enums/avatar-size.enum';
+import { Size } from '../shared/size.enum';
 import { AvatarVariant } from './enums/avatar-variant.enum';
 import { AvatarShape } from './enums/avatar-shape.enum';
 
@@ -13,7 +13,7 @@ import { AvatarShape } from './enums/avatar-shape.enum';
 })
 export class AvatarComponent {
   /** Size of avatar */
-  @Input() size: AvatarSize | string = AvatarSize.MEDIUM;
+  @Input() size: Size | string = Size.MEDIUM;
   /** Variant: defines the colors */
   @Input() variant: AvatarVariant | string = AvatarVariant.PRIMARY;
   /** Avatar image */
@@ -23,7 +23,7 @@ export class AvatarComponent {
   /** short text */
   @Input() initials = '';
 
-  avatarSize = AvatarSize;
+  avatarSize = Size;
   avatarShape = AvatarShape;
   avatarVariant = AvatarVariant;
 }

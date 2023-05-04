@@ -9,22 +9,31 @@ import {
 } from '@angular/core';
 import { AvatarGroupStack } from './enums/avatar-group-stack.enum';
 import { AvatarComponent } from '../avatar/avatar.component';
-import { AvatarSize } from '../avatar/enums/avatar-size.enum';
+import { Size } from '../shared/size.enum';
 import { AvatarShape } from '../avatar/enums/avatar-shape.enum';
 
+/**
+ * UI Avatar group component
+ */
 @Component({
   selector: 'ui-avatar-group',
   templateUrl: './avatar-group.component.html',
   styleUrls: ['./avatar-group.component.scss'],
 })
 export class AvatarGroupComponent implements AfterViewInit {
-  @Input() size: AvatarSize | string = AvatarSize.MEDIUM;
+  @Input() size: Size | string = Size.MEDIUM;
   @Input() shape: AvatarShape | string = AvatarShape.CIRCLE;
   @Input() stack: AvatarGroupStack | string = AvatarGroupStack.TOP;
   @Input() limit = 5;
 
   @ContentChildren(AvatarComponent) avatars!: QueryList<AvatarComponent>;
 
+  /**
+   * Constructor
+   *
+   * @param renderer Renderer2
+   * @param el The host element
+   */
   constructor(private renderer: Renderer2, private el: ElementRef) {}
 
   avatarGroupStack = AvatarGroupStack;
