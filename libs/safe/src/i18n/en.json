@@ -400,7 +400,11 @@
 			"customStyling": "Custom Styling",
 			"dashboard": {
 				"editFilter": "Edit filter",
-				"empty": "No content available. Wait for your administrator to build some."
+				"empty": "No content available. Wait for your administrator to build some.",
+				"filterSettings": "Filter settings",
+				"settings": {
+					"defaultPosition": "Default position for the filter"
+				}
 			},
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the application {{name}}?"
@@ -1572,6 +1576,7 @@
 			"type": "Notification type"
 		},
 		"dashboard": {
+			"activateFiltering": "Activate filtering",
 			"context": {
 				"datasource": {
 					"alert": "Select a datasource, in order to set one page per record of the datasource. You can also set a template, which would be loaded by default if no specific page is created for a record.",
@@ -1590,6 +1595,7 @@
 					"element": "Element"
 				}
 			},
+			"deactivateFiltering": "Deactivate filtering",
 			"share": "Share Dashboard"
 		},
 		"form": {

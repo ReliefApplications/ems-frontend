@@ -111,6 +111,7 @@ export const GET_APPLICATION_BY_ID = gql`
       locked
       lockedByUser
       contextualFilter
+      contextualFilterPosition
     }
   }
 `;
