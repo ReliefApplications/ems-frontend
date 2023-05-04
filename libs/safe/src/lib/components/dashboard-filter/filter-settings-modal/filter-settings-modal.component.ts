@@ -6,6 +6,7 @@ import {
 import { FilterPosition } from '../enums/dashboard-filters.enum';
 import { SafeModalModule } from '../../ui/modal/modal.module';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Data for the settings modal
@@ -22,7 +23,7 @@ interface SettingsData {
   selector: 'safe-filter-settings-modal',
   templateUrl: './filter-settings-modal.component.html',
   styleUrls: ['./filter-settings-modal.component.scss'],
-  imports: [SafeModalModule, CommonModule],
+  imports: [SafeModalModule, CommonModule, TranslateModule],
 })
 export class FilterSettingsModalComponent implements OnInit {
   public positionList: FilterPosition[] = [];

@@ -75,11 +75,10 @@
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="toggleFiltering()">
             <mat-icon>tune</mat-icon>
-            <!-- todo(translate) -->
             {{
               showFilter
-                ? 'Deactivate filtering'
-                : 'Activate filtering'
+                ? ('models.dashboard.deactivateFiltering' | translate)
+                : ('models.dashboard.activateFiltering' | translate)
             }}
           </button>
           <button mat-menu-item (click)="onAppSelection()">
