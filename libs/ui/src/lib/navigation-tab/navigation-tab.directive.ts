@@ -17,8 +17,7 @@ export class NavigationTabDirective {
   @Output() selectedIndexChangeDirective = new EventEmitter<number>();
 
   content: any;
-  // Distance from tooltip and the host element
-  contentSeparation = 5;
+  currentSelected!: number;
 
   // Default classes to render content
   classes = [
@@ -28,8 +27,6 @@ export class NavigationTabDirective {
     'duration-300',
     'block',
     'py-4',
-    'hover:bg-indigo-500',
-    'hover:scale-110',
   ] as const;
 
   /**
@@ -69,7 +66,7 @@ export class NavigationTabDirective {
   @HostListener('click', ['$event'])
   onClick(event: any) {
     // console.log('content when clicking : ');
-    // console.log(this.content);
+    // console.log(event.target);
     if (event.target.parentElement.children[1].id === 'content') {
       this.showContent(event.target);
       event.stopPropagation();
@@ -80,16 +77,53 @@ export class NavigationTabDirective {
    * Show the tooltip and place it on the screen accordingly to its width and height
    */
   showContent(target: any) {
-    // NEED TO COPY
+    //Defining useful variables
+    const tabs = target.parentElement.parentElement.parentElement.children;
     const currentTabSelected = target.parentElement.parentElement;
-    for (const tab of currentTabSelected.parentElement.children) {
+
+    // Get unselected classes to old selected
+    if (this.currentSelected) {
+      console.log(tabs[this.currentSelected].children[0].children[0]);
+      this.renderer.removeClass(
+        tabs[this.currentSelected].children[0].children[0],
+        'border-primary-500'
+      );
+      this.renderer.removeClass(
+        tabs[this.currentSelected].children[0].children[0],
+        'text-primary-600'
+      );
+      this.renderer.addClass(
+        tabs[this.currentSelected].children[0].children[0],
+        'text-gray-500'
+      );
+      this.renderer.addClass(
+        tabs[this.currentSelected].children[0].children[0],
+        'border-transparent'
+      );
+      this.renderer.addClass(
+        tabs[this.currentSelected].children[0].children[0],
+        'hover:border-gray-300'
+      );
+      this.renderer.addClass(
+        tabs[this.currentSelected].children[0].children[0],
+        'hover:text-gray-700'
+      );
+    }
+
+    // Get selected classes to newly selected
+    this.renderer.removeClass(target, 'text-gray-500');
+    this.renderer.removeClass(target, 'border-transparent');
+    this.renderer.removeClass(target, 'hover:border-gray-300');
+    this.renderer.removeClass(target, 'hover:text-gray-700');
+    this.renderer.addClass(target, 'border-primary-500');
+    this.renderer.addClass(target, 'text-primary-600');
+
+    for (const tab of tabs) {
       if (tab.isSameNode(currentTabSelected)) {
         this.selectedIndexChangeDirective.emit(
-          Array.prototype.indexOf.call(
-            currentTabSelected.parentElement.children,
-            tab
-          )
+          Array.prototype.indexOf.call(tabs, tab)
         );
+        this.currentSelected = Array.prototype.indexOf.call(tabs, tab);
         // console.log(
         //   Array.prototype.indexOf.call(
         //     currentTabSelected.parentElement.children,

@@ -10,6 +10,8 @@ export class NavigationTabComponent {
   @Input() vertical = false;
   @Output() selectedIndexChange = new EventEmitter<number>();
 
+  currentSelected = this.selectedIndex;
+
   selectedIndexChangeEvent(event: any) {
     this.selectedIndexChange.emit(event);
   }

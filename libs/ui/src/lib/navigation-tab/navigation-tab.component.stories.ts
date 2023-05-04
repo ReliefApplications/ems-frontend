@@ -39,8 +39,20 @@ const Template: Story<NavigationTabComponent> = (
   };
 };
 
-export const NavigationTab = Template.bind({});
-NavigationTab.args = {
+export const HorizontalTab = Template.bind({});
+HorizontalTab.args = {
   selectedIndex: 0,
+  vertical: false,
+};
+
+export const VerticalTab = Template.bind({});
+VerticalTab.args = {
+  selectedIndex: 0,
+  vertical: true,
+};
+
+export const DefaultSelection1Tab = Template.bind({});
+DefaultSelection1Tab.args = {
+  selectedIndex: 1,
   vertical: false,
 };
