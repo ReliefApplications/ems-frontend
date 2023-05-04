@@ -1686,6 +1686,10 @@
 				"confirmationMessage": "Do you confirm the deletion of the widget?",
 				"title": "Delete Widget"
 			},
+			"display": {
+				"border": "Show widget border",
+				"title": "Widget display"
+			},
 			"map": {
 				"defaultTitle": "Map Widget",
 				"latitude": "Latitude",
