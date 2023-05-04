@@ -86,8 +86,7 @@ export class TabDisplayComponent
           const serieSettings = seriesSettings.find(
             (x: any) =>
               isEqual(x.serie, get(serie, 'name')) ||
-              isNil(x.serie) ||
-              isNil(get(serie, 'name'))
+              (isNil(x.serie) && isNil(get(serie, 'name')))
           );
           if (serieSettings) {
             const categories: any[] = [];
