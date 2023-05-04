@@ -62,35 +62,17 @@ export class SafeDrawerPositionerDirective
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.position?.currentValue) {
-      this.setPosition(changes.position.currentValue);
+    if (
+      changes.position ||
+      changes.elementLeftOffset ||
+      changes.elementTopOffset ||
+      changes.elementWidth ||
+      changes.elementHeight
+    ) {
+      this.setPosition(this.position);
     }
     if (changes.opened?.currentValue !== changes.opened?.previousValue) {
       this.displayDrawer(changes.opened.currentValue);
-    }
-    // Width has to be set when the element is in horizontal(at the TOP or BOTTOM of the parent context) position
-    if (
-      changes.elementWidth?.currentValue &&
-      (this.position === FilterPosition.TOP ||
-        this.position === FilterPosition.BOTTOM)
-    ) {
-      this.renderer.setStyle(
-        this.el.nativeElement,
-        'width',
-        changes.elementWidth.currentValue
-      );
-    }
-    // Height has to be set when the element is in vertical(at the LEFT or RIGHT of the parent context) position
-    if (
-      changes.elementHeight?.currentValue &&
-      (this.position === FilterPosition.LEFT ||
-        this.position === FilterPosition.RIGHT)
-    ) {
-      this.renderer.setStyle(
-        this.el.nativeElement,
-        'height',
-        changes.elementHeight.currentValue
-      );
     }
   }
 

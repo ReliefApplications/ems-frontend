@@ -133,6 +133,8 @@ export class DashboardFilterComponent
       this.hostElement.nativeElement.parentElement?.parentElement?.getBoundingClientRect(); //This is the sidenav container, not ideal solution
     this.containerWidth = `${parentRect?.width}px`;
     this.containerHeight = `${parentRect?.height}px`;
+    this.containerLeftOffset = `${parentRect?.x}px`;
+    this.containerTopOffset = `${parentRect?.y}px`;
   }
 
   /**
