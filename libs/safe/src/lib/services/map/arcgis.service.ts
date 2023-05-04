@@ -97,7 +97,15 @@ export class ArcgisService {
       .match('Web Map')
       .in('type');
     if (options.text) {
-      query.and().match(options.text).in('title');
+      query.and();
+      query
+        .startGroup()
+        .match(options.text)
+        .in('title')
+        .or()
+        .match(options.text)
+        .in('id')
+        .endGroup();
     }
     query.endGroup();
     if (options.id) {

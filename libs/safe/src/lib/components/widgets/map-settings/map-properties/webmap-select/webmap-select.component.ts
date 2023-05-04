@@ -165,7 +165,7 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
     ) {
       if (!this.loading && this.nextPage) {
         this.loading = true;
-        this.search();
+        this.search(this.searchControl.value);
       }
     }
   }
