@@ -5,12 +5,12 @@
 <div id="zoom-slider-control" class="zoom-slider-control">
   <mat-slider
     step="1"
-    [max]="map?.getMaxZoom()"
-    [min]="map?.getMinZoom()"
+    [max]="maxZoom"
+    [min]="minZoom"
     showTickMarks
     discrete
     (change)="updateZoom($event)"
   >
-    <input matSliderThumb [value]="map?.getZoom()" />
+    <input matSliderThumb [value]="currentZoom" />
   </mat-slider>
 </div>

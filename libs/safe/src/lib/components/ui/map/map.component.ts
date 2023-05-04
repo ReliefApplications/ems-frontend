@@ -136,6 +136,9 @@ export class MapComponent
     controls: DefaultMapControls,
   };
   private arcGisWebMap: any;
+  public maxZoom = get(this.settingsConfig, 'maxZoom', 18);
+  public minZoom = get(this.settingsConfig, 'minZoom', 2);
+  public currentZoom = 2;
 
   // === MARKERS ===
   private baseTree!: L.Control.Layers.TreeObject;
@@ -190,6 +193,7 @@ export class MapComponent
     });
 
     this.map.on('zoomend', () => {
+      this.currentZoom = this.map.getZoom();
       this.mapEvent.emit({
         type: MapEventType.ZOOM_END,
         content: { zoom: this.map.getZoom() },
@@ -348,6 +352,10 @@ export class MapComponent
     //L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
 
     this.setMapControls(controls, true);
+    //Ugly but sets off an error otherwise
+    setTimeout(() => {
+      this.currentZoom = this.map.getZoom();
+    }, 100);
   }
 
   /**
@@ -357,48 +365,6 @@ export class MapComponent
    * @param {boolean} [initMap=false] if initializing map to add the fixed controls
    */
   private setMapControls(controls: MapControls, initMap = false) {
-    // Create additional Control placeholders
-    function addControlPlaceholders(map: {
-      _controlCorners: any;
-      _controlContainer: any;
-    }) {
-      const corners = map._controlCorners,
-        l = 'leaflet-',
-        container = map._controlContainer;
-
-      function createCorner(vSide: string, hSide: string) {
-        const className = l + vSide + ' ' + l + hSide;
-
-        corners[vSide + hSide] = L.DomUtil.create('div', className, container);
-      }
-
-      createCorner('verticalcenter', 'left');
-      createCorner('verticalcenter', 'right');
-    }
-    addControlPlaceholders(this.map);
-
-    const mapHere = this.map;
-    // Add custom zoom control
-    const customZoomControl = L.Control.extend({
-      options: {
-        position: 'verticalcenterright',
-      },
-      onAdd: function () {
-        const zoomSliderControl = DomUtil.get('zoom-slider-control');
-        // Disable dragging when user's cursor enters the element
-        zoomSliderControl?.addEventListener('mouseover', function () {
-          mapHere.dragging.disable();
-        });
-
-        // Re-enable dragging when user's cursor leaves the element
-        zoomSliderControl?.addEventListener('mouseout', function () {
-          mapHere.dragging.enable();
-        });
-        return zoomSliderControl;
-      },
-    });
-    this.map.addControl(new customZoomControl());
-
     // Add leaflet measure control
     this.mapControlsService.getMeasureControl(
       this.map,
@@ -452,6 +418,8 @@ export class MapComponent
       }
     }
 
+    this.addCustomZoomControl();
+
     // If initializing map: add fixed controls
     if (initMap) {
       // Add leaflet fullscreen control
@@ -489,6 +457,7 @@ export class MapComponent
       this.map.setMaxBounds(maxBounds);
 
       if (this.map.getZoom() !== initialState.viewpoint.zoom) {
+        this.currentZoom = this.map.getZoom();
         this.map.setZoom(initialState.viewpoint.zoom);
       }
 
@@ -900,6 +869,54 @@ export class MapComponent
   // if (this.basemap) {
   //   this.basemap.remove();
   // }
+
+  addCustomZoomControl() {
+    // Create additional Control placeholders
+    function addControlPlaceholders(map: {
+      _controlCorners: any;
+      _controlContainer: any;
+    }) {
+      const corners = map._controlCorners,
+        l = 'leaflet-',
+        container = map._controlContainer;
+
+      function createCorner(vSide: string, hSide: string) {
+        const className = l + vSide + ' ' + l + hSide;
+
+        corners[vSide + hSide] = L.DomUtil.create('div', className, container);
+      }
+
+      createCorner('verticalcenter', 'left');
+      createCorner('verticalcenter', 'right');
+    }
+    addControlPlaceholders(this.map);
+
+    const mapHere = this.map;
+    //Ugly but sets off an error otherwise
+    setTimeout(() => {
+      // Add custom zoom control
+      const customZoomControl = L.Control.extend({
+        options: {
+          position: 'verticalcenterright',
+        },
+        onAdd: function () {
+          console.log('we are here');
+          const zoomSliderControl = DomUtil.get('zoom-slider-control');
+          // Disable dragging when user's cursor enters the element
+          zoomSliderControl?.addEventListener('mouseover', function () {
+            mapHere.dragging.disable();
+          });
+
+          // Re-enable dragging when user's cursor leaves the element
+          zoomSliderControl?.addEventListener('mouseout', function () {
+            mapHere.dragging.enable();
+          });
+          return zoomSliderControl;
+        },
+      });
+      this.map.addControl(new customZoomControl());
+    }, 100);
+  }
 
   updateZoom(event: any) {
     this.map.setZoom(event.originalTarget.valueAsNumber);
