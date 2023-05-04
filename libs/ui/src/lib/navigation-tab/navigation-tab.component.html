@@ -4,16 +4,19 @@
   uiNavigationTab
   [selectedIndex]="selectedIndex"
   [vertical]="vertical"
+  [variant]="variant"
   (selectedIndexChangeDirective)="selectedIndexChangeEvent($event)"
   [ngClass]="{ 'flex grid-cols-6 grid-rows-1': vertical }"
 >
   <!-- List of tabs -->
   <div
     id="tabs"
-    class="justify-around border-gray-200"
+    class="justify-around"
     [ngClass]="{
       'flex border-r h-full col-span-1': vertical,
-      'flex border-b': !vertical
+      'flex border-b': !vertical,
+      'border-gray-200' : variant !== ColorVariant.GREY,
+      'border-gray-600' : variant === ColorVariant.GREY
     }"
   >
     <ng-content></ng-content>

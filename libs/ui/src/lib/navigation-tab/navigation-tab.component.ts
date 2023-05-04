@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Variant } from '../shared/variant.enum';
 
 /**
  * UI Navigation Tab Component
@@ -9,8 +10,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./navigation-tab.component.scss'],
 })
 export class NavigationTabComponent {
+  ColorVariant = Variant;
+
   @Input() selectedIndex = 0;
   @Input() vertical = false;
+  @Input() variant: Variant = this.ColorVariant.DEFAULT;
   @Output() selectedIndexChange = new EventEmitter<number>();
 
   /**

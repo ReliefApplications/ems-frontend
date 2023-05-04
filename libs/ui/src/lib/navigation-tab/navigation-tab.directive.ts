@@ -8,6 +8,7 @@ import {
   EventEmitter,
   OnInit,
 } from '@angular/core';
+import { Variant } from '../shared/variant.enum';
 
 /**
  * Directive that manages the behavior of a navigation tab
@@ -16,6 +17,7 @@ import {
   selector: '[uiNavigationTab]',
 })
 export class NavigationTabDirective implements OnInit {
+  ColorVariant = Variant;
   /**
    * Index of the default selected tab
    */
@@ -24,6 +26,10 @@ export class NavigationTabDirective implements OnInit {
    * True if the navigation tab is to be vertical, false otherwise
    */
   @Input() vertical = false;
+  /**
+   * True if the navigation tab is to be vertical, false otherwise
+   */
+  @Input() variant = this.ColorVariant.DEFAULT;
   /**
    * Output emitted whenever a new tab is clicked, gives the index of the new tab
    */
@@ -143,20 +149,64 @@ export class NavigationTabDirective implements OnInit {
       );
       this.renderer.addClass(
         tabs[this.currentSelected].children[0].children[0],
-        'text-gray-500'
-      );
-      this.renderer.addClass(
-        tabs[this.currentSelected].children[0].children[0],
         'border-transparent'
       );
-      this.renderer.addClass(
-        tabs[this.currentSelected].children[0].children[0],
-        'hover:border-gray-300'
-      );
-      this.renderer.addClass(
-        tabs[this.currentSelected].children[0].children[0],
-        'hover:text-gray-700'
-      );
+      if (this.variant !== this.ColorVariant.GREY) {
+        this.renderer.addClass(
+          tabs[this.currentSelected].children[0].children[0],
+          'text-gray-500'
+        );
+        this.renderer.addClass(
+          tabs[this.currentSelected].children[0].children[0],
+          'hover:text-gray-700'
+        );
+      }
+      switch (this.variant) {
+        case this.ColorVariant.DEFAULT:
+          this.renderer.addClass(
+            tabs[this.currentSelected].children[0].children[0],
+            'hover:border-gray-300'
+          );
+          break;
+        case this.ColorVariant.PRIMARY:
+          this.renderer.addClass(
+            tabs[this.currentSelected].children[0].children[0],
+            'hover:border-primary-300'
+          );
+          break;
+        case this.ColorVariant.SUCCESS:
+          this.renderer.addClass(
+            tabs[this.currentSelected].children[0].children[0],
+            'hover:border-green-300'
+          );
+          break;
+        case this.ColorVariant.DANGER:
+          this.renderer.addClass(
+            tabs[this.currentSelected].children[0].children[0],
+            'hover:border-red-300'
+          );
+          break;
+        case this.ColorVariant.GREY:
+          this.renderer.addClass(
+            tabs[this.currentSelected].children[0].children[0],
+            'hover:border-gray-500'
+          );
+          this.renderer.addClass(
+            tabs[this.currentSelected].children[0].children[0],
+            'text-gray-400'
+          );
+          this.renderer.addClass(
+            tabs[this.currentSelected].children[0].children[0],
+            'hover:text-gray-100'
+          );
+          break;
+        case this.ColorVariant.LIGHT:
+          this.renderer.addClass(
+            tabs[this.currentSelected].children[0].children[0],
+            'hover:border-gray-300'
+          );
+          break;
+      }
     }
   }
 
@@ -166,10 +216,39 @@ export class NavigationTabDirective implements OnInit {
    * @param target dom element clicked
    */
   classSelect(target: any) {
-    this.renderer.removeClass(target, 'text-gray-500');
+    switch (this.variant) {
+      case this.ColorVariant.DEFAULT:
+        this.renderer.removeClass(target, 'text-gray-500');
+        this.renderer.removeClass(target, 'hover:border-gray-300');
+        this.renderer.removeClass(target, 'hover:text-gray-700');
+        break;
+      case this.ColorVariant.PRIMARY:
+        this.renderer.removeClass(target, 'text-gray-500');
+        this.renderer.removeClass(target, 'hover:border-primary-300');
+        this.renderer.removeClass(target, 'hover:text-gray-700');
+        break;
+      case this.ColorVariant.SUCCESS:
+        this.renderer.removeClass(target, 'text-gray-500');
+        this.renderer.removeClass(target, 'hover:border-green-300');
+        this.renderer.removeClass(target, 'hover:text-gray-700');
+        break;
+      case this.ColorVariant.DANGER:
+        this.renderer.removeClass(target, 'text-gray-500');
+        this.renderer.removeClass(target, 'hover:border-red-300');
+        this.renderer.removeClass(target, 'hover:text-gray-700');
+        break;
+      case this.ColorVariant.LIGHT:
+        this.renderer.removeClass(target, 'text-gray-500');
+        this.renderer.removeClass(target, 'hover:border-gray-300');
+        this.renderer.removeClass(target, 'hover:text-gray-700');
+        break;
+      case this.ColorVariant.GREY:
+        this.renderer.removeClass(target, 'text-gray-100');
+        this.renderer.removeClass(target, 'hover:border-gray-500');
+        this.renderer.removeClass(target, 'hover:text-gray-400');
+        break;
+    }
     this.renderer.removeClass(target, 'border-transparent');
-    this.renderer.removeClass(target, 'hover:border-gray-300');
-    this.renderer.removeClass(target, 'hover:text-gray-700');
     this.renderer.addClass(target, 'border-primary-500');
     this.renderer.addClass(target, 'text-primary-600');
   }
