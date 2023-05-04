@@ -13,10 +13,13 @@ export default {
   ],
 } as Meta<NavigationTabComponent>;
 
-const navigationTabTemplate = `<ui-navigation-tab uiNavigationTab [selectedIndex]="0" [vertical]="false">
-<ui-tab label="First">First content</ui-tab>
-<ui-tab label="Second">Second content</ui-tab>
-<ui-tab label="Third">Third content</ui-tab>
+const navigationTabTemplate = `<ui-navigation-tab uiNavigationTab [selectedIndex]="1" [vertical]="false">
+  <ui-tab label="First">First content</ui-tab>
+  <ui-tab label="Second">Second content</ui-tab>
+  <ui-tab label="Third">
+    <div class="text-red-600"> Third content </div>
+    <button class="bg-primary-400 hover:bg-primary-600 focus:ring-0 focus:ring-primary-200 rounded-md p-2 text-small text-gray-800"> Random Content </button>
+  </ui-tab>
 </ui-navigation-tab>`;
 
 const Template: Story<NavigationTabComponent> = (

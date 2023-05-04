@@ -44,35 +44,29 @@ export class NavigationTabDirective {
    */
   constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
 
+  ngOnInit() {
+    const host = this.elementRef.nativeElement;
+    const tabsWrapper = host?.children[0];
+    const initialTabButton =
+      tabsWrapper?.children[this.selectedIndex]?.children[0]?.children[0];
+    // console.log(initialTabButton.parentElement.children[1].id);
+    // console.log(tabsWrapper.children[this.selectedIndex]);
+    if (initialTabButton?.parentElement?.children[1]?.id === 'content') {
+      this.showContent(initialTabButton);
+    }
+  }
+
   /**
    * Function that listen for the user's mouse to enter the element where the directive is placed
    */
-  @HostListener('focusin', ['$event.target'])
-  onFocusIn(target: any) {
-    if (!this.content) {
-      this.showContent(target);
+  @HostListener('click', ['$event'])
+  onClick(event: any) {
+    // console.log('content when clicking : ');
+    // console.log(this.content);
+    if (event.target.parentElement.children[1].id === 'content') {
+      this.showContent(event.target);
+      event.stopPropagation();
     }
-  }
-
-  /**
-   * Function that listen for the user's mouse to quit the element where the directive is placed
-   */
-  @HostListener('focusout')
-  onFocusOut() {
-    if (this.content) {
-      this.removeContent();
-    }
-  }
-
-  /**
-   * Destroy the tooltip and stop its display
-   */
-  removeContent() {
-    for (const cl of this.classes) {
-      this.renderer.removeClass(this.content, cl);
-    }
-    this.renderer.removeChild(document.body, this.content);
-    this.content = null;
   }
 
   /**
@@ -80,10 +74,36 @@ export class NavigationTabDirective {
    */
   showContent(target: any) {
     // NEED TO COPY
-    console.log(target.parentElement.children[1]);
-    this.content = target.parentElement.children[1];
-    this.content.visibility = 'block';
-    this.renderer.appendChild(document.body, this.content);
+    const wrappingDiv =
+      target.parentElement.parentElement.parentElement.parentElement;
+
+    if (this.content) {
+      // console.log(target.parentElement.children[1]);
+      // console.log(target.parentElement.children[1].id);
+      for (const cl of this.classes) {
+        this.renderer.removeClass(this.content, cl);
+      }
+      this.renderer.removeChild(wrappingDiv, this.content);
+      this.content = null;
+    }
+
+    // console.log(target.parentElement.children[1]);
+    // this.content = target.parentElement.children[1].outerHTML;
+    // console.log(target.parentElement.children[1].id);
+    this.content = this.renderer.createElement('div');
+    this.content.innerHTML = target.parentElement.children[1].innerHTML;
+    // console.log(
+    //   target.parentElement.parentElement.parentElement.parentElement
+    // );
+    // console.log(target.parentElement.parentElement.parentElement);
+    // console.log(target.parentElement.parentElement);
+    // this.content.appendChild(target.parentElement.children[1].innerHTML);
+    // console.log(this.content);
+    // this.renderer.removeClass(this.content.children[0], 'hidden');
+    // this.renderer.addClass(this.content.children[0], 'block');
+    this.renderer.addClass(this.content, 'block');
+    this.renderer.addClass(this.content, 'py-4');
+    this.renderer.appendChild(wrappingDiv, this.content);
     // console.log(this.content);
 
     // // Management of tooltip placement in the screen (including screen edges cases)

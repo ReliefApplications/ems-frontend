@@ -1,3 +1,10 @@
-<div uiNavigationTab [selectedIndex]="0" [vertical]="false" class="flex justify-around border-b border-gray-200">
+<div
+  uiNavigationTab
+  [selectedIndex]="selectedIndex"
+  [vertical]="vertical"
+  
+>
+  <div id="tabs" class="flex justify-around border-b border-gray-200">
     <ng-content></ng-content>
+  </div>
 </div>
