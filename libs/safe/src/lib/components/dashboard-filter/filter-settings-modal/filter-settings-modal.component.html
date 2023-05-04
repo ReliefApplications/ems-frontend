@@ -1,6 +1,6 @@
 <safe-modal [closable]="true">
-  <div class="flex flex-auto justify-end">
-    {{'components.application.dashboard.settings.defaultPosition' | translate}}
+  <h3>{{ 'components.application.dashboard.settings.defaultPosition' | translate }}</h3>
+  <div class="flex flex-auto">
     <ng-container *ngFor="let position of positionList">
       <safe-button
         matSuffix
