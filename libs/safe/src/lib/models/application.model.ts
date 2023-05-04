@@ -36,4 +36,5 @@ export interface Application {
   distributionLists?: DistributionList[];
   customNotifications?: Connection<CustomNotification>;
   contextualFilter?: any;
+  contextualFilterPosition?: any;
 }

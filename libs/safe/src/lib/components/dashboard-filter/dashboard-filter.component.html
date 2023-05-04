@@ -4,7 +4,10 @@
   [minSizeOnClosed]="48"
   [elementWidth]="containerWidth"
   [elementHeight]="containerHeight"
+  [elementLeftOffset]="containerLeftOffset"
+  [elementTopOffset]="containerTopOffset"
   [opened]="isDrawerOpen"
+  [dashboardSurveyCreatorContainer]="dashboardSurveyCreatorContainer"
   class="pointer-events-auto"
 >
   <div
@@ -30,8 +33,15 @@
       }"
       class="relative flex justify-between bg-primary-500 text-white"
     >
-      <!-- Edition -->
-      <div class="flex-auto">
+      <div
+        [ngClass]="{
+          'flex-col':
+            position === filterPosition.LEFT ||
+            position === filterPosition.RIGHT
+        }"
+        class="flex flex-auto"
+      >
+        <!-- Edition -->
         <safe-button
           [isIcon]="true"
           icon="edit"
@@ -41,7 +51,18 @@
           "
         >
         </safe-button>
+        <!-- Default position -->
+        <safe-button
+          [isIcon]="true"
+          icon="settings"
+          (click)="openSettings()"
+          [matTooltip]="
+            'components.application.dashboard.filterSettings' | translate
+          "
+        >
+        </safe-button>
       </div>
+
       <!-- Position -->
       <div
         [ngClass]="{
@@ -87,11 +108,16 @@
         'h-full':
           position === filterPosition.LEFT || position === filterPosition.RIGHT,
         'flex-col':
-          position === filterPosition.LEFT || position === filterPosition.RIGHT
+          position === filterPosition.LEFT || position === filterPosition.RIGHT,
+        'animate-fadeOut': !isDrawerOpen,
+        'animate-fadeIn': isDrawerOpen
       }"
       class="dashboard-filter-content bg-white p-3"
     >
-      <div #dashboardSurveyCreatorContainer></div>
+      <div
+        #dashboardSurveyCreatorContainer
+        class="overflow-scroll"
+      ></div>
       <!-- <form
         [ngClass]="{
           'flex-col':

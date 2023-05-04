@@ -183,7 +183,7 @@ export class FilterBuilderModalComponent
    * Custom SurveyJS method, save the survey when edited.
    */
   saveMySurvey = () => {
-    this.dialogRef.close(this.surveyCreator);
+    this.dialogRef.close(this.surveyCreator.text);
   };
 
   ngOnDestroy(): void {
