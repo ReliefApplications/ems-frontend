@@ -66,12 +66,10 @@ const removeStatus = (status: string) => {
   if (index >= 0) {
     statuses.splice(index, 1);
   }
-  currentStatus = statuses[0];
-  // formControl.setValue(currentStatus);
 };
 
 /**
- * Template chip
+ * Template chip list
  *
  * @param {ChipComponent} args args
  * @returns ChipComponent
@@ -123,3 +121,45 @@ const ChipVariantsTemplate: StoryFn<ChipComponent> = (args: ChipComponent) => {
 };
 /** Chips variants demonstration */
 export const ChipVariants = ChipVariantsTemplate.bind({});
+
+/**
+ * Template chip list with form control
+ *
+ * @param {ChipComponent} args args
+ * @returns ChipComponent
+ */
+const FormChipListTemplate: StoryFn<ChipComponent> = (args: ChipComponent) => {
+  return {
+    component: ChipComponent,
+    template: `
+      <div 
+        [formControl]="formControl"
+        uiChipList
+        (uiChipListChange)="updateStatus($event)"
+        class="flex max-w-xs flex-wrap justify-between"
+      >
+        <ui-chip
+          *ngFor="let status of statuses"
+          [removable]="true"
+          [value]="status"
+          (removed)="removeStatus(status)"
+        >
+          {{ status }}
+        </ui-chip>
+      </div>
+      <br>
+      <p>value: {{formControl.value}}</p>
+      <p>touched: {{formControl.touched}}</p>
+    `,
+    props: {
+      ...args,
+      formControl,
+      statuses,
+      updateStatus,
+      currentStatus,
+      removeStatus,
+    },
+  };
+};
+/** Chip list with form control */
+export const FormChipList = FormChipListTemplate.bind({});

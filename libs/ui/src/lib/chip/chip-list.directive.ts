@@ -7,22 +7,38 @@ import {
   Renderer2,
   OnDestroy,
   ElementRef,
+  forwardRef,
 } from '@angular/core';
 import { Observable, Subject, fromEvent, merge, takeUntil } from 'rxjs';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 /**
  * UI Chip list directive
  */
 @Directive({
   selector: '[uiChipList]',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => ChipListDirective),
+      multi: true,
+    },
+  ],
 })
-export class ChipListDirective implements AfterContentInit, OnDestroy {
+export class ChipListDirective
+  implements AfterContentInit, OnDestroy, ControlValueAccessor
+{
   @Input() uiChipList!: any;
   @Output() uiChipListChange = new EventEmitter<any>();
 
   private selectedChip!: any;
   private destroy$: Subject<void> = new Subject<void>();
   private currentChipList: any[] = [];
+
+  value = '';
+  disabled = false;
+  onChange!: (value: any) => void;
+  onTouch!: () => void;
 
   /**
    * UI Chip list directive constructor
@@ -33,11 +49,9 @@ export class ChipListDirective implements AfterContentInit, OnDestroy {
   constructor(private renderer: Renderer2, private elementRef: ElementRef) {}
 
   ngAfterContentInit() {
-    console.log('uiChipList', this.uiChipList);
     // Get all the ui-chip inside the element with the directive
     this.currentChipList =
       this.elementRef.nativeElement.querySelectorAll('ui-chip');
-    console.log('currentChipList', this.currentChipList);
 
     const childrenEventStream: Observable<Event>[] = [];
     this.currentChipList.forEach((chip: any) => {
@@ -60,6 +74,11 @@ export class ChipListDirective implements AfterContentInit, OnDestroy {
     // Store selected value and emit it
     this.selectedChip = chip.dataset['value'];
     this.uiChipListChange.emit(this.selectedChip);
+    // Handles with the control value accessor functions
+    if (this.onTouch && this.onChange) {
+      this.onTouch();
+      this.onChange(this.selectedChip);
+    }
   }
 
   /**
@@ -75,11 +94,48 @@ export class ChipListDirective implements AfterContentInit, OnDestroy {
           const selectedChipElement = (
             event?.currentTarget as HTMLElement
           ).querySelector('div');
-          if (selectedChipElement) {
+          // Check if click was in the div of the chip selected
+          if (event?.target instanceof HTMLDivElement && selectedChipElement) {
             this.setChipSelected(selectedChipElement);
           }
         },
       });
+  }
+
+  /**
+   * Write value of control.
+   *
+   * @param value new value
+   */
+  public writeValue(value: string): void {
+    this.value = value;
+  }
+
+  /**
+   * Register new method to call when control state change
+   *
+   * @param fn callback function
+   */
+  public registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  /**
+   * Register new method to call when control touch state change
+   *
+   * @param fn callback function
+   */
+  public registerOnTouched(fn: any): void {
+    this.onTouch = fn;
+  }
+
+  /**
+   * Set disabled state of the control
+   *
+   * @param isDisabled is control disabled
+   */
+  public setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
   }
 
   ngOnDestroy(): void {
