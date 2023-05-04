@@ -68,6 +68,11 @@ export class NavigationTabDirective implements OnInit {
           this.renderer.addClass(tabButton, 'border-r-2');
         }
       }
+    } else {
+      //Make the ui-tab growing so it occupies all the space available
+      for (const tab of host.children[0].children) {
+        this.renderer.addClass(tab, 'grow');
+      }
     }
 
     // Launches the content show and class modification function for the selectedIndex tab
