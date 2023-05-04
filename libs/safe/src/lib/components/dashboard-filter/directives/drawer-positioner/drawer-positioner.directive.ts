@@ -24,10 +24,14 @@ export class SafeDrawerPositionerDirective
   @Input() elementWidth!: string;
   // The element height, as the directive host is positioned fixed, we need to set the height manually in order to match the parent element
   @Input() elementHeight!: string;
+  @Input() elementLeftOffset!: string;
+  @Input() elementTopOffset!: string;
   // The minimum amount of element size(in px) remaining visible when the element is collapsed
   @Input() minSizeOnClosed = 48;
   // If the element is open or not
   @Input() opened = false;
+  @Input()
+  dashboardSurveyCreatorContainer!: any;
 
   /**
    * Class constructor
@@ -61,7 +65,7 @@ export class SafeDrawerPositionerDirective
     if (changes.position?.currentValue) {
       this.setPosition(changes.position.currentValue);
     }
-    if (changes.opened) {
+    if (changes.opened?.currentValue !== changes.opened?.previousValue) {
       this.displayDrawer(changes.opened.currentValue);
     }
     // Width has to be set when the element is in horizontal(at the TOP or BOTTOM of the parent context) position
@@ -96,29 +100,66 @@ export class SafeDrawerPositionerDirective
    * @param position Position to set
    */
   private setPosition(position: FilterPosition) {
+    this.renderer.setStyle(this.el.nativeElement, 'position', 'relative');
     // Reset drawer containers styles
     this.renderer.setStyle(this.el.nativeElement, 'height', 'max-content');
     this.renderer.setStyle(this.el.nativeElement, 'width', 'max-content');
+    this.renderer.setStyle(
+      this.dashboardSurveyCreatorContainer,
+      'height',
+      this.elementHeight
+    );
     // Remove any positioning from the element first in order to not conflict with each position properties later
     this.renderer.removeStyle(this.el.nativeElement, 'right');
     this.renderer.removeStyle(this.el.nativeElement, 'bottom');
+    this.renderer.removeStyle(this.el.nativeElement, 'top');
+    this.renderer.removeStyle(this.el.nativeElement, 'left');
+    this.renderer.removeStyle(
+      this.dashboardSurveyCreatorContainer,
+      'max-height'
+    );
     switch (position) {
       // Set the width as it's in the horizontal side of the parent context, fixed element is in the top of parent context by default
       case FilterPosition.TOP:
         this.renderer.setStyle(
           this.el.nativeElement,
+          'top',
+          this.elementTopOffset
+        );
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'left',
+          this.elementLeftOffset
+        );
+        this.renderer.setStyle(
+          this.el.nativeElement,
           'width',
           this.elementWidth
         );
+        this.renderer.setStyle(
+          this.dashboardSurveyCreatorContainer,
+          'max-height',
+          `${Number(this.elementHeight.split('px')[0]) / 3}px`
+        ); // The filter cannot take more than a third of the screen in height
         break;
       // Set the width as it's in the horizontal side of the parent context, but also set the bottom property to 0
       case FilterPosition.BOTTOM:
         this.renderer.setStyle(this.el.nativeElement, 'bottom', 0);
         this.renderer.setStyle(
           this.el.nativeElement,
+          'left',
+          this.elementLeftOffset
+        );
+        this.renderer.setStyle(
+          this.el.nativeElement,
           'width',
           this.elementWidth
         );
+        this.renderer.setStyle(
+          this.dashboardSurveyCreatorContainer,
+          'max-height',
+          `${Number(this.elementHeight.split('px')[0]) / 3}px`
+        ); // The filter cannot take more than a third of the screen in height
         break;
       // Set the height as it's in the vertical side of the parent context, fixed element is in the left of parent context by default
       case FilterPosition.LEFT:
@@ -126,6 +167,16 @@ export class SafeDrawerPositionerDirective
           this.el.nativeElement,
           'height',
           this.elementHeight
+        );
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'left',
+          this.elementLeftOffset
+        );
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'top',
+          this.elementTopOffset
         );
         break;
       // Set the height as it's in the vertical side of the parent context, but also set the right property to 0
@@ -136,11 +187,16 @@ export class SafeDrawerPositionerDirective
           'height',
           this.elementHeight
         );
+        this.renderer.setStyle(
+          this.el.nativeElement,
+          'top',
+          this.elementTopOffset
+        );
         break;
       default:
         break;
     }
-    this.displayDrawer(this.opened);
+    setTimeout(() => this.displayDrawer(this.opened), 0); //Waiting to acquire the right client size
   }
 
   /**
@@ -151,34 +207,7 @@ export class SafeDrawerPositionerDirective
   private displayDrawer(open: boolean) {
     switch (this.position) {
       case FilterPosition.TOP:
-        // TOP has an especial behavior as the overflow for the top side of the parent if is not in the viewport, it would be visible
-        // We will have to set the parent element as the container reference(e.g. setting transform property, but the positioned element would lose fixed behavior)
-        if (open) {
-          this.el.nativeElement.style.transform = `translateY(0px)`;
-          setTimeout(() => {
-            this.renderer.setStyle(
-              document
-                .getElementsByClassName('dashboard-filter-content')
-                .item(0),
-              'visibility',
-              'initial'
-            );
-          }, 200);
-        } else {
-          // If close we would translate the element out leaving the minSizeOnClosed value visible
-          this.el.nativeElement.style.transform = `translateY(${
-            this.minSizeOnClosed - this.el.nativeElement.clientHeight
-          }px)`;
-          setTimeout(() => {
-            this.renderer.setStyle(
-              document
-                .getElementsByClassName('dashboard-filter-content')
-                .item(0),
-              'visibility',
-              'collapse'
-            );
-          }, 50);
-        }
+        this.translateY(open);
         break;
       case FilterPosition.BOTTOM:
         this.translateY(open, true);
@@ -198,17 +227,17 @@ export class SafeDrawerPositionerDirective
    * Open animation for Y axis
    *
    * @param open Is element open
-   * @param isAbsoluteValue Has to use absolute value(for BOTTOM)
+   * @param translateToTheBottom Has to use absolute value(for BOTTOM)
    */
-  private translateY(open: boolean, isAbsoluteValue: boolean = false) {
+  private translateY(open: boolean, translateToTheBottom: boolean = false) {
     if (open) {
-      this.el.nativeElement.style.transform = `translateY(0px)`;
+      this.el.nativeElement.style.transform = `translateY(0)`;
     } else {
       // If close we would translate the element out leaving the minSizeOnClosed value visible
+      const heightToTranslate =
+        this.minSizeOnClosed - this.el.nativeElement.clientHeight;
       this.el.nativeElement.style.transform = `translateY(${
-        isAbsoluteValue
-          ? Math.abs(this.minSizeOnClosed - this.el.nativeElement.clientHeight)
-          : this.minSizeOnClosed - this.el.nativeElement.clientHeight
+        translateToTheBottom ? -heightToTranslate : heightToTranslate
       }px)`;
     }
   }
@@ -217,17 +246,17 @@ export class SafeDrawerPositionerDirective
    * Open animation for X axis
    *
    * @param open Is element open
-   * @param isAbsoluteValue Has to use absolute value(for RIGHT)
+   * @param translateToTheRight Has to use absolute value(for RIGHT)
    */
-  private translateX(open: boolean, isAbsoluteValue: boolean = false) {
+  private translateX(open: boolean, translateToTheRight: boolean = false) {
     if (open) {
       this.el.nativeElement.style.transform = `translateX(0px)`;
     } else {
       // If close we would translate the element out leaving the minSizeOnClosed value visible
+      const widthToTranslate =
+        this.minSizeOnClosed - this.el.nativeElement.clientWidth;
       this.el.nativeElement.style.transform = `translateX(${
-        isAbsoluteValue
-          ? Math.abs(this.minSizeOnClosed - this.el.nativeElement.clientWidth)
-          : this.minSizeOnClosed - this.el.nativeElement.clientWidth
+        translateToTheRight ? -widthToTranslate : widthToTranslate
       }px)`;
     }
   }

@@ -16,6 +16,24 @@ export const EDIT_APPLICATION_FILTER = gql`
   }
 `;
 
+/** Graphql request for editing an application by its id */
+export const EDIT_APPLICATION_FILTER_POSITION = gql`
+  mutation editApplication($id: ID!, $contextualFilterPosition: String) {
+    editApplication(
+      id: $id
+      contextualFilterPosition: $contextualFilterPosition
+    ) {
+      id
+      description
+      name
+      createdAt
+      modifiedAt
+      status
+      contextualFilterPosition
+    }
+  }
+`;
+
 /** Edit application gql mutation response interface */
 export interface EditApplicationMutationResponse {
   editApplication: Application;
