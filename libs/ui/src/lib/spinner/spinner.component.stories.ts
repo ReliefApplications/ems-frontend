@@ -6,7 +6,7 @@ import { Variant } from '../shared/variant.enum';
 import { Category } from '../shared/category.enum';
 
 export default {
-  title: 'SpinnerComponent',
+  title: 'Spinner',
   component: SpinnerComponent,
   decorators: [
     moduleMetadata({

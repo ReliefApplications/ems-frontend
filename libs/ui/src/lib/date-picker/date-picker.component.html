@@ -1,1 +1,70 @@
-<p>date-picker works!</p>
+<kendo-dateinput
+  (click)="showPanel = !showPanel"
+  [disabled]="disabled"
+></kendo-dateinput>
+
+<ng-container *ngIf="isRange; else datePicker">
+  <kendo-multiviewcalendar
+    kendoDateRangeSelection
+    [attr.data-date-panel-show]="showPanel"
+    class="data-[date-panel-show='false']:h-0 data-[date-panel-show='false']:opacity-0 transition-all duration-150 ease-in"
+    [disabled]="disabled"
+    [showViewHeader]="isRange"
+    [views]="2"
+    [focusedDate]="range.start || range.end"
+    (valueChange)="handleChange($event)"
+  >
+    <ng-template kendoCalendarMonthCellTemplate let-date>
+      <span [ngClass]="isToday(date)">{{ date.getDate() }}</span>
+    </ng-template>
+    <ng-template kendoCalendarYearCellTemplate let-context="cellContext">
+      <span>{{ context.formattedValue }}</span>
+    </ng-template>
+    <ng-template kendoCalendarDecadeCellTemplate let-context="cellContext">
+      <span>{{ context.formattedValue }}¿¿</span>
+    </ng-template>
+    <ng-template kendoCalendarCenturyCellTemplate let-context="cellContext">
+      <span>{{ context.formattedValue }}!!</span>
+    </ng-template>
+    <ng-template kendoCalendarWeekNumberCellTemplate let-context="cellContext">
+      <span>{{ context.formattedValue }}^^</span>
+    </ng-template>
+    <ng-template kendoCalendarHeaderTitleTemplate let-title>
+      <span class="p-2.5">
+        {{ title }}
+      </span>
+    </ng-template>
+  </kendo-multiviewcalendar>
+</ng-container>
+<ng-template #datePicker>
+  <kendo-multiviewcalendar
+    [attr.data-date-panel-show]="showPanel"
+    class="bg-pr data-[date-panel-show='false']:h-0 data-[date-panel-show='false']:opacity-0 transition-all duration-150 ease-in bg-white rounded-lg shadow-[0px_2px_15px_-3px_rgba(0,0,0,.07),_0px_10px_20px_-2px_rgba(0,0,0,.04)] z-[1066] dark:bg-zinc-700 animate-[fade-in_0.3s_both] px-[auto] motion-reduce:transition-none motion-reduce:animate-none"
+    [disabled]="disabled"
+    [showViewHeader]="isRange"
+    [views]="1"
+    [focusedDate]="range.start || range.end"
+    (valueChange)="handleChange($event)"
+  >
+    <ng-template kendoCalendarMonthCellTemplate let-date>
+      <span [ngClass]="isToday(date)">{{ date.getDate() }}</span>
+    </ng-template>
+    <ng-template kendoCalendarYearCellTemplate let-context="cellContext">
+      <span>{{ context.formattedValue }}</span>
+    </ng-template>
+    <ng-template kendoCalendarDecadeCellTemplate let-context="cellContext">
+      <span>{{ context.formattedValue }}¿¿</span>
+    </ng-template>
+    <ng-template kendoCalendarCenturyCellTemplate let-context="cellContext">
+      <span>{{ context.formattedValue }}!!</span>
+    </ng-template>
+    <ng-template kendoCalendarWeekNumberCellTemplate let-context="cellContext">
+      <span>{{ context.formattedValue }}^^</span>
+    </ng-template>
+    <ng-template kendoCalendarHeaderTitleTemplate let-title>
+      <span class="p-2.5">
+        {{ title }}
+      </span>
+    </ng-template>
+  </kendo-multiviewcalendar>
+</ng-template>

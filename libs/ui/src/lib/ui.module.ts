@@ -3,7 +3,6 @@ import { AvatarModule } from './avatar/avatar.module';
 import { ButtonModule } from './button/button.module';
 import { CheckboxModule } from './checkbox/checkbox.module';
 import { IconModule } from './icon/icon.module';
-import { SelectModule } from './select/select.module';
 import { TooltipModule } from './tooltip/tooltip.module';
 import { SpinnerModule } from './spinner/spinner.module';
 import { PaginatorModule } from './paginator/paginator.module';
@@ -25,7 +24,6 @@ import { RadioModule } from './radio/radio.module';
     AvatarGroupModule,
     CheckboxModule,
     IconModule,
-    SelectModule,
     TooltipModule,
     SpinnerModule,
     PaginatorModule,
