@@ -23,6 +23,13 @@ const navigationTabTemplate = `<ui-navigation-tab uiNavigationTab (selectedIndex
   <ui-tab label="Third">
     <div class="text-red-600"> Third content </div>
     <button class="bg-primary-400 hover:bg-primary-600 focus:ring-0 focus:ring-primary-200 rounded-md p-2 text-small text-gray-800"> Random Content </button>
+    <div> a </div>
+    <div> a </div>
+    <div> a </div>
+    <div> a </div>
+    <div> a </div>
+    <div> a </div>
+    <div> a </div>
   </ui-tab>
 </ui-navigation-tab>`;
 

@@ -3,13 +3,13 @@
   [selectedIndex]="selectedIndex"
   [vertical]="vertical"
   (selectedIndexChangeDirective)="selectedIndexChangeEvent($event)"
-  [ngClass]="{ 'grid grid-cols-6': vertical }"
+  [ngClass]="{ 'grid grid-cols-6 grid-rows-1': vertical }"
 >
   <div
     id="tabs"
     class="justify-around border-gray-200"
     [ngClass]="{
-      'flex-row border-r h-full col-span-1': vertical,
+      'flex border-r h-full col-span-1': vertical,
       'flex border-b': !vertical
     }"
   >

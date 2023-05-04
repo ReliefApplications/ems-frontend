@@ -44,8 +44,11 @@ export class NavigationTabDirective {
     if (this.vertical) {
       for (const tab of tabsWrapper.children) {
         const tabButton = tab?.children[0]?.children[0];
-        this.renderer.removeClass(tabButton, 'border-b-2');
-        this.renderer.addClass(tabButton, 'border-r-2');
+        console.log(tabButton);
+        if (tabButton?.parentElement?.children[1]?.id === 'content') {
+          this.renderer.removeClass(tabButton, 'border-b-2');
+          this.renderer.addClass(tabButton, 'border-r-2');
+        }
       }
     }
 
@@ -82,8 +85,7 @@ export class NavigationTabDirective {
     const currentTabSelected = target.parentElement.parentElement;
 
     // Get unselected classes to old selected
-    if (this.currentSelected) {
-      console.log(tabs[this.currentSelected].children[0].children[0]);
+    if (this.currentSelected !== undefined) {
       this.renderer.removeClass(
         tabs[this.currentSelected].children[0].children[0],
         'border-primary-500'
@@ -130,6 +132,7 @@ export class NavigationTabDirective {
         //     tab
         //   )
         // );
+        // console.log('new current selected : ' + this.currentSelected);
       }
     }
 
