@@ -60,7 +60,10 @@ export class ArcgisService {
    */
   public loadWebMap(
     map: L.Map,
-    id: string
+    id: string,
+    options: {
+      loadBasemap?: boolean;
+    } = { loadBasemap: true }
   ): Promise<{ basemaps: TreeObject[]; layers: TreeObject[] }> {
     return new Promise((resolve) => {
       getItemData(id, {
@@ -68,7 +71,9 @@ export class ArcgisService {
       }).then((webMap: any) => {
         this.setDefaultView(map, webMap);
         Promise.all([
-          this.loadBaseMap(map, webMap),
+          options.loadBasemap
+            ? this.loadBaseMap(map, webMap)
+            : Promise.resolve([]),
           this.loadOperationalLayers(map, webMap),
         ]).then(([basemaps, layers]) => {
           resolve({ basemaps, layers });
@@ -427,6 +432,19 @@ export class ArcgisService {
             }
           });
         }
+        break;
+      }
+      case 'ArcGISTiledMapServiceLayer': {
+        const tiledMapLayer = Esri.tiledMapLayer({
+          pane: 'tilePane',
+          url: layer.url,
+          token: this.esriApiKey,
+          opacity,
+        });
+        layers.push({
+          label: layer.title,
+          layer: tiledMapLayer,
+        });
         break;
       }
       case 'WMS': {

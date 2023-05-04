@@ -46,13 +46,13 @@ export const getMapFeature = (map: any): Feature =>
  * @param layerType geoman layer type
  */
 export const updateGeoManLayerPosition = (
-  map: L.Map,
+  map: L.Map | undefined,
   data: any,
   previousLayer?: L.Layer,
   layerType: string = 'Marker'
 ) => {
   if (previousLayer) {
-    map.removeLayer(previousLayer);
+    map?.removeLayer(previousLayer);
   }
   // We automatically add the marker there
   if (layerType === 'Marker') {

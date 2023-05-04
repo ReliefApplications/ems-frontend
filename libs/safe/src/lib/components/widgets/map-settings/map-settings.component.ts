@@ -237,7 +237,7 @@ export class SafeMapSettingsComponent
   onEditLayer(layer?: LayerModel): void {
     this.openedLayer = layer;
     // We initialize the map settings to default value once we display the map layer editor
-    (this.mapComponent as MapComponent).settingsConfig = {
+    (this.mapComponent as MapComponent).mapSettings = {
       basemap: 'OSM',
       initialState: {
         viewpoint: {

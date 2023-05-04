@@ -7,6 +7,8 @@ import {
   Inject,
   Output,
   EventEmitter,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import get from 'lodash/get';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -34,33 +36,16 @@ import {
 import { BASEMAP_LAYERS } from './const/baseMaps';
 import { timeDimensionGeoJSON } from './test/timedimension-test';
 import { SafeMapControlsService } from '../../../services/map/map-controls.service';
-
 import * as L from 'leaflet';
 import { Layer } from './layer';
 import { LayerFormData } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
 import { ArcgisService } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
-import { flatten } from 'lodash';
+import { flatten, isNil, omitBy } from 'lodash';
 import { takeUntil } from 'rxjs';
-import { legendControl } from '@oort-front/leaflet';
+// import { legendControl } from '@oort-front/leaflet';
 import { SafeMapPopupService } from './map-popup/map-popup.service';
-/**
- * Cleans the settings object from null values
- *
- * @param settings Settings needed to create/edit map
- */
-const cleanSettingsFromNulls = (settings: MapConstructorSettings) => {
-  const mapSettingsKeys: (keyof MapConstructorSettings)[] = Object.keys(
-    settings
-  ) as (keyof MapConstructorSettings)[];
-
-  mapSettingsKeys.forEach((k) => {
-    if (settings[k] === null) {
-      delete settings[k];
-    }
-  });
-};
 
 /** Component for the map widget */
 @Component({
@@ -71,15 +56,8 @@ const cleanSettingsFromNulls = (settings: MapConstructorSettings) => {
 })
 export class MapComponent
   extends SafeUnsubscribeComponent
-  implements AfterViewInit
+  implements AfterViewInit, OnChanges
 {
-  /** Map settings setter */
-  @Input() set mapSettings(settings: MapConstructorSettings) {
-    if (settings) {
-      cleanSettingsFromNulls(settings);
-      this.updateMapSettings(settings);
-    }
-  }
   /** Add or delete layer setter */
   @Input() set addOrDeleteLayer(layerAction: LayerActionOnMap | null) {
     if (layerAction?.layerData) {
@@ -117,11 +95,10 @@ export class MapComponent
 
   // === MAP ===
   public mapId: string;
-  public map: any;
+  public map!: L.Map;
   private basemap: any;
   private esriApiKey!: string;
-  public settingsConfig: MapConstructorSettings = {
-    basemap: 'OSM',
+  @Input() mapSettings: MapConstructorSettings = {
     initialState: {
       viewpoint: {
         center: {
@@ -231,14 +208,23 @@ export class MapComponent
     }, 100);
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.mapSettings && changes.mapSettings.previousValue) {
+      if (this.map) {
+        this.drawMap(false);
+      }
+    }
+  }
+
   /**
    * Extract settings
    *
    * @returns cleaned settings
    */
   private extractSettings(): MapConstructorSettings {
+    const mapSettings = omitBy(this.mapSettings, isNil);
     // Settings initialization
-    const initialState = get(this.settingsConfig, 'initialState', {
+    const initialState = get(mapSettings, 'initialState', {
       viewpoint: {
         center: {
           latitude: 0,
@@ -247,19 +233,18 @@ export class MapComponent
         zoom: 3,
       },
     });
-
-    const maxBounds = get(this.settingsConfig, 'maxBounds', [
+    const maxBounds = get(mapSettings, 'maxBounds', [
       [-90, -180],
       [90, 180],
     ]);
-    const basemap = get(this.settingsConfig, 'basemap', 'OSM');
-    const maxZoom = get(this.settingsConfig, 'maxZoom', 18);
-    const minZoom = get(this.settingsConfig, 'minZoom', 2);
-    const worldCopyJump = get(this.settingsConfig, 'worldCopyJump', true);
-    const zoomControl = get(this.settingsConfig, 'zoomControl', false);
-    const controls = get(this.settingsConfig, 'controls', DefaultMapControls);
-    const arcGisWebMap = get(this.settingsConfig, 'arcGisWebMap', undefined);
-    const layers = get(this.settingsConfig, 'layers', []);
+    const basemap = get(mapSettings, 'basemap');
+    const maxZoom = get(mapSettings, 'maxZoom', 18);
+    const minZoom = get(mapSettings, 'minZoom', 2);
+    const worldCopyJump = get(mapSettings, 'worldCopyJump', true);
+    const zoomControl = get(mapSettings, 'zoomControl', false);
+    const controls = get(mapSettings, 'controls', DefaultMapControls);
+    const arcGisWebMap = get(mapSettings, 'arcGisWebMap', undefined);
+    const layers = get(mapSettings, 'layers', []);
 
     return {
       initialState,
@@ -276,10 +261,11 @@ export class MapComponent
   }
 
   /** Creates the map and adds all the controls we use */
-  private drawMap(): void {
+  private drawMap(initMap: boolean = true): void {
+    console.log('draw map');
     const {
       initialState,
-      maxBounds: maxBoundArray,
+      maxBounds,
       basemap,
       maxZoom,
       minZoom,
@@ -290,40 +276,96 @@ export class MapComponent
       controls,
     } = this.extractSettings();
 
-    // Create leaflet map
-    this.map = L.map(this.mapId, {
-      zoomControl,
-      maxBounds: maxBoundArray
-        ? L.latLngBounds(
-            L.latLng(maxBoundArray[0][0], maxBoundArray[0][1]),
-            L.latLng(maxBoundArray[1][0], maxBoundArray[1][1])
-          )
-        : undefined,
-      minZoom,
+    console.log({
+      initialState,
+      maxBounds,
+      basemap,
       maxZoom,
+      minZoom,
       worldCopyJump,
-      timeDimension: true,
-    } as any).setView(
-      L.latLng(
-        initialState.viewpoint.center.latitude,
-        initialState.viewpoint.center.longitude
-      ),
-      initialState.viewpoint.zoom
-    );
+      zoomControl,
+      arcGisWebMap,
+      layers,
+      controls,
+    });
 
-    // Set the needed map instance for it's popup service instance
-    this.mapPopupService.setMap = this.map;
+    if (initMap) {
+      // Create leaflet map
+      this.map = L.map(this.mapId, {
+        zoomControl,
+        maxBounds: maxBounds
+          ? L.latLngBounds(
+              L.latLng(maxBounds[0][0], maxBounds[0][1]),
+              L.latLng(maxBounds[1][0], maxBounds[1][1])
+            )
+          : undefined,
+        minZoom,
+        maxZoom,
+        worldCopyJump,
+        timeDimension: true,
+      } as any).setView(
+        L.latLng(
+          initialState.viewpoint.center.latitude,
+          initialState.viewpoint.center.longitude
+        ),
+        initialState.viewpoint.zoom
+      );
+      // Set the needed map instance for it's popup service instance
+      this.mapPopupService.setMap = this.map;
+    } else {
+      // If value changes for the map we would change in order to not trigger map events unnecessarily
+      if (this.map.getMaxZoom() !== maxZoom) {
+        this.map.setMaxZoom(maxZoom as number);
+      }
+      if (this.map.getMinZoom() !== minZoom) {
+        this.map.setMinZoom(minZoom as number);
+      }
+      if (maxBounds) {
+        this.map.setMaxBounds(maxBounds as L.LatLngBoundsExpression);
+      }
+      if (this.map.getZoom() !== initialState.viewpoint.zoom) {
+        this.map.setZoom(initialState.viewpoint.zoom);
+      }
+      const currentCenter = this.map.getCenter();
+      if (
+        initialState.viewpoint.center.latitude !== currentCenter.lat ||
+        initialState.viewpoint.center.longitude !== currentCenter.lng
+      ) {
+        this.map.setView(
+          L.latLng(
+            initialState.viewpoint.center.latitude,
+            initialState.viewpoint.center.longitude
+          ),
+          initialState.viewpoint.zoom
+        );
+      }
+    }
 
+    // Get layers
     const promises: Promise<{
       basemaps?: L.Control.Layers.TreeObject[];
       layers?: L.Control.Layers.TreeObject[];
     }>[] = [];
 
-    if (arcGisWebMap) {
-      //set webmap
-      promises.push(this.setWebmap(arcGisWebMap));
-    } else {
+    if (this.basemap) {
+      this.basemap.removeFrom(this.map);
+    }
+    this.map.eachLayer((layer) => {
+      this.map.removeLayer(layer);
+    });
+    // If no basemap, we check if a basemap was used before
+    if (basemap) {
       promises.push(this.setBasemap(this.map, basemap));
+    }
+
+    // Get arcgis layers
+    if (arcGisWebMap) {
+      // Prevent basemap to be loaded if any provided in settings
+      promises.push(this.setWebmap(arcGisWebMap, { loadBasemap: !basemap }));
+    } else {
+      if (!basemap) {
+        promises.push(this.setBasemap(this.map, basemap));
+      }
     }
 
     if (layers?.length) {
@@ -336,6 +378,7 @@ export class MapComponent
       // );
     }
 
+    // Add layers on map
     Promise.all(promises).then((trees) => {
       const basemaps: L.Control.Layers.TreeObject[][] = [];
       const layers: L.Control.Layers.TreeObject[][] = [];
@@ -344,12 +387,14 @@ export class MapComponent
         tree.layers && layers.push(tree.layers);
       }
       this.setLayersControl(flatten(basemaps), flatten(layers));
-      legendControl().addTo(this.map);
+      // legendControl().addTo(this.map);
     });
 
     // Add zoom control
-    L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
-    this.setMapControls(controls, true);
+    if (initMap) {
+      L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
+    }
+    this.setMapControls(controls, initMap);
   }
 
   /**
@@ -419,94 +464,6 @@ export class MapComponent
   }
 
   /**
-   * Update map settings
-   *
-   * @param settingsValue new settings
-   */
-  private updateMapSettings(settingsValue: MapConstructorSettings) {
-    this.settingsConfig = settingsValue;
-    if (this.map) {
-      const {
-        initialState,
-        maxBounds,
-        basemap,
-        maxZoom,
-        minZoom,
-        controls,
-        arcGisWebMap,
-        layers,
-      } = this.extractSettings();
-
-      // If value changes for the map we would change in order to not trigger map events unnecessarily
-      if (this.map.getMaxZoom() !== maxZoom) {
-        this.map.setMaxZoom(maxZoom);
-      }
-      if (this.map.getMinZoom() !== minZoom) {
-        this.map.setMinZoom(minZoom);
-      }
-
-      this.map.setMaxBounds(maxBounds);
-
-      if (this.map.getZoom() !== initialState.viewpoint.zoom) {
-        this.map.setZoom(initialState.viewpoint.zoom);
-      }
-
-      if (basemap) {
-        const currentBasemap = this.basemap?.options?.key;
-        const newBaseMap = get(BASEMAP_LAYERS, basemap);
-        if (newBaseMap !== currentBasemap) {
-          this.setBasemap(this.map, basemap);
-        }
-      }
-
-      if (arcGisWebMap) {
-        const currentWebMap = this.arcGisWebMap;
-        if (arcGisWebMap !== currentWebMap) {
-          this.setWebmap(arcGisWebMap);
-        }
-      }
-
-      // Get base layers from the layers array
-      const baseLayers = this.layers.filter(
-        (layer) => !layer.getChildren().length
-      );
-      // If the layer amount in the settings changes
-      if (baseLayers.length !== layers?.length) {
-        if (this.layerControl) {
-          this.map.removeControl(this.layerControl);
-          this.layerControl = undefined;
-        }
-        // We remove previous layers
-        this.layers.forEach((layer) => {
-          layer.getLayer().removeFrom(this.map);
-        });
-        this.layers = [];
-        this.layersTree = [];
-        // If the number of layers if positive, we'll add them
-        // if (layers?.length) {
-        //   this.setUpLayers(layers);
-        // }
-      }
-
-      const currentCenter = this.map.getCenter();
-      if (
-        initialState.viewpoint.center.latitude !== currentCenter.lat ||
-        initialState.viewpoint.center.longitude !== currentCenter.lng
-      ) {
-        this.map.setView(
-          L.latLng(
-            initialState.viewpoint.center.latitude,
-            initialState.viewpoint.center.longitude
-          ),
-          initialState.viewpoint.zoom
-        );
-      }
-
-      this.setMapControls(controls);
-    }
-  }
-
-  /**
    * Setup layers control from loaded basemaps and layers
    *
    * @param basemaps loaded basemaps
@@ -523,10 +480,18 @@ export class MapComponent
     };
     this.layersTree = layers;
     // Add control to the map layers
-    this.layerControl = L.control.layers.tree(
-      this.baseTree,
-      this.layersTree as any
-    );
+    // if (this.layerControl) {
+    //   this.layerControl.setLayersControl
+    // }
+    if (this.layerControl) {
+      this.layerControl.setBaseTree(this.baseTree);
+      this.layerControl.setOverlayTree(this.layersTree);
+    } else {
+      this.layerControl = L.control.layers.tree(
+        this.baseTree,
+        this.layersTree as any
+      );
+    }
     if (this.extractSettings().controls.layer) {
       this.layerControl.addTo(this.map);
     }
@@ -850,22 +815,21 @@ export class MapComponent
     map: L.Map,
     basemap: any
   ): Promise<{ basemaps: L.Control.Layers.TreeObject[] }> {
+    console.log('there');
     const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
+    this.basemap = Vector.vectorBasemapLayer(basemapName, {
+      apiKey: this.esriApiKey,
+    });
+    console.log(basemapName);
     return Promise.resolve({
       basemaps: [
         {
           label: basemapName,
-          layer: Vector.vectorBasemapLayer(basemapName, {
-            apiKey: this.esriApiKey,
-          }).addTo(map),
+          layer: this.basemap.addTo(map),
         },
       ],
     });
   }
-  // @TODO when switching between basemaps the related layers and controls to the previous map are there
-  // if (this.basemap) {
-  //   this.basemap.remove();
-  // }
 
   /**
    * Set the webmap.
@@ -873,8 +837,12 @@ export class MapComponent
    * @param webmap String containing the id (name) of the webmap
    * @returns loaded basemaps and layers as Promise
    */
-  public setWebmap(webmap: any) {
+  public setWebmap(
+    webmap: any,
+    options: { loadBasemap: boolean } = { loadBasemap: true }
+  ) {
+    console.log(options.loadBasemap);
     this.arcGisWebMap = webmap;
-    return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
+    return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap, options);
   }
 }

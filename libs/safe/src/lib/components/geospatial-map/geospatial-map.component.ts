@@ -229,7 +229,7 @@ export class GeospatialMapComponent
     // set language
     const setLang = (lang: string) => {
       if (AVAILABLE_GEOMAN_LANGUAGES.includes(lang)) {
-        this.mapComponent?.map.pm.setLang(lang);
+        this.mapComponent?.map.pm.setLang(lang as any);
       } else {
         console.warn(`Language "${lang}" not supported by geoman`);
         this.mapComponent?.map.pm.setLang('en');

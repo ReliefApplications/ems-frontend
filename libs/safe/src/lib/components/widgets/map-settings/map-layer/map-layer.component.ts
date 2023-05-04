@@ -103,8 +103,8 @@ export class MapLayerComponent
 
   ngOnInit(): void {
     this.form = createLayerForm(this.layer);
-    this.currentZoom = this.mapComponent?.map.getZoom();
     if (this.mapComponent) {
+      this.currentZoom = this.mapComponent.map.getZoom();
       this.setUpLayer();
     }
     this.setUpEditLayerListeners();
