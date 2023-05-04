@@ -6,17 +6,32 @@ import {
   HostListener,
   Output,
   EventEmitter,
+  OnInit,
 } from '@angular/core';
 
+/**
+ * Directive that manages the behavior of a navigation tab
+ */
 @Directive({
   selector: '[uiNavigationTab]',
 })
-export class NavigationTabDirective {
+export class NavigationTabDirective implements OnInit {
+  /**
+   * Index of the default selected tab
+   */
   @Input() selectedIndex = 0;
+  /**
+   * True if the navigation tab is to be vertical, false otherwise
+   */
   @Input() vertical = false;
+  /**
+   * Output emitted whenever a new tab is clicked, gives the index of the new tab
+   */
   @Output() selectedIndexChangeDirective = new EventEmitter<number>();
 
+  // Content that is to be displayed
   content: any;
+  // Current selected tab (used to gives good classes to the tab before selecting another)
   currentSelected!: number;
 
   // Default classes to render content
@@ -32,59 +47,86 @@ export class NavigationTabDirective {
   /**
    * Constructor of the directive
    *
-   * @param elementRef Tooltip host reference
+   * @param elementRef NavigationTabDirective host reference
    * @param renderer Angular renderer to work with DOM
    */
   constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit() {
+    // Util variables for initialization
     const host = this.elementRef.nativeElement;
     const tabsWrapper = host?.children[0];
 
+    // Manages the vertical or horizontal aspect of the navbar (for tabs)
     if (this.vertical) {
+      // For all tabs
       for (const tab of tabsWrapper.children) {
+        // Manages classes only if the tabButton is the button inside the tab component
         const tabButton = tab?.children[0]?.children[0];
-        console.log(tabButton);
-        if (tabButton?.parentElement?.children[1]?.id === 'content') {
+        if (tabButton?.id === 'buttonTab') {
           this.renderer.removeClass(tabButton, 'border-b-2');
           this.renderer.addClass(tabButton, 'border-r-2');
         }
       }
     }
 
+    // Launches the content show and class modification function for the selectedIndex tab
     const initialTabButton =
       tabsWrapper?.children[this.selectedIndex]?.children[0]?.children[0];
-    // console.log(initialTabButton.parentElement.children[1].id);
-    // console.log(
-    //   tabsWrapper?.children[this.selectedIndex]?.children[0]?.children[0]
-    // );
-    if (initialTabButton?.parentElement?.children[1]?.id === 'content') {
+    if (initialTabButton?.id === 'buttonTab') {
       this.showContent(initialTabButton);
     }
   }
 
   /**
-   * Function that listen for the user's mouse to enter the element where the directive is placed
+   * Function that listen for the user's mouse to click the element where the directive is placed
+   *
+   * @param event event emitted by click
    */
   @HostListener('click', ['$event'])
   onClick(event: any) {
-    // console.log('content when clicking : ');
-    // console.log(event.target);
-    if (event.target.parentElement.children[1].id === 'content') {
+    // If the target of the event is a button of a tab, launch the content show
+    if (event.target.id === 'buttonTab') {
       this.showContent(event.target);
+      // Avoid double display by preventing event propagation to parent elements
       event.stopPropagation();
     }
   }
 
   /**
-   * Show the tooltip and place it on the screen accordingly to its width and height
+   * Show the content linked to the tab clicked + manages classes so the good tab is selected in design
+   *
+   * @param target dom element clicked
    */
   showContent(target: any) {
     //Defining useful variables
     const tabs = target.parentElement.parentElement.parentElement.children;
     const currentTabSelected = target.parentElement.parentElement;
+    const wrappingDiv =
+      target.parentElement.parentElement.parentElement.parentElement;
 
     // Get unselected classes to old selected
+    this.classUnselect(tabs);
+
+    // Get selected classes to newly selected
+    this.classSelect(target);
+
+    // Emits the current selected index
+    this.currentTabIndexEmission(tabs, currentTabSelected);
+
+    // If there was already content, delete it
+    this.deleteContent(wrappingDiv);
+
+    // Creates the content element thanks to the hidden html content of the tab component
+    this.createContent(target, wrappingDiv);
+  }
+
+  /**
+   * Get unselected classes to old selected tab
+   *
+   * @param tabs list of tabs in the navigation tab
+   */
+  classUnselect(tabs: any) {
     if (this.currentSelected !== undefined) {
       this.renderer.removeClass(
         tabs[this.currentSelected].children[0].children[0],
@@ -111,58 +153,64 @@ export class NavigationTabDirective {
         'hover:text-gray-700'
       );
     }
+  }
 
-    // Get selected classes to newly selected
+  /**
+   * Get selected classes to newly selected
+   *
+   * @param target dom element clicked
+   */
+  classSelect(target: any) {
     this.renderer.removeClass(target, 'text-gray-500');
     this.renderer.removeClass(target, 'border-transparent');
     this.renderer.removeClass(target, 'hover:border-gray-300');
     this.renderer.removeClass(target, 'hover:text-gray-700');
     this.renderer.addClass(target, 'border-primary-500');
     this.renderer.addClass(target, 'text-primary-600');
+  }
 
+  /**
+   * Emits the current selected index
+   *
+   * @param tabs list of tabs in the navigation tab
+   * @param currentTabSelected tab currently selected
+   */
+  currentTabIndexEmission(tabs: any, currentTabSelected: any) {
     for (const tab of tabs) {
       if (tab.isSameNode(currentTabSelected)) {
         this.selectedIndexChangeDirective.emit(
           Array.prototype.indexOf.call(tabs, tab)
         );
         this.currentSelected = Array.prototype.indexOf.call(tabs, tab);
-        // console.log(
-        //   Array.prototype.indexOf.call(
-        //     currentTabSelected.parentElement.children,
-        //     tab
-        //   )
-        // );
-        // console.log('new current selected : ' + this.currentSelected);
       }
     }
+  }
 
-    const wrappingDiv =
-      target.parentElement.parentElement.parentElement.parentElement;
-
+  /**
+   * Delete content displayed currently
+   *
+   * @param wrappingDiv element wrapping the whole ui-navigation-tab
+   */
+  deleteContent(wrappingDiv: any) {
     if (this.content) {
-      // console.log(target.parentElement.children[1]);
-      // console.log(target.parentElement.children[1].id);
       for (const cl of this.classes) {
         this.renderer.removeClass(this.content, cl);
       }
       this.renderer.removeChild(wrappingDiv, this.content);
       this.content = null;
     }
+  }
 
-    // console.log(target.parentElement.children[1]);
-    // this.content = target.parentElement.children[1].outerHTML;
-    // console.log(target.parentElement.children[1].id);
+  /**
+   * Creates the content element thanks to the hidden html content of the tab component targeted
+   *
+   * @param target dom element clicked
+   * @param wrappingDiv element wrapping the whole ui-navigation-tab
+   */
+  createContent(target: any, wrappingDiv: any) {
     this.content = this.renderer.createElement('div');
     this.content.innerHTML = target.parentElement.children[1].innerHTML;
-    // console.log(
-    //   target.parentElement.parentElement.parentElement.parentElement
-    // );
-    // console.log(target.parentElement.parentElement.parentElement);
-    // console.log(target.parentElement.parentElement);
-    // this.content.appendChild(target.parentElement.children[1].innerHTML);
-    // console.log(this.content);
-    // this.renderer.removeClass(this.content.children[0], 'hidden');
-    // this.renderer.addClass(this.content.children[0], 'block');
+    // Manages classes and verticality
     for (const cl of this.classes) {
       this.renderer.addClass(this.content, cl);
     }
@@ -170,42 +218,7 @@ export class NavigationTabDirective {
       this.renderer.addClass(this.content, 'col-span-5');
       this.renderer.addClass(this.content, 'px-4');
     }
-    // this.renderer.addClass(this.content, 'block');
-    // this.renderer.addClass(this.content, 'py-4');
+    // Actually add content to the wrapping div of the navigation tab content
     this.renderer.appendChild(wrappingDiv, this.content);
-    // console.log(this.content);
-
-    // // Management of tooltip placement in the screen (including screen edges cases)
-    // const hostPos = this.elementRef.nativeElement.getBoundingClientRect();
-    // const tooltipPos = this.elToolTip.getBoundingClientRect();
-
-    // const top = hostPos.bottom;
-    // const left = hostPos.left;
-    // const tooltipWidth = tooltipPos.width;
-    // const tooltipHeight = tooltipPos.height;
-
-    // //Default working case
-    // let topValue = `${top + this.tooltipSeparation}px`;
-    // let leftValue = `${left}px`;
-    // // Case where it is both on the bottom and on the right of the screen
-    // if (
-    //   tooltipHeight + top > window.innerHeight &&
-    //   tooltipWidth + left > window.innerWidth
-    // ) {
-    //   topValue = `${hostPos.top - this.tooltipSeparation - tooltipHeight}px`;
-    //   leftValue = `${window.innerWidth - tooltipWidth}px`;
-    // }
-    // //Bottom centered case (not to be placed first but after other allegations)
-    // else if (tooltipHeight + top > window.innerHeight) {
-    //   topValue = `${hostPos.top - this.tooltipSeparation - tooltipHeight}px`;
-    //   leftValue = `${left}px`;
-    // }
-    // //Right placed case
-    // else if (tooltipWidth + left > window.innerWidth) {
-    //   topValue = `${top + this.tooltipSeparation}px`;
-    //   leftValue = `${window.innerWidth - tooltipWidth}px`;
-    // }
-    // this.renderer.setStyle(this.elToolTip, 'top', topValue);
-    // this.renderer.setStyle(this.elToolTip, 'left', leftValue);
   }
 }

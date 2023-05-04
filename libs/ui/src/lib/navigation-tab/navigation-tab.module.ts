@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { NavigationTabComponent } from './navigation-tab.component';
 import { NavigationTabDirective } from './navigation-tab.directive';
 
+/**
+ * UI Navigation Tab Module
+ */
 @NgModule({
   declarations: [NavigationTabComponent, NavigationTabDirective],
   imports: [CommonModule],

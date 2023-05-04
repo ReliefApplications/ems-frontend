@@ -12,10 +12,18 @@ export default {
   ],
 } as Meta<TabComponent>;
 
+/**
+ * Tab default template
+ */
 const tabTemplate = '<ui-tab [label]="label"><div> Test </div></ui-tab>';
 
+/**
+ * Template for storybook's test of tab component
+ *
+ * @param args args of the story
+ * @returns Story<TabComponent>
+ */
 const Template: Story<TabComponent> = (args: TabComponent) => {
-  args.label = 'Label';
   return {
     component: TabComponent,
     template: tabTemplate,
@@ -25,4 +33,10 @@ const Template: Story<TabComponent> = (args: TabComponent) => {
   };
 };
 
+/**
+ * Test template
+ */
 export const Tab = Template.bind({});
+Tab.args = {
+  label: 'Label',
+};
