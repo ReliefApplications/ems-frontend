@@ -16,7 +16,7 @@ export * from './lib/textarea/textarea.module';
 export * from './lib/breadcrumbs/breadcrumbs.module';
 export * from './lib/divider/divider.module';
 export * from './lib/radio/radio.module';
-export * from './lib/sidenav-container/sidenav-container.module';
+export * from './lib/sidenav/sidenav-container.module';
 
 // === ENUMS === //
 export * from './lib/shared/size.enum';

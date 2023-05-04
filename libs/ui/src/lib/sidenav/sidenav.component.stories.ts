@@ -1,6 +1,7 @@
 import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
 import { SidenavContainerComponent } from './sidenav-container.component';
 import { SidenavContainerModule } from './sidenav-container.module';
+import { ButtonModule } from '../button/button.module';
 
 export default {
   title: 'Sidenav',
@@ -12,7 +13,7 @@ export default {
   },
   decorators: [
     moduleMetadata({
-      imports: [SidenavContainerModule],
+      imports: [SidenavContainerModule, ButtonModule],
     }),
   ],
 } as Meta<SidenavContainerComponent>;
@@ -32,8 +33,8 @@ const SidenavTemplate: StoryFn<SidenavContainerComponent> = (
     template: `
       <ui-sidenav-container>
         <ng-container ngProjectAs="content">
-          <p>Main content</p>
-          <button type="button" (click)="nav.toggle()">Toggle sidenav</button>
+        <ui-button (click)="nav.toggle()">Toggle sidenav</ui-button>
+          <p class="mt-3">Main content</p>
         </ng-container>
         <ng-container
           uiSidenavDirective
@@ -51,5 +52,5 @@ const SidenavTemplate: StoryFn<SidenavContainerComponent> = (
   };
 };
 
-/** Primary sidenav */
-export const Primary = SidenavTemplate.bind({});
+/** Sidenav sidenav */
+export const Sidenav = SidenavTemplate.bind({});

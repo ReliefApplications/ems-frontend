@@ -4,7 +4,7 @@ import { SidenavDirective } from './sidenav.directive';
 import { SidenavContainerComponent } from './sidenav-container.component';
 
 /**
- * UI sidenav module
+ * UI Sidenav module
  */
 @NgModule({
   declarations: [SidenavDirective, SidenavContainerComponent],

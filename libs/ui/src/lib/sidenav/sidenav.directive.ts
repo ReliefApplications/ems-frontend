@@ -1,7 +1,7 @@
 import { Directive, Input, Output, EventEmitter } from '@angular/core';
 
 /**
- * UI sidenav directive
+ * UI Sidenav directive
  */
 @Directive({
   selector: '[uiSidenavDirective]',

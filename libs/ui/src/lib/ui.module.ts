@@ -12,7 +12,7 @@ import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
 import { TextareaModule } from './textarea/textarea.module';
 import { RadioModule } from './radio/radio.module';
-import { SidenavContainerModule } from './sidenav-container/sidenav-container.module';
+import { SidenavContainerModule } from './sidenav/sidenav-container.module';
 
 /**
  * UI Library Module
