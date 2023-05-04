@@ -200,6 +200,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       availableFields: [get(value, 'availableFields', [])],
       useStyles: get(value, 'useStyles', true),
       wholeCardStyles: get(value, 'wholeCardStyles', false),
+      identifier: get(value, 'identifier', null),
     });
   }
 

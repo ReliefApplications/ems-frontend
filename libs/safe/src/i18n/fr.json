@@ -115,6 +115,12 @@
 		},
 		"history": "Historique",
 		"id": "Id",
+		"identifier": {
+			"alert": "Assurez-vous que le résultat agrégé peut être identifié par une valeur unique.",
+			"few": "Identifiants",
+			"none": "Aucun identifiant",
+			"one": "Identifiant"
+		},
 		"input": {
 			"dateRange": "Intervalle de dates",
 			"none": "-- Aucun --",

@@ -115,6 +115,18 @@
   </ng-container>
   <!-- FROM AGGREGATIONS -->
   <ng-container *ngIf="selectedAggregation && form.get('resource')?.value">
+    <safe-alert
+      ><safe-icon icon="info"></safe-icon>
+      {{ 'common.identifier.alert' | translate }}
+    </safe-alert>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'common.identifier.one' | translate }}</mat-label>
+      <mat-select formControlName="identifier" [value]="selectedAggregation.id">
+        <mat-option [value]="selectedAggregation.id"
+          >{{ selectedAggregation.name }} pouet</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>{{ 'common.aggregation.one' | translate }}</mat-label>
       <mat-select [disabled]="true" [value]="selectedAggregation.id">

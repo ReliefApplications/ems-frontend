@@ -115,6 +115,12 @@
 		},
 		"history": "History",
 		"id": "Id",
+		"identifier": {
+			"alert": "Please make sure that the aggregated result can be identified by a unique value.",
+			"few": "Identifiers",
+			"none": "No identifier",
+			"one": "Identifier"
+		},
 		"input": {
 			"dateRange": "Date range",
 			"none": "-- None --",
