@@ -380,7 +380,7 @@ export class MapComponent
     // Add custom zoom control
     const customZoomControl = L.Control.extend({
       options: {
-        position: 'verticalcenterleft',
+        position: 'verticalcenterright',
       },
       onAdd: function () {
         return DomUtil.get('zoom-slider-control');

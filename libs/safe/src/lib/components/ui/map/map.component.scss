@@ -39,12 +39,16 @@
 mat-slider {
   transform: rotate(270deg);
   position: absolute;
-  left: -50px;
+  left: -80px;
 }
 
 ::ng-deep .mat-ripple {
   height: 0 !important;
   width: 0 !important;
+}
+
+::ng-deep .mdc-slider__value-indicator-text {
+  transform: rotate(90deg) !important;
 }
 
 ::ng-deep .mat-primary .mdc-slider__thumb-knob {
@@ -58,7 +62,7 @@ mat-slider {
   width: 100px !important;
   z-index: 1000;
   pointer-events: none;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 40%;
+  transform: translateY(-40%);
   padding-top: 10px;
 }
