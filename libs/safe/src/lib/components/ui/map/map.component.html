@@ -9,7 +9,8 @@
     [min]="map?.getMinZoom()"
     showTickMarks
     discrete
+    (change)="updateZoom($event)"
   >
-    <input matSliderThumb />
+    <input matSliderThumb [value]="map?.getZoom()" />
   </mat-slider>
 </div>

@@ -901,6 +901,10 @@ export class MapComponent
   //   this.basemap.remove();
   // }
 
+  updateZoom(event: any) {
+    this.map.setZoom(event.originalTarget.valueAsNumber);
+  }
+
   /**
    * Set the webmap.
    *
