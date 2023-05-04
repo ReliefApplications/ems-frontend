@@ -34,6 +34,7 @@
       [class.shadow-2lg]="widget.settings.widgetDisplay?.showBorder ?? true"
       [class.hide-border]="!(widget.settings.widgetDisplay?.showBorder ?? true)"
       [class.hover:shadow-2lg]="isBackOffice"
+      [class.bg-inherit]="!(widget.settings.widgetDisplay?.showBorder ?? true)"
     >
       <safe-floating-options
         *ngIf="canUpdate"
