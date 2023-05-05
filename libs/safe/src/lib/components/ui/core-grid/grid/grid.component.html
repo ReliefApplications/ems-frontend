@@ -2,7 +2,7 @@
 <kendo-grid
   id="recordsGrid"
   class="w-full"
-  [class.border-none]="!(widget.settings.widgetDisplay?.showBorder ?? true)"
+  [class.border-none]="!showBorder"
   [loading]="loadingRecords || loadingSettings"
   [data]="status.error ? [] : data"
   [autoSize]="false"
