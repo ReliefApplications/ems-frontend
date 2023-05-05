@@ -1377,11 +1377,14 @@
 					"hint": {
 						"dynamic": "Les cartes dynamiques adaptent leur affichage en fonction du nombre d'éléments dans la source de données. Vous devez définir une unique carte qui sera répétée pour chaque élément."
 					},
-					"infiniteScroll": "Utiliser le défilement infini",
+					"loadMore": {
+						"infiniteScroll": "Utiliser le défilement infini",
+						"pagination": "Utiliser la pagination",
+						"title": "Déclencheur pour charger plus de données"
+					},
 					"options": {
 						"ariaLabel": "***"
 					},
-					"pagination": "Utiliser la pagination",
 					"static": "Statique"
 				}
 			},

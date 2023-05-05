@@ -1369,11 +1369,14 @@
 					"hint": {
 						"dynamic": "******"
 					},
-					"infiniteScroll": "******",
+					"loadMore": {
+						"infiniteScroll": "******",
+						"pagination": "******",
+						"title": "******"
+					},
 					"options": {
 						"ariaLabel": "******"
 					},
-					"pagination": "******",
 					"static": "******"
 				}
 			},

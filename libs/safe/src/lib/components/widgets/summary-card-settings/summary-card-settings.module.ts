@@ -9,6 +9,7 @@ import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-t
 import { SummaryCardGeneralComponent } from './summary-card-general/summary-card-general.component';
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -24,6 +25,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatSlideToggleModule,
     FormsModule,
     ReactiveFormsModule,
+    MatRadioModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

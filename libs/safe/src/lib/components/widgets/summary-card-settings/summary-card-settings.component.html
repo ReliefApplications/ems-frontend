@@ -43,13 +43,26 @@
           >
             {{ 'models.widget.display.searchable' | translate }}
           </mat-slide-toggle>
-          <!-- TODO: move usePagination here too (https://github.com/ReliefApplications/oort-frontend/pull/1304) -->
-          <!-- <mat-slide-toggle
-            *ngIf="usePaginationControl"
+
+          <mat-radio-group
             [formControl]="usePaginationControl"
+            class="flex flex-col gap-1 mt-2"
           >
-            {{ 'models.widget.display.usePagination' | translate }}
-          </mat-slide-toggle> -->
+            <p class="font-medium mt-0 mb-0.5">
+              {{
+                'components.widget.settings.summaryCard.loadMore.title'
+                  | translate
+              }}
+            </p>
+            <mat-radio-button [value]="false">{{
+              'components.widget.settings.summaryCard.loadMore.infiniteScroll'
+                | translate
+            }}</mat-radio-button>
+            <mat-radio-button [value]="true">{{
+              'components.widget.settings.summaryCard.loadMore.pagination'
+                | translate
+            }}</mat-radio-button>
+          </mat-radio-group>
         </safe-display-settings>
       </ng-template>
     </mat-tab>

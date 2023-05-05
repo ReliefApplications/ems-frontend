@@ -20,15 +20,6 @@
         [matTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
       ></safe-button>
     </div>
-    <input
-      *ngIf="!!settings.widgetDisplay?.searchable"
-      [placeholder]="'common.placeholder.search' | translate"
-      kendoTextBox
-      [formControl]="searchControl"
-      class="!w-full"
-    />
-  </kendo-tilelayout-item-header>
-  <ng-container *ngIf="displayMode === 'cards' || settings.isDynamic === false">
     <safe-button
       *ngIf="
         export && (displayMode === 'cards' || settings.isDynamic === false)
@@ -38,6 +29,13 @@
       class="text-neutral-700"
       (click)="pdf.saveAs(exportName)"
     ></safe-button>
+    <input
+      *ngIf="!!settings.widgetDisplay?.searchable"
+      [placeholder]="'common.placeholder.search' | translate"
+      kendoTextBox
+      [formControl]="searchControl"
+      class="!w-full"
+    />
   </kendo-tilelayout-item-header>
   <ng-container *ngIf="displayMode === 'cards' || settings.isDynamic === false">
     <div class="w-full grow overflow-auto" #summaryCardGrid>
@@ -63,7 +61,7 @@
   </ng-container>
   <kendo-datapager
     *ngIf="
-      settings.usePagination &&
+      settings.widgetDisplay?.usePagination &&
       (displayMode === 'cards' || settings.isDynamic === false)
     "
     [style.width.%]="100"

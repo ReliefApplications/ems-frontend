@@ -137,7 +137,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (
-      !this.settings.usePagination &&
+      !this.settings.widgetDisplay?.usePagination &&
       this.settings.isDynamic &&
       !this.isAggregation
     ) {
@@ -212,7 +212,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     }));
 
     this.cachedCards = [...this.cachedCards, ...newCards];
-    this.cards = this.settings.usePagination
+    this.cards = this.settings.widgetDisplay?.usePagination
       ? this.cachedCards.slice(
           this.pageInfo.skip,
           this.pageInfo.skip + this.pageInfo.first

@@ -1369,11 +1369,14 @@
 					"hint": {
 						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
 					},
-					"infiniteScroll": "Use infinite scrolling",
+					"loadMore": {
+						"infiniteScroll": "Use infinite scrolling",
+						"pagination": "Use pagination",
+						"title": "Trigger for loading more data"
+					},
 					"options": {
 						"ariaLabel": "Select an option"
 					},
-					"pagination": "Use pagination",
 					"static": "Static"
 				}
 			},
