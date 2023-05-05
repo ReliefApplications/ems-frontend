@@ -9,7 +9,7 @@ export default {
   component: NavigationTabComponent,
   argTypes: {
     variant: {
-      options: Variant,
+      options: Object.values(Variant),
       control: 'select',
     },
   },

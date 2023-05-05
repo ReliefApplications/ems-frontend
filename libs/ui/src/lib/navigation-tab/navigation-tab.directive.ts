@@ -63,6 +63,8 @@ export class NavigationTabDirective implements OnInit {
     const host = this.elementRef.nativeElement;
     const tabsWrapper = host?.children[0];
 
+    console.log('Variant : ' + this.variant);
+
     // Manages the vertical or horizontal aspect of the navbar (for tabs)
     if (this.vertical) {
       // For all tabs
@@ -70,6 +72,7 @@ export class NavigationTabDirective implements OnInit {
         // Manages classes only if the tabButton is the button inside the tab component
         const tabButton = tab?.children[0]?.children[0];
         if (tabButton?.id === 'buttonTab') {
+          // console.log(tabButton);
           this.renderer.removeClass(tabButton, 'border-b-2');
           this.renderer.addClass(tabButton, 'border-r-2');
         }
@@ -77,7 +80,9 @@ export class NavigationTabDirective implements OnInit {
     } else {
       //Make the ui-tab growing so it occupies all the space available
       for (const tab of host.children[0].children) {
-        this.renderer.addClass(tab, 'grow');
+        if (tab.id !== 'tabs') {
+          this.renderer.addClass(tab, 'grow');
+        }
       }
     }
 
