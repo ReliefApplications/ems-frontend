@@ -136,6 +136,8 @@ export class MapComponent
     controls: DefaultMapControls,
   };
   private arcGisWebMap: any;
+
+  // === ZOOM ===
   public maxZoom = get(this.settingsConfig, 'maxZoom', 18);
   public minZoom = get(this.settingsConfig, 'minZoom', 2);
   public currentZoom = 2;
@@ -870,8 +872,19 @@ export class MapComponent
   //   this.basemap.remove();
   // }
 
+  /**
+   * Adds custom zoom control (different from the leaflet default one
+   *
+   */
   addCustomZoomControl() {
     // Create additional Control placeholders
+    /**
+     * Adds two new placeholder corners for map controls
+     *
+     * @param map the map on which it applies
+     * @param map._controlCorners control corners of the map
+     * @param map._controlContainer control container of the map
+     */
     function addControlPlaceholders(map: {
       _controlCorners: any;
       _controlContainer: any;
@@ -880,6 +893,12 @@ export class MapComponent
         l = 'leaflet-',
         container = map._controlContainer;
 
+      /**
+       * Creates new corner for the map
+       *
+       * @param vSide vertical side
+       * @param hSide horizontal side
+       */
       function createCorner(vSide: string, hSide: string) {
         const className = l + vSide + ' ' + l + hSide;
 
@@ -899,8 +918,12 @@ export class MapComponent
         options: {
           position: 'verticalcenterright',
         },
+        /**
+         * Adds the new custom control
+         *
+         * @returns the zoom slider control
+         */
         onAdd: function () {
-          console.log('we are here');
           const zoomSliderControl = DomUtil.get('zoom-slider-control');
           // Disable dragging when user's cursor enters the element
           zoomSliderControl?.addEventListener('mouseover', function () {
@@ -918,6 +941,11 @@ export class MapComponent
     }, 100);
   }
 
+  /**
+   * Updates zoom when using the slider
+   *
+   * @param event Slider change event
+   */
   updateZoom(event: any) {
     this.map.setZoom(event.originalTarget.valueAsNumber);
   }
