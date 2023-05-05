@@ -9,6 +9,8 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeGridWidgetModule } from '../grid/grid.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { TranslateModule } from '@ngx-translate/core';
+import { InputsModule } from '@progress/kendo-angular-inputs';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 /** Summary Card Widget Module */
 @NgModule({
@@ -23,6 +25,9 @@ import { TranslateModule } from '@ngx-translate/core';
     IndicatorsModule,
     MatTooltipModule,
     TranslateModule,
+    InputsModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   exports: [SafeSummaryCardComponent],
 })

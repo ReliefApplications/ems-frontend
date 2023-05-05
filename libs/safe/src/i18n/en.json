@@ -1688,6 +1688,7 @@
 			},
 			"display": {
 				"border": "Show widget border",
+				"searchable": "Allow search",
 				"title": "Widget display"
 			},
 			"map": {

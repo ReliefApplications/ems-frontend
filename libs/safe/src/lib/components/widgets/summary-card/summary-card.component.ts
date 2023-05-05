@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import { firstValueFrom } from 'rxjs';
+import { debounceTime, distinctUntilChanged, firstValueFrom } from 'rxjs';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -16,6 +16,7 @@ import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
 } from './graphql/queries';
+import { FormControl } from '@angular/forms';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -53,6 +54,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
 
   public cards: any[] = [];
   private dataQuery?: QueryRef<any>;
+
+  public searchControl = new FormControl('');
 
   /**
    * Gets whether the cards that will be displayed
@@ -115,6 +118,12 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     }
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.setupGridSettings();
+
+    this.searchControl.valueChanges
+      .pipe(debounceTime(2000), distinctUntilChanged())
+      .subscribe((value) => {
+        this.handleSearch(value || '');
+      });
   }
 
   ngAfterViewInit(): void {
@@ -156,6 +165,19 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
 
     if (card.isAggregation) this.getCardsFromAggregation(card);
     else this.createDynamicQueryFromLayout(card);
+  }
+
+  /**
+   * Handles the search on cards
+   *
+   * @param value search value
+   */
+  private handleSearch(value: string) {
+    // Only need to fetch data if is dynamic and not an aggregation
+    const needRefetch = this.settings.isDynamic && !this.isAggregation;
+    console.log('searching', value);
+    console.log('needRefetch', needRefetch);
+    console.log(this.cards[0]);
   }
 
   /**

@@ -1688,6 +1688,7 @@
 			},
 			"display": {
 				"border": "******",
+				"searchable": "******",
 				"title": "******"
 			},
 			"map": {

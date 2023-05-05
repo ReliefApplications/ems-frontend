@@ -98,8 +98,25 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
         get(this.tile, 'settings.cards', []).map((x: any) => createCardForm(x))
       ),
     });
-    this.tileForm = extendWidgetForm(form, this.tile.settings?.widgetDisplay);
+    this.tileForm = extendWidgetForm(form, this.tile.settings?.widgetDisplay, {
+      searchable: new FormControl(
+        get(this.tile, 'settings.widgetDisplay.searchable', false)
+      ),
+      // usePagination: new FormControl(
+      //   get(this.tile, 'settings.widgetDisplay.usePagination', false)
+      // ),
+    });
     this.change.emit(this.tileForm);
+  }
+
+  /** @returns a FormControl for the searchable field */
+  get searchableControl(): FormControl {
+    return this.tileForm?.get('widgetDisplay.searchable') as FormControl;
+  }
+
+  /** @returns a FormControl for the usePagination field */
+  get usePaginationControl(): FormControl {
+    return this.tileForm?.get('widgetDisplay.usePagination') as FormControl;
   }
 
   /**

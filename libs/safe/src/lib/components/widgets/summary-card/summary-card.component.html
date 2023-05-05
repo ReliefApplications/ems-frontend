@@ -20,10 +20,19 @@
         [matTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
       ></safe-button>
     </div>
+    <input
+      *ngIf="!!settings.widgetDisplay?.searchable"
+      [placeholder]="'common.placeholder.search' | translate"
+      kendoTextBox
+      [formControl]="searchControl"
+      class="!w-full"
+    />
   </kendo-tilelayout-item-header>
   <ng-container *ngIf="displayMode === 'cards' || settings.isDynamic === false">
     <safe-button
-      *ngIf="export && (displayMode === 'cards' || settings.isDynamic === false)"
+      *ngIf="
+        export && (displayMode === 'cards' || settings.isDynamic === false)
+      "
       [isIcon]="true"
       icon="get_app"
       class="export-button"

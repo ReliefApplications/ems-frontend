@@ -7,6 +7,8 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { SummaryCardGeneralComponent } from './summary-card-general/summary-card-general.component';
+import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -19,6 +21,9 @@ import { SummaryCardGeneralComponent } from './summary-card-general/summary-card
     TranslateModule,
     DisplaySettingsComponent,
     SummaryCardGeneralComponent,
+    MatSlideToggleModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

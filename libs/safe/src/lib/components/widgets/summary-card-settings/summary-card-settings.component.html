@@ -35,7 +35,22 @@
         <span>{{ 'models.widget.display.title' | translate }}</span>
       </ng-template>
       <ng-template matTabContent>
-        <safe-display-settings [formGroup]="tileForm"></safe-display-settings>
+        <safe-display-settings [formGroup]="tileForm">
+          <!-- Specific settings for summary card -->
+          <mat-slide-toggle
+            *ngIf="searchableControl"
+            [formControl]="searchableControl"
+          >
+            {{ 'models.widget.display.searchable' | translate }}
+          </mat-slide-toggle>
+          <!-- TODO: move usePagination here too (https://github.com/ReliefApplications/oort-frontend/pull/1304) -->
+          <!-- <mat-slide-toggle
+            *ngIf="usePaginationControl"
+            [formControl]="usePaginationControl"
+          >
+            {{ 'models.widget.display.usePagination' | translate }}
+          </mat-slide-toggle> -->
+        </safe-display-settings>
       </ng-template>
     </mat-tab>
   </mat-tab-group>

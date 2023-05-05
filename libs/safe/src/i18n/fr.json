@@ -1696,6 +1696,7 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"searchable": "Autoriser la recherche",
 				"title": "Affichage des widgets"
 			},
 			"map": {
