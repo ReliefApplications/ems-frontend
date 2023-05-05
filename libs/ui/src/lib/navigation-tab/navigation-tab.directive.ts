@@ -34,6 +34,10 @@ export class NavigationTabDirective implements OnInit {
    * Output emitted whenever a new tab is clicked, gives the index of the new tab
    */
   @Output() selectedIndexChangeDirective = new EventEmitter<number>();
+  /**
+   * Output emitted enabling and disabling animation states
+   */
+  @Output() toggleAnimation = new EventEmitter<boolean>();
 
   // Content that is to be displayed
   content: any;
@@ -140,7 +144,11 @@ export class NavigationTabDirective implements OnInit {
     this.deleteContent(wrappingDiv);
 
     // Creates the content element thanks to the hidden html content of the tab component
-    this.createContent(target, wrappingDiv);
+    // Timeout so the animation has the time to render (elsewhere it can't cause delete then create is instantaneous)
+    setTimeout(() => {
+      this.createContent(target, wrappingDiv);
+    }, 100);
+    // this.createContent(target, wrappingDiv);
   }
 
   /**
@@ -287,11 +295,12 @@ export class NavigationTabDirective implements OnInit {
    * @param wrappingDiv element wrapping the whole ui-navigation-tab
    */
   deleteContent(wrappingDiv: any) {
+    this.toggleAnimation.emit(false);
     if (this.content) {
       for (const cl of this.classes) {
         this.renderer.removeClass(this.content, cl);
       }
-      this.renderer.removeChild(wrappingDiv, this.content);
+      this.renderer.removeChild(wrappingDiv?.children[1], this.content);
       this.content = null;
     }
   }
@@ -303,6 +312,7 @@ export class NavigationTabDirective implements OnInit {
    * @param wrappingDiv element wrapping the whole ui-navigation-tab
    */
   createContent(target: any, wrappingDiv: any) {
+    this.toggleAnimation.emit(true);
     this.content = this.renderer.createElement('div');
     this.content.innerHTML = target.parentElement.children[1].innerHTML;
     // Manages classes and verticality
@@ -314,6 +324,6 @@ export class NavigationTabDirective implements OnInit {
       this.renderer.addClass(this.content, 'px-4');
     }
     // Actually add content to the wrapping div of the navigation tab content
-    this.renderer.appendChild(wrappingDiv, this.content);
+    this.renderer.appendChild(wrappingDiv.children[1], this.content);
   }
 }

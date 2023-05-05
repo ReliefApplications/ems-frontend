@@ -1,8 +1,16 @@
-import { moduleMetadata, Story, Meta } from '@storybook/angular';
+import {
+  applicationConfig,
+  moduleMetadata,
+  Story,
+  Meta,
+} from '@storybook/angular';
 import { NavigationTabComponent } from './navigation-tab.component';
 import { TabModule } from '../tab/tab.module';
 import { NavigationTabModule } from './navigation-tab.module';
 import { Variant } from '../shared/variant.enum';
+import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { importProvidersFrom } from '@angular/core';
 
 export default {
   title: 'Navigation Tab',
@@ -15,11 +23,22 @@ export default {
   },
   decorators: [
     moduleMetadata({
-      imports: [TabModule, NavigationTabModule],
+      imports: [
+        TabModule,
+        NavigationTabModule,
+        CommonModule,
+        BrowserAnimationsModule,
+      ],
+    }),
+    applicationConfig({
+      providers: [importProvidersFrom(BrowserAnimationsModule)],
     }),
   ],
 } as Meta<NavigationTabComponent>;
 
+/**
+ * Variant following enum
+ */
 const ColorVariant = Variant;
 
 /**
@@ -108,8 +127,8 @@ DefaultSelection1Tab.args = {
 /**
  * Vertical navigation tab with third tab selected by default
  */
-export const VerticalDefaultSelection1Tab = Template.bind({});
-VerticalDefaultSelection1Tab.args = {
+export const VerticalDefaultSelection2Tab = Template.bind({});
+VerticalDefaultSelection2Tab.args = {
   selectedIndex: 2,
   vertical: true,
   variant: ColorVariant.DEFAULT,
