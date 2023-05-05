@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { MatDividerModule } from '@angular/material/divider';
@@ -23,7 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
   declarations: [SafeAddCardComponent, SafeCardTemplateComponent],
   imports: [
     CommonModule,
-    MatTooltipModule,
+    TooltipModule,
     TranslateModule,
     MatRadioModule,
     MatDividerModule,

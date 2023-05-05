@@ -31,7 +31,7 @@ import { SafeAggregationService } from '../../../../services/aggregation/aggrega
 import { CommonModule } from '@angular/common';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -54,7 +54,7 @@ import { SafeModalModule } from '../../../ui/modal/modal.module';
     CommonModule,
     SafeButtonModule,
     TranslateModule,
-    MatTooltipModule,
+    TooltipModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,

@@ -176,11 +176,10 @@
             variant="grey"
             [inline]="true"
             [size]="18"
-            [matTooltip]="
+            [uiTooltip]="
               'components.widget.settings.grid.buttons.tooltip.attach'
                 | translate
             "
-            matTooltipPosition="right"
           ></safe-icon>
         </mat-checkbox>
       </ng-container>
@@ -247,10 +246,9 @@
           variant="grey"
           [size]="18"
           [inline]="true"
-          [matTooltip]="
+          [uiTooltip]="
             'components.widget.settings.grid.buttons.tooltip.notify' | translate
           "
-          matTooltipPosition="right"
         ></safe-icon>
       </mat-checkbox>
       <div *ngIf="formGroup.value.notify" class="sub-parameters">
@@ -280,11 +278,10 @@
           variant="grey"
           [size]="18"
           [inline]="true"
-          [matTooltip]="
+          [uiTooltip]="
             'components.widget.settings.grid.buttons.tooltip.publish'
               | translate
           "
-          matTooltipPosition="right"
         ></safe-icon>
       </mat-checkbox>
       <div *ngIf="formGroup.value.publish" class="sub-parameters">
@@ -323,7 +320,7 @@
             class="cursor-pointer"
             variant="grey"
             matSuffix
-            [matTooltip]="
+            [uiTooltip]="
               'components.widget.settings.grid.buttons.tooltip.mail.selectDistributionList'
                 | translate
             "
@@ -334,7 +331,7 @@
             icon="add_circle_outline"
             variant="primary"
             (click)="$event.stopPropagation(); addDistributionList()"
-            [matTooltip]="'components.distributionLists.edit.new' | translate"
+            [uiTooltip]="'components.distributionLists.edit.new' | translate"
           >
           </safe-button>
         </mat-form-field>
@@ -357,7 +354,7 @@
             class="cursor-pointer"
             variant="grey"
             matSuffix
-            [matTooltip]="
+            [uiTooltip]="
               'components.widget.settings.grid.buttons.tooltip.mail.selectTemplates'
                 | translate
             "
@@ -368,7 +365,7 @@
             icon="add_circle_outline"
             variant="primary"
             (click)="$event.stopPropagation(); addEmailTemplate()"
-            [matTooltip]="'components.templates.edit.new' | translate"
+            [uiTooltip]="'components.templates.edit.new' | translate"
           >
           </safe-button>
           <mat-error

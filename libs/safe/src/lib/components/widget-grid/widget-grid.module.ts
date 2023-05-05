@@ -10,7 +10,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { SafeFloatingOptionsComponent } from './floating-options/floating-options.component';
 import { SafeTileDataComponent } from './floating-options/menu/tile-data/tile-data.component';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
@@ -41,7 +40,6 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
     MatIconModule,
     MatSelectModule,
     MatDialogModule,
-    MatTooltipModule,
     MatDialogModule,
     MatMenuModule,
     SafeDividerModule,

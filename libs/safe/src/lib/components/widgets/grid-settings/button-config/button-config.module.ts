@@ -12,7 +12,7 @@ import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 
 /**
  * Button config component for grid widget.
@@ -30,7 +30,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MatCheckboxModule,
     MatSelectModule,
     MatTabsModule,
-    MatTooltipModule,
+    TooltipModule,
     SafeButtonModule,
     SafeIconModule,
     SafeQueryBuilderModule,
