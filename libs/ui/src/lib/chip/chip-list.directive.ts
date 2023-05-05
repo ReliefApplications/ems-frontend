@@ -4,7 +4,6 @@ import {
   Output,
   EventEmitter,
   AfterContentInit,
-  Renderer2,
   OnDestroy,
   ElementRef,
   forwardRef,
@@ -43,10 +42,9 @@ export class ChipListDirective
   /**
    * UI Chip list directive constructor
    *
-   * @param renderer Renderer2
    * @param elementRef ElementRef
    */
-  constructor(private renderer: Renderer2, private elementRef: ElementRef) {}
+  constructor(private elementRef: ElementRef) {}
 
   ngAfterContentInit() {
     // Get all the ui-chip inside the element with the directive

@@ -10,7 +10,7 @@ import { Variant } from '../shared/variant.enum';
   styleUrls: ['./chip.component.scss'],
 })
 export class ChipComponent {
-  @Input() value!: string;
+  @Input() value = '';
   @Input() removable = false;
   @Input() variant: Variant = Variant.DEFAULT;
   @Input() disabled = false;
@@ -24,7 +24,7 @@ export class ChipComponent {
     const classes = [];
     // Disable state
     if (this.disabled) {
-      classes.push('opacity-40 bg-gray-200 text-gray-400');
+      classes.push('opacity-40 bg-gray-200 text-gray-400 pointer-events-none');
     } else {
       classes.push('cursor-pointer');
       // Variants
@@ -48,8 +48,12 @@ export class ChipComponent {
     return classes;
   }
 
-  // to test click animation
-  click(event: MouseEvent): void {
+  /**
+   * Add animation on click in the chip
+   *
+   * @param event mouse event of the chip clicked
+   */
+  onClick(event: MouseEvent): void {
     const chip = event.currentTarget as HTMLElement;
     chip.style.transform = 'scale(0.95)';
     setTimeout(() => (chip.style.transform = 'scale(1)'), 200);

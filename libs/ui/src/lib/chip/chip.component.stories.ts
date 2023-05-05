@@ -3,6 +3,7 @@ import { ChipComponent } from './chip.component';
 import { ChipModule } from './chip.module';
 import { Variant } from '../shared/variant.enum';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 export default {
   title: 'Chip',
@@ -34,15 +35,11 @@ export default {
   ],
 } as Meta<ChipComponent>;
 
-/**
- * Status array for story testing
- */
+/** Status array for story testing */
 const statuses = ['Active', 'Pending', 'Archived'];
 let currentStatus = statuses[0];
 
-/**
- * Form control to test chip story
- */
+/** Form control to test chip story */
 const formControl = new FormControl('');
 
 /**
@@ -56,47 +53,13 @@ const updateStatus = (status: any) => {
 };
 
 /**
- * Callback to test the chip list directive change event
+ * Callback to test the chip remove event
  *
- * @param status Selected status from the chips
+ * @param index Index of the selected status from the chip list
  */
-const removeStatus = (status: string) => {
-  console.log('Remove Status: ', status);
-  const index = statuses.indexOf(status);
-  if (index >= 0) {
-    statuses.splice(index, 1);
-  }
+const removeStatus = (index: number) => {
+  statuses.splice(index, 1);
 };
-
-/**
- * Template chip list
- *
- * @param {ChipComponent} args args
- * @returns ChipComponent
- */
-const ChipListTemplate: StoryFn<ChipComponent> = (args: ChipComponent) => {
-  return {
-    component: ChipComponent,
-    template: `
-      <div [uiChipList]="currentStatus" (uiChipListChange)="updateStatus($event)">
-        <ui-chip [removable]="true" [value]="status"
-          *ngFor="let status of statuses" (removed)="removeStatus(status)"
-        >
-          {{ status }}
-        </ui-chip>
-      </div>
-    `,
-    props: {
-      ...args,
-      statuses,
-      updateStatus,
-      currentStatus,
-      removeStatus,
-    },
-  };
-};
-/** Chip list */
-export const ChipList = ChipListTemplate.bind({});
 
 /**
  * Template chip variants
@@ -108,11 +71,13 @@ const ChipVariantsTemplate: StoryFn<ChipComponent> = (args: ChipComponent) => {
   return {
     component: ChipComponent,
     template: `
-      <ui-chip [variant]="'${Variant.DEFAULT}'" [removable]="true"> Default </ui-chip>
-      <ui-chip [variant]="'${Variant.PRIMARY}'" [removable]="true"> Primary </ui-chip>
-      <ui-chip [variant]="'${Variant.SUCCESS}'" [removable]="true"> Success </ui-chip>
-      <ui-chip [variant]="'${Variant.DANGER}'" [removable]="true"> Danger </ui-chip>
-      <ui-chip [variant]="'${Variant.DANGER}'" [removable]="true" [disabled]="true"> Disabled </ui-chip>
+      <div class="flex gap-1">
+        <ui-chip [variant]="'${Variant.DEFAULT}'" [removable]="true"> Default </ui-chip>
+        <ui-chip [variant]="'${Variant.PRIMARY}'" [removable]="true"> Primary </ui-chip>
+        <ui-chip [variant]="'${Variant.SUCCESS}'" [removable]="true"> Success </ui-chip>
+        <ui-chip [variant]="'${Variant.DANGER}'" [removable]="true"> Danger </ui-chip>
+        <ui-chip [variant]="'${Variant.DANGER}'" [removable]="true" [disabled]="true"> Disabled </ui-chip>
+      </div>
     `,
     props: {
       ...args,
@@ -136,13 +101,13 @@ const FormChipListTemplate: StoryFn<ChipComponent> = (args: ChipComponent) => {
         [formControl]="formControl"
         uiChipList
         (uiChipListChange)="updateStatus($event)"
-        class="flex max-w-xs flex-wrap justify-between"
+        class="flex gap-1"
       >
         <ui-chip
-          *ngFor="let status of statuses"
+          *ngFor="let status of statuses; let i = index"
           [removable]="true"
           [value]="status"
-          (removed)="removeStatus(status)"
+          (removed)="removeStatus(i)"
         >
           {{ status }}
         </ui-chip>
@@ -163,3 +128,56 @@ const FormChipListTemplate: StoryFn<ChipComponent> = (args: ChipComponent) => {
 };
 /** Chip list with form control */
 export const FormChipList = FormChipListTemplate.bind({});
+
+/**
+ * Callback to test the chip input directive change event
+ *
+ * @param chip New chip to add to the chip list
+ */
+const addChipFromInput = (chip: string) => {
+  statuses.push(chip);
+};
+
+/** Separator key codes for story testing */
+const separatorKeysCodes = [ENTER, COMMA];
+
+/**
+ * Template chip list with input
+ *
+ * @param {ChipComponent} args args
+ * @returns ChipComponent
+ */
+const ChipsInputTemplate: StoryFn<ChipComponent> = (args: ChipComponent) => {
+  return {
+    component: ChipComponent,
+    template: `
+      <div uiChipList #chipList>
+        <ui-chip
+          [removable]="true"
+          [value]="status"
+          *ngFor="let status of statuses; let i = index"
+          (removed)="removeStatus(i)"
+        >
+          {{ status }}
+        </ui-chip>
+      </div>
+      <input
+        placeholder="New status..."
+        #inputChip
+        [uiChipListFor]="chipList"
+        [chipInput]="inputChip"
+        [chipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (chipTokenEnd)="addChipFromInput($event)"
+        >
+        `,
+    props: {
+      ...args,
+      statuses,
+      removeStatus,
+      addChipFromInput,
+      separatorKeysCodes,
+    },
+  };
+};
+/** Chip list with input */
+export const ChipWithInput = ChipsInputTemplate.bind({});
