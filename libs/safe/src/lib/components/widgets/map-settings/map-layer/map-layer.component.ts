@@ -226,10 +226,10 @@ export class MapLayerComponent
 
   /** If the form has a resource, fetch it */
   getResource(): void {
-    const resourceID = this.form.get('datasource')?.value.resource;
+    const resourceID = this.form.get('datasource')?.value?.resource;
     if (resourceID) {
-      const layoutID = this.form.get('datasource')?.value.layout;
-      const aggregationID = this.form.get('datasource')?.value.aggregation;
+      const layoutID = this.form.get('datasource')?.value?.layout;
+      const aggregationID = this.form.get('datasource')?.value?.aggregation;
       this.apollo
         .query<GetResourceQueryResponse>({
           query: GET_RESOURCE,

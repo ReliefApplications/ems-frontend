@@ -15,6 +15,7 @@ import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe
 import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.component';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 import { LayerModel } from '../../../../models/layer.model';
+import { LayerType } from '../../../ui/map/interfaces/layer-settings.type';
 
 /**
  * Layers configuration component of Map Widget.
@@ -83,22 +84,10 @@ export class MapLayersComponent
   }
 
   /** Opens a modal to add a new layer */
-  public onAddLayer() {
-    // const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
-    //   this.dialog.open(SafeEditLayerModalComponent, { disableClose: true });
-
-    // dialogRef.afterClosed().subscribe((layer) => {
-    //   if (layer) {
-    //     this.mapLayersService.addLayer(layer).subscribe({
-    //       next: (res) => {
-    //         if (res) {
-    //           this.layers.setValue([...this.layers.value, res.id]);
-    //         }
-    //       },
-    //     });
-    //   }
-    // });
-    this.editLayer.emit({} as LayerModel);
+  public onAddLayer(type: LayerType = 'FeatureLayer') {
+    this.editLayer.emit({
+      type,
+    } as LayerModel);
   }
 
   /**

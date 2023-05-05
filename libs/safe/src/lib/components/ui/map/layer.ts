@@ -278,7 +278,7 @@ export class Layer implements LayerModel {
   public setConfig(options: any) {
     this.id = get(options, 'id', '');
     this.name = get(options, 'name', '');
-    this.type = get<LayerType>(options, 'type', 'feature');
+    this.type = get<LayerType>(options, 'type', 'FeatureLayer');
     this.opacity = get(options, 'opacity', 1);
 
     if (options.type !== 'group') {
@@ -438,7 +438,7 @@ export class Layer implements LayerModel {
     };
 
     switch (this.type) {
-      case 'group':
+      case 'GroupLayer':
         this.sublayers.forEach((child) => (child.layer = child.getLayer()));
         const layers = this.sublayers
           .map((child) => child.layer)

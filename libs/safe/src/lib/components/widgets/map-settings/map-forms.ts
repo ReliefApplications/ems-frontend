@@ -16,6 +16,7 @@ import {
   PopupElementType,
 } from '../../../models/layer.model';
 import { IconName } from '../../icon-picker/icon-picker.const';
+import { LayerType } from '../../ui/map/interfaces/layer-settings.type';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -58,18 +59,26 @@ const DEFAULT_GRADIENT = [
  * @param value layer value ( optional )
  * @returns new form group
  */
-export const createLayerForm = (value?: LayerModel) =>
-  fb.group({
+export const createLayerForm = (value?: LayerModel) => {
+  const type = get(value, 'type', 'FeatureLayer') as LayerType;
+  return fb.group({
     // Layer properties
     id: [get(value, 'id', null)],
+    type: [type, Validators.required],
     name: [get(value, 'name', null), Validators.required],
     visibility: [get(value, 'visibility', true), Validators.required],
     opacity: [get(value, 'opacity', 1), Validators.required],
-    layerDefinition: createLayerDefinitionForm(get(value, 'layerDefinition')),
-    popupInfo: createPopupInfoForm(get(value, 'popupInfo')),
-    // Layer datasource
-    datasource: createLayerDataSourceForm(get(value, 'datasource')),
+    layerDefinition: createLayerDefinitionForm(
+      type,
+      get(value, 'layerDefinition')
+    ),
+    ...(type !== 'GroupLayer' && {
+      popupInfo: createPopupInfoForm(get(value, 'popupInfo')),
+      // Layer datasource
+      datasource: createLayerDataSourceForm(get(value, 'datasource')),
+    }),
   });
+};
 
 /**
  * Create layer data source form group
@@ -142,49 +151,53 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
  * @param value layer definition
  * @returns layer definition form group
  */
-const createLayerDefinitionForm = (value?: any): FormGroup => {
+const createLayerDefinitionForm = (type: LayerType, value?: any): FormGroup => {
   const formGroup = fb.group({
     minZoom: [get(value, 'minZoom', 2), Validators.required],
     maxZoom: [get(value, 'maxZoom', 18), Validators.required],
-    drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
-    featureReduction: createLayerFeatureReductionForm(
-      get(value, 'featureReduction')
-    ),
+    ...(type !== 'GroupLayer' && {
+      drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
+      featureReduction: createLayerFeatureReductionForm(
+        get(value, 'featureReduction')
+      ),
+    }),
   });
-  const rendererType = formGroup.value.drawingInfo.renderer.type;
-  // Add more conditions there to disabled aggregation
-  if (rendererType === 'heatmap') {
-    formGroup.get('featureReduction')?.disable();
+  if (type !== 'GroupLayer') {
+    const rendererType = formGroup.value.drawingInfo.renderer.type;
+    // Add more conditions there to disabled aggregation
+    if (rendererType === 'heatmap') {
+      formGroup.get('featureReduction')?.disable();
+    }
+    const setTypeListeners = () => {
+      formGroup
+        .get('drawingInfo.renderer.type')
+        ?.valueChanges.subscribe((type) => {
+          if (type === 'heatmap') {
+            formGroup.get('featureReduction')?.disable();
+          } else {
+            formGroup.get('featureReduction')?.enable();
+          }
+          formGroup.setControl(
+            'drawingInfo',
+            createLayerDrawingInfoForm({
+              ...formGroup.get('drawingInfo'),
+              type,
+            })
+          );
+          setTypeListeners();
+        });
+    };
+    setTypeListeners();
+    formGroup.get('featureReduction.type')?.valueChanges.subscribe((type) => {
+      formGroup.setControl(
+        'featureReduction',
+        createLayerFeatureReductionForm({
+          ...formGroup.get('featureReduction')?.value,
+          type,
+        })
+      );
+    });
   }
-  const setTypeListeners = () => {
-    formGroup
-      .get('drawingInfo.renderer.type')
-      ?.valueChanges.subscribe((type) => {
-        if (type === 'heatmap') {
-          formGroup.get('featureReduction')?.disable();
-        } else {
-          formGroup.get('featureReduction')?.enable();
-        }
-        formGroup.setControl(
-          'drawingInfo',
-          createLayerDrawingInfoForm({
-            ...formGroup.get('drawingInfo'),
-            type,
-          })
-        );
-        setTypeListeners();
-      });
-  };
-  setTypeListeners();
-  formGroup.get('featureReduction.type')?.valueChanges.subscribe((type) => {
-    formGroup.setControl(
-      'featureReduction',
-      createLayerFeatureReductionForm({
-        ...formGroup.get('featureReduction')?.value,
-        type,
-      })
-    );
-  });
   return formGroup;
 };
 

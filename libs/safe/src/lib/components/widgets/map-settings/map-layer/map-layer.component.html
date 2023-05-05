@@ -8,6 +8,7 @@
       {{ 'components.widget.settings.map.edit.layerProperties' | translate }}
     </safe-button>
     <safe-button
+      *ngIf="form?.get('datasource')"
       icon="storage"
       [attr.data-selected]="currentTab === 'datasource'"
       (click)="currentTab = 'datasource'"
@@ -15,6 +16,7 @@
       {{ 'components.widget.settings.map.edit.layerDatasource' | translate }}
     </safe-button>
     <safe-button
+      *ngIf="form?.get('layerDefinition.drawingInfo')"
       icon="storage"
       [attr.data-selected]="currentTab === 'styling'"
       (click)="currentTab = 'styling'"
@@ -36,7 +38,7 @@
       {{ 'components.widget.settings.map.edit.cluster.cluster' | translate }}
     </safe-button> -->
     <safe-button
-      *ngIf="form.get('layerDefinition.featureReduction')?.enabled"
+      *ngIf="form?.get('layerDefinition.featureReduction')?.enabled"
       icon="map"
       [attr.data-selected]="currentTab === 'aggregation'"
       (click)="currentTab = 'aggregation'"
@@ -44,6 +46,7 @@
       {{ 'components.widget.settings.map.edit.aggregation' | translate }}
     </safe-button>
     <safe-button
+      *ngIf="form?.get('popupInfo')"
       icon="map"
       [attr.data-selected]="currentTab === 'popup'"
       (click)="currentTab = 'popup'"
@@ -51,6 +54,7 @@
       {{ 'components.widget.settings.map.edit.popup' | translate }}
     </safe-button>
     <safe-button
+      *ngIf="form?.get('datasource')"
       icon="map"
       [attr.data-selected]="currentTab === 'fields'"
       (click)="currentTab = 'fields'"

@@ -71,7 +71,9 @@ export class SafeMapLayersService {
   public addLayer(layer: LayerFormData): Observable<LayerModel | undefined> {
     const newLayer = { ...layer };
     delete newLayer.id;
-    delete newLayer.datasource.origin;
+    if (newLayer.datasource) {
+      delete newLayer.datasource.origin;
+    }
     return this.apollo
       .mutate<AddLayerMutationResponse>({
         mutation: ADD_LAYER,
@@ -99,7 +101,9 @@ export class SafeMapLayersService {
   public editLayer(layer: LayerFormData): Observable<LayerModel | undefined> {
     const newLayer = { ...layer };
     delete newLayer.id;
-    delete newLayer.datasource.origin;
+    if (newLayer.datasource) {
+      delete newLayer.datasource.origin;
+    }
     return this.apollo
       .mutate<EditLayerMutationResponse>({
         mutation: EDIT_LAYER,

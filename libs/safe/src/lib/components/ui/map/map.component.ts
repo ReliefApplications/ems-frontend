@@ -527,7 +527,7 @@ export class MapComponent
       if (!this.map.hasLayer(featureLayer)) this.map.addLayer(featureLayer);
 
       const children = layer.getChildren();
-      if (layer.type === 'group') {
+      if (layer.type === 'GroupLayer') {
         // It is a group, it should not have any layer but it should be able to check/uncheck its children
         return {
           label: layer.name,

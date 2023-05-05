@@ -1,5 +1,6 @@
 import { Gradient } from '../components/gradient-picker/gradient-picker.component';
 import { IconName } from '../components/icon-picker/icon-picker.const';
+import { LayerType } from '../components/ui/map/interfaces/layer-settings.type';
 
 /**
  * Layer types for backend
@@ -106,6 +107,7 @@ export interface LayerDatasource {
 export interface LayerModel {
   id: string;
   name: string;
+  type?: LayerType;
   sublayers?: LayerModel[];
   visibility: boolean;
   opacity: number;

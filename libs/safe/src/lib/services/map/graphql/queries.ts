@@ -8,6 +8,7 @@ export const GET_LAYER_BY_ID = gql`
     layer(id: $id) {
       id
       name
+      type
       visibility
       opacity
       datasource {

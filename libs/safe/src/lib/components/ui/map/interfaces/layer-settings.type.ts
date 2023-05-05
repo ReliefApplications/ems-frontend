@@ -9,58 +9,15 @@ export type GeoJSON =
 
 // Assuming that data will be a valid geoJSON object,
 // the layer types are defined as follows:
-export type LayerType = 'feature' | 'heatmap' | 'cluster' | 'sketch' | 'group';
+export type LayerType = 'FeatureLayer' | 'GroupLayer';
 
 export type GeometryTypes = 'Point' | 'Polygon' | 'LineString';
-// The 'feature' layer type would display in the layer all the features
-// in the geoJSON object. Points would be displayed as markers, unless
-// they have the radius property, in which case they would be displayed
-// as circles.
-
-// The 'heatmap' layer type would display a heatmap of the points in the
-// geoJSON object. All other features would be ignored.
-
-// The 'cluster' layer type would display a cluster of the points in the
-// geoJSON object. All other features would be ignored.
-
-// The 'sketch' type indicates that the layer is a sketch layer.
-// it works like a 'feature' layer, but also allows the user to draw
-// new features on the map.
-
-// The 'group' layer type would display a group of layers.
-// It has no other properties besides the name and children.
-
-// The layer type has always a name and type property.
-// The other properties depend on the layer type.
-export type LayerSettingsI = {
-  name: string;
-  id: string;
-} & (LayerNode | LayerGroup);
-
-// The group layer has a children property, which is an array of layers.
-type LayerGroup = {
-  type: 'group';
-  children: LayerSettingsI[];
-};
-
-type LayerNode = {
-  type: Omit<LayerType, 'group'>;
-  geojson?: GeoJSON;
-  // TODO: define datasource
-  datasource?: any;
-  properties?: any;
-  filter?: LayerFilter;
-  // Not all styles are valid for all layer types but for simplicity,
-  // if if a layer has an invalid style, it will simply be ignored
-  styling?: any;
-  labels?: LayerLabel;
-  popup?: any;
-};
 
 /** Layer documents interface declaration */
 export interface LayerFormData {
   id?: string;
   name: string;
+  type: string;
   visibility: boolean;
   opacity: number;
   layerDefinition: {
