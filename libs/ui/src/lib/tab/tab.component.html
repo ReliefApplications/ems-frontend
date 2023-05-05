@@ -1,6 +1,6 @@
 <div>
   <button
-    class="border-transparent w-full whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium"
+    class="border-transparent w-full whitespace-nowrap py-3 px-1 text-sm font-medium"
     id="buttonTab"
     [ngClass]="{
       'text-gray-500 hover:bg-gray-100 hover:border-gray-300 hover:text-gray-700' : variant === ColorVariant.DEFAULT,
@@ -10,8 +10,7 @@
       'text-gray-400 hover:bg-gray-600 hover:border-gray-500 hover:text-gray-100' : variant === ColorVariant.GREY,
       'text-gray-500 hover:bg-gray-200 hover:border-gray-300 hover:text-gray-700' : variant === ColorVariant.LIGHT
     }"
-  >
-    {{ label }}
+  >{{label}}
   </button>
   <div id="content" class="py-4 hidden">
     <ng-content></ng-content>

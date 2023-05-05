@@ -66,22 +66,28 @@ export class NavigationTabDirective implements OnInit {
     console.log('Variant : ' + this.variant);
 
     // Manages the vertical or horizontal aspect of the navbar (for tabs)
-    if (this.vertical) {
-      // For all tabs
+    if (!this.vertical) {
+      // if horizontal, add border to bottom
       for (const tab of tabsWrapper.children) {
         // Manages classes only if the tabButton is the button inside the tab component
         const tabButton = tab?.children[0]?.children[0];
         if (tabButton?.id === 'buttonTab') {
-          // console.log(tabButton);
-          this.renderer.removeClass(tabButton, 'border-b-2');
-          this.renderer.addClass(tabButton, 'border-r-2');
+          this.renderer.addClass(tabButton, 'border-b-2');
         }
       }
-    } else {
       //Make the ui-tab growing so it occupies all the space available
       for (const tab of host.children[0].children) {
         if (tab.id !== 'tabs') {
           this.renderer.addClass(tab, 'grow');
+        }
+      }
+    } else {
+      // if vertical, add border to right
+      for (const tab of tabsWrapper.children) {
+        // Manages classes only if the tabButton is the button inside the tab component
+        const tabButton = tab?.children[0]?.children[0];
+        if (tabButton?.id === 'buttonTab') {
+          this.renderer.addClass(tabButton, 'border-r-2');
         }
       }
     }
