@@ -18,6 +18,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 })
 export class SafeLeftSidenavComponent {
   @Input() appLayout = false;
+  @Input() sideMenu = false;
   @Input() canAddPage = false;
   @Output() reorder: EventEmitter<any> = new EventEmitter();
 

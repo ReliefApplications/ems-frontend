@@ -323,6 +323,7 @@ export class SafeApplicationService {
             id: application?.id,
             name: value.name,
             description: value.description,
+            sideMenu: false,
             status: value.status,
           },
         })
@@ -349,8 +350,10 @@ export class SafeApplicationService {
                 ...application,
                 name: data.editApplication.name,
                 description: data.editApplication.description,
+                sideMenu: value.sideMenu,
                 status: data.editApplication.status,
               };
+
               this.application.next(newApplication);
             }
           }

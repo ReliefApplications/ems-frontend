@@ -1555,6 +1555,7 @@
 		"application": {
 			"description": "******",
 			"id": "******",
+			"menu": "******",
 			"new": "******",
 			"notifications": {
 				"notPublished": "******",

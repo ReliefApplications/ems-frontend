@@ -1,4 +1,4 @@
-<mat-nav-list>
+<mat-nav-list [class]="!sideMenu && largeDevice ? 'top-menu' : ''">
   <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
     <div mat-subheader class="sidenav-header">
       {{ group.name }}
@@ -86,7 +86,7 @@
         </div>
       </ng-container>
     </div>
-    <ng-container *ngIf="appLayout && canAddPage">
+    <ng-container *ngIf="appLayout && canAddPage && sideMenu">
       <div class="flex flex-col items-center w-full absolute bottom-0">
         <safe-divider class="m-0"></safe-divider>
         <safe-button

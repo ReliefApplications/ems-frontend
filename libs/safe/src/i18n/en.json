@@ -1555,6 +1555,7 @@
 		"application": {
 			"description": "Description",
 			"id": "Application ID",
+			"menu": "Side menu",
 			"new": "New application",
 			"notifications": {
 				"notPublished": "Application not published.",

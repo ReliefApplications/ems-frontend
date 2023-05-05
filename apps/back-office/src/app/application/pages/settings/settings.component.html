@@ -55,6 +55,12 @@
         [cdkAutosizeMaxRows]="5"
       ></textarea>
     </mat-form-field>
+
+    <div class="mb-6">
+      <mat-slide-toggle formControlName="sideMenu">
+        {{ 'models.application.menu' | translate }}
+      </mat-slide-toggle>
+    </div>
   </div>
   <safe-button
     category="secondary"
@@ -73,11 +79,7 @@
   <h1>{{ 'pages.application.settings.actions' | translate }}</h1>
   <div class="flex gap-2 flex-wrap">
     <!-- Styling -->
-    <safe-button
-      category="secondary"
-      variant="primary"
-      (click)="onOpenStyle()"
-    >
+    <safe-button category="secondary" variant="primary" (click)="onOpenStyle()">
       {{ 'components.application.customStyling' | translate }}
     </safe-button>
     <safe-button
