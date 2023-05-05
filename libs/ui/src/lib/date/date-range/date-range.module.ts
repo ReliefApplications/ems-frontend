@@ -1,27 +1,24 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DatePickerComponent } from './date-picker.component';
-import { ButtonModule } from '../button/button.module';
 import { IntlModule } from '@progress/kendo-angular-intl';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
-import { ReactiveFormsModule } from '@angular/forms';
-
+import { DateRangeComponent } from './date-range.component';
+import { IconModule } from '../../icon/icon.module';
 /**
- * UI Datepicker module
+ * UI Daterange module
  */
 @NgModule({
-  declarations: [DatePickerComponent],
+  declarations: [DateRangeComponent],
   imports: [
     CommonModule,
-    ButtonModule,
+    ButtonsModule,
     IntlModule,
     DateInputsModule,
     LabelModule,
-    ButtonsModule,
-    ReactiveFormsModule,
+    IconModule,
   ],
-  exports: [DatePickerComponent],
+  exports: [DateRangeComponent],
 })
-export class DatePickerModule {}
+export class DateRangeModule {}

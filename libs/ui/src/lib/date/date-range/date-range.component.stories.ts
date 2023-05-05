@@ -1,13 +1,16 @@
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { DateRangeComponent } from './date-range.component';
-import { ButtonModule } from '../button/button.module';
+import { DateRangeModule } from './date-range.module';
+import { DateWrapperDirective } from '../date-wrapper.directive';
+import { DatePickerDirective } from '../date-picker.directive';
 
 export default {
   title: 'Date Range',
   component: DateRangeComponent,
   decorators: [
     moduleMetadata({
-      imports: [ButtonModule],
+      declarations: [DateWrapperDirective, DatePickerDirective],
+      imports: [DateRangeModule],
     }),
   ],
 } as Meta<DateRangeComponent>;
@@ -24,7 +27,12 @@ const DateRangeTemplate: StoryFn<DateRangeComponent> = (
   return {
     component: DateRangeComponent,
     template: `
-      <ui-date-range><ng-container ngProjectAs="label">Select a data</ng-container></ui-date-range> `,
+    <div [uiDateWrapper]="calendar">
+    <input uiDatePicker="'start'" [label]="'Select a start date'"/>
+    <input uiDatePicker="'end'" [label]="'Select a end date'"/>
+      <ui-date-range #calendar>
+      </ui-date-range> 
+      </div>`,
     props: {
       ...args,
     },
