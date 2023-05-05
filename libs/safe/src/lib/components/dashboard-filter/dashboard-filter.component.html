@@ -51,7 +51,7 @@
           "
         >
         </safe-button>
-        <!-- Default position -->
+        <!-- Settings -->
         <safe-button
           [isIcon]="true"
           icon="settings"
@@ -62,7 +62,24 @@
         >
         </safe-button>
       </div>
-
+      <!-- Quick filter -->
+      <ng-container
+        *ngIf="
+          position === filterPosition.TOP || position === filterPosition.BOTTOM
+        "
+      >
+        <ng-container
+          *ngFor="let quickFilter of quickFilters"
+          class="flex flex-auto justify-center"
+        >
+          <safe-button
+            class="z-20"
+            [matTooltip]="quickFilter.tooltip ? quickFilter.tooltip : ''"
+            matTooltipClass="multiline-tooltip"
+            >{{ quickFilter.name }}</safe-button
+          >
+        </ng-container></ng-container
+      >
       <!-- Position -->
       <div
         [ngClass]="{
@@ -114,10 +131,7 @@
       }"
       class="dashboard-filter-content bg-white p-3"
     >
-      <div
-        #dashboardSurveyCreatorContainer
-        class="overflow-scroll"
-      ></div>
+      <div #dashboardSurveyCreatorContainer class="overflow-scroll"></div>
       <!-- <form
         [ngClass]="{
           'flex-col':

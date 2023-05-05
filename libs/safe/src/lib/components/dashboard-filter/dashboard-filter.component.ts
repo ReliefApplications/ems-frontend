@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  NgZone,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -23,6 +24,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { ContextService } from '../../services/context/context.service';
 import localForage from 'localforage';
+
+/**
+ * Interface for quick filters
+ */
+interface QuickFilter {
+  name: string;
+  tooltip?: string;
+}
 
 /**  Dashboard contextual filter component. */
 @Component({
@@ -55,6 +64,7 @@ export class DashboardFilterComponent
   public surveyStructure: any = {};
   @ViewChild('dashboardSurveyCreatorContainer')
   dashboardSurveyCreatorContainer!: ElementRef<HTMLElement>;
+  public quickFilters: QuickFilter[] = [];
 
   public applicationId?: string;
 
@@ -68,6 +78,7 @@ export class DashboardFilterComponent
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param contextService Context service
+   * @param ngZone Triggers html changes
    */
   constructor(
     private hostElement: ElementRef<HTMLElement>,
@@ -76,7 +87,8 @@ export class DashboardFilterComponent
     private applicationService: SafeApplicationService,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private ngZone: NgZone
   ) {
     super();
   }
@@ -284,6 +296,17 @@ export class DashboardFilterComponent
    * when a value changes.
    */
   private onValueChange() {
-    this.contextService.filter.next(this.survey.data);
+    const surveyData = this.survey.data;
+    this.contextService.filter.next(surveyData);
+    this.ngZone.run(() => {
+      this.quickFilters = Object.keys(surveyData).map((question: string) =>
+        Array.isArray(surveyData[question]) && surveyData[question].length > 2
+          ? {
+              name: question + ` (${surveyData[question].length})`,
+              tooltip: surveyData[question].join('\n'),
+            }
+          : { name: surveyData[question] }
+      );
+    });
   }
 }
