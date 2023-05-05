@@ -124,7 +124,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     if (this.settings.isDynamic) {
       this.setupDynamicCards();
     } else {
-      this.cards = this.settings.cards;
+      this.cachedCards = this.settings.cards;
+      this.cards = this.cachedCards;
     }
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.setupGridSettings();
