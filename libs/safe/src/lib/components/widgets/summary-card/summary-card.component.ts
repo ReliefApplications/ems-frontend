@@ -20,6 +20,7 @@ import {
 import { Layout } from '../../../models/layout.model';
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { FormControl } from '@angular/forms';
+import { clone, isNaN } from 'lodash';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -183,14 +184,58 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   /**
    * Handles the search on cards
    *
-   * @param value search value
+   * @param search search value
    */
-  private handleSearch(value: string) {
+  private handleSearch(search: string) {
     // Only need to fetch data if is dynamic and not an aggregation
     const needRefetch = this.settings.isDynamic && !this.isAggregation;
-    console.log('searching', value);
-    console.log('needRefetch', needRefetch);
-    console.log(this.cards[0]);
+    const skippedFields = ['id', 'incrementalId'];
+
+    if (!needRefetch)
+      this.cards = this.cachedCards.filter((card: any) => {
+        const data = clone(card.record || card.cardAggregationData || {});
+        skippedFields.forEach((field) => delete data[field]);
+        const recordValues = Object.values(data);
+        return recordValues.some(
+          (value) =>
+            (typeof value === 'string' &&
+              value.toLowerCase().includes(search.toLowerCase()) &&
+              !skippedFields.includes(value)) ||
+            (!isNaN(parseFloat(search)) &&
+              typeof value === 'number' &&
+              value === parseFloat(search))
+        );
+      });
+    else {
+      const filters: {
+        field: string;
+        operator: string;
+        value: string | number;
+      }[] = [];
+      this.fields.forEach((field) => {
+        if (skippedFields.includes(field.name)) return;
+        if (field?.type === 'text')
+          filters.push({
+            field: field.name,
+            operator: 'contains',
+            value: search,
+          });
+        if (field?.type === 'numeric' && !isNaN(parseFloat(search)))
+          filters.push({
+            field: field.name,
+            operator: 'eq',
+            value: parseFloat(search),
+          });
+      });
+      this.pageInfo.skip = 0;
+      this.dataQuery?.refetch({
+        skip: 0,
+        filter: {
+          logic: 'or',
+          filters,
+        },
+      });
+    }
   }
 
   /**
@@ -211,7 +256,9 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       metadata: this.fields,
     }));
 
-    this.cachedCards = [...this.cachedCards, ...newCards];
+    this.cachedCards =
+      this.pageInfo.skip > 0 ? [...this.cachedCards, ...newCards] : newCards;
+
     this.cards = this.settings.widgetDisplay?.usePagination
       ? this.cachedCards.slice(
           this.pageInfo.skip,
@@ -285,7 +332,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * mdr
    */
   private async setupGridSettings() {
-    const [card] = this.settings.cards;
+    const [card] = this.settings.cards || [];
     if (!card) return;
 
     this.gridLayoutService
@@ -327,10 +374,11 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       .aggregationDataQuery(card.resource, card.aggregation)
       ?.subscribe((res) => {
         if (!res.data) return;
-        this.cards = res.data.recordsAggregation.map((x: any) => ({
+        this.cachedCards = res.data.recordsAggregation.items.map((x: any) => ({
           ...this.settings.cards[0],
           cardAggregationData: x,
         }));
+        this.cards = this.cachedCards;
       });
   }
 

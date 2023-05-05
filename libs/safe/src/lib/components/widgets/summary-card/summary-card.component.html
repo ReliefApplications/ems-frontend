@@ -29,14 +29,15 @@
       class="text-neutral-700"
       (click)="pdf.saveAs(exportName)"
     ></safe-button>
+  </kendo-tilelayout-item-header>
+  <div class="bg-zinc-50 p-2" *ngIf="!!settings.widgetDisplay?.searchable">
     <input
-      *ngIf="!!settings.widgetDisplay?.searchable"
       [placeholder]="'common.placeholder.search' | translate"
       kendoTextBox
       [formControl]="searchControl"
       class="!w-full"
     />
-  </kendo-tilelayout-item-header>
+  </div>
   <ng-container *ngIf="displayMode === 'cards' || settings.isDynamic === false">
     <div class="w-full grow overflow-auto" #summaryCardGrid>
       <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
