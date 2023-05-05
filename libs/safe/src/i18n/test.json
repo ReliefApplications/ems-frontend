@@ -400,7 +400,11 @@
 			"customStyling": "******",
 			"dashboard": {
 				"editFilter": "******",
-				"empty": "******"
+				"empty": "******",
+				"filterSettings": "******",
+				"settings": {
+					"defaultPosition": "******"
+				}
 			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
@@ -671,6 +675,12 @@
 				"ariaLabel": "******"
 			},
 			"readAll": "******"
+		},
+		"paginator": {
+			"items": "******",
+			"itemsPerPage": "******",
+			"of": "******",
+			"page": "******"
 		},
 		"preferences": {
 			"dateFormat": "******",
@@ -1566,6 +1576,7 @@
 			"type": "******"
 		},
 		"dashboard": {
+			"activateFiltering": "******",
 			"context": {
 				"datasource": {
 					"alert": "******",
@@ -1584,6 +1595,7 @@
 					"element": "******"
 				}
 			},
+			"deactivateFiltering": "******",
 			"share": "******"
 		},
 		"form": {
@@ -1672,6 +1684,10 @@
 			},
 			"delete": {
 				"confirmationMessage": "******",
+				"title": "******"
+			},
+			"display": {
+				"border": "******",
 				"title": "******"
 			},
 			"map": {

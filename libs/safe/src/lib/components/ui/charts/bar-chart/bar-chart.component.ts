@@ -11,12 +11,12 @@ import { BaseChartDirective } from 'ng2-charts';
 import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plugin';
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
-import { addTransparency } from '../../../../utils/graphs/addTransparency';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
 import { ChartTitle } from '../interfaces';
 import { DEFAULT_PALETTE } from '../const/palette';
 import { getColor } from '../utils/color.util';
 import { isEqual, isNil } from 'lodash';
+import Color from 'color';
 
 /**
  * Interface of chart legend.
@@ -92,7 +92,9 @@ export class SafeBarChartComponent implements OnChanges {
         // if the serie is visible, get the data
         if (get(serie, 'visible', true)) {
           // Get color
-          const color: any = get(serie, 'color', null) || getColor(palette, i);
+          const color = Color(
+            get(serie, 'color', null) || getColor(palette, i)
+          ).hexa();
           // Get fill type
           const fill = get(serie, 'fill', null);
           let gradient: CanvasGradient | undefined;
@@ -105,10 +107,8 @@ export class SafeBarChartComponent implements OnChanges {
               isBar ? chartArea.right : 0,
               isBar ? 0 : chartArea.top
             );
-            if (color) {
-              gradient?.addColorStop(1, color);
-              gradient?.addColorStop(0, color.slice(0, -3) + ' 0.05)');
-            }
+            gradient?.addColorStop(1, color);
+            gradient?.addColorStop(0, Color.rgb(color).alpha(0.05).toString());
           }
           return {
             ...x,
@@ -117,7 +117,9 @@ export class SafeBarChartComponent implements OnChanges {
             color,
             borderColor: color,
             pointBorderColor: color,
-            hoverBackgroundColor: color ? addTransparency(color) : undefined,
+            hoverBackgroundColor: color
+              ? Color.rgb(color).fade(0.7).toString()
+              : undefined,
           };
         } else {
           return;

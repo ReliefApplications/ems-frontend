@@ -400,7 +400,11 @@
 			"customStyling": "Custom Styling",
 			"dashboard": {
 				"editFilter": "Edit filter",
-				"empty": "No content available. Wait for your administrator to build some."
+				"empty": "No content available. Wait for your administrator to build some.",
+				"filterSettings": "Filter settings",
+				"settings": {
+					"defaultPosition": "Default position for the filter"
+				}
 			},
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the application {{name}}?"
@@ -671,6 +675,12 @@
 				"ariaLabel": "Select page of notifications"
 			},
 			"readAll": "Mark all as read"
+		},
+		"paginator": {
+			"items": "items",
+			"itemsPerPage": "items per page",
+			"of": "of",
+			"page": "Page"
 		},
 		"preferences": {
 			"dateFormat": "Date and time format",
@@ -1566,6 +1576,7 @@
 			"type": "Notification type"
 		},
 		"dashboard": {
+			"activateFiltering": "Activate filtering",
 			"context": {
 				"datasource": {
 					"alert": "Select a datasource, in order to set one page per record of the datasource. You can also set a template, which would be loaded by default if no specific page is created for a record.",
@@ -1584,6 +1595,7 @@
 					"element": "Element"
 				}
 			},
+			"deactivateFiltering": "Deactivate filtering",
 			"share": "Share Dashboard"
 		},
 		"form": {
@@ -1673,6 +1685,10 @@
 			"delete": {
 				"confirmationMessage": "Do you confirm the deletion of the widget?",
 				"title": "Delete Widget"
+			},
+			"display": {
+				"border": "Show widget border",
+				"title": "Widget display"
 			},
 			"map": {
 				"defaultTitle": "Map Widget",

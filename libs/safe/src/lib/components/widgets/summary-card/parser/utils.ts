@@ -205,10 +205,12 @@ const replaceRecordFields = (
             } items</span>`;
             break;
           default:
-            convertedValue = `<span style='${style}'>${applyLayoutFormat(
-              value,
-              field
-            )}</span>`;
+            convertedValue = style
+              ? `<span style='${style}'>${applyLayoutFormat(
+                  value,
+                  field
+                )}</span>`
+              : applyLayoutFormat(value, field) || '';
             break;
         }
       }
