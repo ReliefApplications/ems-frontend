@@ -94,6 +94,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       id: this.tile.id,
       title: this.tile.settings.title,
       isDynamic: get(this.tile, 'settings.isDynamic', false),
+      usePagination: get(this.tile, 'settings.usePagination', false),
       cards: this.fb.array(
         get(this.tile, 'settings.cards', []).map((x: any) => createCardForm(x))
       ),

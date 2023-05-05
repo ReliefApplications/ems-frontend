@@ -11,6 +11,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PagerModule } from '@progress/kendo-angular-pager';
 
 /** Summary Card Widget Module */
 @NgModule({
@@ -28,6 +29,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     InputsModule,
     FormsModule,
     ReactiveFormsModule,
+    PagerModule,
   ],
   exports: [SafeSummaryCardComponent],
 })

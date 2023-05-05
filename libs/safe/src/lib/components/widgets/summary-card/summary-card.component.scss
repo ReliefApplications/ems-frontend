@@ -5,7 +5,6 @@
   padding: 16px;
   grid-auto-flow: row;
   background-color: unset;
-  overflow: auto;
   max-height: 80vh;
 
   .k-card {
@@ -14,17 +13,4 @@
     overflow: hidden;
     box-shadow: 0 2px 5px 0 rgba(134, 134, 134, 0.2);
   }
-}
-
-.export-button {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  z-index: 1;
-  color: #aeaeaf;
-}
-
-.summary-grid {
-  height: 100%;
-  width: 100%;
 }

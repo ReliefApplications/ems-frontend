@@ -6,6 +6,15 @@
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
     </div>
+    <!--TODO: Move this into the widget display tab once AB#59610 is merged (https://github.com/ReliefApplications/oort-frontend/pull/1299)  -->
+    <mat-radio-group formControlName="usePagination">
+      <mat-radio-button [value]="false">{{
+        'components.widget.settings.summaryCard.infiniteScroll' | translate
+      }}</mat-radio-button>
+      <mat-radio-button [value]="true">{{
+        'components.widget.settings.summaryCard.pagination' | translate
+      }}</mat-radio-button>
+    </mat-radio-group>
     <div class="settings">
       <mat-radio-group formControlName="isDynamic">
         <mat-radio-button [value]="false">{{

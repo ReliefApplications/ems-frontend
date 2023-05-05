@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   HostListener,
   Input,
   OnInit,
@@ -16,6 +17,8 @@ import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
 } from './graphql/queries';
+import { Layout } from '../../../models/layout.model';
+import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { FormControl } from '@angular/forms';
 
 /** Maximum width of the widget in column units */
@@ -45,15 +48,20 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   public colsNumber = MAX_COL_SPAN;
 
   // === DYNAMIC CARDS PAGINATION ===
-  private pageInfo = {
+  public pageInfo = {
     first: DEFAULT_PAGE_SIZE,
     skip: 0,
     hasNextPage: false,
+    totalCount: 0,
   };
   public loading = true;
 
   public cards: any[] = [];
+  private cachedCards: any[] = [];
   private dataQuery?: QueryRef<any>;
+
+  private layout: Layout | null = null;
+  private fields: any[] = [];
 
   public searchControl = new FormControl('');
 
@@ -67,7 +75,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     return !!this.settings.cards[0]?.isAggregation;
   }
 
-  @ViewChild('pdf') pdfExport!: any;
+  @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
+  @ViewChild('pdf') pdf!: any;
 
   /**
    * Get the summary card pdf name
@@ -127,8 +136,12 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.settings.isDynamic && !this.isAggregation) {
-      this.pdfExport.element.nativeElement.addEventListener(
+    if (
+      !this.settings.usePagination &&
+      this.settings.isDynamic &&
+      !this.isAggregation
+    ) {
+      this.summaryCardGrid.nativeElement.addEventListener(
         'scroll',
         (event: any) => this.loadOnScroll(event)
       );
@@ -181,6 +194,37 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Updates the cards from fetched custom query
+   *
+   * @param res Query result
+   */
+  private updateCards(res: any) {
+    if (!this.layout || !res?.data) return;
+    const layoutQueryName = this.layout.query.name;
+    const edges = res.data?.[layoutQueryName].edges;
+    if (!edges) return;
+
+    const newCards = edges.map((e: any) => ({
+      ...this.settings.cards[0],
+      record: e.node,
+      layout: this.layout,
+      metadata: this.fields,
+    }));
+
+    this.cachedCards = [...this.cachedCards, ...newCards];
+    this.cards = this.settings.usePagination
+      ? this.cachedCards.slice(
+          this.pageInfo.skip,
+          this.pageInfo.skip + this.pageInfo.first
+        )
+      : this.cachedCards;
+    this.pageInfo.totalCount = get(res.data[layoutQueryName], 'totalCount', 0);
+    this.pageInfo.hasNextPage = this.pageInfo.totalCount > this.cards.length;
+
+    this.loading = res.loading;
+  }
+
+  /**
    * Gets the query for fetching the dynamic cards records from a card's settings
    *
    * @param card Card settings
@@ -201,12 +245,13 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       .then((res) => {
         const layouts = res.edges.map((edge) => edge.node);
         if (layouts.length > 0) {
-          const layoutQuery = layouts[0].query;
+          this.layout = layouts[0];
+          const layoutQuery = this.layout.query;
           const builtQuery = this.queryBuilder.buildQuery({
             query: layoutQuery,
           });
           const layoutFields = layoutQuery.fields;
-          const fields = get(metaRes, 'data.resource.metadata', []).map(
+          this.fields = get(metaRes, 'data.resource.metadata', []).map(
             (f: any) => {
               const layoutField = layoutFields.find(
                 (lf: any) => lf.name === f.name
@@ -230,24 +275,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
               fetchPolicy: 'network-only',
               nextFetchPolicy: 'cache-first',
             });
-            this.dataQuery.valueChanges.subscribe((res2) => {
-              const edges = res2.data?.[layoutQuery.name].edges;
-              if (!edges) return;
-
-              const newCards = edges.map((e: any) => ({
-                ...this.settings.cards[0],
-                record: e.node,
-                layout: layouts[0],
-                metadata: fields,
-              }));
-
-              this.cards = [...this.cards, ...newCards];
-              this.pageInfo.hasNextPage =
-                get(res2.data[layoutQuery.name], 'totalCount', 0) >
-                this.cards.length;
-
-              this.loading = res2.loading;
-            });
+            this.dataQuery.valueChanges.subscribe(this.updateCards.bind(this));
           }
         }
       });
@@ -318,13 +346,44 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        // TOCHECK
-        this.dataQuery?.fetchMore({
-          variables: {
-            skip: this.cards.length,
-          },
-        });
+        this.dataQuery
+          ?.fetchMore({
+            variables: {
+              skip: this.cachedCards.length,
+            },
+          })
+          .then(this.updateCards.bind(this));
       }
+    }
+  }
+
+  /**
+   * Triggered when the page changes.
+   *
+   * @param e Kendo paginator page change event
+   */
+  public onPageChange(e: PageChangeEvent) {
+    this.pageInfo.first = e.take;
+    this.pageInfo.skip = e.skip;
+
+    this.summaryCardGrid.nativeElement.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+
+    // Check if the data is already cached
+    if (this.cachedCards.length >= e.skip + e.take)
+      this.cards = this.cachedCards.slice(e.skip, e.skip + e.take);
+    else {
+      this.loading = true;
+      this.dataQuery
+        ?.fetchMore({
+          variables: {
+            skip: this.cachedCards.length,
+          },
+        })
+        .then(this.updateCards.bind(this));
     }
   }
 }

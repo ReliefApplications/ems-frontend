@@ -1369,9 +1369,11 @@
 					"hint": {
 						"dynamic": "******"
 					},
+					"infiniteScroll": "******",
 					"options": {
 						"ariaLabel": "******"
 					},
+					"pagination": "******",
 					"static": "******"
 				}
 			},
@@ -1533,6 +1535,14 @@
 			"stick": "******",
 			"unlock": "******",
 			"unstick": "******"
+		},
+		"tilelayout": {
+			"component": {
+				"items": "******",
+				"itemsPerPage": "******",
+				"of": "******",
+				"page": "******"
+			}
 		},
 		"timepicker": {
 			"accept": "******",
