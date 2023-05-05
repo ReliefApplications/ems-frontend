@@ -14,7 +14,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { SafeButtonModule } from '../ui/button/button.module';
@@ -70,7 +70,7 @@ import { SafeAlertModule } from '../ui/alert/alert.module';
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
-    MatTooltipModule,
+    TooltipModule,
     MatAutocompleteModule,
     MatButtonToggleModule,
     SafeButtonModule,

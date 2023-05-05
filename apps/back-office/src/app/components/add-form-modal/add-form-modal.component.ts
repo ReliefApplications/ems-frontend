@@ -21,7 +21,6 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -29,6 +28,7 @@ import {
   SafeIconModule,
   SafeModalModule,
 } from '@oort-front/safe';
+import { TooltipModule } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -47,13 +47,13 @@ const ITEMS_PER_PAGE = 10;
     MatSelectModule,
     MatButtonModule,
     MatRadioModule,
-    MatTooltipModule,
     MatSlideToggleModule,
     MatChipsModule,
     TranslateModule,
     SafeIconModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
+    TooltipModule,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',

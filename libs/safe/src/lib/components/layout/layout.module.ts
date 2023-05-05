@@ -9,7 +9,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-list';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { TranslateModule } from '@ngx-translate/core';
@@ -39,7 +39,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     MatListModule,
     DragDropModule,
     SafeDividerModule,
-    MatTooltipModule,
+    TooltipModule,
     SafeButtonModule,
     IndicatorsModule,
     TranslateModule,

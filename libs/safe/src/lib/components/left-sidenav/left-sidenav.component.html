@@ -7,7 +7,7 @@
         [isIcon]="true"
         icon="add"
         variant="grey"
-        [matTooltip]="'models.page.add' | translate"
+        [uiTooltip]="'models.page.add' | translate"
         routerLink="./add-page"
         (click)="largeDevice ? null : nav.toggle()"
       ></safe-button>
@@ -44,9 +44,7 @@
               <div
                 mat-line
                 class="nav-text"
-                [matTooltip]="item.name"
-                matTooltipShowDelay="1000"
-                matTooltipPosition="right"
+                [uiTooltip]="item.name"
               >
                 {{ item.name }}
               </div>
@@ -59,8 +57,7 @@
                 (click)="onClick(item.action.callback, $event)"
               >
                 <mat-icon
-                  matTooltip="{{ item.action.toolTip }}"
-                  matTooltipPosition="left"
+                  uiTooltip="{{ item.action.toolTip }}"
                   >{{ item.action.icon }}</mat-icon
                 >
               </button>

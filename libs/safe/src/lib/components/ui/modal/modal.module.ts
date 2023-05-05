@@ -6,6 +6,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 import { SafeButtonModule } from '../button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeIconModule } from '../icon/icon.module';
+import { TooltipModule } from '@oort-front/ui';
 
 /**
  * Modal component, used as a generic wrapper for all modals
@@ -16,6 +17,7 @@ import { SafeIconModule } from '../icon/icon.module';
     CommonModule,
     TranslateModule,
     MatDialogModule,
+    TooltipModule,
     MatTooltipModule,
     SafeButtonModule,
     SafeIconModule,
@@ -25,6 +27,7 @@ import { SafeIconModule } from '../icon/icon.module';
     TranslateModule,
     MatDialogModule,
     MatTooltipModule,
+    TooltipModule,
     SafeButtonModule,
     SafeIconModule,
   ],

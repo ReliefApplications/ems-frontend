@@ -13,7 +13,6 @@ import {
   SafeButtonModule,
   SafeDateModule,
 } from '@oort-front/safe';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -33,7 +32,6 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     MatChipsModule,
     SafeAccessModule,
     SafeButtonModule,
-    MatTooltipModule,
     MatPaginatorModule,
     TranslateModule,
     OverlayModule,

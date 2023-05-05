@@ -11,7 +11,7 @@ import {
   SafeDividerModule,
   SafeSkeletonTableModule,
 } from '@oort-front/safe';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -28,7 +28,7 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     MatMenuModule,
     SafeRecordHistoryModule,
     SafeDividerModule,
-    MatTooltipModule,
+    TooltipModule,
     SafeButtonModule,
     MatPaginatorModule,
     TranslateModule,

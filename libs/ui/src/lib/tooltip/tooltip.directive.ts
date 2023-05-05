@@ -14,6 +14,7 @@ import {
 })
 export class TooltipDirective {
   @Input() uiTooltip = 'test';
+  @Input() tooltipDisabled = false;
 
   elToolTip: any;
   // Distance from tooltip and the host element
@@ -21,7 +22,7 @@ export class TooltipDirective {
 
   // Default classes to render the tooltip
   classes = [
-    'opacity-50',
+    'opacity-70',
     'transition-opacity',
     'delay-300',
     'bg-gray-800',
@@ -33,6 +34,7 @@ export class TooltipDirective {
     'text-gray-100',
     'rounded-md',
     'absolute',
+    'z-[9999]',
   ] as const;
 
   /**
@@ -48,7 +50,7 @@ export class TooltipDirective {
    */
   @HostListener('mouseenter')
   onMouseEnter() {
-    if (!this.elToolTip) {
+    if (!this.elToolTip && !this.tooltipDisabled) {
       this.showHint();
     }
   }
