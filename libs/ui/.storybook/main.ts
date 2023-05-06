@@ -1,5 +1,10 @@
 import type { StorybookConfig } from '@storybook/angular';
 
+/**
+ * Storybook configuration
+ *
+ * Set needed assets, translation, get story files etc
+ */
 const config: StorybookConfig = {
   stories: ['../**/*.stories.@(js|jsx|ts|tsx|mdx)'],
   addons: ['@storybook/addon-mdx-gfm', '@storybook/addon-essentials'],

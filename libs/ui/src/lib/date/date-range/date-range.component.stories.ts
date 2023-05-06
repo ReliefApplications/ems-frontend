@@ -1,8 +1,8 @@
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { DateRangeComponent } from './date-range.component';
 import { DateRangeModule } from './date-range.module';
-import { StorybookTranslateModule } from 'libs/ui/src/storybook-translate.module';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { StorybookTranslateModule } from '../../../storybook-translate.module';
 
 export default {
   title: 'Date Range',

@@ -1,8 +1,8 @@
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { DatePickerComponent } from './date-picker.component';
 import { DatePickerModule } from './date-picker.module';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { StorybookTranslateModule } from 'libs/ui/src/storybook-translate.module';
+import { StorybookTranslateModule } from '../../../storybook-translate.module';
 
 export default {
   title: 'Date Picker',
