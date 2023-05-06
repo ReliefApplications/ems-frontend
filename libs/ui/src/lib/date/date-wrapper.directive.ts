@@ -10,11 +10,11 @@ import {
   Renderer2,
   TemplateRef,
 } from '@angular/core';
+import { SelectionRange } from '@progress/kendo-angular-dateinputs';
+import { Subject, merge, takeUntil } from 'rxjs';
 import { DateRangeComponent } from './date-range/date-range.component';
 import { DatePickerComponent } from './date-picker/date-picker.component';
 import { DatePickerDirective } from './date-picker.directive';
-import { Subject, merge, takeUntil } from 'rxjs';
-
 /**
  * UI Date wrapper directive
  */
@@ -30,6 +30,7 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   private outsideClickListener!: any;
+  private dateInputListeners: any[] = [];
 
   /**
    * UI Date wrapper directive constructor
@@ -41,11 +42,13 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
 
   ngAfterContentInit(): void {
     this.renderer.addClass(this.el.nativeElement, 'relative');
-    if (this.dateInputs.toArray().length > 1) {
+    // If is a date range we would have two inputs, there for flex the parent component to display them inline
+    if (this.uiDateWrapper instanceof DateRangeComponent) {
       this.renderer.addClass(this.el.nativeElement, 'flex');
     }
-    this.setCalendarDisplayPosition();
     this.setDateCalendarListener();
+    this.setCalendarDisplayPosition();
+    this.setDateInputListeners();
   }
 
   /**
@@ -61,12 +64,11 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
         }
       }
     );
+
     const dateInputClickEventStreams: EventEmitter<void>[] = [];
-
-    this.dateInputs.toArray().forEach((input) => {
-      dateInputClickEventStreams.push(input.clickEvent);
+    this.dateInputs.toArray().forEach((dateInput) => {
+      dateInputClickEventStreams.push(dateInput.clickEvent);
     });
-
     merge(...dateInputClickEventStreams)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -74,6 +76,45 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
           (this.uiDateWrapper as any).showPanel = true;
         },
       });
+
+    (this.uiDateWrapper as any).selectedValue
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (value: Date | SelectionRange) => {
+          if (this.uiDateWrapper instanceof DatePickerComponent) {
+            this.dateInputs.first.setValue(value as Date);
+          } else if (this.uiDateWrapper instanceof DateRangeComponent) {
+            this.dateInputs.first.setValue((value as SelectionRange).start);
+            if ((value as SelectionRange).end) {
+              this.dateInputs.last.setValue((value as SelectionRange).end);
+            }
+          }
+        },
+      });
+  }
+
+  /**
+   * Set calendar event listeners
+   */
+  private setDateInputListeners() {
+    const listener = this.renderer.listen(
+      this.dateInputs.first['el'].nativeElement,
+      'change',
+      (event) => {
+        (this.uiDateWrapper as any).value = event?.target.valueAsDate;
+      }
+    );
+    this.dateInputListeners.push(listener);
+    if (this.uiDateWrapper instanceof DateRangeComponent) {
+      const listener = this.renderer.listen(
+        this.dateInputs.last['el'].nativeElement,
+        'change',
+        (event) => {
+          (this.uiDateWrapper as any).endValue = event?.target.valueAsDate;
+        }
+      );
+      this.dateInputListeners.push(listener);
+    }
   }
 
   /**
@@ -99,5 +140,8 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
     this.outsideClickListener();
+    this.dateInputListeners.forEach((listener) => {
+      listener();
+    });
   }
 }

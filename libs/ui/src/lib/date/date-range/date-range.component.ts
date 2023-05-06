@@ -1,4 +1,11 @@
-import { Component, HostListener, Input } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+} from '@angular/core';
+import { SelectionRange } from '@progress/kendo-angular-dateinputs';
 
 /**
  * UI Daterange component
@@ -10,12 +17,13 @@ import { Component, HostListener, Input } from '@angular/core';
 })
 export class DateRangeComponent {
   @Input() disabled = false;
-  selectedValue: any;
+  @Output() selectedValue = new EventEmitter<SelectionRange>();
+
+  private range: SelectionRange = {
+    start: null,
+    end: null,
+  } as unknown as SelectionRange;
   showPanel = false;
-  public range = {
-    start: new Date(2018, 10, 10),
-    end: new Date(2018, 10, 20),
-  };
 
   /**
    * Propagate host element blur event
@@ -28,12 +36,11 @@ export class DateRangeComponent {
   /**
    * Handles the selection of a content
    *
-   * @param value selected date
+   * @param event SelectionRange
    */
-  public handleChange(value: any) {
-    this.range.start = value;
-    console.log(this.range);
-    console.log(value);
+  public onChange(event: SelectionRange) {
+    this.range = event as any;
+    this.selectedValue.emit(this.range);
   }
 
   /**

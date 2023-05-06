@@ -14,8 +14,8 @@ export * from './lib/toggle/toggle.module';
 export * from './lib/textarea/textarea.module';
 export * from './lib/breadcrumbs/breadcrumbs.module';
 export * from './lib/divider/divider.module';
-export * from './lib/date-range/date-range.module';
-export * from './lib/date-picker/date-picker.module';
+export * from './lib/date/date-range/date-range.module';
+export * from './lib/date/date-picker/date-picker.module';
 export * from './lib/radio/radio.module';
 
 // === ENUMS === //

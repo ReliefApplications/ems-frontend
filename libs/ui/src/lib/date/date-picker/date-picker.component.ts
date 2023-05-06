@@ -1,4 +1,10 @@
-import { Component, HostListener, Input } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+} from '@angular/core';
 
 /**
  * UI Datepicker component
@@ -10,7 +16,9 @@ import { Component, HostListener, Input } from '@angular/core';
 })
 export class DatePickerComponent {
   @Input() disabled = false;
-  selectedValue: any;
+  @Output() selectedValue = new EventEmitter<Date>();
+
+  value!: Date;
   showPanel = false;
 
   /**
@@ -26,9 +34,9 @@ export class DatePickerComponent {
    *
    * @param value selected date
    */
-  public handleChange(value: any) {
-    this.selectedValue = value;
-    console.log(value);
+  public handleChange(value: Date) {
+    this.value = value;
+    this.selectedValue.emit(value);
   }
 
   /**

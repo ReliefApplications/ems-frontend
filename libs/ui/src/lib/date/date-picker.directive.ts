@@ -5,13 +5,17 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  Optional,
   Output,
   Renderer2,
+  Self,
   ViewContainerRef,
 } from '@angular/core';
+import { NgControl } from '@angular/forms';
+import { formatDate } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
 import { DateValues } from './enums/date-values.enum';
 import { IconComponent } from '../icon/icon.component';
-
 /**
  * UI Datepicker directive
  */
@@ -98,14 +102,18 @@ export class DatePickerDirective implements OnInit, OnDestroy {
   /**
    * UI Date picker directive constructor
    *
+   * @param control NgControl instance
    * @param el Directive host element
    * @param renderer Renderer2
    * @param vcr ViewContainerRef
+   * @param translate TranslateService
    */
   constructor(
+    @Self() @Optional() private control: NgControl,
     private el: ElementRef,
     private renderer: Renderer2,
-    private vcr: ViewContainerRef
+    private vcr: ViewContainerRef,
+    private translate: TranslateService
   ) {
     if (!(el.nativeElement instanceof HTMLInputElement)) {
       throw new Error(
@@ -127,6 +135,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
    */
   private buildDateInputElement() {
     this.renderer.setAttribute(this.el.nativeElement, 'type', 'date');
+    this.renderer.setAttribute(this.el.nativeElement, 'format', 'dd/mm/yyyy');
     this.inputClasses.forEach((iClass) => {
       this.renderer.addClass(this.el.nativeElement, iClass);
     });
@@ -163,9 +172,14 @@ export class DatePickerDirective implements OnInit, OnDestroy {
    * Set icon to the input element
    */
   private setIconElement() {
+    // Create the icon element
     const icon = this.vcr.createComponent(IconComponent);
     icon.instance.icon = this.uiDatePicker;
     icon.instance.size = 18;
+    this.iconClasses.forEach((iClass) => {
+      this.renderer.addClass(icon.location.nativeElement, iClass);
+    });
+    // Set listener to the icon to display the calendar
     this.clickEventListener = this.renderer.listen(
       icon.location.nativeElement,
       'click',
@@ -173,13 +187,29 @@ export class DatePickerDirective implements OnInit, OnDestroy {
         this.clickEvent.emit();
       }
     );
-    this.iconClasses.forEach((iClass) => {
-      this.renderer.addClass(icon.location.nativeElement, iClass);
-    });
+    // Attach the icon to the DOM
     this.renderer.appendChild(
       this.el.nativeElement.parentElement,
       icon.location.nativeElement
     );
+  }
+
+  /**
+   * Formats and updates the input value and associated control value if exists
+   *
+   * @param value Date value to set
+   */
+  setValue(value: Date) {
+    const formattedValue = formatDate(
+      value,
+      'yyyy-MM-dd',
+      this.translate.currentLang
+    );
+    if (this.control) {
+      this.control.control?.setValue(formattedValue);
+    } else {
+      this.el.nativeElement.value = formattedValue;
+    }
   }
 
   ngOnDestroy(): void {

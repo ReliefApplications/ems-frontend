@@ -4,20 +4,18 @@
   [disabled]="disabled"
   [showViewHeader]="false"
   [views]="1"
-  [focusedDate]="selectedValue"
+  [focusedDate]="value"
+  [value]="value"
   topView="decade"
   (valueChange)="handleChange($event)"
 >
   <ng-template kendoCalendarMonthCellTemplate let-date>
-    <span [ngClass]="isToday(date)">{{ date.getDate() }}</span>
+    <span>{{ date.getDate() }}</span>
   </ng-template>
   <ng-template kendoCalendarYearCellTemplate let-context="cellContext">
     <span>{{ context.formattedValue }}</span>
   </ng-template>
   <ng-template kendoCalendarDecadeCellTemplate let-context="cellContext">
-    <span>{{ context.formattedValue }}</span>
-  </ng-template>
-  <ng-template kendoCalendarWeekNumberCellTemplate let-context="cellContext">
     <span>{{ context.formattedValue }}</span>
   </ng-template>
   <ng-template kendoCalendarHeaderTitleTemplate let-title>

@@ -1,19 +1,28 @@
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { DateRangeComponent } from './date-range.component';
 import { DateRangeModule } from './date-range.module';
-import { DateWrapperDirective } from '../date-wrapper.directive';
-import { DatePickerDirective } from '../date-picker.directive';
+import { StorybookTranslateModule } from 'libs/ui/src/storybook-translate.module';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 export default {
   title: 'Date Range',
   component: DateRangeComponent,
   decorators: [
     moduleMetadata({
-      declarations: [DateWrapperDirective, DatePickerDirective],
-      imports: [DateRangeModule],
+      imports: [DateRangeModule, StorybookTranslateModule, ReactiveFormsModule],
     }),
   ],
 } as Meta<DateRangeComponent>;
+
+/**
+ * FormControl for story testing
+ */
+const formControlStart = new FormControl();
+
+/**
+ * FormControl for story testing
+ */
+const formControlEnd = new FormControl();
 
 /**
  * Date range template
@@ -28,13 +37,17 @@ const DateRangeTemplate: StoryFn<DateRangeComponent> = (
     component: DateRangeComponent,
     template: `
     <div [uiDateWrapper]="calendar">
-    <input uiDatePicker="'start'" [label]="'Select a start date'"/>
-    <input uiDatePicker="'end'" [label]="'Select a end date'"/>
+    <input [formControl]="formControlStart" uiDatePicker="'start'" [label]="'Select a start date'"/>
+    <input [formControl]="formControlEnd" uiDatePicker="'end'" [label]="'Select a end date'"/>
       <ui-date-range #calendar>
       </ui-date-range> 
-      </div>`,
+      </div>
+      <p>start value: {{formControlStart.value}}</p>
+      <p>end value: {{formControlEnd.value}}</p>`,
     props: {
       ...args,
+      formControlStart,
+      formControlEnd,
     },
   };
 };

@@ -1,19 +1,27 @@
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { DatePickerComponent } from './date-picker.component';
 import { DatePickerModule } from './date-picker.module';
-import { DateWrapperDirective } from '../date-wrapper.directive';
-import { DatePickerDirective } from '../date-picker.directive';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { StorybookTranslateModule } from 'libs/ui/src/storybook-translate.module';
 
 export default {
   title: 'Date Picker',
   component: DatePickerComponent,
   decorators: [
     moduleMetadata({
-      declarations: [DateWrapperDirective, DatePickerDirective],
-      imports: [DatePickerModule],
+      imports: [
+        DatePickerModule,
+        ReactiveFormsModule,
+        StorybookTranslateModule,
+      ],
     }),
   ],
 } as Meta<DatePickerComponent>;
+
+/**
+ * FormControl for story testing
+ */
+const formControl = new FormControl();
 
 /**
  * Date picker template
@@ -28,13 +36,15 @@ const DatePickerTemplate: StoryFn<DatePickerComponent> = (
     component: DatePickerComponent,
     template: `
     <div [uiDateWrapper]="calendar">
-    <input uiDatePicker [label]="'Select a date'"/>
+    <input uiDatePicker [formControl]="formControl" [label]="'Select a date'"/>
       <ui-date-picker #calendar>
       </ui-date-picker> 
       </div>
+      <p>selected value: {{formControl.value}}</p>
       `,
     props: {
       ...args,
+      formControl,
     },
   };
 };
