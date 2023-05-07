@@ -443,7 +443,14 @@ export class Layer implements LayerModel {
         const layers = this.sublayers
           .map((child) => child.layer)
           .filter((layer) => layer !== undefined) as L.Layer[];
-        this.layer = new L.LayerGroup(layers);
+        const layer = L.layerGroup(layers);
+        layer.onAdd = (map: L.Map) => {
+          const l = L.LayerGroup.prototype.onAdd.call(layer, map);
+          // Leaflet.heat doesn't support click events, so we have to do it ourselves
+          this.onLayerAdd(map, layer);
+          return l;
+        };
+        this.layer = layer;
         return this.layer;
 
       default:
@@ -500,6 +507,8 @@ export class Layer implements LayerModel {
             const layer = L.heatLayer(heatArray, heatmapOptions);
 
             layer.onAdd = (map: L.Map) => {
+              // So we can use onAdd method from HeatLayer class
+              const l = (L as any).HeatLayer.prototype.onAdd.call(layer, map);
               // Leaflet.heat doesn't support click events, so we have to do it ourselves
               map.on('click', (event: any) => {
                 const layerClass = event.originalEvent.target?.className;
@@ -542,8 +551,8 @@ export class Layer implements LayerModel {
                   );
                 }
               });
-
-              return layer;
+              this.onLayerAdd(map, layer);
+              return l;
             };
             this.layer = layer;
             return this.layer;
@@ -582,6 +591,14 @@ export class Layer implements LayerModel {
                     );
                   },
                 });
+                clusterGroup.onAdd = (map: L.Map) => {
+                  const l = L.MarkerClusterGroup.prototype.onAdd.call(
+                    clusterGroup,
+                    map
+                  );
+                  this.onLayerAdd(map, clusterGroup);
+                  return l;
+                };
 
                 // Set popup for all the cluster markers
                 clusterGroup.on('clusterclick', (event: any) => {
@@ -601,15 +618,54 @@ export class Layer implements LayerModel {
                 });
 
                 const clusterLayer = L.geoJSON(data, geoJSONopts);
+                clusterLayer.onAdd = (map: L.Map) => {
+                  const l = L.GeoJSON.prototype.onAdd.call(clusterLayer, map);
+                  this.onLayerAdd(map, clusterLayer);
+                  return l;
+                };
                 clusterGroup.addLayer(clusterLayer);
                 this.layer = clusterGroup;
                 return this.layer;
               default:
-                this.layer = L.geoJSON(data, geoJSONopts);
+                const layer = L.geoJSON(data, geoJSONopts);
+
+                layer.onAdd = (map: L.Map) => {
+                  const l = L.GeoJSON.prototype.onAdd.call(layer, map);
+                  this.onLayerAdd(map, layer);
+                  return l;
+                };
+                this.layer = layer;
                 return this.layer;
             }
         }
     }
+  }
+
+  /**
+   * Handle layer addition, to subscribe to map event:
+   * - set visibility based on zoom.
+   *
+   * @param map Leaflet map
+   * @param layer leaflet layer
+   */
+  onLayerAdd(map: L.Map, layer: L.Layer) {
+    const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
+    const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
+    if (map.getZoom() > maxZoom || map.getZoom() < minZoom) {
+      map.removeLayer(layer);
+    } else {
+      map.addLayer(layer);
+    }
+    map.on('zoomend', (zoom) => {
+      const currZoom = zoom.target.getZoom();
+      const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
+      const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
+      if (currZoom > maxZoom || currZoom < minZoom) {
+        map.removeLayer(layer);
+      } else {
+        map.addLayer(layer);
+      }
+    });
   }
 
   /**
