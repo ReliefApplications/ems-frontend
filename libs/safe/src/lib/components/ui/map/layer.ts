@@ -14,7 +14,6 @@ import {
   createCustomDivIcon,
   DEFAULT_MARKER_ICON_OPTIONS,
 } from './utils/create-div-icon';
-import { LegendDefinition } from './interfaces/layer-legend.type';
 import {
   LayerDatasource,
   LayerDefinition,
@@ -621,6 +620,8 @@ export class Layer implements LayerModel {
                 clusterLayer.onAdd = (map: L.Map) => {
                   const l = L.GeoJSON.prototype.onAdd.call(clusterLayer, map);
                   this.onLayerAdd(map, clusterLayer);
+                  console.log((map as any).legendControl);
+                  (map as any).legendControl.addLayer(l, this.legend);
                   return l;
                 };
                 clusterGroup.addLayer(clusterLayer);
@@ -632,6 +633,8 @@ export class Layer implements LayerModel {
                 layer.onAdd = (map: L.Map) => {
                   const l = L.GeoJSON.prototype.onAdd.call(layer, map);
                   this.onLayerAdd(map, layer);
+                  console.log((map as any).legendControl);
+                  (map as any).legendControl.addLayer(l, this.legend);
                   return l;
                 };
                 this.layer = layer;
@@ -669,12 +672,19 @@ export class Layer implements LayerModel {
   }
 
   /**
-   * Get the legend definition from the layer
+   * Get legend from layer
    *
-   * @returns the legend definition
+   * @returns layer legend as html
    */
-  public getLegend(): LegendDefinition | null {
-    return null;
+  get legend() {
+    switch (this.type) {
+      case 'FeatureLayer': {
+        return 'feature';
+      }
+      case 'GroupLayer': {
+        return 'group';
+      }
+    }
     // if (!this.properties?.legend || this.properties.legend.display === false)
     //   return null;
 

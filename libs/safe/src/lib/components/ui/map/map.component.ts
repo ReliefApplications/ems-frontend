@@ -44,8 +44,8 @@ import { ArcgisService } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { flatten, isNil, omitBy } from 'lodash';
 import { takeUntil } from 'rxjs';
-// import { legendControl } from '@oort-front/leaflet';
 import { SafeMapPopupService } from './map-popup/map-popup.service';
+import { legendControl } from './controls/legend.control';
 
 /** Component for the map widget */
 @Component({
@@ -387,7 +387,6 @@ export class MapComponent
         tree.layers && layers.push(tree.layers);
       }
       this.setLayersControl(flatten(basemaps), flatten(layers));
-      // legendControl().addTo(this.map);
     });
 
     // Add zoom control
@@ -404,6 +403,10 @@ export class MapComponent
    * @param {boolean} [initMap=false] if initializing map to add the fixed controls
    */
   private setMapControls(controls: MapControls, initMap = false) {
+    // Add legend control
+    if (controls.legend) {
+      legendControl().addTo(this.map);
+    }
     // Add leaflet measure control
     this.mapControlsService.getMeasureControl(
       this.map,
