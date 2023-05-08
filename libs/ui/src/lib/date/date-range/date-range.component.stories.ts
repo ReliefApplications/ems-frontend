@@ -66,3 +66,38 @@ const DateRangeTemplate: StoryFn<DateRangeComponent> = (
 };
 /** Date range */
 export const DateRange = DateRangeTemplate.bind({});
+
+/**
+ * Date range bottom template
+ *
+ * @param {DateRangeComponent} args args
+ * @returns DateRangeComponent
+ */
+const BottomDateRangeTemplate: StoryFn<DateRangeComponent> = (
+  args: DateRangeComponent
+) => {
+  return {
+    component: DateRangeComponent,
+    template: `
+    <div class="absolute">
+    <p>start value: {{formControlStart.value}}</p>
+    <p>end value: {{formControlEnd.value}}</p>
+    </div>
+    <div class="flex flex-col h-screen justify-end">
+    <div [uiDateWrapper]="calendar">
+    <input [uiDatePicker] [formControl]="formControlStart" [label]="'Select a start date'"/>
+    <input [uiDatePicker] [formControl]="formControlEnd" [label]="'Select a end date'"/>
+      <ui-date-range #calendar>
+      </ui-date-range> 
+      </div>
+      </div>
+      `,
+    props: {
+      ...args,
+      formControlStart,
+      formControlEnd,
+    },
+  };
+};
+/** Date range bottom */
+export const BottomDateRange = BottomDateRangeTemplate.bind({});

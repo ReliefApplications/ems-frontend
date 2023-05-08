@@ -130,18 +130,11 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
    */
   private setCalendarDisplayPosition(): void {
     // As the menu is not displayed yet, we set a default value to check element boundaries
-    const defaultCheckValue = 200;
+    const defaultCheckValue = 300;
     // Is the host element nearby the bottom edge of the screen
-    const isBottomEdge =
+    (this.uiDateWrapper as any).isBottom =
       window.innerHeight - this.el.nativeElement.getBoundingClientRect().top <
       defaultCheckValue;
-    if (isBottomEdge) {
-      this.renderer.setStyle(
-        this.uiDateWrapper.elementRef.nativeElement,
-        'top',
-        `-${this.uiDateWrapper.elementRef.nativeElement.clientHeight}px`
-      );
-    }
   }
 
   ngOnDestroy(): void {

@@ -20,6 +20,7 @@ export class DatePickerComponent {
 
   value!: Date;
   showPanel = false;
+  isBottom = false;
 
   /**
    * Propagate host element blur event

@@ -19,11 +19,12 @@ export class DateRangeComponent {
   @Input() disabled = false;
   @Output() selectedValue = new EventEmitter<SelectionRange>();
 
-  private range: SelectionRange = {
+  range: SelectionRange = {
     start: null,
     end: null,
   } as unknown as SelectionRange;
   showPanel = false;
+  isBottom = false;
 
   /**
    * Propagate host element blur event
