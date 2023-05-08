@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FlyoutMenuComponent } from './flyout-menu.component';
+import { SpinnerComponent } from './spinner.component';
 
-describe('FlyoutMenuComponent', () => {
-  let component: FlyoutMenuComponent;
-  let fixture: ComponentFixture<FlyoutMenuComponent>;
+describe('SpinnerComponent', () => {
+  let component: SpinnerComponent;
+  let fixture: ComponentFixture<SpinnerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FlyoutMenuComponent],
+      declarations: [SpinnerComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FlyoutMenuComponent);
+    fixture = TestBed.createComponent(SpinnerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
