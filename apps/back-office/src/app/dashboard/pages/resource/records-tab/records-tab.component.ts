@@ -25,6 +25,7 @@ import {
   GetResourceRecordsQueryResponse,
   GET_RESOURCE_RECORDS,
 } from './graphql/queries';
+import { Variant } from '@oort-front/ui';
 
 /** Quantity of resource that will be loaded at once. */
 const ITEMS_PER_PAGE = 10;
@@ -49,6 +50,9 @@ export class RecordsTabComponent implements OnInit {
   public resource!: Resource;
   recordsDefaultColumns: string[] = RECORDS_DEFAULT_COLUMNS;
   displayedColumnsRecords: string[] = [];
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   showDeletedRecords = false;
   public pageInfo = {

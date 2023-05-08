@@ -25,6 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Component for the main layout of the platform
@@ -82,6 +83,9 @@ export class SafeLayoutComponent
 
   // === APP SEARCH ===
   public showAppMenu = false;
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /**
    * Gets URI of the other office

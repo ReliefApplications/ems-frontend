@@ -50,9 +50,7 @@
     [routerLink]="setting.path"
     routerLinkActive="active-link"
   >
-    <mat-icon class="nav-icon mr-2.5">
-      {{ setting.icon }}
-    </mat-icon>
+    <ui-icon [icon]="setting.icon" class="nav-icon mr-2.5"></ui-icon>
     {{ setting.name }}
   </a>
 </mat-menu>

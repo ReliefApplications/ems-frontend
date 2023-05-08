@@ -27,6 +27,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { Variant } from '@oort-front/ui';
 
 /** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
@@ -61,6 +62,9 @@ export class ReferenceDatasComponent
 
   // === FILTERS ===
   public searchText = '';
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   public pageInfo = {
     pageIndex: 0,

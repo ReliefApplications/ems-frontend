@@ -7,9 +7,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Module for custom notifications table.
@@ -24,9 +24,9 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
     SafeButtonModule,
     SafeSkeletonTableModule,
     SafeDividerModule,
-    MatIconModule,
     MatPaginatorModule,
     MatChipsModule,
+    UiModule,
   ],
   exports: [NotificationsComponent],
 })

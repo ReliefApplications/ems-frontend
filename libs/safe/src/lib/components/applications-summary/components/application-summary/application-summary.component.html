@@ -49,7 +49,7 @@
     <mat-menu #menu="matMenu">
       <!-- Preview -->
       <button mat-menu-item (click)="preview.emit()">
-        <mat-icon>preview</mat-icon>
+        <ui-icon [icon]="'preview'" [variant]="colorVariant.GREY"></ui-icon>
         {{ 'common.preview' | translate }}
       </button>
       <!-- Duplication -->
@@ -58,14 +58,14 @@
         (click)="clone.emit()"
         *ngIf="application.canUpdate"
       >
-        <mat-icon>file_copy</mat-icon>
+        <ui-icon [icon]="'file_copy'" [variant]="colorVariant.GREY"></ui-icon>
         {{ 'common.duplicate' | translate }}
       </button>
       <!-- Delete -->
       <ng-container *ngIf="application.canDelete">
         <safe-divider class="m-0"></safe-divider>
         <button mat-menu-item (click)="delete.emit()">
-          <mat-icon>delete</mat-icon>
+          <ui-icon [icon]="'delete'" [variant]="colorVariant.GREY"></ui-icon>
           {{ 'common.delete' | translate }}
         </button>
       </ng-container>

@@ -113,7 +113,7 @@
             </safe-button>
             <mat-menu #menu="matMenu">
               <button mat-menu-item (click)="onPreview(element)">
-                <mat-icon>preview</mat-icon>
+                <ui-icon [icon]="'preview'" [variant]="colorVariant.GREY"></ui-icon>
                 {{ 'common.preview' | translate }}
               </button>
               <safe-access
@@ -128,13 +128,13 @@
                 (click)="onClone(element)"
                 *ngIf="element.canDelete"
               >
-                <mat-icon>file_copy</mat-icon>
+                <ui-icon [icon]="'file_copy'" [variant]="colorVariant.GREY"></ui-icon>
                 {{ 'common.duplicate' | translate }}
               </button>
               <ng-container *ngIf="element.canDelete">
                 <safe-divider class="m-0"></safe-divider>
                 <button mat-menu-item (click)="onDelete(element, $event)">
-                  <mat-icon>delete</mat-icon>
+                  <ui-icon [icon]="'delete'" [variant]="colorVariant.GREY"></ui-icon>
                   {{ 'common.delete' | translate }}
                 </button>
               </ng-container>

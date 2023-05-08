@@ -38,11 +38,11 @@
           </safe-button>
           <mat-menu #resMenu="matMenu">
             <button mat-menu-item (click)="onEditAggregation(element)">
-              <mat-icon>edit</mat-icon>
+              <ui-icon [icon]="'edit'" [variant]="colorVariant.GREY"></ui-icon>
               {{ 'common.edit' | translate }}
             </button>
             <button mat-menu-item (click)="onDeleteAggregation(element)">
-              <mat-icon>delete</mat-icon>
+              <ui-icon [icon]="'delete'" [variant]="colorVariant.GREY"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
           </mat-menu>

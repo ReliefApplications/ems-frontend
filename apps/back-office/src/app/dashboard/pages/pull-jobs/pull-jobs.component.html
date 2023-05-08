@@ -90,12 +90,12 @@
           </safe-button>
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onEdit(element)">
-              <mat-icon>edit</mat-icon>
+              <ui-icon [icon]="'edit'" [variant]="colorVariant.GREY"></ui-icon>
               {{ 'common.edit' | translate }}
             </button>
             <safe-divider class="m-0"></safe-divider>
             <button mat-menu-item color="warn" (click)="onDelete(element)">
-              <mat-icon>delete</mat-icon>
+              <ui-icon [icon]="'delete'" [variant]="colorVariant.GREY"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
           </mat-menu>

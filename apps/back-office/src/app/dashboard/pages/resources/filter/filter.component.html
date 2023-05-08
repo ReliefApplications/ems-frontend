@@ -3,7 +3,7 @@
   <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
     <!-- Search text filter -->
     <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
-      <mat-icon matPrefix>search</mat-icon>
+      <ui-icon matPrefix [icon]="'search'"></ui-icon>
       <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
       <input matInput [formControl]="search" type="search" />
       <mat-spinner *ngIf="loading" diameter="24" matSuffix></mat-spinner>

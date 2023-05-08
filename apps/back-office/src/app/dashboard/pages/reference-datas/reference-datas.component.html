@@ -5,7 +5,7 @@
     <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
       <!-- Search text filter -->
       <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-        <mat-icon matPrefix>search</mat-icon>
+        <ui-icon matPrefix [icon]="'search'" [variant]="colorVariant.GREY"></ui-icon>
         <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
         <input
           matInput
@@ -94,7 +94,7 @@
               (click)="onDelete(element, $event)"
               *ngIf="element.canDelete"
             >
-              <mat-icon>delete</mat-icon>
+              <ui-icon [icon]="'delete'" [variant]="colorVariant.GREY"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
           </mat-menu>

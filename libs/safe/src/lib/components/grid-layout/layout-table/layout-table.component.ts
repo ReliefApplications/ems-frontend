@@ -9,6 +9,7 @@ import get from 'lodash/get';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Layouts list configuration for grid widgets
@@ -30,6 +31,9 @@ export class LayoutTableComponent
   layouts: Layout[] = [];
   allLayouts: Layout[] = [];
   columns: string[] = ['name', 'createdAt', '_actions'];
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /**
    * Constructor of the layout list component

@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { Variant } from '@oort-front/ui';
 /**
  * The left side navigator used in the main layout
  */
@@ -24,6 +25,9 @@ export class SafeLeftSidenavComponent {
   // === NAVIGATION GROUP ===
   @Input() navGroups: any[] = [];
   @Input() nav: any;
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   private environment: any;
 

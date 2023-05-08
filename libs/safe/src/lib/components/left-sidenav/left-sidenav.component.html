@@ -38,9 +38,10 @@
               (click)="largeDevice ? null : nav.toggle()"
               [class]="item.class ? item.class : ''"
             >
-              <mat-icon mat-list-icon class="nav-icon">
-                {{ item.icon }}
-              </mat-icon>
+              <ui-icon
+                mat-list-icon
+                [icon]="item.icon"
+              ></ui-icon>
               <div
                 mat-line
                 class="nav-text"
@@ -58,11 +59,11 @@
                 *ngIf="item.action"
                 (click)="onClick(item.action.callback, $event)"
               >
-                <mat-icon
+                <ui-icon
                   matTooltip="{{ item.action.toolTip }}"
                   matTooltipPosition="left"
-                  >{{ item.action.icon }}</mat-icon
-                >
+                  [icon]="item.action.icon"
+                ></ui-icon>
               </button>
               <button
                 mat-icon-button
@@ -70,16 +71,14 @@
                 class="nav-item-handle"
                 *ngIf="item.orderable"
               >
-                <mat-icon>drag_indicator</mat-icon>
+                <ui-icon [icon]="'drag_indicator'"></ui-icon>
               </button>
             </div>
           </mat-list-item>
           <!-- Preview when dragging element -->
           <mat-list-item *cdkDragPreview class="nav-item">
             <a [class]="item.class ? item.class : ''">
-              <mat-icon mat-list-icon class="nav-icon">
-                {{ item.icon }}
-              </mat-icon>
+              <ui-icon mat-list-icon [icon]="item.icon" class="nav-icon"></ui-icon>
               <div mat-line>{{ item.name }}</div>
             </a>
           </mat-list-item>

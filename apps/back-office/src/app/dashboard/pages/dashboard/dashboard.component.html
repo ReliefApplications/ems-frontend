@@ -74,7 +74,7 @@
         </safe-button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="toggleFiltering()">
-            <mat-icon>tune</mat-icon>
+            <ui-icon [icon]="'tune'" [variant]="colorVariant.GREY"></ui-icon>
             <!-- todo(translate) -->
             {{
               dashboard.showFilter
@@ -83,11 +83,11 @@
             }}
           </button>
           <button mat-menu-item (click)="onAppSelection()">
-            <mat-icon>file_copy</mat-icon>
+            <ui-icon [icon]="'file_copy'" [variant]="colorVariant.GREY"></ui-icon>
             {{ 'common.duplicate' | translate }}
           </button>
           <button mat-menu-item (click)="onShare()">
-            <mat-icon>share</mat-icon>
+            <ui-icon [icon]="'share'" [variant]="colorVariant.GREY"></ui-icon>
             {{ 'models.dashboard.share' | translate }}
           </button>
         </mat-menu>

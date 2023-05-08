@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Component that is used to create the access management modals
@@ -20,6 +21,9 @@ export class SafeAccessComponent {
 
   // === PASS THE RESULT TO PARENT COMPONENT ===
   @Output() save: EventEmitter<any> = new EventEmitter();
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is

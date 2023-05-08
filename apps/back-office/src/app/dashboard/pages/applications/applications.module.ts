@@ -5,7 +5,6 @@ import { ApplicationsComponent } from './applications.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
@@ -31,6 +30,7 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
+import { UiModule } from '@oort-front/ui';
 /**
  * Applications page module.
  */
@@ -49,7 +49,6 @@ import { AbilityModule } from '@casl/angular';
     MatSortModule,
     MatDialogModule,
     MatMenuModule,
-    MatIconModule,
     MatChipsModule,
     SafeAccessModule,
     MatDatepickerModule,
@@ -65,6 +64,7 @@ import { AbilityModule } from '@casl/angular';
     SafeModalModule,
     SafeDividerModule,
     AbilityModule,
+    UiModule,
   ],
   exports: [ApplicationsComponent],
 })

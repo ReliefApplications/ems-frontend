@@ -1,6 +1,6 @@
 <ng-container *ngIf="menuItem">
   <button mat-menu-item (click)="onClick()">
-    <mat-icon matTooltipPosition="above">admin_panel_settings</mat-icon>
+    <ui-icon matTooltipPosition="above" [icon]="'admin_panel_settings'" [variant]="colorVariant.GREY"></ui-icon>
     {{ 'components.access.title' | translate }}
   </button>
 </ng-container>

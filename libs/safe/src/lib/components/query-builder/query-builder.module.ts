@@ -11,7 +11,6 @@ import { SafeTabLayoutPreviewComponent } from './tab-layout-preview/tab-layout-p
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
@@ -37,6 +36,7 @@ import { SafeFilterModule } from '../filter/filter.module';
 import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { SafeAlertModule } from '../ui/alert/alert.module';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * SafeQueryBuilderModule is a class used to manage all the modules and components
@@ -68,7 +68,6 @@ import { SafeAlertModule } from '../ui/alert/alert.module';
     MatTableModule,
     DragDropModule,
     MatButtonModule,
-    MatIconModule,
     MatSelectModule,
     MatTooltipModule,
     MatAutocompleteModule,
@@ -85,6 +84,7 @@ import { SafeAlertModule } from '../ui/alert/alert.module';
     SafeFilterModule,
     EditorModule,
     SafeAlertModule,
+    UiModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

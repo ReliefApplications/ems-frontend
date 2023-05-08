@@ -15,9 +15,9 @@ import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@ang
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeSearchMenuModule } from '@oort-front/safe';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Application workflow page module.
@@ -34,13 +34,13 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     TranslateModule,
     OverlayModule,
     SafeSearchMenuModule,
-    MatIconModule,
     MatMenuModule,
     IndicatorsModule,
     SafeAlertModule,
     SafeIconModule,
     SafeSkeletonModule,
     SafeEditableTextModule,
+    UiModule,
   ],
   exports: [WorkflowComponent],
 })

@@ -32,6 +32,7 @@ import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '@oort-front/safe';
+import { Variant } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -73,6 +74,9 @@ export class FormRecordsComponent
     length: 0,
     endCursor: '',
   };
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   @ViewChild('xlsxFile') xlsxFile: any;
   public showUpload = false;

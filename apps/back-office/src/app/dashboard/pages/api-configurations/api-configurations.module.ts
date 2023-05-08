@@ -21,11 +21,11 @@ import {
   SafeModalModule,
   SafeSkeletonTableModule,
 } from '@oort-front/safe';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * API configurations page module.
@@ -47,13 +47,13 @@ import { AbilityModule } from '@casl/angular';
     ReactiveFormsModule,
     MatDialogModule,
     SafeButtonModule,
-    MatIconModule,
     MatButtonModule,
     MatPaginatorModule,
     TranslateModule,
     SafeSkeletonTableModule,
     SafeModalModule,
     AbilityModule,
+    UiModule,
   ],
   exports: [ApiConfigurationsComponent],
 })

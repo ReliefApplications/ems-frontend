@@ -3,6 +3,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant } from '@oort-front/ui';
 
 /**
  * List of query styles.
@@ -22,6 +23,10 @@ export class SafeQueryStyleListComponent
 
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
+
   /**
    * Constructor for the query style list component
    */

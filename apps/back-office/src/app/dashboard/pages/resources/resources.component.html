@@ -72,7 +72,7 @@
           </safe-button>
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onDelete(element)">
-              <mat-icon>delete</mat-icon>
+              <ui-icon [icon]="'delete'" [variant]="colorVariant.GREY"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
           </mat-menu>

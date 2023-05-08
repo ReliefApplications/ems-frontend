@@ -8,6 +8,7 @@ import {
   Calculated_FIELD_UPDATE,
   CalculatedFieldUpdateMutationResponse,
 } from './graphql/mutations';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Calculated fields tab of resource page
@@ -22,6 +23,9 @@ export class CalculatedFieldsTabComponent implements OnInit {
   public fields: any[] = [];
 
   public displayedColumns: string[] = ['name', 'createdAt', '_actions'];
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /**
    * Layouts tab of resource page

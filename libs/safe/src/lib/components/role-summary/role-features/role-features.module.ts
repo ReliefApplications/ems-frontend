@@ -11,9 +11,9 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { SafeEmptyModule } from '../../ui/empty/empty.module';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Features tab of Role Summary component.
@@ -30,7 +30,6 @@ import { SafeEmptyModule } from '../../ui/empty/empty.module';
     CommonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatIconModule,
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
@@ -39,6 +38,7 @@ import { SafeEmptyModule } from '../../ui/empty/empty.module';
     SafeButtonModule,
     SafeIconModule,
     SafeEmptyModule,
+    UiModule,
   ],
   exports: [RoleFeaturesComponent],
 })

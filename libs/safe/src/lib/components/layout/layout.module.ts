@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SafeLayoutComponent } from './layout.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-list';
@@ -20,6 +19,7 @@ import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * SafeLayoutModule is a class used to manage all the modules and components
@@ -33,7 +33,6 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     FormsModule,
     MatToolbarModule,
     MatButtonModule,
-    MatIconModule,
     MatMenuModule,
     MatSidenavModule,
     MatListModule,
@@ -48,6 +47,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     SafeDateModule,
     SafeBreadcrumbModule,
     SafeIconModule,
+    UiModule,
   ],
   exports: [SafeLayoutComponent],
 })

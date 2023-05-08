@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Application } from '../../../../models/application.model';
+import { Variant } from '@oort-front/ui';
 
 /**
  * This interface describes the data structure of the status of the application
@@ -47,6 +48,9 @@ export class SafeApplicationSummaryComponent {
       focusColor: '#F14343',
     },
   ];
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /**
    * Getter for the status of the application

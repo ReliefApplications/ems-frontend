@@ -35,9 +35,7 @@
       matTreeNodeToggle
       [attr.aria-label]="'Toggle ' + node.item"
     >
-      <mat-icon class="mat-icon-rtl-mirror">
-        {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-      </mat-icon>
+      <ui-icon class="mat-icon-rtl-mirror" [icon]="treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'"></ui-icon>
     </button>
     <mat-checkbox
       [checked]="descendantsAllSelected(node)"
@@ -46,7 +44,7 @@
       >{{ node.item }}</mat-checkbox
     >
     <!-- <button mat-icon-button (click)="addNewItem(node)">
-      <mat-icon>add</mat-icon>
+      <ui-icon [icon]="'add'"></ui-icon>
     </button> -->
   </mat-tree-node>
 </mat-tree>

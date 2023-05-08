@@ -5,6 +5,7 @@ import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/materia
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { createFormGroup, Mapping, Mappings } from './mapping-forms';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Mapping component to handle all mapping grids.
@@ -23,6 +24,8 @@ export class SafeMappingComponent
   // === TABLE ===
   displayedColumns = ['field', 'path', 'value', 'text', 'actions'];
   dataSource = new MatTableDataSource<Mapping>([]);
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /**
    * Mapping component constructor.

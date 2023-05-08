@@ -39,7 +39,7 @@
         </safe-button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="onAppSelection()">
-            <mat-icon>file_copy</mat-icon>
+            <ui-icon [icon]="'file_copy'" [variant]="colorVariant.GREY"></ui-icon>
             {{ 'common.duplicate' | translate }}
           </button>
         </mat-menu>

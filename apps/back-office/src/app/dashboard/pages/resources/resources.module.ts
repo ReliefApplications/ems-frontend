@@ -4,7 +4,6 @@ import { ResourcesRoutingModule } from './resources-routing.module';
 import { ResourcesComponent } from './resources.component';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatSortModule } from '@angular/material/sort';
@@ -21,6 +20,7 @@ import {
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { FilterComponent } from './filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Resources page module.
@@ -32,7 +32,6 @@ import { TranslateModule } from '@ngx-translate/core';
     ResourcesRoutingModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    MatIconModule,
     MatDialogModule,
     MatMenuModule,
     MatSortModule,
@@ -47,6 +46,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
+    UiModule,
   ],
   exports: [ResourcesComponent],
 })

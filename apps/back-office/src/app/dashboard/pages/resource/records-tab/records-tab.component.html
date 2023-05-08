@@ -103,7 +103,7 @@
                 matTooltipPosition="above"
                 [matTooltipDisabled]="(resource.forms?.length || 0) <= 1"
               >
-                <mat-icon>edit</mat-icon>
+                <ui-icon [icon]="'edit'" [variant]="colorVariant.GREY"></ui-icon>
                 {{ 'common.edit' | translate }}
               </button>
               <button
@@ -111,7 +111,7 @@
                 mat-menu-item
                 [matMenuTriggerFor]="templates"
               >
-                <mat-icon>edit_note</mat-icon>
+                <ui-icon [icon]="'edit_note'" [variant]="colorVariant.GREY"></ui-icon>
                 {{
                   'common.editObject'
                     | translate : { name: 'common.child' | translate }
@@ -122,7 +122,7 @@
                 mat-menu-item
                 (click)="onDeleteRecord(element, $event)"
               >
-                <mat-icon>delete</mat-icon>
+                <ui-icon [icon]="'delete'" [variant]="colorVariant.GREY"></ui-icon>
                 {{ 'common.delete' | translate }}
               </button>
               <button
@@ -130,7 +130,7 @@
                 mat-menu-item
                 (click)="onDeleteRecord(element, $event)"
               >
-                <mat-icon>delete_forever</mat-icon>
+                <ui-icon [icon]="'delete_forever'" [variant]="colorVariant.GREY"></ui-icon>
                 {{ 'components.record.delete.permanently' | translate }}
               </button>
               <button
@@ -138,7 +138,7 @@
                 mat-menu-item
                 (click)="onRestoreRecord(element.id, $event)"
               >
-                <mat-icon>unarchive</mat-icon>
+                <ui-icon [icon]="'unarchive'" [variant]="colorVariant.GREY"></ui-icon>
                 {{ 'models.record.restore' | translate }}
               </button>
             </mat-menu>

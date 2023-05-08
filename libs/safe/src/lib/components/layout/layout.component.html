@@ -37,7 +37,7 @@
       #appMenuTrigger="cdkOverlayOrigin"
     >
       {{ theme.prefix }} {{ title }}
-      <mat-icon>arrow_drop_down</mat-icon>
+      <ui-icon [icon]="'arrow_drop_down'" [variant]="colorVariant.LIGHT"></ui-icon>
     </button>
     <ng-template
       cdkConnectedOverlay
@@ -64,9 +64,9 @@
   <button
     mat-icon-button
     [matMenuTriggerFor]="notificationMenu"
-    [disabled]="notifications.length === 0"
+    [disabled]="notifications.length===0"
   >
-    <mat-icon class="mat-badge-notification">
+    <!-- <mat-icon class="mat-badge-notification">
       <kendo-badge-container>
         notifications
         <kendo-badge
@@ -75,7 +75,16 @@
           *ngIf="notifications.length > 0"
         ></kendo-badge>
       </kendo-badge-container>
-    </mat-icon>
+    </mat-icon> -->
+    <!-- TO REVIEW, BETTER SOLUTION AVAILABLE ? -->
+    <kendo-badge-container>
+      <ui-icon [icon]="'notifications'" [variant]="colorVariant.LIGHT"></ui-icon>
+      <kendo-badge
+        shape="dot"
+        themeColor="error"
+        *ngIf="notifications.length > 0"
+      ></kendo-badge>
+    </kendo-badge-container>
   </button>
   <mat-menu #accountMenu="matMenu">
     <a mat-menu-item [routerLink]="[profileRoute]">
@@ -105,7 +114,7 @@
     <div class="notification-menu">
       <a (click)="onMarkAllNotificationsAsRead()">
         {{ 'components.notifications.readAll' | translate }}
-        <mat-icon [inline]="true">check_circle_outline</mat-icon>
+        <ui-icon [icon]="'check_circle_outline'" [inline]="true"></ui-icon>
       </a>
       <button
         mat-menu-item

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SafeAccessComponent } from './access.component';
 import { SafeEditAccessComponent } from './edit-access/edit-access.component';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
@@ -13,6 +12,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
+import { UiModule } from '@oort-front/ui';
 /**
  * SafeAccessModule is a class used to manage all the modules and components related to the access properties.
  */
@@ -21,7 +21,6 @@ import { SafeModalModule } from '../ui/modal/modal.module';
   imports: [
     CommonModule,
     MatButtonModule,
-    MatIconModule,
     MatDialogModule,
     FormsModule,
     ReactiveFormsModule,
@@ -32,6 +31,7 @@ import { SafeModalModule } from '../ui/modal/modal.module';
     SafeButtonModule,
     TranslateModule,
     SafeModalModule,
+    UiModule,
   ],
   exports: [SafeAccessComponent],
 })
