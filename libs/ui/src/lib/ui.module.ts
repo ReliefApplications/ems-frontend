@@ -10,6 +10,7 @@ import { PaginatorModule } from './paginator/paginator.module';
 import { AvatarGroupModule } from './avatar-group/avatar-group.module';
 import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
+import { SliderModule } from './slider/slider.module';
 import { TextareaModule } from './textarea/textarea.module';
 import { RadioModule } from './radio/radio.module';
 
@@ -29,6 +30,7 @@ import { RadioModule } from './radio/radio.module';
     PaginatorModule,
     ToggleModule,
     DividerModule,
+    SliderModule,
     TextareaModule,
     RadioModule,
   ],
