@@ -90,7 +90,6 @@ formControlName="selectMenu"
 (opened)="openEvent($event)" 
 (closed)="closeEvent($event)" 
 (selectedOption)="selectEvent($event)" 
-[label]="label" 
 [options]="options"
 [multiselect]="multiselect"
 [disabled]="disabled">
@@ -111,8 +110,7 @@ const customTriggerSelectTemplate = `<ui-select-menu
 formControlName="selectMenu"
 (opened)="openEvent($event)" 
 (closed)="closeEvent($event)" 
-(selectedOption)="selectEvent($event)" 
-[label]="label" 
+(selectedOption)="selectEvent($event)"
 [options]="options"
 [multiselect]="multiselect"
 [disabled]="disabled"
@@ -161,7 +159,6 @@ const TemplateStandaloneSelection: Story<SelectMenuComponent> = (
   args.options = options;
   args.multiselect = false;
   args.disabled = false;
-  args.label = 'Choose your language';
   return {
     component: SelectMenuComponent,
     template: selectMenuTemplate,
@@ -201,7 +198,6 @@ const TemplateStandaloneSelectionDefaultValue: Story<SelectMenuComponent> = (
   ];
   args.multiselect = false;
   args.disabled = false;
-  args.label = 'Choose your language';
   formGroup.get('selectMenu')?.setValue([args.options[0]]);
   return {
     component: SelectMenuComponent,
@@ -233,7 +229,6 @@ const TemplateMultiSelection: Story<SelectMenuComponent> = (
   args.options = options;
   args.multiselect = true;
   args.disabled = false;
-  args.label = 'Choose your language';
   formGroup.get('selectMenu')?.setValue([options[0]]);
   return {
     component: SelectMenuComponent,
@@ -263,7 +258,6 @@ const TemplateDisabledSelection: Story<SelectMenuComponent> = (
 ) => {
   args.options = options;
   args.disabled = true;
-  args.label = 'Choose your language';
   return {
     component: SelectMenuComponent,
     template: selectMenuTemplate,
@@ -293,7 +287,6 @@ const TemplateTemplateRefSelection: Story<SelectMenuComponent> = (
   args.options = options;
   args.multiselect = false;
   args.disabled = false;
-  args.label = 'Choose your language';
   return {
     component: SelectMenuComponent,
     template: singleSelectMenuTemplateWithTrigger,
@@ -328,7 +321,6 @@ const TemplateDifferentObjectsSelection: Story<SelectMenuComponent> = (
   args.options = [testDate, 12, 'I am a string', 22.1, true];
   args.multiselect = true;
   args.disabled = false;
-  args.label = 'Many different objects';
   return {
     component: SelectMenuComponent,
     template: selectMenuTemplate,

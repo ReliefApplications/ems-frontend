@@ -38,10 +38,6 @@ export class SelectMenuComponent implements ControlValueAccessor {
    */
   @Input() options: Array<any> = [];
   /**
-   * Label placed in the selection
-   */
-  @Input() label = '';
-  /**
    * Tells if the select menu should be disabled
    */
   @Input() disabled = false;

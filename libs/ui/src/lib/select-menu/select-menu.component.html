@@ -9,14 +9,6 @@
         !disabled
     }"
   >
-    <!-- Text of the trigger -->
-    <span
-      class="block truncate text-sm"
-      [ngClass]="{
-        corner_label: selectionControl?.value.length
-      }"
-      >{{ label }}</span
-    >
     <ng-container *ngIf="selectionControl?.value.length">
       <ng-container [ngTemplateOutlet]="customTemplate"> </ng-container>
       <div class="default">
