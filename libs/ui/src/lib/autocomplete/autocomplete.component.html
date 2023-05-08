@@ -1,31 +1,8 @@
-<div *ngIf="panelOpened && filteredOptions.length"
-  class="z-10 p-1 max-h-60 w-full overflow-auto mt-2 rounded-md bg-white py-1 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-  <ng-container *ngTemplateOutlet="recursiveOptionsTemplate; context:{ list: filteredOptions }"></ng-container>
-</div>
-
-<ng-template #recursiveOptionsTemplate let-list="list">
+<div class="relative w-full">
   <ul
-    id="autocomplete"
-    *ngFor="let item of list; let i = index"
-    class="z-20 mt-1 p-1 py-1 focus:outline-none sm:text-sm"
-    [ngClass]="{
-      'cursor-pointer hover:bg-primary-100': !item[childrenKey],
-      'bg-primary-200': selectedOption === item[displayKey]
-    }"
-    (click)="!item[childrenKey] ? onSelect(item) : ''"
-    >
-    <ng-content></ng-content> <!-- DOESN'T WORK -->
-    {{item[displayKey]}}
-    <li
-      *ngIf="item[childrenKey]"
-      class="cursor-pointer text-gray-900 relative pl-2" id="autocomplete-option-{{i}}"
-    >
-      <ng-content *ngIf="item[contentKey]"></ng-content>  <!-- DOESN'T WORK -->
-      <ng-container
-        *ngTemplateOutlet="recursiveOptionsTemplate; context:{ list: item[childrenKey] }"
-      ></ng-container>
-    </li>
+    [ngClass]="{ block: openPanel, hidden: !openPanel }"
+    class="z-10 absolute top-full max-h-60 w-full overflow-auto mt-2 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+  >
+    <ng-content></ng-content>
   </ul>
-</ng-template>
-<!-- <ng-content></ng-content> --> 
-<!-- use just the ng-content element works -->
+</div>

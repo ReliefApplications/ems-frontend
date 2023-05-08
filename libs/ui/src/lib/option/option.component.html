@@ -1,0 +1,12 @@
+<li
+  [attr.value]="value"
+  [ngClass]="{
+    'bg-primary-200': !isGroup && selected,
+    'cursor-pointer hover:bg-primary-100 flex': !isGroup
+  }"
+  class="px-2 py-1 text-gray-900 relative pl-2 w-full justify-between"
+  (click)="onClickItem()"
+>
+  <ng-content></ng-content>
+  <ng-content select="icon"></ng-content>
+</li>

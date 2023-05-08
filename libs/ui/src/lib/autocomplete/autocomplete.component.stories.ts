@@ -1,15 +1,15 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
-import { AutocompleteDirective } from './autocomplete.directive';
+import { AutocompleteModule } from './autocomplete.module';
 import { AutocompleteComponent } from './autocomplete.component';
 import { IconModule } from '../icon/icon.module';
-
+import { OptionModule } from '../option/option.module';
+import { CommonModule } from '@angular/common';
 
 /** Autocomplete options example */
 const SIMPLE_OPTIONS = [
   {
     label: 'A',
-    icon: 'edit'
   },
   {
     label: 'a B',
@@ -67,8 +67,13 @@ export default {
   component: AutocompleteComponent,
   decorators: [
     moduleMetadata({
-      declarations: [AutocompleteDirective],
-      imports: [ReactiveFormsModule, IconModule],
+      imports: [
+        CommonModule,
+        AutocompleteModule,
+        ReactiveFormsModule,
+        IconModule,
+        OptionModule,
+      ],
     }),
   ],
 } as Meta<AutocompleteComponent>;
@@ -96,41 +101,43 @@ const selectedOption = (option: string) => {
 /**
  * Form control to test autocomplete story
  */
-const formControl = new FormControl('');
+const formControl = new FormControl();
 
 /**
  * Simple autocomplete template
  *
- * @param {AutocompleteDirective} args args
+ * @param {any} args args
  * @returns AutocompleteDirective
  */
-const SimpleAutocompletePanelTemplate: StoryFn<AutocompleteDirective> = (
-  args: AutocompleteDirective
-) => {
-  args.options = SIMPLE_OPTIONS;
+const SimpleAutocompletePanelTemplate: StoryFn<any> = (args: any) => {
   return {
     component: AutocompleteComponent,
     template: `
       <input
         type="text"
         placeholder="Select a value"
-        [uiAutocomplete]="options"
-        [displayKey]="'label'"
+        [uiAutocomplete]="auto"
+        [autocompleteDisplayKey]="'label'"
         (opened)="openedAutocompletePanel()"
         (closed)="closesAutocompletePanel()"
         (optionSelected)="selectedOption($event)"
         class="relative w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset sm:leading-6 focus:ring-2 focus:ring-inset"
       >
-      <ui-autocomplete [contentKey]="'icon'" [displayKey]="'label'" [options]="options">
-        <p>TEST</p>
+      <ui-autocomplete #auto>
+      <ui-option *ngFor="let option of SIMPLE_OPTIONS" [value]="option">
+        {{option.label}}
+        <ng-container ngProjectsAs="icon">
         <ui-icon
           [icon]="'edit'"
-          [size]="12"
+          [size]="18"
         ></ui-icon>
-      </ui-autocomplete>
+        </ng-container>
+      </ui-option>
+      <ui-autocomplete>
     `,
     props: {
       ...args,
+      SIMPLE_OPTIONS,
       openedAutocompletePanel,
       closesAutocompletePanel,
       selectedOption,
@@ -144,29 +151,40 @@ export const SimpleAutocompletePanel = SimpleAutocompletePanelTemplate.bind({});
 /**
  * Grouped autocomplete template
  *
- * @param {AutocompleteDirective} args args
+ * @param {any} args args
  * @returns AutocompleteDirective
  */
-const GroupedAutocompletePanelTemplate: StoryFn<AutocompleteDirective> = (
-  args: AutocompleteDirective
-) => {
-  args.options = GROUPED_OPTIONS;
+const GroupedAutocompletePanelTemplate: StoryFn<any> = (args: any) => {
   return {
     template: `
-      <input
-        type="text"
-        placeholder="Select a value"
-        [uiAutocomplete]="options"
-        [displayKey]="'optionName'"
-        [childrenKey]="'channels'"
-        (opened)="openedAutocompletePanel()"
-        (closed)="closesAutocompletePanel()"
-        (optionSelected)="selectedOption($event)"
-        class="relative w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset sm:leading-6 focus:ring-2 focus:ring-inset"
-      >
+    <input
+    type="text"
+    placeholder="Select a value"
+    [uiAutocomplete]="auto"
+    [autocompleteDisplayKey]="'optionName'"
+    (opened)="openedAutocompletePanel()"
+    (closed)="closesAutocompletePanel()"
+    (optionSelected)="selectedOption($event)"
+    class="relative w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset sm:leading-6 focus:ring-2 focus:ring-inset"
+  >
+  <ui-autocomplete #auto>
+  <ui-option [isGroup]="true" *ngFor="let option of GROUPED_OPTIONS">
+    {{option.optionName}}
+    <ui-option *ngFor="let child of option.channels" [value]="child">
+    {{child.optionName}}
+    <ng-container ngProjectsAs="icon">
+    <ui-icon
+      [icon]="'edit'"
+      [size]="18"
+    ></ui-icon>
+    </ng-container>
+  </ui-option>
+  </ui-option>
+  <ui-autocomplete>
     `,
     props: {
       ...args,
+      GROUPED_OPTIONS,
       openedAutocompletePanel,
       closesAutocompletePanel,
       selectedOption,
@@ -182,33 +200,42 @@ export const GroupedAutocompletePanel = GroupedAutocompletePanelTemplate.bind(
 /**
  * Form control template autocomplete
  *
- * @param {AutocompleteDirective} args args
+ * @param {any} args args
  * @returns AutocompleteDirective
  */
-const FormControlTemplate: StoryFn<AutocompleteDirective> = (
-  args: AutocompleteDirective
-) => {
-  args.options = SIMPLE_OPTIONS;
-  formControl.setValue(SIMPLE_OPTIONS[2].label);
+const FormControlTemplate: StoryFn<any> = (args: any) => {
+  formControl.setValue(SIMPLE_OPTIONS[2]);
   return {
     template: `
-        <input
-          type="text"
-          [formControl]="formControl"
-          placeholder="Select a value to the form group"
-          [uiAutocomplete]="options"
-          [displayKey]="'label'"
-          (opened)="openedAutocompletePanel()"
-          (closed)="closesAutocompletePanel()"
-          (optionSelected)="selectedOption($event)"
-          class="relative w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset sm:leading-6 focus:ring-2 focus:ring-inset"
-        >
+    <input
+    type="text"
+    placeholder="Select a value"
+    [formControl]="formControl"
+    [uiAutocomplete]="auto"
+    [autocompleteDisplayKey]="'label'"
+    (opened)="openedAutocompletePanel()"
+    (closed)="closesAutocompletePanel()"
+    (optionSelected)="selectedOption($event)"
+    class="relative w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset sm:leading-6 focus:ring-2 focus:ring-inset"
+  >
+  <ui-autocomplete #auto>
+  <ui-option *ngFor="let option of SIMPLE_OPTIONS" [value]="option">
+    {{option.label}}
+    <ng-container ngProjectsAs="icon">
+    <ui-icon
+      [icon]="'edit'"
+      [size]="18"
+    ></ui-icon>
+    </ng-container>
+  </ui-option>
+  </ui-autocomplete>
       <br>
-      <p>value: {{formControl.value}}</p>
+      <p>value: {{formControl.value | json}}</p>
       <p>touched: {{formControl.touched}}</p>
     `,
     props: {
       ...args,
+      SIMPLE_OPTIONS,
       formControl,
       openedAutocompletePanel,
       closesAutocompletePanel,

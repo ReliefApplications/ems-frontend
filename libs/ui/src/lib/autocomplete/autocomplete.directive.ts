@@ -8,223 +8,223 @@ import {
   Renderer2,
   HostListener,
   AfterContentInit,
+  OnDestroy,
+  TemplateRef,
+  QueryList,
+  Optional,
+  Self,
 } from '@angular/core';
+import { AutocompleteComponent } from './autocomplete.component';
+import { isEqual } from 'lodash';
+import { Subject, takeUntil } from 'rxjs';
+import { OptionComponent } from '../option/option.component';
+import { NgControl } from '@angular/forms';
 
 /**
  * UI Autocomplete directive
  */
 @Directive({
   selector: '[uiAutocomplete]',
-  exportAs: '[uiAutocomplete]',
 })
-export class AutocompleteDirective implements OnInit, AfterContentInit {
-  @Input('uiAutocomplete') options: any[] = [];
-  @Input() public displayKey!: string;
-  @Input() public childrenKey!: string;
+export class AutocompleteDirective
+  implements OnInit, AfterContentInit, OnDestroy
+{
+  @Input('uiAutocomplete')
+  autocompletePanel!: TemplateRef<AutocompleteComponent>;
+
+  @Input() autocompleteDisplayKey?: string;
 
   @Output() opened: EventEmitter<void> = new EventEmitter();
   @Output() closed: EventEmitter<void> = new EventEmitter();
   @Output() optionSelected: EventEmitter<string> = new EventEmitter();
 
-  private panelOpened = false;
   private inputElement!: HTMLInputElement;
-  private autocompletePanel!: HTMLUListElement;
-  private selectedOption?: string;
+  private selectedOption!: any;
+  private inputEventListener!: any;
+  private outsideClickListener!: any;
+  private destroy$ = new Subject<void>();
+  private control!: NgControl;
 
-  private autocompleteClasses = [
-    'z-10',
-    'p-1',
-    'max-h-60',
-    'w-full',
-    'overflow-auto',
-    'mt-2',
-    'rounded-md',
-    'bg-white',
-    'py-1',
-    'ring-1',
-    'ring-black',
-    'ring-opacity-5',
-    'focus:outline-none',
-    'sm:text-sm',
-    'py-1',
-    'hidden',
-  ] as const;
+  /**
+   * Get the value from the option to set in the input host element
+   * Could be a plain value or an object
+   *
+   * @param option Option from autocomplete list item
+   * @returns The option value needed to set in the host input
+   */
+  getOptionValue = (option: OptionComponent) =>
+    this.autocompleteDisplayKey
+      ? option.value[this.autocompleteDisplayKey]
+      : option.value;
 
-  private autocompleteItemClasses = [
-    'text-gray-900',
-    'relative',
-    'pl-2',
-  ] as const;
+  /**
+   * Get options
+   *
+   * @returns all the options that are not parent group
+   */
+  getNotGroupOptionList = () =>
+    (
+      (this.autocompletePanel as any).options as QueryList<OptionComponent>
+    ).filter((option: OptionComponent) => !option.isGroup);
 
   /**
    * UI Autocomplete directive
    *
+   * @param control NgControl
    * @param el Element reference where the directive is attached
    * @param renderer Renderer2
    */
-  constructor(private el: ElementRef, private renderer: Renderer2) {
+  constructor(
+    @Self() @Optional() control: NgControl,
+    private el: ElementRef,
+    private renderer: Renderer2
+  ) {
+    this.control = control;
     this.inputElement = el.nativeElement as HTMLInputElement;
   }
 
-  /** Check the blur to automatically close the select list */
-  @HostListener('blur', ['$event'])
-  onBlur() {
-    // Hide the autocomplete panel when clicking outside the input element
-    if (this.panelOpened) {
-      setTimeout(() => {
-        this.hideAutocompletePanel();
-        this.panelOpened = false;
-        this.closed.emit();
-      }, 300);
-    }
-  }
-
   /** Check the click event into the input to automatically close the select list */
-  @HostListener('click', ['$event'])
+  @HostListener('click')
   onClick() {
-    if (!this.panelOpened) {
-      this.showAutocompletePanel();
-      this.panelOpened = true;
-      this.opened.emit();
+    if (!(this.autocompletePanel as any).openPanel) {
+      this.highLightSelectedOption();
+      this.openAutocompletePanel();
     }
   }
 
   ngOnInit(): void {
-    // Create the autocomplete panel element
-    this.autocompletePanel = this.renderer.createElement('ul');
-    this.autocompleteClasses.forEach((auClass) => {
-      this.renderer.addClass(this.autocompletePanel, auClass);
-    });
-    this.renderer.appendChild(
-      this.inputElement.parentNode,
-      this.autocompletePanel
-    );
-
-    // Add a listener to the input element to show the autocomplete panel and filter the options
-    this.inputElement.addEventListener('input', () => {
-      if (this.selectedOption !== this.inputElement.value) {
-        this.selectedOption = undefined;
+    // outside click event for the autocomplete and input panel
+    this.outsideClickListener = this.renderer.listen(
+      'window',
+      'click',
+      (ev: Event) => {
+        if (
+          (this.autocompletePanel as any).openPanel &&
+          !this.el.nativeElement.contains(ev.target)
+        ) {
+          this.closeAutocompletePanel();
+        }
       }
-      this.setAutocompletePanel();
-    });
+    );
+    // Add a listener to the input element to unset selected option if input value changes and there is already a selected option
+    this.inputEventListener = this.renderer.listen(
+      this.inputElement,
+      'input',
+      () => {
+        if (
+          this.selectedOption &&
+          !isEqual(
+            this.autocompleteDisplayKey
+              ? this.selectedOption[this.autocompleteDisplayKey]
+              : this.selectedOption,
+            this.inputElement.value
+          )
+        ) {
+          this.selectedOption = null;
+          this.highLightSelectedOption();
+        }
+      }
+    );
   }
 
   ngAfterContentInit(): void {
-    this.selectedOption = this.inputElement.value ?? undefined;
+    if (this.control?.control?.value) {
+      this.selectedOption = this.control.control.value;
+      const inputValue = this.getOptionValue({
+        value: this.selectedOption,
+      } as OptionComponent);
+      this.renderer.setProperty(this.inputElement, 'value', inputValue);
+      this.highLightSelectedOption();
+    }
     // Create default autocomplete panel with all options
     this.setAutocompletePanel();
   }
 
+  /**
+   * Open autocomplete panel and emit opened event
+   */
+  private openAutocompletePanel() {
+    (this.autocompletePanel as any).openPanel = true;
+    this.opened.emit();
+  }
+
+  /**
+   * Close autocomplete panel and emit closed event
+   */
+  private closeAutocompletePanel() {
+    (this.autocompletePanel as any).openPanel = false;
+    this.closed.emit();
+  }
+
   /** Creates the autocomplete panel with the options list */
   private setAutocompletePanel(): void {
-    // Clear the previous autocomplete panel items
-    this.autocompletePanel.innerHTML = '';
     // Get value from input
-    const searchText = this.inputElement.value;
+    // const searchText = this.inputElement.value;
 
     // Filter the options based on the search text, if no search text, display all options
-    const filteredOptions = searchText
-      ? this.filterAutocompleteOptions([...this.options], searchText)
-      : [...this.options];
+    // const filteredOptions = searchText
+    //   ? this.filterAutocompleteOptions(
+    //       [...(this.autocompletePanel as any).options],
+    //       searchText
+    //     )
+    //   : [...(this.autocompletePanel as any).options];
 
     // Create the autocomplete panel items
-    this.setAutocompletePanelItems(filteredOptions, this.autocompletePanel);
-  }
-
-  /** Display the autocomplete panel */
-  private showAutocompletePanel() {
-    this.renderer.removeClass(this.autocompletePanel, 'hidden');
-    this.renderer.addClass(this.autocompletePanel, 'block');
-  }
-
-  /** Hide the autocomplete panel  */
-  private hideAutocompletePanel() {
-    this.renderer.removeClass(this.autocompletePanel, 'block');
-    this.renderer.addClass(this.autocompletePanel, 'hidden');
+    this.setAutocompletePanelItemsListener();
   }
 
   /**
    * Recursively creates li elements to the options
-   *
-   * @param options array of options
-   * @param  parentElement the parent HTML element to attach the generated li elements
    */
-  private setAutocompletePanelItems(
-    options: any[],
-    parentElement: HTMLElement
-  ): void {
-    options.forEach((option: any) => {
-      const listItem = this.renderer.createElement('li');
-      this.renderer.setProperty(listItem, 'innerText', option[this.displayKey]);
-      this.autocompleteItemClasses.forEach((auiClass) => {
-        this.renderer.addClass(listItem, auiClass);
+  private setAutocompletePanelItemsListener(): void {
+    // Highlight selected option
+    this.highLightSelectedOption();
+    this.getNotGroupOptionList().forEach((option: OptionComponent) => {
+      option.itemClick.pipe(takeUntil(this.destroy$)).subscribe({
+        next: (isSelected: boolean) => {
+          const inputValue = isSelected ? this.getOptionValue(option) : '';
+          if (isSelected) {
+            this.selectedOption = option.value;
+          } else {
+            this.selectedOption = null;
+          }
+          if (this.control?.control) {
+            this.control.control.setValue(this.selectedOption);
+          }
+          this.optionSelected.emit(this.selectedOption);
+          this.renderer.setProperty(this.inputElement, 'value', inputValue);
+        },
       });
-      // If options is not the group's parent allow click
-      if (!option[this.childrenKey]) {
-        this.renderer.addClass(listItem, 'cursor-pointer');
-        this.renderer.addClass(listItem, 'hover:bg-primary-100');
-      }
-      // Highlight selected option
-      if (this.selectedOption === listItem.innerText) {
-        this.renderer.addClass(listItem, 'bg-primary-200');
-      }
-      listItem.addEventListener('click', () => {
-        if (!option[this.childrenKey]) {
-          this.selectedOption = option[this.displayKey];
-          this.renderer.setProperty(
-            this.inputElement,
-            'value',
-            option[this.displayKey]
-          );
-          this.inputElement.dispatchEvent(new Event('input'));
-        }
-      });
-      this.renderer.appendChild(parentElement, listItem);
+    });
+  }
 
-      // If the option has children, a nested ul element is created
-      // and the createAutocompletePanelItems() is recursively called
-      if (option[this.childrenKey] && option[this.childrenKey].length > 0) {
-        const nestedList = this.renderer.createElement('ul');
-        this.renderer.addClass(nestedList, 'pl-4');
-        this.renderer.addClass(nestedList, 'py-1');
-        this.renderer.appendChild(listItem, nestedList);
-        this.setAutocompletePanelItems(option[this.childrenKey], nestedList);
+  /**
+   * Updates highlight of items in autocomplete list
+   */
+  private highLightSelectedOption() {
+    this.getNotGroupOptionList().forEach((option: OptionComponent) => {
+      // Highlight selected option
+      if (isEqual(this.selectedOption, option.value)) {
+        option.selected = true;
+      } else {
+        option.selected = false;
       }
     });
   }
 
   /**
    * Recursively filter the original options list based on the displayKey and return the matching options
-   *
-   * @param options autocomplete options original list
-   * @param searchText text typed in the input
-   * @returns filtered options that match the search text
    */
-  private filterAutocompleteOptions(options: any[], searchText: string): any[] {
-    const filteredOptions: any[] = [];
-    options.forEach((option: any) => {
-      const filteredOption: any = {
-        [this.displayKey]: option[this.displayKey],
-      };
-      if (option[this.childrenKey] && option[this.childrenKey].length > 0) {
-        const filteredChildren = this.filterAutocompleteOptions(
-          option[this.childrenKey],
-          searchText
-        );
-        if (filteredChildren.length > 0) {
-          filteredOption[this.childrenKey] = filteredChildren;
-        }
-      }
-      if (
-        option[this.displayKey]
-          .toLowerCase()
-          .includes(searchText.toLowerCase()) ||
-        (filteredOption[this.childrenKey] &&
-          filteredOption[this.childrenKey].length > 0)
-      ) {
-        filteredOptions.push(filteredOption);
-      }
-    });
-    return filteredOptions;
+  // private filterAutocompleteOptions(searchText: string) {}
+
+  ngOnDestroy(): void {
+    if (this.inputEventListener) {
+      this.inputEventListener();
+    }
+    if (this.outsideClickListener) {
+      this.outsideClickListener();
+    }
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
