@@ -23,7 +23,6 @@ import {
   SafeDividerModule,
 } from '@oort-front/safe';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -38,7 +37,6 @@ import { TranslateModule } from '@ngx-translate/core';
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatIconModule,
     MatInputModule,
     MatMenuModule,
     MatProgressSpinnerModule,
