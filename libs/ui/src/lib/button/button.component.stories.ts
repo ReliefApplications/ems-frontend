@@ -5,13 +5,10 @@ import {
   componentWrapperDecorator,
 } from '@storybook/angular';
 import { ButtonComponent } from './button.component';
-import { ButtonModule } from './button.module';
 import { Category } from '../shared/category.enum';
 import { Size } from '../shared/size.enum';
 import { ButtonIconPosition } from './enums/button-icon-position.enum';
 import { Variant } from '../shared/variant.enum';
-import { IconModule } from '../icon/icon.module';
-import { SpinnerModule } from '../spinner/spinner.module';
 
 type StoryType = ButtonComponent & { label?: string };
 
@@ -20,7 +17,7 @@ export default {
   component: ButtonComponent,
   decorators: [
     moduleMetadata({
-      imports: [ButtonModule, IconModule, SpinnerModule],
+      imports: [ButtonComponent],
     }),
     componentWrapperDecorator((story) => {
       story = story.replace(/></, '>Button label<');

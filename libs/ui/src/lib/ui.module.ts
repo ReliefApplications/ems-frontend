@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { AvatarModule } from './avatar/avatar.module';
-import { ButtonModule } from './button/button.module';
+import { ButtonComponent } from './button/button.component';
 import { CheckboxModule } from './checkbox/checkbox.module';
 import { IconModule } from './icon/icon.module';
 import { TooltipModule } from './tooltip/tooltip.module';
@@ -9,8 +9,8 @@ import { PaginatorModule } from './paginator/paginator.module';
 import { AvatarGroupModule } from './avatar-group/avatar-group.module';
 import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
-import { DatePickerModule } from './date-picker/date-picker.module';
-import { DateRangeModule } from './date-range/date-range.module';
+import { DatePickerModule } from './date/date-picker/date-picker.module';
+import { DateRangeModule } from './date/date-range/date-range.module';
 import { TextareaModule } from './textarea/textarea.module';
 import { RadioModule } from './radio/radio.module';
 
@@ -19,8 +19,8 @@ import { RadioModule } from './radio/radio.module';
  */
 @NgModule({
   exports: [
+    ButtonComponent,
     AvatarModule,
-    ButtonModule,
     AvatarGroupModule,
     CheckboxModule,
     IconModule,

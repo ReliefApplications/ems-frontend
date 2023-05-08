@@ -15,14 +15,26 @@ export default {
 } as Meta<DateRangeComponent>;
 
 /**
- * FormControl for story testing
+ * Today date
  */
-const formControlStart = new FormControl();
+const today = new Date();
 
 /**
- * FormControl for story testing
+ * After tomorrow date
  */
-const formControlEnd = new FormControl();
+const afterTomorrow = new Date();
+
+/**
+ * FormControl for start date
+ */
+const formControlStart = new FormControl(today);
+
+/**
+ * FormControl for end date
+ */
+const formControlEnd = new FormControl(
+  afterTomorrow.setDate(today.getDate() + 2)
+);
 
 /**
  * Date range template
@@ -37,11 +49,12 @@ const DateRangeTemplate: StoryFn<DateRangeComponent> = (
     component: DateRangeComponent,
     template: `
     <div [uiDateWrapper]="calendar">
-    <input [formControl]="formControlStart" uiDatePicker="'start'" [label]="'Select a start date'"/>
-    <input [formControl]="formControlEnd" uiDatePicker="'end'" [label]="'Select a end date'"/>
+    <input [uiDatePicker] [formControl]="formControlStart" [label]="'Select a start date'"/>
+    <input [uiDatePicker] [formControl]="formControlEnd" [label]="'Select a end date'"/>
       <ui-date-range #calendar>
       </ui-date-range> 
       </div>
+      <br>
       <p>start value: {{formControlStart.value}}</p>
       <p>end value: {{formControlEnd.value}}</p>`,
     props: {

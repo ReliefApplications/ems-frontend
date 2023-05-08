@@ -38,14 +38,4 @@ export class DatePickerComponent {
     this.value = value;
     this.selectedValue.emit(value);
   }
-
-  /**
-   * Set class for today date in calendar
-   *
-   * @param date Date
-   * @returns today class
-   */
-  public isToday(date: Date) {
-    return new Date().getDate() === date.getDate() ? 'today' : '';
-  }
 }

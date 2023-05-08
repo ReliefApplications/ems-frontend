@@ -4,6 +4,9 @@ import { Category } from '../shared/category.enum';
 import { Variant } from '../shared/variant.enum';
 import { Subject } from 'rxjs';
 import { Size } from '../shared/size.enum';
+import { CommonModule } from '@angular/common';
+import { IconModule } from '../icon/icon.module';
+import { SpinnerModule } from '../spinner/spinner.module';
 
 /**
  * UI Button Component
@@ -12,6 +15,8 @@ import { Size } from '../shared/size.enum';
   selector: 'ui-button',
   templateUrl: './button.component.html',
   styleUrls: ['./button.component.scss'],
+  standalone: true,
+  imports: [CommonModule, IconModule, SpinnerModule],
 })
 export class ButtonComponent {
   @Input() icon = '';

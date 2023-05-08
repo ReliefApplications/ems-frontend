@@ -21,7 +21,7 @@ export default {
 /**
  * FormControl for story testing
  */
-const formControl = new FormControl();
+const formControl = new FormControl(new Date());
 
 /**
  * Date picker template
@@ -36,10 +36,11 @@ const DatePickerTemplate: StoryFn<DatePickerComponent> = (
     component: DatePickerComponent,
     template: `
     <div [uiDateWrapper]="calendar">
-    <input uiDatePicker [formControl]="formControl" [label]="'Select a date'"/>
+    <input [uiDatePicker] [formControl]="formControl" [label]="'Select a date'"/>
       <ui-date-picker #calendar>
       </ui-date-picker> 
       </div>
+      <br>
       <p>selected value: {{formControl.value}}</p>
       `,
     props: {

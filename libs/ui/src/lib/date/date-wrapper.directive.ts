@@ -45,6 +45,10 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
     // If is a date range we would have two inputs, there for flex the parent component to display them inline
     if (this.uiDateWrapper instanceof DateRangeComponent) {
       this.renderer.addClass(this.el.nativeElement, 'flex');
+      this.renderer.addClass(
+        this.dateInputs.last['el'].nativeElement.parentElement,
+        'ml-3'
+      );
     }
     this.setDateCalendarListener();
     this.setCalendarDisplayPosition();
@@ -101,7 +105,11 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
       this.dateInputs.first['el'].nativeElement,
       'change',
       (event) => {
-        (this.uiDateWrapper as any).value = event?.target.valueAsDate;
+        if (this.uiDateWrapper instanceof DateRangeComponent) {
+          (this.uiDateWrapper as any).range.start = event?.target.valueAsDate;
+        } else {
+          (this.uiDateWrapper as any).value = event?.target.valueAsDate;
+        }
       }
     );
     this.dateInputListeners.push(listener);
@@ -110,7 +118,7 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
         this.dateInputs.last['el'].nativeElement,
         'change',
         (event) => {
-          (this.uiDateWrapper as any).endValue = event?.target.valueAsDate;
+          (this.uiDateWrapper as any).range.end = event?.target.valueAsDate;
         }
       );
       this.dateInputListeners.push(listener);

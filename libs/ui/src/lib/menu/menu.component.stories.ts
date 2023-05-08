@@ -4,7 +4,7 @@ import { MenuComponent } from './menu.component';
 import { MenuTriggerForDirective } from './menu.directive';
 import { DividerModule } from '../divider/divider.module';
 import { CommonModule } from '@angular/common';
-import { ButtonModule } from '../button/button.module';
+import { ButtonComponent } from '../button/button.component';
 
 export default {
   title: 'Menu',
@@ -16,7 +16,7 @@ export default {
         CommonModule,
         BrowserAnimationsModule,
         DividerModule,
-        ButtonModule,
+        ButtonComponent,
       ],
     }),
   ],

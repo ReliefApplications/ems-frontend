@@ -42,14 +42,4 @@ export class DateRangeComponent {
     this.range = event as any;
     this.selectedValue.emit(this.range);
   }
-
-  /**
-   * Set class for today date in calendar
-   *
-   * @param date Date
-   * @returns today class
-   */
-  public isToday(date: Date) {
-    return new Date().getDate() === date.getDate() ? 'today' : '';
-  }
 }

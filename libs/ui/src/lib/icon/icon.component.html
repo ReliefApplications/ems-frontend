@@ -1,17 +1,6 @@
 <ng-container *ngIf="icon.endsWith('_outline'); else angularMaterialIconTmpl">
   <span
-    [ngClass]="{
-      'icon-primary':
-        category !== iconCategory.SECONDARY && variant === iconVariant.PRIMARY,
-      'icon-success':
-        category !== iconCategory.SECONDARY && variant === iconVariant.SUCCESS,
-      'icon-light':
-        category === iconCategory.SECONDARY || variant === iconVariant.LIGHT,
-      'icon-grey':
-        category !== iconCategory.SECONDARY && variant === iconVariant.GREY,
-      'icon-danger':
-        category !== iconCategory.SECONDARY && variant === iconVariant.DANGER
-    }"
+    [ngClass]="resolveIconClasses"
     [style.inline]="inline"
     [style.font-size]="fontSize"
     [style.width]="fontSize"
@@ -22,27 +11,15 @@
     {{ icon }}
   </span>
 </ng-container>
-<!--@TODO Are we using Angular Material Icons?-->
 <ng-template #angularMaterialIconTmpl>
   <i
-    [ngClass]="{
-      'icon-primary':
-        category !== iconCategory.SECONDARY && variant === iconVariant.PRIMARY,
-      'icon-success':
-        category !== iconCategory.SECONDARY && variant === iconVariant.SUCCESS,
-      'icon-light':
-        category === iconCategory.SECONDARY || variant === iconVariant.LIGHT,
-      'icon-grey':
-        category !== iconCategory.SECONDARY && variant === iconVariant.GREY,
-      'icon-danger':
-        category !== iconCategory.SECONDARY && variant === iconVariant.DANGER
-    }"
+    [ngClass]="resolveIconClasses"
     [style.inline]="inline"
     [style.font-size]="fontSize"
     [style.width]="fontSize"
     [style.height]="fontSize"
     [style.line-height]="fontSize"
-    class="material-icons inline-flex align-middle"
+    class="material-icons align-middle"
     >{{ icon }}</i
   >
 </ng-template>

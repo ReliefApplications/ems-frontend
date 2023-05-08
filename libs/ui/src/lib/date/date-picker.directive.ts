@@ -14,8 +14,8 @@ import {
 import { NgControl } from '@angular/forms';
 import { formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { DateValues } from './enums/date-values.enum';
-import { IconComponent } from '../icon/icon.component';
+import { ButtonComponent } from '../button/button.component';
+import { Size } from '../shared/size.enum';
 /**
  * UI Datepicker directive
  */
@@ -23,21 +23,22 @@ import { IconComponent } from '../icon/icon.component';
   selector: '[uiDatePicker]',
 })
 export class DatePickerDirective implements OnInit, OnDestroy {
-  @Input() uiDatePicker = 'calendar';
-  @Input() dateValueSet?: DateValues;
+  @Input() uiDatePicker = 'calendar_today';
   @Input() label = '';
 
   @Output() clickEvent = new EventEmitter<void>();
+
   private clickEventListener!: any;
   private inputClasses = [
     'peer',
     'block',
     'min-h-[auto]',
+    'min-w-[200px]',
     'w-full',
     'rounded',
     'border-0',
     'bg-transparent',
-    'px-3',
+    'px-2',
     'py-[0.32rem]',
     'leading-[1.6]',
     'outline-none',
@@ -46,42 +47,35 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'ease-linear',
     'focus:placeholder:opacity-100',
     'peer-focus:text-primary',
-    'data-[te-input-state-active]:placeholder:opacity-100',
     'motion-reduce:transition-none',
     'dark:text-neutral-200',
     'dark:placeholder:text-neutral-200',
     'dark:peer-focus:text-primary',
-    '[&:not([data-te-input-placeholder-active])]:placeholder:opacity-0',
   ] as const;
 
   private labelClasses = [
     'pointer-events-none',
     'absolute',
-    'left-3',
+    'left-2',
+    'bg-white',
     'top-0',
     'mb-0',
     'max-w-[90%]',
     'origin-[0_0]',
     'truncate',
-    'pt-[0.37rem]',
+    'pt-[0.3rem]',
     'leading-[1.6]',
     'text-neutral-500',
     'transition-all',
     'duration-200',
     'ease-out',
-    'peer-focus:-translate-y-[0.9rem]',
-    'peer-focus:scale-[0.8]',
-    'peer-focus:text-primary',
-    'peer-data-[te-input-state-active]:-translate-y-[0.9rem]',
-    'peer-data-[te-input-state-active]:scale-[0.8]',
+    '-translate-y-[1rem]',
+    'scale-[0.8]',
     'motion-reduce:transition-none',
-    'dark:text-neutral-200',
-    'dark:peer-focus:text-primary',
   ] as const;
 
   private iconClasses = [
     'flex',
-    'cursor-pointer',
     'items-center',
     'justify-content-center',
     'absolute',
@@ -90,13 +84,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'bg-transparent',
     'right-0.5',
     'top-1/2',
-    '-translate-x-1/2',
     '-translate-y-1/2',
-    'hover:text-primary',
-    'focus:text-primary',
-    'dark:hover:text-primary-400',
-    'dark:focus:text-primary-400',
-    'dark:text-neutral-200',
   ] as const;
 
   /**
@@ -128,6 +116,14 @@ export class DatePickerDirective implements OnInit, OnDestroy {
       this.setLabelElement();
     }
     this.setIconElement();
+    if (this.control.control?.value) {
+      this.setValue(this.control.control?.value);
+      // Trigger input change event to update date picker/ date range element
+      const event = new Event('change');
+      setTimeout(() => {
+        this.el.nativeElement.dispatchEvent(event);
+      }, 0);
+    }
   }
 
   /**
@@ -173,9 +169,10 @@ export class DatePickerDirective implements OnInit, OnDestroy {
    */
   private setIconElement() {
     // Create the icon element
-    const icon = this.vcr.createComponent(IconComponent);
+    const icon = this.vcr.createComponent(ButtonComponent);
     icon.instance.icon = this.uiDatePicker;
-    icon.instance.size = 18;
+    icon.instance.size = Size.SMALL;
+    icon.instance.isIcon = true;
     this.iconClasses.forEach((iClass) => {
       this.renderer.addClass(icon.location.nativeElement, iClass);
     });
