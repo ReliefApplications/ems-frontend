@@ -66,22 +66,12 @@
     [matMenuTriggerFor]="notificationMenu"
     [disabled]="notifications.length===0"
   >
-    <!-- <mat-icon class="mat-badge-notification">
-      <kendo-badge-container>
-        notifications
-        <kendo-badge
-          shape="dot"
-          themeColor="error"
-          *ngIf="notifications.length > 0"
-        ></kendo-badge>
-      </kendo-badge-container>
-    </mat-icon> -->
-    <!-- TO REVIEW, BETTER SOLUTION AVAILABLE ? -->
     <kendo-badge-container>
       <ui-icon [icon]="'notifications'" [variant]="colorVariant.LIGHT"></ui-icon>
       <kendo-badge
         shape="dot"
         themeColor="error"
+        class="absolute -translate-x-1/4 translate-y-full scale-50"
         *ngIf="notifications.length > 0"
       ></kendo-badge>
     </kendo-badge-container>
