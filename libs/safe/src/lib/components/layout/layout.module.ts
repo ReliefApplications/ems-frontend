@@ -18,7 +18,7 @@ import { SafeSearchMenuModule } from '../search-menu/search-menu.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
-import { SafeDividerModule } from '../ui/divider/divider.module';
+import { DividerModule } from '@oort-front/ui';
 import { SafeIconModule } from '../ui/icon/icon.module';
 
 /**
@@ -38,7 +38,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     MatSidenavModule,
     MatListModule,
     DragDropModule,
-    SafeDividerModule,
+    DividerModule,
     MatTooltipModule,
     SafeButtonModule,
     IndicatorsModule,

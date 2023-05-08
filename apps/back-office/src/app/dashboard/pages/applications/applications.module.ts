@@ -19,8 +19,8 @@ import {
   SafeDateModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
-  SafeDividerModule,
 } from '@oort-front/safe';
+import { DividerModule } from '@oort-front/ui';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
@@ -63,7 +63,7 @@ import { AbilityModule } from '@casl/angular';
     SafeDateModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
-    SafeDividerModule,
+    DividerModule,
     AbilityModule,
   ],
   exports: [ApplicationsComponent],

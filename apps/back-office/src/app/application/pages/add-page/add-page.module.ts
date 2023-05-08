@@ -13,10 +13,10 @@ import {
   SafeButtonModule,
   SafeContentChoiceModule,
   SafeFormsDropdownModule,
-  SafeDividerModule,
 } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
+import { DividerModule } from '@oort-front/ui';
 
 /**
  * Add page module.
@@ -38,7 +38,7 @@ import { AbilityModule } from '@casl/angular';
     SafeContentChoiceModule,
     TranslateModule,
     SafeFormsDropdownModule,
-    SafeDividerModule,
+    DividerModule,
     AbilityModule,
   ],
 })

@@ -46,8 +46,8 @@ import {
   SafeIconModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
-  SafeDividerModule,
 } from '@oort-front/safe';
+import { DividerModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
@@ -75,7 +75,7 @@ const ITEMS_PER_PAGE = 10;
     MatProgressSpinnerModule,
     MatTableModule,
     MatAutocompleteModule,
-    SafeDividerModule,
+    DividerModule,
     SafeButtonModule,
     SafeIconModule,
     TranslateModule,

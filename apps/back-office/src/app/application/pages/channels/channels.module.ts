@@ -8,15 +8,12 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import {
-  SafeButtonModule,
-  SafeModalModule,
-  SafeDividerModule,
-} from '@oort-front/safe';
+import { SafeButtonModule, SafeModalModule } from '@oort-front/safe';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
+import { DividerModule } from '@oort-front/ui';
 
 /**
  * Channels page module.
@@ -35,7 +32,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatProgressSpinnerModule,
     MatTableModule,
     MatSelectModule,
-    SafeDividerModule,
+    DividerModule,
     SafeButtonModule,
     MatButtonModule,
     TranslateModule,

@@ -10,7 +10,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TranslateModule } from '@ngx-translate/core';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import { SafeDividerModule } from '../ui/divider/divider.module';
+import { DividerModule } from '@oort-front/ui';
 /**
  * Module for workflow stepper component
  */
@@ -22,7 +22,7 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
   ],
   imports: [
     CommonModule,
-    SafeDividerModule,
+    DividerModule,
     MatRippleModule,
     MatTooltipModule,
     DragDropModule,

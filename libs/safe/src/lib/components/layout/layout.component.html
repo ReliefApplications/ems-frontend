@@ -81,17 +81,17 @@
     <a mat-menu-item [routerLink]="[profileRoute]">
       {{ 'pages.profile.title' | translate }}
     </a>
-    <safe-divider class="m-0"></safe-divider>
+    <ui-divider class="m-0"></ui-divider>
     <button mat-menu-item (click)="onOpenPreferences()" *ngIf="showPreferences">
       {{ 'components.preferences.title' | translate }}
     </button>
     <ng-container *ngIf="user && user.isAdmin">
-      <safe-divider class="m-0"></safe-divider>
+      <ui-divider class="m-0"></ui-divider>
       <a mat-menu-item [href]="otherOfficeUri">
         {{ 'components.header.goToPlatform' | translate }} {{ otherOffice }}
       </a>
     </ng-container>
-    <safe-divider class="m-0"></safe-divider>
+    <ui-divider class="m-0"></ui-divider>
     <button mat-menu-item (click)="logout()" class="warn">
       {{ 'components.header.logout' | translate }}
     </button>

@@ -31,10 +31,10 @@
         >
       </div>
     </ng-container>
-    <safe-divider
+    <ui-divider
       *ngIf="!selectedAggregation && !selectedLayout"
       [text]="'common.or' | translate"
-    ></safe-divider>
+    ></ui-divider>
     <div *ngIf="!selectedLayout">
       <h2>{{ 'common.aggregation.one' | translate }}</h2>
     </div>
