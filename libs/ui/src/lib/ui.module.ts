@@ -11,6 +11,7 @@ import { AvatarGroupModule } from './avatar-group/avatar-group.module';
 import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
 import { ExpansionPanelModule } from './expansion-panel/expansion-panel.module';
+import { SliderModule } from './slider/slider.module';
 import { TextareaModule } from './textarea/textarea.module';
 import { RadioModule } from './radio/radio.module';
 
@@ -31,6 +32,7 @@ import { RadioModule } from './radio/radio.module';
     ToggleModule,
     DividerModule,
     ExpansionPanelModule,
+    SliderModule,
     TextareaModule,
     RadioModule,
   ],
