@@ -4,20 +4,25 @@ export * from './lib/ui.module';
 export * from './lib/avatar/avatar.module';
 export * from './lib/button/button.module';
 export * from './lib/checkbox/checkbox.module';
-export * from './lib/flyout-menu/flyout-menu.module';
+export * from './lib/menu/menu.module';
 export * from './lib/icon/icon.module';
 export * from './lib/select/select.module';
+export * from './lib/tooltip/tooltip.module';
+export * from './lib/spinner/spinner.module';
 export * from './lib/paginator/paginator.module';
 export * from './lib/avatar-group/avatar-group.module';
 export * from './lib/toggle/toggle.module';
+export * from './lib/textarea/textarea.module';
 export * from './lib/breadcrumbs/breadcrumbs.module';
 export * from './lib/divider/divider.module';
 export * from './lib/slider/slider.module';
+export * from './lib/radio/radio.module';
 
 // === ENUMS === //
 export * from './lib/shared/size.enum';
 export * from './lib/shared/variant.enum';
 export * from './lib/shared/category.enum';
+export * from './lib/button/enums/button-icon-position.enum';
 export * from './lib/toggle/enums/toggle-type.enum';
 export * from './lib/divider/enums/divider-position.enum';
 export * from './lib/divider/enums/divider-orientation.enum';
@@ -29,3 +34,6 @@ export * from './lib/toggle/interfaces/toggle-label.interface';
 export * from './lib/toggle/interfaces/toggle-icon.interface';
 export * from './lib/breadcrumbs/interfaces/breadcrumb.interface';
 export * from './lib/paginator/interfaces/paginator.interfaces';
+
+// === MODULE === //
+export * from './lib/ui.module';

@@ -1,0 +1,20 @@
+<div class="flex items-center">
+    <input
+    type="radio"
+    [ngClass]="getVariant"
+    class="h-4 w-4 border-gray-300"
+    [required]="required"
+    [disabled]="disabled"
+    [value]="value"
+    [checked]="checked"
+    [name]="name"
+    [ariaLabel]="ariaLabelledby"
+    >
+    <label for="{{ name }}" class="ml-3 block text-sm font-medium leading-6 text-gray-900">
+        <ng-content select="label"></ng-content>
+    </label>
+    <ng-content select="icon"></ng-content>
+    <p id="{{ name }}-radio-description" class="ml-3 block text-sm font-medium leading-6 text-gray-900">
+        <ng-content select="description"></ng-content>
+    </p>
+</div>
