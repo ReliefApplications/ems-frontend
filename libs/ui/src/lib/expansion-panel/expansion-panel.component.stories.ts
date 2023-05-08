@@ -77,7 +77,7 @@ const Template: StoryFn<ExpansionPanelComponent> = (
           [index]="i"
           [last]="last"
         >
-          <p class="mb-2 text-gray-500 dark:text-gray-400">{{panel.text}}</p>
+          <p class="mb-2 text-gray-500">{{panel.text}}</p>
         </ui-expansion-panel>
       </cdk-accordion>
     `,
@@ -114,7 +114,7 @@ const TemplateMulti: StoryFn<ExpansionPanelComponent> = (
           [index]="i"
           [last]="last"
         >
-          <p class="mb-2 text-gray-500 dark:text-gray-400" >{{panel.text}}</p>
+          <p class="mb-2 text-gray-500" >{{panel.text}}</p>
         </ui-expansion-panel>
       </cdk-accordion>
     `,

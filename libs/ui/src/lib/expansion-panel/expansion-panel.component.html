@@ -10,7 +10,7 @@
 >
   <div
     [ngClass]="{
-      'focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800':
+      'focus:ring-4 focus:ring-gray-200 hover:bg-gray-100':
         !disabled,
       'border-b-0 rounded-t-md': !last || accordionItem.expanded,
       'rounded-md': last
@@ -40,7 +40,7 @@
     #contentContainer
     [@contentExpansion]="accordionItem.expanded ? 'expanded' : 'collapsed'"
     [ngClass]="{ 'border-b-0': !last }"
-    class="p-5 hidden border border-gray-200 dark:border-gray-700 dark:bg-gray-900"
+    class="p-5 hidden border border-gray-200"
     role="region"
     [attr.id]="'accordion-body-' + index"
     [attr.aria-labelledby]="'accordion-header-' + index"
