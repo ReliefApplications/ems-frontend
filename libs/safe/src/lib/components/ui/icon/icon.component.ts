@@ -1,5 +1,6 @@
-import { Component, HostBinding, Input } from '@angular/core';
+import { Component, HostBinding, Input, OnInit } from '@angular/core';
 import { IconVariant } from './icon-variant.enum';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Component for custom icons
@@ -9,7 +10,7 @@ import { IconVariant } from './icon-variant.enum';
   templateUrl: './icon.component.html',
   styleUrls: ['./icon.component.scss'],
 })
-export class SafeIconComponent {
+export class SafeIconComponent implements OnInit {
   @Input() icon = '';
 
   @Input() inline = false;
@@ -20,9 +21,16 @@ export class SafeIconComponent {
 
   @Input() fontSet!: string;
 
+  colorVariant = Variant;
+  uiVariant = Variant.DEFAULT;
+
   /** @returns A getter that returns the display style of the host element. */
   @HostBinding('style.display') get display() {
     return this.inline ? 'inline-flex' : 'flex';
+  }
+
+  ngOnInit(): void {
+    this.convertVariantToUi;
   }
 
   /**
@@ -35,21 +43,28 @@ export class SafeIconComponent {
   }
 
   /**
-   * Compares the variant passed with an enum to return a valid color variant.
-   *
-   * @returns Returns a string with the icon color variant
+   * Compares the variant passed with a string to return a valid color variant.
    */
-  get color(): string {
+  convertVariantToUi(): void {
     switch (this.variant) {
-      case IconVariant.PRIMARY: {
-        return 'primary';
-      }
-      case IconVariant.DANGER: {
-        return 'warn';
-      }
-      default: {
-        return '';
-      }
+      case this.colorVariant.DEFAULT:
+        this.uiVariant = this.colorVariant.DEFAULT;
+        break;
+      case this.colorVariant.GREY:
+        this.uiVariant = this.colorVariant.GREY;
+        break;
+      case this.colorVariant.DANGER:
+        this.uiVariant = this.colorVariant.DANGER;
+        break;
+      case this.colorVariant.LIGHT:
+        this.uiVariant = this.colorVariant.LIGHT;
+        break;
+      case this.colorVariant.PRIMARY:
+        this.uiVariant = this.colorVariant.PRIMARY;
+        break;
+      case this.colorVariant.SUCCESS:
+        this.uiVariant = this.colorVariant.SUCCESS;
+        break;
     }
   }
 }
