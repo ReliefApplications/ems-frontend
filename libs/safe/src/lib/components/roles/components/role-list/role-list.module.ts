@@ -1,5 +1,4 @@
 import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
@@ -15,6 +14,7 @@ import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skelet
 import { SafeRoleListComponent } from './role-list.component';
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { AbilityModule } from '@casl/angular';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * BackOfficeRolesModule manages modules and components
@@ -31,7 +31,6 @@ import { AbilityModule } from '@casl/angular';
     MatProgressSpinnerModule,
     MatTableModule,
     MatMenuModule,
-    MatIconModule,
     MatSortModule,
     MatAutocompleteModule,
     SafeDividerModule,
@@ -39,6 +38,7 @@ import { AbilityModule } from '@casl/angular';
     TranslateModule,
     SafeSkeletonTableModule,
     AbilityModule,
+    UiModule,
   ],
   exports: [SafeRoleListComponent],
 })

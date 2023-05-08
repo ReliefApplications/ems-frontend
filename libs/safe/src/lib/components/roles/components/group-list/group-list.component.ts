@@ -19,6 +19,7 @@ import get from 'lodash/get';
 import { SafeRestService } from '../../../../services/rest/rest.service';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant } from '@oort-front/ui';
 
 /**
  * This component is used to display the groups tab in the platform
@@ -40,6 +41,9 @@ export class SafeGroupListComponent
   public displayedColumns = ['title', 'usersCount', 'actions'];
 
   public searchText = '';
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /**
    * This component is used to display the groups tab in the platform

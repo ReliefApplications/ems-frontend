@@ -69,12 +69,12 @@
         ></safe-button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="openCard(i)">
-            <mat-icon>insert_chart</mat-icon>
+            <ui-icon [icon]="'insert_chart'"></ui-icon>
             <span>{{ 'common.settings' | translate }}</span>
           </button>
           <mat-divider></mat-divider>
           <button mat-menu-item (click)="removeCard(i)">
-            <mat-icon>delete</mat-icon>
+            <ui-icon [icon]="'delete'" [variant]="colorVariant.GREY"></ui-icon>
             <span>{{ 'common.delete' | translate }}</span>
           </button>
         </mat-menu>

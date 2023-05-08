@@ -4,6 +4,7 @@ import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/materia
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { TemplateTypeEnum } from '../../models/template.model';
+import { Variant } from '@oort-front/ui';
 
 /**
  * A component to display the list of templates of an application
@@ -22,6 +23,9 @@ export class SafeTemplatesComponent implements OnInit {
   public displayedColumns = ['name', 'type', 'actions'];
 
   public loading = false;
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /**
    * Constructor of the templates component

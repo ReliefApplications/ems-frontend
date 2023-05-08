@@ -11,11 +11,11 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeAddCardModule } from './add-card/add-card.module';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SummaryCardItemModule } from '../summary-card/summary-card-item/summary-card-item.module';
+import { UiModule } from '@oort-front/ui';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -33,11 +33,11 @@ import { SummaryCardItemModule } from '../summary-card/summary-card-item/summary
     MatRadioModule,
     SafeIconModule,
     MatMenuModule,
-    MatIconModule,
     MatDividerModule,
     SafeAddCardModule,
     MatButtonModule,
     SummaryCardItemModule,
+    UiModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

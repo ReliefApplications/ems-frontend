@@ -14,6 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Variant } from '@oort-front/ui';
 import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,
@@ -50,6 +51,9 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
 
   // === WIDGET ===
   @Input() tile: any;
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native

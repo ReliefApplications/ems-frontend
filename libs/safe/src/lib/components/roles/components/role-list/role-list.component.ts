@@ -25,6 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant } from '@oort-front/ui';
 
 /**
  * This component is used to display the back-office roles tab
@@ -58,6 +59,9 @@ export class SafeRoleListComponent
   public showFilters = false;
   public searchText = '';
   public usersFilter = '';
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is

@@ -15,6 +15,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { SafeDownloadService } from '../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Variant } from '@oort-front/ui';
 
 /**
  * A component to display the list of users
@@ -44,6 +45,9 @@ export class SafeUsersComponent implements OnInit {
   public searchText = '';
   public roleFilter = '';
   public showFilters = false;
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   selection = new SelectionModel<User>(true, []);
 

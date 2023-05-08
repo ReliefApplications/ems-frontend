@@ -7,9 +7,9 @@ import { SafeSkeletonTableModule } from '../../../../components/skeleton/skeleto
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { SafeEmptyModule } from '../../../../components/ui/empty/empty.module';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatIconModule } from '@angular/material/icon';
 import { SafeButtonModule } from '../../../../components/ui/button/button.module';
 import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Users list module.
@@ -24,9 +24,9 @@ import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/
     MatPaginatorModule,
     SafeEmptyModule,
     MatMenuModule,
-    MatIconModule,
     SafeButtonModule,
     MatCheckboxModule,
+    UiModule,
   ],
   exports: [UserListComponent],
 })

@@ -5,7 +5,7 @@
     <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
       <!-- Search text filter -->
       <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-        <mat-icon matPrefix>search</mat-icon>
+        <ui-icon matPrefix [icon]="'search'"></ui-icon>
         <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
         <input matInput (keyup)="applyFilter($event)" type="search" />
       </mat-form-field>
@@ -64,12 +64,12 @@
           </safe-button>
           <mat-menu #menu="matMenu">
             <!-- <button mat-menu-item (click)="onOpen(element)">
-          <mat-icon>edit</mat-icon>
+          <ui-icon [icon]="'edit'" [variant]="colorVariant.GREY"></ui-icon>
           {{ 'common.edit' | translate }}
         </button>
         <safe-divider class="m-0"></safe-divider> -->
             <button mat-menu-item color="warn" (click)="onDelete(element)">
-              <mat-icon>delete</mat-icon>
+              <ui-icon [icon]="'delete'" [variant]="colorVariant.GREY"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
           </mat-menu>

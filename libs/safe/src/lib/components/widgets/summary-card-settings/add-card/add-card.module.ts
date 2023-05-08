@@ -16,7 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeSpinnerModule } from '../../../ui/spinner/spinner.module';
-import { MatIconModule } from '@angular/material/icon';
+import { UiModule } from '@oort-front/ui';
 
 /** Module to add new card in summary card widget */
 @NgModule({
@@ -38,7 +38,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule,
     MatInputModule,
     SafeSpinnerModule,
-    MatIconModule,
+    UiModule,
   ],
   exports: [SafeAddCardComponent, SafeCardTemplateComponent],
 })

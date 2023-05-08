@@ -15,6 +15,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Variant } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -42,6 +43,9 @@ export class UserListComponent
     'attributes',
     'actions',
   ];
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   public users: MatTableDataSource<User> = new MatTableDataSource<User>([]);
   public cachedUsers: User[] = [];
