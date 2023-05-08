@@ -27,6 +27,7 @@ import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-l
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * An interface to define the structure of the data displayed in the modal
@@ -55,6 +56,7 @@ interface DialogData {
     MatProgressSpinnerModule,
     TranslateModule,
     SafeModalModule,
+    UiModule,
   ],
   selector: 'safe-convert-modal',
   templateUrl: './convert-modal.component.html',
