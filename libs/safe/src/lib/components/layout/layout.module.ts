@@ -17,7 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { SafeSearchMenuModule } from '../search-menu/search-menu.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeDateModule } from '../../pipes/date/date.module';
-import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
+import { BreadcrumbsModule } from '@oort-front/ui';
 import { SafeDividerModule } from '../ui/divider/divider.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
 
@@ -46,7 +46,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     SafeSearchMenuModule,
     OverlayModule,
     SafeDateModule,
-    SafeBreadcrumbModule,
+    BreadcrumbsModule,
     SafeIconModule,
   ],
   exports: [SafeLayoutComponent],

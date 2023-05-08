@@ -149,7 +149,7 @@
   </mat-sidenav>
 
   <mat-sidenav-content class="sidenav-content">
-    <safe-breadcrumb></safe-breadcrumb>
+    <ui-breadcrumbs [breadcrumbs]="breadcrumbs.length > 1 ? breadcrumbs : []"></ui-breadcrumbs>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 
