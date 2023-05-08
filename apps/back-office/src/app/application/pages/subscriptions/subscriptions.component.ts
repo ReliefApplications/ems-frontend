@@ -9,6 +9,7 @@ import {
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { takeUntil } from 'rxjs/operators';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Application subscriptions page component.
@@ -31,6 +32,7 @@ export class SubscriptionsComponent
     'channel',
     'actions',
   ];
+  public colorVariant = Variant;
 
   // === SUBSCRIPTIONS ===
   private channels: Channel[] = [];

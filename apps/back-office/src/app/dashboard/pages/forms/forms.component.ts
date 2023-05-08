@@ -25,6 +25,7 @@ import {
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
 import { takeUntil } from 'rxjs';
+import { Variant } from '@oort-front/ui';
 
 /** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -52,6 +53,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
   ];
   public forms = new MatTableDataSource<Form>([]);
   public cachedForms: Form[] = [];
+  public colorVariant = Variant;
 
   // === FILTERING ===
   public filter: any = {

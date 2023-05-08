@@ -10,9 +10,9 @@ import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@ang
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SafeButtonModule, SafeModalModule } from '@oort-front/safe';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Application position module.
@@ -29,12 +29,12 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    MatIconModule,
     MatMenuModule,
     SafeButtonModule,
     MatButtonModule,
     TranslateModule,
     SafeModalModule,
+    UiModule,
   ],
   exports: [PositionComponent],
 })

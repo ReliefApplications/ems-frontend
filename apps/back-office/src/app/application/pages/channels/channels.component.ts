@@ -10,6 +10,7 @@ import {
   SafeConfirmService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
+import { Variant } from '@oort-front/ui';
 import { takeUntil } from 'rxjs/operators';
 
 /**
@@ -29,6 +30,7 @@ export class ChannelsComponent
   public channelsData: ChannelDisplay[] = [];
   public loading = true;
   public displayedColumns: string[] = ['title', 'subscribedRoles', 'actions'];
+  public colorVariant = Variant;
 
   /**
    * Channels page component
