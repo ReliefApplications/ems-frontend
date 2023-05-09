@@ -10,7 +10,6 @@ import { SafeDropdownFilterMenuModule } from '../dropdown-filter-menu/dropdown-f
 import { SafeExpandedCommentModule } from '../expanded-comment/expanded-comment.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
@@ -32,7 +31,6 @@ import { SafeDateFilterMenuModule } from '../date-filter-menu/date-filter-menu.m
     ReactiveFormsModule,
     // === MATERIAL ===
     MatButtonModule,
-    MatIconModule,
     MatTooltipModule,
     SafeButtonModule,
     // === KENDO ===

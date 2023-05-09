@@ -41,7 +41,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../utils/cleanRecord';
 import { CommonModule } from '@angular/common';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
@@ -80,7 +79,6 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
   imports: [
     CommonModule,
     MatDialogModule,
-    MatIconModule,
     MatButtonModule,
     MatTabsModule,
     SafeButtonModule,

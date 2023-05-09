@@ -8,7 +8,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatIconModule } from '@angular/material/icon';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { SafeChartModule } from '../chart/chart.module';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -38,7 +37,6 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MatSelectModule,
     MatRadioModule,
     MatButtonModule,
-    MatIconModule,
     TextFieldModule,
     SafeQueryBuilderModule,
     SafeChartModule,

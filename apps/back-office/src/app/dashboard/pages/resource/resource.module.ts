@@ -5,7 +5,6 @@ import { ResourceComponent } from './resource.component';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import {
@@ -28,7 +27,6 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     MatProgressSpinnerModule,
     MatTabsModule,
     MatTableModule,
-    MatIconModule,
     MatMenuModule,
     MatChipsModule,
     SafeAccessModule,

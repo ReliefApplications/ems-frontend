@@ -10,7 +10,6 @@ import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { SafeButtonModule } from '../../ui/button/button.module';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -34,7 +33,6 @@ interface MappingDialogData {
     TranslateModule,
     MatTableModule,
     MatMenuModule,
-    MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
