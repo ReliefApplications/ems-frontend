@@ -20,3 +20,7 @@ mat-radio-group {
 h2 {
   margin-bottom: 0 !important;
 }
+
+:host ::ng-deep .mat-form-field-prefix {
+  top: -0.25em !important;
+}

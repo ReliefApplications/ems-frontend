@@ -3,3 +3,7 @@
   flex-direction: column;
   gap: 32px;
 }
+
+:host ::ng-deep .mat-form-field-prefix {
+  top: -0.25em !important;
+}
