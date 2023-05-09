@@ -57,6 +57,8 @@ export class ArcgisService {
    *
    * @param {L.Map} map to add the webmap
    * @param {string} id webmap id
+   * @param options webmap options
+   * @param options.loadBasemap use basemap
    * @returns basemaps and layers
    */
   public loadWebMap(
@@ -558,6 +560,12 @@ export class ArcgisService {
     return this.http.get(path + `?token=${this.esriApiKey}`).toPromise();
   }
 
+  /**
+   * Execute reverse geosearch
+   *
+   * @param latlng latlng to reverse search
+   * @returns seerch as promise
+   */
   public reverseSearch(latlng: L.LatLng) {
     return new Promise((resolve, reject) =>
       (Geocoding as any)

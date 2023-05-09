@@ -260,7 +260,11 @@ export class MapComponent
     };
   }
 
-  /** Creates the map and adds all the controls we use */
+  /**
+   * Creates the map and adds all the controls we use
+   *
+   * @param initMap initialize map?
+   */
   private drawMap(initMap: boolean = true): void {
     console.log('draw map');
     const {
@@ -838,6 +842,8 @@ export class MapComponent
    * Set the webmap.
    *
    * @param webmap String containing the id (name) of the webmap
+   * @param options webmap options
+   * @param options.loadBasemap use basemap
    * @returns loaded basemaps and layers as Promise
    */
   public setWebmap(

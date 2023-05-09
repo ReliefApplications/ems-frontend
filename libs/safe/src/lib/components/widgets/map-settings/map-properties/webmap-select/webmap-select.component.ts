@@ -54,6 +54,7 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    * Map Properties of Map widget.
    *
    * @param arcgis service
+   * @param ngControl current ng control
    */
   constructor(
     private arcgis: ArcgisService,
@@ -123,6 +124,8 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
 
   /**
    * Search for webmap data in argcis-rest-request using arcgis service
+   *
+   * @param text search text
    */
   private search(text?: string): void {
     this.arcgis

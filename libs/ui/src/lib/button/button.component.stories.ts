@@ -25,6 +25,9 @@ export default {
 //   props: args,
 // });
 
+/**
+ * Primary story.
+ */
 export const Primary: StoryObj<StoryType> = {
   args: {
     label: 'My button',

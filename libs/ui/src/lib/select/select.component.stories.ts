@@ -13,10 +13,19 @@ export default {
   ],
 } as Meta<SelectComponent>;
 
+/**
+ * Template function
+ *
+ * @param args arguments
+ * @returns template
+ */
 const Template: StoryFn<SelectComponent> = (args: SelectComponent) => ({
   props: args,
 });
 
+/**
+ * Primary story.
+ */
 export const Primary = Template.bind({});
 Primary.args = {
   label: '',

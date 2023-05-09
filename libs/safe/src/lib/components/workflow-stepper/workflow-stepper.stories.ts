@@ -33,6 +33,9 @@ const TEMPLATE: StoryFn<SafeWorkflowStepperComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',

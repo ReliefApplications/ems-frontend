@@ -148,6 +148,7 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
 /**
  * Create layer definition form group
  *
+ * @param type layer type
  * @param value layer definition
  * @returns layer definition form group
  */

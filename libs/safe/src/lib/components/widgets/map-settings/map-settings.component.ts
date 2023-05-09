@@ -35,7 +35,8 @@ export class SafeMapSettingsComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  public currentTab: 'parameters' | 'layers' | 'layer' | 'display' | null = 'parameters';
+  public currentTab: 'parameters' | 'layers' | 'layer' | 'display' | null =
+    'parameters';
   public mapSettings!: MapConstructorSettings;
   public layerIds: string[] = [];
   // === REACTIVE FORM ===
@@ -171,7 +172,9 @@ export class SafeMapSettingsComponent
    *
    * @param selectedTab tab
    */
-  handleTabChange(selectedTab: 'parameters' | 'layers' | 'layer' | 'display' | null) {
+  handleTabChange(
+    selectedTab: 'parameters' | 'layers' | 'layer' | 'display' | null
+  ) {
     if (this.currentTab === 'layer' && !this.layerComponent?.form.pristine) {
       const confirmDialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('common.close'),

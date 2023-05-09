@@ -83,7 +83,11 @@ export class MapLayersComponent
     this.deleteLayer.emit(this.mapLayers.data[index].id);
   }
 
-  /** Opens a modal to add a new layer */
+  /**
+   * Opens a modal to add a new layer
+   *
+   * @param type type of layer
+   */
   public onAddLayer(type: LayerType = 'FeatureLayer') {
     this.editLayer.emit({
       type,
