@@ -2,8 +2,9 @@ import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogModule } from './dialog.module';
 import { CommonModule } from '@angular/common';
-import { Component, Input, Inject } from '@angular/core';
+import { Component, Input, Inject, OnDestroy } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
+import { Subject, takeUntil } from 'rxjs';
 
 /**
  * LaunchDialog component.
@@ -20,8 +21,9 @@ import { DialogRef } from '@angular/cdk/dialog';
     </button>
   `,
 })
-class LaunchDialogComponent {
+class LaunchDialogComponent implements OnDestroy {
   @Input() animal = '';
+  private destroy$ = new Subject<void>();
   /**
    * Constructor for the launchDialog component
    *
@@ -38,9 +40,14 @@ class LaunchDialogComponent {
         animal: this.animal,
       },
     });
-    dialogRef.closed.subscribe((result: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((result: any) => {
       console.log(`Dialog result: ${result}`);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
 
