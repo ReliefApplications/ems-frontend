@@ -78,7 +78,6 @@
     "ngx-cron-editor": "^0.7.6",
     "ngx-monaco-editor-v2": "^15.0.1",
     "rxjs": "~7.8.0",
-    "stream": "^0.0.2",
     "subscriptions-transport-ws": "^0.9.18",
     "survey-angular": "1.9.71",
     "survey-creator": "1.9.71",
