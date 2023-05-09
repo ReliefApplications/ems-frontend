@@ -45,7 +45,7 @@ export class SafeApiProxyService {
    */
   public buildPingRequest(name: string | undefined, pingUrl: string): any {
     if (name) {
-      const url = `${this.baseUrl}${name}${pingUrl}`;
+      const url = `${this.baseUrl}${name}${pingUrl ?? ''}`;
       const headers = this.buildHeaders();
       return this.restService.get(url, { headers });
     }
@@ -68,7 +68,7 @@ export class SafeApiProxyService {
    *
    * @param url URL string.
    * @param body body of the request.
-   * @param options standard http otions.
+   * @param options standard http options.
    * @returns Promised http request
    */
   public buildPostRequest(

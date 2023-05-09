@@ -14,6 +14,7 @@ import {
 import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
 import { firstValueFrom } from 'rxjs';
 import { ApiConfiguration } from '../../models/apiConfiguration.model';
+import jsonpath from 'jsonpath';
 
 /** Local storage key for last modified */
 const LAST_MODIFIED_KEY = '_last_modified';
@@ -197,12 +198,13 @@ export class SafeReferenceDataService {
         // Fetch items
         const url =
           this.apiProxy.baseUrl +
-          referenceData.apiConfiguration?.name +
-          referenceData.apiConfiguration?.graphQLEndpoint;
-        const body = { query: this.buildGraphQLQuery(referenceData, isCached) };
+          (referenceData.apiConfiguration?.name ?? '') +
+          (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
+        const body = { query: referenceData.query };
         const data = (await this.apiProxy.buildPostRequest(url, body)) as any;
-        items = referenceData.path ? get(data, referenceData.path) : data;
-        items = referenceData.query ? items[referenceData.query] : items;
+        items = referenceData.path
+          ? jsonpath.query(data, referenceData.path)
+          : data;
         // Cache items
         if (isCached) {
           const { items: cache } = (await localForage.getItem(
@@ -254,12 +256,13 @@ export class SafeReferenceDataService {
       case referenceDataType.graphql: {
         const url =
           this.apiProxy.baseUrl +
-          referenceData.apiConfiguration?.name +
-          referenceData.apiConfiguration?.graphQLEndpoint;
-        const body = { query: this.buildGraphQLQuery(referenceData, false) };
+          (referenceData.apiConfiguration?.name ?? '') +
+          (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
+        const body = { query: referenceData.query };
         const data = (await this.apiProxy.buildPostRequest(url, body)) as any;
-        items = referenceData.path ? get(data, referenceData.path) : data;
-        items = referenceData.query ? items[referenceData.query] : items;
+        items = referenceData.path
+          ? jsonpath.query(data, referenceData.path)
+          : data;
         localStorage.setItem(
           cacheKey + LAST_REQUEST_KEY,
           this.formatDateSQL(new Date())

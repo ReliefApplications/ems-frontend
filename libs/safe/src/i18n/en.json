@@ -1833,7 +1833,8 @@
 			},
 			"queryName": "Query Name",
 			"tooltip": {
-				"graphQLFilter": "Enter a query parameter to be used as a filter once choices are already cached. You can use {{lastUpdate}} to insert dynamically the last fetch date in SQL format."
+				"graphQLFilter": "Enter a query parameter to be used as a filter once choices are already cached. You can use {{lastUpdate}} to insert dynamically the last fetch date in SQL format.",
+				"path": "Uses JSONPath syntax to extract items from the JSON response. Examples: $.data[*].name, $.data..countries, $.data.countries.*"
 			},
 			"type": "Type",
 			"validateCsv": "Validate CSV",

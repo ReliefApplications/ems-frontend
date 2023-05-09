@@ -1833,7 +1833,8 @@
 			},
 			"queryName": "******",
 			"tooltip": {
-				"graphQLFilter": "****** {{lastUpdate}} ******"
+				"graphQLFilter": "****** {{lastUpdate}} ******",
+				"path": "******"
 			},
 			"type": "******",
 			"validateCsv": "******",

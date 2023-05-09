@@ -38,6 +38,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { inferTypeFromString } from './utils/inferTypeFromString';
 import { get } from 'lodash';
 
+/** Default graphql query */
+const DEFAULT_QUERY = `query {\n  \n}`;
 /** Default pagination parameter. */
 const ITEMS_PER_PAGE = 10;
 /** Available separator for csv */
@@ -79,6 +81,17 @@ export class ReferenceDataComponent
 
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
   @ViewChild('csvData') csvData?: ElementRef<HTMLInputElement>;
+
+  // === MONACO EDITOR ===
+  public editorOptions = {
+    language: 'graphql',
+    formatOnPaste: true,
+  };
+
+  /** @returns the graphqlQuery form control */
+  get queryControl() {
+    return this.referenceForm.get('query') as FormControl | null;
+  }
 
   /** @returns name of reference model */
   get name(): AbstractControl | null {
@@ -146,7 +159,17 @@ export class ReferenceDataComponent
       form
         .get('type')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe(clearFields);
+        .subscribe(() => {
+          clearFields();
+
+          // Clear the query field if the type is not GraphQL
+          if (this.type !== referenceDataType.graphql)
+            form.get('query')?.setValue('');
+
+          // Set the default query if the type is GraphQL
+          if (this.type === referenceDataType.graphql)
+            form.get('query')?.setValue(DEFAULT_QUERY);
+        });
 
       form
         .get('apiConfiguration')
@@ -557,7 +580,6 @@ export class ReferenceDataComponent
       this.loadingFields = false;
       return;
     }
-
     try {
       this.triedToGetFields = true;
       // get the fields
@@ -585,5 +607,25 @@ export class ReferenceDataComponent
   onRemoveField(field: any) {
     this.valueFields = this.valueFields.filter((x) => x.name !== field.name);
     this.referenceForm?.get('fields')?.setValue(this.valueFields);
+  }
+
+  /**
+   * On initialization of editor, format code
+   *
+   * @param editor monaco editor used for scss edition
+   */
+  public initEditor(editor: any): void {
+    const queryControl = this.queryControl;
+    if (!queryControl) return;
+    if (editor) {
+      setTimeout(() => {
+        editor
+          .getAction('editor.action.formatDocument')
+          .run()
+          .finally(() => {
+            queryControl.markAsPristine();
+          });
+      }, 100);
+    }
   }
 }
