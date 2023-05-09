@@ -18,7 +18,6 @@ import {
   RESTORE_RECORD,
 } from './graphql/mutations';
 import {
-  SafeRecordHistoryComponent,
   SafeLayoutService,
   SafeConfirmService,
   SafeSnackBarService,
@@ -366,13 +365,15 @@ export class FormRecordsComponent
       })
       .subscribe(({ data }) => {
         this.historyId = id;
-        this.layoutService.setRightSidenav({
-          component: SafeRecordHistoryComponent,
-          inputs: {
-            id: data.record.id,
-            revert: (version: any) =>
-              this.confirmRevertDialog(data.record, version),
-          },
+        import('@oort-front/safe').then(({ SafeRecordHistoryComponent }) => {
+          this.layoutService.setRightSidenav({
+            component: SafeRecordHistoryComponent,
+            inputs: {
+              id: data.record.id,
+              revert: (version: any) =>
+                this.confirmRevertDialog(data.record, version),
+            },
+          });
         });
       });
   }

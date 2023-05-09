@@ -23,6 +23,7 @@ import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MapComponent } from '../../ui/map';
+import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 
 /** Component for the map widget settings */
 @Component({
@@ -34,7 +35,7 @@ export class SafeMapSettingsComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  public currentTab: 'parameters' | 'layers' | 'layer' | null = 'parameters';
+  public currentTab: 'parameters' | 'layers' | 'layer' | 'display' | null = 'parameters';
   public mapSettings!: MapConstructorSettings;
   public layerIds: string[] = [];
   // === REACTIVE FORM ===
@@ -73,8 +74,12 @@ export class SafeMapSettingsComponent
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    this.tileForm = createMapWidgetFormGroup(this.tile.id, this.tile.settings);
+    this.tileForm = extendWidgetForm(
+      createMapWidgetFormGroup(this.tile.id, this.tile.settings),
+      this.tile.settings?.widgetDisplay
+    );
     this.layerIds = this.tileForm.get('layers')?.value;
+
     this.change.emit(this.tileForm);
 
     const defaultMapSettings: MapConstructorSettings = {
@@ -140,7 +145,7 @@ export class SafeMapSettingsComponent
    *
    * @param tab Tab
    */
-  private openTab(tab: 'parameters' | 'layers' | 'layer' | null) {
+  private openTab(tab: 'parameters' | 'layers' | 'layer' | 'display' | null) {
     // Reset settings when switching to/from 'layer' tab
     if (
       (this.currentTab === 'layer' && tab !== 'layer') ||
@@ -166,7 +171,7 @@ export class SafeMapSettingsComponent
    *
    * @param selectedTab tab
    */
-  handleTabChange(selectedTab: 'parameters' | 'layers' | 'layer' | null) {
+  handleTabChange(selectedTab: 'parameters' | 'layers' | 'layer' | 'display' | null) {
     if (this.currentTab === 'layer' && !this.layerComponent?.form.pristine) {
       const confirmDialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('common.close'),

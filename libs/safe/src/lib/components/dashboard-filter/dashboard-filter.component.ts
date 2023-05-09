@@ -1,9 +1,8 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   HostListener,
-  Input,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -17,11 +16,13 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.compo
 import { takeUntil } from 'rxjs/operators';
 import {
   EDIT_APPLICATION_FILTER,
+  EDIT_APPLICATION_FILTER_POSITION,
   EditApplicationMutationResponse,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { ContextService } from '../../services/context/context.service';
+import localForage from 'localforage';
 
 /**  Dashboard contextual filter component. */
 @Component({
@@ -31,10 +32,10 @@ import { ContextService } from '../../services/context/context.service';
 })
 export class DashboardFilterComponent
   extends SafeUnsubscribeComponent
-  implements AfterViewInit, OnInit
+  implements OnInit, OnDestroy
 {
   // Filter
-  @Input() position: FilterPosition = FilterPosition.BOTTOM;
+  position!: FilterPosition;
   public positionList = [
     FilterPosition.LEFT,
     FilterPosition.TOP,
@@ -45,13 +46,15 @@ export class DashboardFilterComponent
   public filterPosition = FilterPosition;
   public containerWidth!: string;
   public containerHeight!: string;
+  public containerTopOffset!: string;
+  public containerLeftOffset!: string;
   private value: any;
 
   // Survey
   public survey: Survey.Model = new Survey.Model();
   public surveyStructure: any = {};
   @ViewChild('dashboardSurveyCreatorContainer')
-  dashboardSurveyCreatorContainer!: ElementRef;
+  dashboardSurveyCreatorContainer!: ElementRef<HTMLElement>;
 
   public applicationId?: string;
 
@@ -64,9 +67,10 @@ export class DashboardFilterComponent
    * @param applicationService Shared application service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param contextService Context service
    */
   constructor(
-    private hostElement: ElementRef,
+    private hostElement: ElementRef<HTMLElement>,
     private dialog: MatDialog,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
@@ -88,12 +92,36 @@ export class DashboardFilterComponent
       .subscribe((application: Application | null) => {
         if (application) {
           this.applicationId = application.id;
-          if (application.contextualFilter) {
-            this.surveyStructure = application.contextualFilter;
-            this.initSurvey();
-          }
+          localForage
+            .getItem(this.applicationId + 'contextualFilter')
+            .then((contextualFilter) => {
+              if (contextualFilter) {
+                this.surveyStructure = contextualFilter;
+                this.initSurvey();
+              } else if (application.contextualFilter) {
+                this.surveyStructure = application.contextualFilter;
+                this.initSurvey();
+              }
+            });
+          localForage
+            .getItem(this.applicationId + 'contextualFilterPosition')
+            .then((contextualFilterPosition) => {
+              if (contextualFilterPosition) {
+                this.position = contextualFilterPosition as FilterPosition;
+              } else if (application.contextualFilterPosition) {
+                this.position = application.contextualFilterPosition;
+              } else {
+                this.position = FilterPosition.BOTTOM; //case where there are no default position set up
+              }
+            });
         }
       });
+    const parentRect =
+      this.hostElement.nativeElement.parentElement?.parentElement?.getBoundingClientRect(); //This is the sidenav container, not ideal solution
+    this.containerWidth = `${parentRect?.width}px`;
+    this.containerHeight = `${parentRect?.height}px`;
+    this.containerLeftOffset = `${parentRect?.x}px`;
+    this.containerTopOffset = `${parentRect?.y}px`;
   }
 
   /**
@@ -101,10 +129,12 @@ export class DashboardFilterComponent
    */
   @HostListener('window:resize', ['$event'])
   onResize() {
-    this.containerWidth =
-      this.hostElement.nativeElement?.offsetWidth.toString() + 'px';
-    this.containerHeight =
-      this.hostElement.nativeElement?.offsetHeight.toString() + 'px';
+    const parentRect =
+      this.hostElement.nativeElement.parentElement?.parentElement?.getBoundingClientRect(); //This is the sidenav container, not ideal solution
+    this.containerWidth = `${parentRect?.width}px`;
+    this.containerHeight = `${parentRect?.height}px`;
+    this.containerLeftOffset = `${parentRect?.x}px`;
+    this.containerTopOffset = `${parentRect?.y}px`;
   }
 
   /**
@@ -113,20 +143,6 @@ export class DashboardFilterComponent
   @HostListener('document:keydown.escape', ['$event'])
   onEsc() {
     this.isDrawerOpen = false;
-  }
-
-  // We need the set the fix values first as we do not know the number of filters the component is going to receive
-  // And because the drawerPositioner directive makes the element fixed
-  ngAfterViewInit(): void {
-    // This settimeout is needed as this dashboard is currently placed inside a mat-drawer
-    // We have to set a minimum timeout fix to get the real width of the host component until mat-drawer fully opens
-    // If the dashboard filter is placed somewhere else that is not a mat-drawer this would not be needed
-    setTimeout(() => {
-      this.containerWidth =
-        this.hostElement.nativeElement?.offsetWidth.toString() + 'px';
-      this.containerHeight =
-        this.hostElement.nativeElement?.offsetHeight.toString() + 'px';
-    }, 0);
   }
 
   /**
@@ -151,6 +167,10 @@ export class DashboardFilterComponent
         dialogRef.afterClosed().subscribe((newStructure) => {
           if (newStructure) {
             this.surveyStructure = newStructure;
+            localForage.setItem(
+              this.applicationId + 'contextualFilter',
+              this.surveyStructure
+            );
             this.initSurvey();
             this.saveFilter();
           }
@@ -166,7 +186,7 @@ export class DashboardFilterComponent
         mutation: EDIT_APPLICATION_FILTER,
         variables: {
           id: this.applicationId,
-          contextualFilter: this.surveyStructure.text,
+          contextualFilter: this.surveyStructure,
         },
       })
       .subscribe(({ errors, data }) => {
@@ -192,17 +212,77 @@ export class DashboardFilterComponent
   /** Render the survey using the saved structure */
   private initSurvey(): void {
     Survey.StylesManager.applyTheme();
-    const surveyStructure = this.surveyStructure.JSON ?? this.surveyStructure;
+    const surveyStructure = this.surveyStructure;
     this.survey = new Survey.Model(surveyStructure);
     if (this.value) {
       this.survey.data = this.value;
     }
     this.survey.showCompletedPage = false;
     this.survey.showNavigationButtons = false;
-    this.survey.render(this.dashboardSurveyCreatorContainer.nativeElement);
+    this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
     this.survey.onValueChanged.add(this.onValueChange.bind(this));
   }
 
+  /**
+   * Opens the settings modal
+   */
+  public openSettings() {
+    import('./filter-settings-modal/filter-settings-modal.component').then(
+      ({ FilterSettingsModalComponent }) => {
+        const dialogRef = this.dialog.open(FilterSettingsModalComponent, {
+          data: { positionList: this.positionList },
+        });
+        dialogRef.afterClosed().subscribe((defaultPosition) => {
+          if (defaultPosition) {
+            this.saveSettings(defaultPosition);
+          }
+        });
+      }
+    );
+  }
+
+  /**
+   *  Saves the filter settings
+   *
+   * @param defaultPosition default position for the filter to be registered
+   */
+  private saveSettings(defaultPosition: FilterPosition): void {
+    this.apollo
+      .mutate<EditApplicationMutationResponse>({
+        mutation: EDIT_APPLICATION_FILTER_POSITION,
+        variables: {
+          id: this.applicationId,
+          contextualFilterPosition: defaultPosition,
+        },
+      })
+      .subscribe(({ errors, data }) => {
+        if (errors) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotUpdated', {
+              type: this.translate.instant('common.filter.one'),
+              error: errors ? errors[0].message : '',
+            }),
+            { error: true }
+          );
+        } else {
+          localForage.setItem(
+            this.applicationId + 'contextualFilterPosition',
+            defaultPosition
+          );
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectUpdated', {
+              type: this.translate.instant('common.filter.one').toLowerCase(),
+              value: data?.editApplication.name ?? '',
+            })
+          );
+        }
+      });
+  }
+
+  /**
+   * Updates the filter in the context service with the latest survey data
+   * when a value changes.
+   */
   private onValueChange() {
     this.contextService.filter.next(this.survey.data);
   }

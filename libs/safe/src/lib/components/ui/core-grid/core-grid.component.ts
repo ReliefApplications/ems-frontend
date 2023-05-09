@@ -623,32 +623,40 @@ export class SafeCoreGridComponent
             error: false,
           };
           for (const field in data) {
-            if (Object.prototype.hasOwnProperty.call(data, field)) {
-              const nodes =
-                data[field].edges.map((x: any) => ({
-                  ...x.node,
-                  _meta: {
-                    style: x.meta.style,
-                  },
-                })) || [];
-              this.totalCount = data[field].totalCount;
-              this.items = cloneData(nodes);
-              this.convertDateFields(this.items);
-              this.originalItems = cloneData(this.items);
-              this.loadItems();
-              for (const updatedItem of this.updatedItems) {
-                const item: any = this.items.find(
-                  (x) => x.id === updatedItem.id
-                );
-                if (item) {
-                  Object.assign(item, updatedItem);
-                  item.saved = false;
+            try {
+              if (Object.prototype.hasOwnProperty.call(data, field)) {
+                const nodes =
+                  data[field]?.edges.map((x: any) => ({
+                    ...x.node,
+                    _meta: {
+                      style: x.meta.style,
+                    },
+                  })) || [];
+                this.totalCount = data[field] ? data[field].totalCount : 0;
+                this.items = cloneData(nodes);
+                this.convertDateFields(this.items);
+                this.originalItems = cloneData(this.items);
+                this.loadItems();
+                for (const updatedItem of this.updatedItems) {
+                  const item: any = this.items.find(
+                    (x) => x.id === updatedItem.id
+                  );
+                  if (item) {
+                    Object.assign(item, updatedItem);
+                    item.saved = false;
+                  }
                 }
+                // if (!this.readOnly) {
+                //   this.initSelectedRows();
+                // }
               }
-              // if (!this.readOnly) {
-              //   this.initSelectedRows();
-              // }
+            } catch (error) {
+              console.error(error);
             }
+          }
+          if (this.settings.query.temporaryRecords) {
+            //Handles temporary records for resources creation in forms
+            this.getTemporaryRecords();
           }
         },
         error: (err: any) => {
@@ -670,6 +678,19 @@ export class SafeCoreGridComponent
     } else {
       this.loading = false;
     }
+  }
+
+  /**
+   * Loads temporary records for resources questions
+   */
+  public getTemporaryRecords() {
+    const ids = this.items.map((item) => item.id);
+    this.settings.query.temporaryRecords.forEach((record: any) => {
+      if (!ids.includes(record.id)) this.items.unshift(record);
+    });
+    this.totalCount =
+      this.totalCount + this.settings.query.temporaryRecords.length;
+    this.loadItems();
   }
 
   /**
@@ -888,6 +909,23 @@ export class SafeCoreGridComponent
             name: this.queryBuilder.getQueryNameFromResourceName(field.type),
             template: null,
           },
+        },
+      });
+    } else if (
+      (!isArray && items.isTemporary) ||
+      (isArray && items[0].isTemporary)
+    ) {
+      const { SafeRecordModalComponent } = await import(
+        '../../record-modal/record-modal.component'
+      );
+      //case for temporary records
+      this.dialog.open(SafeRecordModalComponent, {
+        data: {
+          isTemporary: true,
+          template: isArray ? items[0].template : items.template,
+          canUpdate: false,
+          compareTo: false,
+          temporaryRecordData: isArray ? items[0] : items,
         },
       });
     } else {

@@ -28,6 +28,7 @@ import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -100,7 +101,10 @@ export class SafeGridSettingsComponent
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     const tileSettings = this.tile.settings;
-    this.formGroup = createGridWidgetFormGroup(this.tile.id, tileSettings);
+    this.formGroup = extendWidgetForm(
+      createGridWidgetFormGroup(this.tile.id, tileSettings),
+      tileSettings?.widgetDisplay
+    );
     this.change.emit(this.formGroup);
     // this.formGroup?.get('query.name')?.valueChanges.subscribe((res) => {
     //   this.filteredQueries = this.filterQueries(res);
