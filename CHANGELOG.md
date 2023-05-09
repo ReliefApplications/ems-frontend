@@ -1,3 +1,22 @@
+# [2.0.0-beta.11](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.10...v2.0.0-beta.11) (2023-05-09)
+
+
+### Bug Fixes
+
+* duplication of date editor in surveyjs when switching question type ([dbbaf1a](https://github.com/ReliefApplications/oort-frontend/commit/dbbaf1ab6093a4482f5b3baa2ebc6954c5b0402e))
+* history of changes of record would not appear on form-records page due to scroll strategy error ([db17a49](https://github.com/ReliefApplications/oort-frontend/commit/db17a497e884713119a0189c9961318df1b86460))
+* incorrect dashboard position and size when size of screen changes ([9f8a70c](https://github.com/ReliefApplications/oort-frontend/commit/9f8a70c02c8a5c9d99e2f878fa2b04e9e8678658))
+* remove default span in summary card parsing if no styling, as it could prevent some images to appear ([0a4a252](https://github.com/ReliefApplications/oort-frontend/commit/0a4a2524a6e0309175ede3f47fb954c024bd3e35))
+* series settings were messing up when changing type of chart ([22aaf80](https://github.com/ReliefApplications/oort-frontend/commit/22aaf80ce6dbde1e547a93048e8fda32cae678b5))
+* showBorder option was creating an issue with summary cards value selection ([216b0cf](https://github.com/ReliefApplications/oort-frontend/commit/216b0cfbe61abd27b96db7404df3c4c7326d29c0))
+
+
+### Features
+
+* add substr / toint / tolong calc key ([9756763](https://github.com/ReliefApplications/oort-frontend/commit/97567632077745403dca79e1bba10e8de7946527))
+* borderless widgets ([b2fdd8b](https://github.com/ReliefApplications/oort-frontend/commit/b2fdd8b7fd3316987e3e17d91b53add8fa70d395))
+* possibility to have borderless widgets ([7657b39](https://github.com/ReliefApplications/oort-frontend/commit/7657b39195af31bd2caea5efafc2f056506746ba)), closes [feat/AB#59610](https://github.com/feat/AB/issues/59610)
+
 # [2.0.0-beta.10](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.9...v2.0.0-beta.10) (2023-04-25)
 
 
