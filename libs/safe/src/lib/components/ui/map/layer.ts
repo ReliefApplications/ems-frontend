@@ -23,6 +23,7 @@ import {
 } from '../../../models/layer.model';
 import { SafeMapPopupService } from './map-popup/map-popup.service';
 import { haversineDistance } from './utils/haversine';
+import { SafeIconDisplayPipe } from '../../../pipes/icon-display/icon-display.pipe';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -446,7 +447,12 @@ export class Layer implements LayerModel {
         layer.onAdd = (map: L.Map) => {
           const l = L.LayerGroup.prototype.onAdd.call(layer, map);
           // Leaflet.heat doesn't support click events, so we have to do it ourselves
-          this.onLayerAdd(map, layer);
+          this.onAddLayer(map, layer);
+          return l;
+        };
+        layer.onRemove = (map: L.Map) => {
+          const l = L.LayerGroup.prototype.onRemove.call(layer, map);
+          this.onRemoveLayer(map, layer);
           return l;
         };
         this.layer = layer;
@@ -550,7 +556,15 @@ export class Layer implements LayerModel {
                   );
                 }
               });
-              this.onLayerAdd(map, layer);
+              this.onAddLayer(map, layer);
+              return l;
+            };
+            layer.onRemove = (map: L.Map) => {
+              const l = (L as any).HeatLayer.prototype.onRemove.call(
+                layer,
+                map
+              );
+              this.onRemoveLayer(map, layer);
               return l;
             };
             this.layer = layer;
@@ -595,7 +609,15 @@ export class Layer implements LayerModel {
                     clusterGroup,
                     map
                   );
-                  this.onLayerAdd(map, clusterGroup);
+                  this.onAddLayer(map, clusterGroup);
+                  return l;
+                };
+                clusterGroup.onRemove = (map: L.Map) => {
+                  const l = L.MarkerClusterGroup.prototype.onRemove.call(
+                    clusterGroup,
+                    map
+                  );
+                  this.onRemoveLayer(map, clusterGroup);
                   return l;
                 };
 
@@ -619,9 +641,12 @@ export class Layer implements LayerModel {
                 const clusterLayer = L.geoJSON(data, geoJSONopts);
                 clusterLayer.onAdd = (map: L.Map) => {
                   const l = L.GeoJSON.prototype.onAdd.call(clusterLayer, map);
-                  this.onLayerAdd(map, clusterLayer);
-                  console.log((map as any).legendControl);
-                  (map as any).legendControl.addLayer(l, this.legend);
+                  this.onAddLayer(map, clusterLayer);
+                  return l;
+                };
+                clusterLayer.onRemove = (map: L.Map) => {
+                  const l = L.GeoJSON.prototype.onRemove.call(layer, map);
+                  this.onRemoveLayer(map, clusterLayer);
                   return l;
                 };
                 clusterGroup.addLayer(clusterLayer);
@@ -632,9 +657,12 @@ export class Layer implements LayerModel {
 
                 layer.onAdd = (map: L.Map) => {
                   const l = L.GeoJSON.prototype.onAdd.call(layer, map);
-                  this.onLayerAdd(map, layer);
-                  console.log((map as any).legendControl);
-                  (map as any).legendControl.addLayer(l, this.legend);
+                  this.onAddLayer(map, layer);
+                  return l;
+                };
+                layer.onRemove = (map: L.Map) => {
+                  const l = L.GeoJSON.prototype.onRemove.call(layer, map);
+                  this.onRemoveLayer(map, layer);
                   return l;
                 };
                 this.layer = layer;
@@ -647,17 +675,22 @@ export class Layer implements LayerModel {
   /**
    * Handle layer addition, to subscribe to map event:
    * - set visibility based on zoom.
+   * - add legend if any
    *
    * @param map Leaflet map
    * @param layer leaflet layer
    */
-  onLayerAdd(map: L.Map, layer: L.Layer) {
+  onAddLayer(map: L.Map, layer: L.Layer) {
     const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
     const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
     if (map.getZoom() > maxZoom || map.getZoom() < minZoom) {
       map.removeLayer(layer);
     } else {
       map.addLayer(layer);
+      const legendControl = (map as any).legendControl;
+      if (legendControl) {
+        legendControl.addLayer(layer, this.legend);
+      }
     }
     map.on('zoomend', (zoom) => {
       const currZoom = zoom.target.getZoom();
@@ -672,86 +705,119 @@ export class Layer implements LayerModel {
   }
 
   /**
+   * Handle layer deletion, to subscribe to map event:
+   * - remove legend if any
+   *
+   * @param map Leaflet map
+   * @param layer Leaflet layer
+   */
+  onRemoveLayer(map: L.Map, layer: L.Layer) {
+    const legendControl = (map as any).legendControl;
+    if (legendControl) {
+      legendControl.removeLayer(layer);
+    }
+  }
+
+  /**
    * Get legend from layer
    *
    * @returns layer legend as html
    */
   get legend() {
+    let html = '';
     switch (this.type) {
       case 'FeatureLayer': {
-        return 'feature';
+        switch (
+          get(this.layerDefinition, 'drawingInfo.renderer.type', 'simple')
+        ) {
+          case 'heatmap':
+            const gradient = get(
+              this.layerDefinition,
+              'drawingInfo.renderer.gradient',
+              DEFAULT_HEATMAP.gradient
+            );
+            html += '<ul class="pl-2">';
+            gradient.forEach((value) => {
+              html += `<li class="flex items-center gap-1"><i style="background-color: ${value.color}" class="w-4 h-4 rounded"></i><span>${value.ratio}</span></li>`;
+            });
+            html += '</ul>';
+            break;
+          default:
+            switch (get(this.layerDefinition, 'featureReduction.type')) {
+              case 'cluster': {
+                // Features legend
+                const symbol: LayerSymbol = {
+                  style: get(
+                    this.layerDefinition,
+                    'drawingInfo.renderer.symbol.style',
+                    'location-dot'
+                  ),
+                  color: get(
+                    this.layerDefinition,
+                    'drawingInfo.renderer.symbol.color',
+                    'blue'
+                  ),
+                  size: get(
+                    this.layerDefinition,
+                    'drawingInfo.renderer.symbol.size',
+                    24
+                  ),
+                };
+                const pipe = new SafeIconDisplayPipe();
+                html += `<i style="color: ${
+                  symbol.color
+                }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>`;
+                // Cluster legend
+                const clusterSymbol: LayerSymbol = get(
+                  this.layerDefinition,
+                  'featureReduction.drawingInfo.renderer.symbol',
+                  symbol
+                );
+                html += `<div>Clusters</div>`;
+                html += `<i style="color: ${
+                  clusterSymbol.color
+                }"; class="${pipe.transform(
+                  clusterSymbol.style,
+                  'fa'
+                )} pl-2"></i>`;
+                break;
+              }
+
+              default: {
+                const symbol: LayerSymbol = {
+                  style: get(
+                    this.layerDefinition,
+                    'drawingInfo.renderer.symbol.style',
+                    'location-dot'
+                  ),
+                  color: get(
+                    this.layerDefinition,
+                    'drawingInfo.renderer.symbol.color',
+                    'blue'
+                  ),
+                  size: get(
+                    this.layerDefinition,
+                    'drawingInfo.renderer.symbol.size',
+                    24
+                  ),
+                };
+                const pipe = new SafeIconDisplayPipe();
+                html += `<i style="color: ${
+                  symbol.color
+                }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>`;
+                break;
+              }
+            }
+        }
+        break;
       }
       case 'GroupLayer': {
-        return 'group';
+        break;
       }
     }
-    // if (!this.properties?.legend || this.properties.legend.display === false)
-    //   return null;
-
-    // const data = this.data;
-    // const labelField = this.properties.legend.field;
-
-    // switch (this.type) {
-    //   case 'group':
-    //     // Groups don't have legends
-    //     return null;
-
-    //   case 'sketch':
-    //   case 'feature':
-    //     // check if data is a FeatureCollection or a Feature
-    //     const features =
-    //       data.type === 'FeatureCollection' ? data.features : [data];
-
-    //     const items: {
-    //       label: string;
-    //       color: string;
-    //       icon?: IconName | 'location-dot';
-    //     }[] = [];
-
-    //     features.forEach((feature) => {
-    //       if ('properties' in feature) {
-    //         // check if feature is a point
-    //         // @TODO structure sent from backend follows the feature.type structure
-    //         const isPoint = feature.geometry?.type
-    //           ? feature.geometry.type === 'Point'
-    //           : (feature as any).type === 'Point';
-    //         const style = this.getFeatureStyle(feature);
-    //         items.push({
-    //           label: labelField ? feature.properties?.[labelField] ?? '' : '',
-    //           color: style.symbol.color,
-    //           icon: isPoint ? style.symbol.icon : undefined,
-    //         });
-    //       }
-    //     });
-
-    //     return {
-    //       type: 'feature',
-    //       items,
-    //     };
-
-    //   case 'cluster':
-    //     return {
-    //       type: 'cluster',
-    //       color: this.firstStyle.fillColor,
-    //       icon: this.firstStyle.icon,
-    //       min: MIN_CLUSTER_SIZE,
-    //       max: MAX_CLUSTER_SIZE,
-    //     };
-    //   case 'heatmap':
-    //     // transform gradient to array of objects
-    //     const gradient: { color: string; value: number }[] = [];
-    //     Object.keys(this.firstStyle.heatmap.gradient).forEach((key) => {
-    //       const nbr = parseFloat(key);
-    //       gradient.push({
-    //         color: this.firstStyle.heatmap.gradient[nbr],
-    //         value: parseFloat(key),
-    //       });
-    //     });
-
-    //     return {
-    //       type: 'heatmap',
-    //       gradient,
-    //     };
-    // }
+    if (html) {
+      html = `<div class="font-bold">${this.name}</div>` + html;
+    }
+    return html;
   }
 }

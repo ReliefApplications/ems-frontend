@@ -8,14 +8,12 @@ interface LegendControlOptions extends L.ControlOptions {
 }
 
 class LegendControl extends L.Control {
-  private legends: any;
-
   public override options: LegendControlOptions = {
     position: 'bottomright',
     // layers: [],
   };
   private _map!: L.Map;
-  // public layers: Layer[];
+  private layers = {};
 
   /**
    * Custom leaflet legend control
@@ -38,53 +36,56 @@ class LegendControl extends L.Control {
     this._map = map;
     const container: HTMLElement =
       this.options.container ||
-      L.DomUtil.create('div', 'leaflet-legend-control leaflet-bar');
+      L.DomUtil.create('div', 'leaflet-legend-control leaflet-bar p-2');
     L.DomEvent.disableScrollPropagation(container).disableClickPropagation(
       container
     );
     container.style.backgroundColor = 'white';
     container.style.width = '300';
-    container.innerHTML = 'Legend control';
+    container.innerHTML = this.innerHtml;
 
-    // for (const legend of this.legends) {
-    //   console.log(legend);
-    // }
-
-    // this.layers
-    //   .map((layer: Layer) => {
-    //     switch (layer.type) {
-    //       case 'cluster':
-    //         return layer.getLayer() as ClusterLayer;
-    //       case 'heatmap':
-    //         return { ...layer.getLayer() } as HeatmapLayer;
-    //       case 'feature':
-    //         return new FeatureLayer(layer.data, '', '');
-    //       case 'group':
-    //         return layer.getLayer() as GroupLayer;
-    //       case 'sketch':
-    //         return layer.getLayer() as SketchLayer;
-    //     }
-    //   })
-    //   .forEach((leafletLayer) => {
-    //     console.log('type', leafletLayer instanceof FeatureLayer);
-    //     container.innerHTML =
-    //       container.innerHTML + '<br>' + leafletLayer.legend;
-    //   });
-
-    // if (this._layers.length) {
-    //   this._load();
-    // }
-    console.log(this);
     (map as any).legendControl = this;
     return container;
   }
 
+  get innerHtml() {
+    const title = document.createElement('div');
+    title.className = 'text-base font-bold';
+    title.innerHTML = 'Legend';
+
+    let legendHtml = '';
+    for (const layer in this.layers) {
+      const legend = get(this.layers, layer);
+      if (legend) {
+        legendHtml += legend;
+      }
+    }
+    if (legendHtml) {
+      const legend = document.createElement('div');
+      legend.className = 'flex flex-col gap-1';
+      legend.innerHTML = legendHtml;
+      return title.outerHTML + legend.outerHTML;
+    } else {
+      return '';
+    }
+  }
+
   public addLayer(layer: L.Layer, legend: string) {
-    console.log(layer);
-    console.log(get(layer, '_leaflet_id'));
-    // set(this.legends, layer._leaflet_id, legend);
-    console.log('add layer');
-    this.onAdd(this._map);
+    set(this.layers, (layer as any)._leaflet_id, legend);
+    this._update();
+  }
+
+  public removeLayer(layer: L.Layer) {
+    set(this.layers, (layer as any)._leaflet_id, null);
+    this._update();
+  }
+
+  _update() {
+    const container = this.getContainer();
+    if (!container) {
+      return;
+    }
+    container.innerHTML = this.innerHtml;
   }
 }
 
