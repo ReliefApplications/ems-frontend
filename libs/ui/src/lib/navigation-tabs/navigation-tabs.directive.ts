@@ -370,10 +370,11 @@ export class NavigationTabsDirective implements AfterViewInit {
   }
 
   /**
+   * Initializes a tab classes for horizontal display
    *
-   * @param tabButton
+   * @param tabButton tabButton
    */
-  initializesClassHorizontal(tabButton: any) {
+  initializesClassHorizontal(tabButton: any): void {
     this.renderer.addClass(tabButton, 'border-b-2');
     this.renderer.addClass(tabButton, 'border-transparent');
     switch (this.variant) {
@@ -417,12 +418,13 @@ export class NavigationTabsDirective implements AfterViewInit {
   }
 
   /**
+   * Initializes a tab classes for vertical display
    *
-   * @param tabButton
+   * @param tabButton tabButton
    */
-  initializesClassVertical(tabButton: any) {
+  initializesClassVertical(tabButton: any): void {
     this.renderer.addClass(tabButton, 'rounded-md');
-    this.renderer.addClass(tabButton, 'justify-left');
+    this.renderer.addClass(tabButton, 'justify-start');
     switch (this.variant) {
       case this.colorVariant.DEFAULT:
         this.renderer.addClass(tabButton, 'text-gray-500');
