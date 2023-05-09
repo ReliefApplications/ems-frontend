@@ -33,7 +33,7 @@ export class NavigationTabsDirective implements OnInit {
   /**
    * Output emitted whenever a new tab is clicked, gives the index of the new tab
    */
-  @Output() selectedIndexChangeDirective = new EventEmitter<number>();
+  @Output() selectedIndexChange = new EventEmitter<number>();
   /**
    * Output emitted enabling and disabling animation states
    */
@@ -281,9 +281,7 @@ export class NavigationTabsDirective implements OnInit {
   currentTabIndexEmission(tabs: any, currentTabSelected: any) {
     for (const tab of tabs) {
       if (tab.isSameNode(currentTabSelected)) {
-        this.selectedIndexChangeDirective.emit(
-          Array.prototype.indexOf.call(tabs, tab)
-        );
+        this.selectedIndexChange.emit(Array.prototype.indexOf.call(tabs, tab));
         this.currentSelected = Array.prototype.indexOf.call(tabs, tab);
       }
     }
