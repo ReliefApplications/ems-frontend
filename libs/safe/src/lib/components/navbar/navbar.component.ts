@@ -1,22 +1,15 @@
-import {
-  Component,
-  Input,
-  Inject,
-  Output,
-  EventEmitter,
-  HostListener,
-} from '@angular/core';
+import { Component, Input, Inject, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 /**
- * The left side navigator used in the main layout
+ * The navbar navigator used in the main layout
  */
 @Component({
-  selector: 'safe-left-sidenav',
-  templateUrl: './left-sidenav.component.html',
-  styleUrls: ['./left-sidenav.component.scss'],
+  selector: 'safe-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.scss'],
 })
-export class SafeLeftSidenavComponent {
+export class SafeNavbarComponent {
   @Input() appLayout = false;
   @Input() canAddPage = false;
   @Output() reorder: EventEmitter<any> = new EventEmitter();
@@ -27,18 +20,14 @@ export class SafeLeftSidenavComponent {
 
   private environment: any;
 
-  // === DISPLAY ===
-  public largeDevice: boolean;
-
   /**
-   * Left sidenav visible in application edition and preview.
+   * Left navbar visible in application edition and preview.
    *
    * @param environment This is the environment in which we are running the application
    * @param router The Angular Router service
    */
   constructor(@Inject('environment') environment: any, private router: Router) {
     this.environment = environment;
-    this.largeDevice = window.innerWidth > 1024;
   }
 
   /**
@@ -62,15 +51,5 @@ export class SafeLeftSidenavComponent {
   drop(event: any, group: any): void {
     moveItemInArray(group.navItems, event.previousIndex, event.currentIndex);
     this.reorder.emit(group.navItems);
-  }
-
-  /**
-   * Change the display depending on windows size.
-   *
-   * @param event Event that implies a change in window size
-   */
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any): void {
-    this.largeDevice = event.target.innerWidth > 1024;
   }
 }

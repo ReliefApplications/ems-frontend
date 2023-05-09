@@ -58,6 +58,8 @@ export class SafeLayoutComponent
 
   @Input() profileRoute = '/profile';
 
+  @Input() sideMenu = true;
+
   languages: string[] = [];
 
   // === NOTIFICATIONS ===
@@ -79,8 +81,6 @@ export class SafeLayoutComponent
   public otherOffice = '';
   public environment: any;
   private inApplication = false;
-
-  public sideMenu = true;
 
   // === APP SEARCH ===
   public showAppMenu = false;
@@ -236,7 +236,6 @@ export class SafeLayoutComponent
    */
   goBack(): void {
     this.router.navigate(['../../'], { relativeTo: this.route });
-    this.sideMenu = true;
   }
 
   /**
@@ -256,7 +255,6 @@ export class SafeLayoutComponent
    */
   onOpenApplication(application: Application): void {
     this.openApplication.emit(application);
-    this.sideMenu = application.sideMenu ?? false;
   }
 
   /**

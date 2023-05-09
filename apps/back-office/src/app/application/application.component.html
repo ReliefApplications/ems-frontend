@@ -1,7 +1,8 @@
 <safe-layout
   [toolbar]="toolbar"
-  [leftSidenav]="leftSidenav"
   [route]="route"
+  [leftSidenav]="pages"
+  [sideMenu]="sideMenu"
 ></safe-layout>
 <ng-template #toolbar>
   <safe-app-application-toolbar
@@ -12,13 +13,21 @@
   ></safe-app-application-toolbar>
 </ng-template>
 <!--Need the nav variable, don't remove let-nav, used in layout-->
-<ng-template #leftSidenav let-nav>
+<ng-template #pages let-nav>
   <safe-left-sidenav
+    *ngIf="sideMenu || !largeDevice"
     [nav]="nav"
     [navGroups]="navGroups"
     [appLayout]="true"
     [canAddPage]="application?.canUpdate!"
-    [sideMenu]="application?.sideMenu!"
     (reorder)="onReorder($event)"
   ></safe-left-sidenav>
+  <safe-navbar
+    *ngIf="!sideMenu && largeDevice"
+    [nav]="nav"
+    [navGroups]="navGroups"
+    [appLayout]="true"
+    [canAddPage]="application?.canUpdate!"
+    (reorder)="onReorder($event)"
+  ></safe-navbar>
 </ng-template>

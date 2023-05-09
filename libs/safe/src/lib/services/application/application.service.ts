@@ -323,7 +323,7 @@ export class SafeApplicationService {
             id: application?.id,
             name: value.name,
             description: value.description,
-            sideMenu: false,
+            sideMenu: value.sideMenu,
             status: value.status,
           },
         })
