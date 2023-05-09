@@ -17,7 +17,7 @@ export * from './lib/breadcrumbs/breadcrumbs.module';
 export * from './lib/divider/divider.module';
 export * from './lib/radio/radio.module';
 export * from './lib/tab/tab.module';
-export * from './lib/navigation-tab/navigation-tab.module';
+export * from './lib/navigation-tabs/navigation-tabs.module';
 
 // === ENUMS === //
 export * from './lib/shared/size.enum';

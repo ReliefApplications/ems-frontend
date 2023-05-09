@@ -10,8 +10,8 @@ import { Variant } from '../shared/variant.enum';
   styleUrls: ['./tab.component.scss'],
 })
 export class TabComponent {
-  ColorVariant = Variant;
+  colorVariant = Variant;
 
   @Input() label!: string;
-  @Input() variant: Variant = this.ColorVariant.DEFAULT;
+  @Input() variant: Variant = this.colorVariant.DEFAULT;
 }

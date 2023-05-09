@@ -1,7 +1,7 @@
 <!-- Wrapper of the component, allows to display content 
      not in the body while not interfering with the list of tabs -->
 <div
-  uiNavigationTab
+  uiNavigationTabs
   [selectedIndex]="selectedIndex"
   [vertical]="vertical"
   [variant]="variant"
@@ -16,8 +16,8 @@
     [ngClass]="{
       'flex border-r h-full col-span-1': vertical,
       'flex border-b': !vertical,
-      'border-gray-200': variant !== ColorVariant.GREY,
-      'border-gray-600': variant === ColorVariant.GREY
+      'border-gray-200': variant !== colorVariant.GREY,
+      'border-gray-600': variant === colorVariant.GREY
     }"
   >
     <ng-content></ng-content>

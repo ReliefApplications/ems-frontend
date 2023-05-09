@@ -12,7 +12,7 @@ import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
 import { TextareaModule } from './textarea/textarea.module';
 import { RadioModule } from './radio/radio.module';
-import { NavigationTabModule } from './navigation-tab/navigation-tab.module';
+import { NavigationTabsModule } from './navigation-tabs/navigation-tabs.module';
 import { TabModule } from './tab/tab.module';
 
 /**
@@ -33,7 +33,7 @@ import { TabModule } from './tab/tab.module';
     DividerModule,
     TextareaModule,
     RadioModule,
-    NavigationTabModule,
+    NavigationTabsModule,
     TabModule,
   ],
 })

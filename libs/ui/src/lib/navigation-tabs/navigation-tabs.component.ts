@@ -12,9 +12,9 @@ import {
  * UI Navigation Tab Component
  */
 @Component({
-  selector: 'ui-navigation-tab',
-  templateUrl: './navigation-tab.component.html',
-  styleUrls: ['./navigation-tab.component.scss'],
+  selector: 'ui-navigation-tabs',
+  templateUrl: './navigation-tabs.component.html',
+  styleUrls: ['./navigation-tabs.component.scss'],
   animations: [
     trigger('tabContentDisplay', [
       // Initial state of content when loading component is visible(no animation)
@@ -30,13 +30,13 @@ import {
     ]),
   ],
 })
-export class NavigationTabComponent {
-  ColorVariant = Variant;
+export class NavigationTabsComponent {
+  colorVariant = Variant;
   triggerAnimation = false;
 
   @Input() selectedIndex = 0;
   @Input() vertical = false;
-  @Input() variant: Variant = this.ColorVariant.DEFAULT;
+  @Input() variant: Variant = this.colorVariant.DEFAULT;
   @Output() selectedIndexChange = new EventEmitter<number>();
 
   /**
