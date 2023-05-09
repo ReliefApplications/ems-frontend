@@ -19,9 +19,12 @@
       [formGroup]="formGroup"
       class="flex flex-row justify-between mb-5"
     >
-      <mat-slide-toggle formControlName="visible">{{
-        'components.widget.settings.chart.series.showSerie' | translate
-      }}</mat-slide-toggle>
+      <ui-toggle formControlName="visible"
+        [label]="{
+          text: 'components.widget.settings.chart.series.showSerie' | translate,
+          position: 'right'
+        }"
+      ></ui-toggle>
       <br />
     </div>
   </div>
