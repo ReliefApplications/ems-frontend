@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
+import { UiModule } from '@oort-front/ui';
 
 /** Module for the scheduler settings component */
 @NgModule({
@@ -20,6 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatRadioModule,
     MatSelectModule,
     TranslateModule,
+    UiModule,
   ],
   exports: [SafeSchedulerSettingsComponent],
 })

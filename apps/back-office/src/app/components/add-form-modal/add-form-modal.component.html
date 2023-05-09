@@ -12,9 +12,8 @@
             placeholder="Enter a name"
           />
         </mat-form-field>
-        
         <div class="flex flex-col mb-5 gap-1" formControlName="newResource" uiRadioGroupDirective="newResourceOptions">
-          <ui-radio [value]="true" [checked]="true">
+          <ui-radio [value]="true" [checked]="form.get('newResource')?.value === true">
             <ng-container ngProjectAs="label">
               {{ 'components.form.create.choice.resource' | translate }}
               <ui-icon
@@ -29,7 +28,7 @@
               </ui-icon>
             </ng-container>
           </ui-radio>
-          <ui-radio [value]="false">
+          <ui-radio [value]="false" [checked]="form.get('newResource')?.value === false">
             <ng-container ngProjectAs="label">
               {{ 'components.form.create.choice.inherit' | translate }}
               <ui-icon
@@ -45,7 +44,6 @@
             </ng-container>
           </ui-radio>
         </div>
-        
         <ng-container *ngIf="!form.value.newResource">
           <mat-form-field appearance="outline">
             <mat-label>{{

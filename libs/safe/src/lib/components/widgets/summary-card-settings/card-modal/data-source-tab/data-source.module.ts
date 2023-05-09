@@ -15,6 +15,7 @@ import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeDataSourceTabComponent } from './data-source-tab.component';
 import { SafeDividerModule } from '../../../../ui/divider/divider.module';
+import { UiModule } from '@oort-front/ui';
 
 /** Data Source tab Module for summary card edition */
 @NgModule({
@@ -36,6 +37,7 @@ import { SafeDividerModule } from '../../../../ui/divider/divider.module';
     SafeButtonModule,
     MatCheckboxModule,
     SafeDividerModule,
+    UiModule,
   ],
   exports: [SafeDataSourceTabComponent],
 })

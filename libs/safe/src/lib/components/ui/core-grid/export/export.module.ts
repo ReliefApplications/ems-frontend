@@ -8,6 +8,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../modal/modal.module';
+import { UiModule } from '@oort-front/ui';
 
 /** Module for the export component */
 @NgModule({
@@ -21,6 +22,7 @@ import { SafeModalModule } from '../../modal/modal.module';
     MatSlideToggleModule,
     TranslateModule,
     SafeModalModule,
+    UiModule,
   ],
   exports: [SafeExportComponent],
 })

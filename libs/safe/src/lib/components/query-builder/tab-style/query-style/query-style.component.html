@@ -80,12 +80,12 @@
           'components.queryBuilder.style.edit.appliesTo' | translate
         }}</span>
         <div class="flex flex-col" formControlName="wholeRow" uiRadioGroupDirective="wholeRowOptions">
-          <ui-radio class="mb-10" [value]="true" [checked]="true">
+          <ui-radio class="mb-10" [value]="true" [checked]="wholeRow.value === true">
             <ng-container ngProjectAs="label">
               {{ 'components.queryBuilder.style.edit.wholeRow' | translate }}
             </ng-container>
           </ui-radio>
-          <ui-radio [value]="false">
+          <ui-radio [value]="false" [checked]="wholeRow.value === false">
             <ng-container ngProjectAs="label">
               {{ 'components.queryBuilder.style.edit.selectedColumns' | translate }}
             </ng-container>

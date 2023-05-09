@@ -97,20 +97,24 @@
             | translate
         }}
       </p>
-      <mat-radio-group formControlName="wholeCardStyles">
-        <mat-radio-button [value]="false">
-          {{
-            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option1'
-              | translate
-          }}
-        </mat-radio-button>
-        <mat-radio-button [value]="true">
-          {{
-            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option2'
-              | translate
-          }}
-        </mat-radio-button>
-      </mat-radio-group>
+      <div class="flex gap-12 items-center my-4" formControlName="wholeCardStyles" uiRadioGroupDirective="wholeCardStylesOptions">
+        <ui-radio [value]="false" [checked]="form.get('wholeCardStyles')?.value === false">
+          <ng-container ngProjectAs="label">
+            {{
+              'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option1'
+                | translate
+            }}
+          </ng-container>
+        </ui-radio>
+        <ui-radio [value]="true" [checked]="form.get('wholeCardStyles')?.value === true">
+          <ng-container ngProjectAs="label">
+            {{
+              'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option2'
+                | translate
+            }}
+          </ng-container>
+        </ui-radio>
+      </div>
     </div>
   </ng-container>
   <!-- FROM AGGREGATIONS -->
