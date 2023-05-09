@@ -14,10 +14,10 @@
     id="tabs"
     class="justify-around"
     [ngClass]="{
-      'flex border-r h-full col-span-1': vertical,
+      'flex h-full col-span-2 space-x-4': vertical,
       'flex border-b': !vertical,
-      'border-gray-200': variant !== colorVariant.GREY,
-      'border-gray-600': variant === colorVariant.GREY
+      'border-gray-200': variant !== colorVariant.GREY && !vertical,
+      'border-gray-600': variant === colorVariant.GREY && !vertical
     }"
   >
     <ng-content></ng-content>
