@@ -20,22 +20,28 @@
       </mat-form-field>
 
       <!-- Select all records of query -->
-      <mat-checkbox formControlName="selectAll">{{
-        'components.widget.settings.grid.buttons.callback.selectAllRecords'
-          | translate
-      }}</mat-checkbox>
+      <ui-checkbox formControlName="selectAll">
+        <ng-container ngProjectAs="label">{{
+          'components.widget.settings.grid.buttons.callback.selectAllRecords'
+            | translate
+        }}</ng-container>
+      </ui-checkbox>
 
       <!-- Select only visible records -->
-      <mat-checkbox formControlName="selectPage">{{
-        'components.widget.settings.grid.buttons.callback.selectAllRecordsActivePage'
-          | translate
-      }}</mat-checkbox>
+      <ui-checkbox formControlName="selectPage">
+        <ng-container ngProjectAs="label">{{
+          'components.widget.settings.grid.buttons.callback.selectAllRecordsActivePage'
+            | translate
+        }}</ng-container>
+      </ui-checkbox>
 
       <!-- Prefill form with selected records -->
       <ng-container *ngIf="relatedForms.length > 0">
-        <mat-checkbox formControlName="prefillForm">{{
-          'components.widget.settings.grid.buttons.callback.prefill' | translate
-        }}</mat-checkbox>
+        <ui-checkbox formControlName="prefillForm">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.prefill' | translate
+          }}</ng-container>
+        </ui-checkbox>
         <div *ngIf="formGroup.value.prefillForm" class="sub-parameters">
           <mat-form-field appearance="outline">
             <mat-label>{{ 'models.form.template' | translate }}</mat-label>
@@ -52,15 +58,19 @@
       <!-- Workflow actions -->
       <ng-container *ngIf="!isDashboard">
         <!-- Go to next step -->
-        <mat-checkbox formControlName="goToNextStep">{{
-          'components.widget.settings.grid.buttons.callback.workflow.next'
-            | translate
-        }}</mat-checkbox>
+        <ui-checkbox formControlName="goToNextStep">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.workflow.next'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
         <!-- Close workflow -->
-        <mat-checkbox formControlName="closeWorkflow">{{
-          'components.widget.settings.grid.buttons.callback.workflow.close'
-            | translate
-        }}</mat-checkbox>
+        <ui-checkbox formControlName="closeWorkflow">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.workflow.close'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
         <!-- Confirm action -->
         <mat-form-field
           appearance="outline"
@@ -76,15 +86,19 @@
       </ng-container>
 
       <!-- Auto save edited records -->
-      <mat-checkbox formControlName="autoSave">{{
-        'components.widget.settings.grid.buttons.callback.save' | translate
-      }}</mat-checkbox>
+      <ui-checkbox formControlName="autoSave">
+        <ng-container ngProjectAs="label">{{
+          'components.widget.settings.grid.buttons.callback.save' | translate
+        }}</ng-container>
+      </ui-checkbox>
 
       <!-- Auto edition of selected records -->
       <div class="flex flex-col">
-        <mat-checkbox formControlName="modifySelectedRows">{{
-          'components.widget.settings.grid.buttons.callback.modify' | translate
-        }}</mat-checkbox>
+        <ui-checkbox formControlName="modifySelectedRows">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.modify' | translate
+          }}</ng-container>
+        </ui-checkbox>
         <div
           *ngIf="formGroup.value.modifySelectedRows"
           class="sub-parameters flex flex-col"
@@ -166,23 +180,27 @@
 
       <!-- Attach record to another resource record -->
       <ng-container *ngIf="relatedForms.length > 0">
-        <mat-checkbox formControlName="attachToRecord">
-          {{
-            'components.widget.settings.grid.buttons.callback.attach'
-              | translate
-          }}
-          <safe-icon
-            icon="info_outline"
-            variant="grey"
-            [inline]="true"
-            [size]="18"
-            [matTooltip]="
-              'components.widget.settings.grid.buttons.tooltip.attach'
+        <ui-checkbox formControlName="attachToRecord">
+          <ng-container ngProjectAs="label">
+            {{
+              'components.widget.settings.grid.buttons.callback.attach'
                 | translate
-            "
-            matTooltipPosition="right"
-          ></safe-icon>
-        </mat-checkbox>
+            }}
+          </ng-container>
+          <ng-container ngProjectAs="icon">
+            <safe-icon
+              icon="info_outline"
+              variant="grey"
+              [inline]="true"
+              [size]="18"
+              [matTooltip]="
+                'components.widget.settings.grid.buttons.tooltip.attach'
+                  | translate
+              "
+              matTooltipPosition="right"
+            ></safe-icon>
+          </ng-container>
+        </ui-checkbox>
       </ng-container>
       <div *ngIf="formGroup.value.attachToRecord" class="sub-parameters">
         <!-- Selection of target resource -->
@@ -240,19 +258,23 @@
       </div>
 
       <!-- Send notification -->
-      <mat-checkbox formControlName="notify">
-        {{ 'components.channel.dropdown.select' | translate }}
-        <safe-icon
-          icon="info_outline"
-          variant="grey"
-          [size]="18"
-          [inline]="true"
-          [matTooltip]="
-            'components.widget.settings.grid.buttons.tooltip.notify' | translate
-          "
-          matTooltipPosition="right"
-        ></safe-icon>
-      </mat-checkbox>
+      <ui-checkbox formControlName="notify">
+        <ng-container ngProjectAs="label">
+          {{ 'components.channel.dropdown.select' | translate }}
+        </ng-container>
+        <ng-container ngProjectAs="icon">
+          <safe-icon
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [inline]="true"
+            [matTooltip]="
+              'components.widget.settings.grid.buttons.tooltip.notify' | translate
+            "
+            matTooltipPosition="right"
+          ></safe-icon>
+        </ng-container>
+      </ui-checkbox>
       <div *ngIf="formGroup.value.notify" class="sub-parameters">
         <mat-form-field appearance="outline">
           <mat-label>{{ 'common.channel.one' | translate }}</mat-label>
@@ -273,20 +295,24 @@
       </div>
 
       <!-- Publish on a channel -->
-      <mat-checkbox formControlName="publish">
-        {{ 'common.publish' | translate }}
-        <safe-icon
-          icon="info_outline"
-          variant="grey"
-          [size]="18"
-          [inline]="true"
-          [matTooltip]="
-            'components.widget.settings.grid.buttons.tooltip.publish'
-              | translate
-          "
-          matTooltipPosition="right"
-        ></safe-icon>
-      </mat-checkbox>
+      <ui-checkbox formControlName="publish">
+        <ng-container ngProjectAs="label">
+          {{ 'common.publish' | translate }}
+        </ng-container>
+        <ng-container ngProjectAs="icon">
+          <safe-icon
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [inline]="true"
+            [matTooltip]="
+              'components.widget.settings.grid.buttons.tooltip.publish'
+                | translate
+            "
+            matTooltipPosition="right"
+          ></safe-icon>
+        </ng-container>
+      </ui-checkbox>
       <div *ngIf="formGroup.value.publish" class="sub-parameters">
         <mat-form-field appearance="outline">
           <mat-label>{{ 'common.channel.one' | translate }}</mat-label>
@@ -300,9 +326,11 @@
       </div>
 
       <!-- Send email -->
-      <mat-checkbox formControlName="sendMail">{{
-        'components.widget.settings.grid.buttons.callback.sendMail' | translate
-      }}</mat-checkbox>
+      <ui-checkbox formControlName="sendMail">
+        <ng-container ngProjectAs="label">{{
+          'components.widget.settings.grid.buttons.callback.sendMail' | translate
+        }}</ng-container>
+      </ui-checkbox>
       <div *ngIf="formGroup.value.sendMail" class="sub-parameters">
         <!-- Distribution list -->
         <mat-form-field appearance="outline">
@@ -380,9 +408,11 @@
           >
         </mat-form-field>
         <!-- Export dataset -->
-        <mat-checkbox formControlName="export">{{
-          'components.widget.settings.grid.buttons.callback.export' | translate
-        }}</mat-checkbox>
+        <ui-checkbox formControlName="export">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.export' | translate
+          }}</ng-container>
+        </ui-checkbox>
         <!-- Select fields to see in dataset -->
         <h2>{{ 'components.emailBuilder.fields' | translate }}</h2>
         <safe-tab-fields
