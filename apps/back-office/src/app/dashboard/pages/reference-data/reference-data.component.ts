@@ -144,7 +144,6 @@ export class ReferenceDataComponent
       query: new FormControl(this.referenceData?.query),
       path: new FormControl(this.referenceData?.path),
       data: new FormControl(this.referenceData?.data),
-      graphQLFilter: new FormControl(this.referenceData?.graphQLFilter),
     });
 
     // Clear valueFields when type, apiConfiguration, path or query changes
@@ -391,10 +390,6 @@ export class ReferenceDataComponent
         },
         this.referenceForm.value.query !== this.referenceData?.query && {
           query: this.referenceForm.value.query,
-        },
-        this.referenceForm.value.graphQLFilter !==
-          this.referenceData?.graphQLFilter && {
-          graphQLFilter: this.referenceForm.value.graphQLFilter,
         }
       );
     } else {

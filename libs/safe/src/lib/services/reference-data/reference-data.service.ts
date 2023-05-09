@@ -20,8 +20,6 @@ import jsonpath from 'jsonpath';
 const LAST_MODIFIED_KEY = '_last_modified';
 /** Local storage key for last request */
 const LAST_REQUEST_KEY = '_last_request';
-/** Property for filtering in requests */
-const LAST_UPDATE_CODE = '{{lastUpdate}}';
 
 /**
  *  Interface for items stored in localForage cache.
@@ -61,36 +59,6 @@ export class SafeReferenceDataService {
         })
         .pipe(map(({ data }) => data.referenceData))
     );
-  }
-
-  /**
-   * Build a graphQL query based on the ReferenceData configuration.
-   *
-   * @param referenceData Reference data configuration.
-   * @param newItems do we need to query only new items
-   * @returns GraphQL query.
-   */
-  private buildGraphQLQuery(
-    referenceData: ReferenceData,
-    newItems = false
-  ): string {
-    let query = '{ ' + (referenceData.query || '');
-    if (newItems && referenceData.graphQLFilter) {
-      let filter = `${referenceData.graphQLFilter}`;
-      if (filter.includes(LAST_UPDATE_CODE)) {
-        const lastUpdate =
-          localStorage.getItem(referenceData.id + LAST_REQUEST_KEY) ||
-          this.formatDateSQL(new Date(0));
-        filter = filter.split(LAST_UPDATE_CODE).join(lastUpdate);
-      }
-      query += '(' + filter + ')';
-    }
-    query += ' { ';
-    for (const field of referenceData.fields || []) {
-      query += field + ' ';
-    }
-    query += '} }';
-    return query;
   }
 
   /**
