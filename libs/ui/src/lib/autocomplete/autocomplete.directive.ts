@@ -68,6 +68,16 @@ export class AutocompleteDirective
     ).filter((option: OptionComponent) => !option.isGroup);
 
   /**
+   * Get options
+   *
+   * @returns all the options that are parent group
+   */
+  getGroupOptionList = () =>
+    (
+      (this.autocompletePanel as any).options as QueryList<OptionComponent>
+    ).filter((option: OptionComponent) => option.isGroup);
+
+  /**
    * UI Autocomplete directive
    *
    * @param control NgControl
@@ -110,30 +120,34 @@ export class AutocompleteDirective
     this.inputEventListener = this.renderer.listen(
       this.inputElement,
       'input',
-      () => {
+      (event: Event) => {
         if (
           this.selectedOption &&
           !isEqual(
-            this.autocompleteDisplayKey
-              ? this.selectedOption[this.autocompleteDisplayKey]
-              : this.selectedOption,
+            this.getOptionValue({
+              value: this.selectedOption,
+            } as OptionComponent),
             this.inputElement.value
           )
         ) {
           this.selectedOption = null;
           this.highLightSelectedOption();
         }
+        this.filterAutocompleteOptions(
+          (event.target as HTMLInputElement).value
+        );
       }
     );
   }
 
   ngAfterContentInit(): void {
+    // Check if form control exists and contains any value
     if (this.control?.control?.value) {
       this.selectedOption = this.control.control.value;
-      const inputValue = this.getOptionValue({
+      const optionToInputValue = this.getOptionValue({
         value: this.selectedOption,
       } as OptionComponent);
-      this.renderer.setProperty(this.inputElement, 'value', inputValue);
+      this.renderer.setProperty(this.inputElement, 'value', optionToInputValue);
       this.highLightSelectedOption();
     }
     // Create default autocomplete panel with all options
@@ -159,18 +173,13 @@ export class AutocompleteDirective
   /** Creates the autocomplete panel with the options list */
   private setAutocompletePanel(): void {
     // Get value from input
-    // const searchText = this.inputElement.value;
-
-    // Filter the options based on the search text, if no search text, display all options
-    // const filteredOptions = searchText
-    //   ? this.filterAutocompleteOptions(
-    //       [...(this.autocompletePanel as any).options],
-    //       searchText
-    //     )
-    //   : [...(this.autocompletePanel as any).options];
+    const searchText = this.inputElement.value;
 
     // Create the autocomplete panel items
     this.setAutocompletePanelItemsListener();
+
+    // Filter the options based on the search text, if no search text, display all options
+    this.filterAutocompleteOptions(searchText);
   }
 
   /**
@@ -179,10 +188,13 @@ export class AutocompleteDirective
   private setAutocompletePanelItemsListener(): void {
     // Highlight selected option
     this.highLightSelectedOption();
+    // Listen to clickable elements in the list
     this.getNotGroupOptionList().forEach((option: OptionComponent) => {
       option.itemClick.pipe(takeUntil(this.destroy$)).subscribe({
         next: (isSelected: boolean) => {
-          const inputValue = isSelected ? this.getOptionValue(option) : '';
+          const optionToInputValue = isSelected
+            ? this.getOptionValue(option)
+            : '';
           if (isSelected) {
             this.selectedOption = option.value;
           } else {
@@ -191,8 +203,13 @@ export class AutocompleteDirective
           if (this.control?.control) {
             this.control.control.setValue(this.selectedOption);
           }
+          this.renderer.setProperty(
+            this.inputElement,
+            'value',
+            optionToInputValue
+          );
           this.optionSelected.emit(this.selectedOption);
-          this.renderer.setProperty(this.inputElement, 'value', inputValue);
+          this.filterAutocompleteOptions(optionToInputValue);
         },
       });
     });
@@ -213,9 +230,32 @@ export class AutocompleteDirective
   }
 
   /**
-   * Recursively filter the original options list based on the displayKey and return the matching options
+   * Filter autocomplete list options by given text
+   *
+   * @param searchText value from autocomplete input
    */
-  // private filterAutocompleteOptions(searchText: string) {}
+  private filterAutocompleteOptions(searchText: string) {
+    // Display/Hide selectable values from autocomplete list
+    this.getNotGroupOptionList().forEach((option) => {
+      if (
+        this.getOptionValue(option)
+          .toLowerCase()
+          .includes(searchText.toLowerCase())
+      ) {
+        option.display = true;
+      } else {
+        option.display = false;
+      }
+    });
+    // Display /Hide parent values from autocomplete list
+    this.getGroupOptionList().forEach((option) => {
+      if (option.options.toArray().every((option) => !option.display)) {
+        option.display = false;
+      } else {
+        option.display = true;
+      }
+    });
+  }
 
   ngOnDestroy(): void {
     if (this.inputEventListener) {

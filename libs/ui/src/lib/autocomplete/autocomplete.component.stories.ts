@@ -94,7 +94,6 @@ const closesAutocompletePanel = () => {
  * @param option Option selected
  */
 const selectedOption = (option: string) => {
-  formControl.setValue(option);
   console.log('Option selected: ', option);
 };
 

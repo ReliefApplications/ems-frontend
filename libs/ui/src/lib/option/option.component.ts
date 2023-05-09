@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  ContentChildren,
+  EventEmitter,
+  Input,
+  Output,
+  QueryList,
+  forwardRef,
+} from '@angular/core';
 
 /**
  * UI Option component
@@ -12,8 +20,11 @@ export class OptionComponent {
   @Input() value!: any;
   @Input() isGroup = false;
   @Output() itemClick = new EventEmitter<any>();
+  @ContentChildren(forwardRef(() => OptionComponent))
+  options!: QueryList<OptionComponent>;
 
   selected = false;
+  display = true;
 
   /**
    * Emit the value attribute of the option
