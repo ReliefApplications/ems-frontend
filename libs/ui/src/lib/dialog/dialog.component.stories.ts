@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, Inject, OnDestroy } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
 import { Subject, takeUntil } from 'rxjs';
+import { DialogSize } from './enums/dialog-size.enum';
 
 /**
  * LaunchDialog component.
@@ -23,6 +24,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 class LaunchDialogComponent implements OnDestroy {
   @Input() animal = '';
+  @Input() size: DialogSize = DialogSize.MEDIUM;
   private destroy$ = new Subject<void>();
   /**
    * Constructor for the launchDialog component
@@ -38,6 +40,7 @@ class LaunchDialogComponent implements OnDestroy {
     const dialogRef: any = this._dialog.open(EditDialogComponent, {
       data: {
         animal: this.animal,
+        size: this.size,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((result: any) => {
@@ -59,7 +62,7 @@ class LaunchDialogComponent implements OnDestroy {
   imports: [CommonModule, DialogModule],
   selector: 'ui-edit-dialog',
   template: `
-    <ui-dialog size="medium">
+    <ui-dialog [size]="data.size">
       <ng-container ngProjectAs="header">
         <div
           class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100"
@@ -101,7 +104,7 @@ class LaunchDialogComponent implements OnDestroy {
         <button
           type="button"
           class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          (click)="onClose(data.animal)"
+          [uiDialogClose]="[data.animal, dialogRef]"
         >
           Go back
         </button>
@@ -116,23 +119,16 @@ class EditDialogComponent {
    * @param dialogRef Material dialog ref
    * @param data Injected dialog data
    * @param data.animal animal data
+   * @param data.size size data
    */
   constructor(
     public dialogRef: DialogRef<EditDialogComponent>,
     @Inject(DIALOG_DATA)
     public data: {
       animal: string;
+      size: DialogSize;
     }
   ) {}
-
-  /**
-   * Close material dialog.
-   *
-   * @param val value of dialogRef when close
-   */
-  onClose(val: any) {
-    this.dialogRef.close(val);
-  }
 }
 
 export default {
@@ -144,6 +140,19 @@ export default {
       imports: [CommonModule, DialogModule],
     }),
   ],
+  argTypes: {
+    size: {
+      options: [
+        DialogSize.SMALL,
+        DialogSize.MEDIUM,
+        DialogSize.BIG,
+        DialogSize.FULLSCREEN,
+      ],
+      control: {
+        type: 'select',
+      },
+    },
+  },
 } as Meta;
 
 /**
@@ -162,4 +171,5 @@ const Template: Story<LaunchDialogComponent> = (
 export const Default = Template.bind({});
 Default.args = {
   animal: 'panda',
+  size: DialogSize.SMALL,
 };
