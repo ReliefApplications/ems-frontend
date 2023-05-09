@@ -4,9 +4,11 @@ import { get, set } from 'lodash';
 /** Interface for legend control options */
 interface LegendControlOptions extends L.ControlOptions {
   container?: HTMLElement;
-  // layers: Layer[];
 }
 
+/**
+ * Custom Legend control.
+ */
 class LegendControl extends L.Control {
   public override options: LegendControlOptions = {
     position: 'bottomright',
@@ -48,6 +50,7 @@ class LegendControl extends L.Control {
     return container;
   }
 
+  /** @returns inner html of container */
   get innerHtml() {
     const title = document.createElement('div');
     title.className = 'text-base font-bold';
@@ -70,17 +73,31 @@ class LegendControl extends L.Control {
     }
   }
 
+  /**
+   * Add layer to legend
+   *
+   * @param layer leaflet layer to add
+   * @param legend legend to add
+   */
   public addLayer(layer: L.Layer, legend: string) {
     set(this.layers, (layer as any)._leaflet_id, legend);
     this._update();
   }
 
+  /**
+   * Remove layer from legend
+   *
+   * @param layer Leaflet layer to remove
+   */
   public removeLayer(layer: L.Layer) {
     set(this.layers, (layer as any)._leaflet_id, null);
     this._update();
   }
 
-  _update() {
+  /**
+   * Update legend
+   */
+  _update(): void {
     const container = this.getContainer();
     if (!container) {
       return;
