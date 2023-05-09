@@ -48,8 +48,7 @@ export class ExpansionPanelComponent implements AfterViewInit {
   @Input() displayIcon = true;
   @Input() disabled = false;
   @Input() expanded = false;
-  @Input() index = '0';
-  @Input() last = true;
+  @Input() index = 0;
   @Output() closePanel = new EventEmitter<any>();
 
   @ViewChild('accordionItem') accordionItem!: CdkAccordionItem;
