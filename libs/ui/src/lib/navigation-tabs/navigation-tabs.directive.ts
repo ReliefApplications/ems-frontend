@@ -6,7 +6,7 @@ import {
   HostListener,
   Output,
   EventEmitter,
-  OnInit,
+  AfterViewInit,
 } from '@angular/core';
 import { Variant } from '../shared/variant.enum';
 
@@ -16,7 +16,7 @@ import { Variant } from '../shared/variant.enum';
 @Directive({
   selector: '[uiNavigationTabs]',
 })
-export class NavigationTabsDirective implements OnInit {
+export class NavigationTabsDirective implements AfterViewInit {
   colorVariant = Variant;
   /**
    * Index of the default selected tab
@@ -62,7 +62,7 @@ export class NavigationTabsDirective implements OnInit {
    */
   constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
 
-  ngOnInit() {
+  ngAfterViewInit() {
     // Util variables for initialization
     const host = this.elementRef.nativeElement;
     const tabsWrapper = host?.children[0];
@@ -77,6 +77,7 @@ export class NavigationTabsDirective implements OnInit {
         const tabButton = tab?.children[0]?.children[0];
         if (tabButton?.id === 'buttonTab') {
           this.renderer.addClass(tabButton, 'border-b-2');
+          this.renderer.addClass(tabButton, 'border-transparent');
         }
       }
       //Make the ui-tab growing so it occupies all the space available
@@ -92,6 +93,7 @@ export class NavigationTabsDirective implements OnInit {
         const tabButton = tab?.children[0]?.children[0];
         if (tabButton?.id === 'buttonTab') {
           this.renderer.addClass(tabButton, 'border-r-2');
+          this.renderer.addClass(tabButton, 'border-transparent');
         }
       }
     }
@@ -270,6 +272,8 @@ export class NavigationTabsDirective implements OnInit {
     this.renderer.removeClass(target, 'border-transparent');
     this.renderer.addClass(target, 'border-primary-500');
     this.renderer.addClass(target, 'text-primary-600');
+    console.log('initialisation maggle : ');
+    console.log(target);
   }
 
   /**
