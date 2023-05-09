@@ -14,6 +14,7 @@ declare module 'esri-leaflet-cluster' {
 
 declare module 'esri-leaflet-heatmap' {
   export let featureLayer: any;
+  export let FeatureLayer: any;
 }
 
 declare module 'esri-leaflet-renderers' {

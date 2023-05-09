@@ -18,6 +18,7 @@ import * as Esri from 'esri-leaflet';
 import * as Vector from 'esri-leaflet-vector';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import * as L from 'leaflet';
+import { GradientPipe } from '../../pipes/gradient/gradient.pipe';
 
 /**
  * Define the ArcGIS projected coordinate system (102100 is the WKID for Web Mercator)
@@ -271,6 +272,7 @@ export class ArcgisService {
             switch (reduction.type) {
               case 'cluster': {
                 const pane = map.createPane(layer.id);
+                console.log(layer);
                 featureLayer = EsriCluster.featureLayer({
                   url: layer.url,
                   token: this.esriApiKey,
@@ -287,6 +289,7 @@ export class ArcgisService {
                   minZoom: minScaleLevel,
                   maxZoom: maxScaleLevel,
                 });
+                console.log(featureLayer);
                 pane.style.opacity = `${opacity}`;
                 break;
               }
@@ -315,7 +318,7 @@ export class ArcgisService {
                       colorStop.color[0],
                       colorStop.color[1],
                       colorStop.color[2]
-                    );
+                    ).toString();
                   }
                   const pane = map.createPane(layer.id);
                   // todo(arcgis): not working with current options
@@ -336,6 +339,44 @@ export class ArcgisService {
                       drawingInfo: layer.layerDefinition.drawingInfo,
                     }),
                   });
+                  if (featureLayer) {
+                    const gradientPipe = new GradientPipe();
+                    const gradientForPipe: any[] = [];
+                    Object.keys(gradient).map((key) => {
+                      gradientForPipe.push({
+                        color: gradient[key],
+                        ratio: key,
+                      });
+                    });
+                    featureLayer.onAdd = (map: L.Map) => {
+                      const l = EsriHeat.FeatureLayer.prototype.onAdd.call(
+                        featureLayer,
+                        map
+                      );
+                      const container = document.createElement('div');
+                      container.className = 'flex gap-1';
+                      const linearGradient = document.createElement('div');
+                      linearGradient.className = 'w-4 h-16';
+                      linearGradient.style.background = gradientPipe.transform(
+                        gradientForPipe,
+                        180
+                      );
+                      const legend = document.createElement('div');
+                      legend.className = 'flex flex-col justify-between';
+                      legend.innerHTML = '<span>Min</span><span>Max</span>';
+                      container.innerHTML =
+                        linearGradient.outerHTML + legend.outerHTML;
+                      const html =
+                        `<div class="font-bold">${layer.title}</div>` +
+                        container.outerHTML;
+                      const legendControl = (map as any).legendControl;
+                      if (legendControl) {
+                        legendControl.addLayer(featureLayer, html);
+                      }
+                      return l;
+                    };
+                  }
+
                   pane.style.opacity = `${opacity}`;
                   break;
                 }

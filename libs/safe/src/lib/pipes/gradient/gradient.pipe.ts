@@ -15,16 +15,27 @@ export class GradientPipe implements PipeTransform {
    * Transform gradient value into background css property value
    *
    * @param value gradient
+   * @param degrees rotation in degrees
    * @returns background css property value if gradient is defined
    */
-  transform(value?: Gradient): string {
+  transform(value?: Gradient, degrees?: number): string {
     if (value) {
       const sorted = value.sort((a, b) => a.ratio - b.ratio);
-      return (
-        'linear-gradient(to left, ' +
-        sorted.map((g) => `${g.color} ${g.ratio * 100}%`).join(', ') +
-        ')'
-      );
+      if (degrees) {
+        return (
+          'linear-gradient(' +
+          degrees +
+          'deg, ' +
+          sorted.map((g) => `${g.color} ${g.ratio * 100}%`).join(', ') +
+          ')'
+        );
+      } else {
+        return (
+          'linear-gradient(to left, ' +
+          sorted.map((g) => `${g.color} ${g.ratio * 100}%`).join(', ') +
+          ')'
+        );
+      }
     } else {
       return '';
     }

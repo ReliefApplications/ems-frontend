@@ -24,6 +24,7 @@ import {
 import { SafeMapPopupService } from './map-popup/map-popup.service';
 import { haversineDistance } from './utils/haversine';
 import { SafeIconDisplayPipe } from '../../../pipes/icon-display/icon-display.pipe';
+import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -736,11 +737,20 @@ export class Layer implements LayerModel {
               'drawingInfo.renderer.gradient',
               DEFAULT_HEATMAP.gradient
             );
-            html += '<ul class="pl-2">';
-            gradient.forEach((value) => {
-              html += `<li class="flex items-center gap-1"><i style="background-color: ${value.color}" class="w-4 h-4 rounded"></i><span>${value.ratio}</span></li>`;
-            });
-            html += '</ul>';
+            const gradientPipe = new GradientPipe();
+            const container = document.createElement('div');
+            container.className = 'flex gap-1';
+            const linearGradient = document.createElement('div');
+            linearGradient.className = 'w-4 h-16';
+            linearGradient.style.background = gradientPipe.transform(
+              gradient,
+              180
+            );
+            const legend = document.createElement('div');
+            legend.className = 'flex flex-col justify-between';
+            legend.innerHTML = '<span>Min</span><span>Max</span>';
+            container.innerHTML = linearGradient.outerHTML + legend.outerHTML;
+            html = container.outerHTML;
             break;
           default:
             switch (get(this.layerDefinition, 'featureReduction.type')) {
