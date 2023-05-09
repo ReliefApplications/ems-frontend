@@ -1,15 +1,16 @@
 import {
   Directive,
   Input,
-  Output,
-  EventEmitter,
   AfterContentInit,
   OnDestroy,
-  ElementRef,
   forwardRef,
+  ContentChildren,
+  QueryList,
+  ChangeDetectorRef,
 } from '@angular/core';
-import { Observable, Subject, fromEvent, merge, takeUntil } from 'rxjs';
+import { Subject, filter, startWith, takeUntil } from 'rxjs';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ChipComponent } from './chip.component';
 
 /**
  * UI Chip list directive
@@ -28,13 +29,11 @@ export class ChipListDirective
   implements AfterContentInit, OnDestroy, ControlValueAccessor
 {
   @Input() uiChipList!: any;
-  @Output() uiChipListChange = new EventEmitter<any>();
 
-  private selectedChip!: any;
+  @ContentChildren(ChipComponent) currentChipList!: QueryList<ChipComponent>;
   private destroy$: Subject<void> = new Subject<void>();
-  private currentChipList: any[] = [];
 
-  value = '';
+  value: any[] = [];
   disabled = false;
   onChange!: (value: any) => void;
   onTouch!: () => void;
@@ -42,60 +41,26 @@ export class ChipListDirective
   /**
    * UI Chip list directive constructor
    *
-   * @param elementRef ElementRef
+   * @param cdr ChangeDetectorRef
    */
-  constructor(private elementRef: ElementRef) {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngAfterContentInit() {
-    // Get all the ui-chip inside the element with the directive
-    this.currentChipList =
-      this.elementRef.nativeElement.querySelectorAll('ui-chip');
-
-    const childrenEventStream: Observable<Event>[] = [];
-    this.currentChipList.forEach((chip: any) => {
-      //If value is already selected from the directive, apply changes
-      if (this.uiChipList === chip.firstChild.dataset.value) {
-        this.setChipSelected(chip.firstChild);
-      }
-      // Get all click event streams from the children chips
-      childrenEventStream.push(fromEvent(chip, 'click'));
-    });
-    this.setChipsEventsListener(childrenEventStream);
-  }
-
-  /**
-   * Get the selected chip and emits the value
-   *
-   * @param chip selected chip
-   */
-  private setChipSelected(chip: HTMLDivElement) {
-    // Store selected value and emit it
-    this.selectedChip = chip.dataset['value'];
-    this.uiChipListChange.emit(this.selectedChip);
-    // Handles with the control value accessor functions
-    if (this.onTouch && this.onChange) {
-      this.onTouch();
-      this.onChange(this.selectedChip);
-    }
-  }
-
-  /**
-   * Initialize chip events callback
-   *
-   * @param chipEventStream chips event stream
-   */
-  private setChipsEventsListener(chipEventStream: Observable<Event>[]) {
-    merge(...chipEventStream)
-      .pipe(takeUntil(this.destroy$))
+    this.currentChipList.changes
+      .pipe(
+        startWith(this.currentChipList),
+        filter(() => !this.disabled),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
-        next: (event: Event) => {
-          const selectedChipElement = (
-            event?.currentTarget as HTMLElement
-          ).querySelector('div');
-          // Check if click was in the div of the chip selected
-          if (event?.target instanceof HTMLDivElement && selectedChipElement) {
-            this.setChipSelected(selectedChipElement);
+        next: (chips: QueryList<ChipComponent>) => {
+          const currentValues = chips.toArray().map((chip) => chip.value);
+          this.writeValue(currentValues);
+          if (this.onTouch && this.onChange) {
+            this.onTouch();
+            this.onChange(this.value);
           }
+          this.cdr.detectChanges();
         },
       });
   }
@@ -105,7 +70,7 @@ export class ChipListDirective
    *
    * @param value new value
    */
-  public writeValue(value: string): void {
+  public writeValue(value: any[]): void {
     this.value = value;
   }
 

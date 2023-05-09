@@ -1,8 +1,8 @@
 <div
   class="will-change-transform inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium justify-between rounded-[16px]"
   [ngClass]="chipClasses"
-  (click)="disabled ? '' : onClick($event)"
-  [attr.data-value]="value"
+  (click)="onClick($event)"
+  [attr.value]="value"
 >
   <!-- CONTENT -->
   <ng-content></ng-content>

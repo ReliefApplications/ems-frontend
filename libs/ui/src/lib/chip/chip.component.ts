@@ -54,6 +54,9 @@ export class ChipComponent {
    * @param event mouse event of the chip clicked
    */
   onClick(event: MouseEvent): void {
+    if (this.disabled) {
+      return;
+    }
     const chip = event.currentTarget as HTMLElement;
     chip.style.transform = 'scale(0.95)';
     setTimeout(() => (chip.style.transform = 'scale(1)'), 200);

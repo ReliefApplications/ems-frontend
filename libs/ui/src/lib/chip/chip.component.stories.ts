@@ -16,9 +16,6 @@ export default {
         type: 'select',
       },
     },
-    value: {
-      control: { type: 'text' },
-    },
     removable: {
       defaultValue: false,
       type: 'boolean',
@@ -36,21 +33,9 @@ export default {
 } as Meta<ChipComponent>;
 
 /** Status array for story testing */
-const statuses = ['Active', 'Pending', 'Archived'];
-let currentStatus = statuses[0];
-
+let statuses = ['Active', 'Pending', 'Archived'];
 /** Form control to test chip story */
-const formControl = new FormControl('');
-
-/**
- * Callback to test the chip list directive change event
- *
- * @param status Selected status from the chips
- */
-const updateStatus = (status: any) => {
-  currentStatus = status;
-  console.log('Update Status: ', status);
-};
+const formControl = new FormControl();
 
 /**
  * Callback to test the chip remove event
@@ -60,6 +45,23 @@ const updateStatus = (status: any) => {
 const removeStatus = (index: number) => {
   statuses.splice(index, 1);
 };
+
+/**
+ * Callback to test the chip input directive change event
+ *
+ * @param chips New chip/chips to add to the chip list
+ */
+const addChipsFromInput = (chips: string[] | string) => {
+  if (chips instanceof Array) {
+    statuses = statuses.concat([...chips]);
+  } else {
+    statuses.push(chips);
+  }
+  formControl.setValue(statuses);
+};
+
+/** Separator key codes for story testing */
+const separatorKeysCodes = [ENTER, COMMA];
 
 /**
  * Template chip variants
@@ -88,60 +90,6 @@ const ChipVariantsTemplate: StoryFn<ChipComponent> = (args: ChipComponent) => {
 export const ChipVariants = ChipVariantsTemplate.bind({});
 
 /**
- * Template chip list with form control
- *
- * @param {ChipComponent} args args
- * @returns ChipComponent
- */
-const FormChipListTemplate: StoryFn<ChipComponent> = (args: ChipComponent) => {
-  return {
-    component: ChipComponent,
-    template: `
-      <div 
-        [formControl]="formControl"
-        uiChipList
-        (uiChipListChange)="updateStatus($event)"
-        class="flex gap-1"
-      >
-        <ui-chip
-          *ngFor="let status of statuses; let i = index"
-          [removable]="true"
-          [value]="status"
-          (removed)="removeStatus(i)"
-        >
-          {{ status }}
-        </ui-chip>
-      </div>
-      <br>
-      <p>value: {{formControl.value}}</p>
-      <p>touched: {{formControl.touched}}</p>
-    `,
-    props: {
-      ...args,
-      formControl,
-      statuses,
-      updateStatus,
-      currentStatus,
-      removeStatus,
-    },
-  };
-};
-/** Chip list with form control */
-export const FormChipList = FormChipListTemplate.bind({});
-
-/**
- * Callback to test the chip input directive change event
- *
- * @param chip New chip to add to the chip list
- */
-const addChipFromInput = (chip: string) => {
-  statuses.push(chip);
-};
-
-/** Separator key codes for story testing */
-const separatorKeysCodes = [ENTER, COMMA];
-
-/**
  * Template chip list with input
  *
  * @param {ChipComponent} args args
@@ -151,9 +99,11 @@ const ChipsInputTemplate: StoryFn<ChipComponent> = (args: ChipComponent) => {
   return {
     component: ChipComponent,
     template: `
-      <div uiChipList #chipList>
+      <div uiChipList [formControl]="formControl" #chipList>
         <ui-chip
-          [removable]="true"
+          [removable]="${args.removable}"
+          [disabled]="${args.disabled}"
+          [variant]="'${args.variant}'"
           [value]="status"
           *ngFor="let status of statuses; let i = index"
           (removed)="removeStatus(i)"
@@ -163,21 +113,28 @@ const ChipsInputTemplate: StoryFn<ChipComponent> = (args: ChipComponent) => {
       </div>
       <input
         placeholder="New status..."
-        #inputChip
         [uiChipListFor]="chipList"
-        [chipInput]="inputChip"
         [chipInputSeparatorKeyCodes]="separatorKeysCodes"
-        (chipTokenEnd)="addChipFromInput($event)"
+        (chipTokenEnd)="addChipsFromInput($event)"
         >
+        <br>
+        <p>value: <span *ngFor="let val of formControl.value;let last = last">{{val}} <span *ngIf="!last">, </span></span></p>
+        <p>touched: {{formControl.touched}}</p>
         `,
     props: {
       ...args,
       statuses,
+      formControl,
       removeStatus,
-      addChipFromInput,
+      addChipsFromInput,
       separatorKeysCodes,
     },
   };
 };
 /** Chip list with input */
 export const ChipWithInput = ChipsInputTemplate.bind({});
+ChipWithInput.args = {
+  removable: true,
+  variant: Variant.DEFAULT,
+  disabled: false,
+};

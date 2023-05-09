@@ -6,6 +6,7 @@ import {
   AfterContentInit,
   Renderer2,
   ElementRef,
+  OnDestroy,
 } from '@angular/core';
 
 /**
@@ -14,13 +15,13 @@ import {
 @Directive({
   selector: '[uiChipListFor]',
 })
-export class ChipInputDirective implements AfterContentInit {
+export class ChipInputDirective implements AfterContentInit, OnDestroy {
   @Input('uiChipListFor') chipList!: any;
-  @Input() chipInput!: any;
   @Input() chipInputSeparatorKeyCodes: number[] = [];
 
   @Output() chipTokenEnd = new EventEmitter<string>();
 
+  private inputListener!: any;
   private wrapperDivClasses = [
     'border-solid',
     'rounded-md',
@@ -44,21 +45,23 @@ export class ChipInputDirective implements AfterContentInit {
   ngAfterContentInit() {
     this.setWrapperDiv();
     // Add a listener to the input element to know when enter a separator key
-    this.chipInput.addEventListener('keydown', (event: any) => {
-      let value = this.chipInput.value;
-      if (this.chipInputSeparatorKeyCodes.includes(event.keyCode)) {
-        event.preventDefault();
-        // Check if text input aren't empty
-        if (value.trim()) {
-          // If separator key is there, remove it
-          value = this.chipInputSeparatorKeyCodes.includes(value.slice(-1))
-            ? value.substr(0, value.length - 1)
-            : value;
-          this.chipTokenEnd.emit(value);
+    this.inputListener = this.renderer.listen(
+      this.elementRef.nativeElement,
+      'keydown',
+      (event: any) => {
+        const inputValue: string = this.elementRef.nativeElement.value;
+        if (this.chipInputSeparatorKeyCodes.includes(event.keyCode)) {
+          event.preventDefault();
+          // Check if text input aren't empty
+          if (inputValue.trim()) {
+            // If separator key is there, remove it
+            const newChip = inputValue.replace(new RegExp(event.keyCode), '');
+            this.chipTokenEnd.emit(newChip);
+          }
+          this.elementRef.nativeElement.value = '';
         }
-        this.chipInput.value = '';
       }
-    });
+    );
   }
 
   /**
@@ -68,9 +71,9 @@ export class ChipInputDirective implements AfterContentInit {
   private setWrapperDiv(): void {
     const wrapper = this.renderer.createElement('div');
     const parent = this.elementRef.nativeElement.parentNode;
-    this.renderer.insertBefore(parent, wrapper, this.chipInput);
+    this.renderer.insertBefore(parent, wrapper, this.elementRef.nativeElement);
     this.renderer.appendChild(wrapper, this.chipList);
-    this.renderer.appendChild(wrapper, this.chipInput);
+    this.renderer.appendChild(wrapper, this.elementRef.nativeElement);
 
     // Add classes to the chip list wrapper
     this.renderer.addClass(this.chipList, 'flex');
@@ -80,5 +83,11 @@ export class ChipInputDirective implements AfterContentInit {
     this.wrapperDivClasses.forEach((divClass: string) => {
       this.renderer.addClass(wrapper, divClass);
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.inputListener) {
+      this.inputListener();
+    }
   }
 }
