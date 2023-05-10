@@ -39,6 +39,4 @@ export class NavigationTabsComponent {
   triggerAnimation = false;
   vertical = false;
   variant: Variant = this.colorVariant.DEFAULT;
-  //Only in order to make stories work but non useful (args)
-  selectedIndex = 0;
 }

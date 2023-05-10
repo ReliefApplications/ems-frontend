@@ -51,30 +51,44 @@ const selectedIndexChangeEvent = (event: any) => {
 };
 
 /**
- * Template to display by the story
+ * Template for storybook's test of navigation tab component
+ *
+ * @param args args of the story
+ * @returns Story<NavigationTabComponent>
  */
-const navigationTabsTemplate = `
-<ui-navigation-tabs uiNavigationTabs (selectedIndexChange)="selectedIndexChangeEvent($event)" [selectedIndex]="selectedIndex" [vertical]="vertical" [variant]="variant" >  
-<ui-tab label="First" [variant]="variant">
-    First content
-  </ui-tab>
-  <ui-tab label="Second" [variant]="variant">
-    Second content
-  </ui-tab>
-  <ui-tab label="Third" [variant]="variant">
-    <div class="text-red-600">
-      Third content 
-    </div>
-    <button class="bg-primary-400 hover:bg-primary-600 focus:ring-0 focus:ring-primary-200 rounded-md p-2 text-small text-gray-800"> Random Content </button>
-    <div class="justify-center"> a </div>
-    <div> a </div>
-    <div> a </div>
-    <div> a </div>
-    <div> a </div>
-    <div> a </div>
-    <div> a </div>
-  </ui-tab>
-</ui-navigation-tabs>`;
+const SelectedThirdTemplate: Story<NavigationTabsComponent> = (
+  args: NavigationTabsComponent
+) => {
+  return {
+    component: NavigationTabsComponent,
+    template: `
+    <ui-navigation-tabs uiNavigationTabs (selectedIndexChange)="selectedIndexChangeEvent($event)" [selectedIndex]="2" [vertical]="vertical" [variant]="variant" >  
+    <ui-tab label="First" [variant]="variant">
+        First content
+      </ui-tab>
+      <ui-tab label="Second" [variant]="variant">
+        Second content
+      </ui-tab>
+      <ui-tab label="Third" [variant]="variant">
+        <div class="text-red-600">
+          Third content 
+        </div>
+        <button class="bg-primary-400 hover:bg-primary-600 focus:ring-0 focus:ring-primary-200 rounded-md p-2 text-small text-gray-800"> Random Content </button>
+        <div class="justify-center"> a </div>
+        <div> a </div>
+        <div> a </div>
+        <div> a </div>
+        <div> a </div>
+        <div> a </div>
+        <div> a </div>
+      </ui-tab>
+    </ui-navigation-tabs>`,
+    props: {
+      ...args,
+      selectedIndexChangeEvent,
+    },
+  };
+};
 
 /**
  * Template for storybook's test of navigation tab component
@@ -82,12 +96,33 @@ const navigationTabsTemplate = `
  * @param args args of the story
  * @returns Story<NavigationTabComponent>
  */
-const Template: Story<NavigationTabsComponent> = (
+const SelectedFirstTemplate: Story<NavigationTabsComponent> = (
   args: NavigationTabsComponent
 ) => {
   return {
     component: NavigationTabsComponent,
-    template: navigationTabsTemplate,
+    template: `
+    <ui-navigation-tabs uiNavigationTabs (selectedIndexChange)="selectedIndexChangeEvent($event)" [selectedIndex]="0" [vertical]="vertical" [variant]="variant" >  
+    <ui-tab label="First" [variant]="variant">
+        First content
+      </ui-tab>
+      <ui-tab label="Second" [variant]="variant">
+        Second content
+      </ui-tab>
+      <ui-tab label="Third" [variant]="variant">
+        <div class="text-red-600">
+          Third content 
+        </div>
+        <button class="bg-primary-400 hover:bg-primary-600 focus:ring-0 focus:ring-primary-200 rounded-md p-2 text-small text-gray-800"> Random Content </button>
+        <div class="justify-center"> a </div>
+        <div> a </div>
+        <div> a </div>
+        <div> a </div>
+        <div> a </div>
+        <div> a </div>
+        <div> a </div>
+      </ui-tab>
+    </ui-navigation-tabs>`,
     props: {
       ...args,
       selectedIndexChangeEvent,
@@ -98,9 +133,8 @@ const Template: Story<NavigationTabsComponent> = (
 /**
  * Horizontal navigation tab with first tab selected by default
  */
-export const HorizontalTab = Template.bind({});
+export const HorizontalTab = SelectedFirstTemplate.bind({});
 HorizontalTab.args = {
-  selectedIndex: 0,
   vertical: false,
   variant: colorVariant.DEFAULT,
 };
@@ -108,9 +142,8 @@ HorizontalTab.args = {
 /**
  * Vertical navigation tab with first tab selected by default
  */
-export const VerticalTab = Template.bind({});
+export const VerticalTab = SelectedFirstTemplate.bind({});
 VerticalTab.args = {
-  selectedIndex: 0,
   vertical: true,
   variant: colorVariant.DEFAULT,
 };
@@ -118,9 +151,8 @@ VerticalTab.args = {
 /**
  * Horizontal navigation tab with second tab selected by default
  */
-export const DefaultSelection1Tab = Template.bind({});
-DefaultSelection1Tab.args = {
-  selectedIndex: 1,
+export const HorizontalSelectedThirdTab = SelectedThirdTemplate.bind({});
+HorizontalSelectedThirdTab.args = {
   vertical: false,
   variant: colorVariant.DEFAULT,
 };
@@ -128,9 +160,8 @@ DefaultSelection1Tab.args = {
 /**
  * Vertical navigation tab with third tab selected by default
  */
-export const VerticalDefaultSelection2Tab = Template.bind({});
-VerticalDefaultSelection2Tab.args = {
-  selectedIndex: 2,
+export const VerticalSelectedThirdTab = SelectedThirdTemplate.bind({});
+VerticalSelectedThirdTab.args = {
   vertical: true,
   variant: colorVariant.DEFAULT,
 };
