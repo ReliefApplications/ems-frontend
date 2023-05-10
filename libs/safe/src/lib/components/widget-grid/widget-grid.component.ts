@@ -52,7 +52,7 @@ export class SafeWidgetGridComponent implements OnInit {
   @Output() add: EventEmitter<any> = new EventEmitter();
 
   // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<any> = new EventEmitter();
 
   @ViewChildren(SafeWidgetComponent)
   widgetComponents!: QueryList<SafeWidgetComponent>;
@@ -156,10 +156,14 @@ export class SafeWidgetGridComponent implements OnInit {
       },
       autoFocus: false,
     });
-    dialogRef.componentInstance.goToNextStep.subscribe((event: any) => {
-      this.goToNextStep.emit(event);
+    dialogRef.componentInstance.changeStep.subscribe((event: any) => {
+      this.changeStep.emit(event);
       dialogRef.close();
     });
+    // dialogRef.componentInstance.goToPreviousStep.subscribe((event: any) => {
+    //   this.goToPreviousStep.emit(event);
+    //   dialogRef.close();
+    // });
   }
 
   /**

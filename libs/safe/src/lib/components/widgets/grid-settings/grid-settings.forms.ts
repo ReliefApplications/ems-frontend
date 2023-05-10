@@ -31,6 +31,9 @@ export const createButtonFormGroup = (value: any): UntypedFormGroup => {
     selectAll: [value && value.selectAll ? value.selectAll : false],
     selectPage: [value && value.selectPage ? value.selectPage : false],
     goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
+    goToPreviousStep: [
+      value && value.goToPreviousStep ? value.goToPreviousStep : false,
+    ],
     prefillForm: [value && value.prefillForm ? value.prefillForm : false],
     prefillTargetForm: [
       value && value.prefillTargetForm ? value.prefillTargetForm : null,

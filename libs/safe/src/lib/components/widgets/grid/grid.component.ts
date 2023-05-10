@@ -88,7 +88,7 @@ export class SafeGridWidgetComponent implements OnInit {
   } = { error: false };
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<any> = new EventEmitter();
 
   // === EMIT EVENT ===
   @Output() edit: EventEmitter<any> = new EventEmitter();
@@ -437,10 +437,16 @@ export class SafeGridWidgetComponent implements OnInit {
       });
     }
 
-    // Workflow only: goes to next step, or closes the workflow.
-    if (options.goToNextStep || options.closeWorkflow) {
+    // Workflow only: goes to next step, goes to the previous step, or closes the workflow.
+    if (
+      options.goToNextStep ||
+      options.goToPreviousStep ||
+      options.closeWorkflow
+    ) {
       if (options.goToNextStep) {
-        this.goToNextStep.emit(true);
+        this.changeStep.emit(true);
+      } else if (options.goToPreviousStep) {
+        this.changeStep.emit(false);
       } else {
         const dialogRef = this.confirmService.openConfirmModal({
           title: this.translate.instant(

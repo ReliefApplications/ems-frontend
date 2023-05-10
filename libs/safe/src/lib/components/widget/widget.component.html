@@ -14,7 +14,7 @@
     class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
-    (goToNextStep)="goToNextStep.emit($event)"
+    (changeStep)="changeStep.emit($event)"
     (edit)="edit.emit($event)"
     [widget]="widget"
     [canUpdate]="canUpdate"
@@ -47,7 +47,7 @@
     class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
-    (goToNextStep)="goToNextStep.emit($event)"
+    (changeStep)="changeStep.emit($event)"
     (edit)="edit.emit($event)"
     [widget]="widget"
   >

@@ -1222,7 +1222,8 @@
 							"workflow": {
 								"close": "Close workflow",
 								"confirm": "Confirmation message",
-								"next": "Go to next step"
+								"next": "Go to next step",
+								"previous": "Go to previous step"
 							}
 						},
 						"create": "Add a button",
@@ -1709,6 +1710,7 @@
 		"workflow": {
 			"notifications": {
 				"cannotGoToNextStep": "Cannot go to the next step.",
+				"cannotGoToPreviousStep": "Cannot go to the previous step.",
 				"goToStep": "Back to {{step}} step."
 			}
 		}
