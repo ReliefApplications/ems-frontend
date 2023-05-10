@@ -348,8 +348,8 @@ export const createMapControlsForm = (value?: MapControls): FormGroup =>
  * @param value map settings ( optional )
  * @returns map form
  */
-export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup =>
-  fb.group({
+export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
+  const formGroup = fb.group({
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],
     initialState: fb.group({
@@ -391,3 +391,15 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup =>
     ),
     arcGisWebMap: [get(value, 'arcGisWebMap', DEFAULT_MAP.arcGisWebMap)],
   });
+  if (formGroup.get('arcGisWebMap')?.value) {
+    formGroup.get('basemap')?.disable({ emitEvent: false });
+  }
+  formGroup.get('arcGisWebMap')?.valueChanges.subscribe((value) => {
+    if (value) {
+      formGroup.get('basemap')?.disable({ emitEvent: false });
+    } else {
+      formGroup.get('basemap')?.enable({ emitEvent: false });
+    }
+  });
+  return formGroup;
+};

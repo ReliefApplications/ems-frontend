@@ -58,16 +58,11 @@ export class ArcgisService {
    *
    * @param {L.Map} map to add the webmap
    * @param {string} id webmap id
-   * @param options webmap options
-   * @param options.loadBasemap use basemap
    * @returns basemaps and layers
    */
   public loadWebMap(
     map: L.Map,
-    id: string,
-    options: {
-      loadBasemap?: boolean;
-    } = { loadBasemap: true }
+    id: string
   ): Promise<{ basemaps: TreeObject[]; layers: TreeObject[] }> {
     return new Promise((resolve) => {
       getItemData(id, {
@@ -75,9 +70,7 @@ export class ArcgisService {
       }).then((webMap: any) => {
         this.setDefaultView(map, webMap);
         Promise.all([
-          options.loadBasemap
-            ? this.loadBaseMap(map, webMap)
-            : Promise.resolve([]),
+          this.loadBaseMap(map, webMap),
           this.loadOperationalLayers(map, webMap),
         ]).then(([basemaps, layers]) => {
           resolve({ basemaps, layers });
@@ -271,19 +264,14 @@ export class ArcgisService {
       case 'ArcGISFeatureLayer': {
         let featureLayer: L.Layer | undefined = undefined;
         if (layer.url) {
-          let layerDefinition: any = {};
           if (layer.itemId) {
             await getItemData(layer.itemId, {
               authentication: this.session,
             }).then((item: any) => {
               console.log(item);
-              // there, there is an issue with the index of the layers if part of a group layer
-              layerDefinition = get(item, 'layers[0].layerDefinition');
             });
-          } else {
-            layerDefinition = get(layer, 'layerDefinition');
           }
-          const reduction = get(layerDefinition, 'featureReduction');
+          const reduction = get(layer, 'layerDefinition.featureReduction');
           if (reduction) {
             switch (reduction.type) {
               case 'cluster': {
@@ -294,8 +282,8 @@ export class ArcgisService {
                   token: this.esriApiKey,
                   // If popup is not disabled we want to show the cluster popup, no zoom to bounds
                   zoomToBoundsOnClick: get(
-                    layerDefinition,
-                    'featureReduction.disablePopup',
+                    layer,
+                    'layerDefinition.featureReduction.disablePopup',
                     true
                   ),
                   // opacity,
@@ -304,7 +292,7 @@ export class ArcgisService {
                   // },
                   // pane,
                   clusterPane: pane,
-                  drawingInfo: layerDefinition.drawingInfo,
+                  drawingInfo: get(layer, 'layerDefinition.drawingInfo'),
                   minZoom: minScaleLevel,
                   maxZoom: maxScaleLevel,
                 });
@@ -454,8 +442,8 @@ export class ArcgisService {
                 url: layer.url,
                 token: this.esriApiKey,
                 ...{ opacity },
-                ...(get(layerDefinition, 'drawingInfo') && {
-                  drawingInfo: layerDefinition.drawingInfo,
+                ...(get(layer, 'layerDefinition.drawingInfo') && {
+                  drawingInfo: layer.layerDefinition.drawingInfo,
                   minZoom: minScaleLevel,
                   maxZoom: maxScaleLevel,
                 }),
