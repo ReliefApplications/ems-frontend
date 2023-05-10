@@ -472,12 +472,25 @@ export class Layer implements LayerModel {
             const heatArray: any[] = [];
 
             data.features.forEach((feature: any) => {
-              // @TODO incorrect, it should be a feature, not a point
-              if (get(feature, 'type') === 'Point') {
-                heatArray.push([
-                  feature.coordinates[1], // lat
-                  feature.coordinates[0], // long
-                ]);
+              console.log(feature);
+              switch (get(feature, 'type')) {
+                case 'Point': {
+                  heatArray.push([
+                    get(feature, 'coordinates[1]'), // lat
+                    get(feature, 'coordinates[0]'), // long
+                  ]);
+                  break;
+                }
+                case 'Feature': {
+                  heatArray.push([
+                    get(feature, 'geometry.coordinates[1]'), // lat
+                    get(feature, 'geometry.coordinates[0]'), // long
+                  ]);
+                  break;
+                }
+                default: {
+                  break;
+                }
               }
             });
 
@@ -510,7 +523,11 @@ export class Layer implements LayerModel {
               }, {}),
             };
 
+            console.log(heatArray);
+
             const layer = L.heatLayer(heatArray, heatmapOptions);
+
+            console.log(layer);
 
             layer.onAdd = (map: L.Map) => {
               // So we can use onAdd method from HeatLayer class
