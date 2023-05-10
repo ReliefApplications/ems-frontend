@@ -16,10 +16,11 @@
       {{ 'components.widget.settings.map.edit.layerDatasource' | translate }}
     </safe-button>
     <safe-button
-      *ngIf="datasourceValid && form?.get('layerDefinition.drawingInfo')"
+      *ngIf="form?.get('layerDefinition.drawingInfo')"
       icon="storage"
       [attr.data-selected]="currentTab === 'styling'"
       (click)="currentTab = 'styling'"
+      [disabled]="datasourceValid"
     >
       {{ 'components.widget.settings.map.edit.layerStyling' | translate }}
     </safe-button>
@@ -38,26 +39,29 @@
       {{ 'components.widget.settings.map.edit.cluster.cluster' | translate }}
     </safe-button> -->
     <safe-button
-      *ngIf="datasourceValid && form?.get('layerDefinition.featureReduction')?.enabled"
+      *ngIf="form?.get('layerDefinition.drawingInfo.renderer.type')?.value !== 'heatmap'"
       icon="map"
       [attr.data-selected]="currentTab === 'aggregation'"
       (click)="currentTab = 'aggregation'"
+      [disabled]="datasourceValid"
     >
       {{ 'components.widget.settings.map.edit.aggregation' | translate }}
     </safe-button>
     <safe-button
-      *ngIf="datasourceValid && form?.get('popupInfo')"
+      *ngIf="form?.get('popupInfo')"
       icon="map"
       [attr.data-selected]="currentTab === 'popup'"
       (click)="currentTab = 'popup'"
+      [disabled]="datasourceValid"
     >
       {{ 'components.widget.settings.map.edit.popup' | translate }}
     </safe-button>
     <safe-button
-      *ngIf="datasourceValid && form?.get('datasource')"
+      *ngIf="form?.get('datasource')"
       icon="map"
       [attr.data-selected]="currentTab === 'fields'"
       (click)="currentTab = 'fields'"
+      [disabled]="datasourceValid"
     >
       {{ 'components.widget.settings.map.edit.fields' | translate }}
     </safe-button>

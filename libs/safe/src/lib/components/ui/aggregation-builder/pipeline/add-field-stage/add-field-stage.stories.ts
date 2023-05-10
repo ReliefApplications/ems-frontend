@@ -80,6 +80,9 @@ const TEMPLATE: StoryFn<SafeAddFieldStageComponent> = () => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',

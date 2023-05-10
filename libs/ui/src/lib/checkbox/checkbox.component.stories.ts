@@ -13,10 +13,19 @@ export default {
   ],
 } as Meta<CheckboxComponent>;
 
+/**
+ * Template
+ *
+ * @param args arguments
+ * @returns template
+ */
 const Template: StoryFn<CheckboxComponent> = (args: CheckboxComponent) => ({
   props: args,
 });
 
+/**
+ * Primary story.
+ */
 export const Primary = Template.bind({});
 Primary.args = {
   checked: false,

@@ -48,6 +48,9 @@ const TEMPLATE: StoryFn<SafeIconComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',

@@ -5,6 +5,9 @@ import { LabelModule } from '@progress/kendo-angular-label';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+/**
+ * Geospatial fields component.
+ */
 @Component({
   selector: 'safe-geospatial-fields',
   standalone: true,

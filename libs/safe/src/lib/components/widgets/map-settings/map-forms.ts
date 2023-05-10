@@ -148,6 +148,7 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
 /**
  * Create layer definition form group
  *
+ * @param type layer type
  * @param value layer definition
  * @returns layer definition form group
  */
@@ -163,20 +164,11 @@ const createLayerDefinitionForm = (type: LayerType, value?: any): FormGroup => {
     }),
   });
   if (type !== 'GroupLayer') {
-    const rendererType = formGroup.value.drawingInfo.renderer.type;
     // Add more conditions there to disabled aggregation
-    if (rendererType === 'heatmap') {
-      formGroup.get('featureReduction')?.disable();
-    }
     const setTypeListeners = () => {
       formGroup
         .get('drawingInfo.renderer.type')
-        ?.valueChanges.subscribe((type) => {
-          if (type === 'heatmap') {
-            formGroup.get('featureReduction')?.disable();
-          } else {
-            formGroup.get('featureReduction')?.enable();
-          }
+        ?.valueChanges.subscribe((type: string) => {
           formGroup.setControl(
             'drawingInfo',
             createLayerDrawingInfoForm({
@@ -347,8 +339,8 @@ export const createMapControlsForm = (value?: MapControls): FormGroup =>
  * @param value map settings ( optional )
  * @returns map form
  */
-export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup =>
-  fb.group({
+export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
+  const formGroup = fb.group({
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],
     initialState: fb.group({
@@ -390,3 +382,15 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup =>
     ),
     arcGisWebMap: [get(value, 'arcGisWebMap', DEFAULT_MAP.arcGisWebMap)],
   });
+  if (formGroup.get('arcGisWebMap')?.value) {
+    formGroup.get('basemap')?.disable({ emitEvent: false });
+  }
+  formGroup.get('arcGisWebMap')?.valueChanges.subscribe((value) => {
+    if (value) {
+      formGroup.get('basemap')?.disable({ emitEvent: false });
+    } else {
+      formGroup.get('basemap')?.enable({ emitEvent: false });
+    }
+  });
+  return formGroup;
+};

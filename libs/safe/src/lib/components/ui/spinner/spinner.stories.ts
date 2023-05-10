@@ -43,6 +43,9 @@ const TEMPLATE: StoryFn<SafeSpinnerComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',

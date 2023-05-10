@@ -42,6 +42,9 @@ const TEMPLATE_WITH_TEXT: StoryFn<SafeAlertComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = {
   render: TEMPLATE_WITH_TEXT,
   name: 'Default',

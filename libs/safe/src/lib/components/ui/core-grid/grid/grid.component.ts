@@ -168,6 +168,11 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     );
   }
 
+  /** @returns show border of grid */
+  get showBorder(): boolean {
+    return get(this.widget, 'settings.widgetDisplay.showBorder', true);
+  }
+
   // === DISPLAY ===
   @Input() resizable = true;
   @Input() reorderable = true;

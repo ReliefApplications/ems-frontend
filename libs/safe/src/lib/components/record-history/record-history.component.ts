@@ -25,6 +25,9 @@ import { Version } from '../../models/form.model';
 import { Subject } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { scrollFactory } from '../../utils/scroll-factory';
+import { Overlay } from '@angular/cdk/overlay';
+import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -54,6 +57,13 @@ const getValueType = (
   selector: 'safe-record-history',
   templateUrl: './record-history.component.html',
   styleUrls: ['./record-history.component.scss'],
+  providers: [
+    {
+      provide: MAT_SELECT_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+  ],
 })
 export class SafeRecordHistoryComponent
   extends SafeUnsubscribeComponent

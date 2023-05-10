@@ -1,11 +1,42 @@
 <ng-container *ngIf="tileForm">
-  <form [formGroup]="tileForm">
-    <div class="flex flex-col">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.title' | translate }}</mat-label>
-        <input matInput formControlName="title" type="string" />
-      </mat-form-field>
-    </div>
-    <editor [init]="editor" formControlName="text"></editor>
-  </form>
+  <mat-tab-group class="grow" vertical animationDuration="0ms">
+    <!-- Main Parameters -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon
+          icon="settings"
+          [size]="24"
+          matTooltip="{{ 'common.general' | translate }}"
+          matTooltipPosition="right"
+        ></safe-icon>
+        <span>{{ 'common.general' | translate }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <form [formGroup]="tileForm">
+          <div class="flex flex-col">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'common.title' | translate }}</mat-label>
+              <input matInput formControlName="title" type="string" />
+            </mat-form-field>
+          </div>
+          <editor [init]="editor" formControlName="text"></editor>
+        </form>
+      </ng-template>
+    </mat-tab>
+    <!-- Widget display options -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon
+          icon="settings_overscan"
+          [size]="24"
+          matTooltip="{{ 'models.widget.display.title' | translate }}"
+          matTooltipPosition="right"
+        ></safe-icon>
+        <span>{{ 'models.widget.display.title' | translate }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <safe-display-settings [formGroup]="tileForm"></safe-display-settings>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
 </ng-container>

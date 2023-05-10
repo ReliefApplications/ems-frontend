@@ -25,7 +25,7 @@
     </ng-template>
   </mat-tab>
   <!-- AVAILABLE ACTIONS -->
-  <mat-tab [disabled]="formGroup.value.aggregations.length > 0">
+  <mat-tab [disabled]="formGroup && formGroup.value.aggregations.length > 0">
     <ng-template mat-tab-label>
       <safe-icon
         icon="toggle_on"
@@ -44,7 +44,7 @@
     </ng-template>
   </mat-tab>
   <!-- BUTTONS -->
-  <mat-tab [disabled]="formGroup.value.aggregations.length > 0">
+  <mat-tab [disabled]="formGroup && formGroup.value.aggregations.length > 0">
     <ng-template mat-tab-label>
       <safe-icon
         icon="bolt"
@@ -67,6 +67,21 @@
         [relatedForms]="relatedForms"
         [channels]="channels"
       ></safe-tab-buttons>
+    </ng-template>
+  </mat-tab>
+  <!-- Widget display options -->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <safe-icon
+        icon="settings_overscan"
+        [size]="24"
+        matTooltip="{{ 'models.widget.display.title' | translate }}"
+        matTooltipPosition="right"
+      ></safe-icon>
+      <span>{{ 'models.widget.display.title' | translate }}</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <safe-display-settings [formGroup]="formGroup"></safe-display-settings>
     </ng-template>
   </mat-tab>
 </mat-tab-group>

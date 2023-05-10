@@ -14,6 +14,9 @@ type MockedAvatar = {
 
 type StoryType = AvatarGroupComponent & { avatars?: any[] };
 
+/**
+ * Avatars data.
+ */
 const avatars: MockedAvatar[] = [
   {
     size: 'large',
