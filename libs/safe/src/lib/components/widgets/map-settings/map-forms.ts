@@ -164,20 +164,11 @@ const createLayerDefinitionForm = (type: LayerType, value?: any): FormGroup => {
     }),
   });
   if (type !== 'GroupLayer') {
-    const rendererType = formGroup.value.drawingInfo.renderer.type;
     // Add more conditions there to disabled aggregation
-    if (rendererType === 'heatmap') {
-      formGroup.get('featureReduction')?.disable();
-    }
     const setTypeListeners = () => {
       formGroup
         .get('drawingInfo.renderer.type')
-        ?.valueChanges.subscribe((type) => {
-          if (type === 'heatmap') {
-            formGroup.get('featureReduction')?.disable();
-          } else {
-            formGroup.get('featureReduction')?.enable();
-          }
+        ?.valueChanges.subscribe((type: string) => {
           formGroup.setControl(
             'drawingInfo',
             createLayerDrawingInfoForm({
