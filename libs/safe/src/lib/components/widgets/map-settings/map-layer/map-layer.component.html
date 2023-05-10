@@ -38,7 +38,7 @@
       {{ 'components.widget.settings.map.edit.cluster.cluster' | translate }}
     </safe-button> -->
     <safe-button
-      *ngIf="form?.get('layerDefinition.featureReduction')?.enabled"
+      *ngIf="form?.get('layerDefinition.drawingInfo.renderer.type')?.value !== 'heatmap'"
       icon="map"
       [attr.data-selected]="currentTab === 'aggregation'"
       (click)="currentTab = 'aggregation'"
