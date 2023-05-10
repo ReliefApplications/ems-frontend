@@ -235,7 +235,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * mdr
    */
   private async setupGridSettings() {
-    const [card] = this.settings.cards;
+    const [card] = get(this.settings, 'cards', []);
     if (!card) return;
 
     this.gridLayoutService

@@ -43,6 +43,7 @@ export const getMapFeature = (map: any): Feature =>
  *
  * @param map Map on which geoman tools are set
  * @param data layer data
+ * @param previousLayer previous layer
  * @param layerType geoman layer type
  */
 export const updateGeoManLayerPosition = (

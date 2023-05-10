@@ -402,7 +402,11 @@
 			"customStyling": "******",
 			"dashboard": {
 				"editFilter": "******",
-				"empty": "******"
+				"empty": "******",
+				"filterSettings": "******",
+				"settings": {
+					"defaultPosition": "******"
+				}
 			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
@@ -1712,6 +1716,7 @@
 			"type": "******"
 		},
 		"dashboard": {
+			"activateFiltering": "******",
 			"context": {
 				"datasource": {
 					"alert": "******",
@@ -1730,6 +1735,7 @@
 					"element": "******"
 				}
 			},
+			"deactivateFiltering": "******",
 			"share": "******"
 		},
 		"form": {
@@ -1818,6 +1824,10 @@
 			},
 			"delete": {
 				"confirmationMessage": "******",
+				"title": "******"
+			},
+			"display": {
+				"border": "******",
 				"title": "******"
 			},
 			"map": {

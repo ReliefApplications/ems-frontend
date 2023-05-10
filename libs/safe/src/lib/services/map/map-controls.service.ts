@@ -2,10 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
 import { MapDownloadComponent } from '../../components/ui/map/map-download/map-download.component';
-import { MapLegendComponent } from '../../components/ui/map/map-legend/map-legend.component';
 import { DomService } from '../dom/dom.service';
 import { GeoJsonObject } from 'geojson';
-
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
 import * as L from 'leaflet';
 import 'esri-leaflet';
@@ -13,9 +11,8 @@ import 'leaflet-fullscreen';
 import 'leaflet-measure';
 import 'leaflet-timedimension';
 import * as Geocoding from 'esri-leaflet-geocoder';
-import { LegendDefinition } from '../../components/ui/map/interfaces/layer-legend.type';
-import { Layer } from '../../components/ui/map/layer';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/language';
+import { legendControl } from '../../components/ui/map/controls/legend.control';
 
 /**
  * Shared map control service.
@@ -81,10 +78,11 @@ export class SafeMapControlsService {
   }
 
   /**
-   * Creates a custom searchbar control with esri geocoding
+   * Create a custom searchbar control with esri geocoding
    *
    * @param map current map
    * @param apiKey arcgis api key
+   * @returns searchbar control
    */
   public getSearchbarControl(map: L.Map, apiKey: string) {
     const control = Geocoding.geosearch({
@@ -228,69 +226,65 @@ export class SafeMapControlsService {
    * Control is automated to listen to map layers changes
    *
    * @param map leaflet map
-   * @param layers layers
+   * @param layers leaflet layers
    * @param addControl flag that indicates if should add or remove the control
    */
-  public getLegendControl(
-    map: L.Map,
-    layers: Layer[],
-    addControl: boolean
-  ): void {
+  public getLegendControl(map: L.Map, addControl: boolean): void {
     if (addControl) {
       if (!this.legendControl) {
-        const updateControl = (instance: MapLegendComponent) => {
-          // Add legends to the map
-          const layerLegends: {
-            layer: string;
-            legend: LegendDefinition;
-          }[] = [];
-          layers.forEach((layer) => {
-            // check if layer is visible
-            if (!map.hasLayer(layer.getLayer())) return;
+        // const updateControl = (instance: MapLegendComponent) => {
+        //   // Add legends to the map
+        //   const layerLegends: {
+        //     layer: string;
+        //     legend: LegendDefinition;
+        //   }[] = [];
+        //   layers.forEach((layer) => {
+        //     // check if layer is visible
+        //     if (!map.hasLayer(layer.getLayer())) return;
 
-            const legend = (layer.getLayer() as any).legend;
-            if (legend) {
-              layerLegends.push({
-                layer: layer.name,
-                legend,
-              });
-            }
-          });
-          instance.layerLegends = layerLegends;
-        };
-        this.legendControl = new L.Control({ position: 'bottomright' });
-        this.legendControl.onAdd = () => {
-          const div = L.DomUtil.create('div', 'info legend');
-          const component = this.domService.appendComponentToBody(
-            MapLegendComponent,
-            div
-          );
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const instance: MapLegendComponent = component.instance;
-          updateControl(instance);
-          map.on('overlayadd', () => {
-            updateControl(instance);
-          });
+        //     const legend = (layer.getLayer() as any).legend;
+        //     if (legend) {
+        //       layerLegends.push({
+        //         layer: layer.name,
+        //         legend,
+        //       });
+        //     }
+        //   });
+        //   instance.layerLegends = layerLegends;
+        // };
+        this.legendControl = legendControl();
+        // this.legendControl.onAdd = () => {
+        //   const div = L.DomUtil.create('div', 'info legend');
+        //   const component = this.domService.appendComponentToBody(
+        //     MapLegendComponent,
+        //     div
+        //   );
+        //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        //   const instance: MapLegendComponent = component.instance;
+        //   updateControl(instance);
+        //   map.on('overlayadd', () => {
+        //     updateControl(instance);
+        //   });
 
-          map.on('overlayremove', () => {
-            updateControl(instance);
-          });
-          return div;
-        };
+        //   map.on('overlayremove', () => {
+        //     updateControl(instance);
+        //   });
+        //   return div;
+        // };
         this.legendControl.addTo(map);
 
-        const container = this.legendControl.getContainer();
-        if (container) {
-          // prevent click events from propagating to the map
-          container.addEventListener('click', (e: any) => {
-            L.DomEvent.stopPropagation(e);
-          });
+        // const container = this.legendControl.getContainer();
+        // if (container) {
+        //   // prevent click events from propagating to the map
+        //   container.addEventListener('click', (e: any) => {
+        //     L.DomEvent.stopPropagation(e);
+        //   });
 
-          // prevent mouse wheel events from propagating to the map
-          container.addEventListener('wheel', (e: any) => {
-            L.DomEvent.stopPropagation(e);
-          });
-        }
+        //   // prevent mouse wheel events from propagating to the map
+        //   container.addEventListener('wheel', (e: any) => {
+        //     L.DomEvent.stopPropagation(e);
+        //   });
+        // }
       }
     } else {
       if (this.legendControl) {

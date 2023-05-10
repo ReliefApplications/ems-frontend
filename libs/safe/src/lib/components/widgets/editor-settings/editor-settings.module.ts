@@ -6,6 +6,10 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { SafeIconModule } from '../../ui/icon/icon.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 
 /**
  * Module for the safeEditorSetting component
@@ -20,6 +24,10 @@ import { TranslateModule } from '@ngx-translate/core';
     MatInputModule,
     EditorModule,
     TranslateModule,
+    MatTabsModule,
+    SafeIconModule,
+    MatTooltipModule,
+    DisplaySettingsComponent,
   ],
   exports: [SafeEditorSettingsComponent],
   providers: [

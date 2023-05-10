@@ -13,6 +13,7 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { MapModule } from '../../ui/map/map.module';
 import { SafeDividerModule } from '../../ui/divider/divider.module';
 import { MapLayerModule } from './map-layer/map-layer.module';
+import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 
 /** Module for map settings component */
 @NgModule({
@@ -32,6 +33,7 @@ import { MapLayerModule } from './map-layer/map-layer.module';
     SafeButtonModule,
     SafeDividerModule,
     MapLayerModule,
+    DisplaySettingsComponent,
   ],
   exports: [SafeMapSettingsComponent],
 })

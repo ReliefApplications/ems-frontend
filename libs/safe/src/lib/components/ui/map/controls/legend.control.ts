@@ -34,7 +34,6 @@ class LegendControl extends L.Control {
    * @returns legend control container
    */
   public override onAdd(map: L.Map) {
-    console.log('add legend control');
     this._map = map;
     const container: HTMLElement =
       this.options.container ||

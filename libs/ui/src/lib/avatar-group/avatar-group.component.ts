@@ -12,6 +12,9 @@ import { AvatarComponent } from '../avatar/avatar.component';
 import { AvatarSize } from '../avatar/enums/avatar-size.enum';
 import { AvatarShape } from '../avatar/enums/avatar-shape.enum';
 
+/**
+ * Avatar group component.
+ */
 @Component({
   selector: 'ui-avatar-group',
   templateUrl: './avatar-group.component.html',
@@ -25,6 +28,12 @@ export class AvatarGroupComponent implements AfterViewInit {
 
   @ContentChildren(AvatarComponent) avatars!: QueryList<AvatarComponent>;
 
+  /**
+   * Avatar component.
+   *
+   * @param renderer renderer
+   * @param el element ref
+   */
   constructor(private renderer: Renderer2, private el: ElementRef) {}
 
   avatarGroupStack = AvatarGroupStack;

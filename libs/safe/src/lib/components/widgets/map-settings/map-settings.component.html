@@ -15,6 +15,13 @@
     >
       {{ 'common.layers' | translate }}
     </safe-button>
+    <safe-button
+      icon="settings_overscan"
+      [attr.data-selected]="currentTab === 'display'"
+      (click)="handleTabChange('display')"
+    >
+      {{ 'models.widget.display.title' | translate }}
+    </safe-button>
     <ng-container *ngIf="currentTab === 'layer' && layerComponent">
       <safe-divider></safe-divider>
       <ng-container
@@ -53,6 +60,9 @@
               [ngTemplateOutlet]="layerComponent.layerSettingsTemplate"
             ></ng-container>
           </ng-container>
+        </ng-container>
+        <ng-container *ngSwitchCase="'display'">
+          <safe-display-settings [formGroup]="tileForm"></safe-display-settings>
         </ng-container>
       </div>
     </ng-container>

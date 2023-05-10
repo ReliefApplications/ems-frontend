@@ -46,11 +46,17 @@ const TEMPLATE: StoryFn<SafeDividerComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',
 };
 
+/**
+ * With text story.
+ */
 export const WITH_TEXT = {
   render: TEMPLATE,
   name: 'With Text',

@@ -91,6 +91,9 @@ const TEMPLATE: StoryFn<SafeExpressionsComponent> = () => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',

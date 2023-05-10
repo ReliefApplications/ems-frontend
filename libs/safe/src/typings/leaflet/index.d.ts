@@ -21,3 +21,8 @@ declare module 'esri-leaflet-renderers' {
   export let pointSymbol: any;
   export let simpleRenderer: any;
 }
+
+declare module '@oort-front/esri' {
+  export let pointSymbol: any;
+  export let simpleRenderer: any;
+}

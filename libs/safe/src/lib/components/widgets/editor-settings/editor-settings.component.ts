@@ -9,6 +9,7 @@ import {
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { SafeEditorService } from '../../../services/editor/editor.service';
+import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 
 /**
  * Modal content for the settings of the editor widgets.
@@ -52,11 +53,12 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
-    this.tileForm = this.formBuilder.group({
+    const form = this.formBuilder.group({
       id: this.tile.id,
       title: this.tile.settings.title,
       text: this.tile.settings.text,
     });
+    this.tileForm = extendWidgetForm(form, this.tile?.settings?.widgetDisplay);
     this.change.emit(this.tileForm);
   }
 

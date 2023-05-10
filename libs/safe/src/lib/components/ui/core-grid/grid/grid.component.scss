@@ -28,8 +28,15 @@
   & kendo-grid .no-padding {
     padding: 0 !important;
   }
-}
 
+  .border-none {
+    .k-grid-header,
+    .k-pager,
+    .k-grid-toolbar {
+      border: none !important;
+    }
+  }
+}
 textarea {
   width: 100% !important;
 }
