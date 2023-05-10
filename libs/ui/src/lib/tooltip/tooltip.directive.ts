@@ -4,6 +4,7 @@ import {
   Renderer2,
   Input,
   HostListener,
+  OnDestroy,
 } from '@angular/core';
 
 /**
@@ -12,16 +13,16 @@ import {
 @Directive({
   selector: '[uiTooltip]',
 })
-export class TooltipDirective {
-  @Input() uiTooltip = 'test';
+export class TooltipDirective implements OnDestroy {
+  @Input() uiTooltip = '';
   @Input() tooltipDisabled = false;
 
-  elToolTip: any;
+  private elToolTip!: HTMLSpanElement;
   // Distance from tooltip and the host element
-  tooltipSeparation = 5;
+  private tooltipSeparation = 5;
 
   // Default classes to render the tooltip
-  classes = [
+  private tooltipClasses = [
     'opacity-70',
     'transition-opacity',
     'delay-300',
@@ -43,14 +44,17 @@ export class TooltipDirective {
    * @param elementRef Tooltip host reference
    * @param renderer Angular renderer to work with DOM
    */
-  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {
+    // Creation of the tooltip element
+    this.createTooltipElement();
+  }
 
   /**
    * Function that listen for the user's mouse to enter the element where the directive is placed
    */
   @HostListener('mouseenter')
   onMouseEnter() {
-    if (!this.elToolTip && !this.tooltipDisabled) {
+    if (this.uiTooltip && !this.tooltipDisabled) {
       this.showHint();
     }
   }
@@ -68,21 +72,15 @@ export class TooltipDirective {
   /**
    * Destroy the tooltip and stop its display
    */
-  removeHint() {
-    for (const cl of this.classes) {
-      this.renderer.removeClass(this.elToolTip, cl);
-    }
+  private removeHint() {
     this.renderer.removeChild(document.body, this.elToolTip);
-    this.elToolTip = null;
   }
 
   /**
    * Show the tooltip and place it on the screen accordingly to its width and height
    */
-  showHint() {
-    // Creation of the tooltip element
-    this.createTooltipElement();
-
+  private showHint() {
+    this.elToolTip.textContent = this.uiTooltip;
     // Management of tooltip placement in the screen (including screen edges cases)
     const hostPos = this.elementRef.nativeElement.getBoundingClientRect();
     const tooltipPos = this.elToolTip.getBoundingClientRect();
@@ -115,6 +113,7 @@ export class TooltipDirective {
     }
     this.renderer.setStyle(this.elToolTip, 'top', topValue);
     this.renderer.setStyle(this.elToolTip, 'left', leftValue);
+    this.renderer.appendChild(document.body, this.elToolTip);
   }
 
   /**
@@ -122,11 +121,16 @@ export class TooltipDirective {
    */
   private createTooltipElement(): void {
     this.elToolTip = this.renderer.createElement('span');
-    const text = this.renderer.createText(this.uiTooltip);
-    this.renderer.appendChild(this.elToolTip, text);
-    this.renderer.appendChild(document.body, this.elToolTip);
-    for (const cl of this.classes) {
+    for (const cl of this.tooltipClasses) {
       this.renderer.addClass(this.elToolTip, cl);
     }
+  }
+
+  /**
+   * If the element is gone but we don't move cursor out,
+   * remove the tooltip by default
+   */
+  ngOnDestroy(): void {
+    this.removeHint();
   }
 }
