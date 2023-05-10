@@ -5,7 +5,6 @@ import {
   EventEmitter,
   AfterViewInit,
   ViewChild,
-  ElementRef,
   Renderer2,
 } from '@angular/core';
 import {
@@ -71,7 +70,7 @@ export class ExpansionPanelComponent implements AfterViewInit {
    *
    * @param contentContainer content container from the expansion panel
    */
-  onClosed(contentContainer: ElementRef) {
+  onClosed(contentContainer: HTMLDivElement) {
     setTimeout(() => {
       this.renderer.addClass(contentContainer, 'hidden');
     }, 100);
@@ -84,7 +83,7 @@ export class ExpansionPanelComponent implements AfterViewInit {
    *
    * @param contentContainer content container from the expansion panel
    */
-  onOpened(contentContainer: ElementRef) {
+  onOpened(contentContainer: HTMLDivElement) {
     this.renderer.removeClass(contentContainer, 'hidden');
     this.renderer.addClass(contentContainer, 'block');
   }
