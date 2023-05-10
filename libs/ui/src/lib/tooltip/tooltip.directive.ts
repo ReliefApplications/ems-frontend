@@ -31,7 +31,6 @@ export class TooltipDirective implements OnDestroy {
     'max-w-xs',
     'whitespace-pre-wrap',
     'text-xs',
-    'text-justify',
     'text-gray-100',
     'rounded-md',
     'absolute',
@@ -93,22 +92,12 @@ export class TooltipDirective implements OnDestroy {
     //Default working case
     let topValue = `${top + this.tooltipSeparation}px`;
     let leftValue = `${left}px`;
-    // Case where it is both on the bottom and on the right of the screen
-    if (
-      tooltipHeight + top > window.innerHeight &&
-      tooltipWidth + left > window.innerWidth
-    ) {
+    // Case where it on the bottom
+    if (tooltipHeight + top > window.innerHeight) {
       topValue = `${hostPos.top - this.tooltipSeparation - tooltipHeight}px`;
-      leftValue = `${window.innerWidth - tooltipWidth}px`;
-    }
-    //Bottom centered case (not to be placed first but after other allegations)
-    else if (tooltipHeight + top > window.innerHeight) {
-      topValue = `${hostPos.top - this.tooltipSeparation - tooltipHeight}px`;
-      leftValue = `${left}px`;
     }
     //Right placed case
-    else if (tooltipWidth + left > window.innerWidth) {
-      topValue = `${top + this.tooltipSeparation}px`;
+    if (tooltipWidth + left > window.innerWidth) {
       leftValue = `${window.innerWidth - tooltipWidth}px`;
     }
     this.renderer.setStyle(this.elToolTip, 'top', topValue);
