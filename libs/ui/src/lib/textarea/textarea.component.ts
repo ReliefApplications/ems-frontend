@@ -28,7 +28,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   styleUrls: ['./textarea.component.scss'],
   providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class TextareaComponent implements ControlValueAccessor, OnInit{
+export class TextareaComponent implements ControlValueAccessor, OnInit {
   @Input() value: any = '';
   @Input() label = '';
   @Input() placeholder = '';
