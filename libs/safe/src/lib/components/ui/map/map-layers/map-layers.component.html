@@ -6,12 +6,12 @@
   <safe-button
     class="bg-white rounded-l border-2 border-solid border-black border-opacity-20 border-r-0"
     (click)="openLayersMenu()"
-    >Layers</safe-button
+    >{{ 'common.layers' | translate }}</safe-button
   >
   <safe-button
     class="bg-white mr-2 rounded-r border-2 border-solid border-black border-opacity-20 border-l-0"
     (click)="openBookmarksMenu()"
-    >Bookmarks</safe-button
+    >{{ 'common.bookmarks' | translate }}</safe-button
   >
 </div>
 
@@ -25,7 +25,7 @@
         'bg-slate-200': !layersMenuExpanded
       }"
       (click)="openLayersMenu()"
-      >Layers</safe-button
+      >{{ 'common.layers' | translate }}</safe-button
     >
     <safe-button
       class="rounded-t"
@@ -34,7 +34,7 @@
         'bg-slate-200': !bookmarksMenuExpanded
       }"
       (click)="openBookmarksMenu()"
-      >Bookmarks</safe-button
+      >{{ 'common.bookmarks' | translate }}</safe-button
     >
     <safe-button
       [isIcon]="true"
