@@ -5,6 +5,23 @@
   background-image: none;
 }
 
+::ng-deep .leaflet-top.leaflet-right {
+  height: 100%;
+  width: 40%;
+}
+
+::ng-deep .leaflet-control-layers-expanded {
+  height: 100%;
+  width: 100%;
+  margin: 0px 0px !important;
+  border: none !important;
+}
+
+::ng-deep .layers-bookmarks-menu {
+  width: 100%;
+  margin-right: 0px !important;
+}
+
 ::ng-deep .leaflet-layerstree-header input {
   margin-left: 0px;
 }

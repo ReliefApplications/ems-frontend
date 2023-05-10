@@ -260,7 +260,11 @@ export class MapComponent
     };
   }
 
-  /** Creates the map and adds all the controls we use */
+  /**
+   * Creates the map and adds all the controls we use
+   *
+   * @param initMap Does the map need to be reloaded
+   */
   private drawMap(initMap: boolean = true): void {
     console.log('draw map');
     const {
@@ -438,7 +442,7 @@ export class MapComponent
       this.map,
       controls.download ?? true
     );
-    // Add legend contorl if layers ready
+    // Add legend control if layers ready
     if (this.layerControl) {
       this.mapControlsService.getLegendControl(
         this.map,
@@ -446,7 +450,7 @@ export class MapComponent
         controls.legend ?? true
       );
     }
-    // Add layer contorl
+    // Add layer control
     if (controls.layer) {
       if (this.layerControl) {
         this.layerControl.addTo(this.map);
@@ -473,6 +477,7 @@ export class MapComponent
     basemaps: L.Control.Layers.TreeObject[],
     layers: L.Control.Layers.TreeObject[]
   ) {
+    this.mapControlsService.getLayerControl(this.map);
     this.baseTree = {
       label: 'Base Maps',
       children: basemaps,
@@ -489,12 +494,17 @@ export class MapComponent
     } else {
       this.layerControl = L.control.layers.tree(
         this.baseTree,
-        this.layersTree as any
+        this.layersTree as any,
+        { collapsed: false }
       );
     }
     if (this.extractSettings().controls.layer) {
       this.layerControl.addTo(this.map);
     }
+    this.map
+      .getContainer()
+      .querySelector('.leaflet-control-layers')
+      ?.classList.add('hidden');
   }
 
   /**
@@ -835,6 +845,8 @@ export class MapComponent
    * Set the webmap.
    *
    * @param webmap String containing the id (name) of the webmap
+   * @param options options for the web map
+   * @param options.loadBasemap set to true to confirm basemap loading
    * @returns loaded basemaps and layers as Promise
    */
   public setWebmap(
