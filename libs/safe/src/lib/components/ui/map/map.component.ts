@@ -466,7 +466,7 @@ export class MapComponent
         this.layersTree as any
       );
     }
-    if (this.extractSettings().controls.layer) {
+    if (this.extractSettings().controls.layer && !this.layerControl) {
       this.layerControl.addTo(this.map);
     }
   }
