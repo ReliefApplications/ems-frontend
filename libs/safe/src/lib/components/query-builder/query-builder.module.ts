@@ -16,7 +16,6 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -37,7 +36,7 @@ import { SafeFilterModule } from '../filter/filter.module';
 import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { SafeAlertModule } from '../ui/alert/alert.module';
-import { UiModule } from '@oort-front/ui';
+import { RadioModule } from '@oort-front/ui';
 
 /**
  * SafeQueryBuilderModule is a class used to manage all the modules and components
@@ -63,7 +62,6 @@ import { UiModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatRadioModule,
     MatTabsModule,
     MatMenuModule,
     MatTableModule,
@@ -86,7 +84,7 @@ import { UiModule } from '@oort-front/ui';
     SafeFilterModule,
     EditorModule,
     SafeAlertModule,
-    UiModule,
+    RadioModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

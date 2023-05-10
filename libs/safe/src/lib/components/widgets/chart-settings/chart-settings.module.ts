@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatIconModule } from '@angular/material/icon';
@@ -36,7 +35,6 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatRadioModule,
     MatButtonModule,
     MatIconModule,
     TextFieldModule,

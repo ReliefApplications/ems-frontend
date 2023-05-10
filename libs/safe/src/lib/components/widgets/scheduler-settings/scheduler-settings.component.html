@@ -7,7 +7,7 @@
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
       <div class="form-group-title">{{ 'global.data' | translate }}</div>
-      <div formControlName="from" uiRadioGroupDirective="fromOptions" (change)="getSources()">
+      <div formControlName="from" uiRadioGroupDirective="fromOptions" (groupValueChange)="getSources()">
         <ui-radio value="resource" [checked]="tileForm.get('from')?.value === 'resource'">
           <ng-container ngProjectAs="label">
             {{ 'widgets.scheduler.useRecords' | translate }}

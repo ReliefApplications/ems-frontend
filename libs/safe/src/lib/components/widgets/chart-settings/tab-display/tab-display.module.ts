@@ -10,7 +10,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
@@ -39,7 +38,6 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatRadioModule,
     MatButtonModule,
     MatIconModule,
     TextFieldModule,

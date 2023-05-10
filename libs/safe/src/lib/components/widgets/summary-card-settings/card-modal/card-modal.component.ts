@@ -36,7 +36,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { SafeDataSourceTabModule } from './data-source-tab/data-source.module';
 import { SafeValueSelectorTabModule } from './value-selector-tab/value-selector.module';
 import { SafeDisplayTabModule } from './display-tab/display.module';
@@ -60,7 +59,6 @@ import { SafeModalModule } from '../../../ui/modal/modal.module';
     MatFormFieldModule,
     MatInputModule,
     MatTabsModule,
-    MatRadioModule,
     SafeDataSourceTabModule,
     SafeValueSelectorTabModule,
     SafeDisplayTabModule,

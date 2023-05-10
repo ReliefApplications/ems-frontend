@@ -18,7 +18,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
@@ -29,8 +28,7 @@ import {
   SafeIconModule,
   SafeModalModule,
 } from '@oort-front/safe';
-import { UiModule } from '@oort-front/ui';
-import { Variant } from '@oort-front/ui';
+import { RadioModule, IconModule, Variant } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -48,7 +46,6 @@ const ITEMS_PER_PAGE = 10;
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatRadioModule,
     MatTooltipModule,
     MatSlideToggleModule,
     MatChipsModule,
@@ -56,7 +53,8 @@ const ITEMS_PER_PAGE = 10;
     SafeIconModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
-    UiModule,
+    RadioModule,
+    IconModule,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',
