@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeCheckboxTreeComponent } from './checkbox-tree.component';
 import { CdkTreeModule } from '@angular/cdk/tree';
-import { MatTreeModule } from '@angular/material/tree';
 import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
@@ -18,7 +17,6 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [
     CommonModule,
     CdkTreeModule,
-    MatTreeModule,
     MatCheckboxModule,
     MatButtonModule,
     MatFormFieldModule,
