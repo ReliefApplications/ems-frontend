@@ -43,6 +43,16 @@ module.exports = {
         successComment: false,
       },
     ],
-    '@semantic-release/git',
+    [
+      '@semantic-release/git',
+      {
+        assets: [
+          changelog,
+          'package.json',
+          'package-lock.json',
+          'npm-shrinkwrap.json',
+        ],
+      },
+    ],
   ],
 };
