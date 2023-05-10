@@ -18,6 +18,7 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { firstValueFrom, Observable } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 import { Connection } from '../../utils/graphql/connection.type';
+import { SafeDashboardService } from '../dashboard/dashboard.service';
 
 /** Fallback AggregationConnection */
 const FALLBACK_AGGREGATIONS: Connection<Aggregation> = {
@@ -40,8 +41,12 @@ export class SafeAggregationService {
    * Service for aggregations
    *
    * @param apollo The apollo service
+   * @param dashboardService The shared dashboard service
    */
-  constructor(private apollo: Apollo) {}
+  constructor(
+    private apollo: Apollo,
+    private dashboardService: SafeDashboardService
+  ) {}
 
   /**
    * Gets list of aggregation from resourceId
@@ -92,6 +97,7 @@ export class SafeAggregationService {
         resource,
         aggregation,
         mapping,
+        context: this.dashboardService.context,
       },
     });
   }
@@ -118,6 +124,7 @@ export class SafeAggregationService {
         aggregation,
         first,
         skip,
+        context: this.dashboardService.context,
       },
     });
   }

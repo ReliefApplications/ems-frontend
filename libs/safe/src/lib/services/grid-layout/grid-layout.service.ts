@@ -17,6 +17,7 @@ import {
 import { Layout } from '../../models/layout.model';
 import { firstValueFrom } from 'rxjs';
 import { Connection } from '../../utils/graphql/connection.type';
+import { SafeDashboardService } from '../dashboard/dashboard.service';
 
 /** Fallback LayoutConnection */
 const FALLBACK_LAYOUTS: Connection<Layout> = {
@@ -40,8 +41,12 @@ export class SafeGridLayoutService {
    * Constructor the SafeGridLayoutService
    *
    * @param apollo The apollo service
+   * @param dashboardService The shared dashboard service
    */
-  constructor(private apollo: Apollo) {}
+  constructor(
+    private apollo: Apollo,
+    private dashboardService: SafeDashboardService
+  ) {}
 
   /**
    * Gets list of layouts from source
@@ -80,11 +85,15 @@ export class SafeGridLayoutService {
           if (res2.errors) {
             return FALLBACK_LAYOUTS;
           } else {
-            return res2.data.form.layouts || FALLBACK_LAYOUTS;
+            return this.dashboardService.injectContext(
+              res2.data.form.layouts || FALLBACK_LAYOUTS
+            );
           }
         });
       } else {
-        return data.resource.layouts || FALLBACK_LAYOUTS;
+        return this.dashboardService.injectContext(
+          data.resource.layouts || FALLBACK_LAYOUTS
+        );
       }
     });
   }

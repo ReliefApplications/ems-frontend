@@ -212,4 +212,7 @@ export interface Dashboard {
   page?: Page;
   step?: Step;
   showFilter?: boolean;
+  contextData?: {
+    [key: string]: any;
+  };
 }

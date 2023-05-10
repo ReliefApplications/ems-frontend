@@ -42,6 +42,7 @@ export const GET_AGGREGATION_DATA = gql`
     $mapping: JSON
     $first: Int
     $skip: Int
+    $context: JSON
   ) {
     recordsAggregation(
       resource: $resource
@@ -49,6 +50,7 @@ export const GET_AGGREGATION_DATA = gql`
       mapping: $mapping
       first: $first
       skip: $skip
+      context: $context
     )
   }
 `;

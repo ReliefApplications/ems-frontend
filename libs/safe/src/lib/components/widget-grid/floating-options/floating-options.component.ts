@@ -78,7 +78,10 @@ export class SafeFloatingOptionsComponent implements OnInit {
       const dialogRef = this.dialog.open(SafeTileDataComponent, {
         disableClose: true,
         data: {
-          tile: this.widget,
+          tile: {
+            ...this.widget,
+            settings: this.widget.originalSettings || this.widget.settings,
+          },
           template: this.dashboardService.findSettingsTemplate(this.widget),
         },
       });

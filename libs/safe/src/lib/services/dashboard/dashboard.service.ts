@@ -23,6 +23,11 @@ import get from 'lodash/get';
 export class SafeDashboardService {
   /** List of available widgets */
   public availableWidgets = WIDGET_TYPES;
+  /** Current dashboard context */
+  public context: {
+    [key: string]: any;
+  } | null = null;
+
   /** Current dashboard */
   private dashboard = new BehaviorSubject<Dashboard | null>(null);
   /** @returns Current dashboard as observable */
@@ -227,6 +232,24 @@ export class SafeDashboardService {
           page,
           [context]: id,
         },
+      })
+    );
+  }
+
+  /**
+   * Injects current dashboard context into an object.
+   *
+   * @param obj object to inject context into
+   * @returns object with context injected
+   */
+  public injectContext(obj: any): any {
+    const context = this.context;
+    if (!context) return obj;
+    const regex = /{{context\.(.*?)}}/g;
+    return JSON.parse(
+      JSON.stringify(obj).replace(regex, (match) => {
+        const field = match.replace('{{context.', '').replace('}}', '');
+        return context[field] || match;
       })
     );
   }

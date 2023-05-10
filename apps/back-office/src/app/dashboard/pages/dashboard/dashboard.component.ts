@@ -152,9 +152,19 @@ export class DashboardComponent
                   ? this.dashboard?.page?.canUpdate
                   : this.dashboard?.step?.canUpdate) || false;
               this.dashboardService.openDashboard(this.dashboard);
-              this.tiles = data.dashboard.structure
-                ? [...data.dashboard.structure]
-                : [];
+              this.tiles =
+                data.dashboard.structure?.map((tile: any) => {
+                  const contextData = this.dashboard?.contextData;
+                  this.dashboardService.context = contextData || null;
+
+                  if (!contextData) return tile;
+                  // If tile has context, replace the templates with the values
+                  // and keep the original, to be used for the widget settings
+                  const settings = tile.settings;
+                  tile.settings = this.dashboardService.injectContext(settings);
+                  tile.originalSettings = settings;
+                  return tile;
+                }) || [];
               this.generatedTiles =
                 this.tiles.length === 0
                   ? 0
