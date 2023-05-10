@@ -6,7 +6,6 @@ import {
   forwardRef,
 } from '@angular/core';
 import { ToggleType } from './enums/toggle-type.enum';
-import { ToggleLabel } from './interfaces/toggle-label.interface';
 import { ToggleIcon } from './interfaces/toggle-icon.interface';
 import { Variant } from '../shared/variant.enum';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -30,7 +29,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
 export class ToggleComponent implements ControlValueAccessor {
   @Input() type: ToggleType = ToggleType.SIMPLE;
   @Input() icon!: ToggleIcon;
-  @Input() label!: ToggleLabel;
+  @Input() labelPosition: 'right' | 'left' = 'right';
   @Input() variant: Variant = Variant.PRIMARY;
 
   toggleTypes = ToggleType;

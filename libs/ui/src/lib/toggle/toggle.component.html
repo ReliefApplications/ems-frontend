@@ -1,6 +1,6 @@
 <div class="flex items-center">
   <!-- LABEL LEFT -->
-  <ng-container *ngIf="label && label.position === 'left'">
+  <ng-container *ngIf="labelPosition === 'left'">
     <ng-container *ngTemplateOutlet="labelTemplate"></ng-container>
   </ng-container>
 
@@ -38,7 +38,7 @@
   </button>
 
   <!-- LABEL RIGHT -->
-  <ng-container *ngIf="label && label.position === 'right'">
+  <ng-container *ngIf="labelPosition === 'right'">
     <ng-container *ngTemplateOutlet="labelTemplate"></ng-container>
   </ng-container>
 </div>
@@ -57,22 +57,18 @@
 <ng-template #labelTemplate>
   <span
     [ngClass]="{
-      'ml-4': label.position === 'right',
-      'mr-4': label.position === 'left'
+      'ml-4': labelPosition === 'right',
+      'mr-4': labelPosition === 'left'
     }"
     class="flex flex-col flex-wrap whitespace-pre-wrap text-sm"
   >
     <!-- TEXT -->
-    <span class="font-medium leading-6 text-gray-900" id="toggle-label">
-      {{ label.text }}
+    <span class="font-medium leading-6 text-gray-900">
+      <ng-content select="label"></ng-content>
     </span>
     <!-- DESCRIPTION -->
-    <span
-      class="text-gray-500"
-      *ngIf="label.description"
-      id="toggle-description"
-    >
-      {{ label.description }}
+    <span class="text-gray-500">
+      <ng-content select="description"></ng-content>
     </span>
   </span>
 </ng-template>
