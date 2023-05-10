@@ -20,6 +20,7 @@ import * as Vector from 'esri-leaflet-vector';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import * as L from 'leaflet';
 import { GradientPipe } from '../../pipes/gradient/gradient.pipe';
+import { MapControls } from '../../components/ui/map/interfaces/map.interface';
 
 /**
  * Define the ArcGIS projected coordinate system (102100 is the WKID for Web Mercator)
@@ -38,6 +39,7 @@ type TreeObject = { label: string; layer: L.Layer };
 export class ArcgisService {
   private esriApiKey!: string;
   private session!: ApiKeyManager;
+  private mapControls!: MapControls;
 
   /**
    * Shared ArcGIS service map
@@ -58,16 +60,19 @@ export class ArcgisService {
    *
    * @param {L.Map} map to add the webmap
    * @param {string} id webmap id
+   * @param {MapControls} controls map controls
    * @returns basemaps and layers
    */
   public loadWebMap(
     map: L.Map,
-    id: string
+    id: string,
+    controls: MapControls
   ): Promise<{ basemaps: TreeObject[]; layers: TreeObject[] }> {
     return new Promise((resolve) => {
       getItemData(id, {
         authentication: this.session,
       }).then((webMap: any) => {
+        this.mapControls = controls;
         this.setDefaultView(map, webMap);
         Promise.all([
           this.loadBaseMap(map, webMap),
@@ -362,26 +367,26 @@ export class ArcgisService {
                         map
                       );
                       // Create legend element
-                      const container = document.createElement('div');
-                      container.className = 'flex gap-1';
-                      const linearGradient = document.createElement('div');
-                      linearGradient.className = 'w-4 h-16';
-                      linearGradient.style.background = gradientPipe.transform(
-                        gradientForPipe,
-                        180
-                      );
-                      const legend = document.createElement('div');
-                      legend.className = 'flex flex-col justify-between';
-                      legend.innerHTML = '<span>Min</span><span>Max</span>';
-                      container.innerHTML =
-                        linearGradient.outerHTML + legend.outerHTML;
-                      const html =
-                        `<div class="font-bold">${layer.title}</div>` +
-                        container.outerHTML;
-                      // Add legend
-                      const legendControl = (map as any).legendControl;
-                      if (legendControl) {
-                        legendControl.addLayer(featureLayer, html);
+                      if (this.mapControls.legend) {
+                        const container = document.createElement('div');
+                        container.className = 'flex gap-1';
+                        const linearGradient = document.createElement('div');
+                        linearGradient.className = 'w-4 h-16';
+                        linearGradient.style.background =
+                          gradientPipe.transform(gradientForPipe, 180);
+                        const legend = document.createElement('div');
+                        legend.className = 'flex flex-col justify-between';
+                        legend.innerHTML = '<span>Min</span><span>Max</span>';
+                        container.innerHTML =
+                          linearGradient.outerHTML + legend.outerHTML;
+                        const html =
+                          `<div class="font-bold">${layer.title}</div>` +
+                          container.outerHTML;
+                        // Add legend
+                        const legendControl = (map as any).legendControl;
+                        if (legendControl) {
+                          legendControl.addLayer(featureLayer, html);
+                        }
                       }
                       return l;
                     };

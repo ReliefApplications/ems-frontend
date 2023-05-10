@@ -811,6 +811,10 @@ export class MapComponent
    */
   public setWebmap(webmap: any) {
     this.arcGisWebMap = webmap;
-    return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
+    return this.arcgisService.loadWebMap(
+      this.map,
+      this.arcGisWebMap,
+      this.extractSettings().controls
+    );
   }
 }
