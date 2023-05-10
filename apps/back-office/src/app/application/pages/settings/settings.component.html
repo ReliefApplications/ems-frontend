@@ -39,7 +39,6 @@
         <input matInput formControlName="id" type="text" />
       </mat-form-field>
     </div>
-
     <ui-textarea
       label="{{ 'models.application.description' | translate }}"
       formControlName="description"
@@ -52,17 +51,6 @@
       class="mb-6"
     >
     </ui-textarea>
-
-    <!-- <textarea
-        matInput
-        formControlName="description"
-        [placeholder]="
-          'components.application.update.placeholder.description' | translate
-        "
-        [cdkTextareaAutosize]="true"
-        [cdkAutosizeMinRows]="2"
-        [cdkAutosizeMaxRows]="5"
-      ></textarea> -->
   </div>
   <safe-button
     category="secondary"

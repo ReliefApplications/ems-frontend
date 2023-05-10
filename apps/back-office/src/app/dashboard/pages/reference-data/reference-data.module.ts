@@ -16,6 +16,7 @@ import { SafeIconModule } from '@oort-front/safe';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { TextareaModule } from '@oort-front/ui';
 
 /**
  * Reference Data page module.
@@ -40,6 +41,7 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
     MatTooltipModule,
     SafeGraphQLSelectModule,
     ButtonModule,
+    TextareaModule,
   ],
 })
 export class ReferenceDataModule {}

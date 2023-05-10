@@ -19,6 +19,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 import { SafeIconModule } from '../../icon/icon.module';
 import { SafeFilterModule } from '../../../filter/filter.module';
 import { SafeSortStageComponent } from './sort-stage/sort-stage.component';
+import { TextareaModule } from '@oort-front/ui';
 
 /**
  * Aggregation builder pipeline module.
@@ -48,6 +49,7 @@ import { SafeSortStageComponent } from './sort-stage/sort-stage.component';
     SafeIconModule,
     MatTooltipModule,
     SafeFilterModule,
+    TextareaModule,
   ],
   exports: [
     SafePipelineComponent,

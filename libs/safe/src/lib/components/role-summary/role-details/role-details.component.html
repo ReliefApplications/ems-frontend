@@ -6,17 +6,12 @@
       </mat-label>
       <input matInput formControlName="title" type="text" />
     </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>
-        {{ 'models.role.description' | translate }}
-      </mat-label>
-      <textarea
-        matInput
-        formControlName="description"
-        [cdkTextareaAutosize]="true"
-        [cdkAutosizeMinRows]="5"
-      ></textarea>
-    </mat-form-field>
+    <ui-textarea
+      label="{{ 'models.role.description' | translate }}"
+      formControlName="description"
+      [minRows]="5"
+    >
+    </ui-textarea>
     <mat-form-field appearance="outline">
       <mat-label>{{
         'components.role.update.permissions' | translate
