@@ -9,6 +9,7 @@ import { SafeAlertModule } from '../ui/alert/alert.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { ErrorMessageModule } from '@oort-front/ui';
 
 /** Cron expression control module. */
 @NgModule({
@@ -21,6 +22,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
     ReactiveFormsModule,
     SafeReadableCronModule,
     SafeAlertModule,
+    ErrorMessageModule,
     MatFormFieldModule,
     MatDialogModule,
     MatInputModule,

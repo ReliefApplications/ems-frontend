@@ -206,10 +206,11 @@
               [placeholder]="'common.placeholder.email' | translate"
               matInput
               formControlName="recipients"
+              uiErrorMessage=" {{
+                'components.customNotifications.errors.email' | translate
+              }}"
+              [uiErrorMessageIf]="formGroup.get('recipients')?.errors"
             />
-            <mat-error *ngIf="formGroup.get('recipients')?.errors">
-              {{ 'components.customNotifications.errors.email' | translate }}
-            </mat-error>
           </mat-form-field>
         </div>
       </div>

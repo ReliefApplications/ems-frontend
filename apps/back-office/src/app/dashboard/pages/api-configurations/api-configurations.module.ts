@@ -21,6 +21,7 @@ import {
   SafeModalModule,
   SafeSkeletonTableModule,
 } from '@oort-front/safe';
+import { ErrorMessageModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
@@ -54,6 +55,7 @@ import { AbilityModule } from '@casl/angular';
     SafeSkeletonTableModule,
     SafeModalModule,
     AbilityModule,
+    ErrorMessageModule,
   ],
   exports: [ApiConfigurationsComponent],
 })

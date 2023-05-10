@@ -10,6 +10,10 @@
         ? ('components.pullJob.modal.placeholder.schedule' | translate)
         : (value | safeReadableCron)
     }}"
+    uiErrorMessage="{{
+      'components.pullJob.modal.errors.schedule' | translate
+    }}"
+    [uiErrorMessageIf]="ngControl.errors"
   />
   <safe-icon
     icon="edit"
@@ -19,7 +23,4 @@
     (click)="onEdit()"
     [matTooltip]="'components.pullJob.modal.hint.schedule' | translate"
   ></safe-icon>
-  <mat-error *ngIf="ngControl.errors">
-    {{ 'components.pullJob.modal.errors.schedule' | translate }}
-  </mat-error>
 </mat-form-field>

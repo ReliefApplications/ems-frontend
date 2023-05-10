@@ -9,10 +9,11 @@
           formControlName="name"
           type="text"
           [placeholder]="'common.placeholder.name' | translate"
+          uiErrorMessage="{{
+            'components.apiConfiguration.create.errors.name' | translate
+          }}"
+          [uiErrorMessageIf]="name?.errors && name?.touched"
         />
-        <mat-error *ngIf="name?.errors">
-          {{ 'components.apiConfiguration.create.errors.name' | translate }}
-        </mat-error>
       </mat-form-field>
     </form>
   </div>

@@ -343,7 +343,18 @@
           <mat-label>{{
             'components.templates.available' | translate
           }}</mat-label>
-          <mat-select class="select" formControlName="templates" multiple>
+          <mat-select
+            uiErrorMessage="{{
+              'components.templates.errors.empty' | translate
+            }}"
+            [uiErrorMessageIf]="
+              formGroup.get('sendMail')?.value &&
+              !formGroup.get('templates')?.valid
+            "
+            class="select"
+            formControlName="templates"
+            multiple
+          >
             <mat-option
               *ngFor="let template of mailTemplates"
               [value]="template.id"
@@ -371,13 +382,6 @@
             [matTooltip]="'components.templates.edit.new' | translate"
           >
           </safe-button>
-          <mat-error
-            *ngIf="
-              formGroup.get('sendMail')?.value &&
-              !formGroup.get('templates')?.valid
-            "
-            >{{ 'components.templates.errors.empty' | translate }}</mat-error
-          >
         </mat-form-field>
         <!-- Export dataset -->
         <mat-checkbox formControlName="export">{{

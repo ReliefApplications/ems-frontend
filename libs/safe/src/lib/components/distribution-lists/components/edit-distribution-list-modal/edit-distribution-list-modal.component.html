@@ -14,8 +14,13 @@
           <mat-label>{{
             'components.distributionLists.edit.name' | translate
           }}</mat-label>
-          <input matInput formControlName="name" type="text" />
-          <mat-error>{{ errorMessage('name') | translate }}</mat-error>
+          <input
+            matInput
+            formControlName="name"
+            type="text"
+            uiErrorMessage="{{ errorMessage('name') | translate }}"
+            [uiErrorMessageIf]="form.get('name')?.errors && form.get('name')?.touched"
+          />
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>{{ 'common.email.few' | translate }}</mat-label>
@@ -35,9 +40,10 @@
               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
               (focusout)="addEmail($event)"
               (matChipInputTokenEnd)="addEmail($event)"
+              uiErrorMessage="{{ errorMessage('emails') | translate }}"
+              [uiErrorMessageIf]="form.get('emails')?.errors && form.get('emails')?.touched"
             />
           </mat-chip-list>
-          <mat-error>{{ errorMessage('emails') | translate }}</mat-error>
         </mat-form-field>
       </div>
     </form>

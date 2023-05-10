@@ -18,6 +18,7 @@ export * from './lib/divider/divider.module';
 export * from './lib/expansion-panel/expansion-panel.module';
 export * from './lib/slider/slider.module';
 export * from './lib/radio/radio.module';
+export * from './lib/error-message/error-message.module';
 
 // === ENUMS === //
 export * from './lib/shared/size.enum';

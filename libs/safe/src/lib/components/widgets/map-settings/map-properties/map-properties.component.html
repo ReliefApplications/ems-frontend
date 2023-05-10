@@ -38,7 +38,15 @@
         <mat-label>
           {{ 'components.widget.settings.map.properties.latitude' | translate }}
         </mat-label>
-        <input type="number" matInput formControlName="centerLat" />
+        <input
+          uiErrorMessage="{{
+            'components.widget.settings.map.errors.latitude' | translate
+          }}"
+          [uiErrorMessageIf]="form.get('centerLat')?.errors"
+          type="number"
+          matInput
+          formControlName="centerLat"
+        />
         <safe-icon
           matSuffix
           icon="info"
@@ -49,9 +57,6 @@
               | translate
           "
         ></safe-icon>
-        <mat-error *ngIf="form.controls.centerLat.errors">
-          {{ 'components.widget.settings.map.errors.latitude' | translate }}
-        </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="flex-1">
         <mat-label>
@@ -59,7 +64,15 @@
             'components.widget.settings.map.properties.longitude' | translate
           }}
         </mat-label>
-        <input type="number" matInput formControlName="centerLong" />
+        <input
+          uiErrorMessage="{{
+            'components.widget.settings.map.errors.longitude' | translate
+          }}"
+          [uiErrorMessageIf]="form.get('centerLong')?.errors"
+          type="number"
+          matInput
+          formControlName="centerLong"
+        />
         <safe-icon
           matSuffix
           icon="info"
@@ -70,9 +83,6 @@
               | translate
           "
         ></safe-icon>
-        <mat-error *ngIf="form.controls.centerLat.errors">
-          {{ 'components.widget.settings.map.errors.longitude' | translate }}
-        </mat-error>
       </mat-form-field>
     </div>
     <safe-map [header]="false" [settings]="mapSettings"></safe-map>
