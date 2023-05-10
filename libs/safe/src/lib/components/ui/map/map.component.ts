@@ -266,7 +266,6 @@ export class MapComponent
    * @param initMap initialize map?
    */
   private drawMap(initMap: boolean = true): void {
-    console.log('draw map');
     const {
       initialState,
       maxBounds,
@@ -279,19 +278,6 @@ export class MapComponent
       layers,
       controls,
     } = this.extractSettings();
-
-    console.log({
-      initialState,
-      maxBounds,
-      basemap,
-      maxZoom,
-      minZoom,
-      worldCopyJump,
-      zoomControl,
-      arcGisWebMap,
-      layers,
-      controls,
-    });
 
     if (initMap) {
       // Create leaflet map
@@ -812,12 +798,10 @@ export class MapComponent
     map: L.Map,
     basemap: any
   ): Promise<{ basemaps: L.Control.Layers.TreeObject[] }> {
-    console.log('there');
     const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
     this.basemap = Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
     });
-    console.log(basemapName);
     return Promise.resolve({
       basemaps: [
         {
@@ -840,7 +824,6 @@ export class MapComponent
     webmap: any,
     options: { loadBasemap: boolean } = { loadBasemap: true }
   ) {
-    console.log(options.loadBasemap);
     this.arcGisWebMap = webmap;
     return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap, options);
   }

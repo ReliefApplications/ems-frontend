@@ -209,6 +209,7 @@ export class ArcgisService {
   ): Promise<TreeObject[]> {
     const layers: TreeObject[] = [];
     for (const layer of webMap.operationalLayers) {
+      console.log(layer);
       await this.addLayer(map, layer, layers);
     }
     return layers;
@@ -269,7 +270,19 @@ export class ArcgisService {
       case 'ArcGISFeatureLayer': {
         let featureLayer: L.Layer | undefined = undefined;
         if (layer.url) {
-          const reduction = get(layer, 'layerDefinition.featureReduction');
+          let layerDefinition: any = {};
+          if (layer.itemId) {
+            await getItemData(layer.itemId, {
+              authentication: this.session,
+            }).then((item: any) => {
+              console.log(item);
+              // there, there is an issue with the index of the layers if part of a group layer
+              layerDefinition = get(item, 'layers[0].layerDefinition');
+            });
+          } else {
+            layerDefinition = get(layer, 'layerDefinition');
+          }
+          const reduction = get(layerDefinition, 'featureReduction');
           if (reduction) {
             switch (reduction.type) {
               case 'cluster': {
@@ -279,15 +292,18 @@ export class ArcgisService {
                   url: layer.url,
                   token: this.esriApiKey,
                   // If popup is not disabled we want to show the cluster popup, no zoom to bounds
-                  zoomToBoundsOnClick:
-                    layer.layerDefinition.featureReduction.disablePopup,
+                  zoomToBoundsOnClick: get(
+                    layerDefinition,
+                    'featureReduction.disablePopup',
+                    true
+                  ),
                   // opacity,
                   // polygonOptions: {
                   //   opacity,
                   // },
                   // pane,
                   clusterPane: pane,
-                  drawingInfo: layer.layerDefinition.drawingInfo,
+                  drawingInfo: layerDefinition.drawingInfo,
                   minZoom: minScaleLevel,
                   maxZoom: maxScaleLevel,
                 });
@@ -437,8 +453,8 @@ export class ArcgisService {
                 url: layer.url,
                 token: this.esriApiKey,
                 ...{ opacity },
-                ...(get(layer, 'layerDefinition.drawingInfo') && {
-                  drawingInfo: layer.layerDefinition.drawingInfo,
+                ...(get(layerDefinition, 'drawingInfo') && {
+                  drawingInfo: layerDefinition.drawingInfo,
                   minZoom: minScaleLevel,
                   maxZoom: maxScaleLevel,
                 }),
@@ -446,6 +462,7 @@ export class ArcgisService {
             }
           }
         }
+        console.log(featureLayer);
         if (featureLayer) {
           if (get(layer, 'visibility', true) && visibility) {
             featureLayer.addTo(map);
@@ -508,10 +525,22 @@ export class ArcgisService {
           token: this.esriApiKey,
           opacity,
         });
-        layers.push({
-          label: layer.title,
-          layer: tiledMapLayer,
-        });
+        if (layer.itemId) {
+          await getItemData(layer.itemId, {
+            authentication: this.session,
+          }).then((item: any) => {
+            console.log(item);
+          });
+        }
+        if (tiledMapLayer) {
+          if (get(layer, 'visibility', true) && visibility) {
+            tiledMapLayer.addTo(map);
+          }
+          layers.push({
+            label: layer.title,
+            layer: tiledMapLayer,
+          });
+        }
         break;
       }
       case 'WMS': {

@@ -88,7 +88,6 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
   public selectionOnChange(e: any) {
     this.value = e.value;
     this.onChanged(this.value);
-    console.log(this.ngControl.value);
   }
 
   /**
