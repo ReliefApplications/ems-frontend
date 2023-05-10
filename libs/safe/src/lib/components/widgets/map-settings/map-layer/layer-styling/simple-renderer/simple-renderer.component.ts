@@ -42,11 +42,8 @@ export class SimpleRendererComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     // If color not chosen, set primary color as default
-    if (!this.formGroup.value.symbol?.color.length) {
-      this.formGroup.controls.symbol.setValue({
-        ...this.formGroup.value.symbol,
-        color: this.primaryColor,
-      });
+    if (!this.formGroup.value.color) {
+      this.formGroup.controls.color.setValue(this.primaryColor);
     }
     this.loading = false;
   }

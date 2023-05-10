@@ -395,17 +395,65 @@ export class Layer implements LayerModel {
       size: get(this.layerDefinition, 'drawingInfo.renderer.symbol.size', 24),
     };
 
+    const rendererType = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.type',
+      'simple'
+    );
+
+    const uniqueValueInfos = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.uniqueValueInfos',
+      []
+    );
+
+    const uniqueValueField = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.field1',
+      ''
+    );
+
+    const uniqueValueDefaultSymbol = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.defaultSymbol',
+      symbol
+    );
+
+    console.log(this.layerDefinition?.drawingInfo?.renderer);
+
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<any> = {
       pointToLayer: (feature, latlng) => {
-        return new L.Marker(latlng).setIcon(
-          createCustomDivIcon({
-            icon: symbol.style,
-            color: symbol.color,
-            size: symbol.size,
-            opacity: this.opacity,
-          })
-        );
+        if (rendererType === 'uniqueValue') {
+          console.log(feature);
+          const fieldValue = get(
+            feature,
+            `properties.${uniqueValueField}`,
+            null
+          );
+          console.log(fieldValue);
+          const uniqueValueSymbol =
+            uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
+            uniqueValueDefaultSymbol;
+          console.log(uniqueValueSymbol);
+          return new L.Marker(latlng).setIcon(
+            createCustomDivIcon({
+              icon: uniqueValueSymbol.style,
+              color: uniqueValueSymbol.color,
+              size: uniqueValueSymbol.size,
+              opacity: this.opacity,
+            })
+          );
+        } else {
+          return new L.Marker(latlng).setIcon(
+            createCustomDivIcon({
+              icon: symbol.style,
+              color: symbol.color,
+              size: symbol.size,
+              opacity: this.opacity,
+            })
+          );
+        }
       },
       onEachFeature: (feature: Feature<any>, layer: L.Layer) => {
         // Add popup on click because we destroy popup component each time we remove it
@@ -769,72 +817,100 @@ export class Layer implements LayerModel {
             container.innerHTML = linearGradient.outerHTML + legend.outerHTML;
             html = container.outerHTML;
             break;
-          default:
-            switch (get(this.layerDefinition, 'featureReduction.type')) {
-              case 'cluster': {
-                // Features legend
-                const symbol: LayerSymbol = {
-                  style: get(
-                    this.layerDefinition,
-                    'drawingInfo.renderer.symbol.style',
-                    'location-dot'
-                  ),
-                  color: get(
-                    this.layerDefinition,
-                    'drawingInfo.renderer.symbol.color',
-                    'blue'
-                  ),
-                  size: get(
-                    this.layerDefinition,
-                    'drawingInfo.renderer.symbol.size',
-                    24
-                  ),
-                };
-                const pipe = new SafeIconDisplayPipe();
-                html += `<i style="color: ${
-                  symbol.color
-                }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>`;
-                // Cluster legend
-                const clusterSymbol: LayerSymbol = get(
-                  this.layerDefinition,
-                  'featureReduction.drawingInfo.renderer.symbol',
-                  symbol
-                );
-                html += `<div>Clusters</div>`;
-                html += `<i style="color: ${
-                  clusterSymbol.color
-                }"; class="${pipe.transform(
-                  clusterSymbol.style,
-                  'fa'
-                )} pl-2"></i>`;
-                break;
-              }
-
-              default: {
-                const symbol: LayerSymbol = {
-                  style: get(
-                    this.layerDefinition,
-                    'drawingInfo.renderer.symbol.style',
-                    'location-dot'
-                  ),
-                  color: get(
-                    this.layerDefinition,
-                    'drawingInfo.renderer.symbol.color',
-                    'blue'
-                  ),
-                  size: get(
-                    this.layerDefinition,
-                    'drawingInfo.renderer.symbol.size',
-                    24
-                  ),
-                };
-                const pipe = new SafeIconDisplayPipe();
-                html += `<i style="color: ${
-                  symbol.color
-                }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>`;
-                break;
-              }
+          case 'uniqueValue': {
+            const defaultSymbol: LayerSymbol | undefined = get(
+              this.layerDefinition,
+              'drawingInfo.renderer.defaultSymbol'
+            );
+            const pipe = new SafeIconDisplayPipe();
+            for (const info of get(
+              this.layerDefinition,
+              'drawingInfo.renderer.uniqueValueInfos',
+              []
+            )) {
+              const symbol: LayerSymbol = info.symbol;
+              html += `<span class="flex gap-2 items-center"><i style="color: ${
+                symbol.color
+              }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>${
+                info.label
+              }</span>`;
             }
+            if (defaultSymbol) {
+              html += `<span class="flex gap-2 items-center"><i style="color: ${
+                defaultSymbol.color
+              }"; class="${pipe.transform(
+                defaultSymbol.style,
+                'fa'
+              )} pl-2"></i>${get(
+                this.layerDefinition,
+                'drawingInfo.renderer.defaultLabel'
+              )}</span>`;
+            }
+
+            break;
+          }
+          default: {
+            const symbol: LayerSymbol = {
+              style: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.symbol.style',
+                'location-dot'
+              ),
+              color: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.symbol.color',
+                'blue'
+              ),
+              size: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.symbol.size',
+                24
+              ),
+            };
+            const pipe = new SafeIconDisplayPipe();
+            html += `<i style="color: ${symbol.color}"; class="${pipe.transform(
+              symbol.style,
+              'fa'
+            )} pl-2"></i>`;
+            break;
+          }
+        }
+        switch (get(this.layerDefinition, 'featureReduction.type')) {
+          case 'cluster': {
+            // Features legend
+            const symbol: LayerSymbol = {
+              style: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.symbol.style',
+                'location-dot'
+              ),
+              color: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.symbol.color',
+                'blue'
+              ),
+              size: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.symbol.size',
+                24
+              ),
+            };
+            const pipe = new SafeIconDisplayPipe();
+            // Cluster legend
+            const clusterSymbol: LayerSymbol = get(
+              this.layerDefinition,
+              'featureReduction.drawingInfo.renderer.symbol',
+              symbol
+            );
+            html += `<div>Clusters</div>`;
+            html += `<i style="color: ${
+              clusterSymbol.color
+            }"; class="${pipe.transform(clusterSymbol.style, 'fa')} pl-2"></i>`;
+            break;
+          }
+          default: {
+            break;
+          }
         }
         break;
       }

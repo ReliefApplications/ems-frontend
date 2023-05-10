@@ -39,7 +39,10 @@
       {{ 'components.widget.settings.map.edit.cluster.cluster' | translate }}
     </safe-button> -->
     <safe-button
-      *ngIf="form?.get('layerDefinition.drawingInfo.renderer.type')?.value !== 'heatmap'"
+      *ngIf="
+        form?.get('layerDefinition.drawingInfo.renderer.type')?.value !==
+        'heatmap'
+      "
       icon="map"
       [attr.data-selected]="currentTab === 'aggregation'"
       (click)="currentTab = 'aggregation'"
@@ -98,6 +101,7 @@
       <ng-container *ngSwitchCase="'styling'">
         <safe-layer-styling
           [formGroup]="$any(form.get('layerDefinition.drawingInfo'))"
+          [fields$]="fields$"
         ></safe-layer-styling>
       </ng-container>
       <!-- Layer filters -->

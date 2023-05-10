@@ -458,6 +458,9 @@ export class MapComponent
     //   this.layerControl.setLayersControl
     // }
     if (this.layerControl) {
+      if (this.extractSettings().controls.layer) {
+        this.map.removeControl(this.layerControl);
+      }
       this.layerControl.setBaseTree(this.baseTree);
       this.layerControl.setOverlayTree(this.layersTree);
     } else {

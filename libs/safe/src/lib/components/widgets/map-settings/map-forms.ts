@@ -14,6 +14,7 @@ import {
   LayerModel,
   PopupElement,
   PopupElementType,
+  UniqueValueInfo,
 } from '../../../models/layer.model';
 import { IconName } from '../../icon-picker/icon-picker.const';
 import { LayerType } from '../../ui/map/interfaces/layer-settings.type';
@@ -246,10 +247,49 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup => {
           Validators.required,
         ],
       }),
+      ...(type === 'uniqueValue' && {
+        defaultLabel: get(value, 'renderer.defaultLabel', 'Other'),
+        defaultSymbol: fb.group({
+          color: [
+            get(value, 'renderer.defaultSymbol.color', ''),
+            Validators.required,
+          ],
+          size: [get(value, 'renderer.defaultSymbol.size', 24)],
+          style: new FormControl<IconName>(
+            get(value, 'renderer.defaultSymbol.style', 'location-dot')
+          ),
+        }),
+        field1: [get(value, 'renderer.field1', null), Validators.required],
+        uniqueValueInfos: fb.array(
+          get(value, 'uniqueValueInfos', []).map(
+            (uniqueValueInfo: UniqueValueInfo) =>
+              createUniqueValueInfoForm(uniqueValueInfo)
+          )
+        ),
+      }),
     }),
   });
   return formGroup;
 };
+
+/**
+ * Create unique value form group
+ *
+ * @param value unique value
+ * @returns unique value form group
+ */
+export const createUniqueValueInfoForm = (value?: any) =>
+  fb.group({
+    label: [get(value, 'label', ''), Validators.required],
+    value: [get(value, 'value', ''), Validators.required],
+    symbol: fb.group({
+      color: [get(value, 'symbol.color', ''), Validators.required],
+      size: [get(value, 'symbol.size', 24)],
+      style: new FormControl<IconName>(
+        get(value, 'symbol.style', 'location-dot')
+      ),
+    }),
+  });
 
 /**
  * Create popup info form group

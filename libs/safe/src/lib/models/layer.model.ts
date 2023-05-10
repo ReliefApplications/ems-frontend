@@ -16,6 +16,15 @@ export type LayerSymbol = {
 };
 
 /**
+ * Unique value info
+ */
+export interface UniqueValueInfo {
+  label: string;
+  value: string;
+  symbol: LayerSymbol;
+}
+
+/**
  * Layer Drawing info interface
  */
 export interface DrawingInfo {
@@ -26,6 +35,10 @@ export interface DrawingInfo {
     radius?: number;
     gradient?: Gradient;
     minOpacity?: number;
+    defaultLabel?: string;
+    defaultSymbol?: LayerSymbol;
+    field1?: string;
+    uniqueValueInfos?: UniqueValueInfo[];
   };
 }
 
