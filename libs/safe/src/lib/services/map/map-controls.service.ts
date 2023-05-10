@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
 import { MapDownloadComponent } from '../../components/ui/map/map-download/map-download.component';
-// import { MapLegendComponent } from '../../components/ui/map/map-legend/map-legend.component';
 import { DomService } from '../dom/dom.service';
 import { GeoJsonObject } from 'geojson';
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
@@ -12,8 +11,6 @@ import 'leaflet-fullscreen';
 import 'leaflet-measure';
 import 'leaflet-timedimension';
 import * as Geocoding from 'esri-leaflet-geocoder';
-// import { LegendDefinition } from '../../components/ui/map/interfaces/layer-legend.type';
-import { Layer } from '../../components/ui/map/layer';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/language';
 import { legendControl } from '../../components/ui/map/controls/legend.control';
 
@@ -229,14 +226,10 @@ export class SafeMapControlsService {
    * Control is automated to listen to map layers changes
    *
    * @param map leaflet map
-   * @param layers layers
+   * @param layers leaflet layers
    * @param addControl flag that indicates if should add or remove the control
    */
-  public getLegendControl(
-    map: L.Map,
-    layers: Layer[],
-    addControl: boolean
-  ): void {
+  public getLegendControl(map: L.Map, addControl: boolean): void {
     if (addControl) {
       if (!this.legendControl) {
         // const updateControl = (instance: MapLegendComponent) => {

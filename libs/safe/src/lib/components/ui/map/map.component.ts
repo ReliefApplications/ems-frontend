@@ -442,11 +442,7 @@ export class MapComponent
       controls.download ?? true
     );
     // Add legend control
-    this.mapControlsService.getLegendControl(
-      this.map,
-      this.layers,
-      controls.legend ?? true
-    );
+    this.mapControlsService.getLegendControl(this.map, controls.legend ?? true);
     // Add layer contorl
     if (controls.layer) {
       if (this.layerControl) {

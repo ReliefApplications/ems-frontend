@@ -351,10 +351,12 @@ export class ArcgisService {
                       });
                     });
                     featureLayer.onAdd = (map: L.Map) => {
+                      // call default onAdd
                       const l = EsriHeat.FeatureLayer.prototype.onAdd.call(
                         featureLayer,
                         map
                       );
+                      // Create legend element
                       const container = document.createElement('div');
                       container.className = 'flex gap-1';
                       const linearGradient = document.createElement('div');
@@ -371,9 +373,23 @@ export class ArcgisService {
                       const html =
                         `<div class="font-bold">${layer.title}</div>` +
                         container.outerHTML;
+                      // Add legend
                       const legendControl = (map as any).legendControl;
                       if (legendControl) {
                         legendControl.addLayer(featureLayer, html);
+                      }
+                      return l;
+                    };
+                    featureLayer.onRemove = (map: L.Map) => {
+                      // call default onRemove
+                      const l = EsriHeat.FeatureLayer.prototype.onRemove.call(
+                        featureLayer,
+                        map
+                      );
+                      // remove legend
+                      const legendControl = (map as any).legendControl;
+                      if (legendControl) {
+                        legendControl.removeLayer(featureLayer);
                       }
                       return l;
                     };
