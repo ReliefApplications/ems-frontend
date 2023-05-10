@@ -1,14 +1,16 @@
 import {
   Directive,
-  ElementRef,
   Renderer2,
   Input,
   HostListener,
   Output,
   EventEmitter,
   AfterViewInit,
+  QueryList,
 } from '@angular/core';
 import { Variant } from '../shared/variant.enum';
+import { NavigationTabsComponent } from './navigation-tabs.component';
+import { TabComponent } from '../tab/tab.component';
 
 /**
  * Directive that manages the behavior of a navigation tab
@@ -18,6 +20,10 @@ import { Variant } from '../shared/variant.enum';
 })
 export class NavigationTabsDirective implements AfterViewInit {
   colorVariant = Variant;
+
+  // @Input('uiNavigationTabs')
+  // navigationTabsPanel!: TemplateRef<NavigationTabsComponent>;
+
   /**
    * Index of the default selected tab
    */
@@ -34,15 +40,11 @@ export class NavigationTabsDirective implements AfterViewInit {
    * Output emitted whenever a new tab is clicked, gives the index of the new tab
    */
   @Output() selectedIndexChange = new EventEmitter<number>();
-  /**
-   * Output emitted enabling and disabling animation states
-   */
-  @Output() toggleAnimation = new EventEmitter<boolean>();
 
   // Content that is to be displayed
   content: any;
   // Current selected tab (used to gives good classes to the tab before selecting another)
-  currentSelected!: number;
+  private currentSelected!: number;
 
   // Default classes to render content
   classes = [
@@ -57,39 +59,42 @@ export class NavigationTabsDirective implements AfterViewInit {
   /**
    * Constructor of the directive
    *
-   * @param elementRef NavigationTabDirective host reference
    * @param renderer Angular renderer to work with DOM
+   * @param navigationTabsComponent get component linked to the directive
    */
-  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+  constructor(
+    private renderer: Renderer2,
+    private navigationTabsComponent: NavigationTabsComponent
+  ) {}
+
+  /**
+   * Get tabs
+   *
+   * @returns all the options that are not parent group
+   */
+  getTabsList = () =>
+    this.navigationTabsComponent.tabs as QueryList<TabComponent>;
 
   ngAfterViewInit() {
-    // Util variables for initialization
-    const host = this.elementRef.nativeElement;
-    const tabsWrapper = host?.children[0];
-
-    console.log('Variant : ' + this.variant);
-
     // Manages the vertical or horizontal aspect of the navbar (for tabs)
     if (!this.vertical) {
       // if horizontal, add border to bottom
-      for (const tab of tabsWrapper.children) {
-        // Manages classes only if the tabButton is the button inside the tab component
-        const tabButton = tab?.children[0]?.children[0];
+      for (const tab of this.getTabsList()) {
+        //Manages classes only if the tabButton is the button inside the tab component
+        const tabButton = tab.elRef.nativeElement.children[0]?.children[0];
         if (tabButton?.id === 'buttonTab') {
           this.initializesClassHorizontal(tabButton);
         }
       }
       //Make the ui-tab growing so it occupies all the space available
-      for (const tab of host.children[0].children) {
-        if (tab.id !== 'tabs') {
-          this.renderer.addClass(tab, 'grow');
-        }
+      for (const tab of this.getTabsList()) {
+        this.renderer.addClass(tab.elRef.nativeElement, 'grow');
       }
     } else {
       // if vertical, add border to right
-      for (const tab of tabsWrapper.children) {
+      for (const tab of this.getTabsList()) {
         // Manages classes only if the tabButton is the button inside the tab component
-        const tabButton = tab?.children[0]?.children[0];
+        const tabButton = tab.elRef.nativeElement.children[0]?.children[0];
         if (tabButton?.id === 'buttonTab') {
           this.initializesClassVertical(tabButton);
         }
@@ -97,8 +102,8 @@ export class NavigationTabsDirective implements AfterViewInit {
     }
 
     // Launches the content show and class modification function for the selectedIndex tab
-    const initialTabButton =
-      tabsWrapper?.children[this.selectedIndex]?.children[0]?.children[0];
+    const initialTabButton = this.getTabsList().get(this.selectedIndex)?.elRef
+      .nativeElement.children[0]?.children[0];
     if (initialTabButton?.id === 'buttonTab') {
       this.showContent(initialTabButton);
     }
@@ -148,7 +153,6 @@ export class NavigationTabsDirective implements AfterViewInit {
     setTimeout(() => {
       this.createContent(target, wrappingDiv);
     }, 100);
-    // this.createContent(target, wrappingDiv);
   }
 
   /**
@@ -337,7 +341,7 @@ export class NavigationTabsDirective implements AfterViewInit {
    * @param wrappingDiv element wrapping the whole ui-navigation-tab
    */
   deleteContent(wrappingDiv: any) {
-    this.toggleAnimation.emit(false);
+    this.navigationTabsComponent.triggerAnimation = false;
     if (this.content) {
       for (const cl of this.classes) {
         this.renderer.removeClass(this.content, cl);
@@ -354,7 +358,7 @@ export class NavigationTabsDirective implements AfterViewInit {
    * @param wrappingDiv element wrapping the whole ui-navigation-tab
    */
   createContent(target: any, wrappingDiv: any) {
-    this.toggleAnimation.emit(true);
+    this.navigationTabsComponent.triggerAnimation = true;
     this.content = this.renderer.createElement('div');
     this.content.innerHTML = target.parentElement.children[1].innerHTML;
     // Manages classes and verticality

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input } from '@angular/core';
 import { Variant } from '../shared/variant.enum';
 
 /**
@@ -11,6 +11,17 @@ import { Variant } from '../shared/variant.enum';
 })
 export class TabComponent {
   colorVariant = Variant;
+
+  elRef: ElementRef;
+
+  /**
+   * Constructs the reference to the DOM of the tab
+   *
+   * @param elRef elementReference
+   */
+  constructor(elRef: ElementRef) {
+    this.elRef = elRef;
+  }
 
   @Input() label!: string;
   @Input() variant: Variant = this.colorVariant.DEFAULT;

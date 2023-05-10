@@ -53,8 +53,9 @@ const selectedIndexChangeEvent = (event: any) => {
 /**
  * Template to display by the story
  */
-const navigationTabsTemplate = `<ui-navigation-tabs uiNavigationTabs (selectedIndexChange)="selectedIndexChangeEvent($event)" [selectedIndex]="selectedIndex" [vertical]="vertical" [variant]="variant">
-  <ui-tab label="First" [variant]="variant">
+const navigationTabsTemplate = `
+<ui-navigation-tabs uiNavigationTabs (selectedIndexChange)="selectedIndexChangeEvent($event)" [selectedIndex]="selectedIndex" [vertical]="vertical" [variant]="variant" >  
+<ui-tab label="First" [variant]="variant">
     First content
   </ui-tab>
   <ui-tab label="Second" [variant]="variant">

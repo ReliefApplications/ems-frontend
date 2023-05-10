@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ContentChildren, QueryList } from '@angular/core';
 import { Variant } from '../shared/variant.enum';
 import {
   trigger,
@@ -7,6 +7,7 @@ import {
   animate,
   transition,
 } from '@angular/animations';
+import { TabComponent } from '../tab/tab.component';
 
 /**
  * UI Navigation Tab Component
@@ -32,28 +33,12 @@ import {
 })
 export class NavigationTabsComponent {
   colorVariant = Variant;
+
+  @ContentChildren(TabComponent, { descendants: true })
+  tabs!: QueryList<TabComponent>;
   triggerAnimation = false;
-
-  @Input() selectedIndex = 0;
-  @Input() vertical = false;
-  @Input() variant: Variant = this.colorVariant.DEFAULT;
-  @Output() selectedIndexChange = new EventEmitter<number>();
-
-  /**
-   * Relay in order to emit the index of the selected tab
-   *
-   * @param event index of the currently selected tab
-   */
-  selectedIndexChangeEvent(event: any) {
-    this.selectedIndexChange.emit(event);
-  }
-
-  /**
-   * Changes the state of the animation when displaying/destroying content
-   *
-   * @param event true if content is to be displayed, false when destroying
-   */
-  toggleAnimationEvent(event: any) {
-    this.triggerAnimation = event;
-  }
+  vertical = false;
+  variant: Variant = this.colorVariant.DEFAULT;
+  //Only in order to make stories work but non useful (args)
+  selectedIndex = 0;
 }
