@@ -147,6 +147,7 @@
           matSuffix
           [isIcon]="true"
           icon="close"
+          variant="danger"
           (click)="
             formGroup.get('geoField')?.setValue(null); $event.stopPropagation()
           "
@@ -169,6 +170,7 @@
             matSuffix
             [isIcon]="true"
             icon="close"
+            variant="danger"
             (click)="
               formGroup.get('latitudeField')?.setValue(null);
               $event.stopPropagation()
@@ -188,6 +190,7 @@
             matSuffix
             [isIcon]="true"
             icon="close"
+            variant="danger"
             (click)="
               formGroup.get('longitudeField')?.setValue(null);
               $event.stopPropagation()

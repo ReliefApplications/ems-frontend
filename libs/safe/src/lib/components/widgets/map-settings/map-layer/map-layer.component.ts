@@ -71,6 +71,7 @@ export class MapLayerComponent
   public form!: LayerFormT;
   public currentZoom!: number;
   private currentLayer!: L.Layer;
+  public isDatasourceValid = false;
 
   /**
    * Get the overlay tree object of the current map
@@ -82,6 +83,30 @@ export class MapLayerComponent
       label: this.form.get('name')?.value || '',
       layer: this.currentLayer,
     };
+  }
+
+  /**
+   * Get the datasource valid status, so we only display other tabs if valid
+   *
+   * @returns boolean if we have all necessary data to proceed
+   */
+  public get datasourceValid(): boolean {
+    const datasourceForm = this.form?.get('datasource');
+    if (datasourceForm?.get('refData')?.value) {
+      return true;
+    } else if (datasourceForm?.get('resource')?.value) {
+      // If datasource origin is a resource, then geofield OR lat & lng is needed
+      if (
+        (datasourceForm?.get('layout')?.value ||
+          datasourceForm?.get('aggregation')?.value) &&
+        (datasourceForm?.get('geoField')?.value ||
+          (datasourceForm?.get('latitudeField')?.value &&
+            datasourceForm?.get('longitudeField')?.value))
+      ) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -103,12 +128,46 @@ export class MapLayerComponent
 
   ngOnInit(): void {
     this.form = createLayerForm(this.layer);
+    this.setIsDatasourceValid(this.form.get('datasource')?.value);
+    this.form
+      .get('datasource')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        console.log('updating datasource');
+        this.setIsDatasourceValid(value);
+      });
     if (this.mapComponent) {
       this.currentZoom = this.mapComponent.map.getZoom();
       this.setUpLayer();
     }
     this.setUpEditLayerListeners();
     this.getResource();
+  }
+
+  /**
+   * Set is datasource valid
+   *
+   * @param value datasource form value
+   */
+  private setIsDatasourceValid(value: any) {
+    console.log(value);
+    if (get(value, 'refData')) {
+      this.isDatasourceValid = true;
+    } else if (get(value, 'resource')) {
+      // If datasource origin is a resource, then geofield OR lat & lng is needed
+      if (
+        (get(value, 'layout') || get(value, 'aggregation')) &&
+        (get(value, 'geoField') ||
+          (get(value, 'latitudeField') && get(value, 'longitudeField')))
+      ) {
+        this.isDatasourceValid = true;
+      } else {
+        this.isDatasourceValid = false;
+      }
+    } else {
+      this.isDatasourceValid = false;
+    }
+    console.log(this.isDatasourceValid);
   }
 
   /**
