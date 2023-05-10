@@ -5,6 +5,7 @@ import {
   Provider,
   ViewChild,
   EventEmitter,
+  OnInit
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
@@ -27,7 +28,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   styleUrls: ['./textarea.component.scss'],
   providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class TextareaComponent implements ControlValueAccessor {
+export class TextareaComponent implements ControlValueAccessor, OnInit{
   @Input() value: any = '';
   @Input() label = '';
   @Input() placeholder = '';
@@ -56,6 +57,15 @@ export class TextareaComponent implements ControlValueAccessor {
   onChanged!: (value: string) => void;
 
   @ViewChild('autosize') autosize!: CdkTextareaAutosize;
+
+  ngOnInit(): void {
+    console.log(this.value);
+    console.log(this.label);
+    console.log(this.placeholder);
+    console.log(this.name);
+    console.log(this.minRows);
+    console.log(this.maxRows);
+  }
 
   /**
    * Register change of the control

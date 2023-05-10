@@ -53,6 +53,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
+import { UiModule } from '@oort-front/ui';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -78,6 +79,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     MatExpansionModule,
     MatChipsModule,
     CronExpressionControlModule,
+    UiModule,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',

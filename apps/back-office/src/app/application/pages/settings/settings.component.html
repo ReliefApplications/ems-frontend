@@ -44,7 +44,20 @@
       <mat-label>
         {{ 'models.application.description' | translate }}
       </mat-label>
-      <textarea
+      <ui-textarea
+        label="Test Label"
+        formControlName="description"
+        [placeholder]="
+          'components.application.update.placeholder.description' | translate
+        "
+        [minRows]="2"
+        [maxRows]="5"
+        value="123"
+        name="textarea"
+      >
+      </ui-textarea>
+
+      <!-- <textarea
         matInput
         formControlName="description"
         [placeholder]="
@@ -53,7 +66,7 @@
         [cdkTextareaAutosize]="true"
         [cdkAutosizeMinRows]="2"
         [cdkAutosizeMaxRows]="5"
-      ></textarea>
+      ></textarea> -->
     </mat-form-field>
   </div>
   <safe-button

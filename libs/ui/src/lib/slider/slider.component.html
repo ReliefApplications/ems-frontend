@@ -31,7 +31,7 @@
     max="{{ maxValue }}"
     value="{{ currentValue }}"
     step="1"
-    (input)="onChangeFunction($event.target)"
+    (input)="onChangeFunction($any($event.target))"
   />
   <!-- Ticks placement + appearance -->
   <div
