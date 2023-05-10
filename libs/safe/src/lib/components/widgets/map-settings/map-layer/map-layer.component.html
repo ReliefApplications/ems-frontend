@@ -20,7 +20,7 @@
       icon="storage"
       [attr.data-selected]="currentTab === 'styling'"
       (click)="currentTab = 'styling'"
-      [disabled]="datasourceValid"
+      [disabled]="!isDatasourceValid"
     >
       {{ 'components.widget.settings.map.edit.layerStyling' | translate }}
     </safe-button>
@@ -43,7 +43,7 @@
       icon="map"
       [attr.data-selected]="currentTab === 'aggregation'"
       (click)="currentTab = 'aggregation'"
-      [disabled]="datasourceValid"
+      [disabled]="!isDatasourceValid"
     >
       {{ 'components.widget.settings.map.edit.aggregation' | translate }}
     </safe-button>
@@ -52,7 +52,7 @@
       icon="map"
       [attr.data-selected]="currentTab === 'popup'"
       (click)="currentTab = 'popup'"
-      [disabled]="datasourceValid"
+      [disabled]="!isDatasourceValid"
     >
       {{ 'components.widget.settings.map.edit.popup' | translate }}
     </safe-button>
@@ -61,7 +61,7 @@
       icon="map"
       [attr.data-selected]="currentTab === 'fields'"
       (click)="currentTab = 'fields'"
-      [disabled]="datasourceValid"
+      [disabled]="!isDatasourceValid"
     >
       {{ 'components.widget.settings.map.edit.fields' | translate }}
     </safe-button>
