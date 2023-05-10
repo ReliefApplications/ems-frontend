@@ -45,7 +45,6 @@ import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { flatten, isNil, omitBy } from 'lodash';
 import { takeUntil } from 'rxjs';
 import { SafeMapPopupService } from './map-popup/map-popup.service';
-import { legendControl } from './controls/legend.control';
 
 /** Component for the map widget */
 @Component({
@@ -177,6 +176,7 @@ export class MapComponent
     this.translate.onLangChange
       .pipe(takeUntil(this.destroy$))
       .subscribe((event) => {
+        // Update controls that use translation
         if (event.lang !== this.mapControlsService.lang) {
           this.mapControlsService.getMeasureControl(
             this.map,
@@ -407,10 +407,6 @@ export class MapComponent
    * @param {boolean} [initMap=false] if initializing map to add the fixed controls
    */
   private setMapControls(controls: MapControls, initMap = false) {
-    // Add legend control
-    if (controls.legend) {
-      legendControl().addTo(this.map);
-    }
     // Add leaflet measure control
     this.mapControlsService.getMeasureControl(
       this.map,
@@ -445,14 +441,12 @@ export class MapComponent
       this.map,
       controls.download ?? true
     );
-    // Add legend contorl if layers ready
-    if (this.layerControl) {
-      this.mapControlsService.getLegendControl(
-        this.map,
-        this.layers,
-        controls.legend ?? true
-      );
-    }
+    // Add legend control
+    this.mapControlsService.getLegendControl(
+      this.map,
+      this.layers,
+      controls.legend ?? true
+    );
     // Add layer contorl
     if (controls.layer) {
       if (this.layerControl) {
