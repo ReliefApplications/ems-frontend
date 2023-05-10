@@ -84,18 +84,20 @@ class LaunchDialogComponent implements OnDestroy {
         </div>
       </ng-container>
       <ng-container ngProjectAs="content">
-        <div class="mt-3 text-center sm:mt-5">
-          <h3
-            class="text-base font-semibold leading-6 text-gray-900"
-            id="modal-title"
-          >
-            Payment successful
-          </h3>
-          <div class="mt-2">
-            <p class="text-sm text-gray-500">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Consequatur amet labore.
-            </p>
+        <div class="flex flex-col h-full">
+          <div class="my-auto text-center">
+            <h3
+              class="text-base font-semibold leading-6 text-gray-900"
+              id="modal-title"
+            >
+              Payment successful
+            </h3>
+            <div class="mt-2">
+              <p class="text-sm text-gray-500">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Consequatur amet labore.
+              </p>
+            </div>
           </div>
         </div>
       </ng-container>
@@ -104,7 +106,7 @@ class LaunchDialogComponent implements OnDestroy {
         <button
           type="button"
           class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          [uiDialogClose]="[data.animal, dialogRef]"
+          [uiDialogClose]="data.animal"
         >
           Go back
         </button>
