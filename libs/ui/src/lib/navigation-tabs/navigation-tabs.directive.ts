@@ -65,7 +65,16 @@ export class NavigationTabsDirective implements AfterViewInit {
   constructor(
     private renderer: Renderer2,
     private navigationTabsComponent: NavigationTabsComponent
-  ) {}
+  ) {
+    if (
+      !navigationTabsComponent ||
+      !(navigationTabsComponent instanceof NavigationTabsComponent)
+    ) {
+      throw new Error(
+        'Directive cannot be applied to an element other than a navigation-tabs'
+      );
+    }
+  }
 
   /**
    * Get tabs
