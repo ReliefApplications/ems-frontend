@@ -85,6 +85,30 @@ export class MapLayerComponent
   }
 
   /**
+   * Get the datasource valid status, so we only display other tabs if valid
+   *
+   * @returns boolean if we have all necessary data to proceed
+   */
+  public get datasourceValid(): boolean {
+    const datasourceForm = this.form?.get('datasource');
+    if (datasourceForm?.get('refData')?.value) {
+      return true;
+    } else if (datasourceForm?.get('resource')?.value) {
+      // If datasource origin is a resource, then geofield OR lat & lng is needed
+      if (
+        (datasourceForm?.get('layout')?.value ||
+          datasourceForm?.get('aggregation')?.value) &&
+        (datasourceForm?.get('geoField')?.value ||
+          (datasourceForm?.get('latitudeField')?.value &&
+            datasourceForm?.get('longitudeField')?.value))
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Map layer editor.
    *
    * @param confirmService Shared confirm service.
