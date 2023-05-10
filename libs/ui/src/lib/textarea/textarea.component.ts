@@ -5,7 +5,6 @@ import {
   Provider,
   ViewChild,
   EventEmitter,
-  OnInit,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
@@ -28,7 +27,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   styleUrls: ['./textarea.component.scss'],
   providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class TextareaComponent implements ControlValueAccessor, OnInit {
+export class TextareaComponent implements ControlValueAccessor {
   @Input() value: any = '';
   @Input() label = '';
   @Input() placeholder = '';
@@ -58,15 +57,6 @@ export class TextareaComponent implements ControlValueAccessor, OnInit {
 
   @ViewChild('autosize') autosize!: CdkTextareaAutosize;
 
-  ngOnInit(): void {
-    console.log(this.value);
-    console.log(this.label);
-    console.log(this.placeholder);
-    console.log(this.name);
-    console.log(this.minRows);
-    console.log(this.maxRows);
-  }
-
   /**
    * Register change of the control
    *
@@ -74,7 +64,6 @@ export class TextareaComponent implements ControlValueAccessor, OnInit {
    */
   public registerOnChange(fn: any): void {
     this.onChanged = fn;
-    console.log('registerOnChange');
   }
 
   /**
@@ -84,7 +73,6 @@ export class TextareaComponent implements ControlValueAccessor, OnInit {
    */
   public registerOnTouched(fn: any): void {
     this.onTouched = fn;
-    console.log('registerOnTouched');
   }
 
   /**
@@ -94,7 +82,6 @@ export class TextareaComponent implements ControlValueAccessor, OnInit {
    */
   writeValue(value: string): void {
     this.value = value;
-    console.log('writeValue =', this.value);
   }
 
   /**
@@ -109,6 +96,5 @@ export class TextareaComponent implements ControlValueAccessor, OnInit {
       this.onChanged(this.value);
     }
     this.valueChange.emit(this.value);
-    console.log(this.value);
   }
 }

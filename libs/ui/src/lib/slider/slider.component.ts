@@ -141,17 +141,19 @@ export class SliderComponent
    *
    * @param value The value from the slider
    */
-  onChangeFunction(value: EventTarget) {
-    this.currentValue = +((value as HTMLInputElement)?.value ?? value);
-    const min = this.minValue;
-    const max = this.maxValue;
-    const newVal = Number(((this.currentValue - min) * 100) / (max - min));
-    if (this.onChange && this.onTouch) {
-      this.onChange(this.currentValue);
-      this.onTouch();
+  onChangeFunction(value: EventTarget | null) {
+    if (value) {
+      this.currentValue = +((value as HTMLInputElement)?.value ?? value);
+      const min = this.minValue;
+      const max = this.maxValue;
+      const newVal = Number(((this.currentValue - min) * 100) / (max - min));
+      if (this.onChange && this.onTouch) {
+        this.onChange(this.currentValue);
+        this.onTouch();
+      }
+      // Sorta magic numbers based on size of the native UI thumb
+      this.bubbleStyle = String(newVal) + '%';
     }
-    // Sorta magic numbers based on size of the native UI thumb
-    this.bubbleStyle = String(newVal) + '%';
   }
 
   /**

@@ -8,7 +8,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeButtonModule } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
-import { UiModule } from '@oort-front/ui';
+import { TextareaModule } from '@oort-front/ui';
 
 /**
  * Application settings module.
@@ -25,7 +25,7 @@ import { UiModule } from '@oort-front/ui';
     MatSelectModule,
     SafeButtonModule,
     TranslateModule,
-    UiModule,
+    TextareaModule,
   ],
 })
 export class SettingsModule {}

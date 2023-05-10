@@ -40,24 +40,20 @@
       </mat-form-field>
     </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>
-        {{ 'models.application.description' | translate }}
-      </mat-label>
-      <ui-textarea
-        label="Test Label"
-        formControlName="description"
-        [placeholder]="
-          'components.application.update.placeholder.description' | translate
-        "
-        [minRows]="2"
-        [maxRows]="5"
-        value="123"
-        name="textarea"
-      >
-      </ui-textarea>
+    <ui-textarea
+      label="{{ 'models.application.description' | translate }}"
+      formControlName="description"
+      [placeholder]="
+        'components.application.update.placeholder.description' | translate
+      "
+      [minRows]="2"
+      [maxRows]="5"
+      name="textarea"
+      class="mb-6"
+    >
+    </ui-textarea>
 
-      <!-- <textarea
+    <!-- <textarea
         matInput
         formControlName="description"
         [placeholder]="
@@ -67,7 +63,6 @@
         [cdkAutosizeMinRows]="2"
         [cdkAutosizeMaxRows]="5"
       ></textarea> -->
-    </mat-form-field>
   </div>
   <safe-button
     category="secondary"
@@ -86,11 +81,7 @@
   <h1>{{ 'pages.application.settings.actions' | translate }}</h1>
   <div class="flex gap-2 flex-wrap">
     <!-- Styling -->
-    <safe-button
-      category="secondary"
-      variant="primary"
-      (click)="onOpenStyle()"
-    >
+    <safe-button category="secondary" variant="primary" (click)="onOpenStyle()">
       {{ 'components.application.customStyling' | translate }}
     </safe-button>
     <safe-button
