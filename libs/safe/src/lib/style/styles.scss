@@ -258,7 +258,7 @@ $safe-theme: mat.define-light-theme(
 
 // === SLIDE TOGGLE ===
 @mixin slide-toggle($theme) {
-  .mat-slide-toggle-content {
+  ui-toggle {
     safe-icon {
       vertical-align: text-bottom;
     }

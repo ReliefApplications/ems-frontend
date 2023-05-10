@@ -16,12 +16,10 @@
       class="flex items-center justify-between p-2 rounded-lg border border-gray-300"
     >
       <div>
-        <ui-toggle formControlName="visible"
-          [label]="{
-            text: control.value.category,
-            position: 'right'
-          }"
-        >
+        <ui-toggle formControlName="visible">
+          <ng-container ngProjectAs="label">
+            {{ control.value.category }}
+          </ng-container>
         </ui-toggle>
       </div>
       <div class="flex flex-col">

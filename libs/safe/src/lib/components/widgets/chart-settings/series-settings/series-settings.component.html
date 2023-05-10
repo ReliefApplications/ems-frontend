@@ -19,12 +19,11 @@
       [formGroup]="formGroup"
       class="flex flex-row justify-between mb-5"
     >
-      <ui-toggle formControlName="visible"
-        [label]="{
-          text: 'components.widget.settings.chart.series.showSerie' | translate,
-          position: 'right'
-        }"
-      ></ui-toggle>
+      <ui-toggle formControlName="visible">
+        <ng-container ngProjectAs="label">
+          {{ 'components.widget.settings.chart.series.showSerie' | translate }}
+        </ng-container>
+      </ui-toggle>
       <br />
     </div>
   </div>
