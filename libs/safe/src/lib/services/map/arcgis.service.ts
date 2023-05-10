@@ -14,6 +14,7 @@ import {
 import * as EsriHeat from 'esri-leaflet-heatmap';
 import * as EsriCluster from 'esri-leaflet-cluster';
 import * as EsriRenderers from 'esri-leaflet-renderers';
+// import * as EsriRenderers from '@oort-front/esri';
 import * as Esri from 'esri-leaflet';
 import * as Vector from 'esri-leaflet-vector';
 import * as Geocoding from 'esri-leaflet-geocoder';
