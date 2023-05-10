@@ -220,9 +220,11 @@ export class SafeLayoutComponent
       }
     });
 
-    this.breadcrumbService.breadcrumbs$.subscribe((res) => {
-      this.breadcrumbs = res;
-    });
+    this.breadcrumbService.breadcrumbs$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.breadcrumbs = res;
+      });
   }
 
   /**
