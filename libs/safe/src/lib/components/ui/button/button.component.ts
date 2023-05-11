@@ -1,9 +1,9 @@
 import { Component, HostBinding, Input } from '@angular/core';
 import { Subject } from 'rxjs';
-import { SpinnerVariant } from '../spinner/spinner-variant.enum';
 import { ButtonCategory } from './button-category.enum';
 import { ButtonSize } from './button-size.enum';
 import { ButtonVariant } from './button-variant.enum';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Button component.
@@ -60,21 +60,21 @@ export class SafeButtonComponent {
    *
    * @returns spinner variant
    */
-  get spinnerVariant(): string {
+  get spinnerVariant(): Variant {
     switch (this.category) {
       case ButtonCategory.PRIMARY: {
-        return this.variant;
+        return Variant.DEFAULT;
       }
       case ButtonCategory.TERTIARY: {
-        return this.variant;
+        return Variant.DEFAULT;
       }
       default: {
         switch (this.variant) {
           case ButtonVariant.DEFAULT: {
-            return SpinnerVariant.PRIMARY;
+            return Variant.PRIMARY;
           }
           default: {
-            return SpinnerVariant.LIGHT;
+            return Variant.LIGHT;
           }
         }
       }
