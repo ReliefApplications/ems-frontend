@@ -29,7 +29,7 @@ import localForage from 'localforage';
  * Interface for quick filters
  */
 interface QuickFilter {
-  name: string;
+  label: string;
   tooltip?: string;
 }
 
@@ -302,10 +302,10 @@ export class DashboardFilterComponent
       this.quickFilters = Object.keys(surveyData).map((question: string) =>
         Array.isArray(surveyData[question]) && surveyData[question].length > 2
           ? {
-              name: question + ` (${surveyData[question].length})`,
+              label: question + ` (${surveyData[question].length})`,
               tooltip: surveyData[question].join('\n'),
             }
-          : { name: surveyData[question] }
+          : { label: surveyData[question] }
       );
     });
   }

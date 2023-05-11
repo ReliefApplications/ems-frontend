@@ -63,23 +63,29 @@
         </safe-button>
       </div>
       <!-- Quick filter -->
-      <ng-container
-        *ngIf="
-          position === filterPosition.TOP || position === filterPosition.BOTTOM
-        "
+      <div
+        class="flex justify-center gap-4 items-center"
+        [ngClass]="{
+          'flex-row':
+            position === filterPosition.BOTTOM ||
+            position === filterPosition.RIGHT,
+          'flex-col':
+            position === filterPosition.TOP || position === filterPosition.LEFT
+        }"
       >
         <ng-container
           *ngFor="let quickFilter of quickFilters"
-          class="flex flex-auto justify-center"
+          class="flex flex-auto justify-center gap-4"
         >
-          <safe-button
+          <div
             class="z-20"
             [matTooltip]="quickFilter.tooltip ? quickFilter.tooltip : ''"
             matTooltipClass="multiline-tooltip"
-            >{{ quickFilter.name }}</safe-button
           >
-        </ng-container></ng-container
-      >
+            {{ quickFilter.label }}
+          </div>
+        </ng-container>
+      </div>
       <!-- Position -->
       <div
         [ngClass]="{
@@ -122,7 +128,7 @@
           position === filterPosition.RIGHT,
         'w-full':
           position === filterPosition.TOP || position === filterPosition.BOTTOM,
-        'h-full':
+        'h-full max-w-xs':
           position === filterPosition.LEFT || position === filterPosition.RIGHT,
         'flex-col':
           position === filterPosition.LEFT || position === filterPosition.RIGHT,
