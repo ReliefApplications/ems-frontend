@@ -20,6 +20,7 @@ import {
 } from '../../widgets/summary-card/parser/utils';
 import { addNewField } from '../query-builder-forms';
 import { SafeQueryBuilderComponent } from '../query-builder.component';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Component used for the selection of fields to display the fields in tabs
@@ -46,6 +47,9 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   public editor: any = FIELD_EDITOR_CONFIG;
 
   @Input() showLimit = false;
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is created.

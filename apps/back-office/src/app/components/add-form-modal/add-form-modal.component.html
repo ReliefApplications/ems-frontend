@@ -18,27 +18,27 @@
         >
           <mat-radio-button [value]="true">
             {{ 'components.form.create.choice.resource' | translate }}
-            <safe-icon
+            <ui-icon
               icon="info_outline"
-              variant="grey"
+              [variant]="colorVariant.GREY"
               [inline]="true"
               [size]="18"
               [matTooltip]="
                 'components.form.create.tooltip.resource' | translate
               "
-            ></safe-icon>
+            ></ui-icon>
           </mat-radio-button>
           <mat-radio-button [value]="false">
             {{ 'components.form.create.choice.inherit' | translate }}
-            <safe-icon
+            <ui-icon
               icon="info_outline"
-              variant="grey"
+              [variant]="colorVariant.GREY"
               [inline]="true"
               [size]="18"
               [matTooltip]="
                 'components.form.create.tooltip.inherit' | translate
               "
-            ></safe-icon>
+            ></ui-icon>
           </mat-radio-button>
         </mat-radio-group>
         <ng-container *ngIf="!form.value.newResource">
@@ -59,15 +59,15 @@
           <ng-container *ngIf="form.controls.resource.value !== null">
             <mat-slide-toggle formControlName="inheritsTemplate" class="mb-5">
               {{ 'components.form.create.choice.template' | translate }}
-              <safe-icon
+              <ui-icon
                 icon="info_outline"
-                variant="grey"
+                [variant]="colorVariant.GREY"
                 [inline]="true"
                 [size]="18"
                 [matTooltip]="
                   'components.form.create.tooltip.template' | translate
                 "
-              ></safe-icon>
+              ></ui-icon>
             </mat-slide-toggle>
             <ng-container *ngIf="form.controls.inheritsTemplate.value">
               <mat-form-field appearance="outline">

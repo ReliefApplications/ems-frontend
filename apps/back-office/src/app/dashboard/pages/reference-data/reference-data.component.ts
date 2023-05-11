@@ -37,6 +37,7 @@ import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { inferTypeFromString } from './utils/inferTypeFromString';
 import { get } from 'lodash';
+import { ButtonIconPosition, Variant } from '@oort-front/ui';
 
 /** Default pagination parameter. */
 const ITEMS_PER_PAGE = 10;
@@ -76,6 +77,10 @@ export class ReferenceDataComponent
   public csvValue = '';
   public newData: any = [];
   public csvLoading = false;
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
+  public buttonVariant = ButtonIconPosition;
 
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
   @ViewChild('csvData') csvData?: ElementRef<HTMLInputElement>;

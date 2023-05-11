@@ -30,6 +30,7 @@ import { SafeRecordHistoryComponent } from '../record-history/record-history.com
 import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
+import { Variant } from '@oort-front/ui';
 
 /**
  * This component is used to display forms
@@ -66,6 +67,9 @@ export class SafeFormComponent
   private storageId = '';
   public storageDate?: Date;
   public isFromCacheData = false;
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /**
    * Getter for the pages of the form

@@ -4,7 +4,6 @@ import { SafeApplicationsSummaryComponent } from './applications-summary.compone
 import { SafeAddApplicationComponent } from './components/add-application/add-application.component';
 import { SafeApplicationSummaryComponent } from './components/application-summary/application-summary.component';
 import { MatRippleModule } from '@angular/material/core';
-import { SafeIconModule } from '../ui/icon/icon.module';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -26,7 +25,6 @@ import { UiModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     MatRippleModule,
-    SafeIconModule,
     MatMenuModule,
     SafeButtonModule,
     TranslateModule,

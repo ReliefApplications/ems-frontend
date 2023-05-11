@@ -20,6 +20,7 @@ import {
   status,
   authType,
   cronValidator,
+  SafeIconModule,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -71,6 +72,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     SafeModalModule,
     SafeGraphQLSelectModule,
     SafeReadableCronModule,
+    SafeIconModule,
     MatTooltipModule,
     MatInputModule,
     MatSelectModule,

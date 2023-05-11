@@ -7,7 +7,6 @@ import {
   SafeAlertModule,
   SafeButtonModule,
   SafeWorkflowStepperModule,
-  SafeIconModule,
   SafeSkeletonModule,
   SafeEditableTextModule,
 } from '@oort-front/safe';
@@ -37,7 +36,6 @@ import { UiModule } from '@oort-front/ui';
     MatMenuModule,
     IndicatorsModule,
     SafeAlertModule,
-    SafeIconModule,
     SafeSkeletonModule,
     SafeEditableTextModule,
     UiModule,

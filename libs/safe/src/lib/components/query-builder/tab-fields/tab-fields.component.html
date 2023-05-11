@@ -1,6 +1,6 @@
 <!-- General info about field selection -->
 <safe-alert class="mb-4">
-  <safe-icon icon="info"></safe-icon>
+  <ui-icon icon="info"></ui-icon>
   {{ 'components.queryBuilder.hint.fields' | translate }}
 </safe-alert>
 <!-- Field selection -->
@@ -127,16 +127,16 @@
           </div>
         </ng-container>
       </div>
-      <safe-icon
+      <ui-icon
         *ngIf="searchSelected"
         icon="info"
         class="floating-info cursor-pointer"
-        variant="grey"
+        [variant]="colorVariant.GREY"
         [size]="32"
         [matTooltip]="
           'components.queryBuilder.hint.sortingDisabled' | translate
         "
-      ></safe-icon>
+      ></ui-icon>
     </div>
   </div>
 

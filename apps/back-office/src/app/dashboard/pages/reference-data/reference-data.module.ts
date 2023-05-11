@@ -2,7 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceDataRoutingModule } from './reference-data-routing.module';
 import { ReferenceDataComponent } from './reference-data.component';
-import { SafeAccessModule, SafeGraphQLSelectModule } from '@oort-front/safe';
+import {
+  SafeAccessModule,
+  SafeGraphQLSelectModule,
+  SafeIconModule,
+} from '@oort-front/safe';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -12,10 +16,10 @@ import { MatLegacyOptionModule as MatOptionModule } from '@angular/material/lega
 import { SafeButtonModule } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { SafeIconModule } from '@oort-front/safe';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Reference Data page module.
@@ -40,6 +44,7 @@ import { ButtonModule } from '@progress/kendo-angular-buttons';
     MatTooltipModule,
     SafeGraphQLSelectModule,
     ButtonModule,
+    UiModule,
   ],
 })
 export class ReferenceDataModule {}

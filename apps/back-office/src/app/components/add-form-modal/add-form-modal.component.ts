@@ -24,11 +24,8 @@ import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/mat
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  SafeGraphQLSelectModule,
-  SafeIconModule,
-  SafeModalModule,
-} from '@oort-front/safe';
+import { SafeGraphQLSelectModule, SafeModalModule } from '@oort-front/safe';
+import { UiModule, Variant } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -51,9 +48,9 @@ const ITEMS_PER_PAGE = 10;
     MatSlideToggleModule,
     MatChipsModule,
     TranslateModule,
-    SafeIconModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
+    UiModule,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',
@@ -65,6 +62,9 @@ export class AddFormModalComponent implements OnInit {
 
   // === DATA ===
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+
+  // === VARIANTS ===
+  colorVariant = Variant;
 
   public templates: any[] = [];
 

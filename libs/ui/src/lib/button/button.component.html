@@ -3,13 +3,14 @@
   [ngClass]="resolveButtonClasses"
   [disabled]="disabled"
   (click)="emittedEventSubject.next('click')"
+  class="overflow-hidden"
 >
   <ng-container *ngIf="icon">
     <ui-icon
       class="flex"
       [ngClass]="{
         'order-1': iconPosition === buttonIconPosition.PREFIX,
-        'order-2': iconPosition === buttonIconPosition.SUFFIX
+        'order-2 inline-flex': iconPosition === buttonIconPosition.SUFFIX
       }"
       [icon]="icon"
       [inline]="true"

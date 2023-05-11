@@ -15,6 +15,7 @@ import {
   Form,
   Subscription,
   SafeUnsubscribeComponent,
+  SafeIconModule,
 } from '@oort-front/safe';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
@@ -42,7 +43,6 @@ import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy
 import { SubscriptionsRoutingModule } from '../../subscriptions-routing.module';
 import {
   SafeButtonModule,
-  SafeIconModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
   SafeDividerModule,
@@ -51,6 +51,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { UiModule } from '@oort-front/ui';
 
 /** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -75,6 +76,7 @@ const ITEMS_PER_PAGE = 10;
     MatAutocompleteModule,
     SafeDividerModule,
     SafeButtonModule,
+    UiModule,
     SafeIconModule,
     TranslateModule,
     MatTooltipModule,
