@@ -15,6 +15,8 @@ export * from './lib/toggle/toggle.module';
 export * from './lib/textarea/textarea.module';
 export * from './lib/breadcrumbs/breadcrumbs.module';
 export * from './lib/divider/divider.module';
+export * from './lib/expansion-panel/expansion-panel.module';
+export * from './lib/slider/slider.module';
 export * from './lib/radio/radio.module';
 export * from './lib/tab/tab.module';
 export * from './lib/navigation-tabs/navigation-tabs.module';
