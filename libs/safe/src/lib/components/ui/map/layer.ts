@@ -244,6 +244,9 @@ export class Layer implements LayerModel {
     // If the geojson is a feature collection, return a new feature collection
     // with the features that satisfy the filter
     if (this.geojson.type === 'FeatureCollection') {
+      // console.log(this.geojson.features);
+      // const types = uniqBy(this.geojson.features, 'geometry.type');
+      // console.log(types);
       return {
         type: 'FeatureCollection',
         features: this.geojson.features.filter((feature) =>

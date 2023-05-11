@@ -6,6 +6,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { MatSliderModule } from '@angular/material/slider';
 
 /**
  * Layer simple renderer settings component.
@@ -22,12 +23,14 @@ import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@ang
     TranslateModule,
     InputsModule,
     MatProgressSpinnerModule,
+    MatSliderModule,
   ],
   templateUrl: './simple-renderer.component.html',
   styleUrls: ['./simple-renderer.component.scss'],
 })
 export class SimpleRendererComponent implements AfterViewInit {
   @Input() formGroup!: FormGroup;
+  @Input() showSize = true;
   public loading = true;
   private primaryColor!: string;
 
