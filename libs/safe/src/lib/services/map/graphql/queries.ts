@@ -49,6 +49,22 @@ export const GET_LAYER_BY_ID = gql`
             radius
             gradient
             minOpacity
+            field1
+            defaultLabel
+            defaultSymbol {
+              color
+              size
+              style
+            }
+            uniqueValueInfos {
+              label
+              value
+              symbol {
+                color
+                size
+                style
+              }
+            }
           }
         }
       }

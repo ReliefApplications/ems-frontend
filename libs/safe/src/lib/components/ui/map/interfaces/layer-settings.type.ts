@@ -25,7 +25,7 @@ export interface LayerFormData {
     maxZoom: number;
     drawingInfo: {
       renderer: {
-        type: 'simple' | 'heatmap';
+        type: 'simple' | 'heatmap' | 'uniqueValue';
         symbol: {
           color: string;
           type: string;

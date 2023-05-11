@@ -68,7 +68,27 @@ export class GeospatialMapComponent
   public geoForm!: ReturnType<typeof this.buildGeoForm>;
 
   // === MAP ===
-  public mapSettings!: MapConstructorSettings;
+  public mapSettings: MapConstructorSettings = {
+    initialState: {
+      viewpoint: {
+        center: {
+          latitude: 0,
+          longitude: 0,
+        },
+        zoom: 2,
+      },
+    },
+    pmIgnore: false,
+    worldCopyJump: true,
+    controls: {
+      timedimension: false,
+      download: false,
+      legend: false,
+      measure: true,
+      layer: false,
+      search: true,
+    },
+  };
 
   // Layer to edit
   public selectedLayer: any;
@@ -109,27 +129,6 @@ export class GeospatialMapComponent
   }
 
   ngAfterViewInit(): void {
-    this.mapSettings = {
-      initialState: {
-        viewpoint: {
-          center: {
-            latitude: 0,
-            longitude: 0,
-          },
-          zoom: 2,
-        },
-      },
-      pmIgnore: false,
-      worldCopyJump: true,
-      controls: {
-        timedimension: false,
-        download: false,
-        legend: false,
-        measure: true,
-        layer: false,
-        search: true,
-      },
-    };
     this.mapComponent?.map.pm.addControls(this.controls);
     this.setUpPmListeners();
     this.setDataLayers();
@@ -307,60 +306,7 @@ export class GeospatialMapComponent
       ]);
       updateGeoManLayerPosition(this.mapComponent?.map, { latlng });
     }
-
-    // const geospatialData = this.data as any;
-    // if (geospatialData.geometry.coordinates.length > 0) {
-    //   const newLayer = L.geoJSON(this.data, {
-    //     // Circles are not supported by geojson
-    //     // We abstract them as markers with a radius property
-    //     pointToLayer: (feature, latlng) => {
-    //       if (feature.properties.radius) {
-    //         return new L.Circle(latlng, feature.properties.radius);
-    //       } else {
-    //         const icon = createCustomDivIcon({
-    //           color: feature.properties.style?.fillColor || '#3388ff',
-    //           opacity: feature.properties.style?.fillOpacity || 1,
-    //           icon:
-    //             (feature.properties.style?.icon as IconName) ||
-    //             'leaflet_default',
-    //           size: feature.properties.style?.iconSize || 12,
-    //         });
-    //         return new L.Marker(latlng).setIcon(icon);
-    //       }
-    //     },
-    //   } as L.GeoJSONOptions);
-    //   const baseLayer: BaseLayerTree = {
-    //     label: '',
-    //     layer: newLayer,
-    //   };
-    //   this.addOrDeleteLayer.next({ layerData: baseLayer, isDelete: false });
-    // }
   }
-
-  /**
-   * Updates the selected layer with the given options.
-   *
-   * @param options the options to update the layer with
-   */
-  // public updateLayerOptions(options: StyleChange) {
-  //   options = { ...options, visible: true };
-  //   if ('color' in options && 'opacity' in options) {
-  //     // Layers with geoman tools are visible by default
-  //     // We make sure to add that option by default in each update
-  //     if (this.selectedLayer instanceof L.Marker) {
-  //       const icon = createCustomDivIcon({
-  //         color: options.color as string,
-  //         opacity: options.opacity as number,
-  //         icon: 'leaflet_default',
-  //         size: 24,
-  //       });
-
-  //       this.updateLayer.next({ layer: this.selectedLayer, options, icon });
-  //     } else {
-  //       this.updateLayer.next({ layer: this.selectedLayer, options });
-  //     }
-  //   }
-  // }
 
   /**
    * On search, transform the result into a readable one
@@ -387,13 +333,6 @@ export class GeospatialMapComponent
         subRegion: get(address, 'properties.Subregion', DEFAULT_GEOCODING.city),
         address: get(address, 'properties.StAddr', DEFAULT_GEOCODING.city),
       };
-      // update the marker position on the map
-      // if (this.selectedLayer) {
-      //   this.mapComponent?.map.removeLayer(this.selectedLayer);
-      // }
-      // (this.mapComponent?.map as any).pm.Draw['Marker']._createMarker({
-      //   latlng: [value.coordinates.lat, value.coordinates.lng],
-      // });
       updateGeoManLayerPosition(
         this.mapComponent?.map,
         {

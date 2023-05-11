@@ -244,6 +244,9 @@ export class Layer implements LayerModel {
     // If the geojson is a feature collection, return a new feature collection
     // with the features that satisfy the filter
     if (this.geojson.type === 'FeatureCollection') {
+      // console.log(this.geojson.features);
+      // const types = uniqBy(this.geojson.features, 'geometry.type');
+      // console.log(types);
       return {
         type: 'FeatureCollection',
         features: this.geojson.features.filter((feature) =>
@@ -395,17 +398,60 @@ export class Layer implements LayerModel {
       size: get(this.layerDefinition, 'drawingInfo.renderer.symbol.size', 24),
     };
 
+    const rendererType = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.type',
+      'simple'
+    );
+
+    const uniqueValueInfos = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.uniqueValueInfos',
+      []
+    );
+
+    const uniqueValueField = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.field1',
+      ''
+    );
+
+    const uniqueValueDefaultSymbol = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.defaultSymbol',
+      symbol
+    );
+
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<any> = {
       pointToLayer: (feature, latlng) => {
-        return new L.Marker(latlng).setIcon(
-          createCustomDivIcon({
-            icon: symbol.style,
-            color: symbol.color,
-            size: symbol.size,
-            opacity: this.opacity,
-          })
-        );
+        if (rendererType === 'uniqueValue') {
+          const fieldValue = get(
+            feature,
+            `properties.${uniqueValueField}`,
+            null
+          );
+          const uniqueValueSymbol =
+            uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
+            uniqueValueDefaultSymbol;
+          return new L.Marker(latlng).setIcon(
+            createCustomDivIcon({
+              icon: uniqueValueSymbol.style,
+              color: uniqueValueSymbol.color,
+              size: uniqueValueSymbol.size,
+              opacity: this.opacity,
+            })
+          );
+        } else {
+          return new L.Marker(latlng).setIcon(
+            createCustomDivIcon({
+              icon: symbol.style,
+              color: symbol.color,
+              size: symbol.size,
+              opacity: this.opacity,
+            })
+          );
+        }
       },
       onEachFeature: (feature: Feature<any>, layer: L.Layer) => {
         // Add popup on click because we destroy popup component each time we remove it
@@ -472,12 +518,24 @@ export class Layer implements LayerModel {
             const heatArray: any[] = [];
 
             data.features.forEach((feature: any) => {
-              // @TODO incorrect, it should be a feature, not a point
-              if (get(feature, 'type') === 'Point') {
-                heatArray.push([
-                  feature.coordinates[1], // lat
-                  feature.coordinates[0], // long
-                ]);
+              switch (get(feature, 'type')) {
+                case 'Point': {
+                  heatArray.push([
+                    get(feature, 'coordinates[1]'), // lat
+                    get(feature, 'coordinates[0]'), // long
+                  ]);
+                  break;
+                }
+                case 'Feature': {
+                  heatArray.push([
+                    get(feature, 'geometry.coordinates[1]'), // lat
+                    get(feature, 'geometry.coordinates[0]'), // long
+                  ]);
+                  break;
+                }
+                default: {
+                  break;
+                }
               }
             });
 
@@ -752,72 +810,100 @@ export class Layer implements LayerModel {
             container.innerHTML = linearGradient.outerHTML + legend.outerHTML;
             html = container.outerHTML;
             break;
-          default:
-            switch (get(this.layerDefinition, 'featureReduction.type')) {
-              case 'cluster': {
-                // Features legend
-                const symbol: LayerSymbol = {
-                  style: get(
-                    this.layerDefinition,
-                    'drawingInfo.renderer.symbol.style',
-                    'location-dot'
-                  ),
-                  color: get(
-                    this.layerDefinition,
-                    'drawingInfo.renderer.symbol.color',
-                    'blue'
-                  ),
-                  size: get(
-                    this.layerDefinition,
-                    'drawingInfo.renderer.symbol.size',
-                    24
-                  ),
-                };
-                const pipe = new SafeIconDisplayPipe();
-                html += `<i style="color: ${
-                  symbol.color
-                }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>`;
-                // Cluster legend
-                const clusterSymbol: LayerSymbol = get(
-                  this.layerDefinition,
-                  'featureReduction.drawingInfo.renderer.symbol',
-                  symbol
-                );
-                html += `<div>Clusters</div>`;
-                html += `<i style="color: ${
-                  clusterSymbol.color
-                }"; class="${pipe.transform(
-                  clusterSymbol.style,
-                  'fa'
-                )} pl-2"></i>`;
-                break;
-              }
-
-              default: {
-                const symbol: LayerSymbol = {
-                  style: get(
-                    this.layerDefinition,
-                    'drawingInfo.renderer.symbol.style',
-                    'location-dot'
-                  ),
-                  color: get(
-                    this.layerDefinition,
-                    'drawingInfo.renderer.symbol.color',
-                    'blue'
-                  ),
-                  size: get(
-                    this.layerDefinition,
-                    'drawingInfo.renderer.symbol.size',
-                    24
-                  ),
-                };
-                const pipe = new SafeIconDisplayPipe();
-                html += `<i style="color: ${
-                  symbol.color
-                }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>`;
-                break;
-              }
+          case 'uniqueValue': {
+            const defaultSymbol: LayerSymbol | undefined = get(
+              this.layerDefinition,
+              'drawingInfo.renderer.defaultSymbol'
+            );
+            const pipe = new SafeIconDisplayPipe();
+            for (const info of get(
+              this.layerDefinition,
+              'drawingInfo.renderer.uniqueValueInfos',
+              []
+            )) {
+              const symbol: LayerSymbol = info.symbol;
+              html += `<span class="flex gap-2 items-center"><i style="color: ${
+                symbol.color
+              }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>${
+                info.label
+              }</span>`;
             }
+            if (defaultSymbol) {
+              html += `<span class="flex gap-2 items-center"><i style="color: ${
+                defaultSymbol.color
+              }"; class="${pipe.transform(
+                defaultSymbol.style,
+                'fa'
+              )} pl-2"></i>${get(
+                this.layerDefinition,
+                'drawingInfo.renderer.defaultLabel'
+              )}</span>`;
+            }
+
+            break;
+          }
+          default: {
+            const symbol: LayerSymbol = {
+              style: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.symbol.style',
+                'location-dot'
+              ),
+              color: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.symbol.color',
+                'blue'
+              ),
+              size: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.symbol.size',
+                24
+              ),
+            };
+            const pipe = new SafeIconDisplayPipe();
+            html += `<i style="color: ${symbol.color}"; class="${pipe.transform(
+              symbol.style,
+              'fa'
+            )} pl-2"></i>`;
+            break;
+          }
+        }
+        switch (get(this.layerDefinition, 'featureReduction.type')) {
+          case 'cluster': {
+            // Features legend
+            const symbol: LayerSymbol = {
+              style: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.symbol.style',
+                'location-dot'
+              ),
+              color: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.symbol.color',
+                'blue'
+              ),
+              size: get(
+                this.layerDefinition,
+                'drawingInfo.renderer.symbol.size',
+                24
+              ),
+            };
+            const pipe = new SafeIconDisplayPipe();
+            // Cluster legend
+            const clusterSymbol: LayerSymbol = get(
+              this.layerDefinition,
+              'featureReduction.drawingInfo.renderer.symbol',
+              symbol
+            );
+            html += `<div>Clusters</div>`;
+            html += `<i style="color: ${
+              clusterSymbol.color
+            }"; class="${pipe.transform(clusterSymbol.style, 'fa')} pl-2"></i>`;
+            break;
+          }
+          default: {
+            break;
+          }
         }
         break;
       }

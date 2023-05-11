@@ -13,7 +13,7 @@ import {
 } from '@esri/arcgis-rest-portal';
 import * as EsriHeat from 'esri-leaflet-heatmap';
 import * as EsriCluster from 'esri-leaflet-cluster';
-import * as EsriRenderers from 'esri-leaflet-renderers';
+// import * as EsriRenderers from 'esri-leaflet-renderers';
 // import * as EsriRenderers from '@oort-front/esri';
 import * as Esri from 'esri-leaflet';
 import * as Vector from 'esri-leaflet-vector';
@@ -203,7 +203,6 @@ export class ArcgisService {
   ): Promise<TreeObject[]> {
     const layers: TreeObject[] = [];
     for (const layer of webMap.operationalLayers) {
-      console.log(layer);
       await this.addLayer(map, layer, layers);
     }
     return layers;
@@ -262,21 +261,21 @@ export class ArcgisService {
         break;
       }
       case 'ArcGISFeatureLayer': {
+        console.log(layer);
         let featureLayer: L.Layer | undefined = undefined;
         if (layer.url) {
-          if (layer.itemId) {
-            await getItemData(layer.itemId, {
-              authentication: this.session,
-            }).then((item: any) => {
-              console.log(item);
-            });
-          }
+          // if (layer.itemId) {
+          //   await getItemData(layer.itemId, {
+          //     authentication: this.session,
+          //   }).then((item: any) => {
+          //     console.log(item);
+          //   });
+          // }
           const reduction = get(layer, 'layerDefinition.featureReduction');
           if (reduction) {
             switch (reduction.type) {
               case 'cluster': {
                 const pane = map.createPane(layer.id);
-                console.log(layer);
                 featureLayer = EsriCluster.featureLayer({
                   url: layer.url,
                   token: this.esriApiKey,
@@ -296,7 +295,6 @@ export class ArcgisService {
                   minZoom: minScaleLevel,
                   maxZoom: maxScaleLevel,
                 });
-                console.log(featureLayer);
                 pane.style.opacity = `${opacity}`;
                 break;
               }
@@ -412,10 +410,9 @@ export class ArcgisService {
                       drawingInfo: layer.layerDefinition.drawingInfo,
                     }),
                   });
-                  const renderer = EsriRenderers.simpleRenderer(
-                    get(layer, 'layerDefinition.drawingInfo.renderer')
-                  );
-                  console.log(renderer._symbols);
+                  // const renderer = EsriRenderers.simpleRenderer(
+                  //   get(layer, 'layerDefinition.drawingInfo.renderer')
+                  // );
                   break;
                 }
                 case 'uniqueValue': {
@@ -451,7 +448,6 @@ export class ArcgisService {
             }
           }
         }
-        console.log(featureLayer);
         if (featureLayer) {
           if (get(layer, 'visibility', true) && visibility) {
             featureLayer.addTo(map);
@@ -514,13 +510,13 @@ export class ArcgisService {
           token: this.esriApiKey,
           opacity,
         });
-        if (layer.itemId) {
-          await getItemData(layer.itemId, {
-            authentication: this.session,
-          }).then((item: any) => {
-            console.log(item);
-          });
-        }
+        // if (layer.itemId) {
+        //   await getItemData(layer.itemId, {
+        //     authentication: this.session,
+        //   }).then((item: any) => {
+        //     console.log(item);
+        //   });
+        // }
         if (tiledMapLayer) {
           if (get(layer, 'visibility', true) && visibility) {
             tiledMapLayer.addTo(map);
@@ -609,7 +605,6 @@ export class ArcgisService {
         .latlng(latlng)
         .run((err: any, res: any) => {
           if (res) {
-            console.log(res);
             resolve(res);
           }
           if (err) {

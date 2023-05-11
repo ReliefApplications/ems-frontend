@@ -14,6 +14,7 @@ import {
   LayerModel,
   PopupElement,
   PopupElementType,
+  UniqueValueInfo,
 } from '../../../models/layer.model';
 import { IconName } from '../../icon-picker/icon-picker.const';
 import { LayerType } from '../../ui/map/interfaces/layer-settings.type';
@@ -164,20 +165,11 @@ const createLayerDefinitionForm = (type: LayerType, value?: any): FormGroup => {
     }),
   });
   if (type !== 'GroupLayer') {
-    const rendererType = formGroup.value.drawingInfo.renderer.type;
-    // Add more conditions there to disabled aggregation
-    if (rendererType === 'heatmap') {
-      formGroup.get('featureReduction')?.disable();
-    }
+    // Add more conditions there so we subscribe to the type to update the form
     const setTypeListeners = () => {
       formGroup
         .get('drawingInfo.renderer.type')
-        ?.valueChanges.subscribe((type) => {
-          if (type === 'heatmap') {
-            formGroup.get('featureReduction')?.disable();
-          } else {
-            formGroup.get('featureReduction')?.enable();
-          }
+        ?.valueChanges.subscribe((type: string) => {
           formGroup.setControl(
             'drawingInfo',
             createLayerDrawingInfoForm({
@@ -227,7 +219,7 @@ export const createLayerFeatureReductionForm = (value: any) => {
  * @returns layer drawing info form
  */
 export const createLayerDrawingInfoForm = (value: any): FormGroup => {
-  const type = get(value, 'type', 'simple');
+  const type = get(value, 'renderer.type', 'simple');
   const formGroup = fb.group({
     renderer: fb.group({
       type: [type, Validators.required],
@@ -255,10 +247,49 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup => {
           Validators.required,
         ],
       }),
+      ...(type === 'uniqueValue' && {
+        defaultLabel: get(value, 'renderer.defaultLabel', 'Other'),
+        defaultSymbol: fb.group({
+          color: [
+            get(value, 'renderer.defaultSymbol.color', ''),
+            Validators.required,
+          ],
+          size: [get(value, 'renderer.defaultSymbol.size', 24)],
+          style: new FormControl<IconName>(
+            get(value, 'renderer.defaultSymbol.style', 'location-dot')
+          ),
+        }),
+        field1: [get(value, 'renderer.field1', null), Validators.required],
+        uniqueValueInfos: fb.array(
+          get(value, 'renderer.uniqueValueInfos', []).map(
+            (uniqueValueInfo: UniqueValueInfo) =>
+              createUniqueValueInfoForm(uniqueValueInfo)
+          )
+        ),
+      }),
     }),
   });
   return formGroup;
 };
+
+/**
+ * Create unique value form group
+ *
+ * @param value unique value
+ * @returns unique value form group
+ */
+export const createUniqueValueInfoForm = (value?: any) =>
+  fb.group({
+    label: [get(value, 'label', ''), Validators.required],
+    value: [get(value, 'value', ''), Validators.required],
+    symbol: fb.group({
+      color: [get(value, 'symbol.color', ''), Validators.required],
+      size: [get(value, 'symbol.size', 24)],
+      style: new FormControl<IconName>(
+        get(value, 'symbol.style', 'location-dot')
+      ),
+    }),
+  });
 
 /**
  * Create popup info form group
