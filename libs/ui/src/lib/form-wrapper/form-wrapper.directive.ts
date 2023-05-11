@@ -1,10 +1,9 @@
 import { Directive } from '@angular/core';
 
+/**
+ *
+ */
 @Directive({
-  selector: '[uiFormWrapper]'
+  selector: '[uiFormWrapper]',
 })
-export class FormWrapperDirective {
-
-  constructor() { }
-
-}
+export class FormWrapperDirective {}
