@@ -38,7 +38,6 @@ import { timeDimensionGeoJSON } from './test/timedimension-test';
 import { SafeMapControlsService } from '../../../services/map/map-controls.service';
 import * as L from 'leaflet';
 import { Layer } from './layer';
-import { LayerFormData } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
 import { ArcgisService } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
@@ -65,28 +64,6 @@ export class MapComponent
       } else {
         this.deleteLayers(layerAction.layerData);
       }
-    }
-  }
-  /** Update layer options setters */
-  @Input() set updateLayerOptions(layerWithOptions: {
-    layer: any;
-    options: Pick<
-      LayerFormData,
-      'name' | 'visibility' | 'opacity' | 'layerDefinition'
-    >;
-    icon?: any;
-  }) {
-    if (layerWithOptions) {
-      Layer.applyOptionsToLayer(
-        this.map,
-        layerWithOptions.layer,
-        layerWithOptions.options
-      );
-      this.map.removeControl(this.layerControl);
-      // Layer edition takes one layer per edition, therefor we set the updated name as this to the control
-      // If multiple layers, we will have to iterate over children property until we match given layer ids with the ids in the overlaysTree to update name
-      this.layerControl._overlaysTree.label = layerWithOptions.options.name;
-      this.layerControl.addTo(this.map);
     }
   }
 
@@ -423,6 +400,7 @@ export class MapComponent
     // Add layer contorl
     if (controls.layer) {
       if (this.layerControl) {
+        console.log('add 1');
         this.layerControl.addTo(this.map);
       }
     } else {
@@ -470,6 +448,7 @@ export class MapComponent
       );
     }
     if (this.extractSettings().controls.layer) {
+      console.log('add 2');
       this.layerControl.addTo(this.map);
     }
   }
@@ -569,6 +548,10 @@ export class MapComponent
       }
     } else {
       drawLayer(layers);
+    }
+
+    if (this.layerControl && this.extractSettings().controls.layer) {
+      this.map.removeControl(this.layerControl);
     }
 
     this.layerControl = L.control.layers.tree(this.baseTree, layers as any);

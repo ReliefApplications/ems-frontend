@@ -105,10 +105,6 @@ class LegendControl extends L.Control {
   }
 }
 
-L.Map.include({
-  legendControl: LegendControl,
-});
-
 /**
  * Generate a new legend control
  *
