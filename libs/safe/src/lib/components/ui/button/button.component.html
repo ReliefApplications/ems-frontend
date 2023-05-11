@@ -17,11 +17,9 @@
     [inline]="!isIcon"
     [fontSet]="fontSet"
   ></safe-icon>
-  <safe-spinner
+  <ui-spinner
     *ngIf="loading"
     class="safe-btn-spinner"
-    size="small"
-    [variant]="spinnerVariant"
-  ></safe-spinner>
+  ></ui-spinner>
   <ng-content></ng-content>
 </button>

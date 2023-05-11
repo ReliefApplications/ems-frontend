@@ -10,7 +10,7 @@
         (edit)="onEditProfile($event)"
         [loading]="loading"
       ></safe-user-details>
-      <safe-spinner *ngIf="loading"></safe-spinner>
+      <ui-spinner *ngIf="loading"></ui-spinner>
     </ng-template>
   </mat-tab>
   <mat-tab [label]="'common.role.few' | translate">

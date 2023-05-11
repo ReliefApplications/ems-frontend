@@ -10,7 +10,7 @@
         (edit)="onEditRole($event)"
         [loading]="loading"
       ></safe-role-details>
-      <safe-spinner *ngIf="loading"></safe-spinner>
+      <ui-spinner *ngIf="loading"></ui-spinner>
     </ng-template>
   </mat-tab>
   <mat-tab [label]="'components.role.summary.autoAssignment.title' | translate">
@@ -21,13 +21,13 @@
         (edit)="onEditRole($event)"
         [loading]="loading"
       ></safe-role-auto-assignment>
-      <safe-spinner *ngIf="loading"></safe-spinner>
+      <ui-spinner *ngIf="loading"></ui-spinner>
     </ng-template>
   </mat-tab>
   <mat-tab [label]="'common.resource.few' | translate">
     <ng-template matTabContent>
       <safe-role-resources *ngIf="role" [role]="role"></safe-role-resources>
-      <safe-spinner *ngIf="loading"></safe-spinner>
+      <ui-spinner *ngIf="loading"></ui-spinner>
     </ng-template>
   </mat-tab>
   <mat-tab
@@ -41,7 +41,7 @@
         [application]="application"
         [loading]="loading"
       ></safe-role-features>
-      <safe-spinner *ngIf="loading"></safe-spinner>
+      <ui-spinner *ngIf="loading"></ui-spinner>
     </ng-template>
   </mat-tab>
   <mat-tab [label]="'common.channel.few' | translate">
@@ -53,7 +53,7 @@
         (edit)="onEditRole($event)"
         [loading]="loading"
       ></safe-role-channels>
-      <safe-spinner *ngIf="loading"></safe-spinner>
+      <ui-spinner *ngIf="loading"></ui-spinner>
     </ng-template>
   </mat-tab>
 </mat-tab-group>

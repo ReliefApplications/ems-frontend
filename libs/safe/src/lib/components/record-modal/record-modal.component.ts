@@ -43,7 +43,7 @@ import { SafeRecordSummaryModule } from '../record-summary/record-summary.module
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
+import { SpinnerModule } from '@oort-front/ui';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -73,7 +73,7 @@ interface DialogData {
     TranslateModule,
     SafeDateModule,
     SafeModalModule,
-    SafeSpinnerModule,
+    SpinnerModule,
   ],
   selector: 'safe-record-modal',
   templateUrl: './record-modal.component.html',

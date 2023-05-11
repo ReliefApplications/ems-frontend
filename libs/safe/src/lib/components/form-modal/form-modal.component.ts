@@ -50,7 +50,7 @@ import { SafeRecordSummaryModule } from '../record-summary/record-summary.module
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
+import { SpinnerModule } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 
@@ -89,7 +89,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     SafeFormActionsModule,
     TranslateModule,
     SafeModalModule,
-    SafeSpinnerModule,
+    SpinnerModule,
   ],
 })
 export class SafeFormModalComponent

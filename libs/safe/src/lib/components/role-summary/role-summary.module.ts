@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeRoleSummaryComponent } from './role-summary.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
-import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
+import { SpinnerModule } from '@oort-front/ui';
 import { RoleChannelsModule } from './role-channels/role-channels.module';
 import { RoleDetailsModule } from './role-details/role-details.module';
 import { RoleFeaturesModule } from './role-features/role-features.module';
@@ -20,7 +20,7 @@ import { RoleAutoAssignmentModule } from './role-auto-assignment/role-auto-assig
     CommonModule,
     TranslateModule,
     MatTabsModule,
-    SafeSpinnerModule,
+    SpinnerModule,
     RoleChannelsModule,
     RoleDetailsModule,
     RoleFeaturesModule,
