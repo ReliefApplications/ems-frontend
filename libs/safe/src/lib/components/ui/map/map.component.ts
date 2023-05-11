@@ -323,11 +323,9 @@ export class MapComponent
 
     // Get arcgis layers
     if (arcGisWebMap) {
-      console.log('push webmap');
       // Load arcgis webmap
       promises.push(this.setWebmap(arcGisWebMap));
     } else {
-      console.log('push basemap');
       // else, load basemap ( default to osm )
       promises.push(this.setBasemap(this.map, basemap));
     }
@@ -400,7 +398,6 @@ export class MapComponent
     // Add layer contorl
     if (controls.layer) {
       if (this.layerControl) {
-        console.log('add 1');
         this.layerControl.addTo(this.map);
       }
     } else {
@@ -448,7 +445,6 @@ export class MapComponent
       );
     }
     if (this.extractSettings().controls.layer) {
-      console.log('add 2');
       this.layerControl.addTo(this.map);
     }
   }

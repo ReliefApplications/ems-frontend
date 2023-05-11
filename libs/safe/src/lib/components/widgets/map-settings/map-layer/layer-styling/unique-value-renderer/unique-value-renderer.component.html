@@ -26,10 +26,13 @@
     <ul
       *ngIf="uniqueValueInfos.length > 0"
       class="divide-y divide-gray-100 bg-white ring-1 ring-gray-900/5 rounded-xl mx-2"
+      cdkDropList
+      (cdkDropListDropped)="onDrop($event)"
     >
       <li
         *ngFor="let info of uniqueValueInfos.controls; let index = index"
         class="hover:bg-gray-50 p-4 flex flex-col divide-y divide-gray-100"
+        cdkDrag
       >
         <ng-container *ngIf="index === openedIndex">
           <ng-container
@@ -100,15 +103,20 @@
 <!-- Unique value header template -->
 <ng-template #headerTemplate let-value="value" let-index="index">
   <div class="flex justify-between items-center">
-    <div
-      class="flex flex-1 gap-2 items-center cursor-pointer"
-      (click)="openedIndex = index"
-    >
-      <i
-        [style.color]="value.symbol.color"
-        class="{{ value.symbol.style | safeIconDisplay : 'fa' }}"
-      ></i>
-      <span>{{ value.label }}</span>
+    <div class="flex flex-1 gap-4 items-center cursor-pointer">
+      <safe-icon
+        cdkDraghandle
+        icon="drag_indicator"
+        variant="grey"
+        class="cursor-move"
+      ></safe-icon>
+      <div class="flex flex-1 gap-2 items-center" (click)="openedIndex = index">
+        <i
+          [style.color]="value.symbol.color"
+          class="{{ value.symbol.style | safeIconDisplay : 'fa' }}"
+        ></i>
+        <span>{{ value.label }}</span>
+      </div>
     </div>
     <safe-button
       (click)="onRemoveInfo(index)"

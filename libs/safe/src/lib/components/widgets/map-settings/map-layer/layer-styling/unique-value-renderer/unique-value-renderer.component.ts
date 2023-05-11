@@ -10,6 +10,8 @@ import { SafeIconDisplayModule } from '../../../../../../pipes/icon-display/icon
 import { Fields } from '../../layer-fields/layer-fields.component';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { SafeIconModule } from '../../../../../ui/icon/icon.module';
 
 @Component({
   selector: 'safe-unique-value-renderer',
@@ -23,6 +25,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
     SafeButtonModule,
     SafeIconDisplayModule,
     MatSelectModule,
+    DragDropModule,
+    SafeIconModule,
   ],
   templateUrl: './unique-value-renderer.component.html',
   styleUrls: ['./unique-value-renderer.component.scss'],
@@ -41,7 +45,6 @@ export class UniqueValueRendererComponent implements OnInit {
 
   ngOnInit(): void {
     this.fields$.subscribe((value) => {
-      console.log(value);
       this.scalarFields.next(
         value.filter((field) => ['String'].includes(field.type))
       );
@@ -58,5 +61,12 @@ export class UniqueValueRendererComponent implements OnInit {
       this.openedIndex = -1;
     }
     this.uniqueValueInfos.removeAt(index);
+  }
+
+  onDrop(event: any): void {
+    this.openedIndex = -1;
+    const uniqueValueInfos = this.uniqueValueInfos.value;
+    moveItemInArray(uniqueValueInfos, event.previousIndex, event.currentIndex);
+    this.uniqueValueInfos.setValue(uniqueValueInfos);
   }
 }

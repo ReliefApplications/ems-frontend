@@ -128,12 +128,12 @@ export class MapLayerComponent
 
   ngOnInit(): void {
     this.form = createLayerForm(this.layer);
+    console.log(this.form.value);
     this.setIsDatasourceValid(this.form.get('datasource')?.value);
     this.form
       .get('datasource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        console.log('updating datasource');
         this.setIsDatasourceValid(value);
       });
     if (this.mapComponent) {
@@ -150,7 +150,6 @@ export class MapLayerComponent
    * @param value datasource form value
    */
   private setIsDatasourceValid(value: any) {
-    console.log(value);
     if (get(value, 'refData')) {
       this.isDatasourceValid = true;
     } else if (get(value, 'resource')) {
@@ -167,7 +166,6 @@ export class MapLayerComponent
     } else {
       this.isDatasourceValid = false;
     }
-    console.log(this.isDatasourceValid);
   }
 
   /**

@@ -165,7 +165,7 @@ const createLayerDefinitionForm = (type: LayerType, value?: any): FormGroup => {
     }),
   });
   if (type !== 'GroupLayer') {
-    // Add more conditions there to disabled aggregation
+    // Add more conditions there so we subscribe to the type to update the form
     const setTypeListeners = () => {
       formGroup
         .get('drawingInfo.renderer.type')
@@ -219,7 +219,7 @@ export const createLayerFeatureReductionForm = (value: any) => {
  * @returns layer drawing info form
  */
 export const createLayerDrawingInfoForm = (value: any): FormGroup => {
-  const type = get(value, 'type', 'simple');
+  const type = get(value, 'renderer.type', 'simple');
   const formGroup = fb.group({
     renderer: fb.group({
       type: [type, Validators.required],
@@ -261,7 +261,7 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup => {
         }),
         field1: [get(value, 'renderer.field1', null), Validators.required],
         uniqueValueInfos: fb.array(
-          get(value, 'uniqueValueInfos', []).map(
+          get(value, 'renderer.uniqueValueInfos', []).map(
             (uniqueValueInfo: UniqueValueInfo) =>
               createUniqueValueInfoForm(uniqueValueInfo)
           )

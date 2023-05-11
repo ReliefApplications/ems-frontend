@@ -419,23 +419,18 @@ export class Layer implements LayerModel {
       symbol
     );
 
-    console.log(this.layerDefinition?.drawingInfo?.renderer);
-
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<any> = {
       pointToLayer: (feature, latlng) => {
         if (rendererType === 'uniqueValue') {
-          console.log(feature);
           const fieldValue = get(
             feature,
             `properties.${uniqueValueField}`,
             null
           );
-          console.log(fieldValue);
           const uniqueValueSymbol =
             uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
             uniqueValueDefaultSymbol;
-          console.log(uniqueValueSymbol);
           return new L.Marker(latlng).setIcon(
             createCustomDivIcon({
               icon: uniqueValueSymbol.style,
@@ -520,7 +515,6 @@ export class Layer implements LayerModel {
             const heatArray: any[] = [];
 
             data.features.forEach((feature: any) => {
-              console.log(feature);
               switch (get(feature, 'type')) {
                 case 'Point': {
                   heatArray.push([
@@ -571,11 +565,7 @@ export class Layer implements LayerModel {
               }, {}),
             };
 
-            console.log(heatArray);
-
             const layer = L.heatLayer(heatArray, heatmapOptions);
-
-            console.log(layer);
 
             layer.onAdd = (map: L.Map) => {
               // So we can use onAdd method from HeatLayer class
