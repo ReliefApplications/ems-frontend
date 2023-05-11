@@ -22,6 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../../../pipes/date/date.module';
 import { SafeButtonModule } from '../../button/button.module';
 import { SafeDateFilterMenuModule } from '../date-filter-menu/date-filter-menu.module';
+import { TextareaModule } from '@oort-front/ui';
 
 /** Module for the grid component */
 @NgModule({
@@ -59,6 +60,7 @@ import { SafeDateFilterMenuModule } from '../date-filter-menu/date-filter-menu.m
     // === TRANSLATE ===
     TranslateModule,
     SafeDateModule,
+    TextareaModule,
   ],
   exports: [SafeGridComponent],
 })
