@@ -32,11 +32,23 @@ import { TabComponent } from '../tab/tab.component';
   ],
 })
 export class NavigationTabsComponent {
-  colorVariant = Variant;
-
   @ContentChildren(TabComponent, { descendants: true })
   tabs!: QueryList<TabComponent>;
+
   triggerAnimation = false;
   vertical = false;
-  variant: Variant = this.colorVariant.DEFAULT;
+  variant: Variant = Variant.DEFAULT;
+
+  /** @returns general resolved position classes for navigation tabs*/
+  get resolveTabPositionClasses(): string[] {
+    const classes = [];
+    if (this.vertical) {
+      classes.push('col-span-3');
+      classes.push('flex-col');
+      classes.push('h-full');
+    } else {
+      classes.push('border-b');
+    }
+    return classes;
+  }
 }

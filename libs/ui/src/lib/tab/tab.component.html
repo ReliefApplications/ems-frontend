@@ -1,8 +1,12 @@
 <div>
   <button
+    [attr.selected]="selected"
+    [ngClass]="resolveTabClasses"
     class="w-full whitespace-nowrap py-2 text-sm font-medium"
     id="buttonTab"
-  >{{label}}
+    #button
+  >
+    {{ label }}
   </button>
   <div id="content" class="py-4 hidden">
     <ng-content></ng-content>

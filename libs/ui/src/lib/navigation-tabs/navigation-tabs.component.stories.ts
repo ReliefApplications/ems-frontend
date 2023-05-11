@@ -47,7 +47,7 @@ const colorVariant = Variant;
  * @param event index of the currently selected tab
  */
 const selectedIndexChangeEvent = (event: any) => {
-  console.log(event);
+  console.log('selected tab index: ', event);
 };
 
 /**
@@ -62,14 +62,14 @@ const SelectedThirdTemplate: Story<NavigationTabsComponent> = (
   return {
     component: NavigationTabsComponent,
     template: `
-    <ui-navigation-tabs uiNavigationTabs (selectedIndexChange)="selectedIndexChangeEvent($event)" [selectedIndex]="2" [vertical]="vertical" [variant]="variant" >  
-    <ui-tab label="First" [variant]="variant">
+    <ui-navigation-tabs uiNavigationTabs (selectedIndexChange)="selectedIndexChangeEvent($event)" [selectedIndex]="2" [vertical]="${args.vertical}" [variant]="'${args.variant}'" >  
+    <ui-tab label="First">
         First content
       </ui-tab>
-      <ui-tab label="Second" [variant]="variant">
+      <ui-tab label="Second">
         Second content
       </ui-tab>
-      <ui-tab label="Third" [variant]="variant">
+      <ui-tab label="Third">
         <div class="text-red-600">
           Third content 
         </div>
@@ -102,14 +102,14 @@ const SelectedFirstTemplate: Story<NavigationTabsComponent> = (
   return {
     component: NavigationTabsComponent,
     template: `
-    <ui-navigation-tabs uiNavigationTabs (selectedIndexChange)="selectedIndexChangeEvent($event)" [selectedIndex]="0" [vertical]="vertical" [variant]="variant" >  
-    <ui-tab label="First" [variant]="variant">
+    <ui-navigation-tabs uiNavigationTabs (selectedIndexChange)="selectedIndexChangeEvent($event)" [selectedIndex]="0" [vertical]="${args.vertical}" [variant]="'${args.variant}'" >  
+    <ui-tab label="First">
         First content
       </ui-tab>
-      <ui-tab label="Second" [variant]="variant">
+      <ui-tab label="Second">
         Second content
       </ui-tab>
-      <ui-tab label="Third" [variant]="variant">
+      <ui-tab label="Third">
         <div class="text-red-600">
           Third content 
         </div>
