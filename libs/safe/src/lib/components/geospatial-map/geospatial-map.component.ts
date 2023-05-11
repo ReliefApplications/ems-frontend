@@ -68,7 +68,27 @@ export class GeospatialMapComponent
   public geoForm!: ReturnType<typeof this.buildGeoForm>;
 
   // === MAP ===
-  public mapSettings!: MapConstructorSettings;
+  public mapSettings: MapConstructorSettings = {
+    initialState: {
+      viewpoint: {
+        center: {
+          latitude: 0,
+          longitude: 0,
+        },
+        zoom: 2,
+      },
+    },
+    pmIgnore: false,
+    worldCopyJump: true,
+    controls: {
+      timedimension: false,
+      download: false,
+      legend: false,
+      measure: true,
+      layer: false,
+      search: true,
+    },
+  };
 
   // Layer to edit
   public selectedLayer: any;
@@ -109,27 +129,6 @@ export class GeospatialMapComponent
   }
 
   ngAfterViewInit(): void {
-    this.mapSettings = {
-      initialState: {
-        viewpoint: {
-          center: {
-            latitude: 0,
-            longitude: 0,
-          },
-          zoom: 2,
-        },
-      },
-      pmIgnore: false,
-      worldCopyJump: true,
-      controls: {
-        timedimension: false,
-        download: false,
-        legend: false,
-        measure: true,
-        layer: false,
-        search: true,
-      },
-    };
     this.mapComponent?.map.pm.addControls(this.controls);
     this.setUpPmListeners();
     this.setDataLayers();
