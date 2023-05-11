@@ -1593,6 +1593,11 @@
 				"origin": "Context origin",
 				"refData": {
 					"element": "Element"
+				},
+				"title": "Context",
+				"tooltip": {
+					"useContextEditor": "Use context editor",
+					"useDefaultEditor": "Use default editor"
 				}
 			},
 			"deactivateFiltering": "Deactivate filtering",

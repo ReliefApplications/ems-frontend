@@ -1601,6 +1601,11 @@
 				"origin": "Origine du contexte",
 				"refData": {
 					"element": "Élément"
+				},
+				"title": "Contexte",
+				"tooltip": {
+					"useContextEditor": "Utiliser l'éditeur de contexte",
+					"useDefaultEditor": "Utiliser l'éditeur par défaut"
 				}
 			},
 			"deactivateFiltering": "Désactiver le filtre",

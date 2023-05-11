@@ -18,6 +18,21 @@
       [ngTemplateOutletContext]="{ valueControl: valueControl }"
     ></ng-container>
   </ng-container>
+
+  <!-- TOGGLE CONTEXT EDITOR -->
+  <safe-button
+    *ngIf="field"
+    [isIcon]="true"
+    icon="cached"
+    (click)="toggleContextEditor()"
+    [matTooltip]="
+      (contextEditorIsActivated
+        ? 'models.dashboard.context.tooltip.useDefaultEditor'
+        : 'models.dashboard.context.tooltip.useContextEditor'
+      ) | translate
+    "
+  ></safe-button>
+
   <!-- DELETE ROW -->
   <safe-button
     [isIcon]="true"
@@ -116,6 +131,19 @@
       <mat-datepicker-toggle matSuffix [for]="datePicker">
       </mat-datepicker-toggle>
       <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
+  </ng-template>
+
+  <!-- CONTEXT EDITOR -->
+  <ng-template #contextEditor>
+    <mat-form-field appearance="outline" id="context-editor">
+      <mat-label>{{ 'models.dashboard.context.title' | translate }}</mat-label>
+      <input matInput formControlName="value" type="text" />
+      <!-- To be replaced by the new editor control, so we can have autocomplete -->
+      <!-- <safe-editor-control
+        formControlName="title"
+        [editorConfig]="editorConfig"
+      ></safe-editor-control> -->
     </mat-form-field>
   </ng-template>
 </form>

@@ -1593,6 +1593,11 @@
 				"origin": "******",
 				"refData": {
 					"element": "******"
+				},
+				"title": "******",
+				"tooltip": {
+					"useContextEditor": "******",
+					"useDefaultEditor": "******"
 				}
 			},
 			"deactivateFiltering": "******",

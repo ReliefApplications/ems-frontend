@@ -273,12 +273,14 @@ export class DashboardComponent
   onEditTile(e: any): void {
     // make sure that we save the default layout.
     const index = this.tiles.findIndex((v: any) => v.id === e.id);
-    const options = this.tiles[index]?.settings?.defaultLayout
-      ? {
-          ...e.options,
-          defaultLayout: this.tiles[index].settings.defaultLayout,
-        }
-      : e.options;
+    const options = this.dashboardService.injectContext(
+      this.tiles[index]?.settings?.defaultLayout
+        ? {
+            ...e.options,
+            defaultLayout: this.tiles[index].settings.defaultLayout,
+          }
+        : e.options
+    );
     if (options) {
       switch (e.type) {
         case 'display': {
