@@ -231,7 +231,7 @@ export class SafeEmailService {
             if (value) {
               this.sendMail(
                 recipient,
-                subject,
+                value.subject,
                 value.html,
                 filter,
                 query,
