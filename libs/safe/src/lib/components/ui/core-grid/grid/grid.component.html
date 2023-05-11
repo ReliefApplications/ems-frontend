@@ -49,6 +49,7 @@
       class="!w-full"
     />
     <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
+    <button kendoButton (click)="selectAllColumns()">{{ allColumnsSelected ? 'kendo.editor.unselectAll' | translate : 'kendo.editor.selectAll' |translate }}</button>
     <button
       *ngIf="actions.add && canAdd"
       kendoButton

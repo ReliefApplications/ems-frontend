@@ -177,6 +177,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() resizable = true;
   @Input() reorderable = true;
   @Input() canAdd = false;
+  public allColumnsSelected = true;
 
   /** @returns The column menu */
   get columnMenu(): { columnChooser: boolean; filter: boolean } {
@@ -485,7 +486,23 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
    * Sets and emits new grid configuration after column visibility event.
    */
   onColumnVisibilityChange(): void {
+    if (this.grid?.columns.toArray().every((c: any) => c.hidden === false))
+      this.allColumnsSelected = true;
     this.columnChange.emit();
+  }
+
+  /** Selects/unselects all columns */
+  selectAllColumns() {
+    this.allColumnsSelected = !this.allColumnsSelected;
+    if (this.allColumnsSelected) {
+      this.grid?.columns.forEach((c: any) => {
+        c.hidden = false;
+      });
+    } else {
+      this.grid?.columns.forEach((c: any) => {
+        if (c.field) c.hidden = true;
+      });
+    }
   }
 
   /** @returns Visible columns of the grid. */

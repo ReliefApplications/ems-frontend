@@ -1455,6 +1455,7 @@
 			"underline": "Underline",
 			"undo": "Undo",
 			"unlink": "Remove Link",
+			"unselectAll": "Unselect all",
 			"viewSource": "View source"
 		},
 		"fileselect": {
