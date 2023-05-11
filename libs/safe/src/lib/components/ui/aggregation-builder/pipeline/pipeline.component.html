@@ -29,6 +29,7 @@
     <ng-container [ngSwitch]="stageForm.value.type">
       <ng-container *ngSwitchCase="stageType.FILTER">
         <safe-filter
+          [canUseContext]="true"
           [form]="$any(stageForm).controls.form"
           [fields]="fieldsPerStage[index]"
         ></safe-filter>

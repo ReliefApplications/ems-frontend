@@ -23,6 +23,7 @@
           'components.queryBuilder.style.edit.criteria' | translate
         }}</span>
         <safe-filter
+          [canUseContext]="true"
           [form]="$any(form.controls.filter)"
           [fields]="filterFields"
         ></safe-filter>

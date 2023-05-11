@@ -12,4 +12,6 @@ import { UntypedFormGroup } from '@angular/forms';
 export class SafeFilterComponent {
   @Input() form!: UntypedFormGroup;
   @Input() fields: any[] = [];
+
+  @Input() canUseContext = false;
 }

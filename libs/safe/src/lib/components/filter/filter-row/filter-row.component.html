@@ -21,7 +21,7 @@
 
   <!-- TOGGLE CONTEXT EDITOR -->
   <safe-button
-    *ngIf="field"
+    *ngIf="field && canUseContext"
     [isIcon]="true"
     icon="cached"
     (click)="toggleContextEditor()"

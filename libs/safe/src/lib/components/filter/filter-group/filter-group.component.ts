@@ -18,6 +18,8 @@ export class FilterGroupComponent {
   @Input() fields: any[] = [];
   @Output() delete = new EventEmitter();
 
+  @Input() canUseContext = false;
+
   /**
    * Getter for the filters
    *

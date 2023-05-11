@@ -11,6 +11,7 @@
     <input type="color" matInput formControlName="color" />
   </mat-form-field>
   <safe-filter
+    [canUseContext]="true"
     [form]="$any(form.controls.filter)"
     [fields]="fields"
   ></safe-filter>

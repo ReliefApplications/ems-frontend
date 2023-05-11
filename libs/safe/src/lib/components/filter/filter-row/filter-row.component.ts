@@ -6,11 +6,12 @@ import {
   OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { clone, get } from 'lodash';
+import { clone, get, isEqual } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
@@ -33,6 +34,9 @@ export class FilterRowComponent
   @Output() delete = new EventEmitter();
   @Input() fields: any[] = [];
 
+  @Input() canUseContext = false;
+  public contextEditorIsActivated = false;
+
   public field?: any;
   public editor?: TemplateRef<any>;
 
@@ -54,11 +58,6 @@ export class FilterRowComponent
   // public editorConfig = INLINE_EDITOR_CONFIG;
 
   public operators: any[] = [];
-
-  /** @returns if the context editor is active */
-  get contextEditorIsActivated(): boolean {
-    return !!document.getElementById('context-editor');
-  }
 
   /**
    * Constructor of filter row
@@ -108,9 +107,13 @@ export class FilterRowComponent
     }
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     const initialField = this.form.get('field')?.value;
-    if (initialField && this.fields.length > 0) {
+    if (
+      initialField &&
+      this.fields.length > 0 &&
+      !isEqual(changes.fields?.previousValue, changes.fields?.currentValue)
+    ) {
       this.setField(initialField);
     }
   }
@@ -165,10 +168,16 @@ export class FilterRowComponent
   private setEditor(field: any) {
     const value = this.form.get('value')?.value;
 
+    this.contextEditorIsActivated = false;
     if (get(field, 'filter.template', null)) {
       this.editor = field.filter.template;
-    } else if (typeof value === 'string' && value.startsWith('{{context.')) {
+    } else if (
+      typeof value === 'string' &&
+      value.startsWith('{{context.') &&
+      !this.contextEditorIsActivated
+    ) {
       this.editor = this.contextEditor;
+      this.contextEditorIsActivated = true;
     } else {
       switch (field.editor) {
         case 'text': {
@@ -207,6 +216,7 @@ export class FilterRowComponent
       this.setEditor(this.field);
     } else {
       this.editor = this.contextEditor;
+      this.contextEditorIsActivated = true;
     }
   }
 }
