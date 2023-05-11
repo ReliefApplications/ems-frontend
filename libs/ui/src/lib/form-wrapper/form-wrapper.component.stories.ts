@@ -7,7 +7,7 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [],
-    })
+    }),
   ],
 } as Meta<FormWrapperComponent>;
 
@@ -15,7 +15,5 @@ const Template: Story<FormWrapperComponent> = (args: FormWrapperComponent) => ({
   props: args,
 });
 
-
 export const Primary = Template.bind({});
-Primary.args = {
-}
+Primary.args = {};
