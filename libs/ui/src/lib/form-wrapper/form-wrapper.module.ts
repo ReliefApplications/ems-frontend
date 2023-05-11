@@ -18,6 +18,11 @@ import { SpinnerModule } from '../spinner/spinner.module';
     SuffixDirective,
   ],
   imports: [CommonModule, IconModule, SpinnerModule],
-  exports: [FormWrapperDirective, PrefixDirective, SuffixDirective],
+  exports: [
+    FormWrapperDirective,
+    PrefixDirective,
+    SuffixDirective,
+    FormWrapperComponent,
+  ],
 })
 export class FormWrapperModule {}
