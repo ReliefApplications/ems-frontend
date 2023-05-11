@@ -15,8 +15,6 @@ import { SliderModule } from './slider/slider.module';
 import { TextareaModule } from './textarea/textarea.module';
 import { RadioModule } from './radio/radio.module';
 import { FormWrapperModule } from './form-wrapper/form-wrapper.module';
-import { PrefixDirective } from './prefix/prefix.directive';
-import { SuffixDirective } from './suffix/suffix.directive';
 
 /**
  * UI Library Module
@@ -39,10 +37,6 @@ import { SuffixDirective } from './suffix/suffix.directive';
     TextareaModule,
     RadioModule,
     FormWrapperModule,
-  ],
-  declarations: [
-    PrefixDirective,
-    SuffixDirective
   ],
 })
 export class UiModule {}
