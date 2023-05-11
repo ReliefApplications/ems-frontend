@@ -2,7 +2,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatSortModule } from '@angular/material/sort';
@@ -28,7 +28,7 @@ import { AbilityModule } from '@casl/angular';
     FormsModule,
     MatInputModule,
     MatSelectModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatTableModule,
     MatMenuModule,
     MatIconModule,

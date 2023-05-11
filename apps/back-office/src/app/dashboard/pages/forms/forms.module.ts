@@ -5,7 +5,7 @@ import { FormsComponent } from './forms.component';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import {
@@ -37,7 +37,7 @@ import { AbilityModule } from '@casl/angular';
     FormsRoutingModule,
     AngularFormsModule,
     ReactiveFormsModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatTableModule,
     MatSortModule,
     MatDialogModule,

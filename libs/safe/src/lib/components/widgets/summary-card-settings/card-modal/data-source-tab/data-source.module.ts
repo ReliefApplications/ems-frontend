@@ -5,7 +5,7 @@ import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/m
 import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
@@ -31,7 +31,7 @@ import { SafeDividerModule } from '../../../../ui/divider/divider.module';
     MatAutocompleteModule,
     MatInputModule,
     SafeIconModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     SafeGraphQLSelectModule,
     SafeButtonModule,
     MatCheckboxModule,

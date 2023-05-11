@@ -12,7 +12,7 @@ import { Category } from '../shared/category.enum';
   styleUrls: ['./spinner.component.scss'],
 })
 export class SpinnerComponent {
-  @Input() size: Size = Size.MEDIUM;
+  @Input() size: Size = Size.LARGE;
   @Input() variant: Variant = Variant.DEFAULT;
   @Input() category: Category = Category.PRIMARY;
 

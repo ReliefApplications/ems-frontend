@@ -4,7 +4,7 @@
       <mat-icon matPrefix>search</mat-icon>
       <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
       <input matInput [formControl]="search" type="search" />
-      <mat-spinner *ngIf="loading" diameter="24" matSuffix></mat-spinner>
+      <ui-spinner *ngIf="loading" matSuffix></ui-spinner>
     </mat-form-field>
     <safe-button
       icon="filter_list"

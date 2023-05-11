@@ -6,7 +6,7 @@ import {
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 import { CommonModule } from '@angular/common';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
 import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
@@ -33,7 +33,7 @@ interface DialogData {
   imports: [
     CommonModule,
     MatDialogModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatButtonModule,
     SafeResourceDropdownModule,
     SafeApplicationDropdownModule,

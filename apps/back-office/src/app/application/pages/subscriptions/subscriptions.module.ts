@@ -7,7 +7,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import {
@@ -38,7 +38,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MatInputModule,
     MatSelectModule,
     MatMenuModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatTableModule,
     MatAutocompleteModule,
     SafeDividerModule,

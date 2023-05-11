@@ -382,8 +382,9 @@ mat-header-row {
   }
 }
 
-.mat-spinner {
-  margin: auto;
+ui-spinner {
+  display: flex;
+  justify-content: center;
 }
 
 *:focus,
