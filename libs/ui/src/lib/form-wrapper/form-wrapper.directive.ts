@@ -23,21 +23,24 @@ export class FormWrapperDirective implements AfterContentInit {
   @Input() outline = false;
 
   // === GET THE ELEMENTS ON WHICH SUFFIX/PREFIX ARE APPLIED ===
-  @ContentChildren(SuffixDirective, { descendants: true })
-  allSuffixDirectives: QueryList<SuffixDirective> = new QueryList();
+  @ContentChildren(SuffixDirective)
+  private allSuffixDirectives: QueryList<SuffixDirective> = new QueryList();
   @ContentChildren(PrefixDirective)
-  allPrefixDirectives: QueryList<PrefixDirective> = new QueryList();
+  private allPrefixDirectives: QueryList<PrefixDirective> = new QueryList();
+
+  private currentInputElement!: HTMLInputElement;
+  private currentLabelElement!: HTMLLabelElement;
 
   // === LISTS OF CLASSES TO APPLY TO ELEMENTS ===
-  labelClasses = [
+  private labelClasses = [
     'block',
     'text-sm',
     'font-medium',
     'leading-6',
     'text-gray-900',
-  ];
+  ] as const;
 
-  inputClassesNoOutline = [
+  private inputClassesNoOutline = [
     'block',
     'overflow-hidden',
     'border-0',
@@ -51,9 +54,9 @@ export class FormWrapperDirective implements AfterContentInit {
     'sm:leading-6',
     'focus:ring-0',
     'focus:ring-inset',
-  ];
+  ] as const;
 
-  inputClassesOutline = [
+  private inputClassesOutline = [
     'block',
     'w-full',
     'border-0',
@@ -64,18 +67,18 @@ export class FormWrapperDirective implements AfterContentInit {
     'focus:ring-0',
     'sm:text-sm',
     'sm:leading-6',
-  ];
+  ] as const;
 
-  beyondLabelGeneral = [
+  private beyondLabelGeneral = [
     'relative',
     'mt-0.5',
     'py-0.5',
     'flex',
     'items-center',
     'w-full',
-  ];
+  ] as const;
 
-  beyondLabelNoOutline = [
+  private beyondLabelNoOutline = [
     'focus-within:ring-2',
     'focus-within:ring-inset',
     'focus-within:ring-primary-600',
@@ -85,16 +88,16 @@ export class FormWrapperDirective implements AfterContentInit {
     'ring-1',
     'ring-inset',
     'ring-gray-300',
-  ];
+  ] as const;
 
-  beyondLabelOutline = [
+  private beyondLabelOutline = [
     'bg-gray-50',
     'border-0',
     'border-b',
     'border-b-gray-300',
     'focus-within:border-b-2',
     'focus-within:border-b-primary-600',
-  ];
+  ] as const;
 
   /**
    * Constructor including a ref to the element on which the directive is applied
@@ -106,6 +109,12 @@ export class FormWrapperDirective implements AfterContentInit {
   constructor(private renderer: Renderer2, private elementRef: ElementRef) {}
 
   ngAfterContentInit() {
+    // Get inner input and label elements
+    this.currentInputElement =
+      this.elementRef.nativeElement.querySelector('input');
+    this.currentLabelElement =
+      this.elementRef.nativeElement.querySelector('label');
+
     //Putting order classes to elements that has prefix/suffix directive
     for (const e of this.allPrefixDirectives) {
       this.renderer.addClass(e.elementRef.nativeElement, 'order-first');
@@ -132,35 +141,34 @@ export class FormWrapperDirective implements AfterContentInit {
       }
     }
 
-    // Create a deep copy of the list of children elements (because otherwise, it will mess the following loop)
-    const elementsCopy = Array.prototype.slice
-      .call(this.elementRef.nativeElement.children)
-      .map((x: any) => x);
-
-    // Loop to apply classes to elements depending on their tag/outline value
-    // + add elements that are not label to the wrapper created before
-    for (const child of elementsCopy) {
-      // Getting classes to input
-      if (child.tagName === 'INPUT' && !this.outline) {
-        for (const cl of this.inputClassesNoOutline) {
-          this.renderer.addClass(child, cl);
-        }
-      } else if (child.tagName === 'INPUT' && this.outline) {
-        for (const cl of this.inputClassesOutline) {
-          this.renderer.addClass(child, cl);
-        }
+    // Add related classes to input element
+    if (!this.outline) {
+      for (const cl of this.inputClassesNoOutline) {
+        this.renderer.addClass(this.currentInputElement, cl);
       }
-      // Getting classes to label
-      if (child.tagName === 'LABEL') {
-        for (const cl of this.labelClasses) {
-          this.renderer.addClass(child, cl);
-        }
-      }
-      // Putting other things as child of beyond label
-      if (!(child.tagName === 'LABEL')) {
-        this.renderer.appendChild(beyondLabel, child);
+    } else {
+      for (const cl of this.inputClassesOutline) {
+        this.renderer.addClass(this.currentInputElement, cl);
       }
     }
+
+    // Then add the input to our beyondLabel wrapper element
+    this.renderer.appendChild(beyondLabel, this.currentInputElement);
+
+    // Add related classes to label
+    for (const cl of this.labelClasses) {
+      this.renderer.addClass(this.currentLabelElement, cl);
+    }
+
+    // Get all the child elements that are not input or label and add them to our beyondLabel element
+    Array.from(this.elementRef.nativeElement.children)
+      .filter(
+        (el: any) =>
+          !(el instanceof HTMLInputElement || el instanceof HTMLLabelElement)
+      )
+      .forEach((childEl: any) =>
+        this.renderer.appendChild(beyondLabel, childEl)
+      );
 
     //Add beyond label as a child of elementRef
     this.renderer.appendChild(this.elementRef.nativeElement, beyondLabel);
