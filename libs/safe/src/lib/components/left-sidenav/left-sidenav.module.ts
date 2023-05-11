@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Left Sidenav Module
@@ -29,6 +30,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeButtonModule,
     SafeDividerModule,
     TranslateModule,
+    ButtonModule,
   ],
   exports: [SafeLeftSidenavComponent],
 })

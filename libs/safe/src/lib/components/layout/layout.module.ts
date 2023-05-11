@@ -20,6 +20,7 @@ import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * SafeLayoutModule is a class used to manage all the modules and components
@@ -48,6 +49,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     SafeDateModule,
     SafeBreadcrumbModule,
     SafeIconModule,
+    ButtonModule,
   ],
   exports: [SafeLayoutComponent],
 })

@@ -64,14 +64,13 @@
                   >{{ item.action.icon }}</mat-icon
                 >
               </button>
-              <button
-                mat-icon-button
-                cdkDragHandle
+              <!-- @TODO check cdkDragHandle -->
+              <ui-button
                 class="nav-item-handle"
                 *ngIf="item.orderable"
+                icon="drag_indicator"
               >
-                <mat-icon>drag_indicator</mat-icon>
-              </button>
+              </ui-button>
             </div>
           </mat-list-item>
           <!-- Preview when dragging element -->

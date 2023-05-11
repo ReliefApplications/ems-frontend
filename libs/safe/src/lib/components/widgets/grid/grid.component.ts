@@ -45,6 +45,7 @@ import { SafeApplicationService } from '../../../services/application/applicatio
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { firstValueFrom } from 'rxjs';
+import { Variant } from '@oort-front/ui';
 
 /** Component for the grid widget */
 @Component({
@@ -75,6 +76,9 @@ export class SafeGridWidgetComponent implements OnInit {
 
   // === VERIFICATION IF USER IS ADMIN ===
   public isAdmin: boolean;
+
+  // === GET UI-BUTTON VARIANTS ===
+  public btnVariant = Variant;
 
   // === SETTINGS ===
   @Input() header = true;

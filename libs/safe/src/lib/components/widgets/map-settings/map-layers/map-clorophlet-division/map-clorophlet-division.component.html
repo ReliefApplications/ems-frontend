@@ -16,13 +16,13 @@
   ></safe-filter>
 </form>
 <div mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>{{ 'common.close' | translate }}</button>
-  <button
-    mat-flat-button
-    color="primary"
-    [mat-dialog-close]="form.value"
+  <!-- @TODO check mat-dialog-close and uiDialogClose-->
+  <ui-button>{{ 'common.close' | translate }}</ui-button>
+  <!-- @TODO check mat-dialog-close and uiDialogClose, pass form.value-->
+  <ui-button
+    [variant]="btnVariant.PRIMARY"
     [disabled]="form.invalid"
   >
     {{ 'common.update' | translate }}
-  </button>
+  </ui-button>
 </div>
