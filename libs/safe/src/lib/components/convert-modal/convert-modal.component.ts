@@ -23,7 +23,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
-import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-list';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
@@ -51,7 +50,6 @@ interface DialogData {
     MatInputModule,
     MatSelectModule,
     MatRadioModule,
-    MatListModule,
     MatProgressSpinnerModule,
     TranslateModule,
     SafeModalModule,
