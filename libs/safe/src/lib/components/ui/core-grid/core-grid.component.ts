@@ -829,6 +829,25 @@ export class SafeCoreGridComponent
         this.resetDefaultLayout();
         break;
       }
+      case 'map': {
+        import('./map-modal/map-modal.component').then(
+          ({ MapModalComponent }) => {
+            this.dialog.open(MapModalComponent, {
+              data: {
+                item: event.item,
+                datasource: {
+                  resource: this.settings.resource,
+                  // todo(change)
+                  layout: this.settings.id,
+                  geoField: event.field.name,
+                },
+              },
+            });
+          }
+        );
+
+        break;
+      }
       default: {
         break;
       }

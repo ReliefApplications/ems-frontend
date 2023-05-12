@@ -1,31 +1,8 @@
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { SafeMapComponent } from '../../map/map.component';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
-
-/** List of basemap that can be used by the widget */
-const BASEMAPS: string[] = [
-  'Sreets',
-  'Navigation',
-  'Topographic',
-  'Light Gray',
-  'Dark Gray',
-  'Streets Relief',
-  'Imagery',
-  'ChartedTerritory',
-  'ColoredPencil',
-  'Nova',
-  'Midcentury',
-  'OSM',
-  'OSM:Streets',
-];
+import { MapConstructorSettings } from '../../../ui/map/interfaces/map.interface';
+import { BASEMAPS } from '../../../ui/map/const/baseMaps';
 
 /**
  * Map Properties of Map widget.
@@ -35,22 +12,19 @@ const BASEMAPS: string[] = [
   templateUrl: './map-properties.component.html',
   styleUrls: ['./map-properties.component.scss'],
 })
-export class MapPropertiesComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit
-{
+export class MapPropertiesComponent extends SafeUnsubscribeComponent {
   @Input() form!: UntypedFormGroup;
+  @Input() mapSettings!: MapConstructorSettings;
+  @Input() arcgisteste!: string;
 
-  @ViewChild(SafeMapComponent) previewMap!: SafeMapComponent;
+  public baseMaps = BASEMAPS;
 
-  public basemaps = BASEMAPS;
-
-  public mapSettings!: {
-    basemap: string;
-    zoom: number;
-    centerLat: number;
-    centerLong: number;
-  };
+  /** @returns the form group for the map controls */
+  get controlsFormGroup() {
+    return this.form.get('controls') as UntypedFormGroup;
+  }
+  // eslint-disable-next-line @angular-eslint/no-output-native
+  @Output() close = new EventEmitter();
 
   /**
    * Map Properties of Map widget.
@@ -60,55 +34,13 @@ export class MapPropertiesComponent
   }
 
   /**
-   * Subscribe to settings changes to update map.
+   * Set the latitude and longitude of the center of the map using the one in the preview map.
    */
-  ngOnInit(): void {
-    this.mapSettings = {
-      basemap: this.form.value.basemap,
-      zoom: this.form.value.zoom,
-      centerLat: this.form.value.centerLat,
-      centerLong: this.form.value.centerLong,
-    };
+  onSetByMap(): void {
     this.form
-      .get('zoom')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.previewMap.map.setZoom(value);
+      .get('initialState.viewpoint')
+      ?.setValue(this.mapSettings.initialState.viewpoint, {
+        emitEvent: false,
       });
-    this.form
-      .get('centerLat')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        const map = this.previewMap.map;
-        map.setView([value, map.getCenter().lng], map.getZoom());
-      });
-    this.form
-      .get('centerLong')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        const map = this.previewMap.map;
-        map.setView([map.getCenter().lat, value], map.getZoom());
-      });
-    this.form
-      .get('basemap')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.previewMap.setBasemap(value);
-      });
-  }
-
-  /**
-   * Subscribe to map events to update settings
-   */
-  ngAfterViewInit(): void {
-    const map = this.previewMap.map;
-    map.on('zoomend', () => {
-      this.form.get('zoom')?.setValue(map.getZoom(), { emitEvent: false });
-    });
-    map.on('moveend', () => {
-      const center = map.getCenter();
-      this.form.get('centerLat')?.setValue(center.lat, { emitEvent: false });
-      this.form.get('centerLong')?.setValue(center.lng, { emitEvent: false });
-    });
   }
 }

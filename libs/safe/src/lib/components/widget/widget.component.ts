@@ -8,7 +8,7 @@ import {
 import { SafeChartComponent } from '../widgets/chart/chart.component';
 import { SafeEditorComponent } from '../widgets/editor/editor.component';
 import { SafeGridWidgetComponent } from '../widgets/grid/grid.component';
-import { SafeMapComponent } from '../widgets/map/map.component';
+import { SafeMapWidgetComponent } from '../widgets/map/map.component';
 import { SafeSummaryCardComponent } from '../widgets/summary-card/summary-card.component';
 
 /** Component for the widgets */
@@ -35,7 +35,7 @@ export class SafeWidgetComponent {
   widgetContentComponent!:
     | SafeChartComponent
     | SafeGridWidgetComponent
-    | SafeMapComponent
+    | SafeMapWidgetComponent
     | SafeEditorComponent
     | SafeSummaryCardComponent;
 

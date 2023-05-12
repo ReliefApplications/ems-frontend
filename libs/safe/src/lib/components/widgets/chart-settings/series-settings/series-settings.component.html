@@ -34,7 +34,10 @@
         <kendo-colorpicker formControlName="color"></kendo-colorpicker>
       </div>
       <mat-form-field *ngIf="formGroup.get('fill')" appearance="outline">
-        <mat-label>Fill</mat-label>
+        <mat-label>{{
+          'components.widget.settings.chart.series.settings.fill'
+            | translate
+        }}</mat-label>
         <mat-select formControlName="fill">
           <mat-option>
             {{ 'components.widget.settings.chart.auto' | translate }}

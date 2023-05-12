@@ -84,6 +84,7 @@
 		"errors": {
 			"objectDuplicated": "{{type}} ****** {{value}} ******"
 		},
+		"exitFullscreen": "******",
 		"export": "******",
 		"exportObject": "****** {{name}}",
 		"false": "******",
@@ -284,6 +285,11 @@
 			"one": "******"
 		},
 		"title": "******",
+		"tooltip": {
+			"editor": {
+				"insert": "******"
+			}
+		},
 		"true": "******",
 		"type": {
 			"few": "******",
@@ -303,6 +309,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"viewFullscreen": "******",
 		"viewObject": "****** {{name}}",
 		"workflow": {
 			"few": "******",
@@ -662,6 +669,23 @@
 		"logout": {
 			"confirmationMessage": "******",
 			"title": "******"
+		},
+		"map": {
+			"controls": {
+				"download": {
+					"layers": {
+						"all": "******",
+						"selected": "******",
+						"visible": "******"
+					},
+					"output": "******",
+					"selectLayers": "******",
+					"view": {
+						"all": "******",
+						"current": "******"
+					}
+				}
+			}
 		},
 		"mapping": {
 			"field": "******",
@@ -1110,6 +1134,7 @@
 				},
 				"openSettings": "******",
 				"tooltip": {
+					"displayMap": "******",
 					"saved": "******",
 					"unsaved": "******",
 					"uploadFailed": "******"
@@ -1271,27 +1296,101 @@
 						"template": "******"
 					}
 				},
+				"iconPicker": {
+					"default": "******",
+					"placeholder": "******"
+				},
 				"map": {
 					"basemap": "******",
 					"category": "******",
 					"dataset": "******",
+					"edit": {
+						"aggregation": "******",
+						"cluster": {
+							"cluster": "******",
+							"clusterSettings": "******",
+							"fields": "******",
+							"high": "******",
+							"label": "******",
+							"low": "******",
+							"max": "******",
+							"min": "******",
+							"overrideSymbol": "******",
+							"popups": "******",
+							"radius": "******",
+							"sizeRange": "******",
+							"symbol": "******"
+						},
+						"datasource": {
+							"origin": "******"
+						},
+						"fields": "******",
+						"filter": "******",
+						"labels": "******",
+						"layerDatasource": "******",
+						"layerProperties": "******",
+						"layerStyling": "******",
+						"popup": "******",
+						"properties": {
+							"defaultVisibility": "******",
+							"opacity": "******",
+							"visibilityRange": "******",
+							"zoom": "******"
+						},
+						"reduction": {
+							"noReduction": "******",
+							"reduction": "******"
+						},
+						"style": {
+							"color": "******",
+							"icon": "******",
+							"size": "******",
+							"stylingType": "{{layerType}} ******"
+						},
+						"styling": {
+							"heatmapOptions": {
+								"blur": "******",
+								"gradient": "******",
+								"minOpacity": "******",
+								"radius": "******"
+							}
+						}
+					},
 					"errors": {
 						"latitude": "******",
 						"longitude": "******"
 					},
-					"layers": {
-						"clorophlet": {
-							"add": "******",
-							"division": {
-								"add": "******",
+					"geospatial": {
+						"layersStyles": {
+							"fill": {
+								"color": "******",
+								"opacity": "******",
 								"title": "******"
 							},
-							"geoJSON": "******",
-							"geoJSONidentifier": "******",
-							"identifier": "******",
-							"info": "******",
+							"marker": {
+								"color": "******",
+								"opacity": "******",
+								"title": "******"
+							},
+							"outline": {
+								"color": "******",
+								"opacity": "******",
+								"title": "******",
+								"width": "******"
+							},
 							"title": "******"
+						}
+					},
+					"layers": {
+						"add": "******",
+						"chooseLayer": "******",
+						"createLayer": "******",
+						"dataSource": {
+							"geoField": "******",
+							"latitude": "******",
+							"longitude": "******"
 						},
+						"edit": "****** {{name}}",
 						"online": {
 							"info": "******",
 							"select": "******",
@@ -1307,16 +1406,62 @@
 							"rulesInfo": "******",
 							"size": "******",
 							"title": "******"
+						},
+						"popup": {
+							"addField": "******",
+							"description": "******",
+							"fields": "******",
+							"fieldsElements": {
+								"description": "******",
+								"title": "******"
+							},
+							"popup": "******",
+							"popupElements": "******",
+							"text": "******",
+							"title": "******",
+							"tooltip": {
+								"text": "******"
+							}
+						},
+						"remove": "******",
+						"selectLayer": "******",
+						"styling": {
+							"style": "******"
+						},
+						"types": {
+							"cluster": "******",
+							"heatmap": "******",
+							"point": "******",
+							"polygon": "******"
 						}
 					},
+					"legend": {
+						"high": "******",
+						"low": "******",
+						"title": "******"
+					},
 					"popup": {
-						"label": "******"
+						"label": "******",
+						"location": "******",
+						"of": "{{current}} ****** {{total}}",
+						"zoomTo": "******"
 					},
 					"properties": {
 						"basemap": "******",
+						"controls": {
+							"download": "******",
+							"layer": "******",
+							"legend": "******",
+							"measure": "******",
+							"search": "******",
+							"timedimension": "******",
+							"title": "******"
+						},
 						"latitude": "******",
 						"longitude": "******",
+						"setByMap": "******",
 						"title": "******",
+						"webmap": "******",
 						"zoom": "******"
 					},
 					"tooltip": {

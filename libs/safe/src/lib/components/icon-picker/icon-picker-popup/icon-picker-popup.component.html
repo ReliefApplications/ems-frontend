@@ -1,0 +1,28 @@
+<div class="bg-white rounded shadow-lg w-80">
+  <div class="flex flex-col">
+    <mat-form-field appearance="fill" class="!w-full">
+      <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
+      <input matInput [formControl]="searchControl" type="text" />
+      <safe-button
+        matSuffix
+        [isIcon]="true"
+        icon="close"
+        (click)="searchControl.setValue('')"
+      ></safe-button>
+    </mat-form-field>
+    <div class="h-60 overflow-y-auto">
+      <div class="flex flex-row flex-wrap gap-2 justify-evenly p-2">
+        <button
+          class="w-10 h-10"
+          *ngFor="let icon of filteredIcons$ | async"
+          (click)="select(icon)"
+        >
+          <i
+            [style.color]="color"
+            class="{{ icon | safeIconDisplay : fontFamily }}"
+          ></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

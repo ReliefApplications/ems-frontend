@@ -88,6 +88,9 @@ const TEMPLATE_WITHOUT_TEXT: StoryFn<SafeButtonComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = {
   render: TEMPLATE_WITH_TEXT,
   name: 'Icon only',
@@ -99,6 +102,9 @@ export const DEFAULT = {
   },
 };
 
+/**
+ * With icon and text.
+ */
 export const ICON_AND_TEXT = {
   render: TEMPLATE_WITH_TEXT,
 
@@ -108,6 +114,9 @@ export const ICON_AND_TEXT = {
   },
 };
 
+/**
+ * With icon.
+ */
 export const ICON = {
   render: TEMPLATE_WITHOUT_TEXT,
 

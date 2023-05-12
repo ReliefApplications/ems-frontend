@@ -1,0 +1,39 @@
+<h3 class="mb-4">
+  {{ 'components.widget.settings.map.properties.controls.title' | translate }}
+</h3>
+<form [formGroup]="form" class="flex flex-col gap-1">
+  <mat-slide-toggle formControlName="timedimension">
+    {{
+      'components.widget.settings.map.properties.controls.timedimension'
+        | translate
+    }}
+  </mat-slide-toggle>
+
+  <mat-slide-toggle formControlName="download">
+    {{
+      'components.widget.settings.map.properties.controls.download' | translate
+    }}
+  </mat-slide-toggle>
+
+  <mat-slide-toggle formControlName="search">
+    {{
+      'components.widget.settings.map.properties.controls.search' | translate
+    }}
+  </mat-slide-toggle>
+
+  <mat-slide-toggle formControlName="layer">
+    {{ 'components.widget.settings.map.properties.controls.layer' | translate }}
+  </mat-slide-toggle>
+
+  <mat-slide-toggle formControlName="legend">
+    {{
+      'components.widget.settings.map.properties.controls.legend' | translate
+    }}
+  </mat-slide-toggle>
+
+  <mat-slide-toggle formControlName="measure">
+    {{
+      'components.widget.settings.map.properties.controls.measure' | translate
+    }}
+  </mat-slide-toggle>
+</form>

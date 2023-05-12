@@ -13,10 +13,19 @@ export default {
   ],
 } as Meta<IconComponent>;
 
+/**
+ * Template function
+ *
+ * @param args arguments
+ * @returns template
+ */
 const Template: StoryFn<IconComponent> = (args: IconComponent) => ({
   props: args,
 });
 
+/**
+ * Primary story.
+ */
 export const Primary = Template.bind({});
 Primary.args = {
   icon: 'search_outline',

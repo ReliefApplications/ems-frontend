@@ -15,6 +15,7 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@import '~@fortawesome/fontawesome-free/css/all.css';
 
 .sv_main,
 .svd_container {
@@ -718,6 +719,17 @@ mat-tab-group[vertical] {
     .cdk-drag:not(.cdk-drag-placeholder) {
       @apply transition-transform;
     }
+  }
+
+  // === Measure plugin ===
+  // todo(gis): move somewhere else
+  .leaflet-measure-resultpopup a.deletemarkup,
+  .leaflet-measure-resultpopup a.zoomto,
+  .leaflet-control-measure a.cancel,
+  .leaflet-control-measure a.finish,
+  .leaflet-control-measure a.start {
+    @apply text-primary-500;
+    background-image: none !important;
   }
 }
 
