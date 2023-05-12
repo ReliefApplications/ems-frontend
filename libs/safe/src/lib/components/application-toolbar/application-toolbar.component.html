@@ -10,7 +10,7 @@
       [isIcon]="true"
       icon="tune"
       variant="grey"
-      [matMenuTriggerFor]="settingsMenu"
+      [uiMenuTriggerFor]="settingsMenu"
     ></safe-button>
     <!-- Access -->
     <safe-access
@@ -43,9 +43,9 @@
 </div>
 
 <!-- Admin pages -->
-<mat-menu #settingsMenu="matMenu">
+<ui-menu #settingsMenu>
   <a
-    mat-menu-item
+    class="menu-item"
     *ngFor="let setting of settings"
     [routerLink]="setting.path"
     routerLinkActive="active-link"
@@ -55,4 +55,4 @@
     </mat-icon>
     {{ setting.name }}
   </a>
-</mat-menu>
+</ui-menu>

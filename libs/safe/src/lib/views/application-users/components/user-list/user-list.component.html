@@ -102,16 +102,16 @@
           <safe-button
             [isIcon]="true"
             icon="more_vert"
-            [matMenuTriggerFor]="menu"
+            [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
           >
           </safe-button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="onDelete([element])">
+          <ui-menu #menu>
+            <button class="menu-item" (click)="onDelete([element])">
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
             </button>
-          </mat-menu>
+          </ui-menu>
         </td>
       </ng-container>
 

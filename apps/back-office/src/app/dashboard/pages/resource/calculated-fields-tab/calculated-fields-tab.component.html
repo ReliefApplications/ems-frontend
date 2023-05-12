@@ -34,21 +34,21 @@
             <safe-button
               [isIcon]="true"
               icon="more_vert"
-              [matMenuTriggerFor]="resMenu"
+              [uiMenuTriggerFor]="resMenu"
               (click)="$event.stopPropagation()"
               [disabled]="!resource.canUpdate"
             >
             </safe-button>
-            <mat-menu #resMenu="matMenu">
-              <button mat-menu-item (click)="onEditCalculatedField(element)">
+            <ui-menu #resMenu>
+              <button class="menu-item" (click)="onEditCalculatedField(element)">
                 <mat-icon>edit</mat-icon>
                 {{ 'common.edit' | translate }}
               </button>
-              <button mat-menu-item (click)="onDeleteCalculatedField(element)">
+              <button class="menu-item" (click)="onDeleteCalculatedField(element)">
                 <mat-icon>delete</mat-icon>
                 {{ 'common.delete' | translate }}
               </button>
-            </mat-menu>
+            </ui-menu>
           </td>
         </ng-container>
 

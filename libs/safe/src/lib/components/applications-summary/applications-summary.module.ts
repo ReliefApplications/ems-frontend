@@ -5,7 +5,7 @@ import { SafeAddApplicationComponent } from './components/add-application/add-ap
 import { SafeApplicationSummaryComponent } from './components/application-summary/application-summary.component';
 import { MatRippleModule } from '@angular/material/core';
 import { SafeIconModule } from '../ui/icon/icon.module';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -27,7 +27,7 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
     CommonModule,
     MatRippleModule,
     SafeIconModule,
-    MatMenuModule,
+    MenuModule,
     MatIconModule,
     SafeButtonModule,
     TranslateModule,
