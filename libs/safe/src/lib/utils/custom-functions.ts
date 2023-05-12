@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 import { Record } from '../models/record.model';
 import { SafeAuthService } from '../services/auth/auth.service';
 
@@ -38,6 +39,27 @@ const addCustomFunctions = (
     result.setDate(result.getDate() + Number(params[1]));
     return result;
   });
+
+  survey.FunctionFactory.Instance.register(
+    'listRowsWithColValue',
+    (params: any[]) => {
+      const [matrix, colName, colValue] = params;
+      if (!matrix || !colName || !colValue) return '';
+      if (typeof matrix !== 'object') return '';
+      if (typeof colName !== 'string') return '';
+
+      const result: any[] = [];
+
+      const rows = Object.keys(matrix);
+      rows.forEach((row) => {
+        if (isEqual(matrix[row][colName], colValue)) {
+          result.push(row);
+        }
+      });
+
+      return result.join(', ');
+    }
+  );
 };
 
 export default addCustomFunctions;
