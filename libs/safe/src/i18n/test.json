@@ -1247,7 +1247,8 @@
 							"workflow": {
 								"close": "******",
 								"confirm": "******",
-								"next": "******"
+								"next": "******",
+								"previous": "******"
 							}
 						},
 						"create": "******",
@@ -1854,6 +1855,7 @@
 		"workflow": {
 			"notifications": {
 				"cannotGoToNextStep": "******",
+				"cannotGoToPreviousStep": "******",
 				"goToStep": "****** {{step}} ******"
 			}
 		}

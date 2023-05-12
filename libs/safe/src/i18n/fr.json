@@ -1254,7 +1254,8 @@
 							"workflow": {
 								"close": "Fermer le workflow",
 								"confirm": "Message de confirmation",
-								"next": "Aller à l'étape suivante"
+								"next": "Aller à l'étape suivante",
+								"previous": "Aller à l'étape précédente"
 							}
 						},
 						"create": "Ajouter un bouton",
@@ -1862,6 +1863,7 @@
 		"workflow": {
 			"notifications": {
 				"cannotGoToNextStep": "Impossible de passer à l'étape suivante",
+				"cannotGoToPreviousStep": "Impossible de passer à l'étape précédente",
 				"goToStep": "De retour à l'étape {{step}}."
 			}
 		}

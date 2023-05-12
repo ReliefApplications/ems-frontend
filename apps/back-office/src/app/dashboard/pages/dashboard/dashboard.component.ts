@@ -80,7 +80,7 @@ export class DashboardComponent
   public formActive = false;
 
   // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   // === DUP APP SELECTION ===
   public showAppMenu = false;
