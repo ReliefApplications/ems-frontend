@@ -9,6 +9,7 @@ import { UntypedFormGroup } from '@angular/forms';
 import { SafeMapComponent } from '../../map/map.component';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant } from '@oort-front/ui';
 
 /** List of basemap that can be used by the widget */
 const BASEMAPS: string[] = [
@@ -51,6 +52,9 @@ export class MapPropertiesComponent
     centerLat: number;
     centerLong: number;
   };
+
+  // === ICON VARIANTS ===
+  public colorVariant = Variant;
 
   /**
    * Map Properties of Map widget.

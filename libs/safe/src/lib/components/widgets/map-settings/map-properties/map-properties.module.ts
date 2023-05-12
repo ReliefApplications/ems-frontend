@@ -10,6 +10,7 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeMapModule } from '../../map/map.module';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Module of Map Properties of Map Widget.
@@ -28,6 +29,7 @@ import { SafeMapModule } from '../../map/map.module';
     MatSelectModule,
     SafeIconModule,
     SafeMapModule,
+    UiModule,
   ],
   exports: [MapPropertiesComponent],
 })

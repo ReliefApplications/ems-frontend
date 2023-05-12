@@ -1,18 +1,18 @@
 <div matRipple class="card-template">
   <div class="card-template-header">
     <div *ngIf="isDynamic">
-      <safe-icon
+      <ui-icon
         class="card-template-icon"
         icon="dynamic_feed"
         [size]="25"
-      ></safe-icon>
+      ></ui-icon>
     </div>
     <div *ngIf="!isDynamic">
-      <safe-icon
+      <ui-icon
         class="card-template-icon"
         icon="wysiwyg"
         [size]="25"
-      ></safe-icon>
+      ></ui-icon>
     </div>
   </div>
   <div class="card-template-content">

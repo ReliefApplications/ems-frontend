@@ -4,7 +4,7 @@
     {{ 'components.widget.settings.grid.buttons.title' | translate }}
   </h2>
   <safe-alert class="mb-4">
-    <safe-icon icon="info"></safe-icon>
+    <ui-icon icon="info"></ui-icon>
     {{ 'components.widget.settings.grid.hint.buttons' | translate }}
   </safe-alert>
   <!-- Add new button -->
@@ -45,11 +45,11 @@
               <!-- Drag placeholder-->
               <div *cdkDragPlaceholder></div>
               <!-- Drag indicator -->
-              <safe-icon
+              <ui-icon
                 cdkDragHandle
                 class="draggable"
                 icon="drag_indicator"
-              ></safe-icon>
+              ></ui-icon>
               <!-- Button name -->
               <span
                 class="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap"
@@ -61,13 +61,12 @@
                 }}
               </span>
               <!-- Error indicator -->
-              <safe-icon
+              <ui-icon
                 *ngIf="button.invalid"
                 icon="error_outline"
-                variant="danger"
-                [inline]="true"
+                [variant]="colorVariant.DANGER"
                 [size]="18"
-              ></safe-icon>
+              ></ui-icon>
             </div>
           </div>
         </ng-template>

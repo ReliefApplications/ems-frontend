@@ -43,6 +43,7 @@ import { SafeDisplayTabModule } from './display-tab/display.module';
 import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
 import { SafePreviewTabModule } from './preview-tab/preview.module';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Card modal component.
@@ -67,6 +68,7 @@ import { SafeModalModule } from '../../../ui/modal/modal.module';
     SafeTextEditorTabModule,
     SafePreviewTabModule,
     SafeModalModule,
+    UiModule,
   ],
   selector: 'safe-card-modal',
   templateUrl: './card-modal.component.html',

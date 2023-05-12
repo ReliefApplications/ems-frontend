@@ -9,15 +9,14 @@
         [formControlName]="action.name"
       >
         {{ action.text | translate
-        }}<safe-icon
+        }}<ui-icon
           *ngIf="action.tooltip"
           class="ml-2"
-          [inline]="true"
-          variant="grey"
+          [variant]="colorVariant.GREY"
           icon="info_outline"
           [size]="18"
           [matTooltip]="action.tooltip | translate"
-        ></safe-icon>
+        ></ui-icon>
       </mat-slide-toggle>
     </div>
   </div>

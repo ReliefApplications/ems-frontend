@@ -4,10 +4,10 @@ import { MapClorophletsComponent } from './map-clorophlets.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '../../../../ui/button/button.module';
-import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeAlertModule } from '../../../../ui/alert/alert.module';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MapClorophletModule } from '../map-clorophlet/map-clorophlet.module';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * List of clorophlets in Map Settings Module.
@@ -20,7 +20,7 @@ import { MapClorophletModule } from '../map-clorophlet/map-clorophlet.module';
     ReactiveFormsModule,
     TranslateModule,
     SafeButtonModule,
-    SafeIconModule,
+    UiModule,
     SafeAlertModule,
     MatTableModule,
     MapClorophletModule,

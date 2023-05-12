@@ -9,7 +9,6 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
-import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeAddCardModule } from './add-card/add-card.module';
@@ -31,7 +30,6 @@ import { UiModule } from '@oort-front/ui';
     SafeButtonModule,
     MatTooltipModule,
     MatRadioModule,
-    SafeIconModule,
     MatMenuModule,
     MatDividerModule,
     SafeAddCardModule,

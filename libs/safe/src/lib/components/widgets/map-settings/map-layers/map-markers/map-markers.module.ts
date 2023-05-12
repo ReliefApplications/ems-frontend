@@ -11,6 +11,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MapMarkerRuleModule } from '../map-marker-rule/map-marker-rule.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Module of Map Widget marker rules.
@@ -30,6 +31,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MatSelectModule,
     MapMarkerRuleModule,
     MatTooltipModule,
+    UiModule,
   ],
   exports: [MapMarkersComponent],
 })

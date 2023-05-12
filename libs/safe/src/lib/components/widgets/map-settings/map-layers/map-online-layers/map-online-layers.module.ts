@@ -8,8 +8,8 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeBadgeModule } from '../../../../ui/badge/badge.module';
 import { SafeAlertModule } from '../../../../ui/alert/alert.module';
-import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Online Layers configuration of Map Widget Module.
@@ -26,7 +26,7 @@ import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy
     SafeButtonModule,
     SafeBadgeModule,
     SafeAlertModule,
-    SafeIconModule,
+    UiModule,
     MatTableModule,
   ],
   exports: [MapOnlineLayersComponent],

@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Component used in the card-modal-settings for configuring some display settings.
@@ -11,4 +12,7 @@ import { UntypedFormGroup } from '@angular/forms';
 })
 export class SafeDisplayTabComponent {
   @Input() form!: UntypedFormGroup;
+
+  // === ICON VARIANTS ===
+  public colorVariant = Variant;
 }

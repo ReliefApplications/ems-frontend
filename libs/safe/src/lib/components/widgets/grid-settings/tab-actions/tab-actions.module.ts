@@ -4,8 +4,8 @@ import { TabActionsComponent } from './tab-actions.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
-import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Actions tab of grid widget configuration modal.
@@ -18,7 +18,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     FormsModule,
     ReactiveFormsModule,
     MatSlideToggleModule,
-    SafeIconModule,
+    UiModule,
     MatTooltipModule,
   ],
   exports: [TabActionsComponent],

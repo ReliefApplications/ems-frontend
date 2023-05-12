@@ -8,7 +8,6 @@ import { SafeAddCardComponent } from './add-card.component';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { MatRippleModule } from '@angular/material/core';
 import { SafeCardTemplateComponent } from './card-template/card-template.component';
-import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeSkeletonModule } from '../../../../directives/skeleton/skeleton.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeAlertModule } from '../../../ui/alert/alert.module';
@@ -29,7 +28,6 @@ import { UiModule } from '@oort-front/ui';
     MatDividerModule,
     SafeModalModule,
     MatRippleModule,
-    SafeIconModule,
     SafeSkeletonModule,
     IndicatorsModule,
     SafeAlertModule,

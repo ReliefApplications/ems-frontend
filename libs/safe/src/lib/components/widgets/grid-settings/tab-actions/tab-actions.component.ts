@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Actions tab of grid widget configuration modal.
@@ -11,6 +12,9 @@ import { UntypedFormGroup } from '@angular/forms';
 })
 export class TabActionsComponent {
   @Input() formGroup!: UntypedFormGroup;
+
+  // === ICON VARIANTS ===
+  public colorVariant = Variant;
 
   public actions = [
     {

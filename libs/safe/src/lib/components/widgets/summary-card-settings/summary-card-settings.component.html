@@ -69,7 +69,7 @@
         ></safe-button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="openCard(i)">
-            <ui-icon [icon]="'insert_chart'"></ui-icon>
+            <ui-icon icon="insert_chart"></ui-icon>
             <span>{{ 'common.settings' | translate }}</span>
           </button>
           <mat-divider></mat-divider>
@@ -78,12 +78,12 @@
             <span>{{ 'common.delete' | translate }}</span>
           </button>
         </mat-menu>
-        <safe-icon
+        <ui-icon
           *ngIf="!tileForm.value.isDynamic"
           icon="drag_indicator"
           class="widget-handle"
         >
-        </safe-icon>
+        </ui-icon>
       </kendo-tilelayout-item>
     </kendo-tilelayout>
   </form>

@@ -15,16 +15,15 @@
     </mat-form-field>
     <mat-label>
       {{ 'components.widget.settings.map.properties.zoom' | translate }}
-      <safe-icon
+      <ui-icon
         icon="info_outline"
         class="cursor-pointer"
         [matTooltip]="
           'components.widget.settings.map.properties.zoom' | translate
         "
-        [inline]="true"
         [size]="18"
-        variant="grey"
-      ></safe-icon>
+        [variant]="colorVariant.GREY"
+      ></ui-icon>
     </mat-label>
     <mat-slider
       thumbLabel
