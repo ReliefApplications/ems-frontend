@@ -4,11 +4,13 @@ import {
   Directive,
   ElementRef,
   Input,
+  OnDestroy,
   QueryList,
   Renderer2,
 } from '@angular/core';
 import { SuffixDirective } from './suffix.directive';
 import { PrefixDirective } from './prefix.directive';
+import { Subject, startWith, takeUntil } from 'rxjs';
 
 /**
  * UI Form Wrapper Directive
@@ -16,7 +18,7 @@ import { PrefixDirective } from './prefix.directive';
 @Directive({
   selector: '[uiFormFieldDirective]',
 })
-export class FormWrapperDirective implements AfterContentInit {
+export class FormWrapperDirective implements AfterContentInit, OnDestroy {
   /**
    * Will the form field be wrapped ?
    */
@@ -30,6 +32,7 @@ export class FormWrapperDirective implements AfterContentInit {
 
   private currentInputElement!: HTMLInputElement;
   private currentLabelElement!: HTMLLabelElement;
+  private beyondLabelContainer!: HTMLDivElement;
 
   // === LISTS OF CLASSES TO APPLY TO ELEMENTS ===
   private labelClasses = [
@@ -41,13 +44,13 @@ export class FormWrapperDirective implements AfterContentInit {
   ] as const;
 
   private inputClassesNoOutline = [
+    'bg-transparent',
     'block',
     'overflow-hidden',
     'border-0',
     'rounded-md',
     'w-full',
-    'py-1.5',
-    'pr-10',
+    'p-0',
     'text-gray-900',
     'placeholder:text-gray-400',
     'sm:text-sm',
@@ -57,10 +60,11 @@ export class FormWrapperDirective implements AfterContentInit {
   ] as const;
 
   private inputClassesOutline = [
+    'bg-transparent',
     'block',
     'w-full',
     'border-0',
-    'py-1.5',
+    'p-0',
     'bg-gray-50',
     'text-gray-900',
     'placeholder:text-gray-400',
@@ -72,7 +76,8 @@ export class FormWrapperDirective implements AfterContentInit {
   private beyondLabelGeneral = [
     'relative',
     'mt-0.5',
-    'py-0.5',
+    'py-1.5',
+    'px-2',
     'flex',
     'items-center',
     'w-full',
@@ -98,6 +103,7 @@ export class FormWrapperDirective implements AfterContentInit {
     'focus-within:border-b-2',
     'focus-within:border-b-primary-600',
   ] as const;
+  private destroy$ = new Subject<void>();
 
   /**
    * Constructor including a ref to the element on which the directive is applied
@@ -115,29 +121,19 @@ export class FormWrapperDirective implements AfterContentInit {
     this.currentLabelElement =
       this.elementRef.nativeElement.querySelector('label');
 
-    //Putting order classes to elements that has prefix/suffix directive
-    for (const e of this.allPrefixDirectives) {
-      this.renderer.addClass(e.elementRef.nativeElement, 'order-first');
-      this.renderer.addClass(e.elementRef.nativeElement, 'px-2');
-    }
-    for (const e of this.allSuffixDirectives) {
-      this.renderer.addClass(e.elementRef.nativeElement, 'order-last');
-      this.renderer.addClass(e.elementRef.nativeElement, 'px-2');
-    }
-
     // Creating a wrapper to all that is not label and give it appropriate classes
     // depending of outline value
-    const beyondLabel = this.renderer.createElement('div');
+    this.beyondLabelContainer = this.renderer.createElement('div');
     for (const cl of this.beyondLabelGeneral) {
-      this.renderer.addClass(beyondLabel, cl);
+      this.renderer.addClass(this.beyondLabelContainer, cl);
     }
     if (!this.outline) {
       for (const cl of this.beyondLabelNoOutline) {
-        this.renderer.addClass(beyondLabel, cl);
+        this.renderer.addClass(this.beyondLabelContainer, cl);
       }
     } else {
       for (const cl of this.beyondLabelOutline) {
-        this.renderer.addClass(beyondLabel, cl);
+        this.renderer.addClass(this.beyondLabelContainer, cl);
       }
     }
 
@@ -153,24 +149,80 @@ export class FormWrapperDirective implements AfterContentInit {
     }
 
     // Then add the input to our beyondLabel wrapper element
-    this.renderer.appendChild(beyondLabel, this.currentInputElement);
+    this.renderer.appendChild(
+      this.beyondLabelContainer,
+      this.currentInputElement
+    );
 
-    // Add related classes to label
-    for (const cl of this.labelClasses) {
-      this.renderer.addClass(this.currentLabelElement, cl);
+    if (this.currentLabelElement) {
+      // Add related classes to label
+      for (const cl of this.labelClasses) {
+        this.renderer.addClass(this.currentLabelElement, cl);
+      }
     }
-
-    // Get all the child elements that are not input or label and add them to our beyondLabel element
-    Array.from(this.elementRef.nativeElement.children)
-      .filter(
-        (el: any) =>
-          !(el instanceof HTMLInputElement || el instanceof HTMLLabelElement)
-      )
-      .forEach((childEl: any) =>
-        this.renderer.appendChild(beyondLabel, childEl)
-      );
+    this.initializeDirectiveListeners();
 
     //Add beyond label as a child of elementRef
-    this.renderer.appendChild(this.elementRef.nativeElement, beyondLabel);
+    this.renderer.appendChild(
+      this.elementRef.nativeElement,
+      this.beyondLabelContainer
+    );
+  }
+
+  /**
+   * Initialize any DOM change/add/removal of the elements with prefix and suffix directives
+   */
+  private initializeDirectiveListeners() {
+    this.allPrefixDirectives.changes
+      .pipe(startWith(this.allPrefixDirectives), takeUntil(this.destroy$))
+      .subscribe({
+        next: (prefixes: QueryList<PrefixDirective>) => {
+          for (const prefix of prefixes) {
+            const prefixRef = (prefix as any).elementRef.nativeElement;
+            if (!this.beyondLabelContainer.contains(prefixRef)) {
+              this.applyPrefixClasses(prefixRef);
+              this.renderer.appendChild(this.beyondLabelContainer, prefixRef);
+            }
+          }
+        },
+      });
+    this.allSuffixDirectives.changes
+      .pipe(startWith(this.allSuffixDirectives), takeUntil(this.destroy$))
+      .subscribe({
+        next: (suffixes: QueryList<SuffixDirective>) => {
+          for (const suffix of suffixes) {
+            const suffixRef = (suffix as any).elementRef.nativeElement;
+            if (!this.beyondLabelContainer.contains(suffixRef)) {
+              this.applySuffixClasses(suffixRef);
+              this.renderer.appendChild(this.beyondLabelContainer, suffixRef);
+            }
+          }
+        },
+      });
+  }
+
+  /**
+   * Update prefix element with the needed classes
+   *
+   * @param prefixElement prefix directive element
+   */
+  private applyPrefixClasses(prefixElement: any) {
+    this.renderer.addClass(prefixElement, 'order-first');
+    this.renderer.addClass(prefixElement, 'pr-2');
+  }
+
+  /**
+   * Update suffix element with the needed classes
+   *
+   * @param suffixElement suffix directive element
+   */
+  private applySuffixClasses(suffixElement: any) {
+    this.renderer.addClass(suffixElement, 'order-last');
+    this.renderer.addClass(suffixElement, 'pl-2');
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

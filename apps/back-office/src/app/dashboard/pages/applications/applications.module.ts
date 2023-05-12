@@ -8,7 +8,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { SpinnerModule } from '@oort-front/ui';
+import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import {
@@ -65,6 +65,8 @@ import { AbilityModule } from '@casl/angular';
     SafeModalModule,
     SafeDividerModule,
     AbilityModule,
+    FormWrapperModule,
+    IconModule,
   ],
   exports: [ApplicationsComponent],
 })

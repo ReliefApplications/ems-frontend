@@ -26,17 +26,16 @@
       <safe-icon icon="info"></safe-icon>
       {{ 'components.widget.settings.summaryCard.hint.dynamic' | translate }}
     </safe-alert>
-    <mat-form-field appearance="outline">
-      <mat-icon matPrefix>search</mat-icon>
+    <div uiFormFieldDirective>
+      <ui-icon [icon]="'search'" uiPrefix></ui-icon>
       <input
         id="custom-search"
-        matInput
         [formControl]="searchControl"
-        type="search"
+        type="text"
         [placeholder]="'common.placeholder.search' | translate"
       />
-      <ui-spinner *ngIf="loading" matSuffix></ui-spinner>
-    </mat-form-field>
+      <ui-spinner [size]="size.SMALL" *ngIf="loading" uiSuffix></ui-spinner>
+    </div>
     <div class="card-templates">
       <ng-container *ngIf="loading">
         <ng-container *ngFor="let item of [].constructor(3); let i = index">

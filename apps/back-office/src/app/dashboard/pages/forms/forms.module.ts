@@ -5,7 +5,7 @@ import { FormsComponent } from './forms.component';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { SpinnerModule } from '@oort-front/ui';
+import { FormWrapperModule, IconModule, SpinnerModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import {
@@ -56,6 +56,8 @@ import { AbilityModule } from '@casl/angular';
     SafeSkeletonTableModule,
     SafeDateModule,
     AbilityModule,
+    FormWrapperModule,
+    IconModule,
   ],
   exports: [FormsComponent],
 })

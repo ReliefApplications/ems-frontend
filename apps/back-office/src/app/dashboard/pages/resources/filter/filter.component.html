@@ -2,12 +2,15 @@
   <!-- Default filter -->
   <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
     <!-- Search text filter -->
-    <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
-      <mat-icon matPrefix>search</mat-icon>
-      <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
-      <input matInput [formControl]="search" type="search" />
-      <ui-spinner *ngIf="loading" matSuffix></ui-spinner>
-    </mat-form-field>
+    <div uiFormFieldDirective>
+      <ui-icon [icon]="'search'" uiPrefix></ui-icon>
+      <input
+        placeholder="{{ 'common.placeholder.search' | translate }}"
+        [formControl]="search"
+        type="text"
+      />
+      <ui-spinner [size]="size.SMALL" *ngIf="loading" uiSuffix></ui-spinner>
+    </div>
     <!-- Toggle advanced filters -->
     <safe-button
       class="max-sm:!w-auto"
