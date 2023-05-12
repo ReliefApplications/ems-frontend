@@ -31,9 +31,19 @@
         <mat-label>{{
           'components.templates.edit.subject' | translate
         }}</mat-label>
-        <input matInput formControlName="subject" type="text" />
+        <safe-editor-control
+          formControlName="subject"
+          [editorConfig]="subjectEditor"
+        ></safe-editor-control>
+        <safe-icon
+          icon="info"
+          class="cursor-pointer"
+          variant="grey"
+          matSuffix
+          [matTooltip]="'common.tooltip.editor.insert' | translate"
+        ></safe-icon>
       </mat-form-field>
-      <editor [init]="editor" formControlName="body"></editor>
+      <editor [init]="bodyEditor" formControlName="body"></editor>
     </form>
   </div>
   <div mat-dialog-actions align="end">

@@ -285,6 +285,11 @@
 			"one": "Modèle de notification"
 		},
 		"title": "Titre",
+		"tooltip": {
+			"editor": {
+				"insert": "Tapez '{' pour utiliser des expressions et des variables"
+			}
+		},
 		"true": "Vrai",
 		"type": {
 			"few": "Types",

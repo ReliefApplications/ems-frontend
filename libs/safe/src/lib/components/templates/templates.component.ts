@@ -4,6 +4,8 @@ import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/materia
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { TemplateTypeEnum } from '../../models/template.model';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
 
 /**
  * A component to display the list of templates of an application
@@ -13,7 +15,10 @@ import { TemplateTypeEnum } from '../../models/template.model';
   templateUrl: './templates.component.html',
   styleUrls: ['./templates.component.scss'],
 })
-export class SafeTemplatesComponent implements OnInit {
+export class SafeTemplatesComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === INPUT DATA ===
   public templates: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   @Input() applicationService!: SafeApplicationService;
@@ -29,12 +34,16 @@ export class SafeTemplatesComponent implements OnInit {
    * @param dialog The material dialog service
    * @param translate The translation service
    */
-  constructor(public dialog: MatDialog, private translate: TranslateService) {}
+  constructor(public dialog: MatDialog, private translate: TranslateService) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.applicationService.application$.subscribe((value) => {
-      this.templates.data = value?.templates || [];
-    });
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.templates.data = value?.templates || [];
+      });
   }
 
   /**

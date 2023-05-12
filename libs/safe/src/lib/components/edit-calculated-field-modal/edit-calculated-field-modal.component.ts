@@ -9,7 +9,7 @@ import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { FIELD_EDITOR_CONFIG } from '../../const/tinymce.const';
+import { INLINE_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
 import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
 import { CommonModule } from '@angular/common';
@@ -18,7 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeModalModule } from '../ui/modal/modal.module';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { SafeEditorControlComponent } from '../editor-control/editor-control.component';
 /**
  * Interface describing the structure of the data displayed in the dialog
  */
@@ -40,10 +40,7 @@ interface DialogData {
     MatInputModule,
     MatSelectModule,
     SafeModalModule,
-    EditorModule,
-  ],
-  providers: [
-    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    SafeEditorControlComponent,
   ],
   selector: 'safe-edit-calculated-field-modal',
   templateUrl: './edit-calculated-field-modal.component.html',
@@ -56,7 +53,7 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
   public resourceFields: any[] = [];
 
   /** tinymce editor */
-  public editor: any = FIELD_EDITOR_CONFIG;
+  public editor: any = INLINE_EDITOR_CONFIG;
 
   /**
    * Modal to edit Calculated field.

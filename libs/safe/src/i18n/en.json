@@ -285,6 +285,11 @@
 			"one": "Notification template"
 		},
 		"title": "Title",
+		"tooltip": {
+			"editor": {
+				"insert": "Type '{' to inject expressions and variables"
+			}
+		},
 		"true": "True",
 		"type": {
 			"few": "Types",
