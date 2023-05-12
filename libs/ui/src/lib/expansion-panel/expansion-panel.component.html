@@ -6,8 +6,8 @@
   [disabled]="disabled"
   [attr.id]="'accordion-header-' + index"
   [attr.aria-controls]="'accordion-body-' + index"
-  (closed)="onClosed(contentContainer)"
-  (opened)="onOpened(contentContainer)"
+  (closed)="onClosed()"
+  (opened)="onOpened()"
 >
   <div
     [ngClass]="{
