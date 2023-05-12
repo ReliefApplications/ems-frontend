@@ -30,10 +30,8 @@ export const createButtonFormGroup = (value: any): UntypedFormGroup => {
     ],
     selectAll: [value && value.selectAll ? value.selectAll : false],
     selectPage: [value && value.selectPage ? value.selectPage : false],
-    goToNextStep: [value && value.goToNextStep ? value.goToNextStep : false],
-    goToPreviousStep: [
-      value && value.goToPreviousStep ? value.goToPreviousStep : false,
-    ],
+    goToNextStep: [get(value, 'goToNextStep', false)],
+    goToPreviousStep: [get(value, 'goToPreviousStep', false)],
     prefillForm: [value && value.prefillForm ? value.prefillForm : false],
     prefillTargetForm: [
       value && value.prefillTargetForm ? value.prefillTargetForm : null,
@@ -95,6 +93,22 @@ export const createButtonFormGroup = (value: any): UntypedFormGroup => {
         : [],
       value && value.sendMail ? Validators.required : null
     ),
+  });
+  // Avoid goToNextStep & goToPreviousStep to coexist
+  if (formGroup.get('goToNextStep')?.value) {
+    formGroup.get('goToPreviousStep')?.setValue(false);
+  } else if (formGroup.get('goToPreviousStep')?.value) {
+    formGroup.get('goToNextStep')?.setValue(false);
+  }
+  formGroup.get('goToNextStep')?.valueChanges.subscribe((value) => {
+    if (value) {
+      formGroup.get('goToPreviousStep')?.setValue(false);
+    }
+  });
+  formGroup.get('goToPreviousStep')?.valueChanges.subscribe((value) => {
+    if (value) {
+      formGroup.get('goToNextStep')?.setValue(false);
+    }
   });
   return formGroup;
 };

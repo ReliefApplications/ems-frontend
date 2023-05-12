@@ -14,7 +14,7 @@ interface DialogData {
 })
 export class SafeExpandedWidgetComponent {
   // === EMIT STEP CHANGE FOR WORKFLOW ===
-  @Output() changeStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   /**
    * Constructor for the component

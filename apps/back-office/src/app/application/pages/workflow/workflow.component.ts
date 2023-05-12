@@ -332,8 +332,8 @@ export class WorkflowComponent
    */
   onActivate(elementRef: any): void {
     if (elementRef.changeStep) {
-      elementRef.changeStep.subscribe((event: any) => {
-        if (event) {
+      elementRef.changeStep.subscribe((event: number) => {
+        if (event > 0) {
           this.goToNextStep();
         } else {
           this.goToPreviousStep();
