@@ -1,13 +1,13 @@
 <cdk-accordion-item
   #accordionItem="cdkAccordionItem"
-  [ngClass]="{'cursor-default': disabled}"
+  [ngClass]="{ 'cursor-default': disabled }"
   role="button"
   [attr.aria-expanded]="accordionItem.expanded"
   [disabled]="disabled"
   [attr.id]="'accordion-header-' + index"
   [attr.aria-controls]="'accordion-body-' + index"
-  (closed)="onClosed(contentContainer)"
-  (opened)="onOpened(contentContainer)"
+  (closed)="onClosed()"
+  (opened)="onOpened()"
 >
   <div
     [ngClass]="{
