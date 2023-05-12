@@ -205,6 +205,13 @@ export class SafeFormComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     this.survey.onValueChanged.add(this.valueChange.bind(this));
 
+    this.survey.onValueChanged.add(() => {
+      console.log(
+        'ON VALUE CHANGED PRINT TRIGGER KEYS',
+        this.survey.triggerKeys
+      );
+    });
+
     // Sets default language as form language if it is in survey locales
     // const currentLang = this.usedLocales.find(
     //   (lang) => lang.value === this.translate.currentLang

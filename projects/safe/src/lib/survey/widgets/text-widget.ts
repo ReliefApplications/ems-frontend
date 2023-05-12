@@ -1,4 +1,5 @@
 import { DomService } from '../../services/dom/dom.service';
+/*
 import {
   DatePickerComponent,
   DateTimePickerComponent,
@@ -11,8 +12,9 @@ import { SafeButtonComponent } from '../../components/ui/button/button.component
 import { ButtonSize } from '../../components/ui/button/button-size.enum';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Question, QuestionText } from '../types';
+*/
 
-type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
+// type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
@@ -21,7 +23,9 @@ type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
  * @param domService Shared DOM service
  */
 export const init = (Survey: any, domService: DomService): void => {
-  const widget = {
+  console.log('REMOVE KENDO DATE PICKER', Survey, domService);
+  /*
+  *  const widget = {
     name: 'text-widget',
     widgetIsLoaded: (): boolean => true,
     isFit: (question: Question): boolean => question.getType() === 'text',
@@ -250,7 +254,7 @@ export const init = (Survey: any, domService: DomService): void => {
       }
     },
   };
-
+  */
   /**
    * Get date for input display.
    *
@@ -258,15 +262,14 @@ export const init = (Survey: any, domService: DomService): void => {
    * @param inputType question input type
    * @returns formatted date
    */
-  const getDateDisplay = (value: any, inputType: string): Date => {
-    const date = new Date(value);
-    if (inputType === 'time') {
-      return new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
-    } else {
-      return date;
-    }
-  };
-
+  //const getDateDisplay = (value: any, inputType: string): Date => {
+  // const date = new Date(value);
+  // if (inputType === 'time') {
+  // return new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+  // } else {
+  // return date;
+  // }
+  // };
   /**
    * Set date for question / parameter value
    *
@@ -274,17 +277,16 @@ export const init = (Survey: any, domService: DomService): void => {
    * @param inputType question input type
    * @returns formatted date
    */
-  const setDateValue = (value: Date, inputType: string): Date | string => {
-    if (inputType === 'time') {
-      // for time fields, translate the date to UTC
-      return new Date(
-        Date.UTC(1970, 0, 1, value.getHours(), value.getMinutes())
-      );
-    } else {
-      return value.toISOString();
-    }
-  };
-
+  // const setDateValue = (value: Date, inputType: string): Date | string => {
+  // if (inputType === 'time') {
+  // for time fields, translate the date to UTC
+  //return new Date(
+  // Date.UTC(1970, 0, 1, value.getHours(), value.getMinutes())
+  // );
+  // } else {
+  // return value.toISOString();
+  // }
+  //};
   /**
    * It creates a date, datetime or time picker instance based on the input type
    *
@@ -292,48 +294,47 @@ export const init = (Survey: any, domService: DomService): void => {
    * @param element - The element that the directive is attached to.
    * @returns The picker instance, or null if the type is not allowed
    */
-  const createPickerInstance = (
-    inputType: DateInputFormat,
-    element: any
-  ):
-    | DatePickerComponent
-    | DateTimePickerComponent
-    | TimePickerComponent
-    | null => {
-    switch (inputType) {
-      case 'date':
-        const datePicker = domService.appendComponentToBody(
-          DatePickerComponent,
-          element
-        );
-        const datePickerInstance: DatePickerComponent = datePicker.instance;
-        datePickerInstance.format = 'dd/MM/yyyy';
-        return datePickerInstance;
-      case 'datetime':
-      case 'datetime-local':
-        const dateTimePicker = domService.appendComponentToBody(
-          DateTimePickerComponent,
-          element
-        );
-        const dateTimePickerInstance: DateTimePickerComponent =
-          dateTimePicker.instance;
-        dateTimePickerInstance.format = 'dd/MM/yyyy HH:mm';
-        return dateTimePickerInstance;
-      case 'time':
-        const timePicker = domService.appendComponentToBody(
-          TimePickerComponent,
-          element
-        );
-        const timePickerInstance: TimePickerComponent = timePicker.instance;
-        timePickerInstance.format = 'HH:mm';
-        return timePickerInstance;
-      default:
-        return null;
-    }
-  };
-
-  Survey.CustomWidgetCollection.Instance.addCustomWidget(
-    widget,
-    'customwidget'
-  );
+  // const createPickerInstance = (
+  // inputType: DateInputFormat,
+  // element: any
+  // ):
+  //  | DatePickerComponent
+  //  | DateTimePickerComponent
+  //  | TimePickerComponent
+  //  | null => {
+  //  switch (inputType) {
+  //    case 'date':
+  //      const datePicker = domService.appendComponentToBody(
+  //        DatePickerComponent,
+  //        element
+  //      );
+  //      const datePickerInstance: DatePickerComponent = datePicker.instance;
+  //      datePickerInstance.format = 'dd/MM/yyyy';
+  //      return datePickerInstance;
+  //    case 'datetime':
+  //    case 'datetime-local':
+  //      const dateTimePicker = domService.appendComponentToBody(
+  //        DateTimePickerComponent,
+  //        element
+  //      );
+  //      const dateTimePickerInstance: DateTimePickerComponent =
+  //        dateTimePicker.instance;
+  //      dateTimePickerInstance.format = 'dd/MM/yyyy HH:mm';
+  //      return dateTimePickerInstance;
+  //    case 'time':
+  //      const timePicker = domService.appendComponentToBody(
+  //        TimePickerComponent,
+  //        element
+  //      );
+  //      const timePickerInstance: TimePickerComponent = timePicker.instance;
+  //      timePickerInstance.format = 'HH:mm';
+  //      return timePickerInstance;
+  //    default:
+  //      return null;
+  //  }
+  //};
+  // Survey.CustomWidgetCollection.Instance.addCustomWidget(
+  // widget,
+  // 'customwidget'
+  //);
 };
