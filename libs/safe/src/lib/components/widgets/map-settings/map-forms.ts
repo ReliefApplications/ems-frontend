@@ -18,6 +18,7 @@ import {
 } from '../../../models/layer.model';
 import { IconName } from '../../icon-picker/icon-picker.const';
 import { LayerType } from '../../ui/map/interfaces/layer-settings.type';
+import { set } from 'lodash';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -170,12 +171,11 @@ const createLayerDefinitionForm = (type: LayerType, value?: any): FormGroup => {
       formGroup
         .get('drawingInfo.renderer.type')
         ?.valueChanges.subscribe((type: string) => {
+          const drawingInfo = { ...formGroup.get('drawingInfo')?.value };
+          set(drawingInfo, 'renderer.type', type);
           formGroup.setControl(
             'drawingInfo',
-            createLayerDrawingInfoForm({
-              ...formGroup.get('drawingInfo'),
-              type,
-            })
+            createLayerDrawingInfoForm(drawingInfo)
           );
           setTypeListeners();
         });
