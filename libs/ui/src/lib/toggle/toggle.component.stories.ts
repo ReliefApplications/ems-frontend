@@ -25,7 +25,10 @@ export default {
       control: 'object',
     },
     labelPosition: {
-      control: 'text',
+      options: ['right', 'left'],
+      control: {
+        type: 'select',
+      },
     },
     disabled: {
       type: 'boolean',
@@ -54,7 +57,7 @@ const FormControlTemplate: StoryFn<ToggleComponent> = (
     component: ToggleComponent,
     template: `
       <form [formGroup]="formGroup">
-      <ui-toggle formControlName="toggle">
+      <ui-toggle [type]="'${args.type}'" [variant]="'${args.variant}'" [labelPosition]="'${args.labelPosition}'" formControlName="toggle">
         <ng-container ngProjectAs="label">Test test test!</ng-container>
         <ng-container ngProjectAs="description">
           Test test test test test test test test test test test test test
@@ -73,6 +76,11 @@ const FormControlTemplate: StoryFn<ToggleComponent> = (
 };
 /** Form control toggle */
 export const FormToggle = FormControlTemplate.bind({});
+FormToggle.args = {
+  labelPosition: 'right',
+  variant: Variant.PRIMARY,
+  type: ToggleType.SIMPLE,
+};
 
 /**
  * Primary template toggle
@@ -88,7 +96,7 @@ const PrimaryTemplate: StoryFn<ToggleComponent> = (args: ToggleComponent) => {
   return {
     component: ToggleComponent,
     template: `
-      <ui-toggle [icon]="icon" [labelPosition]="'left'">
+      <ui-toggle [type]="'${args.type}'" [icon]="icon" [variant]="'${args.variant}'" [labelPosition]="'${args.labelPosition}'">
         <ng-container ngProjectAs="label">Test test test!</ng-container>
         <ng-container ngProjectAs="description">
           Test test test test test test test test test test test test test
@@ -102,3 +110,8 @@ const PrimaryTemplate: StoryFn<ToggleComponent> = (args: ToggleComponent) => {
 };
 /** Primary toggle */
 export const Primary = PrimaryTemplate.bind({});
+Primary.args = {
+  labelPosition: 'right',
+  variant: Variant.PRIMARY,
+  type: ToggleType.SIMPLE,
+};
