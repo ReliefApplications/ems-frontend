@@ -12,7 +12,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeGraphQLSelectModule } from '../../../../graphql-select/graphql-select.module';
 import { SafeFormsDropdownModule } from '../../../../ui/aggregation-builder/public-api';
 import { SafeButtonModule } from '../../../../ui/button/button.module';
-import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeDataSourceTabComponent } from './data-source-tab.component';
 import { SafeDividerModule } from '../../../../ui/divider/divider.module';
 
@@ -30,7 +29,6 @@ import { SafeDividerModule } from '../../../../ui/divider/divider.module';
     MatSelectModule,
     MatAutocompleteModule,
     MatInputModule,
-    SafeIconModule,
     MatProgressSpinnerModule,
     SafeGraphQLSelectModule,
     SafeButtonModule,

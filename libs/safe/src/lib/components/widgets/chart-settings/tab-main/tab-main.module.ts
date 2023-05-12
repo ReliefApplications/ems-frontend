@@ -19,7 +19,6 @@ import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.mod
 import { SafeAggregationBuilderModule } from '../../../ui/aggregation-builder/aggregation-builder.module';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeGridModule } from '../../../ui/core-grid/grid/grid.module';
-import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-mapping/series-mapping.module';
@@ -50,7 +49,6 @@ import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-
     MatAutocompleteModule,
     MatChipsModule,
     SafeGridModule,
-    SafeIconModule,
     SafePaletteControlModule,
     SafeGraphQLSelectModule,
     SafeSeriesMappingModule,

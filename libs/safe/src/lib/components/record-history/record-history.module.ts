@@ -14,7 +14,6 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeEmptyModule } from '../ui/empty/empty.module';
 
 /**
@@ -34,7 +33,6 @@ import { SafeEmptyModule } from '../ui/empty/empty.module';
     MatNativeDateModule,
     MatMenuModule,
     SafeButtonModule,
-    SafeIconModule,
     TranslateModule,
     SafeDateModule,
     MatSelectModule,

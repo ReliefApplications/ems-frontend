@@ -8,7 +8,6 @@ import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy
 import {
   SafeButtonModule,
   SafeSkeletonTableModule,
-  SafeIconModule,
   SafeDividerModule,
   SafeCronParserModule,
   SafeDateModule,
@@ -33,7 +32,6 @@ import { UiModule } from '@oort-front/ui';
     TranslateModule,
     MatChipsModule,
     SafeSkeletonTableModule,
-    SafeIconModule,
     SafeCronParserModule,
     SafeDateModule,
     UiModule,

@@ -11,7 +11,6 @@ import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import {
   SafeButtonModule,
-  SafeIconModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
   SafeDividerModule,
@@ -42,7 +41,6 @@ import { UiModule } from '@oort-front/ui';
     MatAutocompleteModule,
     SafeDividerModule,
     SafeButtonModule,
-    SafeIconModule,
     TranslateModule,
     MatTooltipModule,
     SafeGraphQLSelectModule,

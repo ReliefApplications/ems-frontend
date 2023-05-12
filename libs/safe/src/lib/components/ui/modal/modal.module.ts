@@ -5,7 +5,6 @@ import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/lega
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { SafeButtonModule } from '../button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeIconModule } from '../icon/icon.module';
 
 /**
  * Modal component, used as a generic wrapper for all modals
@@ -18,7 +17,6 @@ import { SafeIconModule } from '../icon/icon.module';
     MatDialogModule,
     MatTooltipModule,
     SafeButtonModule,
-    SafeIconModule,
   ],
   exports: [
     SafeModalComponent,
@@ -26,7 +24,6 @@ import { SafeIconModule } from '../icon/icon.module';
     MatDialogModule,
     MatTooltipModule,
     SafeButtonModule,
-    SafeIconModule,
   ],
 })
 export class SafeModalModule {}

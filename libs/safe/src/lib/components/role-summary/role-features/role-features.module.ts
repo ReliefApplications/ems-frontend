@@ -7,7 +7,6 @@ import { RoleWorkflowsComponent } from './role-workflows/role-workflows.componen
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SafeButtonModule } from '../../ui/button/button.module';
-import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -36,7 +35,6 @@ import { UiModule } from '@oort-front/ui';
     MatTooltipModule,
     MatTableModule,
     SafeButtonModule,
-    SafeIconModule,
     SafeEmptyModule,
     UiModule,
   ],

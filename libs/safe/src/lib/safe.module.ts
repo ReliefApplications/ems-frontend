@@ -23,7 +23,6 @@ import { SafeSkeletonTableModule } from './components/skeleton/skeleton-table/sk
 import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
 import { SafeUserSummaryModule } from './components/user-summary/user-summary.module';
 import { SafeDateModule } from './pipes/date/date.module';
-import { SafeIconModule } from './components/ui/icon/icon.module';
 import { SafeSummaryCardSettingsModule } from './components/widgets/summary-card-settings/summary-card-settings.module';
 import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
 import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-select.module';
@@ -72,7 +71,6 @@ import { DashboardFilterModule } from './components/dashboard-filter/dashboard-f
     SafeDateModule,
     SafeReadableCronModule,
     SafeCronParserModule,
-    SafeIconModule,
     SafeSummaryCardSettingsModule,
     SafeRoleSummaryModule,
     SafeGraphQLSelectModule,

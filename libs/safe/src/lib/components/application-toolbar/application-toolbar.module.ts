@@ -7,7 +7,6 @@ import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-l
 import { RouterModule } from '@angular/router';
 import { SafeAccessModule } from '../access/access.module';
 import { SafeButtonModule } from '../ui/button/button.module';
-import { SafeIconModule } from '../ui/icon/icon.module';
 import { UiModule } from '@oort-front/ui';
 
 /**
@@ -23,7 +22,6 @@ import { UiModule } from '@oort-front/ui';
     MatMenuModule,
     MatListModule,
     RouterModule,
-    SafeIconModule,
     UiModule,
   ],
   exports: [SafeApplicationToolbarComponent],

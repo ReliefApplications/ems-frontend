@@ -8,7 +8,6 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../../../components/skeleton/skeleton-table/skeleton-table.module';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { SafeIconModule } from '../../ui/icon/icon.module';
 import { FilterComponent } from '../role-resources-filter/role-resources-filter.component';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
@@ -39,7 +38,6 @@ import { UiModule } from '@oort-front/ui';
     MatPaginatorModule,
     TranslateModule,
     SafeDateModule,
-    SafeIconModule,
     SafeButtonModule,
     SafeSkeletonTableModule,
     MatFormFieldModule,

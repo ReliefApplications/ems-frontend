@@ -18,7 +18,6 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
-import { SafeIconModule } from '../ui/icon/icon.module';
 import { UiModule } from '@oort-front/ui';
 
 /**
@@ -46,7 +45,6 @@ import { UiModule } from '@oort-front/ui';
     OverlayModule,
     SafeDateModule,
     SafeBreadcrumbModule,
-    SafeIconModule,
     UiModule,
   ],
   exports: [SafeLayoutComponent],
