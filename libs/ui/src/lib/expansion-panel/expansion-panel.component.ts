@@ -51,6 +51,7 @@ export class ExpansionPanelComponent implements AfterViewInit {
   @Output() closePanel = new EventEmitter<any>();
 
   @ViewChild('accordionItem') accordionItem!: CdkAccordionItem;
+  @ViewChild('contentContainer') contentContainer!: ElementRef;
 
   /**
    * UI Panel Expansion constructor
@@ -67,12 +68,10 @@ export class ExpansionPanelComponent implements AfterViewInit {
 
   /**
    * Function detects on close and emit
-   *
-   * @param contentContainer content container from the expansion panel
    */
-  onClosed(contentContainer: HTMLDivElement) {
+  onClosed() {
     setTimeout(() => {
-      this.renderer.addClass(contentContainer, 'hidden');
+      this.renderer.addClass(this.contentContainer.nativeElement, 'hidden');
     }, 100);
     this.closePanel.emit(true);
   }
@@ -80,11 +79,9 @@ export class ExpansionPanelComponent implements AfterViewInit {
   /**
    * Function detects on open
    * Method added in order to keep the animation on expansion panel closed as well
-   *
-   * @param contentContainer content container from the expansion panel
    */
-  onOpened(contentContainer: HTMLDivElement) {
-    this.renderer.removeClass(contentContainer, 'hidden');
-    this.renderer.addClass(contentContainer, 'block');
+  onOpened() {
+    this.renderer.removeClass(this.contentContainer.nativeElement, 'hidden');
+    this.renderer.addClass(this.contentContainer.nativeElement, 'block');
   }
 }
