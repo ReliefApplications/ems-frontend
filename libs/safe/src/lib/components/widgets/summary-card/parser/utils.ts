@@ -116,10 +116,14 @@ const replaceRecordFields = (
       if (!isNil(value)) {
         switch (field.type) {
           case 'url':
-            convertedValue = `<a href="${value}" style="${style}" target="_blank">${applyLayoutFormat(
-              value,
-              field
-            )}</a>`;
+            if (value.match(/\.(jpeg|jpg|gif|png|bmp)$/)) {
+              convertedValue = `<img src="${value}" style="${style}" alt="${field.name}" />`;
+            } else {
+              convertedValue = `<a href="${value}" style="${style}" target="_blank">${applyLayoutFormat(
+                value,
+                field
+              )}</a>`;
+            }
             break;
           case 'email':
             convertedValue = `<a href="mailto:${value}"
