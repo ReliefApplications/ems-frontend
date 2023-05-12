@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * New Refence Data modal.
@@ -18,6 +19,10 @@ import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dia
 export class AddReferenceDataComponent implements OnInit {
   // === REACTIVE FORM ===
   referenceForm: UntypedFormGroup = new UntypedFormGroup({});
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /** @returns name of reference data */
   get name(): AbstractControl | null {

@@ -8,10 +8,10 @@
   [multiple]="false"
 >
 </kendo-upload>
-<safe-button
-  variant="primary"
-  category="tertiary"
+<ui-button
+  [variant]="btnVariant.PRIMARY"
+  [category]="btnCategory.TERTIARY"
   (click)="onDownloadTemplate()"
 >
   {{ 'common.downloadTemplate' | translate }}
-</safe-button>
+</ui-button>

@@ -31,6 +31,8 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
+import { ButtonModule } from '@oort-front/ui';
+
 /**
  * Applications page module.
  */
@@ -65,6 +67,7 @@ import { AbilityModule } from '@casl/angular';
     SafeModalModule,
     SafeDividerModule,
     AbilityModule,
+    ButtonModule,
   ],
   exports: [ApplicationsComponent],
 })

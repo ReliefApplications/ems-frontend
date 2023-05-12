@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Form answer page module.
@@ -23,6 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeFormModule,
     SafeButtonModule,
     TranslateModule,
+    ButtonModule,
   ],
   exports: [FormAnswerComponent],
 })

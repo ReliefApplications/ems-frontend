@@ -23,6 +23,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '@oort-front/safe';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /**
  * Duplicate application component (modal)
@@ -39,6 +40,7 @@ import { SafeModalModule } from '@oort-front/safe';
     MatDialogModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'app-duplicate-application-modal',
   templateUrl: './duplicate-application-modal.component.html',
@@ -47,6 +49,10 @@ import { SafeModalModule } from '@oort-front/safe';
 export class DuplicateApplicationModalComponent implements OnInit {
   public currentApp: Application;
   public duplicateForm: UntypedFormGroup = new UntypedFormGroup({});
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * Duplicate application component.

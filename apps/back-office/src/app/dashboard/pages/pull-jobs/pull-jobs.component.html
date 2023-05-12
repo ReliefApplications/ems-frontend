@@ -1,12 +1,12 @@
 <div class="mb-4 flex flex-row justify-end">
-  <safe-button
+  <ui-button
     icon="add"
-    category="secondary"
-    variant="primary"
+    [category]="btnCategory.SECONDARY"
+    [variant]="btnVariant.PRIMARY"
     (click)="onAdd()"
   >
     {{ 'pages.pullJobs.create' | translate }}
-  </safe-button>
+  </ui-button>
 </div>
 
 <!-- Table container -->
@@ -81,13 +81,13 @@
       <ng-container matColumnDef="actions" [stickyEnd]="true">
         <th mat-header-cell *matHeaderCellDef class="w-16"></th>
         <td mat-cell *matCellDef="let element">
-          <safe-button
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
             [matMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
           >
-          </safe-button>
+          </ui-button>
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onEdit(element)">
               <mat-icon>edit</mat-icon>

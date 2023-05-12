@@ -17,17 +17,17 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">{{
+    <ui-button (click)="onClose()">{{
       'common.close' | translate
-    }}</safe-button>
-    <safe-button
-      category="secondary"
-      variant="primary"
+    }}</ui-button>
+    <ui-button
+      [category]="btnCategory.SECONDARY"
+      [variant]="btnVariant.PRIMARY"
       [mat-dialog-close]="apiForm.value"
       cdkFocusInitial
       [disabled]="!apiForm.valid"
     >
       {{ 'common.create' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

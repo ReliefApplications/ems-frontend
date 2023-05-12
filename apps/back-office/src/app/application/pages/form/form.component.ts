@@ -28,6 +28,7 @@ import {
 } from './graphql/mutations';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Form page in application.
@@ -56,6 +57,10 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
   public page?: Page;
   public step?: Step;
   public isStep = false;
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * Form page in application

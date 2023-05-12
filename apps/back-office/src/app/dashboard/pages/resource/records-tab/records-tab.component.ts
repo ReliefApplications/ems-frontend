@@ -25,6 +25,7 @@ import {
   GetResourceRecordsQueryResponse,
   GET_RESOURCE_RECORDS,
 } from './graphql/queries';
+import { Variant, Category } from '@oort-front/ui';
 
 /** Quantity of resource that will be loaded at once. */
 const ITEMS_PER_PAGE = 10;
@@ -59,6 +60,10 @@ export class RecordsTabComponent implements OnInit {
   };
   public loading = true;
   public showUpload = false;
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /** @returns True if the records tab is empty */
   get empty(): boolean {

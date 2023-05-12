@@ -12,6 +12,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '@oort-front/safe';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /**
  * Modal to add a new resource.
@@ -27,6 +28,7 @@ import { SafeModalModule } from '@oort-front/safe';
     MatButtonModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'app-add-resource-modal',
   templateUrl: './add-resource-modal.component.html',
@@ -34,6 +36,10 @@ import { SafeModalModule } from '@oort-front/safe';
 })
 export class AddResourceModalComponent implements OnInit {
   public addForm: UntypedFormGroup = new UntypedFormGroup({});
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * Modal to add a new resource.

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { UploadEvent } from '@progress/kendo-angular-upload';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Upload Menu to be displayed in overlay container.
@@ -17,6 +18,10 @@ export class UploadMenuComponent {
   @Output() close: EventEmitter<null> = new EventEmitter();
 
   private show = true;
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /** Listen to click event on the document */
   @HostListener('click')

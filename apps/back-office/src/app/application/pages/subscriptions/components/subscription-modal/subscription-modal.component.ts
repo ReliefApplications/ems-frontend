@@ -52,6 +52,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -82,6 +83,7 @@ const ITEMS_PER_PAGE = 10;
     MatTooltipModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'app-subscription-modal',
   templateUrl: './subscription-modal.component.html',
@@ -108,6 +110,10 @@ export class SubscriptionModalComponent
     hasNextPage: true,
   };
   private applicationsLoading = true;
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   @ViewChild('applicationSelect') applicationSelect?: MatAutocomplete;
 

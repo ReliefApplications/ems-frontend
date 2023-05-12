@@ -95,15 +95,15 @@
           <div *ngIf="triedToGetFields && !loadingFields">
             {{ 'pages.referenceData.fields.noFields' | translate }}
           </div>
-          <safe-button
+          <ui-button
             *ngIf="!loadingFields"
-            category="secondary"
-            variant="primary"
+            [category]="btnCategory.SECONDARY"
+            [variant]="btnVariant.PRIMARY"
             (click)="$event.preventDefault(); getFields()"
             class="mx-auto my-1"
           >
             {{ 'pages.referenceData.fields.fetch' | translate }}
-          </safe-button>
+          </ui-button>
           <mat-spinner
             diameter="45"
             class="my-2"
@@ -123,13 +123,13 @@
           [value]="csvValue"
         ></textarea>
       </mat-form-field>
-      <safe-button
-        category="secondary"
-        variant="primary"
+      <ui-button
+        [category]="btnCategory.SECONDARY"
+        [variant]="btnVariant.PRIMARY"
         (click)="onValidateCSV()"
       >
         {{ 'pages.referenceData.validateCsv' | translate }}
-      </safe-button>
+      </ui-button>
     </div>
     <mat-spinner
       diameter="45"
@@ -200,13 +200,13 @@
     </div>
   </form>
   <!-- Submit button -->
-  <safe-button
+  <ui-button
     class="!w-auto"
-    category="secondary"
-    variant="primary"
+    [category]="btnCategory.SECONDARY"
+    [variant]="btnVariant.PRIMARY"
     (click)="onSave()"
     [disabled]="referenceForm.invalid || !referenceForm.dirty"
   >
     {{ 'common.save' | translate }}
-  </safe-button>
+  </ui-button>
 </ng-container>

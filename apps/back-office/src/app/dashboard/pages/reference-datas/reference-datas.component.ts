@@ -27,6 +27,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { Variant, Category } from '@oort-front/ui';
 
 /** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
@@ -68,6 +69,10 @@ export class ReferenceDatasComponent
     length: 0,
     endCursor: '',
   };
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * List of Reference data page.

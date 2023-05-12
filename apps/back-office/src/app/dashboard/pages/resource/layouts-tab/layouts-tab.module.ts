@@ -15,6 +15,7 @@ import {
 } from '@oort-front/safe';
 import { LayoutsTabComponent } from './layouts-tab.component';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Layouts tab of resource page
@@ -35,6 +36,7 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
     SafeSkeletonTableModule,
     MatPaginatorModule,
     SafeEmptyModule,
+    ButtonModule,
   ],
 })
 export class LayoutsTabModule {}

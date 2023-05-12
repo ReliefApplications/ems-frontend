@@ -31,6 +31,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { Variant, Category } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -71,6 +72,10 @@ export class ApplicationsComponent
     length: 0,
     endCursor: '',
   };
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;

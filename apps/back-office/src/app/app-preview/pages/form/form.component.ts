@@ -18,6 +18,7 @@ import {
   GET_STEP_BY_ID,
 } from './graphql/queries';
 import { takeUntil } from 'rxjs/operators';
+import { Category } from '@oort-front/ui';
 
 /**
  * Application preview form page component.
@@ -44,6 +45,9 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
 
   // === ROUTE ===
   public isStep = false;
+
+  // === BUTTON ===
+  public btnCategory = Category;
 
   /**
    * Application preview form page component.

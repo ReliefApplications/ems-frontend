@@ -27,6 +27,7 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
+import { Variant, Category } from '@oort-front/ui';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -64,6 +65,10 @@ export class ApiConfigurationsComponent
     length: 0,
     endCursor: '',
   };
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * API configurations page component

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { PreviewService } from '../../../services/preview.service';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Displays preview actions on top of the application content, when showing the app with preview capacity.
@@ -11,6 +12,8 @@ import { PreviewService } from '../../../services/preview.service';
   styleUrls: ['./preview-toolbar.component.scss'],
 })
 export class PreviewToolbarComponent {
+  public btnVariant = Variant;
+
   /**
    * Displays preview actions on top of the application content, when showing the app with preview capacity.
    *

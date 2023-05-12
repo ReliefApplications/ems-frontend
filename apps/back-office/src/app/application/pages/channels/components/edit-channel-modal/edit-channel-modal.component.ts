@@ -26,6 +26,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /**
  * Edit channel component, act as modal.
@@ -49,6 +50,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'app-edit-channel-modal',
   templateUrl: './edit-channel-modal.component.html',
@@ -57,6 +59,10 @@ import { TranslateModule } from '@ngx-translate/core';
 export class EditChannelModalComponent implements OnInit {
   // === REACTIVE FORM ===
   roleForm: UntypedFormGroup = new UntypedFormGroup({});
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * Edit channel component

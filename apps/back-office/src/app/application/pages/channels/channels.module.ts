@@ -17,6 +17,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Channels page module.
@@ -40,6 +41,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
   ],
 })
 export class ChannelsModule {}

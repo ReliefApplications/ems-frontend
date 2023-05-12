@@ -4,6 +4,7 @@ import { FormRoutingModule } from './form-routing.module';
 import { FormComponent } from './form.component';
 import { SafeFormModule, SafeButtonModule } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Application preview form page module.
@@ -16,6 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeFormModule,
     SafeButtonModule,
     TranslateModule,
+    ButtonModule,
   ],
   exports: [FormComponent],
 })

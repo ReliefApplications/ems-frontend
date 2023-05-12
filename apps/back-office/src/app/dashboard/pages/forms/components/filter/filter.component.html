@@ -9,11 +9,11 @@
       <mat-spinner *ngIf="loading" diameter="24" matSuffix></mat-spinner>
     </mat-form-field>
     <!-- Toggle advanced filters -->
-    <safe-button
+    <ui-button
       class="max-sm:!w-auto"
       icon="filter_list"
-      category="tertiary"
-      variant="primary"
+      [category]="btnCategory.TERTIARY"
+      [variant]="btnVariant.PRIMARY"
       (click)="show = !show"
     >
       {{
@@ -21,7 +21,7 @@
           ? ('common.filter.hide' | translate)
           : ('common.filter.show' | translate)
       }}
-    </safe-button>
+    </ui-button>
   </div>
   <!-- Advanced filters -->
   <div
@@ -41,16 +41,16 @@
       ></mat-datepicker-toggle>
       <mat-date-range-picker #rangePicker>
         <mat-date-range-picker-actions>
-          <safe-button matDateRangePickerCancel (click)="clearDateFilter()">
+          <ui-button matDateRangePickerCancel (click)="clearDateFilter()">
             {{ 'common.clear' | translate }}
-          </safe-button>
-          <safe-button
-            category="secondary"
-            variant="primary"
+          </ui-button>
+          <ui-button
+            [category]="btnCategory.SECONDARY"
+            [variant]="btnVariant.PRIMARY"
             matDateRangePickerApply
           >
             {{ 'common.filter.apply' | translate }}
-          </safe-button>
+          </ui-button>
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
@@ -84,8 +84,8 @@
       </mat-select>
     </mat-form-field>
     <!-- Clear filters -->
-    <safe-button class="max-sm:!w-auto" variant="danger" (click)="clear()">{{
+    <ui-button class="max-sm:!w-auto" [variant]="btnVariant.DANGER" (click)="clear()">{{
       'common.filter.clear' | translate
-    }}</safe-button>
+    }}</ui-button>
   </div>
 </div>

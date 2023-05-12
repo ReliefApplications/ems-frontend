@@ -16,6 +16,7 @@ import {
 } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Add step module
@@ -38,6 +39,7 @@ import { AbilityModule } from '@casl/angular';
     SafeFormsDropdownModule,
     SafeDividerModule,
     AbilityModule,
+    ButtonModule,
   ],
 })
 export class AddStepModule {}

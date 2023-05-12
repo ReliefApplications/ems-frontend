@@ -17,6 +17,7 @@ import {
   GetResourceByIdQueryResponse,
   GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Aggregations tab of resource page
@@ -46,6 +47,10 @@ export class AggregationsTabComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /** @returns True if the aggregations tab is empty */
   get empty(): boolean {

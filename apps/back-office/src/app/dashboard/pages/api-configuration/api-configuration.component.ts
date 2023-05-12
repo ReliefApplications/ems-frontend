@@ -27,6 +27,7 @@ import {
   GetApiConfigurationQueryResponse,
   GET_API_CONFIGURATION,
 } from './graphql/queries';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * API configuration page component.
@@ -51,6 +52,10 @@ export class ApiConfigurationComponent
   public statusChoices = Object.values(status);
   public authType = authType;
   public authTypeChoices = Object.values(authType);
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /** @returns API configuration name */
   get name(): AbstractControl | null {

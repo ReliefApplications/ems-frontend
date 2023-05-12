@@ -13,6 +13,7 @@ import {
   SafeDateModule,
   SafeSkeletonTableModule,
 } from '@oort-front/safe';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Forms tab of resource page.
@@ -31,6 +32,7 @@ import {
     TranslateModule,
     SafeDateModule,
     SafeSkeletonTableModule,
+    ButtonModule,
   ],
 })
 export class FormsTabModule {}

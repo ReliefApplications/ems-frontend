@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { apiValidator } from '../../../../../utils/nameValidation';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Add API configuration component (modal)
@@ -19,6 +20,10 @@ import { apiValidator } from '../../../../../utils/nameValidation';
 export class AddApiConfigurationComponent implements OnInit {
   // === REACTIVE FORM ===
   apiForm: UntypedFormGroup = new UntypedFormGroup({});
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /** @returns name for the API configuration */
   get name(): AbstractControl | null {

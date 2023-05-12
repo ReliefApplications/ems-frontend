@@ -29,6 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Dashboard page module.
@@ -63,6 +64,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
     ReactiveFormsModule,
     MatFormFieldModule,
     DashboardFilterModule,
+    ButtonModule,
   ],
   exports: [DashboardComponent],
 })

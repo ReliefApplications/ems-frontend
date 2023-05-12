@@ -24,6 +24,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { CustomStyleComponent } from '../../../components/custom-style/custom-style.component';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Application settings page component.
@@ -43,6 +44,10 @@ export class SettingsComponent
   public user: any;
   public locked: boolean | undefined = undefined;
   public lockedByUser: boolean | undefined = undefined;
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * Application settings page component.

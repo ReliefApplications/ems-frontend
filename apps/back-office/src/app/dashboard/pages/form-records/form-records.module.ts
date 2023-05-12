@@ -16,6 +16,7 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Forms records page module */
 @NgModule({
@@ -35,6 +36,7 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     OverlayModule,
     UploadMenuModule,
     SafeSkeletonTableModule,
+    ButtonModule,
   ],
   exports: [FormRecordsComponent],
 })

@@ -21,6 +21,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Application subscriptions page module.
@@ -48,6 +49,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MatTooltipModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
+    ButtonModule,
   ],
 })
 export class SubscriptionsModule {}

@@ -25,6 +25,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../../utils/update-queries';
+import { Variant, Category } from '@oort-front/ui';
 
 /** Default items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -59,6 +60,10 @@ export class AddStepComponent
   // === REACTIVE FORM ===
   public stepForm: UntypedFormGroup = new UntypedFormGroup({});
   public stage = 1;
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * Add step page component

@@ -9,6 +9,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule, SafeEmptyModule } from '@oort-front/safe';
 import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Calculated fields tab of resource page
@@ -26,6 +27,7 @@ import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component'
     TranslateModule,
     OverlayModule,
     SafeEmptyModule,
+    ButtonModule,
   ],
 })
 export class CalculatedFieldsTabModule {}

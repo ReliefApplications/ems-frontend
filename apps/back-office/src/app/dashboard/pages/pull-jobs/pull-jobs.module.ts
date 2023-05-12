@@ -17,6 +17,7 @@ import {
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Pull Jobs page module. */
 @NgModule({
@@ -37,6 +38,7 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
     SafeIconModule,
     SafeCronParserModule,
     SafeDateModule,
+    ButtonModule,
   ],
 })
 export class PullJobsModule {}

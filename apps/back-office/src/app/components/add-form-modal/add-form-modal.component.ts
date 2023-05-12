@@ -29,6 +29,7 @@ import {
   SafeIconModule,
   SafeModalModule,
 } from '@oort-front/safe';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -54,6 +55,7 @@ const ITEMS_PER_PAGE = 10;
     SafeIconModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',
@@ -67,6 +69,10 @@ export class AddFormModalComponent implements OnInit {
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
   public templates: any[] = [];
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   @ViewChild('resourceSelect') resourceSelect?: MatSelect;
 

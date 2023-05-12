@@ -20,6 +20,7 @@ import { SafeButtonModule, SafeModalModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /**
  * Add new application position component (modal)
@@ -41,6 +42,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'app-position-modal',
   templateUrl: './position-modal.component.html',
@@ -49,6 +51,10 @@ import { TranslateModule } from '@ngx-translate/core';
 export class PositionModalComponent implements OnInit {
   // === REACTIVE FORM ===
   positionForm: UntypedFormGroup = new UntypedFormGroup({});
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * Add new application position component

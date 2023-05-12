@@ -51,7 +51,7 @@
               </mat-option>
             </mat-optgroup>
           </mat-autocomplete>
-          <safe-button
+          <ui-button
             *ngIf="routingKey"
             matSuffix
             [isIcon]="true"
@@ -61,7 +61,7 @@
                 | translate
             "
             (click)="routingKey = ''"
-          ></safe-button>
+          ></ui-button>
           <safe-icon
             icon="info"
             class="cursor-pointer"
@@ -103,17 +103,17 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">{{
+    <ui-button (click)="onClose()">{{
       'common.close' | translate
-    }}</safe-button>
-    <safe-button
-      category="secondary"
-      variant="primary"
+    }}</ui-button>
+    <ui-button
+      [category]="btnCategory.SECONDARY"
+      [variant]="btnVariant.PRIMARY"
       [mat-dialog-close]="subscriptionForm.value"
       cdkFocusInitial
       [disabled]="!subscriptionForm.valid"
     >
       {{ (data.subscription ? 'common.update' : 'common.create') | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

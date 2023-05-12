@@ -15,6 +15,7 @@ import {
   SafeEmptyModule,
 } from '@oort-front/safe';
 import { UploadMenuModule } from '../../../../components/upload-menu/upload-menu.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Records tab module for resource page.
@@ -35,6 +36,7 @@ import { UploadMenuModule } from '../../../../components/upload-menu/upload-menu
     UploadMenuModule,
     SafeSkeletonTableModule,
     SafeEmptyModule,
+    ButtonModule,
   ],
 })
 export class RecordsTabModule {}

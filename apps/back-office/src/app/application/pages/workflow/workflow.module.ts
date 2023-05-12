@@ -18,6 +18,7 @@ import { SafeSearchMenuModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Application workflow page module.
@@ -41,6 +42,7 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     SafeIconModule,
     SafeSkeletonModule,
     SafeEditableTextModule,
+    ButtonModule,
   ],
   exports: [WorkflowComponent],
 })

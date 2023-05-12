@@ -82,9 +82,9 @@
         ></safe-icon>
       </mat-form-field>
     </form>
-    <safe-button
-      category="secondary"
-      variant="primary"
+    <ui-button
+      [category]="btnCategory.SECONDARY"
+      [variant]="btnVariant.PRIMARY"
       (click)="onSubmit()"
       cdkFocusInitial
       [disabled]="!form.valid || !!form.get('displayField')?.disabled"
@@ -96,6 +96,6 @@
           : 'models.dashboard.context.datasource.set'
         ) | translate
       }}
-    </safe-button>
+    </ui-button>
   </ng-container>
 </safe-modal>

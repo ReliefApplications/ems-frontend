@@ -13,6 +13,7 @@ import { SafeButtonModule, SafeModalModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Application position module.
@@ -35,6 +36,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
   ],
   exports: [PositionComponent],
 })

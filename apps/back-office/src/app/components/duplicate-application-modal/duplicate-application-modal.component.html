@@ -23,17 +23,17 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button (click)="onCancel()">{{
+    <ui-button (click)="onCancel()">{{
       'common.close' | translate
-    }}</safe-button>
-    <safe-button
-      category="secondary"
-      variant="primary"
+    }}</ui-button>
+    <ui-button
+      [category]="btnCategory.SECONDARY"
+      [variant]="btnVariant.PRIMARY"
       (click)="onSubmit()"
       cdkFocusInitial
       [disabled]="!duplicateForm.valid"
     >
       {{ 'common.duplicate' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

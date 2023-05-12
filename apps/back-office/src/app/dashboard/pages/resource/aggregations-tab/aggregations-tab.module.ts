@@ -16,6 +16,7 @@ import {
 } from '@oort-front/safe';
 import { AggregationsTabComponent } from './aggregations-tab.component';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Aggregations tab of resource page
@@ -37,6 +38,7 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
     SafeSkeletonTableModule,
     MatPaginatorModule,
     SafeEmptyModule,
+    ButtonModule,
   ],
 })
 export class AggregationsTabModule {}

@@ -56,14 +56,14 @@
       ></textarea>
     </mat-form-field>
   </div>
-  <safe-button
-    category="secondary"
-    variant="primary"
+  <ui-button
+    [category]="btnCategory.SECONDARY"
+    [variant]="btnVariant.PRIMARY"
     (click)="onSubmit()"
     [disabled]="settingsForm.invalid || !settingsForm.dirty"
   >
     {{ 'common.saveChanges' | translate }}
-  </safe-button>
+  </ui-button>
 </form>
 <!-- Actions -->
 <div
@@ -73,30 +73,30 @@
   <h1>{{ 'pages.application.settings.actions' | translate }}</h1>
   <div class="flex gap-2 flex-wrap">
     <!-- Styling -->
-    <safe-button
-      category="secondary"
-      variant="primary"
+    <ui-button
+      [category]="btnCategory.SECONDARY"
+      [variant]="btnVariant.PRIMARY"
       (click)="onOpenStyle()"
     >
       {{ 'components.application.customStyling' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       icon="file_copy"
-      category="tertiary"
-      variant="primary"
+      [category]="btnCategory.TERTIARY"
+      [variant]="btnVariant.PRIMARY"
       (click)="onDuplicate()"
       *ngIf="application.canUpdate"
     >
       {{ 'common.duplicate' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       icon="delete"
-      category="tertiary"
-      variant="danger"
+      [category]="btnCategory.TERTIARY"
+      [variant]="btnVariant.DANGER"
       (click)="onDelete()"
       *ngIf="application.canDelete"
     >
       {{ 'common.delete' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </div>

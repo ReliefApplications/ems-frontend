@@ -5,6 +5,7 @@ import {
   UntypedFormGroup,
 } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Filter component of applications page.
@@ -18,6 +19,11 @@ export class FilterComponent implements OnInit {
   public form!: UntypedFormGroup;
   public search = new UntypedFormControl('');
   public show = false;
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
+
   @Output() filter = new EventEmitter<any>();
   @Input() loading = false;
 

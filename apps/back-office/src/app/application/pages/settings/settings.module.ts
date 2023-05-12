@@ -8,6 +8,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeButtonModule } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Application settings module.
@@ -24,6 +25,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule,
     SafeButtonModule,
     TranslateModule,
+    ButtonModule,
   ],
 })
 export class SettingsModule {}

@@ -32,6 +32,7 @@ import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '@oort-front/safe';
+import { Variant, Category } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -76,6 +77,10 @@ export class FormRecordsComponent
 
   @ViewChild('xlsxFile') xlsxFile: any;
   public showUpload = false;
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * Forms records page component

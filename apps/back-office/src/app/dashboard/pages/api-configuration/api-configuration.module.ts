@@ -12,6 +12,7 @@ import { MatLegacyOptionModule as MatOptionModule } from '@angular/material/lega
 import { SafeButtonModule } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * API configuration page module.
@@ -31,6 +32,7 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
     SafeButtonModule,
     TranslateModule,
     MatChipsModule,
+    ButtonModule,
   ],
 })
 export class ApiConfigurationModule {}

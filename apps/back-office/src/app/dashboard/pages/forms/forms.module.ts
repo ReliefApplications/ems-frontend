@@ -28,6 +28,7 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Forms page module */
 @NgModule({
@@ -56,6 +57,7 @@ import { AbilityModule } from '@casl/angular';
     SafeSkeletonTableModule,
     SafeDateModule,
     AbilityModule,
+    ButtonModule,
   ],
   exports: [FormsComponent],
 })

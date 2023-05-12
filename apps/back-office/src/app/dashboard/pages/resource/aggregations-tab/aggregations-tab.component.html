@@ -1,13 +1,13 @@
 <div class="self-end" *ngIf="!loading">
-  <safe-button
-    variant="primary"
-    category="secondary"
+  <ui-button
+    [variant]="btnVariant.PRIMARY"
+    [category]="btnCategory.SECONDARY"
     (click)="onAddAggregation()"
   >
     {{
       'components.widget.settings.grid.aggregations.add.choice.create'
         | translate
-    }}</safe-button
+    }}</ui-button
   >
 </div>
 <div>
@@ -37,14 +37,14 @@
         <ng-container matColumnDef="_actions" [stickyEnd]="true">
           <th mat-header-cell *matHeaderCellDef class="w-16"></th>
           <td mat-cell *matCellDef="let element">
-            <safe-button
+            <ui-button
               [isIcon]="true"
               icon="more_vert"
               [matMenuTriggerFor]="resMenu"
               (click)="$event.stopPropagation()"
               [disabled]="!resource.canUpdate"
             >
-            </safe-button>
+            </ui-button>
             <mat-menu #resMenu="matMenu">
               <button mat-menu-item (click)="onEditAggregation(element)">
                 <mat-icon>edit</mat-icon>

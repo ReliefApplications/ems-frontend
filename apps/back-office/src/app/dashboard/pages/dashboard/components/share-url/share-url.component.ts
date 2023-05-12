@@ -6,6 +6,7 @@ import {
 import { Clipboard } from '@angular/cdk/clipboard';
 import { SafeSnackBarService } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
+import { Variant, Category } from '@oort-front/ui';
 
 /** Component to display current url and copy it. */
 @Component({
@@ -14,6 +15,10 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./share-url.component.css'],
 })
 export class ShareUrlComponent {
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
+
   /**
    * Component to display current url and copy it.
    *

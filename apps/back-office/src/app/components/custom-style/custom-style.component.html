@@ -6,17 +6,17 @@
         {{ 'components.application.customStyling' | translate }}
       </h2>
       <div class="flex">
-        <safe-button
-          variant="primary"
-          category="tertiary"
+        <ui-button
+          [variant]="btnVariant.PRIMARY"
+          [category]="btnCategory.TERTIARY"
           [isIcon]="true"
           icon="check"
           (click)="onSave()"
           [disabled]="!applicationId || formControl.pristine"
         >
-        </safe-button>
-        <safe-button [isIcon]="true" icon="close" (click)="onClose()">
-        </safe-button>
+        </ui-button>
+        <ui-button [isIcon]="true" icon="close" (click)="onClose()">
+        </ui-button>
       </div>
     </div>
   </div>

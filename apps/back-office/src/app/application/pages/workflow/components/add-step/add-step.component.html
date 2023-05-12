@@ -23,31 +23,31 @@
         ></safe-forms-dropdown>
         <safe-divider [text]="'or'"></safe-divider>
         <!-- New form -->
-        <safe-button
+        <ui-button
           class="mt-4"
           icon="add"
-          category="secondary"
-          variant="primary"
+          [category]="btnCategory.SECONDARY"
+          [variant]="btnVariant.PRIMARY"
           (click)="onAdd()"
           [disabled]="!('create' | able : 'Form')"
         >
           {{ 'models.form.create' | translate }}
-        </safe-button>
+        </ui-button>
       </div>
     </ng-container>
   </div>
 </form>
 <!-- Actions -->
 <div class="flex flex-row justify-center mt-16" *ngIf="stage !== 1">
-  <safe-button [disabled]="stage <= 1" (click)="onBack()" class="my-0 mx-1">{{
+  <ui-button [disabled]="stage <= 1" (click)="onBack()" class="my-0 mx-1">{{
     'common.back' | translate
-  }}</safe-button>
-  <safe-button
+  }}</ui-button>
+  <ui-button
     class="my-0 mx-1"
-    category="secondary"
-    variant="primary"
+    [category]="btnCategory.SECONDARY"
+    [variant]="btnVariant.PRIMARY"
     (click)="onNext()"
     [disabled]="!isStageValid(stage)"
-    >{{ 'common.next' | translate }}</safe-button
+    >{{ 'common.next' | translate }}</ui-button
   >
 </div>
