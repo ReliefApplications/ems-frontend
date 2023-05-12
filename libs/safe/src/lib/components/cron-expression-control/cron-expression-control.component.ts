@@ -1,6 +1,7 @@
 import { Component, Optional, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Cron expression form control
@@ -22,6 +23,9 @@ export class CronExpressionControlComponent implements ControlValueAccessor {
   //   this.ngControl.control?.setValue(value);
   // }
   public value: string | undefined | null;
+
+  // === ICON VARIANTS ===
+  public colorVariant = Variant;
 
   private onTouched!: any;
   private onChanged!: any;

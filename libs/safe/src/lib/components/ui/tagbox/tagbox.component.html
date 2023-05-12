@@ -1,5 +1,5 @@
-<mat-form-field appearance="outline" class="flex-1">
-  <mat-label>{{ label }}</mat-label>
+<div uiFormFieldDirective [outline]="false" class="flex-1">
+  <label>{{ label }}</label>
   <!-- Chip list -->
   <mat-chip-list #chipList>
     <!-- Individual chip choice -->
@@ -23,7 +23,6 @@
       type="text"
       [placeholder]="label"
       #textInput
-      matInput
       [formControl]="inputFormControl"
       [matAutocomplete]="auto"
       [matChipInputFor]="chipList"
@@ -43,13 +42,13 @@
       {{ choice[displayKey] }}
     </mat-option>
   </mat-autocomplete>
-  <safe-icon
-    matSuffix
+  <ui-icon
+    uiSuffix
     class="cursor-pointer"
     icon="info"
-    variant="grey"
+    [variant]="colorVariant.GREY"
     [matTooltip]="
       'components.aggregationBuilder.tooltip.selectedFields' | translate
     "
-  ></safe-icon>
-</mat-form-field>
+  ></ui-icon>
+</div>

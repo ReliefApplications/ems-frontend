@@ -302,10 +302,10 @@
       }}</mat-checkbox>
       <div *ngIf="formGroup.value.sendMail" class="sub-parameters">
         <!-- Distribution list -->
-        <mat-form-field appearance="outline">
-          <mat-label>{{
+        <div uiFormFieldDirective [outline]="false">
+          <label>{{
             'components.emailBuilder.distribution' | translate
-          }}</mat-label>
+          }}</label>
           <mat-select formControlName="distributionList">
             <mat-option
               *ngFor="let list of distributionLists"
@@ -314,19 +314,18 @@
               {{ list.name }}
             </mat-option>
           </mat-select>
-          <safe-icon
-            matSuffix
+          <ui-icon
+            uiSuffix
             icon="info_outline"
             class="cursor-pointer"
-            variant="grey"
-            matSuffix
+            [variant]="colorVariant.GREY"
             [matTooltip]="
               'components.widget.settings.grid.buttons.tooltip.mail.selectDistributionList'
                 | translate
             "
-          ></safe-icon>
+          ></ui-icon>
           <safe-button
-            matSuffix
+            uiSuffix
             [isIcon]="true"
             icon="add_circle_outline"
             variant="primary"
@@ -334,12 +333,12 @@
             [matTooltip]="'components.distributionLists.edit.new' | translate"
           >
           </safe-button>
-        </mat-form-field>
+        </div>
         <!-- Templates -->
-        <mat-form-field appearance="outline">
-          <mat-label>{{
+        <div uiFormFieldDirective [outline]="false">
+          <label>{{
             'components.templates.available' | translate
-          }}</mat-label>
+          }}</label>
           <mat-select class="select" formControlName="templates" multiple>
             <mat-option
               *ngFor="let template of mailTemplates"
@@ -348,19 +347,18 @@
               {{ template.name }}
             </mat-option>
           </mat-select>
-          <safe-icon
-            matSuffix
+          <ui-icon
+            uiSuffix
             icon="info_outline"
             class="cursor-pointer"
-            variant="grey"
-            matSuffix
+            [variant]="colorVariant.GREY"
             [matTooltip]="
               'components.widget.settings.grid.buttons.tooltip.mail.selectTemplates'
                 | translate
             "
-          ></safe-icon>
+          ></ui-icon>
           <safe-button
-            matSuffix
+            uiSuffix
             [isIcon]="true"
             icon="add_circle_outline"
             variant="primary"
@@ -375,7 +373,7 @@
             "
             >{{ 'components.templates.errors.empty' | translate }}</mat-error
           >
-        </mat-form-field>
+        </div>
         <!-- Export dataset -->
         <mat-checkbox formControlName="export">{{
           'components.widget.settings.grid.buttons.callback.export' | translate

@@ -166,9 +166,9 @@ export class FormWrapperDirective implements AfterContentInit {
         (el: any) =>
           !(el instanceof HTMLInputElement || el instanceof HTMLLabelElement)
       )
-      .forEach((childEl: any) =>
-        this.renderer.appendChild(beyondLabel, childEl)
-      );
+      .forEach((childEl: any) => {
+        this.renderer.appendChild(beyondLabel, childEl);
+      });
 
     //Add beyond label as a child of elementRef
     this.renderer.appendChild(this.elementRef.nativeElement, beyondLabel);

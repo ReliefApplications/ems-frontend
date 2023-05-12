@@ -168,26 +168,25 @@
       </mat-form-field>
     </div>
     <!-- For graphql -->
-    <mat-form-field appearance="outline" *ngIf="type === 'graphql'">
-      <mat-label
+    <div uiFormFieldDirective [outline]="false" *ngIf="type === 'graphql'">
+      <label
         >{{ 'pages.referenceData.graphQLFilter' | translate }}
-      </mat-label>
+      </label>
       <input
-        matInput
         formControlName="graphQLFilter"
         type="text"
         [placeholder]="
           'pages.referenceData.placeholder.graphQLFilter' | translate
         "
       />
-      <safe-icon
+      <ui-icon
         icon="info_outline"
         class="cursor-pointer"
-        variant="grey"
-        matSuffix
+        [variant]="colorVariant.GREY"
+        uiSuffix
         [matTooltip]="'pages.referenceData.tooltip.graphQLFilter' | translate"
-      ></safe-icon>
-    </mat-form-field>
+      ></ui-icon>
+    </div>
     <!-- Kendo grid to preview data on static type -->
     <div *ngIf="!csvLoading && csvValue && type === 'static'">
       <kendo-grid [data]="newData">

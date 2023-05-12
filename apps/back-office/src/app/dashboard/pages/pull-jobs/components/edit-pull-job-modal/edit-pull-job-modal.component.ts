@@ -20,7 +20,6 @@ import {
   status,
   authType,
   cronValidator,
-  SafeIconModule,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -54,6 +53,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
+import { UiModule, Variant } from '@oort-front/ui';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -72,7 +72,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     SafeModalModule,
     SafeGraphQLSelectModule,
     SafeReadableCronModule,
-    SafeIconModule,
+    UiModule,
     MatTooltipModule,
     MatInputModule,
     MatSelectModule,
@@ -116,6 +116,9 @@ export class EditPullJobModalComponent implements OnInit {
 
   // === RAW JSON UTILITY ===
   public openRawJSON = false;
+
+  // === ICON VARIANTS ===
+  public colorVariant = Variant;
 
   /** @returns pull job mapping as form array */
   get mappingArray(): UntypedFormArray {

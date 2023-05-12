@@ -101,9 +101,9 @@
       <h3>{{ 'components.customNotifications.edit.email' | translate }}</h3>
       <div class="flex flex-col">
         <!-- Template -->
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{ 'common.template.one' | translate }}</mat-label>
-          <mat-select formControlName="template">
+        <div uiFormFieldDirective [outline]="false" class="flex-1">
+          <label>{{ 'common.template.one' | translate }}</label>
+          <mat-select uiPrefix formControlName="template">
             <mat-option
               *ngFor="let template of templates"
               [value]="template.id"
@@ -111,16 +111,15 @@
               {{ template.name }}
             </mat-option>
           </mat-select>
-          <safe-icon
-            matSuffix
+          <ui-icon
             icon="info_outline"
             class="cursor-pointer"
-            variant="grey"
-            matSuffix
+            [variant]="colorVariant.GREY"
+            uiSuffix
             matTooltip="HINT"
-          ></safe-icon>
+          ></ui-icon>
           <safe-button
-            matSuffix
+            uiSuffix
             [isIcon]="true"
             icon="add_circle_outline"
             variant="primary"
@@ -128,7 +127,7 @@
             [matTooltip]="'components.templates.edit.new' | translate"
           >
           </safe-button>
-        </mat-form-field>
+        </div>
         <!-- Recipients -->
         <h4>
           {{

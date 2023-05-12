@@ -23,26 +23,26 @@
     </mat-form-field>
   </div>
   <!-- Quick layer -->
-  <mat-form-field appearance="outline" class="w-full">
-    <mat-label>{{
+  <div uiFormFieldDirective [outline]="false" class="w-full">
+    <label>{{
       'components.widget.settings.map.layers.point.category' | translate
-    }}</mat-label>
+    }}</label>
     <mat-select formControlName="category">
       <mat-option [value]="">{{ 'common.input.none' | translate }}</mat-option>
       <mat-option *ngFor="let field of selectedFields" [value]="field">
         {{ field }}
       </mat-option>
     </mat-select>
-    <safe-icon
-      matSuffix
+    <ui-icon
+      uiSuffix
       icon="info"
       class="cursor-pointer"
-      variant="grey"
+      [variant]="colorVariant.GREY"
       [matTooltip]="
         'components.widget.settings.map.tooltip.category' | translate
       "
-    ></safe-icon>
-  </mat-form-field>
+    ></ui-icon>
+  </div>
   <!-- Popup details selector -->
   <mat-form-field appearance="outline" class="w-full">
     <mat-label>

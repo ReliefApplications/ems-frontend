@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { markerRuleForm } from '../../map-forms';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Component of Map widget marker rules.
@@ -17,6 +18,9 @@ export class MapMarkersComponent implements OnInit {
   @Input() selectedFields: any[] = [];
   @Input() formattedSelectedFields: any[] = [];
   public numberFields: any[] = [];
+
+  // === ICON VARIANTS ===
+  public colorVariant = Variant;
 
   /**
    * Get marker rules as form array.

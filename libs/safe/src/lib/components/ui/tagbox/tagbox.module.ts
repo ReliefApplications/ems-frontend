@@ -9,7 +9,6 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { UiModule } from '@oort-front/ui';
-import { SafeIconModule } from '../icon/icon.module';
 
 /**
  * Module declaration for safe-tagbox component
@@ -22,7 +21,6 @@ import { SafeIconModule } from '../icon/icon.module';
     MatFormFieldModule,
     MatChipsModule,
     UiModule,
-    SafeIconModule,
     MatAutocompleteModule,
     MatInputModule,
     ReactiveFormsModule,

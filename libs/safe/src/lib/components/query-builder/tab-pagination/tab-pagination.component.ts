@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Pagination tab component for the query builder.
@@ -12,4 +13,7 @@ import { UntypedFormGroup } from '@angular/forms';
 })
 export class SafeTabPaginationComponent {
   @Input() form!: UntypedFormGroup;
+
+  // === ICON VARIANTS ===
+  public colorVariant = Variant;
 }

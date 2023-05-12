@@ -64,23 +64,23 @@
       </mat-form-field>
 
       <!-- Field selection -->
-      <mat-form-field appearance="outline" class="grow">
-        <mat-label>{{
+      <div uiFormFieldDirective [outline]="false" class="grow">
+        <label>{{
           'models.dashboard.context.displayField' | translate
-        }}</mat-label>
+        }}</label>
         <mat-select formControlName="displayField">
           <mat-option *ngFor="let field of availableFields" [value]="field">
             {{ field }}
           </mat-option>
         </mat-select>
-        <safe-icon
+        <ui-icon
           icon="info"
           class="cursor-pointer"
-          variant="grey"
-          matSuffix
+          [variant]="colorVariant.GREY"
+          uiSuffix
           [matTooltip]="'models.dashboard.context.datasource.info' | translate"
-        ></safe-icon>
-      </mat-form-field>
+        ></ui-icon>
+      </div>
     </form>
     <safe-button
       category="secondary"

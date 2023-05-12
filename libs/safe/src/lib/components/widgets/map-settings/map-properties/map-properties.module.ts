@@ -6,7 +6,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySliderModule as MatSliderModule } from '@angular/material/legacy-slider';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeMapModule } from '../../map/map.module';
@@ -27,7 +26,6 @@ import { UiModule } from '@oort-front/ui';
     MatSliderModule,
     MatTooltipModule,
     MatSelectModule,
-    SafeIconModule,
     SafeMapModule,
     UiModule,
   ],

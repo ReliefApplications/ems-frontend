@@ -19,17 +19,16 @@
             formControlName="title"
           />
         </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{
+        <div uiFormFieldDirective [outline]="false">
+          <label>{{
             'components.application.subscription.modal.listenTo' | translate
-          }}</mat-label>
+          }}</label>
           <input
             type="text"
             [placeholder]="
               'components.application.subscription.modal.placeholder.listenTo'
                 | translate
             "
-            matInput
             formControlName="routingKey"
             [matAutocomplete]="auto"
           />
@@ -53,7 +52,7 @@
           </mat-autocomplete>
           <safe-button
             *ngIf="routingKey"
-            matSuffix
+            uiSuffix
             [isIcon]="true"
             icon="close"
             [ariaLabel]="
@@ -62,17 +61,17 @@
             "
             (click)="routingKey = ''"
           ></safe-button>
-          <safe-icon
+          <ui-icon
             icon="info"
             class="cursor-pointer"
-            variant="grey"
-            matSuffix
+            [variant]="colorVariant.GREY"
+            uiSuffix
             [matTooltip]="
               'components.application.subscription.modal.hint.listenTo'
                 | translate
             "
-          ></safe-icon>
-        </mat-form-field>
+          ></ui-icon>
+        </div>
         <mat-form-field appearance="outline">
           <mat-label>{{
             'components.record.convert.select' | translate

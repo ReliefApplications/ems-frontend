@@ -10,9 +10,9 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { LayoutTableModule } from '../../../grid-layout/layout-table/layout-table.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { AggregationTableModule } from '../../../aggregation/aggregation-table/aggregation-table.module';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Main Tab of grid widget configuration modal.
@@ -31,7 +31,7 @@ import { AggregationTableModule } from '../../../aggregation/aggregation-table/a
     LayoutTableModule,
     SafeGraphQLSelectModule,
     MatTooltipModule,
-    SafeIconModule,
+    UiModule,
     SafeDividerModule,
     AggregationTableModule,
   ],

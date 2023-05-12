@@ -36,6 +36,7 @@ import {
   GET_RESOURCE,
   GET_RESOURCES,
 } from './graphql/queries';
+import { UiModule, Variant } from '@oort-front/ui';
 
 /** Default items per resources query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -77,6 +78,7 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     SafeModalModule,
     SafeGraphQLSelectModule,
     SafeAlertModule,
+    UiModule,
   ],
   templateUrl: './context-datasource.component.html',
   styleUrls: ['./context-datasource.component.scss'],
@@ -96,6 +98,9 @@ export class ContextDatasourceComponent
   // Queries
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public refDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
+
+  // === ICON VARIANTS ===
+  public colorVariant = Variant;
 
   @ViewChild(SafeGraphQLSelectComponent)
   resourceSelect?: SafeGraphQLSelectComponent;

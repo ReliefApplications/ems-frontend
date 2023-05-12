@@ -20,6 +20,7 @@ import { scrollFactory } from '../../utils/scroll-factory';
 import { LayoutPreviewData } from './tab-layout-preview/tab-layout-preview.component';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Main query builder component.
@@ -75,6 +76,9 @@ export class SafeQueryBuilderComponent
   // === FIELD EDITION ===
   public isField = false;
   @Output() closeField: EventEmitter<boolean> = new EventEmitter();
+
+  // === ICON VARIANTS ===
+  public colorVariant = Variant;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is

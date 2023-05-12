@@ -4,6 +4,7 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Form } from '../../../../models/form.model';
 import { Resource } from '../../../../models/resource.model';
 import { GetResourcesQueryResponse, GET_RESOURCES } from '../graphql/queries';
+import { Variant } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -24,6 +25,9 @@ export class TabMainComponent implements OnInit {
   @Input() templates: Form[] = [];
 
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+
+  // === ICON VARIANTS ===
+  public colorVariant = Variant;
 
   /**
    * Main tab of widget grid configuration modal

@@ -2,11 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceDataRoutingModule } from './reference-data-routing.module';
 import { ReferenceDataComponent } from './reference-data.component';
-import {
-  SafeAccessModule,
-  SafeGraphQLSelectModule,
-  SafeIconModule,
-} from '@oort-front/safe';
+import { SafeAccessModule, SafeGraphQLSelectModule } from '@oort-front/safe';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -39,7 +35,6 @@ import { UiModule } from '@oort-front/ui';
     SafeButtonModule,
     TranslateModule,
     MatChipsModule,
-    SafeIconModule,
     GridModule,
     MatTooltipModule,
     SafeGraphQLSelectModule,

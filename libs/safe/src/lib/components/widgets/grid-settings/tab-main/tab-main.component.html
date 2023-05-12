@@ -36,23 +36,23 @@
     </mat-autocomplete> -->
     </mat-form-field>
     <!-- Template selection -->
-    <mat-form-field appearance="outline" class="flex-1">
-      <mat-label>{{ 'models.form.template' | translate }}</mat-label>
+    <div uiFormFieldDirective [outline]="false" class="flex-1">
+      <label>{{ 'models.form.template' | translate }}</label>
       <mat-select formControlName="template">
         <mat-option>-</mat-option>
         <mat-option *ngFor="let template of templates" [value]="template.id">{{
           template.name
         }}</mat-option>
       </mat-select>
-      <safe-icon
-        matSuffix
+      <ui-icon
+        uiSuffix
         icon="info_outline"
-        variant="grey"
+        [variant]="colorVariant.GREY"
         [matTooltip]="
           'components.widget.settings.grid.tooltip.template' | translate
         "
-      ></safe-icon>
-    </mat-form-field>
+      ></ui-icon>
+    </div>
   </div>
 </div>
 <div class="flex flex-col mt-8 gap-8" *ngIf="form || resource">

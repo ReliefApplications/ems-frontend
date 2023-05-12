@@ -6,7 +6,6 @@ import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeAlertModule } from '../../../../ui/alert/alert.module';
 import { SafeButtonModule } from '../../../../ui/button/button.module';
-import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MapMarkerRuleModule } from '../map-marker-rule/map-marker-rule.module';
@@ -24,7 +23,6 @@ import { UiModule } from '@oort-front/ui';
     ReactiveFormsModule,
     TranslateModule,
     SafeButtonModule,
-    SafeIconModule,
     SafeAlertModule,
     MatTableModule,
     MatFormFieldModule,

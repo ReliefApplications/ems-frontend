@@ -33,46 +33,46 @@
       [max]="18"
     ></mat-slider>
     <div class="flex flex-wrap gap-2">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+      <div uiFormFieldDirective [outline]="false" class="flex-1">
+        <label>
           {{ 'components.widget.settings.map.properties.latitude' | translate }}
-        </mat-label>
-        <input type="number" matInput formControlName="centerLat" />
-        <safe-icon
-          matSuffix
+        </label>
+        <input type="number" formControlName="centerLat" />
+        <ui-icon
+          uiSuffix
           icon="info"
           class="cursor-pointer"
-          variant="grey"
+          [variant]="colorVariant.GREY"
           [matTooltip]="
             'components.widget.settings.map.tooltip.default.latitude'
               | translate
           "
-        ></safe-icon>
+        ></ui-icon>
         <mat-error *ngIf="form.controls.centerLat.errors">
           {{ 'components.widget.settings.map.errors.latitude' | translate }}
         </mat-error>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+      </div>
+      <div uiFormFieldDirective [outline]="false" class="flex-1">
+        <label>
           {{
             'components.widget.settings.map.properties.longitude' | translate
           }}
-        </mat-label>
-        <input type="number" matInput formControlName="centerLong" />
-        <safe-icon
-          matSuffix
+        </label>
+        <input type="number" formControlName="centerLong" />
+        <ui-icon
+          uiSuffix
           icon="info"
           class="cursor-pointer"
-          variant="grey"
+          [variant]="colorVariant.GREY"
           [matTooltip]="
             'components.widget.settings.map.tooltip.default.longitude'
               | translate
           "
-        ></safe-icon>
+        ></ui-icon>
         <mat-error *ngIf="form.controls.centerLat.errors">
           {{ 'components.widget.settings.map.errors.longitude' | translate }}
         </mat-error>
-      </mat-form-field>
+      </div>
     </div>
     <safe-map [header]="false" [settings]="mapSettings"></safe-map>
   </div>

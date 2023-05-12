@@ -15,7 +15,6 @@ import {
   Form,
   Subscription,
   SafeUnsubscribeComponent,
-  SafeIconModule,
 } from '@oort-front/safe';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
@@ -51,7 +50,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { UiModule } from '@oort-front/ui';
+import { UiModule, Variant } from '@oort-front/ui';
 
 /** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -77,7 +76,6 @@ const ITEMS_PER_PAGE = 10;
     SafeDividerModule,
     SafeButtonModule,
     UiModule,
-    SafeIconModule,
     TranslateModule,
     MatTooltipModule,
     SafeGraphQLSelectModule,
@@ -108,6 +106,9 @@ export class SubscriptionModalComponent
     hasNextPage: true,
   };
   private applicationsLoading = true;
+
+  // === ICON VARIANTS ===
+  public colorVariant = Variant;
 
   @ViewChild('applicationSelect') applicationSelect?: MatAutocomplete;
 
