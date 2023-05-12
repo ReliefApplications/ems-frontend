@@ -6,6 +6,7 @@ import {
   AfterViewInit,
   ViewChild,
   Renderer2,
+  ElementRef,
 } from '@angular/core';
 import {
   trigger,

@@ -16,6 +16,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Form } from '../../../../models/form.model';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant } from '@oort-front/ui';
 
 /**
  * This component is used to display a dropdown where the user chan choose a form
@@ -51,6 +52,9 @@ export class SafeFormsDropdownComponent
 
   // === FILTER ===
   @Output() filter = new EventEmitter<string>();
+
+  // === BUTTON VARIANTS ===
+  public colorVariant = Variant;
 
   /**
    * Constructor for the dropdown of forms
