@@ -60,6 +60,7 @@ export const addNewField = (
       return formBuilder.group({
         name: [{ value: field.name, disabled: true }],
         label: [field.label],
+        width: [newField ? null : field.width],
         type: [newField ? field.type.ofType.name : field.type],
         kind: [newField ? field.type.kind : field.kind],
         fields: formBuilder.array(
@@ -108,6 +109,7 @@ export const addNewField = (
           field.label ? field.label : prettifyLabel(field.name),
           Validators.required,
         ],
+        width: [newField ? null : field.width],
         format: [get(field, 'format', null)],
       });
     }
