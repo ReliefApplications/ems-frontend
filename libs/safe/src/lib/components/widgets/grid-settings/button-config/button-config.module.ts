@@ -9,10 +9,11 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeButtonModule } from '../../../ui/button/button.module';
-import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { UiModule } from '@oort-front/ui';
+import { SafeIconModule } from '../../../ui/icon/icon.module';
 
 /**
  * Button config component for grid widget.
@@ -33,6 +34,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MatTooltipModule,
     SafeButtonModule,
     SafeIconModule,
+    UiModule,
     SafeQueryBuilderModule,
   ],
   exports: [ButtonConfigComponent],

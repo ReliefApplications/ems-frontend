@@ -10,13 +10,11 @@
   [disabled]="disabled"
   (click)="emittedEventSubject.next('click')"
 >
-  <safe-icon
+  <ui-icon
     *ngIf="icon && !loading"
     [class.safe-btn-icon]="!isIcon"
     [icon]="icon"
-    [inline]="!isIcon"
-    [fontSet]="fontSet"
-  ></safe-icon>
+  ></ui-icon>
   <safe-spinner
     *ngIf="loading"
     class="safe-btn-spinner"

@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { EXPORT_SETTINGS } from '../grid/grid.constants';
+import { Variant } from '@oort-front/ui';
 
 /** The data for the dialogs input */
 interface DialogData {
@@ -21,6 +22,9 @@ interface DialogData {
 export class SafeExportComponent implements OnInit {
   // === EXPORT MENU SELECTION ===
   public export = EXPORT_SETTINGS;
+
+  // === BUTTON VARIANTS ===
+  public colorVariant = Variant;
 
   /**
    * Constructor for the component

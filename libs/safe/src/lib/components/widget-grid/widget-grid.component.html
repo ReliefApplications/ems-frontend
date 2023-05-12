@@ -49,8 +49,8 @@
         (edit)="onEditWidget($event)"
         [canUpdate]="canUpdate"
       ></safe-widget>
-      <safe-icon *ngIf="canUpdate" icon="drag_indicator" class="widget-handle">
-      </safe-icon>
+      <ui-icon *ngIf="canUpdate" icon="drag_indicator" class="widget-handle">
+      </ui-icon>
       <safe-button
         *ngIf="!canUpdate"
         [isIcon]="true"

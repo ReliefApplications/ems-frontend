@@ -8,6 +8,7 @@ import { debounceTime } from 'rxjs/operators';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Aggregation pipeline component.
@@ -33,6 +34,9 @@ export class SafePipelineComponent
 
   // === PARENT FORM ===
   @Input() pipelineForm!: UntypedFormArray;
+
+  // === BUTTON VARIANTS ===
+  public colorVariant = Variant;
 
   /**
    * Aggregation pipeline component.

@@ -1,13 +1,12 @@
 <!-- todo(translate) -->
 <h2>
-  {{ 'components.widget.settings.chart.categories' | translate }}<safe-icon
+  {{ 'components.widget.settings.chart.categories' | translate }}<ui-icon
     class="ml-2"
-    variant="grey"
-    [inline]="true"
+    [variant]="colorVariant.GREY"
     [size]="18"
     icon="info_outline"
     matTooltip="Toggle categories to hide/show them"
-  ></safe-icon>
+  ></ui-icon>
 </h2>
 <div class="flex flex-col gap-1 max-h-60 overflow-auto">
   <ng-container *ngFor="let control of formArray.controls">

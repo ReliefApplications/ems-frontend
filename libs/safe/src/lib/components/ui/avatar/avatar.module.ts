@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeAvatarComponent } from './avatar.component';
-import { SafeIconModule } from '../icon/icon.module';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Avatar component module.
  */
 @NgModule({
   declarations: [SafeAvatarComponent],
-  imports: [CommonModule, SafeIconModule],
+  imports: [CommonModule, UiModule],
   exports: [SafeAvatarComponent],
 })
 export class SafeAvatarModule {}

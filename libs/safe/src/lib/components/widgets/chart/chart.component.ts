@@ -14,6 +14,7 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 import { takeUntil } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Default file name for chart exports
@@ -83,6 +84,9 @@ export class SafeChartComponent
   ) {
     super();
   }
+
+  // === BUTTON VARIANTS ===
+  public colorVariant = Variant;
 
   ngOnChanges(changes: SimpleChanges): void {
     const previousDatasource = {

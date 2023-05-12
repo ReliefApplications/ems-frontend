@@ -11,12 +11,12 @@
       (removed)="remove(choice)"
     >
       {{ choice[displayKey] }}
-      <safe-icon
+      <ui-icon
         *ngIf="!choice.used"
         matChipRemove
         icon="cancel"
         [size]="18"
-      ></safe-icon>
+      ></ui-icon>
     </mat-chip>
     <!-- Search text control -->
     <input

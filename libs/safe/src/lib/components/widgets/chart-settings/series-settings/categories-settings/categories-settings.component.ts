@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormArray } from '@angular/forms';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Chart serie: categories setting component.
@@ -11,4 +12,7 @@ import { FormArray } from '@angular/forms';
 })
 export class CategoriesSettingsComponent {
   @Input() formArray!: FormArray;
+
+  // === BUTTON VARIANTS ===
+  public colorVariant = Variant;
 }

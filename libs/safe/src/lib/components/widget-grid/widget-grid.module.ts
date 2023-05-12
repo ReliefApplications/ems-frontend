@@ -17,7 +17,6 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeWidgetChoiceModule } from '../widget-choice/widget-choice.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
-import { SafeIconModule } from '../ui/icon/icon.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeModalModule } from '../ui/modal/modal.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
@@ -46,7 +45,6 @@ import { UiModule } from '@oort-front/ui';
     SafeDividerModule,
     SafeButtonModule,
     TranslateModule,
-    SafeIconModule,
     SafeWidgetChoiceModule,
     LayoutModule,
     IndicatorsModule,

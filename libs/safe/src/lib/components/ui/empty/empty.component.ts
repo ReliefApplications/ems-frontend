@@ -1,4 +1,5 @@
 import { Component, Input, TemplateRef } from '@angular/core';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Empty state component, this component can be used in different situation when no data is present, all parameters are optional.
@@ -19,4 +20,7 @@ export class SafeEmptyComponent {
   @Input() subtitle?: string;
   // Footer template, will be inserted after everything else
   @Input() footerTemplate?: TemplateRef<any>;
+
+  // === BUTTON VARIANTS ===
+  public colorVariant = Variant;
 }

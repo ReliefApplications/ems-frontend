@@ -17,6 +17,7 @@ import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
 import { SafeChartComponent } from '../../chart/chart.component';
 import { createSerieForm } from '../chart-forms';
 import { isEqual, isNil, get } from 'lodash';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Display tab of the chart settings modal.
@@ -47,6 +48,9 @@ export class TabDisplayComponent
   }
 
   @ViewChild(SafeChartComponent) chartComponent!: SafeChartComponent;
+
+  // === BUTTON VARIANTS ===
+  public colorVariant = Variant;
 
   /**
    * Constructor of the display tab of the chart settings modal.

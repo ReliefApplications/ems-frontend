@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeBadgeComponent } from './badge.component';
-import { SafeIconModule } from '../icon/icon.module';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Badge component module.
  */
 @NgModule({
   declarations: [SafeBadgeComponent],
-  imports: [CommonModule, SafeIconModule],
+  imports: [CommonModule, UiModule],
   exports: [SafeBadgeComponent],
 })
 export class SafeBadgeModule {}

@@ -171,17 +171,16 @@
             'components.widget.settings.grid.buttons.callback.attach'
               | translate
           }}
-          <safe-icon
+          <ui-icon
             icon="info_outline"
-            variant="grey"
-            [inline]="true"
+            [variant]="colorVariant.GREY"
             [size]="18"
             [matTooltip]="
               'components.widget.settings.grid.buttons.tooltip.attach'
                 | translate
             "
             matTooltipPosition="right"
-          ></safe-icon>
+          ></ui-icon>
         </mat-checkbox>
       </ng-container>
       <div *ngIf="formGroup.value.attachToRecord" class="sub-parameters">
@@ -242,16 +241,15 @@
       <!-- Send notification -->
       <mat-checkbox formControlName="notify">
         {{ 'components.channel.dropdown.select' | translate }}
-        <safe-icon
+        <ui-icon
           icon="info_outline"
-          variant="grey"
+          [variant]="colorVariant.GREY"
           [size]="18"
-          [inline]="true"
           [matTooltip]="
             'components.widget.settings.grid.buttons.tooltip.notify' | translate
           "
           matTooltipPosition="right"
-        ></safe-icon>
+        ></ui-icon>
       </mat-checkbox>
       <div *ngIf="formGroup.value.notify" class="sub-parameters">
         <mat-form-field appearance="outline">
@@ -275,17 +273,16 @@
       <!-- Publish on a channel -->
       <mat-checkbox formControlName="publish">
         {{ 'common.publish' | translate }}
-        <safe-icon
+        <ui-icon
           icon="info_outline"
-          variant="grey"
+          [variant]="colorVariant.GREY"
           [size]="18"
-          [inline]="true"
           [matTooltip]="
             'components.widget.settings.grid.buttons.tooltip.publish'
               | translate
           "
           matTooltipPosition="right"
-        ></safe-icon>
+        ></ui-icon>
       </mat-checkbox>
       <div *ngIf="formGroup.value.publish" class="sub-parameters">
         <mat-form-field appearance="outline">

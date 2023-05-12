@@ -48,15 +48,14 @@
     <p class="mt-6 mb-3 mx-0">
       <mat-slide-toggle [(ngModel)]="export.email"
         >{{ 'components.widget.grid.export.email.title' | translate
-        }}<safe-icon
-          variant="grey"
-          [inline]="true"
+        }}<ui-icon
+          [variant]="colorVariant.GREY"
           [size]="18"
           icon="info_outline"
           [matTooltip]="
             'components.widget.grid.export.email.tooltip' | translate
           "
-        ></safe-icon
+        ></ui-icon
       ></mat-slide-toggle>
     </p>
   </mat-dialog-content>

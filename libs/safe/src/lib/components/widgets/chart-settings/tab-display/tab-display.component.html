@@ -30,10 +30,9 @@
                   <div class="flex">
                     <span class="flex w-full items-center justify-between"
                       >{{ position.value }}
-                      <safe-icon
-                        [inline]="true"
+                      <ui-icon
                         icon="{{ position.icon }}"
-                      ></safe-icon>
+                      ></ui-icon>
                     </span>
                   </div>
                 </mat-option>
@@ -84,10 +83,9 @@
                     <div class="flex">
                       <span class="flex w-full items-center justify-between"
                         >{{ position.value }}
-                        <safe-icon
-                          [inline]="true"
+                        <ui-icon
                           icon="{{ position.icon }}"
-                        ></safe-icon>
+                        ></ui-icon>
                       </span>
                     </div>
                   </mat-option>
@@ -156,16 +154,15 @@
           <div class="flex flex-col gap-2">
             <mat-slide-toggle formControlName="enabled"
               >{{ 'components.widget.settings.chart.palette.enable' | translate
-              }}<safe-icon
+              }}<ui-icon
                 class="ml-2"
-                variant="grey"
-                [inline]="true"
+                [variant]="colorVariant.GREY"
                 [size]="18"
                 icon="info_outline"
                 [matTooltip]="
                 'components.widget.settings.chart.tooltip.palette' | translate
                 "
-              ></safe-icon
+              ></ui-icon
             ></mat-slide-toggle>
             <safe-palette-control
               formControlName="value"

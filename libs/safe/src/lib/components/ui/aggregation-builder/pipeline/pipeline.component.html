@@ -13,17 +13,16 @@
           'components.aggregationBuilder.stages.' + stageForm.value.type
             | translate
         }}
-        <safe-icon
+        <ui-icon
           icon="info_outline"
-          variant="grey"
-          [inline]="true"
+          [variant]="colorVariant.GREY"
           [size]="18"
           [matTooltip]="
             'components.aggregationBuilder.tooltip.' + stageForm.value.type
               | translate
           "
           matTooltipPosition="right"
-        ></safe-icon>
+        ></ui-icon>
       </mat-panel-title>
     </mat-expansion-panel-header>
     <ng-container [ngSwitch]="stageForm.value.type">

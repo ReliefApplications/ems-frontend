@@ -19,12 +19,12 @@ import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.mod
 import { SafeAggregationBuilderModule } from '../../../ui/aggregation-builder/aggregation-builder.module';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeGridModule } from '../../../ui/core-grid/grid/grid.module';
-import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { SeriesSettingsModule } from '../series-settings/series-settings.module';
 import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { UiModule } from '@oort-front/ui';
 
 /**
  * Display tab of chart settings modal.
@@ -52,7 +52,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MatAutocompleteModule,
     MatChipsModule,
     SafeGridModule,
-    SafeIconModule,
+    UiModule,
     SafePaletteControlModule,
     InputsModule,
     SeriesSettingsModule,

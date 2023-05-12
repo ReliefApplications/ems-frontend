@@ -9,12 +9,11 @@
   [class.safe-avatar-warning]="variant === 'warning'"
 >
   <div class="safe-avatar-content" [class.safe-avatar-letter]="!icon">
-    <safe-icon
+    <ui-icon
       *ngIf="icon"
       [icon]="icon"
-      [inline]="true"
       [size]="20"
-    ></safe-icon>
+    ></ui-icon>
     <ng-content *ngIf="!icon"></ng-content>
   </div>
 </div>

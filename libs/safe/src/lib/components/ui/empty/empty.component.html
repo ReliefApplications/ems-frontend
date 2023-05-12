@@ -1,8 +1,8 @@
-<safe-icon
+<ui-icon
   [icon]="icon || 'folder_open'"
-  variant="grey"
+  [variant]="colorVariant.GREY"
   [size]="48"
-></safe-icon>
+></ui-icon>
 <img *ngIf="image && !icon" [src]="image" />
 <div
   class="text-gray-500 flex flex-col items-center gap-1"

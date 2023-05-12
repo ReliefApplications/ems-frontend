@@ -7,12 +7,12 @@
   <!-- MAIN PARAMETERS / SELECTION OF LAYOUTS -->
   <mat-tab>
     <ng-template mat-tab-label>
-      <safe-icon
+      <ui-icon
         icon="preview"
         [size]="24"
         matTooltip="{{ 'common.general' | translate }}"
         matTooltipPosition="right"
-      ></safe-icon>
+      ></ui-icon>
       <span>{{ 'common.general' | translate }}</span>
     </ng-template>
     <ng-template matTabContent>
@@ -27,14 +27,14 @@
   <!-- AVAILABLE ACTIONS -->
   <mat-tab [disabled]="formGroup.value.aggregations.length > 0">
     <ng-template mat-tab-label>
-      <safe-icon
+      <ui-icon
         icon="toggle_on"
         [size]="24"
         matTooltip="{{
           'components.widget.settings.grid.actions.title' | translate
         }}"
         matTooltipPosition="right"
-      ></safe-icon>
+      ></ui-icon>
       <span>{{
         'components.widget.settings.grid.actions.title' | translate
       }}</span>
@@ -46,14 +46,14 @@
   <!-- BUTTONS -->
   <mat-tab [disabled]="formGroup.value.aggregations.length > 0">
     <ng-template mat-tab-label>
-      <safe-icon
+      <ui-icon
         icon="bolt"
         [size]="24"
         matTooltip="{{
           'components.widget.settings.grid.buttons.title' | translate
         }}"
         matTooltipPosition="right"
-      ></safe-icon>
+      ></ui-icon>
       <span>{{
         'components.widget.settings.grid.buttons.title' | translate
       }}</span>

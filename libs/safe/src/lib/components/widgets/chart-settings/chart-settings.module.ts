@@ -19,11 +19,11 @@ import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggre
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { SafeGridModule } from '../../../components/ui/core-grid/grid/grid.module';
-import { SafeIconModule } from '../../ui/icon/icon.module';
 import { SafePaletteControlModule } from '../../palette-control/palette-control.module';
 import { TabMainModule } from './tab-main/tab-main.module';
 import { TabDisplayModule } from './tab-display/tab-display.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { UiModule } from '@oort-front/ui';
 
 /** Module for the chart settings component */
 @NgModule({
@@ -49,7 +49,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MatAutocompleteModule,
     MatChipsModule,
     SafeGridModule,
-    SafeIconModule,
+    UiModule,
     SafePaletteControlModule,
     TabMainModule,
     TabDisplayModule,

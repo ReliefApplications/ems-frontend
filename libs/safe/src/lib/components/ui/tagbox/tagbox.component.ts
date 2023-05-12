@@ -10,6 +10,7 @@ import {
   MatLegacyAutocompleteTrigger as MatAutocompleteTrigger,
 } from '@angular/material/legacy-autocomplete';
 import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
+import { Variant } from '@oort-front/ui';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 
@@ -42,6 +43,9 @@ export class SafeTagboxComponent implements OnInit {
 
   // === OUTPUT CONTROL ===
   @Input() formControl!: FormControl;
+
+  // === BUTTON VARIANTS ===
+  public colorVariant = Variant;
 
   ngOnInit(): void {
     this.choices$.subscribe((choices: any[]) => {

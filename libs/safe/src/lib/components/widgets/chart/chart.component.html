@@ -97,7 +97,7 @@
   *ngIf="loading"
 ></mat-spinner>
 <div *ngIf="hasError" class="chart-error">
-  <safe-icon variant="danger" icon="error_outline"></safe-icon>
+  <ui-icon [variant]="colorVariant.DANGER" icon="error_outline"></ui-icon>
   <p color="danger">
     {{ 'components.widget.chart.errors.aggregation.invalid' | translate }}
   </p>

@@ -19,6 +19,7 @@ import { DistributionList } from '../../../../models/distribution-list.model';
 import { SafeApplicationService } from '../../../../services/application/application.service';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant } from '@oort-front/ui';
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -50,6 +51,9 @@ export class ButtonConfigComponent
 
   // Indicate if the next step is a Form and so we could potentially pass some data to it.
   public canPassData = false;
+
+  // === ICON VARIANTS ===
+  public colorVariant = Variant;
 
   /** @returns The list of fields which are of type scalar and not disabled */
   get scalarFields(): any[] {
