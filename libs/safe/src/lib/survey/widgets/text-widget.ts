@@ -11,7 +11,9 @@ import { SafeButtonComponent } from '../../components/ui/button/button.component
 import { ButtonSize } from '../../components/ui/button/button-size.enum';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Question, QuestionText } from '../types';
-import { SafeIconComponent } from '../../components/ui/icon/icon.component';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { IconComponent } from '../../../../../ui/src/lib/icon/icon.component';
+import { Variant } from '@oort-front/ui';
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 
@@ -22,6 +24,9 @@ type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
  * @param domService Shared DOM service
  */
 export const init = (Survey: any, domService: DomService): void => {
+  // === ICON VARIANTS ===
+  const colorVariant = Variant;
+
   const widget = {
     name: 'text-widget',
     widgetIsLoaded: (): boolean => true,
@@ -145,16 +150,16 @@ export const init = (Survey: any, domService: DomService): void => {
             );
 
             const icon = domService.appendComponentToBody(
-              SafeIconComponent,
+              IconComponent,
               button
             );
 
             // add the button to the DOM
             el.parentElement?.appendChild(button);
 
-            const iconInstance: SafeIconComponent = icon.instance;
+            const iconInstance: IconComponent = icon.instance;
             iconInstance.icon = 'close';
-            iconInstance.variant = 'grey';
+            iconInstance.variant = colorVariant.GREY;
 
             pickerInstance.registerOnChange((value: Date | null) => {
               if (value) {
