@@ -1,3 +1,10 @@
+## [1.3.12](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.11...v1.3.12) (2023-05-15)
+
+
+### Bug Fixes
+
+* date / datetime / time can now be used in triggers in surveyjs ([6b1fc3d](https://github.com/ReliefApplications/oort-frontend/commit/6b1fc3d7f40a0136907bb52ba69dbd80cf713c02))
+
 ## [1.3.11](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.10...v1.3.11) (2023-04-14)
 
 
