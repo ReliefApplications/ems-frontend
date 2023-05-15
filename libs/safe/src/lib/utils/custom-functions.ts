@@ -48,16 +48,8 @@ const addCustomFunctions = (
       if (typeof matrix !== 'object') return '';
       if (typeof colName !== 'string') return '';
 
-      const result: any[] = [];
-
       const rows = Object.keys(matrix);
-      rows.forEach((row) => {
-        if (isEqual(matrix[row][colName], colValue)) {
-          result.push(row);
-        }
-      });
-
-      return result.join(', ');
+      return rows.filter((row) => isEqual(matrix[row][colName], colValue));
     }
   );
 };
