@@ -767,11 +767,7 @@
                     <li *ngFor="let row of field.meta.rows">
                       <ng-container
                         *ngIf="
-                          ['text', 'dropdown', 'radiogroup'].includes(
-                            column.type
-                          ) &&
-                          dataItem[field.name] &&
-                          dataItem[field.name][row.name]
+                          dataItem[field.name] && dataItem[field.name][row.name]
                         "
                       >
                         {{ dataItem[field.name][row.name][column.name] }}
