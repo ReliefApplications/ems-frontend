@@ -6,7 +6,6 @@ import {
   forwardRef,
 } from '@angular/core';
 import { ToggleType } from './enums/toggle-type.enum';
-import { ToggleLabel } from './interfaces/toggle-label.interface';
 import { ToggleIcon } from './interfaces/toggle-icon.interface';
 import { Variant } from '../shared/variant.enum';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -28,9 +27,9 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class ToggleComponent implements ControlValueAccessor {
-  @Input() type: ToggleType = ToggleType.SIMPLE;
+  @Input() type: ToggleType = ToggleType.SHORT;
   @Input() icon!: ToggleIcon;
-  @Input() label!: ToggleLabel;
+  @Input() labelPosition: 'right' | 'left' = 'right';
   @Input() variant: Variant = Variant.PRIMARY;
 
   toggleTypes = ToggleType;
@@ -48,6 +47,10 @@ export class ToggleComponent implements ControlValueAccessor {
     const classes = [];
     // Disable state
     classes.push(this.disabled ? 'opacity-70' : '');
+    // Space from button to label depending on label position
+    classes.push(this.labelPosition === 'left' ? 'ml-3' : 'mr-3');
+    // Order of button depending on label position
+    classes.push(this.labelPosition === 'left' ? 'order-2' : 'order-1');
     // Variants
     classes.push('focus-' + this.variant);
     if (this.type === this.toggleTypes.SIMPLE) {
