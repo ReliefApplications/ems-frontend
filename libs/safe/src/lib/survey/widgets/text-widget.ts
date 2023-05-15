@@ -212,6 +212,19 @@ export const init = (Survey: any, domService: DomService): void => {
             // Positioning the button inside the picker
             el.parentElement?.classList.add('relative');
             button.classList.add('absolute', 'right-7', 'z-10');
+            (question.survey as SurveyModel).onValueChanged.add(
+              (sender: any, options: any) => {
+                if (options.question.name === question.name) {
+                  if (options.question.value) {
+                    pickerInstance.writeValue(
+                      getDateDisplay(question.value, question.inputType)
+                    );
+                  } else {
+                    pickerInstance.writeValue(null as any);
+                  }
+                }
+              }
+            );
           }
         } else {
           el.style.display = 'initial';
