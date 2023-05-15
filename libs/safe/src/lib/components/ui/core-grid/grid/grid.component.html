@@ -50,6 +50,12 @@
     />
     <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
     <button
+      kendoButton
+      icon="columns"
+      *ngIf="reorderable"
+      (click)="openColumnToggler()"
+    ></button>
+    <button
       *ngIf="actions.add && canAdd"
       kendoButton
       (click)="action.emit({ action: 'add' })"

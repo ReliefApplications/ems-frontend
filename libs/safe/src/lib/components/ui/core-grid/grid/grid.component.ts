@@ -55,6 +55,7 @@ import {
   MatLegacySnackBarRef as MatSnackBarRef,
   LegacyTextOnlySnackBar as TextOnlySnackBar,
 } from '@angular/material/legacy-snack-bar';
+import { SafeGridColumnChooserComponent } from '../grid-column-chooser/grid-column-chooser.component';
 
 /**
  * Factory for creating scroll strategy
@@ -464,6 +465,13 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     this.selectedItems = this.data.data.filter((x) =>
       this.selectedRows.includes(x.id)
     );
+  }
+
+  /** Opens modal for columns*/
+  public openColumnToggler() {
+    this.dialog.open(SafeGridColumnChooserComponent, {
+      data: { columns: this.grid?.columns },
+    });
   }
 
   // === LAYOUT ===
