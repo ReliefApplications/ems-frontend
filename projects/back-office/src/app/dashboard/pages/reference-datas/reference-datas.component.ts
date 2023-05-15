@@ -149,7 +149,7 @@ export class ReferenceDatasComponent
             return prev;
           }
           return Object.assign({}, prev, {
-            apiConfigurations: {
+            referenceDatas: {
               edges: [
                 ...prev.referenceDatas.edges,
                 ...fetchMoreResult.referenceDatas.edges,
