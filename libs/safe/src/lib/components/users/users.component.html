@@ -107,24 +107,22 @@
       <!-- Checkbox Column -->
       <ng-container matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef>
-          <mat-checkbox
-            class="mr-2"
+          <ui-checkbox
             (change)="$event ? masterToggle() : null"
             [checked]="selection.hasValue() && isAllSelected()"
             [indeterminate]="selection.hasValue() && !isAllSelected()"
-            [aria-label]="checkboxLabel()"
+            [ariaLabel]="checkboxLabel()"
           >
-          </mat-checkbox>
+          </ui-checkbox>
         </th>
         <td mat-cell *matCellDef="let row">
-          <mat-checkbox
-            class="mr-2"
+          <ui-checkbox
             (click)="$event.stopPropagation()"
             (change)="$event ? selection.toggle(row) : null"
             [checked]="selection.isSelected(row)"
-            [aria-label]="checkboxLabel(row)"
+            [ariaLabel]="checkboxLabel(row)"
           >
-          </mat-checkbox>
+          </ui-checkbox>
         </td>
       </ng-container>
       <ng-container matColumnDef="username">

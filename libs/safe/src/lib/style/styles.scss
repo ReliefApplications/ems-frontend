@@ -274,7 +274,7 @@ $safe-theme: mat.define-light-theme(
 
 // === CHECKBOX ===
 @mixin checkbox($theme) {
-  .mat-checkbox-label {
+  ui-checkbox {
     safe-icon {
       vertical-align: text-bottom;
     }
