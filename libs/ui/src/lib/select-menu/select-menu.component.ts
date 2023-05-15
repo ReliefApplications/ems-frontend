@@ -6,12 +6,18 @@ import {
   EventEmitter,
   HostListener,
   TemplateRef,
+  ContentChildren,
+  QueryList,
+  AfterViewInit,
+  OnDestroy,
 } from '@angular/core';
 import {
   ControlValueAccessor,
   FormControl,
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
+import { SelectOptionComponent } from './select-option/select-option.component';
+import { Subject, takeUntil } from 'rxjs';
 
 /**
  * UI Select Menu component
@@ -28,43 +34,33 @@ import {
     },
   ],
 })
-export class SelectMenuComponent implements ControlValueAccessor {
-  /**
-   * Tells if the select menu should allow multi selection
-   */
+export class SelectMenuComponent
+  implements ControlValueAccessor, AfterViewInit, OnDestroy
+{
+  @ContentChildren(SelectOptionComponent, { descendants: true })
+  options!: QueryList<SelectOptionComponent>;
+  // Tells if the select menu should allow multi selection
   @Input() multiselect = false;
-  /**
-   * Gives the list of options the component must display
-   */
-  @Input() options: Array<any> = [];
-  /**
-   * Tells if the select menu should be disabled
-   */
+  // Tells if the select menu should be disabled
   @Input() disabled = false;
-  /**
-   * Any custom template provided for display
-   */
+  // Any custom template provided for display
   @Input()
   customTemplate!: TemplateRef<any>;
-  /**
-   * Emits when the list is opened
-   */
+  // Emits when the list is opened
   @Output() opened = new EventEmitter<void>();
-  /**
-   * Emits when the list is closed
-   */
+  // Emits when the list is closed
   @Output() closed = new EventEmitter<void>();
-  /**
-   * Emits the list of the selected options
-   */
-  @Output() selectedOption = new EventEmitter<any[]>();
+  // Emits the list of the selected options
+  @Output() selectedOption = new EventEmitter<string[]>();
 
   // Form control to get the values selected
-  selectionControl = new FormControl(new Array<any>());
+  public selectionControl = new FormControl(new Array<string>());
   // True if the box is focused, false otherwise
-  listBoxFocused = false;
+  public listBoxFocused = false;
   // Text to be displayed in the trigger when some selections are made
-  displayTrigger = '';
+  public displayTrigger = '';
+
+  private destroy$ = new Subject<void>();
 
   //Control access value functions
   onChange!: (value: any) => void;
@@ -85,12 +81,23 @@ export class SelectMenuComponent implements ControlValueAccessor {
     }
   }
 
+  ngAfterViewInit(): void {
+    this.options.forEach((option: SelectOptionComponent) => {
+      option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
+        next: (isSelected: boolean) => {
+          this.updateFormControl(option, isSelected);
+          this.onChangeFunction();
+        },
+      });
+    });
+  }
+
   /**
    * Write new value
    *
    * @param value value set from parent form control
    */
-  writeValue(value: any): void {
+  writeValue(value: string[]): void {
     if (value) {
       this.selectionControl.setValue([...value], { emitEvent: false });
       this.setDisplayTriggerText();
@@ -138,8 +145,27 @@ export class SelectMenuComponent implements ControlValueAccessor {
   }
 
   /**
-   * Builds the text displayed from selected options
+   * Opens or closes the list when the trigger component is clicked (+ make the corresponding output emissions)
    */
+  public dealListBox() {
+    //Do nothing if the box is disabled
+    if (this.disabled) {
+      return;
+    }
+    // Open the box + emit outputs
+    if (this.listBoxFocused) {
+      this.closeListBox();
+    }
+    //Close the box + emit outputs
+    else {
+      if (!this.listBoxFocused) {
+        this.opened.emit();
+        this.listBoxFocused = true;
+      }
+    }
+  }
+
+  /** Builds the text displayed from selected options */
   private setDisplayTriggerText() {
     // Adapt the text to be displayed in the trigger if no custom template for display is provided
     if (this.selectionControl?.value) {
@@ -159,9 +185,7 @@ export class SelectMenuComponent implements ControlValueAccessor {
     }
   }
 
-  /**
-   * Closes the listbox if a click is made outside of the component
-   */
+  /** Closes the listbox if a click is made outside of the component */
   private closeListBox() {
     //If the click was not made on one of the options or children of the component, close list box
     this.closed.emit();
@@ -169,23 +193,28 @@ export class SelectMenuComponent implements ControlValueAccessor {
   }
 
   /**
-   * Opens or closes the list when the trigger component is clicked (+ make the corresponding output emissions)
+   * Updated the form control value on optionClick event
+   *
+   * @param {SelectOptionComponent} option option clicked
+   * @param {boolean} selected if the option as selected or unselected
    */
-  dealListBox() {
-    //Do nothing if the box is disabled
-    if (this.disabled) {
-      return;
-    }
-    // Open the box + emit outputs
-    if (this.listBoxFocused) {
-      this.closeListBox();
-    }
-    //Close the box + emit outputs
-    else {
-      if (!this.listBoxFocused) {
-        this.opened.emit();
-        this.listBoxFocused = true;
+  private updateFormControl(
+    option: SelectOptionComponent,
+    selected: boolean
+  ): void {
+    if (selected) {
+      if (!this.multiselect) {
+        this.selectionControl.setValue([]);
       }
+      this.selectionControl.value?.push(option.value);
+    } else {
+      const index = this.selectionControl.value?.indexOf(option.value) ?? 0;
+      this.selectionControl.value?.splice(index, 1);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
