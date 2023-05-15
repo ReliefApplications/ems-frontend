@@ -8,7 +8,7 @@ import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/lega
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -27,7 +27,7 @@ import { SafeModalModule } from '../ui/modal/modal.module';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatMenuModule,
+    MenuModule,
     MatTooltipModule,
     SafeButtonModule,
     TranslateModule,

@@ -33,17 +33,17 @@
       icon="file_download"
       category="secondary"
       variant="primary"
-      [matMenuTriggerFor]="menu"
+      [uiMenuTriggerFor]="menu"
     >
       {{
         'common.downloadObject'
           | translate : { name: 'common.record.few' | translate }
       }}
     </safe-button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="onDownload('csv')">.csv</button>
-      <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
-    </mat-menu>
+    <ui-menu #menu>
+      <button class="menu-item" (click)="onDownload('csv')">.csv</button>
+      <button class="menu-item" (click)="onDownload('xlsx')">.xlsx</button>
+    </ui-menu>
     <safe-button
       icon="file_upload"
       category="secondary"
@@ -104,13 +104,13 @@
             <safe-button
               [isIcon]="true"
               icon="more_vert"
-              [matMenuTriggerFor]="menu"
+              [uiMenuTriggerFor]="menu"
               (click)="$event.stopPropagation()"
             >
             </safe-button>
-            <mat-menu #menu="matMenu">
+            <ui-menu #menu>
               <button
-                mat-menu-item
+                class="menu-item"
                 color="warn"
                 (click)="onViewHistory(element.id)"
               >
@@ -120,7 +120,7 @@
               <safe-divider class="m-0"></safe-divider>
               <button
                 *ngIf="!showDeletedRecords"
-                mat-menu-item
+                class="menu-item"
                 (click)="onDeleteRecord(element, $event)"
               >
                 <mat-icon>delete</mat-icon>
@@ -128,7 +128,7 @@
               </button>
               <button
                 *ngIf="showDeletedRecords"
-                mat-menu-item
+                class="menu-item"
                 (click)="onDeleteRecord(element, $event)"
               >
                 <mat-icon>delete_forever</mat-icon>
@@ -136,13 +136,13 @@
               </button>
               <button
                 *ngIf="showDeletedRecords"
-                mat-menu-item
+                class="menu-item"
                 (click)="onRestoreRecord(element.id, $event)"
               >
                 <mat-icon>unarchive</mat-icon>
                 {{ 'models.record.restore' | translate }}
               </button>
-            </mat-menu>
+            </ui-menu>
           </td>
         </ng-container>
       </ng-container>

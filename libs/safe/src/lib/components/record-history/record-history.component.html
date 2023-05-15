@@ -77,14 +77,14 @@
     <safe-button
       category="secondary"
       variant="primary"
-      [matMenuTriggerFor]="menu"
+      [uiMenuTriggerFor]="menu"
     >
       {{ 'components.history.download' | translate }}
     </safe-button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="onDownload('csv')">.csv</button>
-      <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
-    </mat-menu>
+    <ui-menu #menu>
+      <button class="menu-item" (click)="onDownload('csv')">.csv</button>
+      <button class="menu-item" (click)="onDownload('xlsx')">.xlsx</button>
+    </ui-menu>
   </div>
 </div>
 <!-- LOADING -->

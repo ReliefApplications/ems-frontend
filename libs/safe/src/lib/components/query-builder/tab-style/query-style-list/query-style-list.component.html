@@ -34,20 +34,20 @@
           <safe-button
             [isIcon]="true"
             icon="more_vert"
-            [matMenuTriggerFor]="resMenu"
+            [uiMenuTriggerFor]="resMenu"
             (click)="$event.stopPropagation()"
           >
           </safe-button>
-          <mat-menu #resMenu="matMenu">
-            <button mat-menu-item (click)="edit.emit(i)">
+          <ui-menu #resMenu>
+            <button class="menu-item" (click)="edit.emit(i)">
               <mat-icon>edit</mat-icon>
               {{ 'common.edit' | translate }}
             </button>
-            <button mat-menu-item (click)="delete.emit(i)">
+            <button class="menu-item" (click)="delete.emit(i)">
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
             </button>
-          </mat-menu>
+          </ui-menu>
         </mat-cell>
       </ng-container>
 
