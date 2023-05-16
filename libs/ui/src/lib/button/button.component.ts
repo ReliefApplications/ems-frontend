@@ -22,7 +22,8 @@ export class ButtonComponent {
   @Input() isIcon = false;
   @Input() loading = false;
   @HostBinding('class.disabled')
-  @Input() disabled = false;
+  @Input()
+  disabled = false;
   @Input() fontSet = false;
 
   buttonIconPosition = ButtonIconPosition;

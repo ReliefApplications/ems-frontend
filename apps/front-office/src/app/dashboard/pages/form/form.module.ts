@@ -10,7 +10,13 @@ import { ButtonModule } from '@oort-front/ui';
  */
 @NgModule({
   declarations: [FormComponent],
-  imports: [CommonModule, FormRoutingModule, SafeFormModule, SafeButtonModule, ButtonModule],
+  imports: [
+    CommonModule,
+    FormRoutingModule,
+    SafeFormModule,
+    SafeButtonModule,
+    ButtonModule,
+  ],
   exports: [FormComponent],
 })
 export class FormModule {}
