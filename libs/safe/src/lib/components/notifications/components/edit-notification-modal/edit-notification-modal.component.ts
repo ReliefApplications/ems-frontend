@@ -28,7 +28,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
 import { DividerModule } from '@oort-front/ui';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
@@ -58,7 +58,7 @@ const ITEMS_PER_PAGE = 10;
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatTooltipModule,
+    TooltipModule,
     SafeReadableCronModule,
     DividerModule,
     SafeGraphQLSelectModule,

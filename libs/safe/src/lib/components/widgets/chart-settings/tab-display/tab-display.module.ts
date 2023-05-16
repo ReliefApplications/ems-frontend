@@ -23,8 +23,7 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { SeriesSettingsModule } from '../series-settings/series-settings.module';
-import { DividerModule } from '@oort-front/ui';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule, DividerModule } from '@oort-front/ui';
 
 /**
  * Display tab of chart settings modal.
@@ -56,8 +55,8 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     SafePaletteControlModule,
     InputsModule,
     SeriesSettingsModule,
+    TooltipModule,
     DividerModule,
-    MatTooltipModule,
   ],
   exports: [TabDisplayComponent],
 })

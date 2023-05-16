@@ -11,7 +11,7 @@ import { SafeExpandedCommentModule } from '../expanded-comment/expanded-comment.
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -33,7 +33,7 @@ import { SafeDateFilterMenuModule } from '../date-filter-menu/date-filter-menu.m
     // === MATERIAL ===
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule,
+    TooltipModule,
     SafeButtonModule,
     // === KENDO ===
     GridModule,

@@ -24,11 +24,11 @@ import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/lega
 import { MatIconModule } from '@angular/material/icon';
 import { MenuModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { TooltipModule } from '@oort-front/ui';
 
 /**
  * Dashboard page module.
@@ -44,7 +44,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
     MatIconModule,
     MatSelectModule,
     MatDialogModule,
-    MatTooltipModule,
     MenuModule,
     ClipboardModule,
     SafeRecordHistoryModule,
@@ -63,6 +62,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
     ReactiveFormsModule,
     MatFormFieldModule,
     DashboardFilterModule,
+    TooltipModule,
   ],
   exports: [DashboardComponent],
 })

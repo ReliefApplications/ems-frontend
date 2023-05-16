@@ -6,7 +6,7 @@ import { ColorPickerModule } from '@progress/kendo-angular-inputs';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToggleModule } from '@oort-front/ui';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 
 /**
  * Chart Serie: Categories settings module.
@@ -21,7 +21,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     TranslateModule,
     ToggleModule,
     SafeIconModule,
-    MatTooltipModule,
+    TooltipModule,
   ],
   exports: [CategoriesSettingsComponent],
 })
