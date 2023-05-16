@@ -111,6 +111,7 @@
   </div>
   <mat-paginator
     [disabled]="loading"
+    [pageIndex]="pageInfo.pageIndex"
     [pageSize]="pageInfo.pageSize"
     [pageSizeOptions]="[10, 25, 50]"
     [length]="pageInfo.length"
