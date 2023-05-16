@@ -13,9 +13,6 @@ export default {
   title: 'Expansion Panel',
   component: ExpansionPanelComponent,
   argTypes: {
-    title: {
-      control: 'text',
-    },
     displayIcon: {
       control: 'boolean',
     },
@@ -72,9 +69,11 @@ const Template: StoryFn<ExpansionPanelComponent> = (
           [disabled]="${args.disabled}" 
           [displayIcon]="${args.displayIcon}" 
           [expanded]="panel.expanded"
-          [title]="panel.title"
           [index]="i"
         >
+          <ng-container ngProjectAs="title">
+            {{panel.title}}
+          </ng-container>
           <p class="mb-2 text-gray-500">{{panel.text}}</p>
         </ui-expansion-panel>
       </cdk-accordion>
@@ -112,9 +111,11 @@ const TemplateMulti: StoryFn<ExpansionPanelComponent> = (
           [disabled]="${args.disabled}" 
           [displayIcon]="${args.displayIcon}" 
           [expanded]="panel.expanded"
-          [title]="panel.title"
           [index]="i"
         >
+          <ng-container ngProjectAs="title">
+            {{panel.title}}
+          </ng-container>
           <p class="mb-2 text-gray-500" >{{panel.text}}</p>
         </ui-expansion-panel>
       </cdk-accordion>
