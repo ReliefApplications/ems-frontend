@@ -162,7 +162,6 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * @param card Card settings
    */
   private async createDynamicQueryFromLayout(card: any) {
-    console.log('HIII', card);
     // gets metadata
     const metaRes = await firstValueFrom(
       this.apollo.query<GetResourceMetadataQueryResponse>({

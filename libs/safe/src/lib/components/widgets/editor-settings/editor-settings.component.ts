@@ -124,7 +124,6 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
 
   /** Extracts the fields from the resource/layout */
   public updateFields() {
-    console.log('updateFields');
     // extract data keys from metadata
     const fields: any = [];
     get(this.selectedResource, 'metadata', []).forEach((metaField: any) => {
