@@ -38,7 +38,7 @@
         >
         </safe-button>
         <ui-menu #menu>
-          <button class="menu-item" (click)="onAppSelection()">
+          <button uiMenuItem (click)="onAppSelection()">
             <mat-icon>file_copy</mat-icon>
             {{ 'common.duplicate' | translate }}
           </button>

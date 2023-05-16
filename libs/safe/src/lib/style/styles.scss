@@ -386,10 +386,6 @@ mat-header-row {
   margin: auto;
 }
 
-.menu-item {
-  @apply flex flex-row gap-4 py-2 px-3 cursor-pointer hover:bg-primary-400 hover:text-white;
-}
-
 *:focus,
 *:active:focus,
 *.active:focus {

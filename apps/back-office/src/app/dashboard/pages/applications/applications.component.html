@@ -112,7 +112,7 @@
             >
             </safe-button>
             <ui-menu #menu>
-              <button class="menu-item" (click)="onPreview(element)">
+              <button uiMenuItem (click)="onPreview(element)">
                 <mat-icon>preview</mat-icon>
                 {{ 'common.preview' | translate }}
               </button>
@@ -124,7 +124,7 @@
                 *ngIf="element.canUpdate"
               ></safe-access>
               <button
-                class="menu-item"
+                uiMenuItem
                 (click)="onClone(element)"
                 *ngIf="element.canDelete"
               >
@@ -133,7 +133,7 @@
               </button>
               <ng-container *ngIf="element.canDelete">
                 <safe-divider class="m-0"></safe-divider>
-                <button class="menu-item" (click)="onDelete(element, $event)">
+                <button uiMenuItem (click)="onDelete(element, $event)">
                   <mat-icon>delete</mat-icon>
                   {{ 'common.delete' | translate }}
                 </button>

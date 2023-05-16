@@ -48,13 +48,13 @@
     </safe-button>
     <ui-menu #menu>
       <!-- Preview -->
-      <button class="menu-item" (click)="preview.emit()">
+      <button uiMenuItem (click)="preview.emit()">
         <mat-icon>preview</mat-icon>
         {{ 'common.preview' | translate }}
       </button>
       <!-- Duplication -->
       <button
-        class="menu-item"
+        uiMenuItem
         (click)="clone.emit()"
         *ngIf="application.canUpdate"
       >
@@ -64,7 +64,7 @@
       <!-- Delete -->
       <ng-container *ngIf="application.canDelete">
         <safe-divider class="m-0"></safe-divider>
-        <button class="menu-item" (click)="delete.emit()">
+        <button uiMenuItem (click)="delete.emit()">
           <mat-icon>delete</mat-icon>
           {{ 'common.delete' | translate }}
         </button>

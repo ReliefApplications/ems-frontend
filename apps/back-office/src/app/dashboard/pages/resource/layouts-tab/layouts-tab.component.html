@@ -41,11 +41,11 @@
             >
             </safe-button>
             <ui-menu #resMenu>
-              <button class="menu-item" (click)="onEditLayout(element)">
+              <button uiMenuItem (click)="onEditLayout(element)">
                 <mat-icon>edit</mat-icon>
                 {{ 'common.edit' | translate }}
               </button>
-              <button class="menu-item" (click)="onDeleteLayout(element)">
+              <button uiMenuItem (click)="onDeleteLayout(element)">
                 <mat-icon>delete</mat-icon>
                 {{ 'common.delete' | translate }}
               </button>

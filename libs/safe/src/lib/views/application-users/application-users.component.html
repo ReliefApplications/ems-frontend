@@ -14,8 +14,8 @@
       }}
     </safe-button>
     <ui-menu #menu>
-      <button class="menu-item" (click)="onExport('csv')">.csv</button>
-      <button class="menu-item" (click)="onExport('xlsx')">.xlsx</button>
+      <button uiMenuItem (click)="onExport('csv')">.csv</button>
+      <button uiMenuItem (click)="onExport('xlsx')">.xlsx</button>
     </ui-menu>
     <safe-button
       icon="send"

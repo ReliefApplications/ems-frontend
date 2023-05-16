@@ -81,12 +81,12 @@
           >
           </safe-button>
           <ui-menu #menu>
-            <button class="menu-item" (click)="editNotification(element)">
+            <button uiMenuItem (click)="editNotification(element)">
               <mat-icon>edit</mat-icon>
               {{ 'common.edit' | translate }}
             </button>
             <safe-divider class="!m-0"></safe-divider>
-            <button class="menu-item" (click)="deleteNotification(element)">
+            <button uiMenuItem (click)="deleteNotification(element)">
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
             </button>

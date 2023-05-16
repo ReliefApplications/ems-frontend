@@ -105,7 +105,7 @@
           >
           </safe-button>
           <ui-menu #menu>
-            <button class="menu-item" (click)="onDelete([element])">
+            <button uiMenuItem (click)="onDelete([element])">
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
             </button>

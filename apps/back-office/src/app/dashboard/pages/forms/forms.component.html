@@ -150,7 +150,7 @@
           </safe-button>
           <ui-menu #menu>
             <button
-              class="menu-item"
+              uiMenuItem
               [routerLink]="[element.id + '/builder']"
               *ngIf="element.canUpdate"
             >
@@ -158,7 +158,7 @@
               {{ 'common.edit' | translate }}
             </button>
             <ng-container *ngIf="element.canSee">
-              <button class="menu-item" [routerLink]="[element.id + '/records']">
+              <button uiMenuItem [routerLink]="[element.id + '/records']">
                 <mat-icon>plagiarism</mat-icon>
                 {{
                   'common.viewObject'
@@ -168,7 +168,7 @@
             </ng-container>
             <ng-container *ngIf="element.canDelete">
               <safe-divider class="m-0"></safe-divider>
-              <button class="menu-item" (click)="onDelete(element, $event)">
+              <button uiMenuItem (click)="onDelete(element, $event)">
                 <mat-icon>delete</mat-icon>
                 {{ 'common.delete' | translate }}
               </button>

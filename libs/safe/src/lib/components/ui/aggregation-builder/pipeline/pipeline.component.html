@@ -92,7 +92,7 @@
   <ui-menu #menu>
     <button
       *ngFor="let stage of stageList"
-      class="menu-item"
+      uiMenuItem
       (click)="addStage(stage)"
     >
       {{ 'components.aggregationBuilder.stages.' + stage | translate }}

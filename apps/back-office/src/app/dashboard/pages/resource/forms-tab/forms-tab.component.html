@@ -89,7 +89,7 @@
           </safe-button>
           <ui-menu #resMenu>
             <button
-              class="menu-item"
+              uiMenuItem
               *ngIf="element.canUpdate"
               [routerLink]="[element.id + '/builder']"
             >
@@ -97,7 +97,7 @@
               {{ 'common.edit' | translate }}
             </button>
             <button
-              class="menu-item"
+              uiMenuItem
               (click)="deleteForm(element, $event)"
               *ngIf="element.canDelete"
             >

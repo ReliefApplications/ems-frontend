@@ -50,12 +50,12 @@
           >
           </safe-button>
           <ui-menu #menu>
-            <button class="menu-item" (click)="editEmailTemplate(element)">
+            <button uiMenuItem (click)="editEmailTemplate(element)">
               <mat-icon>edit</mat-icon>
               {{ 'common.edit' | translate }}
             </button>
             <safe-divider class="!m-0"></safe-divider>
-            <button class="menu-item" (click)="deleteTemplate(element)">
+            <button uiMenuItem (click)="deleteTemplate(element)">
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
             </button>

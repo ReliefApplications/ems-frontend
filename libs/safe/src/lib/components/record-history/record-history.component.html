@@ -82,8 +82,8 @@
       {{ 'components.history.download' | translate }}
     </safe-button>
     <ui-menu #menu>
-      <button class="menu-item" (click)="onDownload('csv')">.csv</button>
-      <button class="menu-item" (click)="onDownload('xlsx')">.xlsx</button>
+      <button uiMenuItem (click)="onDownload('csv')">.csv</button>
+      <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
     </ui-menu>
   </div>
 </div>
