@@ -15,6 +15,7 @@ import { SliderModule } from './slider/slider.module';
 import { TextareaModule } from './textarea/textarea.module';
 import { RadioModule } from './radio/radio.module';
 import { DialogModule } from './dialog/dialog.module';
+import { FormWrapperModule } from './form-wrapper/form-wrapper.module';
 
 /**
  * UI Library Module
@@ -37,6 +38,7 @@ import { DialogModule } from './dialog/dialog.module';
     TextareaModule,
     RadioModule,
     DialogModule,
+    FormWrapperModule,
   ],
   imports: [],
 })

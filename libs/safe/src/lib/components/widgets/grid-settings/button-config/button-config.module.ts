@@ -4,9 +4,9 @@ import { ButtonConfigComponent } from './button-config.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { ToggleModule } from '@oort-front/ui';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
+import { CheckboxModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
@@ -25,9 +25,9 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatSlideToggleModule,
+    ToggleModule,
     MatInputModule,
-    MatCheckboxModule,
+    CheckboxModule,
     MatSelectModule,
     MatTabsModule,
     MatTooltipModule,
