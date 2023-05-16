@@ -39,7 +39,7 @@ export class DashboardComponent
 {
   public isFullScreen = false;
   // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   /** Current dashboard id */
   public id = '';
