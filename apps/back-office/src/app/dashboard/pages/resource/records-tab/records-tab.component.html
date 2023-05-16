@@ -24,17 +24,17 @@
       icon="file_download"
       category="secondary"
       variant="primary"
-      [matMenuTriggerFor]="menu"
+      [uiMenuTriggerFor]="menu"
     >
       {{
         'common.downloadObject'
           | translate : { name: 'common.record.few' | translate }
       }}
     </safe-button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="onDownload('csv')">.csv</button>
-      <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
-    </mat-menu>
+    <ui-menu #menu>
+      <button uiMenuItem (click)="onDownload('csv')">.csv</button>
+      <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
+    </ui-menu>
     <safe-button
       icon="file_upload"
       category="secondary"
@@ -91,13 +91,13 @@
             <safe-button
               [isIcon]="true"
               icon="more_vert"
-              [matMenuTriggerFor]="recMenu"
+              [uiMenuTriggerFor]="recMenu"
               (click)="$event.stopPropagation()"
             >
             </safe-button>
-            <mat-menu #recMenu="matMenu">
+            <ui-menu #recMenu>
               <button
-                mat-menu-item
+                uiMenuItem
                 [routerLink]="['update', element.id]"
                 [matTooltip]="'Edit as ' + element.form.name"
                 matTooltipPosition="above"
@@ -108,8 +108,8 @@
               </button>
               <button
                 *ngIf="(resource.forms?.length || 0) > 1"
-                mat-menu-item
-                [matMenuTriggerFor]="templates"
+                uiMenuItem
+                [uiMenuTriggerFor]="templates"
               >
                 <mat-icon>edit_note</mat-icon>
                 {{
@@ -119,7 +119,7 @@
               </button>
               <button
                 *ngIf="!showDeletedRecords"
-                mat-menu-item
+                uiMenuItem
                 (click)="onDeleteRecord(element, $event)"
               >
                 <mat-icon>delete</mat-icon>
@@ -127,7 +127,7 @@
               </button>
               <button
                 *ngIf="showDeletedRecords"
-                mat-menu-item
+                uiMenuItem
                 (click)="onDeleteRecord(element, $event)"
               >
                 <mat-icon>delete_forever</mat-icon>
@@ -135,24 +135,24 @@
               </button>
               <button
                 *ngIf="showDeletedRecords"
-                mat-menu-item
+                uiMenuItem
                 (click)="onRestoreRecord(element.id, $event)"
               >
                 <mat-icon>unarchive</mat-icon>
                 {{ 'models.record.restore' | translate }}
               </button>
-            </mat-menu>
-            <mat-menu #templates="matMenu">
+            </ui-menu>
+            <ui-menu #templates>
               <ng-container *ngFor="let form of filterTemplates(element)">
                 <button
-                  mat-menu-item
+                  uiMenuItem
                   [routerLink]="['./update', element.id]"
                   [state]="{ template: form.id }"
                 >
                   {{ form.name }}
                 </button>
               </ng-container>
-            </mat-menu>
+            </ui-menu>
           </td>
         </ng-container>
       </ng-container>

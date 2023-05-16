@@ -30,7 +30,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
-import { SafeDividerModule } from '../../../ui/divider/divider.module';
+import { DividerModule } from '@oort-front/ui';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
 import { RadioModule } from '@oort-front/ui';
@@ -60,7 +60,7 @@ const ITEMS_PER_PAGE = 10;
     MatSelectModule,
     MatTooltipModule,
     SafeReadableCronModule,
-    SafeDividerModule,
+    DividerModule,
     SafeGraphQLSelectModule,
     CronExpressionControlModule,
     RadioModule,

@@ -23,7 +23,7 @@ import { LabelModule } from '@progress/kendo-angular-label';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { SafeQueryStyleListComponent } from './tab-style/query-style-list/query-style-list.component';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { SafeQueryStyleComponent } from './tab-style/query-style/query-style.component';
 import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/query-style-preview.component';
 import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
@@ -63,7 +63,7 @@ import { RadioModule } from '@oort-front/ui';
     MatFormFieldModule,
     MatInputModule,
     MatTabsModule,
-    MatMenuModule,
+    MenuModule,
     MatTableModule,
     DragDropModule,
     MatButtonModule,

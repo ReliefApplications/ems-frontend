@@ -4,7 +4,7 @@ import { SafeExportComponent } from './export.component';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { FormsModule } from '@angular/forms';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { ToggleModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../modal/modal.module';
 import { RadioModule } from '@oort-front/ui';
@@ -17,7 +17,7 @@ import { RadioModule } from '@oort-front/ui';
     FormsModule,
     MatDialogModule,
     MatTooltipModule,
-    MatSlideToggleModule,
+    ToggleModule,
     TranslateModule,
     SafeModalModule,
     RadioModule,

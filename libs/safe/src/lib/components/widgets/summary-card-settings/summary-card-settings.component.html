@@ -69,19 +69,19 @@
           icon="more_vert"
           [isIcon]="true"
           class="widget-options"
-          [matMenuTriggerFor]="menu"
+          [uiMenuTriggerFor]="menu"
         ></safe-button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="openCard(i)">
+        <ui-menu #menu>
+          <button uiMenuItem (click)="openCard(i)">
             <mat-icon>insert_chart</mat-icon>
             <span>{{ 'common.settings' | translate }}</span>
           </button>
           <mat-divider></mat-divider>
-          <button mat-menu-item (click)="removeCard(i)">
+          <button uiMenuItem (click)="removeCard(i)">
             <mat-icon>delete</mat-icon>
             <span>{{ 'common.delete' | translate }}</span>
           </button>
-        </mat-menu>
+        </ui-menu>
         <safe-icon
           *ngIf="!tileForm.value.isDynamic"
           icon="drag_indicator"

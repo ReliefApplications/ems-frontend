@@ -4,10 +4,10 @@ import { DistributionListsComponent } from './distribution-lists.component';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeButtonModule } from '../ui/button/button.module';
-import { SafeDividerModule } from '../ui/divider/divider.module';
+import { DividerModule } from '@oort-front/ui';
 
 /**
  * Module of distribution list table
@@ -19,10 +19,10 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
     MatTableModule,
     TranslateModule,
     SafeSkeletonTableModule,
-    MatMenuModule,
+    MenuModule,
     MatIconModule,
     SafeButtonModule,
-    SafeDividerModule,
+    DividerModule,
   ],
   exports: [DistributionListsComponent],
 })

@@ -8,7 +8,7 @@ import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { SafeFloatingOptionsComponent } from './floating-options/floating-options.component';
@@ -21,7 +21,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { SafeDividerModule } from '../ui/divider/divider.module';
+import { DividerModule } from '@oort-front/ui';
 /** Module for the widget-related components */
 @NgModule({
   declarations: [
@@ -43,8 +43,8 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
     MatDialogModule,
     MatTooltipModule,
     MatDialogModule,
-    MatMenuModule,
-    SafeDividerModule,
+    MenuModule,
+    DividerModule,
     SafeButtonModule,
     TranslateModule,
     SafeIconModule,

@@ -11,7 +11,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { SafeChartModule } from '../chart/chart.module';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -41,7 +40,6 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     SafeQueryBuilderModule,
     SafeChartModule,
     MatExpansionModule,
-    MatSlideToggleModule,
     MatTabsModule,
     SafeButtonModule,
     TranslateModule,

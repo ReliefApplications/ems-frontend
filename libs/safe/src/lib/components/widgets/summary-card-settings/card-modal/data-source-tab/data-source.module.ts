@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
-import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
@@ -13,8 +12,7 @@ import { SafeFormsDropdownModule } from '../../../../ui/aggregation-builder/publ
 import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeDataSourceTabComponent } from './data-source-tab.component';
-import { SafeDividerModule } from '../../../../ui/divider/divider.module';
-import { RadioModule } from '@oort-front/ui';
+import { RadioModule, DividerModule, CheckboxModule } from '@oort-front/ui';
 
 /** Data Source tab Module for summary card edition */
 @NgModule({
@@ -33,9 +31,9 @@ import { RadioModule } from '@oort-front/ui';
     MatProgressSpinnerModule,
     SafeGraphQLSelectModule,
     SafeButtonModule,
-    MatCheckboxModule,
-    SafeDividerModule,
-    RadioModule,
+    CheckboxModule,
+    DividerModule,
+    RadioModule
   ],
   exports: [SafeDataSourceTabComponent],
 })

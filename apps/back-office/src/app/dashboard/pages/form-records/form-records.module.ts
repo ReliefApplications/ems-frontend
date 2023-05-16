@@ -4,13 +4,13 @@ import { FormRecordsRoutingModule } from './form-records-routing.module';
 import { FormRecordsComponent } from './form-records.component';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import {
   SafeRecordHistoryModule,
   SafeButtonModule,
-  SafeDividerModule,
   SafeSkeletonTableModule,
 } from '@oort-front/safe';
+import { DividerModule } from '@oort-front/ui';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
@@ -25,9 +25,9 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     FormRecordsRoutingModule,
     MatTableModule,
     MatIconModule,
-    MatMenuModule,
+    MenuModule,
     SafeRecordHistoryModule,
-    SafeDividerModule,
+    DividerModule,
     MatTooltipModule,
     SafeButtonModule,
     MatPaginatorModule,

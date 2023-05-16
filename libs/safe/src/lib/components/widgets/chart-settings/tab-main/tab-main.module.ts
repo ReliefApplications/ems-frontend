@@ -11,7 +11,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePaletteControlModule } from '../../../palette-control/palette-control.module';
@@ -42,7 +41,6 @@ import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-
     SafeQueryBuilderModule,
     SafeChartModule,
     MatExpansionModule,
-    MatSlideToggleModule,
     MatTabsModule,
     SafeButtonModule,
     TranslateModule,
