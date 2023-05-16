@@ -2,6 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
+/**
+ *
+ */
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
@@ -14,6 +17,10 @@ export class FilterComponent implements OnInit {
   @Output() filter = new EventEmitter<any>();
   @Input() loading = false;
 
+  /**
+   *
+   * @param formBuilder
+   */
   constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {

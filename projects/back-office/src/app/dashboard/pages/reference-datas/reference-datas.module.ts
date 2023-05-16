@@ -31,7 +31,11 @@ import { FilterComponent } from './filter/filter/filter.component';
  * List of reference data page module
  */
 @NgModule({
-  declarations: [ReferenceDatasComponent, AddReferenceDataComponent, FilterComponent],
+  declarations: [
+    ReferenceDatasComponent,
+    AddReferenceDataComponent,
+    FilterComponent,
+  ],
   imports: [
     CommonModule,
     MatMenuModule,
