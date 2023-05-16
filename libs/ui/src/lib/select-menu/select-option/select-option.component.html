@@ -1,10 +1,9 @@
 <li
   [cdkOption]="value"
-  [attr.value]="value"
   [ngClass]="{
     'bg-primary-600 text-white': isSelected
   }"
-  class="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9 hover:bg-primary-600 hover:text-white"
+  class="text-gray-900 relative cursor-pointer select-none py-2 pl-3 pr-9 hover:bg-primary-600 hover:text-white"
   (click)="onChangeFunction()"
 >
   <!-- Text, changes if selected -->
