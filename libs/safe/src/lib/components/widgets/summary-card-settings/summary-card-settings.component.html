@@ -68,12 +68,12 @@
           [uiMenuTriggerFor]="menu"
         ></safe-button>
         <ui-menu #menu>
-          <button class="menu-item" (click)="openCard(i)">
+          <button uiMenuItem (click)="openCard(i)">
             <mat-icon>insert_chart</mat-icon>
             <span>{{ 'common.settings' | translate }}</span>
           </button>
           <mat-divider></mat-divider>
-          <button class="menu-item" (click)="removeCard(i)">
+          <button uiMenuItem (click)="removeCard(i)">
             <mat-icon>delete</mat-icon>
             <span>{{ 'common.delete' | translate }}</span>
           </button>

@@ -35,11 +35,11 @@
             >
             </safe-button>
             <ui-menu #menu>
-              <button class="menu-item" (click)="onEdit(element)">
+              <button uiMenuItem (click)="onEdit(element)">
                 <mat-icon>edit</mat-icon>
                 {{ 'common.edit' | translate }}
               </button>
-              <button class="menu-item" color="warn" (click)="onDelete(element)">
+              <button uiMenuItem color="warn" (click)="onDelete(element)">
                 <mat-icon>delete</mat-icon>
                 {{ 'common.delete' | translate }}
               </button>

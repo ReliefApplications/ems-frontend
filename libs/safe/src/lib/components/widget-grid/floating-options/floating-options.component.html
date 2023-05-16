@@ -5,7 +5,7 @@
   <ng-container *ngFor="let item of items">
     <safe-divider *ngIf="item.name === 'Delete'" class="m-0"></safe-divider>
 
-    <button class="menu-item" (click)="onClick(item)" [disabled]="item.disabled">
+    <button uiMenuItem (click)="onClick(item)" [disabled]="item.disabled">
       <mat-icon>{{ item.icon }}</mat-icon>
       <span>{{ item.text }}</span>
     </button>

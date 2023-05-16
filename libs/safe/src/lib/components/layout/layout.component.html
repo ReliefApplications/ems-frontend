@@ -78,21 +78,21 @@
     </mat-icon>
   </button>
   <ui-menu #accountMenu>
-    <a class="menu-item" [routerLink]="[profileRoute]">
+    <a uiMenuItem [routerLink]="[profileRoute]">
       {{ 'pages.profile.title' | translate }}
     </a>
     <safe-divider class="m-0"></safe-divider>
-    <button class="menu-item" (click)="onOpenPreferences()" *ngIf="showPreferences">
+    <button uiMenuItem (click)="onOpenPreferences()" *ngIf="showPreferences">
       {{ 'components.preferences.title' | translate }}
     </button>
     <ng-container *ngIf="user && user.isAdmin">
       <safe-divider class="m-0"></safe-divider>
-      <a class="menu-item" [href]="otherOfficeUri">
+      <a uiMenuItem [href]="otherOfficeUri">
         {{ 'components.header.goToPlatform' | translate }} {{ otherOffice }}
       </a>
     </ng-container>
     <safe-divider class="m-0"></safe-divider>
-    <button class="menu-item warn" (click)="logout()">
+    <button uiMenuItem class="warn" (click)="logout()">
       {{ 'components.header.logout' | translate }}
     </button>
     <div
@@ -108,7 +108,7 @@
         <mat-icon [inline]="true">check_circle_outline</mat-icon>
       </a>
       <button
-        class="menu-item"
+        uiMenuItem
         (click)="onNotificationClick(notification)"
         *ngFor="let notification of notifications"
       >

@@ -45,7 +45,7 @@
 <!-- Admin pages -->
 <ui-menu #settingsMenu>
   <a
-    class="menu-item"
+    uiMenuItem
     *ngFor="let setting of settings"
     [routerLink]="setting.path"
     routerLinkActive="active-link"

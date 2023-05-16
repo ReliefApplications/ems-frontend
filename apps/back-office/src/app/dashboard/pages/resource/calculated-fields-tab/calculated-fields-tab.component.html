@@ -40,11 +40,11 @@
             >
             </safe-button>
             <ui-menu #resMenu>
-              <button class="menu-item" (click)="onEditCalculatedField(element)">
+              <button uiMenuItem (click)="onEditCalculatedField(element)">
                 <mat-icon>edit</mat-icon>
                 {{ 'common.edit' | translate }}
               </button>
-              <button class="menu-item" (click)="onDeleteCalculatedField(element)">
+              <button uiMenuItem (click)="onDeleteCalculatedField(element)">
                 <mat-icon>delete</mat-icon>
                 {{ 'common.delete' | translate }}
               </button>

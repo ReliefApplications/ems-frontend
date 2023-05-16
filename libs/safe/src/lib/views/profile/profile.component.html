@@ -84,7 +84,7 @@
             >
             </safe-button>
             <ui-menu #menu>
-              <button class="menu-item" (click)="onSelectFavorite(element)">
+              <button uiMenuItem (click)="onSelectFavorite(element)">
                 <mat-icon>star</mat-icon>
                 {{ 'models.application.setAsFavorite' | translate }}
               </button>

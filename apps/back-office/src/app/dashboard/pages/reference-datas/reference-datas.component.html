@@ -90,7 +90,7 @@
           </safe-button>
           <ui-menu #menu>
             <button
-              class="menu-item"
+              uiMenuItem
               (click)="onDelete(element, $event)"
               *ngIf="element.canDelete"
             >

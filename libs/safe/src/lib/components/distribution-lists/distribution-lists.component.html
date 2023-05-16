@@ -39,12 +39,12 @@
           >
           </safe-button>
           <ui-menu #menu>
-            <button class="menu-item" (click)="editDistributionList(element)">
+            <button uiMenuItem (click)="editDistributionList(element)">
               <mat-icon>edit</mat-icon>
               {{ 'common.edit' | translate }}
             </button>
             <safe-divider class="!m-0"></safe-divider>
-            <button class="menu-item" (click)="deleteDistributionList(element)">
+            <button uiMenuItem (click)="deleteDistributionList(element)">
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
             </button>

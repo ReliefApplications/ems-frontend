@@ -46,11 +46,11 @@
             >
             </safe-button>
             <ui-menu #resMenu>
-              <button class="menu-item" (click)="onEditAggregation(element)">
+              <button uiMenuItem (click)="onEditAggregation(element)">
                 <mat-icon>edit</mat-icon>
                 {{ 'common.edit' | translate }}
               </button>
-              <button class="menu-item" (click)="onDeleteAggregation(element)">
+              <button uiMenuItem (click)="onDeleteAggregation(element)">
                 <mat-icon>delete</mat-icon>
                 {{ 'common.delete' | translate }}
               </button>

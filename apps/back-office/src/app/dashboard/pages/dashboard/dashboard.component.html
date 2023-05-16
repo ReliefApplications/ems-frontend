@@ -73,7 +73,7 @@
         >
         </safe-button>
         <ui-menu #menu>
-          <button class="menu-item" (click)="toggleFiltering()">
+          <button uiMenuItem (click)="toggleFiltering()">
             <mat-icon>tune</mat-icon>
             <!-- todo(translate) -->
             {{
@@ -82,11 +82,11 @@
                 : 'Activate filtering'
             }}
           </button>
-          <button class="menu-item" (click)="onAppSelection()">
+          <button uiMenuItem (click)="onAppSelection()">
             <mat-icon>file_copy</mat-icon>
             {{ 'common.duplicate' | translate }}
           </button>
-          <button class="menu-item" (click)="onShare()">
+          <button uiMenuItem (click)="onShare()">
             <mat-icon>share</mat-icon>
             {{ 'models.dashboard.share' | translate }}
           </button>

@@ -32,8 +32,8 @@
       }}
     </safe-button>
     <ui-menu #menu>
-      <button class="menu-item" (click)="onDownload('csv')">.csv</button>
-      <button class="menu-item" (click)="onDownload('xlsx')">.xlsx</button>
+      <button uiMenuItem (click)="onDownload('csv')">.csv</button>
+      <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
     </ui-menu>
     <safe-button
       icon="file_upload"
@@ -97,7 +97,7 @@
             </safe-button>
             <ui-menu #recMenu>
               <button
-                class="menu-item"
+                uiMenuItem
                 [routerLink]="['update', element.id]"
                 [matTooltip]="'Edit as ' + element.form.name"
                 matTooltipPosition="above"
@@ -108,7 +108,7 @@
               </button>
               <button
                 *ngIf="(resource.forms?.length || 0) > 1"
-                class="menu-item"
+                uiMenuItem
                 [uiMenuTriggerFor]="templates"
               >
                 <mat-icon>edit_note</mat-icon>
@@ -119,7 +119,7 @@
               </button>
               <button
                 *ngIf="!showDeletedRecords"
-                class="menu-item"
+                uiMenuItem
                 (click)="onDeleteRecord(element, $event)"
               >
                 <mat-icon>delete</mat-icon>
@@ -127,7 +127,7 @@
               </button>
               <button
                 *ngIf="showDeletedRecords"
-                class="menu-item"
+                uiMenuItem
                 (click)="onDeleteRecord(element, $event)"
               >
                 <mat-icon>delete_forever</mat-icon>
@@ -135,7 +135,7 @@
               </button>
               <button
                 *ngIf="showDeletedRecords"
-                class="menu-item"
+                uiMenuItem
                 (click)="onRestoreRecord(element.id, $event)"
               >
                 <mat-icon>unarchive</mat-icon>
@@ -145,7 +145,7 @@
             <ui-menu #templates>
               <ng-container *ngFor="let form of filterTemplates(element)">
                 <button
-                  class="menu-item"
+                  uiMenuItem
                   [routerLink]="['./update', element.id]"
                   [state]="{ template: form.id }"
                 >
