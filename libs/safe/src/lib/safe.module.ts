@@ -29,7 +29,6 @@ import { SafeRoleSummaryModule } from './components/role-summary/role-summary.mo
 import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-select.module';
 import { SafeModalModule } from './components/ui/modal/modal.module';
 import { SafeEmptyModule } from './components/ui/empty/empty.module';
-import { SafeDividerModule } from './components/ui/divider/divider.module';
 import { SafeLeftSidenavModule } from './components/left-sidenav/left-sidenav.module';
 import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.module';
 import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
@@ -78,7 +77,6 @@ import { DashboardFilterModule } from './components/dashboard-filter/dashboard-f
     SafeGraphQLSelectModule,
     SafeModalModule,
     SafeEmptyModule,
-    SafeDividerModule,
     SafeLeftSidenavModule,
     // === Directives
     SafeSkeletonModule,

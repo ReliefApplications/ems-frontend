@@ -7,14 +7,18 @@
       </mat-form-field>
     </div>
     <div class="settings">
-      <mat-radio-group formControlName="isDynamic">
-        <mat-radio-button [value]="false">{{
-          'components.widget.settings.summaryCard.static' | translate
-        }}</mat-radio-button>
-        <mat-radio-button [value]="true">{{
-          'components.widget.settings.summaryCard.dynamic' | translate
-        }}</mat-radio-button>
-      </mat-radio-group>
+      <div formControlName="isDynamic" uiRadioGroupDirective="isDynamicOptions" class="flex gap-4 items-center">
+        <ui-radio [value]="false" [checked]="tileForm.get('isDynamic')?.value === false">
+          <ng-container ngProjectAs="label">
+            {{ 'components.widget.settings.summaryCard.static' | translate }}
+          </ng-container>
+        </ui-radio>
+        <ui-radio [value]="true" [checked]="tileForm.get('isDynamic')?.value === true">
+          <ng-container ngProjectAs="label">
+            {{ 'components.widget.settings.summaryCard.dynamic' | translate }}
+          </ng-container>
+        </ui-radio>
+      </div>
       <safe-button
         (click)="addCard()"
         icon="add"
@@ -65,19 +69,19 @@
           icon="more_vert"
           [isIcon]="true"
           class="widget-options"
-          [matMenuTriggerFor]="menu"
+          [uiMenuTriggerFor]="menu"
         ></safe-button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="openCard(i)">
+        <ui-menu #menu>
+          <button uiMenuItem (click)="openCard(i)">
             <mat-icon>insert_chart</mat-icon>
             <span>{{ 'common.settings' | translate }}</span>
           </button>
           <mat-divider></mat-divider>
-          <button mat-menu-item (click)="removeCard(i)">
+          <button uiMenuItem (click)="removeCard(i)">
             <mat-icon>delete</mat-icon>
             <span>{{ 'common.delete' | translate }}</span>
           </button>
-        </mat-menu>
+        </ui-menu>
         <safe-icon
           *ngIf="!tileForm.value.isDynamic"
           icon="drag_indicator"

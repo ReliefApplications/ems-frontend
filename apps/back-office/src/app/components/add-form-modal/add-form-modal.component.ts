@@ -18,9 +18,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { ToggleModule } from '@oort-front/ui';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { TranslateModule } from '@ngx-translate/core';
@@ -29,6 +28,7 @@ import {
   SafeIconModule,
   SafeModalModule,
 } from '@oort-front/safe';
+import { RadioModule, IconModule, Variant } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -46,14 +46,15 @@ const ITEMS_PER_PAGE = 10;
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatRadioModule,
     MatTooltipModule,
-    MatSlideToggleModule,
+    ToggleModule,
     MatChipsModule,
     TranslateModule,
     SafeIconModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
+    RadioModule,
+    IconModule,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',
@@ -67,6 +68,9 @@ export class AddFormModalComponent implements OnInit {
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
   public templates: any[] = [];
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   @ViewChild('resourceSelect') resourceSelect?: MatSelect;
 
@@ -92,7 +96,6 @@ export class AddFormModalComponent implements OnInit {
       inheritsTemplate: [false],
       template: [null],
     });
-
     this.form.get('newResource')?.valueChanges.subscribe((value: boolean) => {
       if (value) {
         this.form.get('resource')?.clearValidators();
