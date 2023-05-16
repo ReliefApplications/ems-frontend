@@ -18,8 +18,9 @@ export class FilterComponent implements OnInit {
   @Input() loading = false;
 
   /**
+   * FilterComponent contructor
    *
-   * @param formBuilder
+   * @param formBuilder Used to create reactive forms
    */
   constructor(private formBuilder: FormBuilder) {}
 
