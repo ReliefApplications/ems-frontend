@@ -19,8 +19,6 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { ToggleModule } from '@oort-front/ui';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -28,7 +26,13 @@ import {
   SafeIconModule,
   SafeModalModule,
 } from '@oort-front/safe';
-import { RadioModule, IconModule, Variant } from '@oort-front/ui';
+import {
+  ToggleModule,
+  TooltipModule,
+  RadioModule,
+  IconModule,
+  Variant,
+} from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -46,13 +50,13 @@ const ITEMS_PER_PAGE = 10;
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatTooltipModule,
     ToggleModule,
     MatChipsModule,
     TranslateModule,
     SafeIconModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
+    TooltipModule,
     RadioModule,
     IconModule,
   ],

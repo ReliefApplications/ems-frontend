@@ -17,7 +17,6 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
 import { MatRippleModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeButtonModule } from '../ui/button/button.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
@@ -44,7 +43,6 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     MatProgressSpinnerModule,
     MatDividerModule,
     SafeButtonModule,
-    MatTooltipModule,
     SafeInviteUsersModule,
     TranslateModule,
     SafeSkeletonTableModule,

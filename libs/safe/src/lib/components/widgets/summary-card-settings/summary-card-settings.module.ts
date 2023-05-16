@@ -7,7 +7,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeButtonModule } from '../../ui/button/button.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MenuModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,7 +29,7 @@ import { RadioModule } from '@oort-front/ui';
     TranslateModule,
     LayoutModule,
     SafeButtonModule,
-    MatTooltipModule,
+    TooltipModule,
     SafeIconModule,
     MenuModule,
     MatIconModule,

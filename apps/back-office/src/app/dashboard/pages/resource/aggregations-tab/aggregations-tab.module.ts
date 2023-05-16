@@ -5,7 +5,6 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
 import { MenuModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
@@ -29,7 +28,6 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
     MatIconModule,
     MenuModule,
     SafeButtonModule,
-    MatTooltipModule,
     TranslateModule,
     SafeAggregationBuilderModule,
     OverlayModule,

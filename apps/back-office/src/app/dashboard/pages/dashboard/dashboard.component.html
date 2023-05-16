@@ -54,7 +54,7 @@
           [isIcon]="true"
           [icon]="dashboard.page?.context ? 'cached' : 'add'"
           (click)="selectContextDatasource()"
-          [matTooltip]="
+          [uiTooltip]="
             (dashboard.page?.context
               ? 'models.dashboard.context.datasource.update'
               : 'models.dashboard.context.datasource.set'

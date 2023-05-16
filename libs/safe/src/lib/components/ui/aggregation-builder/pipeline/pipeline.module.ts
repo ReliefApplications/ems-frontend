@@ -15,7 +15,7 @@ import { SafeAddFieldStageComponent } from './add-field-stage/add-field-stage.co
 import { SafeExpressionsComponent } from './expressions/expressions.component';
 import { SafeFieldDropdownComponent } from './field-dropdown/field-dropdown.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { SafeIconModule } from '../../icon/icon.module';
 import { SafeFilterModule } from '../../../filter/filter.module';
 import { SafeSortStageComponent } from './sort-stage/sort-stage.component';
@@ -46,7 +46,7 @@ import { SafeSortStageComponent } from './sort-stage/sort-stage.component';
     MatInputModule,
     DragDropModule,
     SafeIconModule,
-    MatTooltipModule,
+    TooltipModule,
     SafeFilterModule,
   ],
   exports: [

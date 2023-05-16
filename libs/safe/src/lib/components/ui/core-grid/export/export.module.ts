@@ -3,11 +3,9 @@ import { CommonModule } from '@angular/common';
 import { SafeExportComponent } from './export.component';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { FormsModule } from '@angular/forms';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { ToggleModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../modal/modal.module';
-import { RadioModule } from '@oort-front/ui';
+import { RadioModule, TooltipModule, ToggleModule } from '@oort-front/ui';
 
 /** Module for the export component */
 @NgModule({
@@ -16,7 +14,7 @@ import { RadioModule } from '@oort-front/ui';
     CommonModule,
     FormsModule,
     MatDialogModule,
-    MatTooltipModule,
+    TooltipModule,
     ToggleModule,
     TranslateModule,
     SafeModalModule,
