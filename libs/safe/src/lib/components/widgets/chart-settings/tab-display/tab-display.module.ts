@@ -10,9 +10,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { ToggleModule } from '@oort-front/ui';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePaletteControlModule } from '../../../palette-control/palette-control.module';
@@ -24,8 +23,7 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { SeriesSettingsModule } from '../series-settings/series-settings.module';
-import { SafeDividerModule } from '../../../ui/divider/divider.module';
-import { TooltipModule } from '@oort-front/ui';
+import { TooltipModule, DividerModule } from '@oort-front/ui';
 
 /**
  * Display tab of chart settings modal.
@@ -39,14 +37,13 @@ import { TooltipModule } from '@oort-front/ui';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatRadioModule,
     MatButtonModule,
     MatIconModule,
     TextFieldModule,
     SafeQueryBuilderModule,
     SafeChartModule,
     MatExpansionModule,
-    MatSlideToggleModule,
+    ToggleModule,
     MatTabsModule,
     SafeButtonModule,
     TranslateModule,
@@ -58,8 +55,8 @@ import { TooltipModule } from '@oort-front/ui';
     SafePaletteControlModule,
     InputsModule,
     SeriesSettingsModule,
-    SafeDividerModule,
     TooltipModule,
+    DividerModule,
   ],
   exports: [TabDisplayComponent],
 })

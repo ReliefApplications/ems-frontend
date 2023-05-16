@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TabActionsComponent } from './tab-actions.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { ToggleModule } from '@oort-front/ui';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { TooltipModule } from '@oort-front/ui';
 
@@ -17,7 +17,7 @@ import { TooltipModule } from '@oort-front/ui';
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSlideToggleModule,
+    ToggleModule,
     SafeIconModule,
     TooltipModule,
   ],

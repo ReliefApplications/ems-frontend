@@ -1,19 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeAvatarComponent } from './avatar.component';
+import { SliderComponent } from './slider.component';
 
-describe('AvatarComponent', () => {
-  let component: SafeAvatarComponent;
-  let fixture: ComponentFixture<SafeAvatarComponent>;
+describe('SliderComponent', () => {
+  let component: SliderComponent;
+  let fixture: ComponentFixture<SliderComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SafeAvatarComponent],
+      declarations: [SliderComponent],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SafeAvatarComponent);
+    fixture = TestBed.createComponent(SliderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

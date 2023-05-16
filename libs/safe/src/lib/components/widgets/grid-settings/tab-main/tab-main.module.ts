@@ -11,7 +11,7 @@ import { LayoutTableModule } from '../../../grid-layout/layout-table/layout-tabl
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { TooltipModule } from '@oort-front/ui';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
-import { SafeDividerModule } from '../../../ui/divider/divider.module';
+import { DividerModule } from '@oort-front/ui';
 import { AggregationTableModule } from '../../../aggregation/aggregation-table/aggregation-table.module';
 
 /**
@@ -32,7 +32,7 @@ import { AggregationTableModule } from '../../../aggregation/aggregation-table/a
     SafeGraphQLSelectModule,
     TooltipModule,
     SafeIconModule,
-    SafeDividerModule,
+    DividerModule,
     AggregationTableModule,
   ],
   exports: [TabMainComponent],

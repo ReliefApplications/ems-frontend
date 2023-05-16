@@ -4,7 +4,7 @@ import { CategoriesSettingsComponent } from './categories-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ColorPickerModule } from '@progress/kendo-angular-inputs';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { ToggleModule } from '@oort-front/ui';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { TooltipModule } from '@oort-front/ui';
 
@@ -19,7 +19,7 @@ import { TooltipModule } from '@oort-front/ui';
     ReactiveFormsModule,
     ColorPickerModule,
     TranslateModule,
-    MatSlideToggleModule,
+    ToggleModule,
     SafeIconModule,
     TooltipModule,
   ],

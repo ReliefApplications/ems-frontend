@@ -66,13 +66,13 @@
       [selectedAggregations]="$any(formGroup).get('aggregations')"
     ></safe-aggregation-table>
   </div>
-  <safe-divider
+  <ui-divider
     *ngIf="
       !(formGroup.get('layouts')?.value.length > 0) &&
       !(formGroup.get('aggregations')?.value.length > 0)
     "
     [text]="'common.or' | translate"
-  ></safe-divider>
+  ></ui-divider>
   <!-- Layouts -->
   <div *ngIf="!(formGroup.get('aggregations')?.value.length > 0)">
     <h2>

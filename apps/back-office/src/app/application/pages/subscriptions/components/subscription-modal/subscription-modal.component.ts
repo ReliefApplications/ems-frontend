@@ -37,7 +37,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SubscriptionsRoutingModule } from '../../subscriptions-routing.module';
@@ -46,8 +46,8 @@ import {
   SafeIconModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
-  SafeDividerModule,
 } from '@oort-front/safe';
+import { DividerModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
@@ -71,11 +71,11 @@ const ITEMS_PER_PAGE = 10;
     MatIconModule,
     MatInputModule,
     MatSelectModule,
-    MatMenuModule,
+    MenuModule,
     MatProgressSpinnerModule,
     MatTableModule,
     MatAutocompleteModule,
-    SafeDividerModule,
+    DividerModule,
     SafeButtonModule,
     SafeIconModule,
     TranslateModule,

@@ -1,7 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
 import { SafeRoleListComponent } from './role-list.component';
-import { SafeDividerModule } from '../../../ui/divider/divider.module';
+import { DividerModule } from '@oort-front/ui';
 import { AbilityModule } from '@casl/angular';
 
 /**
@@ -30,11 +30,11 @@ import { AbilityModule } from '@casl/angular';
     MatSelectModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    MatMenuModule,
+    MenuModule,
     MatIconModule,
     MatSortModule,
     MatAutocompleteModule,
-    SafeDividerModule,
+    DividerModule,
     SafeButtonModule,
     TranslateModule,
     SafeSkeletonTableModule,

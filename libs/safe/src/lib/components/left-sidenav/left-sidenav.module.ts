@@ -9,7 +9,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { TooltipModule } from '@oort-front/ui';
 import { RouterModule } from '@angular/router';
 import { SafeButtonModule } from '../ui/button/button.module';
-import { SafeDividerModule } from '../ui/divider/divider.module';
+import { DividerModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -27,7 +27,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TooltipModule,
     RouterModule,
     SafeButtonModule,
-    SafeDividerModule,
+    DividerModule,
     TranslateModule,
   ],
   exports: [SafeLeftSidenavComponent],

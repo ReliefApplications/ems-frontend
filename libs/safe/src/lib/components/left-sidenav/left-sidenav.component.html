@@ -85,7 +85,7 @@
     </div>
     <ng-container *ngIf="appLayout && canAddPage">
       <div class="flex flex-col items-center w-full absolute bottom-0">
-        <safe-divider class="m-0"></safe-divider>
+        <ui-divider class="m-0"></ui-divider>
         <safe-button
           class="my-4"
           icon="add"
@@ -98,6 +98,6 @@
         </safe-button>
       </div>
     </ng-container>
-    <safe-divider class="m-0" *ngIf="i < navGroups.length - 1"></safe-divider>
+    <ui-divider class="m-0" *ngIf="i < navGroups.length - 1"></ui-divider>
   </ng-container>
 </mat-nav-list>

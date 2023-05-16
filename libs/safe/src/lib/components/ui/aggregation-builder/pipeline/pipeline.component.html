@@ -82,19 +82,19 @@
   <safe-button
     icon="add"
     category="primary"
-    [matMenuTriggerFor]="menu"
+    [uiMenuTriggerFor]="menu"
     class="!w-auto"
     (click)="$event.stopPropagation()"
   >
     {{ 'components.aggregationBuilder.addStage' | translate }}
   </safe-button>
-  <mat-menu #menu="matMenu">
+  <ui-menu #menu>
     <button
       *ngFor="let stage of stageList"
-      mat-menu-item
+      uiMenuItem
       (click)="addStage(stage)"
     >
       {{ 'components.aggregationBuilder.stages.' + stage | translate }}
     </button>
-  </mat-menu>
+  </ui-menu>
 </div>
