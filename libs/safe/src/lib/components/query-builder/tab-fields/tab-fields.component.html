@@ -163,6 +163,12 @@
           <mat-label>{{ 'models.form.field.label' | translate }}</mat-label>
           <input matInput formControlName="label" type="text" />
         </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>
+            {{ 'components.queryBuilder.fields.column' | translate }}
+          </mat-label>
+          <input matInput formControlName="width" type="number" />
+        </mat-form-field>
       </div>
       <!-- Display format -->
       <mat-form-field appearance="outline" class="w-full">

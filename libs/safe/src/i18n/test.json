@@ -749,6 +749,7 @@
 			},
 			"fields": {
 				"available": "******",
+				"column": "******",
 				"format": {
 					"info": "******",
 					"title": "******"
