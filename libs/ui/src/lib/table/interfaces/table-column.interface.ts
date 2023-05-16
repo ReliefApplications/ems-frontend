@@ -1,11 +1,7 @@
-import { Type } from '@angular/core';
-
 /**
- * Table column definition interface
+ * Table sort definition interface
  */
-export interface TableColumnDefinition {
-  title: string;
-  dataAccessor: string;
-  template: Type<any> | string;
-  sortable: boolean;
+export interface TableSort {
+  active: string;
+  sortDirection: 'asc' | 'desc' | '';
 }

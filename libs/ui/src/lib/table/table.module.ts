@@ -1,16 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CdkTableModule } from '@angular/cdk/table';
-import { TableComponent } from './table.component';
-import { PagerModule } from '@progress/kendo-angular-pager';
-import { TableTemplateResolverDirective } from './table-template-resolver.directive';
+import { TableWrapperDirective } from './table-wrapper.directive';
+import { TableHeaderSortDirective } from './table-header-sort.directive';
 
 /**
  * UI Table module
  */
 @NgModule({
-  declarations: [TableComponent, TableTemplateResolverDirective],
-  imports: [CommonModule, CdkTableModule, PagerModule],
-  exports: [TableComponent],
+  declarations: [TableWrapperDirective, TableHeaderSortDirective],
+  imports: [CommonModule, CdkTableModule],
+  exports: [TableWrapperDirective, CdkTableModule, TableHeaderSortDirective],
 })
 export class TableModule {}

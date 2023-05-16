@@ -1,18 +1,9 @@
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import '@angular/compiler';
-import {
-  moduleMetadata,
-  Meta,
-  StoryFn,
-  componentWrapperDecorator,
-} from '@storybook/angular';
-import { CdkTableModule } from '@angular/cdk/table';
-import { TableComponent } from './table.component';
-import { TableTemplateResolverDirective } from './table-template-resolver.directive';
-import { TableColumnDefinition } from './interfaces/table-column.interface';
-import { ToggleModule } from '../toggle/toggle.module';
-import { PaginatorModule } from '../paginator/paginator.module';
+import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
+
+import { TableModule } from './table.module';
 import { StorybookTranslateModule } from '../../storybook-translate.module';
+import { ToggleModule } from '../toggle/toggle.module';
+import { TableSort } from './interfaces/table-column.interface';
 
 type MockedTable = {
   name: string;
@@ -20,33 +11,17 @@ type MockedTable = {
   phone: { value: string };
   cityVal: string;
   isValid: boolean;
-  isToggle: boolean;
   id: string;
 };
 
 export default {
   title: 'Table',
-  component: TableComponent,
   decorators: [
     moduleMetadata({
-      declarations: [TableTemplateResolverDirective],
-      imports: [
-        CdkTableModule,
-        PaginatorModule,
-        BrowserAnimationsModule,
-        StorybookTranslateModule,
-      ],
+      imports: [TableModule, StorybookTranslateModule, ToggleModule],
     }),
-    componentWrapperDecorator(
-      (story) => `<div class="h-screen overflow-y-auto">${story}</div>`
-    ),
   ],
-  argTypes: {
-    displayAsCard: {
-      control: 'boolean',
-    },
-  },
-} as Meta<TableComponent<MockedTable>>;
+} as Meta<any>;
 
 /**
  * Mocked table data
@@ -58,7 +33,6 @@ const tableData: MockedTable[] = [
     phone: { value: '111111111' },
     cityVal: 'City 1',
     isValid: false,
-    isToggle: false,
     id: '1',
   },
   {
@@ -67,7 +41,6 @@ const tableData: MockedTable[] = [
     phone: { value: '333333333' },
     cityVal: 'City 3',
     isValid: true,
-    isToggle: true,
     id: '3',
   },
   {
@@ -76,7 +49,6 @@ const tableData: MockedTable[] = [
     phone: { value: '222222222' },
     cityVal: 'City 2',
     isValid: true,
-    isToggle: true,
     id: '2',
   },
   {
@@ -85,7 +57,6 @@ const tableData: MockedTable[] = [
     phone: { value: '444444444' },
     cityVal: 'City 4',
     isValid: false,
-    isToggle: false,
     id: '4',
   },
   {
@@ -94,7 +65,6 @@ const tableData: MockedTable[] = [
     phone: { value: '555555555' },
     cityVal: 'City 5',
     isValid: false,
-    isToggle: false,
     id: '5',
   },
   {
@@ -103,7 +73,6 @@ const tableData: MockedTable[] = [
     phone: { value: '666666666' },
     cityVal: 'City 6',
     isValid: true,
-    isToggle: false,
     id: '6',
   },
   {
@@ -112,7 +81,6 @@ const tableData: MockedTable[] = [
     phone: { value: '111111111' },
     cityVal: 'City 1',
     isValid: false,
-    isToggle: false,
     id: '1',
   },
   {
@@ -121,7 +89,6 @@ const tableData: MockedTable[] = [
     phone: { value: '333333333' },
     cityVal: 'City 3',
     isValid: true,
-    isToggle: false,
     id: '3',
   },
   {
@@ -130,7 +97,6 @@ const tableData: MockedTable[] = [
     phone: { value: '222222222' },
     cityVal: 'City 2',
     isValid: true,
-    isToggle: false,
     id: '2',
   },
   {
@@ -139,7 +105,6 @@ const tableData: MockedTable[] = [
     phone: { value: '444444444' },
     cityVal: 'City 4',
     isValid: false,
-    isToggle: false,
     id: '4',
   },
   {
@@ -148,7 +113,6 @@ const tableData: MockedTable[] = [
     phone: { value: '555555555' },
     cityVal: 'City 5',
     isValid: false,
-    isToggle: false,
     id: '5',
   },
   {
@@ -157,7 +121,6 @@ const tableData: MockedTable[] = [
     phone: { value: '666666666' },
     cityVal: 'City 6',
     isValid: true,
-    isToggle: false,
     id: '6',
   },
   {
@@ -166,7 +129,7 @@ const tableData: MockedTable[] = [
     phone: { value: '111111111' },
     cityVal: 'City 1',
     isValid: false,
-    isToggle: false,
+
     id: '1',
   },
   {
@@ -175,7 +138,6 @@ const tableData: MockedTable[] = [
     phone: { value: '333333333' },
     cityVal: 'City 3',
     isValid: true,
-    isToggle: false,
     id: '3',
   },
   {
@@ -184,7 +146,6 @@ const tableData: MockedTable[] = [
     phone: { value: '222222222' },
     cityVal: 'City 2',
     isValid: true,
-    isToggle: false,
     id: '2',
   },
   {
@@ -193,7 +154,6 @@ const tableData: MockedTable[] = [
     phone: { value: '444444444' },
     cityVal: 'City 4',
     isValid: false,
-    isToggle: false,
     id: '4',
   },
   {
@@ -202,7 +162,6 @@ const tableData: MockedTable[] = [
     phone: { value: '555555555' },
     cityVal: 'City 5',
     isValid: false,
-    isToggle: false,
     id: '5',
   },
   {
@@ -211,62 +170,30 @@ const tableData: MockedTable[] = [
     phone: { value: '666666666' },
     cityVal: 'City 6',
     isValid: true,
-    isToggle: false,
     id: '6',
   },
 ];
 
 /**
- * Mocked Table column definition
+ * Console log receive table sort data
+ *
+ * @param column TableSort data
  */
-const columnDefinitionData: TableColumnDefinition[] = [
-  {
-    title: 'name',
-    dataAccessor: 'name',
-    sortable: true,
-    template: '',
-  },
-  {
-    title: 'email',
-    dataAccessor: 'email.value',
-    sortable: false,
-    template: '',
-  },
-  {
-    title: 'phone',
-    dataAccessor: 'phone.value',
-    sortable: true,
-    template: '',
-  },
-  {
-    title: 'city',
-    dataAccessor: 'cityVal',
-    sortable: true,
-    template: '',
-  },
-  {
-    title: 'Active',
-    dataAccessor: 'isValid',
-    sortable: false,
-    template: `<div class="flex items-center justify-end gap-x-2 sm:justify-start">
-    <div [ngClass]="{'text-rose-400 bg-rose-400/10': !get(element, dataAccessor), 'text-green-400 bg-green-400/10': get(element, dataAccessor)}" class="flex-none rounded-full p-1">
-      <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
-    </div>
-    <div class="text-neutral sm:block">{{get(element, dataAccessor) ? 'Completed' : 'Error' }}</div>
-  </div>`,
-  },
-  {
-    title: 'TemplateRef',
-    dataAccessor: 'isValid',
-    sortable: false,
-    template: ToggleModule,
-  },
-  {
-    title: 'id',
-    dataAccessor: 'id',
-    sortable: false,
-    template: '',
-  },
+const sortTableByKey = (column: TableSort) => {
+  console.log(column);
+};
+
+/**
+ * Column definition for table
+ */
+const columnDefinitionArray = [
+  'name',
+  'email',
+  'phone',
+  'city',
+  'active',
+  'selected',
+  'id',
 ];
 
 /**
@@ -275,14 +202,133 @@ const columnDefinitionData: TableColumnDefinition[] = [
  * @param args Table component args
  * @returns TableComponent story
  */
-const Template: StoryFn<TableComponent<MockedTable>> = (
-  args: TableComponent<MockedTable>
-) => ({
-  props: args,
-});
+const Template: StoryFn<any> = (args: any) => {
+  const pagedTableData = tableData.filter((el, index) => index < 10);
+  return {
+    template: `
+    <!--TABLE CONTENT-->
+<table
+  cdk-table
+  uiTableWrapper
+  (sortChange)="sortTableByKey($event)"
+  [dataSource]="pagedTableData"
+>
+  <ng-container cdkColumnDef="name">
+    <th
+    uiTableHeaderSort="name"
+      cdk-header-cell
+      *cdkHeaderCellDef
+      scope="col"
+      
+    >
+      name
+    </th>
+    <td cdk-cell *cdkCellDef="let element">
+      {{ element.name }}
+    </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="email">
+    <th
+      cdk-header-cell
+      *cdkHeaderCellDef
+      scope="col"
+      
+    >
+      email
+    </th>
+    <td cdk-cell *cdkCellDef="let element">
+      {{ element.email.value }}
+    </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="phone">
+    <th
+    uiTableHeaderSort="phone"
+      cdk-header-cell
+      *cdkHeaderCellDef
+      scope="col"
+      
+    >
+      phone
+    </th>
+    <td cdk-cell *cdkCellDef="let element">
+      {{ element.phone.value }}
+    </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="city">
+    <th
+    uiTableHeaderSort="cityVal"
+      cdk-header-cell
+      *cdkHeaderCellDef
+      scope="col"
+      
+    >
+      city
+    </th>
+    <td cdk-cell *cdkCellDef="let element">
+      {{ element.cityVal }}
+    </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="active">
+    <th
+      cdk-header-cell
+      *cdkHeaderCellDef
+      scope="col"
+      
+    >
+      active
+    </th>
+    <td cdk-cell *cdkCellDef="let element">
+    <div class="flex items-center justify-end gap-x-2 sm:justify-start">
+    <div [ngClass]="{'text-rose-400 bg-rose-400/10': !element.isValid, 'text-green-400 bg-green-400/10': element.isValid}" class="flex-none rounded-full p-1">
+      <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+    </div>
+    <div class="text-neutral sm:block">{{element.isValid ? 'Completed' : 'Error' }}</div>
+  </div>
+    </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="selected">
+    <th
+      cdk-header-cell
+      *cdkHeaderCellDef
+      scope="col"
+      
+    >
+      selected
+    </th>
+    <td cdk-cell *cdkCellDef="let element">
+      <ui-toggle></ui-toggle>
+    </td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="id">
+    <th
+      cdk-header-cell
+      *cdkHeaderCellDef
+      scope="col"
+      
+    >
+      id
+    </th>
+    <td cdk-cell *cdkCellDef="let element">
+      {{ element.id }}
+    </td>
+  </ng-container>
+  <tr cdk-header-row *cdkHeaderRowDef="columnDefinitionArray"></tr>
+  <tr cdk-row *cdkRowDef="let row; columns: columnDefinitionArray"></tr>
+</table>`,
+    props: {
+      ...args,
+      pagedTableData,
+      sortTableByKey,
+      columnDefinitionArray,
+    },
+  };
+};
 
 /** Table component */
 export const Table = Template.bind({});
-Table.args = {
-  tableDefinition: { tableData, columnDefinitionData },
-};
