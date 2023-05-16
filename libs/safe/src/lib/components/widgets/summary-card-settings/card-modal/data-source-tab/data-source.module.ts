@@ -33,7 +33,7 @@ import { RadioModule, DividerModule, CheckboxModule } from '@oort-front/ui';
     SafeButtonModule,
     CheckboxModule,
     DividerModule,
-    RadioModule
+    RadioModule,
   ],
   exports: [SafeDataSourceTabComponent],
 })
