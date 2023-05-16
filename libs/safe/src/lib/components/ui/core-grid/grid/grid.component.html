@@ -48,12 +48,24 @@
       [formControl]="search"
       class="!w-full"
     />
-    <button
-      kendoButton
+
+    <kendo-button
+      #anchor
+      (click)="toggleColumnChooser()"
       icon="columns"
-      *ngIf="reorderable"
-      (click)="openColumnToggler()"
-    ></button>
+    ></kendo-button>
+    <kendo-popup
+      [anchor]="anchor.element"
+      (anchorViewportLeave)="showColumnChooser = false"
+      [anchorAlign]="{ vertical: 'bottom', horizontal: 'left' }"
+      *ngIf="showColumnChooser"
+    >
+      <safe-grid-column-chooser
+        [originalColumns]="grid?.columns"
+        (hideColumnChooser)="toggleColumnChooser($event)"
+      ></safe-grid-column-chooser>
+    </kendo-popup>
+
     <button
       *ngIf="actions.add && canAdd"
       kendoButton

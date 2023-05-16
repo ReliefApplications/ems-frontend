@@ -1,33 +1,48 @@
-<div *ngFor="let column of columns">
-  <ng-container *ngIf="column.title">
-    <mat-checkbox color="primary" [(ngModel)]="column.visible"></mat-checkbox
-    >{{ column.title }}
-  </ng-container>
-</div>
+<div class="max-h-80 overflow-auto">
+  <div class="flex justify-center">
+    <kendo-button
+      (click)="uncheckAllCheckboxes()"
+      iconClass="fa fa-taxi"
+      class="mr-px"
+      [matTooltip]="'kendo.editor.unselectAll' | translate"
+    >
+    </kendo-button>
+    <kendo-button
+      (click)="checkAllCheckboxes()"
+      iconClass="fa fa-taxi"
+      class="ml-px"
+      [matTooltip]="'kendo.editor.selectAll' | translate"
+    >
+    </kendo-button>
+  </div>
 
-<div class="flex justify-center">
-  <div class="grid grid-cols-2 gap-1">
-    <div class="flex flex-col items-end">
-      <safe-button
-        (click)="uncheckAllCheckboxes()"
-        class="text-xs hover:bg-slate-100 rounded mb-px"
-        >{{ 'kendo.editor.unselectAll' | translate }}</safe-button
-      >
-      <safe-button (click)="reset()" class="hover:bg-slate-100 rounded">{{
-        'kendo.grid.columnsReset' | translate
-      }}</safe-button>
-    </div>
-    <div class="flex flex-col">
-      <safe-button
-        (click)="checkAllCheckboxes()"
-        class="bg-blue-500 hover:bg-blue-600 text-white rounded mb-px"
-        >{{ 'kendo.editor.selectAll' | translate }}</safe-button
-      >
-      <safe-button
-        (click)="apply()"
-        class="bg-blue-500 hover:bg-blue-600 text-white rounded"
-        >{{ 'kendo.grid.columnsApply' | translate }}</safe-button
-      >
+  <safe-divider class="m-px"></safe-divider>
+
+  <div *ngFor="let column of columns">
+    <ng-container *ngIf="column.title">
+      <mat-checkbox color="primary" [(ngModel)]="column.visible"></mat-checkbox
+      >{{ column.title }}
+    </ng-container>
+  </div>
+
+  <div class="flex justify-center mb-1">
+    <div class="grid grid-cols-2 gap-1">
+      <div class="flex flex-col items-end">
+        <button
+          (click)="reset()"
+          class="k-button k-button-solid-base k-button-solid k-button-md k-rounded-md k-button-rectangle mr-px"
+        >
+          {{ 'kendo.grid.columnsReset' | translate }}
+        </button>
+      </div>
+      <div class="flex flex-col">
+        <button
+          class="k-button k-button-solid-primary k-button-solid k-button-md k-rounded-md k-button-rectangle ml-px"
+          (click)="apply()"
+        >
+          {{ 'kendo.grid.columnsApply' | translate }}
+        </button>
+      </div>
     </div>
   </div>
 </div>
