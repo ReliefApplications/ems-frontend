@@ -32,8 +32,8 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
 import { DividerModule } from '@oort-front/ui';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
+import { RadioModule } from '@oort-front/ui';
 
 /**
  * Dialog data interface
@@ -62,8 +62,8 @@ const ITEMS_PER_PAGE = 10;
     SafeReadableCronModule,
     DividerModule,
     SafeGraphQLSelectModule,
-    MatRadioModule,
     CronExpressionControlModule,
+    RadioModule,
   ],
   selector: 'safe-edit-notification-modal',
   templateUrl: './edit-notification-modal.component.html',
