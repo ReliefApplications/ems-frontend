@@ -58,6 +58,8 @@ export class ReferenceDatasComponent
 
   // === FILTERS ===
   public searchText = '';
+  public filter: any;
+  public filterLoading = false;
 
   public pageInfo = {
     pageIndex: 0,
@@ -114,7 +116,7 @@ export class ReferenceDatasComponent
         this.pageInfo.length = data.referenceDatas.totalCount;
         this.pageInfo.endCursor = data.referenceDatas.pageInfo.endCursor;
         this.loading = loading;
-        this.filterPredicate();
+        this.filterLoading = false;
       });
   }
 
@@ -170,34 +172,34 @@ export class ReferenceDatasComponent
   }
 
   /**
-   * Frontend filtering.
-   */
-  private filterPredicate(): void {
-    this.dataSource.filterPredicate = (data: any) =>
-      this.searchText.trim().length === 0 ||
-      (this.searchText.trim().length > 0 &&
-        data.name.toLowerCase().includes(this.searchText.trim()));
-  }
-
-  /**
-   * Applies the filter to the data source.
+   * Handles the filter event
    *
-   * @param column Column to filter on.
-   * @param event Value of the filter.
+   * @param filter value of the filter
    */
-  applyFilter(column: string, event: any): void {
-    this.searchText = !!event
-      ? event.target.value.trim().toLowerCase()
-      : this.searchText;
-    this.dataSource.filter = '##';
-  }
-
-  /**
-   * Removes all the filters.
-   */
-  clearAllFilters(): void {
-    this.searchText = '';
-    this.applyFilter('', null);
+  onFilter(filter: any) {
+    this.filterLoading = true;
+    this.cachedReferenceDatas = [];
+    this.pageInfo.pageIndex = 0;
+    console.log(filter);
+    this.filter = filter;
+    this.referenceDatasQuery.fetchMore({
+      variables: {
+        first: this.pageInfo.pageSize,
+        filter: this.filter,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
+        return Object.assign({}, prev, {
+          referenceDatas: {
+            edges: fetchMoreResult.referenceDatas.edges,
+            pageInfo: fetchMoreResult.referenceDatas.pageInfo,
+            totalCount: fetchMoreResult.referenceDatas.totalCount,
+          },
+        });
+      },
+    });
   }
 
   /**

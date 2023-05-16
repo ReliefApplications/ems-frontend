@@ -28,6 +28,8 @@ export class SafePermissionGuard implements CanActivate {
    * @param environment environment
    * @param router Angular router
    * @param ability user ability
+   * @param translate Angular translate service
+   * @param snackBar Shared snackbar service
    * @param appService application service
    */
   constructor(
