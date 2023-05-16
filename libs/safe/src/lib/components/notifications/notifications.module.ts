@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationsComponent } from './notifications.component';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
-import { SafeDividerModule } from '../ui/divider/divider.module';
+import { DividerModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
@@ -19,11 +19,11 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
   imports: [
     CommonModule,
     MatTableModule,
-    MatMenuModule,
+    MenuModule,
     TranslateModule,
     SafeButtonModule,
     SafeSkeletonTableModule,
-    SafeDividerModule,
+    DividerModule,
     MatIconModule,
     MatPaginatorModule,
     MatChipsModule,

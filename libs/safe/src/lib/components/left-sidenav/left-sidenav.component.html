@@ -7,7 +7,7 @@
         [isIcon]="true"
         icon="add"
         variant="grey"
-        [matTooltip]="'models.page.add' | translate"
+        [uiTooltip]="'models.page.add' | translate"
         routerLink="./add-page"
         (click)="largeDevice ? null : nav.toggle()"
       ></safe-button>
@@ -42,12 +42,7 @@
                 <mat-icon class="nav-icon">
                   {{ item.icon }}
                 </mat-icon>
-                <div
-                  class="nav-text"
-                  [matTooltip]="item.name"
-                  matTooltipShowDelay="1000"
-                  matTooltipPosition="right"
-                >
+                <div class="nav-text" [uiTooltip]="item.name">
                   {{ item.name }}
                 </div>
               </a>
@@ -61,11 +56,9 @@
                   *ngIf="item.action"
                   (click)="onClick(item.action.callback, $event)"
                 >
-                  <mat-icon
-                    matTooltip="{{ item.action.toolTip }}"
-                    matTooltipPosition="left"
-                    >{{ item.action.icon }}</mat-icon
-                  >
+                  <mat-icon uiTooltip="{{ item.action.toolTip }}">{{
+                    item.action.icon
+                  }}</mat-icon>
                 </button>
                 <button
                   mat-icon-button
@@ -92,7 +85,7 @@
     </div>
     <ng-container *ngIf="appLayout && canAddPage">
       <div class="flex flex-col items-center w-full absolute bottom-0">
-        <safe-divider class="m-0"></safe-divider>
+        <ui-divider class="m-0"></ui-divider>
         <safe-button
           class="my-4"
           icon="add"
@@ -105,6 +98,6 @@
         </safe-button>
       </div>
     </ng-container>
-    <safe-divider class="m-0" *ngIf="i < navGroups.length - 1"></safe-divider>
+    <ui-divider class="m-0" *ngIf="i < navGroups.length - 1"></ui-divider>
   </ng-container>
 </section>

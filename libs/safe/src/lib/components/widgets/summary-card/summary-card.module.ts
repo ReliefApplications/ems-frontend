@@ -7,7 +7,7 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { SummaryCardItemModule } from './summary-card-item/summary-card-item.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeGridWidgetModule } from '../grid/grid.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
 /** Summary Card Widget Module */
@@ -21,7 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SummaryCardItemModule,
     SafeGridWidgetModule,
     IndicatorsModule,
-    MatTooltipModule,
+    TooltipModule,
     TranslateModule,
   ],
   exports: [SafeSummaryCardComponent],

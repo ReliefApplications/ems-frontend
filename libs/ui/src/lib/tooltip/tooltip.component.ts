@@ -9,7 +9,7 @@ import { TooltipExamplesPositions } from './enums/tooltip-example-positions.enum
   templateUrl: './tooltip.component.html',
 })
 export class TooltipComponent {
-  @Input() position!: TooltipExamplesPositions;
+  @Input() position!: TooltipExamplesPositions | string;
   @Input() hint = '';
 
   TooltipPositionEnum = TooltipExamplesPositions;
