@@ -71,8 +71,8 @@ export class ReferenceDatasComponent
   };
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * List of Reference data page.

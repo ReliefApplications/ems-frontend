@@ -25,7 +25,7 @@ export class MapClorophletDivisionComponent {
   public fields: any[] = [];
   public query: any;
 
-  public btnVariant = Variant;
+  public variant = Variant;
 
   /**
    * Single clorophlet configuration component.

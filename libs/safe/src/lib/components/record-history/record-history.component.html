@@ -2,13 +2,13 @@
   <!-- HEADER -->
   <div class="flex justify-between items-center mb-2">
     <h2 class="float-left mb-0">{{ 'common.history' | translate }}</h2>
-    <safe-button
+    <ui-button
       [isIcon]="true"
       icon="close"
       class="float-right"
       (click)="onCancel()"
     >
-    </safe-button>
+    </ui-button>
   </div>
   <!-- FILTER -->
   <div class="clear-both flex flex-col">
@@ -38,15 +38,15 @@
       ></mat-datepicker-toggle>
       <mat-date-range-picker #rangePicker>
         <mat-date-range-picker-actions>
-          <safe-button matDateRangePickerCancel (click)="clearDateFilter()">{{
+          <ui-button matDateRangePickerCancel (click)="clearDateFilter()">{{
             'common.clear' | translate
-          }}</safe-button>
-          <safe-button
-            category="secondary"
-            variant="primary"
+          }}</ui-button>
+          <ui-button
+            [category]="category.SECONDARY"
+            [variant]="variant.PRIMARY"
             matDateRangePickerApply
             (click)="applyFilter()"
-            >{{ 'common.filter.apply' | translate }}</safe-button
+            >{{ 'common.filter.apply' | translate }}</ui-button
           >
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
@@ -64,23 +64,23 @@
           >{{ field.title || field.name }}</mat-option
         >
       </mat-select>
-      <safe-button
+      <ui-button
         matSuffix
         icon="close"
         [isIcon]="true"
         (click)="applyFilter([]); $event.stopPropagation()"
-      ></safe-button>
+      ></ui-button>
     </mat-form-field>
   </div>
   <!-- ACTIONS -->
   <div class="flex flex-row justify-start text-end ml-auto">
-    <safe-button
-      category="secondary"
-      variant="primary"
+    <ui-button
+      [category]="category.SECONDARY"
+      [variant]="variant.PRIMARY"
       [uiMenuTriggerFor]="menu"
     >
       {{ 'components.history.download' | translate }}
-    </safe-button>
+    </ui-button>
     <ui-menu #menu>
       <button uiMenuItem (click)="onDownload('csv')">.csv</button>
       <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
@@ -129,23 +129,23 @@
           [innerHTML]="getHTMLFromChange(value)"
         ></div>
         <div class="text-center mb-3">
-          <safe-button
-            variant="primary"
+          <ui-button
+            [variant]="variant.PRIMARY"
             *ngIf="!showMore && item.changes.length > 4"
             (click)="showMore = true"
             >{{ 'common.pagination.loadMore' | translate }} ({{
               item.changes.length - 4
-            }})</safe-button
+            }})</ui-button
           >
         </div>
-        <safe-button
+        <ui-button
           icon="update"
           class="float-right"
           (click)="onRevert(item.version)"
           *ngIf="item.version"
         >
           {{ 'components.history.preview' | translate }}
-        </safe-button>
+        </ui-button>
       </ng-template>
     </mat-expansion-panel>
   </ng-container>

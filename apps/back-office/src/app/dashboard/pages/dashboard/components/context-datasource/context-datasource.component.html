@@ -83,8 +83,8 @@
       </mat-form-field>
     </form>
     <ui-button
-      [category]="btnCategory.SECONDARY"
-      [variant]="btnVariant.PRIMARY"
+      [category]="category.SECONDARY"
+      [variant]="variant.PRIMARY"
       (click)="onSubmit()"
       cdkFocusInitial
       [disabled]="!form.valid || !!form.get('displayField')?.disabled"

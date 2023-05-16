@@ -36,8 +36,8 @@ export class SafeApplicationToolbarComponent
   public user: any;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Toolbar component visible when editing application

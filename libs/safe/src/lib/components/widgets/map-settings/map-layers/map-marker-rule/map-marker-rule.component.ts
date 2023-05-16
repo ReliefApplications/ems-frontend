@@ -26,7 +26,7 @@ export class MapMarkerRuleComponent {
   public fields: any[] = [];
   public query: any;
 
-  public btnVariant = Variant;
+  public variant = Variant;
 
   /**
    * Single Marker Rule component.

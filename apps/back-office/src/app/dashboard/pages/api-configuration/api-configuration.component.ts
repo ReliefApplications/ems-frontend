@@ -54,8 +54,8 @@ export class ApiConfigurationComponent
   public authTypeChoices = Object.values(authType);
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /** @returns API configuration name */
   get name(): AbstractControl | null {

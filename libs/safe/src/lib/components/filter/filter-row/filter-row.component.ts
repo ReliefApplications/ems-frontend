@@ -14,6 +14,7 @@ import { clone, get } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Composite filter row.
@@ -33,6 +34,10 @@ export class FilterRowComponent
 
   public field?: any;
   public editor?: TemplateRef<any>;
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {

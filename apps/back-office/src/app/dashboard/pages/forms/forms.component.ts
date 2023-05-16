@@ -70,8 +70,8 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
   };
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Forms page component

@@ -7,8 +7,8 @@
       <!-- Load from existing Aggregation -->
       <ui-button
         class="!w-auto"
-        [variant]="btnVariant.PRIMARY"
-        [category]="btnCategory.SECONDARY"
+        [variant]="variant.PRIMARY"
+        [category]="category.SECONDARY"
         (click)="nextStep = true"
         [disabled]="!hasAggregations"
         >{{ 'components.aggregation.add.choice.load' | translate }}</ui-button
@@ -16,8 +16,8 @@
       <!-- Add a new aggregation -->
       <ui-button
         class="!w-auto"
-        [variant]="btnVariant.PRIMARY"
-        [category]="btnCategory.TERTIARY"
+        [variant]="variant.PRIMARY"
+        [category]="category.TERTIARY"
         (click)="onCreate()"
         >{{
           'components.aggregation.add.choice.create' | translate

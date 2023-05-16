@@ -21,8 +21,8 @@ export class FilterComponent implements OnInit {
   public show = false;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   @Output() filter = new EventEmitter<any>();
   @Input() loading = false;

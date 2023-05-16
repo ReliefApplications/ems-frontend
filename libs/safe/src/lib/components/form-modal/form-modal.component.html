@@ -38,39 +38,39 @@
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <safe-button (click)="onClose()" variant="danger">{{
+    <ui-button (click)="onClose()" [variant]="variant.DANGER">{{
       'common.cancel' | translate
-    }}</safe-button>
+    }}</ui-button>
     <ng-container *ngIf="pages$ | async as pages">
-      <safe-button
-        category="secondary"
-        variant="primary"
+      <ui-button
+        [category]="category.SECONDARY"
+        [variant]="variant.PRIMARY"
         *ngIf="pages.length > 1"
         (click)="survey && survey.prevPage()"
         cdkFocusInitial
         [disabled]="!survey || survey.isFirstPage"
       >
         {{ 'common.previous' | translate }}
-      </safe-button>
-      <safe-button
-        category="secondary"
-        variant="primary"
+      </ui-button>
+      <ui-button
+        [category]="category.SECONDARY"
+        [variant]="variant.PRIMARY"
         *ngIf="pages.length > 1"
         (click)="survey && survey.nextPage()"
         cdkFocusInitial
         [disabled]="!survey || survey.isLastPage"
       >
         {{ 'common.next' | translate }}
-      </safe-button>
+      </ui-button>
     </ng-container>
-    <safe-button
-      category="secondary"
-      variant="primary"
+    <ui-button
+      [category]="category.SECONDARY"
+      [variant]="variant.PRIMARY"
       [disabled]="saving"
       (click)="submit()"
       cdkFocusInitial
     >
       {{ 'components.record.modal.update' | translate }}
-    </safe-button>
+    </ui-button>
   </mat-dialog-actions>
 </safe-modal>

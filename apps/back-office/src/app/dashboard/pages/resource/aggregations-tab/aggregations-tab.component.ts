@@ -49,8 +49,8 @@ export class AggregationsTabComponent implements OnInit {
   };
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /** @returns True if the aggregations tab is empty */
   get empty(): boolean {

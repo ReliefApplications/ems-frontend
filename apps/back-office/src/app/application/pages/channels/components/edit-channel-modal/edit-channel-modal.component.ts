@@ -58,8 +58,8 @@ export class EditChannelModalComponent implements OnInit {
   roleForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Edit channel component

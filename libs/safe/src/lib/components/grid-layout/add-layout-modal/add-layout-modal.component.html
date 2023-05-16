@@ -5,35 +5,35 @@
   <div mat-dialog-content>
     <div class="flex gap-4 flex-col" *ngIf="!nextStep">
       <!-- LOAD FROM EXISTING LAYOUT -->
-      <safe-button
-        variant="primary"
-        category="secondary"
+      <ui-button
+        [variant]="variant.PRIMARY"
+        [category]="category.SECONDARY"
         class="!w-auto"
         (click)="nextStep = true"
         [disabled]="!hasLayouts"
         >{{
           'components.widget.settings.grid.layouts.add.choice.load' | translate
-        }}</safe-button
+        }}</ui-button
       >
       <!-- ADD A NEW LAYOUT -->
-      <safe-button
-        variant="primary"
-        category="tertiary"
+      <ui-button
+        [variant]="variant.PRIMARY"
+        [category]="category.TERTIARY"
         class="!w-auto"
         (click)="onCreate()"
         >{{
           'components.widget.settings.grid.layouts.add.choice.create'
             | translate
-        }}</safe-button
+        }}</ui-button
       >
     </div>
     <div *ngIf="nextStep">
       <div class="flex gap-4 mb-3 items-center">
-        <safe-button
+        <ui-button
           [isIcon]="true"
           icon="arrow_back"
           (click)="nextStep = false"
-        ></safe-button>
+        ></ui-button>
         <div>
           {{
             'components.widget.settings.grid.layouts.add.choice.load'
@@ -59,6 +59,6 @@
     </div>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
+    <ui-button mat-dialog-close>{{ 'common.close' | translate }}</ui-button>
   </div>
 </safe-modal>

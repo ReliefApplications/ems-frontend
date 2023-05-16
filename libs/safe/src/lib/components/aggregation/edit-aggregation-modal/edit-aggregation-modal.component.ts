@@ -49,8 +49,8 @@ export class SafeEditAggregationModalComponent implements OnInit {
   public resource!: Resource;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   // public templates: any[] = [];
   // public layoutPreviewData!: { form: FormGroup; defaultLayout: any };

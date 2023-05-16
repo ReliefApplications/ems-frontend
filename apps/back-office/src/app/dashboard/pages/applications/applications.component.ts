@@ -74,8 +74,8 @@ export class ApplicationsComponent
   };
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;

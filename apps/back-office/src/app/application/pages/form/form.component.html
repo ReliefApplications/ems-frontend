@@ -30,8 +30,8 @@
       <!-- Edit name -->
       <ui-button
         icon="edit"
-        [category]="btnCategory.SECONDARY"
-        [variant]="btnVariant.PRIMARY"
+        [category]="category.SECONDARY"
+        [variant]="variant.PRIMARY"
         (click)="editForm()"
         *ngIf="form.canUpdate"
       >
@@ -52,8 +52,8 @@
     <!-- New record -->
     <ui-button
       class="flex-1 max-w-xs"
-      [variant]="btnVariant.PRIMARY"
-      [category]="btnCategory.SECONDARY"
+      [variant]="variant.PRIMARY"
+      [category]="category.SECONDARY"
       (click)="clearForm()"
     >
       {{ 'models.record.new' | translate }}

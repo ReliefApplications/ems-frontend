@@ -50,48 +50,48 @@
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end" *ngIf="!loading && data.compareTo">
-    <safe-button (click)="onClose()">
+    <ui-button (click)="onClose()">
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
-      category="secondary"
-      variant="primary"
+    </ui-button>
+    <ui-button
+      [category]="category.SECONDARY"
+      [variant]="variant.PRIMARY"
       mat-dialog-close="true"
       cdkFocusInitial
     >
       {{ 'components.record.history.revert' | translate }}
-    </safe-button>
+    </ui-button>
   </mat-dialog-actions>
   <mat-dialog-actions align="end" *ngIf="!loading && !data.compareTo">
-    <safe-button (click)="onClose()" variant="danger">
+    <ui-button (click)="onClose()" [variant]="variant.DANGER">
       {{ 'common.close' | translate }}
-    </safe-button>
+    </ui-button>
 
     <ng-container *ngIf="pages$ | async as pages">
-      <safe-button
-        category="secondary"
-        variant="primary"
+      <ui-button
+        [category]="category.SECONDARY"
+        [variant]="variant.PRIMARY"
         cdkFocusInitial
         *ngIf="pages.length > 1"
         (click)="survey.prevPage()"
         [disabled]="survey.isFirstPage"
       >
         {{ 'common.previous' | translate }}
-      </safe-button>
-      <safe-button
-        category="secondary"
-        variant="primary"
+      </ui-button>
+      <ui-button
+        [category]="category.SECONDARY"
+        [variant]="variant.PRIMARY"
         cdkFocusInitial
         *ngIf="pages.length > 1"
         (click)="survey.nextPage()"
         [disabled]="survey.isLastPage"
       >
         {{ 'common.next' | translate }}
-      </safe-button>
+      </ui-button>
     </ng-container>
-    <safe-button
-      category="secondary"
-      variant="primary"
+    <ui-button
+      [category]="category.SECONDARY"
+      [variant]="variant.PRIMARY"
       cdkFocusInitial
       *ngIf="canEdit"
       (click)="onEdit()"
@@ -100,6 +100,6 @@
         'common.editObject'
           | translate : { name: 'common.record.one' | translate }
       }}
-    </safe-button>
+    </ui-button>
   </mat-dialog-actions>
 </safe-modal>

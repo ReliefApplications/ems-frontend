@@ -34,8 +34,8 @@ export class ChoseRoleComponent implements OnInit {
   public rolesQuery!: QueryRef<GetRolesQueryResponse>;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Chose role component, to preview application with selected role.

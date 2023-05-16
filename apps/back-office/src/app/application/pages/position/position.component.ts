@@ -29,8 +29,8 @@ export class PositionComponent
   public displayedColumns = ['title', 'actions'];
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Application position component

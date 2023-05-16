@@ -45,8 +45,8 @@ export class LayoutsTabComponent implements OnInit {
   };
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /** @returns True if the layouts tab is empty */
   get empty(): boolean {

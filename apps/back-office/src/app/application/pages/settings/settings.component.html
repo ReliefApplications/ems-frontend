@@ -57,8 +57,8 @@
     </mat-form-field>
   </div>
   <ui-button
-    [category]="btnCategory.SECONDARY"
-    [variant]="btnVariant.PRIMARY"
+    [category]="category.SECONDARY"
+    [variant]="variant.PRIMARY"
     (click)="onSubmit()"
     [disabled]="settingsForm.invalid || !settingsForm.dirty"
   >
@@ -74,16 +74,16 @@
   <div class="flex gap-2 flex-wrap">
     <!-- Styling -->
     <ui-button
-      [category]="btnCategory.SECONDARY"
-      [variant]="btnVariant.PRIMARY"
+      [category]="category.SECONDARY"
+      [variant]="variant.PRIMARY"
       (click)="onOpenStyle()"
     >
       {{ 'components.application.customStyling' | translate }}
     </ui-button>
     <ui-button
       icon="file_copy"
-      [category]="btnCategory.TERTIARY"
-      [variant]="btnVariant.PRIMARY"
+      [category]="category.TERTIARY"
+      [variant]="variant.PRIMARY"
       (click)="onDuplicate()"
       *ngIf="application.canUpdate"
     >
@@ -91,8 +91,8 @@
     </ui-button>
     <ui-button
       icon="delete"
-      [category]="btnCategory.TERTIARY"
-      [variant]="btnVariant.DANGER"
+      [category]="category.TERTIARY"
+      [variant]="variant.DANGER"
       (click)="onDelete()"
       *ngIf="application.canDelete"
     >

@@ -31,17 +31,17 @@
     </form>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+    <ui-button mat-dialog-close>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
-      category="secondary"
-      variant="primary"
+    </ui-button>
+    <ui-button
+      [category]="category.SECONDARY"
+      [variant]="variant.PRIMARY"
       (click)="onSubmit()"
       cdkFocusInitial
       [disabled]="!form.valid"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
+    </ui-button>
   </mat-dialog-actions>
 </safe-modal>

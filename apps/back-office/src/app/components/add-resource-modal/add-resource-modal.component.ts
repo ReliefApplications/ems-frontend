@@ -38,8 +38,8 @@ export class AddResourceModalComponent implements OnInit {
   public addForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Modal to add a new resource.

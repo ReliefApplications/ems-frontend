@@ -29,8 +29,8 @@ export class SafeApplicationSummaryComponent {
   @Output() editAccess = new EventEmitter();
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   statuses: IStatus[] = [
     {

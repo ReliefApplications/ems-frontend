@@ -39,8 +39,8 @@ export class SafeEditAccessComponent
   accessForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * The constructor function is used to create a new instance of the SafeEditAccessComponent class

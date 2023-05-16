@@ -10,13 +10,13 @@
     (edit)="onEdit($event)"
   ></safe-query-style-list>
   <div class="flex justify-center mt-4">
-    <safe-button
+    <ui-button
       class="grow max-w-xs"
       icon="add"
       (click)="onAdd()"
-      category="tertiary"
-      variant="primary"
-      >{{ 'components.queryBuilder.style.new' | translate }}</safe-button
+      [category]="category.TERTIARY"
+      [variant]="variant.PRIMARY"
+      >{{ 'components.queryBuilder.style.new' | translate }}</ui-button
     >
   </div>
 </ng-container>

@@ -76,8 +76,8 @@ export class SafeConvertModalComponent
   public loading = true;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is

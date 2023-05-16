@@ -51,8 +51,8 @@ export class DuplicateApplicationModalComponent implements OnInit {
   public duplicateForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Duplicate application component.

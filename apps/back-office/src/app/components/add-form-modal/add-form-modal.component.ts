@@ -77,8 +77,8 @@ export class AddFormModalComponent implements OnInit {
   public templates: any[] = [];
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   @ViewChild('resourceSelect') resourceSelect?: MatSelect;
 

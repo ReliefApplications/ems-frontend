@@ -20,8 +20,8 @@ export class UploadMenuComponent {
   private show = true;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /** Listen to click event on the document */
   @HostListener('click')

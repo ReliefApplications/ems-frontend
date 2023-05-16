@@ -3,6 +3,7 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Component to show the list of distribution lists of an application
@@ -21,6 +22,11 @@ export class DistributionListsComponent implements OnInit {
   public displayedColumns = ['name', 'actions'];
 
   public loading = false;
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
+
   /**
    * Constructor of the distribution lists component
    *

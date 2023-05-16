@@ -39,22 +39,22 @@
 <!-- Form actions -->
 <div *ngIf="surveyActive" class="flex justify-end gap-2 mt-4 flex-wrap">
   <ng-container *ngIf="pages$ | async as pages">
-    <safe-button
+    <ui-button
       *ngIf="pages.length > 1"
       [disabled]="survey.isFirstPage"
-      variant="primary"
+      [variant]="variant.PRIMARY"
       (click)="survey.prevPage()"
-      >{{ 'common.previous' | translate }}</safe-button
+      >{{ 'common.previous' | translate }}</ui-button
     >
-    <safe-button
+    <ui-button
       *ngIf="pages.length > 1"
       [disabled]="survey.isLastPage"
-      variant="primary"
+      [variant]="variant.PRIMARY"
       (click)="survey.nextPage()"
-      >{{ 'common.next' | translate }}</safe-button
+      >{{ 'common.next' | translate }}</ui-button
     >
   </ng-container>
-  <safe-button variant="primary" category="secondary" (click)="submit()">{{
+  <ui-button [variant]="variant.PRIMARY" [category]="category.SECONDARY" (click)="submit()">{{
     'common.save' | translate
-  }}</safe-button>
+  }}</ui-button>
 </div>

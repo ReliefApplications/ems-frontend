@@ -31,8 +31,8 @@ export class ChannelsComponent
   public loading = true;
   public displayedColumns: string[] = ['title', 'subscribedRoles', 'actions'];
 
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Channels page component

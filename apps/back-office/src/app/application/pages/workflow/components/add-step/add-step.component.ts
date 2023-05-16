@@ -62,8 +62,8 @@ export class AddStepComponent
   public stage = 1;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Add step page component

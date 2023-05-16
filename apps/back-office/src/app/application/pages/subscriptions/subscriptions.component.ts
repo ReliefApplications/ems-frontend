@@ -37,8 +37,8 @@ export class SubscriptionsComponent
   private channels: Channel[] = [];
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Application subscriptions page component

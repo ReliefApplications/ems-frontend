@@ -78,7 +78,7 @@ export class SafeGridWidgetComponent implements OnInit {
   public isAdmin: boolean;
 
   // === GET UI-BUTTON VARIANTS ===
-  public btnVariant = Variant;
+  public variant = Variant;
 
   // === SETTINGS ===
   @Input() header = true;

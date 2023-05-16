@@ -26,8 +26,8 @@ export class FormComponent implements OnInit, OnChanges {
   public hideNewRecord = false;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Form component

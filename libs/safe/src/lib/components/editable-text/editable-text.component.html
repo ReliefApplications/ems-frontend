@@ -18,25 +18,25 @@
       <mat-label>{{ 'common.name' | translate }}</mat-label>
       <input matInput [formControl]="formControl" type="string" />
       <!-- Validate value -->
-      <safe-button
+      <ui-button
         matSuffix
         [isIcon]="true"
         icon="done"
-        variant="primary"
+        [variant]="variant.PRIMARY"
         [disabled]="!formControl.valid"
         (click)="onChange.emit(formControl.value)"
       >
-      </safe-button>
+      </ui-button>
       <!-- Undo change -->
-      <safe-button
+      <ui-button
         matSuffix
         mat-icon-button
         [isIcon]="true"
         icon="close"
-        variant="danger"
+        [variant]="variant.DANGER"
         (click)="onChange.emit()"
       >
-      </safe-button>
+      </ui-button>
     </mat-form-field>
   </ng-container>
 </div>

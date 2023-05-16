@@ -12,7 +12,7 @@ import { Variant } from '@oort-front/ui';
   styleUrls: ['./preview-toolbar.component.scss'],
 })
 export class PreviewToolbarComponent {
-  public btnVariant = Variant;
+  public variant = Variant;
 
   /**
    * Displays preview actions on top of the application content, when showing the app with preview capacity.

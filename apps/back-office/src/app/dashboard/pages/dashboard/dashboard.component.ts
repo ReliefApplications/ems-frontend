@@ -96,8 +96,8 @@ export class DashboardComponent
   public contextRecord: Record | null = null;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Dashboard page

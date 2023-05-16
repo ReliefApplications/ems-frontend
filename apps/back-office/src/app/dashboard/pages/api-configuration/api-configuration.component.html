@@ -76,8 +76,8 @@
       <!-- Send ping request -->
       <ui-button
         icon="online_prediction"
-        [category]="btnCategory.SECONDARY"
-        [variant]="btnVariant.PRIMARY"
+        [category]="category.SECONDARY"
+        [variant]="variant.PRIMARY"
         (click)="onPing()"
         [disabled]="!apiForm.value.pingUrl || !apiForm.value.endpoint"
       >
@@ -232,8 +232,8 @@
 
     <!-- Save button -->
     <ui-button
-      [category]="btnCategory.SECONDARY"
-      [variant]="btnVariant.PRIMARY"
+      [category]="category.SECONDARY"
+      [variant]="variant.PRIMARY"
       (click)="onSave()"
       [disabled]="apiForm.invalid || !apiForm.dirty"
     >

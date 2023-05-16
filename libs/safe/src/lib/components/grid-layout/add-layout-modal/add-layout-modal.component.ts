@@ -25,6 +25,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { SafeModalModule } from '../../ui/modal/modal.module';
 import { SafeGraphQLSelectModule } from '../../graphql-select/graphql-select.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /**
  * Data needed for the dialog, should contain a layouts array, a form and a resource
@@ -52,6 +53,7 @@ interface DialogData {
     SafeGraphQLSelectModule,
     FormsModule,
     ReactiveFormsModule,
+    ButtonModule,
   ],
   selector: 'safe-add-layout-modal',
   templateUrl: './add-layout-modal.component.html',
@@ -71,6 +73,10 @@ export class AddLayoutModalComponent implements OnInit {
   /** Reference to graphql select for layout */
   @ViewChild(SafeGraphQLSelectComponent)
   layoutSelect?: SafeGraphQLSelectComponent;
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Add layout modal component.

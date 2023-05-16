@@ -18,11 +18,11 @@
     </mat-form-field>
   </div>
 </form>
-<safe-button
-  variant="primary"
-  category="secondary"
+<ui-button
+  [variant]="variant.PRIMARY"
+  [category]="category.SECONDARY"
   type="submit"
   [disabled]="!form.valid"
   (click)="onUpdate()"
-  >{{ 'common.saveChanges' | translate }}</safe-button
+  >{{ 'common.saveChanges' | translate }}</ui-button
 >

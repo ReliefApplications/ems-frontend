@@ -12,6 +12,7 @@ import { SafeRestService } from '../../../services/rest/rest.service';
 import { getFilterGroupDisplay } from '../../../utils/filter/filter-display.helper';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { GetGroupsQueryResponse, GET_GROUPS } from '../graphql/queries';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Component for Auto assignment of role
@@ -39,6 +40,10 @@ export class RoleAutoAssignmentComponent implements OnInit {
 
   private fields: any[] = [];
   private groups: Group[] = [];
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Component for Auto assignment of role

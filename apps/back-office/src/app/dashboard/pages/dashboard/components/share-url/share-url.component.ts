@@ -16,8 +16,8 @@ import { Variant, Category } from '@oort-front/ui';
 })
 export class ShareUrlComponent {
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Component to display current url and copy it.

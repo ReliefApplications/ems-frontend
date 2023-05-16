@@ -56,8 +56,8 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
   public isStep = false;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Form page.

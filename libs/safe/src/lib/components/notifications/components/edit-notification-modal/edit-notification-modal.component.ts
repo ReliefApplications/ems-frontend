@@ -33,7 +33,7 @@ import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable
 import { DividerModule } from '@oort-front/ui';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
-import { RadioModule } from '@oort-front/ui';
+import { RadioModule, ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /**
  * Dialog data interface
@@ -64,6 +64,7 @@ const ITEMS_PER_PAGE = 10;
     SafeGraphQLSelectModule,
     CronExpressionControlModule,
     RadioModule,
+    ButtonModule,
   ],
   selector: 'safe-edit-notification-modal',
   templateUrl: './edit-notification-modal.component.html',
@@ -78,6 +79,10 @@ export class EditNotificationModalComponent
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public resource?: Resource;
   public layout?: Layout;
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /** @returns application templates */
   get templates(): Template[] {

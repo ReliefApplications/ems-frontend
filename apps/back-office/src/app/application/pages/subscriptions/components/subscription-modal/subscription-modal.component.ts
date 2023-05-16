@@ -111,8 +111,8 @@ export class SubscriptionModalComponent
   private applicationsLoading = true;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   @ViewChild('applicationSelect') applicationSelect?: MatAutocomplete;
 

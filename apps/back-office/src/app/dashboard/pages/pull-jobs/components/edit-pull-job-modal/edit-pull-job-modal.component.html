@@ -160,8 +160,8 @@
             <div class="flex justify-end">
               <ui-button
                 icon="edit_note"
-                [category]="btnCategory.SECONDARY"
-                [variant]="btnVariant.PRIMARY"
+                [category]="category.SECONDARY"
+                [variant]="variant.PRIMARY"
                 (click)="toggleRawJSON()"
               >
                 {{ 'components.pullJob.modal.switch' | translate }}
@@ -207,7 +207,7 @@
                   <ui-button
                     [isIcon]="true"
                     icon="remove_circle_outline"
-                    [variant]="btnVariant.DANGER"
+                    [variant]="variant.DANGER"
                     (click)="onDeleteElement(i)"
                   >
                   </ui-button>
@@ -216,7 +216,7 @@
                   *ngIf="filteredFields('').length > 0"
                   [isIcon]="true"
                   icon="add_circle_outline"
-                  [variant]="btnVariant.PRIMARY"
+                  [variant]="variant.PRIMARY"
                   (click)="onAddElement()"
                 >
                 </ui-button>
@@ -249,8 +249,8 @@
   <div mat-dialog-actions align="end">
     <ui-button mat-dialog-close>{{ 'common.close' | translate }}</ui-button>
     <ui-button
-      [category]="btnCategory.SECONDARY"
-      [variant]="btnVariant.PRIMARY"
+      [category]="category.SECONDARY"
+      [variant]="variant.PRIMARY"
       [mat-dialog-close]="returnFormValue()"
       cdkFocusInitial
       [disabled]="!formGroup.valid"

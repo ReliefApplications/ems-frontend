@@ -1,5 +1,5 @@
 <mat-toolbar [color]="theme.headerColor">
-  <safe-button
+  <ui-button
     *ngIf="!largeDevice"
     [isIcon]="true"
     icon="menu"
@@ -11,15 +11,15 @@
       ) | translate
     "
   >
-  </safe-button>
-  <safe-button
+  </ui-button>
+  <ui-button
     [isIcon]="true"
     icon="keyboard_backspace"
     (click)="goBack()"
     *ngIf="route"
     [uiTooltip]="'pages.applications.goTo' | translate"
   >
-  </safe-button>
+  </ui-button>
   <ng-container *ngIf="!applications || applications.length === 0">
     <h1 *ngIf="!route">
       {{ theme.prefix }}
@@ -55,12 +55,12 @@
     <div class="account-property">{{ account ? account.name : '' }}</div>
     <div class="account-property">{{ account ? account.username : '' }}</div>
   </div>
-  <safe-button
+  <ui-button
     [isIcon]="true"
     icon="account_circle"
     [uiMenuTriggerFor]="accountMenu"
   >
-  </safe-button>
+  </ui-button>
   <button
     mat-icon-button
     [uiMenuTriggerFor]="notificationMenu"
@@ -115,17 +115,17 @@
         {{ notification.action }} - {{ notification.createdAt | safeDate }}
       </button>
     </div>
-    <safe-button
+    <ui-button
       *ngIf="hasMoreNotifications"
-      category="primary"
-      variant="primary"
+      [category]="category.PRIMARY"
+      [variant]="variant.PRIMARY"
       class="!w-auto"
       [disabled]="loadingNotifications"
       [loading]="loadingNotifications"
       (click)="onLoadMoreNotifications($event)"
     >
       {{ 'common.pagination.loadMore' | translate }}
-    </safe-button>
+    </ui-button>
   </ui-menu>
 </mat-toolbar>
 

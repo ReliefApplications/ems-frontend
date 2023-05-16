@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { isDate } from 'lodash';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Template of custom date edition, for filtering.
@@ -13,6 +14,10 @@ import { isDate } from 'lodash';
 export class DateFilterEditorComponent implements OnInit {
   @Input() control!: UntypedFormControl;
   public useExpression = false;
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /** @returns Is the first input a date or not. */
   get isDate(): boolean {

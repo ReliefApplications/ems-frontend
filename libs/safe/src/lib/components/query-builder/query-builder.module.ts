@@ -36,7 +36,7 @@ import { SafeFilterModule } from '../filter/filter.module';
 import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { SafeAlertModule } from '../ui/alert/alert.module';
-import { RadioModule } from '@oort-front/ui';
+import { RadioModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * SafeQueryBuilderModule is a class used to manage all the modules and components
@@ -85,6 +85,7 @@ import { RadioModule } from '@oort-front/ui';
     EditorModule,
     SafeAlertModule,
     RadioModule,
+    ButtonModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

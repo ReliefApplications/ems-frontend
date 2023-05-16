@@ -21,6 +21,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { SafeModalModule } from '../../ui/modal/modal.module';
 import { flattenDeep } from 'lodash';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -44,6 +45,7 @@ interface DialogData {
     SafeQueryBuilderModule,
     SafeCoreGridModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'safe-edit-layout-modal',
   templateUrl: './edit-layout-modal.component.html',
@@ -54,6 +56,10 @@ export class SafeEditLayoutModalComponent implements OnInit {
   public form?: UntypedFormGroup;
   public templates: any[] = [];
   public layoutPreviewData!: { form: UntypedFormGroup; defaultLayout: any };
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is created

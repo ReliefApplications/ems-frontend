@@ -58,8 +58,8 @@ export class CronExpressionControlModalComponent {
   };
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    *  Cron expression form control modal

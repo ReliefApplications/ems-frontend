@@ -67,8 +67,8 @@ export class ApiConfigurationsComponent
   };
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * API configurations page component

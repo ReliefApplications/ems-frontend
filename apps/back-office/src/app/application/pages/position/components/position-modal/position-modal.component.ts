@@ -53,8 +53,8 @@ export class PositionModalComponent implements OnInit {
   positionForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Add new application position component

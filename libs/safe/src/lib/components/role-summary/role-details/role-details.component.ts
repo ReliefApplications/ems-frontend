@@ -12,6 +12,7 @@ import {
 } from '../graphql/queries';
 import { get } from 'lodash';
 import { SafeRestService } from '../../../services/rest/rest.service';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * General tab of Role Summary.
@@ -52,6 +53,10 @@ export class RoleDetailsComponent implements OnInit {
       this.form?.enable();
     }
   }
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * General tab of Role Summary.

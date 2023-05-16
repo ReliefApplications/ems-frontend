@@ -7,7 +7,7 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
 import { MenuModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeButtonModule } from '../ui/button/button.module';
-import { DividerModule } from '@oort-front/ui';
+import { DividerModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * Module of distribution list table
@@ -23,6 +23,7 @@ import { DividerModule } from '@oort-front/ui';
     MatIconModule,
     SafeButtonModule,
     DividerModule,
+    ButtonModule,
   ],
   exports: [DistributionListsComponent],
 })

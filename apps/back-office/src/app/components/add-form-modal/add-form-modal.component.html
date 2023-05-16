@@ -26,7 +26,7 @@
               <ui-icon
                 [size]="18"
                 icon="info_outline"
-                [variant]="btnVariant.GREY"
+                [variant]="variant.GREY"
                 [uiTooltip]="
                   'components.form.create.tooltip.resource' | translate
                 "
@@ -43,7 +43,7 @@
               <ui-icon
                 [size]="18"
                 icon="info_outline"
-                [variant]="btnVariant.GREY"
+                [variant]="variant.GREY"
                 [uiTooltip]="
                   'components.form.create.tooltip.inherit' | translate
                 "
@@ -120,8 +120,8 @@
       'common.close' | translate
     }}</ui-button>
     <ui-button
-      [category]="btnCategory.SECONDARY"
-      [variant]="btnVariant.PRIMARY"
+      [category]="category.SECONDARY"
+      [variant]="variant.PRIMARY"
       [mat-dialog-close]="form.value"
       cdkFocusInitial
       [disabled]="!form.valid"

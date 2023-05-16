@@ -53,6 +53,7 @@ import { SafeModalModule } from '../ui/modal/modal.module';
 import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
+import { Variant, Category, ButtonModule } from '@oort-front/ui';
 
 /**
  * Interface of Dialog data.
@@ -90,6 +91,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     TranslateModule,
     SafeModalModule,
     SafeSpinnerModule,
+    ButtonModule,
   ],
 })
 export class SafeFormModalComponent
@@ -113,6 +115,10 @@ export class SafeFormModalComponent
   private temporaryFilesStorage: any = {};
 
   @ViewChild('formContainer') formContainer!: ElementRef;
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Getter for the pages property

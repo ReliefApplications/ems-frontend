@@ -61,8 +61,8 @@ export class WorkflowComponent
   public applications: Application[] = [];
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Application workflow page component

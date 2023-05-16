@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
 import { createStyleForm } from '../query-builder-forms';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Component to display the styling menu
@@ -25,6 +26,10 @@ export class SafeTabStyleComponent implements OnInit {
   @Input() query: any;
   @ViewChild('childTemplate', { read: ViewContainerRef })
   childTemplate?: ViewContainerRef;
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Getter for the styles

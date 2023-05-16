@@ -62,8 +62,8 @@ export class RecordsTabComponent implements OnInit {
   public showUpload = false;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /** @returns True if the records tab is empty */
   get empty(): boolean {

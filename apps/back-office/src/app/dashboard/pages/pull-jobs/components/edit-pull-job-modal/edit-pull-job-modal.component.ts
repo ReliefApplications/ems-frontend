@@ -118,8 +118,8 @@ export class EditPullJobModalComponent implements OnInit {
   public openRawJSON = false;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /** @returns pull job mapping as form array */
   get mappingArray(): UntypedFormArray {

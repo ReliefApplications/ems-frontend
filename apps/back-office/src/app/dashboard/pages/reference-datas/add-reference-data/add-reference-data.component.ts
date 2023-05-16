@@ -21,8 +21,8 @@ export class AddReferenceDataComponent implements OnInit {
   referenceForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /** @returns name of reference data */
   get name(): AbstractControl | null {

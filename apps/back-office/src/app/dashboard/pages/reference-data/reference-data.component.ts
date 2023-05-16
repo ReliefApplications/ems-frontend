@@ -79,8 +79,8 @@ export class ReferenceDataComponent
   public csvLoading = false;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
   @ViewChild('csvData') csvData?: ElementRef<HTMLInputElement>;

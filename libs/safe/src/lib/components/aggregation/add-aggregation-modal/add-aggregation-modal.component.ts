@@ -67,8 +67,8 @@ export class AddAggregationModalComponent implements OnInit {
   public selectedAggregationControl = new UntypedFormControl('');
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /** Reference to graphql select for layout */
   @ViewChild(SafeGraphQLSelectComponent)

@@ -6,6 +6,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Module of editable text
@@ -20,6 +21,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
     MatInputModule,
     TranslateModule,
     SafeButtonModule,
+    ButtonModule,
   ],
   exports: [SafeEditableTextComponent],
 })

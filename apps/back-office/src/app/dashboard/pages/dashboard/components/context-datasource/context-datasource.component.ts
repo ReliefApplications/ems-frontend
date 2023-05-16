@@ -105,8 +105,8 @@ export class ContextDatasourceComponent
   refDataSelect?: SafeGraphQLSelectComponent;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   // Available fields
   public availableFields: string[] = [];

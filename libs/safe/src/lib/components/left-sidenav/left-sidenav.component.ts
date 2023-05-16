@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { Variant, Category } from '@oort-front/ui';
+
 /**
  * The left side navigator used in the main layout
  */
@@ -29,6 +31,10 @@ export class SafeLeftSidenavComponent {
 
   // === DISPLAY ===
   public largeDevice: boolean;
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Left sidenav visible in application edition and preview.

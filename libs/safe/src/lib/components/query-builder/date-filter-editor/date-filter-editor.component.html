@@ -14,10 +14,10 @@
     placeholder="YYYY/MM/DD"
   />
 </mat-form-field>
-<safe-button
+<ui-button
   [isIcon]="true"
   icon="change_circle_outline"
-  variant="primary"
+  [variant]="variant.PRIMARY"
   (click)="changeEditor()"
   [uiTooltip]="
     (useExpression
@@ -25,4 +25,4 @@
       : 'components.queryBuilder.tooltip.filter.date.useExpression'
     ) | translate
   "
-></safe-button>
+></ui-button>

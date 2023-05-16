@@ -23,8 +23,8 @@ export class FilterComponent implements OnInit {
   @Input() loading = false;
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Filter component of forms page

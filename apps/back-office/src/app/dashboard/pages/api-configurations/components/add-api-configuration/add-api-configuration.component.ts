@@ -22,8 +22,8 @@ export class AddApiConfigurationComponent implements OnInit {
   apiForm: UntypedFormGroup = new UntypedFormGroup({});
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /** @returns name for the API configuration */
   get name(): AbstractControl | null {

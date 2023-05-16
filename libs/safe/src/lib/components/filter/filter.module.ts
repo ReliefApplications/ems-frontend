@@ -10,6 +10,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Composite Filter module.
@@ -26,6 +27,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatInputModule,
     MatDatepickerModule,
     SafeButtonModule,
+    ButtonModule,
   ],
   exports: [SafeFilterComponent],
 })

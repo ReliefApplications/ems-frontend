@@ -56,8 +56,8 @@ export class AddPageComponent
   private loading = true;
   public loadingMore = false;
 
-  public btnCategory = Category;
-  public btnVariant = Variant;
+  public category = Category;
+  public variant = Variant;
 
   @ViewChild('formSelect') formSelect?: MatSelect;
 

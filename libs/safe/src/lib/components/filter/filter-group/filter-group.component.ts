@@ -4,6 +4,7 @@ import {
   UntypedFormBuilder,
   UntypedFormGroup,
 } from '@angular/forms';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Composite filter group.
@@ -17,6 +18,10 @@ export class FilterGroupComponent {
   @Input() form!: UntypedFormGroup;
   @Input() fields: any[] = [];
   @Output() delete = new EventEmitter();
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Getter for the filters

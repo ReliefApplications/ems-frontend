@@ -54,8 +54,8 @@ export class CustomStyleComponent
   private savedStyle = '';
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.

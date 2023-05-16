@@ -33,8 +33,8 @@ export class AggregationTableComponent
   columns: string[] = ['name', 'createdAt', '_actions'];
 
   // === BUTTON ===
-  public btnVariant = Variant;
-  public btnCategory = Category;
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Aggregation table component.
