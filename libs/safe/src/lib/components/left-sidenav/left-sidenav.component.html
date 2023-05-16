@@ -1,6 +1,6 @@
-<mat-nav-list>
+<section class="pt-2 block">
   <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
-    <div mat-subheader class="sidenav-header">
+    <div class="sidenav-header">
       {{ group.name }}
       <safe-button
         *ngIf="appLayout && canAddPage"
@@ -15,7 +15,7 @@
     <div
       cdkDropList
       (cdkDropListDropped)="drop($event, group)"
-      class="nav-items-list"
+      class="overflow-hidden"
       [class]="
         appLayout
           ? canAddPage
@@ -29,59 +29,59 @@
       "
     >
       <!-- Classes determine nav-list height for application layout -->
-      <ng-container *ngFor="let item of group.navItems">
-        <div cdkDrag [cdkDragDisabled]="!item.orderable">
-          <mat-list-item class="nav-item">
-            <a
-              [routerLink]="item.path"
-              routerLinkActive="active-link"
-              (click)="largeDevice ? null : nav.toggle()"
-              [class]="item.class ? item.class : ''"
-            >
-              <mat-icon mat-list-icon class="nav-icon">
-                {{ item.icon }}
-              </mat-icon>
+      <ul>
+        <ng-container *ngFor="let item of group.navItems">
+          <div cdkDrag [cdkDragDisabled]="!item.orderable">
+            <li class="nav-item">
+              <a
+                [routerLink]="item.path"
+                routerLinkActive="active-link"
+                (click)="largeDevice ? null : nav.toggle()"
+                [class]="item.class ? item.class : ''"
+              >
+                <mat-icon class="nav-icon">
+                  {{ item.icon }}
+                </mat-icon>
+                <div class="nav-text" [uiTooltip]="item.name">
+                  {{ item.name }}
+                </div>
+              </a>
               <div
-                mat-line
-                class="nav-text"
-                [uiTooltip]="item.name"
+                class="nav-actions items-center"
+                *ngIf="item.action || item.orderable"
               >
-                {{ item.name }}
-              </div>
-            </a>
-            <div class="nav-actions" *ngIf="item.action || item.orderable">
-              <button
-                mat-icon-button
-                class="nav-action"
-                *ngIf="item.action"
-                (click)="onClick(item.action.callback, $event)"
-              >
-                <mat-icon
-                  uiTooltip="{{ item.action.toolTip }}"
-                  >{{ item.action.icon }}</mat-icon
+                <button
+                  mat-icon-button
+                  class="nav-action"
+                  *ngIf="item.action"
+                  (click)="onClick(item.action.callback, $event)"
                 >
-              </button>
-              <button
-                mat-icon-button
-                cdkDragHandle
-                class="nav-item-handle"
-                *ngIf="item.orderable"
-              >
-                <mat-icon>drag_indicator</mat-icon>
-              </button>
-            </div>
-          </mat-list-item>
-          <!-- Preview when dragging element -->
-          <mat-list-item *cdkDragPreview class="nav-item">
-            <a [class]="item.class ? item.class : ''">
-              <mat-icon mat-list-icon class="nav-icon">
-                {{ item.icon }}
-              </mat-icon>
-              <div mat-line>{{ item.name }}</div>
-            </a>
-          </mat-list-item>
-        </div>
-      </ng-container>
+                  <mat-icon uiTooltip="{{ item.action.toolTip }}">{{
+                    item.action.icon
+                  }}</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  cdkDragHandle
+                  class="nav-item-handle"
+                  *ngIf="item.orderable"
+                >
+                  <mat-icon>drag_indicator</mat-icon>
+                </button>
+              </div>
+            </li>
+            <!-- Preview when dragging element -->
+            <li *cdkDragPreview class="nav-item bg-white shadow-2lg rounded-lg">
+              <a [class]="item.class ? item.class : ''">
+                <mat-icon class="nav-icon">
+                  {{ item.icon }}
+                </mat-icon>
+                <div class="pl-2">{{ item.name }}</div>
+              </a>
+            </li>
+          </div>
+        </ng-container>
+      </ul>
     </div>
     <ng-container *ngIf="appLayout && canAddPage">
       <div class="flex flex-col items-center w-full absolute bottom-0">
@@ -100,4 +100,4 @@
     </ng-container>
     <ui-divider class="m-0" *ngIf="i < navGroups.length - 1"></ui-divider>
   </ng-container>
-</mat-nav-list>
+</section>
