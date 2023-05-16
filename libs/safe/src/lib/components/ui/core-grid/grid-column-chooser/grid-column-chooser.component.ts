@@ -1,7 +1,9 @@
 import { Component, Inject, QueryList } from '@angular/core';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import {
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+  MatLegacyDialogRef as MatDialogRef,
+} from '@angular/material/legacy-dialog';
 import { ColumnBase } from '@progress/kendo-angular-grid';
-import * as _ from 'lodash';
 
 /** Data provided from the opening of the dialog */
 interface DialogData {
@@ -18,45 +20,54 @@ interface DialogData {
 })
 export class SafeGridColumnChooserComponent {
   private originalColumns: QueryList<ColumnBase>;
-  public columns: ColumnBase[];
+  public columns: { title: string; visible: boolean }[];
 
   /**
    * Column chooser for the grid widget
    *
    * @param data Data provided from the opening of the dialog
+   * @param dialogRef Reference to the modal
    */
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private dialogRef: MatDialogRef<SafeGridColumnChooserComponent>
+  ) {
     this.originalColumns = data.columns;
-    this.columns = _.cloneDeep(this.originalColumns.toArray());
-    console.log(this.columns);
+    this.columns = this.originalColumns.toArray().map((column) => {
+      return { title: column.title, visible: !column.hidden };
+    });
   }
 
   /**
    * Resets the columns to their original state
    */
   public reset() {
-    this.columns = _.cloneDeep(this.originalColumns.toArray());
+    this.columns = this.originalColumns.toArray().map((column) => {
+      return { title: column.title, visible: !column.hidden };
+    });
   }
 
   /**
    * Applies visibility changes to the grid
    */
   public apply() {
-    //this.originalColumns = this.columns;
+    this.originalColumns.toArray().forEach((column, index) => {
+      column.hidden = !this.columns[index].visible;
+    });
+    this.dialogRef.close();
   }
 
   /** Checks all the columns checkboxes */
   public checkAllCheckboxes() {
     this.columns.forEach((column) => {
-      column.hidden = false;
+      column.visible = true;
     });
-    console.log(this.columns.map((column) => column.hidden));
   }
 
   /** Unchecks all the columns checkboxes */
   public uncheckAllCheckboxes() {
     this.columns.forEach((column) => {
-      if (column.title) column.hidden = true;
+      if (column.title) column.visible = false;
     });
   }
 }

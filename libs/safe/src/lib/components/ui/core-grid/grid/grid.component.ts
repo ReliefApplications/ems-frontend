@@ -471,6 +471,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   public openColumnToggler() {
     this.dialog.open(SafeGridColumnChooserComponent, {
       data: { columns: this.grid?.columns },
+      maxHeight: '800px',
     });
   }
 

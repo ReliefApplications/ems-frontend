@@ -1,17 +1,33 @@
 <div *ngFor="let column of columns">
   <ng-container *ngIf="column.title">
-    <mat-checkbox color="blue" [(ngModel)]="!column.hidden">{{
-      column.hidden
-    }}</mat-checkbox
+    <mat-checkbox color="primary" [(ngModel)]="column.visible"></mat-checkbox
     >{{ column.title }}
   </ng-container>
 </div>
 
 <div class="flex justify-center">
-  <safe-button (click)="checkAllCheckboxes()">Select all</safe-button>
-  <safe-button (click)="uncheckAllCheckboxes()">Unselect all</safe-button>
-</div>
-<div class="flex justify-center">
-  <safe-button>Apply</safe-button>
-  <safe-button (click)="reset()">Reset</safe-button>
+  <div class="grid grid-cols-2 gap-1">
+    <div class="flex flex-col items-end">
+      <safe-button
+        (click)="uncheckAllCheckboxes()"
+        class="text-xs hover:bg-slate-100 rounded mb-px"
+        >{{ 'kendo.editor.unselectAll' | translate }}</safe-button
+      >
+      <safe-button (click)="reset()" class="hover:bg-slate-100 rounded">{{
+        'kendo.grid.columnsReset' | translate
+      }}</safe-button>
+    </div>
+    <div class="flex flex-col">
+      <safe-button
+        (click)="checkAllCheckboxes()"
+        class="bg-blue-500 hover:bg-blue-600 text-white rounded mb-px"
+        >{{ 'kendo.editor.selectAll' | translate }}</safe-button
+      >
+      <safe-button
+        (click)="apply()"
+        class="bg-blue-500 hover:bg-blue-600 text-white rounded"
+        >{{ 'kendo.grid.columnsApply' | translate }}</safe-button
+      >
+    </div>
+  </div>
 </div>
