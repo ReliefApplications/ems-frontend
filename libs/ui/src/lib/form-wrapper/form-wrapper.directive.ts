@@ -1,5 +1,6 @@
 import {
   AfterContentInit,
+  ContentChild,
   ContentChildren,
   Directive,
   ElementRef,
@@ -9,6 +10,7 @@ import {
 } from '@angular/core';
 import { SuffixDirective } from './suffix.directive';
 import { PrefixDirective } from './prefix.directive';
+import { FormControlName, Validators } from '@angular/forms';
 
 /**
  * UI Form Wrapper Directive
@@ -21,6 +23,9 @@ export class FormWrapperDirective implements AfterContentInit {
    * Will the form field be wrapped ?
    */
   @Input() outline = false;
+
+  @ContentChild(FormControlName)
+  public childControl!: FormControlName;
 
   // === GET THE ELEMENTS ON WHICH SUFFIX/PREFIX ARE APPLIED ===
   @ContentChildren(SuffixDirective)
@@ -47,7 +52,6 @@ export class FormWrapperDirective implements AfterContentInit {
     'rounded-md',
     'w-full',
     'py-1.5',
-    'pr-10',
     'text-gray-900',
     'placeholder:text-gray-400',
     'sm:text-sm',
@@ -72,7 +76,7 @@ export class FormWrapperDirective implements AfterContentInit {
   private beyondLabelGeneral = [
     'relative',
     'mt-0.5',
-    'py-0.5',
+    'p-0.5',
     'flex',
     'items-center',
     'w-full',
@@ -114,6 +118,13 @@ export class FormWrapperDirective implements AfterContentInit {
       this.elementRef.nativeElement.querySelector('input');
     this.currentLabelElement =
       this.elementRef.nativeElement.querySelector('label');
+
+    if (this.childControl?.control?.hasValidator(Validators.required)) {
+      this.renderer.appendChild(
+        this.currentLabelElement,
+        this.renderer.createText(' *')
+      );
+    }
 
     //Putting order classes to elements that has prefix/suffix directive
     for (const e of this.allPrefixDirectives) {

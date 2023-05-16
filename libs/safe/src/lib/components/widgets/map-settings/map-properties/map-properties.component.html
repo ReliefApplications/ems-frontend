@@ -34,21 +34,20 @@
       [max]="18"
     ></mat-slider>
     <div class="flex flex-wrap gap-2">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+      <div uiFormFieldDirective class="flex-1">
+        <label>
           {{ 'components.widget.settings.map.properties.latitude' | translate }}
-        </mat-label>
+        </label>
         <input
           uiErrorMessage="{{
             'components.widget.settings.map.errors.latitude' | translate
           }}"
           [uiErrorMessageIf]="form.get('centerLat')?.errors"
           type="number"
-          matInput
           formControlName="centerLat"
         />
         <safe-icon
-          matSuffix
+          uiSuffix
           icon="info"
           class="cursor-pointer"
           variant="grey"
@@ -57,24 +56,23 @@
               | translate
           "
         ></safe-icon>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+      </div>
+      <div uiFormFieldDirective class="flex-1">
+        <label>
           {{
             'components.widget.settings.map.properties.longitude' | translate
           }}
-        </mat-label>
+        </label>
         <input
           uiErrorMessage="{{
             'components.widget.settings.map.errors.longitude' | translate
           }}"
           [uiErrorMessageIf]="form.get('centerLong')?.errors"
           type="number"
-          matInput
           formControlName="centerLong"
         />
         <safe-icon
-          matSuffix
+          uiSuffix
           icon="info"
           class="cursor-pointer"
           variant="grey"
@@ -83,7 +81,7 @@
               | translate
           "
         ></safe-icon>
-      </mat-form-field>
+      </div>
     </div>
     <safe-map [header]="false" [settings]="mapSettings"></safe-map>
   </div>

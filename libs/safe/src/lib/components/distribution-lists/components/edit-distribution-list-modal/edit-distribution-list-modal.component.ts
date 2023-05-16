@@ -28,7 +28,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { ErrorMessageModule } from '@oort-front/ui';
+import { ErrorMessageModule, FormWrapperModule } from '@oort-front/ui';
 
 /** Model for the data input */
 interface DialogData {
@@ -68,6 +68,7 @@ export function codesFactory(): () => any {
     ReactiveFormsModule,
     TranslateModule,
     ErrorMessageModule,
+    FormWrapperModule,
     MatChipsModule,
   ],
   selector: 'safe-edit-distribution-list-modal',

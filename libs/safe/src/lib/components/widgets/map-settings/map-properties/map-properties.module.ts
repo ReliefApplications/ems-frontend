@@ -7,10 +7,13 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacySliderModule as MatSliderModule } from '@angular/material/legacy-slider';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
-import { TooltipModule } from '@oort-front/ui';
+import {
+  TooltipModule,
+  FormWrapperModule,
+  ErrorMessageModule,
+} from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeMapModule } from '../../map/map.module';
-import { ErrorMessageModule } from '@oort-front/ui';
 
 /**
  * Module of Map Properties of Map Widget.
@@ -30,6 +33,7 @@ import { ErrorMessageModule } from '@oort-front/ui';
     SafeIconModule,
     SafeMapModule,
     ErrorMessageModule,
+    FormWrapperModule,
   ],
   exports: [MapPropertiesComponent],
 })

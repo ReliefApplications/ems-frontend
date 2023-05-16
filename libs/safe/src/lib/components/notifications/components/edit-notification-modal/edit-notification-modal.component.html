@@ -136,7 +136,11 @@
           }}
         </h4>
         <!-- Recipients type -->
-        <div class="flex flex-col gap-2" formControlName="recipientsType" uiRadioGroupDirective="recipientsTypeOptions">
+        <div
+          class="flex flex-col gap-2"
+          formControlName="recipientsType"
+          uiRadioGroupDirective="recipientsTypeOptions"
+        >
           <!-- Using user field -->
           <!-- <ui-radio value="field">
             <ng-container ngProjectAs="label">
@@ -144,18 +148,32 @@
             </ng-container>
           </ui-radio> -->
           <!-- Using distribution list -->
-          <ui-radio value="distributionList" [checked]="formGroup.get('recipientsType')?.value === 'distributionList'">
+          <ui-radio
+            value="distributionList"
+            [checked]="
+              formGroup.get('recipientsType')?.value === 'distributionList'
+            "
+          >
             <ng-container ngProjectAs="label">
-              {{ 'components.customNotifications.edit.recipients.distributionList' | translate }}
+              {{
+                'components.customNotifications.edit.recipients.distributionList'
+                  | translate
+              }}
             </ng-container>
           </ui-radio>
           <!-- Using email -->
-          <ui-radio value="email" [checked]="formGroup.get('recipientsType')?.value === 'email'">
+          <ui-radio
+            value="email"
+            [checked]="formGroup.get('recipientsType')?.value === 'email'"
+          >
             <ng-container ngProjectAs="label">
-              {{ 'components.customNotifications.edit.recipients.email' | translate }}
+              {{
+                'components.customNotifications.edit.recipients.email'
+                  | translate
+              }}
             </ng-container>
           </ui-radio>
-        </div>  
+        </div>
         <!-- Recipients value -->
         <div class="mt-6 flex">
           <!-- Using user field -->
@@ -194,23 +212,22 @@
             </mat-select>
           </mat-form-field>
           <!-- Using email -->
-          <mat-form-field
-            appearance="outline"
+          <div
+            uiFormFieldDirective
             *ngIf="formGroup.value.recipientsType === 'email'"
             class="flex-1"
           >
-            <mat-label>{{ 'common.email.one' | translate }}</mat-label>
+            <label>{{ 'common.email.one' | translate }}</label>
             <input
               type="text"
               [placeholder]="'common.placeholder.email' | translate"
-              matInput
               formControlName="recipients"
               uiErrorMessage=" {{
                 'components.customNotifications.errors.email' | translate
               }}"
               [uiErrorMessageIf]="formGroup.get('recipients')?.errors"
             />
-          </mat-form-field>
+          </div>
         </div>
       </div>
     </form>

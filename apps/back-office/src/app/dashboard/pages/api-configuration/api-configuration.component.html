@@ -38,12 +38,11 @@
     <div class="flex flex-col last:mb-0">
       <div class="flex gap-x-2 flex-wrap">
         <!-- Name -->
-        <mat-form-field appearance="outline" class="flex-auto">
-          <mat-label>
+        <div uiFormFieldDirective class="flex-auto">
+          <label>
             {{ 'common.name' | translate }}
-          </mat-label>
+          </label>
           <input
-            matInput
             formControlName="name"
             type="text"
             [placeholder]="'common.placeholder.name' | translate"
@@ -52,7 +51,7 @@
             }}"
             [uiErrorMessageIf]="name?.errors"
           />
-        </mat-form-field>
+        </div>
         <!-- Authentication type -->
         <mat-form-field appearance="outline" class="flex-1">
           <mat-label>

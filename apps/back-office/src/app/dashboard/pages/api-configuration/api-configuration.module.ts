@@ -12,7 +12,7 @@ import { MatLegacyOptionModule as MatOptionModule } from '@angular/material/lega
 import { SafeButtonModule } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { ErrorMessageModule } from '@oort-front/ui';
+import { ErrorMessageModule, FormWrapperModule } from '@oort-front/ui';
 
 /**
  * API configuration page module.
@@ -33,6 +33,7 @@ import { ErrorMessageModule } from '@oort-front/ui';
     TranslateModule,
     MatChipsModule,
     ErrorMessageModule,
+    FormWrapperModule,
   ],
 })
 export class ApiConfigurationModule {}

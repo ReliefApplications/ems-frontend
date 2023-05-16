@@ -19,7 +19,7 @@ export class ErrorMessageDirective {
     }
   }
   errorMessageTemplate!: HTMLSpanElement;
-  private errorMessageClasses = ['block', 'text-red-400'] as const;
+  private errorMessageClasses = ['block', 'text-red-400', 'py-2'] as const;
 
   /**
    * UI Error Message constructor
@@ -46,10 +46,12 @@ export class ErrorMessageDirective {
    */
   private displayErrorMessage() {
     this.errorMessageTemplate.textContent = this.uiErrorMessage;
-    this.renderer.appendChild(
-      this.el.nativeElement.parentElement,
-      this.errorMessageTemplate
-    );
+    const parentToAttach = !Array.from(
+      this.el.nativeElement.parentElement.classList
+    ).includes('flex')
+      ? this.el.nativeElement.parentElement
+      : this.el.nativeElement.parentElement.parentElement;
+    this.renderer.appendChild(parentToAttach, this.errorMessageTemplate);
   }
 
   /**

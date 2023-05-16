@@ -1,9 +1,8 @@
-<mat-form-field appearance="outline" class="flex-1">
-  <mat-label>{{ 'models.pullJob.schedule' | translate }}</mat-label>
+<div uiFormFieldDirective class="flex-1">
+  <label>{{ 'models.pullJob.schedule' | translate }}</label>
   <input
     type="text"
     [placeholder]="'components.pullJob.modal.placeholder.schedule' | translate"
-    matInput
     readonly
     value="{{
       ngControl.invalid
@@ -19,8 +18,8 @@
     icon="edit"
     class="cursor-pointer"
     variant="grey"
-    matSuffix
+    uiSuffix
     (click)="onEdit()"
     [uiTooltip]="'components.pullJob.modal.hint.schedule' | translate"
   ></safe-icon>
-</mat-form-field>
+</div>

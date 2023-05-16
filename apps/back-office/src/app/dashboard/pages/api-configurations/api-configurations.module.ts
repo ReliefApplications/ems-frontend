@@ -2,7 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiConfigurationsRoutingModule } from './api-configurations-routing.module';
 import { ApiConfigurationsComponent } from './api-configurations.component';
-import { MenuModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  ErrorMessageModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
@@ -21,7 +25,6 @@ import {
   SafeModalModule,
   SafeSkeletonTableModule,
 } from '@oort-front/safe';
-import { ErrorMessageModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
@@ -56,6 +59,7 @@ import { AbilityModule } from '@casl/angular';
     SafeModalModule,
     AbilityModule,
     ErrorMessageModule,
+    FormWrapperModule,
   ],
   exports: [ApiConfigurationsComponent],
 })
