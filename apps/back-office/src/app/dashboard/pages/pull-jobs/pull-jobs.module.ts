@@ -10,10 +10,10 @@ import {
   SafeButtonModule,
   SafeSkeletonTableModule,
   SafeIconModule,
-  SafeDividerModule,
   SafeCronParserModule,
   SafeDateModule,
 } from '@oort-front/safe';
+import { DividerModule } from '@oort-front/ui';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
@@ -28,7 +28,7 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
     MatIconModule,
     MenuModule,
     MatTableModule,
-    SafeDividerModule,
+    DividerModule,
     SafeButtonModule,
     MatPaginatorModule,
     TranslateModule,

@@ -132,7 +132,7 @@
                 {{ 'common.duplicate' | translate }}
               </button>
               <ng-container *ngIf="element.canDelete">
-                <safe-divider class="m-0"></safe-divider>
+                <ui-divider class="m-0"></ui-divider>
                 <button uiMenuItem (click)="onDelete(element, $event)">
                   <mat-icon>delete</mat-icon>
                   {{ 'common.delete' | translate }}

@@ -81,17 +81,17 @@
     <a uiMenuItem [routerLink]="[profileRoute]">
       {{ 'pages.profile.title' | translate }}
     </a>
-    <safe-divider class="m-0"></safe-divider>
+    <ui-divider class="m-0"></ui-divider>
     <button uiMenuItem (click)="onOpenPreferences()" *ngIf="showPreferences">
       {{ 'components.preferences.title' | translate }}
     </button>
     <ng-container *ngIf="user && user.isAdmin">
-      <safe-divider class="m-0"></safe-divider>
+      <ui-divider class="m-0"></ui-divider>
       <a uiMenuItem [href]="otherOfficeUri">
         {{ 'components.header.goToPlatform' | translate }} {{ otherOffice }}
       </a>
     </ng-container>
-    <safe-divider class="m-0"></safe-divider>
+    <ui-divider class="m-0"></ui-divider>
     <button uiMenuItem class="warn" (click)="logout()">
       {{ 'components.header.logout' | translate }}
     </button>

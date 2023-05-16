@@ -8,7 +8,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { SafeDividerModule } from '../ui/divider/divider.module';
+import { DividerModule } from '@oort-front/ui';
 /**
  * Search menu component module.
  */
@@ -22,7 +22,7 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
     MatInputModule,
     MatIconModule,
     SafeButtonModule,
-    SafeDividerModule,
+    DividerModule,
     MatTooltipModule,
   ],
   exports: [SafeSearchMenuComponent],

@@ -5,8 +5,8 @@ import {
   EventEmitter,
   AfterViewInit,
   ViewChild,
-  ElementRef,
   Renderer2,
+  ElementRef,
 } from '@angular/core';
 import {
   trigger,

@@ -12,8 +12,8 @@ import {
   SafeButtonModule,
   SafeSkeletonTableModule,
   SafeDateModule,
-  SafeDividerModule,
 } from '@oort-front/safe';
+import { DividerModule } from '@oort-front/ui';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -49,7 +49,7 @@ import { AbilityModule } from '@casl/angular';
     MatNativeDateModule,
     MatInputModule,
     MatSelectModule,
-    SafeDividerModule,
+    DividerModule,
     SafeButtonModule,
     MatPaginatorModule,
     TranslateModule,

@@ -21,7 +21,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { SafeDividerModule } from '../ui/divider/divider.module';
+import { DividerModule } from '@oort-front/ui';
 /** Module for the widget-related components */
 @NgModule({
   declarations: [
@@ -44,7 +44,7 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
     MatTooltipModule,
     MatDialogModule,
     MenuModule,
-    SafeDividerModule,
+    DividerModule,
     SafeButtonModule,
     TranslateModule,
     SafeIconModule,

@@ -24,7 +24,7 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { SeriesSettingsModule } from '../series-settings/series-settings.module';
-import { SafeDividerModule } from '../../../ui/divider/divider.module';
+import { DividerModule } from '@oort-front/ui';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 
 /**
@@ -58,7 +58,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     SafePaletteControlModule,
     InputsModule,
     SeriesSettingsModule,
-    SafeDividerModule,
+    DividerModule,
     MatTooltipModule,
   ],
   exports: [TabDisplayComponent],

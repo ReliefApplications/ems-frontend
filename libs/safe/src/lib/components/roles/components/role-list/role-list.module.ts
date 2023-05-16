@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
 import { SafeRoleListComponent } from './role-list.component';
-import { SafeDividerModule } from '../../../ui/divider/divider.module';
+import { DividerModule } from '@oort-front/ui';
 import { AbilityModule } from '@casl/angular';
 
 /**
@@ -34,7 +34,7 @@ import { AbilityModule } from '@casl/angular';
     MatIconModule,
     MatSortModule,
     MatAutocompleteModule,
-    SafeDividerModule,
+    DividerModule,
     SafeButtonModule,
     TranslateModule,
     SafeSkeletonTableModule,
