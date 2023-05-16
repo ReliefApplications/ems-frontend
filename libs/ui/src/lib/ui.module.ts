@@ -4,6 +4,7 @@ import { ButtonModule } from './button/button.module';
 import { CheckboxModule } from './checkbox/checkbox.module';
 import { IconModule } from './icon/icon.module';
 import { SelectModule } from './select/select.module';
+import { TableModule } from './table/table.module';
 import { TooltipModule } from './tooltip/tooltip.module';
 import { SpinnerModule } from './spinner/spinner.module';
 import { PaginatorModule } from './paginator/paginator.module';
@@ -14,8 +15,8 @@ import { ExpansionPanelModule } from './expansion-panel/expansion-panel.module';
 import { SliderModule } from './slider/slider.module';
 import { TextareaModule } from './textarea/textarea.module';
 import { RadioModule } from './radio/radio.module';
-import { DialogModule } from './dialog/dialog.module';
 import { FormWrapperModule } from './form-wrapper/form-wrapper.module';
+import { DialogModule } from './dialog/dialog.module';
 import { TabsModule } from './tabs/tabs.module';
 
 /**
@@ -29,6 +30,7 @@ import { TabsModule } from './tabs/tabs.module';
     CheckboxModule,
     IconModule,
     SelectModule,
+    TableModule,
     TooltipModule,
     SpinnerModule,
     PaginatorModule,
@@ -38,8 +40,8 @@ import { TabsModule } from './tabs/tabs.module';
     SliderModule,
     TextareaModule,
     RadioModule,
-    DialogModule,
     FormWrapperModule,
+    DialogModule,
     TabsModule,
   ],
   imports: [],
