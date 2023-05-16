@@ -84,12 +84,14 @@
           | translate
       }}
     </h2>
-    <mat-checkbox formControlName="useStyles">
-      {{
-        'components.widget.settings.summaryCard.card.dataSource.layoutStyles.use'
-          | translate
-      }}
-    </mat-checkbox>
+    <ui-checkbox formControlName="useStyles">
+      <ng-container ngProjectAs="label">
+        {{
+          'components.widget.settings.summaryCard.card.dataSource.layoutStyles.use'
+            | translate
+        }}
+      </ng-container>
+    </ui-checkbox>
     <div *ngIf="this.form.value.useStyles">
       <p>
         {{

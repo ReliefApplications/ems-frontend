@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeTemplatesComponent } from './templates.component';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { SafeButtonModule } from '../ui/button/button.module';
@@ -16,7 +16,7 @@ import { DividerModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     MatTableModule,
-    MatMenuModule,
+    MenuModule,
     MatProgressSpinnerModule,
     TranslateModule,
     MatIconModule,

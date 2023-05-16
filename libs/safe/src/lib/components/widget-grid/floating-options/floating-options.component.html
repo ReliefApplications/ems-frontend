@@ -1,13 +1,13 @@
-<button mat-icon-button [matMenuTriggerFor]="menu">
+<button mat-icon-button [uiMenuTriggerFor]="menu">
   <mat-icon>more_vert</mat-icon>
 </button>
-<mat-menu #menu="matMenu">
+<ui-menu #menu>
   <ng-container *ngFor="let item of items">
     <ui-divider *ngIf="item.name === 'Delete'" class="m-0"></ui-divider>
 
-    <button mat-menu-item (click)="onClick(item)" [disabled]="item.disabled">
+    <button uiMenuItem (click)="onClick(item)" [disabled]="item.disabled">
       <mat-icon>{{ item.icon }}</mat-icon>
       <span>{{ item.text }}</span>
     </button>
   </ng-container>
-</mat-menu>
+</ui-menu>

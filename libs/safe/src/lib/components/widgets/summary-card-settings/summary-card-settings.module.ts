@@ -10,7 +10,7 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { SafeIconModule } from '../../ui/icon/icon.module';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeAddCardModule } from './add-card/add-card.module';
@@ -32,7 +32,7 @@ import { SummaryCardItemModule } from '../summary-card/summary-card-item/summary
     MatTooltipModule,
     MatRadioModule,
     SafeIconModule,
-    MatMenuModule,
+    MenuModule,
     MatIconModule,
     MatDividerModule,
     SafeAddCardModule,

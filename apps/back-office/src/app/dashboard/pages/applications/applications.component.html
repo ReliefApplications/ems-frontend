@@ -107,12 +107,12 @@
             <safe-button
               [isIcon]="true"
               icon="more_vert"
-              [matMenuTriggerFor]="menu"
+              [uiMenuTriggerFor]="menu"
               (click)="$event.stopPropagation()"
             >
             </safe-button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="onPreview(element)">
+            <ui-menu #menu>
+              <button uiMenuItem (click)="onPreview(element)">
                 <mat-icon>preview</mat-icon>
                 {{ 'common.preview' | translate }}
               </button>
@@ -124,7 +124,7 @@
                 *ngIf="element.canUpdate"
               ></safe-access>
               <button
-                mat-menu-item
+                uiMenuItem
                 (click)="onClone(element)"
                 *ngIf="element.canDelete"
               >
@@ -133,12 +133,12 @@
               </button>
               <ng-container *ngIf="element.canDelete">
                 <ui-divider class="m-0"></ui-divider>
-                <button mat-menu-item (click)="onDelete(element, $event)">
+                <button uiMenuItem (click)="onDelete(element, $event)">
                   <mat-icon>delete</mat-icon>
                   {{ 'common.delete' | translate }}
                 </button>
               </ng-container>
-            </mat-menu>
+            </ui-menu>
           </td>
         </ng-container>
 

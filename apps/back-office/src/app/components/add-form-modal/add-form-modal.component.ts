@@ -20,7 +20,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { ToggleModule } from '@oort-front/ui';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { TranslateModule } from '@ngx-translate/core';
@@ -48,7 +48,7 @@ const ITEMS_PER_PAGE = 10;
     MatButtonModule,
     MatRadioModule,
     MatTooltipModule,
-    MatSlideToggleModule,
+    ToggleModule,
     MatChipsModule,
     TranslateModule,
     SafeIconModule,

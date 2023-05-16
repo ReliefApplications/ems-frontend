@@ -9,7 +9,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../pipes/date/date.module';
@@ -32,7 +32,7 @@ import { SafeEmptyModule } from '../ui/empty/empty.module';
     MatFormFieldModule,
     MatInputModule,
     MatNativeDateModule,
-    MatMenuModule,
+    MenuModule,
     SafeButtonModule,
     SafeIconModule,
     TranslateModule,

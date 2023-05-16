@@ -6,7 +6,7 @@ import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@ang
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import {
   SafeAccessModule,
@@ -29,7 +29,7 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     MatTabsModule,
     MatTableModule,
     MatIconModule,
-    MatMenuModule,
+    MenuModule,
     MatChipsModule,
     SafeAccessModule,
     SafeButtonModule,
