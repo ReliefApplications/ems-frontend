@@ -42,7 +42,6 @@ import { TabsModule } from './tabs/tabs.module';
     RadioModule,
     FormWrapperModule,
     DialogModule,
-    FormWrapperModule,
     TabsModule,
   ],
   imports: [],

@@ -21,7 +21,6 @@ export * from './lib/slider/slider.module';
 export * from './lib/radio/radio.module';
 export * from './lib/form-wrapper/form-wrapper.module';
 export * from './lib/dialog/dialog.module';
-export * from './lib/form-wrapper/form-wrapper.module';
 export * from './lib/tabs/tabs.module';
 
 // === ENUMS === //
