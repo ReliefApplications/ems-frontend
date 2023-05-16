@@ -52,8 +52,7 @@ export class ExpansionPanelComponent implements AfterViewInit {
   @Output() closePanel = new EventEmitter<any>();
 
   @ViewChild('accordionItem') accordionItem!: CdkAccordionItem;
-  @ViewChild('contentContainer', { read: ElementRef })
-  contentContainer!: ElementRef;
+  @ViewChild('contentContainer') contentContainer!: ElementRef;
 
   /**
    * UI Panel Expansion constructor

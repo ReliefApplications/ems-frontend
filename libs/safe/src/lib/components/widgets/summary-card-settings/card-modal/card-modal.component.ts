@@ -31,12 +31,11 @@ import { SafeAggregationService } from '../../../../services/aggregation/aggrega
 import { CommonModule } from '@angular/common';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { SafeDataSourceTabModule } from './data-source-tab/data-source.module';
 import { SafeValueSelectorTabModule } from './value-selector-tab/value-selector.module';
 import { SafeDisplayTabModule } from './display-tab/display.module';
@@ -54,13 +53,12 @@ import { SafeModalModule } from '../../../ui/modal/modal.module';
     CommonModule,
     SafeButtonModule,
     TranslateModule,
-    MatTooltipModule,
+    TooltipModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatTabsModule,
-    MatRadioModule,
     SafeDataSourceTabModule,
     SafeValueSelectorTabModule,
     SafeDisplayTabModule,

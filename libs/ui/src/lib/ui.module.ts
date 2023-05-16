@@ -16,6 +16,8 @@ import { TextareaModule } from './textarea/textarea.module';
 import { RadioModule } from './radio/radio.module';
 import { NavigationTabsModule } from './navigation-tabs/navigation-tabs.module';
 import { TabModule } from './tab/tab.module';
+import { DialogModule } from './dialog/dialog.module';
+import { FormWrapperModule } from './form-wrapper/form-wrapper.module';
 
 /**
  * UI Library Module
@@ -39,6 +41,9 @@ import { TabModule } from './tab/tab.module';
     RadioModule,
     NavigationTabsModule,
     TabModule,
+    DialogModule,
+    FormWrapperModule,
   ],
+  imports: [],
 })
 export class UiModule {}

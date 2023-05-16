@@ -20,6 +20,8 @@ export * from './lib/slider/slider.module';
 export * from './lib/radio/radio.module';
 export * from './lib/tab/tab.module';
 export * from './lib/navigation-tabs/navigation-tabs.module';
+export * from './lib/dialog/dialog.module';
+export * from './lib/form-wrapper/form-wrapper.module';
 
 // === ENUMS === //
 export * from './lib/shared/size.enum';
@@ -33,7 +35,6 @@ export * from './lib/breadcrumbs/enums/breadcrumb-display.enum';
 export * from './lib/breadcrumbs/enums/breadcrumb-separator.enum';
 
 // === INTERFACES === //
-export * from './lib/toggle/interfaces/toggle-label.interface';
 export * from './lib/toggle/interfaces/toggle-icon.interface';
 export * from './lib/breadcrumbs/interfaces/breadcrumb.interface';
 export * from './lib/paginator/interfaces/paginator.interfaces';

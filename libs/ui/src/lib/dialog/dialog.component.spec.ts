@@ -1,19 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeAvatarComponent } from './avatar.component';
+import { DialogComponent } from './dialog.component';
 
-describe('AvatarComponent', () => {
-  let component: SafeAvatarComponent;
-  let fixture: ComponentFixture<SafeAvatarComponent>;
+describe('DialogComponent', () => {
+  let component: DialogComponent;
+  let fixture: ComponentFixture<DialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SafeAvatarComponent],
+      declarations: [DialogComponent],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SafeAvatarComponent);
+    fixture = TestBed.createComponent(DialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

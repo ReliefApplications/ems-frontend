@@ -34,8 +34,7 @@
         class="safe-widget-type"
         *ngFor="let type of widgetTypes"
         (click)="onSelect(type)"
-        [matTooltip]="type.name"
-        matTooltipPosition="above"
+        [uiTooltip]="type.name"
         (mouseover)="hovered = type.id"
         (mouseout)="hovered = ''"
       >
@@ -53,8 +52,7 @@
       icon="close"
       [isIcon]="true"
       (click)="collapsed = true"
-      [matTooltip]="'models.widget.tooltip.selector.collapse' | translate"
-      matTooltipPosition="above"
+      [uiTooltip]="'models.widget.tooltip.selector.collapse' | translate"
     ></safe-button>
   </div>
 </ng-template>
@@ -70,8 +68,7 @@
       icon="widgets"
       [isIcon]="true"
       (click)="collapsed = false"
-      [matTooltip]="'models.widget.tooltip.selector.expand' | translate"
-      matTooltipPosition="left"
+      [uiTooltip]="'models.widget.tooltip.selector.expand' | translate"
     ></safe-button>
   </div>
 </ng-template>
