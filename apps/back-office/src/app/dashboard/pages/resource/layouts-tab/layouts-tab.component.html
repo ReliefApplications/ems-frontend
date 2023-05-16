@@ -35,21 +35,21 @@
             <ui-button
               [isIcon]="true"
               icon="more_vert"
-              [matMenuTriggerFor]="resMenu"
+              [uiMenuTriggerFor]="resMenu"
               (click)="$event.stopPropagation()"
               [disabled]="!resource.canUpdate"
             >
             </ui-button>
-            <mat-menu #resMenu="matMenu">
-              <button mat-menu-item (click)="onEditLayout(element)">
+            <ui-menu #resMenu>
+              <button uiMenuItem (click)="onEditLayout(element)">
                 <mat-icon>edit</mat-icon>
                 {{ 'common.edit' | translate }}
               </button>
-              <button mat-menu-item (click)="onDeleteLayout(element)">
+              <button uiMenuItem (click)="onDeleteLayout(element)">
                 <mat-icon>delete</mat-icon>
                 {{ 'common.delete' | translate }}
               </button>
-            </mat-menu>
+            </ui-menu>
           </td>
         </ng-container>
 

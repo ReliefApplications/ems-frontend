@@ -5,7 +5,7 @@ import { PositionComponent } from './position.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
@@ -31,7 +31,7 @@ import { ButtonModule } from '@oort-front/ui';
     MatProgressSpinnerModule,
     MatTableModule,
     MatIconModule,
-    MatMenuModule,
+    MenuModule,
     SafeButtonModule,
     MatButtonModule,
     TranslateModule,

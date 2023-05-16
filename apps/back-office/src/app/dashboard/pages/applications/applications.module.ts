@@ -7,7 +7,7 @@ import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
@@ -19,8 +19,8 @@ import {
   SafeDateModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
-  SafeDividerModule,
 } from '@oort-front/safe';
+import { DividerModule } from '@oort-front/ui';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
@@ -50,7 +50,7 @@ import { ButtonModule } from '@oort-front/ui';
     MatTableModule,
     MatSortModule,
     MatDialogModule,
-    MatMenuModule,
+    MenuModule,
     MatIconModule,
     MatChipsModule,
     SafeAccessModule,
@@ -65,7 +65,7 @@ import { ButtonModule } from '@oort-front/ui';
     SafeDateModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
-    SafeDividerModule,
+    DividerModule,
     AbilityModule,
     ButtonModule,
   ],

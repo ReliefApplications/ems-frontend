@@ -37,11 +37,10 @@
                 [variant]="permission.variant"
                 (click)="editResourceAccess(element.resource, permission.name)"
                 [disabled]="loading || updating"
-                [matTooltip]="
+                [uiTooltip]="
                   permission.tooltip
                     | translate : { resource: element.resource.name }
                 "
-                matTooltipPosition="left"
               >
               </safe-button>
             </ng-container>

@@ -14,7 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { SafeIconModule } from '@oort-front/safe';
 import { GridModule } from '@progress/kendo-angular-grid';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { ButtonModule as UiButtonModule } from '@oort-front/ui';
 
@@ -38,7 +38,7 @@ import { ButtonModule as UiButtonModule } from '@oort-front/ui';
     MatChipsModule,
     SafeIconModule,
     GridModule,
-    MatTooltipModule,
+    TooltipModule,
     SafeGraphQLSelectModule,
     ButtonModule,
     UiButtonModule,

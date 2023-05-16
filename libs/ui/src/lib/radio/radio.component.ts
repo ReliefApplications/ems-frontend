@@ -11,7 +11,7 @@ import { Variant } from '../shared/variant.enum';
 })
 export class RadioComponent {
   @Input() name = '';
-  @Input() value = '';
+  @Input() value: string | boolean = '';
   @Input() disabled = false;
   @Input() required = false;
   @Input() checked = false;

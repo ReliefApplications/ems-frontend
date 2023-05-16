@@ -4,9 +4,8 @@ import { FormsTabRoutingModule } from './forms-tab-routing.module';
 import { FormsTabComponent } from './forms-tab.component';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
@@ -25,10 +24,9 @@ import { ButtonModule } from '@oort-front/ui';
     FormsTabRoutingModule,
     MatTableModule,
     MatIconModule,
-    MatMenuModule,
+    MenuModule,
     MatChipsModule,
     SafeButtonModule,
-    MatTooltipModule,
     TranslateModule,
     SafeDateModule,
     SafeSkeletonTableModule,

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceDatasRoutingModule } from './reference-datas-routing.module';
 import { ReferenceDatasComponent } from './reference-datas.component';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatSortModule } from '@angular/material/sort';
@@ -34,7 +34,7 @@ import { ButtonModule } from '@oort-front/ui';
   declarations: [ReferenceDatasComponent, AddReferenceDataComponent],
   imports: [
     CommonModule,
-    MatMenuModule,
+    MenuModule,
     ReferenceDatasRoutingModule,
     MatProgressSpinnerModule,
     MatTableModule,

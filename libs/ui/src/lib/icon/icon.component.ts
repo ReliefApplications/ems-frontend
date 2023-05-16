@@ -12,14 +12,10 @@ import { Category } from '../shared/category.enum';
 })
 export class IconComponent {
   @Input() icon = '';
-  @Input() inline = false;
   @Input() category: Category = Category.PRIMARY;
   @Input() variant: Variant = Variant.DEFAULT;
   @Input() size = 24;
   @Input() fontSet = false;
-
-  iconVariant = Variant;
-  iconCategory = Category;
 
   /**
    * Formats the size input adding a 'px' suffix
@@ -28,5 +24,28 @@ export class IconComponent {
    */
   get fontSize(): string {
     return this.size + 'px';
+  }
+
+  /**
+   * Resolve icon class by given category and variant
+   *
+   * @returns Returns a string array with the current variant and category class
+   */
+  get iconVariantAndCategory(): string[] {
+    const classes = [];
+    classes.push(
+      this.category === Category.SECONDARY || this.variant === Variant.LIGHT
+        ? 'icon-light'
+        : this.variant === Variant.PRIMARY
+        ? 'icon-primary'
+        : this.variant === Variant.SUCCESS
+        ? 'icon-success'
+        : this.variant === Variant.GREY
+        ? 'icon-grey'
+        : this.variant === Variant.DANGER
+        ? 'icon-danger'
+        : ''
+    );
+    return classes;
   }
 }

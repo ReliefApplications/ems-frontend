@@ -88,6 +88,9 @@ export class RadioGroupDirective
    */
   @HostListener('change', ['$event']) onOptionChange(event: Event) {
     this.groupValue = (event.target as HTMLInputElement).value;
+    if (this.groupValue === 'true' || this.groupValue === 'false') {
+      this.groupValue = this.groupValue === 'true' ? true : false;
+    }
     if (this.onTouched && this.onChanged) {
       this.onChanged(this.groupValue);
       this.onTouched();

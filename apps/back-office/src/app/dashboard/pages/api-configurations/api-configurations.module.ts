@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiConfigurationsRoutingModule } from './api-configurations-routing.module';
 import { ApiConfigurationsComponent } from './api-configurations.component';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
@@ -36,7 +36,7 @@ import { ButtonModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     ApiConfigurationsRoutingModule,
-    MatMenuModule,
+    MenuModule,
     MatProgressSpinnerModule,
     MatTableModule,
     MatChipsModule,

@@ -18,10 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -29,7 +26,15 @@ import {
   SafeIconModule,
   SafeModalModule,
 } from '@oort-front/safe';
-import { ButtonModule, Variant, Category } from '@oort-front/ui';
+import {
+  ToggleModule,
+  TooltipModule,
+  RadioModule,
+  IconModule,
+  Variant,
+  ButtonModule,
+  Category
+} from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -47,14 +52,15 @@ const ITEMS_PER_PAGE = 10;
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatRadioModule,
-    MatTooltipModule,
-    MatSlideToggleModule,
+    ToggleModule,
     MatChipsModule,
     TranslateModule,
     SafeIconModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
+    TooltipModule,
+    RadioModule,
+    IconModule,
     ButtonModule,
   ],
   selector: 'app-add-form-modal',
@@ -98,7 +104,6 @@ export class AddFormModalComponent implements OnInit {
       inheritsTemplate: [false],
       template: [null],
     });
-
     this.form.get('newResource')?.valueChanges.subscribe((value: boolean) => {
       if (value) {
         this.form.get('resource')?.clearValidators();

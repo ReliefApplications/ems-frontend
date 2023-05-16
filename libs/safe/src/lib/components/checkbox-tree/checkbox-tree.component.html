@@ -9,12 +9,13 @@
     matTreeNodePadding
   >
     <ui-button [disabled]="true" [icon]="''"></ui-button>
-    <mat-checkbox
+    <ui-checkbox
       class="checklist-leaf-node"
       [checked]="checklistSelection.isSelected(node)"
       (change)="todoLeafItemSelectionToggle(node)"
-      >{{ node.item }}</mat-checkbox
     >
+      <ng-container ngProjectAs="label">{{ node.item }}</ng-container>
+    </ui-checkbox>
   </mat-tree-node>
 
   <!-- <mat-tree-node
@@ -35,14 +36,19 @@
       [attr.aria-label]="'Toggle ' + node.item"
       icon="{{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}"
     >
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+      </mat-icon>
     </ui-button>
-    <mat-checkbox
+    <ui-checkbox
       [checked]="descendantsAllSelected(node)"
       [indeterminate]="descendantsPartiallySelected(node)"
       (change)="todoItemSelectionToggle(node)"
-      >{{ node.item }}</mat-checkbox
     >
-    <!-- <ui-button icon="" (click)="addNewItem(node)">
+      <ng-container ngProjectAs="label">{{ node.item }}</ng-container>
+    </ui-checkbox>
+    <!-- <button mat-icon-button (click)="addNewItem(node)">
+      <mat-icon>add</mat-icon>
     </button> -->
   </mat-tree-node>
 </mat-tree>

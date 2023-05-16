@@ -3,9 +3,8 @@ import { CommonModule } from '@angular/common';
 import { LayoutsTabRoutingModule } from './layouts-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
@@ -27,9 +26,8 @@ import { ButtonModule } from '@oort-front/ui';
     LayoutsTabRoutingModule,
     MatTableModule,
     MatIconModule,
-    MatMenuModule,
+    MenuModule,
     SafeButtonModule,
-    MatTooltipModule,
     TranslateModule,
     OverlayModule,
     SafeDateModule,

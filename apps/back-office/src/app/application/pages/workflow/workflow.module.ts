@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeSearchMenuModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { ButtonModule } from '@oort-front/ui';
 
@@ -36,7 +36,7 @@ import { ButtonModule } from '@oort-front/ui';
     OverlayModule,
     SafeSearchMenuModule,
     MatIconModule,
-    MatMenuModule,
+    MenuModule,
     IndicatorsModule,
     SafeAlertModule,
     SafeIconModule,

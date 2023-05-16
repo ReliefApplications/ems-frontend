@@ -74,22 +74,24 @@
             ></safe-button>
           </div>
         </div>
-      </ng-container>
-
+      </ng-container>    
       <div class="field-form">
         <span class="field-name">{{
           'components.queryBuilder.style.edit.appliesTo' | translate
         }}</span>
-        <mat-radio-group [formControl]="wholeRow">
-          <mat-radio-button [value]="true">{{
-            'components.queryBuilder.style.edit.wholeRow' | translate
-          }}</mat-radio-button>
-          <mat-radio-button [value]="false">{{
-            'components.queryBuilder.style.edit.selectedColumns' | translate
-          }}</mat-radio-button>
-        </mat-radio-group>
+        <div class="flex flex-col" formControlName="wholeRow" uiRadioGroupDirective="wholeRowOptions">
+          <ui-radio [value]="true" [checked]="wholeRow.value === true">
+            <ng-container ngProjectAs="label">
+              {{ 'components.queryBuilder.style.edit.wholeRow' | translate }}
+            </ng-container>
+          </ui-radio>
+          <ui-radio [value]="false" [checked]="wholeRow.value === false">
+            <ng-container ngProjectAs="label">
+              {{ 'components.queryBuilder.style.edit.selectedColumns' | translate }}
+            </ng-container>
+          </ui-radio>
+        </div>
       </div>
-
       <div class="field-form" *ngIf="!wholeRow.value">
         <span class="field-name">{{
           'components.queryBuilder.style.edit.fields' | translate
