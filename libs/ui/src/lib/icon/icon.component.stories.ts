@@ -21,10 +21,6 @@ export default {
       defaultValue: 'search_outline',
       control: { type: 'text' },
     },
-    inline: {
-      defaultValue: false,
-      type: 'boolean',
-    },
   },
   decorators: [
     moduleMetadata({
@@ -49,7 +45,6 @@ const Template: StoryFn<IconComponent> = (args: IconComponent) => ({
 export const Primary = Template.bind({});
 Primary.args = {
   icon: 'search_outline',
-  inline: false,
   variant: Variant.DEFAULT,
   size: 24,
 };

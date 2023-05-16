@@ -154,19 +154,23 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="flex flex-col gap-2">
-            <mat-slide-toggle formControlName="enabled"
-              >{{ 'components.widget.settings.chart.palette.enable' | translate
-              }}<safe-icon
-                class="ml-2"
-                variant="grey"
-                [inline]="true"
-                [size]="18"
-                icon="info_outline"
-                [matTooltip]="
-                'components.widget.settings.chart.tooltip.palette' | translate
-                "
-              ></safe-icon
-            ></mat-slide-toggle>
+            <ui-toggle formControlName="enabled">
+              <ng-container ngProjectAs="label">
+                {{
+                  'components.widget.settings.chart.palette.enable' | translate
+                }}<safe-icon
+                  class="ml-2"
+                  variant="grey"
+                  [inline]="true"
+                  [size]="18"
+                  icon="info_outline"
+                  [uiTooltip]="
+                    'components.widget.settings.chart.tooltip.palette'
+                      | translate
+                  "
+                ></safe-icon>
+              </ng-container>
+            </ui-toggle>
             <safe-palette-control
               formControlName="value"
             ></safe-palette-control>
@@ -180,17 +184,20 @@
             }}</mat-panel-title>
           </mat-expansion-panel-header>
           <div class="flex flex-col gap-2">
-            <mat-slide-toggle
+            <ui-toggle
               formControlName="showCategory"
               *ngIf="type.name === 'donut' || type.name === 'pie'"
-              >{{
+            >
+              <ng-container ngProjectAs="label">{{
                 'components.widget.settings.chart.labels.showCategory'
                   | translate
-              }}</mat-slide-toggle
-            >
-            <mat-slide-toggle formControlName="showValue">{{
-              'components.widget.settings.chart.labels.showValue' | translate
-            }}</mat-slide-toggle>
+              }}</ng-container>
+            </ui-toggle>
+            <ui-toggle formControlName="showValue">
+              <ng-container ngProjectAs="label">{{
+                'components.widget.settings.chart.labels.showValue' | translate
+              }}</ng-container>
+            </ui-toggle>
             <mat-form-field
               appearance="outline"
               *ngIf="
@@ -231,7 +238,7 @@
               {{ 'components.widget.settings.chart.xAxis' | translate }}
             </h3>
             <div class="axis-container">
-              <mat-slide-toggle formControlName="enableMin"></mat-slide-toggle>
+              <ui-toggle formControlName="enableMin"></ui-toggle>
               <mat-form-field appearance="outline" floatLabel="always">
                 <mat-label>{{
                   'components.aggregationBuilder.operators.min' | translate
@@ -245,7 +252,7 @@
               </mat-form-field>
             </div>
             <div class="axis-container">
-              <mat-slide-toggle formControlName="enableMax"></mat-slide-toggle>
+              <ui-toggle formControlName="enableMax"></ui-toggle>
               <mat-form-field appearance="outline" floatLabel="always">
                 <mat-label>{{
                   'components.aggregationBuilder.operators.max' | translate
@@ -268,7 +275,7 @@
               {{ 'components.widget.settings.chart.yAxis' | translate }}
             </h3>
             <div class="axis-container">
-              <mat-slide-toggle formControlName="enableMin"></mat-slide-toggle>
+              <ui-toggle formControlName="enableMin"></ui-toggle>
               <mat-form-field appearance="outline" floatLabel="always">
                 <mat-label>{{
                   'components.aggregationBuilder.operators.min' | translate
@@ -282,7 +289,7 @@
               </mat-form-field>
             </div>
             <div class="axis-container">
-              <mat-slide-toggle formControlName="enableMax"></mat-slide-toggle>
+              <ui-toggle formControlName="enableMax"></ui-toggle>
               <mat-form-field appearance="outline" floatLabel="always">
                 <mat-label>{{
                   'components.aggregationBuilder.operators.max' | translate
@@ -308,14 +315,18 @@
             }}</mat-panel-title>
           </mat-expansion-panel-header>
           <div class="flex flex-col gap-2" formGroupName="x">
-            <mat-slide-toggle formControlName="display">{{
-              'components.widget.settings.chart.grid.x.display' | translate
-            }}</mat-slide-toggle>
+            <ui-toggle formControlName="display">
+              <ng-container ngProjectAs="label">{{
+                'components.widget.settings.chart.grid.x.display' | translate
+              }}</ng-container>
+            </ui-toggle>
           </div>
-          <div class="flex flex-col gap-2" formGroupName="y">
-            <mat-slide-toggle formControlName="display">{{
-              'components.widget.settings.chart.grid.y.display' | translate
-            }}</mat-slide-toggle>
+          <div class="flex flex-col gap-2 mt-2" formGroupName="y">
+            <ui-toggle formControlName="display">
+              <ng-container ngProjectAs="label">{{
+                'components.widget.settings.chart.grid.y.display' | translate
+              }}</ng-container>
+            </ui-toggle>
           </div>
         </mat-expansion-panel>
         <!-- === SERIES AND STACKS PARAMETERS === -->
@@ -333,14 +344,19 @@
               chartForm.value.mapping.series
             "
           >
-            <mat-slide-toggle formControlName="enable">{{
-              'components.widget.settings.chart.series.stack.enable' | translate
-            }}</mat-slide-toggle>
-            <mat-slide-toggle formControlName="usePercentage">{{
-              'components.widget.settings.chart.series.stack.usePercentage'
-                | translate
-            }}</mat-slide-toggle>
-            <safe-divider></safe-divider>
+            <ui-toggle formControlName="enable">
+              <ng-container ngProjectAs="label">{{
+                'components.widget.settings.chart.series.stack.enable'
+                  | translate
+              }}</ng-container>
+            </ui-toggle>
+            <ui-toggle formControlName="usePercentage">
+              <ng-container ngProjectAs="label">{{
+                'components.widget.settings.chart.series.stack.usePercentage'
+                  | translate
+              }}</ng-container>
+            </ui-toggle>
+            <ui-divider></ui-divider>
           </div>
           <safe-series-settings
             [formArray]="$any(formGroup.get('chart.series'))"

@@ -63,19 +63,17 @@ const panelOptions: PanelOption[] = [
 const Template: StoryFn<ExpansionPanelComponent> = (
   args: ExpansionPanelComponent
 ) => {
-  args.displayIcon = true;
   return {
     component: ExpansionPanelComponent,
     template: `
       <cdk-accordion>
         <ui-expansion-panel 
-          *ngFor="let panel of panelOptions; let i = index; let last = last" 
+          *ngFor="let panel of panelOptions; let i = index;" 
           [disabled]="${args.disabled}" 
           [displayIcon]="${args.displayIcon}" 
           [expanded]="panel.expanded"
           [title]="panel.title"
           [index]="i"
-          [last]="last"
         >
           <p class="mb-2 text-gray-500">{{panel.text}}</p>
         </ui-expansion-panel>
@@ -90,6 +88,10 @@ const Template: StoryFn<ExpansionPanelComponent> = (
 
 /** Toggle expansion panel */
 export const TogglePanel = Template.bind({});
+TogglePanel.args = {
+  disabled: false,
+  displayIcon: true,
+};
 
 /**
  * Template multi expansion panel group
@@ -106,13 +108,12 @@ const TemplateMulti: StoryFn<ExpansionPanelComponent> = (
     template: `
       <cdk-accordion [multi]="true">
         <ui-expansion-panel 
-          *ngFor="let panel of panelOptions; let i = index; let last = last" 
+          *ngFor="let panel of panelOptions; let i = index;" 
           [disabled]="${args.disabled}" 
           [displayIcon]="${args.displayIcon}" 
           [expanded]="panel.expanded"
           [title]="panel.title"
           [index]="i"
-          [last]="last"
         >
           <p class="mb-2 text-gray-500" >{{panel.text}}</p>
         </ui-expansion-panel>
@@ -127,3 +128,7 @@ const TemplateMulti: StoryFn<ExpansionPanelComponent> = (
 
 /** Multi expansion panel */
 export const MultiPanel = TemplateMulti.bind({});
+MultiPanel.args = {
+  disabled: false,
+  displayIcon: true,
+};
