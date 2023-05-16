@@ -8,7 +8,7 @@ import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-t
 import { MapGeneralModule } from './map-general/map-general.module';
 import { MapLayersModule } from './map-layers/map-layers.module';
 import { MapPropertiesModule } from './map-properties/map-properties.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 
 /** Module for map settings component */
 @NgModule({
@@ -23,7 +23,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MapGeneralModule,
     MapLayersModule,
     MapPropertiesModule,
-    MatTooltipModule,
+    TooltipModule,
   ],
   exports: [SafeMapSettingsComponent],
 })

@@ -42,8 +42,7 @@
                 [isIcon]="true"
                 [icon]="permission.icon"
                 [variant]="permission.variant"
-                [matTooltip]="permission.tooltip | translate"
-                matTooltipPosition="left"
+                [uiTooltip]="permission.tooltip | translate"
                 (click)="
                   $event.stopPropagation();
                   toggleFilterAccess(i, permission.name)

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeRecordSummaryComponent } from './record-summary.component';
 import { SafeButtonModule } from '../ui/button/button.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { DateInputModule } from '@progress/kendo-angular-dateinputs';
@@ -15,7 +15,7 @@ import { DateInputModule } from '@progress/kendo-angular-dateinputs';
   imports: [
     CommonModule,
     SafeButtonModule,
-    MatTooltipModule,
+    TooltipModule,
     TranslateModule,
     SafeDateModule,
     DateInputModule,

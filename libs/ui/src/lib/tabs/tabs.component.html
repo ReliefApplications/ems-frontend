@@ -1,0 +1,16 @@
+<!-- Wrapper of the component, allows to display content 
+     not in the body while not interfering with the list of tabs -->
+<div [ngClass]="{ 'flex grid-cols-6 grid-rows-1': vertical }">
+  <!-- List of tabs -->
+  <div
+    id="tabs"
+    class="justify-around flex"
+    [ngClass]="resolveTabPositionClasses"
+  >
+    <ng-content></ng-content>
+  </div>
+  <!-- The directive will display the content here -->
+  <div [@tabContentDisplay]="triggerAnimation ? 'initial' : 'loadContent'">
+    <ng-template #content></ng-template>
+  </div>
+</div>

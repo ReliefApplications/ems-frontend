@@ -12,35 +12,46 @@
             placeholder="Enter a name"
           />
         </mat-form-field>
-        <mat-radio-group
-          formControlName="newResource"
+        <div
           class="flex flex-col mb-5 gap-1"
+          formControlName="newResource"
+          uiRadioGroupDirective="newResourceOptions"
         >
-          <mat-radio-button [value]="true">
-            {{ 'components.form.create.choice.resource' | translate }}
-            <safe-icon
-              icon="info_outline"
-              variant="grey"
-              [inline]="true"
-              [size]="18"
-              [matTooltip]="
-                'components.form.create.tooltip.resource' | translate
-              "
-            ></safe-icon>
-          </mat-radio-button>
-          <mat-radio-button [value]="false">
-            {{ 'components.form.create.choice.inherit' | translate }}
-            <safe-icon
-              icon="info_outline"
-              variant="grey"
-              [inline]="true"
-              [size]="18"
-              [matTooltip]="
-                'components.form.create.tooltip.inherit' | translate
-              "
-            ></safe-icon>
-          </mat-radio-button>
-        </mat-radio-group>
+          <ui-radio
+            [value]="true"
+            [checked]="form.get('newResource')?.value === true"
+          >
+            <ng-container ngProjectAs="label">
+              {{ 'components.form.create.choice.resource' | translate }}
+              <ui-icon
+                [size]="18"
+                icon="info_outline"
+                [variant]="colorVariant.GREY"
+                [uiTooltip]="
+                  'components.form.create.tooltip.resource' | translate
+                "
+              >
+              </ui-icon>
+            </ng-container>
+          </ui-radio>
+          <ui-radio
+            [value]="false"
+            [checked]="form.get('newResource')?.value === false"
+          >
+            <ng-container ngProjectAs="label">
+              {{ 'components.form.create.choice.inherit' | translate }}
+              <ui-icon
+                [size]="18"
+                icon="info_outline"
+                [variant]="colorVariant.GREY"
+                [uiTooltip]="
+                  'components.form.create.tooltip.inherit' | translate
+                "
+              >
+              </ui-icon>
+            </ng-container>
+          </ui-radio>
+        </div>
         <ng-container *ngIf="!form.value.newResource">
           <mat-form-field appearance="outline">
             <mat-label>{{
@@ -57,18 +68,20 @@
             </safe-graphql-select>
           </mat-form-field>
           <ng-container *ngIf="form.controls.resource.value !== null">
-            <mat-slide-toggle formControlName="inheritsTemplate" class="mb-5">
-              {{ 'components.form.create.choice.template' | translate }}
-              <safe-icon
-                icon="info_outline"
-                variant="grey"
-                [inline]="true"
-                [size]="18"
-                [matTooltip]="
-                  'components.form.create.tooltip.template' | translate
-                "
-              ></safe-icon>
-            </mat-slide-toggle>
+            <ui-toggle formControlName="inheritsTemplate" class="mb-5">
+              <ng-container ngProjectAs="label">
+                {{ 'components.form.create.choice.template' | translate }}
+                <safe-icon
+                  icon="info_outline"
+                  variant="grey"
+                  [inline]="true"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.form.create.tooltip.template' | translate
+                  "
+                ></safe-icon>
+              </ng-container>
+            </ui-toggle>
             <ng-container *ngIf="form.controls.inheritsTemplate.value">
               <mat-form-field appearance="outline">
                 <mat-label>{{

@@ -82,14 +82,14 @@
           <safe-button
             [isIcon]="true"
             icon="more_vert"
-            [matMenuTriggerFor]="resMenu"
+            [uiMenuTriggerFor]="resMenu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
           >
           </safe-button>
-          <mat-menu #resMenu="matMenu">
+          <ui-menu #resMenu>
             <button
-              mat-menu-item
+              uiMenuItem
               *ngIf="element.canUpdate"
               [routerLink]="[element.id + '/builder']"
             >
@@ -97,14 +97,14 @@
               {{ 'common.edit' | translate }}
             </button>
             <button
-              mat-menu-item
+              uiMenuItem
               (click)="deleteForm(element, $event)"
               *ngIf="element.canDelete"
             >
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
             </button>
-          </mat-menu>
+          </ui-menu>
         </td>
       </ng-container>
 
