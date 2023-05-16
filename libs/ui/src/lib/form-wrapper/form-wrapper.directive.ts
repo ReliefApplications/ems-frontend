@@ -73,6 +73,7 @@ export class FormWrapperDirective implements AfterContentInit {
     'relative',
     'mt-0.5',
     'py-0.5',
+    'px-0.5',
     'flex',
     'items-center',
     'w-full',
