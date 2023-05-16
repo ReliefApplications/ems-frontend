@@ -1,22 +1,20 @@
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MenuComponent } from './menu.component';
-import { MenuTriggerForDirective } from './menu.directive';
 import { DividerModule } from '../divider/divider.module';
-import { CommonModule } from '@angular/common';
 import { ButtonModule } from '../button/button.module';
+import { MenuModule } from './menu.module';
 
 export default {
   title: 'Menu',
   component: MenuComponent,
   decorators: [
     moduleMetadata({
-      declarations: [MenuTriggerForDirective],
       imports: [
-        CommonModule,
         BrowserAnimationsModule,
         DividerModule,
         ButtonModule,
+        MenuModule,
       ],
     }),
   ],
@@ -35,11 +33,11 @@ const clickEvent = (name: string) =>
  * Default menu items template
  */
 const menuItemsTemplate = `<ui-menu #menu>
-  <div (click)="clickEvent('First')" class="py-2 px-3 cursor-pointer text-primary hover:bg-primary-400 hover:text-white">Button 1</div>
+  <div uiMenuItem (click)="clickEvent('First')">Button 1</div>
   <ui-divider></ui-divider>
-  <div (click)="clickEvent('Second')" class="py-2 px-3 cursor-pointer text-primary hover:bg-primary-400 hover:text-white">Button 2</div>
+  <div uiMenuItem (click)="clickEvent('Second')">Button 2</div>
   <ui-divider></ui-divider>
-  <div (click)="clickEvent('Third')" class="py-2 px-3 cursor-pointer text-primary hover:bg-primary-400 hover:text-white">Button 3</div>
+  <div uiMenuItem (click)="clickEvent('Third')">Button 3</div>
   </ui-menu>`;
 
 /**
