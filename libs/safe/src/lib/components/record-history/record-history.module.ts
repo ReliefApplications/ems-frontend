@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeRecordHistoryComponent } from './record-history.component';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { ExpansionPanelModule } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -27,7 +27,7 @@ import { SafeEmptyModule } from '../ui/empty/empty.module';
     CommonModule,
     MatTableModule,
     MatButtonModule,
-    MatExpansionModule,
+    ExpansionPanelModule,
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,

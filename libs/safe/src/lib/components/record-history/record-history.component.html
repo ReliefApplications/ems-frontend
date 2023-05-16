@@ -89,38 +89,34 @@
 </div>
 <!-- LOADING -->
 <div class="grow overflow-y-auto" *ngIf="loading">
-  <ng-container *ngFor="let _ of [].constructor(4)">
-    <mat-expansion-panel closed>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <kendo-skeleton width="50%"></kendo-skeleton>
-          <kendo-skeleton
-            class="history-user"
-            width="30%"
-            height="2em"
-          ></kendo-skeleton>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-    </mat-expansion-panel>
+  <ng-container *ngFor="let _ of [].constructor(4); let i = index">
+    <ui-expansion-panel [index]="i">
+      <ng-container ngProjectAs="title">
+        <kendo-skeleton width="50%"></kendo-skeleton>
+        <kendo-skeleton
+          class="history-user"
+          width="30%"
+          height="2em"
+        ></kendo-skeleton>
+      </ng-container>
+    </ui-expansion-panel>
   </ng-container>
 </div>
 <!-- HISTORY CHANGES -->
 <div class="history-container" *ngIf="!loading">
-  <ng-container *ngFor="let item of filterHistory">
-    <mat-expansion-panel (closed)="showMore = false">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <span class="font-bold mr-2">{{
-            item.createdAt | safeDate : 'shortDate'
-          }}</span>
-          {{ item.createdAt | safeDate : 'shortTime' }}
-          <span class="history-user" *ngIf="item.createdBy">{{
-            item.createdBy
-          }}</span>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
+  <ng-container *ngFor="let item of filterHistory; let i = index">
+    <ui-expansion-panel [index]="i" (closePanel)="showMore = false">
+      <ng-container ngProjectAs="title">
+        <span class="font-bold mr-2">{{
+          item.createdAt | safeDate : 'shortDate'
+        }}</span>
+        {{ item.createdAt | safeDate : 'shortTime' }}
+        <span class="history-user" *ngIf="item.createdBy">{{
+          item.createdBy
+        }}</span>
+      </ng-container>
 
-      <ng-template matExpansionPanelContent>
+      <div class="expansion-panel-content">
         <div
           class="changes-content"
           *ngFor="
@@ -140,14 +136,14 @@
         </div>
         <safe-button
           icon="update"
-          class="float-right"
+          class="self-end"
           (click)="onRevert(item.version)"
           *ngIf="item.version"
         >
           {{ 'components.history.preview' | translate }}
         </safe-button>
-      </ng-template>
-    </mat-expansion-panel>
+      </div>
+    </ui-expansion-panel>
   </ng-container>
   <safe-empty
     class="m-auto py-6 px-0"
