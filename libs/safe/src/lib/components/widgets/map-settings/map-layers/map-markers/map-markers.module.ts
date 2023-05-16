@@ -10,7 +10,7 @@ import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MapMarkerRuleModule } from '../map-marker-rule/map-marker-rule.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 
 /**
  * Module of Map Widget marker rules.
@@ -29,7 +29,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MatFormFieldModule,
     MatSelectModule,
     MapMarkerRuleModule,
-    MatTooltipModule,
+    TooltipModule,
   ],
   exports: [MapMarkersComponent],
 })

@@ -1,28 +1,28 @@
 <cdk-accordion-item
   #accordionItem="cdkAccordionItem"
+  [ngClass]="{ 'cursor-default': disabled }"
   role="button"
   [attr.aria-expanded]="accordionItem.expanded"
   [disabled]="disabled"
   [attr.id]="'accordion-header-' + index"
   [attr.aria-controls]="'accordion-body-' + index"
-  (closed)="onClosed(contentContainer)"
-  (opened)="onOpened(contentContainer)"
+  (closed)="onClosed()"
+  (opened)="onOpened()"
 >
   <div
     [ngClass]="{
-      'focus:ring-4 focus:ring-gray-200 hover:bg-gray-100':
-        !disabled,
-      'border-b-0 rounded-t-md': !last || accordionItem.expanded,
-      'rounded-md': last
+      'focus:ring-4 focus:ring-gray-200 hover:bg-gray-100': !disabled,
+      'rounded-t-xl': !index,
+      'border-t-0': index
     }"
-    class="flex items-center justify-between w-full p-5 font-medium text-left text-gray-500 border border-gray-200"
+    class="accordion-item justify-between"
     (click)="accordionItem.toggle()"
   >
     <span>{{ title }}</span>
     <ng-container *ngIf="displayIcon">
       <svg
         data-accordion-icon
-        class="w-6 h-6 shrink-0"
+        class="w-6 rounded-md h-6 shrink-0"
         fill="currentColor"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg"
@@ -39,8 +39,7 @@
   <div
     #contentContainer
     [@contentExpansion]="accordionItem.expanded ? 'expanded' : 'collapsed'"
-    [ngClass]="{ 'border-b-0': !last }"
-    class="p-5 hidden border border-gray-200"
+    class="accordion-content"
     role="region"
     [attr.id]="'accordion-body-' + index"
     [attr.aria-labelledby]="'accordion-header-' + index"
