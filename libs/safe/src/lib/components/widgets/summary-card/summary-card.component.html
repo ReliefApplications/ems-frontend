@@ -4,7 +4,7 @@
       settings.title
     }}</span>
     <!-- Switch between grid and cards view -->
-    <div class="flex" *ngIf="settings.isDynamic === true">
+    <div class="flex">
       <safe-button
         [isIcon]="true"
         icon="grid_view"
@@ -21,9 +21,9 @@
       ></safe-button>
     </div>
   </kendo-tilelayout-item-header>
-  <ng-container *ngIf="displayMode === 'cards' || settings.isDynamic === false">
+  <ng-container *ngIf="displayMode === 'cards'">
     <safe-button
-      *ngIf="export && (displayMode === 'cards' || settings.isDynamic === false)"
+      *ngIf="export && displayMode === 'cards'"
       [isIcon]="true"
       icon="get_app"
       class="export-button"
@@ -40,7 +40,8 @@
           class="k-tilelayout-item k-card"
           [style.order]="i"
           style.grid-column-end="{{
-            'span ' + (card.width > colsNumber ? colsNumber : card.width)
+            'span ' +
+              (card.width && card.width > colsNumber ? colsNumber : card.width)
           }}"
           style.grid-row-end="{{ 'span ' + card.height }}"
           [card]="card"
@@ -51,7 +52,7 @@
   </ng-container>
 </div>
 
-<ng-container *ngIf="displayMode === 'grid' && settings.isDynamic === true">
+<ng-container *ngIf="displayMode === 'grid'">
   <div class="summary-grid">
     <safe-grid-widget
       class="flex-auto max-h-full w-full"

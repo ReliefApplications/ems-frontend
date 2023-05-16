@@ -16,6 +16,17 @@ import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
 } from './graphql/queries';
+import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
+import { Record } from '../../../models/record.model';
+import { Layout } from '../../../models/layout.model';
+
+export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
+  Partial<{
+    record: Record;
+    metadata: any[];
+    layout: Layout;
+    cardAggregationData: any;
+  }>;
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -35,7 +46,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   @Input() widget: any;
   @Input() header = true;
   @Input() export = true;
-  @Input() settings: any = null;
+  @Input() settings!: SummaryCardFormT['value'];
 
   public gridSettings: any = null;
 
@@ -51,18 +62,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   };
   public loading = true;
 
-  public cards: any[] = [];
+  public cards: CardT[] = [];
   private dataQuery?: QueryRef<any>;
-
-  /**
-   * Gets whether the cards that will be displayed
-   * are from an aggregation
-   *
-   * @returns if the cards are from an aggregation
-   */
-  private get isAggregation(): boolean {
-    return !!this.settings.cards[0]?.isAggregation;
-  }
 
   @ViewChild('pdf') pdfExport!: any;
 
@@ -108,17 +109,14 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    if (this.settings.isDynamic) {
-      this.setupDynamicCards();
-    } else {
-      this.cards = this.settings.cards;
-    }
+    this.setupDynamicCards();
+
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.setupGridSettings();
   }
 
   ngAfterViewInit(): void {
-    if (this.settings.isDynamic && !this.isAggregation) {
+    if (!this.settings.card?.aggregation) {
       this.pdfExport.element.nativeElement.addEventListener(
         'scroll',
         (event: any) => this.loadOnScroll(event)
@@ -151,11 +149,11 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   /** Gets the query for fetching the dynamic cards records. */
   private async setupDynamicCards() {
     // only one dynamic card is allowed per widget
-    const [card] = this.settings.cards;
+    const card = this.settings.card;
     if (!card) return;
 
-    if (card.isAggregation) this.getCardsFromAggregation(card);
-    else this.createDynamicQueryFromLayout(card);
+    if (card.aggregation) this.getCardsFromAggregation(card);
+    else if (card.layout) this.createDynamicQueryFromLayout(card);
   }
 
   /**
@@ -164,6 +162,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * @param card Card settings
    */
   private async createDynamicQueryFromLayout(card: any) {
+    console.log('HIII', card);
     // gets metadata
     const metaRes = await firstValueFrom(
       this.apollo.query<GetResourceMetadataQueryResponse>({
@@ -213,7 +212,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
               if (!edges) return;
 
               const newCards = edges.map((e: any) => ({
-                ...this.settings.cards[0],
+                ...this.settings.card,
                 record: e.node,
                 layout: layouts[0],
                 metadata: fields,
@@ -235,8 +234,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * mdr
    */
   private async setupGridSettings() {
-    const [card] = get(this.settings, 'cards', []);
-    if (!card) return;
+    const card = this.settings.card;
+    if (!card || !card.resource || !card.layout) return;
 
     this.gridLayoutService
       .getLayouts(card.resource, { ids: [card.layout], first: 1 })
@@ -272,13 +271,16 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    *
    * @param card Card settings
    */
-  private async getCardsFromAggregation(card: any) {
+  private async getCardsFromAggregation(
+    card: NonNullable<SummaryCardFormT['value']['card']>
+  ) {
+    if (!card.aggregation || !card.resource) return;
     this.aggregationService
       .aggregationDataQuery(card.resource, card.aggregation)
       ?.subscribe((res) => {
-        if (!res.data) return;
-        this.cards = res.data.recordsAggregation.map((x: any) => ({
-          ...this.settings.cards[0],
+        if (!res.data?.recordsAggregation?.items) return;
+        this.cards = res.data.recordsAggregation.items.map((x: any) => ({
+          ...this.settings.card,
           cardAggregationData: x,
         }));
       });

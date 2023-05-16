@@ -7,6 +7,8 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { SummaryCardGeneralComponent } from './summary-card-general/summary-card-general.component';
+import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
+import { SafeDisplayTabModule } from './display-tab/display.module';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -19,6 +21,8 @@ import { SummaryCardGeneralComponent } from './summary-card-general/summary-card
     TranslateModule,
     DisplaySettingsComponent,
     SummaryCardGeneralComponent,
+    SafeTextEditorTabModule,
+    SafeDisplayTabModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

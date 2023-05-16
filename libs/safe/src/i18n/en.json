@@ -1182,6 +1182,10 @@
 				"close": {
 					"confirmationMessage": "Some changes will be lost when closing edition. Do you want to continue?"
 				},
+				"editor": {
+					"recordSelection": "Record selection",
+					"title": "Editor"
+				},
 				"grid": {
 					"actions": {
 						"add": "Add new records",
@@ -1259,12 +1263,12 @@
 								"create": "Create a new layout",
 								"load": "Load existing layout"
 							},
-							"select": "Select a layout",
 							"title": "Add new layout"
 						},
 						"edit": {
 							"title": "Layout configuration"
 						},
+						"select": "Select a layout",
 						"title": "Grid layouts"
 					},
 					"tooltip": {
@@ -1649,7 +1653,8 @@
 				"rowsNotAdded": "Error on add row(s).",
 				"uploadSuccessful": "Records upload successful."
 			},
-			"restore": "Restore"
+			"restore": "Restore",
+			"select": "Select a record"
 		},
 		"referenceData": {
 			"add": "Add new reference data"

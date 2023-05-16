@@ -1182,6 +1182,10 @@
 				"close": {
 					"confirmationMessage": "******"
 				},
+				"editor": {
+					"recordSelection": "******",
+					"title": "******"
+				},
 				"grid": {
 					"actions": {
 						"add": "******",
@@ -1259,12 +1263,12 @@
 								"create": "******",
 								"load": "******"
 							},
-							"select": "******",
 							"title": "******"
 						},
 						"edit": {
 							"title": "******"
 						},
+						"select": "******",
 						"title": "******"
 					},
 					"tooltip": {
@@ -1649,7 +1653,8 @@
 				"rowsNotAdded": "******",
 				"uploadSuccessful": "******"
 			},
-			"restore": "******"
+			"restore": "******",
+			"select": "******"
 		},
 		"referenceData": {
 			"add": "******"

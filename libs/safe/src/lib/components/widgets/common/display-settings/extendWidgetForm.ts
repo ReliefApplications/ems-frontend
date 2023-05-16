@@ -1,4 +1,4 @@
-import { FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 
 /**
  * Extends the widget form with the common fields
@@ -8,18 +8,21 @@ import { FormControl, FormGroup } from '@angular/forms';
  * @param settings.showBorder show border setting
  * @returns form with the common fields
  */
-export const extendWidgetForm = (
-  form: FormGroup,
+export const extendWidgetForm = <
+  T extends { [key: string]: AbstractControl<any> }
+>(
+  form: FormGroup<T>,
   settings?: {
     showBorder?: boolean;
   }
 ) => {
-  form.addControl(
-    'widgetDisplay',
-    new FormGroup({
-      showBorder: new FormControl(settings?.showBorder ?? true),
-    })
-  );
+  const widgetDisplayForm = new FormGroup({
+    showBorder: new FormControl(settings?.showBorder ?? true),
+  });
 
-  return form;
+  (form as any).addControl('widgetDisplay', widgetDisplayForm);
+
+  return form as any as FormGroup<
+    T & { widgetDisplay: typeof widgetDisplayForm }
+  >;
 };

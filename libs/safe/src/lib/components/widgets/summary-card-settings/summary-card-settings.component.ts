@@ -6,16 +6,17 @@ import {
   Input,
   AfterViewInit,
 } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  Validators,
-  FormGroup,
-  FormControl,
-} from '@angular/forms';
+import { Validators, FormGroup, FormControl } from '@angular/forms';
 
 import { get } from 'lodash';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { Apollo } from 'apollo-angular';
+import { Resource } from '../../../models/resource.model';
+import { Layout } from '../../../models/layout.model';
+import { Aggregation } from '../../../models/aggregation.model';
+import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
+import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
+import { MatLegacyTabChangeEvent } from '@angular/material/legacy-tabs';
 
 /** Define max height of summary card */
 const MAX_ROW_SPAN = 4;
@@ -33,32 +34,49 @@ const DEFAULT_CARD_WIDTH = 2;
  * @param value card value, optional
  * @returns card as form group
  */
-export const createCardForm = (value?: any): UntypedFormGroup => {
+const createCardForm = (value?: any) => {
   return new FormGroup({
-    title: new FormControl(get(value, 'title', 'New Card')),
-    isDynamic: new FormControl(value.isDynamic),
-    height: new FormControl(get(value, 'height', DEFAULT_CARD_HEIGHT), [
+    title: new FormControl<string>(get(value, 'title', 'New Card')),
+    height: new FormControl<number>(get(value, 'height', DEFAULT_CARD_HEIGHT), [
       Validators.min(1),
       Validators.max(MAX_ROW_SPAN),
     ]),
-    width: new FormControl(get(value, 'width', DEFAULT_CARD_WIDTH), [
+    width: new FormControl<number>(get(value, 'width', DEFAULT_CARD_WIDTH), [
       Validators.min(1),
       Validators.max(MAX_COL_SPAN),
     ]),
-    isAggregation: new FormControl(get(value, 'isAggregation', true)),
-    resource: new FormControl(get(value, 'resource', null)),
-    layout: new FormControl(get(value, 'layout', null)),
-    aggregation: new FormControl(get(value, 'aggregation', null)),
-    record: new FormControl(get(value, 'record', null)),
-    html: new FormControl(get(value, 'html', null)),
-    showDataSourceLink: new FormControl(
+    resource: new FormControl<string>(get(value, 'resource', null)),
+    layout: new FormControl<string>(get(value, 'layout', null)),
+    aggregation: new FormControl<string>(get(value, 'aggregation', null)),
+    html: new FormControl<string>(get(value, 'html', null)),
+    showDataSourceLink: new FormControl<boolean>(
       get(value, 'showDataSourceLink', false)
     ),
-    availableFields: new FormControl(get(value, 'availableFields', [])),
-    useStyles: new FormControl(get(value, 'useStyles', true)),
-    wholeCardStyles: new FormControl(get(value, 'wholeCardStyles', false)),
+    useStyles: new FormControl<boolean>(get(value, 'useStyles', true)),
+    wholeCardStyles: new FormControl<boolean>(
+      get(value, 'wholeCardStyles', false)
+    ),
   });
 };
+
+/**
+ * Create a summary card form from definition
+ *
+ * @param def Widget definition
+ * @returns Summary card widget form
+ */
+const createSummaryCardForm = (def: any) => {
+  const settings = get(def, 'settings', {});
+
+  const form = new FormGroup({
+    id: new FormControl<number>(def.id),
+    title: new FormControl<string>(get(settings, 'title', '')),
+    card: createCardForm(get(settings, 'card', null)),
+  });
+
+  return extendWidgetForm(form, settings?.widgetDisplay);
+};
+export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
 /**
  * Summary Card Settings component.
@@ -70,7 +88,7 @@ export const createCardForm = (value?: any): UntypedFormGroup => {
 })
 export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
-  tileForm: UntypedFormGroup | undefined;
+  tileForm: SummaryCardFormT | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -79,27 +97,39 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
+  public selectedResource: Resource | null = null;
+  public selectedLayout: Layout | null = null;
+  public selectedAggregation: Aggregation | null = null;
+  public customAggregation: any;
+
+  public fields: any[] = [];
+  public activeTabIndex: number | undefined;
+
   /**
    * Summary Card Settings component.
    *
-   * @param fb Angular Form Builder.
+   * @param apollo Apollo service
+   * @param aggregationService Shared aggregation service
    */
-  constructor(private fb: UntypedFormBuilder) {}
+  constructor(
+    private apollo: Apollo,
+    private aggregationService: SafeAggregationService
+  ) {}
 
   /**
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
-    const form = this.fb.group({
-      id: this.tile.id,
-      title: this.tile.settings.title,
-      isDynamic: get(this.tile, 'settings.isDynamic', false),
-      cards: this.fb.array(
-        get(this.tile, 'settings.cards', []).map((x: any) => createCardForm(x))
-      ),
-    });
-    this.tileForm = extendWidgetForm(form, this.tile.settings?.widgetDisplay);
+    this.tileForm = extendWidgetForm(
+      createSummaryCardForm(this.tile),
+      this.tile.settings?.widgetDisplay
+    );
     this.change.emit(this.tileForm);
+
+    const resourceID = this.tileForm?.get('card.resource')?.value;
+    if (resourceID) {
+      this.getResource(resourceID);
+    }
   }
 
   /**
@@ -109,5 +139,140 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
+  }
+
+  /**
+   * Sets an internal variable with the current tab.
+   *
+   * @param e Change tab event.
+   */
+  handleTabChange(e: MatLegacyTabChangeEvent) {
+    this.activeTabIndex = e.index;
+  }
+
+  /**
+   * Get resource by id, doing graphQL query
+   *
+   * @param id resource id
+   */
+  private getResource(id: string): void {
+    const form = this.tileForm;
+    if (!form) return;
+    const layoutID = form.get('card.layout')?.value;
+    const aggregationID = form.get('card.aggregation')?.value;
+    this.fields = [];
+    this.apollo
+      .query<GetResourceByIdQueryResponse>({
+        query: GET_RESOURCE,
+        variables: {
+          id,
+          layout: layoutID ? [layoutID] : undefined,
+          aggregation: aggregationID ? [aggregationID] : undefined,
+        },
+      })
+      .subscribe((res) => {
+        if (res.errors) {
+          form.get('card.resource')?.patchValue(null);
+          form.get('card.layout')?.patchValue(null);
+          form.get('card.aggregation')?.patchValue(null);
+          this.selectedResource = null;
+          this.selectedLayout = null;
+          this.selectedAggregation = null;
+        } else {
+          this.selectedResource = res.data.resource;
+          if (layoutID) {
+            this.selectedLayout =
+              res.data?.resource.layouts?.edges[0]?.node || null;
+            this.fields = [];
+            get(res, 'data.resource.metadata', []).map((metaField: any) => {
+              get(this.selectedLayout, 'query.fields', []).map((field: any) => {
+                if (field.name === metaField.name) {
+                  const type = metaField.type;
+                  this.fields.push({ ...field, type });
+                }
+              });
+            });
+          }
+          if (aggregationID) {
+            this.selectedAggregation =
+              res.data?.resource.aggregations?.edges[0]?.node || null;
+            this.getCustomAggregation();
+          }
+        }
+      });
+  }
+
+  /**
+   * Gets the custom aggregation
+   * for the selected resource and aggregation.
+   */
+  private getCustomAggregation(): void {
+    if (!this.selectedAggregation || !this.selectedResource?.id) return;
+    this.aggregationService
+      .aggregationDataQuery(
+        this.selectedResource.id,
+        this.selectedAggregation.id || ''
+      )
+      ?.subscribe((res) => {
+        if (res.data?.recordsAggregation) {
+          this.customAggregation = res.data.recordsAggregation;
+          // @TODO: Figure out fields' types from aggregation
+          this.fields = this.customAggregation.items[0]
+            ? Object.keys(this.customAggregation.items[0]).map((f) => ({
+                name: f,
+                editor: 'text',
+              }))
+            : [];
+        }
+      });
+  }
+
+  /**
+   * Updates modified resource
+   *
+   * @param resource the modified resource
+   */
+  handleResourceChange(resource: Resource | null) {
+    this.selectedResource = resource;
+    this.fields = [];
+
+    // clear layout and record
+    this.tileForm?.get('card.layout')?.setValue(null);
+    this.tileForm?.get('card.aggregation')?.setValue(null);
+    this.selectedLayout = null;
+    this.selectedAggregation = null;
+    this.customAggregation = null;
+  }
+
+  /**
+   * Updates modified layout
+   *
+   * @param layout the modified layout
+   */
+  handleLayoutChange(layout: Layout | null) {
+    this.selectedLayout = layout;
+
+    // extract data keys from metadata
+    const fields: any = [];
+    get(this.selectedResource, 'metadata', []).forEach((metaField: any) => {
+      get(this.selectedLayout, 'query.fields', []).forEach((field: any) => {
+        if (field.name === metaField.name) {
+          const type = metaField.type;
+          fields.push({ ...field, type });
+        }
+      });
+    });
+
+    this.fields = fields;
+  }
+
+  /**
+   * Updates modified aggregation
+   *
+   * @param aggregation the modified aggregation
+   */
+  handleAggregationChange(aggregation: Aggregation | null) {
+    this.selectedAggregation = aggregation;
+    this.getCustomAggregation();
   }
 }
