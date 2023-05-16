@@ -33,7 +33,7 @@ import {
   IconModule,
   Variant,
   ButtonModule,
-  Category
+  Category,
 } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
