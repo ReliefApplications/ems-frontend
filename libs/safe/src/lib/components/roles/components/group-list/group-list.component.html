@@ -4,11 +4,11 @@
     <!-- Default filter -->
     <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
       <!-- Search text filter -->
-      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-        <ui-icon matPrefix [icon]="'search'"></ui-icon>
-        <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
-        <input matInput (keyup)="applyFilter($event)" type="search" />
-      </mat-form-field>
+      <div uiFormFieldDirective [outline]="false" class="p-0">
+        <ui-icon uiPrefix [icon]="'search'"></ui-icon>
+        <label>{{ 'common.placeholder.search' | translate }}</label>
+        <input (keyup)="applyFilter($event)" type="search" />
+      </div>
     </div>
   </div>
   <!-- Actions -->
