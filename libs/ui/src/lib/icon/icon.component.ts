@@ -16,6 +16,7 @@ export class IconComponent {
   @Input() category: Category = Category.PRIMARY;
   @Input() variant: Variant = Variant.DEFAULT;
   @Input() size = 24;
+  @Input() fontSet = false;
 
   iconVariant = Variant;
   iconCategory = Category;

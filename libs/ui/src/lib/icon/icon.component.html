@@ -1,4 +1,4 @@
-<ng-container *ngIf="icon.endsWith('_outline'); else angularMaterialIconTmpl">
+<ng-container *ngIf="true; else angularMaterialIconTmpl">
   <span
     [ngClass]="{
       'icon-primary':
@@ -17,7 +17,7 @@
     [style.width]="fontSize"
     [style.height]="fontSize"
     [style.line-height]="fontSize"
-    class="material-icons-outlined inline-flex align-middle"
+    class="material-icons-outlined material-symbols-outlined inline-flex align-middle"
   >
     {{ icon }}
   </span>

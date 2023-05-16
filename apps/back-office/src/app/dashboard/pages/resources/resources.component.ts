@@ -24,6 +24,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Default number of resources that will be shown at once.
@@ -64,6 +65,10 @@ export class ResourcesComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * ResourcesComponent constructor.

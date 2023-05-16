@@ -10,6 +10,7 @@ import { SafeAggregationService } from '../../../services/aggregation/aggregatio
 import { get } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Aggregation table component.
@@ -30,6 +31,10 @@ export class AggregationTableComponent
   aggregations: Layout[] = [];
   allAggregations: Layout[] = [];
   columns: string[] = ['name', 'createdAt', '_actions'];
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * Aggregation table component.

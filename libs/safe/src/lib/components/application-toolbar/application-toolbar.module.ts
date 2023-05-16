@@ -9,6 +9,7 @@ import { RouterModule } from '@angular/router';
 import { SafeAccessModule } from '../access/access.module';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Application toolbar module.
@@ -25,6 +26,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     MatListModule,
     RouterModule,
     SafeIconModule,
+    ButtonModule,
   ],
   exports: [SafeApplicationToolbarComponent],
 })

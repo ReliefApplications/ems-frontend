@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormComponent } from './form.component';
 import { SafeButtonModule, SafeFormModule } from '@oort-front/safe';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Form module. */
 @NgModule({
@@ -12,6 +13,7 @@ import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@ang
     SafeButtonModule,
     SafeFormModule,
     MatProgressSpinnerModule,
+    ButtonModule,
   ],
   exports: [FormComponent],
 })

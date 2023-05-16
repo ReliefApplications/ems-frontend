@@ -29,13 +29,13 @@
       <ng-container matColumnDef="_actions" [stickyEnd]="true">
         <mat-header-cell *matHeaderCellDef class="w-16"></mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <safe-button
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
             [matMenuTriggerFor]="resMenu"
             (click)="$event.stopPropagation()"
           >
-          </safe-button>
+          </ui-button>
           <mat-menu #resMenu="matMenu">
             <button mat-menu-item (click)="onEditAggregation(element)">
               <mat-icon>edit</mat-icon>
@@ -59,12 +59,12 @@
   </div>
 </div>
 <div class="flex mt-4 justify-center">
-  <safe-button
+  <ui-button
     class="max-w-xs grow"
-    category="tertiary"
-    variant="primary"
+    [category]="btnCategory.TERTIARY"
+    [variant]="btnVariant.PRIMARY"
     (click)="onAdd()"
     [disabled]="!resource && !form"
-    >{{ 'components.aggregation.add.title' | translate }}</safe-button
+    >{{ 'components.aggregation.add.title' | translate }}</ui-button
   >
 </div>

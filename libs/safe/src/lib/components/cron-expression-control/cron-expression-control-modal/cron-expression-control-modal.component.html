@@ -8,14 +8,14 @@
   <cron-editor [formControl]="control" [options]="cronOptions"></cron-editor>
   <!-- Modal actions -->
   <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
-    <safe-button
-      category="secondary"
-      variant="primary"
+    <ui-button mat-dialog-close>{{ 'common.close' | translate }}</ui-button>
+    <ui-button
+      [category]="btnCategory.SECONDARY"
+      [variant]="btnVariant.PRIMARY"
       [mat-dialog-close]="control.value"
       [disabled]="!control.valid"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

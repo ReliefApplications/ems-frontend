@@ -13,6 +13,8 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
+import { ButtonModule } from '@oort-front/ui';
+
 /**
  * SafeAccessModule is a class used to manage all the modules and components related to the access properties.
  */
@@ -32,6 +34,7 @@ import { SafeModalModule } from '../ui/modal/modal.module';
     SafeButtonModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
   ],
   exports: [SafeAccessComponent],
 })

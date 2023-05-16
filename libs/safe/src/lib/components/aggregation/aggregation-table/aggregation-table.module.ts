@@ -8,6 +8,7 @@ import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy
 import { TranslateModule } from '@ngx-translate/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeDateModule } from '../../../pipes/date/date.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Module for aggregation table component */
 @NgModule({
@@ -21,6 +22,7 @@ import { SafeDateModule } from '../../../pipes/date/date.module';
     DragDropModule,
     SafeButtonModule,
     SafeDateModule,
+    ButtonModule,
   ],
   exports: [AggregationTableComponent],
 })

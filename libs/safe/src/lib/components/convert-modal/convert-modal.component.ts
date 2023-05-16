@@ -27,6 +27,7 @@ import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-l
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /**
  * An interface to define the structure of the data displayed in the modal
@@ -55,6 +56,7 @@ interface DialogData {
     MatProgressSpinnerModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'safe-convert-modal',
   templateUrl: './convert-modal.component.html',
@@ -74,6 +76,11 @@ export class SafeConvertModalComponent
 
   // === LOAD DATA ===
   public loading = true;
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
+  
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.

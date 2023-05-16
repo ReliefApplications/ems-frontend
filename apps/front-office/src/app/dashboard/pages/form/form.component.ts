@@ -20,6 +20,7 @@ import {
 import { Subscription } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Form page.
@@ -53,6 +54,10 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
   public step?: Step;
   /** Tells if the form is within a workflow */
   public isStep = false;
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * Form page.

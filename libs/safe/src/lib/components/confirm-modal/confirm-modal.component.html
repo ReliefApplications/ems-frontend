@@ -12,14 +12,14 @@
     >
       {{ confirmText }}
     </button> -->
-    <safe-button mat-dialog-close>{{ cancelText }}</safe-button>
-    <safe-button
-      category="secondary"
-      variant="primary"
+    <ui-button mat-dialog-close>{{ cancelText }}</ui-button>
+    <ui-button
+      [category]="btnCategory.SECONDARY"
+      [variant]="btnVariant.PRIMARY"
       [mat-dialog-close]="true"
       cdkFocusInitial
     >
       {{ confirmText }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

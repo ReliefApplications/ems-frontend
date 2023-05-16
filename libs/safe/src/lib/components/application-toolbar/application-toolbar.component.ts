@@ -8,6 +8,7 @@ import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Toolbar component visible when editing application.
@@ -33,6 +34,10 @@ export class SafeApplicationToolbarComponent
   public lockedByUser: boolean | undefined = undefined;
   public canPublish = false;
   public user: any;
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * Toolbar component visible when editing application

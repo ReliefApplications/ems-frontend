@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /**
  * This interface describes the structure of the data to be displayed in the modal
@@ -41,6 +41,10 @@ export class SafeConfirmModalComponent {
   public cancelText: string;
   public confirmText: string;
   public confirmColor: string;
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is

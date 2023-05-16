@@ -8,6 +8,8 @@ import {
   SafeSkeletonModule,
   SafeWidgetGridModule,
 } from '@oort-front/safe';
+import { ButtonModule } from '@oort-front/ui';
+
 /**
  * Dashboard page.
  * Dashboard is one of the available content types of application pages.
@@ -21,6 +23,7 @@ import {
     FullScreenModule,
     SafeSkeletonModule,
     SafeButtonModule,
+    ButtonModule,
   ],
   exports: [DashboardComponent],
 })

@@ -12,6 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonModule } from '../../directives/skeleton/skeleton.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * SafeApplicationsSummaryModule is a class used to manage all the modules and components
@@ -34,6 +35,7 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
     SafeSkeletonModule,
     SafeDateModule,
     SafeDividerModule,
+    ButtonModule,
   ],
   exports: [
     SafeApplicationsSummaryComponent,

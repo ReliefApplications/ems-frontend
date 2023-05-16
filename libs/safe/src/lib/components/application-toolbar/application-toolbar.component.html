@@ -5,13 +5,13 @@
       {{ title }}
     </h2>
     <!-- Settings -->
-    <safe-button
+    <ui-button
       *ngIf="settings.length > 0"
       [isIcon]="true"
       icon="tune"
-      variant="grey"
+      [variant]="btnVariant.GREY"
       [matMenuTriggerFor]="settingsMenu"
-    ></safe-button>
+    ></ui-button>
     <!-- Access -->
     <safe-access
       *ngIf="title && canUpdate"
@@ -21,23 +21,23 @@
     ></safe-access>
   </div>
   <div class="flex flex-row gap-2 items-center" *ngIf="showActions">
-    <safe-button
+    <ui-button
       *ngIf="application?.canUpdate && locked"
       [isIcon]="true"
       icon="lock"
-      [variant]="lockedByUser ? 'primary' : 'danger'"
+      [variant]="lockedByUser ? btnVariant.PRIMARY : btnVariant.DANGER"
       (click)="onUnlock()"
     >
-    </safe-button>
-    <safe-button variant="danger" (click)="onClose()">{{
+    </ui-button>
+    <ui-button [variant]="btnVariant.DANGER" (click)="onClose()">{{
       'common.close' | translate
-    }}</safe-button>
-    <safe-button
-      category="secondary"
-      variant="success"
+    }}</ui-button>
+    <ui-button
+      [category]="btnCategory.SECONDARY"
+      [variant]="btnVariant.SUCCESS"
       (click)="onPublish()"
       [disabled]="!canPublish || this.application?.status === 'active'"
-      >{{ 'common.publish' | translate }}</safe-button
+      >{{ 'common.publish' | translate }}</ui-button
     >
   </div>
 </div>

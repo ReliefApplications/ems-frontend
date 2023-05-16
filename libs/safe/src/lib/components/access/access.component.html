@@ -5,8 +5,8 @@
   </button>
 </ng-container>
 <ng-container *ngIf="!menuItem">
-  <safe-button
-    variant="grey"
+  <ui-button
+    [variant]="btnVariant.GREY"
     [isIcon]="true"
     icon="admin_panel_settings"
     matTooltipPosition="above"
@@ -15,5 +15,5 @@
     "
     (click)="onClick()"
   >
-  </safe-button>
+  </ui-button>
 </ng-container>

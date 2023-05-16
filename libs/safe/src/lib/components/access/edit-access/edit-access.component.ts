@@ -9,6 +9,7 @@ import { GetRolesQueryResponse, GET_ROLES } from './graphql/queries';
 import { Role } from '../../../models/user.model';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Interface defining the structure of the data
@@ -36,6 +37,10 @@ export class SafeEditAccessComponent
 
   // === REACTIVE FORM ===
   accessForm: UntypedFormGroup = new UntypedFormGroup({});
+
+  // === BUTTON ===
+  public btnVariant = Variant;
+  public btnCategory = Category;
 
   /**
    * The constructor function is used to create a new instance of the SafeEditAccessComponent class
