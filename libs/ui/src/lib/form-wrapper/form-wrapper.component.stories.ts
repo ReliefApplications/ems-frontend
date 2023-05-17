@@ -4,7 +4,7 @@ import { FormWrapperModule } from './form-wrapper.module';
 import { IconModule } from '../icon/icon.module';
 import { SpinnerModule } from '../spinner/spinner.module';
 import { SelectMenuModule } from '../select-menu/select-menu.module';
-import { SelectOptionModule } from '../select-menu/select-option/select-option.module';
+import { SelectOptionModule } from '../select-menu/components/select-option.module';
 
 export default {
   title: 'Form Wrapper',

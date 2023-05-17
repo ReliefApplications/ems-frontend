@@ -217,11 +217,17 @@ export class FormWrapperDirective implements AfterContentInit, AfterViewInit {
     // Do the same with selectMenu
     if (this.currentSelectElement !== null) {
       //Get select-menu button in order to remove styling elements
-      const selectButton =
-        this.currentSelectElement.childNodes[0].childNodes[0];
+      const selectButton = this.currentSelectElement.querySelector('button');
       for (const cl of this.selectButtonRemove) {
         this.renderer.removeClass(selectButton, cl);
       }
+      // Class change in order to make the select list display full width and aligned with the form wrapper element
+      const listWrapperContainer =
+        this.currentSelectElement.querySelector('div');
+      this.renderer.removeClass(listWrapperContainer, 'relative');
+      const selectList =
+        this.currentSelectElement.querySelector('#listWrapper');
+      this.renderer.addClass(selectList, 'left-0');
       // Add related classes to select menu element
       if (!this.outline) {
         for (const cl of this.selectClassesNoOutline) {
