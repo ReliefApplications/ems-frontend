@@ -12,6 +12,7 @@ import {
   GetCustomNotificationsQueryResponse,
   GET_CUSTOM_NOTIFICATIONS,
 } from './graphql/queries';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -52,13 +53,15 @@ export class NotificationsComponent implements OnInit, OnDestroy {
    * @param confirmService Shared confirmation service
    * @param apollo Apollo service
    * @param applicationService Shared application service
+   * @param snackBar Shared snackbar service
    */
   constructor(
     public dialog: MatDialog,
     private translate: TranslateService,
     private confirmService: SafeConfirmService,
     private apollo: Apollo,
-    private applicationService: SafeApplicationService
+    private applicationService: SafeApplicationService,
+    private snackBar: SafeSnackBarService
   ) {}
 
   ngOnInit(): void {
@@ -128,6 +131,12 @@ export class NotificationsComponent implements OnInit, OnDestroy {
             this.notificationsQuery.refetch();
           }
         );
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectUpdated', {
+            value: value.name,
+            type: this.translate.instant('common.customNotification.one'),
+          })
+        );
       }
     });
   }
@@ -158,6 +167,11 @@ export class NotificationsComponent implements OnInit, OnDestroy {
             this.notificationsQuery.refetch();
           }
         );
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectDeleted', {
+            value: notification.name,
+          })
+        );
       }
     });
   }
@@ -176,6 +190,12 @@ export class NotificationsComponent implements OnInit, OnDestroy {
         this.applicationService.addCustomNotification(value, () => {
           this.notificationsQuery.refetch();
         });
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectCreated', {
+            value: value.name,
+            type: this.translate.instant('common.customNotification.one'),
+          })
+        );
       }
     });
   }
