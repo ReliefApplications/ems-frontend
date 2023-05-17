@@ -6,7 +6,6 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatIconModule } from '@angular/material/icon';
 import { MenuModule } from '@oort-front/ui';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-list';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TooltipModule } from '@oort-front/ui';
@@ -36,7 +35,6 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     MatIconModule,
     MenuModule,
     MatSidenavModule,
-    MatListModule,
     DragDropModule,
     TooltipModule,
     DividerModule,

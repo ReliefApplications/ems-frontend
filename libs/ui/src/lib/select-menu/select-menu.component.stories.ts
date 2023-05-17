@@ -2,9 +2,8 @@ import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SelectMenuComponent } from './select-menu.component';
-import { CdkListboxModule } from '@angular/cdk/listbox';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SelectOptionModule } from './select-option/select-option.module';
+import { SelectOptionModule } from './components/select-option.module';
 
 export default {
   title: 'Select Menu',
@@ -37,7 +36,6 @@ export default {
       imports: [
         CommonModule,
         ReactiveFormsModule,
-        CdkListboxModule,
         BrowserAnimationsModule,
         SelectOptionModule,
       ],
@@ -77,6 +75,7 @@ const closeEvent = () => {
  */
 const selectEvent = (event: any) => {
   console.log('Select Event: ', event);
+  console.log('Form control: ', formGroup.get('selectMenu')?.value);
 };
 
 /** Select with no custom template */
@@ -118,9 +117,6 @@ const customTriggerSelectTemplate = `<ui-select-menu
 const selectMenuTemplate = `<div [formGroup]="formGroup" class="py-5">
 ${selectTemplate}
 </div>
-<br>
-<p>value: {{formGroup.get('selectMenu').value}}</p>
-<p>touched: {{formGroup.get('selectMenu').touched}}</p>
 `;
 
 /** Template used to render the stories (using a formGroup with pre-selected values) */
@@ -141,9 +137,6 @@ const formControlSelectTemplate = `
     </ui-select-option>
   </ui-select-menu>
 </div>
-<br>
-<p>value: {{formGroup.get('selectMenu').value}}</p>
-<p>touched: {{formGroup.get('selectMenu').touched}}</p>
 `;
 
 /**
@@ -152,9 +145,6 @@ const formControlSelectTemplate = `
 const singleSelectMenuTemplateWithTrigger = `<div [formGroup]="formGroup" class="py-5">
 ${customTriggerSelectTemplate}
 </div>
-<br>
-<p>value: {{formGroup.get('selectMenu').value}}</p>
-<p>touched: {{formGroup.get('selectMenu').touched}}</p>
 `;
 
 /** Form group to test select-menu control value accessor */
@@ -171,8 +161,7 @@ const formGroup = new FormGroup({
 const TemplateStandaloneSelection: StoryFn<SelectMenuComponent> = (
   args: SelectMenuComponent
 ) => {
-  args.multiselect = false;
-  args.disabled = false;
+  formGroup.get('selectMenu')?.setValue([]);
   return {
     component: SelectMenuComponent,
     template: selectMenuTemplate,
@@ -188,6 +177,10 @@ const TemplateStandaloneSelection: StoryFn<SelectMenuComponent> = (
 };
 /** Actual export of standalone select story */
 export const StandaloneSelection = TemplateStandaloneSelection.bind({});
+StandaloneSelection.args = {
+  multiselect: false,
+  disabled: false,
+};
 
 /**
  * Template for standalone selection default value select menu
@@ -198,8 +191,6 @@ export const StandaloneSelection = TemplateStandaloneSelection.bind({});
 const TemplateStandaloneSelectionDefaultValue: StoryFn<SelectMenuComponent> = (
   args: SelectMenuComponent
 ) => {
-  args.multiselect = false;
-  args.disabled = false;
   formGroup.get('selectMenu')?.setValue([options[0]]);
   return {
     component: SelectMenuComponent,
@@ -217,6 +208,10 @@ const TemplateStandaloneSelectionDefaultValue: StoryFn<SelectMenuComponent> = (
 /** Actual export of standalone select story */
 export const StandaloneSelectionDefaultValue =
   TemplateStandaloneSelectionDefaultValue.bind({});
+StandaloneSelectionDefaultValue.args = {
+  multiselect: false,
+  disabled: false,
+};
 
 /**
  * Template for multi selection select menu
@@ -228,7 +223,6 @@ const TemplateMultiSelection: StoryFn<SelectMenuComponent> = (
   args: SelectMenuComponent
 ) => {
   args.multiselect = true;
-  args.disabled = false;
   formGroup.get('selectMenu')?.setValue([options[0], options[1]]);
   return {
     component: SelectMenuComponent,
@@ -245,6 +239,10 @@ const TemplateMultiSelection: StoryFn<SelectMenuComponent> = (
 };
 /** Actual export of multi select story */
 export const MultiSelection = TemplateMultiSelection.bind({});
+MultiSelection.args = {
+  multiselect: true,
+  disabled: false,
+};
 
 /**
  * Template for disabled selection select menu
@@ -271,6 +269,9 @@ const TemplateDisabledSelection: StoryFn<SelectMenuComponent> = (
 };
 /** Actual export of disabled select story */
 export const DisabledSelection = TemplateDisabledSelection.bind({});
+MultiSelection.args = {
+  disabled: true,
+};
 
 /**
  * Template for single select menu using a ngTemplate as input
@@ -281,8 +282,6 @@ export const DisabledSelection = TemplateDisabledSelection.bind({});
 const TemplateTemplateRefSelection: StoryFn<SelectMenuComponent> = (
   args: SelectMenuComponent
 ) => {
-  args.multiselect = false;
-  args.disabled = false;
   formGroup.get('selectMenu')?.setValue([options[0]]);
   return {
     component: SelectMenuComponent,
@@ -299,3 +298,7 @@ const TemplateTemplateRefSelection: StoryFn<SelectMenuComponent> = (
 };
 /** Actual export of select story using ngTemplate as input */
 export const TemplateRefSelection = TemplateTemplateRefSelection.bind({});
+TemplateRefSelection.args = {
+  multiselect: false,
+  disabled: false,
+};
