@@ -167,7 +167,13 @@ export class ReferenceDataComponent
 
           // Set the default query if the type is GraphQL
           if (this.type === referenceDataType.graphql)
-            form.get('query')?.setValue(DEFAULT_QUERY);
+            form
+              .get('query')
+              ?.setValue(
+                `# ${this.translateService.instant(
+                  'pages.referenceData.tooltip.graphQLFilter'
+                )}\n\n${DEFAULT_QUERY}`
+              );
         });
 
       form

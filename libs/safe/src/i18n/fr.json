@@ -1841,7 +1841,7 @@
 			},
 			"queryName": "Nom de la requête",
 			"tooltip": {
-				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés. Vous pouvez utiliser le code {{lastUpdate}} pour insérer dynamiquement la date de la dernière mise à jour des choix dans un format compatible SQL.",
+				"graphQLFilter": "Vous pouvez utiliser {{lastUpdate}} pour obtenir dynamiquement la dernière date de récupération au format SQL.",
 				"path": "Utilise la syntaxe JSONPath pour extraire les éléments de la réponse JSON. Exemples: $.data[*].name, $.data..countries, $.data.countries.*"
 			},
 			"type": "Type",
