@@ -37,14 +37,16 @@
     </span>
   </button>
   <!-- Listbox showing when focus on the component, change in function of inputs -->
-  <ul
-    *ngIf="listBoxFocused"
-    class="absolute z-10 mt-1 opacity-0 transition ease-in-out duration-100 max-h-36 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-    [ngClass]="{
-      'opacity-100': listBoxFocused
-    }"
-  >
-    <!-- Elements of the list -->
-    <ng-content></ng-content>
-  </ul>
+  <div id="listWrapper" class="absolute z-10 w-full mt-1">
+    <ul
+      *ngIf="listBoxFocused"
+      class="opacity-0 transition shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm max-h-36 ease-in-out duration-100 w-full overflow-auto rounded-md bg-white py-1 text-base"
+      [ngClass]="{
+        'opacity-100': listBoxFocused
+      }"
+    >
+      <!-- Elements of the list -->
+      <ng-content></ng-content>
+    </ul>
+  </div>
 </div>
