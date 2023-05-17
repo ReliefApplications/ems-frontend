@@ -45,6 +45,11 @@ class LegendControl extends L.Control {
       container
     );
     container.innerHTML = this.innerHtml;
+    if (container.innerHTML) {
+      container.hidden = false;
+    } else {
+      container.hidden = true;
+    }
 
     (map as any).legendControl = this;
     return container;
@@ -54,7 +59,7 @@ class LegendControl extends L.Control {
   get innerHtml() {
     if (this.layers) {
       const legend = document.createElement('div');
-      legend.className = 'flex flex-col gap-1';
+      legend.className = 'flex flex-col gap-2';
 
       for (const layer in this.layers) {
         const legendTxt = get(this.layers, layer);
@@ -65,8 +70,11 @@ class LegendControl extends L.Control {
           legend.appendChild(div);
         }
       }
-
-      return legend.outerHTML;
+      if (legend.innerHTML) {
+        return legend.outerHTML;
+      } else {
+        return '';
+      }
     } else {
       return '';
     }
@@ -102,6 +110,11 @@ class LegendControl extends L.Control {
       return;
     }
     container.innerHTML = this.innerHtml;
+    if (container.innerHTML) {
+      container.hidden = false;
+    } else {
+      container.hidden = true;
+    }
   }
 }
 
