@@ -22,6 +22,7 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-mapping/series-mapping.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Main tab of chart settings modal.
@@ -52,6 +53,7 @@ import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-
     SafePaletteControlModule,
     SafeGraphQLSelectModule,
     SafeSeriesMappingModule,
+    ButtonModule,
   ],
   exports: [TabMainComponent],
 })

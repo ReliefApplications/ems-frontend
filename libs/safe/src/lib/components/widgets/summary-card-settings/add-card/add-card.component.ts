@@ -7,6 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * The component is used on a card creation in the summary-card widget
@@ -22,6 +23,10 @@ export class SafeAddCardComponent implements OnInit {
   private templatesUrl = '';
   public templates: any = [];
   public searchControl = new UntypedFormControl('');
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Constructor for safe-add-card constructor

@@ -7,12 +7,12 @@
     <ng-content></ng-content>
   </div>
 
-  <safe-button
+  <ui-button
     class="self-center"
     *ngIf="closable"
-    [variant]="variant"
+    [variant]="btnVariant.DEFAULT"
     [isIcon]="true"
     icon="close"
     (click)="onClose()"
-  ></safe-button>
+  ></ui-button>
 </div>

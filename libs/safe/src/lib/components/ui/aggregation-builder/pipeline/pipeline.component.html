@@ -69,25 +69,25 @@
       </ng-container>
     </ng-container>
     <mat-action-row>
-      <safe-button
+      <ui-button
         [isIcon]="true"
         icon="delete"
-        variant="danger"
+        [variant]="variant.DANGER"
         (click)="deleteStage(index)"
-      ></safe-button>
+      ></ui-button>
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
 <div>
-  <safe-button
+  <ui-button
     icon="add"
-    category="primary"
+    [category]="category.PRIMARY"
     [uiMenuTriggerFor]="menu"
     class="!w-auto"
     (click)="$event.stopPropagation()"
   >
     {{ 'components.aggregationBuilder.addStage' | translate }}
-  </safe-button>
+  </ui-button>
   <ui-menu #menu>
     <button
       *ngFor="let stage of stageList"

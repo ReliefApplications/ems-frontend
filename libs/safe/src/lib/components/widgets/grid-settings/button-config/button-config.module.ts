@@ -13,6 +13,7 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
 import { TooltipModule } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Button config component for grid widget.
@@ -34,6 +35,7 @@ import { TooltipModule } from '@oort-front/ui';
     SafeButtonModule,
     SafeIconModule,
     SafeQueryBuilderModule,
+    ButtonModule,
   ],
   exports: [ButtonConfigComponent],
 })

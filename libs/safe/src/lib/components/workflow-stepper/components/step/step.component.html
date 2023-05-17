@@ -5,28 +5,28 @@
   [ngClass]="{ active: active }"
 >
   <div class="step-actions">
-    <safe-button
+    <ui-button
       *ngIf="canUpdate"
       [isIcon]="true"
       icon="delete_outline"
-      category="primary"
-      variant="danger"
+      [category]="category.PRIMARY"
+      [variant]="variant.DANGER"
       [uiTooltip]="
         'common.deleteObject'
           | translate : { name: 'common.step.one' | translate }
       "
       (click)="onDelete($event)"
     >
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       *ngIf="canUpdate"
       [isIcon]="true"
       icon="content_copy"
-      category="primary"
-      variant="primary"
+      [category]="category.PRIMARY"
+      [variant]="variant.PRIMARY"
       [disabled]="true"
     >
-    </safe-button>
+    </ui-button>
   </div>
   <img class="h-9 mt-5" [src]="type?.img" />
   <span>{{ step.name | titlecase }}</span>

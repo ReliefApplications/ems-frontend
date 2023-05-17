@@ -42,6 +42,7 @@ import { SafeDisplayTabModule } from './display-tab/display.module';
 import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
 import { SafePreviewTabModule } from './preview-tab/preview.module';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /**
  * Card modal component.
@@ -65,6 +66,7 @@ import { SafeModalModule } from '../../../ui/modal/modal.module';
     SafeTextEditorTabModule,
     SafePreviewTabModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'safe-card-modal',
   templateUrl: './card-modal.component.html',
@@ -91,6 +93,10 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   // === AGGREGATION DATA ===
   public selectedAggregation: Aggregation | null = null;
   public customAggregation: any;
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Card modal component.

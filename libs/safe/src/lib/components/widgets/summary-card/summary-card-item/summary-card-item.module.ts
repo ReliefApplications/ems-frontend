@@ -5,6 +5,7 @@ import { SummaryCardItemContentModule } from '../summary-card-item-content/summa
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Single item of summary card.
@@ -17,6 +18,7 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     SafeButtonModule,
     TranslateModule,
     IndicatorsModule,
+    ButtonModule,
   ],
   exports: [SummaryCardItemComponent],
 })

@@ -11,6 +11,7 @@ import { MatLegacySliderModule as MatSliderModule } from '@angular/material/lega
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MapClorophletDivisionModule } from '../map-clorophlet-division/map-clorophlet-division.module';
 import { SafeModalModule } from '../../../../ui/modal/modal.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Single Clorophlet Configuration in Map Settings Module.
@@ -30,6 +31,7 @@ import { SafeModalModule } from '../../../../ui/modal/modal.module';
     MatSelectModule,
     MapClorophletDivisionModule,
     SafeModalModule,
+    ButtonModule,
   ],
   exports: [MapClorophletComponent],
 })

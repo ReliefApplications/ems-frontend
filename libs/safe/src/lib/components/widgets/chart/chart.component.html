@@ -4,15 +4,15 @@
   }}</span>
 </kendo-tilelayout-item-header>
 <ng-container *ngIf="!hasError && (series$ | async) as series">
-  <safe-button
+  <ui-button
     *ngIf="export"
     [isIcon]="true"
     icon="get_app"
     class="absolute bottom-0 right-0 z-10"
-    variant="grey"
+    [variant]="variant.GREY"
     (click)="onExport()"
   >
-  </safe-button>
+  </ui-button>
   <div class="group flex-1">
     <safe-line-chart
       #chartWrapper

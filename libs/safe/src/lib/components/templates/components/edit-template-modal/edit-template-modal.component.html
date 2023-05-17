@@ -37,16 +37,16 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+    <ui-button mat-dialog-close>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
-      category="secondary"
-      variant="primary"
+    </ui-button>
+    <ui-button
+      [category]="category.SECONDARY"
+      [variant]="variant.PRIMARY"
       [mat-dialog-close]="form.value"
       [disabled]="!form.valid"
     >
       {{ (data ? 'common.update' : 'common.create') | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

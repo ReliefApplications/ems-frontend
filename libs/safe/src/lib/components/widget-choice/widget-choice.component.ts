@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IWidgetType } from '../../models/dashboard.model';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Component for widget choice
@@ -20,6 +21,10 @@ export class SafeWidgetChoiceComponent {
   @Output() add: EventEmitter<string> = new EventEmitter();
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter();
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Emit an add event on selection

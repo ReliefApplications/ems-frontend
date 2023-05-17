@@ -6,6 +6,7 @@ import { Channel } from '../../../../models/channel.model';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { MatLegacyTabGroup as MatTabGroup } from '@angular/material/legacy-tabs';
 import { BehaviorSubject } from 'rxjs';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Buttons tab of grid widget configuration modal.
@@ -27,6 +28,10 @@ export class TabButtonsComponent implements OnInit {
 
   TAB_ID_NAME = 'button-';
   tabIds$ = new BehaviorSubject<string[]>([]);
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   ngOnInit(): void {
     this.recalculateUniqIdsForDragDrop();

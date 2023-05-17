@@ -24,6 +24,7 @@ import { SafeChartModule } from '../../chart/chart.module';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { SeriesSettingsModule } from '../series-settings/series-settings.module';
 import { TooltipModule, DividerModule } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Display tab of chart settings modal.
@@ -57,6 +58,7 @@ import { TooltipModule, DividerModule } from '@oort-front/ui';
     SeriesSettingsModule,
     TooltipModule,
     DividerModule,
+    ButtonModule,
   ],
   exports: [TabDisplayComponent],
 })

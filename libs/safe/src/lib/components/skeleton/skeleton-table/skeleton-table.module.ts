@@ -11,7 +11,7 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { TranslateModule } from '@ngx-translate/core';
-import { CheckboxModule } from '@oort-front/ui';
+import { CheckboxModule, ButtonModule } from '@oort-front/ui';
 
 /** Skeleton table module */
 @NgModule({
@@ -29,6 +29,7 @@ import { CheckboxModule } from '@oort-front/ui';
     ButtonsModule,
     TranslateModule,
     CheckboxModule,
+    ButtonModule,
   ],
   exports: [SafeSkeletonTableComponent],
 })

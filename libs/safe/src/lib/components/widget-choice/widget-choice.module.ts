@@ -6,6 +6,7 @@ import { TooltipModule } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Module for widget choice component */
 @NgModule({
@@ -17,6 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TooltipModule,
     DragDropModule,
     SafeButtonModule,
+    ButtonModule,
   ],
   exports: [SafeWidgetChoiceComponent],
 })

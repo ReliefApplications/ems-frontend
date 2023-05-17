@@ -15,13 +15,13 @@
         [multiple]="false"
       >
       </kendo-upload>
-      <safe-button
+      <ui-button
         (click)="onDownload()"
-        variant="primary"
+        [variant]="variant.PRIMARY"
         icon="file_download"
       >
         {{ 'common.downloadTemplate' | translate }}
-      </safe-button>
+      </ui-button>
     </div>
     <kendo-grid
       [data]="gridData"
@@ -105,17 +105,17 @@
     </kendo-grid>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">
+    <ui-button (click)="onClose()">
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
-      category="secondary"
-      variant="primary"
+    </ui-button>
+    <ui-button
+      [category]="category.SECONDARY"
+      [variant]="variant.PRIMARY"
       (click)="onSubmit()"
       cdkFocusInitial
       [disabled]="gridData.data.length === 0"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

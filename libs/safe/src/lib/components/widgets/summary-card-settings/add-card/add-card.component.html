@@ -64,20 +64,20 @@
       </ng-container>
     </div>
     <mat-divider></mat-divider>
-    <safe-button
+    <ui-button
       class="!w-auto"
-      variant="primary"
-      category="secondary"
+      [variant]="variant.PRIMARY"
+      [category]="category.SECONDARY"
       (click)="onCreate()"
     >
       {{
         'components.widget.settings.summaryCard.create.choice.blank' | translate
-      }}</safe-button
+      }}</ui-button
     >
   </mat-dialog-content>
   <div mat-dialog-actions class="mat-dialog-actions" align="end">
-    <safe-button mat-dialog-close>
+    <ui-button mat-dialog-close>
       {{ 'common.close' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

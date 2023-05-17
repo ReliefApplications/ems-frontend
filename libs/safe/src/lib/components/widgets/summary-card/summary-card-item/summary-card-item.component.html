@@ -11,14 +11,14 @@
     <!-- Actions -->
     <div class="floating-button">
       <!-- Data source button -->
-      <safe-button
-        variant="primary"
+      <ui-button
+        [variant]="variant.PRIMARY"
         icon="open_in_new"
         (click)="openDataSource()"
         *ngIf="card.showDataSourceLink"
       >
         {{ 'components.widget.summaryCard.dataSource' | translate }}
-      </safe-button>
+      </ui-button>
     </div>
   </div>
   <!-- HTML content -->

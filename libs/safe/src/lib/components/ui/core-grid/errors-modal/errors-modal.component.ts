@@ -8,6 +8,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SafeModalModule } from '../../modal/modal.module';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /** Model for the dialog data */
 interface DialogData {
@@ -27,6 +28,7 @@ interface DialogData {
     TranslateModule,
     MatTableModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'safe-errors-modal',
   templateUrl: './errors-modal.component.html',
@@ -34,6 +36,10 @@ interface DialogData {
 })
 export class SafeErrorsModalComponent {
   public displayedColumns = ['question', 'errors'];
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Constructor of the component

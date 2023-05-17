@@ -14,6 +14,7 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 import { takeUntil } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Default file name for chart exports
@@ -47,6 +48,10 @@ export class SafeChartComponent
   @Input() header = true;
   @Input() export = true;
   @Input() settings: any = null;
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Get filename from the date and widget title

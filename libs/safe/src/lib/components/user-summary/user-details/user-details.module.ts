@@ -7,6 +7,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * User details module.
@@ -22,6 +23,7 @@ import { AbilityModule } from '@casl/angular';
     MatInputModule,
     SafeButtonModule,
     AbilityModule,
+    ButtonModule,
   ],
   exports: [UserDetailsComponent],
 })

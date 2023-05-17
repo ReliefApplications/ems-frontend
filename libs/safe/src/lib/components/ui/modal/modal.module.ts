@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeModalComponent } from './modal.component';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { TooltipModule } from '@oort-front/ui';
+import { TooltipModule, ButtonModule } from '@oort-front/ui';
 import { SafeButtonModule } from '../button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeIconModule } from '../icon/icon.module';
@@ -19,6 +19,7 @@ import { SafeIconModule } from '../icon/icon.module';
     TooltipModule,
     SafeButtonModule,
     SafeIconModule,
+    ButtonModule,
   ],
   exports: [
     SafeModalComponent,

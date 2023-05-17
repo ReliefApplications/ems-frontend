@@ -9,6 +9,7 @@ import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-t
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ButtonConfigModule } from '../button-config/button-config.module';
 import { SafeAlertModule } from '../../../ui/alert/alert.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Buttons tab of grid widget configuration modal.
@@ -26,6 +27,7 @@ import { SafeAlertModule } from '../../../ui/alert/alert.module';
     DragDropModule,
     ButtonConfigModule,
     SafeAlertModule,
+    ButtonModule,
   ],
   exports: [TabButtonsComponent],
 })

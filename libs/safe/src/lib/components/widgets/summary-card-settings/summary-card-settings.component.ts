@@ -19,6 +19,7 @@ import {
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
 import { cloneDeep, get } from 'lodash';
+import { Variant, Category } from '@oort-front/ui';
 
 /** Define max height of summary card */
 const MAX_ROW_SPAN = 4;
@@ -54,6 +55,10 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Changes display when windows size changes.

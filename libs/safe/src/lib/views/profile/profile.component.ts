@@ -16,6 +16,7 @@ import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Shared profile page.
@@ -43,6 +44,10 @@ export class SafeProfileComponent
     'positionAttributes',
     'actions',
   ];
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Shared profile page.

@@ -15,6 +15,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { SafeDownloadService } from '../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * A component to display the list of users
@@ -46,6 +47,10 @@ export class SafeUsersComponent implements OnInit {
   public showFilters = false;
 
   selection = new SelectionModel<User>(true, []);
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Constructor of the users component

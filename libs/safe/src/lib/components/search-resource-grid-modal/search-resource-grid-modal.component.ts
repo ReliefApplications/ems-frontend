@@ -14,6 +14,7 @@ import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.mod
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /**
  * Dialog data interface of the component
@@ -41,6 +42,7 @@ interface DialogData {
     SafeCoreGridModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'safe-search-resource-grid-modal',
   templateUrl: './search-resource-grid-modal.component.html',
@@ -50,6 +52,10 @@ export class SafeResourceGridModalComponent {
   public multiSelect = false;
   public gridSettings: GridSettings;
   public selectedRows: any[] = [];
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Is the data selectable

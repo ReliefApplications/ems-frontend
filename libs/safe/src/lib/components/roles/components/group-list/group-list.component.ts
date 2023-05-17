@@ -19,6 +19,7 @@ import get from 'lodash/get';
 import { SafeRestService } from '../../../../services/rest/rest.service';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * This component is used to display the groups tab in the platform
@@ -40,6 +41,10 @@ export class SafeGroupListComponent
   public displayedColumns = ['title', 'usersCount', 'actions'];
 
   public searchText = '';
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * This component is used to display the groups tab in the platform

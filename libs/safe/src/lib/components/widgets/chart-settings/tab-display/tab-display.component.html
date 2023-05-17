@@ -104,35 +104,35 @@
                   <ng-container
                     *ngIf="chartForm.get('title.bold'); let control"
                   >
-                    <safe-button
+                    <ui-button
                       icon="format_bold"
                       (click)="onToggleStyle('title.bold')"
-                      [category]="control.value ? 'secondary' : 'tertiary'"
-                      [variant]="control.value && 'primary'"
+                      [category]="control.value ? category.SECONDARY : category.TERTIARY"
+                      [variant]="control.value && category.PRIMARY"
                       [disabled]="control.disabled"
-                    ></safe-button>
+                    ></ui-button>
                   </ng-container>
                   <ng-container
                     *ngIf="chartForm.get('title.italic'); let control"
                   >
-                    <safe-button
+                    <ui-button
                       icon="format_italic"
                       (click)="onToggleStyle('title.italic')"
-                      [category]="control.value ? 'secondary' : 'tertiary'"
-                      [variant]="control.value && 'primary'"
+                      [category]="control.value ? category.SECONDARY : category.TERTIARY"
+                      [variant]="control.value && variant.PRIMARY"
                       [disabled]="control.disabled"
-                    ></safe-button>
+                    ></ui-button>
                   </ng-container>
                   <ng-container
                     *ngIf="chartForm.get('title.underline'); let control"
                   >
-                    <safe-button
+                    <ui-button
                       (click)="onToggleStyle('title.underline')"
                       icon="format_underline"
-                      [category]="control.value ? 'secondary' : 'tertiary'"
-                      [variant]="control.value && 'primary'"
+                      [category]="control.value ? category.SECONDARY : category.TERTIARY"
+                      [variant]="control.value && variant.PRIMARY"
                       [disabled]="control.disabled"
-                    ></safe-button>
+                    ></ui-button>
                   </ng-container>
                 </div>
               </div>

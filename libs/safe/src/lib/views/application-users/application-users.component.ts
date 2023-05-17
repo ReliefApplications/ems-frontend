@@ -10,6 +10,7 @@ import { SafeApplicationService } from '../../services/application/application.s
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { AddUsersMutationResponse, ADD_USERS } from './graphql/mutations';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Application users component.
@@ -27,6 +28,10 @@ export class SafeApplicationUsersComponent
   public positionAttributeCategories: PositionAttributeCategory[] = [];
   refetch$: Subject<boolean> = new Subject<boolean>();
   @ViewChild(UserListComponent) userList?: UserListComponent;
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Application users component.

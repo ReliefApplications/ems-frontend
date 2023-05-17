@@ -21,6 +21,7 @@ import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe
 import { takeUntil } from 'rxjs/operators';
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Configuration component for grid widget button.
@@ -50,6 +51,10 @@ export class ButtonConfigComponent
 
   // Indicate if the next step is a Form and so we could potentially pass some data to it.
   public canPassData = false;
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /** @returns The list of fields which are of type scalar and not disabled */
   get scalarFields(): any[] {

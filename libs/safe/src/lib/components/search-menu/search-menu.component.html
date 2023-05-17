@@ -13,21 +13,21 @@
 </mat-form-field>
 <div class="flex flex-col gap-2 -mt-3.5">
   <div *ngIf="currentApplication">
-    <safe-button
+    <ui-button
       class="!w-auto"
-      variant="primary"
+      [variant]="variant.PRIMARY"
       (click)="onClick(currentApplication)"
-      >{{ currentApplication.name }}</safe-button
+      >{{ currentApplication.name }}</ui-button
     >
   </div>
   <ui-divider *ngIf="currentApplication" class="m-0"></ui-divider>
   <div class="search-application-list">
-    <safe-button
+    <ui-button
       *ngFor="let item of searchResults"
       class="!w-auto block"
       (click)="onClick(item)"
       [uiTooltip]="item.name"
-      >{{ item.name }}</safe-button
+      >{{ item.name }}</ui-button
     >
   </div>
   <p class="text-center opacity-50" *ngIf="searchResults.length === 0">

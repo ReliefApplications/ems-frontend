@@ -12,7 +12,12 @@ import { SafeFormsDropdownModule } from '../../../../ui/aggregation-builder/publ
 import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeDataSourceTabComponent } from './data-source-tab.component';
-import { RadioModule, DividerModule, CheckboxModule } from '@oort-front/ui';
+import {
+  RadioModule,
+  DividerModule,
+  CheckboxModule,
+  ButtonModule,
+} from '@oort-front/ui';
 
 /** Data Source tab Module for summary card edition */
 @NgModule({
@@ -34,6 +39,7 @@ import { RadioModule, DividerModule, CheckboxModule } from '@oort-front/ui';
     CheckboxModule,
     DividerModule,
     RadioModule,
+    ButtonModule,
   ],
   exports: [SafeDataSourceTabComponent],
 })

@@ -29,10 +29,10 @@
         <th mat-header-cell *matHeaderCellDef class="w-16"></th>
         <td mat-cell *matCellDef="let element">
           <div class="flex">
-            <safe-button
+            <ui-button
               [isIcon]="true"
               [icon]="element.canSee ? 'visibility' : 'visibility_off'"
-              [variant]="element.canSee ? 'primary' : 'grey'"
+              [variant]="element.canSee ? variant.PRIMARY : variant.GREY"
               [disabled]="disabled"
               [uiTooltip]="
                 (element.canSee
@@ -42,11 +42,11 @@
               "
               (click)="onEditFieldAccess(element, 'canSee')"
             >
-            </safe-button>
-            <safe-button
+            </ui-button>
+            <ui-button
               [isIcon]="true"
               [icon]="element.canUpdate ? 'edit' : 'edit_off'"
-              [variant]="element.canUpdate ? 'primary' : 'grey'"
+              [variant]="element.canUpdate ? variant.PRIMARY : variant.GREY"
               [disabled]="disabled"
               [uiTooltip]="
                 (element.canUpdate
@@ -56,7 +56,7 @@
               "
               (click)="onEditFieldAccess(element, 'canUpdate')"
             >
-            </safe-button>
+            </ui-button>
           </div>
         </td>
       </ng-container>

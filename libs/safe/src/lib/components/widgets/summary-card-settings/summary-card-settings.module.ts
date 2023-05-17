@@ -15,7 +15,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SafeAddCardModule } from './add-card/add-card.module';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SummaryCardItemModule } from '../summary-card/summary-card-item/summary-card-item.module';
-import { RadioModule } from '@oort-front/ui';
+import { RadioModule, ButtonModule } from '@oort-front/ui';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -38,6 +38,7 @@ import { RadioModule } from '@oort-front/ui';
     MatButtonModule,
     SummaryCardItemModule,
     RadioModule,
+    ButtonModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

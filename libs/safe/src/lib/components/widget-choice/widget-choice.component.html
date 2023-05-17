@@ -46,14 +46,14 @@
         ></div>
       </div>
     </div>
-    <safe-button
-      category="secondary"
-      variant="primary"
+    <ui-button
+      [category]="category.SECONDARY"
+      [variant]="variant.PRIMARY"
       icon="close"
       [isIcon]="true"
       (click)="collapsed = true"
       [uiTooltip]="'models.widget.tooltip.selector.collapse' | translate"
-    ></safe-button>
+    ></ui-button>
   </div>
 </ng-template>
 
@@ -62,13 +62,13 @@
     class="rounded-full ml-auto mr-6 shadow-lg bg-white pointer-events-auto"
     cdkDrag
   >
-    <safe-button
-      category="tertiary"
-      variant="primary"
+    <ui-button
+      [category]="category.TERTIARY"
+      [variant]="variant.PRIMARY"
       icon="widgets"
       [isIcon]="true"
       (click)="collapsed = false"
       [uiTooltip]="'models.widget.tooltip.selector.expand' | translate"
-    ></safe-button>
+    ></ui-button>
   </div>
 </ng-template>

@@ -8,6 +8,7 @@ import get from 'lodash/get';
 import { User } from '../../../models/user.model';
 import { AppAbility } from '../../../services/auth/auth.service';
 import { SafeRestService } from '../../../services/rest/rest.service';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * User summary details component.
@@ -34,6 +35,10 @@ export class UserDetailsComponent implements OnInit {
   }
 
   public attributes: { text: string; value: string }[] = [];
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * User summary details component

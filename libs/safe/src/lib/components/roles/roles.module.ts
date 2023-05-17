@@ -13,6 +13,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeModalModule } from '../ui/modal/modal.module';
 import { AbilityModule } from '@casl/angular';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * SafeRolesModule manages modules and components for the roles page
@@ -34,6 +35,7 @@ import { AbilityModule } from '@casl/angular';
     MatInputModule,
     SafeModalModule,
     AbilityModule,
+    ButtonModule,
   ],
   exports: [SafeRolesComponent],
 })

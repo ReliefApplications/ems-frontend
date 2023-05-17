@@ -8,6 +8,7 @@ import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * This component allows the user to add a role to the platform or to an application.
@@ -22,6 +23,10 @@ export class SafeAddRoleComponent implements OnInit {
 
   // === REACTIVE FORM ===
   roleForm: UntypedFormGroup = new UntypedFormGroup({});
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is

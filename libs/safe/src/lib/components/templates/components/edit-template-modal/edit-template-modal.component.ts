@@ -19,6 +19,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /** Model for the data input */
 interface DialogData {
@@ -40,6 +41,7 @@ interface DialogData {
     ReactiveFormsModule,
     TranslateModule,
     EditorModule,
+    ButtonModule,
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
@@ -54,6 +56,10 @@ export class EditTemplateModalComponent implements OnInit {
 
   /** tinymce editor */
   public editor: any = EMAIL_EDITOR_CONFIG;
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Component for editing a template

@@ -8,14 +8,14 @@
     {{ 'components.widget.settings.grid.hint.buttons' | translate }}
   </safe-alert>
   <!-- Add new button -->
-  <safe-button
+  <ui-button
     class="self-end"
     icon="add"
-    variant="primary"
+    [variant]="variant.PRIMARY"
     (click)="addButton($event)"
   >
     {{ 'components.widget.settings.grid.buttons.create' | translate }}
-  </safe-button>
+  </ui-button>
   <!-- Available buttons -->
   <mat-tab-group
     mat-align-tabs="start"

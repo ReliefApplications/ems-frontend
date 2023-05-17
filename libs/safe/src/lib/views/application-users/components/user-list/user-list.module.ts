@@ -9,7 +9,7 @@ import { SafeEmptyModule } from '../../../../components/ui/empty/empty.module';
 import { MenuModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeButtonModule } from '../../../../components/ui/button/button.module';
-import { CheckboxModule } from '@oort-front/ui';
+import { CheckboxModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * Users list module.
@@ -27,6 +27,7 @@ import { CheckboxModule } from '@oort-front/ui';
     MatIconModule,
     SafeButtonModule,
     CheckboxModule,
+    ButtonModule,
   ],
   exports: [UserListComponent],
 })

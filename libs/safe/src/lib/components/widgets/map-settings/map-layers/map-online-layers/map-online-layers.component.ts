@@ -3,6 +3,7 @@ import { SafeArcGISService } from '../../../../../services/arc-gis.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { UntypedFormControl } from '@angular/forms';
+import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Online Layers configuration of Map Widget
@@ -19,6 +20,10 @@ export class MapOnlineLayersComponent implements OnInit {
   @Input() layers!: UntypedFormControl;
   public availableLayers: any[] = [];
   public tableColumns = ['title', 'actions'];
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Online Layers configuration of Map Widget

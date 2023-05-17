@@ -4,6 +4,7 @@ import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
+import { Variant, Category } from '@oort-front/ui';
 
 /** Data for the dialog inputs */
 interface DialogData {
@@ -20,6 +21,10 @@ interface DialogData {
 })
 export class SafeExpandedCommentComponent implements OnInit {
   public formControl!: UntypedFormControl;
+
+  // === UI VARIANT AND CATEGORY ===
+  public variant = Variant;
+  public category = Category;
 
   /**
    * Constructor of this component

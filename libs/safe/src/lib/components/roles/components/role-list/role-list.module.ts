@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
 import { SafeRoleListComponent } from './role-list.component';
-import { DividerModule } from '@oort-front/ui';
+import { DividerModule, ButtonModule } from '@oort-front/ui';
 import { AbilityModule } from '@casl/angular';
 
 /**
@@ -39,6 +39,7 @@ import { AbilityModule } from '@casl/angular';
     TranslateModule,
     SafeSkeletonTableModule,
     AbilityModule,
+    ButtonModule,
   ],
   exports: [SafeRoleListComponent],
 })
