@@ -4,7 +4,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeLeftSidenavComponent } from './left-sidenav.component';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { TooltipModule } from '@oort-front/ui';
 import { RouterModule } from '@angular/router';
@@ -22,7 +21,6 @@ import { TranslateModule } from '@ngx-translate/core';
     DragDropModule,
     MatButtonModule,
     MatIconModule,
-    MatListModule,
     MatSidenavModule,
     TooltipModule,
     RouterModule,
