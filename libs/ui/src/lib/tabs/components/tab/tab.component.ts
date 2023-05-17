@@ -15,7 +15,6 @@ import { Variant } from '../../../shared/variant.enum';
   styleUrls: ['./tab.component.scss'],
 })
 export class TabComponent {
-  @Input() label!: string;
   @Input() disabled = false;
   @ViewChild('button')
   button!: ElementRef;
