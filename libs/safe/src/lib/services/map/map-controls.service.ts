@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { EventEmitter, Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
 import { MapDownloadComponent } from '../../components/ui/map/map-download/map-download.component';
@@ -16,6 +16,8 @@ import * as Geocoding from 'esri-leaflet-geocoder';
 import { LegendDefinition } from '../../components/ui/map/interfaces/layer-legend.type';
 import { Layer } from '../../components/ui/map/layer';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/language';
+import { MapZoomComponent } from '../../components/ui/map/map-zoom/map-zoom.component';
+import { MapEvent } from '../../components/ui/map/interfaces/map.interface';
 
 /**
  * Shared map control service.
@@ -85,6 +87,7 @@ export class SafeMapControlsService {
    *
    * @param map current map
    * @param apiKey arcgis api key
+   * @returns the searchbar control
    */
   public getSearchbarControl(map: L.Map, apiKey: string) {
     const control = Geocoding.geosearch({
@@ -339,6 +342,65 @@ export class SafeMapControlsService {
         this.downloadControl.remove();
         this.downloadControl = null;
       }
+    }
+  }
+
+  /**
+   * Add a zoom slider to control the zoom level of the map
+   *
+   * @param map map widget
+   * @param maxZoom maximum zoom for the map
+   * @param minZoom minimum zoom for the map
+   * @param currentZoom currentZoom of the map
+   * @param mapEvent listen to map events to get correct zoom
+   */
+  public getZoomControl(
+    map: L.Map,
+    maxZoom: number,
+    minZoom: number,
+    currentZoom: number,
+    mapEvent: EventEmitter<MapEvent>
+  ) {
+    const zoomControl = new L.Control();
+    zoomControl.onAdd = () => {
+      const div = L.DomUtil.create('div', 'zoom-slider-control');
+      const component = this.domService.appendComponentToBody(
+        MapZoomComponent,
+        div
+      );
+      const instance: MapZoomComponent = component.instance;
+      instance.maxZoom = maxZoom;
+      instance.minZoom = minZoom;
+      instance.currentZoom = currentZoom;
+      instance.map = map;
+      instance.mapEvent = mapEvent;
+      return div;
+    };
+    zoomControl.addTo(map);
+    const container = zoomControl.getContainer();
+    if (container) {
+      // prevent click events from propagating to the map
+      container.addEventListener('click', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
+      // prevent mouse wheel events from propagating to the map
+      container.addEventListener('wheel', (e: any) => {
+        L.DomEvent.stopPropagation(e);
+      });
+
+      const mapBounds = map.getBounds();
+      const mapCenter = mapBounds.getCenter();
+      const containerWidth = container.offsetWidth;
+      const containerHeight = container.offsetHeight;
+
+      const containerPos = map.latLngToContainerPoint(mapCenter);
+      const leftOffset = containerPos.x - containerWidth / 2;
+      const topOffset = containerPos.y - containerHeight / 2;
+
+      container.style.left = leftOffset + 'px';
+      container.style.top = topOffset + 'px';
+      container.style.position = 'relative';
+      console.log(container.style, container, map.getContainer());
     }
   }
 

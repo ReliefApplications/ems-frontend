@@ -16,7 +16,6 @@ import 'leaflet.markercluster';
 import 'leaflet.control.layers.tree';
 import 'leaflet-fullscreen';
 import 'esri-leaflet';
-import { DomUtil } from 'leaflet';
 import * as Vector from 'esri-leaflet-vector';
 import { TranslateService } from '@ngx-translate/core';
 //import { takeUntil } from 'rxjs';
@@ -401,7 +400,15 @@ export class MapComponent
       this.map,
       controls.download ?? true
     );
-    // Add legend contorl if layers ready
+    // Add zoom control
+    this.mapControlsService.getZoomControl(
+      this.map,
+      this.maxZoom,
+      this.minZoom,
+      this.currentZoom,
+      this.mapEvent
+    );
+    // Add legend control if layers ready
     if (this.layerControl) {
       this.mapControlsService.getLegendControl(
         this.map,
@@ -409,7 +416,7 @@ export class MapComponent
         controls.legend ?? true
       );
     }
-    // Add layer contorl
+    // Add layer control
     if (controls.layer) {
       if (this.layerControl) {
         this.layerControl.addTo(this.map);
@@ -419,8 +426,6 @@ export class MapComponent
         this.layerControl.remove();
       }
     }
-
-    this.addCustomZoomControl();
 
     // If initializing map: add fixed controls
     if (initMap) {
@@ -871,84 +876,6 @@ export class MapComponent
   // if (this.basemap) {
   //   this.basemap.remove();
   // }
-
-  /**
-   * Adds custom zoom control (different from the leaflet default one
-   *
-   */
-  addCustomZoomControl() {
-    // Create additional Control placeholders
-    /**
-     * Adds two new placeholder corners for map controls
-     *
-     * @param map the map on which it applies
-     * @param map._controlCorners control corners of the map
-     * @param map._controlContainer control container of the map
-     */
-    function addControlPlaceholders(map: {
-      _controlCorners: any;
-      _controlContainer: any;
-    }) {
-      const corners = map._controlCorners,
-        l = 'leaflet-',
-        container = map._controlContainer;
-
-      /**
-       * Creates new corner for the map
-       *
-       * @param vSide vertical side
-       * @param hSide horizontal side
-       */
-      function createCorner(vSide: string, hSide: string) {
-        const className = l + vSide + ' ' + l + hSide;
-
-        corners[vSide + hSide] = L.DomUtil.create('div', className, container);
-      }
-
-      createCorner('verticalcenter', 'left');
-      createCorner('verticalcenter', 'right');
-    }
-    addControlPlaceholders(this.map);
-
-    const mapHere = this.map;
-    //Ugly but sets off an error otherwise
-    setTimeout(() => {
-      // Add custom zoom control
-      const customZoomControl = L.Control.extend({
-        options: {
-          position: 'verticalcenterright',
-        },
-        /**
-         * Adds the new custom control
-         *
-         * @returns the zoom slider control
-         */
-        onAdd: function () {
-          const zoomSliderControl = DomUtil.get('zoom-slider-control');
-          // Disable dragging when user's cursor enters the element
-          zoomSliderControl?.addEventListener('mouseover', function () {
-            mapHere.dragging.disable();
-          });
-
-          // Re-enable dragging when user's cursor leaves the element
-          zoomSliderControl?.addEventListener('mouseout', function () {
-            mapHere.dragging.enable();
-          });
-          return zoomSliderControl;
-        },
-      });
-      this.map.addControl(new customZoomControl());
-    }, 100);
-  }
-
-  /**
-   * Updates zoom when using the slider
-   *
-   * @param event Slider change event
-   */
-  updateZoom(event: any) {
-    this.map.setZoom(event.originalTarget.valueAsNumber);
-  }
 
   /**
    * Set the webmap.

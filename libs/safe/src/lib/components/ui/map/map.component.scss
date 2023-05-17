@@ -35,34 +35,3 @@
 ::ng-deep .leaflet-layerstree-expand-collapse {
   cursor: pointer;
 }
-
-mat-slider {
-  transform: rotate(270deg);
-  position: absolute;
-  left: -80px;
-}
-
-::ng-deep .mat-ripple {
-  height: 0 !important;
-  width: 0 !important;
-}
-
-::ng-deep .mdc-slider__value-indicator-text {
-  transform: rotate(90deg) !important;
-}
-
-::ng-deep .mat-primary .mdc-slider__thumb-knob {
-  height: 2px !important;
-  width: 2px !important;
-  border-width: 8px !important;
-}
-
-::ng-deep .leaflet-verticalcenter {
-  position: absolute;
-  width: 100px !important;
-  z-index: 1000;
-  pointer-events: none;
-  top: 40%;
-  transform: translateY(-40%);
-  padding-top: 10px;
-}

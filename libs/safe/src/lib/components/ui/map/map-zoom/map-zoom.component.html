@@ -1,0 +1,44 @@
+<!-- Component wrapper -->
+<div
+  class="relative -rotate-90"
+  [ngClass]="{
+    'min-value': currentZoom === minZoom
+  }"
+>
+  <button
+    class="w-4 h-4 relative flex top-0 left-full items-center justify-center bg-white border border-gray-300 rounded cursor-pointer hover:bg-gray-100"
+    (click)="zoomIn()"
+  >
+    <span class="font-bold">+</span>
+  </button>
+  <!-- Bubble -->
+  <span
+    [ngStyle]="{ left: bubbleStyle }"
+    [ngClass]="{
+      block: bubbleToShow,
+      hidden: !bubbleToShow,
+      'bg-gray-400 opacity-80': currentZoom === minZoom,
+      'bg-primary-400': currentZoom !== minZoom
+    }"
+    class="transition-all duration-200 absolute px-2 -translate-x-2/4 -translate-y-3/4 text-white rounded-lg"
+    >{{ currentZoom }}</span
+  >
+  <!-- Actual input range -->
+  <input
+    name="slider"
+    style="--value:{{ currentZoom }}; --min:{{ minZoom }}; --max:{{ maxZoom }}"
+    class="w-full h-1 bg-gray-300 focus:bg-gray-400 bg-gradient-to-r from-primary-400 to-primary-400"
+    type="range"
+    min="{{ minZoom }}"
+    max="{{ maxZoom }}"
+    value="{{ currentZoom }}"
+    step="1"
+    (input)="onChangeFunction($event.target)"
+  />
+  <button
+    class="w-4 h-4 relative flex top-0 left-0 items-center justify-center bg-white border border-gray-300 rounded cursor-pointer hover:bg-gray-100"
+    (click)="zoomOut()"
+  >
+    <span class="font-bold rotate-90">-</span>
+  </button>
+</div>
