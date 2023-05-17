@@ -11,7 +11,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePaletteControlModule } from '../../../palette-control/palette-control.module';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
@@ -41,7 +41,7 @@ import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-
     SafeQueryBuilderModule,
     SafeChartModule,
     MatExpansionModule,
-    MatTabsModule,
+    TabsModule,
     SafeButtonModule,
     TranslateModule,
     SafeAggregationBuilderModule,
