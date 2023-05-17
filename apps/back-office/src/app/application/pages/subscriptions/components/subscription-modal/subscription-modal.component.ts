@@ -49,7 +49,14 @@ import {
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
-import { DividerModule, MenuModule, TooltipModule, ButtonModule, Variant, Category } from '@oort-front/ui';
+import {
+  DividerModule,
+  MenuModule,
+  TooltipModule,
+  ButtonModule,
+  Variant,
+  Category,
+} from '@oort-front/ui';
 
 /** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;

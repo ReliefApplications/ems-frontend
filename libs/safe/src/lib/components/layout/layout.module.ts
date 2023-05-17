@@ -16,7 +16,12 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeBreadcrumbModule } from '../ui/breadcrumb/breadcrumb.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
-import { DividerModule, TooltipModule, MenuModule, ButtonModule } from '@oort-front/ui';
+import {
+  DividerModule,
+  TooltipModule,
+  MenuModule,
+  ButtonModule,
+} from '@oort-front/ui';
 
 /**
  * SafeLayoutModule is a class used to manage all the modules and components

@@ -31,7 +31,14 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
-import { DividerModule, TooltipModule, RadioModule, ButtonModule, Variant, Category } from '@oort-front/ui';
+import {
+  DividerModule,
+  TooltipModule,
+  RadioModule,
+  ButtonModule,
+  Variant,
+  Category,
+} from '@oort-front/ui';
 
 /**
  * Dialog data interface

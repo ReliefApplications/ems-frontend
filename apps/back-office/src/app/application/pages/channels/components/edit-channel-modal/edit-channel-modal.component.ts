@@ -21,7 +21,13 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
-import { DividerModule, MenuModule, ButtonModule, Variant, Category } from '@oort-front/ui';
+import {
+  DividerModule,
+  MenuModule,
+  ButtonModule,
+  Variant,
+  Category,
+} from '@oort-front/ui';
 
 /**
  * Edit channel component, act as modal.

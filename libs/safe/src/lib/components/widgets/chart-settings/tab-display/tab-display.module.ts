@@ -22,7 +22,12 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { SeriesSettingsModule } from '../series-settings/series-settings.module';
-import { ButtonModule, ToggleModule, TooltipModule, DividerModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  ToggleModule,
+  TooltipModule,
+  DividerModule,
+} from '@oort-front/ui';
 
 /**
  * Display tab of chart settings modal.

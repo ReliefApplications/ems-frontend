@@ -10,7 +10,12 @@ import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
-import { CheckboxModule, TooltipModule, ToggleModule, ButtonModule } from '@oort-front/ui';
+import {
+  CheckboxModule,
+  TooltipModule,
+  ToggleModule,
+  ButtonModule,
+} from '@oort-front/ui';
 
 /**
  * Button config component for grid widget.

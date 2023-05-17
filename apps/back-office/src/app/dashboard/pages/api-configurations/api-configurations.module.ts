@@ -25,7 +25,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
-import { ButtonModule, MenuModule} from '@oort-front/ui';
+import { ButtonModule, MenuModule } from '@oort-front/ui';
 
 /**
  * API configurations page module.
