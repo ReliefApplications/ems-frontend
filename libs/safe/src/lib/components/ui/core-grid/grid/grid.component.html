@@ -57,7 +57,7 @@
     <kendo-popup
       [anchor]="anchor.element"
       (anchorViewportLeave)="showColumnChooser = false"
-      [anchorAlign]="{ vertical: 'bottom', horizontal: 'left' }"
+      [collision]="{ horizontal: 'fit', vertical: 'fit' }"
       *ngIf="showColumnChooser"
     >
       <safe-grid-column-chooser
