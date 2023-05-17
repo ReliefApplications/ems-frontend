@@ -4,12 +4,14 @@
     <mat-tab>
       <ng-template mat-tab-label>
         <safe-icon
-          icon="settings"
+          icon="format_color_text"
           [size]="24"
-          matTooltip="{{ 'common.general' | translate }}"
+          matTooltip="{{
+            'components.widget.settings.editor.title' | translate
+          }}"
           matTooltipPosition="right"
         ></safe-icon>
-        <span>{{ 'common.general' | translate }}</span>
+        <span>{{ 'components.widget.settings.editor.title' | translate }}</span>
       </ng-template>
       <ng-template matTabContent>
         <form [formGroup]="tileForm">
@@ -21,6 +23,32 @@
           </div>
           <editor [init]="editor" formControlName="text"></editor>
         </form>
+      </ng-template>
+    </mat-tab>
+    <!-- Resource and record selection  -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon
+          icon="settings"
+          [size]="24"
+          matTooltip="{{
+            'components.widget.settings.editor.recordSelection' | translate
+          }}"
+          matTooltipPosition="right"
+        ></safe-icon>
+        <span>{{
+          'components.widget.settings.editor.recordSelection' | translate
+        }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <safe-record-selection-tab
+          *ngIf="tileForm"
+          [form]="tileForm"
+          [selectedResource]="selectedResource"
+          [selectedLayout]="selectedLayout"
+          (resourceChange)="selectedResource = $event; updateFields()"
+          (layoutChange)="selectedLayout = $event; updateFields()"
+        ></safe-record-selection-tab>
       </ng-template>
     </mat-tab>
     <!-- Widget display options -->

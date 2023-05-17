@@ -1,4 +1,4 @@
-import { FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { get } from 'lodash';
 
 /**
@@ -10,9 +10,11 @@ import { get } from 'lodash';
  * @param specificControls specific controls to add to the form, on a widget basis
  * @returns form with the common fields
  */
-export const extendWidgetForm = (
-  form: FormGroup,
-  settings: {
+export const extendWidgetForm = <
+  T extends { [key: string]: AbstractControl<any> }
+>(
+  form: FormGroup<T>,
+  settings?: {
     showBorder?: boolean;
   },
   specificControls?: {
@@ -23,7 +25,9 @@ export const extendWidgetForm = (
     showBorder: new FormControl(get(settings, 'showBorder', true)),
   };
   Object.assign(controls, specificControls);
-  form.addControl('widgetDisplay', new FormGroup(controls));
+  (form as any).addControl('widgetDisplay', new FormGroup(controls));
 
-  return form;
+  return form as any as FormGroup<
+    T & { widgetDisplay: typeof widgetDisplayForm }
+  >;
 };

@@ -57,7 +57,7 @@ export class SafeEmailPreviewComponent implements OnInit {
     this.form = this.formBuilder.group({
       from: [{ value: this.data.from, disabled: true }],
       to: [{ value: this.data.to, disabled: true }],
-      subject: [{ value: this.data.subject, disabled: true }],
+      subject: this.data.subject,
       html: this.data.html,
       files: [[]],
     });

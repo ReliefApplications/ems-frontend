@@ -17,6 +17,17 @@ import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
 } from './graphql/queries';
+import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
+import { Record } from '../../../models/record.model';
+import { Layout } from '../../../models/layout.model';
+
+export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
+  Partial<{
+    record: Record;
+    metadata: any[];
+    layout: Layout;
+    cardAggregationData: any;
+  }>;
 import { Layout } from '../../../models/layout.model';
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { FormControl } from '@angular/forms';
@@ -40,7 +51,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   @Input() widget: any;
   @Input() header = true;
   @Input() export = true;
-  @Input() settings: any = null;
+  @Input() settings!: SummaryCardFormT['value'];
 
   public gridSettings: any = null;
 
@@ -57,24 +68,14 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   };
   public loading = true;
 
-  public cards: any[] = [];
-  private cachedCards: any[] = [];
+  public cards: CardT[] = [];
+  private cachedCards: CardT[] = [];
   private dataQuery?: QueryRef<any>;
 
   private layout: Layout | null = null;
   private fields: any[] = [];
 
   public searchControl = new FormControl('');
-
-  /**
-   * Gets whether the cards that will be displayed
-   * are from an aggregation
-   *
-   * @returns if the cards are from an aggregation
-   */
-  private get isAggregation(): boolean {
-    return !!this.settings.cards[0]?.isAggregation;
-  }
 
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   @ViewChild('pdf') pdf!: any;
@@ -121,12 +122,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    if (this.settings.isDynamic) {
-      this.setupDynamicCards();
-    } else {
-      this.cachedCards = this.settings.cards;
-      this.cards = this.cachedCards;
-    }
+    this.setupDynamicCards();
+
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.setupGridSettings();
 
@@ -140,8 +137,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     if (
       !this.settings.widgetDisplay?.usePagination &&
-      this.settings.isDynamic &&
-      !this.isAggregation
+      !this.settings.card?.aggregation
     ) {
       this.summaryCardGrid.nativeElement.addEventListener(
         'scroll',
@@ -175,11 +171,101 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   /** Gets the query for fetching the dynamic cards records. */
   private async setupDynamicCards() {
     // only one dynamic card is allowed per widget
-    const [card] = this.settings.cards;
+    const card = this.settings.card;
     if (!card) return;
 
-    if (card.isAggregation) this.getCardsFromAggregation(card);
-    else this.createDynamicQueryFromLayout(card);
+    if (card.aggregation) this.getCardsFromAggregation(card);
+    else if (card.layout) this.createDynamicQueryFromLayout(card);
+  }
+
+  /**
+   * Handles the search on cards
+   *
+   * @param search search value
+   */
+  private handleSearch(search: string) {
+    // Only need to fetch data if is dynamic and not an aggregation
+    const needRefetch = this.settings.isDynamic && !this.isAggregation;
+    const skippedFields = ['id', 'incrementalId'];
+
+    if (!needRefetch)
+      this.cards = this.cachedCards.filter((card: any) => {
+        const data = clone(card.record || card.cardAggregationData || {});
+        skippedFields.forEach((field) => delete data[field]);
+        const recordValues = Object.values(data);
+        return recordValues.some(
+          (value) =>
+            (typeof value === 'string' &&
+              value.toLowerCase().includes(search.toLowerCase()) &&
+              !skippedFields.includes(value)) ||
+            (!isNaN(parseFloat(search)) &&
+              typeof value === 'number' &&
+              value === parseFloat(search))
+        );
+      });
+    else {
+      const filters: {
+        field: string;
+        operator: string;
+        value: string | number;
+      }[] = [];
+      this.fields.forEach((field) => {
+        if (skippedFields.includes(field.name)) return;
+        if (field?.type === 'text')
+          filters.push({
+            field: field.name,
+            operator: 'contains',
+            value: search,
+          });
+        if (field?.type === 'numeric' && !isNaN(parseFloat(search)))
+          filters.push({
+            field: field.name,
+            operator: 'eq',
+            value: parseFloat(search),
+          });
+      });
+      this.pageInfo.skip = 0;
+      this.dataQuery?.refetch({
+        skip: 0,
+        filter: {
+          logic: 'or',
+          filters,
+        },
+      });
+    }
+  }
+
+  /**
+   * Updates the cards from fetched custom query
+   *
+   * @param res Query result
+   */
+  private updateCards(res: any) {
+    if (!this.layout || !res?.data) return;
+    const layoutQueryName = this.layout.query.name;
+    const edges = res.data?.[layoutQueryName].edges;
+    if (!edges) return;
+
+    const newCards = edges.map((e: any) => ({
+      ...this.settings.cards[0],
+      record: e.node,
+      layout: this.layout,
+      metadata: this.fields,
+    }));
+
+    this.cachedCards =
+      this.pageInfo.skip > 0 ? [...this.cachedCards, ...newCards] : newCards;
+
+    this.cards = this.settings.widgetDisplay?.usePagination
+      ? this.cachedCards.slice(
+          this.pageInfo.skip,
+          this.pageInfo.skip + this.pageInfo.first
+        )
+      : this.cachedCards;
+    this.pageInfo.totalCount = get(res.data[layoutQueryName], 'totalCount', 0);
+    this.pageInfo.hasNextPage = this.pageInfo.totalCount > this.cards.length;
+
+    this.loading = res.loading;
   }
 
   /**
@@ -333,8 +419,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * mdr
    */
   private async setupGridSettings() {
-    const [card] = this.settings.cards || [];
-    if (!card) return;
+    const card = this.settings.card;
+    if (!card || !card.resource || !card.layout) return;
 
     this.gridLayoutService
       .getLayouts(card.resource, { ids: [card.layout], first: 1 })
@@ -370,11 +456,14 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    *
    * @param card Card settings
    */
-  private async getCardsFromAggregation(card: any) {
+  private async getCardsFromAggregation(
+    card: NonNullable<SummaryCardFormT['value']['card']>
+  ) {
+    if (!card.aggregation || !card.resource) return;
     this.aggregationService
       .aggregationDataQuery(card.resource, card.aggregation)
       ?.subscribe((res) => {
-        if (!res.data) return;
+        if (!res.data?.recordsAggregation?.items) return;
         this.cachedCards = res.data.recordsAggregation.items.map((x: any) => ({
           ...this.settings.cards[0],
           cardAggregationData: x,

@@ -231,7 +231,7 @@ export class SafeEmailService {
             if (value) {
               this.sendMail(
                 recipient,
-                subject,
+                value.subject,
                 value.html,
                 filter,
                 query,
@@ -276,6 +276,7 @@ export class SafeEmailService {
               name: fullName,
               title,
               subFields,
+              width: f.width,
             };
           }
           default: {
@@ -283,6 +284,7 @@ export class SafeEmailService {
             return {
               name: fullName,
               title,
+              width: f.width,
             };
           }
         }

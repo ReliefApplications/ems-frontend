@@ -4,7 +4,7 @@
       settings.title
     }}</span>
     <!-- Switch between grid and cards view -->
-    <div class="flex" *ngIf="settings.isDynamic === true">
+    <div class="flex">
       <safe-button
         [isIcon]="true"
         icon="grid_view"
@@ -20,10 +20,10 @@
         [matTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
       ></safe-button>
     </div>
+  </kendo-tilelayout-item-header>
+  <ng-container *ngIf="displayMode === 'cards'">
     <safe-button
-      *ngIf="
-        export && (displayMode === 'cards' || settings.isDynamic === false)
-      "
+      *ngIf="export && displayMode === 'cards'"
       [isIcon]="true"
       icon="get_app"
       class="text-neutral-700"
