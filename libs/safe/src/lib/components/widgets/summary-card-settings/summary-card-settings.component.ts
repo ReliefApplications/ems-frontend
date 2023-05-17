@@ -74,7 +74,14 @@ const createSummaryCardForm = (def: any) => {
     card: createCardForm(get(settings, 'card', null)),
   });
 
-  return extendWidgetForm(form, settings?.widgetDisplay);
+  return extendWidgetForm(form, settings?.widgetDisplay, {
+    searchable: new FormControl(
+      get<boolean>(settings, 'widgetDisplay.searchable', false)
+    ),
+    usePagination: new FormControl(
+      get<boolean>(settings, 'widgetDisplay.usePagination', false)
+    ),
+  });
 };
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
@@ -120,18 +127,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
-    this.tileForm = extendWidgetForm(
-      createSummaryCardForm(this.tile),
-      this.tile.settings?.widgetDisplay,
-      {
-        searchable: new FormControl(
-          get(this.tile, 'settings.widgetDisplay.searchable', false)
-        ),
-        usePagination: new FormControl(
-          get(this.tile, 'settings.widgetDisplay.usePagination', false)
-        ),
-      }
-    );
+    this.tileForm = createSummaryCardForm(this.tile);
     this.change.emit(this.tileForm);
 
     const resourceID = this.tileForm?.get('card.resource')?.value;
@@ -139,25 +135,14 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       this.getResource(resourceID);
     }
   }
-
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
-    return this.tileForm?.get('widgetDisplay.searchable') as FormControl;
+    return this.tileForm?.get('widgetDisplay.searchable') as any;
   }
 
   /** @returns a FormControl for the usePagination field */
   get usePaginationControl(): FormControl {
-    return this.tileForm?.get('widgetDisplay.usePagination') as FormControl;
-  }
-
-  /** @returns a FormControl for the searchable field */
-  get searchableControl(): FormControl {
-    return this.tileForm?.get('widgetDisplay.searchable') as FormControl;
-  }
-
-  /** @returns a FormControl for the usePagination field */
-  get usePaginationControl(): FormControl {
-    return this.tileForm?.get('widgetDisplay.usePagination') as FormControl;
+    return this.tileForm?.get('widgetDisplay.usePagination') as any;
   }
 
   /**

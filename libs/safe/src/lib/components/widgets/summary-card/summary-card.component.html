@@ -20,8 +20,6 @@
         [matTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
       ></safe-button>
     </div>
-  </kendo-tilelayout-item-header>
-  <ng-container *ngIf="displayMode === 'cards'">
     <safe-button
       *ngIf="export && displayMode === 'cards'"
       [isIcon]="true"
@@ -38,7 +36,7 @@
       class="!w-full"
     />
   </div>
-  <ng-container *ngIf="displayMode === 'cards' || settings.isDynamic === false">
+  <ng-container *ngIf="displayMode === 'cards'">
     <div class="w-full grow overflow-auto" #summaryCardGrid>
       <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
         <div
@@ -50,7 +48,10 @@
             class="k-tilelayout-item k-card"
             [style.order]="i"
             style.grid-column-end="{{
-              'span ' + (card.width > colsNumber ? colsNumber : card.width)
+              'span ' +
+                (card.width && card.width > colsNumber
+                  ? colsNumber
+                  : card.width)
             }}"
             style.grid-row-end="{{ 'span ' + card.height }}"
             [card]="card"
@@ -61,10 +62,7 @@
     </div>
   </ng-container>
   <kendo-datapager
-    *ngIf="
-      settings.widgetDisplay?.usePagination &&
-      (displayMode === 'cards' || settings.isDynamic === false)
-    "
+    *ngIf="settings.widgetDisplay?.usePagination && displayMode === 'cards'"
     [style.width.%]="100"
     [pageSize]="pageInfo.first"
     [pageSizeValues]="[10, 25, 50, 100]"
@@ -73,7 +71,7 @@
     (pageChange)="onPageChange($event)"
   >
   </kendo-datapager>
-  <ng-container *ngIf="displayMode === 'grid' && settings.isDynamic === true">
+  <ng-container *ngIf="displayMode === 'grid'">
     <div class="w-full h-full">
       <safe-grid-widget
         class="flex-auto max-h-full w-full"

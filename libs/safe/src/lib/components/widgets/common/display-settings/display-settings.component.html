@@ -2,7 +2,9 @@
   {{ 'models.widget.display.title' | translate }}
 </h2>
 <form class="flex flex-col gap-2">
-  <mat-slide-toggle [formControl]="showBorderControl">
+  <mat-slide-toggle
+    [formControl]="$any(formGroup.get('widgetDisplay.showBorder'))"
+  >
     {{ 'models.widget.display.border' | translate }}
   </mat-slide-toggle>
 

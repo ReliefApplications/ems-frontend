@@ -72,14 +72,13 @@
         <safe-display-settings [formGroup]="tileForm">
           <!-- Specific settings for summary card -->
           <mat-slide-toggle
-            *ngIf="searchableControl"
-            [formControl]="searchableControl"
+            [formControl]="$any(tileForm.get('widgetDisplay.searchable'))"
           >
             {{ 'models.widget.display.searchable' | translate }}
           </mat-slide-toggle>
 
           <mat-radio-group
-            [formControl]="usePaginationControl"
+            [formControl]="$any(tileForm.get('widgetDisplay.usePagination'))"
             class="flex flex-col gap-1 mt-2"
           >
             <p class="font-medium mt-0 mb-0.5">

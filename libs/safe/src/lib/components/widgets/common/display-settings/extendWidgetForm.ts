@@ -11,15 +11,14 @@ import { get } from 'lodash';
  * @returns form with the common fields
  */
 export const extendWidgetForm = <
-  T extends { [key: string]: AbstractControl<any> }
+  T extends { [key: string]: AbstractControl<any> },
+  T2 extends { [key: string]: AbstractControl<any> }
 >(
   form: FormGroup<T>,
   settings?: {
     showBorder?: boolean;
   },
-  specificControls?: {
-    [key: string]: FormControl;
-  }
+  specificControls?: T2
 ) => {
   const controls = {
     showBorder: new FormControl(get(settings, 'showBorder', true)),
@@ -28,6 +27,6 @@ export const extendWidgetForm = <
   (form as any).addControl('widgetDisplay', new FormGroup(controls));
 
   return form as any as FormGroup<
-    T & { widgetDisplay: typeof widgetDisplayForm }
+    T & { widgetDisplay: FormGroup<{ showBorder: FormControl<boolean> } & T2> }
   >;
 };

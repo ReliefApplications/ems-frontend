@@ -19,7 +19,6 @@ import {
 } from './graphql/queries';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
-import { Layout } from '../../../models/layout.model';
 
 export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
   Partial<{
@@ -185,7 +184,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    */
   private handleSearch(search: string) {
     // Only need to fetch data if is dynamic and not an aggregation
-    const needRefetch = this.settings.isDynamic && !this.isAggregation;
+    const needRefetch = !this.settings.card?.aggregation;
     const skippedFields = ['id', 'incrementalId'];
 
     if (!needRefetch)
@@ -247,97 +246,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     if (!edges) return;
 
     const newCards = edges.map((e: any) => ({
-      ...this.settings.cards[0],
-      record: e.node,
-      layout: this.layout,
-      metadata: this.fields,
-    }));
-
-    this.cachedCards =
-      this.pageInfo.skip > 0 ? [...this.cachedCards, ...newCards] : newCards;
-
-    this.cards = this.settings.widgetDisplay?.usePagination
-      ? this.cachedCards.slice(
-          this.pageInfo.skip,
-          this.pageInfo.skip + this.pageInfo.first
-        )
-      : this.cachedCards;
-    this.pageInfo.totalCount = get(res.data[layoutQueryName], 'totalCount', 0);
-    this.pageInfo.hasNextPage = this.pageInfo.totalCount > this.cards.length;
-
-    this.loading = res.loading;
-  }
-
-  /**
-   * Handles the search on cards
-   *
-   * @param search search value
-   */
-  private handleSearch(search: string) {
-    // Only need to fetch data if is dynamic and not an aggregation
-    const needRefetch = this.settings.isDynamic && !this.isAggregation;
-    const skippedFields = ['id', 'incrementalId'];
-
-    if (!needRefetch)
-      this.cards = this.cachedCards.filter((card: any) => {
-        const data = clone(card.record || card.cardAggregationData || {});
-        skippedFields.forEach((field) => delete data[field]);
-        const recordValues = Object.values(data);
-        return recordValues.some(
-          (value) =>
-            (typeof value === 'string' &&
-              value.toLowerCase().includes(search.toLowerCase()) &&
-              !skippedFields.includes(value)) ||
-            (!isNaN(parseFloat(search)) &&
-              typeof value === 'number' &&
-              value === parseFloat(search))
-        );
-      });
-    else {
-      const filters: {
-        field: string;
-        operator: string;
-        value: string | number;
-      }[] = [];
-      this.fields.forEach((field) => {
-        if (skippedFields.includes(field.name)) return;
-        if (field?.type === 'text')
-          filters.push({
-            field: field.name,
-            operator: 'contains',
-            value: search,
-          });
-        if (field?.type === 'numeric' && !isNaN(parseFloat(search)))
-          filters.push({
-            field: field.name,
-            operator: 'eq',
-            value: parseFloat(search),
-          });
-      });
-      this.pageInfo.skip = 0;
-      this.dataQuery?.refetch({
-        skip: 0,
-        filter: {
-          logic: 'or',
-          filters,
-        },
-      });
-    }
-  }
-
-  /**
-   * Updates the cards from fetched custom query
-   *
-   * @param res Query result
-   */
-  private updateCards(res: any) {
-    if (!this.layout || !res?.data) return;
-    const layoutQueryName = this.layout.query.name;
-    const edges = res.data?.[layoutQueryName].edges;
-    if (!edges) return;
-
-    const newCards = edges.map((e: any) => ({
-      ...this.settings.cards[0],
+      ...this.settings.card,
       record: e.node,
       layout: this.layout,
       metadata: this.fields,
@@ -465,7 +374,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       ?.subscribe((res) => {
         if (!res.data?.recordsAggregation?.items) return;
         this.cachedCards = res.data.recordsAggregation.items.map((x: any) => ({
-          ...this.settings.cards[0],
+          ...this.settings.card,
           cardAggregationData: x,
         }));
         this.cards = this.cachedCards;
