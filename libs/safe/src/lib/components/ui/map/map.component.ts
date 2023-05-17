@@ -347,7 +347,7 @@ export class MapComponent
 
     // Add zoom control
     if (initMap) {
-      L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
+      L.control.zoom({ position: 'bottomright' }).addTo(this.map);
     }
     this.setMapControls(controls, initMap);
   }

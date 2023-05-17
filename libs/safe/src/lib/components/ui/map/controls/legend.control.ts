@@ -11,7 +11,7 @@ interface LegendControlOptions extends L.ControlOptions {
  */
 class LegendControl extends L.Control {
   public override options: LegendControlOptions = {
-    position: 'bottomright',
+    position: 'bottomleft',
     // layers: [],
   };
   private _map!: L.Map;
@@ -37,13 +37,19 @@ class LegendControl extends L.Control {
     this._map = map;
     const container: HTMLElement =
       this.options.container ||
-      L.DomUtil.create('div', 'leaflet-legend-control leaflet-bar p-2');
+      L.DomUtil.create(
+        'div',
+        'leaflet-legend-control leaflet-bar p-3 max-h-52 overflow-y-auto bg-white bg-clip-border'
+      );
     L.DomEvent.disableScrollPropagation(container).disableClickPropagation(
       container
     );
-    container.style.backgroundColor = 'white';
-    container.style.width = '300';
     container.innerHTML = this.innerHtml;
+    if (container.innerHTML) {
+      container.hidden = false;
+    } else {
+      container.hidden = true;
+    }
 
     (map as any).legendControl = this;
     return container;
@@ -51,22 +57,24 @@ class LegendControl extends L.Control {
 
   /** @returns inner html of container */
   get innerHtml() {
-    const title = document.createElement('div');
-    title.className = 'text-base font-bold';
-    title.innerHTML = 'Legend';
-
-    let legendHtml = '';
-    for (const layer in this.layers) {
-      const legend = get(this.layers, layer);
-      if (legend) {
-        legendHtml += legend;
-      }
-    }
-    if (legendHtml) {
+    if (this.layers) {
       const legend = document.createElement('div');
-      legend.className = 'flex flex-col gap-1';
-      legend.innerHTML = legendHtml;
-      return title.outerHTML + legend.outerHTML;
+      legend.className = 'flex flex-col gap-2';
+
+      for (const layer in this.layers) {
+        const legendTxt = get(this.layers, layer);
+        if (legendTxt) {
+          const div = document.createElement('div');
+          div.style.maxWidth = '150px';
+          div.innerHTML = legendTxt;
+          legend.appendChild(div);
+        }
+      }
+      if (legend.innerHTML) {
+        return legend.outerHTML;
+      } else {
+        return '';
+      }
     } else {
       return '';
     }
@@ -102,6 +110,11 @@ class LegendControl extends L.Control {
       return;
     }
     container.innerHTML = this.innerHtml;
+    if (container.innerHTML) {
+      container.hidden = false;
+    } else {
+      container.hidden = true;
+    }
   }
 }
 

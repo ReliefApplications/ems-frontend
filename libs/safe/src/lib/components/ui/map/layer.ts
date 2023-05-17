@@ -912,7 +912,7 @@ export class Layer implements LayerModel {
       }
     }
     if (html) {
-      html = `<div class="font-bold">${this.name}</div>` + html;
+      html = `<div class="font-bold truncate">${this.name}</div>` + html;
     }
     return html;
   }
