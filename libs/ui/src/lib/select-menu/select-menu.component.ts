@@ -4,20 +4,17 @@ import {
   Input,
   Output,
   EventEmitter,
-  HostListener,
   TemplateRef,
   ContentChildren,
   QueryList,
   AfterViewInit,
   OnDestroy,
+  Renderer2,
+  ElementRef,
 } from '@angular/core';
-import {
-  ControlValueAccessor,
-  FormControl,
-  NG_VALUE_ACCESSOR,
-} from '@angular/forms';
-import { SelectOptionComponent } from './select-option/select-option.component';
-import { Subject, takeUntil } from 'rxjs';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { SelectOptionComponent } from './components/select-option.component';
+import { Subject, startWith, takeUntil } from 'rxjs';
 
 /**
  * UI Select Menu component
@@ -37,8 +34,6 @@ import { Subject, takeUntil } from 'rxjs';
 export class SelectMenuComponent
   implements ControlValueAccessor, AfterViewInit, OnDestroy
 {
-  @ContentChildren(SelectOptionComponent, { descendants: true })
-  options!: QueryList<SelectOptionComponent>;
   // Tells if the select menu should allow multi selection
   @Input() multiselect = false;
   // Tells if the select menu should be disabled
@@ -46,6 +41,7 @@ export class SelectMenuComponent
   // Any custom template provided for display
   @Input()
   customTemplate!: TemplateRef<any>;
+
   // Emits when the list is opened
   @Output() opened = new EventEmitter<void>();
   // Emits when the list is closed
@@ -53,43 +49,62 @@ export class SelectMenuComponent
   // Emits the list of the selected options
   @Output() selectedOption = new EventEmitter<string[]>();
 
-  // Form control to get the values selected
-  public selectionControl = new FormControl(new Array<string>());
+  @ContentChildren(SelectOptionComponent, { descendants: true })
+  optionList!: QueryList<SelectOptionComponent>;
+
+  // Array to store the values selected
+  public selectedValues: any[] = [];
   // True if the box is focused, false otherwise
   public listBoxFocused = false;
   // Text to be displayed in the trigger when some selections are made
   public displayTrigger = '';
 
   private destroy$ = new Subject<void>();
-
+  private clickOutsideListener!: any;
   //Control access value functions
   onChange!: (value: any) => void;
   onTouch!: () => void;
 
   /**
-   * Check the focusout to automatically close the select list
+   * Ui Select constructor
    *
-   * @param event focusout event
+   * @param el Host element reference
+   * @param renderer Renderer2
    */
-  @HostListener('focusout', ['$event'])
-  onFocusout(event: any) {
-    if (
-      event?.relatedTarget === null ||
-      event?.relatedTarget?.role !== 'option'
-    ) {
-      this.closeListBox();
-    }
-  }
+  constructor(private el: ElementRef, private renderer: Renderer2) {}
 
   ngAfterViewInit(): void {
-    this.options.forEach((option: SelectOptionComponent) => {
+    this.clickOutsideListener = this.renderer.listen(
+      window,
+      'click',
+      (event) => {
+        if (!this.el.nativeElement.contains(event.target)) {
+          this.closeListBox();
+        }
+      }
+    );
+    this.optionList.forEach((option: SelectOptionComponent) => {
       option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
         next: (isSelected: boolean) => {
-          this.updateFormControl(option, isSelected);
+          this.updateSelectedValues(option, isSelected);
           this.onChangeFunction();
         },
       });
     });
+    // Initialize any selected values
+    this.optionList?.changes
+      .pipe(startWith(this.optionList), takeUntil(this.destroy$))
+      .subscribe({
+        next: (options: QueryList<SelectOptionComponent>) => {
+          options.forEach((option) => {
+            if (this.selectedValues.includes(option.value)) {
+              option.selected = true;
+            } else {
+              option.selected = false;
+            }
+          });
+        },
+      });
   }
 
   /**
@@ -99,7 +114,7 @@ export class SelectMenuComponent
    */
   writeValue(value: string[]): void {
     if (value) {
-      this.selectionControl.setValue([...value], { emitEvent: false });
+      this.selectedValues = [...value];
       this.setDisplayTriggerText();
     }
   }
@@ -128,16 +143,15 @@ export class SelectMenuComponent
    * Emit selectedOption output, change trigger text and deal with control access value when an element of the list is clicked
    */
   onChangeFunction() {
-    if (this.selectionControl.value) {
-      // Emit the list of values selected as an output
-      this.selectedOption.emit(this.selectionControl.value ?? []);
-      this.setDisplayTriggerText();
-      // Manage control access value
-      if (this.onChange && this.onTouch) {
-        this.onChange(this.selectionControl.value);
-        this.onTouch();
-      }
+    // Emit the list of values selected as an output
+    this.setDisplayTriggerText();
+    // Manage control access value
+    if (this.onChange && this.onTouch) {
+      this.onChange(this.selectedValues);
+      this.onTouch();
     }
+
+    this.selectedOption.emit(this.selectedValues);
     // If no multiselect, close list after selection
     if (!this.multiselect) {
       this.closeListBox();
@@ -168,15 +182,15 @@ export class SelectMenuComponent
   /** Builds the text displayed from selected options */
   private setDisplayTriggerText() {
     // Adapt the text to be displayed in the trigger if no custom template for display is provided
-    if (this.selectionControl?.value) {
+    if (this.selectedValues?.length) {
       if (!this.customTemplate) {
-        if (this.selectionControl.value.length === 1) {
-          this.displayTrigger = this.selectionControl.value[0];
-        } else if (this.selectionControl.value.length >= 1) {
+        if (this.selectedValues.length === 1) {
+          this.displayTrigger = this.selectedValues[0];
+        } else if (this.selectedValues.length >= 1) {
           this.displayTrigger =
-            this.selectionControl.value[0] +
+            this.selectedValues[0] +
             ' (+' +
-            (this.selectionControl.value.length - 1) +
+            (this.selectedValues.length - 1) +
             ' others)';
         } else {
           this.displayTrigger = '';
@@ -195,25 +209,35 @@ export class SelectMenuComponent
   /**
    * Updated the form control value on optionClick event
    *
-   * @param {SelectOptionComponent} option option clicked
+   * @param {SelectOptionComponent} selectedOption option clicked
    * @param {boolean} selected if the option as selected or unselected
    */
-  private updateFormControl(
-    option: SelectOptionComponent,
+  private updateSelectedValues(
+    selectedOption: SelectOptionComponent,
     selected: boolean
   ): void {
     if (selected) {
       if (!this.multiselect) {
-        this.selectionControl.setValue([]);
+        // Reset any other selected option
+        this.optionList.forEach((option: SelectOptionComponent) => {
+          if (selectedOption.value !== option.value) {
+            option.selected = false;
+          }
+        });
+        this.selectedValues = [selectedOption.value];
+      } else {
+        this.selectedValues = [...this.selectedValues, selectedOption.value];
       }
-      this.selectionControl.value?.push(option.value);
     } else {
-      const index = this.selectionControl.value?.indexOf(option.value) ?? 0;
-      this.selectionControl.value?.splice(index, 1);
+      const index = this.selectedValues?.indexOf(selectedOption.value) ?? 0;
+      this.selectedValues?.splice(index, 1);
     }
   }
 
   ngOnDestroy(): void {
+    if (this.clickOutsideListener) {
+      this.clickOutsideListener();
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }
