@@ -52,6 +52,13 @@ const panelOptions: PanelOption[] = [
 ];
 
 /**
+ * Test panel close
+ */
+const onClose = () => {
+  console.log('panel closed');
+};
+
+/**
  * Template expansion panel group
  *
  * @param {ExpansionPanelComponent} args args
@@ -70,6 +77,7 @@ const Template: StoryFn<ExpansionPanelComponent> = (
           [displayIcon]="${args.displayIcon}" 
           [expanded]="panel.expanded"
           [index]="i"
+          (closePanel)="onClose()"
         >
           <ng-container ngProjectAs="title">
             {{panel.title}}
@@ -81,6 +89,7 @@ const Template: StoryFn<ExpansionPanelComponent> = (
     props: {
       ...args,
       panelOptions,
+      onClose,
     },
   };
 };
@@ -112,6 +121,7 @@ const TemplateMulti: StoryFn<ExpansionPanelComponent> = (
           [displayIcon]="${args.displayIcon}" 
           [expanded]="panel.expanded"
           [index]="i"
+          (closePanel)="onClose()"
         >
           <ng-container ngProjectAs="title">
             {{panel.title}}
@@ -123,6 +133,7 @@ const TemplateMulti: StoryFn<ExpansionPanelComponent> = (
     props: {
       ...args,
       panelOptions,
+      onClose,
     },
   };
 };
