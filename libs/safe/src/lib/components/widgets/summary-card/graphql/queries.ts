@@ -32,7 +32,7 @@ export const GET_RECORD_BY_ID = gql`
 export interface GetRecordByIdQueryResponse {
   record: Record;
 }
-
+ 
 /** Graphql request for getting resource meta date for a grid */
 export const GET_RESOURCE_LAYOUTS = gql`
   query GetResource($id: ID!) {
@@ -72,3 +72,21 @@ export const GET_RESOURCE_METADATA = gql`
 export interface GetResourceMetadataQueryResponse {
   resource: Resource;
 }
+
+
+// === GET USER ===
+export const USER_FIELDS = gql`
+  fragment UserFields on User {
+    username
+  }
+`;
+/** Graphql request for getting users (optionnally by a list of application ids) */
+export const GET_USER = gql`
+  query GetUser($id: ID!) {
+    user(id: $id) {
+      ...UserFields
+    }
+  }
+  ${USER_FIELDS}
+`;
+
