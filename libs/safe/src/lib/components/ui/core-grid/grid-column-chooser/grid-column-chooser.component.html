@@ -1,20 +1,17 @@
 <div class="max-h-80 overflow-auto mt-1">
   <div class="flex justify-center">
-    <safe-button
+    <button
       kendoButton
       (click)="uncheckAllCheckboxes()"
-      icon="deselect"
-      [matTooltip]="'kendo.editor.unselectAll' | translate"
-    ></safe-button>
-    <safe-button
+    >{{'kendo.editor.unselectAll' | translate}}</button>
+    <button
       kendoButton
       (click)="checkAllCheckboxes()"
-      icon="select_all"
       [matTooltip]="'kendo.editor.selectAll' | translate"
-    ></safe-button>
+    >{{'kendo.editor.selectAll' | translate}}</button>
   </div>
 
-  <safe-divider class="mb-0 mt-px"></safe-divider>
+  <safe-divider class="mb-0 mt-1"></safe-divider>
 
   <div *ngFor="let column of columns">
     <ng-container *ngIf="column.title">
