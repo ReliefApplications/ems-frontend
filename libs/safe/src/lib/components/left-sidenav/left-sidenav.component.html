@@ -50,24 +50,23 @@
                 class="nav-actions items-center"
                 *ngIf="item.action || item.orderable"
               >
-                <button
-                  mat-icon-button
+                <ui-button
+                  [isIcon]="true"
                   class="nav-action"
                   *ngIf="item.action"
                   (click)="onClick(item.action.callback, $event)"
+                  icon="item.action.toolTip"
+                  uiTooltip="{{ item.action.toolTip }}"
                 >
-                  <mat-icon uiTooltip="{{ item.action.toolTip }}">{{
-                    item.action.icon
-                  }}</mat-icon>
-                </button>
-                <button
-                  mat-icon-button
+                </ui-button>
+                <ui-button
                   cdkDragHandle
                   class="nav-item-handle"
                   *ngIf="item.orderable"
+                  [isIcon]="true"
+                  icon="drag_indicator"
                 >
-                  <mat-icon>drag_indicator</mat-icon>
-                </button>
+                </ui-button>
               </div>
             </li>
             <!-- Preview when dragging element -->

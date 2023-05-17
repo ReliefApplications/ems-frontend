@@ -14,9 +14,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { SafeIconModule } from '@oort-front/safe';
 import { GridModule } from '@progress/kendo-angular-grid';
-import { TooltipModule } from '@oort-front/ui';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
-import { ButtonModule as UiButtonModule } from '@oort-front/ui';
+import { TooltipModule, ButtonModule as UiButtonModule } from '@oort-front/ui';
 
 /**
  * Reference Data page module.

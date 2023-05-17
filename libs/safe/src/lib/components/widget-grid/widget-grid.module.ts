@@ -8,7 +8,6 @@ import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MenuModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeFloatingOptionsComponent } from './floating-options/floating-options.component';
 import { SafeTileDataComponent } from './floating-options/menu/tile-data/tile-data.component';
@@ -20,7 +19,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { DividerModule, ButtonModule } from '@oort-front/ui';
+import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
 
 /** Module for the widget-related components */
 @NgModule({

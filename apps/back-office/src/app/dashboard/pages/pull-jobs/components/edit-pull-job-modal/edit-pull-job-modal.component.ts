@@ -50,10 +50,9 @@ import {
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { TooltipModule } from '@oort-front/ui';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { ButtonModule, Variant, Category } from '@oort-front/ui';
+import { TooltipModule, ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;

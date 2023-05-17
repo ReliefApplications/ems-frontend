@@ -30,15 +30,14 @@
     </h1>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
-    <button
-      mat-button
+    <ui-button
+      icon="arrow_drop_down"
       (click)="showAppMenu = !showAppMenu"
       cdkOverlayOrigin
       #appMenuTrigger="cdkOverlayOrigin"
     >
       {{ theme.prefix }} {{ title }}
-      <mat-icon>arrow_drop_down</mat-icon>
-    </button>
+    </ui-button>
     <ng-template
       cdkConnectedOverlay
       [cdkConnectedOverlayOrigin]="appMenuTrigger"

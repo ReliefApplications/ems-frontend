@@ -11,7 +11,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { ToggleModule } from '@oort-front/ui';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePaletteControlModule } from '../../../palette-control/palette-control.module';
@@ -23,8 +22,7 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { SeriesSettingsModule } from '../series-settings/series-settings.module';
-import { TooltipModule, DividerModule } from '@oort-front/ui';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, ToggleModule, TooltipModule, DividerModule } from '@oort-front/ui';
 
 /**
  * Display tab of chart settings modal.

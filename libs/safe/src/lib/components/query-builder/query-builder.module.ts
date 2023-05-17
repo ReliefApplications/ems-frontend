@@ -14,7 +14,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { TooltipModule } from '@oort-front/ui';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -23,7 +22,6 @@ import { LabelModule } from '@progress/kendo-angular-label';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { SafeQueryStyleListComponent } from './tab-style/query-style-list/query-style-list.component';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MenuModule } from '@oort-front/ui';
 import { SafeQueryStyleComponent } from './tab-style/query-style/query-style.component';
 import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/query-style-preview.component';
 import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
@@ -36,7 +34,7 @@ import { SafeFilterModule } from '../filter/filter.module';
 import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { SafeAlertModule } from '../ui/alert/alert.module';
-import { RadioModule, ButtonModule } from '@oort-front/ui';
+import { MenuModule, TooltipModule, RadioModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * SafeQueryBuilderModule is a class used to manage all the modules and components

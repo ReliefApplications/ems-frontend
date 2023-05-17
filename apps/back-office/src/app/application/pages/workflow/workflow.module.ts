@@ -16,9 +16,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeSearchMenuModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule } from '@oort-front/ui';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, MenuModule } from '@oort-front/ui';
 
 /**
  * Application workflow page module.

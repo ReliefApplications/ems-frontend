@@ -25,8 +25,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { ButtonModule, Variant, Category } from '@oort-front/ui';
-import { RadioModule } from '@oort-front/ui';
+import { RadioModule, ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /**
  * An interface to define the structure of the data displayed in the modal

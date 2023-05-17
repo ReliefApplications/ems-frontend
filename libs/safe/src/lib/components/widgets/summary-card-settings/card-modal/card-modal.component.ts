@@ -31,7 +31,6 @@ import { SafeAggregationService } from '../../../../services/aggregation/aggrega
 import { CommonModule } from '@angular/common';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { TooltipModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -42,7 +41,7 @@ import { SafeDisplayTabModule } from './display-tab/display.module';
 import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
 import { SafePreviewTabModule } from './preview-tab/preview.module';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
-import { ButtonModule, Variant, Category } from '@oort-front/ui';
+import { TooltipModule, ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /**
  * Card modal component.

@@ -31,10 +31,10 @@
   </mat-tree-node> -->
 
   <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-    <!-- @TODO check matTreeNodeToggle -->
     <ui-button
       [attr.aria-label]="'Toggle ' + node.item"
       icon="{{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}"
+      matTreeNodeToggle
     >
       <mat-icon class="mat-icon-rtl-mirror">
         {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { AggregationsTabRoutingModule } from './aggregations-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -15,7 +14,7 @@ import {
 } from '@oort-front/safe';
 import { AggregationsTabComponent } from './aggregations-tab.component';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
-import { ButtonModule } from '@oort-front/ui';
+import { MenuModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * Aggregations tab of resource page

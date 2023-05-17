@@ -28,8 +28,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { ButtonModule } from '@oort-front/ui';
-import { Variant, Category } from '@oort-front/ui';
+import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
 /** Model for the data input */
 interface DialogData {
