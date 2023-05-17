@@ -6,6 +6,7 @@ import {
   ElementRef,
   EventEmitter,
   OnDestroy,
+  OnInit,
   Output,
   QueryList,
   Renderer2,
@@ -21,7 +22,7 @@ import { Observable, Subject, filter, merge, startWith, takeUntil } from 'rxjs';
   selector: '[uiTableWrapper]',
 })
 export class TableWrapperDirective
-  implements AfterContentInit, AfterViewInit, OnDestroy
+  implements OnInit, AfterContentInit, AfterViewInit, OnDestroy
 {
   @Output() sortChange = new EventEmitter<TableSort>();
 
@@ -68,7 +69,9 @@ export class TableWrapperDirective
    * @param el Directive host element
    * @param renderer Renderer2
    */
-  constructor(private el: ElementRef, private renderer: Renderer2) {
+  constructor(private el: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
     if (!(this.el.nativeElement instanceof HTMLTableElement)) {
       throw new Error('Directive could only be applied to an HTMLTableElement');
     }
@@ -100,11 +103,13 @@ export class TableWrapperDirective
       this.renderer.addClass(tableBody, tbClass);
     });
     tableHeaders.forEach((th: any) => {
+      console.log(th);
       this.tableHeaderClasses.forEach((hClass) => {
         this.renderer.addClass(th, hClass);
       });
     });
     tableData.forEach((tr: any) => {
+      // console.log(tr);
       this.tableRowClasses.forEach((rClass) => {
         this.renderer.addClass(tr, rClass);
       });
