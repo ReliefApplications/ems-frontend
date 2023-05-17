@@ -4,6 +4,7 @@ import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/materia
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { TemplateTypeEnum } from '../../models/template.model';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 
 /**
  * A component to display the list of templates of an application
@@ -28,8 +29,13 @@ export class SafeTemplatesComponent implements OnInit {
    *
    * @param dialog The material dialog service
    * @param translate The translation service
+   * @param snackBar Shared snackbar service
    */
-  constructor(public dialog: MatDialog, private translate: TranslateService) {}
+  constructor(
+    public dialog: MatDialog,
+    private translate: TranslateService,
+    private snackBar: SafeSnackBarService
+  ) {}
 
   ngOnInit(): void {
     this.applicationService.application$.subscribe((value) => {
@@ -51,7 +57,7 @@ export class SafeTemplatesComponent implements OnInit {
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe((value) => {
-      if (value)
+      if (value) {
         this.applicationService.editTemplate({
           id: template.id,
           name: value.name,
@@ -61,6 +67,13 @@ export class SafeTemplatesComponent implements OnInit {
             body: value.body,
           },
         });
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectUpdated', {
+            value: value.name,
+            type: this.translate.instant('common.template.one'),
+          })
+        );
+      }
     });
   }
 
@@ -92,6 +105,11 @@ export class SafeTemplatesComponent implements OnInit {
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.applicationService.deleteTemplate(template.id);
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectDeleted', {
+            value: template.name,
+          })
+        );
       }
     });
   }
@@ -105,7 +123,7 @@ export class SafeTemplatesComponent implements OnInit {
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe((value) => {
-      if (value)
+      if (value) {
         this.applicationService.addTemplate({
           name: value.name,
           type: TemplateTypeEnum.EMAIL,
@@ -114,6 +132,13 @@ export class SafeTemplatesComponent implements OnInit {
             body: value.body,
           },
         });
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectCreated', {
+            value: value.name,
+            type: this.translate.instant('common.template.one'),
+          })
+        );
+      }
     });
   }
 }
