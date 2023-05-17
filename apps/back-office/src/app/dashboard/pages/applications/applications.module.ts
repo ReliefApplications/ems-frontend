@@ -7,10 +7,9 @@ import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MenuModule } from '@oort-front/ui';
+import { MenuModule, UiModule } from '@oort-front/ui';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import {
   SafeAccessModule,
   SafeButtonModule,
@@ -45,7 +44,6 @@ import { AbilityModule } from '@casl/angular';
     MatInputModule,
     MatSelectModule,
     MatProgressSpinnerModule,
-    MatTableModule,
     MatSortModule,
     MatDialogModule,
     MenuModule,
@@ -65,6 +63,7 @@ import { AbilityModule } from '@casl/angular';
     SafeModalModule,
     DividerModule,
     AbilityModule,
+    UiModule,
   ],
   exports: [ApplicationsComponent],
 })

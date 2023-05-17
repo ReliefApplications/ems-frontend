@@ -2,35 +2,37 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <mat-table
+    <table
+      cdk-table
+      uiTableWrapper
       [dataSource]="styles"
       cdkDropList
       (cdkDropListDropped)="drop($event)"
       [cdkDropListData]="styles"
     >
-      <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="name">
+        <th cdk-header-cell *cdkHeaderCellDef scope="col">
           {{ 'common.name' | translate }}
-        </mat-header-cell>
-        <mat-cell *matCellDef="let element" class="font-bold">
+        </th>
+        <td cdk-cell *cdkCellDef="let element" class="font-bold">
           {{ element.name }}
-        </mat-cell>
+        </td>
       </ng-container>
 
-      <ng-container matColumnDef="preview">
-        <mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="preview">
+        <th cdk-header-cell *cdkHeaderCellDef scope="col">
           {{ 'common.preview' | translate }}
-        </mat-header-cell>
-        <mat-cell *matCellDef="let element">
+        </th>
+        <td cdk-cell *cdkCellDef="let element">
           <safe-query-style-preview
             [style]="element"
           ></safe-query-style-preview>
-        </mat-cell>
+        </td>
       </ng-container>
 
-      <ng-container matColumnDef="_actions" [stickyEnd]="true">
-        <mat-header-cell *matHeaderCellDef class="w-16"></mat-header-cell>
-        <mat-cell *matCellDef="let element; let i = index">
+      <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
+        <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td cdk-cell *cdkCellDef="let element; let i = index">
           <safe-button
             [isIcon]="true"
             icon="more_vert"
@@ -48,15 +50,16 @@
               {{ 'common.delete' | translate }}
             </button>
           </ui-menu>
-        </mat-cell>
+        </td>
       </ng-container>
 
-      <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
-      <mat-row
-        *matRowDef="let row; columns: columns"
+      <tr cdk-header-row *cdkHeaderRowDef="columns"></tr>
+      <tr
+        cdk-row
+        *cdkRowDef="let row; columns: columns"
         cdkDrag
         [cdkDragData]="row"
-      ></mat-row>
-    </mat-table>
+      ></tr>
+    </table>
   </div>
 </div>

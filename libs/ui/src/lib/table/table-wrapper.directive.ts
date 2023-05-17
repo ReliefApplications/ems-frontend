@@ -30,7 +30,7 @@ export class TableWrapperDirective
   private sortableColumns!: QueryList<TableHeaderSortDirective>;
 
   private tableWrapperClasses = [
-    'overflow-hidden',
+    'overflow-x-auto',
     'shadow',
     'border',
     'py-2',
@@ -103,13 +103,11 @@ export class TableWrapperDirective
       this.renderer.addClass(tableBody, tbClass);
     });
     tableHeaders.forEach((th: any) => {
-      console.log(th);
       this.tableHeaderClasses.forEach((hClass) => {
         this.renderer.addClass(th, hClass);
       });
     });
     tableData.forEach((tr: any) => {
-      // console.log(tr);
       this.tableRowClasses.forEach((rClass) => {
         this.renderer.addClass(tr, rClass);
       });

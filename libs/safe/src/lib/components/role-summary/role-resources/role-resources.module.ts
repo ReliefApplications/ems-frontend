@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RoleResourcesComponent } from './role-resources.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../../pipes/date/date.module';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../../../components/skeleton/skeleton-table/skeleton-table.module';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
-import { TooltipModule } from '@oort-front/ui';
+import { TooltipModule, UiModule } from '@oort-front/ui';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { FilterComponent } from '../role-resources-filter/role-resources-filter.component';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -34,7 +33,6 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
   ],
   imports: [
     CommonModule,
-    MatTableModule,
     TooltipModule,
     MatPaginatorModule,
     TranslateModule,
@@ -52,6 +50,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
     MatProgressSpinnerModule,
     SafeFilterModule,
     MatSelectModule,
+    UiModule,
   ],
   exports: [RoleResourcesComponent],
 })

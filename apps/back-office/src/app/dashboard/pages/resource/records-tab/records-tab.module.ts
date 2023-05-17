@@ -4,9 +4,8 @@ import { RecordsTabRoutingModule } from './records-tab-routing.module';
 import { RecordsTabComponent } from './records-tab.component';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule } from '@oort-front/ui';
+import { MenuModule, UiModule } from '@oort-front/ui';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -24,7 +23,6 @@ import { UploadMenuModule } from '../../../../components/upload-menu/upload-menu
   imports: [
     CommonModule,
     RecordsTabRoutingModule,
-    MatTableModule,
     MatIconModule,
     MenuModule,
     SafeButtonModule,
@@ -35,6 +33,7 @@ import { UploadMenuModule } from '../../../../components/upload-menu/upload-menu
     UploadMenuModule,
     SafeSkeletonTableModule,
     SafeEmptyModule,
+    UiModule,
   ],
 })
 export class RecordsTabModule {}

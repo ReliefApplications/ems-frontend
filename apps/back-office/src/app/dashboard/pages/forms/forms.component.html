@@ -26,8 +26,15 @@
       [dataSource]="forms"
     >
       <ng-container cdkColumnDef="name">
-        <th cdk-header-cell uiTableHeaderSort="name" *cdkHeaderCellDef scope="col">
+        <th
+          cdk-header-cell
+          uiTableHeaderSort="name"
+          *cdkHeaderCellDef
+          scope="col"
+        >
+          <span class="headerTitle">
             {{ 'common.name' | translate }}
+          </span>
         </th>
         <td cdk-cell *cdkCellDef="let element" class="font-bold">
           {{ element.name }}
@@ -35,8 +42,15 @@
       </ng-container>
 
       <ng-container cdkColumnDef="createdAt">
-        <th uiTableHeaderSort="createdAt" cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th
+          uiTableHeaderSort="createdAt"
+          cdk-header-cell
+          *cdkHeaderCellDef
+          scope="col"
+        >
+          <span class="headerTitle">
             {{ 'common.createdOn' | translate }}
+          </span>
         </th>
         <td cdk-cell *cdkCellDef="let element">
           {{ element.createdAt | safeDate }}
@@ -44,7 +58,11 @@
       </ng-container>
 
       <ng-container cdkColumnDef="status">
-        <th uiTableHeaderSort="status" cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th
+          cdk-header-cell
+          *cdkHeaderCellDef
+          scope="col"
+        >
           <span class="headerTitle">
             {{ 'common.status' | translate }}
           </span>
@@ -79,22 +97,40 @@
       </ng-container>
 
       <ng-container cdkColumnDef="versionsCount">
-        <th uiTableHeaderSort="versionsCount" cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th
+          cdk-header-cell
+          *cdkHeaderCellDef
+          scope="col"
+        >
+          <span class="headerTitle">
             {{ 'common.history' | translate }}
+          </span>
         </th>
         <td cdk-cell *cdkCellDef="let element">{{ element.versionsCount }}</td>
       </ng-container>
 
       <ng-container cdkColumnDef="recordsCount">
-        <th uiTableHeaderSort="recordsCount" cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th
+          cdk-header-cell
+          *cdkHeaderCellDef
+          scope="col"
+        >
+          <span class="headerTitle">
             {{ 'common.record.few' | translate }}
+          </span>
         </th>
         <td cdk-cell *cdkCellDef="let element">{{ element.recordsCount }}</td>
       </ng-container>
 
       <ng-container cdkColumnDef="core">
-        <th uiTableHeaderSort="core" cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th
+          cdk-header-cell
+          *cdkHeaderCellDef
+          scope="col"
+        >
+          <span class="headerTitle">
             {{ 'components.forms.isCore' | translate }}
+          </span>
         </th>
         <td cdk-cell *cdkCellDef="let element">
           <mat-chip-list *ngIf="element.core">
@@ -106,8 +142,14 @@
       </ng-container>
 
       <ng-container cdkColumnDef="parentForm">
-        <th uiTableHeaderSort="parentForm" cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th
+          cdk-header-cell
+          *cdkHeaderCellDef
+          scope="col"
+        >
+          <span class="headerTitle">
             {{ 'components.forms.parent' | translate }}
+          </span>
         </th>
         <td cdk-cell *cdkCellDef="let element">
           <safe-button
@@ -120,7 +162,12 @@
       </ng-container>
 
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th uiTableHeaderSort="actions" cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <th
+          cdk-header-cell
+          *cdkHeaderCellDef
+          scope="col"
+          class="w-16"
+        ></th>
         <td cdk-cell *cdkCellDef="let element">
           <safe-button
             [isIcon]="true"
@@ -165,7 +212,7 @@
         </td>
       </ng-container>
 
-      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns" class="align-middle"></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr
         cdk-row
         *cdkRowDef="let row; columns: displayedColumns"

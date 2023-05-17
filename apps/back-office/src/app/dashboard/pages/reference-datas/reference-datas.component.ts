@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatSort } from '@angular/material/sort';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -27,6 +26,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { TableSort } from '@oort-front/ui';
 
 /** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
@@ -57,7 +57,7 @@ export class ReferenceDatasComponent
   public cachedReferenceDatas: ReferenceData[] = [];
 
   // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
+  sort?: TableSort;
 
   // === FILTERS ===
   public searchText = '';
@@ -309,7 +309,17 @@ export class ReferenceDatasComponent
    * Sets the sort in the view.
    */
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort || null;
+    console.log('Sort not working cause no equivalent for MatTableDataSource');
+    // this.dataSource.sort = this.sort || null;
+  }
+
+  /**
+   * Handle sort change.
+   *
+   * @param event sort event
+   */
+  onSort(event: TableSort): void {
+    this.sort = event;
   }
 
   /**

@@ -16,21 +16,21 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" mat-table [dataSource]="distributionLists" matSort>
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="distributionLists">
+      <ng-container cdkColumnDef="name">
+        <th cdk-header-cell *cdkHeaderCellDef>
+          <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element" class="font-bold">
+        <td cdk-cell *cdkCellDef="let element" class="font-bold">
           {{ element.name }}
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="w-16"></th>
-        <td mat-cell *matCellDef="let element">
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th cdk-header-cell *cdkHeaderCellDef class="w-16"></th>
+        <td cdk-cell *cdkCellDef="let element">
           <safe-button
             [isIcon]="true"
             icon="more_vert"
@@ -52,8 +52,8 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+      <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
     </table>
     <safe-skeleton-table
       *ngIf="loading"

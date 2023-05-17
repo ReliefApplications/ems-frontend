@@ -14,7 +14,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { TooltipModule } from '@oort-front/ui';
+import { TooltipModule, UiModule } from '@oort-front/ui';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -22,7 +22,6 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { SafeQueryStyleListComponent } from './tab-style/query-style-list/query-style-list.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MenuModule } from '@oort-front/ui';
 import { SafeQueryStyleComponent } from './tab-style/query-style/query-style.component';
 import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/query-style-preview.component';
@@ -64,7 +63,6 @@ import { RadioModule } from '@oort-front/ui';
     MatInputModule,
     MatTabsModule,
     MenuModule,
-    MatTableModule,
     DragDropModule,
     MatButtonModule,
     MatIconModule,
@@ -85,6 +83,7 @@ import { RadioModule } from '@oort-front/ui';
     EditorModule,
     SafeAlertModule,
     RadioModule,
+    UiModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

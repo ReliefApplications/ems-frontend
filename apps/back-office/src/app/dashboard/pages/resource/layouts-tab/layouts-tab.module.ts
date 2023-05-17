@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LayoutsTabRoutingModule } from './layouts-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule } from '@oort-front/ui';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
+import { MenuModule, UiModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
@@ -23,7 +22,6 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
   imports: [
     CommonModule,
     LayoutsTabRoutingModule,
-    MatTableModule,
     MatIconModule,
     MenuModule,
     SafeButtonModule,
@@ -33,6 +31,7 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
     SafeSkeletonTableModule,
     MatPaginatorModule,
     SafeEmptyModule,
+    UiModule,
   ],
 })
 export class LayoutsTabModule {}

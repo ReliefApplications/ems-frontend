@@ -80,25 +80,31 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" mat-table [dataSource]="dataSource" matSort>
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+    <table
+      *ngIf="!loading"
+      cdk-table
+      uiTableWrapper
+      (sortChange)="onSort($event)"
+      [dataSource]="dataSource"
+    >
+      <ng-container cdkColumnDef="name">
+        <th uiTableHeaderSort="name" cdk-header-cell *cdkHeaderCellDef>
+          <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element" class="font-bold">
+        <td cdk-cell *cdkCellDef="let element" class="font-bold">
           {{ element.name }}
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="status">
+        <th uiTableHeaderSort="status" cdk-header-cell *cdkHeaderCellDef>
+          <span class="headerTitle">
             {{ 'common.status' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td cdk-cell *cdkCellDef="let element">
           <mat-chip-list>
             <mat-chip
               class="success-chip !rounded-lg"
@@ -127,18 +133,18 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="authType">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="authType">
+        <th uiTableHeaderSort="authType" cdk-header-cell *cdkHeaderCellDef>
+          <span class="headerTitle">
             {{ 'models.apiConfiguration.authType' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.authType }}</td>
+        <td cdk-cell *cdkCellDef="let element">{{ element.authType }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-        <td mat-cell *matCellDef="let element">
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th cdk-header-cell *cdkHeaderCellDef class="w-16"></th>
+        <td cdk-cell *cdkCellDef="let element">
           <safe-button
             [isIcon]="true"
             icon="more_vert"
@@ -160,10 +166,10 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
+        cdk-row
+        *cdkRowDef="let row; columns: displayedColumns"
         class="cursor-pointer"
         [routerLink]="['/settings/apiconfigurations', row.id]"
       ></tr>
