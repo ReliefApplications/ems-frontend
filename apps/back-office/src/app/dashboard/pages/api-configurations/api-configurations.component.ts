@@ -337,6 +337,8 @@ export class ApiConfigurationsComponent
       this.pageInfo.pageSize * this.pageInfo.pageIndex,
       this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
     );
+    console.log('source date update values :');
+    console.log(this.dataSource.data);
     this.pageInfo.length = data.apiConfigurations.totalCount;
     this.pageInfo.endCursor = data.apiConfigurations.pageInfo.endCursor;
     this.loading = loading;
@@ -357,58 +359,119 @@ export class ApiConfigurationsComponent
    */
   onSort(event: TableSort): void {
     this.sort = event;
-    this.fetchAPIConfigurations(true);
-  }
-
-  /**
-   * Update forms query.
-   *
-   * @param refetch erase previous query results
-   */
-  private fetchAPIConfigurations(refetch?: boolean): void {
-    console.log('I was there');
-
-    const variables = {
-      first: this.pageInfo.pageSize,
-      afterCursor: refetch ? null : this.pageInfo.endCursor,
-      sortField:
-        (this.sort?.sortDirection && this.sort.active) !== ''
-          ? this.sort?.sortDirection && this.sort.active
-          : 'name',
-      sortOrder: this.sort?.sortDirection,
-    };
-
-    const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
-      this.apollo.client,
-      GET_API_CONFIGURATIONS,
-      variables
-    );
-    console.log(cachedValues);
-    if (refetch) {
-      this.cachedApiConfigurations = [];
-      this.pageInfo.pageIndex = 0;
-      console.log('A');
-    }
-    if (cachedValues) {
-      this.updateValues(cachedValues, false);
-      console.log('B');
-    } else {
-      if (refetch) {
-        this.apiConfigurationsQuery.refetch(variables);
-        console.log('D');
-      } else {
-        console.log('E');
-        this.apiConfigurationsQuery
-          .fetchMore({
-            variables,
-          })
-          .then(
-            (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
-              console.log('F');
-              this.updateValues(results.data, results.loading);
+    // this.fetchAPIConfigurations(true);
+    if (this.sort.sortDirection !== '') {
+      this.dataSource.data = this.dataSource.data.sort((row1, row2) => {
+        let compareValue = 0;
+        if (this.sort?.active === 'name') {
+          const row1Value = row1.name;
+          const row2Value = row2.name;
+          if (typeof row1Value === 'string') {
+            compareValue = (row1Value as string).localeCompare(
+              row2Value as string
+            );
+          } else {
+            if (row1Value !== undefined && row2Value !== undefined) {
+              compareValue = Number((row1Value as string) > row2Value);
             }
+          }
+          if (this.sort?.sortDirection === 'asc') {
+            return compareValue;
+          } else if (this.sort?.sortDirection === 'desc') {
+            return compareValue === 1 ? -1 : 1;
+          }
+          return compareValue;
+        } else if (this.sort?.active === 'status') {
+          const row1Value = row1.status;
+          const row2Value = row2.status;
+          compareValue = (row1Value as string).localeCompare(
+            row2Value as string
           );
-      }
+          if (compareValue !== undefined) {
+            if (this.sort?.sortDirection === 'asc') {
+              return compareValue as number;
+            } else if (this.sort?.sortDirection === 'desc') {
+              return compareValue === 1 ? -1 : (1 as number);
+            }
+            return compareValue as number;
+          } else {
+            return compareValue;
+          }
+        } else if (this.sort?.active === 'authType') {
+          const row1Value = row1.authType;
+          const row2Value = row2.authType;
+          compareValue = (row1Value as string).localeCompare(
+            row2Value as string
+          );
+          if (compareValue !== undefined) {
+            if (this.sort?.sortDirection === 'asc') {
+              return compareValue as number;
+            } else if (this.sort?.sortDirection === 'desc') {
+              return compareValue === 1 ? -1 : (1 as number);
+            }
+            return compareValue as number;
+          } else {
+            return compareValue;
+          }
+        } else {
+          return compareValue;
+        }
+      });
     }
   }
+
+  // /**
+  //  * Update forms query.
+  //  *
+  //  * @param refetch erase previous query results
+  //  */
+  // private fetchAPIConfigurations(refetch?: boolean): void {
+  //   console.log('I was there');
+
+  //   const variables = {
+  //     first: this.pageInfo.pageSize,
+  //     afterCursor: refetch ? null : this.pageInfo.endCursor,
+  //     sortField:
+  //       (this.sort?.sortDirection && this.sort.active) !== ''
+  //         ? this.sort?.sortDirection && this.sort.active
+  //         : 'name',
+  //     sortOrder: this.sort?.sortDirection,
+  //   };
+
+  //   console.log(variables.sortField);
+  //   console.log(variables.sortOrder);
+
+  //   const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
+  //     this.apollo.client,
+  //     GET_API_CONFIGURATIONS,
+  //     variables
+  //   );
+  //   console.log(cachedValues);
+  //   if (refetch) {
+  //     this.cachedApiConfigurations = [];
+  //     this.pageInfo.pageIndex = 0;
+  //     console.log('A');
+  //   }
+  //   if (cachedValues) {
+  //     this.updateValues(cachedValues, false);
+  //     console.log('B');
+  //   } else {
+  //     if (refetch) {
+  //       this.apiConfigurationsQuery.refetch(variables);
+  //       console.log('D');
+  //     } else {
+  //       console.log('E');
+  //       this.apiConfigurationsQuery
+  //         .fetchMore({
+  //           variables,
+  //         })
+  //         .then(
+  //           (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
+  //             console.log('F');
+  //             this.updateValues(results.data, results.loading);
+  //           }
+  //         );
+  //     }
+  //   }
+  // }
 }
