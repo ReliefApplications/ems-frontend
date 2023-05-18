@@ -18,6 +18,7 @@ import { RadioModule } from './radio/radio.module';
 import { FormWrapperModule } from './form-wrapper/form-wrapper.module';
 import { DialogModule } from './dialog/dialog.module';
 import { TabsModule } from './tabs/tabs.module';
+import { SnackbarModule } from './snackbar/snackbar.module';
 
 /**
  * UI Library Module
@@ -43,7 +44,7 @@ import { TabsModule } from './tabs/tabs.module';
     FormWrapperModule,
     DialogModule,
     TabsModule,
+    SnackbarModule,
   ],
-  imports: [],
 })
 export class UiModule {}

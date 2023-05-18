@@ -22,6 +22,7 @@ export * from './lib/radio/radio.module';
 export * from './lib/form-wrapper/form-wrapper.module';
 export * from './lib/dialog/dialog.module';
 export * from './lib/tabs/tabs.module';
+export * from './lib/snackbar/snackbar.service';
 
 // === ENUMS === //
 export * from './lib/shared/size.enum';
@@ -39,6 +40,9 @@ export * from './lib/table/interfaces/table-column.interface';
 export * from './lib/toggle/interfaces/toggle-icon.interface';
 export * from './lib/breadcrumbs/interfaces/breadcrumb.interface';
 export * from './lib/paginator/interfaces/paginator.interfaces';
+
+// === TOKENS === //
+export * from './lib/snackbar/snackbar.token';
 
 // === MODULE === //
 export * from './lib/ui.module';
