@@ -350,10 +350,34 @@ export class ApiConfigurationsComponent
    */
   onSort(event: TableSort): void {
     this.sort = event;
+    //Get list of all values
+    const variables = {
+      first: ITEMS_PER_PAGE,
+      afterCursor: this.pageInfo.endCursor,
+    };
+    const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_API_CONFIGURATIONS,
+      variables
+    );
+    console.log('cachedValues : ');
+    console.log(cachedValues);
+    const cachedApiConfigurations = updateQueryUniqueValues(
+      this.cachedApiConfigurations,
+      cachedValues.apiConfigurations.edges.map((x) => x.node)
+    );
+    console.log('cachedApiConfigurations : ');
+    console.log(cachedApiConfigurations);
+    //If sort is needed, sort list of all values, then slice it properly
     if (this.sort.sortDirection !== '') {
-      this.dataSource.data = this.dataSource.data.sort((row1, row2) => {
-        return this.compare(row1, row2);
-      });
+      this.dataSource.data = cachedApiConfigurations
+        .sort((row1, row2) => {
+          return this.compare(row1, row2);
+        })
+        .slice(
+          this.pageInfo.pageSize * this.pageInfo.pageIndex,
+          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+        );
     }
   }
 
