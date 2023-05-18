@@ -120,6 +120,7 @@ export class TableWrapperDirective
       .pipe(startWith(this.sortableColumns), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
+          console.log('test');
           if (this.sortableColumns.length) {
             this.initializeSortListeners();
           }
