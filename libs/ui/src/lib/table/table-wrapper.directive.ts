@@ -88,7 +88,6 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
       .subscribe({
         next: (sortData: TableSort) => {
           // Reset all the other sortable properties
-          console.log('test');
           this.sortableColumns.forEach((sColumn) => {
             if (sColumn.uiTableHeaderSort !== sortData.active) {
               sColumn.sortIndicatorElement.textContent = '';

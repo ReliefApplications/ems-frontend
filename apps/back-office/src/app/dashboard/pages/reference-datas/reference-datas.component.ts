@@ -372,6 +372,7 @@ export class ReferenceDatasComponent
     else if (this.sort?.active === 'type') {
       const row1Value = row1.type;
       const row2Value = row2.type;
+      //Deal with undefined values and put them on the bottom of the list
       if (row1Value !== null && row1Value !== undefined) {
         if (row2Value !== null) {
           compareValue = (row1Value as string).localeCompare(
@@ -414,6 +415,7 @@ export class ReferenceDatasComponent
     else if (this.sort?.active === 'apiConfiguration') {
       const row1Value = row1.apiConfiguration?.name;
       const row2Value = row2.apiConfiguration?.name;
+      //Deal with undefined values and put them on the bottom of the list
       if (row1Value !== null && row1Value !== undefined) {
         if (row2Value !== null) {
           compareValue = (row1Value as string).localeCompare(
