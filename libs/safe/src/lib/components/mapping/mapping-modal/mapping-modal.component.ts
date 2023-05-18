@@ -6,7 +6,6 @@ import {
 } from '@angular/material/legacy-dialog';
 import { createFormGroup, Mapping } from '../mapping-forms';
 import { CommonModule } from '@angular/common';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
 import { MenuModule } from '@oort-front/ui';
 import { SafeButtonModule } from '../../ui/button/button.module';
@@ -32,7 +31,6 @@ interface MappingDialogData {
   imports: [
     CommonModule,
     TranslateModule,
-    MatTableModule,
     MenuModule,
     MatIconModule,
     MatFormFieldModule,

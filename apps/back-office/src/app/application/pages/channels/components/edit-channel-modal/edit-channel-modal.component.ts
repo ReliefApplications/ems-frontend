@@ -16,7 +16,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MenuModule } from '@oort-front/ui';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SafeButtonModule, SafeModalModule } from '@oort-front/safe';
 import { DividerModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
@@ -39,7 +38,6 @@ import { TranslateModule } from '@ngx-translate/core';
     MatInputModule,
     MenuModule,
     MatProgressSpinnerModule,
-    MatTableModule,
     MatSelectModule,
     DividerModule,
     SafeButtonModule,
