@@ -346,7 +346,7 @@ export class ApiConfigurationsComponent
    * Sets the sort in the view.
    */
   ngAfterViewInit(): void {
-    // this.dataSource.sort = this.sort || null;
+    // this.dataSource.sort.direction = (TableHeaderSortDirective)this.sort?.sortDirection;
     console.log('Sort not working cause no equivalent for MatTableDataSource');
   }
 
@@ -357,5 +357,58 @@ export class ApiConfigurationsComponent
    */
   onSort(event: TableSort): void {
     this.sort = event;
+    this.fetchAPIConfigurations(true);
+  }
+
+  /**
+   * Update forms query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchAPIConfigurations(refetch?: boolean): void {
+    console.log('I was there');
+
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      sortField:
+        (this.sort?.sortDirection && this.sort.active) !== ''
+          ? this.sort?.sortDirection && this.sort.active
+          : 'name',
+      sortOrder: this.sort?.sortDirection,
+    };
+
+    const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_API_CONFIGURATIONS,
+      variables
+    );
+    console.log(cachedValues);
+    if (refetch) {
+      this.cachedApiConfigurations = [];
+      this.pageInfo.pageIndex = 0;
+      console.log('A');
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
+      console.log('B');
+    } else {
+      if (refetch) {
+        this.apiConfigurationsQuery.refetch(variables);
+        console.log('D');
+      } else {
+        console.log('E');
+        this.apiConfigurationsQuery
+          .fetchMore({
+            variables,
+          })
+          .then(
+            (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
+              console.log('F');
+              this.updateValues(results.data, results.loading);
+            }
+          );
+      }
+    }
   }
 }

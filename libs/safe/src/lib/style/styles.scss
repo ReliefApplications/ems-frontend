@@ -326,30 +326,6 @@ $safe-theme: mat.define-light-theme(
   }
 }
 
-// === GLOBAL STYLES ==
-.mat-table {
-  font-size: 14px;
-  opacity: 0.87;
-  border-radius: 4px;
-  width: 100%;
-  th,
-  td {
-    padding: 0 4px !important;
-    &:first-of-type {
-      padding-left: 24px !important;
-      &:not(:last-of-type) {
-        padding-right: 4px !important;
-      }
-    }
-    &:last-of-type {
-      padding-right: 24px !important;
-      &:not(:first-of-type) {
-        padding-left: 4px !important;
-      }
-    }
-  }
-}
-
 .success-button {
   &:not(:disabled) {
     background-color: #63d168 !important;

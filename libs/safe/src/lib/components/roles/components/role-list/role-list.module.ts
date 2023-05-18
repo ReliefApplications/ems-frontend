@@ -1,10 +1,9 @@
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MenuModule } from '@oort-front/ui';
+import { MenuModule, UiModule } from '@oort-front/ui';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
@@ -29,7 +28,6 @@ import { AbilityModule } from '@casl/angular';
     MatInputModule,
     MatSelectModule,
     MatProgressSpinnerModule,
-    MatTableModule,
     MenuModule,
     MatIconModule,
     MatSortModule,
@@ -39,6 +37,7 @@ import { AbilityModule } from '@casl/angular';
     TranslateModule,
     SafeSkeletonTableModule,
     AbilityModule,
+    UiModule,
   ],
   exports: [SafeRoleListComponent],
 })

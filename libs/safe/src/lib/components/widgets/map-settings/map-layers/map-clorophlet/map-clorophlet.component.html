@@ -75,27 +75,27 @@
     <div class="overflow-x-hidden shadow-2lg">
       <!-- Table scroll container -->
       <div class="overflow-x-auto">
-        <table mat-table [dataSource]="divisions.value">
-          <ng-container matColumnDef="label">
-            <th mat-header-cell *matHeaderCellDef>
+        <table cdk-table uiTableWrapper [dataSource]="divisions.value">
+          <ng-container cdkColumnDef="label">
+            <th cdk-header-cell *cdkHeaderCellDef  scope="col">
               {{ 'common.label' | translate }}
             </th>
-            <td mat-cell *matCellDef="let element">{{ element.label }}</td>
+            <td cdk-cell *cdkCellDef="let element">{{ element.label }}</td>
           </ng-container>
-          <ng-container matColumnDef="color">
-            <th mat-header-cell *matHeaderCellDef>
+          <ng-container cdkColumnDef="color">
+            <th cdk-header-cell *cdkHeaderCellDef  scope="col">
               {{ 'common.preview' | translate }}
             </th>
-            <td mat-cell *matCellDef="let element">
+            <td cdk-cell *cdkCellDef="let element">
               <span
                 [style]="'background-color:' + element.color"
                 class="color-indicator"
               ></span>
             </td>
           </ng-container>
-          <ng-container matColumnDef="actions" [stickyEnd]="true">
-            <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-            <td mat-cell *matCellDef="let element; let i = index">
+          <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+            <th cdk-header-cell *cdkHeaderCellDef  scope="col" class="w-16"></th>
+            <td cdk-cell *cdkCellDef="let element; let i = index">
               <div>
                 <safe-button
                   [isIcon]="true"
@@ -114,8 +114,8 @@
             </td>
           </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
-          <tr *matRowDef="let row; columns: tableColumns" mat-row></tr>
+          <tr cdk-header-row *cdkHeaderRowDef="tableColumns"></tr>
+          <tr *cdkRowDef="let row; columns: tableColumns" cdk-row></tr>
         </table>
       </div>
     </div>
