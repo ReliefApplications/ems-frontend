@@ -349,10 +349,11 @@ export class ApiConfigurationsComponent
    * @param event sort event
    */
   onSort(event: TableSort): void {
-    this.sort = event;
+    const sortMemory: TableSort = event;
     //Get list of all values
+    this.loading = true;
     const variables = {
-      first: ITEMS_PER_PAGE,
+      first: this.pageInfo.pageSize,
       afterCursor: this.pageInfo.endCursor,
     };
     const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
@@ -362,23 +363,59 @@ export class ApiConfigurationsComponent
     );
     console.log('cachedValues : ');
     console.log(cachedValues);
-    const cachedApiConfigurations = updateQueryUniqueValues(
-      this.cachedApiConfigurations,
-      cachedValues.apiConfigurations.edges.map((x) => x.node)
-    );
-    console.log('cachedApiConfigurations : ');
-    console.log(cachedApiConfigurations);
-    //If sort is needed, sort list of all values, then slice it properly
-    if (this.sort.sortDirection !== '') {
-      this.dataSource.data = cachedApiConfigurations
-        .sort((row1, row2) => {
-          return this.compare(row1, row2);
-        })
-        .slice(
-          this.pageInfo.pageSize * this.pageInfo.pageIndex,
-          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    if (cachedValues) {
+      const cachedApiConfigurations = updateQueryUniqueValues(
+        this.cachedApiConfigurations,
+        cachedValues.apiConfigurations.edges.map((x) => x.node)
+      );
+      console.log('cachedApiConfigurations : ');
+      console.log(cachedApiConfigurations);
+      //If sort is needed, sort list of all values, then slice it properly
+      if (sortMemory.sortDirection !== '') {
+        this.dataSource.data = cachedApiConfigurations
+          .sort((row1, row2) => {
+            return this.compare(row1, row2, sortMemory);
+          })
+          .slice(
+            this.pageInfo.pageSize * this.pageInfo.pageIndex,
+            this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+          );
+        this.loading = false;
+      } else {
+        console.log('sort stopped');
+        this.loading = false;
+      }
+    } else {
+      this.apiConfigurationsQuery
+        .fetchMore({ variables })
+        .then(
+          (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
+            const cachedApiConfigurations = updateQueryUniqueValues(
+              this.cachedApiConfigurations,
+              results.data.apiConfigurations.edges.map((x) => x.node)
+            );
+            console.log('cachedApiConfigurations : ');
+            console.log(cachedApiConfigurations);
+            console.log(sortMemory);
+            //If sort is needed, sort list of all values, then slice it properly
+            if (sortMemory.sortDirection !== '') {
+              this.dataSource.data = cachedApiConfigurations
+                .sort((row1, row2) => {
+                  return this.compare(row1, row2, sortMemory);
+                })
+                .slice(
+                  this.pageInfo.pageSize * this.pageInfo.pageIndex,
+                  this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+                );
+              this.loading = false;
+            } else {
+              console.log('sort stopped');
+              this.loading = false;
+            }
+          }
         );
     }
+    this.sort = event;
   }
 
   /**
@@ -386,13 +423,18 @@ export class ApiConfigurationsComponent
    *
    * @param row1 row 1
    * @param row2 row 2
+   * @param sortMemory
    * @returns the compare value
    */
-  compare(row1: ApiConfiguration, row2: ApiConfiguration): number {
+  compare(
+    row1: ApiConfiguration,
+    row2: ApiConfiguration,
+    sortMemory: TableSort
+  ): number {
     //Initializes compare value
     let compareValue = 0;
     //If the sort is on Name, compare names
-    if (this.sort?.active === 'name') {
+    if (sortMemory.active === 'name') {
       const row1Value = row1.name;
       const row2Value = row2.name;
       if (typeof row1Value === 'string') {
@@ -402,22 +444,22 @@ export class ApiConfigurationsComponent
           compareValue = Number((row1Value as string) > row2Value);
         }
       }
-      if (this.sort?.sortDirection === 'asc') {
+      if (sortMemory.sortDirection === 'asc') {
         return compareValue;
-      } else if (this.sort?.sortDirection === 'desc') {
+      } else if (sortMemory.sortDirection === 'desc') {
         return compareValue === 1 ? -1 : 1;
       }
       return compareValue;
     }
     //If the sort is on Status, compare statuses
-    else if (this.sort?.active === 'status') {
+    else if (sortMemory.active === 'status') {
       const row1Value = row1.status;
       const row2Value = row2.status;
       compareValue = (row1Value as string).localeCompare(row2Value as string);
       if (compareValue !== undefined) {
-        if (this.sort?.sortDirection === 'asc') {
+        if (sortMemory.sortDirection === 'asc') {
           return compareValue as number;
-        } else if (this.sort?.sortDirection === 'desc') {
+        } else if (sortMemory.sortDirection === 'desc') {
           return compareValue === 1 ? -1 : 1;
         }
         return compareValue as number;
@@ -426,14 +468,14 @@ export class ApiConfigurationsComponent
       }
     }
     //If the sort is on authentication type, compare authentication Types
-    else if (this.sort?.active === 'authType') {
+    else if (sortMemory.active === 'authType') {
       const row1Value = row1.authType;
       const row2Value = row2.authType;
       compareValue = (row1Value as string).localeCompare(row2Value as string);
       if (compareValue !== undefined) {
-        if (this.sort?.sortDirection === 'asc') {
+        if (sortMemory.sortDirection === 'asc') {
           return compareValue as number;
-        } else if (this.sort?.sortDirection === 'desc') {
+        } else if (sortMemory.sortDirection === 'desc') {
           return compareValue === 1 ? -1 : 1;
         }
         return compareValue as number;
