@@ -1,5 +1,4 @@
 import {
-  AfterContentInit,
   AfterViewInit,
   ContentChildren,
   Directive,
@@ -21,9 +20,7 @@ import { Observable, Subject, filter, merge, startWith, takeUntil } from 'rxjs';
 @Directive({
   selector: '[uiTableWrapper]',
 })
-export class TableWrapperDirective
-  implements OnInit, AfterContentInit, AfterViewInit, OnDestroy
-{
+export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
   @Output() sortChange = new EventEmitter<TableSort>();
 
   @ContentChildren(TableHeaderSortDirective, { descendants: true })
@@ -36,31 +33,6 @@ export class TableWrapperDirective
     'py-2',
     'sm:rounded-lg',
   ];
-  private tableClasses = ['min-w-full', 'divide-y', 'divide-gray-300'] as const;
-  private tableHeaderClasses = [
-    'capitalize',
-    'py-3.5',
-    'pl-4',
-    'pr-3',
-    'text-left',
-    'text-sm',
-    'font-medium',
-    'text-gray-900',
-  ] as const;
-  private tableBodyClasses = [
-    'divide-y',
-    'divide-gray-200',
-    'bg-white',
-  ] as const;
-  private tableRowClasses = [
-    'whitespace-nowrap',
-    'py-4',
-    'pl-4',
-    'pr-3',
-    'text-sm',
-    'font-normal',
-    'text-gray-900',
-  ] as const;
 
   private destroy$ = new Subject<void>();
   /**
@@ -75,11 +47,7 @@ export class TableWrapperDirective
     if (!(this.el.nativeElement instanceof HTMLTableElement)) {
       throw new Error('Directive could only be applied to an HTMLTableElement');
     }
-    // Render default classes for the host table
-    this.tableClasses.forEach((tClass) => {
-      this.renderer.addClass(this.el.nativeElement, tClass);
-    });
-    // Wrap up the table to match tailwind styling
+    // Render default classes for the host table parent
     const tableWrapperElement = this.renderer.createElement('div');
     this.tableWrapperClasses.forEach((twClass) => {
       this.renderer.addClass(tableWrapperElement, twClass);
@@ -92,35 +60,12 @@ export class TableWrapperDirective
     this.renderer.appendChild(tableWrapperElement, this.el.nativeElement);
   }
 
-  ngAfterContentInit(): void {
-    // Get table related elements
-    const tableHeaders = this.el.nativeElement.querySelectorAll('th');
-    const tableData = this.el.nativeElement.querySelectorAll('td');
-    const tableBody = this.el.nativeElement.querySelector('tbody');
-
-    // Apply default classes to the table related elements
-    this.tableBodyClasses.forEach((tbClass) => {
-      this.renderer.addClass(tableBody, tbClass);
-    });
-    tableHeaders.forEach((th: any) => {
-      this.tableHeaderClasses.forEach((hClass) => {
-        this.renderer.addClass(th, hClass);
-      });
-    });
-    tableData.forEach((tr: any) => {
-      this.tableRowClasses.forEach((rClass) => {
-        this.renderer.addClass(tr, rClass);
-      });
-    });
-  }
-
   ngAfterViewInit(): void {
     // Initialize sortable column listeners
     this.sortableColumns.changes
       .pipe(startWith(this.sortableColumns), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          console.log('test');
           if (this.sortableColumns.length) {
             this.initializeSortListeners();
           }
@@ -143,6 +88,7 @@ export class TableWrapperDirective
       .subscribe({
         next: (sortData: TableSort) => {
           // Reset all the other sortable properties
+          console.log('test');
           this.sortableColumns.forEach((sColumn) => {
             if (sColumn.uiTableHeaderSort !== sortData.active) {
               sColumn.sortIndicatorElement.textContent = '';

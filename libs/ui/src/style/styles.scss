@@ -55,7 +55,7 @@ $ui-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,
+      // A700: #ffffff,,,,,,,,
     ),
 );
 
@@ -314,6 +314,23 @@ body {
       @apply transition-transform;
     }
   }
+
+  .cdk-cell {
+    @apply whitespace-nowrap py-4 pl-4 pr-3 text-sm font-normal text-gray-900;
+  }
+
+  .cdk-header-cell {
+    @apply capitalize py-3.5 pl-4 pr-3 text-left text-sm font-medium text-gray-900;
+  }
+
+  .cdk-table {
+    @apply min-w-full divide-y divide-gray-300;
+  }
+
+  tbody {
+    @apply divide-y divide-gray-200 bg-white;
+  }
+  
 }
 
 // Define new colors
