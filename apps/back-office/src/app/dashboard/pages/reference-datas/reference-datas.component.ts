@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -41,7 +41,7 @@ const ITEMS_PER_PAGE = 10;
 })
 export class ReferenceDatasComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
   // === DATA ===
   public loading = true;
@@ -306,20 +306,17 @@ export class ReferenceDatasComponent
   }
 
   /**
-   * Sets the sort in the view.
-   */
-  ngAfterViewInit(): void {
-    console.log('Sort not working cause no equivalent for MatTableDataSource');
-    // this.dataSource.sort = this.sort || null;
-  }
-
-  /**
    * Handle sort change.
    *
    * @param event sort event
    */
   onSort(event: TableSort): void {
     this.sort = event;
+    if (this.sort.sortDirection !== '') {
+      this.dataSource.data = this.dataSource.data.sort((row1, row2) => {
+        return this.compare(row1, row2);
+      });
+    }
   }
 
   /**
@@ -341,5 +338,107 @@ export class ReferenceDatasComponent
     this.pageInfo.endCursor = data.referenceDatas.pageInfo.endCursor;
     this.loading = loading;
     this.filterPredicate();
+  }
+
+  /**
+   * Compares two rows of API configuration table and give a compare value in order to sort them
+   *
+   * @param row1 row 1
+   * @param row2 row 2
+   * @returns the compare value
+   */
+  compare(row1: ReferenceData, row2: ReferenceData): number {
+    //Initializes compare value
+    let compareValue = 0;
+    //If the sort is on Name, compare names
+    if (this.sort?.active === 'name') {
+      const row1Value = row1.name;
+      const row2Value = row2.name;
+      if (typeof row1Value === 'string') {
+        compareValue = (row1Value as string).localeCompare(row2Value as string);
+      } else {
+        if (row1Value !== undefined && row2Value !== undefined) {
+          compareValue = Number((row1Value as string) > row2Value);
+        }
+      }
+      if (this.sort?.sortDirection === 'asc') {
+        return compareValue;
+      } else if (this.sort?.sortDirection === 'desc') {
+        return compareValue === 1 ? -1 : 1;
+      }
+      return compareValue;
+    }
+    //If the sort is on type, compare type
+    else if (this.sort?.active === 'type') {
+      const row1Value = row1.type;
+      const row2Value = row2.type;
+      if (row1Value !== null && row1Value !== undefined) {
+        if (row2Value !== null) {
+          compareValue = (row1Value as string).localeCompare(
+            row2Value as string
+          );
+        } else {
+          return -1;
+        }
+      } else {
+        return 1;
+      }
+      if (compareValue !== undefined) {
+        if (this.sort?.sortDirection === 'asc') {
+          return compareValue as number;
+        } else if (this.sort?.sortDirection === 'desc') {
+          return compareValue === 1 ? -1 : 1;
+        }
+        return compareValue as number;
+      } else {
+        return compareValue;
+      }
+    }
+    //If the sort is on Modified on, compare Modified On
+    else if (this.sort?.active === 'modifiedAt') {
+      const row1Value = row1.modifiedAt;
+      const row2Value = row2.modifiedAt;
+      compareValue = (row1Value as string).localeCompare(row2Value as string);
+      if (compareValue !== undefined) {
+        if (this.sort?.sortDirection === 'asc') {
+          return compareValue as number;
+        } else if (this.sort?.sortDirection === 'desc') {
+          return compareValue === 1 ? -1 : 1;
+        }
+        return compareValue as number;
+      } else {
+        return compareValue;
+      }
+    }
+    //If the sort is on api configuration, compare api configurations
+    else if (this.sort?.active === 'apiConfiguration') {
+      const row1Value = row1.apiConfiguration?.name;
+      const row2Value = row2.apiConfiguration?.name;
+      if (row1Value !== null && row1Value !== undefined) {
+        if (row2Value !== null) {
+          compareValue = (row1Value as string).localeCompare(
+            row2Value as string
+          );
+        } else {
+          return -1;
+        }
+      } else {
+        return 1;
+      }
+      if (compareValue !== undefined) {
+        if (this.sort?.sortDirection === 'asc') {
+          return compareValue as number;
+        } else if (this.sort?.sortDirection === 'desc') {
+          return compareValue === 1 ? -1 : 1;
+        }
+        return compareValue as number;
+      } else {
+        return compareValue;
+      }
+    }
+    //Else, it returns 0 so no change is made to the list
+    else {
+      return compareValue;
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -41,7 +41,7 @@ const ITEMS_PER_PAGE = 10;
 })
 export class ApiConfigurationsComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
   // === DATA ===
   public loading = true;
@@ -337,19 +337,10 @@ export class ApiConfigurationsComponent
       this.pageInfo.pageSize * this.pageInfo.pageIndex,
       this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
     );
-    console.log('source date update values :');
-    console.log(this.dataSource.data);
     this.pageInfo.length = data.apiConfigurations.totalCount;
     this.pageInfo.endCursor = data.apiConfigurations.pageInfo.endCursor;
     this.loading = loading;
     this.filterPredicate();
-  }
-  /**
-   * Sets the sort in the view.
-   */
-  ngAfterViewInit(): void {
-    // this.dataSource.sort.direction = (TableHeaderSortDirective)this.sort?.sortDirection;
-    console.log('Sort not working cause no equivalent for MatTableDataSource');
   }
 
   /**
@@ -359,119 +350,76 @@ export class ApiConfigurationsComponent
    */
   onSort(event: TableSort): void {
     this.sort = event;
-    // this.fetchAPIConfigurations(true);
     if (this.sort.sortDirection !== '') {
       this.dataSource.data = this.dataSource.data.sort((row1, row2) => {
-        let compareValue = 0;
-        if (this.sort?.active === 'name') {
-          const row1Value = row1.name;
-          const row2Value = row2.name;
-          if (typeof row1Value === 'string') {
-            compareValue = (row1Value as string).localeCompare(
-              row2Value as string
-            );
-          } else {
-            if (row1Value !== undefined && row2Value !== undefined) {
-              compareValue = Number((row1Value as string) > row2Value);
-            }
-          }
-          if (this.sort?.sortDirection === 'asc') {
-            return compareValue;
-          } else if (this.sort?.sortDirection === 'desc') {
-            return compareValue === 1 ? -1 : 1;
-          }
-          return compareValue;
-        } else if (this.sort?.active === 'status') {
-          const row1Value = row1.status;
-          const row2Value = row2.status;
-          compareValue = (row1Value as string).localeCompare(
-            row2Value as string
-          );
-          if (compareValue !== undefined) {
-            if (this.sort?.sortDirection === 'asc') {
-              return compareValue as number;
-            } else if (this.sort?.sortDirection === 'desc') {
-              return compareValue === 1 ? -1 : (1 as number);
-            }
-            return compareValue as number;
-          } else {
-            return compareValue;
-          }
-        } else if (this.sort?.active === 'authType') {
-          const row1Value = row1.authType;
-          const row2Value = row2.authType;
-          compareValue = (row1Value as string).localeCompare(
-            row2Value as string
-          );
-          if (compareValue !== undefined) {
-            if (this.sort?.sortDirection === 'asc') {
-              return compareValue as number;
-            } else if (this.sort?.sortDirection === 'desc') {
-              return compareValue === 1 ? -1 : (1 as number);
-            }
-            return compareValue as number;
-          } else {
-            return compareValue;
-          }
-        } else {
-          return compareValue;
-        }
+        return this.compare(row1, row2);
       });
     }
   }
 
-  // /**
-  //  * Update forms query.
-  //  *
-  //  * @param refetch erase previous query results
-  //  */
-  // private fetchAPIConfigurations(refetch?: boolean): void {
-  //   console.log('I was there');
-
-  //   const variables = {
-  //     first: this.pageInfo.pageSize,
-  //     afterCursor: refetch ? null : this.pageInfo.endCursor,
-  //     sortField:
-  //       (this.sort?.sortDirection && this.sort.active) !== ''
-  //         ? this.sort?.sortDirection && this.sort.active
-  //         : 'name',
-  //     sortOrder: this.sort?.sortDirection,
-  //   };
-
-  //   console.log(variables.sortField);
-  //   console.log(variables.sortOrder);
-
-  //   const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
-  //     this.apollo.client,
-  //     GET_API_CONFIGURATIONS,
-  //     variables
-  //   );
-  //   console.log(cachedValues);
-  //   if (refetch) {
-  //     this.cachedApiConfigurations = [];
-  //     this.pageInfo.pageIndex = 0;
-  //     console.log('A');
-  //   }
-  //   if (cachedValues) {
-  //     this.updateValues(cachedValues, false);
-  //     console.log('B');
-  //   } else {
-  //     if (refetch) {
-  //       this.apiConfigurationsQuery.refetch(variables);
-  //       console.log('D');
-  //     } else {
-  //       console.log('E');
-  //       this.apiConfigurationsQuery
-  //         .fetchMore({
-  //           variables,
-  //         })
-  //         .then(
-  //           (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
-  //             console.log('F');
-  //             this.updateValues(results.data, results.loading);
-  //           }
-  //         );
-  //     }
-  //   }
-  // }
+  /**
+   * Compares two rows of API configuration table and give a compare value in order to sort them
+   *
+   * @param row1 row 1
+   * @param row2 row 2
+   * @returns the compare value
+   */
+  compare(row1: ApiConfiguration, row2: ApiConfiguration): number {
+    //Initializes compare value
+    let compareValue = 0;
+    //If the sort is on Name, compare names
+    if (this.sort?.active === 'name') {
+      const row1Value = row1.name;
+      const row2Value = row2.name;
+      if (typeof row1Value === 'string') {
+        compareValue = (row1Value as string).localeCompare(row2Value as string);
+      } else {
+        if (row1Value !== undefined && row2Value !== undefined) {
+          compareValue = Number((row1Value as string) > row2Value);
+        }
+      }
+      if (this.sort?.sortDirection === 'asc') {
+        return compareValue;
+      } else if (this.sort?.sortDirection === 'desc') {
+        return compareValue === 1 ? -1 : 1;
+      }
+      return compareValue;
+    }
+    //If the sort is on Status, compare statuses
+    else if (this.sort?.active === 'status') {
+      const row1Value = row1.status;
+      const row2Value = row2.status;
+      compareValue = (row1Value as string).localeCompare(row2Value as string);
+      if (compareValue !== undefined) {
+        if (this.sort?.sortDirection === 'asc') {
+          return compareValue as number;
+        } else if (this.sort?.sortDirection === 'desc') {
+          return compareValue === 1 ? -1 : 1;
+        }
+        return compareValue as number;
+      } else {
+        return compareValue;
+      }
+    }
+    //If the sort is on authentication type, compare authentication Types
+    else if (this.sort?.active === 'authType') {
+      const row1Value = row1.authType;
+      const row2Value = row2.authType;
+      compareValue = (row1Value as string).localeCompare(row2Value as string);
+      if (compareValue !== undefined) {
+        if (this.sort?.sortDirection === 'asc') {
+          return compareValue as number;
+        } else if (this.sort?.sortDirection === 'desc') {
+          return compareValue === 1 ? -1 : 1;
+        }
+        return compareValue as number;
+      } else {
+        return compareValue;
+      }
+    }
+    //Else, it returns 0 so no change is made to the list
+    else {
+      return compareValue;
+    }
+  }
 }
