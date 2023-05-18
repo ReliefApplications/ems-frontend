@@ -4,10 +4,6 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
 import { Channel } from '@oort-front/safe';
 import { CommonModule } from '@angular/common';
 import { ChannelsRoutingModule } from '../../channels-routing.module';
@@ -17,12 +13,14 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MenuModule } from '@oort-front/ui';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { SafeButtonModule, SafeModalModule } from '@oort-front/safe';
 import { DividerModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { TranslateModule } from '@ngx-translate/core';
+import { DialogModule } from '@oort-front/ui';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+// @TODO: Remove SafeButtonModule import after ui-button is being used in the app
+import { SafeButtonModule } from '@oort-front/safe';
 
 /**
  * Edit channel component, act as modal.
@@ -44,8 +42,7 @@ import { TranslateModule } from '@ngx-translate/core';
     DividerModule,
     SafeButtonModule,
     MatButtonModule,
-    TranslateModule,
-    SafeModalModule,
+    DialogModule,
   ],
   selector: 'app-edit-channel-modal',
   templateUrl: './edit-channel-modal.component.html',
@@ -65,8 +62,8 @@ export class EditChannelModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<EditChannelModalComponent>,
-    @Inject(MAT_DIALOG_DATA)
+    public dialogRef: DialogRef<EditChannelModalComponent>,
+    @Inject(DIALOG_DATA)
     public data: {
       channel: Channel;
     }

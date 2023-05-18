@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   Application,
   Channel,
@@ -44,7 +44,7 @@ export class SubscriptionsComponent
    */
   constructor(
     private applicationService: SafeApplicationService,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private apollo: Apollo
   ) {
     super();
@@ -77,20 +77,11 @@ export class SubscriptionsComponent
         channels: this.channels,
       },
     });
-    dialogRef
-      .afterClosed()
-      .subscribe(
-        (value: {
-          routingKey: string;
-          title: string;
-          convertTo: string;
-          channel: string;
-        }) => {
-          if (value) {
-            this.applicationService.addSubscription(value);
-          }
-        }
-      );
+    dialogRef.closed.subscribe((value: any) => {
+      if (value) {
+        this.applicationService.addSubscription(value);
+      }
+    });
   }
 
   /**
@@ -119,7 +110,7 @@ export class SubscriptionsComponent
         subscription: element,
       },
     });
-    dialogRef.afterClosed().subscribe((value: any) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.applicationService.editSubscription(value, element.routingKey);
       }

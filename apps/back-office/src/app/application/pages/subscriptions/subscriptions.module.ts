@@ -14,12 +14,12 @@ import {
   SafeButtonModule,
   SafeIconModule,
   SafeGraphQLSelectModule,
-  SafeModalModule,
 } from '@oort-front/safe';
 import { DividerModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
+import { DialogModule } from '@oort-front/ui';
 
 /**
  * Application subscriptions page module.
@@ -45,7 +45,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeIconModule,
     TranslateModule,
     SafeGraphQLSelectModule,
-    SafeModalModule,
+    DialogModule,
   ],
 })
 export class SubscriptionsModule {}

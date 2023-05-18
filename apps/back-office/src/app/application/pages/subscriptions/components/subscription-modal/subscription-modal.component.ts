@@ -6,10 +6,6 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
-import {
   Application,
   Channel,
   Form,
@@ -45,13 +41,14 @@ import {
   SafeButtonModule,
   SafeIconModule,
   SafeGraphQLSelectModule,
-  SafeModalModule,
 } from '@oort-front/safe';
 import { DividerModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
 /** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -80,7 +77,7 @@ const ITEMS_PER_PAGE = 10;
     SafeIconModule,
     TranslateModule,
     SafeGraphQLSelectModule,
-    SafeModalModule,
+    DialogModule,
     TooltipModule,
   ],
   selector: 'app-subscription-modal',
@@ -140,9 +137,9 @@ export class SubscriptionModalComponent
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<SubscriptionModalComponent>,
+    public dialogRef: DialogRef<SubscriptionModalComponent>,
     private apollo: Apollo,
-    @Inject(MAT_DIALOG_DATA)
+    @Inject(DIALOG_DATA)
     public data: {
       channels: Channel[];
       subscription?: Subscription;

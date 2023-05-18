@@ -4,7 +4,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
 import { ChannelsRoutingModule } from '../../channels-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,12 +13,13 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MenuModule } from '@oort-front/ui';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { SafeButtonModule, SafeModalModule } from '@oort-front/safe';
 import { DividerModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { TranslateModule } from '@ngx-translate/core';
+import { DialogModule } from '@oort-front/ui';
+// @TODO: Remove SafeButtonModule import after ui-button is being used in the app
+import { SafeButtonModule } from '@oort-front/safe';
 
 /**
  * Add channel component, act as modal.
@@ -40,8 +41,7 @@ import { TranslateModule } from '@ngx-translate/core';
     DividerModule,
     SafeButtonModule,
     MatButtonModule,
-    TranslateModule,
-    SafeModalModule,
+    DialogModule,
   ],
   selector: 'app-add-channel-modal',
   templateUrl: './add-channel-modal.component.html',
@@ -59,7 +59,7 @@ export class AddChannelModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<AddChannelModalComponent>
+    public dialogRef: DialogRef<AddChannelModalComponent>
   ) {}
 
   ngOnInit(): void {

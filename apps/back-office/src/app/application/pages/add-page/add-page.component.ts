@@ -5,7 +5,6 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   ContentType,
   CONTENT_TYPES,
@@ -24,6 +23,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Number of items per page.
@@ -75,7 +75,7 @@ export class AddPageComponent
     private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService
   ) {
@@ -191,7 +191,7 @@ export class AddPageComponent
       '../../../components/add-form-modal/add-form-modal.component'
     );
     const dialogRef = this.dialog.open(AddFormModalComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         const variablesData = { name: value.name };
         Object.assign(

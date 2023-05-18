@@ -5,7 +5,6 @@ import {
   UntypedFormBuilder,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import {
   GetResourcesQueryResponse,
   GET_RESOURCES,
@@ -24,7 +23,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeGraphQLSelectModule,
   SafeIconModule,
-  SafeModalModule,
+// @TODO: Remove SafeButtonModule import after ui-button is being used in the app
+  SafeButtonModule,
 } from '@oort-front/safe';
 import {
   ToggleModule,
@@ -33,6 +33,8 @@ import {
   IconModule,
   Variant,
 } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
+import { DialogRef } from '@angular/cdk/dialog';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -55,10 +57,11 @@ const ITEMS_PER_PAGE = 10;
     TranslateModule,
     SafeIconModule,
     SafeGraphQLSelectModule,
-    SafeModalModule,
+    DialogModule,
     TooltipModule,
     RadioModule,
     IconModule,
+    SafeButtonModule,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',
@@ -87,7 +90,7 @@ export class AddFormModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<AddFormModalComponent>,
+    public dialogRef: DialogRef<AddFormModalComponent>,
     private apollo: Apollo
   ) {}
 

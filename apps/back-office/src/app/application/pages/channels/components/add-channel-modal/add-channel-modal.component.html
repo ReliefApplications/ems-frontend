@@ -1,6 +1,8 @@
-<safe-modal size="small">
-  <h1 mat-dialog-title>{{ 'models.channel.new' | translate }}</h1>
-  <div mat-dialog-content>
+<ui-dialog size="small">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'models.channel.new' | translate }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="channelForm" class="flex flex-col">
       <mat-form-field appearance="outline">
         <mat-label>{{ 'common.title' | translate }}</mat-label>
@@ -12,19 +14,19 @@
         />
       </mat-form-field>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
+  </ng-container>
+  <ng-container ngProjectAs="actions">
     <safe-button (click)="onClose()">{{
       'common.close' | translate
     }}</safe-button>
     <safe-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="channelForm.value"
+      [uiDialogClose]="channelForm.value"
       cdkFocusInitial
       [disabled]="!channelForm.valid"
     >
       {{ 'common.create' | translate }}
     </safe-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

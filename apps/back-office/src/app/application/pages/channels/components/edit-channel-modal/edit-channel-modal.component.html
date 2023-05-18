@@ -1,11 +1,13 @@
-<safe-modal size="small">
-  <h1 mat-dialog-title>
-    {{
-      'common.editObject'
-        | translate : { name: 'common.channel.one' | translate }
-    }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="small">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        'common.editObject'
+          | translate : { name: 'common.channel.one' | translate }
+      }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="roleForm" class="flex flex-col">
       <mat-form-field appearance="outline">
         <mat-label>{{ 'common.title' | translate }}</mat-label>
@@ -17,19 +19,19 @@
         />
       </mat-form-field>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
+  </ng-container>
+  <ng-container ngProjectAs="actions">
     <safe-button (click)="onClose()">{{
       'common.close' | translate
     }}</safe-button>
     <safe-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="roleForm.value"
+      [uiDialogClose]="roleForm.value"
       cdkFocusInitial
       [disabled]="!roleForm.valid"
     >
       {{ 'common.update' | translate }}
     </safe-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

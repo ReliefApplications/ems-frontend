@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsRoutingModule } from './forms-routing.module';
 import { FormsComponent } from './forms.component';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MenuModule } from '@oort-front/ui';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
@@ -40,7 +39,6 @@ import { AbilityModule } from '@casl/angular';
     MatProgressSpinnerModule,
     MatTableModule,
     MatSortModule,
-    MatDialogModule,
     MenuModule,
     MatIconModule,
     MatChipsModule,
