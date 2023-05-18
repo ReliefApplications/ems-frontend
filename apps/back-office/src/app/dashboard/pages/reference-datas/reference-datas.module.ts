@@ -13,7 +13,6 @@ import {
 } from '@angular/forms';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import {
-  SafeButtonModule,
   SafeDateModule,
   SafeModalModule,
   SafeSkeletonTableModule,
@@ -43,7 +42,6 @@ import { MenuModule, ButtonModule } from '@oort-front/ui';
     AngularFormsModule,
     ReactiveFormsModule,
     MatDialogModule,
-    SafeButtonModule,
     MatIconModule,
     MatButtonModule,
     MatPaginatorModule,

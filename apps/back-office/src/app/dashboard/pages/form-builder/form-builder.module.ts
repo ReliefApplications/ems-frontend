@@ -5,7 +5,6 @@ import { FormBuilderComponent } from './form-builder.component';
 import {
   SafeAccessModule,
   SafeFormBuilderModule,
-  SafeButtonModule,
   SafeDateModule,
   SafeEditableTextModule,
 } from '@oort-front/safe';
@@ -28,7 +27,6 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonToggleModule,
     SafeFormBuilderModule,
     SafeAccessModule,
-    SafeButtonModule,
     TranslateModule,
     SafeDateModule,
     SafeEditableTextModule,

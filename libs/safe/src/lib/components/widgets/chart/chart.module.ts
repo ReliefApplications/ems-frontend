@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeChartComponent } from './chart.component';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafePieDonutChartModule } from '../../ui/charts/pie-donut-chart/pie-donut-chart.module';
 import { SafeLineChartModule } from '../../ui/charts/line-chart/line-chart.module';
 import { SafeBarChartModule } from '../../ui/charts/bar-chart/bar-chart.module';
@@ -20,7 +19,6 @@ import { ButtonModule } from '@oort-front/ui';
     CommonModule,
     MatProgressSpinnerModule,
     LayoutModule,
-    SafeButtonModule,
     SafePieDonutChartModule,
     SafeLineChartModule,
     SafeBarChartModule,

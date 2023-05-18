@@ -9,7 +9,6 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeGraphQLSelectModule } from '../../../../graphql-select/graphql-select.module';
 import { SafeFormsDropdownModule } from '../../../../ui/aggregation-builder/public-api';
-import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeDataSourceTabComponent } from './data-source-tab.component';
 import {
@@ -35,7 +34,6 @@ import {
     SafeIconModule,
     MatProgressSpinnerModule,
     SafeGraphQLSelectModule,
-    SafeButtonModule,
     CheckboxModule,
     DividerModule,
     RadioModule,

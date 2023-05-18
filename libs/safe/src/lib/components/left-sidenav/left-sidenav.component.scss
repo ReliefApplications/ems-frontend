@@ -9,6 +9,17 @@
   padding: 16px;
 }
 
+.show-icons{
+  .hide-icons{
+    display: none;
+  }
+  &:hover{
+    .hide-icons{
+      display: block;
+    }
+  }
+}
+
 .nav-item {
   cursor: pointer;
   height: 56px;

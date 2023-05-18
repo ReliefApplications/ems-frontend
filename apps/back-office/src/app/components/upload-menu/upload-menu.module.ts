@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { UploadMenuComponent } from './upload-menu.component';
 import { UploadModule } from '@progress/kendo-angular-upload';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '@oort-front/safe';
 import { ButtonModule } from '@oort-front/ui';
 
 /**
@@ -12,13 +11,7 @@ import { ButtonModule } from '@oort-front/ui';
  */
 @NgModule({
   declarations: [UploadMenuComponent],
-  imports: [
-    CommonModule,
-    UploadModule,
-    TranslateModule,
-    SafeButtonModule,
-    ButtonModule,
-  ],
+  imports: [CommonModule, UploadModule, TranslateModule, ButtonModule],
   exports: [UploadMenuComponent],
 })
 export class UploadMenuModule {}

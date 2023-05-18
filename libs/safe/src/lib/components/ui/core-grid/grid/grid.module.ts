@@ -20,7 +20,6 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { SafeExportModule } from '../export/export.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../../../pipes/date/date.module';
-import { SafeButtonModule } from '../../button/button.module';
 import { SafeDateFilterMenuModule } from '../date-filter-menu/date-filter-menu.module';
 
 /** Module for the grid component */
@@ -34,7 +33,6 @@ import { SafeDateFilterMenuModule } from '../date-filter-menu/date-filter-menu.m
     MatButtonModule,
     MatIconModule,
     TooltipModule,
-    SafeButtonModule,
     // === KENDO ===
     GridModule,
     ButtonModule,

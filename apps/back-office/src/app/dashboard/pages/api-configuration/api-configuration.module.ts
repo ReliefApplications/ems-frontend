@@ -9,7 +9,6 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyOptionModule as MatOptionModule } from '@angular/material/legacy-core';
-import { SafeButtonModule } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { ButtonModule } from '@oort-front/ui';
@@ -29,7 +28,6 @@ import { ButtonModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatSelectModule,
     MatOptionModule,
-    SafeButtonModule,
     TranslateModule,
     MatChipsModule,
     ButtonModule,

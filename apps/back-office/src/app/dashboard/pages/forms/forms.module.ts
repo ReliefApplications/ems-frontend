@@ -7,11 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import {
-  SafeButtonModule,
-  SafeSkeletonTableModule,
-  SafeDateModule,
-} from '@oort-front/safe';
+import { SafeSkeletonTableModule, SafeDateModule } from '@oort-front/safe';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -49,7 +45,6 @@ import { DividerModule, MenuModule, ButtonModule } from '@oort-front/ui';
     MatInputModule,
     MatSelectModule,
     DividerModule,
-    SafeButtonModule,
     MatPaginatorModule,
     TranslateModule,
     SafeSkeletonTableModule,

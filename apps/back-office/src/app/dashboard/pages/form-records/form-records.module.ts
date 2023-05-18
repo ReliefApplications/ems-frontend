@@ -6,7 +6,6 @@ import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy
 import { MatIconModule } from '@angular/material/icon';
 import {
   SafeRecordHistoryModule,
-  SafeButtonModule,
   SafeSkeletonTableModule,
 } from '@oort-front/safe';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
@@ -32,7 +31,6 @@ import {
     SafeRecordHistoryModule,
     TooltipModule,
     DividerModule,
-    SafeButtonModule,
     MatPaginatorModule,
     TranslateModule,
     OverlayModule,

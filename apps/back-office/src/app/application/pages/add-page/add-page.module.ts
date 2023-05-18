@@ -9,7 +9,6 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatRippleModule } from '@angular/material/core';
 import {
-  SafeButtonModule,
   SafeContentChoiceModule,
   SafeFormsDropdownModule,
 } from '@oort-front/safe';
@@ -32,7 +31,6 @@ import { DividerModule, ButtonModule } from '@oort-front/ui';
     MatDialogModule,
     AddPageRoutingModule,
     MatRippleModule,
-    SafeButtonModule,
     SafeContentChoiceModule,
     TranslateModule,
     SafeFormsDropdownModule,

@@ -5,7 +5,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
 import { TooltipModule, DividerModule, ButtonModule } from '@oort-front/ui';
 
@@ -21,7 +20,6 @@ import { TooltipModule, DividerModule, ButtonModule } from '@oort-front/ui';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    SafeButtonModule,
     TooltipModule,
     DividerModule,
     ButtonModule,

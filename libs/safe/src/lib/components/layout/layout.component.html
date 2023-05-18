@@ -14,6 +14,7 @@
   </ui-button>
   <ui-button
     [isIcon]="true"
+    [variant]="variant.LIGHT"
     icon="keyboard_backspace"
     (click)="goBack()"
     *ngIf="route"
@@ -58,24 +59,23 @@
     [isIcon]="true"
     icon="account_circle"
     [uiMenuTriggerFor]="accountMenu"
+    [variant]="variant.LIGHT"
   >
   </ui-button>
-  <button
-    mat-icon-button
+  <ui-button
     [uiMenuTriggerFor]="notificationMenu"
     [disabled]="notifications.length === 0"
   >
-    <mat-icon class="mat-badge-notification">
-      <kendo-badge-container>
-        notifications
-        <kendo-badge
-          shape="dot"
-          themeColor="error"
-          *ngIf="notifications.length > 0"
-        ></kendo-badge>
-      </kendo-badge-container>
-    </mat-icon>
-  </button>
+  <kendo-badge-container>
+    <ui-icon [icon]="'notifications'" [variant]="variant.LIGHT"></ui-icon>
+    <kendo-badge
+      shape="dot"
+      themeColor="error"
+      class="absolute -translate-x-1/4 translate-y-full scale-50"
+      *ngIf="notifications.length > 0"
+    ></kendo-badge>
+  </kendo-badge-container>
+  </ui-button>
   <ui-menu #accountMenu>
     <a uiMenuItem [routerLink]="[profileRoute]">
       {{ 'pages.profile.title' | translate }}

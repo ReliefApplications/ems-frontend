@@ -5,7 +5,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule, SafeEmptyModule } from '@oort-front/safe';
+import { SafeEmptyModule } from '@oort-front/safe';
 import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component';
 import { MenuModule, ButtonModule } from '@oort-front/ui';
 
@@ -20,7 +20,6 @@ import { MenuModule, ButtonModule } from '@oort-front/ui';
     MatTableModule,
     MatIconModule,
     MenuModule,
-    SafeButtonModule,
     TranslateModule,
     OverlayModule,
     SafeEmptyModule,

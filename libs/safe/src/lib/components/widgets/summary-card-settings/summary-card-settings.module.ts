@@ -6,7 +6,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
@@ -31,7 +30,6 @@ import {
     MatInputModule,
     TranslateModule,
     LayoutModule,
-    SafeButtonModule,
     TooltipModule,
     SafeIconModule,
     MenuModule,

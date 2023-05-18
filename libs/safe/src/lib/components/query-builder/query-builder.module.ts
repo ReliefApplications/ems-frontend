@@ -15,7 +15,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
@@ -75,7 +74,6 @@ import {
     TooltipModule,
     MatAutocompleteModule,
     MatButtonToggleModule,
-    SafeButtonModule,
     SafeIconModule,
     TranslateModule,
     InputsModule,

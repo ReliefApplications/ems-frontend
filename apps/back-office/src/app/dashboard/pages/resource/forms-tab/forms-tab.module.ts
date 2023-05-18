@@ -6,11 +6,7 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  SafeButtonModule,
-  SafeDateModule,
-  SafeSkeletonTableModule,
-} from '@oort-front/safe';
+import { SafeDateModule, SafeSkeletonTableModule } from '@oort-front/safe';
 import { MenuModule, ButtonModule } from '@oort-front/ui';
 
 /**
@@ -25,7 +21,6 @@ import { MenuModule, ButtonModule } from '@oort-front/ui';
     MatIconModule,
     MenuModule,
     MatChipsModule,
-    SafeButtonModule,
     TranslateModule,
     SafeDateModule,
     SafeSkeletonTableModule,

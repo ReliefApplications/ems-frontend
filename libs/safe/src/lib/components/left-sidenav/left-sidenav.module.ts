@@ -6,7 +6,6 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterModule } from '@angular/router';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { TooltipModule, DividerModule, ButtonModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -23,7 +22,6 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSidenavModule,
     TooltipModule,
     RouterModule,
-    SafeButtonModule,
     DividerModule,
     TranslateModule,
     ButtonModule,

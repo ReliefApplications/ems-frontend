@@ -6,7 +6,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
@@ -34,7 +33,6 @@ import {
     MatSelectModule,
     MatTabsModule,
     TooltipModule,
-    SafeButtonModule,
     SafeIconModule,
     SafeQueryBuilderModule,
     ButtonModule,

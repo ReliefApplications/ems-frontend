@@ -14,7 +14,6 @@ import {
 import { SafeFormService } from '../../../services/form/form.service';
 import { CommonModule } from '@angular/common';
 import { SafeFormBuilderModule } from '../../form-builder/form-builder.module';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from '@oort-front/ui';
 import { SafeModalModule } from '../../ui/modal/modal.module';
@@ -98,7 +97,6 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   imports: [
     CommonModule,
     SafeFormBuilderModule,
-    SafeButtonModule,
     TranslateModule,
     TooltipModule,
     SafeModalModule,

@@ -2,7 +2,6 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { SafeButtonModule } from '@oort-front/safe';
 import {
   Application,
   SafeApplicationService,
@@ -30,7 +29,6 @@ const DEFAULT_STYLE = '';
     FormsModule,
     ReactiveFormsModule,
     MonacoEditorModule,
-    SafeButtonModule,
     TranslateModule,
     ButtonModule,
   ],

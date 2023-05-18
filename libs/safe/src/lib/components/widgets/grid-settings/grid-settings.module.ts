@@ -4,7 +4,6 @@ import { SafeGridSettingsComponent } from './grid-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { TabActionsModule } from './tab-actions/tab-actions.module';
@@ -21,7 +20,6 @@ import { TooltipModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatTabsModule,
-    SafeButtonModule,
     TranslateModule,
     SafeIconModule,
     TabActionsModule,

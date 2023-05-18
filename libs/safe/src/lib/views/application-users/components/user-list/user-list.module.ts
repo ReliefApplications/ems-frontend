@@ -7,7 +7,6 @@ import { SafeSkeletonTableModule } from '../../../../components/skeleton/skeleto
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { SafeEmptyModule } from '../../../../components/ui/empty/empty.module';
 import { MatIconModule } from '@angular/material/icon';
-import { SafeButtonModule } from '../../../../components/ui/button/button.module';
 import { MenuModule, CheckboxModule, ButtonModule } from '@oort-front/ui';
 
 /**
@@ -24,7 +23,6 @@ import { MenuModule, CheckboxModule, ButtonModule } from '@oort-front/ui';
     SafeEmptyModule,
     MenuModule,
     MatIconModule,
-    SafeButtonModule,
     CheckboxModule,
     ButtonModule,
   ],

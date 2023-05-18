@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormRoutingModule } from './form-routing.module';
 import { FormComponent } from './form.component';
-import { SafeFormModule, SafeButtonModule } from '@oort-front/safe';
+import { SafeFormModule } from '@oort-front/safe';
 import { ButtonModule } from '@oort-front/ui';
 
 /**
@@ -10,13 +10,7 @@ import { ButtonModule } from '@oort-front/ui';
  */
 @NgModule({
   declarations: [FormComponent],
-  imports: [
-    CommonModule,
-    FormRoutingModule,
-    SafeFormModule,
-    SafeButtonModule,
-    ButtonModule,
-  ],
+  imports: [CommonModule, FormRoutingModule, SafeFormModule, ButtonModule],
   exports: [FormComponent],
 })
 export class FormModule {}

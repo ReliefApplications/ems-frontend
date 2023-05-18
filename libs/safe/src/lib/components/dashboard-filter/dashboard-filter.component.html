@@ -53,6 +53,7 @@
       >
         <ng-container *ngFor="let position of positionList">
           <ui-button
+            [variant]="variant.LIGHT"
             matSuffix
             [isIcon]="true"
             icon="{{ position + '_panel_open' }}"

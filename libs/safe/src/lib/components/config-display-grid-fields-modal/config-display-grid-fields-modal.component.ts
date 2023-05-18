@@ -21,7 +21,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeModalModule } from '../ui/modal/modal.module';
 import { ButtonModule, Variant, Category } from '@oort-front/ui';
 
@@ -59,7 +58,6 @@ interface DialogData {
     MatButtonModule,
     MatInputModule,
     TranslateModule,
-    SafeButtonModule,
     SafeModalModule,
     ButtonModule,
   ],

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SafeWidgetChoiceComponent } from './widget-choice.component';
 import { MatRippleModule } from '@angular/material/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule, ButtonModule } from '@oort-front/ui';
 
@@ -16,7 +15,6 @@ import { TooltipModule, ButtonModule } from '@oort-front/ui';
     MatRippleModule,
     TooltipModule,
     DragDropModule,
-    SafeButtonModule,
     ButtonModule,
   ],
   exports: [SafeWidgetChoiceComponent],

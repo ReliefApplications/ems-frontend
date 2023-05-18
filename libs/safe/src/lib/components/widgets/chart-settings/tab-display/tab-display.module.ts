@@ -16,7 +16,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafePaletteControlModule } from '../../../palette-control/palette-control.module';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
 import { SafeAggregationBuilderModule } from '../../../ui/aggregation-builder/aggregation-builder.module';
-import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeGridModule } from '../../../ui/core-grid/grid/grid.module';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
@@ -49,7 +48,6 @@ import {
     MatExpansionModule,
     ToggleModule,
     MatTabsModule,
-    SafeButtonModule,
     TranslateModule,
     SafeAggregationBuilderModule,
     MatAutocompleteModule,

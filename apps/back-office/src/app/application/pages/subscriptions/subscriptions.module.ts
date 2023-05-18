@@ -10,7 +10,6 @@ import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@ang
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import {
-  SafeButtonModule,
   SafeIconModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
@@ -40,7 +39,6 @@ import { MenuModule, ButtonModule, DividerModule } from '@oort-front/ui';
     MatTableModule,
     MatAutocompleteModule,
     DividerModule,
-    SafeButtonModule,
     SafeIconModule,
     TranslateModule,
     SafeGraphQLSelectModule,

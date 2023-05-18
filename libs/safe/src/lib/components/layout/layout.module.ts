@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +20,7 @@ import {
   TooltipModule,
   MenuModule,
   ButtonModule,
+  IconModule,
 } from '@oort-front/ui';
 
 /**
@@ -41,7 +41,6 @@ import {
     DragDropModule,
     TooltipModule,
     DividerModule,
-    SafeButtonModule,
     IndicatorsModule,
     TranslateModule,
     SafeSearchMenuModule,
@@ -50,6 +49,7 @@ import {
     SafeBreadcrumbModule,
     SafeIconModule,
     ButtonModule,
+    IconModule,
   ],
   exports: [SafeLayoutComponent],
 })

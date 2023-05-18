@@ -5,7 +5,6 @@ import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 import { MatIconModule } from '@angular/material/icon';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
 
 /**
@@ -20,7 +19,6 @@ import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
     SafeSkeletonTableModule,
     MenuModule,
     MatIconModule,
-    SafeButtonModule,
     DividerModule,
     ButtonModule,
   ],

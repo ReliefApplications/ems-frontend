@@ -7,11 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  SafeButtonModule,
-  SafeSkeletonTableModule,
-  SafeEmptyModule,
-} from '@oort-front/safe';
+import { SafeSkeletonTableModule, SafeEmptyModule } from '@oort-front/safe';
 import { UploadMenuModule } from '../../../../components/upload-menu/upload-menu.module';
 import { TooltipModule, MenuModule, ButtonModule } from '@oort-front/ui';
 
@@ -26,7 +22,6 @@ import { TooltipModule, MenuModule, ButtonModule } from '@oort-front/ui';
     MatTableModule,
     MatIconModule,
     MenuModule,
-    SafeButtonModule,
     TooltipModule,
     MatPaginatorModule,
     TranslateModule,

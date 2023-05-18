@@ -5,7 +5,6 @@ import { WorkflowComponent } from './workflow.component';
 import {
   SafeAccessModule,
   SafeAlertModule,
-  SafeButtonModule,
   SafeWorkflowStepperModule,
   SafeIconModule,
   SafeSkeletonModule,
@@ -29,7 +28,6 @@ import { ButtonModule, MenuModule } from '@oort-front/ui';
     WorkflowRoutingModule,
     SafeAccessModule,
     MatProgressSpinnerModule,
-    SafeButtonModule,
     SafeWorkflowStepperModule,
     TranslateModule,
     OverlayModule,

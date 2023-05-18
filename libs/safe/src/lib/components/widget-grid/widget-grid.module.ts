@@ -12,7 +12,6 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { SafeFloatingOptionsComponent } from './floating-options/floating-options.component';
 import { SafeTileDataComponent } from './floating-options/menu/tile-data/tile-data.component';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeWidgetChoiceModule } from '../widget-choice/widget-choice.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
@@ -43,7 +42,6 @@ import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
     MatDialogModule,
     MenuModule,
     DividerModule,
-    SafeButtonModule,
     TranslateModule,
     SafeIconModule,
     SafeWidgetChoiceModule,

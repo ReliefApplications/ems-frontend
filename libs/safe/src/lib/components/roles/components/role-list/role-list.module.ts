@@ -9,7 +9,6 @@ import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/m
 import { TranslateModule } from '@ngx-translate/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
 import { SafeRoleListComponent } from './role-list.component';
 import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
@@ -34,7 +33,6 @@ import { AbilityModule } from '@casl/angular';
     MatSortModule,
     MatAutocompleteModule,
     DividerModule,
-    SafeButtonModule,
     TranslateModule,
     SafeSkeletonTableModule,
     AbilityModule,

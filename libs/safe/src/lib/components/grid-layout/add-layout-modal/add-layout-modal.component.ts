@@ -19,7 +19,6 @@ import { SafeGraphQLSelectComponent } from '../../graphql-select/graphql-select.
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeModalModule } from '../../ui/modal/modal.module';
@@ -48,7 +47,6 @@ interface DialogData {
     MatButtonModule,
     MatFormFieldModule,
     MatSelectModule,
-    SafeButtonModule,
     SafeModalModule,
     SafeGraphQLSelectModule,
     FormsModule,

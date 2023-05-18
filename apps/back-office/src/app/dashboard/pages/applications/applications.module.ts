@@ -12,7 +12,6 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import {
   SafeAccessModule,
-  SafeButtonModule,
   SafeApplicationsSummaryModule,
   SafeSkeletonTableModule,
   SafeDateModule,
@@ -54,7 +53,6 @@ import { ButtonModule, MenuModule, DividerModule } from '@oort-front/ui';
     SafeAccessModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    SafeButtonModule,
     MatButtonModule,
     MatPaginatorModule,
     SafeApplicationsSummaryModule,

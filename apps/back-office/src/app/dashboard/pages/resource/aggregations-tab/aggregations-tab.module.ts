@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  SafeButtonModule,
   SafeAggregationBuilderModule,
   SafeDateModule,
   SafeSkeletonTableModule,
@@ -27,7 +26,6 @@ import { MenuModule, ButtonModule } from '@oort-front/ui';
     MatTableModule,
     MatIconModule,
     MenuModule,
-    SafeButtonModule,
     TranslateModule,
     SafeAggregationBuilderModule,
     OverlayModule,

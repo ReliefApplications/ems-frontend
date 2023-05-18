@@ -8,7 +8,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatRippleModule } from '@angular/material/core';
 import {
-  SafeButtonModule,
   SafeContentChoiceModule,
   SafeFormsDropdownModule,
 } from '@oort-front/safe';
@@ -30,7 +29,6 @@ import { DividerModule, ButtonModule } from '@oort-front/ui';
     MatSelectModule,
     AddStepRoutingModule,
     MatRippleModule,
-    SafeButtonModule,
     SafeContentChoiceModule,
     TranslateModule,
     SafeFormsDropdownModule,

@@ -16,7 +16,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { SafeButtonModule, SafeModalModule } from '@oort-front/safe';
+import { SafeModalModule } from '@oort-front/safe';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
@@ -47,7 +47,6 @@ import {
     MatTableModule,
     MatSelectModule,
     DividerModule,
-    SafeButtonModule,
     MatButtonModule,
     TranslateModule,
     SafeModalModule,

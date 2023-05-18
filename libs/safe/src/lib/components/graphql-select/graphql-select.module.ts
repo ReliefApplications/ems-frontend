@@ -7,7 +7,6 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { ButtonModule } from '@oort-front/ui';
 
 /**
@@ -24,7 +23,6 @@ import { ButtonModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatProgressSpinnerModule,
     MatInputModule,
-    SafeButtonModule,
     ButtonModule,
   ],
   exports: [SafeGraphQLSelectComponent],

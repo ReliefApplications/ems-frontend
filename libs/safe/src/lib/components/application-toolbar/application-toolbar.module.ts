@@ -5,7 +5,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { SafeAccessModule } from '../access/access.module';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { MenuModule, ButtonModule } from '@oort-front/ui';
 
@@ -16,7 +15,6 @@ import { MenuModule, ButtonModule } from '@oort-front/ui';
   declarations: [SafeApplicationToolbarComponent],
   imports: [
     CommonModule,
-    SafeButtonModule,
     TranslateModule,
     SafeAccessModule,
     MenuModule,

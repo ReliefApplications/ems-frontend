@@ -41,7 +41,6 @@ import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@ang
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SubscriptionsRoutingModule } from '../../subscriptions-routing.module';
 import {
-  SafeButtonModule,
   SafeIconModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
@@ -81,7 +80,6 @@ const ITEMS_PER_PAGE = 10;
     MatTableModule,
     MatAutocompleteModule,
     DividerModule,
-    SafeButtonModule,
     SafeIconModule,
     TranslateModule,
     SafeGraphQLSelectModule,

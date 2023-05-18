@@ -8,7 +8,6 @@ import { createFormGroup, Mapping } from '../mapping-forms';
 import { CommonModule } from '@angular/common';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -40,7 +39,6 @@ interface MappingDialogData {
     MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
-    SafeButtonModule,
     SafeModalModule,
     ButtonModule,
   ],

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { NotificationsComponent } from './notifications.component';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,7 +19,6 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
     MatTableModule,
     MenuModule,
     TranslateModule,
-    SafeButtonModule,
     SafeSkeletonTableModule,
     DividerModule,
     MatIconModule,

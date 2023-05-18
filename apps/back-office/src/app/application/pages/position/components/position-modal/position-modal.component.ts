@@ -15,7 +15,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { SafeButtonModule, SafeModalModule } from '@oort-front/safe';
+import { SafeModalModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
@@ -37,7 +37,6 @@ import { ButtonModule, Variant, Category, MenuModule } from '@oort-front/ui';
     MatTableModule,
     MatIconModule,
     MenuModule,
-    SafeButtonModule,
     MatButtonModule,
     TranslateModule,
     SafeModalModule,

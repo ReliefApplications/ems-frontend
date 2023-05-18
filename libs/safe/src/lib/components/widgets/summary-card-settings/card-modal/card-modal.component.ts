@@ -29,7 +29,6 @@ import { Resource } from '../../../../models/resource.model';
 import get from 'lodash/get';
 import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
 import { CommonModule } from '@angular/common';
-import { SafeButtonModule } from '../../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
@@ -51,7 +50,6 @@ import { TooltipModule, ButtonModule, Variant, Category } from '@oort-front/ui';
   standalone: true,
   imports: [
     CommonModule,
-    SafeButtonModule,
     TranslateModule,
     TooltipModule,
     FormsModule,

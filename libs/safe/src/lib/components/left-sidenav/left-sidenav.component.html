@@ -31,7 +31,7 @@
       <!-- Classes determine nav-list height for application layout -->
       <ul>
         <ng-container *ngFor="let item of group.navItems">
-          <div cdkDrag [cdkDragDisabled]="!item.orderable">
+          <div cdkDrag [cdkDragDisabled]="!item.orderable" class="show-icons">
             <li class="nav-item">
               <a
                 [routerLink]="item.path"
@@ -51,19 +51,19 @@
                 *ngIf="item.action || item.orderable"
               >
                 <ui-button
+                  class="hide-icons"
                   [isIcon]="true"
-                  class="nav-action"
                   *ngIf="item.action"
                   (click)="onClick(item.action.callback, $event)"
-                  icon="item.action.toolTip"
                   uiTooltip="{{ item.action.toolTip }}"
-                >
+                  icon="delete"
+                  >
                 </ui-button>
                 <ui-button
-                  cdkDragHandle
-                  class="nav-item-handle"
-                  *ngIf="item.orderable"
+                  class="hide-icons"
                   [isIcon]="true"
+                  cdkDragHandle
+                  *ngIf="item.orderable"
                   icon="drag_indicator"
                 >
                 </ui-button>

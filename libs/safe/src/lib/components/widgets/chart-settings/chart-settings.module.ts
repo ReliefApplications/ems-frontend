@@ -12,7 +12,6 @@ import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module
 import { SafeChartModule } from '../chart/chart.module';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
@@ -41,7 +40,6 @@ import { TooltipModule } from '@oort-front/ui';
     SafeChartModule,
     MatExpansionModule,
     MatTabsModule,
-    SafeButtonModule,
     TranslateModule,
     SafeAggregationBuilderModule,
     MatAutocompleteModule,

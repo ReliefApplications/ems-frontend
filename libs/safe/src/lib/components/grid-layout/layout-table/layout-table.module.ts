@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LayoutTableComponent } from './layout-table.component';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
@@ -19,7 +18,6 @@ import { MenuModule, ButtonModule } from '@oort-front/ui';
     MenuModule,
     MatIconModule,
     DragDropModule,
-    SafeButtonModule,
     SafeDateModule,
     ButtonModule,
   ],

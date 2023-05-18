@@ -5,7 +5,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeFormComponent } from './form.component';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { ButtonModule } from '@oort-front/ui';
 
@@ -18,7 +17,6 @@ import { ButtonModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     MatTabsModule,
-    SafeButtonModule,
     SafeIconModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,

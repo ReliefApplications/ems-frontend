@@ -12,11 +12,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  SafeButtonModule,
-  SafeSkeletonTableModule,
-  SafeDateModule,
-} from '@oort-front/safe';
+import { SafeSkeletonTableModule, SafeDateModule } from '@oort-front/safe';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { FilterComponent } from './filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -41,7 +37,6 @@ import { MenuModule, ButtonModule } from '@oort-front/ui';
     MatNativeDateModule,
     MatFormFieldModule,
     FormsModule,
-    SafeButtonModule,
     MatPaginatorModule,
     ReactiveFormsModule,
     TranslateModule,

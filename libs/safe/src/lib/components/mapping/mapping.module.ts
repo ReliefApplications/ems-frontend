@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SafeMappingComponent } from './mapping.component';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -28,7 +27,6 @@ import { MenuModule, ButtonModule } from '@oort-front/ui';
     MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
-    SafeButtonModule,
     SafeModalModule,
     ButtonModule,
   ],

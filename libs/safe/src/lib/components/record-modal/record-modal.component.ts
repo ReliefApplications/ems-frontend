@@ -38,7 +38,6 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
@@ -68,7 +67,6 @@ interface DialogData {
     MatGridListModule,
     MatIconModule,
     MatButtonModule,
-    SafeButtonModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,
