@@ -5,12 +5,11 @@
   <div class="flex w-full flex-col items-end space-y-4 sm:items-center">
     <div
       [ngClass]="{
-        'translate-y-0 opacity-100 sm:translate-x-0 transition ease-in duration-100':
-          displaySnackBar,
-        'transform ease-out duration-300 transition translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2':
-          !displaySnackBar
+        'translate-y-0 opacity-0 sm:translate-x-0': !displaySnackBar,
+        'transform ease-out duration-300 transition translate-y-2 opacity-100 sm:translate-y-0 sm:translate-x-2':
+          displaySnackBar
       }"
-      class="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+      class="pointer-events-auto w-full transition ease-in duration-100 max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5"
     >
       <div class="p-4">
         <div class="flex justify-between items-center">
