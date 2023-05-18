@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
 import { DialogSize } from './enums/dialog-size.enum';
+import { Variant } from '../shared/variant.enum';
 
 /**
  * Dialog component.
@@ -14,6 +15,8 @@ export class DialogComponent implements OnChanges, OnInit {
   @Input() closable = false;
   @Input() padding = true;
   @Input() size: DialogSize | string = '';
+
+  public buttonVariant = Variant;
 
   /**
    * Constructor for the modal component
@@ -78,5 +81,10 @@ export class DialogComponent implements OnChanges, OnInit {
     if (!this.padding) {
       this.dialogRef.addPanelClass('no-padding-dialog');
     }
+  }
+
+  /** Closes the dialog when using the default close icon button */
+  public onClose(): void {
+    this.dialogRef.close();
   }
 }
