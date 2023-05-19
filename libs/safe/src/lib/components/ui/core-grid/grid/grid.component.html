@@ -452,6 +452,7 @@
               [minRows]="2"
               [name]="field.name"
               class="w-full"
+              [uiTextareaDirective]
             >
             </ui-textarea>   
           </ng-container>
@@ -461,9 +462,9 @@
           >
             <input
               [formControl]="formGroup.get(field.name)"
-              kendoGridFocusable
               [name]="field.name"
               class="k-textbox"
+              [uiTextareaDirective]
             />
           </ng-container>
           <!-- EDITION ( color ) -->
@@ -832,6 +833,7 @@
                           [minRows]="2"
                           [name]="row.name"
                           class="w-full"
+                          [uiTextareaDirective]
                         >
                         </ui-textarea>
                       </ng-container>
@@ -867,6 +869,7 @@
                           [name]="field.name + i"
                           [minRows]="2"
                           class="w-full"
+                          [uiTextareaDirective]
                         >
                         </ui-textarea>
                       </ng-container>
@@ -916,6 +919,7 @@
                   [minRows]="2"
                   [name]="column.name"
                   class="w-full"
+                  [uiTextareaDirective]
                 >
                 </ui-textarea>
               </ng-container>
