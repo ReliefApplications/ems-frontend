@@ -29,7 +29,7 @@ import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/
 import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
-import { MatLegacySliderModule as MatSliderModule } from '@angular/material/legacy-slider';
+import { SliderModule } from '@oort-front/ui';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.component';
 import { SafeFilterModule } from '../filter/filter.module';
@@ -79,7 +79,7 @@ import { RadioModule } from '@oort-front/ui';
     LabelModule,
     SafeCheckboxTreeModule,
     SafeCoreGridModule,
-    MatSliderModule,
+    SliderModule,
     MatDatepickerModule,
     SafeFilterModule,
     EditorModule,
