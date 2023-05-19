@@ -230,19 +230,16 @@ export class EditNotificationModalComponent
         hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
       },
     });
-    dialogRef
-      .closed
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        if (value) {
-          if (typeof value === 'string') {
-            this.formGroup.get('layout')?.setValue(value);
-          } else {
-            this.formGroup.get('layout')?.setValue(value.id);
-          }
-          this.getResource(this.resource?.id as string);
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        if (typeof value === 'string') {
+          this.formGroup.get('layout')?.setValue(value);
+        } else {
+          this.formGroup.get('layout')?.setValue(value.id);
         }
-      });
+        this.getResource(this.resource?.id as string);
+      }
+    });
   }
 
   /**
@@ -258,18 +255,15 @@ export class EditNotificationModalComponent
         layout: this.layout,
       },
     });
-    dialogRef
-      .closed
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        if (value && this.layout) {
-          this.gridLayoutService
-            .editLayout(this.layout, value, this.resource?.id)
-            .subscribe((res: any) => {
-              this.layout = res.data?.editLayout;
-            });
-        }
-      });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value && this.layout) {
+        this.gridLayoutService
+          .editLayout(this.layout, value, this.resource?.id)
+          .subscribe((res: any) => {
+            this.layout = res.data?.editLayout;
+          });
+      }
+    });
   }
 
   /** Unset layout. */
@@ -286,24 +280,21 @@ export class EditNotificationModalComponent
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       disableClose: true,
     });
-    dialogRef
-      .closed
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        if (value)
-          this.applicationService.addTemplate(
-            {
-              name: value.name,
-              type: TemplateTypeEnum.EMAIL,
-              content: {
-                subject: value.subject,
-                body: value.body,
-              },
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value)
+        this.applicationService.addTemplate(
+          {
+            name: value.name,
+            type: TemplateTypeEnum.EMAIL,
+            content: {
+              subject: value.subject,
+              body: value.body,
             },
-            (template: Template) => {
-              this.formGroup.get('template')?.setValue(template.id || null);
-            }
-          );
-      });
+          },
+          (template: Template) => {
+            this.formGroup.get('template')?.setValue(template.id || null);
+          }
+        );
+    });
   }
 }

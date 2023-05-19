@@ -372,7 +372,7 @@ export class SafeGridWidgetComponent implements OnInit {
             },
           });
 
-          const value = await firstValueFrom(dialogRef.closed)  as any;
+          const value = (await firstValueFrom(dialogRef.closed)) as any;
           const template = value?.template;
 
           if (template) {
