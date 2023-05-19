@@ -7,7 +7,12 @@ import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { SpinnerModule, FormWrapperModule, IconModule, MenuModule } from '@oort-front/ui';
+import {
+  SpinnerModule,
+  FormWrapperModule,
+  IconModule,
+  MenuModule,
+} from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import {
