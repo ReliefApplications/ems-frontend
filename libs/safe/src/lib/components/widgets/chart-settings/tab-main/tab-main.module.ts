@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { ExpansionPanelModule } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -40,7 +40,7 @@ import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-
     TextFieldModule,
     SafeQueryBuilderModule,
     SafeChartModule,
-    MatExpansionModule,
+    ExpansionPanelModule,
     MatTabsModule,
     SafeButtonModule,
     TranslateModule,
