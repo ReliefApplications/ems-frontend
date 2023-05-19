@@ -44,7 +44,7 @@ import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/lega
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SafeButtonModule } from '../ui/button/button.module';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { TabsModule } from '@oort-front/ui';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
@@ -82,7 +82,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     MatDialogModule,
     MatIconModule,
     MatButtonModule,
-    MatTabsModule,
+    TabsModule,
     SafeButtonModule,
     SafeIconModule,
     SafeRecordSummaryModule,

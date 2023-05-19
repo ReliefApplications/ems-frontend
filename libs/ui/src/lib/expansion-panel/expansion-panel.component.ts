@@ -5,8 +5,8 @@ import {
   EventEmitter,
   AfterViewInit,
   ViewChild,
-  ElementRef,
   Renderer2,
+  ElementRef,
 } from '@angular/core';
 import {
   trigger,
@@ -44,7 +44,6 @@ import { CdkAccordionItem } from '@angular/cdk/accordion';
   ],
 })
 export class ExpansionPanelComponent implements AfterViewInit {
-  @Input() title = '';
   @Input() displayIcon = true;
   @Input() disabled = false;
   @Input() expanded = false;

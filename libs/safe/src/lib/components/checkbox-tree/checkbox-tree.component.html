@@ -9,12 +9,13 @@
     matTreeNodePadding
   >
     <button mat-icon-button disabled></button>
-    <mat-checkbox
+    <ui-checkbox
       class="checklist-leaf-node"
       [checked]="checklistSelection.isSelected(node)"
       (change)="todoLeafItemSelectionToggle(node)"
-      >{{ node.item }}</mat-checkbox
     >
+      <ng-container ngProjectAs="label">{{ node.item }}</ng-container>
+    </ui-checkbox>
   </mat-tree-node>
 
   <!-- <mat-tree-node
@@ -39,12 +40,13 @@
         {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
       </mat-icon>
     </button>
-    <mat-checkbox
+    <ui-checkbox
       [checked]="descendantsAllSelected(node)"
       [indeterminate]="descendantsPartiallySelected(node)"
       (change)="todoItemSelectionToggle(node)"
-      >{{ node.item }}</mat-checkbox
     >
+      <ng-container ngProjectAs="label">{{ node.item }}</ng-container>
+    </ui-checkbox>
     <!-- <button mat-icon-button (click)="addNewItem(node)">
       <mat-icon>add</mat-icon>
     </button> -->

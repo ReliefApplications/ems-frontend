@@ -6,8 +6,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { SpinnerModule } from '@oort-front/ui';
+import { SpinnerModule, MenuModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import {
@@ -15,12 +14,11 @@ import {
   SafeIconModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
-  SafeDividerModule,
 } from '@oort-front/safe';
+import { DividerModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 
 /**
  * Application subscriptions page module.
@@ -37,15 +35,14 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MatIconModule,
     MatInputModule,
     MatSelectModule,
-    MatMenuModule,
     SpinnerModule,
+    MenuModule,
     MatTableModule,
     MatAutocompleteModule,
-    SafeDividerModule,
+    DividerModule,
     SafeButtonModule,
     SafeIconModule,
     TranslateModule,
-    MatTooltipModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
   ],

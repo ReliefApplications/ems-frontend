@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeTemplatesComponent } from './templates.component';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SpinnerModule } from '@oort-front/ui';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
-import { SafeDividerModule } from '../ui/divider/divider.module';
+import { DividerModule } from '@oort-front/ui';
 
 /** Module for components related to templates */
 @NgModule({
@@ -16,13 +16,13 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
   imports: [
     CommonModule,
     MatTableModule,
-    MatMenuModule,
     SpinnerModule,
+    MenuModule,
     TranslateModule,
     MatIconModule,
     SafeButtonModule,
     SafeSkeletonTableModule,
-    SafeDividerModule,
+    DividerModule,
   ],
   exports: [SafeTemplatesComponent],
 })

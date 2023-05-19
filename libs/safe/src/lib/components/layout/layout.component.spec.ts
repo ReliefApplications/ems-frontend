@@ -20,7 +20,7 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import {
   ApolloTestingModule,
   ApolloTestingController,
@@ -56,7 +56,7 @@ describe('SafeLayoutComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-        MatMenuModule,
+        MenuModule,
         ApolloTestingModule,
       ],
     }).compileComponents();
