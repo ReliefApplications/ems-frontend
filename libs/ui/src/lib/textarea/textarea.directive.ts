@@ -1,4 +1,4 @@
-import { Directive, Self, Optional, Input, AfterViewInit } from '@angular/core';
+import { Directive, Self, Optional, Input } from '@angular/core';
 import { FocusableDirective } from '@progress/kendo-angular-grid';
 
 /**
@@ -11,5 +11,5 @@ import { FocusableDirective } from '@progress/kendo-angular-grid';
 })
 export class TextareaDirective {
     @Input() uiTextareaDirective!: void;
-    constructor(@Self() @Optional() private kendoFocus: FocusableDirective){}
+    constructor(@Self() @Optional() private kendoFocus: FocusableDirective) {}
 }
