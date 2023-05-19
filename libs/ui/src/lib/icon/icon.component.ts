@@ -15,7 +15,7 @@ export class IconComponent {
   @Input() category: Category = Category.PRIMARY;
   @Input() variant: Variant = Variant.DEFAULT;
   @Input() size = 24;
-  @Input() fontSet = false;
+  @Input() isOutlined = false;
 
   /**
    * Formats the size input adding a 'px' suffix

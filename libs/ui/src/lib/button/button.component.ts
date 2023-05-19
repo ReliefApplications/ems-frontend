@@ -24,7 +24,7 @@ export class ButtonComponent {
   @HostBinding('class.disabled')
   @Input()
   disabled = false;
-  @Input() fontSet = false;
+  @Input() isOutlined = false;
 
   buttonIconPosition = ButtonIconPosition;
   buttonCategory = Category;
@@ -57,11 +57,7 @@ export class ButtonComponent {
     classes.push(this.size);
     classes.push(
       'button-' +
-        (this.variant === Variant.DEFAULT
-          ? Variant.PRIMARY
-          : this.variant === Variant.LIGHT
-          ? Variant.GREY
-          : this.variant)
+        (this.variant === Variant.DEFAULT ? Variant.PRIMARY : this.variant)
     );
     if ((this.icon || this.loading) && !this.isIcon) {
       classes.push('inline-flex items-center gap-x-2');

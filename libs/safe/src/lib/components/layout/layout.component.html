@@ -2,6 +2,8 @@
   <ui-button
     *ngIf="!largeDevice"
     [isIcon]="true"
+    [variant]="variant.LIGHT"
+    [size]="size.LARGE"
     icon="menu"
     (click)="nav.toggle()"
     [uiTooltip]="
@@ -14,6 +16,7 @@
   </ui-button>
   <ui-button
     [isIcon]="true"
+    [size]="size.LARGE"
     [variant]="variant.LIGHT"
     icon="keyboard_backspace"
     (click)="goBack()"
@@ -32,6 +35,7 @@
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <ui-button
+      [size]="size.LARGE"
       icon="arrow_drop_down"
       (click)="showAppMenu = !showAppMenu"
       cdkOverlayOrigin
@@ -56,26 +60,32 @@
     <div class="account-property">{{ account ? account.username : '' }}</div>
   </div>
   <ui-button
+    [size]="size.LARGE"
     [isIcon]="true"
     icon="account_circle"
     [uiMenuTriggerFor]="accountMenu"
     [variant]="variant.LIGHT"
   >
   </ui-button>
-  <ui-button
-    [uiMenuTriggerFor]="notificationMenu"
-    [disabled]="notifications.length === 0"
-  >
-  <kendo-badge-container>
-    <ui-icon [icon]="'notifications'" [variant]="variant.LIGHT"></ui-icon>
-    <kendo-badge
-      shape="dot"
-      themeColor="error"
-      class="absolute -translate-x-1/4 translate-y-full scale-50"
-      *ngIf="notifications.length > 0"
-    ></kendo-badge>
-  </kendo-badge-container>
-  </ui-button>
+  <span class="relative">
+    <ui-button
+      [size]="size.LARGE"
+      [variant]="variant.LIGHT"
+      [uiMenuTriggerFor]="notificationMenu"
+      [disabled]="notifications.length === 0"
+      [icon]="'notifications'"
+      [isIcon]="true"
+    >
+    </ui-button>
+    <kendo-badge-container class="absolute">
+      <kendo-badge
+        shape="dot"
+        themeColor="error"
+        class="absolute -translate-x-1/4 translate-y-full scale-50"
+        *ngIf="notifications.length > 0"
+      ></kendo-badge>
+    </kendo-badge-container>
+  </span>
   <ui-menu #accountMenu>
     <a uiMenuItem [routerLink]="[profileRoute]">
       {{ 'pages.profile.title' | translate }}

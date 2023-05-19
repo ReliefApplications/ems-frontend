@@ -33,6 +33,7 @@
       <!-- Edition -->
       <div class="flex-auto">
         <ui-button
+          [variant]="variant.LIGHT"
           [isIcon]="true"
           icon="edit"
           (click)="onEditFilter()"
@@ -57,7 +58,7 @@
             matSuffix
             [isIcon]="true"
             icon="{{ position + '_panel_open' }}"
-            [fontSet]="true"
+            [isOutlined]="true"
             (click)="changeFilterPosition(position)"
           ></ui-button>
         </ng-container>

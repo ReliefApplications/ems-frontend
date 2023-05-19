@@ -29,26 +29,26 @@ export default {
   ],
   argTypes: {
     category: {
-      options: Category,
+      options: Object.keys(Category),
       control: {
         type: 'select',
       },
     },
     variant: {
-      options: Variant,
+      options: Object.keys(Variant),
       control: {
         type: 'select',
       },
       defaultValue: Variant.DEFAULT,
     },
     size: {
-      options: Size,
+      options: Object.keys(Size),
       control: {
         type: 'select',
       },
     },
     iconPosition: {
-      options: ButtonIconPosition,
+      options: Object.keys(ButtonIconPosition),
       control: {
         type: 'select',
       },
@@ -85,6 +85,7 @@ export default {
 const primaryButton = {
   label: 'Primary button',
   category: Category.PRIMARY,
+  variant: Variant.DEFAULT,
   size: Size.MEDIUM,
 };
 /**
@@ -93,6 +94,7 @@ const primaryButton = {
 const secondaryButton = {
   label: 'Secondary button',
   category: Category.SECONDARY,
+  variant: Variant.DEFAULT,
   size: Size.MEDIUM,
 };
 /**
@@ -101,8 +103,16 @@ const secondaryButton = {
 const tertiaryButton = {
   label: 'Tertiary button',
   category: Category.TERTIARY,
+  variant: Variant.DEFAULT,
   size: Size.MEDIUM,
 };
+
+/**
+ * Disable click test
+ *
+ * @returns alert
+ */
+const testClick = () => window.alert('Should not show if disabled!!');
 
 /**
  * Template button
@@ -110,9 +120,24 @@ const tertiaryButton = {
  * @param {StoryType} args args
  * @returns StoryType
  */
-const Template: StoryFn<StoryType> = (args: StoryType) => ({
-  props: args,
-});
+const Template: StoryFn<StoryType> = (args: StoryType) => {
+  return {
+    template: `<ui-button 
+    (click)="testClick()" 
+    [disabled]="${args.disabled}"
+    [icon]="'${args.icon}'"
+    [isIcon]="${args.isIcon}" 
+    [size]="'${args.size}'" 
+    [variant]="'${args.variant}'" 
+    [category]="'${args.category}'">
+    ${args.label}
+    </ui-button>`,
+    props: {
+      ...args,
+      testClick,
+    },
+  };
+};
 
 /** Primary button */
 export const Primary = Template.bind({});

@@ -25,7 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { Variant, Category } from '@oort-front/ui';
+import { Variant, Category, Size } from '@oort-front/ui';
 
 /**
  * Component for the main layout of the platform
@@ -87,6 +87,7 @@ export class SafeLayoutComponent
   // === UI VARIANT AND CATEGORY ===
   public variant = Variant;
   public category = Category;
+  public size = Size;
 
   /**
    * Gets URI of the other office

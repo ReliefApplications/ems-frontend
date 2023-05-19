@@ -3,6 +3,7 @@ export * from './lib/ui.module';
 // === TAILWIND COMPONENTS === //
 export * from './lib/avatar/avatar.module';
 export * from './lib/button/button.module';
+export * from './lib/button/button.component';
 export * from './lib/checkbox/checkbox.module';
 export * from './lib/menu/menu.module';
 export * from './lib/icon/icon.module';

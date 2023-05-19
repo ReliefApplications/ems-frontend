@@ -32,8 +32,8 @@
       }}
     </ui-button>
     <ui-menu #menu>
-      <button mat-menu-item (click)="onDownload('csv')">.csv</button>
-      <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
+      <button uiMenuItem (click)="onDownload('csv')">.csv</button>
+      <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
     </ui-menu>
     <ui-button
       icon="file_upload"
