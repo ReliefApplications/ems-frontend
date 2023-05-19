@@ -7,8 +7,12 @@ import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import {
+  SpinnerModule,
+  FormWrapperModule,
+  IconModule,
+  MenuModule,
+} from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import {
@@ -19,8 +23,8 @@ import {
   SafeDateModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
-  SafeDividerModule,
 } from '@oort-front/safe';
+import { DividerModule } from '@oort-front/ui';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
@@ -31,6 +35,7 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
+
 /**
  * Applications page module.
  */
@@ -44,11 +49,11 @@ import { AbilityModule } from '@casl/angular';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatTableModule,
     MatSortModule,
     MatDialogModule,
-    MatMenuModule,
+    MenuModule,
     MatIconModule,
     MatChipsModule,
     SafeAccessModule,
@@ -63,8 +68,10 @@ import { AbilityModule } from '@casl/angular';
     SafeDateModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
-    SafeDividerModule,
+    DividerModule,
     AbilityModule,
+    FormWrapperModule,
+    IconModule,
   ],
   exports: [ApplicationsComponent],
 })

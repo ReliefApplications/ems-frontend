@@ -3,7 +3,7 @@
  * Theming defines colors of the modules, and additional parameters that can appear on screen.
  */
 export const theme = {
-  headerColor: 'warn',
+  // todo: add headerClass: yellow for dev / red for uat
   prefix: '[UAT]',
   primary: '#008dc9',
 };

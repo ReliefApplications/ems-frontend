@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WorkflowRoutingModule } from './workflow-routing.module';
 import { WorkflowComponent } from './workflow.component';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { SafeWorkflowStepperModule } from '@oort-front/safe';
 
 /**
@@ -13,7 +13,7 @@ import { SafeWorkflowStepperModule } from '@oort-front/safe';
   imports: [
     CommonModule,
     WorkflowRoutingModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     SafeWorkflowStepperModule,
   ],
   exports: [WorkflowComponent],

@@ -4,16 +4,15 @@
     <!-- Default filter -->
     <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
       <!-- Search text filter -->
-      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-        <mat-icon matPrefix>search</mat-icon>
-        <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
+      <div uiFormFieldDirective>
+        <ui-icon [icon]="'search'" uiPrefix></ui-icon>
         <input
-          matInput
+          placeholder="{{ 'common.placeholder.search' | translate }}"
           [ngModel]="searchText"
           (keyup)="applyFilter('', $event)"
-          type="search"
+          type="text"
         />
-      </mat-form-field>
+      </div>
     </div>
   </div>
   <!-- Actions -->
@@ -83,21 +82,21 @@
           <safe-button
             [isIcon]="true"
             icon="more_vert"
-            [matMenuTriggerFor]="menu"
+            [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
           >
           </safe-button>
-          <mat-menu #menu="matMenu">
+          <ui-menu #menu>
             <button
-              mat-menu-item
+              uiMenuItem
               (click)="onDelete(element, $event)"
               *ngIf="element.canDelete"
             >
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
             </button>
-          </mat-menu>
+          </ui-menu>
         </td>
       </ng-container>
 

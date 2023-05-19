@@ -2,15 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
-
-/** Interface of breadcrumb */
-export interface Breadcrumb {
-  alias?: string;
-  uri: string;
-  text?: string;
-  key?: string;
-  queryParams?: any;
-}
+import { Breadcrumb } from '@oort-front/ui';
 
 /**
  * Shared Breadcrumb service.

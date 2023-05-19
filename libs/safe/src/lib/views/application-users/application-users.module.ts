@@ -5,8 +5,8 @@ import { SafeApplicationUsersRoutingModule } from './application-users-routing.m
 import { UserListModule } from './components/user-list/user-list.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '../../components/ui/button/button.module';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { TabsModule } from '@oort-front/ui';
+import { MenuModule } from '@oort-front/ui';
 import { SafeInviteUsersModule } from '../../components/users/components/invite-users/invite-users.module';
 
 /**
@@ -20,8 +20,8 @@ import { SafeInviteUsersModule } from '../../components/users/components/invite-
     UserListModule,
     TranslateModule,
     SafeButtonModule,
-    MatTabsModule,
-    MatMenuModule,
+    TabsModule,
+    MenuModule,
     SafeInviteUsersModule,
   ],
   exports: [SafeApplicationUsersComponent],
