@@ -11,7 +11,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatIconModule } from '@angular/material/icon';
-import { TooltipModule, UiModule } from '@oort-front/ui';
+import { TooltipModule, TableModule } from '@oort-front/ui';
 import { SafeEmptyModule } from '../../ui/empty/empty.module';
 
 /**
@@ -37,7 +37,7 @@ import { SafeEmptyModule } from '../../ui/empty/empty.module';
     SafeButtonModule,
     SafeIconModule,
     SafeEmptyModule,
-    UiModule,
+    TableModule,
   ],
   exports: [RoleFeaturesComponent],
 })

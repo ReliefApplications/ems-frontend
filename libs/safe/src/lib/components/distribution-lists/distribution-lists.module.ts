@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DistributionListsComponent } from './distribution-lists.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
-import { MenuModule, UiModule } from '@oort-front/ui';
+import { MenuModule, TableModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { DividerModule } from '@oort-front/ui';
@@ -21,7 +21,7 @@ import { DividerModule } from '@oort-front/ui';
     MatIconModule,
     SafeButtonModule,
     DividerModule,
-    UiModule,
+    TableModule,
   ],
   exports: [DistributionListsComponent],
 })

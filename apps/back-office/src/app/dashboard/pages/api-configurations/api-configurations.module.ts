@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiConfigurationsRoutingModule } from './api-configurations-routing.module';
 import { ApiConfigurationsComponent } from './api-configurations.component';
-import { MenuModule, UiModule, SpinnerModule } from '@oort-front/ui';
+import { MenuModule, TableModule, SpinnerModule } from '@oort-front/ui';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -49,7 +49,7 @@ import { AbilityModule } from '@casl/angular';
     SafeSkeletonTableModule,
     SafeModalModule,
     AbilityModule,
-    UiModule,
+    TableModule,
   ],
   exports: [ApiConfigurationsComponent],
 })

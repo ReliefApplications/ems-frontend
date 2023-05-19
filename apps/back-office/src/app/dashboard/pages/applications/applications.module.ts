@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import {
   MenuModule,
-  UiModule,
+  TableModule,
   SpinnerModule,
   FormWrapperModule,
   IconModule,
@@ -71,7 +71,7 @@ import { AbilityModule } from '@casl/angular';
     AbilityModule,
     FormWrapperModule,
     IconModule,
-    UiModule,
+    TableModule,
   ],
   exports: [ApplicationsComponent],
 })

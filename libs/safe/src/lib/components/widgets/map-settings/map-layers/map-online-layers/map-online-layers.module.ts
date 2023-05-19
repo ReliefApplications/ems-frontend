@@ -9,7 +9,7 @@ import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeBadgeModule } from '../../../../ui/badge/badge.module';
 import { SafeAlertModule } from '../../../../ui/alert/alert.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
-import { UiModule } from '@oort-front/ui';
+import { TableModule } from '@oort-front/ui';
 
 /**
  * Online Layers configuration of Map Widget Module.
@@ -27,7 +27,7 @@ import { UiModule } from '@oort-front/ui';
     SafeBadgeModule,
     SafeAlertModule,
     SafeIconModule,
-    UiModule,
+    TableModule,
   ],
   exports: [MapOnlineLayersComponent],
 })

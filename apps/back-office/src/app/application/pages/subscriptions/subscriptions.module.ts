@@ -6,7 +6,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MenuModule, UiModule, SpinnerModule } from '@oort-front/ui';
+import { MenuModule, TableModule, SpinnerModule } from '@oort-front/ui';
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import {
   SafeButtonModule,
@@ -43,7 +43,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
-    UiModule,
+    TableModule,
   ],
 })
 export class SubscriptionsModule {}

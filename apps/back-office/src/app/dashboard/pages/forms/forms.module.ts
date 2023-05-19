@@ -9,7 +9,7 @@ import {
   FormWrapperModule,
   IconModule,
   SpinnerModule,
-  UiModule,
+  TableModule,
 } from '@oort-front/ui';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import {
@@ -61,7 +61,7 @@ import { AbilityModule } from '@casl/angular';
     AbilityModule,
     FormWrapperModule,
     IconModule,
-    UiModule,
+    TableModule,
   ],
   exports: [FormsComponent],
 })

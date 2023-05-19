@@ -5,7 +5,7 @@ import { PositionComponent } from './position.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MenuModule, UiModule, SpinnerModule } from '@oort-front/ui';
+import { MenuModule, TableModule, SpinnerModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeButtonModule, SafeModalModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,7 +32,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     TranslateModule,
     SafeModalModule,
-    UiModule,
+    TableModule,
   ],
   exports: [PositionComponent],
 })

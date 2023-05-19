@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LayoutTableComponent } from './layout-table.component';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule, UiModule } from '@oort-front/ui';
+import { MenuModule, TableModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeDateModule } from '../../../pipes/date/date.module';
@@ -19,7 +19,7 @@ import { SafeDateModule } from '../../../pipes/date/date.module';
     DragDropModule,
     SafeButtonModule,
     SafeDateModule,
-    UiModule,
+    TableModule,
   ],
   exports: [LayoutTableComponent],
 })

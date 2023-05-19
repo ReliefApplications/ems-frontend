@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormRecordsRoutingModule } from './form-records-routing.module';
 import { FormRecordsComponent } from './form-records.component';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule, UiModule } from '@oort-front/ui';
+import { MenuModule, TableModule } from '@oort-front/ui';
 import {
   SafeRecordHistoryModule,
   SafeButtonModule,
@@ -32,7 +32,7 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     OverlayModule,
     UploadMenuModule,
     SafeSkeletonTableModule,
-    UiModule,
+    TableModule,
   ],
   exports: [FormRecordsComponent],
 })

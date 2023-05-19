@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
-import { TooltipModule, UiModule } from '@oort-front/ui';
+import { TooltipModule, TableModule } from '@oort-front/ui';
 
 /**
  * Component for Auto assignment of role
@@ -20,7 +20,7 @@ import { TooltipModule, UiModule } from '@oort-front/ui';
     SafeButtonModule,
     SafeSkeletonTableModule,
     TooltipModule,
-    UiModule,
+    TableModule,
   ],
   exports: [RoleAutoAssignmentComponent],
 })

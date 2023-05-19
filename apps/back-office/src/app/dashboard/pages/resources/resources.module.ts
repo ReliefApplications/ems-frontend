@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import {
   MenuModule,
-  UiModule,
+  TableModule,
   SpinnerModule,
   FormWrapperModule,
   IconModule,
@@ -50,7 +50,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeDateModule,
     FormWrapperModule,
     IconModule,
-    UiModule,
+    TableModule,
   ],
   exports: [ResourcesComponent],
 })

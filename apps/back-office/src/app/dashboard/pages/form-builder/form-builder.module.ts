@@ -13,7 +13,7 @@ import { SpinnerModule } from '@oort-front/ui';
 import { HistoryComponent } from './components/history/history.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TranslateModule } from '@ngx-translate/core';
-import { UiModule } from '@oort-front/ui';
+import { TableModule } from '@oort-front/ui';
 
 /**
  * Form builder module.
@@ -31,7 +31,7 @@ import { UiModule } from '@oort-front/ui';
     TranslateModule,
     SafeDateModule,
     SafeEditableTextModule,
-    UiModule,
+    TableModule,
   ],
   exports: [FormBuilderComponent],
 })

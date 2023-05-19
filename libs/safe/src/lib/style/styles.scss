@@ -67,7 +67,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,,,
+      // A700: #ffffff,,,,,,,,
     ),
 );
 
@@ -259,7 +259,6 @@ $safe-theme: mat.define-light-theme(
   }
 }
 
-
 // === CHECKBOX ===
 @mixin checkbox($theme) {
   ui-checkbox {
@@ -329,21 +328,6 @@ $safe-theme: mat.define-light-theme(
 
 .danger-button {
   background: mat.get-color-from-palette($safe-warn) !important;
-}
-
-// Mat table
-mat-header-row {
-  border-bottom: none !important;
-}
-
-.mat-header-cell {
-  @apply text-gray-500 border-b border-solid border-zinc-300 #{!important};
-}
-
-.mat-row {
-  .mat-cell {
-    @apply text-gray-600 border-b border-solid border-zinc-100 #{!important};
-  }
 }
 
 *:focus,

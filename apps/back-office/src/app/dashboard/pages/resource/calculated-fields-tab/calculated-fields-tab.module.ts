@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CalculatedFieldsTabRoutingModule } from './calculated-fields-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule, UiModule } from '@oort-front/ui';
+import { MenuModule, TableModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule, SafeEmptyModule } from '@oort-front/safe';
 import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component';
@@ -22,7 +22,7 @@ import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component'
     TranslateModule,
     OverlayModule,
     SafeEmptyModule,
-    UiModule,
+    TableModule,
   ],
 })
 export class CalculatedFieldsTabModule {}

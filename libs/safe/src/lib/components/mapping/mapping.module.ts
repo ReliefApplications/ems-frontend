@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeMappingComponent } from './mapping.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { MenuModule, UiModule } from '@oort-front/ui';
+import { MenuModule, TableModule } from '@oort-front/ui';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
@@ -28,7 +28,7 @@ import { SafeModalModule } from '../ui/modal/modal.module';
     ReactiveFormsModule,
     SafeButtonModule,
     SafeModalModule,
-    UiModule,
+    TableModule,
   ],
   exports: [SafeMappingComponent],
 })

@@ -6,7 +6,7 @@ import {
   MenuModule,
   FormWrapperModule,
   IconModule,
-  UiModule,
+  TableModule,
 } from '@oort-front/ui';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
@@ -55,7 +55,7 @@ import { AbilityModule } from '@casl/angular';
     AbilityModule,
     FormWrapperModule,
     IconModule,
-    UiModule,
+    TableModule,
   ],
   exports: [ReferenceDatasComponent],
 })

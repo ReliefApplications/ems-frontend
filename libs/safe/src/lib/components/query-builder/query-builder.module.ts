@@ -14,7 +14,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { TooltipModule, UiModule } from '@oort-front/ui';
+import { TooltipModule, TableModule } from '@oort-front/ui';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -83,7 +83,7 @@ import { RadioModule } from '@oort-front/ui';
     EditorModule,
     SafeAlertModule,
     RadioModule,
-    UiModule,
+    TableModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

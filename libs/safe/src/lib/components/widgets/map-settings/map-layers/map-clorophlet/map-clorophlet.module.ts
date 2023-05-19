@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MapClorophletDivisionModule } from '../map-clorophlet-division/map-clorophlet-division.module';
 import { SafeModalModule } from '../../../../ui/modal/modal.module';
-import { UiModule, SliderModule } from '@oort-front/ui';
+import { TableModule, SliderModule } from '@oort-front/ui';
 
 /**
  * Single Clorophlet Configuration in Map Settings Module.
@@ -28,7 +28,7 @@ import { UiModule, SliderModule } from '@oort-front/ui';
     MatSelectModule,
     MapClorophletDivisionModule,
     SafeModalModule,
-    UiModule,
+    TableModule,
   ],
   exports: [MapClorophletComponent],
 })

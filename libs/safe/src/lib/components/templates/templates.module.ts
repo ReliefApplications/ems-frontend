@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeTemplatesComponent } from './templates.component';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule, SpinnerModule, UiModule } from '@oort-front/ui';
+import { MenuModule, SpinnerModule, TableModule } from '@oort-front/ui';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
@@ -20,7 +20,7 @@ import { DividerModule } from '@oort-front/ui';
     SafeButtonModule,
     SafeSkeletonTableModule,
     DividerModule,
-    UiModule,
+    TableModule,
   ],
   exports: [SafeTemplatesComponent],
 })

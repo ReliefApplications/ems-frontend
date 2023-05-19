@@ -4,7 +4,7 @@ import { FormsTabRoutingModule } from './forms-tab-routing.module';
 import { FormsTabComponent } from './forms-tab.component';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule, UiModule } from '@oort-front/ui';
+import { MenuModule, TableModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
@@ -27,7 +27,7 @@ import {
     TranslateModule,
     SafeDateModule,
     SafeSkeletonTableModule,
-    UiModule,
+    TableModule,
   ],
 })
 export class FormsTabModule {}

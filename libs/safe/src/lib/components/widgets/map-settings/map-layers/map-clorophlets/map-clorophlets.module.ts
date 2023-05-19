@@ -7,7 +7,7 @@ import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeAlertModule } from '../../../../ui/alert/alert.module';
 import { MapClorophletModule } from '../map-clorophlet/map-clorophlet.module';
-import { UiModule } from '@oort-front/ui';
+import { TableModule } from '@oort-front/ui';
 
 /**
  * List of clorophlets in Map Settings Module.
@@ -23,7 +23,7 @@ import { UiModule } from '@oort-front/ui';
     SafeIconModule,
     SafeAlertModule,
     MapClorophletModule,
-    UiModule,
+    TableModule,
   ],
   exports: [MapClorophletsComponent],
 })
