@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -42,7 +42,7 @@ const ITEMS_PER_PAGE = 10;
 })
 export class ApiConfigurationsComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
   // === DATA ===
   public loading = true;
@@ -111,11 +111,6 @@ export class ApiConfigurationsComponent
       active: '',
       sortDirection: '',
     };
-    // console.log(this.uiTableWrapper.fullData);
-  }
-
-  ngAfterViewInit() {
-    console.log('just after view init');
   }
 
   /**
@@ -361,13 +356,10 @@ export class ApiConfigurationsComponent
    * @param event sort event
    */
   onSort(event: TableSort): void {
-    console.log(this.sort?.sortDirection);
     if (this.sort?.sortDirection === '') {
       this.currentDataWithoutSort = this.dataSource.data;
-      console.log(this.currentDataWithoutSort);
     }
     this.sort = event;
-    console.log('entering sort');
     //Get list of all values
     // this.loading = true;
     if (this.completeDataTable.length < this.pageInfo.length) {
@@ -379,128 +371,15 @@ export class ApiConfigurationsComponent
         .refetch(variables)
         .then(
           (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
-            console.log(results);
             this.completeDataTable = updateQueryUniqueValues(
               this.cachedApiConfigurations,
               results.data.apiConfigurations.edges.map((x) => x.node)
             );
             this.sorting();
-            console.log(this.completeDataTable);
           }
         );
     } else {
       this.sorting();
-    }
-
-    // const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
-    //   this.apollo.client,
-    //   GET_API_CONFIGURATIONS,
-    //   variables
-    // );
-    // console.log('cachedValues : ');
-    // console.log(cachedValues);
-    // if (cachedValues) {
-    // const cachedApiConfigurations = updateQueryUniqueValues(
-    //   this.cachedApiConfigurations,
-    //   cachedValues.apiConfigurations.edges.map((x) => x.node)
-    // );
-    //   console.log('cachedApiConfigurations : ');
-    //   console.log(cachedApiConfigurations);
-    //   //If sort is needed, sort list of all values, then slice it properly
-    //   if (sortMemory.sortDirection !== '') {
-    //     this.dataSource.data = cachedApiConfigurations
-    //       .sort((row1, row2) => {
-    //         return this.compare(row1, row2, sortMemory);
-    //       })
-    //       .slice(
-    //         this.pageInfo.pageSize * this.pageInfo.pageIndex,
-    //         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-    //       );
-    //     this.loading = false;
-    //   } else {
-    //     console.log('sort stopped');
-    //     this.loading = false;
-    //   }
-    // } else {
-    //   this.apiConfigurationsQuery
-    //     .fetchMore({ variables })
-    //     .then(
-    //       (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
-    //         const cachedApiConfigurations = updateQueryUniqueValues(
-    //           this.cachedApiConfigurations,
-    //           results.data.apiConfigurations.edges.map((x) => x.node)
-    //         );
-    //         console.log('cachedApiConfigurations : ');
-    //         console.log(cachedApiConfigurations);
-    //         console.log(sortMemory);
-    //         //If sort is needed, sort list of all values, then slice it properly
-    //         if (sortMemory.sortDirection !== '') {
-    //           this.dataSource.data = cachedApiConfigurations
-    //             .sort((row1, row2) => {
-    //               return this.compare(row1, row2, sortMemory);
-    //             })
-    //             .slice(
-    //               this.pageInfo.pageSize * this.pageInfo.pageIndex,
-    //               this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-    //             );
-    //           this.loading = false;
-    //         } else {
-    //           console.log('sort stopped');
-    //           this.loading = false;
-    //         }
-    //       }
-    //     );
-    // }
-    // this.sort = event;
-    // this.fetchForms(true);
-  }
-
-  /**
-   * Update forms query.
-   *
-   * @param refetch erase previous query results
-   */
-  private fetchForms(refetch?: boolean): void {
-    this.loading = true;
-    console.log('Fetch forms entered');
-    const variables = {
-      first: this.pageInfo.pageSize,
-      afterCursor: refetch ? null : this.pageInfo.endCursor,
-      sortField: this.sort?.sortDirection && this.sort.active,
-      sortOrder: this.sort?.sortDirection,
-    };
-
-    const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
-      this.apollo.client,
-      GET_API_CONFIGURATIONS,
-      variables
-    );
-    if (refetch) {
-      console.log('first refetch entered');
-      this.cachedApiConfigurations = [];
-      this.pageInfo.pageIndex = 0;
-    }
-    if (cachedValues) {
-      console.log('cached values non empty');
-      this.updateValues(cachedValues, false);
-    } else {
-      console.log('cached values empty');
-      if (refetch) {
-        console.log('use of refetch');
-        this.apiConfigurationsQuery.refetch(variables);
-      } else {
-        console.log('use of fetch more');
-        this.apiConfigurationsQuery
-          .fetchMore({
-            variables,
-          })
-          .then(
-            (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
-              console.log('update values');
-              this.updateValues(results.data, results.loading);
-            }
-          );
-      }
     }
   }
 
@@ -509,7 +388,7 @@ export class ApiConfigurationsComponent
    *
    * @param row1 row 1
    * @param row2 row 2
-   * @param sortMemory
+   * @param sortMemory the sort used here for comparison
    * @returns the compare value
    */
   compare(
@@ -575,6 +454,9 @@ export class ApiConfigurationsComponent
     }
   }
 
+  /**
+   * Function that sorts and give the good value to data source data according to the current sort
+   */
   sorting(): void {
     if (this.sort?.sortDirection !== '') {
       this.dataSource.data = this.completeDataTable
