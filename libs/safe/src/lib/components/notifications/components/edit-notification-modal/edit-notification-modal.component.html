@@ -34,7 +34,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <safe-divider></safe-divider>
+      <ui-divider></ui-divider>
       <!-- Schedule builder -->
       <h3>{{ 'models.customNotification.schedule' | translate }}</h3>
       <!-- Schedule -->
@@ -42,7 +42,7 @@
         class="flex"
         formControlName="schedule"
       ></safe-cron-expression-control>
-      <safe-divider></safe-divider>
+      <ui-divider></ui-divider>
       <!-- Dataset selection -->
       <h3>{{ 'components.customNotifications.edit.dataset' | translate }}</h3>
       <div class="flex flex-col">
@@ -97,7 +97,7 @@
           </ng-container>
         </ng-container>
       </div>
-      <safe-divider></safe-divider>
+      <ui-divider></ui-divider>
       <h3>{{ 'components.customNotifications.edit.email' | translate }}</h3>
       <div class="flex flex-col">
         <!-- Template -->
@@ -117,7 +117,7 @@
             class="cursor-pointer"
             variant="grey"
             matSuffix
-            matTooltip="HINT"
+            uiTooltip="HINT"
           ></safe-icon>
           <safe-button
             matSuffix
@@ -125,7 +125,7 @@
             icon="add_circle_outline"
             variant="primary"
             (click)="$event.stopPropagation(); addEmailTemplate()"
-            [matTooltip]="'components.templates.edit.new' | translate"
+            [uiTooltip]="'components.templates.edit.new' | translate"
           >
           </safe-button>
         </mat-form-field>
@@ -136,27 +136,26 @@
           }}
         </h4>
         <!-- Recipients type -->
-        <mat-radio-group
-          formControlName="recipientsType"
-          class="flex flex-col gap-2"
-        >
+        <div class="flex flex-col gap-2" formControlName="recipientsType" uiRadioGroupDirective="recipientsTypeOptions">
           <!-- Using user field -->
-          <!-- <mat-radio-button value="field">{{
-            'components.customNotifications.edit.recipients.userField'
-              | translate
-          }}</mat-radio-button> -->
+          <!-- <ui-radio value="field">
+            <ng-container ngProjectAs="label">
+              {{ 'components.customNotifications.edit.recipients.userField' | translate }}
+            </ng-container>
+          </ui-radio> -->
           <!-- Using distribution list -->
-          <mat-radio-button value="distributionList">{{
-            'components.customNotifications.edit.recipients.distributionList'
-              | translate
-          }}</mat-radio-button>
+          <ui-radio value="distributionList" [checked]="formGroup.get('recipientsType')?.value === 'distributionList'">
+            <ng-container ngProjectAs="label">
+              {{ 'components.customNotifications.edit.recipients.distributionList' | translate }}
+            </ng-container>
+          </ui-radio>
           <!-- Using email -->
-          <mat-radio-button value="email"
-            >{{
-              'components.customNotifications.edit.recipients.email' | translate
-            }}
-          </mat-radio-button>
-        </mat-radio-group>
+          <ui-radio value="email" [checked]="formGroup.get('recipientsType')?.value === 'email'">
+            <ng-container ngProjectAs="label">
+              {{ 'components.customNotifications.edit.recipients.email' | translate }}
+            </ng-container>
+          </ui-radio>
+        </div>  
         <!-- Recipients value -->
         <div class="mt-6 flex">
           <!-- Using user field -->

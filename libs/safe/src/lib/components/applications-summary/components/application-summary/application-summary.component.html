@@ -42,19 +42,19 @@
     <safe-button
       [isIcon]="true"
       icon="more_vert"
-      [matMenuTriggerFor]="menu"
+      [uiMenuTriggerFor]="menu"
       (click)="$event.stopPropagation()"
     >
     </safe-button>
-    <mat-menu #menu="matMenu">
+    <ui-menu #menu>
       <!-- Preview -->
-      <button mat-menu-item (click)="preview.emit()">
+      <button uiMenuItem (click)="preview.emit()">
         <mat-icon>preview</mat-icon>
         {{ 'common.preview' | translate }}
       </button>
       <!-- Duplication -->
       <button
-        mat-menu-item
+        uiMenuItem
         (click)="clone.emit()"
         *ngIf="application.canUpdate"
       >
@@ -63,12 +63,12 @@
       </button>
       <!-- Delete -->
       <ng-container *ngIf="application.canDelete">
-        <safe-divider class="m-0"></safe-divider>
-        <button mat-menu-item (click)="delete.emit()">
+        <ui-divider class="m-0"></ui-divider>
+        <button uiMenuItem (click)="delete.emit()">
           <mat-icon>delete</mat-icon>
           {{ 'common.delete' | translate }}
         </button>
       </ng-container>
-    </mat-menu>
+    </ui-menu>
   </div>
 </div>

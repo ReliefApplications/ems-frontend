@@ -6,7 +6,7 @@ import { UserListModule } from './components/user-list/user-list.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '../../components/ui/button/button.module';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { SafeInviteUsersModule } from '../../components/users/components/invite-users/invite-users.module';
 
 /**
@@ -21,7 +21,7 @@ import { SafeInviteUsersModule } from '../../components/users/components/invite-
     TranslateModule,
     SafeButtonModule,
     MatTabsModule,
-    MatMenuModule,
+    MenuModule,
     SafeInviteUsersModule,
   ],
   exports: [SafeApplicationUsersComponent],
