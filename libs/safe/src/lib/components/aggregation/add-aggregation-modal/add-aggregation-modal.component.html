@@ -1,8 +1,10 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>
-    {{ 'components.aggregation.add.title' | translate }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.aggregation.add.title' | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <div class="flex gap-4 flex-col" *ngIf="!nextStep">
       <!-- Load from existing Aggregation -->
       <safe-button
@@ -51,8 +53,8 @@
         </safe-graphql-select>
       </mat-form-field>
     </div>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
-  </div>
-</safe-modal>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <safe-button uiDialogClose>{{ 'common.close' | translate }}</safe-button>
+  </ng-container>
+</ui-dialog>

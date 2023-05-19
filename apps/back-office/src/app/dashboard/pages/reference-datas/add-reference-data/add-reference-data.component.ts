@@ -5,7 +5,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { DialogRef } from '@angular/cdk/dialog';
 
 /**
  * New Refence Data modal.
@@ -32,7 +32,7 @@ export class AddReferenceDataComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<AddReferenceDataComponent>
+    public dialogRef: DialogRef<AddReferenceDataComponent>
   ) {}
 
   /**

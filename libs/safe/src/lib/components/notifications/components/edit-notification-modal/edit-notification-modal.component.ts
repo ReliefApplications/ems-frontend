@@ -2,10 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { cronValidator } from '../../../../utils/validators/cron.validator';
 import { CustomNotification } from '../../../../models/custom-notification.model';
-import {
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialog as MatDialog,
-} from '@angular/material/legacy-dialog';
+import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   GetResourceByIdQueryResponse,
@@ -23,7 +20,6 @@ import { DistributionList } from '../../../../models/distribution-list.model';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -34,6 +30,9 @@ import { DividerModule } from '@oort-front/ui';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
 import { RadioModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
+// @TODO: Remove SafeButtonModule import after ui-button is being used in the app
+import { SafeButtonModule } from '../../../ui/button/button.module';
 
 /**
  * Dialog data interface
@@ -52,7 +51,7 @@ const ITEMS_PER_PAGE = 10;
   standalone: true,
   imports: [
     CommonModule,
-    SafeModalModule,
+    DialogModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -64,6 +63,7 @@ const ITEMS_PER_PAGE = 10;
     SafeGraphQLSelectModule,
     CronExpressionControlModule,
     RadioModule,
+    SafeButtonModule,
   ],
   selector: 'safe-edit-notification-modal',
   templateUrl: './edit-notification-modal.component.html',
@@ -108,10 +108,10 @@ export class EditNotificationModalComponent
    */
   constructor(
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA)
+    @Inject(DIALOG_DATA)
     public data: DialogData,
     private apollo: Apollo,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private gridLayoutService: SafeGridLayoutService,
     private applicationService: SafeApplicationService
   ) {
@@ -231,9 +231,9 @@ export class EditNotificationModalComponent
       },
     });
     dialogRef
-      .afterClosed()
+      .closed
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
+      .subscribe((value: any) => {
         if (value) {
           if (typeof value === 'string') {
             this.formGroup.get('layout')?.setValue(value);
@@ -259,9 +259,9 @@ export class EditNotificationModalComponent
       },
     });
     dialogRef
-      .afterClosed()
+      .closed
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
+      .subscribe((value: any) => {
         if (value && this.layout) {
           this.gridLayoutService
             .editLayout(this.layout, value, this.resource?.id)
@@ -287,9 +287,9 @@ export class EditNotificationModalComponent
       disableClose: true,
     });
     dialogRef
-      .afterClosed()
+      .closed
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
+      .subscribe((value: any) => {
         if (value)
           this.applicationService.addTemplate(
             {

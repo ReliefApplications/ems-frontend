@@ -5,10 +5,10 @@ import { GET_RESOURCES, GetResourcesQueryResponse } from '../graphql/queries';
 import { Resource } from '../../../../../models/resource.model';
 import { Layout } from '../../../../../models/layout.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeGridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';
 import { SafeAggregationService } from '../../../../../services/aggregation/aggregation.service';
 import { get } from 'lodash';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * How many resources.forms will be shown on the selector.
@@ -46,7 +46,7 @@ export class SafeDataSourceTabComponent implements OnInit {
    */
   constructor(
     private apollo: Apollo,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private gridLayoutService: SafeGridLayoutService,
     private aggregationService: SafeAggregationService
   ) {}
@@ -78,7 +78,7 @@ export class SafeDataSourceTabComponent implements OnInit {
         hasLayouts: get(this.selectedResource, 'layouts.totalCount', 0) > 0,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         if (typeof value === 'string') {
           this.form.get('layout')?.setValue(value);
@@ -103,7 +103,7 @@ export class SafeDataSourceTabComponent implements OnInit {
         layout: this.selectedLayout,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value && this.selectedLayout) {
         this.gridLayoutService
           .editLayout(this.selectedLayout, value, this.selectedResource?.id)
@@ -128,7 +128,7 @@ export class SafeDataSourceTabComponent implements OnInit {
         resource: this.selectedResource,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         if (typeof value === 'string') {
           this.form.get('aggregation')?.setValue(value);
@@ -154,7 +154,7 @@ export class SafeDataSourceTabComponent implements OnInit {
         aggregation: this.selectedAggregation,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value && this.selectedAggregation) {
         this.aggregationService
           .editAggregation(

@@ -1,15 +1,18 @@
-<safe-modal size="medium">
+<ui-dialog size="medium">
   <!-- Modal header -->
-  <h1 mat-dialog-title>
-    {{
-      data.pullJob
-        ? ('common.editObject'
-          | translate : { name: 'common.pullJob.one' | translate })
-        : ('models.pullJob.new' | translate)
-    }}
-  </h1>
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        data.pullJob
+          ? ('common.editObject'
+            | translate : { name: 'common.pullJob.one' | translate })
+          : ('models.pullJob.new' | translate)
+      }}
+    </h1>
+  </ng-container>
+
   <!-- Modal content -->
-  <div mat-dialog-content>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="formGroup">
       <div class="flex flex-col pb-1">
         <div class="flex gap-x-2 flex-wrap">
@@ -244,22 +247,22 @@
         </mat-form-field>
       </div>
     </form>
-  </div>
+  </ng-container>
   <!-- Modal actions -->
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
+  <ng-container ngProjectAs="actions">
+    <safe-button uiDialogClose>{{ 'common.close' | translate }}</safe-button>
     <safe-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="returnFormValue()"
+      [uiDialogClose]="returnFormValue()"
       cdkFocusInitial
       [disabled]="!formGroup.valid"
       (click)="toggleRawJSON()"
     >
       {{ (data.pullJob ? 'common.update' : 'common.create') | translate }}
     </safe-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>
 
 <!-- Template to display status -->
 <ng-template #statusTemplate let-status>

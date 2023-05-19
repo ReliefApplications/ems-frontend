@@ -5,11 +5,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialog as MatDialog,
-} from '@angular/material/legacy-dialog';
+import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import {
   ApiConfiguration,
@@ -43,9 +39,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeGraphQLSelectModule,
-  SafeModalModule,
   SafeReadableCronModule,
   CronExpressionControlModule,
+  // @TODO: Remove SafeButtonModule and SafeIconModule imports after ui-button and ui-icon are being used in the app
+  SafeButtonModule,
+  SafeIconModule,
 } from '@oort-front/safe';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -53,6 +51,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { TooltipModule } from '@oort-front/ui';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
+import { DialogModule } from '@oort-front/ui';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -68,7 +67,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    SafeModalModule,
+    DialogModule,
     SafeGraphQLSelectModule,
     SafeReadableCronModule,
     TooltipModule,
@@ -78,6 +77,8 @@ const DEFAULT_FIELDS = ['createdBy'];
     MatExpansionModule,
     MatChipsModule,
     CronExpressionControlModule,
+    SafeButtonModule,
+    SafeIconModule,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',
@@ -148,10 +149,10 @@ export class EditPullJobModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<EditPullJobModalComponent>,
+    public dialogRef: DialogRef<EditPullJobModalComponent>,
     private apollo: Apollo,
-    private dialog: MatDialog,
-    @Inject(MAT_DIALOG_DATA)
+    private dialog: Dialog,
+    @Inject(DIALOG_DATA)
     public data: {
       channels: Channel[];
       pullJob?: PullJob;

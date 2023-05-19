@@ -1,8 +1,10 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>
-    {{ 'components.templates.select.email' | translate }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.templates.select.email' | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="form">
       <mat-form-field appearance="outline" class="w-full">
         <mat-label
@@ -15,18 +17,18 @@
         </mat-select>
       </mat-form-field>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <safe-button uiDialogClose>
       {{ 'common.close' | translate }}
     </safe-button>
     <safe-button
       category="secondary"
       variant="primary"
       [disabled]="!form.valid"
-      [mat-dialog-close]="form.value"
+      [uiDialogClose]="form.value"
     >
       {{ 'components.confirmModal.confirm' | translate }}
     </safe-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

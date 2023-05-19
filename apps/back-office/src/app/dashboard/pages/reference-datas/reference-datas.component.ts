@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -27,6 +26,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
@@ -82,7 +82,7 @@ export class ReferenceDatasComponent
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
@@ -200,7 +200,7 @@ export class ReferenceDatasComponent
       './add-reference-data/add-reference-data.component'
     );
     const dialogRef = this.dialog.open(AddReferenceDataComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<AddReferenceDataMutationResponse>({

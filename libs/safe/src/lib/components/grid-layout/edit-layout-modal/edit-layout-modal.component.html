@@ -1,10 +1,12 @@
-<safe-modal [closable]="true" size="fullscreen">
+<ui-dialog [closable]="true" size="fullscreen">
   <!-- Modal title -->
-  <h1 mat-dialog-title>
-    {{ 'components.widget.settings.grid.layouts.edit.title' | translate }}
-  </h1>
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.widget.settings.grid.layouts.edit.title' | translate }}
+    </h1>
+  </ng-container>
   <!-- Modal content -->
-  <mat-dialog-content class="grow max-h-full" *ngIf="form">
+  <ng-container ngProjectAs="content" *ngIf="form">
     <form [formGroup]="form">
       <h2>{{ 'common.general' | translate }}</h2>
       <div class="flex flex-col">
@@ -15,17 +17,17 @@
         </mat-form-field>
         <!-- Query builder -->
         <safe-query-builder
-          [form]="$any(form.controls.query)"
+          [form]="$any(form?.controls?.query)"
           [templates]="templates"
           [queryName]="data.queryName"
           [layoutPreviewData]="layoutPreviewData"
         ></safe-query-builder>
       </div>
     </form>
-  </mat-dialog-content>
+  </ng-container>
   <!-- Modal actions -->
-  <mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+  <ng-container ngProjectAs="actions">
+    <safe-button uiDialogClose>
       {{ 'common.close' | translate }}
     </safe-button>
     <safe-button
@@ -37,5 +39,5 @@
     >
       {{ 'common.save' | translate }}
     </safe-button>
-  </mat-dialog-actions>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

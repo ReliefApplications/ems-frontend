@@ -1,5 +1,4 @@
 import { Apollo } from 'apollo-angular';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   EDIT_RECORD,
   EditRecordMutationResponse,
@@ -45,6 +44,7 @@ import { SafeApplicationService } from '../../../services/application/applicatio
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { firstValueFrom } from 'rxjs';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Component for the grid widget */
 @Component({
@@ -127,7 +127,7 @@ export class SafeGridWidgetComponent implements OnInit {
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SafeSnackBarService,
     private workflowService: SafeWorkflowService,
     private safeAuthService: SafeAuthService,
@@ -372,7 +372,7 @@ export class SafeGridWidgetComponent implements OnInit {
             },
           });
 
-          const value = await firstValueFrom(dialogRef.afterClosed());
+          const value = await firstValueFrom(dialogRef.closed)  as any;
           const template = value?.template;
 
           if (template) {
@@ -529,7 +529,7 @@ export class SafeGridWidgetComponent implements OnInit {
             },
           });
           const value = await Promise.resolve(
-            firstValueFrom(dialogRef.afterClosed())
+            firstValueFrom(dialogRef.closed) as any
           );
           if (value && value.record) {
             this.apollo

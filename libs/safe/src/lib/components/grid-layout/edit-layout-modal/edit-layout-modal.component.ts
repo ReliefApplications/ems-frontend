@@ -4,10 +4,6 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
 import { Layout } from '../../../models/layout.model';
 import {
   createDisplayForm,
@@ -19,8 +15,11 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
-import { SafeModalModule } from '../../ui/modal/modal.module';
 import { flattenDeep } from 'lodash';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+import { DialogModule } from '@oort-front/ui';
+// @TODO: Remove SafeButtonModule import after ui-button is being used in the app
+import { SafeButtonModule } from '../../ui/button/button.module';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -43,7 +42,8 @@ interface DialogData {
     MatInputModule,
     SafeQueryBuilderModule,
     SafeCoreGridModule,
-    SafeModalModule,
+    DialogModule,
+    SafeButtonModule,
   ],
   selector: 'safe-edit-layout-modal',
   templateUrl: './edit-layout-modal.component.html',
@@ -64,8 +64,8 @@ export class SafeEditLayoutModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<SafeEditLayoutModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    public dialogRef: DialogRef<SafeEditLayoutModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {}
 
   ngOnInit(): void {
@@ -96,7 +96,7 @@ export class SafeEditLayoutModalComponent implements OnInit {
    * Closes the modal sending tile form value.
    */
   onSubmit(): void {
-    this.dialogRef.close(this.form?.getRawValue());
+    this.dialogRef.close(this.form?.getRawValue() as any);
   }
 
   /**

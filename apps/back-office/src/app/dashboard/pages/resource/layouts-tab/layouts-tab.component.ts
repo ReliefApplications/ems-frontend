@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Layout,
@@ -17,6 +16,7 @@ import {
   GetResourceByIdQueryResponse,
   GET_RESOURCE_LAYOUTS,
 } from './graphql/queries';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Layouts tab of resource page
@@ -59,7 +59,7 @@ export class LayoutsTabComponent implements OnInit {
    */
   constructor(
     private apollo: Apollo,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private gridLayoutService: SafeGridLayoutService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
@@ -153,7 +153,7 @@ export class LayoutsTabComponent implements OnInit {
         queryName: this.resource.queryName,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.gridLayoutService
           .addLayout(value, this.resource.id)
@@ -180,7 +180,7 @@ export class LayoutsTabComponent implements OnInit {
         queryName: this.resource.queryName,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.gridLayoutService
           .editLayout(layout, value, this.resource.id)

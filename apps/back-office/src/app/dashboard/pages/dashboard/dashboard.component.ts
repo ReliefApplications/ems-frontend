@@ -7,7 +7,6 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Dashboard,
@@ -21,7 +20,6 @@ import {
   SafeWidgetGridComponent,
   SafeConfirmService,
   SafeReferenceDataService,
-  PageContextT,
   Record,
 } from '@oort-front/safe';
 import {
@@ -46,6 +44,7 @@ import { Observable } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -116,7 +115,7 @@ export class DashboardComponent
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService,
     private translateService: TranslateService,
@@ -555,7 +554,7 @@ export class DashboardComponent
         url,
       },
     });
-    dialogRef.afterClosed().subscribe();
+    dialogRef.closed.subscribe();
   }
 
   /**
@@ -599,7 +598,7 @@ export class DashboardComponent
       data: currContext,
     });
 
-    dialogRef.afterClosed().subscribe(async (context: PageContextT | null) => {
+    dialogRef.closed.subscribe(async (context: any) => {
       if (context) {
         if (isEqual(context, currContext)) return;
 

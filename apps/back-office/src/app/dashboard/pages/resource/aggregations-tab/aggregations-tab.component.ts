@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   Aggregation,
   SafeAggregationService,
@@ -63,7 +63,7 @@ export class AggregationsTabComponent implements OnInit {
    */
   constructor(
     private apollo: Apollo,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private aggregationService: SafeAggregationService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
@@ -161,7 +161,7 @@ export class AggregationsTabComponent implements OnInit {
         resource: this.resource,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.aggregationService
           .addAggregation(value, this.resource.id)
@@ -190,7 +190,7 @@ export class AggregationsTabComponent implements OnInit {
         aggregation,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.aggregationService
           .editAggregation(aggregation, value, this.resource.id)

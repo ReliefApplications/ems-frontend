@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -12,6 +11,7 @@ import {
   GetCustomNotificationsQueryResponse,
   GET_CUSTOM_NOTIFICATIONS,
 } from './graphql/queries';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -54,7 +54,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
    * @param applicationService Shared application service
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private translate: TranslateService,
     private confirmService: SafeConfirmService,
     private apollo: Apollo,
@@ -118,7 +118,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       disableClose: true,
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.updating = true;
         this.applicationService.updateCustomNotification(
@@ -171,7 +171,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       disableClose: true,
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.applicationService.addCustomNotification(value, () => {
           this.notificationsQuery.refetch();
