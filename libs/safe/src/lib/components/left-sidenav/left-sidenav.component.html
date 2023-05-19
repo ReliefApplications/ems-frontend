@@ -42,9 +42,9 @@
                 <mat-icon class="nav-icon">
                   {{ item.icon }}
                 </mat-icon>
-                <div class="nav-text" [uiTooltip]="item.name">
+                <p class="nav-text m-0" [uiTooltip]="item.name">
                   {{ item.name }}
-                </div>
+                </p>
               </a>
               <div
                 class="nav-actions items-center"
@@ -57,7 +57,7 @@
                   (click)="onClick(item.action.callback, $event)"
                   uiTooltip="{{ item.action.toolTip }}"
                   icon="delete"
-                  >
+                >
                 </ui-button>
                 <ui-button
                   class="hide-icons"
