@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ResourceRoutingModule } from './resource-routing.module';
 import { ResourceComponent } from './resource.component';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatIconModule } from '@angular/material/icon';
 import { MenuModule } from '@oort-front/ui';
@@ -17,6 +16,7 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.module';
+import { TabsModule } from '@oort-front/ui';
 
 /** Resource page module. */
 @NgModule({
@@ -25,7 +25,7 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     CommonModule,
     ResourceRoutingModule,
     MatProgressSpinnerModule,
-    MatTabsModule,
+    TabsModule,
     MatTableModule,
     MatIconModule,
     MenuModule,

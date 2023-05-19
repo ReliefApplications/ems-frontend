@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeQueryBuilderComponent } from './query-builder.component';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { TabsModule } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeTabFieldsComponent } from './tab-fields/tab-fields.component';
 import { SafeTabSortComponent } from './tab-sort/tab-sort.component';
@@ -62,7 +62,7 @@ import { RadioModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatTabsModule,
+    TabsModule,
     MenuModule,
     MatTableModule,
     DragDropModule,

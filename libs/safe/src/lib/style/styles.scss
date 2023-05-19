@@ -414,11 +414,6 @@ mat-header-row {
   margin: 32px;
 }
 
-.mat-tab-group .mat-tab-header,
-.mat-tab-nav-bar {
-  margin-bottom: 12px;
-}
-
 // === ADDITIONAL MATERIAL STYLING ===
 @include mat.all-component-themes($safe-theme);
 @include mat.all-legacy-component-themes($safe-theme);
@@ -513,87 +508,6 @@ body {
 
 // === KENDO THEME ===
 @import 'theme.scss';
-
-// === VERTICAL TABS ===
-mat-tab-group[vertical] {
-  display: flex;
-  flex-direction: row !important;
-
-  & > .mat-tab-header {
-    border-bottom: none;
-    width: 240px;
-    z-index: 1;
-
-    .mat-tab-labels {
-      display: flex;
-      flex-direction: column !important;
-      position: relative;
-
-      .mat-tab-label {
-        justify-content: left;
-        border-radius: 7px;
-        transition: all 0.1s ease;
-
-        &.mat-tab-label-active:not(.cdk-keyboard-focused) {
-          opacity: 1;
-          background-color: #f5f5f5;
-        }
-
-        .mat-tab-label-content {
-          gap: 6px;
-
-          safe-icon {
-            display: flex;
-            pointer-events: none;
-          }
-        }
-      }
-    }
-
-    .mat-ink-bar {
-      display: none;
-    }
-  }
-
-  & > .mat-tab-body-wrapper {
-    width: 100%;
-
-    & > .mat-tab-body {
-      & > .mat-tab-body-content {
-        transition: all ease 200ms;
-        padding-left: 32px;
-      }
-      &
-        > .mat-tab-body-content[style*='transform: translate3d(100%, 0px, 0px)'] {
-        transform: translate3d(0px, 100%, 0px) !important;
-      }
-      &
-        > .mat-tab-body-content[style*='transform: translate3d(-100%, 0px, 0px)'] {
-        transform: translate3d(0px, -100%, 0px) !important;
-      }
-    }
-  }
-}
-
-@media (max-width: 598px) {
-  mat-tab-group[vertical] {
-    & > .mat-tab-header {
-      width: unset;
-
-      .mat-tab-label {
-        .mat-tab-label-content {
-          span {
-            display: none;
-          }
-
-          safe-icon {
-            pointer-events: all !important;
-          }
-        }
-      }
-    }
-  }
-}
 
 // === TINYMCE ===
 .tox-editor-header *,
