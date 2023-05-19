@@ -51,7 +51,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TooltipModule } from '@oort-front/ui';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { ExpansionPanelModule } from '@oort-front/ui';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 
 /** Items per page for pagination */
@@ -75,7 +75,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     MatInputModule,
     MatSelectModule,
     MatFormFieldModule,
-    MatExpansionModule,
+    ExpansionPanelModule,
     MatChipsModule,
     CronExpressionControlModule,
   ],

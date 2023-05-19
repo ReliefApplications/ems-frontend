@@ -259,12 +259,6 @@ $safe-theme: mat.define-light-theme(
   }
 }
 
-// === EXPANSION PANEL ===
-@mixin expansion-panel($theme) {
-  .mat-expansion-panel-header-title {
-    gap: 4px;
-  }
-}
 
 // === CHECKBOX ===
 @mixin checkbox($theme) {
@@ -420,18 +414,6 @@ mat-header-row {
   margin: 32px;
 }
 
-.collapsible-form-group {
-  mat-expansion-panel {
-    border: solid 1px rgba(0, 0, 0, 0.1);
-    box-shadow: none !important;
-  }
-
-  mat-expansion-panel:not(.mat-expanded)
-    + mat-expansion-panel:not(.mat-expanded) {
-    border-top: 0;
-  }
-}
-
 // === ADDITIONAL MATERIAL STYLING ===
 @include mat.all-component-themes($safe-theme);
 @include mat.all-legacy-component-themes($safe-theme);
@@ -440,7 +422,6 @@ mat-header-row {
 @include alert($safe-theme);
 @include radio($safe-theme);
 @include slide-toggle($safe-theme);
-@include expansion-panel($safe-theme);
 @include checkbox($safe-theme);
 @include form-field($safe-theme);
 @include modal($safe-theme);

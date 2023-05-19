@@ -147,15 +147,13 @@
           </mat-form-field>
         </div>
         <!-- Mapping -->
-        <mat-expansion-panel
+        <ui-expansion-panel
           [expanded]="false"
           [disabled]="!formGroup.value.convertTo"
         >
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              {{ 'components.pullJob.modal.mapping' | translate }}
-            </mat-panel-title>
-          </mat-expansion-panel-header>
+          <ng-container ngProjectAs="title">
+            {{ 'components.pullJob.modal.mapping' | translate }}
+          </ng-container>
           <div class="flex flex-col gap-4">
             <div class="flex justify-end">
               <safe-button
@@ -223,7 +221,7 @@
               </div>
             </ng-container>
           </div>
-        </mat-expansion-panel>
+        </ui-expansion-panel>
         <!-- Unique identifiers -->
         <mat-form-field
           *ngIf="mappingArray.controls.length > 0"
