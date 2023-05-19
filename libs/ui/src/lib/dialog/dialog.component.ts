@@ -18,6 +18,11 @@ export class DialogComponent implements OnChanges, OnInit {
 
   public buttonVariant = Variant;
 
+  /** Close material dialog. */
+  @Input() onClose = () => {
+    this.dialogRef.close();
+  };
+
   /**
    * Constructor for the modal component
    *
@@ -81,10 +86,5 @@ export class DialogComponent implements OnChanges, OnInit {
     if (!this.padding) {
       this.dialogRef.addPanelClass('no-padding-dialog');
     }
-  }
-
-  /** Closes the dialog when using the default close icon button */
-  public onClose(): void {
-    this.dialogRef.close();
   }
 }

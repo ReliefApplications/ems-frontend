@@ -8,7 +8,7 @@ import {
   QueryList,
   ViewChildren,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
 import {
   TileLayoutReorderEvent,
@@ -83,7 +83,7 @@ export class SafeWidgetGridComponent implements OnInit {
    * @param dashboardService Shared dashboard service
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private dashboardService: SafeDashboardService
   ) {}
 
@@ -149,7 +149,7 @@ export class SafeWidgetGridComponent implements OnInit {
       },
       autoFocus: false,
     });
-    dialogRef.componentInstance.goToNextStep.subscribe((event: any) => {
+    dialogRef.componentInstance?.goToNextStep.subscribe((event: any) => {
       this.goToNextStep.emit(event);
       dialogRef.close();
     });

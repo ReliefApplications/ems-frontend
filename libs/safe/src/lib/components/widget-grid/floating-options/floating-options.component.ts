@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeDashboardService } from '../../../services/dashboard/dashboard.service';
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Button on top left of each widget, if user can see it, with menu of possible
@@ -35,7 +35,7 @@ export class SafeFloatingOptionsComponent implements OnInit {
    * @param translate Translation service
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private dashboardService: SafeDashboardService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
@@ -82,7 +82,7 @@ export class SafeFloatingOptionsComponent implements OnInit {
           template: this.dashboardService.findSettingsTemplate(this.widget),
         },
       });
-      dialogRef.afterClosed().subscribe((res) => {
+      dialogRef.closed.subscribe((res: any) => {
         if (res) {
           this.edit.emit({ type: 'data', id: this.widget.id, options: res });
         }

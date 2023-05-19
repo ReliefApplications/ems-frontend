@@ -17,7 +17,7 @@ import {
   RowArgs,
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   EXPORT_SETTINGS,
   GRADIENT_SETTINGS,
@@ -236,7 +236,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
    */
   constructor(
     @Inject('environment') environment: any,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private gridService: SafeGridService,
     private renderer: Renderer2,
     private downloadService: SafeDownloadService,
@@ -656,7 +656,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((res) => {
+    dialogRef.closed.subscribe((res: any) => {
       if (res) {
         this.exportSettings = res;
         this.export.emit(this.exportSettings);
@@ -696,7 +696,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((res) => {
+    dialogRef.closed.subscribe((res: any) => {
       if (res && res !== get(item, field)) {
         const value = { field: res };
         this.action.emit({ action: 'edit', item, value });
@@ -720,7 +720,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((res) => {
+    dialogRef.closed.subscribe((res: any) => {
       if (res) {
         this.action.emit({ action: 'update', item });
       }
@@ -741,7 +741,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
         template: this.dashboardService.findSettingsTemplate(this.widget),
       },
     });
-    dialogRef.afterClosed().subscribe((res) => {
+    dialogRef.closed.subscribe((res: any) => {
       if (res) {
         this.edit.emit({ type: 'data', id: this.widget.id, options: res });
       }

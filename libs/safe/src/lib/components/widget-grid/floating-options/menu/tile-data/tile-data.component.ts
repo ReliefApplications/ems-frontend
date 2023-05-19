@@ -6,13 +6,9 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialog as MatDialog,
-} from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../../services/confirm/confirm.service';
+import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 /** Model for dialog data */
 interface DialogData {
@@ -45,11 +41,11 @@ export class SafeTileDataComponent implements AfterViewInit {
    * @param dialog Material dialog service
    */
   constructor(
-    public dialogRef: MatDialogRef<SafeTileDataComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<SafeTileDataComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
-    private dialog: MatDialog
+    private dialog: Dialog
   ) {}
 
   /** Once the template is ready, inject the settings component linked to the widget type passed as a parameter. */
