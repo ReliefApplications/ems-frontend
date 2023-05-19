@@ -1,8 +1,10 @@
-<safe-modal>
-  <h2 mat-dialog-title>
-    Duplicating <i>{{ currentApp.name }}</i>
-  </h2>
-  <div mat-dialog-content>
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h2>
+      Duplicating <i>{{ currentApp.name }}</i>
+    </h2>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="duplicateForm">
       <div class="flex flex-col">
         <h3>
@@ -21,8 +23,8 @@
         </mat-form-field>
       </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
+  </ng-container>
+  <ng-container ngProjectAs="actions">
     <safe-button (click)="onCancel()">{{
       'common.close' | translate
     }}</safe-button>
@@ -35,5 +37,5 @@
     >
       {{ 'common.duplicate' | translate }}
     </safe-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

@@ -14,7 +14,7 @@ import {
   SafeUnsubscribeComponent,
   SafeLayoutService,
 } from '@oort-front/safe';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   DeleteApplicationMutationResponse,
   DELETE_APPLICATION,
@@ -66,7 +66,7 @@ export class SettingsComponent
     private applicationService: SafeApplicationService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private translate: TranslateService,
     private layoutService: SafeLayoutService
   ) {

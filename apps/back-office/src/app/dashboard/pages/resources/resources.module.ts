@@ -5,7 +5,6 @@ import { ResourcesComponent } from './resources.component';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MenuModule } from '@oort-front/ui';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
@@ -33,7 +32,6 @@ import { TranslateModule } from '@ngx-translate/core';
     MatProgressSpinnerModule,
     MatTableModule,
     MatIconModule,
-    MatDialogModule,
     MenuModule,
     MatSortModule,
     MatInputModule,

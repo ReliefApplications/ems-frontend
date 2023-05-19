@@ -15,7 +15,6 @@ import {
   SafeConfirmService,
   SafeSnackBarService,
 } from '@oort-front/safe';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Sort } from '@angular/material/sort';
@@ -24,6 +23,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Default number of resources that will be shown at once.
@@ -76,7 +76,7 @@ export class ResourcesComponent implements OnInit {
    * @param router Used to change the app route.
    */
   constructor(
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private confirmService: SafeConfirmService,
@@ -264,7 +264,7 @@ export class ResourcesComponent implements OnInit {
       '../../../components/add-resource-modal/add-resource-modal.component'
     );
     const dialogRef = this.dialog.open(AddResourceModalComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         const variablesData = { name: value.name };
         this.apollo

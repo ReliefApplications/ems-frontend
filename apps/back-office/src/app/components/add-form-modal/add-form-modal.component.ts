@@ -23,7 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeGraphQLSelectModule,
   SafeIconModule,
-// @TODO: Remove SafeButtonModule import after ui-button is being used in the app
+  // @TODO: Remove SafeButtonModule import after ui-button is being used in the app
   SafeButtonModule,
 } from '@oort-front/safe';
 import {

@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -77,7 +77,7 @@ export class ApiConfigurationsComponent
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SafeSnackBarService,
     private confirmService: SafeConfirmService,
     private router: Router,
@@ -206,7 +206,7 @@ export class ApiConfigurationsComponent
       './components/add-api-configuration/add-api-configuration.component'
     );
     const dialogRef = this.dialog.open(AddApiConfigurationComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<AddApiConfigurationMutationResponse>({
