@@ -9,6 +9,7 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { SafeModalModule } from '../ui/modal/modal.module';
+import { ChipModule } from '@oort-front/ui';
 
 /**
  * Preview Email Component Module.
@@ -26,6 +27,7 @@ import { SafeModalModule } from '../ui/modal/modal.module';
     UploadsModule,
     EditorModule,
     SafeModalModule,
+    ChipModule,
   ],
   exports: [SafeEmailPreviewComponent],
   providers: [

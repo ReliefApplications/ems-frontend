@@ -25,6 +25,7 @@ import {
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
 import { takeUntil } from 'rxjs';
+import { Variant } from '@oort-front/ui';
 
 /** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -67,6 +68,9 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /**
    * Forms page component

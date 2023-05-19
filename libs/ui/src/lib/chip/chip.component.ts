@@ -41,6 +41,9 @@ export class ChipComponent {
         case this.chipVariant.DANGER:
           classes.push('bg-red-100 hover:bg-red-200 text-red-400');
           break;
+        case this.chipVariant.ACCENT:
+          classes.push('bg-orange-100 hover:bg-orange-200 text-orange-400');
+          break;
         default:
           break;
       }

@@ -12,6 +12,7 @@ import {
 import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Custom tagbox component to use in the app
@@ -42,6 +43,9 @@ export class SafeTagboxComponent implements OnInit {
 
   // === OUTPUT CONTROL ===
   @Input() formControl!: FormControl;
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   ngOnInit(): void {
     this.choices$.subscribe((choices: any[]) => {

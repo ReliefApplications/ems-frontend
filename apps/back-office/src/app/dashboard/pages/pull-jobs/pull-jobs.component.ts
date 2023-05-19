@@ -26,6 +26,7 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { takeUntil } from 'rxjs';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Limit of pull jobs shown at once.
@@ -68,6 +69,9 @@ export class PullJobsComponent
     length: 0,
     endCursor: '',
   };
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /**
    * PullJobsComponent constructor.

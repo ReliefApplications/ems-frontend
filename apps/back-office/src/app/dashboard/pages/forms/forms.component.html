@@ -54,31 +54,29 @@
           </span>
         </th>
         <td mat-cell *matCellDef="let element">
-          <mat-chip-list>
-            <mat-chip
-              class="success-chip !rounded-lg"
-              disabled
+          <div uiChipList>
+            <ui-chip
+              class="!rounded-lg"
+              [variant]="colorVariant.SUCCESS"
               *ngIf="element.status === 'active'"
             >
               {{ 'common.status_active' | translate | titlecase }}
-            </mat-chip>
-            <mat-chip
-              class="accent-chip !rounded-lg"
-              disabled
-              color="accent"
+            </ui-chip>
+            <ui-chip
+              class="!rounded-lg"
+              [variant]="colorVariant.ACCENT"
               *ngIf="element.status === 'pending'"
             >
               {{ 'common.status_pending' | translate | titlecase }}
-            </mat-chip>
-            <mat-chip
-              class="warn-chip !rounded-lg"
-              disabled
-              color="warn"
+            </ui-chip>
+            <ui-chip
+              class="!rounded-lg"
+              [variant]="colorVariant.DANGER"
               *ngIf="element.status === 'archived'"
             >
               {{ 'common.status_archived' | translate | titlecase }}
-            </mat-chip>
-          </mat-chip-list>
+            </ui-chip>
+          </div>
         </td>
       </ng-container>
 
@@ -107,11 +105,11 @@
           </span>
         </th>
         <td mat-cell *matCellDef="let element">
-          <mat-chip-list *ngIf="element.core">
-            <mat-chip class="primary-chip !rounded-lg" disabled>{{
+          <div uiChipList *ngIf="element.core">
+            <ui-chip class="!rounded-lg" [variant]="colorVariant.PRIMARY">{{
               'models.form.core' | translate
-            }}</mat-chip>
-          </mat-chip-list>
+            }}</ui-chip>
+          </div>
         </td>
       </ng-container>
 

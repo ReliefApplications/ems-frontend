@@ -8,4 +8,5 @@ export enum Variant {
   DANGER = 'danger',
   GREY = 'grey',
   LIGHT = 'light',
+  ACCENT = 'accent',
 }

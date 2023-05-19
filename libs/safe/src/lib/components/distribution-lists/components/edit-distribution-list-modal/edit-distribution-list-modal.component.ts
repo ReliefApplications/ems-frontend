@@ -28,6 +28,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
+import { ChipModule,Variant } from '@oort-front/ui';
 
 /** Model for the data input */
 interface DialogData {
@@ -67,6 +68,7 @@ export function codesFactory(): () => any {
     ReactiveFormsModule,
     TranslateModule,
     MatChipsModule,
+    ChipModule,
   ],
   selector: 'safe-edit-distribution-list-modal',
   templateUrl: './edit-distribution-list-modal.component.html',
@@ -77,6 +79,9 @@ export class EditDistributionListModalComponent implements OnInit {
   // === REACTIVE FORM ===
   public form: UntypedFormGroup = new UntypedFormGroup({});
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /** @returns list of emails */
   get emails(): string[] {

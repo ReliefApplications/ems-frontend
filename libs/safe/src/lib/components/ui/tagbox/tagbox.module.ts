@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TooltipModule } from '@oort-front/ui';
+import { TooltipModule, ChipModule } from '@oort-front/ui';
 
 /**
  * Module declaration for safe-tagbox component
@@ -26,6 +26,7 @@ import { TooltipModule } from '@oort-front/ui';
     ReactiveFormsModule,
     FormsModule,
     TooltipModule,
+    ChipModule,
   ],
   exports: [SafeTagboxComponent],
 })

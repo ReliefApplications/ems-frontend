@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiConfigurationsRoutingModule } from './api-configurations-routing.module';
 import { ApiConfigurationsComponent } from './api-configurations.component';
-import { SpinnerModule, MenuModule } from '@oort-front/ui';
+import { SpinnerModule, MenuModule, ChipModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { MatSortModule } from '@angular/material/sort';
@@ -53,6 +53,7 @@ import { AbilityModule } from '@casl/angular';
     SafeSkeletonTableModule,
     SafeModalModule,
     AbilityModule,
+    ChipModule,
   ],
   exports: [ApiConfigurationsComponent],
 })

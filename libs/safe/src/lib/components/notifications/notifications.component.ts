@@ -12,6 +12,7 @@ import {
   GetCustomNotificationsQueryResponse,
   GET_CUSTOM_NOTIFICATIONS,
 } from './graphql/queries';
+import { Variant } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -34,6 +35,9 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns = ['name', 'status', 'lastExecution', 'actions'];
+  
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   public loading = true;
   public updating = false;

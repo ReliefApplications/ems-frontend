@@ -261,29 +261,27 @@
 
 <!-- Template to display status -->
 <ng-template #statusTemplate let-status>
-  <mat-chip-list>
-    <mat-chip
-      class="success-chip !rounded-lg"
-      disabled
+  <div uiChipList>
+    <ui-chip
+      class="!rounded-lg"
+      [variant]="colorVariant.SUCCESS"
       *ngIf="status === 'active'"
     >
       {{ 'common.status_active' | translate | titlecase }}
-    </mat-chip>
-    <mat-chip
-      class="accent-chip !rounded-lg"
-      disabled
-      color="accent"
+    </ui-chip>
+    <ui-chip
+      class="!rounded-lg"
+      [variant]="colorVariant.ACCENT"
       *ngIf="status === 'pending'"
     >
       {{ 'common.status_pending' | translate | titlecase }}
-    </mat-chip>
-    <mat-chip
-      class="warn-chip !rounded-lg"
-      disabled
-      color="warn"
+    </ui-chip>
+    <ui-chip
+      class="!rounded-lg"
+      [variant]="colorVariant.DANGER"
       *ngIf="status === 'archived'"
     >
       {{ 'common.status_archived' | translate | titlecase }}
-    </mat-chip>
-  </mat-chip-list>
+    </ui-chip>
+  </div>
 </ng-template>

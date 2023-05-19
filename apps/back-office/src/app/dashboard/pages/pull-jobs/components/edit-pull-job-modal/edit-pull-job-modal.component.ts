@@ -53,6 +53,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { TooltipModule } from '@oort-front/ui';
 import { ExpansionPanelModule } from '@oort-front/ui';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
+import { ChipModule, Variant } from '@oort-front/ui';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -78,6 +79,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     ExpansionPanelModule,
     MatChipsModule,
     CronExpressionControlModule,
+    ChipModule,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',
@@ -114,6 +116,9 @@ export class EditPullJobModalComponent implements OnInit {
 
   // === RAW JSON UTILITY ===
   public openRawJSON = false;
+
+  // === COLOR VARIANT ===
+  public colorVariant = Variant;
 
   /** @returns pull job mapping as form array */
   get mappingArray(): UntypedFormArray {

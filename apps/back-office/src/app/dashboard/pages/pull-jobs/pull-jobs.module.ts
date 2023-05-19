@@ -13,7 +13,7 @@ import {
   SafeCronParserModule,
   SafeDateModule,
 } from '@oort-front/safe';
-import { DividerModule } from '@oort-front/ui';
+import { DividerModule, ChipModule } from '@oort-front/ui';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
@@ -37,6 +37,7 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
     SafeIconModule,
     SafeCronParserModule,
     SafeDateModule,
+    ChipModule,
   ],
 })
 export class PullJobsModule {}

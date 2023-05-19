@@ -29,6 +29,7 @@ import {
 import {
   ToggleModule,
   TooltipModule,
+  ChipModule,
   RadioModule,
   IconModule,
   Variant,
@@ -59,6 +60,7 @@ const ITEMS_PER_PAGE = 10;
     TooltipModule,
     RadioModule,
     IconModule,
+    ChipModule,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',
