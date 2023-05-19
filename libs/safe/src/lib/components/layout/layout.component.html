@@ -1,4 +1,4 @@
-<nav class="flex p-4 items-center md:justify-between text-gray-200 bg-primary-600">
+<nav class="flex p-4 items-center md:justify-between text-gray-200 bg-primary-600" [ngClass]="theme.headerClass">
   <div class="flex-shrink-0 flex flex-wrap min-w-0">
     <safe-button
       *ngIf="!largeDevice"
