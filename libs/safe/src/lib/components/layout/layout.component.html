@@ -149,7 +149,10 @@
   </mat-sidenav>
 
   <mat-sidenav-content class="sidenav-content">
-    <safe-breadcrumb></safe-breadcrumb>
+    <ui-breadcrumbs
+      *ngIf="breadcrumbs.length > 1"
+      [breadcrumbs]="breadcrumbs"
+    ></ui-breadcrumbs>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 
