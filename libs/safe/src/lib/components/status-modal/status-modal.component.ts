@@ -6,7 +6,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { SafeModalModule } from '../ui/modal/modal.module';
 
 /**
@@ -27,7 +27,7 @@ interface StatusDialogData {
     CommonModule,
     MatDialogModule,
     MatButtonModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     SafeModalModule,
   ],
   selector: 'safe-status-modal',

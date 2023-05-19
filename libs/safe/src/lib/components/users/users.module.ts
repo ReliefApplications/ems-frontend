@@ -11,8 +11,8 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { SpinnerModule } from '@oort-front/ui';
 import { CheckboxModule } from '@oort-front/ui';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
@@ -39,8 +39,8 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     MatAutocompleteModule,
     MatChipsModule,
     MatRippleModule,
+    SpinnerModule,
     CheckboxModule,
-    MatProgressSpinnerModule,
     MatDividerModule,
     SafeButtonModule,
     SafeInviteUsersModule,

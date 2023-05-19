@@ -1,12 +1,11 @@
-<mat-form-field appearance="outline">
-  <mat-label *ngIf="!label">{{
+<div uiFormFieldDirective>
+  <label *ngIf="!label">{{
     'components.aggregationBuilder.dataset.select' | translate
-  }}</mat-label>
-  <mat-label *ngIf="label">{{ label }}</mat-label>
+  }}</label>
+  <label *ngIf="label">{{ label }}</label>
   <input
     type="text"
     [placeholder]="'common.placeholder.search' | translate"
-    matInput
     [formControl]="sourceFormControl"
     [matAutocomplete]="auto"
   />
@@ -31,5 +30,5 @@
       ></safe-icon>
     </mat-option>
   </mat-autocomplete>
-  <mat-spinner *ngIf="loadingMore" diameter="24" matSuffix></mat-spinner>
-</mat-form-field>
+  <ui-spinner [size]="size.MEDIUM" *ngIf="loadingMore" uiSuffix></ui-spinner>
+</div>

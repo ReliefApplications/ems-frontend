@@ -10,6 +10,7 @@ import { scrollFactory } from '../../config-display-grid-fields-modal/config-dis
 import { Overlay } from '@angular/cdk/overlay';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Size } from '@oort-front/ui';
 
 /**
  * Main component of Aggregation builder.
@@ -58,6 +59,8 @@ export class SafeAggregationBuilderComponent
   get pipelineForm(): UntypedFormArray {
     return this.aggregationForm.get('pipeline') as UntypedFormArray;
   }
+
+  size = Size;
 
   /**
    * Constructor for the aggregation builder

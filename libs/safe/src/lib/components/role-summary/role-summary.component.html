@@ -10,7 +10,7 @@
       (edit)="onEditRole($event)"
       [loading]="loading"
     ></safe-role-details>
-    <safe-spinner *ngIf="loading"></safe-spinner>
+    <ui-spinner *ngIf="loading"></ui-spinner>
   </ui-tab>
   <ui-tab>
     <ng-container ngProjectAs="label">{{'components.role.summary.autoAssignment.title' | translate}}</ng-container>
@@ -20,12 +20,12 @@
       (edit)="onEditRole($event)"
       [loading]="loading"
     ></safe-role-auto-assignment>
-    <safe-spinner *ngIf="loading"></safe-spinner>
+    <ui-spinner *ngIf="loading"></ui-spinner>
   </ui-tab>
   <ui-tab>
     <ng-container ngProjectAs="label">{{'common.resource.few' | translate}}</ng-container>
     <safe-role-resources *ngIf="role" [role]="role"></safe-role-resources>
-    <safe-spinner *ngIf="loading"></safe-spinner>
+    <ui-spinner *ngIf="loading"></ui-spinner>
   </ui-tab>
   <ui-tab *ngIf="application">
   <ng-container ngProjectAs="label">{{'components.role.summary.features' | translate}}</ng-container>
@@ -35,7 +35,7 @@
       [application]="application"
       [loading]="loading"
     ></safe-role-features>
-    <safe-spinner *ngIf="loading"></safe-spinner>
+    <ui-spinner *ngIf="loading"></ui-spinner>
   </ui-tab>
   <ui-tab>
     <ng-container ngProjectAs="label">{{'common.channel.few' | translate}}</ng-container>
@@ -46,6 +46,6 @@
       (edit)="onEditRole($event)"
       [loading]="loading"
     ></safe-role-channels>
-    <safe-spinner *ngIf="loading"></safe-spinner>
+    <ui-spinner *ngIf="loading"></ui-spinner>
   </ui-tab>
 </ui-tabs>

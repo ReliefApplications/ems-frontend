@@ -5,7 +5,7 @@ import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserDetailsModule } from './user-details/user-details.module';
 import { UserRolesModule } from './user-roles/user-roles.module';
-import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
+import { SpinnerModule } from '@oort-front/ui';
 
 /**
  * User Summary component module.
@@ -18,7 +18,7 @@ import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
     TranslateModule,
     UserDetailsModule,
     UserRolesModule,
-    SafeSpinnerModule,
+    SpinnerModule,
   ],
   exports: [SafeUserSummaryComponent],
 })
