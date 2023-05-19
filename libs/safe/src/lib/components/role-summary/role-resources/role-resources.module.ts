@@ -15,7 +15,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
 import { ResourceFieldsComponent } from './resource-fields/resource-fields.component';
 import { SafeRoleResourceFiltersComponent } from './resource-access-filters/resource-access-filters.component';
 import { SafeFilterModule } from '../../filter/filter.module';
@@ -47,7 +47,9 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
     ReactiveFormsModule,
     MatInputModule,
     MatIconModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
+    FormWrapperModule,
+    IconModule,
     SafeFilterModule,
     MatSelectModule,
     ButtonModule,

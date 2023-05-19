@@ -124,28 +124,24 @@
 <!-- Summary of users with role assigned -->
 <div>
   <h2>{{ 'common.user.few' | translate }}</h2>
-  <mat-tab-group>
+  <ui-tabs>
     <!-- Manual assignment -->
-    <mat-tab>
-      <ng-template mat-tab-label>{{
+    <ui-tab>
+      <ng-container ngProjectAs="label">{{
         'components.role.summary.users.manual' | translate
-      }}</ng-template>
-      <ng-template matTabContent>
-        <safe-role-users [role]="role" *ngIf="role"></safe-role-users>
-      </ng-template>
-    </mat-tab>
+      }}</ng-container>
+      <safe-role-users [role]="role" *ngIf="role"></safe-role-users>
+    </ui-tab>
     <!-- Automated assignment -->
-    <mat-tab>
-      <ng-template mat-tab-label>{{
+    <ui-tab>
+      <ng-container ngProjectAs="label">{{
         'components.role.summary.users.auto' | translate
-      }}</ng-template>
-      <ng-template matTabContent>
-        <safe-role-users
-          [autoAssigned]="true"
-          [role]="role"
-          *ngIf="role"
-        ></safe-role-users>
-      </ng-template>
-    </mat-tab>
-  </mat-tab-group>
+      }}</ng-container>
+      <safe-role-users
+        [autoAssigned]="true"
+        [role]="role"
+        *ngIf="role"
+      ></safe-role-users>
+    </ui-tab>
+  </ui-tabs>
 </div>

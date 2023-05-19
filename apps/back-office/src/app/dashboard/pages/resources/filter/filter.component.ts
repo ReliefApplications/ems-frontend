@@ -4,6 +4,7 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
 } from '@angular/forms';
+import { Size } from '@oort-front/ui';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Variant, Category } from '@oort-front/ui';
 
@@ -16,11 +17,12 @@ import { Variant, Category } from '@oort-front/ui';
   styleUrls: ['./filter.component.scss'],
 })
 export class FilterComponent implements OnInit {
+  @Input() loading = false;
+  @Output() filter = new EventEmitter<any>();
   public form!: UntypedFormGroup;
   public search = new UntypedFormControl('');
   public show = false;
-  @Output() filter = new EventEmitter<any>();
-  @Input() loading = false;
+  size = Size;
 
   // === BUTTON ===
   public variant = Variant;

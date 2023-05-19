@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResourcesRoutingModule } from './resources-routing.module';
 import { ResourcesComponent } from './resources.component';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
@@ -26,7 +26,7 @@ import { MenuModule, ButtonModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     ResourcesRoutingModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatTableModule,
     MatIconModule,
     MatDialogModule,
@@ -43,6 +43,8 @@ import { MenuModule, ButtonModule } from '@oort-front/ui';
     SafeSkeletonTableModule,
     SafeDateModule,
     ButtonModule,
+    FormWrapperModule,
+    IconModule,
   ],
   exports: [ResourcesComponent],
 })

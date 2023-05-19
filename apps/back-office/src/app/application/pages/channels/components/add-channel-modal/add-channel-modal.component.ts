@@ -10,7 +10,6 @@ import { ChannelsRoutingModule } from '../../channels-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SafeModalModule } from '@oort-front/safe';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
@@ -18,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
 import {
+  SpinnerModule,
   DividerModule,
   MenuModule,
   ButtonModule,
@@ -38,8 +38,8 @@ import {
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    SpinnerModule,
     MenuModule,
-    MatProgressSpinnerModule,
     MatTableModule,
     MatSelectModule,
     DividerModule,

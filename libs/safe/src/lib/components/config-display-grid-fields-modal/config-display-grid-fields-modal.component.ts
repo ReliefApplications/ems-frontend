@@ -14,7 +14,7 @@ import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { MAT_LEGACY_TOOLTIP_SCROLL_STRATEGY as MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/legacy-tooltip';
 import { createQueryForm } from '../query-builder/query-builder-forms';
 import { CommonModule } from '@angular/common';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { SafeQueryBuilderModule } from '../query-builder/query-builder.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
@@ -53,7 +53,7 @@ interface DialogData {
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     SafeQueryBuilderModule,
     MatButtonModule,
     MatInputModule,

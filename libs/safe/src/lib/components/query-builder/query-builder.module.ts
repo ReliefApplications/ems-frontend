@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeQueryBuilderComponent } from './query-builder.component';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { TabsModule } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeTabFieldsComponent } from './tab-fields/tab-fields.component';
 import { SafeTabSortComponent } from './tab-sort/tab-sort.component';
@@ -26,7 +26,7 @@ import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/
 import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { SafeIconModule } from '../ui/icon/icon.module';
-import { MatLegacySliderModule as MatSliderModule } from '@angular/material/legacy-slider';
+import { SliderModule } from '@oort-front/ui';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.component';
 import { SafeFilterModule } from '../filter/filter.module';
@@ -64,7 +64,7 @@ import {
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatTabsModule,
+    TabsModule,
     MenuModule,
     MatTableModule,
     DragDropModule,
@@ -80,7 +80,7 @@ import {
     LabelModule,
     SafeCheckboxTreeModule,
     SafeCoreGridModule,
-    MatSliderModule,
+    SliderModule,
     MatDatepickerModule,
     SafeFilterModule,
     EditorModule,

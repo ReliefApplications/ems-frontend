@@ -1,37 +1,47 @@
-<mat-toolbar [color]="theme.headerColor">
-  <ui-button
-    *ngIf="!largeDevice"
-    [isIcon]="true"
-    [variant]="variant.LIGHT"
-    [size]="size.LARGE"
-    icon="menu"
-    (click)="nav.toggle()"
-    [uiTooltip]="
-      (nav.opened
-        ? 'components.header.sidenav.collapse'
-        : 'components.header.sidenav.show'
-      ) | translate
-    "
-  >
-  </ui-button>
-  <ui-button
-    [isIcon]="true"
-    [size]="size.LARGE"
-    [variant]="variant.LIGHT"
-    icon="keyboard_backspace"
-    (click)="goBack()"
-    *ngIf="route"
-    [uiTooltip]="'pages.applications.goTo' | translate"
-  >
-  </ui-button>
+<nav
+  class="flex p-4 items-center md:justify-between text-gray-200 bg-primary-600"
+  [ngClass]="theme.headerClass"
+>
+  <div class="flex-shrink-0 flex flex-wrap min-w-0">
+    <ui-button
+      *ngIf="!largeDevice"
+      [isIcon]="true"
+      [variant]="variant.LIGHT"
+      [size]="size.LARGE"
+      icon="menu"
+      (click)="nav.toggle()"
+      [uiTooltip]="
+        (nav.opened
+          ? 'components.header.sidenav.collapse'
+          : 'components.header.sidenav.show'
+        ) | translate
+      "
+    >
+    </ui-button>
+    <ui-button
+      [isIcon]="true"
+      [size]="size.LARGE"
+      [variant]="variant.LIGHT"
+      icon="keyboard_backspace"
+      (click)="goBack()"
+      *ngIf="route"
+      [uiTooltip]="'pages.applications.goTo' | translate"
+    >
+    </ui-button>
+  </div>
   <ng-container *ngIf="!applications || applications.length === 0">
-    <h1 *ngIf="!route">
-      {{ theme.prefix }}
-      {{ 'common.platform.backOffice' | translate }}
-    </h1>
-    <h1 class="text-base mt-0.5" *ngIf="route">
-      {{ 'common.back' | translate }}
-    </h1>
+    <div class="min-w-0 overflow-hidden flex items-center">
+      <h1
+        class="text-2xl leading-7 mb-0 whitespace-nowrap text-clip"
+        *ngIf="!route"
+      >
+        {{ theme.prefix }}
+        {{ 'common.platform.backOffice' | translate }}
+      </h1>
+      <h1 class="text-base mb-0 whitespace-nowrap text-clip" *ngIf="route">
+        {{ 'common.back' | translate }}
+      </h1>
+    </div>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <ui-button
@@ -136,7 +146,7 @@
       {{ 'common.pagination.loadMore' | translate }}
     </ui-button>
   </ui-menu>
-</mat-toolbar>
+</nav>
 
 <ng-container *ngIf="toolbar">
   <ng-container *ngTemplateOutlet="toolbar"></ng-container>
@@ -158,7 +168,10 @@
   </mat-sidenav>
 
   <mat-sidenav-content class="sidenav-content">
-    <safe-breadcrumb></safe-breadcrumb>
+    <ui-breadcrumbs
+      *ngIf="breadcrumbs.length > 1"
+      [breadcrumbs]="breadcrumbs"
+    ></ui-breadcrumbs>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 

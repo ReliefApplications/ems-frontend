@@ -4,7 +4,7 @@ import { SafeGraphQLSelectComponent } from './graphql-select.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { ButtonModule } from '@oort-front/ui';
@@ -21,7 +21,7 @@ import { ButtonModule } from '@oort-front/ui';
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatInputModule,
     ButtonModule,
   ],

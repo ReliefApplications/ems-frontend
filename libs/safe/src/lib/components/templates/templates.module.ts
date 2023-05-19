@@ -3,10 +3,14 @@ import { CommonModule } from '@angular/common';
 import { SafeTemplatesComponent } from './templates.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
-import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  DividerModule,
+  ButtonModule,
+  SpinnerModule,
+} from '@oort-front/ui';
 
 /** Module for components related to templates */
 @NgModule({
@@ -14,8 +18,8 @@ import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     MatTableModule,
+    SpinnerModule,
     MenuModule,
-    MatProgressSpinnerModule,
     TranslateModule,
     MatIconModule,
     SafeSkeletonTableModule,

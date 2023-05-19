@@ -13,9 +13,6 @@ export default {
   title: 'Expansion Panel',
   component: ExpansionPanelComponent,
   argTypes: {
-    title: {
-      control: 'text',
-    },
     displayIcon: {
       control: 'boolean',
     },
@@ -55,6 +52,13 @@ const panelOptions: PanelOption[] = [
 ];
 
 /**
+ * Test panel close
+ */
+const onClose = () => {
+  console.log('panel closed');
+};
+
+/**
  * Template expansion panel group
  *
  * @param {ExpansionPanelComponent} args args
@@ -72,9 +76,12 @@ const Template: StoryFn<ExpansionPanelComponent> = (
           [disabled]="${args.disabled}" 
           [displayIcon]="${args.displayIcon}" 
           [expanded]="panel.expanded"
-          [title]="panel.title"
           [index]="i"
+          (closePanel)="onClose()"
         >
+          <ng-container ngProjectAs="title">
+            {{panel.title}}
+          </ng-container>
           <p class="mb-2 text-gray-500">{{panel.text}}</p>
         </ui-expansion-panel>
       </cdk-accordion>
@@ -82,6 +89,7 @@ const Template: StoryFn<ExpansionPanelComponent> = (
     props: {
       ...args,
       panelOptions,
+      onClose,
     },
   };
 };
@@ -112,9 +120,12 @@ const TemplateMulti: StoryFn<ExpansionPanelComponent> = (
           [disabled]="${args.disabled}" 
           [displayIcon]="${args.displayIcon}" 
           [expanded]="panel.expanded"
-          [title]="panel.title"
           [index]="i"
+          (closePanel)="onClose()"
         >
+          <ng-container ngProjectAs="title">
+            {{panel.title}}
+          </ng-container>
           <p class="mb-2 text-gray-500" >{{panel.text}}</p>
         </ui-expansion-panel>
       </cdk-accordion>
@@ -122,6 +133,7 @@ const TemplateMulti: StoryFn<ExpansionPanelComponent> = (
     props: {
       ...args,
       panelOptions,
+      onClose,
     },
   };
 };

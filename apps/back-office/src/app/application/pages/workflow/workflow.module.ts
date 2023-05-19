@@ -10,13 +10,12 @@ import {
   SafeSkeletonModule,
   SafeEditableTextModule,
 } from '@oort-front/safe';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeSearchMenuModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import { ButtonModule, MenuModule } from '@oort-front/ui';
+import { ButtonModule, MenuModule, SpinnerModule } from '@oort-front/ui';
 
 /**
  * Application workflow page module.
@@ -27,7 +26,7 @@ import { ButtonModule, MenuModule } from '@oort-front/ui';
     CommonModule,
     WorkflowRoutingModule,
     SafeAccessModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     SafeWorkflowStepperModule,
     TranslateModule,
     OverlayModule,

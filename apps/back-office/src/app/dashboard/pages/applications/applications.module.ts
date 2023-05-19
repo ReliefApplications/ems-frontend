@@ -7,7 +7,6 @@ import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import {
@@ -28,7 +27,14 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
-import { ButtonModule, MenuModule, DividerModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  MenuModule,
+  DividerModule,
+  SpinnerModule,
+  FormWrapperModule,
+  IconModule,
+} from '@oort-front/ui';
 
 /**
  * Applications page module.
@@ -43,7 +49,7 @@ import { ButtonModule, MenuModule, DividerModule } from '@oort-front/ui';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatTableModule,
     MatSortModule,
     MatDialogModule,
@@ -64,6 +70,8 @@ import { ButtonModule, MenuModule, DividerModule } from '@oort-front/ui';
     DividerModule,
     AbilityModule,
     ButtonModule,
+    FormWrapperModule,
+    IconModule,
   ],
   exports: [ApplicationsComponent],
 })
