@@ -1,5 +1,6 @@
 import {
   AfterContentInit,
+  AfterViewInit,
   ContentChildren,
   Directive,
   ElementRef,
@@ -18,7 +19,9 @@ import { Subject, startWith, takeUntil } from 'rxjs';
 @Directive({
   selector: '[uiFormFieldDirective]',
 })
-export class FormWrapperDirective implements AfterContentInit, OnDestroy {
+export class FormWrapperDirective
+  implements AfterContentInit, AfterViewInit, OnDestroy
+{
   /**
    * Will the form field be wrapped ?
    */
@@ -32,6 +35,7 @@ export class FormWrapperDirective implements AfterContentInit, OnDestroy {
 
   private currentInputElement!: HTMLInputElement;
   private currentLabelElement!: HTMLLabelElement;
+  private currentSelectElement!: HTMLLabelElement;
   private beyondLabelContainer!: HTMLDivElement;
 
   // === LISTS OF CLASSES TO APPLY TO ELEMENTS ===
@@ -73,6 +77,22 @@ export class FormWrapperDirective implements AfterContentInit, OnDestroy {
     'sm:leading-6',
   ] as const;
 
+  private selectClassesNoOutline = [
+    'block',
+    'w-full',
+    'py-1.5',
+    'pr-1',
+  ] as const;
+
+  private selectClassesOutline = [
+    'block',
+    'w-full',
+    'border-0',
+    'py-1.5',
+    'pr-1',
+    'bg-gray-50',
+  ] as const;
+
   private beyondLabelGeneral = [
     'relative',
     'mt-0.5',
@@ -104,6 +124,15 @@ export class FormWrapperDirective implements AfterContentInit, OnDestroy {
     'focus-within:border-b-primary-600',
   ] as const;
   private destroy$ = new Subject<void>();
+
+  private selectButtonRemove = [
+    'ring-1',
+    'ring-inset',
+    'ring-gray-300',
+    'focus:ring-2',
+    'focus:ring-primary-600',
+    'shadow-sm',
+  ] as const;
 
   /**
    * Constructor including a ref to the element on which the directive is applied
@@ -137,22 +166,24 @@ export class FormWrapperDirective implements AfterContentInit, OnDestroy {
       }
     }
 
-    // Add related classes to input element
-    if (!this.outline) {
-      for (const cl of this.inputClassesNoOutline) {
-        this.renderer.addClass(this.currentInputElement, cl);
+    if (this.currentInputElement !== null) {
+      // Add related classes to input element
+      if (!this.outline) {
+        for (const cl of this.inputClassesNoOutline) {
+          this.renderer.addClass(this.currentInputElement, cl);
+        }
+      } else {
+        for (const cl of this.inputClassesOutline) {
+          this.renderer.addClass(this.currentInputElement, cl);
+        }
       }
-    } else {
-      for (const cl of this.inputClassesOutline) {
-        this.renderer.addClass(this.currentInputElement, cl);
-      }
-    }
 
-    // Then add the input to our beyondLabel wrapper element
-    this.renderer.appendChild(
-      this.beyondLabelContainer,
-      this.currentInputElement
-    );
+      // Then add the input to our beyondLabel wrapper element
+      this.renderer.appendChild(
+        this.beyondLabelContainer,
+        this.currentInputElement
+      );
+    }
 
     if (this.currentLabelElement) {
       // Add related classes to label
@@ -224,5 +255,44 @@ export class FormWrapperDirective implements AfterContentInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  //We need to use afterViewInit for select menu, otherwise removing class does not work
+  ngAfterViewInit() {
+    this.currentSelectElement =
+      this.elementRef.nativeElement.querySelector('ui-select-menu');
+
+    // Do the same with selectMenu
+    if (this.currentSelectElement !== null) {
+      //Get select-menu button in order to remove styling elements
+      const selectButton = this.currentSelectElement.querySelector('button');
+      for (const cl of this.selectButtonRemove) {
+        this.renderer.removeClass(selectButton, cl);
+      }
+      // Class change in order to make the select list display full width and aligned with the form wrapper element
+      const listWrapperContainer =
+        this.currentSelectElement.querySelector('div');
+      this.renderer.removeClass(listWrapperContainer, 'relative');
+      const selectList =
+        this.currentSelectElement.querySelector('#listWrapper');
+      this.renderer.addClass(selectList, 'left-0');
+      // Add related classes to select menu element
+      if (!this.outline) {
+        for (const cl of this.selectClassesNoOutline) {
+          this.renderer.addClass(this.currentSelectElement, cl);
+        }
+      } else {
+        for (const cl of this.selectClassesOutline) {
+          this.renderer.addClass(this.currentSelectElement, cl);
+        }
+        this.renderer.removeClass(selectButton, 'bg-white');
+        this.renderer.addClass(selectButton, 'bg-gray-50');
+      }
+      //Add reworked element to beyond label
+      this.renderer.appendChild(
+        this.beyondLabelContainer,
+        this.currentSelectElement
+      );
+    }
   }
 }
