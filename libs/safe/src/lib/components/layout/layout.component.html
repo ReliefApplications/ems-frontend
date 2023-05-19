@@ -1,33 +1,37 @@
-<mat-toolbar [color]="theme.headerColor">
-  <safe-button
-    *ngIf="!largeDevice"
-    [isIcon]="true"
-    icon="menu"
-    (click)="nav.toggle()"
-    [uiTooltip]="
-      (nav.opened
-        ? 'components.header.sidenav.collapse'
-        : 'components.header.sidenav.show'
-      ) | translate
-    "
-  >
-  </safe-button>
-  <safe-button
-    [isIcon]="true"
-    icon="keyboard_backspace"
-    (click)="goBack()"
-    *ngIf="route"
-    [uiTooltip]="'pages.applications.goTo' | translate"
-  >
-  </safe-button>
+<nav class="flex p-4 items-center md:justify-between text-gray-200 bg-primary-600" [ngClass]="theme.headerClass">
+  <div class="flex-shrink-0 flex flex-wrap min-w-0">
+    <safe-button
+      *ngIf="!largeDevice"
+      [isIcon]="true"
+      icon="menu"
+      (click)="nav.toggle()"
+      [uiTooltip]="
+        (nav.opened
+          ? 'components.header.sidenav.collapse'
+          : 'components.header.sidenav.show'
+        ) | translate
+      "
+    >
+    </safe-button>
+    <safe-button
+      [isIcon]="true"
+      icon="keyboard_backspace"
+      (click)="goBack()"
+      *ngIf="route"
+      [uiTooltip]="'pages.applications.goTo' | translate"
+    >
+    </safe-button>
+  </div>
   <ng-container *ngIf="!applications || applications.length === 0">
-    <h1 *ngIf="!route">
-      {{ theme.prefix }}
-      {{ 'common.platform.backOffice' | translate }}
-    </h1>
-    <h1 class="text-base mt-0.5" *ngIf="route">
-      {{ 'common.back' | translate }}
-    </h1>
+    <div class="min-w-0 overflow-hidden flex items-center">
+      <h1 class="text-2xl leading-7 mb-0 whitespace-nowrap text-clip" *ngIf="!route">
+        {{ theme.prefix }}
+        {{ 'common.platform.backOffice' | translate }}
+      </h1>
+      <h1 class="text-base mb-0 whitespace-nowrap text-clip" *ngIf="route">
+        {{ 'common.back' | translate }}
+      </h1>
+    </div>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button
@@ -127,7 +131,7 @@
       {{ 'common.pagination.loadMore' | translate }}
     </safe-button>
   </ui-menu>
-</mat-toolbar>
+</nav>
 
 <ng-container *ngIf="toolbar">
   <ng-container *ngTemplateOutlet="toolbar"></ng-container>

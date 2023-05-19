@@ -359,12 +359,12 @@ export class SafeLayoutComponent
    * @returns language id of the language
    */
   getLanguage(): string {
-    // select the langage saved (or default if not)
+    // select the language saved (or default if not)
     let language = localStorage.getItem('lang');
     if (!language || !this.languages.includes(language)) {
       language = this.translate.defaultLang;
     }
-    // if not default language, change langage of the interface
+    // if not default language, change language of the interface
     if (language !== this.translate.defaultLang) {
       this.translate.use(language);
     }
