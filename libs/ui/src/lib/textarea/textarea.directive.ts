@@ -7,9 +7,9 @@ import { FocusableDirective } from '@progress/kendo-angular-grid';
  * Inject kendoGridFocusable
  */
 @Directive({
-    selector: '[uiTextareaDirective]',
+  selector: '[uiTextareaDirective]',
 })
 export class TextareaDirective {
-    @Input() uiTextareaDirective!: void;
-    constructor(@Self() @Optional() private kendoFocus: FocusableDirective) {}
+  @Input() uiTextareaDirective!: void;
+  constructor(@Self() @Optional() private kendoFocus: FocusableDirective) {}
 }
