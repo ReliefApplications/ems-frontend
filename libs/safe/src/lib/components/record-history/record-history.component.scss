@@ -55,11 +55,6 @@ ui-expansion-panel {
   }
 }
 
-.expansion-panel-content {
-  display: flex !important;
-  flex-direction: column;
-}
-
 ::ng-deep p {
   line-height: 2;
 }
