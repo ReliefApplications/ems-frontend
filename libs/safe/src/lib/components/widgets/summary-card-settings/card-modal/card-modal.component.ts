@@ -11,7 +11,6 @@ import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
-import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
 import { Apollo } from 'apollo-angular';
 import {
   GET_RESOURCE,
@@ -35,7 +34,7 @@ import { TooltipModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { TabsModule } from '@oort-front/ui';
 import { SafeDataSourceTabModule } from './data-source-tab/data-source.module';
 import { SafeValueSelectorTabModule } from './value-selector-tab/value-selector.module';
 import { SafeDisplayTabModule } from './display-tab/display.module';
@@ -58,7 +57,7 @@ import { SafeModalModule } from '../../../ui/modal/modal.module';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatTabsModule,
+    TabsModule,
     SafeDataSourceTabModule,
     SafeValueSelectorTabModule,
     SafeDisplayTabModule,
@@ -346,10 +345,10 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   /**
    * Sets an internal variable with the current tab.
    *
-   * @param e Change tab event.
+   * @param event Change tab event.
    */
-  handleTabChange(e: MatTabChangeEvent) {
-    this.activeTabIndex = e.index;
+  handleTabChange(event: number) {
+    this.activeTabIndex = event;
   }
 
   /**

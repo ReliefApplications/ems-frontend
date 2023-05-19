@@ -9,18 +9,20 @@ import {
 } from '@angular/core';
 import { Variant } from '../../../shared/variant.enum';
 
+/**
+ * UI Tab component
+ */
 @Component({
   selector: 'ui-tab',
   templateUrl: './tab.component.html',
   styleUrls: ['./tab.component.scss'],
 })
 export class TabComponent {
-  @Input() label!: string;
   @Input() disabled = false;
   @ViewChild('button')
   button!: ElementRef;
 
-  @Output() openTab: EventEmitter<null> = new EventEmitter();
+  @Output() openTab: EventEmitter<void> = new EventEmitter();
 
   @ViewChild('tabContent')
   tabContent!: TemplateRef<any>;

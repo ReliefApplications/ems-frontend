@@ -9,5 +9,6 @@ import { CdkAccordionModule } from '@angular/cdk/accordion';
 @NgModule({
   declarations: [ExpansionPanelComponent],
   imports: [CommonModule, CdkAccordionModule],
+  exports: [ExpansionPanelComponent, CdkAccordionModule],
 })
 export class ExpansionPanelModule {}
