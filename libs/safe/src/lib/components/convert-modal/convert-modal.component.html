@@ -1,5 +1,5 @@
 <safe-modal>
-  <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+  <ui-spinner *ngIf="loading"></ui-spinner>
   <div class="w-80" *ngIf="!loading">
     <h1 mat-dialog-title>{{ data.title }}</h1>
     <div mat-dialog-content>

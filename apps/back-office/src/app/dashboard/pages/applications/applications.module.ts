@@ -7,8 +7,13 @@ import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MenuModule, UiModule } from '@oort-front/ui';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import {
+  MenuModule,
+  UiModule,
+  SpinnerModule,
+  FormWrapperModule,
+  IconModule,
+} from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import {
   SafeAccessModule,
@@ -30,6 +35,7 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
+
 /**
  * Applications page module.
  */
@@ -43,7 +49,7 @@ import { AbilityModule } from '@casl/angular';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatSortModule,
     MatDialogModule,
     MenuModule,
@@ -63,6 +69,8 @@ import { AbilityModule } from '@casl/angular';
     SafeModalModule,
     DividerModule,
     AbilityModule,
+    FormWrapperModule,
+    IconModule,
     UiModule,
   ],
   exports: [ApplicationsComponent],

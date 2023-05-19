@@ -1,5 +1,5 @@
 <span>{{ data.message }}</span>
-<safe-spinner *ngIf="data.loading"></safe-spinner>
+<ui-spinner [size]="size.MEDIUM" *ngIf="data.loading"></ui-spinner>
 <ng-container *ngIf="!data.loading">
   <safe-icon
     class="h-6"

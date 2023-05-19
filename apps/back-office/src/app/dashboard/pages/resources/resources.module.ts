@@ -2,10 +2,15 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResourcesRoutingModule } from './resources-routing.module';
 import { ResourcesComponent } from './resources.component';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MenuModule, UiModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  UiModule,
+  SpinnerModule,
+  FormWrapperModule,
+  IconModule,
+} from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -28,7 +33,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     ResourcesRoutingModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatIconModule,
     MatDialogModule,
     MenuModule,
@@ -43,6 +48,8 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
+    FormWrapperModule,
+    IconModule,
     UiModule,
   ],
   exports: [ResourcesComponent],

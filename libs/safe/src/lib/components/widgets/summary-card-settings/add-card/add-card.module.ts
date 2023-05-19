@@ -14,7 +14,7 @@ import { SafeAlertModule } from '../../../ui/alert/alert.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { SafeSpinnerModule } from '../../../ui/spinner/spinner.module';
+import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { RadioModule } from '@oort-front/ui';
 
@@ -36,8 +36,10 @@ import { RadioModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    SafeSpinnerModule,
+    SpinnerModule,
     MatIconModule,
+    FormWrapperModule,
+    IconModule,
     RadioModule,
   ],
   exports: [SafeAddCardComponent, SafeCardTemplateComponent],

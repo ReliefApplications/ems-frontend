@@ -39,6 +39,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
+import { Size } from '@oort-front/ui';
 
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
@@ -213,6 +214,7 @@ export class SafeGraphQLSelectComponent
 
   @ViewChild(MatSelect) elementSelect?: MatSelect;
 
+  size = Size;
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created

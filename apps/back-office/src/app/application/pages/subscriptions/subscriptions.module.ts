@@ -6,8 +6,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MenuModule, UiModule } from '@oort-front/ui';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { MenuModule, UiModule, SpinnerModule } from '@oort-front/ui';
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import {
   SafeButtonModule,
@@ -35,8 +34,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatIconModule,
     MatInputModule,
     MatSelectModule,
+    SpinnerModule,
     MenuModule,
-    MatProgressSpinnerModule,
     MatAutocompleteModule,
     DividerModule,
     SafeButtonModule,

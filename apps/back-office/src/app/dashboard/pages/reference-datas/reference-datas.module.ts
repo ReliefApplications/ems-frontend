@@ -2,8 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceDatasRoutingModule } from './reference-datas-routing.module';
 import { ReferenceDatasComponent } from './reference-datas.component';
-import { MenuModule, UiModule } from '@oort-front/ui';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import {
+  MenuModule,
+  FormWrapperModule,
+  IconModule,
+  UiModule,
+} from '@oort-front/ui';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -34,7 +38,6 @@ import { AbilityModule } from '@casl/angular';
     CommonModule,
     MenuModule,
     ReferenceDatasRoutingModule,
-    MatProgressSpinnerModule,
     MatSortModule,
     MatFormFieldModule,
     MatInputModule,
@@ -50,6 +53,8 @@ import { AbilityModule } from '@casl/angular';
     SafeDateModule,
     SafeModalModule,
     AbilityModule,
+    FormWrapperModule,
+    IconModule,
     UiModule,
   ],
   exports: [ReferenceDatasComponent],

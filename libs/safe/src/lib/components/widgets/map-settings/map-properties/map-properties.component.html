@@ -26,13 +26,12 @@
         variant="grey"
       ></safe-icon>
     </mat-label>
-    <mat-slider
-      thumbLabel
-      tickInterval="1"
+    <ui-slider
+      class="mb-2"
       formControlName="zoom"
-      [min]="2"
-      [max]="18"
-    ></mat-slider>
+      [minValue]="2"
+      [maxValue]="18"
+    ></ui-slider>
     <div class="flex flex-wrap gap-2">
       <mat-form-field appearance="outline" class="flex-1">
         <mat-label>

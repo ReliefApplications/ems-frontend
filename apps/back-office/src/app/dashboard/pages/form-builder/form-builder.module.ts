@@ -9,7 +9,7 @@ import {
   SafeDateModule,
   SafeEditableTextModule,
 } from '@oort-front/safe';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { HistoryComponent } from './components/history/history.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TranslateModule } from '@ngx-translate/core';
@@ -23,7 +23,7 @@ import { UiModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     FormBuilderRoutingModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatButtonToggleModule,
     SafeFormBuilderModule,
     SafeAccessModule,

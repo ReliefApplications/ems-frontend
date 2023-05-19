@@ -6,11 +6,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacySliderModule as MatSliderModule } from '@angular/material/legacy-slider';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MapClorophletDivisionModule } from '../map-clorophlet-division/map-clorophlet-division.module';
 import { SafeModalModule } from '../../../../ui/modal/modal.module';
-import { UiModule } from '@oort-front/ui';
+import { UiModule, SliderModule } from '@oort-front/ui';
 
 /**
  * Single Clorophlet Configuration in Map Settings Module.
@@ -25,7 +24,7 @@ import { UiModule } from '@oort-front/ui';
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSliderModule,
+    SliderModule,
     MatSelectModule,
     MapClorophletDivisionModule,
     SafeModalModule,

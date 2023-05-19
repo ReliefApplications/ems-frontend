@@ -10,8 +10,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatIconModule } from '@angular/material/icon';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { SafeChartModule } from '../chart/chart.module';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { ExpansionPanelModule, TabsModule } from '@oort-front/ui';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
@@ -39,8 +38,8 @@ import { TooltipModule } from '@oort-front/ui';
     TextFieldModule,
     SafeQueryBuilderModule,
     SafeChartModule,
-    MatExpansionModule,
-    MatTabsModule,
+    TabsModule,
+    ExpansionPanelModule,
     SafeButtonModule,
     TranslateModule,
     SafeAggregationBuilderModule,

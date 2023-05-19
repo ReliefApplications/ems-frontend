@@ -1,4 +1,4 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ui-spinner *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading && referenceData">
   <!-- Header -->
   <div class="page-header">
@@ -104,11 +104,10 @@
           >
             {{ 'pages.referenceData.fields.fetch' | translate }}
           </safe-button>
-          <mat-spinner
-            diameter="45"
+          <ui-spinner
             class="my-2"
             *ngIf="loadingFields"
-          ></mat-spinner>
+          ></ui-spinner>
         </ng-template>
       </kendo-grid>
     </div>
@@ -131,11 +130,7 @@
         {{ 'pages.referenceData.validateCsv' | translate }}
       </safe-button>
     </div>
-    <mat-spinner
-      diameter="45"
-      class="page-loader"
-      *ngIf="csvLoading"
-    ></mat-spinner>
+    <ui-spinner *ngIf="csvLoading"></ui-spinner>
     <div class="flex gap-x-2">
       <!-- Path -->
       <mat-form-field

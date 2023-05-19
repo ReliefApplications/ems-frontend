@@ -1,12 +1,12 @@
 import {
+  AfterViewInit,
   Component,
   ContentChildren,
-  ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
   Output,
   QueryList,
-  Renderer2,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
@@ -19,7 +19,11 @@ import {
   animate,
 } from '@angular/animations';
 import { TabComponent } from './components/tab/tab.component';
+import { Subject, takeUntil } from 'rxjs';
 
+/**
+ * UI Tabs component
+ */
 @Component({
   selector: 'ui-tabs',
   templateUrl: './tabs.component.html',
@@ -39,11 +43,9 @@ import { TabComponent } from './components/tab/tab.component';
     ]),
   ],
 })
-export class TabsComponent {
+export class TabsComponent implements AfterViewInit, OnDestroy {
   @ContentChildren(TabComponent, { descendants: true })
   tabs!: QueryList<TabComponent>;
-
-  triggerAnimation = false;
 
   /**
    * Index of the default selected tab
@@ -65,6 +67,9 @@ export class TabsComponent {
   @ViewChild('content', { read: ViewContainerRef })
   content!: ViewContainerRef;
 
+  triggerAnimation = false;
+  destroy$ = new Subject<void>();
+
   /** @returns general resolved position classes for navigation tabs*/
   get resolveTabPositionClasses(): string[] {
     const classes = [];
@@ -80,15 +85,13 @@ export class TabsComponent {
     return classes;
   }
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
-
   ngAfterViewInit() {
     // Initialize tab components
     this.tabs.forEach((tab, index) => {
       tab.variant = this.variant;
       tab.vertical = this.vertical;
       tab.index = index;
-      tab.openTab.subscribe(() => {
+      tab.openTab.pipe(takeUntil(this.destroy$)).subscribe(() => {
         this.showContent(tab);
       });
       if (index === this.selectedIndex) {
@@ -151,5 +154,10 @@ export class TabsComponent {
   createContent(target: TabComponent) {
     this.triggerAnimation = true;
     this.content.createEmbeddedView(target.tabContent);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

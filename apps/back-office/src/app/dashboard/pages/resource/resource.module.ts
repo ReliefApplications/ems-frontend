@@ -2,10 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResourceRoutingModule } from './resource-routing.module';
 import { ResourceComponent } from './resource.component';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { SpinnerModule, MenuModule, TabsModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule } from '@oort-front/ui';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import {
   SafeAccessModule,
@@ -23,8 +21,8 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
   imports: [
     CommonModule,
     ResourceRoutingModule,
-    MatProgressSpinnerModule,
-    MatTabsModule,
+    SpinnerModule,
+    TabsModule,
     MatIconModule,
     MenuModule,
     MatChipsModule,
