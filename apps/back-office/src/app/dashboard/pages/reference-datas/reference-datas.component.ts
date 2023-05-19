@@ -27,6 +27,7 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { TableSort } from '@oort-front/ui';
+import { ApolloQueryResult } from '@apollo/client';
 
 /** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
@@ -53,6 +54,8 @@ export class ReferenceDatasComponent
     'modifiedAt',
     'actions',
   ];
+  private completeDataTable: ReferenceData[] = [];
+  private currentDataWithoutSort: ReferenceData[] = [];
   dataSource = new MatTableDataSource<ReferenceData>([]);
   public cachedReferenceDatas: ReferenceData[] = [];
 
@@ -110,6 +113,11 @@ export class ReferenceDatasComponent
       .subscribe(({ data, loading }) => {
         this.updateValues(data, loading);
       });
+    // Initializing sort to an empty one
+    this.sort = {
+      active: '',
+      sortDirection: '',
+    };
   }
 
   /**
@@ -311,11 +319,31 @@ export class ReferenceDatasComponent
    * @param event sort event
    */
   onSort(event: TableSort): void {
+    // if there was no sort before, we save the current data list in a private variable
+    if (this.sort?.sortDirection === '') {
+      this.currentDataWithoutSort = this.dataSource.data;
+    }
+    // We change the sort for the current value
     this.sort = event;
-    if (this.sort.sortDirection !== '') {
-      this.dataSource.data = this.dataSource.data.sort((row1, row2) => {
-        return this.compare(row1, row2);
-      });
+    //Get list of all values if is not already done, then use sorting function
+    if (this.completeDataTable.length !== this.pageInfo.length) {
+      const variables = {
+        first: this.pageInfo.length,
+        afterCursor: this.pageInfo.endCursor,
+      };
+      this.referenceDatasQuery
+        .refetch(variables)
+        .then((results: ApolloQueryResult<GetReferenceDatasQueryResponse>) => {
+          this.completeDataTable = updateQueryUniqueValues(
+            this.cachedReferenceDatas,
+            results.data.referenceDatas.edges.map((x) => x.node)
+          );
+          this.sorting();
+        });
+    }
+    // Else just use sorting function
+    else {
+      this.sorting();
     }
   }
 
@@ -441,6 +469,24 @@ export class ReferenceDatasComponent
     //Else, it returns 0 so no change is made to the list
     else {
       return compareValue;
+    }
+  }
+
+  /**
+   * Function that sorts and give the good value to data source data according to the current sort
+   */
+  sorting(): void {
+    if (this.sort?.sortDirection !== '') {
+      this.dataSource.data = this.completeDataTable
+        .sort((row1, row2) => {
+          return this.compare(row1, row2);
+        })
+        .slice(
+          this.pageInfo.pageSize * this.pageInfo.pageIndex,
+          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+        );
+    } else {
+      this.dataSource.data = this.currentDataWithoutSort;
     }
   }
 }

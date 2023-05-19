@@ -107,6 +107,7 @@ export class ApiConfigurationsComponent
       .subscribe((results) => {
         this.updateValues(results.data, results.loading);
       });
+    // Initializing sort to an empty one
     this.sort = {
       active: '',
       sortDirection: '',
@@ -356,13 +357,14 @@ export class ApiConfigurationsComponent
    * @param event sort event
    */
   onSort(event: TableSort): void {
+    // if there was no sort before, we save the current data list in a private variable
     if (this.sort?.sortDirection === '') {
       this.currentDataWithoutSort = this.dataSource.data;
     }
+    // We change the sort for the current value
     this.sort = event;
-    //Get list of all values
-    // this.loading = true;
-    if (this.completeDataTable.length < this.pageInfo.length) {
+    //Get list of all values if is not already done, then use sorting function
+    if (this.completeDataTable.length !== this.pageInfo.length) {
       const variables = {
         first: this.pageInfo.length,
         afterCursor: this.pageInfo.endCursor,
@@ -378,7 +380,9 @@ export class ApiConfigurationsComponent
             this.sorting();
           }
         );
-    } else {
+    }
+    // Else just use sorting function
+    else {
       this.sorting();
     }
   }
