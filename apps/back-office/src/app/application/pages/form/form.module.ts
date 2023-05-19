@@ -8,7 +8,7 @@ import {
   SafeButtonModule,
   SafeEditableTextModule,
 } from '@oort-front/safe';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -21,7 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
     FormRoutingModule,
     SafeFormModule,
     SafeAccessModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     SafeButtonModule,
     TranslateModule,
     SafeEditableTextModule,

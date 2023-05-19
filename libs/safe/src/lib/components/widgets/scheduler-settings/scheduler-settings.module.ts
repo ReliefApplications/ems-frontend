@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeSchedulerSettingsComponent } from './scheduler-settings.component';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
+import { RadioModule } from '@oort-front/ui';
 
 /** Module for the scheduler settings component */
 @NgModule({
@@ -17,9 +17,9 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatRadioModule,
     MatSelectModule,
     TranslateModule,
+    RadioModule,
   ],
   exports: [SafeSchedulerSettingsComponent],
 })

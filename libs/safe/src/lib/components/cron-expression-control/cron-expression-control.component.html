@@ -17,7 +17,7 @@
     variant="grey"
     matSuffix
     (click)="onEdit()"
-    [matTooltip]="'components.pullJob.modal.hint.schedule' | translate"
+    [uiTooltip]="'components.pullJob.modal.hint.schedule' | translate"
   ></safe-icon>
   <mat-error *ngIf="ngControl.errors">
     {{ 'components.pullJob.modal.errors.schedule' | translate }}

@@ -13,7 +13,7 @@ import { Breadcrumb } from './interfaces/breadcrumb.interface';
 })
 export class BreadcrumbsComponent {
   @Input() breadcrumbs: Breadcrumb[] = [];
-  @Input() separator: BreadcrumbSeparator = BreadcrumbSeparator.CHEVRON;
+  @Input() separator: BreadcrumbSeparator = BreadcrumbSeparator.SLASH;
   @Input() display: BreadcrumbDisplay = BreadcrumbDisplay.SIMPLE;
 
   //In order to be able to use enumerations in html

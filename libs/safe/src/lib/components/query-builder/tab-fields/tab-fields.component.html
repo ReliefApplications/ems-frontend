@@ -108,7 +108,7 @@
                 class="text-red-600"
                 *ngIf="!field.type"
                 (click)="onDelete(index)"
-                [matTooltip]="
+                [uiTooltip]="
                   'components.queryBuilder.errors.field.invalid' | translate
                 "
               >
@@ -133,7 +133,7 @@
         class="floating-info cursor-pointer"
         variant="grey"
         [size]="32"
-        [matTooltip]="
+        [uiTooltip]="
           'components.queryBuilder.hint.sortingDisabled' | translate
         "
       ></safe-icon>

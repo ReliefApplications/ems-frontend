@@ -1,13 +1,13 @@
 <cdk-accordion-item
   #accordionItem="cdkAccordionItem"
-  [ngClass]="{'cursor-default': disabled}"
+  [ngClass]="{ 'cursor-default opacity-50': disabled }"
   role="button"
   [attr.aria-expanded]="accordionItem.expanded"
   [disabled]="disabled"
   [attr.id]="'accordion-header-' + index"
   [attr.aria-controls]="'accordion-body-' + index"
-  (closed)="onClosed(contentContainer)"
-  (opened)="onOpened(contentContainer)"
+  (closed)="onClosed()"
+  (opened)="onOpened()"
 >
   <div
     [ngClass]="{
@@ -18,7 +18,9 @@
     class="accordion-item justify-between"
     (click)="accordionItem.toggle()"
   >
-    <span>{{ title }}</span>
+    <span>
+      <ng-content select="title"></ng-content>
+    </span>
     <ng-container *ngIf="displayIcon">
       <svg
         data-accordion-icon
