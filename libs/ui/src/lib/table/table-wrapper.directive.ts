@@ -13,6 +13,7 @@ import {
 import { TableSort } from './interfaces/table-column.interface';
 import { TableHeaderSortDirective } from './table-header-sort.directive';
 import { Observable, Subject, filter, merge, startWith, takeUntil } from 'rxjs';
+import { CdkTable } from '@angular/cdk/table';
 
 /**
  * UI Table wrapper directive
@@ -41,7 +42,11 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
    * @param el Directive host element
    * @param renderer Renderer2
    */
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  constructor(
+    private el: ElementRef,
+    private renderer: Renderer2,
+    public fullData: CdkTable<any>
+  ) {}
 
   ngOnInit(): void {
     if (!(this.el.nativeElement instanceof HTMLTableElement)) {
@@ -71,6 +76,7 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
           }
         },
       });
+    // console.log(this.fullData);
   }
 
   /**
@@ -95,6 +101,8 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
           });
           // Emit current sort data
           this.sortChange.emit(sortData);
+          // console.log(this.fullData.dataSource);
+          // console.log(this.fullData._contentColumnDefs);
         },
       });
   }

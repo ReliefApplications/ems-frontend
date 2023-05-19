@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -27,6 +27,7 @@ import {
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
 import { TableSort } from '@oort-front/ui';
+// import { TableWrapperDirective } from 'libs/ui/src/lib/table/table-wrapper.directive';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -41,11 +42,13 @@ const ITEMS_PER_PAGE = 10;
 })
 export class ApiConfigurationsComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, AfterViewInit
 {
   // === DATA ===
   public loading = true;
   private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
+  private completeDataTable: ApiConfiguration[] = [];
+  private currentDataWithoutSort: ApiConfiguration[] = [];
   displayedColumns = ['name', 'status', 'authType', 'actions'];
   dataSource = new MatTableDataSource<ApiConfiguration>([]);
   public cachedApiConfigurations: ApiConfiguration[] = [];
@@ -81,7 +84,7 @@ export class ApiConfigurationsComponent
     private snackBar: SafeSnackBarService,
     private confirmService: SafeConfirmService,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService // private uiTableWrapper: TableWrapperDirective
   ) {
     super();
   }
@@ -104,6 +107,15 @@ export class ApiConfigurationsComponent
       .subscribe((results) => {
         this.updateValues(results.data, results.loading);
       });
+    this.sort = {
+      active: '',
+      sortDirection: '',
+    };
+    // console.log(this.uiTableWrapper.fullData);
+  }
+
+  ngAfterViewInit() {
+    console.log('just after view init');
   }
 
   /**
@@ -349,73 +361,147 @@ export class ApiConfigurationsComponent
    * @param event sort event
    */
   onSort(event: TableSort): void {
-    const sortMemory: TableSort = event;
+    console.log(this.sort?.sortDirection);
+    if (this.sort?.sortDirection === '') {
+      this.currentDataWithoutSort = this.dataSource.data;
+      console.log(this.currentDataWithoutSort);
+    }
+    this.sort = event;
+    console.log('entering sort');
     //Get list of all values
+    // this.loading = true;
+    if (this.completeDataTable.length < this.pageInfo.length) {
+      const variables = {
+        first: this.pageInfo.length,
+        afterCursor: this.pageInfo.endCursor,
+      };
+      this.apiConfigurationsQuery
+        .refetch(variables)
+        .then(
+          (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
+            console.log(results);
+            this.completeDataTable = updateQueryUniqueValues(
+              this.cachedApiConfigurations,
+              results.data.apiConfigurations.edges.map((x) => x.node)
+            );
+            this.sorting();
+            console.log(this.completeDataTable);
+          }
+        );
+    } else {
+      this.sorting();
+    }
+
+    // const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
+    //   this.apollo.client,
+    //   GET_API_CONFIGURATIONS,
+    //   variables
+    // );
+    // console.log('cachedValues : ');
+    // console.log(cachedValues);
+    // if (cachedValues) {
+    // const cachedApiConfigurations = updateQueryUniqueValues(
+    //   this.cachedApiConfigurations,
+    //   cachedValues.apiConfigurations.edges.map((x) => x.node)
+    // );
+    //   console.log('cachedApiConfigurations : ');
+    //   console.log(cachedApiConfigurations);
+    //   //If sort is needed, sort list of all values, then slice it properly
+    //   if (sortMemory.sortDirection !== '') {
+    //     this.dataSource.data = cachedApiConfigurations
+    //       .sort((row1, row2) => {
+    //         return this.compare(row1, row2, sortMemory);
+    //       })
+    //       .slice(
+    //         this.pageInfo.pageSize * this.pageInfo.pageIndex,
+    //         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    //       );
+    //     this.loading = false;
+    //   } else {
+    //     console.log('sort stopped');
+    //     this.loading = false;
+    //   }
+    // } else {
+    //   this.apiConfigurationsQuery
+    //     .fetchMore({ variables })
+    //     .then(
+    //       (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
+    //         const cachedApiConfigurations = updateQueryUniqueValues(
+    //           this.cachedApiConfigurations,
+    //           results.data.apiConfigurations.edges.map((x) => x.node)
+    //         );
+    //         console.log('cachedApiConfigurations : ');
+    //         console.log(cachedApiConfigurations);
+    //         console.log(sortMemory);
+    //         //If sort is needed, sort list of all values, then slice it properly
+    //         if (sortMemory.sortDirection !== '') {
+    //           this.dataSource.data = cachedApiConfigurations
+    //             .sort((row1, row2) => {
+    //               return this.compare(row1, row2, sortMemory);
+    //             })
+    //             .slice(
+    //               this.pageInfo.pageSize * this.pageInfo.pageIndex,
+    //               this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    //             );
+    //           this.loading = false;
+    //         } else {
+    //           console.log('sort stopped');
+    //           this.loading = false;
+    //         }
+    //       }
+    //     );
+    // }
+    // this.sort = event;
+    // this.fetchForms(true);
+  }
+
+  /**
+   * Update forms query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchForms(refetch?: boolean): void {
     this.loading = true;
+    console.log('Fetch forms entered');
     const variables = {
       first: this.pageInfo.pageSize,
-      afterCursor: this.pageInfo.endCursor,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      sortField: this.sort?.sortDirection && this.sort.active,
+      sortOrder: this.sort?.sortDirection,
     };
+
     const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
       this.apollo.client,
       GET_API_CONFIGURATIONS,
       variables
     );
-    console.log('cachedValues : ');
-    console.log(cachedValues);
-    if (cachedValues) {
-      const cachedApiConfigurations = updateQueryUniqueValues(
-        this.cachedApiConfigurations,
-        cachedValues.apiConfigurations.edges.map((x) => x.node)
-      );
-      console.log('cachedApiConfigurations : ');
-      console.log(cachedApiConfigurations);
-      //If sort is needed, sort list of all values, then slice it properly
-      if (sortMemory.sortDirection !== '') {
-        this.dataSource.data = cachedApiConfigurations
-          .sort((row1, row2) => {
-            return this.compare(row1, row2, sortMemory);
-          })
-          .slice(
-            this.pageInfo.pageSize * this.pageInfo.pageIndex,
-            this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-          );
-        this.loading = false;
-      } else {
-        console.log('sort stopped');
-        this.loading = false;
-      }
-    } else {
-      this.apiConfigurationsQuery
-        .fetchMore({ variables })
-        .then(
-          (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
-            const cachedApiConfigurations = updateQueryUniqueValues(
-              this.cachedApiConfigurations,
-              results.data.apiConfigurations.edges.map((x) => x.node)
-            );
-            console.log('cachedApiConfigurations : ');
-            console.log(cachedApiConfigurations);
-            console.log(sortMemory);
-            //If sort is needed, sort list of all values, then slice it properly
-            if (sortMemory.sortDirection !== '') {
-              this.dataSource.data = cachedApiConfigurations
-                .sort((row1, row2) => {
-                  return this.compare(row1, row2, sortMemory);
-                })
-                .slice(
-                  this.pageInfo.pageSize * this.pageInfo.pageIndex,
-                  this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-                );
-              this.loading = false;
-            } else {
-              console.log('sort stopped');
-              this.loading = false;
-            }
-          }
-        );
+    if (refetch) {
+      console.log('first refetch entered');
+      this.cachedApiConfigurations = [];
+      this.pageInfo.pageIndex = 0;
     }
-    this.sort = event;
+    if (cachedValues) {
+      console.log('cached values non empty');
+      this.updateValues(cachedValues, false);
+    } else {
+      console.log('cached values empty');
+      if (refetch) {
+        console.log('use of refetch');
+        this.apiConfigurationsQuery.refetch(variables);
+      } else {
+        console.log('use of fetch more');
+        this.apiConfigurationsQuery
+          .fetchMore({
+            variables,
+          })
+          .then(
+            (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
+              console.log('update values');
+              this.updateValues(results.data, results.loading);
+            }
+          );
+      }
+    }
   }
 
   /**
@@ -486,6 +572,21 @@ export class ApiConfigurationsComponent
     //Else, it returns 0 so no change is made to the list
     else {
       return compareValue;
+    }
+  }
+
+  sorting(): void {
+    if (this.sort?.sortDirection !== '') {
+      this.dataSource.data = this.completeDataTable
+        .sort((row1, row2) => {
+          return this.compare(row1, row2, this.sort as TableSort);
+        })
+        .slice(
+          this.pageInfo.pageSize * this.pageInfo.pageIndex,
+          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+        );
+    } else {
+      this.dataSource.data = this.currentDataWithoutSort;
     }
   }
 }
