@@ -1,6 +1,6 @@
 import { Component, Optional, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Cron expression form control
@@ -35,7 +35,7 @@ export class CronExpressionControlComponent implements ControlValueAccessor {
    */
   constructor(
     @Optional() @Self() public ngControl: NgControl,
-    private dialog: MatDialog
+    private dialog: Dialog
   ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
@@ -89,7 +89,7 @@ export class CronExpressionControlComponent implements ControlValueAccessor {
         value: this.value,
       },
     });
-    dialogRef.afterClosed().subscribe((value: string | undefined | null) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.writeValue(value);
         this.onChanged(value);

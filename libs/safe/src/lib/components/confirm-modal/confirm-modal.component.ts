@@ -23,12 +23,7 @@ interface DialogData {
  */
 @Component({
   standalone: true,
-  imports: [
-    CommonModule,
-    DialogModule,
-    MatButtonModule,
-    ButtonModule,
-  ],
+  imports: [CommonModule, DialogModule, MatButtonModule, ButtonModule],
   selector: 'safe-confirm-modal',
   templateUrl: './confirm-modal.component.html',
   styleUrls: ['./confirm-modal.component.scss'],

@@ -1,6 +1,8 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>{{ 'components.users.invite.confirm' | translate }}</h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'components.users.invite.confirm' | translate }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <div class="mb-6">
       {{ 'components.users.invite.description' | translate }}
     </div>
@@ -103,8 +105,8 @@
         </ng-template>
       </kendo-grid-column>
     </kendo-grid>
-  </div>
-  <div mat-dialog-actions align="end">
+  </ng-container>
+  <ng-container ngProjectAs="actions">
     <ui-button (click)="onClose()">
       {{ 'common.close' | translate }}
     </ui-button>
@@ -117,5 +119,5 @@
     >
       {{ 'common.save' | translate }}
     </ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

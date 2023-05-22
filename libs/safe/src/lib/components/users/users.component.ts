@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, Input, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { User, Role } from '../../models/user.model';
@@ -62,7 +62,7 @@ export class SafeUsersComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private downloadService: SafeDownloadService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
@@ -100,7 +100,7 @@ export class SafeUsersComponent implements OnInit {
         uploadPath: 'upload/invite',
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<AddUsersMutationResponse>({

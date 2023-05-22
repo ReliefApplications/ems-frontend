@@ -1,7 +1,6 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
 import { DialogSize } from './types/dialog-size';
-import { Variant } from '../types/variant';
 
 /**
  * Dialog component.
@@ -15,8 +14,6 @@ export class DialogComponent implements OnChanges, OnInit {
   @Input() closable = false;
   @Input() padding = true;
   @Input() size!: DialogSize;
-
-  public buttonVariant = Variant;
 
   /** Close material dialog. */
   @Input() onClose = () => {

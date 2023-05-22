@@ -1,9 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import {
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialogRef as MatDialogRef,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { EMAIL_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
 
@@ -41,8 +38,8 @@ export class SafeEmailPreviewComponent implements OnInit {
    * @param editorService Editor service used to get main URL and current language
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    public dialogRef: MatDialogRef<SafeEmailPreviewComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<SafeEmailPreviewComponent>,
     private formBuilder: UntypedFormBuilder,
     private editorService: SafeEditorService
   ) {

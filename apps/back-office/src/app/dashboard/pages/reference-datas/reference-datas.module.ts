@@ -10,10 +10,7 @@ import {
   FormsModule as AngularFormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import {
-  SafeDateModule,
-  SafeSkeletonTableModule,
-} from '@oort-front/safe';
+import { SafeDateModule, SafeSkeletonTableModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';

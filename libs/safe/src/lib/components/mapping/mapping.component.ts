@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { createFormGroup, Mapping, Mappings } from './mapping-forms';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Mapping component to handle all mapping grids.
@@ -29,7 +29,7 @@ export class SafeMappingComponent
    *
    * @param dialog Angular Material dialog service.
    */
-  constructor(private dialog: MatDialog) {
+  constructor(private dialog: Dialog) {
     super();
   }
 
@@ -57,7 +57,7 @@ export class SafeMappingComponent
         mapping: element,
       },
     });
-    dialogRef.afterClosed().subscribe((mapping: Mapping) => {
+    dialogRef.closed.subscribe((mapping: any) => {
       if (mapping) {
         this.mappingForm.at(index).setValue(mapping);
         this.mappingForm.markAsDirty();
@@ -87,7 +87,7 @@ export class SafeMappingComponent
         mapping: null,
       },
     });
-    dialogRef.afterClosed().subscribe((mapping: Mapping) => {
+    dialogRef.closed.subscribe((mapping: any) => {
       if (mapping) {
         this.mappingForm.push(createFormGroup(mapping));
         this.mappingForm.markAsDirty();

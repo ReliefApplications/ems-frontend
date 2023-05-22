@@ -19,8 +19,6 @@ import {
   SafeGraphQLSelectComponent,
   SafeGraphQLSelectModule,
   SafeUnsubscribeComponent,
-  // @TODO: Remove SafeButtonModule and SafeIconModule imports after ui-button and ui-icon are being used in the app
-  SafeButtonModule,
   SafeIconModule,
 } from '@oort-front/safe';
 import { takeUntil } from 'rxjs';

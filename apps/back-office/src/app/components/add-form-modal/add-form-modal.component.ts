@@ -20,10 +20,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  SafeGraphQLSelectModule,
-  SafeIconModule,
-} from '@oort-front/safe';
+import { SafeGraphQLSelectModule, SafeIconModule } from '@oort-front/safe';
 import {
   ToggleModule,
   TooltipModule,

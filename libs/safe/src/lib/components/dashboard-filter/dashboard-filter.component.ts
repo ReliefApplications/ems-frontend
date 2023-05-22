@@ -8,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import * as Survey from 'survey-angular';
 import { Apollo } from 'apollo-angular';
 import { SafeApplicationService } from '../../services/application/application.service';
@@ -67,7 +67,7 @@ export class DashboardFilterComponent
    */
   constructor(
     private hostElement: ElementRef,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
     private snackBar: SafeSnackBarService,
@@ -148,7 +148,7 @@ export class DashboardFilterComponent
           data: { surveyStructure: this.surveyStructure },
           autoFocus: false,
         });
-        dialogRef.afterClosed().subscribe((newStructure) => {
+        dialogRef.closed.subscribe((newStructure: any) => {
           if (newStructure) {
             this.surveyStructure = newStructure;
             this.initSurvey();

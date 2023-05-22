@@ -14,10 +14,7 @@ import {
   MatLegacyChipInputEvent as MatChipInputEvent,
   MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS,
 } from '@angular/material/legacy-chips';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import get from 'lodash/get';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { CommonModule } from '@angular/common';
@@ -26,9 +23,11 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { ButtonModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
+// @TODO: Remove SafeIconModule import after ui-icon is being used in the app
+import { SafeIconModule } from '../../../ui/icon/icon.module';
 
 /** Model for the data input */
 interface DialogData {
@@ -60,7 +59,7 @@ export function codesFactory(): () => any {
   standalone: true,
   imports: [
     CommonModule,
-    SafeModalModule,
+    DialogModule,
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
@@ -69,6 +68,7 @@ export function codesFactory(): () => any {
     TranslateModule,
     MatChipsModule,
     ButtonModule,
+    SafeIconModule,
   ],
   selector: 'safe-edit-distribution-list-modal',
   templateUrl: './edit-distribution-list-modal.component.html',
@@ -96,8 +96,8 @@ export class EditDistributionListModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<EditDistributionListModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    public dialogRef: DialogRef<EditDistributionListModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {}
 
   /** Build the form. */

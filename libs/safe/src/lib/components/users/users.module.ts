@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SafeUsersComponent } from './users.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
@@ -33,7 +32,6 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     MatFormFieldModule,
     MatSelectModule,
     MatTableModule,
-    MatDialogModule,
     MatButtonModule,
     MenuModule,
     MatIconModule,

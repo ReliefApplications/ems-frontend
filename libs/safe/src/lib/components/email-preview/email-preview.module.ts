@@ -8,8 +8,8 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { SafeModalModule } from '../ui/modal/modal.module';
 import { ButtonModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
 
 /**
  * Preview Email Component Module.
@@ -26,7 +26,7 @@ import { ButtonModule } from '@oort-front/ui';
     MatChipsModule,
     UploadsModule,
     EditorModule,
-    SafeModalModule,
+    DialogModule,
     ButtonModule,
   ],
   exports: [SafeEmailPreviewComponent],

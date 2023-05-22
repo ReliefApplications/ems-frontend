@@ -1,9 +1,5 @@
 import { Component, Inject, Renderer2, ViewChild } from '@angular/core';
-import {
-  MatLegacyDialog as MatDialog,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
 import { GridComponent, GridDataResult } from '@progress/kendo-angular-grid';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
@@ -67,10 +63,10 @@ export class SafeInviteUsersComponent {
     private downloadService: SafeDownloadService,
     private snackBar: SafeSnackBarService,
     private formBuilder: UntypedFormBuilder,
-    public dialog: MatDialog,
-    public dialogRef: MatDialogRef<SafeInviteUsersComponent>,
+    public dialog: Dialog,
+    public dialogRef: DialogRef<SafeInviteUsersComponent>,
     public translate: TranslateService,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {}
 
   /**
@@ -100,7 +96,7 @@ export class SafeInviteUsersComponent {
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.gridData.data.push(value);
       }
@@ -187,7 +183,7 @@ export class SafeInviteUsersComponent {
     if (this.editionActive) {
       this.closeEditor();
     }
-    this.dialogRef.close(this.gridData.data);
+    this.dialogRef.close(this.gridData.data as any);
   }
 
   /**
