@@ -16,7 +16,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeSearchMenuModule } from '@oort-front/safe';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * Application workflow page module.
@@ -38,7 +38,7 @@ import { UiModule } from '@oort-front/ui';
     SafeAlertModule,
     SafeSkeletonModule,
     SafeEditableTextModule,
-    UiModule,
+    IconModule,
   ],
   exports: [WorkflowComponent],
 })

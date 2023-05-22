@@ -9,7 +9,7 @@ import { SafeEmptyModule } from '../../../../components/ui/empty/empty.module';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { SafeButtonModule } from '../../../../components/ui/button/button.module';
 import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * Users list module.
@@ -26,7 +26,7 @@ import { UiModule } from '@oort-front/ui';
     MatMenuModule,
     SafeButtonModule,
     MatCheckboxModule,
-    UiModule,
+    IconModule,
   ],
   exports: [UserListComponent],
 })

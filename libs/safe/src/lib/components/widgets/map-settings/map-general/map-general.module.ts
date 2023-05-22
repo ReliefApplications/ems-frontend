@@ -8,7 +8,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
 import { SafeAlertModule } from '../../../ui/alert/alert.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * Module of General settings of map widget
@@ -24,7 +24,7 @@ import { UiModule } from '@oort-front/ui';
     MatInputModule,
     SafeQueryBuilderModule,
     SafeAlertModule,
-    UiModule,
+    IconModule,
     SafeGraphQLSelectModule,
   ],
   exports: [MapGeneralComponent],

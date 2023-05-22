@@ -11,7 +11,7 @@ import {
   SafeDateModule,
   SafeSkeletonTableModule,
 } from '@oort-front/safe';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * Forms tab of resource page.
@@ -28,7 +28,7 @@ import { UiModule } from '@oort-front/ui';
     TranslateModule,
     SafeDateModule,
     SafeSkeletonTableModule,
-    UiModule,
+    IconModule,
   ],
 })
 export class FormsTabModule {}

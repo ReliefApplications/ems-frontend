@@ -15,7 +15,7 @@ import {
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /** Pull Jobs page module. */
 @NgModule({
@@ -34,7 +34,7 @@ import { UiModule } from '@oort-front/ui';
     SafeSkeletonTableModule,
     SafeCronParserModule,
     SafeDateModule,
-    UiModule,
+    IconModule,
   ],
 })
 export class PullJobsModule {}

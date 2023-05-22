@@ -8,7 +8,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * SafeGroupsModule manages modules and components
@@ -25,7 +25,7 @@ import { UiModule } from '@oort-front/ui';
     SafeSkeletonTableModule,
     MatMenuModule,
     MatTableModule,
-    UiModule,
+    IconModule,
   ],
   exports: [SafeGroupListComponent],
 })

@@ -7,7 +7,7 @@ import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeAlertModule } from '../../../../ui/alert/alert.module';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MapClorophletModule } from '../map-clorophlet/map-clorophlet.module';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * List of clorophlets in Map Settings Module.
@@ -20,7 +20,7 @@ import { UiModule } from '@oort-front/ui';
     ReactiveFormsModule,
     TranslateModule,
     SafeButtonModule,
-    UiModule,
+    IconModule,
     SafeAlertModule,
     MatTableModule,
     MapClorophletModule,

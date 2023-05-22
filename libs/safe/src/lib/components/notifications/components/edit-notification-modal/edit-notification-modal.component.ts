@@ -34,7 +34,7 @@ import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
-import { UiModule, Variant } from '@oort-front/ui';
+import { IconModule, Variant } from '@oort-front/ui';
 
 /**
  * Dialog data interface
@@ -65,7 +65,7 @@ const ITEMS_PER_PAGE = 10;
     SafeGraphQLSelectModule,
     MatRadioModule,
     CronExpressionControlModule,
-    UiModule,
+    IconModule,
   ],
   selector: 'safe-edit-notification-modal',
   templateUrl: './edit-notification-modal.component.html',

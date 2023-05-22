@@ -7,7 +7,7 @@ import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * SafeCheckboxTreeModule is a class used to manage all the modules and components
@@ -23,7 +23,7 @@ import { UiModule } from '@oort-front/ui';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    UiModule,
+    IconModule,
   ],
   exports: [SafeCheckboxTreeComponent],
 })

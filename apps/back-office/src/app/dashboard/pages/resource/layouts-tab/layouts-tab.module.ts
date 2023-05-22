@@ -13,7 +13,7 @@ import {
 } from '@oort-front/safe';
 import { LayoutsTabComponent } from './layouts-tab.component';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * Layouts tab of resource page
@@ -32,7 +32,7 @@ import { UiModule } from '@oort-front/ui';
     SafeSkeletonTableModule,
     MatPaginatorModule,
     SafeEmptyModule,
-    UiModule,
+    IconModule,
   ],
 })
 export class LayoutsTabModule {}

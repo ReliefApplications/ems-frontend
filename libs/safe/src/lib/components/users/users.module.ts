@@ -19,7 +19,7 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /** Module for components related to users */
 @NgModule({
@@ -45,7 +45,7 @@ import { UiModule } from '@oort-front/ui';
     SafeInviteUsersModule,
     TranslateModule,
     SafeSkeletonTableModule,
-    UiModule,
+    IconModule,
   ],
   exports: [SafeUsersComponent],
 })

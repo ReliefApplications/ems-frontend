@@ -9,7 +9,7 @@ import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeBadgeModule } from '../../../../ui/badge/badge.module';
 import { SafeAlertModule } from '../../../../ui/alert/alert.module';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * Online Layers configuration of Map Widget Module.
@@ -26,7 +26,7 @@ import { UiModule } from '@oort-front/ui';
     SafeButtonModule,
     SafeBadgeModule,
     SafeAlertModule,
-    UiModule,
+    IconModule,
     MatTableModule,
   ],
   exports: [MapOnlineLayersComponent],

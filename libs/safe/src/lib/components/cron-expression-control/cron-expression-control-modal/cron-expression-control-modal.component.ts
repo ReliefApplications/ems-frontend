@@ -12,7 +12,7 @@ import { SafeAlertModule } from '../../ui/alert/alert.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * Cron expression form control modal
@@ -30,7 +30,7 @@ import { UiModule } from '@oort-front/ui';
     MatFormFieldModule,
     MatDialogModule,
     MatInputModule,
-    UiModule,
+    IconModule,
   ],
   selector: 'safe-cron-expression-control-modal',
   templateUrl: './cron-expression-control-modal.component.html',

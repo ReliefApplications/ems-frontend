@@ -9,7 +9,7 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
 import { SafeDividerModule } from '../ui/divider/divider.module';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * Module for custom notifications table.
@@ -26,7 +26,7 @@ import { UiModule } from '@oort-front/ui';
     SafeDividerModule,
     MatPaginatorModule,
     MatChipsModule,
-    UiModule,
+    IconModule,
   ],
   exports: [NotificationsComponent],
 })

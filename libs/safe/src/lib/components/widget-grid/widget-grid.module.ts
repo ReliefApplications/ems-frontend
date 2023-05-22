@@ -19,7 +19,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeModalModule } from '../ui/modal/modal.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 /** Module for the widget-related components */
 @NgModule({
   declarations: [
@@ -47,7 +47,7 @@ import { UiModule } from '@oort-front/ui';
     LayoutModule,
     IndicatorsModule,
     SafeModalModule,
-    UiModule,
+    IconModule,
   ],
   exports: [SafeWidgetGridComponent, SafeTileDataComponent],
 })

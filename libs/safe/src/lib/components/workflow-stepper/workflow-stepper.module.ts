@@ -10,7 +10,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TranslateModule } from '@ngx-translate/core';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeDividerModule } from '../ui/divider/divider.module';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 /**
  * Module for workflow stepper component
  */
@@ -26,7 +26,7 @@ import { UiModule } from '@oort-front/ui';
     MatRippleModule,
     TooltipModule,
     DragDropModule,
-    UiModule,
+    IconModule,
     SafeButtonModule,
     TranslateModule,
     IndicatorsModule,

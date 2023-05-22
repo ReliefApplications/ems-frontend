@@ -7,7 +7,7 @@ import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule, SafeEmptyModule } from '@oort-front/safe';
 import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * Calculated fields tab of resource page
@@ -23,7 +23,7 @@ import { UiModule } from '@oort-front/ui';
     TranslateModule,
     OverlayModule,
     SafeEmptyModule,
-    UiModule,
+    IconModule,
   ],
 })
 export class CalculatedFieldsTabModule {}

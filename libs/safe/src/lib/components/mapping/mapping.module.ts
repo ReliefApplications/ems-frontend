@@ -10,7 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * Mapping module
@@ -29,7 +29,7 @@ import { UiModule } from '@oort-front/ui';
     ReactiveFormsModule,
     SafeButtonModule,
     SafeModalModule,
-    UiModule,
+    IconModule,
   ],
   exports: [SafeMappingComponent],
 })

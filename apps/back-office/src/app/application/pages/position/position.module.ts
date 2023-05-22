@@ -11,7 +11,7 @@ import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy
 import { SafeButtonModule, SafeModalModule } from '@oort-front/safe';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * Application position module.
@@ -33,7 +33,7 @@ import { UiModule } from '@oort-front/ui';
     MatButtonModule,
     TranslateModule,
     SafeModalModule,
-    UiModule,
+    IconModule,
   ],
   exports: [PositionComponent],
 })

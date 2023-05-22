@@ -10,7 +10,7 @@ import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-m
 import { SafeButtonModule } from '../../components/ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeProfileRoutingModule } from './profile-routing.module';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * Shared profile page module.
@@ -29,7 +29,7 @@ import { UiModule } from '@oort-front/ui';
     ReactiveFormsModule,
     SafeButtonModule,
     TranslateModule,
-    UiModule,
+    IconModule,
   ],
   exports: [SafeProfileComponent],
 })

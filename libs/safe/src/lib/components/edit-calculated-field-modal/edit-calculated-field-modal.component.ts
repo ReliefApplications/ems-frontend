@@ -19,7 +19,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeModalModule } from '../ui/modal/modal.module';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { UiModule, Variant } from '@oort-front/ui';
+import { IconModule, Variant } from '@oort-front/ui';
 /**
  * Interface describing the structure of the data displayed in the dialog
  */
@@ -42,7 +42,7 @@ interface DialogData {
     MatSelectModule,
     SafeModalModule,
     EditorModule,
-    UiModule,
+    IconModule,
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },

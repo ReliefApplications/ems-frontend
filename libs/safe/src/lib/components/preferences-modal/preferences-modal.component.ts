@@ -15,7 +15,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TabsModule } from '@oort-front/ui';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /** Preferences Dialog Data */
 interface PreferencesDialogData {
@@ -35,7 +35,7 @@ interface PreferencesDialogData {
     MatSelectModule,
     TabsModule,
     SafeModalModule,
-    UiModule,
+    IconModule,
   ],
   selector: 'safe-preferences-modal',
   templateUrl: './preferences-modal.component.html',
