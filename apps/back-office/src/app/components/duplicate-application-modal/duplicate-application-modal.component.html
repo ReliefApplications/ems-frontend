@@ -23,10 +23,10 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button (click)="onCancel()">{{
+    <ui-button (click)="onCancel()">{{
       'common.close' | translate
-    }}</safe-button>
-    <safe-button
+    }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       (click)="onSubmit()"
@@ -34,6 +34,6 @@
       [disabled]="!duplicateForm.valid"
     >
       {{ 'common.duplicate' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

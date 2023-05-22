@@ -38,7 +38,7 @@
         type="text"
         [placeholder]="'common.placeholder.search' | translate"
       />
-      <ui-spinner [size]="size.SMALL" *ngIf="loading" uiSuffix></ui-spinner>
+      <ui-spinner [size]="'small'" *ngIf="loading" uiSuffix></ui-spinner>
     </div>
     <div class="card-templates">
       <ng-container *ngIf="loading">
@@ -63,7 +63,7 @@
       </ng-container>
     </div>
     <mat-divider></mat-divider>
-    <safe-button
+    <ui-button
       class="!w-auto"
       variant="primary"
       category="secondary"
@@ -71,12 +71,12 @@
     >
       {{
         'components.widget.settings.summaryCard.create.choice.blank' | translate
-      }}</safe-button
+      }}</ui-button
     >
   </mat-dialog-content>
   <div mat-dialog-actions class="mat-dialog-actions" align="end">
-    <safe-button mat-dialog-close>
+    <ui-button mat-dialog-close>
       {{ 'common.close' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

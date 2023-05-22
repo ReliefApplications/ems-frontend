@@ -5,19 +5,17 @@ import { WorkflowComponent } from './workflow.component';
 import {
   SafeAccessModule,
   SafeAlertModule,
-  SafeButtonModule,
   SafeWorkflowStepperModule,
   SafeIconModule,
   SafeSkeletonModule,
   SafeEditableTextModule,
 } from '@oort-front/safe';
-import { SpinnerModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeSearchMenuModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule } from '@oort-front/ui';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { ButtonModule, MenuModule, SpinnerModule } from '@oort-front/ui';
 
 /**
  * Application workflow page module.
@@ -29,7 +27,6 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     WorkflowRoutingModule,
     SafeAccessModule,
     SpinnerModule,
-    SafeButtonModule,
     SafeWorkflowStepperModule,
     TranslateModule,
     OverlayModule,
@@ -41,6 +38,7 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
     SafeIconModule,
     SafeSkeletonModule,
     SafeEditableTextModule,
+    ButtonModule,
   ],
   exports: [WorkflowComponent],
 })

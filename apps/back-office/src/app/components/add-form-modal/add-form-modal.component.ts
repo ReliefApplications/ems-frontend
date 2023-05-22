@@ -31,7 +31,7 @@ import {
   TooltipModule,
   RadioModule,
   IconModule,
-  Variant,
+  ButtonModule,
 } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
@@ -59,6 +59,7 @@ const ITEMS_PER_PAGE = 10;
     TooltipModule,
     RadioModule,
     IconModule,
+    ButtonModule,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',
@@ -72,9 +73,6 @@ export class AddFormModalComponent implements OnInit {
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
   public templates: any[] = [];
-
-  // === COLOR VARIANT ===
-  public colorVariant = Variant;
 
   @ViewChild('resourceSelect') resourceSelect?: MatSelect;
 

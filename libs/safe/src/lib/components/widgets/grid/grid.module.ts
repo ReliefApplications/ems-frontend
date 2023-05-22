@@ -7,6 +7,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 import { SafeEmailPreviewModule } from '../../email-preview/email-preview.module';
 import { SafeAggregationGridModule } from '../../aggregation/aggregation-grid/aggregation-grid.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Module for grid widget component */
 @NgModule({
@@ -19,6 +20,7 @@ import { SafeAggregationGridModule } from '../../aggregation/aggregation-grid/ag
     DropDownListModule,
     SafeEmailPreviewModule,
     SafeAggregationGridModule,
+    ButtonModule,
   ],
   exports: [SafeGridWidgetComponent],
 })

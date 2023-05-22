@@ -28,9 +28,7 @@ import { Resource } from '../../../../models/resource.model';
 import get from 'lodash/get';
 import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
 import { CommonModule } from '@angular/common';
-import { SafeButtonModule } from '../../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { TooltipModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -41,6 +39,7 @@ import { SafeDisplayTabModule } from './display-tab/display.module';
 import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
 import { SafePreviewTabModule } from './preview-tab/preview.module';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
+import { TooltipModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * Card modal component.
@@ -50,7 +49,6 @@ import { SafeModalModule } from '../../../ui/modal/modal.module';
   standalone: true,
   imports: [
     CommonModule,
-    SafeButtonModule,
     TranslateModule,
     TooltipModule,
     FormsModule,
@@ -64,6 +62,7 @@ import { SafeModalModule } from '../../../ui/modal/modal.module';
     SafeTextEditorTabModule,
     SafePreviewTabModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'safe-card-modal',
   templateUrl: './card-modal.component.html',

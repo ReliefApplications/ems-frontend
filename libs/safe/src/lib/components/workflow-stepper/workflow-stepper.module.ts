@@ -5,12 +5,10 @@ import { SafeAddStepComponent } from './components/add-step/add-step.component';
 import { SafeStepComponent } from './components/step/step.component';
 import { MatRippleModule } from '@angular/material/core';
 import { SafeIconModule } from '../ui/icon/icon.module';
-import { SafeButtonModule } from '../ui/button/public-api';
-import { TooltipModule } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TranslateModule } from '@ngx-translate/core';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import { DividerModule } from '@oort-front/ui';
+import { TooltipModule, DividerModule, ButtonModule } from '@oort-front/ui';
 /**
  * Module for workflow stepper component
  */
@@ -27,9 +25,9 @@ import { DividerModule } from '@oort-front/ui';
     TooltipModule,
     DragDropModule,
     SafeIconModule,
-    SafeButtonModule,
     TranslateModule,
     IndicatorsModule,
+    ButtonModule,
   ],
   exports: [
     SafeWorkflowStepperComponent,

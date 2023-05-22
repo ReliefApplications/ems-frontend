@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { BreadcrumbDisplay } from './enums/breadcrumb-display.enum';
-import { BreadcrumbSeparator } from './enums/breadcrumb-separator.enum';
+import { BreadcrumbDisplay } from './types/breadcrumb-display';
+import { BreadcrumbSeparator } from './types/breadcrumb-separator';
 import { Breadcrumb } from './interfaces/breadcrumb.interface';
 
 /**
@@ -13,10 +13,6 @@ import { Breadcrumb } from './interfaces/breadcrumb.interface';
 })
 export class BreadcrumbsComponent {
   @Input() breadcrumbs: Breadcrumb[] = [];
-  @Input() separator: BreadcrumbSeparator = BreadcrumbSeparator.SLASH;
-  @Input() display: BreadcrumbDisplay = BreadcrumbDisplay.SIMPLE;
-
-  //In order to be able to use enumerations in html
-  BreadcrumbsTypes = BreadcrumbDisplay;
-  BreadcrumbsSeparators = BreadcrumbSeparator;
+  @Input() separator: BreadcrumbSeparator = 'slash';
+  @Input() display: BreadcrumbDisplay = 'simple';
 }

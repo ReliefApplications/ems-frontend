@@ -4,7 +4,7 @@ import { addons } from '@storybook/addons';
 import { FORCE_RE_RENDER } from '@storybook/core-events';
 import { RadioComponent } from './radio.component';
 import { RadioGroupDirective } from './radio-group.directive';
-import { Variant } from '../shared/variant.enum';
+import { variants } from '../types/variant';
 
 type RadioOption = {
   label: string;
@@ -16,7 +16,7 @@ export default {
   component: RadioComponent,
   argTypes: {
     variant: {
-      options: Object.values(Variant),
+      options: variants,
       control: {
         type: 'select',
       },

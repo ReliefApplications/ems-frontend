@@ -21,8 +21,8 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeModalModule } from '../ui/modal/modal.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Scroll Factory for material select, provided by the component.
@@ -58,8 +58,8 @@ interface DialogData {
     MatButtonModule,
     MatInputModule,
     TranslateModule,
-    SafeButtonModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'safe-config-display-grid-fields-modal',
   templateUrl: './config-display-grid-fields-modal.component.html',

@@ -67,32 +67,32 @@
               <mat-select [disabled]="true" [value]="layout.id">
                 <mat-option [value]="layout.id">{{ layout.name }}</mat-option>
               </mat-select>
-              <safe-button
+              <ui-button
                 matSuffix
                 variant="primary"
                 [isIcon]="true"
                 icon="edit"
                 (click)="editLayout()"
-              ></safe-button>
-              <safe-button
+              ></ui-button>
+              <ui-button
                 matSuffix
                 variant="danger"
                 [isIcon]="true"
                 icon="close"
                 (click)="removeLayout()"
-              ></safe-button>
+              ></ui-button>
             </mat-form-field>
           </ng-container>
           <ng-container *ngIf="!formGroup.value.layout">
             <!-- Layout is not selected yet -->
-            <safe-button
+            <ui-button
               class="!w-auto"
               category="tertiary"
               variant="primary"
               (click)="addLayout()"
               >{{
                 'components.widget.settings.grid.layouts.add.title' | translate
-              }}</safe-button
+              }}</ui-button
             >
           </ng-container>
         </ng-container>
@@ -119,7 +119,7 @@
             matSuffix
             uiTooltip="HINT"
           ></safe-icon>
-          <safe-button
+          <ui-button
             matSuffix
             [isIcon]="true"
             icon="add_circle_outline"
@@ -127,7 +127,7 @@
             (click)="$event.stopPropagation(); addEmailTemplate()"
             [uiTooltip]="'components.templates.edit.new' | translate"
           >
-          </safe-button>
+          </ui-button>
         </mat-form-field>
         <!-- Recipients -->
         <h4>
@@ -136,7 +136,11 @@
           }}
         </h4>
         <!-- Recipients type -->
-        <div class="flex flex-col gap-2" formControlName="recipientsType" uiRadioGroupDirective="recipientsTypeOptions">
+        <div
+          class="flex flex-col gap-2"
+          formControlName="recipientsType"
+          uiRadioGroupDirective="recipientsTypeOptions"
+        >
           <!-- Using user field -->
           <!-- <ui-radio value="field">
             <ng-container ngProjectAs="label">
@@ -144,18 +148,32 @@
             </ng-container>
           </ui-radio> -->
           <!-- Using distribution list -->
-          <ui-radio value="distributionList" [checked]="formGroup.get('recipientsType')?.value === 'distributionList'">
+          <ui-radio
+            value="distributionList"
+            [checked]="
+              formGroup.get('recipientsType')?.value === 'distributionList'
+            "
+          >
             <ng-container ngProjectAs="label">
-              {{ 'components.customNotifications.edit.recipients.distributionList' | translate }}
+              {{
+                'components.customNotifications.edit.recipients.distributionList'
+                  | translate
+              }}
             </ng-container>
           </ui-radio>
           <!-- Using email -->
-          <ui-radio value="email" [checked]="formGroup.get('recipientsType')?.value === 'email'">
+          <ui-radio
+            value="email"
+            [checked]="formGroup.get('recipientsType')?.value === 'email'"
+          >
             <ng-container ngProjectAs="label">
-              {{ 'components.customNotifications.edit.recipients.email' | translate }}
+              {{
+                'components.customNotifications.edit.recipients.email'
+                  | translate
+              }}
             </ng-container>
           </ui-radio>
-        </div>  
+        </div>
         <!-- Recipients value -->
         <div class="mt-6 flex">
           <!-- Using user field -->
@@ -216,16 +234,16 @@
   </div>
   <!-- Modal actions -->
   <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+    <ui-button mat-dialog-close>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [mat-dialog-close]="formGroup.getRawValue()"
       [disabled]="!formGroup.valid"
     >
       {{ (notification ? 'common.update' : 'common.create') | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

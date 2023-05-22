@@ -59,14 +59,13 @@
 <ng-template #floatingButtonsTemplate>
   <div>
     <ng-container *ngFor="let floatingButton of settings.floatingButtons">
-      <button
-        mat-button
-        color="primary"
+      <ui-button
+        variant="primary"
         (click)="onQuickAction(floatingButton)"
         *ngIf="floatingButton.show"
       >
-        {{ floatingButton.name }}
-      </button>
+      {{ floatingButton.name }}
+      </ui-button>
     </ng-container>
   </div>
 </ng-template>
