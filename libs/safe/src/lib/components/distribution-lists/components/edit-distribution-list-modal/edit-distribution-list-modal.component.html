@@ -32,6 +32,7 @@
               [uiChipListFor]="chipList"
               [chipInputSeparatorKeyCodes]="separatorKeysCodes"
               (focusout)="addEmail($event)"
+              (chipTokenEnd)="addEmail($event)"
             />
           </div>
           <mat-error>{{ errorMessage('emails') | translate }}</mat-error>

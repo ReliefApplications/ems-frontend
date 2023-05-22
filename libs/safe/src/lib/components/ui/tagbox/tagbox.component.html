@@ -25,6 +25,7 @@
       [disabled]="choicesEmpty"
       *ngIf="showInput"
       class="mt-5"
+      (chipTokenEnd)="add($event)"
     />
   </div>
   <!-- Filter choices -->

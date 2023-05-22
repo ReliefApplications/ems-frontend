@@ -420,52 +420,35 @@ export class ReferenceDataComponent
    * @param event input event.
    */
   add(event: string | any): void {
-    const input = event.input;
-    const value = event.value;
-    // Add the mail
-    if ((value || '').trim()) {
-      // Deep copy needed for the edition
-      const valueFieldsCopy = [...this.valueFields];
-      valueFieldsCopy.push(value.trim());
-      this.valueFields = valueFieldsCopy;
-    }
-    this.referenceForm?.get('fields')?.setValue(this.valueFields);
-    this.referenceForm?.get('fields')?.updateValueAndValidity();
-    this.referenceForm?.markAsDirty();
-    // Reset the input value
-    if (input) {
-      input.value = '';
-    }
+    // use setTimeout to prevent add input value on focusout
+    setTimeout(
+      () => {
+        const input =
+          event.type === 'focusout'
+            ? this.fieldInput?.nativeElement
+            : event.input;
+        const value =
+          event.type === 'focusout'
+            ? this.fieldInput?.nativeElement.value
+            : event.value;
 
-    // // use setTimeout to prevent add input value on focusout
-    // setTimeout(
-    //   () => {
-    //     const input =
-    //       event.type === 'focusout'
-    //         ? this.fieldInput?.nativeElement
-    //         : event.input;
-    //     const value =
-    //       event.type === 'focusout'
-    //         ? this.fieldInput?.nativeElement.value
-    //         : event.value;
-
-    //     // Add the mail
-    //     if ((value || '').trim()) {
-    //       // Deep copy needed for the edition
-    //       const valueFieldsCopy = [...this.valueFields];
-    //       valueFieldsCopy.push(value.trim());
-    //       this.valueFields = valueFieldsCopy;
-    //     }
-    //     this.referenceForm?.get('fields')?.setValue(this.valueFields);
-    //     this.referenceForm?.get('fields')?.updateValueAndValidity();
-    //     this.referenceForm?.markAsDirty();
-    //     // Reset the input value
-    //     if (input) {
-    //       input.value = '';
-    //     }
-    //   },
-    //   event.type === 'focusout' ? 500 : 0
-    // );
+        // Add the mail
+        if ((value || '').trim()) {
+          // Deep copy needed for the edition
+          const valueFieldsCopy = [...this.valueFields];
+          valueFieldsCopy.push(value.trim());
+          this.valueFields = valueFieldsCopy;
+        }
+        this.referenceForm?.get('fields')?.setValue(this.valueFields);
+        this.referenceForm?.get('fields')?.updateValueAndValidity();
+        this.referenceForm?.markAsDirty();
+        // Reset the input value
+        if (input) {
+          input.value = '';
+        }
+      },
+      event.type === 'focusout' ? 500 : 0
+    );
   }
 
   /**
