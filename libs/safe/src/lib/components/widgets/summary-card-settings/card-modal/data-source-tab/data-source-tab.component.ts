@@ -10,7 +10,6 @@ import { SafeGridLayoutService } from '../../../../../services/grid-layout/grid-
 import { SafeAggregationService } from '../../../../../services/aggregation/aggregation.service';
 import { get } from 'lodash';
 
-
 /**
  * How many resources.forms will be shown on the selector.
  */
@@ -36,8 +35,6 @@ export class SafeDataSourceTabComponent implements OnInit {
 
   // === DATA ===
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
-
-  
 
   /**
    * SafeDataSourceTabComponent constructor

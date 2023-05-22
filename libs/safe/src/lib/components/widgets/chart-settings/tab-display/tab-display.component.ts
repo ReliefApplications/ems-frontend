@@ -18,7 +18,6 @@ import { SafeChartComponent } from '../../chart/chart.component';
 import { createSerieForm } from '../chart-forms';
 import { isEqual, isNil, get } from 'lodash';
 
-
 /**
  * Display tab of the chart settings modal.
  */
@@ -48,8 +47,6 @@ export class TabDisplayComponent
   }
 
   @ViewChild(SafeChartComponent) chartComponent!: SafeChartComponent;
-
-  
 
   /**
    * Constructor of the display tab of the chart settings modal.

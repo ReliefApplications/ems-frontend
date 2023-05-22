@@ -16,7 +16,6 @@ import { SafeDownloadService } from '../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-
 /**
  * A component to display the list of users
  */
@@ -47,8 +46,6 @@ export class SafeUsersComponent implements OnInit {
   public showFilters = false;
 
   selection = new SelectionModel<User>(true, []);
-
-  
 
   /**
    * Constructor of the users component

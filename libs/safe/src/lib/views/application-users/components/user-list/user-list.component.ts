@@ -16,7 +16,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
-
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -66,8 +65,6 @@ export class UserListComponent
   }
 
   public selection = new SelectionModel<User>(true, []);
-
-  
 
   /**
    * Users list component

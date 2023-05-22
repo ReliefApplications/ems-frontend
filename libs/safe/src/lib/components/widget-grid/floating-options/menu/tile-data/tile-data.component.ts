@@ -14,7 +14,6 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../../services/confirm/confirm.service';
 
-
 /** Model for dialog data */
 interface DialogData {
   tile: any;
@@ -35,8 +34,6 @@ export class SafeTileDataComponent implements AfterViewInit {
   // === TEMPLATE REFERENCE ===
   @ViewChild('settingsContainer', { read: ViewContainerRef })
   settingsContainer: any;
-
-  
 
   /**
    * Constructor of a data tile

@@ -19,7 +19,6 @@ import { get } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 
-
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
 
@@ -45,8 +44,6 @@ export class TabMainComponent
 
   private reload = new Subject<boolean>();
   public reload$ = this.reload.asObservable();
-
-  
 
   /**
    * Main tab of chart settings modal.

@@ -19,7 +19,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 
-
 /** Model for the input  */
 interface DialogData {
   roles: Role[];
@@ -47,8 +46,6 @@ export class SafeAddUserComponent
       ? (this.form.get('positionAttributes') as UntypedFormArray)
       : null;
   }
-
-  
 
   /**
    * Constructor for the component

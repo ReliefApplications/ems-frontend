@@ -24,7 +24,6 @@ export class MapClorophletDivisionComponent {
   public fields: any[] = [];
   public query: any;
 
-
   /**
    * Single clorophlet configuration component.
    *

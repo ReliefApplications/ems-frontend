@@ -18,7 +18,6 @@ import { SafeDownloadService } from '../../../../services/download/download.serv
 import { TranslateService } from '@ngx-translate/core';
 import { UploadEvent } from '@progress/kendo-angular-upload';
 
-
 /** Model fot the input data */
 interface DialogData {
   roles: Role[];
@@ -45,8 +44,6 @@ export class SafeInviteUsersComponent {
   private grid?: GridComponent;
 
   @ViewChild('fileReader') fileReader: any;
-
-  
 
   /** @returns The position attributes available */
   get positionAttributes(): UntypedFormArray | null {

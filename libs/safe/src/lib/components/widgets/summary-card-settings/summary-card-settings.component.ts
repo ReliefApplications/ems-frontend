@@ -20,7 +20,6 @@ import {
 } from '@progress/kendo-angular-layout';
 import { cloneDeep, get } from 'lodash';
 
-
 /** Define max height of summary card */
 const MAX_ROW_SPAN = 4;
 /** Define max width of summary card */
@@ -55,8 +54,6 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
-
-  
 
   /**
    * Changes display when windows size changes.

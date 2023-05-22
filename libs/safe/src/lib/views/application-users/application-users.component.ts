@@ -11,7 +11,6 @@ import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { AddUsersMutationResponse, ADD_USERS } from './graphql/mutations';
 
-
 /**
  * Application users component.
  */
@@ -28,8 +27,6 @@ export class SafeApplicationUsersComponent
   public positionAttributeCategories: PositionAttributeCategory[] = [];
   refetch$: Subject<boolean> = new Subject<boolean>();
   @ViewChild(UserListComponent) userList?: UserListComponent;
-
-  
 
   /**
    * Application users component.

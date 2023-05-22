@@ -17,7 +17,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 
-
 /**
  * Shared profile page.
  * Displays information of the logged user.
@@ -44,8 +43,6 @@ export class SafeProfileComponent
     'positionAttributes',
     'actions',
   ];
-
-  
 
   /**
    * Shared profile page.

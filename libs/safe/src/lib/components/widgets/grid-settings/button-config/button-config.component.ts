@@ -22,7 +22,6 @@ import { takeUntil } from 'rxjs/operators';
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
-
 /**
  * Configuration component for grid widget button.
  */
@@ -51,8 +50,6 @@ export class ButtonConfigComponent
 
   // Indicate if the next step is a Form and so we could potentially pass some data to it.
   public canPassData = false;
-
-  
 
   /** @returns The list of fields which are of type scalar and not disabled */
   get scalarFields(): any[] {

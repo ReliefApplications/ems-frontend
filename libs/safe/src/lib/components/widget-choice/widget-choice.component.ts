@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IWidgetType } from '../../models/dashboard.model';
 
-
 /**
  * Component for widget choice
  */
@@ -21,8 +20,6 @@ export class SafeWidgetChoiceComponent {
   @Output() add: EventEmitter<string> = new EventEmitter();
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter();
-
-  
 
   /**
    * Emit an add event on selection

@@ -9,7 +9,6 @@ import { User } from '../../../models/user.model';
 import { AppAbility } from '../../../services/auth/auth.service';
 import { SafeRestService } from '../../../services/rest/rest.service';
 
-
 /**
  * User summary details component.
  */
@@ -35,8 +34,6 @@ export class UserDetailsComponent implements OnInit {
   }
 
   public attributes: { text: string; value: string }[] = [];
-
-  
 
   /**
    * User summary details component
