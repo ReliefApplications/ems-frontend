@@ -11,7 +11,6 @@ import {
 } from '@angular/animations';
 import { Resource } from '../../../models/resource.model';
 import { Role } from '../../../models/user.model';
-import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
 import {
   GetResourceQueryResponse,
   GetResourcesQueryResponse,
@@ -28,6 +27,7 @@ import { Permission } from './permissions.types';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../../utils/update-queries';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -96,7 +96,7 @@ export class RoleResourcesComponent
    * @param apollo Apollo client service
    * @param snackBar shared snackbar service
    */
-  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {
+  constructor(private apollo: Apollo, private snackBar: SnackbarService) {
     super();
   }
 

@@ -7,7 +7,6 @@ import { Page, ContentType } from '../../models/page.model';
 import { Application } from '../../models/application.model';
 import { Channel } from '../../models/channel.model';
 import { HttpHeaders } from '@angular/common/http';
-import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import {
   AddPageMutationResponse,
   ADD_PAGE,
@@ -87,6 +86,7 @@ import {
 } from '../application-notifications/graphql/mutations';
 import { SafeRestService } from '../rest/rest.service';
 import { SafeLayoutService } from '../layout/layout.service';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -173,7 +173,7 @@ export class SafeApplicationService {
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private router: Router,
     private translate: TranslateService,
@@ -232,6 +232,7 @@ export class SafeApplicationService {
             duration: 0,
           }
         );
+        //@TODO snackbar
         snackBar.onAction().subscribe(() => window.location.reload());
       });
     this.lockSubscription = this.apollo

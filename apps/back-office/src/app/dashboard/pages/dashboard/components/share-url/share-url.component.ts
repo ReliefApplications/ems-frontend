@@ -4,8 +4,8 @@ import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { SafeSnackBarService } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Component to display current url and copy it. */
 @Component({
@@ -25,7 +25,7 @@ export class ShareUrlComponent {
    * @param translate Angular translate service
    */
   constructor(
-    public snackBar: SafeSnackBarService,
+    public snackBar: SnackbarService,
     private clipboard: Clipboard,
     public dialogRef: MatDialogRef<ShareUrlComponent>,
     @Inject(MAT_DIALOG_DATA)

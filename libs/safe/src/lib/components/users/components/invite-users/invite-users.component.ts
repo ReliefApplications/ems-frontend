@@ -13,10 +13,10 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UploadEvent } from '@progress/kendo-angular-upload';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Model fot the input data */
 interface DialogData {
@@ -65,7 +65,7 @@ export class SafeInviteUsersComponent {
   constructor(
     private renderer: Renderer2,
     private downloadService: SafeDownloadService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private formBuilder: UntypedFormBuilder,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeInviteUsersComponent>,
