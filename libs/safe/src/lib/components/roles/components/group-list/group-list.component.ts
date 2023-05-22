@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
@@ -53,7 +53,7 @@ export class SafeGroupListComponent
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SafeSnackBarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
@@ -127,9 +127,9 @@ export class SafeGroupListComponent
       data: { title: 'components.group.add.title' },
     });
     dialogRef
-      .afterClosed()
+      .closed
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
+      .subscribe((value: any) => {
         if (value) {
           this.apollo
             .mutate<AddGroupMutationResponse>({

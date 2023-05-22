@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { SafeSnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { HttpHeaders } from '@angular/common/http';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { prettifyLabel } from '../../utils/prettify';
 import { firstValueFrom, Observable } from 'rxjs';
@@ -40,7 +40,7 @@ export class SafeEmailService {
    */
   constructor(
     private snackBar: SafeSnackBarService,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private translate: TranslateService,
     private restService: SafeRestService
   ) {}
@@ -227,7 +227,7 @@ export class SafeEmailService {
             disableClose: true,
             width: '100%',
           });
-          dialogRef.afterClosed().subscribe((value) => {
+          dialogRef.closed.subscribe((value: any) => {
             if (value) {
               this.sendMail(
                 recipient,

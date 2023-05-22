@@ -1,13 +1,9 @@
 import { Component, Inject } from '@angular/core';
-import {
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialogRef as MatDialogRef,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SpinnerModule } from '@oort-front/ui';
-import { SafeModalModule } from '../ui/modal/modal.module';
+import { DialogModule } from '@oort-front/ui';
 
 /**
  * Interface describing the structure of the data displayed in the modal
@@ -25,10 +21,9 @@ interface StatusDialogData {
   standalone: true,
   imports: [
     CommonModule,
-    MatDialogModule,
+    DialogModule,
     MatButtonModule,
     SpinnerModule,
-    SafeModalModule,
   ],
   selector: 'safe-status-modal',
   templateUrl: './status-modal.component.html',
@@ -43,7 +38,7 @@ export class SafeStatusModalComponent {
    * @param data This is the data that is passed into the dialog.
    */
   constructor(
-    private dialogRef: MatDialogRef<SafeStatusModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: StatusDialogData
+    private dialogRef: DialogRef<SafeStatusModalComponent>,
+    @Inject(DIALOG_DATA) public data: StatusDialogData
   ) {}
 }

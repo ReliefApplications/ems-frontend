@@ -19,7 +19,7 @@ import { environment } from '../environments/environment';
 // Config
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { DialogModule } from '@angular/cdk/dialog';
 
 // TRANSLATOR
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -102,7 +102,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     BrowserAnimationsModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatDialogModule,
+    DialogModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

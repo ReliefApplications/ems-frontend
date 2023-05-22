@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormArray } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
@@ -12,6 +11,7 @@ import { SafeRestService } from '../../../services/rest/rest.service';
 import { getFilterGroupDisplay } from '../../../utils/filter/filter-display.helper';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { GetGroupsQueryResponse, GET_GROUPS } from '../graphql/queries';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Component for Auto assignment of role
@@ -52,7 +52,7 @@ export class RoleAutoAssignmentComponent implements OnInit {
   constructor(
     private fb: UntypedFormBuilder,
     private apollo: Apollo,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private translate: TranslateService,
     private restService: SafeRestService
   ) {}
@@ -131,7 +131,7 @@ export class RoleAutoAssignmentComponent implements OnInit {
         fields: this.fields,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.edit.emit({
           autoAssignment: {
@@ -173,7 +173,7 @@ export class RoleAutoAssignmentComponent implements OnInit {
         fields: this.fields,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.edit.emit({
           autoAssignment: {

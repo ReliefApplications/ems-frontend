@@ -6,7 +6,7 @@ import {
   AfterViewInit,
   ViewChild,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { Application } from '../../../../models/application.model';
 import { Role } from '../../../../models/user.model';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
@@ -77,7 +77,7 @@ export class SafeRoleListComponent
    * @param activatedRoute Current Angular route
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private applicationService: SafeApplicationService,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
@@ -146,7 +146,7 @@ export class SafeRoleListComponent
     const dialogRef = this.dialog.open(SafeAddRoleComponent, {
       data: { title: 'components.role.add.title' },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         if (this.inApplication) {
           this.applicationService.addRole(value);

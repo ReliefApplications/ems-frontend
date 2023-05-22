@@ -1,9 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
-import {
-  MatLegacyDialog as MatDialog,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
 import { clorophletForm, divisionForm } from '../../map-forms';
 
 /** Interface of dialog data of the component */
@@ -48,8 +45,8 @@ export class MapClorophletComponent {
    * @param dialog Material dialog service
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private dialog: MatDialog
+    @Inject(DIALOG_DATA) public data: DialogData,
+    private dialog: Dialog
   ) {
     this.form = clorophletForm(data.value);
     this.fields = data.fields;
@@ -92,7 +89,7 @@ export class MapClorophletComponent {
         query: this.query,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.divisions.setControl(index, divisionForm(value));
       }

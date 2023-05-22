@@ -1,9 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeExpandedCommentComponent } from './expanded-comment.component';
 import {
   TranslateModule,
@@ -19,13 +15,13 @@ describe('SafeExpandedCommentComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {} },
+        { provide: DialogRef, useValue: {} },
+        { provide: DIALOG_DATA, useValue: {} },
         TranslateService,
       ],
       declarations: [SafeExpandedCommentComponent],
       imports: [
-        MatDialogModule,
+        DialogModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

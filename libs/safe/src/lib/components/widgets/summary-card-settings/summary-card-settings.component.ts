@@ -13,7 +13,7 @@ import {
   UntypedFormArray,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,
@@ -80,7 +80,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * @param fb Angular Form Builder.
    * @param dialog Material Dialog Service.
    */
-  constructor(private fb: UntypedFormBuilder, private dialog: MatDialog) {}
+  constructor(private fb: UntypedFormBuilder, private dialog: Dialog) {}
 
   /**
    * Build the settings form, using the widget saved parameters.
@@ -162,7 +162,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(SafeAddCardComponent, {
       data: { isDynamic: this.tileForm?.value.isDynamic },
     });
-    dialogRef.afterClosed().subscribe((res: any) => {
+    dialogRef.closed.subscribe((res: any) => {
       if (res) {
         this.cards.push(this.cardForm(res));
         setTimeout(() => {
@@ -230,9 +230,9 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
         right: '0',
       },
       panelClass: 'tile-settings-dialog',
-    });
+    } as any);
 
-    dialogRef.afterClosed().subscribe((value: any) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.cards.at(index).setValue(value);
       }

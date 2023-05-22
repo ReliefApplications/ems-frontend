@@ -209,12 +209,6 @@ body {
   height: 100%;
 }
 
-.resource-access-dialog {
-  max-width: unset !important;
-  width: 90%;
-  height: calc(100% - 72px);
-}
-
 // === KENDO THEME ===
 @import 'theme.scss';
 

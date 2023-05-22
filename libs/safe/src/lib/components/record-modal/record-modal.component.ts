@@ -28,7 +28,7 @@ import isEqual from 'lodash/isEqual';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { CommonModule } from '@angular/common';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { DialogModule } from '@angular/cdk/dialog';
 import { TabsModule } from '@oort-front/ui';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -57,7 +57,7 @@ interface DialogData {
   standalone: true,
   imports: [
     CommonModule,
-    MatDialogModule,
+    DialogModule,
     TabsModule,
     MatGridListModule,
     MatIconModule,

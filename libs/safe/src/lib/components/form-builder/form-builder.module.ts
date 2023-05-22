@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeFormBuilderComponent } from './form-builder.component';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { DialogModule } from '@angular/cdk/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 
@@ -11,7 +11,7 @@ import { DateInputModule } from '@progress/kendo-angular-dateinputs';
  */
 @NgModule({
   declarations: [SafeFormBuilderComponent],
-  imports: [CommonModule, MatDialogModule, TranslateModule, DateInputModule],
+  imports: [CommonModule, DialogModule, TranslateModule, DateInputModule],
   exports: [SafeFormBuilderComponent],
 })
 export class SafeFormBuilderModule {}

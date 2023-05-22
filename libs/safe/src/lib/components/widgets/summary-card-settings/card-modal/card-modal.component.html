@@ -1,8 +1,10 @@
-<safe-modal [closable]="true" size="fullscreen">
-  <h1 mat-dialog-title>
-    {{ 'components.widget.settings.summaryCard.card.title' | translate }}
-  </h1>
-  <mat-dialog-content>
+<ui-dialog [closable]="true" size="fullscreen">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.widget.settings.summaryCard.card.title' | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="form">
       <ui-tabs
         [vertical]="true"
@@ -84,20 +86,20 @@
         </ui-tab>
       </ui-tabs>
     </form>
-  </mat-dialog-content>
-  <!-- Modal actions ( close / save ) -->
-  <div mat-dialog-actions class="mat-dialog-actions" align="end">
-    <ui-button mat-dialog-close>
-      {{ 'common.close' | translate }}
-    </ui-button>
-    <ui-button
-      category="secondary"
-      variant="primary"
-      (click)="onSubmit()"
-      cdkFocusInitial
-      [disabled]="!form || !form.valid"
-    >
-      {{ 'common.save' | translate }}
-    </ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <!-- Modal actions ( close / save ) -->
+      <ui-button uiDialogClose>
+        {{ 'common.close' | translate }}
+      </ui-button>
+      <ui-button
+        category="secondary"
+        variant="primary"
+        (click)="onSubmit()"
+        cdkFocusInitial
+        [disabled]="!form || !form.valid"
+      >
+        {{ 'common.save' | translate }}
+      </ui-button>
+  </ng-container>
+</ui-dialog>

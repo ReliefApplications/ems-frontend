@@ -4,10 +4,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeEditorService } from '../../../../services/editor/editor.service';
 import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
 import get from 'lodash/get';
@@ -17,9 +14,9 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { ButtonModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
 
 /** Model for the data input */
 interface DialogData {
@@ -33,7 +30,7 @@ interface DialogData {
   standalone: true,
   imports: [
     CommonModule,
-    SafeModalModule,
+    DialogModule,
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
@@ -67,8 +64,8 @@ export class EditTemplateModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<EditTemplateModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<EditTemplateModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
     private editorService: SafeEditorService
   ) {
     // Set the editor base url based on the environment file

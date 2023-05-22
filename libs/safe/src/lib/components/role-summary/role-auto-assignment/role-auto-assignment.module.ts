@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
 import { TooltipModule, ButtonModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
 
 /**
  * Component for Auto assignment of role
@@ -21,6 +22,7 @@ import { TooltipModule, ButtonModule } from '@oort-front/ui';
     SafeSkeletonTableModule,
     TooltipModule,
     ButtonModule,
+    DialogModule,
   ],
   exports: [RoleAutoAssignmentComponent],
 })

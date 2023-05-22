@@ -1,10 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeAddRoleComponent } from './add-role.component';
 import {
   TranslateModule,
@@ -21,13 +17,13 @@ describe('SafeAddRoleComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {} },
+        { provide: DialogRef, useValue: {} },
+        { provide: DIALOG_DATA, useValue: {} },
         TranslateService,
       ],
       declarations: [SafeAddRoleComponent],
       imports: [
-        MatDialogModule,
+        DialogModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Application } from '../../models/application.model';
 import { SafeApplicationService } from '../../services/application/application.service';
@@ -47,7 +47,7 @@ export class SafeApplicationToolbarComponent
   constructor(
     private applicationService: SafeApplicationService,
     private router: Router,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SafeSnackBarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService

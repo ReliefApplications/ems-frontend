@@ -9,9 +9,9 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { DeleteFormMutationResponse, DELETE_FORM } from './graphql/mutations';
 import get from 'lodash/get';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { GetResourceByIdQueryResponse } from '../graphql/queries';
 import { GET_RESOURCE_FORMS } from './graphql/queries';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  *Forms tab of resource page
@@ -49,7 +49,7 @@ export class FormsTabComponent implements OnInit {
     private snackBar: SafeSnackBarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
-    private dialog: MatDialog
+    private dialog: Dialog
   ) {}
 
   ngOnInit(): void {

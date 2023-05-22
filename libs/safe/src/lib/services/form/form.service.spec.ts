@@ -7,7 +7,7 @@ import {
   OAuthService,
   UrlHelperService,
 } from 'angular-oauth2-oidc';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { DialogModule } from '@angular/cdk/dialog';
 import { UntypedFormBuilder } from '@angular/forms';
 
 import { SafeFormService } from './form.service';
@@ -25,7 +25,7 @@ describe('SafeFormService', () => {
         OAuthLogger,
         DateTimeProvider,
       ],
-      imports: [HttpClientModule, MatDialogModule],
+      imports: [HttpClientModule, DialogModule],
     });
     service = TestBed.inject(SafeFormService);
   });

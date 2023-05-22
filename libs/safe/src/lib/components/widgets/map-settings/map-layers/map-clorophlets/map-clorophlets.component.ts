@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { clorophletForm } from '../../map-forms';
 
 /**
@@ -25,7 +25,7 @@ export class MapClorophletsComponent {
    *
    * @param dialog Material Dialog Service
    */
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: Dialog) {}
 
   /**
    * Adds a new clorophlet.
@@ -52,7 +52,7 @@ export class MapClorophletsComponent {
         query: this.query,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.clorophlets.setControl(index, clorophletForm(value));
       }

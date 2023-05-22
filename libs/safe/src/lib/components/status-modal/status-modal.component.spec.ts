@@ -1,9 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeStatusModalComponent } from './status-modal.component';
 
 describe('StatusModalComponent', () => {
@@ -14,7 +10,7 @@ describe('StatusModalComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         {
-          provide: MatDialogRef,
+          provide: DialogRef,
           useValue: {
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             updateSize: () => {},
@@ -22,10 +18,10 @@ describe('StatusModalComponent', () => {
             addPanelClass: () => {},
           },
         },
-        { provide: MAT_DIALOG_DATA, useValue: { title: '', content: '' } },
+        { provide: DIALOG_DATA, useValue: { title: '', content: '' } },
       ],
       declarations: [SafeStatusModalComponent],
-      imports: [MatDialogModule],
+      imports: [DialogModule],
     }).compileComponents();
   });
 

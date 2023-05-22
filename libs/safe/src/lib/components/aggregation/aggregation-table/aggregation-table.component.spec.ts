@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { DialogModule } from '@angular/cdk/dialog';
 import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import {
   TranslateModule,
@@ -19,7 +19,7 @@ describe('AggregationTableComponent', () => {
       providers: [TranslateService],
       declarations: [AggregationTableComponent],
       imports: [
-        MatDialogModule,
+        DialogModule,
         MatSnackBarModule,
         TranslateModule.forRoot({
           loader: {

@@ -7,7 +7,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   GetDashboardByIdQueryResponse,
@@ -69,7 +69,7 @@ export class DashboardComponent
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SafeSnackBarService,
     private dashboardService: SafeDashboardService,
     private translate: TranslateService,

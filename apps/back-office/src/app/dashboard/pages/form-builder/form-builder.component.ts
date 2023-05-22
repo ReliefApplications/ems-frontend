@@ -12,7 +12,7 @@ import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
 } from './graphql/queries';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   SafeAuthService,
   SafeSnackBarService,
@@ -83,7 +83,7 @@ export class FormBuilderComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: SafeSnackBarService,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,

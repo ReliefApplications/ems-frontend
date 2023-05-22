@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SafeAccessComponent } from './access.component';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { DialogModule } from '@angular/cdk/dialog';
 import {
   TranslateModule,
   TranslateService,
@@ -17,7 +17,7 @@ describe('SafeAccessComponent', () => {
       providers: [TranslateService],
       declarations: [SafeAccessComponent],
       imports: [
-        MatDialogModule,
+        DialogModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

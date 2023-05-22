@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { markerRuleForm } from '../../map-forms';
 
 /**
@@ -34,7 +34,7 @@ export class MapMarkersComponent implements OnInit {
    *
    * @param dialog Material Dialog Service
    */
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: Dialog) {}
 
   ngOnInit(): void {
     // Build list of number fields
@@ -65,7 +65,7 @@ export class MapMarkersComponent implements OnInit {
         query: this.form.get('query'),
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.rules.setControl(index, markerRuleForm(value));
       }
