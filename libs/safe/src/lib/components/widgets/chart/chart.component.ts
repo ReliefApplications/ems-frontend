@@ -15,7 +15,6 @@ import { takeUntil } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
-
 /**
  * Default file name for chart exports
  */
@@ -48,8 +47,6 @@ export class SafeChartComponent
   @Input() header = true;
   @Input() export = true;
   @Input() settings: any = null;
-
-  
 
   /**
    * Get filename from the date and widget title
