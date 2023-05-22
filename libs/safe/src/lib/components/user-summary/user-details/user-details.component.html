@@ -31,12 +31,12 @@
     </ng-container>
   </div>
 </form>
-<safe-button
+<ui-button
   *ngIf="'update' | able : 'User'"
   variant="primary"
   category="secondary"
   type="submit"
   [disabled]="!form.valid"
   (click)="onUpdate()"
-  >{{ 'common.saveChanges' | translate }}</safe-button
+  >{{ 'common.saveChanges' | translate }}</ui-button
 >

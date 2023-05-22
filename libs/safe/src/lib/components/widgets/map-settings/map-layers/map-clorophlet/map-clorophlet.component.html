@@ -13,7 +13,7 @@
         formControlName="name"
       />
     </mat-form-field>
-    <safe-button category="tertiary" (click)="fileInput.click()">{{
+    <ui-button category="tertiary" (click)="fileInput.click()">{{
       form.value.geoJSONname
         ? form.value.geoJSONname
         : ('common.uploadObject'
@@ -23,7 +23,7 @@
                   ('components.widget.settings.map.layers.clorophlet.geoJSON'
                   | translate)
               })
-    }}</safe-button>
+    }}</ui-button>
     <input
       hidden
       #fileInput
@@ -57,13 +57,11 @@
       </mat-form-field>
     </div>
     <mat-label>Opacity</mat-label>
-    <mat-slider
-      thumbLabel
-      tickInterval="1"
+    <ui-slider
       formControlName="opacity"
-      [min]="0"
-      [max]="100"
-    ></mat-slider>
+      [minValue]="0"
+      [maxValue]="100"
+    ></ui-slider>
     <!-- LIST of Divisions -->
     <h2 class="mt-6">
       {{
@@ -97,19 +95,19 @@
             <th mat-header-cell *matHeaderCellDef class="w-16"></th>
             <td mat-cell *matCellDef="let element; let i = index">
               <div>
-                <safe-button
+                <ui-button
                   [isIcon]="true"
                   icon="edit"
                   category="primary"
                   (click)="editDivision(i)"
-                ></safe-button>
-                <safe-button
+                ></ui-button>
+                <ui-button
                   [isIcon]="true"
                   icon="delete"
                   category="primary"
                   variant="danger"
                   (click)="removeDivision(i)"
-                ></safe-button>
+                ></ui-button>
               </div>
             </td>
           </ng-container>
@@ -119,7 +117,7 @@
         </table>
       </div>
     </div>
-    <safe-button
+    <ui-button
       class="!w-auto"
       category="tertiary"
       variant="primary"
@@ -127,20 +125,20 @@
       >{{
         'components.widget.settings.map.layers.clorophlet.division.add'
           | translate
-      }}</safe-button
+      }}</ui-button
     >
   </form>
   <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+    <ui-button mat-dialog-close>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [mat-dialog-close]="form.value"
       [disabled]="form.invalid"
     >
       {{ 'common.update' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

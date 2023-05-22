@@ -10,6 +10,7 @@ import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/m
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Module for the add user component */
 @NgModule({
@@ -26,6 +27,7 @@ import { SafeModalModule } from '../../../ui/modal/modal.module';
     MatInputModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
   ],
   exports: [SafeAddUserComponent],
 })

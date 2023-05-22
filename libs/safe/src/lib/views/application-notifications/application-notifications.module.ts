@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeApplicationNotificationsComponent } from './application-notifications.component';
 import { SafeApplicationNotificationsRoutingModule } from './application-notifications-routing.module';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { NotificationsModule } from '../../components/notifications/notifications.module';
 
 /**
@@ -13,7 +13,7 @@ import { NotificationsModule } from '../../components/notifications/notification
   imports: [
     CommonModule,
     SafeApplicationNotificationsRoutingModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     NotificationsModule,
   ],
   exports: [SafeApplicationNotificationsComponent],

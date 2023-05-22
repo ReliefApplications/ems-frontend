@@ -3,11 +3,7 @@
     {{ 'components.role.impersonate.title' | translate }}
   </h1>
   <div mat-dialog-content>
-    <mat-spinner
-      diameter="45"
-      class="page-loader"
-      *ngIf="loading"
-    ></mat-spinner>
+    <ui-spinner *ngIf="loading"></ui-spinner>
     <form [formGroup]="roleForm" class="flex flex-col" *ngIf="!loading">
       <mat-form-field appearance="outline">
         <mat-label>{{ 'common.role.one' | translate }}</mat-label>
@@ -22,10 +18,8 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
-    <safe-button
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [mat-dialog-close]="roleForm.value"
@@ -33,6 +27,6 @@
       [disabled]="!roleForm.valid"
     >
       {{ 'common.preview' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

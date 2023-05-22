@@ -13,9 +13,6 @@ export default {
   title: 'Expansion Panel',
   component: ExpansionPanelComponent,
   argTypes: {
-    title: {
-      control: 'text',
-    },
     displayIcon: {
       control: 'boolean',
     },
@@ -55,6 +52,13 @@ const panelOptions: PanelOption[] = [
 ];
 
 /**
+ * Test panel close
+ */
+const onClose = () => {
+  console.log('panel closed');
+};
+
+/**
  * Template expansion panel group
  *
  * @param {ExpansionPanelComponent} args args
@@ -63,7 +67,6 @@ const panelOptions: PanelOption[] = [
 const Template: StoryFn<ExpansionPanelComponent> = (
   args: ExpansionPanelComponent
 ) => {
-  args.displayIcon = true;
   return {
     component: ExpansionPanelComponent,
     template: `
@@ -73,9 +76,12 @@ const Template: StoryFn<ExpansionPanelComponent> = (
           [disabled]="${args.disabled}" 
           [displayIcon]="${args.displayIcon}" 
           [expanded]="panel.expanded"
-          [title]="panel.title"
           [index]="i"
+          (closePanel)="onClose()"
         >
+          <ng-container ngProjectAs="title">
+            {{panel.title}}
+          </ng-container>
           <p class="mb-2 text-gray-500">{{panel.text}}</p>
         </ui-expansion-panel>
       </cdk-accordion>
@@ -83,12 +89,17 @@ const Template: StoryFn<ExpansionPanelComponent> = (
     props: {
       ...args,
       panelOptions,
+      onClose,
     },
   };
 };
 
 /** Toggle expansion panel */
 export const TogglePanel = Template.bind({});
+TogglePanel.args = {
+  disabled: false,
+  displayIcon: true,
+};
 
 /**
  * Template multi expansion panel group
@@ -109,9 +120,12 @@ const TemplateMulti: StoryFn<ExpansionPanelComponent> = (
           [disabled]="${args.disabled}" 
           [displayIcon]="${args.displayIcon}" 
           [expanded]="panel.expanded"
-          [title]="panel.title"
           [index]="i"
+          (closePanel)="onClose()"
         >
+          <ng-container ngProjectAs="title">
+            {{panel.title}}
+          </ng-container>
           <p class="mb-2 text-gray-500" >{{panel.text}}</p>
         </ui-expansion-panel>
       </cdk-accordion>
@@ -119,9 +133,14 @@ const TemplateMulti: StoryFn<ExpansionPanelComponent> = (
     props: {
       ...args,
       panelOptions,
+      onClose,
     },
   };
 };
 
 /** Multi expansion panel */
 export const MultiPanel = TemplateMulti.bind({});
+MultiPanel.args = {
+  disabled: false,
+  displayIcon: true,
+};

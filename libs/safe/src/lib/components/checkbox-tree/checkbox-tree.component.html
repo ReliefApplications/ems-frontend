@@ -1,55 +1,42 @@
-<div class="border border-gray-200 rounded overflow-auto max-h-80">
-  <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
+<div class="border border-gray-200 rounded overflow-auto max-h-80 p-4">
+  <cdk-tree
+    [dataSource]="dataSource"
+    [treeControl]="treeControl"
+    class="flex flex-col gap-2"
+  >
     <cdk-tree-node
       *cdkTreeNodeDef="let node"
       cdkTreeNodeToggle
       cdkTreeNodePadding
       class="flex items-center"
     >
-      <button mat-icon-button disabled></button>
-      <mat-checkbox
-        class="checklist-leaf-node"
+      <ui-checkbox
         [checked]="checklistSelection.isSelected(node)"
         (change)="todoLeafItemSelectionToggle(node)"
-        >{{ node.item }}</mat-checkbox
       >
+        <ng-container ngProjectAs="label">{{ node.item }}</ng-container>
+      </ui-checkbox>
     </cdk-tree-node>
-
-    <!-- <mat-tree-node
-    *matTreeNodeDef="let node; when: hasNoContent"
-    matTreeNodePadding
-  >
-    <button mat-icon-button disabled></button>
-    <mat-form-field appearance="fill">
-      <mat-label>New item...</mat-label>
-      <input matInput #itemValue placeholder="Ex. Lettuce" />
-    </mat-form-field>
-    <button mat-button (click)="saveNode(node, itemValue.value)">Save</button>
-  </mat-tree-node> -->
 
     <cdk-tree-node
       class="flex items-center"
       *cdkTreeNodeDef="let node; when: hasChild"
       cdkTreeNodePadding
     >
-      <button
-        mat-icon-button
-        cdkTreeNodeToggle
+      <ui-button
         [attr.aria-label]="'Toggle ' + node.item"
-      >
-        <mat-icon class="mat-icon-rtl-mirror">
-          {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-        </mat-icon>
-      </button>
-      <mat-checkbox
+        icon="{{
+          treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'
+        }}"
+        matTreeNodeToggle
+      ></ui-button>
+      <ui-checkbox
         [checked]="descendantsAllSelected(node)"
         [indeterminate]="descendantsPartiallySelected(node)"
         (change)="todoItemSelectionToggle(node)"
-        >{{ node.item }}</mat-checkbox
       >
-      <!-- <button mat-icon-button (click)="addNewItem(node)">
-      <mat-icon>add</mat-icon>
-    </button> -->
+        <ng-container ngProjectAs="label">{{ node.item }}</ng-container>
+      </ui-checkbox>
     </cdk-tree-node>
   </cdk-tree>
 </div>

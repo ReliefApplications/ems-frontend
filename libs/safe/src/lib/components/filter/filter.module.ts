@@ -7,10 +7,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Composite Filter module.
@@ -26,8 +25,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MatSelectModule,
     MatInputModule,
     MatDatepickerModule,
-    MatTooltipModule,
-    SafeButtonModule,
+    ButtonModule,
   ],
   exports: [SafeFilterComponent],
 })

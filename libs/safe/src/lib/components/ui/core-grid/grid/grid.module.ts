@@ -11,7 +11,7 @@ import { SafeExpandedCommentModule } from '../expanded-comment/expanded-comment.
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule, ButtonModule as uiButtonModule } from '@oort-front/ui';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -20,7 +20,6 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { SafeExportModule } from '../export/export.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../../../pipes/date/date.module';
-import { SafeButtonModule } from '../../button/button.module';
 import { SafeDateFilterMenuModule } from '../date-filter-menu/date-filter-menu.module';
 
 /** Module for the grid component */
@@ -33,8 +32,7 @@ import { SafeDateFilterMenuModule } from '../date-filter-menu/date-filter-menu.m
     // === MATERIAL ===
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule,
-    SafeButtonModule,
+    TooltipModule,
     // === KENDO ===
     GridModule,
     ButtonModule,
@@ -59,6 +57,7 @@ import { SafeDateFilterMenuModule } from '../date-filter-menu/date-filter-menu.m
     // === TRANSLATE ===
     TranslateModule,
     SafeDateModule,
+    uiButtonModule,
   ],
   exports: [SafeGridComponent],
 })

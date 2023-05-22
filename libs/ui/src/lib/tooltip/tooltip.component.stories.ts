@@ -1,6 +1,6 @@
 import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { TooltipComponent } from './tooltip.component';
-import { TooltipExamplesPositions } from './enums/tooltip-example-positions.enum';
+import { tooltipExamplesPositions } from './types/tooltip-example-positions';
 import { TooltipModule } from './tooltip.module';
 
 export default {
@@ -8,7 +8,7 @@ export default {
   component: TooltipComponent,
   argTypes: {
     position: {
-      options: TooltipExamplesPositions,
+      options: tooltipExamplesPositions,
       control: 'select',
     },
   },
@@ -34,7 +34,7 @@ const Template: Story<TooltipComponent> = (args: TooltipComponent) => ({
  */
 export const TopExample = Template.bind({});
 TopExample.args = {
-  position: TooltipExamplesPositions.TOP,
+  position: 'top',
   hint: 'test',
 };
 /**
@@ -42,7 +42,7 @@ TopExample.args = {
  */
 export const TopLeftExample = Template.bind({});
 TopLeftExample.args = {
-  position: TooltipExamplesPositions.TOP_LEFT,
+  position: 'top-left',
   hint: 'test',
 };
 /**
@@ -50,7 +50,7 @@ TopLeftExample.args = {
  */
 export const TopRightExample = Template.bind({});
 TopRightExample.args = {
-  position: TooltipExamplesPositions.TOP_RIGHT,
+  position: 'top-right',
   hint: 'test',
 };
 /**
@@ -58,7 +58,7 @@ TopRightExample.args = {
  */
 export const BottomExample = Template.bind({});
 BottomExample.args = {
-  position: TooltipExamplesPositions.BOTTOM,
+  position: 'bottom',
   hint: 'test',
 };
 /**
@@ -66,7 +66,7 @@ BottomExample.args = {
  */
 export const BottomLeftExample = Template.bind({});
 BottomLeftExample.args = {
-  position: TooltipExamplesPositions.BOTTOM_LEFT,
+  position: 'bottom-left',
   hint: 'test',
 };
 /**
@@ -74,7 +74,7 @@ BottomLeftExample.args = {
  */
 export const BottomRightExample = Template.bind({});
 BottomRightExample.args = {
-  position: TooltipExamplesPositions.BOTTOM_RIGHT,
+  position: 'bottom-right',
   hint: 'test',
 };
 /**
@@ -82,7 +82,7 @@ BottomRightExample.args = {
  */
 export const LeftExample = Template.bind({});
 LeftExample.args = {
-  position: TooltipExamplesPositions.LEFT,
+  position: 'left',
   hint: 'test',
 };
 /**
@@ -90,7 +90,7 @@ LeftExample.args = {
  */
 export const RightExample = Template.bind({});
 RightExample.args = {
-  position: TooltipExamplesPositions.RIGHT,
+  position: 'right',
   hint: 'test',
 };
 /**
@@ -98,6 +98,6 @@ RightExample.args = {
  */
 export const LongTextExample = Template.bind({});
 LongTextExample.args = {
-  position: TooltipExamplesPositions.TOP,
+  position: 'top',
   hint: 'The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ...',
 };

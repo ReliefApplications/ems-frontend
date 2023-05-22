@@ -17,7 +17,7 @@ import {
 } from '@ngx-translate/core';
 
 import { SafeUsersComponent } from './users.component';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 
 describe('SafeUsersComponent', () => {
   let component: SafeUsersComponent;
@@ -44,7 +44,7 @@ describe('SafeUsersComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-        MatMenuModule,
+        MenuModule,
       ],
     }).compileComponents();
   });
