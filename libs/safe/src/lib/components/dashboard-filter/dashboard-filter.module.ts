@@ -4,8 +4,7 @@ import { DashboardFilterComponent } from './dashboard-filter.component';
 import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeDrawerPositionerDirective } from './directives/drawer-positioner/drawer-positioner.directive';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { UiModule } from '@oort-front/ui';
+import { TooltipModule, IconModule } from '@oort-front/ui';
 
 /** Cron expression control module. */
 @NgModule({
@@ -13,9 +12,9 @@ import { UiModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     SafeButtonModule,
-    UiModule,
+    IconModule,
     TranslateModule,
-    MatTooltipModule,
+    TooltipModule,
   ],
   exports: [DashboardFilterComponent],
   providers: [SafeDrawerPositionerDirective],

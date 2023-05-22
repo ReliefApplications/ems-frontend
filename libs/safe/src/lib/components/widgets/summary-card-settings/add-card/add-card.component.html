@@ -26,15 +26,15 @@
       <ui-icon icon="info"></ui-icon>
       {{ 'components.widget.settings.summaryCard.hint.dynamic' | translate }}
     </safe-alert>
-    <div uiFormFieldDirective [outline]="false">
-      <ui-icon uiPrefix [icon]="'search'"></ui-icon>
+    <div uiFormFieldDirective>
+      <ui-icon [icon]="'search'" uiPrefix></ui-icon>
       <input
         id="custom-search"
         [formControl]="searchControl"
-        type="search"
+        type="text"
         [placeholder]="'common.placeholder.search' | translate"
       />
-      <safe-spinner *ngIf="loading" uiSuffix></safe-spinner>
+      <ui-spinner [size]="size.SMALL" *ngIf="loading" uiSuffix></ui-spinner>
     </div>
     <div class="card-templates">
       <ng-container *ngIf="loading">

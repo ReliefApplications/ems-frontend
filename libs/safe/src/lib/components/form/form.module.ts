@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeFormComponent } from './form.component';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
@@ -16,7 +16,7 @@ import { UiModule } from '@oort-front/ui';
   declarations: [SafeFormComponent],
   imports: [
     CommonModule,
-    MatTabsModule,
+    TabsModule,
     SafeButtonModule,
     UiModule,
     SafeRecordSummaryModule,

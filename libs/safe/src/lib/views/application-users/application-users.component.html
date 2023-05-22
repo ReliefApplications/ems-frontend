@@ -27,26 +27,22 @@
     </safe-button>
   </div>
 </div>
-<mat-tab-group>
+<ui-tabs>
   <!-- Manual assignment -->
-  <mat-tab>
-    <ng-template mat-tab-label>{{
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
       'components.application.users.manual' | translate
-    }}</ng-template>
-    <ng-template matTabContent>
-      <safe-user-list
-        [roles]="roles"
-        [positionAttributeCategories]="positionAttributeCategories"
-      ></safe-user-list>
-    </ng-template>
-  </mat-tab>
+    }}</ng-container>
+    <safe-user-list
+      [roles]="roles"
+      [positionAttributeCategories]="positionAttributeCategories"
+    ></safe-user-list>
+  </ui-tab>
   <!-- Automated assignment -->
-  <mat-tab>
-    <ng-template mat-tab-label>{{
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
       'components.application.users.auto' | translate
-    }}</ng-template>
-    <ng-template matTabContent>
-      <safe-user-list [autoAssigned]="true"></safe-user-list>
-    </ng-template>
-  </mat-tab>
-</mat-tab-group>
+    }}</ng-container>
+    <safe-user-list [autoAssigned]="true"></safe-user-list>
+  </ui-tab>
+</ui-tabs>

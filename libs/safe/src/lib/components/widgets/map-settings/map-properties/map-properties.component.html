@@ -18,20 +18,19 @@
       <ui-icon
         icon="info_outline"
         class="cursor-pointer"
-        [matTooltip]="
+        [uiTooltip]="
           'components.widget.settings.map.properties.zoom' | translate
         "
         [size]="18"
         [variant]="colorVariant.GREY"
       ></ui-icon>
     </mat-label>
-    <mat-slider
-      thumbLabel
-      tickInterval="1"
+    <ui-slider
+      class="mb-2"
       formControlName="zoom"
-      [min]="2"
-      [max]="18"
-    ></mat-slider>
+      [minValue]="2"
+      [maxValue]="18"
+    ></ui-slider>
     <div class="flex flex-wrap gap-2">
       <div uiFormFieldDirective [outline]="false" class="flex-1">
         <label>
@@ -43,7 +42,7 @@
           icon="info"
           class="cursor-pointer"
           [variant]="colorVariant.GREY"
-          [matTooltip]="
+          [uiTooltip]="
             'components.widget.settings.map.tooltip.default.latitude'
               | translate
           "
@@ -64,7 +63,7 @@
           icon="info"
           class="cursor-pointer"
           [variant]="colorVariant.GREY"
-          [matTooltip]="
+          [uiTooltip]="
             'components.widget.settings.map.tooltip.default.longitude'
               | translate
           "

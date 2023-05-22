@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { MenuModule, SpinnerModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { PositionAttributesRoutingModule } from './position-attributes-routing.module';
 import { PositionAttributesComponent } from './position-attributes.component';
@@ -16,10 +15,10 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     PositionAttributesRoutingModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatTableModule,
     MatButtonModule,
-    MatMenuModule,
+    MenuModule,
     TranslateModule,
   ],
   exports: [PositionAttributesComponent],

@@ -25,9 +25,7 @@
       *ngFor="let item of searchResults"
       class="!w-auto block"
       (click)="onClick(item)"
-      [matTooltip]="item.name"
-      matTooltipShowDelay="1000"
-      matTooltipPosition="right"
+      [uiTooltip]="item.name"
       >{{ item.name }}</safe-button
     >
   </div>

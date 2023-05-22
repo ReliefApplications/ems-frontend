@@ -1,6 +1,6 @@
 <ng-container *ngIf="menuItem">
-  <button mat-menu-item (click)="onClick()">
-    <ui-icon matTooltipPosition="above" [icon]="'admin_panel_settings'" [variant]="colorVariant.GREY"></ui-icon>
+  <button uiMenuItem (click)="onClick()">
+    <ui-icon [icon]="'admin_panel_settings'" [variant]="colorVariant.GREY"></ui-icon>
     {{ 'components.access.title' | translate }}
   </button>
 </ng-container>
@@ -9,8 +9,7 @@
     variant="grey"
     [isIcon]="true"
     icon="admin_panel_settings"
-    matTooltipPosition="above"
-    [matTooltip]="
+    [uiTooltip]="
       'components.access.description' | translate : { name: objectTypeName }
     "
     (click)="onClick()"

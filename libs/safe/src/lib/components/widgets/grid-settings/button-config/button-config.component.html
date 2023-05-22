@@ -166,22 +166,25 @@
 
       <!-- Attach record to another resource record -->
       <ng-container *ngIf="relatedForms.length > 0">
-        <mat-checkbox formControlName="attachToRecord">
-          {{
-            'components.widget.settings.grid.buttons.callback.attach'
-              | translate
-          }}
-          <ui-icon
-            icon="info_outline"
-            [variant]="colorVariant.GREY"
-            [size]="18"
-            [matTooltip]="
-              'components.widget.settings.grid.buttons.tooltip.attach'
+        <ui-checkbox formControlName="attachToRecord">
+          <ng-container ngProjectAs="label">
+            {{
+              'components.widget.settings.grid.buttons.callback.attach'
                 | translate
-            "
-            matTooltipPosition="right"
-          ></ui-icon>
-        </mat-checkbox>
+            }}
+          </ng-container>
+          <ng-container ngProjectAs="icon">
+            <ui-icon
+              icon="info_outline"
+              [variant]="colorVariant.GREY"
+              [size]="18"
+              [uiTooltip]="
+                'components.widget.settings.grid.buttons.tooltip.attach'
+                  | translate
+              "
+            ></ui-icon>
+          </ng-container>
+        </ui-checkbox>
       </ng-container>
       <div *ngIf="formGroup.value.attachToRecord" class="sub-parameters">
         <!-- Selection of target resource -->
@@ -239,18 +242,22 @@
       </div>
 
       <!-- Send notification -->
-      <mat-checkbox formControlName="notify">
-        {{ 'components.channel.dropdown.select' | translate }}
-        <ui-icon
-          icon="info_outline"
-          [variant]="colorVariant.GREY"
-          [size]="18"
-          [matTooltip]="
-            'components.widget.settings.grid.buttons.tooltip.notify' | translate
-          "
-          matTooltipPosition="right"
-        ></ui-icon>
-      </mat-checkbox>
+      <ui-checkbox formControlName="notify">
+        <ng-container ngProjectAs="label">
+          {{ 'components.channel.dropdown.select' | translate }}
+        </ng-container>
+        <ng-container ngProjectAs="icon">
+          <ui-icon
+            icon="info_outline"
+            [variant]="colorVariant.GREY"
+            [size]="18"
+            [uiTooltip]="
+              'components.widget.settings.grid.buttons.tooltip.notify'
+                | translate
+            "
+          ></ui-icon>
+        </ng-container>
+      </ui-checkbox>
       <div *ngIf="formGroup.value.notify" class="sub-parameters">
         <mat-form-field appearance="outline">
           <mat-label>{{ 'common.channel.one' | translate }}</mat-label>
@@ -271,19 +278,22 @@
       </div>
 
       <!-- Publish on a channel -->
-      <mat-checkbox formControlName="publish">
-        {{ 'common.publish' | translate }}
-        <ui-icon
+      <ui-checkbox formControlName="publish">
+        <ng-container ngProjectAs="label">
+          {{ 'common.publish' | translate }}
+        </ng-container>
+        <ng-container ngProjectAs="icon">
+          <ui-icon
           icon="info_outline"
           [variant]="colorVariant.GREY"
           [size]="18"
-          [matTooltip]="
+          [uiTooltip]="
             'components.widget.settings.grid.buttons.tooltip.publish'
               | translate
           "
-          matTooltipPosition="right"
         ></ui-icon>
-      </mat-checkbox>
+        </ng-container>
+      </ui-checkbox>
       <div *ngIf="formGroup.value.publish" class="sub-parameters">
         <mat-form-field appearance="outline">
           <mat-label>{{ 'common.channel.one' | translate }}</mat-label>
@@ -319,7 +329,7 @@
             icon="info_outline"
             class="cursor-pointer"
             [variant]="colorVariant.GREY"
-            [matTooltip]="
+            [uiTooltip]="
               'components.widget.settings.grid.buttons.tooltip.mail.selectDistributionList'
                 | translate
             "
@@ -330,15 +340,13 @@
             icon="add_circle_outline"
             variant="primary"
             (click)="$event.stopPropagation(); addDistributionList()"
-            [matTooltip]="'components.distributionLists.edit.new' | translate"
+            [uiTooltip]="'components.distributionLists.edit.new' | translate"
           >
           </safe-button>
         </div>
         <!-- Templates -->
         <div uiFormFieldDirective [outline]="false">
-          <label>{{
-            'components.templates.available' | translate
-          }}</label>
+          <label>{{ 'components.templates.available' | translate }}</label>
           <mat-select class="select" formControlName="templates" multiple>
             <mat-option
               *ngFor="let template of mailTemplates"
@@ -352,7 +360,7 @@
             icon="info_outline"
             class="cursor-pointer"
             [variant]="colorVariant.GREY"
-            [matTooltip]="
+            [uiTooltip]="
               'components.widget.settings.grid.buttons.tooltip.mail.selectTemplates'
                 | translate
             "
@@ -363,7 +371,7 @@
             icon="add_circle_outline"
             variant="primary"
             (click)="$event.stopPropagation(); addEmailTemplate()"
-            [matTooltip]="'components.templates.edit.new' | translate"
+            [uiTooltip]="'components.templates.edit.new' | translate"
           >
           </safe-button>
           <mat-error

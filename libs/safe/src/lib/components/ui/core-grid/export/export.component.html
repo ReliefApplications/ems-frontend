@@ -46,17 +46,20 @@
     </mat-radio-group>
     <!-- EMAIL -->
     <p class="mt-6 mb-3 mx-0">
-      <mat-slide-toggle [(ngModel)]="export.email"
-        >{{ 'components.widget.grid.export.email.title' | translate
-        }}<ui-icon
+      <ui-toggle [(ngModel)]="export.email">
+        <ng-container ngProjectAs="label">
+          {{ 'components.widget.grid.export.email.title' | translate
+          }}<ui-icon
           [variant]="colorVariant.GREY"
           [size]="18"
           icon="info_outline"
-          [matTooltip]="
+          [uiTooltip]="
             'components.widget.grid.export.email.tooltip' | translate
           "
         ></ui-icon
-      ></mat-slide-toggle>
+      >
+      </ng-container>
+    </ui-toggle>
     </p>
   </mat-dialog-content>
   <mat-dialog-actions align="end">

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeApplicationToolbarComponent } from './application-toolbar.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule, IconModule } from '@oort-front/ui';
 import { MatLegacyListModule as MatListModule } from '@angular/material/legacy-list';
 import { RouterModule } from '@angular/router';
 import { SafeAccessModule } from '../access/access.module';
@@ -19,7 +19,8 @@ import { UiModule } from '@oort-front/ui';
     SafeButtonModule,
     TranslateModule,
     SafeAccessModule,
-    MatMenuModule,
+    MenuModule,
+    IconModule,
     MatListModule,
     RouterModule,
     UiModule,

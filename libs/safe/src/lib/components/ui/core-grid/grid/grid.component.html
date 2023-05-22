@@ -68,7 +68,7 @@
     </ng-container>
     <button
       *ngIf="filterable"
-      [matTooltip]="'components.widget.grid.filter.toggle' | translate"
+      [uiTooltip]="'components.widget.grid.filter.toggle' | translate"
       kendoButton
       icon="eye"
       (click)="onToggleFilter()"
@@ -210,7 +210,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                [matTooltip]="'common.openFullScreen' | translate"
+                [uiTooltip]="'common.openFullScreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -326,7 +326,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                [matTooltip]="'common.openFullScreen' | translate"
+                [uiTooltip]="'common.openFullScreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -373,7 +373,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                [matTooltip]="'common.openFullScreen' | translate"
+                [uiTooltip]="'common.openFullScreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -397,7 +397,7 @@
                 #refSpan
                 class="textbox hover:cursor-pointer text-primary-500"
                 *ngIf="dataItem[field.name].length > 0"
-                [matTooltip]="
+                [uiTooltip]="
                   'components.widget.grid.actions.detail' | translate
                 "
                 (click)="
@@ -687,7 +687,7 @@
               kendoButton
               *ngFor="let file of dataItem[field.name]"
               [look]="'flat'"
-              [matTooltip]="file.name"
+              [uiTooltip]="file.name"
               (click)="onDownload(file)"
               class="w-full justify-start overflow-hidden text-overflow-ellipsis"
             >
@@ -935,7 +935,7 @@
           [icon]="'detail-section'"
           [look]="'flat'"
           (click)="action.emit({ action: 'details', items: dataItem })"
-          [matTooltip]="'components.widget.grid.actions.detail' | translate"
+          [uiTooltip]="'components.widget.grid.actions.detail' | translate"
         ></button>
       </ng-template>
     </kendo-grid-column>
@@ -965,7 +965,7 @@
           look="flat"
           class="k-color-error"
           (click)="showErrors(dataItem)"
-          [matTooltip]="
+          [uiTooltip]="
             'components.widget.grid.tooltip.uploadFailed' | translate
           "
         ></button>
@@ -975,7 +975,7 @@
           icon="exclamation-circle"
           look="flat"
           class="k-color-warning cursor-default"
-          [matTooltip]="'components.widget.grid.tooltip.unsaved' | translate"
+          [uiTooltip]="'components.widget.grid.tooltip.unsaved' | translate"
         ></span>
         <span
           *ngIf="dataItem.saved"
@@ -983,7 +983,7 @@
           icon="check-outline"
           look="flat"
           class="k-color-success cursor-default"
-          [matTooltip]="'components.widget.grid.tooltip.saved' | translate"
+          [uiTooltip]="'components.widget.grid.tooltip.saved' | translate"
         ></span>
       </ng-template>
     </kendo-grid-column>

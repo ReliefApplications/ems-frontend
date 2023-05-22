@@ -12,17 +12,15 @@
   ></safe-form-actions>
 </div>
 <!-- Form pages -->
-<mat-tab-group
+<ui-tabs
   class="mb-4"
-  animationDuration="0ms"
   [selectedIndex]="selectedTabIndex"
   (selectedIndexChange)="onShowPage($event)"
 >
-  <mat-tab
+  <ui-tab
     *ngFor="let page of pages$ | async"
-    [label]="page.title ? page.title : page.name"
   >
-    <ng-template mat-tab-label>
+    <ng-container ngProjectAs="label">
       {{ page.title ? page.title : page.name }}
       <ui-icon
         *ngIf="page.containsErrors"
@@ -30,9 +28,9 @@
         [variant]="colorVariant.DANGER"
         [size]="20"
       ></ui-icon>
-    </ng-template>
-  </mat-tab>
-</mat-tab-group>
+    </ng-container>
+  </ui-tab>
+</ui-tabs>
 <!-- Form -->
 <div #formContainer></div>
 <!-- Form actions -->

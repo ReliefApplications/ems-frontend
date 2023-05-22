@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ApiConfigurationRoutingModule } from './api-configuration-routing.module';
 import { ApiConfigurationComponent } from './api-configuration.component';
 import { SafeAccessModule } from '@oort-front/safe';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -22,7 +22,7 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
     CommonModule,
     ApiConfigurationRoutingModule,
     SafeAccessModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,

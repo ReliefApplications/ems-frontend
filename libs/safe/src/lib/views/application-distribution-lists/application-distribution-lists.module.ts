@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeApplicationDistributionListsComponent } from './application-distribution-lists.component';
 import { SafeApplicationDistributionListsRoutingModule } from './application-distribution-lists-routing.module';
 import { DistributionListsModule } from '../../components/distribution-lists/distribution-lists.module';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 
 /**
  * Page to view distribution lists within app.
@@ -14,7 +14,7 @@ import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@ang
     CommonModule,
     SafeApplicationDistributionListsRoutingModule,
     DistributionListsModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
   ],
   exports: [SafeApplicationDistributionListsComponent],
 })

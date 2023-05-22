@@ -39,7 +39,7 @@
       icon="file_upload"
       category="secondary"
       variant="primary"
-      [matTooltip]="'components.records.upload.hint' | translate"
+      [uiTooltip]="'components.records.upload.hint' | translate"
       (click)="showUpload = !showUpload"
       cdkOverlayOrigin
       #uploadTrigger="cdkOverlayOrigin"
@@ -99,9 +99,8 @@
               <button
                 mat-menu-item
                 [routerLink]="['update', element.id]"
-                [matTooltip]="'Edit as ' + element.form.name"
-                matTooltipPosition="above"
-                [matTooltipDisabled]="(resource.forms?.length || 0) <= 1"
+                [uiTooltip]="'Edit as ' + element.form.name"
+                [tooltipDisabled]="(resource.forms?.length || 0) <= 1"
               >
                 <ui-icon [icon]="'edit'" [variant]="colorVariant.GREY"></ui-icon>
                 {{ 'common.edit' | translate }}

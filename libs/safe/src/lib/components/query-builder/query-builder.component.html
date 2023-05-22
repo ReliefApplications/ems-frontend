@@ -21,7 +21,7 @@
           uiSuffix
           icon="error"
           [variant]="colorVariant.DANGER"
-          [matTooltip]="'components.form.layout.errors.invalid' | translate"
+          [uiTooltip]="'components.form.layout.errors.invalid' | translate"
         ></ui-icon>
       </div>
 
@@ -55,69 +55,60 @@
         </mat-form-field>
       </div>
     </ng-container>
-    <mat-tab-group
-      mat-align-tabs="start"
-      animationDuration="0ms"
+    <ui-tabs
       *ngIf="form.getRawValue().name"
     >
-      <mat-tab [label]="'components.queryBuilder.fields.title' | translate">
-        <ng-template matTabContent>
+      <ui-tab>
+        <ng-container ngProjectAs="label">{{'components.queryBuilder.fields.title' | translate}}</ng-container>
+
           <safe-tab-fields
             *ngIf="availableFields.length > 0"
             [form]="$any(form.controls.fields)"
             [fields]="availableFields"
             [showLimit]="true"
           ></safe-tab-fields>
-        </ng-template>
-      </mat-tab>
-      <mat-tab
-        [label]="
+      </ui-tab>
+      <ui-tab *ngIf="form.get('sort')" >
+        <ng-container ngProjectAs="label">{{
           (showLimit && form.get('first') !== null
             ? 'components.queryBuilder.sort.limitTitle'
             : 'components.queryBuilder.sort.title'
           ) | translate
-        "
-        *ngIf="form.get('sort')"
-      >
-        <ng-template matTabContent>
-          <safe-tab-sort
-            [form]="form"
-            [fields]="availableScalarFields"
-            [showLimit]="showLimit && form.get('first') !== null"
-          ></safe-tab-sort>
-        </ng-template>
-      </mat-tab>
-      <mat-tab
-        [label]="'components.queryBuilder.filter.title' | translate"
+        }}</ng-container>
+
+        <safe-tab-sort
+          [form]="form"
+          [fields]="availableScalarFields"
+          [showLimit]="showLimit && form.get('first') !== null"
+        ></safe-tab-sort>
+      </ui-tab>
+      <ui-tab
         *ngIf="showFilter && form.get('filter')"
       >
-        <ng-template matTabContent>
-          <safe-tab-filter
-            [form]="$any(form.controls.filter)"
-            [query]="form.getRawValue()"
-          >
-          </safe-tab-filter>
-        </ng-template>
-      </mat-tab>
-      <mat-tab
-        [label]="'components.queryBuilder.style.title' | translate"
-        *ngIf="showStyle && form.get('style')"
-      >
-        <ng-template matTabContent>
-          <safe-tab-style
-            [form]="$any(form.controls.style)"
-            [scalarFields]="availableScalarFields"
-            [query]="form.getRawValue()"
-          >
-          </safe-tab-style>
-        </ng-template>
-      </mat-tab>
-      <mat-tab [label]="'common.preview' | translate" *ngIf="layoutPreviewData">
-        <ng-template matTabContent>
-          <safe-tab-layout-preview [data]="layoutPreviewData">
-          </safe-tab-layout-preview>
-        </ng-template>
-      </mat-tab>
-    </mat-tab-group>
+        <ng-container ngProjectAs="label">{{'components.queryBuilder.filter.title' | translate}}</ng-container>
+
+        <safe-tab-filter
+          [form]="$any(form.controls.filter)"
+          [query]="form.getRawValue()"
+        >
+        </safe-tab-filter>
+      </ui-tab>
+      <ui-tab *ngIf="showStyle && form.get('style')">
+        <ng-container ngProjectAs="label">{{'components.queryBuilder.style.title' | translate}}</ng-container>
+
+        <safe-tab-style
+          [form]="$any(form.controls.style)"
+          [scalarFields]="availableScalarFields"
+          [query]="form.getRawValue()"
+        >
+        </safe-tab-style>
+      </ui-tab>
+      <ui-tab *ngIf="layoutPreviewData">
+        <ng-container ngProjectAs="label">{{'common.preview' | translate}}</ng-container>
+
+        <safe-tab-layout-preview [data]="layoutPreviewData">
+        </safe-tab-layout-preview>
+      </ui-tab>
+    </ui-tabs>
   </form>
 </ng-container>

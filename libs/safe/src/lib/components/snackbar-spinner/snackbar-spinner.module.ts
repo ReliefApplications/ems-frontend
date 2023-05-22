@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeSnackbarSpinnerComponent } from './snackbar-spinner.component';
-import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
+import { SpinnerModule } from '@oort-front/ui';
 import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
-import { UiModule } from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
 
 /**
  * SafeSnackbarSpinnerModule is a class used to manage all the modules and components
@@ -11,7 +11,7 @@ import { UiModule } from '@oort-front/ui';
  */
 @NgModule({
   declarations: [SafeSnackbarSpinnerComponent],
-  imports: [CommonModule, SafeSpinnerModule, MatSnackBarModule, UiModule],
+  imports: [CommonModule, SpinnerModule, MatSnackBarModule, IconModule],
   exports: [SafeSnackbarSpinnerComponent],
 })
 export class SafeSnackbarSpinnerModule {}

@@ -91,11 +91,10 @@
     </div>
   </div>
 </ng-container>
-<mat-spinner
-  class="absolute top-0 bottom-0 left-0 right-0 m-auto"
-  [diameter]="30"
+<ui-spinner
+  class="absolute top-0 bottom-0 left-0 right-0 flex-col items-center"
   *ngIf="loading"
-></mat-spinner>
+></ui-spinner>
 <div *ngIf="hasError" class="chart-error">
   <ui-icon [variant]="colorVariant.DANGER" icon="error_outline"></ui-icon>
   <p color="danger">

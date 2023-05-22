@@ -4,20 +4,22 @@
       {{ 'components.widget.settings.grid.actions.title' | translate }}
     </h2>
     <div class="flex flex-col gap-2">
-      <mat-slide-toggle
+      <ui-toggle
         *ngFor="let action of actions"
         [formControlName]="action.name"
       >
-        {{ action.text | translate
-        }}<ui-icon
+        <ng-container ngProjectAs="label">
+          {{ action.text | translate
+          }}<ui-icon
           *ngIf="action.tooltip"
           class="ml-2"
           [variant]="colorVariant.GREY"
           icon="info_outline"
           [size]="18"
-          [matTooltip]="action.tooltip | translate"
+          [uiTooltip]="action.tooltip | translate"
         ></ui-icon>
-      </mat-slide-toggle>
+        </ng-container>
+      </ui-toggle>
     </div>
   </div>
 </form>

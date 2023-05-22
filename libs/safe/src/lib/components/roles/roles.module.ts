@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeRolesComponent } from './roles.component';
 import { SafeRoleListModule } from './components/role-list/role-list.module';
@@ -24,7 +24,7 @@ import { AbilityModule } from '@casl/angular';
     SafeRoleListModule,
     SafeGroupListModule,
     TranslateModule,
-    MatTabsModule,
+    TabsModule,
     MatDialogModule,
     TranslateModule,
     FormsModule,

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResourcesRoutingModule } from './resources-routing.module';
 import { ResourcesComponent } from './resources.component';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
@@ -20,7 +20,6 @@ import {
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { FilterComponent } from './filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { UiModule } from '@oort-front/ui';
 
 /**
  * Resources page module.
@@ -30,7 +29,7 @@ import { UiModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     ResourcesRoutingModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatTableModule,
     MatDialogModule,
     MatMenuModule,
@@ -46,7 +45,8 @@ import { UiModule } from '@oort-front/ui';
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
-    UiModule,
+    FormWrapperModule,
+    IconModule,
   ],
   exports: [ResourcesComponent],
 })

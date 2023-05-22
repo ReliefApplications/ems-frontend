@@ -17,10 +17,7 @@
     {{ 'components.widget.settings.grid.buttons.create' | translate }}
   </safe-button>
   <!-- Available buttons -->
-  <mat-tab-group
-    mat-align-tabs="start"
-    animationDuration="0ms"
-    dynamicHeight
+  <ui-tabs
     *ngIf="buttons.length > 0"
     #tabGroup
   >
@@ -31,9 +28,9 @@
         trackBy: trackByIndex
       "
     >
-      <mat-tab>
-        <!-- Button label - tab header -->
-        <ng-template mat-tab-label>
+      <ui-tab>
+        <!-- Button label - tab label -->
+        <ng-container ngProjectAs="label">
           <div
             (cdkDropListDropped)="onReorder($event)"
             [cdkDropListConnectedTo]="(tabIds$ | async)!"
@@ -69,21 +66,19 @@
               ></ui-icon>
             </div>
           </div>
-        </ng-template>
+        </ng-container>
         <!-- Button form - tab content -->
-        <ng-template matTabContent>
-          <safe-button-config
-            [formGroup]="$any(button)"
-            [fields]="fields"
-            [channels]="channels"
-            [templates]="templates"
-            [distributionLists]="distributionLists"
-            [relatedForms]="relatedForms"
-            (deleteButton)="deleteButton(i)"
-          >
-          </safe-button-config>
-        </ng-template>
-      </mat-tab>
+        <safe-button-config
+          [formGroup]="$any(button)"
+          [fields]="fields"
+          [channels]="channels"
+          [templates]="templates"
+          [distributionLists]="distributionLists"
+          [relatedForms]="relatedForms"
+          (deleteButton)="deleteButton(i)"
+        >
+        </safe-button-config>
+      </ui-tab>
     </ng-container>
-  </mat-tab-group>
+  </ui-tabs>
 </div>

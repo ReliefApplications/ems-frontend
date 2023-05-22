@@ -20,14 +20,12 @@ import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { UiModule } from '@oort-front/ui';
+import { TooltipModule, IconModule, MenuModule } from '@oort-front/ui';
 
 /**
  * Dashboard page module.
@@ -42,8 +40,7 @@ import { UiModule } from '@oort-front/ui';
     MatButtonModule,
     MatSelectModule,
     MatDialogModule,
-    MatTooltipModule,
-    MatMenuModule,
+    MenuModule,
     ClipboardModule,
     SafeRecordHistoryModule,
     SafeButtonModule,
@@ -60,7 +57,8 @@ import { UiModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatFormFieldModule,
     DashboardFilterModule,
-    UiModule,
+    TooltipModule,
+    IconModule,
   ],
   exports: [DashboardComponent],
 })

@@ -1,30 +1,25 @@
-<mat-accordion
-  cdkDropList
-  (cdkDropListDropped)="drop($event)"
-  class="collapsible-form-group"
->
-  <mat-expansion-panel
+<cdk-accordion cdkDropList (cdkDropListDropped)="drop($event)">
+  <ui-expansion-panel
     cdkDrag
     *ngFor="let stageForm of pipelineForm.controls; let index = index"
+    [index]="index"
+    class="bg-white"
   >
-    <mat-expansion-panel-header cdkDragHandle>
-      <mat-panel-title>
-        {{
-          'components.aggregationBuilder.stages.' + stageForm.value.type
+    <ng-container ngProjectAs="title">
+      {{
+        'components.aggregationBuilder.stages.' + stageForm.value.type
+          | translate
+      }}
+      <ui-icon
+        icon="info_outline"
+        [variant]="colorVariant.GREY"
+        [size]="18"
+        [uiTooltip]="
+          'components.aggregationBuilder.tooltip.' + stageForm.value.type
             | translate
-        }}
-        <ui-icon
-          icon="info_outline"
-          [variant]="colorVariant.GREY"
-          [size]="18"
-          [matTooltip]="
-            'components.aggregationBuilder.tooltip.' + stageForm.value.type
-              | translate
-          "
-          matTooltipPosition="right"
-        ></ui-icon>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
+        "
+      ></ui-icon>
+    </ng-container>
     <ng-container [ngSwitch]="stageForm.value.type">
       <ng-container *ngSwitchCase="stageType.FILTER">
         <safe-filter
@@ -68,16 +63,16 @@
         </mat-form-field>
       </ng-container>
     </ng-container>
-    <mat-action-row>
+    <div class="panel-actions">
       <safe-button
         [isIcon]="true"
         icon="delete"
         variant="danger"
         (click)="deleteStage(index)"
       ></safe-button>
-    </mat-action-row>
-  </mat-expansion-panel>
-</mat-accordion>
+    </div>
+  </ui-expansion-panel>
+</cdk-accordion>
 <div>
   <safe-button
     icon="add"

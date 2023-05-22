@@ -1,4 +1,4 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ui-spinner *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading && application && selectedPage">
   <ng-container
     *ngIf="selectedPage.type === contentType.workflow && selectedPage.content"

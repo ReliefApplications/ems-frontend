@@ -9,10 +9,9 @@ import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/m
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { LayoutTableModule } from '../../../grid-layout/layout-table/layout-table.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { SafeDividerModule } from '../../../ui/divider/divider.module';
+import { TooltipModule, IconModule } from '@oort-front/ui';
+import { DividerModule } from '@oort-front/ui';
 import { AggregationTableModule } from '../../../aggregation/aggregation-table/aggregation-table.module';
-import { UiModule } from '@oort-front/ui';
 
 /**
  * Main Tab of grid widget configuration modal.
@@ -30,9 +29,9 @@ import { UiModule } from '@oort-front/ui';
     MatSelectModule,
     LayoutTableModule,
     SafeGraphQLSelectModule,
-    MatTooltipModule,
-    UiModule,
-    SafeDividerModule,
+    TooltipModule,
+    IconModule,
+    DividerModule,
     AggregationTableModule,
   ],
   exports: [TabMainComponent],

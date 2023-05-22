@@ -27,6 +27,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { Size } from '@oort-front/ui';
 import { Variant } from '@oort-front/ui';
 
 /** Default pagination settings. */
@@ -72,6 +73,7 @@ export class ReferenceDatasComponent
     length: 0,
     endCursor: '',
   };
+  size = Size;
 
   /**
    * List of Reference data page.

@@ -5,7 +5,7 @@ import { SafeAddStepComponent } from './components/add-step/add-step.component';
 import { SafeStepComponent } from './components/step/step.component';
 import { MatRippleModule } from '@angular/material/core';
 import { SafeButtonModule } from '../ui/button/public-api';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TranslateModule } from '@ngx-translate/core';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
@@ -24,7 +24,7 @@ import { UiModule } from '@oort-front/ui';
     CommonModule,
     SafeDividerModule,
     MatRippleModule,
-    MatTooltipModule,
+    TooltipModule,
     DragDropModule,
     UiModule,
     SafeButtonModule,

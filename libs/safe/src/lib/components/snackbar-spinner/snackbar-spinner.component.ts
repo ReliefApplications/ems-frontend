@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_LEGACY_SNACK_BAR_DATA as MAT_SNACK_BAR_DATA } from '@angular/material/legacy-snack-bar';
+import { Size } from '@oort-front/ui';
 import { Variant } from '@oort-front/ui';
 
 /**
@@ -21,6 +22,7 @@ interface SnackBarData {
   styleUrls: ['./snackbar-spinner.component.scss'],
 })
 export class SafeSnackbarSpinnerComponent {
+  size = Size;
   // === BUTTON VARIANTS ===
   public colorVariant = Variant;
 

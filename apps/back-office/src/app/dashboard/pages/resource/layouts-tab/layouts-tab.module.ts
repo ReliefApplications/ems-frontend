@@ -4,7 +4,6 @@ import { LayoutsTabRoutingModule } from './layouts-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
@@ -27,7 +26,6 @@ import { UiModule } from '@oort-front/ui';
     MatTableModule,
     MatMenuModule,
     SafeButtonModule,
-    MatTooltipModule,
     TranslateModule,
     OverlayModule,
     SafeDateModule,

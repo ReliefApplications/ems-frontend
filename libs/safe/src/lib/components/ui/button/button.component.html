@@ -15,11 +15,11 @@
     [class.safe-btn-icon]="!isIcon"
     [icon]="icon"
   ></ui-icon>
-  <safe-spinner
+  <ui-spinner
     *ngIf="loading"
     class="safe-btn-spinner"
-    size="small"
     [variant]="spinnerVariant"
-  ></safe-spinner>
+    [size]="size"
+  ></ui-spinner>
   <ng-content></ng-content>
 </button>

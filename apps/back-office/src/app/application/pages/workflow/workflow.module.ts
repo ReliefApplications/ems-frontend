@@ -10,7 +10,7 @@ import {
   SafeSkeletonModule,
   SafeEditableTextModule,
 } from '@oort-front/safe';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeSearchMenuModule } from '@oort-front/safe';
@@ -27,7 +27,7 @@ import { UiModule } from '@oort-front/ui';
     CommonModule,
     WorkflowRoutingModule,
     SafeAccessModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     SafeButtonModule,
     SafeWorkflowStepperModule,
     TranslateModule,

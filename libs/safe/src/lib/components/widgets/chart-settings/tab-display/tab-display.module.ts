@@ -6,13 +6,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { ExpansionPanelModule } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { ToggleModule } from '@oort-front/ui';
+import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePaletteControlModule } from '../../../palette-control/palette-control.module';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
@@ -22,9 +22,7 @@ import { SafeGridModule } from '../../../ui/core-grid/grid/grid.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { SeriesSettingsModule } from '../series-settings/series-settings.module';
-import { SafeDividerModule } from '../../../ui/divider/divider.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { UiModule } from '@oort-front/ui';
+import { TooltipModule, DividerModule, IconModule } from '@oort-front/ui';
 
 /**
  * Display tab of chart settings modal.
@@ -43,21 +41,21 @@ import { UiModule } from '@oort-front/ui';
     TextFieldModule,
     SafeQueryBuilderModule,
     SafeChartModule,
-    MatExpansionModule,
-    MatSlideToggleModule,
-    MatTabsModule,
+    ExpansionPanelModule,
+    ToggleModule,
+    TabsModule,
     SafeButtonModule,
     TranslateModule,
     SafeAggregationBuilderModule,
     MatAutocompleteModule,
     MatChipsModule,
     SafeGridModule,
-    UiModule,
+    IconModule,
     SafePaletteControlModule,
     InputsModule,
     SeriesSettingsModule,
-    SafeDividerModule,
-    MatTooltipModule,
+    TooltipModule,
+    DividerModule,
   ],
   exports: [TabDisplayComponent],
 })

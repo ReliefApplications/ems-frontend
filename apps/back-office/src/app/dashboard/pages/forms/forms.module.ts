@@ -3,8 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsRoutingModule } from './forms-routing.module';
 import { FormsComponent } from './forms.component';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import {
+  FormWrapperModule,
+  IconModule,
+  SpinnerModule,
+  MenuModule,
+} from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import {
@@ -27,7 +31,6 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
-import { UiModule } from '@oort-front/ui';
 
 /** Forms page module */
 @NgModule({
@@ -37,11 +40,11 @@ import { UiModule } from '@oort-front/ui';
     FormsRoutingModule,
     AngularFormsModule,
     ReactiveFormsModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatTableModule,
     MatSortModule,
     MatDialogModule,
-    MatMenuModule,
+    MenuModule,
     MatChipsModule,
     MatFormFieldModule,
     MatDatepickerModule,
@@ -55,7 +58,8 @@ import { UiModule } from '@oort-front/ui';
     SafeSkeletonTableModule,
     SafeDateModule,
     AbilityModule,
-    UiModule,
+    FormWrapperModule,
+    IconModule,
   ],
   exports: [FormsComponent],
 })

@@ -7,19 +7,18 @@ import { SafeDateModule } from '../../../pipes/date/date.module';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../../../components/skeleton/skeleton-table/skeleton-table.module';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule, IconModule } from '@oort-front/ui';
 import { FilterComponent } from '../role-resources-filter/role-resources-filter.component';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule, FormWrapperModule } from '@oort-front/ui';
 import { ResourceFieldsComponent } from './resource-fields/resource-fields.component';
 import { SafeRoleResourceFiltersComponent } from './resource-access-filters/resource-access-filters.component';
 import { SafeFilterModule } from '../../filter/filter.module';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { UiModule } from '@oort-front/ui';
 
 /**
  * Resources tab of Role Summary component.
@@ -34,7 +33,7 @@ import { UiModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     MatTableModule,
-    MatTooltipModule,
+    TooltipModule,
     MatPaginatorModule,
     TranslateModule,
     SafeDateModule,
@@ -46,10 +45,11 @@ import { UiModule } from '@oort-front/ui';
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
+    FormWrapperModule,
+    IconModule,
     SafeFilterModule,
     MatSelectModule,
-    UiModule,
   ],
   exports: [RoleResourcesComponent],
 })

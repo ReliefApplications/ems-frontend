@@ -4,7 +4,6 @@ import { CalculatedFieldsTabRoutingModule } from './calculated-fields-tab-routin
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule, SafeEmptyModule } from '@oort-front/safe';
 import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component';
@@ -21,7 +20,6 @@ import { UiModule } from '@oort-front/ui';
     MatTableModule,
     MatMenuModule,
     SafeButtonModule,
-    MatTooltipModule,
     TranslateModule,
     OverlayModule,
     SafeEmptyModule,

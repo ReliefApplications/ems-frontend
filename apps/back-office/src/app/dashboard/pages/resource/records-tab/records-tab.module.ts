@@ -6,7 +6,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeButtonModule,
@@ -27,7 +27,7 @@ import { UiModule } from '@oort-front/ui';
     MatTableModule,
     MatMenuModule,
     SafeButtonModule,
-    MatTooltipModule,
+    TooltipModule,
     MatPaginatorModule,
     TranslateModule,
     OverlayModule,
