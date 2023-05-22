@@ -111,7 +111,7 @@ export class CustomStyleComponent
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'warn',
       });
-      confirmDialogRef.afterClosed().subscribe((confirm) => {
+      confirmDialogRef.closed.subscribe((confirm: any) => {
         if (confirm) {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.applicationService.customStyle!.innerText = this.savedStyle;

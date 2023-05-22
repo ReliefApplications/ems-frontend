@@ -217,7 +217,7 @@ export class LayoutsTabComponent implements OnInit {
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.gridLayoutService
           .deleteLayout(layout, this.resource.id)

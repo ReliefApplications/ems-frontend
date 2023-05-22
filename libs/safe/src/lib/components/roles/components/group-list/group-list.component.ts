@@ -236,7 +236,7 @@ export class SafeGroupListComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteGroupMutationResponse>({

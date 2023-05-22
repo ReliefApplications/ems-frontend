@@ -103,7 +103,7 @@ export class FormBuilderComponent implements OnInit {
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       });
-      return dialogRef.afterClosed().pipe(
+      return dialogRef.closed.pipe(
         map((value) => {
           if (value) {
             this.authService.canLogout.next(true);

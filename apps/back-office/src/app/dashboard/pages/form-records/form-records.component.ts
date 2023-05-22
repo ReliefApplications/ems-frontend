@@ -244,7 +244,7 @@ export class FormRecordsComponent
         confirmText: this.translate.instant('components.confirmModal.delete'),
         confirmColor: 'warn',
       });
-      dialogRef.afterClosed().subscribe((value) => {
+      dialogRef.closed.subscribe((value: any) => {
         if (value) {
           this.deleteRecord(element.id);
         }
@@ -317,7 +317,7 @@ export class FormRecordsComponent
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmColor: 'primary',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({

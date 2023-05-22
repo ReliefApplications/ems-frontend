@@ -219,7 +219,7 @@ export class DashboardComponent
         ),
         confirmColor: 'primary',
       });
-      return dialogRef.afterClosed().pipe(
+      return dialogRef.closed.pipe(
         map((confirm) => {
           if (confirm) {
             return true;

@@ -268,7 +268,7 @@ export class SafeLayoutComponent
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       });
-      dialogRef.afterClosed().subscribe((value) => {
+      dialogRef.closed.subscribe((value: any) => {
         if (value) {
           this.authService.canLogout.next(true);
           localStorage.clear();

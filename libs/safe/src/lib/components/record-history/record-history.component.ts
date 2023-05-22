@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { Record } from '../../models/record.model';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { SafeDownloadService } from '../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
@@ -102,7 +102,7 @@ export class SafeRecordHistoryComponent
    * @param snackBar The snackbar service
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private downloadService: SafeDownloadService,
     private translate: TranslateService,
     private dateFormat: SafeDateTranslateService,
@@ -271,7 +271,7 @@ export class SafeRecordHistoryComponent
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.revert(version);
       }

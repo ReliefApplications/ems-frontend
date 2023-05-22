@@ -452,7 +452,7 @@ export class SafeGridWidgetComponent implements OnInit {
           ),
           confirmColor: 'primary',
         });
-        dialogRef.afterClosed().subscribe((confirm: boolean) => {
+        dialogRef.closed.subscribe((confirm: any) => {
           if (confirm) {
             this.workflowService.closeWorkflow();
           }

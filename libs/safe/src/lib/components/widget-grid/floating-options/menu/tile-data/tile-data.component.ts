@@ -82,7 +82,7 @@ export class SafeTileDataComponent implements AfterViewInit {
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'warn',
       });
-      confirmDialogRef.afterClosed().subscribe((value) => {
+      confirmDialogRef.closed.subscribe((value: any) => {
         if (value) {
           this.dialogRef.close();
         }

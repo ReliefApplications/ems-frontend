@@ -274,7 +274,7 @@ export class ApiConfigurationsComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value: any) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteApiConfigurationMutationResponse>({

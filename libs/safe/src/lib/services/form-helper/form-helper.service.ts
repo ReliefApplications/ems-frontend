@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import * as Survey from 'survey-angular';
-import { MatLegacyDialogRef } from '@angular/material/legacy-dialog';
 import { Apollo } from 'apollo-angular';
 import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,6 +9,7 @@ import {
   UPLOAD_FILE,
   UploadFileMutationResponse,
 } from '../../components/form/graphql/mutations';
+import { DialogRef } from '@angular/cdk/dialog';
 
 /**
  * Shared survey helper service.
@@ -39,7 +39,7 @@ export class SafeFormHelpersService {
    * @param version The version to recover
    * @returns dialogRef
    */
-  createRevertDialog(version: any): MatLegacyDialogRef<any> {
+  createRevertDialog(version: any): DialogRef<any> {
     // eslint-disable-next-line radix
     const date = new Date(parseInt(version.createdAt, 0));
     const formatDate = `${date.getDate()}/${
@@ -54,7 +54,7 @@ export class SafeFormHelpersService {
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmColor: 'primary',
     });
-    return dialogRef;
+    return dialogRef as any;
   }
 
   /**

@@ -227,7 +227,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         const id = form.id;
         this.apollo

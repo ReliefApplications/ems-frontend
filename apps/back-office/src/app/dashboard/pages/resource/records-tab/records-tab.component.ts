@@ -124,7 +124,7 @@ export class RecordsTabComponent implements OnInit {
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
       });
-      dialogRef.afterClosed().subscribe((value) => {
+      dialogRef.closed.subscribe((value: any) => {
         if (value) {
           this.deleteRecord(element.id);
         }

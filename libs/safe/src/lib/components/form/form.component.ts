@@ -10,7 +10,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import * as Survey from 'survey-angular';
 import {
   AddRecordMutationResponse,
@@ -90,7 +90,7 @@ export class SafeFormComponent
    * @param translate This is the service used to translate text
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
@@ -376,7 +376,7 @@ export class SafeFormComponent
    */
   private confirmRevertDialog(record: any, version: any) {
     const dialogRef = this.formHelpersService.createRevertDialog(version);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({

@@ -260,7 +260,7 @@ export class ReferenceDatasComponent
       confirmText: this.translate.instant('common.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteReferenceDataMutationResponse>({

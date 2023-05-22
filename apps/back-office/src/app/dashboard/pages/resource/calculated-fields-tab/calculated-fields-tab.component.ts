@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Resource, SafeSnackBarService } from '@oort-front/safe';
 import { Apollo } from 'apollo-angular';
@@ -8,6 +7,7 @@ import {
   Calculated_FIELD_UPDATE,
   CalculatedFieldUpdateMutationResponse,
 } from './graphql/mutations';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Calculated fields tab of resource page
@@ -33,7 +33,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
    */
   constructor(
     private apollo: Apollo,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private translate: TranslateService,
     private snackBar: SafeSnackBarService
   ) {}
@@ -61,7 +61,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
         ),
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<CalculatedFieldUpdateMutationResponse>({
@@ -123,7 +123,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
         ),
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (!value) {
         return;
       }
@@ -190,7 +190,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<CalculatedFieldUpdateMutationResponse>({

@@ -150,7 +150,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.subscribe((value: any) => {
       if (value) {
         this.applicationService.deleteCustomNotification(
           notification.id,
