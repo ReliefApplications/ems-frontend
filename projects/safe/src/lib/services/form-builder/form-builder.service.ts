@@ -88,13 +88,16 @@ export class SafeFormBuilderService {
       for (const f of fields.filter((x) => !x.automated)) {
         const accessible = !!f.canSee;
         const editable = !!f.canUpdate;
-        const hidden: boolean = (f.canSee !== undefined && !f.canSee) || false;
         const disabled: boolean =
           (f.canUpdate !== undefined && !f.canUpdate) || false;
         const question = survey.getQuestionByName(f.name);
         if (question) {
-          question.visible = !hidden && accessible;
-          question.readOnly = disabled || !editable;
+          //If is not accessible for the current user, we will delete the question from the current survey instance
+          if (!accessible) {
+            question.delete();
+          } else {
+            question.readOnly = disabled || !editable;
+          }
         }
       }
     }

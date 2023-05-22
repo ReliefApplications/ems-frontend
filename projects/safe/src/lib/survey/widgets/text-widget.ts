@@ -157,6 +157,19 @@ export const init = (Survey: any, domService: DomService): void => {
               }
             });
             el.style.display = 'none';
+            (question.survey as SurveyModel).onValueChanged.add(
+              (sender: any, options: any) => {
+                if (options.question.name === question.name) {
+                  if (options.question.value) {
+                    pickerInstance.writeValue(
+                      getDateDisplay(question.value, question.inputType)
+                    );
+                  } else {
+                    pickerInstance.writeValue(null as any);
+                  }
+                }
+              }
+            );
           }
         } else {
           el.style.display = 'initial';

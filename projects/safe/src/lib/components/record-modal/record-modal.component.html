@@ -26,13 +26,13 @@
       <div class="versions-info" *ngIf="data.compareTo">
         <div class="version-info">
           <div>{{ 'components.record.history.version.old' | translate }}</div>
-          <span>{{ data.compareTo.createdAt | safeDate: 'short' }}</span>
+          <span>{{ data.compareTo.createdAt | safeDate : 'short' }}</span>
         </div>
         <div class="version-info">
           <div>
             {{ 'components.record.history.version.current' | translate }}
           </div>
-          <span>{{ record.modifiedAt | safeDate: 'short' }}</span>
+          <span>{{ record.modifiedAt | safeDate : 'short' }}</span>
         </div>
       </div>
     </div>
@@ -95,7 +95,7 @@
     >
       {{
         'common.editObject'
-          | translate: { name: 'common.record.one' | translate }
+          | translate : { name: 'common.record.one' | translate }
       }}
     </safe-button>
   </mat-dialog-actions>

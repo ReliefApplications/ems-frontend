@@ -247,7 +247,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       this.addCustomClassToCoreFields(coreFields);
     }
 
-    // Scroll to question when adde
+    // Scroll to question when added
     this.surveyCreator.onQuestionAdded.add((sender, opt) => {
       const name = opt.question.name;
       setTimeout(() => {
@@ -403,20 +403,26 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     }
     // if choices object exists, checks for duplicate values
     if (element.choices) {
-      const values = element.choices.map(
-        (choice: { value: string; text: string }) => choice.value || choice
-      );
-      const distinctValues = [...new Set(values)];
-
-      if (values.length > distinctValues.length) {
-        throw new Error(
-          this.translate.instant(
-            'pages.formBuilder.errors.choices.valueDuplicated',
-            {
-              question: element.valueName,
-            }
-          )
+      // If choices do not come from a reference data, we would make the duplication check as we want to save the choices in the form
+      if (!element.referenceData) {
+        const values = element.choices.map(
+          (choice: { value: string; text: string }) => choice.value || choice
         );
+        const distinctValues = [...new Set(values)];
+
+        if (values.length > distinctValues.length) {
+          throw new Error(
+            this.translate.instant(
+              'pages.formBuilder.errors.choices.valueDuplicated',
+              {
+                question: element.valueName,
+              }
+            )
+          );
+        }
+        // As we already have the reference data value to get the choices, we dont want to save them again with the form structure
+      } else {
+        element.choices = [];
       }
     }
     if (element.getType() === 'multipletext') {

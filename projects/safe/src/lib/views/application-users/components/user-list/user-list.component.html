@@ -10,7 +10,8 @@
     (click)="onDelete(selection.selected)"
   >
     {{
-      'common.deleteObject' | translate: { name: 'common.user.few' | translate }
+      'common.deleteObject'
+        | translate : { name: 'common.user.few' | translate }
     }}
   </safe-button>
 </div>
@@ -106,7 +107,7 @@
           >
           </safe-button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item>
+            <button mat-menu-item (click)="onDelete([element])">
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
             </button>
