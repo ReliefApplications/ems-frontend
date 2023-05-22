@@ -27,8 +27,8 @@
         <ui-button
           class="mt-4 self-center"
           icon="add"
-          [category]="'secondary'"
-          [variant]="'primary'"
+          category="secondary"
+          variant="primary"
           (click)="onAdd()"
           [disabled]="!('create' | able : 'Form')"
         >
@@ -45,8 +45,8 @@
   }}</ui-button>
   <ui-button
     class="my-0 mx-1"
-    [category]="'secondary'"
-    [variant]="'primary'"
+    category="secondary"
+    variant="primary"
     (click)="onNext()"
     [disabled]="!isStepValid(step)"
   >

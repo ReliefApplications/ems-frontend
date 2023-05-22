@@ -60,7 +60,7 @@
   <div>
     <ng-container *ngFor="let floatingButton of settings.floatingButtons">
       <ui-button
-        [variant]="'primary'"
+        variant="primary"
         (click)="onQuickAction(floatingButton)"
         *ngIf="floatingButton.show"
       >

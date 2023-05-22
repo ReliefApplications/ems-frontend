@@ -6,7 +6,7 @@
     <ui-button
       *ngIf="!largeDevice"
       [isIcon]="true"
-      [variant]="'light'"
+      variant="light"
       [size]="'large'"
       icon="menu"
       (click)="nav.toggle()"
@@ -21,7 +21,7 @@
     <ui-button
       [isIcon]="true"
       [size]="'large'"
-      [variant]="'light'"
+      variant="light"
       icon="keyboard_backspace"
       (click)="goBack()"
       *ngIf="route"
@@ -74,13 +74,13 @@
     [isIcon]="true"
     icon="account_circle"
     [uiMenuTriggerFor]="accountMenu"
-    [variant]="'light'"
+    variant="light"
   >
   </ui-button>
   <span class="relative">
     <ui-button
       [size]="'large'"
-      [variant]="'light'"
+      variant="light"
       [uiMenuTriggerFor]="notificationMenu"
       [disabled]="notifications.length === 0"
       [icon]="'notifications'"
@@ -136,8 +136,8 @@
     </div>
     <ui-button
       *ngIf="hasMoreNotifications"
-      [category]="'primary'"
-      [variant]="'primary'"
+      category="primary"
+      variant="primary"
       class="!w-auto"
       [disabled]="loadingNotifications"
       [loading]="loadingNotifications"

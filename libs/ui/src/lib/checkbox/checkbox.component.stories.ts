@@ -60,7 +60,7 @@ const Template: StoryFn<CheckboxComponent> = (args: CheckboxComponent) => {
       [icon]="'info_outline'"
       [inline]="true"
       [size]="18"
-      [variant]="'grey'"
+      variant="grey"
     ></ui-icon>
       </ng-container>
       </ui-checkbox>

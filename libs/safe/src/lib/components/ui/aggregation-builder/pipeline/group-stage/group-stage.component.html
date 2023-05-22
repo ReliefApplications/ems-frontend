@@ -21,10 +21,10 @@
         (click)="onDeleteRule(i)"
         [isIcon]="true"
         icon="delete"
-        [variant]="'danger'"
+        variant="danger"
       ></ui-button>
     </div>
-    <ui-button icon="add" [category]="'tertiary'" (click)="onAddRule()">{{
+    <ui-button icon="add" category="tertiary" (click)="onAddRule()">{{
       'components.aggregationBuilder.addRule' | translate
     }}</ui-button>
   </div>

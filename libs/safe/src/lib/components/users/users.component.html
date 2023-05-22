@@ -18,8 +18,8 @@
       <ui-button
         class="max-sm:!w-auto"
         icon="filter_list"
-        [category]="'tertiary'"
-        [variant]="'primary'"
+        category="tertiary"
+        variant="primary"
         (click)="showFilters = !showFilters"
       >
         {{
@@ -50,7 +50,7 @@
       <!-- Clear filters -->
       <ui-button
         class="max-sm:!w-auto"
-        [variant]="'danger'"
+        variant="danger"
         (click)="clearAllFilters()"
         >{{ 'common.filter.clear' | translate }}</ui-button
       >
@@ -62,8 +62,8 @@
     <ng-container *ngIf="selection.selected.length > 0">
       <ui-button
         icon="delete"
-        [category]="'secondary'"
-        [variant]="'danger'"
+        category="secondary"
+        variant="danger"
         (click)="onDelete(selection.selected)"
       >
         {{
@@ -76,8 +76,8 @@
     <!-- Default actions -->
     <ui-button
       icon="file_download"
-      [category]="'secondary'"
-      [variant]="'primary'"
+      category="secondary"
+      variant="primary"
       [uiMenuTriggerFor]="menu"
     >
       {{
@@ -91,8 +91,8 @@
     </ui-menu>
     <ui-button
       icon="send"
-      [category]="'secondary'"
-      [variant]="'primary'"
+      category="secondary"
+      variant="primary"
       (click)="onInvite()"
     >
       {{ 'components.users.invite.confirm' | translate }}

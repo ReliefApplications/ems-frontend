@@ -69,14 +69,14 @@
               </mat-select>
               <ui-button
                 matSuffix
-                [variant]="'primary'"
+                variant="primary"
                 [isIcon]="true"
                 icon="edit"
                 (click)="editLayout()"
               ></ui-button>
               <ui-button
                 matSuffix
-                [variant]="'danger'"
+                variant="danger"
                 [isIcon]="true"
                 icon="close"
                 (click)="removeLayout()"
@@ -87,8 +87,8 @@
             <!-- Layout is not selected yet -->
             <ui-button
               class="!w-auto"
-              [category]="'tertiary'"
-              [variant]="'primary'"
+              category="tertiary"
+              variant="primary"
               (click)="addLayout()"
               >{{
                 'components.widget.settings.grid.layouts.add.title' | translate
@@ -123,7 +123,7 @@
             matSuffix
             [isIcon]="true"
             icon="add_circle_outline"
-            [variant]="'primary'"
+            variant="primary"
             (click)="$event.stopPropagation(); addEmailTemplate()"
             [uiTooltip]="'components.templates.edit.new' | translate"
           >
@@ -238,8 +238,8 @@
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button
-      [category]="'secondary'"
-      [variant]="'primary'"
+      category="secondary"
+      variant="primary"
       [mat-dialog-close]="formGroup.getRawValue()"
       [disabled]="!formGroup.valid"
     >

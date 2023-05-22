@@ -21,8 +21,8 @@
     <ui-button
       *ngIf="'create' | able : 'Role'"
       icon="add"
-      [category]="'secondary'"
-      [variant]="'primary'"
+      category="secondary"
+      variant="primary"
       (click)="onAdd()"
     >
       {{ 'models.role.create' | translate }}

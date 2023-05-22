@@ -92,14 +92,14 @@
             <ui-button
               [isIcon]="true"
               icon="edit"
-              [category]="'primary'"
+              category="primary"
               (click)="editRule(i)"
             ></ui-button>
             <ui-button
               [isIcon]="true"
               icon="delete"
-              [category]="'primary'"
-              [variant]="'danger'"
+              category="primary"
+              variant="danger"
               (click)="removeRule(i)"
             ></ui-button>
           </div>
@@ -113,8 +113,8 @@
 </div>
 <ui-button
   class="!w-auto"
-  [category]="'tertiary'"
-  [variant]="'primary'"
+  category="tertiary"
+  variant="primary"
   (click)="addRule()"
   >{{
     'components.widget.settings.map.layers.point.addNew' | translate

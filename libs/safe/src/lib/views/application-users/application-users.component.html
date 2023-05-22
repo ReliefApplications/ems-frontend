@@ -4,8 +4,8 @@
   <div class="flex gap-2 items-center ml-auto">
     <ui-button
       icon="file_download"
-      [category]="'secondary'"
-      [variant]="'primary'"
+      category="secondary"
+      variant="primary"
       [uiMenuTriggerFor]="menu"
     >
       {{
@@ -19,8 +19,8 @@
     </ui-menu>
     <ui-button
       icon="send"
-      [category]="'secondary'"
-      [variant]="'primary'"
+      category="secondary"
+      variant="primary"
       (click)="onInvite()"
     >
       {{ 'components.users.invite.confirm' | translate }}

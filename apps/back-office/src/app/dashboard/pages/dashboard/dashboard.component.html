@@ -27,7 +27,7 @@
       <div class="flex items-center gap-1" *ngIf="!formActive">
         <!-- Fullscreen -->
         <ui-button
-          [variant]="'grey'"
+          variant="grey"
           [isIcon]="true"
           icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
           (click)="isFullScreen = !isFullScreen"
@@ -50,7 +50,7 @@
         </safe-access>
         <!-- Context -->
         <ui-button
-          [variant]="'grey'"
+          variant="grey"
           [isIcon]="true"
           [icon]="dashboard.page?.context ? 'cached' : 'add'"
           (click)="selectContextDatasource()"
@@ -64,7 +64,7 @@
         </ui-button>
         <!-- More options -->
         <ui-button
-          [variant]="'grey'"
+          variant="grey"
           [isIcon]="true"
           icon="more_vert"
           [uiMenuTriggerFor]="menu"

@@ -16,10 +16,10 @@
     class="mt-2.5 mr-2.5 mb-0 ml-0"
     [isIcon]="true"
     icon="delete"
-    [variant]="'danger'"
+    variant="danger"
     (click)="deleteField(index)"
   ></ui-button>
 </form>
-<ui-button icon="add" [category]="'tertiary'" (click)="addField()">
+<ui-button icon="add" category="tertiary" (click)="addField()">
   {{ 'components.aggregationBuilder.addField' | translate }}
 </ui-button>

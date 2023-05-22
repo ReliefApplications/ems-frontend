@@ -29,8 +29,8 @@
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button
-      [category]="'secondary'"
-      [variant]="'primary'"
+      category="secondary"
+      variant="primary"
       (click)="onSubmit()"
       cdkFocusInitial
       [disabled]="!form || !form.valid"

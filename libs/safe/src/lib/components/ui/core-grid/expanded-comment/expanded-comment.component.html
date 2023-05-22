@@ -10,8 +10,8 @@
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button
-      [category]="'secondary'"
-      [variant]="'primary'"
+      category="secondary"
+      variant="primary"
       [mat-dialog-close]="formControl.value"
       cdkFocusInitial
       *ngIf="!data.readonly"

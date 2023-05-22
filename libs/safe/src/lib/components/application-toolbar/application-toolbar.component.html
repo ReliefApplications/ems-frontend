@@ -9,7 +9,7 @@
       *ngIf="settings.length > 0"
       [isIcon]="true"
       icon="tune"
-      [variant]="'grey'"
+      variant="grey"
       [uiMenuTriggerFor]="settingsMenu"
     ></ui-button>
     <!-- Access -->
@@ -29,12 +29,12 @@
       (click)="onUnlock()"
     >
     </ui-button>
-    <ui-button [variant]="'danger'" (click)="onClose()">{{
+    <ui-button variant="danger" (click)="onClose()">{{
       'common.close' | translate
     }}</ui-button>
     <ui-button
-      [category]="'secondary'"
-      [variant]="'success'"
+      category="secondary"
+      variant="success"
       (click)="onPublish()"
       [disabled]="!canPublish || this.application?.status === 'active'"
       >{{ 'common.publish' | translate }}</ui-button

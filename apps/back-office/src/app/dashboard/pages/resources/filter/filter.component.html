@@ -15,8 +15,8 @@
     <ui-button
       class="max-sm:!w-auto"
       icon="filter_list"
-      [category]="'tertiary'"
-      [variant]="'primary'"
+      category="tertiary"
+      variant="primary"
       (click)="show = !show"
     >
       {{
@@ -48,8 +48,8 @@
             {{ 'common.clear' | translate }}
           </ui-button>
           <ui-button
-            [category]="'secondary'"
-            [variant]="'primary'"
+            category="secondary"
+            variant="primary"
             matDateRangePickerApply
           >
             {{ 'common.filter.apply' | translate }}
@@ -58,7 +58,7 @@
       </mat-date-range-picker>
     </mat-form-field>
     <!-- Clear filters -->
-    <ui-button class="max-sm:!w-auto" [variant]="'danger'" (click)="clear()">
+    <ui-button class="max-sm:!w-auto" variant="danger" (click)="clear()">
       {{ 'common.filter.clear' | translate }}
     </ui-button>
   </div>

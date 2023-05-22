@@ -25,8 +25,8 @@
   <div mat-dialog-actions align="end">
     <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
     <ui-button
-      [category]="'secondary'"
-      [variant]="'primary'"
+      category="secondary"
+      variant="primary"
       [mat-dialog-close]="positionForm.value"
       cdkFocusInitial
       [disabled]="!positionForm.valid"

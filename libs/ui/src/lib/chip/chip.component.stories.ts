@@ -74,11 +74,11 @@ const ChipVariantsTemplate: StoryFn<ChipComponent> = (args: ChipComponent) => {
     component: ChipComponent,
     template: `
       <div class="flex gap-1">
-        <ui-chip [variant]="'default'" [removable]="true"> Default </ui-chip>
-        <ui-chip [variant]="'primary'" [removable]="true"> Primary </ui-chip>
-        <ui-chip [variant]="'success'" [removable]="true"> Success </ui-chip>
-        <ui-chip [variant]="'danger'" [removable]="true"> Danger </ui-chip>
-        <ui-chip [variant]="'danger'" [removable]="true" [disabled]="true"> Disabled </ui-chip>
+        <ui-chip variant="default" [removable]="true"> Default </ui-chip>
+        <ui-chip variant="primary" [removable]="true"> Primary </ui-chip>
+        <ui-chip variant="success" [removable]="true"> Success </ui-chip>
+        <ui-chip variant="danger" [removable]="true"> Danger </ui-chip>
+        <ui-chip variant="danger" [removable]="true" [disabled]="true"> Disabled </ui-chip>
       </div>
     `,
     props: {

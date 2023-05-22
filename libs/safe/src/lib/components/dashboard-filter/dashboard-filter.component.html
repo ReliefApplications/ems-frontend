@@ -33,7 +33,7 @@
       <!-- Edition -->
       <div class="flex-auto">
         <ui-button
-          [variant]="'light'"
+          variant="light"
           [isIcon]="true"
           icon="edit"
           (click)="onEditFilter()"
@@ -54,7 +54,7 @@
       >
         <ng-container *ngFor="let position of positionList">
           <ui-button
-            [variant]="'light'"
+            variant="light"
             matSuffix
             [isIcon]="true"
             icon="{{ position + '_panel_open' }}"

@@ -42,8 +42,8 @@
             'common.clear' | translate
           }}</ui-button>
           <ui-button
-            [category]="'secondary'"
-            [variant]="'primary'"
+            category="secondary"
+            variant="primary"
             matDateRangePickerApply
             (click)="applyFilter()"
             >{{ 'common.filter.apply' | translate }}</ui-button
@@ -75,8 +75,8 @@
   <!-- ACTIONS -->
   <div class="flex flex-row justify-start text-end ml-auto">
     <ui-button
-      [category]="'secondary'"
-      [variant]="'primary'"
+      category="secondary"
+      variant="primary"
       [uiMenuTriggerFor]="menu"
     >
       {{ 'components.history.download' | translate }}
@@ -126,7 +126,7 @@
         ></div>
         <div class="text-center mb-3">
           <ui-button
-            [variant]="'primary'"
+            variant="primary"
             *ngIf="!showMore && item.changes.length > 4"
             (click)="showMore = true"
             >{{ 'common.pagination.loadMore' | translate }} ({{

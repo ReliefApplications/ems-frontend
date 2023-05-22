@@ -1,8 +1,8 @@
 <div class="flex justify-end">
   <ui-button
     icon="add"
-    [variant]="'primary'"
-    [category]="'secondary'"
+    variant="primary"
+    category="secondary"
     (click)="addRule()"
     >{{
       'components.role.summary.autoAssignment.rule.add' | translate
@@ -36,7 +36,7 @@
             <ui-button
               [isIcon]="true"
               icon="edit"
-              [variant]="'grey'"
+              variant="grey"
               [uiTooltip]="'common.edit' | translate"
               (click)="editRule(i)"
             >
@@ -44,7 +44,7 @@
             <ui-button
               [isIcon]="true"
               icon="delete"
-              [variant]="'grey'"
+              variant="grey"
               [uiTooltip]="
                 'components.role.summary.autoAssignment.rule.delete' | translate
               "

@@ -34,13 +34,13 @@
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <ui-button (click)="onClose()" [variant]="'danger'">{{
+    <ui-button (click)="onClose()" variant="danger">{{
       'common.cancel' | translate
     }}</ui-button>
     <ng-container *ngIf="pages$ | async as pages">
       <ui-button
-        [category]="'secondary'"
-        [variant]="'primary'"
+        category="secondary"
+        variant="primary"
         *ngIf="pages.length > 1"
         (click)="survey && survey.prevPage()"
         cdkFocusInitial
@@ -49,8 +49,8 @@
         {{ 'common.previous' | translate }}
       </ui-button>
       <ui-button
-        [category]="'secondary'"
-        [variant]="'primary'"
+        category="secondary"
+        variant="primary"
         *ngIf="pages.length > 1"
         (click)="survey && survey.nextPage()"
         cdkFocusInitial
@@ -60,8 +60,8 @@
       </ui-button>
     </ng-container>
     <ui-button
-      [category]="'secondary'"
-      [variant]="'primary'"
+      category="secondary"
+      variant="primary"
       [disabled]="saving"
       (click)="submit()"
       cdkFocusInitial
