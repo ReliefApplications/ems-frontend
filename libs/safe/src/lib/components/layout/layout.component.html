@@ -1,33 +1,37 @@
-<mat-toolbar [color]="theme.headerColor">
-  <safe-button
-    *ngIf="!largeDevice"
-    [isIcon]="true"
-    icon="menu"
-    (click)="nav.toggle()"
-    [matTooltip]="
-      (nav.opened
-        ? 'components.header.sidenav.collapse'
-        : 'components.header.sidenav.show'
-      ) | translate
-    "
-  >
-  </safe-button>
-  <safe-button
-    [isIcon]="true"
-    icon="keyboard_backspace"
-    (click)="goBack()"
-    *ngIf="route"
-    [matTooltip]="'pages.applications.goTo' | translate"
-  >
-  </safe-button>
+<nav class="flex p-4 items-center md:justify-between text-gray-200 bg-primary-600" [ngClass]="theme.headerClass">
+  <div class="flex-shrink-0 flex flex-wrap min-w-0">
+    <safe-button
+      *ngIf="!largeDevice"
+      [isIcon]="true"
+      icon="menu"
+      (click)="nav.toggle()"
+      [uiTooltip]="
+        (nav.opened
+          ? 'components.header.sidenav.collapse'
+          : 'components.header.sidenav.show'
+        ) | translate
+      "
+    >
+    </safe-button>
+    <safe-button
+      [isIcon]="true"
+      icon="keyboard_backspace"
+      (click)="goBack()"
+      *ngIf="route"
+      [uiTooltip]="'pages.applications.goTo' | translate"
+    >
+    </safe-button>
+  </div>
   <ng-container *ngIf="!applications || applications.length === 0">
-    <h1 *ngIf="!route">
-      {{ theme.prefix }}
-      {{ 'common.platform.backOffice' | translate }}
-    </h1>
-    <h1 class="text-base mt-0.5" *ngIf="route">
-      {{ 'common.back' | translate }}
-    </h1>
+    <div class="min-w-0 overflow-hidden flex items-center">
+      <h1 class="text-2xl leading-7 mb-0 whitespace-nowrap text-clip" *ngIf="!route">
+        {{ theme.prefix }}
+        {{ 'common.platform.backOffice' | translate }}
+      </h1>
+      <h1 class="text-base mb-0 whitespace-nowrap text-clip" *ngIf="route">
+        {{ 'common.back' | translate }}
+      </h1>
+    </div>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <button
@@ -58,12 +62,12 @@
   <safe-button
     [isIcon]="true"
     icon="account_circle"
-    [matMenuTriggerFor]="accountMenu"
+    [uiMenuTriggerFor]="accountMenu"
   >
   </safe-button>
   <button
     mat-icon-button
-    [matMenuTriggerFor]="notificationMenu"
+    [uiMenuTriggerFor]="notificationMenu"
     [disabled]="notifications.length === 0"
   >
     <mat-icon class="mat-badge-notification">
@@ -77,22 +81,22 @@
       </kendo-badge-container>
     </mat-icon>
   </button>
-  <mat-menu #accountMenu="matMenu">
-    <a mat-menu-item [routerLink]="[profileRoute]">
+  <ui-menu #accountMenu>
+    <a uiMenuItem [routerLink]="[profileRoute]">
       {{ 'pages.profile.title' | translate }}
     </a>
-    <safe-divider class="m-0"></safe-divider>
-    <button mat-menu-item (click)="onOpenPreferences()" *ngIf="showPreferences">
+    <ui-divider class="m-0"></ui-divider>
+    <button uiMenuItem (click)="onOpenPreferences()" *ngIf="showPreferences">
       {{ 'components.preferences.title' | translate }}
     </button>
     <ng-container *ngIf="user && user.isAdmin">
-      <safe-divider class="m-0"></safe-divider>
-      <a mat-menu-item [href]="otherOfficeUri">
+      <ui-divider class="m-0"></ui-divider>
+      <a uiMenuItem [href]="otherOfficeUri">
         {{ 'components.header.goToPlatform' | translate }} {{ otherOffice }}
       </a>
     </ng-container>
-    <safe-divider class="m-0"></safe-divider>
-    <button mat-menu-item (click)="logout()" class="warn">
+    <ui-divider class="m-0"></ui-divider>
+    <button uiMenuItem class="warn" (click)="logout()">
       {{ 'components.header.logout' | translate }}
     </button>
     <div
@@ -100,15 +104,15 @@
     >
       {{ environment.version }}
     </div>
-  </mat-menu>
-  <mat-menu #notificationMenu="matMenu">
+  </ui-menu>
+  <ui-menu #notificationMenu>
     <div class="notification-menu">
       <a (click)="onMarkAllNotificationsAsRead()">
         {{ 'components.notifications.readAll' | translate }}
         <mat-icon [inline]="true">check_circle_outline</mat-icon>
       </a>
       <button
-        mat-menu-item
+        uiMenuItem
         (click)="onNotificationClick(notification)"
         *ngFor="let notification of notifications"
       >
@@ -126,8 +130,8 @@
     >
       {{ 'common.pagination.loadMore' | translate }}
     </safe-button>
-  </mat-menu>
-</mat-toolbar>
+  </ui-menu>
+</nav>
 
 <ng-container *ngIf="toolbar">
   <ng-container *ngTemplateOutlet="toolbar"></ng-container>
@@ -149,7 +153,10 @@
   </mat-sidenav>
 
   <mat-sidenav-content class="sidenav-content">
-    <safe-breadcrumb></safe-breadcrumb>
+    <ui-breadcrumbs
+      *ngIf="breadcrumbs.length > 1"
+      [breadcrumbs]="breadcrumbs"
+    ></ui-breadcrumbs>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 

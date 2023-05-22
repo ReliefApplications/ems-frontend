@@ -7,7 +7,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacySliderModule as MatSliderModule } from '@angular/material/legacy-slider';
+import { SliderModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MapClorophletDivisionModule } from '../map-clorophlet-division/map-clorophlet-division.module';
 import { SafeModalModule } from '../../../../ui/modal/modal.module';
@@ -26,7 +26,7 @@ import { SafeModalModule } from '../../../../ui/modal/modal.module';
     MatFormFieldModule,
     MatInputModule,
     MatTableModule,
-    MatSliderModule,
+    SliderModule,
     MatSelectModule,
     MapClorophletDivisionModule,
     SafeModalModule,

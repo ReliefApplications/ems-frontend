@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
 import { SafeFormBuilderModule } from '../../form-builder/form-builder.module';
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { SafeModalModule } from '../../ui/modal/modal.module';
 
 /**
@@ -100,7 +100,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
     SafeFormBuilderModule,
     SafeButtonModule,
     TranslateModule,
-    MatTooltipModule,
+    TooltipModule,
     SafeModalModule,
   ],
 })

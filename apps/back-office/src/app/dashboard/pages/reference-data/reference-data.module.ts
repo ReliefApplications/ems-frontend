@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReferenceDataRoutingModule } from './reference-data-routing.module';
 import { ReferenceDataComponent } from './reference-data.component';
 import { SafeAccessModule, SafeGraphQLSelectModule } from '@oort-front/safe';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -14,7 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { SafeIconModule } from '@oort-front/safe';
 import { GridModule } from '@progress/kendo-angular-grid';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { TextareaModule } from '@oort-front/ui';
 
@@ -27,7 +27,7 @@ import { TextareaModule } from '@oort-front/ui';
     CommonModule,
     ReferenceDataRoutingModule,
     SafeAccessModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
@@ -38,7 +38,7 @@ import { TextareaModule } from '@oort-front/ui';
     MatChipsModule,
     SafeIconModule,
     GridModule,
-    MatTooltipModule,
+    TooltipModule,
     SafeGraphQLSelectModule,
     ButtonModule,
     TextareaModule,

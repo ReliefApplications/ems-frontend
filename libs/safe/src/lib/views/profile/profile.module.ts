@@ -7,7 +7,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { SafeButtonModule } from '../../components/ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeProfileRoutingModule } from './profile-routing.module';
@@ -25,7 +25,7 @@ import { SafeProfileRoutingModule } from './profile-routing.module';
     MatInputModule,
     MatTableModule,
     MatButtonModule,
-    MatMenuModule,
+    MenuModule,
     ReactiveFormsModule,
     MatIconModule,
     SafeButtonModule,

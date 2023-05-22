@@ -1,72 +1,62 @@
-<mat-tab-group
+<ui-tabs
   class="grow"
-  vertical
-  animationDuration="0ms"
-  (selectedTabChange)="handleTabChange($event)"
+  [vertical]="true"
+  (selectedIndexChange)="handleTabChange($event)"
 >
   <!-- MAIN PARAMETERS / SELECTION OF LAYOUTS -->
-  <mat-tab>
-    <ng-template mat-tab-label>
+  <ui-tab>
+    <ng-container ngProjectAs="label">
       <safe-icon
         icon="preview"
         [size]="24"
-        matTooltip="{{ 'common.general' | translate }}"
-        matTooltipPosition="right"
+        uiTooltip="{{ 'common.general' | translate }}"
       ></safe-icon>
       <span>{{ 'common.general' | translate }}</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <safe-tab-main
-        [formGroup]="formGroup"
-        [resource]="resource"
-        [queries]="filteredQueries"
-        [templates]="templates"
-      ></safe-tab-main>
-    </ng-template>
-  </mat-tab>
+    </ng-container>
+    <safe-tab-main
+      [formGroup]="formGroup"
+      [resource]="resource"
+      [queries]="filteredQueries"
+      [templates]="templates"
+    ></safe-tab-main>
+  </ui-tab>
   <!-- AVAILABLE ACTIONS -->
-  <mat-tab [disabled]="formGroup.value.aggregations.length > 0">
-    <ng-template mat-tab-label>
+  <ui-tab [disabled]="formGroup.value.aggregations.length > 0">
+    <ng-container ngProjectAs="label">
       <safe-icon
         icon="toggle_on"
         [size]="24"
-        matTooltip="{{
+        uiTooltip="{{
           'components.widget.settings.grid.actions.title' | translate
         }}"
-        matTooltipPosition="right"
       ></safe-icon>
       <span>{{
         'components.widget.settings.grid.actions.title' | translate
       }}</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <safe-tab-actions [formGroup]="formGroup"></safe-tab-actions>
-    </ng-template>
-  </mat-tab>
+    </ng-container>
+    <safe-tab-actions [formGroup]="formGroup"></safe-tab-actions>
+  </ui-tab>
   <!-- BUTTONS -->
-  <mat-tab [disabled]="formGroup.value.aggregations.length > 0">
-    <ng-template mat-tab-label>
+  <ui-tab [disabled]="formGroup.value.aggregations.length > 0">
+    <ng-container ngProjectAs="label">
       <safe-icon
         icon="bolt"
         [size]="24"
-        matTooltip="{{
+        uiTooltip="{{
           'components.widget.settings.grid.buttons.title' | translate
         }}"
-        matTooltipPosition="right"
       ></safe-icon>
       <span>{{
         'components.widget.settings.grid.buttons.title' | translate
       }}</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <safe-tab-buttons
-        [formGroup]="formGroup"
-        [fields]="fields"
-        [templates]="appTemplates"
-        [distributionLists]="distributionLists"
-        [relatedForms]="relatedForms"
-        [channels]="channels"
-      ></safe-tab-buttons>
-    </ng-template>
-  </mat-tab>
-</mat-tab-group>
+    </ng-container>
+    <safe-tab-buttons
+      [formGroup]="formGroup"
+      [fields]="fields"
+      [templates]="appTemplates"
+      [distributionLists]="distributionLists"
+      [relatedForms]="relatedForms"
+      [channels]="channels"
+    ></safe-tab-buttons>
+  </ui-tab>
+</ui-tabs>

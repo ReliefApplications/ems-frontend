@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResourcesRoutingModule } from './resources-routing.module';
 import { ResourcesComponent } from './resources.component';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -30,11 +30,11 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     ResourcesRoutingModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     MatTableModule,
     MatIconModule,
     MatDialogModule,
-    MatMenuModule,
+    MenuModule,
     MatSortModule,
     MatInputModule,
     MatDatepickerModule,
@@ -47,6 +47,8 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
+    FormWrapperModule,
+    IconModule,
   ],
   exports: [ResourcesComponent],
 })
