@@ -50,4 +50,4 @@ import { TabsModule } from './tabs/tabs.module';
   ],
   imports: [],
 })
-export class IconModule {}
+export class UiModule {}
