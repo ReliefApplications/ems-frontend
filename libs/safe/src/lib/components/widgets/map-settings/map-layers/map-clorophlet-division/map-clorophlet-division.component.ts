@@ -2,7 +2,6 @@ import { Component, Inject } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { divisionForm } from '../../map-forms';
-import { Variant } from '@oort-front/ui';
 
 /** Interface of dialog data of the component */
 interface DialogData {
@@ -25,7 +24,6 @@ export class MapClorophletDivisionComponent {
   public fields: any[] = [];
   public query: any;
 
-  public variant = Variant;
 
   /**
    * Single clorophlet configuration component.

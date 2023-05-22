@@ -13,7 +13,7 @@ import {
 } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../../services/confirm/confirm.service';
-import { Variant, Category } from '@oort-front/ui';
+
 
 /** Model for dialog data */
 interface DialogData {
@@ -36,9 +36,7 @@ export class SafeTileDataComponent implements AfterViewInit {
   @ViewChild('settingsContainer', { read: ViewContainerRef })
   settingsContainer: any;
 
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
+  
 
   /**
    * Constructor of a data tile

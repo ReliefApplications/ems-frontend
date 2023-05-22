@@ -13,7 +13,6 @@ import {
   GetApplicationFeaturesQueryResponse,
   GET_APPLICATION_FEATURES,
 } from '../graphql/queries';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Features tab of Role Summary component.
@@ -35,10 +34,6 @@ export class RoleFeaturesComponent implements OnInit {
 
   // search query
   public search = '';
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Features tab of Role Summary component.

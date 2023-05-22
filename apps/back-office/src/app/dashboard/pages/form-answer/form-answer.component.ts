@@ -1,7 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Variant, Category } from '@oort-front/ui';
 
 import {
   Form,
@@ -30,10 +29,6 @@ export class FormAnswerComponent implements OnInit {
   public id = '';
   public form?: Form;
   public completed = false;
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Form answer page component.

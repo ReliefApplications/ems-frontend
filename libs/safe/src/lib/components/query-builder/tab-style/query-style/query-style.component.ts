@@ -8,7 +8,6 @@ import {
   ChecklistDatabase,
   TreeItemFlatNode,
 } from '../../../checkbox-tree/checkbox-tree.component';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Query style component.
@@ -30,10 +29,6 @@ export class SafeQueryStyleComponent implements OnInit {
   @Output() closeEdition = new EventEmitter<any>();
 
   checklist!: ChecklistDatabase;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Constructor for the query style component

@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { clorophletForm } from '../../map-forms';
-import { Variant, Category } from '@oort-front/ui';
+
 
 /**
  * List of clorophlets in Map Settings
@@ -21,9 +21,7 @@ export class MapClorophletsComponent {
 
   public tableColumns = ['name', 'actions'];
 
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
+  
 
   /**
    * List of clorophlets in Map Settings

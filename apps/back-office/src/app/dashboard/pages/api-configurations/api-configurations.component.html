@@ -18,8 +18,8 @@
       <ui-button
         class="max-sm:!w-auto"
         icon="filter_list"
-        [category]="category.TERTIARY"
-        [variant]="variant.PRIMARY"
+        [category]="'tertiary'"
+        [variant]="'primary'"
         (click)="showFilters = !showFilters"
       >
         {{
@@ -55,7 +55,7 @@
       </mat-form-field>
       <!-- Clear filters -->
       <ui-button
-        [variant]="variant.DANGER"
+        [variant]="'danger'"
         (click)="clearAllFilters()"
         class="max-sm:!w-auto"
         >{{ 'common.filter.clear' | translate }}</ui-button
@@ -66,8 +66,8 @@
   <div class="flex items-center">
     <ui-button
       icon="add"
-      [category]="category.SECONDARY"
-      [variant]="variant.PRIMARY"
+      [category]="'secondary'"
+      [variant]="'primary'"
       (click)="onAdd()"
       *ngIf="'create' | able : 'ApiConfiguration'"
     >

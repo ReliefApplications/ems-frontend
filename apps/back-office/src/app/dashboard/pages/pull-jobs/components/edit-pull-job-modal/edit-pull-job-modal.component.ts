@@ -54,8 +54,6 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
 import {
   TooltipModule,
   ButtonModule,
-  Variant,
-  Category,
   ExpansionPanelModule,
 } from '@oort-front/ui';
 
@@ -120,10 +118,6 @@ export class EditPullJobModalComponent implements OnInit {
 
   // === RAW JSON UTILITY ===
   public openRawJSON = false;
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /** @returns pull job mapping as form array */
   get mappingArray(): UntypedFormArray {

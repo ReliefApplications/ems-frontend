@@ -4,7 +4,7 @@ import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/leg
 import { CommonModule } from '@angular/common';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { SafeFilterModule } from '../../../filter/filter.module';
-import { ButtonModule, Variant, Category } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Interface of component dialog data */
 interface DialogData {
@@ -25,10 +25,6 @@ interface DialogData {
 export class EditRoleAutoAssignmentModalComponent {
   public formGroup!: UntypedFormGroup;
   public fields: any[] = [];
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Modal interface to edit auto assignment rule of roles.

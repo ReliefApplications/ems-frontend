@@ -2,7 +2,6 @@ import { Component, Inject } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { markerRuleForm } from '../../map-forms';
-import { Variant } from '@oort-front/ui';
 
 /** Interface of dialog data of the component */
 interface DialogData {
@@ -25,8 +24,6 @@ export class MapMarkerRuleComponent {
 
   public fields: any[] = [];
   public query: any;
-
-  public variant = Variant;
 
   /**
    * Single Marker Rule component.

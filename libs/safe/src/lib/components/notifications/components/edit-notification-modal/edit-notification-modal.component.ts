@@ -36,8 +36,6 @@ import {
   TooltipModule,
   RadioModule,
   ButtonModule,
-  Variant,
-  Category,
 } from '@oort-front/ui';
 
 /**
@@ -84,10 +82,6 @@ export class EditNotificationModalComponent
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public resource?: Resource;
   public layout?: Layout;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /** @returns application templates */
   get templates(): Template[] {

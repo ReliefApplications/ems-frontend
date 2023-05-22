@@ -9,8 +9,8 @@
       *ngIf="canUpdate"
       [isIcon]="true"
       icon="delete_outline"
-      [category]="category.PRIMARY"
-      [variant]="variant.DANGER"
+      [category]="'primary'"
+      [variant]="'danger'"
       [uiTooltip]="
         'common.deleteObject'
           | translate : { name: 'common.step.one' | translate }
@@ -22,8 +22,8 @@
       *ngIf="canUpdate"
       [isIcon]="true"
       icon="content_copy"
-      [category]="category.PRIMARY"
-      [variant]="variant.PRIMARY"
+      [category]="'primary'"
+      [variant]="'primary'"
       [disabled]="true"
     >
     </ui-button>

@@ -6,8 +6,8 @@
     <ui-button
       *ngIf="!largeDevice"
       [isIcon]="true"
-      [variant]="variant.LIGHT"
-      [size]="size.LARGE"
+      [variant]="'light'"
+      [size]="'large'"
       icon="menu"
       (click)="nav.toggle()"
       [uiTooltip]="
@@ -20,8 +20,8 @@
     </ui-button>
     <ui-button
       [isIcon]="true"
-      [size]="size.LARGE"
-      [variant]="variant.LIGHT"
+      [size]="'large'"
+      [variant]="'light'"
       icon="keyboard_backspace"
       (click)="goBack()"
       *ngIf="route"
@@ -45,7 +45,7 @@
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
     <ui-button
-      [size]="size.LARGE"
+      [size]="'large'"
       icon="arrow_drop_down"
       (click)="showAppMenu = !showAppMenu"
       cdkOverlayOrigin
@@ -70,17 +70,17 @@
     <div class="account-property">{{ account ? account.username : '' }}</div>
   </div>
   <ui-button
-    [size]="size.LARGE"
+    [size]="'large'"
     [isIcon]="true"
     icon="account_circle"
     [uiMenuTriggerFor]="accountMenu"
-    [variant]="variant.LIGHT"
+    [variant]="'light'"
   >
   </ui-button>
   <span class="relative">
     <ui-button
-      [size]="size.LARGE"
-      [variant]="variant.LIGHT"
+      [size]="'large'"
+      [variant]="'light'"
       [uiMenuTriggerFor]="notificationMenu"
       [disabled]="notifications.length === 0"
       [icon]="'notifications'"
@@ -136,8 +136,8 @@
     </div>
     <ui-button
       *ngIf="hasMoreNotifications"
-      [category]="category.PRIMARY"
-      [variant]="variant.PRIMARY"
+      [category]="'primary'"
+      [variant]="'primary'"
       class="!w-auto"
       [disabled]="loadingNotifications"
       [loading]="loadingNotifications"

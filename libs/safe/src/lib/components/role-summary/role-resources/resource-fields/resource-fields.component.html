@@ -32,7 +32,7 @@
             <ui-button
               [isIcon]="true"
               [icon]="element.canSee ? 'visibility' : 'visibility_off'"
-              [variant]="element.canSee ? variant.PRIMARY : variant.GREY"
+              [variant]="element.canSee ? 'primary' : 'grey'"
               [disabled]="disabled"
               [uiTooltip]="
                 (element.canSee
@@ -46,7 +46,7 @@
             <ui-button
               [isIcon]="true"
               [icon]="element.canUpdate ? 'edit' : 'edit_off'"
-              [variant]="element.canUpdate ? variant.PRIMARY : variant.GREY"
+              [variant]="element.canUpdate ? 'primary' : 'grey'"
               [disabled]="disabled"
               [uiTooltip]="
                 (element.canUpdate

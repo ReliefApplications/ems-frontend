@@ -1,6 +1,5 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_LEGACY_SNACK_BAR_DATA as MAT_SNACK_BAR_DATA } from '@angular/material/legacy-snack-bar';
-import { Size } from '@oort-front/ui';
 
 /**
  * Interface that describes the structure of the data displayed in the snackbar
@@ -21,7 +20,6 @@ interface SnackBarData {
   styleUrls: ['./snackbar-spinner.component.scss'],
 })
 export class SafeSnackbarSpinnerComponent {
-  size = Size;
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.

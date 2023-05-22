@@ -24,7 +24,6 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Dashboard page.
@@ -53,10 +52,6 @@ export class DashboardComponent
 
   @ViewChild(SafeWidgetGridComponent)
   widgetGridComponent!: SafeWidgetGridComponent;
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Dashboard page.

@@ -15,7 +15,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Variant, Category } from '@oort-front/ui';
+
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -67,9 +67,7 @@ export class UserListComponent
 
   public selection = new SelectionModel<User>(true, []);
 
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
+  
 
   /**
    * Users list component

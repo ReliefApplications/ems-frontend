@@ -22,8 +22,8 @@
       <div class="flex justify-center mt-4">
         <ui-button
           class="max-w-xs grow"
-          [category]="category.TERTIARY"
-          [variant]="variant.PRIMARY"
+          [category]="'tertiary'"
+          [variant]="'primary'"
           (click)="addLayout()"
           >{{
             'components.widget.settings.grid.layouts.add.title' | translate
@@ -42,8 +42,8 @@
       <div class="flex justify-center mt-4">
         <ui-button
           class="max-w-xs grow"
-          [category]="category.TERTIARY"
-          [variant]="variant.PRIMARY"
+          [category]="'tertiary'"
+          [variant]="'primary'"
           (click)="addAggregation()"
           >{{ 'components.aggregation.add.title' | translate }}</ui-button
         >
@@ -62,14 +62,14 @@
       </mat-select>
       <ui-button
         matSuffix
-        [variant]="variant.PRIMARY"
+        [variant]="'primary'"
         [isIcon]="true"
         icon="edit"
         (click)="editLayout()"
       ></ui-button>
       <ui-button
         matSuffix
-        [variant]="variant.DANGER"
+        [variant]="'danger'"
         [isIcon]="true"
         icon="close"
         (click)="
@@ -130,14 +130,14 @@
       </mat-select>
       <ui-button
         matSuffix
-        [variant]="variant.PRIMARY"
+        [variant]="'primary'"
         [isIcon]="true"
         icon="edit"
         (click)="editAggregation()"
       ></ui-button>
       <ui-button
         matSuffix
-        [variant]="variant.DANGER"
+        [variant]="'danger'"
         [isIcon]="true"
         icon="close"
         (click)="form.get('aggregation')?.setValue(null)"

@@ -19,7 +19,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeModalModule } from '../ui/modal/modal.module';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { ButtonModule, Variant, Category } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -60,10 +60,6 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
 
   /** tinymce editor */
   public editor: any = FIELD_EDITOR_CONFIG;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Modal to edit Calculated field.

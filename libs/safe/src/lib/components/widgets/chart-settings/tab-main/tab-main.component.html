@@ -47,14 +47,14 @@
         </mat-select>
         <ui-button
           matSuffix
-          [variant]="variant.PRIMARY"
+          [variant]="'primary'"
           [isIcon]="true"
           icon="edit"
           (click)="editAggregation()"
         ></ui-button>
         <ui-button
           matSuffix
-          [variant]="variant.DANGER"
+          [variant]="'danger'"
           [isIcon]="true"
           icon="close"
           (click)="formGroup.get('chart.aggregationId')?.setValue(null)"
@@ -69,8 +69,8 @@
     <ng-container *ngIf="!formGroup.value.chart.aggregationId">
       <ui-button
         class="!w-auto"
-        [category]="category.TERTIARY"
-        [variant]="variant.PRIMARY"
+        [category]="'tertiary'"
+        [variant]="'primary'"
         (click)="addAggregation()"
         >{{ 'components.aggregation.add.title' | translate }}</ui-button
       >

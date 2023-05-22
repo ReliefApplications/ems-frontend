@@ -21,7 +21,7 @@ import {
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
 import { firstValueFrom } from 'rxjs';
-import { Variant, Category } from '@oort-front/ui';
+
 
 /**
  * Single Item component of Summary card widget.
@@ -42,9 +42,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
 
   @Input() headerTemplate?: TemplateRef<any>;
 
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
+  
 
   /**
    * Single item component of summary card widget.

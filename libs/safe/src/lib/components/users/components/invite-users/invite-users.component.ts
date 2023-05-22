@@ -17,7 +17,7 @@ import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.serv
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UploadEvent } from '@progress/kendo-angular-upload';
-import { Variant, Category } from '@oort-front/ui';
+
 
 /** Model fot the input data */
 interface DialogData {
@@ -46,9 +46,7 @@ export class SafeInviteUsersComponent {
 
   @ViewChild('fileReader') fileReader: any;
 
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
+  
 
   /** @returns The position attributes available */
   get positionAttributes(): UntypedFormArray | null {

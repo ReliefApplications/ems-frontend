@@ -22,7 +22,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { ButtonModule, Variant, Category } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Scroll Factory for material select, provided by the component.
@@ -84,10 +84,6 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
 
   @ViewChild('settingsContainer', { read: ViewContainerRef })
   settingsContainer: any;
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is

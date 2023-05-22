@@ -12,7 +12,6 @@ import {
   GetCustomNotificationsQueryResponse,
   GET_CUSTOM_NOTIFICATIONS,
 } from './graphql/queries';
-import { Variant, Category } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -44,10 +43,6 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     length: 0,
     endCursor: '',
   };
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Custom notifications table component.

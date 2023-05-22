@@ -25,7 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { Variant, Category, Size, Breadcrumb } from '@oort-front/ui';
+import { Breadcrumb } from '@oort-front/ui';
 import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 
 /**
@@ -85,10 +85,6 @@ export class SafeLayoutComponent
   // === APP SEARCH ===
   public showAppMenu = false;
 
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
-  public size = Size;
   // === BREADCRUMB ===
   public breadcrumbs: Breadcrumb[] = [];
 

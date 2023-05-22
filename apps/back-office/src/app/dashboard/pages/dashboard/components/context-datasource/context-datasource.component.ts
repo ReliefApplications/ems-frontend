@@ -36,7 +36,7 @@ import {
   GET_RESOURCE,
   GET_RESOURCES,
 } from './graphql/queries';
-import { ButtonModule, Variant, Category } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Default items per resources query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -103,10 +103,6 @@ export class ContextDatasourceComponent
   resourceSelect?: SafeGraphQLSelectComponent;
   @ViewChild(SafeGraphQLSelectComponent)
   refDataSelect?: SafeGraphQLSelectComponent;
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   // Available fields
   public availableFields: string[] = [];

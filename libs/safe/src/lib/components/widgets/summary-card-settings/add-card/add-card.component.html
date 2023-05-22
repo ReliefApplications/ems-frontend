@@ -38,7 +38,7 @@
         type="text"
         [placeholder]="'common.placeholder.search' | translate"
       />
-      <ui-spinner [size]="size.SMALL" *ngIf="loading" uiSuffix></ui-spinner>
+      <ui-spinner [size]="'small'" *ngIf="loading" uiSuffix></ui-spinner>
     </div>
     <div class="card-templates">
       <ng-container *ngIf="loading">
@@ -65,8 +65,8 @@
     <mat-divider></mat-divider>
     <ui-button
       class="!w-auto"
-      [variant]="variant.PRIMARY"
-      [category]="category.SECONDARY"
+      [variant]="'primary'"
+      [category]="'secondary'"
       (click)="onCreate()"
     >
       {{

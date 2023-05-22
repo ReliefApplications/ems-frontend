@@ -4,7 +4,6 @@ import { isEqual, sortBy } from 'lodash';
 import { Resource } from '../../../../models/resource.model';
 import { Role } from '../../../../models/user.model';
 import { FormControl } from '@angular/forms';
-import { Variant, Category } from '@oort-front/ui';
 
 type ResourceField = {
   name: string;
@@ -36,10 +35,6 @@ export class ResourceFieldsComponent implements OnInit {
 
   public fields = new MatTableDataSource<ResourceField[]>([]);
   public displayedColumns: string[] = ['name', 'actions'];
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   ngOnInit() {
     this.fields.data = sortBy(

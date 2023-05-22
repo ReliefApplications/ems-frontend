@@ -31,9 +31,7 @@ import {
   TooltipModule,
   RadioModule,
   IconModule,
-  Variant,
   ButtonModule,
-  Category,
 } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
@@ -75,10 +73,6 @@ export class AddFormModalComponent implements OnInit {
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
   public templates: any[] = [];
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   @ViewChild('resourceSelect') resourceSelect?: MatSelect;
 

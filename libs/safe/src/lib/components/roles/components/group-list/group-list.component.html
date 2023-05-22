@@ -16,8 +16,8 @@
     <ui-button
       [disabled]="loading || loadingFetch"
       [icon]="manualCreation ? 'add' : 'cloud_download'"
-      [category]="category.SECONDARY"
-      [variant]="variant.PRIMARY"
+      [category]="'secondary'"
+      [variant]="'primary'"
       (click)="manualCreation ? onAdd() : onFetchFromService()"
     >
       {{

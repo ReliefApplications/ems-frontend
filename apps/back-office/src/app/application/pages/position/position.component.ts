@@ -9,7 +9,6 @@ import {
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { takeUntil } from 'rxjs/operators';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Application position component.
@@ -27,10 +26,6 @@ export class PositionComponent
   public loading = true;
   public positionCategories: any[] = [];
   public displayedColumns = ['title', 'actions'];
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Application position component

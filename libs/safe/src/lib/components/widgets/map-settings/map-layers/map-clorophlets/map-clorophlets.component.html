@@ -26,14 +26,14 @@
             <ui-button
               [isIcon]="true"
               icon="edit"
-              [category]="category.PRIMARY"
+              [category]="'primary'"
               (click)="editClorophlet(i)"
             ></ui-button>
             <ui-button
               [isIcon]="true"
               icon="delete"
-              [category]="category.PRIMARY"
-              [variant]="variant.DANGER"
+              [category]="'primary'"
+              [variant]="'danger'"
               (click)="removeClorophlet(i)"
             ></ui-button>
           </div>
@@ -47,8 +47,8 @@
 </div>
 <ui-button
   class="!w-auto"
-  [category]="category.TERTIARY"
-  [variant]="variant.PRIMARY"
+  [category]="'tertiary'"
+  [variant]="'primary'"
   (click)="addClorophlet()"
   >{{
     'components.widget.settings.map.layers.clorophlet.add' | translate

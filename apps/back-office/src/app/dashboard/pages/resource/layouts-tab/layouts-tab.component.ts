@@ -17,7 +17,6 @@ import {
   GetResourceByIdQueryResponse,
   GET_RESOURCE_LAYOUTS,
 } from './graphql/queries';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Layouts tab of resource page
@@ -43,10 +42,6 @@ export class LayoutsTabComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /** @returns True if the layouts tab is empty */
   get empty(): boolean {

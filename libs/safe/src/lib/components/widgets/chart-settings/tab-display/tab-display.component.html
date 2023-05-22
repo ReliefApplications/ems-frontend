@@ -103,8 +103,8 @@
                     <ui-button
                       icon="format_bold"
                       (click)="onToggleStyle('title.bold')"
-                      [category]="control.value ? category.SECONDARY : category.TERTIARY"
-                      [variant]="control.value && category.PRIMARY"
+                      [category]="control.value ? 'secondary' : 'tertiary'"
+                      [variant]="control.value && 'primary'"
                       [disabled]="control.disabled"
                     ></ui-button>
                   </ng-container>
@@ -114,8 +114,8 @@
                     <ui-button
                       icon="format_italic"
                       (click)="onToggleStyle('title.italic')"
-                      [category]="control.value ? category.SECONDARY : category.TERTIARY"
-                      [variant]="control.value && variant.PRIMARY"
+                      [category]="control.value ? 'secondary' : 'tertiary'"
+                      [variant]="control.value && 'primary'"
                       [disabled]="control.disabled"
                     ></ui-button>
                   </ng-container>
@@ -125,8 +125,8 @@
                     <ui-button
                       (click)="onToggleStyle('title.underline')"
                       icon="format_underline"
-                      [category]="control.value ? category.SECONDARY : category.TERTIARY"
-                      [variant]="control.value && variant.PRIMARY"
+                      [category]="control.value ? 'secondary' : 'tertiary'"
+                      [variant]="control.value && 'primary'"
                       [disabled]="control.disabled"
                     ></ui-button>
                   </ng-container>

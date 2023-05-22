@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
 import { addFieldsForm } from '../../aggregation-builder-forms';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Add Fields aggregation pipeline stage.
@@ -16,10 +15,6 @@ export class SafeAddFieldStageComponent {
   @Input() fields: any[] = [];
   @Input() operators: any;
   @Input() displayName = true;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Adds new addField configuration to the pipeline.

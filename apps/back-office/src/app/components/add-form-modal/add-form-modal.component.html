@@ -26,7 +26,7 @@
               <ui-icon
                 [size]="18"
                 icon="info_outline"
-                [variant]="variant.GREY"
+                [variant]="'grey'"
                 [uiTooltip]="
                   'components.form.create.tooltip.resource' | translate
                 "
@@ -43,7 +43,7 @@
               <ui-icon
                 [size]="18"
                 icon="info_outline"
-                [variant]="variant.GREY"
+                [variant]="'grey'"
                 [uiTooltip]="
                   'components.form.create.tooltip.inherit' | translate
                 "
@@ -116,12 +116,10 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <ui-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</ui-button>
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
     <ui-button
-      [category]="category.SECONDARY"
-      [variant]="variant.PRIMARY"
+      [category]="'secondary'"
+      [variant]="'primary'"
       [mat-dialog-close]="form.value"
       cdkFocusInitial
       [disabled]="!form.valid"

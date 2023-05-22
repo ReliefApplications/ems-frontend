@@ -55,7 +55,6 @@ import {
   MatLegacySnackBarRef as MatSnackBarRef,
   LegacyTextOnlySnackBar as TextOnlySnackBar,
 } from '@angular/material/legacy-snack-bar';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Factory for creating scroll strategy
@@ -219,10 +218,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() admin = false;
   private columnsOrder: any[] = [];
   @Output() columnChange = new EventEmitter();
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   // === SNACKBAR ===
   private snackBarRef: MatSnackBarRef<TextOnlySnackBar> | undefined;

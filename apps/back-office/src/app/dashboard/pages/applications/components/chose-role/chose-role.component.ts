@@ -12,7 +12,6 @@ import {
 
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { Role } from '@oort-front/safe';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Chose role component, to preview application with selected role.
@@ -32,10 +31,6 @@ export class ChoseRoleComponent implements OnInit {
 
   // === ROLES QUERY ===
   public rolesQuery!: QueryRef<GetRolesQueryResponse>;
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Chose role component, to preview application with selected role.

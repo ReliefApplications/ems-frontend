@@ -24,7 +24,6 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Number of items per page.
@@ -55,9 +54,6 @@ export class AddPageComponent
   };
   private loading = true;
   public loadingMore = false;
-
-  public category = Category;
-  public variant = Variant;
 
   @ViewChild('formSelect') formSelect?: MatSelect;
 

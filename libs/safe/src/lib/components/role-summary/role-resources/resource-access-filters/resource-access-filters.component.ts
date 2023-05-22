@@ -19,7 +19,6 @@ import {
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { SafeRestService } from '../../../../services/rest/rest.service';
 import { firstValueFrom } from 'rxjs';
-import { Variant, Category } from '@oort-front/ui';
 
 type AccessPermissions = {
   access: Access;
@@ -94,10 +93,6 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
   // === TABLE ELEMENTS ===
   public displayedColumns: string[] = ['filter', 'actions'];
   public filters = new MatTableDataSource<AccessPermissions>([]);
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Modal for the definition of access/permissions for a given resource

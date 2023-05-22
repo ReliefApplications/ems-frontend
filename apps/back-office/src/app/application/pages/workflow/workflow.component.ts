@@ -25,7 +25,6 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Application workflow page component.
@@ -59,10 +58,6 @@ export class WorkflowComponent
   // === DUP APP SELECTION ===
   public showAppMenu = false;
   public applications: Application[] = [];
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Application workflow page component

@@ -76,15 +76,15 @@
         <safe-icon
           icon="info"
           class="cursor-pointer"
-          variant="grey"
+          variant="'grey'"
           matSuffix
           [uiTooltip]="'models.dashboard.context.datasource.info' | translate"
         ></safe-icon>
       </mat-form-field>
     </form>
     <ui-button
-      [category]="category.SECONDARY"
-      [variant]="variant.PRIMARY"
+      [category]="'secondary'"
+      [variant]="'primary'"
       (click)="onSubmit()"
       cdkFocusInitial
       [disabled]="!form.valid || !!form.get('displayField')?.disabled"

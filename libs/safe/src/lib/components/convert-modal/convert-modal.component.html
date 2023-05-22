@@ -15,18 +15,28 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <div class="flex flex-col mb-5 gap-1" formControlName="copyRecord" uiRadioGroupDirective="copyRecordOptions">
-            <ui-radio [value]="true" [checked]="convertForm.get('copyRecord')?.value === true">
+          <div
+            class="flex flex-col mb-5 gap-1"
+            formControlName="copyRecord"
+            uiRadioGroupDirective="copyRecordOptions"
+          >
+            <ui-radio
+              [value]="true"
+              [checked]="convertForm.get('copyRecord')?.value === true"
+            >
               <ng-container ngProjectAs="label">
                 {{ 'components.record.convert.choice.copy' | translate }}
               </ng-container>
             </ui-radio>
-            <ui-radio [value]="false" [checked]="convertForm.get('copyRecord')?.value === false">
+            <ui-radio
+              [value]="false"
+              [checked]="convertForm.get('copyRecord')?.value === false"
+            >
               <ng-container ngProjectAs="label">
                 {{ 'components.record.convert.choice.overwrite' | translate }}
               </ng-container>
             </ui-radio>
-          </div>        
+          </div>
         </div>
       </form>
     </div>
@@ -44,8 +54,8 @@
         'common.close' | translate
       }}</ui-button>
       <ui-button
-        [category]="category.SECONDARY"
-        [variant]="variant.PRIMARY"
+        [category]="'secondary'"
+        [variant]="'primary'"
         [mat-dialog-close]="convertForm.value"
         cdkFocusInitial
         [disabled]="!convertForm.valid"

@@ -14,7 +14,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeModalModule } from '../../ui/modal/modal.module';
 import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { ButtonModule, Variant, Category } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -47,10 +47,6 @@ interface DialogData {
 export class SafeEditAggregationModalComponent implements OnInit {
   public formGroup!: UntypedFormGroup;
   public resource!: Resource;
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   // public templates: any[] = [];
   // public layoutPreviewData!: { form: FormGroup; defaultLayout: any };

@@ -5,8 +5,8 @@
   <div class="flex items-center">
     <ui-button
       icon="add"
-      [category]="category.SECONDARY"
-      [variant]="variant.PRIMARY"
+      [category]="'secondary'"
+      [variant]="'primary'"
       (click)="onAdd()"
       *ngIf="'create' | able : 'Form'"
     >

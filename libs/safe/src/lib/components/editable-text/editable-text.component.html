@@ -22,7 +22,7 @@
         matSuffix
         [isIcon]="true"
         icon="done"
-        [variant]="variant.PRIMARY"
+        [variant]="'primary'"
         [disabled]="!formControl.valid"
         (click)="onChange.emit(formControl.value)"
       >
@@ -32,7 +32,7 @@
         matSuffix
         [isIcon]="true"
         icon="close"
-        [variant]="variant.DANGER"
+        [variant]="'danger'"
         (click)="onChange.emit()"
       >
       </ui-button>

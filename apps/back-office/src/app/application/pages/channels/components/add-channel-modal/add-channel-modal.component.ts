@@ -21,8 +21,6 @@ import {
   DividerModule,
   MenuModule,
   ButtonModule,
-  Variant,
-  Category,
 } from '@oort-front/ui';
 
 /**
@@ -55,10 +53,6 @@ import {
 export class AddChannelModalComponent implements OnInit {
   // === REACTIVE FORM ===
   channelForm: UntypedFormGroup = new UntypedFormGroup({});
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Add channel component

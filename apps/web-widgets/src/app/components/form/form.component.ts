@@ -5,7 +5,6 @@ import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
 } from './graphql/queries';
-import { Variant, Category } from '@oort-front/ui';
 
 /** Form component */
 @Component({
@@ -24,10 +23,6 @@ export class FormComponent implements OnInit, OnChanges {
   public form?: Form;
   public completed = false;
   public hideNewRecord = false;
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Form component

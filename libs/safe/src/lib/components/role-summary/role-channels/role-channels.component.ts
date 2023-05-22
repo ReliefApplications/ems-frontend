@@ -8,7 +8,6 @@ import { Role } from '../../../models/user.model';
 import { GetChannelsQueryResponse, GET_CHANNELS } from '../graphql/queries';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Channels tab of Role Summary.
@@ -39,10 +38,6 @@ export class RoleChannelsComponent
       this.form?.get('email')?.disable();
     }
   }
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Channels tab of Role Summary.

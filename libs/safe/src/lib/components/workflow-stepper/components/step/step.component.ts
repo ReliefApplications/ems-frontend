@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CONTENT_TYPES, IContentType } from '../../../../models/page.model';
 import { Step } from '../../../../models/step.model';
-import { Variant, Category } from '@oort-front/ui';
+
 
 /** Component for steps in workflow */
 @Component({
@@ -16,9 +16,7 @@ export class SafeStepComponent {
   @Output() delete = new EventEmitter();
   @Output() duplicate = new EventEmitter();
 
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
+  
 
   /** @returns The type of the step */
   get type(): IContentType | undefined {

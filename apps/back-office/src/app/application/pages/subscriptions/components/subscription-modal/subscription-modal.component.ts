@@ -53,8 +53,6 @@ import {
   MenuModule,
   TooltipModule,
   ButtonModule,
-  Variant,
-  Category,
 } from '@oort-front/ui';
 
 /** Items per query for pagination */
@@ -112,10 +110,6 @@ export class SubscriptionModalComponent
     hasNextPage: true,
   };
   private applicationsLoading = true;
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   @ViewChild('applicationSelect') applicationSelect?: MatAutocomplete;
 

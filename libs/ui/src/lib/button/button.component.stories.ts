@@ -6,10 +6,10 @@ import {
 } from '@storybook/angular';
 import { ButtonComponent } from './button.component';
 import { ButtonModule } from './button.module';
-import { Category } from '../shared/category.enum';
-import { Size } from '../shared/size.enum';
-import { ButtonIconPosition } from './enums/button-icon-position.enum';
-import { Variant } from '../shared/variant.enum';
+import { categories } from '../types/category';
+import { sizes } from '../types/size';
+import { buttonIconPositions } from './types/button-icon-position';
+import { variants } from '../types/variant';
 import { IconModule } from '../icon/icon.module';
 import { SpinnerModule } from '../spinner/spinner.module';
 
@@ -29,30 +29,30 @@ export default {
   ],
   argTypes: {
     category: {
-      options: Object.keys(Category),
+      options: categories,
       control: {
         type: 'select',
       },
     },
     variant: {
-      options: Object.keys(Variant),
+      options: variants,
       control: {
         type: 'select',
       },
-      defaultValue: Variant.DEFAULT,
+      defaultValue: 'default',
     },
     size: {
-      options: Object.keys(Size),
+      options: sizes,
       control: {
         type: 'select',
       },
     },
     iconPosition: {
-      options: Object.keys(ButtonIconPosition),
+      options: buttonIconPositions,
       control: {
         type: 'select',
       },
-      defaultValue: ButtonIconPosition.PREFIX,
+      defaultValue: 'prefix',
     },
     icon: {
       control: 'text',
@@ -84,27 +84,30 @@ export default {
  */
 const primaryButton = {
   label: 'Primary button',
-  category: Category.PRIMARY,
-  variant: Variant.DEFAULT,
-  size: Size.MEDIUM,
+  category: 'primary',
+  variant: 'default',
+  size: 'medium',
+  icon: null,
 };
 /**
  * Secondary button
  */
 const secondaryButton = {
   label: 'Secondary button',
-  category: Category.SECONDARY,
-  variant: Variant.DEFAULT,
-  size: Size.MEDIUM,
+  category: 'secondary',
+  variant: 'default',
+  size: 'medium',
+  icon: null,
 };
 /**
  * Tertiary button
  */
 const tertiaryButton = {
   label: 'Tertiary button',
-  category: Category.TERTIARY,
-  variant: Variant.DEFAULT,
-  size: Size.MEDIUM,
+  category: 'tertiary',
+  variant: 'default',
+  size: 'medium',
+  icon: null,
 };
 
 /**
@@ -125,7 +128,7 @@ const Template: StoryFn<StoryType> = (args: StoryType) => {
     template: `<ui-button 
     (click)="testClick()" 
     [disabled]="${args.disabled}"
-    [icon]="'${args.icon}'"
+    [icon]="${args.icon}"
     [isIcon]="${args.isIcon}" 
     [size]="'${args.size}'" 
     [variant]="'${args.variant}'" 
@@ -142,17 +145,17 @@ const Template: StoryFn<StoryType> = (args: StoryType) => {
 /** Primary button */
 export const Primary = Template.bind({});
 Primary.args = {
-  ...primaryButton,
+  ...(primaryButton as any),
 };
 
 /** Secondary button */
 export const Secondary = Template.bind({});
 Secondary.args = {
-  ...secondaryButton,
+  ...(secondaryButton as any),
 };
 
 /** Tertiary button */
 export const Tertiary = Template.bind({});
 Tertiary.args = {
-  ...tertiaryButton,
+  ...(tertiaryButton as any),
 };

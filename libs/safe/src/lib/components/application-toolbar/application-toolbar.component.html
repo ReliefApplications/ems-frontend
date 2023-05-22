@@ -9,7 +9,7 @@
       *ngIf="settings.length > 0"
       [isIcon]="true"
       icon="tune"
-      [variant]="variant.GREY"
+      [variant]="'grey'"
       [uiMenuTriggerFor]="settingsMenu"
     ></ui-button>
     <!-- Access -->
@@ -25,16 +25,16 @@
       *ngIf="application?.canUpdate && locked"
       [isIcon]="true"
       icon="lock"
-      [variant]="lockedByUser ? variant.PRIMARY : variant.DANGER"
+      [variant]="lockedByUser ? 'primary' : 'danger'"
       (click)="onUnlock()"
     >
     </ui-button>
-    <ui-button [variant]="variant.DANGER" (click)="onClose()">{{
+    <ui-button [variant]="'danger'" (click)="onClose()">{{
       'common.close' | translate
     }}</ui-button>
     <ui-button
-      [category]="category.SECONDARY"
-      [variant]="variant.SUCCESS"
+      [category]="'secondary'"
+      [variant]="'success'"
       (click)="onPublish()"
       [disabled]="!canPublish || this.application?.status === 'active'"
       >{{ 'common.publish' | translate }}</ui-button

@@ -7,12 +7,12 @@
         [formControl]="search"
         type="text"
       />
-      <ui-spinner [size]="size.SMALL" *ngIf="loading" uiSuffix></ui-spinner>
+      <ui-spinner [size]="'small'" *ngIf="loading" uiSuffix></ui-spinner>
     </div>
     <ui-button
       icon="filter_list"
-      [category]="category.TERTIARY"
-      [variant]="variant.PRIMARY"
+      [category]="'tertiary'"
+      [variant]="'primary'"
       (click)="show = !show"
     >
       {{
@@ -39,8 +39,8 @@
             {{ 'common.clear' | translate }}
           </ui-button>
           <ui-button
-            [category]="category.SECONDARY"
-            [variant]="variant.PRIMARY"
+            [category]="'secondary'"
+            [variant]="'primary'"
             matDateRangePickerApply
           >
             {{ 'common.filter.apply' | translate }}
@@ -48,7 +48,7 @@
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
-    <ui-button [variant]="variant.DANGER" (click)="clear()">
+    <ui-button [variant]="'danger'" (click)="clear()">
       {{ 'common.filter.clear' | translate }}
     </ui-button>
   </div>

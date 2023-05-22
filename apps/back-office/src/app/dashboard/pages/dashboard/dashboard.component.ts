@@ -46,7 +46,6 @@ import { Observable } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
-import { Variant, Category } from '@oort-front/ui';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -94,10 +93,6 @@ export class DashboardComponent
   public contextId = new FormControl<string | number | null>(null);
   public refDataValueField = '';
   public contextRecord: Record | null = null;
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Dashboard page

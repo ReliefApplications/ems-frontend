@@ -22,7 +22,7 @@
                 : 'visibility_off'
             "
             [variant]="
-              accessiblePages.includes(element.id) ? variant.PRIMARY : variant.GREY
+              accessiblePages.includes(element.id) ? 'primary' : 'grey'
             "
             (click)="onEditAccess(element)"
             [disabled]="loading"
@@ -86,7 +86,7 @@
                       : 'visibility_off'
                   "
                   [variant]="
-                    accessibleSteps.includes(element.id) ? variant.PRIMARY : variant.GREY
+                    accessibleSteps.includes(element.id) ? 'primary' : 'grey'
                   "
                   (click)="onEditStepAccess(element)"
                   [disabled]="loading"

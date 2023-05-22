@@ -35,7 +35,7 @@
     </div>
     <div mat-dialog-actions align="end">
       <ui-button
-        [category]="category.SECONDARY"
+        [category]="'secondary'"
         cdkFocusInitial
         (click)="onSearch()"
         *ngIf="data.targetFormQuery"
@@ -46,8 +46,8 @@
         'common.cancel' | translate
       }}</ui-button>
       <ui-button
-        [category]="category.SECONDARY"
-        [variant]="variant.PRIMARY"
+        [category]="'secondary'"
+        [variant]="'primary'"
         [mat-dialog-close]="chooseRecordForm.value"
         cdkFocusInitial
         [disabled]="!chooseRecordForm.valid"

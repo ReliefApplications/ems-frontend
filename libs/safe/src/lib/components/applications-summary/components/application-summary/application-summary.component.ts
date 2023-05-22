@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Application } from '../../../../models/application.model';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * This interface describes the data structure of the status of the application
@@ -27,10 +26,6 @@ export class SafeApplicationSummaryComponent {
   @Output() delete = new EventEmitter();
   @Output() clone = new EventEmitter();
   @Output() editAccess = new EventEmitter();
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   statuses: IStatus[] = [
     {

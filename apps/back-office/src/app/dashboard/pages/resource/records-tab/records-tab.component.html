@@ -5,8 +5,8 @@
     <ui-button
       *ngIf="resource.canUpdate && !showDeletedRecords"
       icon="search_off"
-      [category]="category.PRIMARY"
-      [variant]="variant.DANGER"
+      [category]="'primary'"
+      [variant]="'danger'"
       (click)="onSwitchView($event)"
     >
       {{ 'components.records.showArchived' | translate }}
@@ -14,16 +14,16 @@
     <ui-button
       *ngIf="resource.canUpdate && showDeletedRecords"
       icon="restore_page"
-      [category]="category.PRIMARY"
-      [variant]="variant.SUCCESS"
+      [category]="'primary'"
+      [variant]="'success'"
       (click)="onSwitchView($event)"
     >
       {{ 'components.records.showActive' | translate }}
     </ui-button>
     <ui-button
       icon="file_download"
-      [category]="category.SECONDARY"
-      [variant]="variant.PRIMARY"
+      [category]="'secondary'"
+      [variant]="'primary'"
       [uiMenuTriggerFor]="menu"
     >
       {{
@@ -37,8 +37,8 @@
     </ui-menu>
     <ui-button
       icon="file_upload"
-      [category]="category.SECONDARY"
-      [variant]="variant.PRIMARY"
+      [category]="'secondary'"
+      [variant]="'primary'"
       [uiTooltip]="'components.records.upload.hint' | translate"
       (click)="showUpload = !showUpload"
       cdkOverlayOrigin

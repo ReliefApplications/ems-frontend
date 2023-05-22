@@ -8,8 +8,8 @@
     <ui-icon
       class="flex"
       [ngClass]="{
-        'order-1': iconPosition === buttonIconPosition.PREFIX,
-        'order-2': iconPosition === buttonIconPosition.SUFFIX
+        'order-1': iconPosition === 'prefix',
+        'order-2': iconPosition === 'suffix'
       }"
       [icon]="icon"
       [size]="iconSize"
@@ -21,8 +21,8 @@
   <ng-container *ngIf="loading">
     <ui-spinner
       [ngClass]="{
-        'order-1': iconPosition === buttonIconPosition.PREFIX,
-        'order-2': iconPosition === buttonIconPosition.SUFFIX
+        'order-1': iconPosition === 'prefix',
+        'order-2': iconPosition === 'suffix'
       }"
       [size]="size"
       [variant]="variant"
@@ -31,8 +31,8 @@
   </ng-container>
   <span
     [ngClass]="{
-      'order-1': iconPosition === buttonIconPosition.SUFFIX,
-      'order-2': iconPosition === buttonIconPosition.PREFIX
+      'order-1': iconPosition === 'suffix',
+      'order-2': iconPosition === 'prefix'
     }"
   >
     <ng-container *ngIf="!isIcon">

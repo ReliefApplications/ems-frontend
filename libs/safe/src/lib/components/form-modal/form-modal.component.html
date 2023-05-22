@@ -13,9 +13,7 @@
         [selectedIndex]="selectedTabIndex"
         (selectedIndexChange)="onShowPage($event)"
       >
-        <ui-tab
-          *ngFor="let page of pages$ | async"
-        >
+        <ui-tab *ngFor="let page of pages$ | async">
           <ng-container ngProjectAs="label">
             {{ page.title ? page.title : page.name }}
             <safe-icon
@@ -36,13 +34,13 @@
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <ui-button (click)="onClose()" [variant]="variant.DANGER">{{
+    <ui-button (click)="onClose()" [variant]="'danger'">{{
       'common.cancel' | translate
     }}</ui-button>
     <ng-container *ngIf="pages$ | async as pages">
       <ui-button
-        [category]="category.SECONDARY"
-        [variant]="variant.PRIMARY"
+        [category]="'secondary'"
+        [variant]="'primary'"
         *ngIf="pages.length > 1"
         (click)="survey && survey.prevPage()"
         cdkFocusInitial
@@ -51,8 +49,8 @@
         {{ 'common.previous' | translate }}
       </ui-button>
       <ui-button
-        [category]="category.SECONDARY"
-        [variant]="variant.PRIMARY"
+        [category]="'secondary'"
+        [variant]="'primary'"
         *ngIf="pages.length > 1"
         (click)="survey && survey.nextPage()"
         cdkFocusInitial
@@ -62,8 +60,8 @@
       </ui-button>
     </ng-container>
     <ui-button
-      [category]="category.SECONDARY"
-      [variant]="variant.PRIMARY"
+      [category]="'secondary'"
+      [variant]="'primary'"
       [disabled]="saving"
       (click)="submit()"
       cdkFocusInitial

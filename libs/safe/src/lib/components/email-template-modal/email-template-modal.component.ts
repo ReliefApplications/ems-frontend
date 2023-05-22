@@ -15,7 +15,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { ButtonModule, Variant, Category } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Interface for the dialog data input */
 interface DialogData {
@@ -42,10 +42,6 @@ interface DialogData {
 export class EmailTemplateModalComponent implements OnInit {
   public templates: any[] = [];
   public form!: UntypedFormGroup;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Component for choosing an email template to send an email with

@@ -14,7 +14,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SafeModalModule } from '../../ui/modal/modal.module';
-import { MenuModule, ButtonModule, Variant, Category } from '@oort-front/ui';
+import { MenuModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * Interface for the data injected into the modal.
@@ -49,10 +49,6 @@ interface MappingDialogData {
 export class SafeMappingModalComponent implements OnInit {
   public form: UntypedFormGroup = new UntypedFormGroup({});
   public isNew = false;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Constructor of the SafeMappingModalComponent.

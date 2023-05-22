@@ -9,7 +9,6 @@ import get from 'lodash/get';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Layouts list configuration for grid widgets
@@ -31,10 +30,6 @@ export class LayoutTableComponent
   layouts: Layout[] = [];
   allLayouts: Layout[] = [];
   columns: string[] = ['name', 'createdAt', '_actions'];
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Constructor of the layout list component

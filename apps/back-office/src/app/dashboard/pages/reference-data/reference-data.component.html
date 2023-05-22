@@ -97,8 +97,8 @@
           </div>
           <ui-button
             *ngIf="!loadingFields"
-            [category]="category.SECONDARY"
-            [variant]="variant.PRIMARY"
+            [category]="'secondary'"
+            [variant]="'primary'"
             (click)="$event.preventDefault(); getFields()"
             class="mx-auto my-1"
           >
@@ -120,8 +120,8 @@
         ></textarea>
       </mat-form-field>
       <ui-button
-        [category]="category.SECONDARY"
-        [variant]="variant.PRIMARY"
+        [category]="'secondary'"
+        [variant]="'primary'"
         (click)="onValidateCSV()"
       >
         {{ 'pages.referenceData.validateCsv' | translate }}
@@ -194,8 +194,8 @@
   <!-- Submit button -->
   <ui-button
     class="!w-auto"
-    [category]="category.SECONDARY"
-    [variant]="variant.PRIMARY"
+    [category]="'secondary'"
+    [variant]="'primary'"
     (click)="onSave()"
     [disabled]="referenceForm.invalid || !referenceForm.dirty"
   >

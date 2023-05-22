@@ -9,7 +9,7 @@ import { EmbeddedViewRef } from '@angular/core';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Question, QuestionText } from '../types';
 import { SafeIconComponent } from '../../components/ui/icon/icon.component';
-import { ButtonComponent, Category, Size } from '@oort-front/ui';
+import { ButtonComponent } from '@oort-front/ui';
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 
@@ -221,8 +221,8 @@ export const init = (Survey: any, domService: DomService): void => {
           const instance: ButtonComponent = button.instance;
           instance.isIcon = true;
           instance.icon = 'open_in_new';
-          instance.size = Size.SMALL;
-          instance.category = Category.TERTIARY;
+          instance.size = 'small';
+          instance.category = 'tertiary';
           // we override the css of the component
           const domElem = (button.hostView as EmbeddedViewRef<any>)
             .rootNodes[0] as HTMLElement;

@@ -9,7 +9,6 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { Application } from '../../models/application.model';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Applications Menu, visible in Front-Office
@@ -33,10 +32,6 @@ export class SafeSearchMenuComponent implements OnInit {
   public currentApplication: Application | undefined;
   public searchResults: any = [];
   public search = '';
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /** Listening to the click event on the component and setting the show variable to true. */
   @HostListener('click')

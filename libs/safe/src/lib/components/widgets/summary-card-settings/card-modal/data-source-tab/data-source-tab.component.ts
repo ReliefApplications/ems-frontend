@@ -9,7 +9,7 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SafeGridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';
 import { SafeAggregationService } from '../../../../../services/aggregation/aggregation.service';
 import { get } from 'lodash';
-import { Variant, Category } from '@oort-front/ui';
+
 
 /**
  * How many resources.forms will be shown on the selector.
@@ -37,9 +37,7 @@ export class SafeDataSourceTabComponent implements OnInit {
   // === DATA ===
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
+  
 
   /**
    * SafeDataSourceTabComponent constructor

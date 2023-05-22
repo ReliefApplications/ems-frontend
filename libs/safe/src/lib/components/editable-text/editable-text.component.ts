@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Component to editable texts: display the text,
@@ -21,10 +20,6 @@ export class SafeEditableTextComponent implements OnInit {
   @Output() onChange = new EventEmitter<string>();
   @Output() formActiveEvent = new EventEmitter<boolean>();
   public formControl!: FormControl;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    *  Component to editable texts: display the text,

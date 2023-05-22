@@ -27,7 +27,6 @@ import {
   EDIT_STEP_ACCESS,
 } from '../../graphql/mutations';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
-import { Variant, Category } from '@oort-front/ui';
 
 /** Component for the workflows section of the roles features */
 @Component({
@@ -60,10 +59,6 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
   public openedWorkflowId = '';
   public accessiblePages: string[] = [];
   public filteredPages = this.pages;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Component for the workflows section of the roles features

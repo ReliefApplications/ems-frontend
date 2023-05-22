@@ -6,8 +6,8 @@
     <div class="flex gap-4 flex-col" *ngIf="!nextStep">
       <!-- LOAD FROM EXISTING LAYOUT -->
       <ui-button
-        [variant]="variant.PRIMARY"
-        [category]="category.SECONDARY"
+        [variant]="'primary'"
+        [category]="'secondary'"
         class="!w-auto"
         (click)="nextStep = true"
         [disabled]="!hasLayouts"
@@ -17,8 +17,8 @@
       >
       <!-- ADD A NEW LAYOUT -->
       <ui-button
-        [variant]="variant.PRIMARY"
-        [category]="category.TERTIARY"
+        [variant]="'primary'"
+        [category]="'tertiary'"
         class="!w-auto"
         (click)="onCreate()"
         >{{

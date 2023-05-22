@@ -6,7 +6,7 @@
         *ngIf="appLayout && canAddPage"
         [isIcon]="true"
         icon="add"
-        [variant]="variant.GREY"
+        [variant]="'grey'"
         [uiTooltip]="'models.page.add' | translate"
         routerLink="./add-page"
         (click)="largeDevice ? null : nav.toggle()"
@@ -88,8 +88,8 @@
         <ui-button
           class="my-4"
           icon="add"
-          [category]="category.SECONDARY"
-          [variant]="variant.PRIMARY"
+          [category]="'secondary'"
+          [variant]="'primary'"
           routerLink="./add-page"
           (click)="largeDevice ? null : nav.toggle()"
         >

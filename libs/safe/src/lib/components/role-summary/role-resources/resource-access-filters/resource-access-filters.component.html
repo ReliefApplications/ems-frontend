@@ -27,8 +27,8 @@
         <th mat-header-cell *matHeaderCellDef class="text-end w-16">
           <ui-button
             [disabled]="disabled"
-            [variant]="variant.PRIMARY"
-            [category]="category.TERTIARY"
+            [variant]="'primary'"
+            [category]="'tertiary'"
             (click)="save()"
             >{{ 'common.save' | translate }}</ui-button
           >
@@ -74,8 +74,8 @@
             <ui-button
               *ngIf="i === openedFilterIndex"
               [disabled]="disabled"
-              [variant]="variant.DANGER"
-              [category]="category.SECONDARY"
+              [variant]="'danger'"
+              [category]="'secondary'"
               icon="delete"
               (click)="deleteFilter(i)"
               class="w-fit"
@@ -103,8 +103,8 @@
 </div>
 <ui-button
   [disabled]="disabled"
-  [variant]="variant.PRIMARY"
-  [category]="category.SECONDARY"
+  [variant]="'primary'"
+  [category]="'secondary'"
   (click)="addFilter()"
   class="self-center"
 >

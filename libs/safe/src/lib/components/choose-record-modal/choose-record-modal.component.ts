@@ -27,7 +27,7 @@ import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.mod
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { ButtonModule, Variant, Category } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.
@@ -102,10 +102,6 @@ export class SafeChooseRecordModalComponent
   public loading = true;
   public isSearchActivated = false;
   public selectedRows: any[] = [];
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is

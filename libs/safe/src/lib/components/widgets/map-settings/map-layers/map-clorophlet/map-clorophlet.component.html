@@ -13,7 +13,7 @@
         formControlName="name"
       />
     </mat-form-field>
-    <ui-button [category]="category.TERTIARY" (click)="fileInput.click()">{{
+    <ui-button [category]="'tertiary'" (click)="fileInput.click()">{{
       form.value.geoJSONname
         ? form.value.geoJSONname
         : ('common.uploadObject'
@@ -98,14 +98,14 @@
                 <ui-button
                   [isIcon]="true"
                   icon="edit"
-                  [category]="category.PRIMARY"
+                  [category]="'primary'"
                   (click)="editDivision(i)"
                 ></ui-button>
                 <ui-button
                   [isIcon]="true"
                   icon="delete"
-                  [category]="category.PRIMARY"
-                  [variant]="variant.DANGER"
+                  [category]="'primary'"
+                  [variant]="'danger'"
                   (click)="removeDivision(i)"
                 ></ui-button>
               </div>
@@ -119,8 +119,8 @@
     </div>
     <ui-button
       class="!w-auto"
-      [category]="category.TERTIARY"
-      [variant]="variant.PRIMARY"
+      [category]="'tertiary'"
+      [variant]="'primary'"
       (click)="addDivision()"
       >{{
         'components.widget.settings.map.layers.clorophlet.division.add'
@@ -133,8 +133,8 @@
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button
-      [category]="category.SECONDARY"
-      [variant]="variant.PRIMARY"
+      [category]="'secondary'"
+      [variant]="'primary'"
       [mat-dialog-close]="form.value"
       [disabled]="form.invalid"
     >

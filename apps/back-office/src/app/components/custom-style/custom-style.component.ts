@@ -15,7 +15,7 @@ import { Apollo } from 'apollo-angular';
 import { UploadApplicationStyleMutationResponse } from './graphql/mutations';
 import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ButtonModule, Variant, Category } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -50,10 +50,6 @@ export class CustomStyleComponent
   };
   private styleApplied: HTMLStyleElement;
   private savedStyle = '';
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.

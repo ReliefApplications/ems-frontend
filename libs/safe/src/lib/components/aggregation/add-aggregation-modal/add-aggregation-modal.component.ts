@@ -22,7 +22,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { SafeModalModule } from '../../ui/modal/modal.module';
 import { SafeGraphQLSelectModule } from '../../../components/graphql-select/graphql-select.module';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Variant, Category, ButtonModule } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Data needed for the dialog, should contain an aggregations array, a form and a resource
@@ -63,10 +63,6 @@ export class AddAggregationModalComponent implements OnInit {
   public queryRef!: QueryRef<GetResourceAggregationsResponse>;
 
   public selectedAggregationControl = new UntypedFormControl('');
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /** Reference to graphql select for layout */
   @ViewChild(SafeGraphQLSelectComponent)

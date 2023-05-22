@@ -40,19 +40,19 @@
     <ui-button
       *ngIf="pages.length > 1"
       [disabled]="survey.isFirstPage"
-      [variant]="variant.PRIMARY"
+      [variant]="'primary'"
       (click)="survey.prevPage()"
       >{{ 'common.previous' | translate }}</ui-button
     >
     <ui-button
       *ngIf="pages.length > 1"
       [disabled]="survey.isLastPage"
-      [variant]="variant.PRIMARY"
+      [variant]="'primary'"
       (click)="survey.nextPage()"
       >{{ 'common.next' | translate }}</ui-button
     >
   </ng-container>
-  <ui-button [variant]="variant.PRIMARY" [category]="category.SECONDARY" (click)="submit()">{{
+  <ui-button [variant]="'primary'" [category]="'secondary'" (click)="submit()">{{
     'common.save' | translate
   }}</ui-button>
 </div>

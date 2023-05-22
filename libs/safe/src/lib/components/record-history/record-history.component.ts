@@ -25,7 +25,6 @@ import { Version } from '../../models/form.model';
 import { Subject } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -81,10 +80,6 @@ export class SafeRecordHistoryComponent
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /** @returns filename from current date and record inc. id */
   get fileName(): string {

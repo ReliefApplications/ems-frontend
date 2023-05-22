@@ -18,13 +18,7 @@ import { SafeModalModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  ButtonModule,
-  Variant,
-  Category,
-  MenuModule,
-  SpinnerModule,
-} from '@oort-front/ui';
+import { ButtonModule, MenuModule, SpinnerModule } from '@oort-front/ui';
 
 /**
  * Add new application position component (modal)
@@ -54,10 +48,6 @@ import {
 export class PositionModalComponent implements OnInit {
   // === REACTIVE FORM ===
   positionForm: UntypedFormGroup = new UntypedFormGroup({});
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Add new application position component

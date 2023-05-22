@@ -22,7 +22,6 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { ContextService } from '../../services/context/context.service';
-import { Variant, Category } from '@oort-front/ui';
 
 /**  Dashboard contextual filter component. */
 @Component({
@@ -47,10 +46,6 @@ export class DashboardFilterComponent
   public containerWidth!: string;
   public containerHeight!: string;
   private value: any;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   // Survey
   public survey: Survey.Model = new Survey.Model();

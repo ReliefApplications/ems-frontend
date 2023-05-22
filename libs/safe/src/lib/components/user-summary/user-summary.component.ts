@@ -11,7 +11,6 @@ import {
 import { GetUserQueryResponse, GET_USER } from './graphql/queries';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
-import { Size } from '@oort-front/ui';
 
 /**
  * User Summary shared component.
@@ -26,7 +25,6 @@ export class SafeUserSummaryComponent implements OnInit {
   @Input() application?: Application;
   public user?: User;
   public loading = true;
-  size = Size;
 
   /** @returns title of the page */
   get title(): string {

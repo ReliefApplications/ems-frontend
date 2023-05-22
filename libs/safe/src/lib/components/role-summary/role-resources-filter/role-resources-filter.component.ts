@@ -4,9 +4,7 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
 } from '@angular/forms';
-import { Size } from '@oort-front/ui';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Role filter component
@@ -17,16 +15,11 @@ import { Variant, Category } from '@oort-front/ui';
   styleUrls: ['./role-resources-filter.component.scss'],
 })
 export class FilterComponent implements OnInit {
+  @Output() filter = new EventEmitter<any>();
+  @Input() loading = false;
   public form!: UntypedFormGroup;
   public search = new UntypedFormControl('');
   public show = false;
-  size = Size;
-  @Output() filter = new EventEmitter<any>();
-  @Input() loading = false;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Role filter component

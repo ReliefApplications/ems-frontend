@@ -6,7 +6,6 @@ import {
 } from '@angular/material/legacy-dialog';
 import { EMAIL_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
-import { Variant, Category } from '@oort-front/ui';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {
@@ -31,10 +30,6 @@ export class SafeEmailPreviewComponent implements OnInit {
 
   /** tinymce editor */
   public editor: any = EMAIL_EDITOR_CONFIG;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Preview Email component.

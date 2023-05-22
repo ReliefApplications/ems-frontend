@@ -8,7 +8,7 @@
       </ui-toggle>
       <ui-button
         icon="remove_circle_outline"
-        [variant]="variant.DANGER"
+        [variant]="'danger'"
         (click)="emitDeleteButton()"
       >
         {{ 'common.delete' | translate }}
@@ -165,7 +165,7 @@
             <ui-button
               [isIcon]="true"
               icon="remove_circle_outline"
-              [variant]="variant.DANGER"
+              [variant]="'danger'"
               (click)="onDeleteModification(i)"
             >
             </ui-button>
@@ -173,7 +173,7 @@
           <ui-button
             [isIcon]="true"
             icon="add_circle_outline"
-            [variant]="variant.PRIMARY"
+            [variant]="'primary'"
             (click)="onAddModification()"
           >
           </ui-button>
@@ -360,7 +360,7 @@
             matSuffix
             [isIcon]="true"
             icon="add_circle_outline"
-            [variant]="variant.PRIMARY"
+            [variant]="'primary'"
             (click)="$event.stopPropagation(); addDistributionList()"
             [uiTooltip]="'components.distributionLists.edit.new' | translate"
           >
@@ -394,7 +394,7 @@
             matSuffix
             [isIcon]="true"
             icon="add_circle_outline"
-            [variant]="variant.PRIMARY"
+            [variant]="'primary'"
             (click)="$event.stopPropagation(); addEmailTemplate()"
             [uiTooltip]="'components.templates.edit.new' | translate"
           >

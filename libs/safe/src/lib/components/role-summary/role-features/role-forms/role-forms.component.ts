@@ -9,7 +9,6 @@ import {
 import { Role } from '../../../../models/user.model';
 import { Page } from '../../../../models/page.model';
 import { get } from 'lodash';
-import { Variant, Category } from '@oort-front/ui';
 
 /** Component for the forms section of the roles features */
 @Component({
@@ -28,10 +27,6 @@ export class RoleFormsComponent implements OnInit, OnChanges {
   public displayedColumns = ['name', 'actions'];
   public accessiblePages: string[] = [];
   public filteredPages = this.pages;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   ngOnInit(): void {
     this.accessiblePages = this.filteredPages

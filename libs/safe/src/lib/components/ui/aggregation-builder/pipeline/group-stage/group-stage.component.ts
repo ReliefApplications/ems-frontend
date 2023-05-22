@@ -10,7 +10,6 @@ import { groupByRuleForm } from '../../aggregation-builder-forms';
 import { Accumulators, DateOperators } from '../expressions/operators';
 import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Group Stage pipeline component.
@@ -29,10 +28,6 @@ export class SafeGroupStageComponent
   public operators = Accumulators;
   public dateOperators = DateOperators;
   public usedDateFields: string[] = [];
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /** @returns this for as form group */
   get formGroup() {

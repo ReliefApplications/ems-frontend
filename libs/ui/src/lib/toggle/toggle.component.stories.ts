@@ -1,8 +1,8 @@
 import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
 import { ToggleComponent } from './toggle.component';
 import { ToggleModule } from './toggle.module';
-import { ToggleType } from './enums/toggle-type.enum';
-import { Variant } from '../shared/variant.enum';
+import { toggleTypes } from './types/toggle-type';
+import { variants } from '../types/variant';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 export default {
@@ -10,13 +10,13 @@ export default {
   component: ToggleComponent,
   argTypes: {
     type: {
-      options: ToggleType,
+      options: toggleTypes,
       control: {
         type: 'select',
       },
     },
     variant: {
-      options: Variant,
+      options: variants,
       control: {
         type: 'select',
       },
@@ -78,8 +78,8 @@ const FormControlTemplate: StoryFn<ToggleComponent> = (
 export const FormToggle = FormControlTemplate.bind({});
 FormToggle.args = {
   labelPosition: 'right',
-  variant: Variant.PRIMARY,
-  type: ToggleType.SIMPLE,
+  variant: 'primary',
+  type: 'simple',
 };
 
 /**
@@ -112,6 +112,6 @@ const PrimaryTemplate: StoryFn<ToggleComponent> = (args: ToggleComponent) => {
 export const Primary = PrimaryTemplate.bind({});
 Primary.args = {
   labelPosition: 'right',
-  variant: Variant.PRIMARY,
-  type: ToggleType.SIMPLE,
+  variant: 'primary',
+  type: 'simple',
 };

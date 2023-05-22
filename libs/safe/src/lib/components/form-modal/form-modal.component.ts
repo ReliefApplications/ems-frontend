@@ -43,7 +43,7 @@ import { CommonModule } from '@angular/common';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { TabsModule } from '@oort-front/ui';
+import { ButtonModule, TabsModule } from '@oort-front/ui';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
@@ -52,7 +52,6 @@ import { SafeModalModule } from '../ui/modal/modal.module';
 import { SpinnerModule } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
-import { Variant, Category, ButtonModule } from '@oort-front/ui';
 
 /**
  * Interface of Dialog data.
@@ -113,10 +112,6 @@ export class SafeFormModalComponent
   private temporaryFilesStorage: any = {};
 
   @ViewChild('formContainer') formContainer!: ElementRef;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Getter for the pages property

@@ -2,7 +2,7 @@ import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { CheckboxComponent } from './checkbox.component';
 import { CheckboxModule } from './checkbox.module';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Variant } from '../shared/variant.enum';
+import { variants } from '../types/variant';
 import { IconModule } from '../icon/icon.module';
 
 export default {
@@ -10,7 +10,7 @@ export default {
   component: CheckboxComponent,
   argTypes: {
     variant: {
-      options: Object.values(Variant),
+      options: variants,
       control: {
         type: 'select',
       },
@@ -48,7 +48,7 @@ export default {
  * @returns CheckboxComponent
  */
 const Template: StoryFn<CheckboxComponent> = (args: CheckboxComponent) => {
-  args.variant = Variant.DEFAULT;
+  args.variant = 'default';
   return {
     component: CheckboxComponent,
     template: `
@@ -83,7 +83,7 @@ const FormControlTemplate: StoryFn<CheckboxComponent> = (
   const formGroup = new FormGroup({
     checkbox: new FormControl(false),
   });
-  args.variant = Variant.DEFAULT;
+  args.variant = 'default';
   return {
     component: CheckboxComponent,
     template: `

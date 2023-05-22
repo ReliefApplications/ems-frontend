@@ -18,7 +18,7 @@ import { SafeAggregationService } from '../../../../services/aggregation/aggrega
 import { get } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { Variant, Category } from '@oort-front/ui';
+
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -46,9 +46,7 @@ export class TabMainComponent
   private reload = new Subject<boolean>();
   public reload$ = this.reload.asObservable();
 
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
+  
 
   /**
    * Main tab of chart settings modal.

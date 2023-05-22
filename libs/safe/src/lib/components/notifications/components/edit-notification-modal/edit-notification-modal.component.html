@@ -69,14 +69,14 @@
               </mat-select>
               <ui-button
                 matSuffix
-                [variant]="variant.PRIMARY"
+                [variant]="'primary'"
                 [isIcon]="true"
                 icon="edit"
                 (click)="editLayout()"
               ></ui-button>
               <ui-button
                 matSuffix
-                [variant]="variant.DANGER"
+                [variant]="'danger'"
                 [isIcon]="true"
                 icon="close"
                 (click)="removeLayout()"
@@ -87,8 +87,8 @@
             <!-- Layout is not selected yet -->
             <ui-button
               class="!w-auto"
-              [category]="category.TERTIARY"
-              [variant]="variant.PRIMARY"
+              [category]="'tertiary'"
+              [variant]="'primary'"
               (click)="addLayout()"
               >{{
                 'components.widget.settings.grid.layouts.add.title' | translate
@@ -123,7 +123,7 @@
             matSuffix
             [isIcon]="true"
             icon="add_circle_outline"
-            [variant]="variant.PRIMARY"
+            [variant]="'primary'"
             (click)="$event.stopPropagation(); addEmailTemplate()"
             [uiTooltip]="'components.templates.edit.new' | translate"
           >
@@ -136,7 +136,11 @@
           }}
         </h4>
         <!-- Recipients type -->
-        <div class="flex flex-col gap-2" formControlName="recipientsType" uiRadioGroupDirective="recipientsTypeOptions">
+        <div
+          class="flex flex-col gap-2"
+          formControlName="recipientsType"
+          uiRadioGroupDirective="recipientsTypeOptions"
+        >
           <!-- Using user field -->
           <!-- <ui-radio value="field">
             <ng-container ngProjectAs="label">
@@ -144,18 +148,32 @@
             </ng-container>
           </ui-radio> -->
           <!-- Using distribution list -->
-          <ui-radio value="distributionList" [checked]="formGroup.get('recipientsType')?.value === 'distributionList'">
+          <ui-radio
+            value="distributionList"
+            [checked]="
+              formGroup.get('recipientsType')?.value === 'distributionList'
+            "
+          >
             <ng-container ngProjectAs="label">
-              {{ 'components.customNotifications.edit.recipients.distributionList' | translate }}
+              {{
+                'components.customNotifications.edit.recipients.distributionList'
+                  | translate
+              }}
             </ng-container>
           </ui-radio>
           <!-- Using email -->
-          <ui-radio value="email" [checked]="formGroup.get('recipientsType')?.value === 'email'">
+          <ui-radio
+            value="email"
+            [checked]="formGroup.get('recipientsType')?.value === 'email'"
+          >
             <ng-container ngProjectAs="label">
-              {{ 'components.customNotifications.edit.recipients.email' | translate }}
+              {{
+                'components.customNotifications.edit.recipients.email'
+                  | translate
+              }}
             </ng-container>
           </ui-radio>
-        </div>  
+        </div>
         <!-- Recipients value -->
         <div class="mt-6 flex">
           <!-- Using user field -->
@@ -220,8 +238,8 @@
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button
-      [category]="category.SECONDARY"
-      [variant]="variant.PRIMARY"
+      [category]="'secondary'"
+      [variant]="'primary'"
       [mat-dialog-close]="formGroup.getRawValue()"
       [disabled]="!formGroup.valid"
     >

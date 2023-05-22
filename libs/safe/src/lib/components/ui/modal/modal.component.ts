@@ -1,7 +1,6 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { ModalSize } from './modal-size.enum';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Modal component, used as a generic wrapper for all modals
@@ -15,10 +14,6 @@ export class SafeModalComponent implements OnInit, OnChanges {
   @Input() closable = false;
   @Input() padding = true;
   @Input() size: ModalSize | string = '';
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Close material dialog.

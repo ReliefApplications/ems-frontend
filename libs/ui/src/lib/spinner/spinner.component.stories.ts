@@ -1,9 +1,9 @@
 import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
 import { SpinnerComponent } from './spinner.component';
 import { SpinnerModule } from './spinner.module';
-import { Size } from '../shared/size.enum';
-import { Variant } from '../shared/variant.enum';
-import { Category } from '../shared/category.enum';
+import { sizes } from '../types/size';
+import { variants } from '../types/variant';
+import { categories } from '../types/category';
 
 export default {
   title: 'SpinnerComponent',
@@ -15,17 +15,23 @@ export default {
   ],
   argTypes: {
     category: {
-      options: Category,
+      options: categories,
       control: {
         type: 'select',
       },
     },
     variant: {
-      options: Variant,
+      options: variants,
       control: {
         type: 'select',
       },
-      defaultValue: Variant.DEFAULT,
+      defaultValue: 'default',
+    },
+    size: {
+      options: sizes,
+      control: {
+        type: 'select',
+      },
     },
   },
 } as Meta<SpinnerComponent>;
@@ -35,19 +41,19 @@ export default {
  * Small spinner
  */
 const smallSpinner = {
-  size: Size.SMALL,
+  size: 'small',
 };
 /**
  * Medium spinner
  */
 const mediumSpinner = {
-  size: Size.MEDIUM,
+  size: 'medium',
 };
 /**
  * Large spinner
  */
 const largeSpinner = {
-  size: Size.LARGE,
+  size: 'large',
 };
 
 /**
@@ -63,17 +69,17 @@ const Template: StoryFn<SpinnerComponent> = (args: SpinnerComponent) => ({
 /** Small spinner */
 export const Small = Template.bind({});
 Small.args = {
-  ...smallSpinner,
+  ...(smallSpinner as any),
 };
 
 /** Medium spinner */
 export const Medium = Template.bind({});
 Medium.args = {
-  ...mediumSpinner,
+  ...(mediumSpinner as any),
 };
 
 /** Large spinner */
 export const Large = Template.bind({});
 Large.args = {
-  ...largeSpinner,
+  ...(largeSpinner as any),
 };

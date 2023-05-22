@@ -6,7 +6,6 @@ import {
   EventEmitter,
 } from '@angular/core';
 import { AlertVariant } from './alert-variant.enum';
-import { Variant, Category } from '@oort-front/ui';
 
 /** Simple alert message component */
 @Component({
@@ -26,10 +25,6 @@ export class SafeAlertComponent implements OnChanges {
 
   // alert is in closing animation
   closing = false;
-
-  // === UI VARIANT AND CATEGORY ===
-  public btnVariant = Variant;
-  public category = Category;
 
   ngOnChanges(): void {
     this.closing = false;

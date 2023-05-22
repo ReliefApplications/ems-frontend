@@ -12,7 +12,7 @@ import { SafeAlertModule } from '../../ui/alert/alert.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { ButtonModule, Variant, Category } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Cron expression form control modal
@@ -56,10 +56,6 @@ export class CronExpressionControlModalComponent {
     // standard or quartz
     cronFlavor: 'standard',
   };
-
-  // === BUTTON ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    *  Cron expression form control modal

@@ -28,7 +28,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { ButtonModule, Variant, Category } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Model for the data input */
 interface DialogData {
@@ -86,10 +86,6 @@ export class EditDistributionListModalComponent implements OnInit {
   }
 
   @ViewChild('emailsInput') emailsInput?: ElementRef<HTMLInputElement>;
-
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Component for edition of distribution list

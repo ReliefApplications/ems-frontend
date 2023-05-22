@@ -18,7 +18,7 @@ import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { Variant, Category } from '@oort-front/ui';
+
 
 /** Model for the input  */
 interface DialogData {
@@ -48,9 +48,7 @@ export class SafeAddUserComponent
       : null;
   }
 
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
+  
 
   /**
    * Constructor for the component

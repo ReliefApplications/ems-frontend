@@ -5,7 +5,7 @@ import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
 import { clorophletForm, divisionForm } from '../../map-forms';
-import { Variant, Category } from '@oort-front/ui';
+
 
 /** Interface of dialog data of the component */
 interface DialogData {
@@ -33,9 +33,7 @@ export class MapClorophletComponent {
   public geoJSONfields: string[] = [];
   public query: any;
 
-  // === UI VARIANT AND CATEGORY ===
-  public variant = Variant;
-  public category = Category;
+  
 
   /**
    * Clorophlet divisions as form array.

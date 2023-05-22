@@ -11,7 +11,6 @@ import {
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { takeUntil } from 'rxjs/operators';
-import { Variant, Category } from '@oort-front/ui';
 
 /**
  * Channels page component.
@@ -30,9 +29,6 @@ export class ChannelsComponent
   public channelsData: ChannelDisplay[] = [];
   public loading = true;
   public displayedColumns: string[] = ['title', 'subscribedRoles', 'actions'];
-
-  public variant = Variant;
-  public category = Category;
 
   /**
    * Channels page component
