@@ -346,6 +346,30 @@ export class SafeMapControlsService {
   }
 
   /**
+   * Adds custom zoom control (different from the leaflet default one
+   *
+   * @param map Leaflet map
+   */
+  public addControlPlaceholders(map: any) {
+    const corners = map._controlCorners,
+      l = 'leaflet-',
+      container = map._controlContainer;
+
+    /**
+     * Creates new corner for the map
+     *
+     * @param vSide vertical side
+     * @param hSide horizontal side
+     */
+    function createCorner(vSide: string, hSide: string) {
+      const className = l + vSide + ' ' + l + hSide;
+
+      corners[vSide + hSide] = L.DomUtil.create('div', className, container);
+    }
+    createCorner('verticalcenter', 'right');
+  }
+
+  /**
    * Add a zoom slider to control the zoom level of the map
    *
    * @param map map widget
@@ -361,47 +385,33 @@ export class SafeMapControlsService {
     currentZoom: number,
     mapEvent: EventEmitter<MapEvent>
   ) {
-    const zoomControl = new L.Control();
-    zoomControl.onAdd = () => {
-      const div = L.DomUtil.create('div', 'zoom-slider-control');
-      const component = this.domService.appendComponentToBody(
-        MapZoomComponent,
-        div
-      );
-      const instance: MapZoomComponent = component.instance;
-      instance.maxZoom = maxZoom;
-      instance.minZoom = minZoom;
-      instance.currentZoom = currentZoom;
-      instance.map = map;
-      instance.mapEvent = mapEvent;
-      return div;
-    };
-    zoomControl.addTo(map);
-    const container = zoomControl.getContainer();
-    if (container) {
-      // prevent click events from propagating to the map
-      container.addEventListener('click', (e: any) => {
-        L.DomEvent.stopPropagation(e);
-      });
-      // prevent mouse wheel events from propagating to the map
-      container.addEventListener('wheel', (e: any) => {
-        L.DomEvent.stopPropagation(e);
-      });
-
-      const mapBounds = map.getBounds();
-      const mapCenter = mapBounds.getCenter();
-      const containerWidth = container.offsetWidth;
-      const containerHeight = container.offsetHeight;
-
-      const containerPos = map.latLngToContainerPoint(mapCenter);
-      const leftOffset = containerPos.x - containerWidth / 2;
-      const topOffset = containerPos.y - containerHeight / 2;
-
-      container.style.left = leftOffset + 'px';
-      container.style.top = topOffset + 'px';
-      container.style.position = 'relative';
-      console.log(container.style, container, map.getContainer());
-    }
+    const domService = this.domService;
+    const customZoomControl = L.Control.extend({
+      options: {
+        position: 'verticalcenterright',
+      },
+      /**
+       * Adds the new custom control
+       *
+       * @returns the zoom slider control
+       */
+      onAdd: function () {
+        const div = L.DomUtil.create('div');
+        const component = domService.appendComponentToBody(
+          MapZoomComponent,
+          div
+        );
+        const instance: MapZoomComponent = component.instance;
+        instance.maxZoom = maxZoom;
+        instance.minZoom = minZoom;
+        instance.currentZoom = currentZoom;
+        instance.map = map;
+        instance.mapEvent = mapEvent;
+        L.DomEvent.addListener(div, 'mousedown', L.DomEvent.stopPropagation);
+        return div;
+      },
+    });
+    map.addControl(new customZoomControl());
   }
 
   /**

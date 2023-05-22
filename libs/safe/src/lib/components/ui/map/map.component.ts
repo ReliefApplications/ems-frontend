@@ -147,6 +147,9 @@ export class MapComponent
   private layerControl: any;
 
   // === Controls ===
+  // === POSITION
+  private customCornersAdded = false;
+
   // Search
   public searchControl?: L.Control;
   @Output() search = new EventEmitter();
@@ -315,6 +318,9 @@ export class MapComponent
       ),
       initialState.viewpoint.zoom
     );
+
+    if (!this.customCornersAdded)
+      this.mapControlsService.addControlPlaceholders(this.map);
 
     const promises: Promise<{
       basemaps?: L.Control.Layers.TreeObject[];

@@ -35,3 +35,13 @@
 ::ng-deep .leaflet-layerstree-expand-collapse {
   cursor: pointer;
 }
+
+::ng-deep .leaflet-verticalcenter {
+  position: absolute;
+  width: 100px !important;
+  z-index: 1000;
+  pointer-events: none;
+  top: 40%;
+  transform: translateY(-40%);
+  padding-top: 10px;
+}
