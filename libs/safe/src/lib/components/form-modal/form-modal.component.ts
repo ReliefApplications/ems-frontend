@@ -51,7 +51,7 @@ import { SafeModalModule } from '../ui/modal/modal.module';
 import { SpinnerModule } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
-import { UiModule, Variant } from '@oort-front/ui';
+import { Variant } from '@oort-front/ui';
 
 /**
  * Interface of Dialog data.

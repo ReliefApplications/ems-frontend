@@ -22,7 +22,6 @@ import { SafeGridModule } from '../../../ui/core-grid/grid/grid.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-mapping/series-mapping.module';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 /**
  * Main tab of chart settings modal.
