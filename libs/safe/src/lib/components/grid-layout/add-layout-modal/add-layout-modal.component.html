@@ -7,7 +7,7 @@
   <ng-container ngProjectAs="content">
     <div class="flex gap-4 flex-col" *ngIf="!nextStep">
       <!-- LOAD FROM EXISTING LAYOUT -->
-      <safe-button
+      <ui-button
         variant="primary"
         category="secondary"
         class="!w-auto"
@@ -15,10 +15,10 @@
         [disabled]="!hasLayouts"
         >{{
           'components.widget.settings.grid.layouts.add.choice.load' | translate
-        }}</safe-button
+        }}</ui-button
       >
       <!-- ADD A NEW LAYOUT -->
-      <safe-button
+      <ui-button
         variant="primary"
         category="tertiary"
         class="!w-auto"
@@ -26,16 +26,16 @@
         >{{
           'components.widget.settings.grid.layouts.add.choice.create'
             | translate
-        }}</safe-button
+        }}</ui-button
       >
     </div>
     <div *ngIf="nextStep">
       <div class="flex gap-4 mb-3 items-center">
-        <safe-button
+        <ui-button
           [isIcon]="true"
           icon="arrow_back"
           (click)="nextStep = false"
-        ></safe-button>
+        ></ui-button>
         <div>
           {{
             'components.widget.settings.grid.layouts.add.choice.load'
@@ -61,6 +61,6 @@
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <safe-button uiDialogClose>{{ 'common.close' | translate }}</safe-button>
+    <ui-button uiDialogClose>{{ 'common.close' | translate }}</ui-button>
   </ng-container>
 </ui-dialog>

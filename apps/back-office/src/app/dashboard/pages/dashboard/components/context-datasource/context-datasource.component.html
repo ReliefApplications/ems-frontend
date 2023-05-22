@@ -79,13 +79,13 @@
           <safe-icon
             icon="info"
             class="cursor-pointer"
-            variant="grey"
+            variant="'grey'"
             matSuffix
             [uiTooltip]="'models.dashboard.context.datasource.info' | translate"
           ></safe-icon>
         </mat-form-field>
       </form>
-      <safe-button
+      <ui-button
         category="secondary"
         variant="primary"
         (click)="onSubmit()"
@@ -99,7 +99,7 @@
             : 'models.dashboard.context.datasource.set'
           ) | translate
         }}
-      </safe-button>
+      </ui-button>
     </ng-container>
   </ng-container>
 </ui-dialog>

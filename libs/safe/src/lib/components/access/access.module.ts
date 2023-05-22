@@ -7,10 +7,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
-import { TooltipModule, MenuModule } from '@oort-front/ui';
+import { TooltipModule, MenuModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * SafeAccessModule is a class used to manage all the modules and components related to the access properties.
@@ -28,8 +27,8 @@ import { TooltipModule, MenuModule } from '@oort-front/ui';
     MatSelectModule,
     TooltipModule,
     MenuModule,
-    SafeButtonModule,
     TranslateModule,
+    ButtonModule,
   ],
   exports: [SafeAccessComponent],
 })

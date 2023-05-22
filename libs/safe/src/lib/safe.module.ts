@@ -11,7 +11,6 @@ import { SafeWidgetGridModule } from './components/widget-grid/widget-grid.modul
 import { SafeUsersModule } from './components/users/users.module';
 import { SafeRolesModule } from './components/roles/roles.module';
 import { SafeRecordHistoryModule } from './components/record-history/record-history.module';
-import { SafeButtonModule } from './components/ui/button/button.module';
 import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
 import { SafeWorkflowStepperModule } from './components/workflow-stepper/workflow-stepper.module';
 import { SafeApplicationsSummaryModule } from './components/applications-summary/applications-summary.module';
@@ -54,7 +53,6 @@ import { DashboardFilterModule } from './components/dashboard-filter/dashboard-f
     SafeUsersModule,
     SafeRolesModule,
     SafeRecordHistoryModule,
-    SafeButtonModule,
     SafeContentChoiceModule,
     SafeWorkflowStepperModule,
     SafeApplicationsSummaryModule,

@@ -14,15 +14,15 @@ import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { MAT_LEGACY_TOOLTIP_SCROLL_STRATEGY as MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/legacy-tooltip';
 import { createQueryForm } from '../query-builder/query-builder-forms';
 import { CommonModule } from '@angular/common';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { SafeQueryBuilderModule } from '../query-builder/query-builder.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { DialogModule } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Scroll Factory for material select, provided by the component.
@@ -53,13 +53,13 @@ interface DialogData {
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     SafeQueryBuilderModule,
     MatButtonModule,
     MatInputModule,
     TranslateModule,
-    SafeButtonModule,
     DialogModule,
+    ButtonModule,
   ],
   selector: 'safe-config-display-grid-fields-modal',
   templateUrl: './config-display-grid-fields-modal.component.html',

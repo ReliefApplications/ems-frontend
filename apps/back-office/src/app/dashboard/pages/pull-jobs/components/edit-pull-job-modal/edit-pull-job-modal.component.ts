@@ -41,16 +41,17 @@ import {
   SafeGraphQLSelectModule,
   SafeReadableCronModule,
   CronExpressionControlModule,
-  // @TODO: Remove SafeButtonModule and SafeIconModule imports after ui-button and ui-icon are being used in the app
-  SafeButtonModule,
   SafeIconModule,
 } from '@oort-front/safe';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { TooltipModule } from '@oort-front/ui';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
+import {
+  TooltipModule,
+  ButtonModule,
+  ExpansionPanelModule,
+} from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 
 /** Items per page for pagination */
@@ -74,11 +75,11 @@ const DEFAULT_FIELDS = ['createdBy'];
     MatInputModule,
     MatSelectModule,
     MatFormFieldModule,
-    MatExpansionModule,
+    ExpansionPanelModule,
     MatChipsModule,
     CronExpressionControlModule,
-    SafeButtonModule,
     SafeIconModule,
+    ButtonModule,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',

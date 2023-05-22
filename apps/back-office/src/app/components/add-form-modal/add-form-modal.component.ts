@@ -23,15 +23,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeGraphQLSelectModule,
   SafeIconModule,
-  // @TODO: Remove SafeButtonModule import after ui-button is being used in the app
-  SafeButtonModule,
 } from '@oort-front/safe';
 import {
   ToggleModule,
   TooltipModule,
   RadioModule,
   IconModule,
-  Variant,
+  ButtonModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef } from '@angular/cdk/dialog';
@@ -61,7 +59,7 @@ const ITEMS_PER_PAGE = 10;
     TooltipModule,
     RadioModule,
     IconModule,
-    SafeButtonModule,
+    ButtonModule,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',
@@ -75,9 +73,6 @@ export class AddFormModalComponent implements OnInit {
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
   public templates: any[] = [];
-
-  // === COLOR VARIANT ===
-  public colorVariant = Variant;
 
   @ViewChild('resourceSelect') resourceSelect?: MatSelect;
 

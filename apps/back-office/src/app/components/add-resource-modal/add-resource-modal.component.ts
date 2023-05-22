@@ -12,8 +12,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef } from '@angular/cdk/dialog';
-// @TODO: Remove SafeButtonModule import after ui-button is being used in the app
-import { SafeButtonModule } from '@oort-front/safe';
+import { ButtonModule } from '@oort-front/ui';
 /**
  * Modal to add a new resource.
  */
@@ -28,7 +27,7 @@ import { SafeButtonModule } from '@oort-front/safe';
     MatButtonModule,
     TranslateModule,
     DialogModule,
-    SafeButtonModule,
+    ButtonModule,
   ],
   selector: 'app-add-resource-modal',
   templateUrl: './add-resource-modal.component.html',

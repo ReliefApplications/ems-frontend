@@ -53,7 +53,7 @@
               </mat-option>
             </mat-optgroup>
           </mat-autocomplete>
-          <safe-button
+          <ui-button
             *ngIf="routingKey"
             matSuffix
             [isIcon]="true"
@@ -63,11 +63,11 @@
                 | translate
             "
             (click)="routingKey = ''"
-          ></safe-button>
+          ></ui-button>
           <safe-icon
             icon="info"
             class="cursor-pointer"
-            variant="grey"
+            variant="'grey'"
             matSuffix
             [uiTooltip]="
               'components.application.subscription.modal.hint.listenTo'
@@ -105,10 +105,8 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
-    <safe-button
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [uiDialogClose]="subscriptionForm.value"
@@ -116,6 +114,6 @@
       [disabled]="!subscriptionForm.valid"
     >
       {{ (data.subscription ? 'common.update' : 'common.create') | translate }}
-    </safe-button>
+    </ui-button>
   </ng-container>
 </ui-dialog>

@@ -29,16 +29,15 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.compo
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { CommonModule } from '@angular/common';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { TabsModule } from '@oort-front/ui';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
-import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
+import { SpinnerModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 
 /**
@@ -59,17 +58,17 @@ interface DialogData {
   imports: [
     CommonModule,
     MatDialogModule,
-    MatTabsModule,
+    TabsModule,
     MatGridListModule,
     MatIconModule,
     MatButtonModule,
-    SafeButtonModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,
     SafeDateModule,
     DialogModule,
-    SafeSpinnerModule,
+    ButtonModule,
+    SpinnerModule,
   ],
   selector: 'safe-record-modal',
   templateUrl: './record-modal.component.html',

@@ -8,6 +8,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeFilterModule } from '../../../../filter/filter.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Single Marker Rule configuration module.
@@ -24,6 +25,7 @@ import { SafeFilterModule } from '../../../../filter/filter.module';
     MatInputModule,
     MatButtonModule,
     SafeFilterModule,
+    ButtonModule,
   ],
   exports: [MapMarkerRuleComponent],
 })

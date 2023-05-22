@@ -38,10 +38,10 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <safe-button (click)="onClose()">{{
+    <ui-button (click)="onClose()">{{
       'common.close' | translate
-    }}</safe-button>
-    <safe-button
+    }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [uiDialogClose]="accessForm.value"
@@ -49,6 +49,6 @@
       [disabled]="!accessForm.valid"
     >
       {{ 'common.update' | translate }}
-    </safe-button>
+    </ui-button>
   </ng-container>
 </ui-dialog>

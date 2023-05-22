@@ -1,14 +1,17 @@
 import {
   AfterContentInit,
+  AfterViewInit,
   ContentChildren,
   Directive,
   ElementRef,
   Input,
+  OnDestroy,
   QueryList,
   Renderer2,
 } from '@angular/core';
 import { SuffixDirective } from './suffix.directive';
 import { PrefixDirective } from './prefix.directive';
+import { Subject, startWith, takeUntil } from 'rxjs';
 
 /**
  * UI Form Wrapper Directive
@@ -16,7 +19,9 @@ import { PrefixDirective } from './prefix.directive';
 @Directive({
   selector: '[uiFormFieldDirective]',
 })
-export class FormWrapperDirective implements AfterContentInit {
+export class FormWrapperDirective
+  implements AfterContentInit, AfterViewInit, OnDestroy
+{
   /**
    * Will the form field be wrapped ?
    */
@@ -30,6 +35,8 @@ export class FormWrapperDirective implements AfterContentInit {
 
   private currentInputElement!: HTMLInputElement;
   private currentLabelElement!: HTMLLabelElement;
+  private currentSelectElement!: HTMLLabelElement;
+  private beyondLabelContainer!: HTMLDivElement;
 
   // === LISTS OF CLASSES TO APPLY TO ELEMENTS ===
   private labelClasses = [
@@ -41,13 +48,13 @@ export class FormWrapperDirective implements AfterContentInit {
   ] as const;
 
   private inputClassesNoOutline = [
+    'bg-transparent',
     'block',
     'overflow-hidden',
     'border-0',
     'rounded-md',
     'w-full',
-    'py-1.5',
-    'pr-10',
+    'p-0',
     'text-gray-900',
     'placeholder:text-gray-400',
     'sm:text-sm',
@@ -57,10 +64,11 @@ export class FormWrapperDirective implements AfterContentInit {
   ] as const;
 
   private inputClassesOutline = [
+    'bg-transparent',
     'block',
     'w-full',
     'border-0',
-    'py-1.5',
+    'p-0',
     'bg-gray-50',
     'text-gray-900',
     'placeholder:text-gray-400',
@@ -69,10 +77,27 @@ export class FormWrapperDirective implements AfterContentInit {
     'sm:leading-6',
   ] as const;
 
+  private selectClassesNoOutline = [
+    'block',
+    'w-full',
+    'py-1.5',
+    'pr-1',
+  ] as const;
+
+  private selectClassesOutline = [
+    'block',
+    'w-full',
+    'border-0',
+    'py-1.5',
+    'pr-1',
+    'bg-gray-50',
+  ] as const;
+
   private beyondLabelGeneral = [
     'relative',
     'mt-0.5',
-    'py-0.5',
+    'py-1.5',
+    'px-2',
     'flex',
     'items-center',
     'w-full',
@@ -98,6 +123,16 @@ export class FormWrapperDirective implements AfterContentInit {
     'focus-within:border-b-2',
     'focus-within:border-b-primary-600',
   ] as const;
+  private destroy$ = new Subject<void>();
+
+  private selectButtonRemove = [
+    'ring-1',
+    'ring-inset',
+    'ring-gray-300',
+    'focus:ring-2',
+    'focus:ring-primary-600',
+    'shadow-sm',
+  ] as const;
 
   /**
    * Constructor including a ref to the element on which the directive is applied
@@ -115,62 +150,149 @@ export class FormWrapperDirective implements AfterContentInit {
     this.currentLabelElement =
       this.elementRef.nativeElement.querySelector('label');
 
-    //Putting order classes to elements that has prefix/suffix directive
-    for (const e of this.allPrefixDirectives) {
-      this.renderer.addClass(e.elementRef.nativeElement, 'order-first');
-      this.renderer.addClass(e.elementRef.nativeElement, 'px-2');
-    }
-    for (const e of this.allSuffixDirectives) {
-      this.renderer.addClass(e.elementRef.nativeElement, 'order-last');
-      this.renderer.addClass(e.elementRef.nativeElement, 'px-2');
-    }
-
     // Creating a wrapper to all that is not label and give it appropriate classes
     // depending of outline value
-    const beyondLabel = this.renderer.createElement('div');
+    this.beyondLabelContainer = this.renderer.createElement('div');
     for (const cl of this.beyondLabelGeneral) {
-      this.renderer.addClass(beyondLabel, cl);
+      this.renderer.addClass(this.beyondLabelContainer, cl);
     }
     if (!this.outline) {
       for (const cl of this.beyondLabelNoOutline) {
-        this.renderer.addClass(beyondLabel, cl);
+        this.renderer.addClass(this.beyondLabelContainer, cl);
       }
     } else {
       for (const cl of this.beyondLabelOutline) {
-        this.renderer.addClass(beyondLabel, cl);
+        this.renderer.addClass(this.beyondLabelContainer, cl);
       }
     }
 
-    // Add related classes to input element
-    if (!this.outline) {
-      for (const cl of this.inputClassesNoOutline) {
-        this.renderer.addClass(this.currentInputElement, cl);
+    if (this.currentInputElement !== null) {
+      // Add related classes to input element
+      if (!this.outline) {
+        for (const cl of this.inputClassesNoOutline) {
+          this.renderer.addClass(this.currentInputElement, cl);
+        }
+      } else {
+        for (const cl of this.inputClassesOutline) {
+          this.renderer.addClass(this.currentInputElement, cl);
+        }
       }
-    } else {
-      for (const cl of this.inputClassesOutline) {
-        this.renderer.addClass(this.currentInputElement, cl);
-      }
-    }
 
-    // Then add the input to our beyondLabel wrapper element
-    this.renderer.appendChild(beyondLabel, this.currentInputElement);
-
-    // Add related classes to label
-    for (const cl of this.labelClasses) {
-      this.renderer.addClass(this.currentLabelElement, cl);
-    }
-
-    // Get all the child elements that are not input or label and add them to our beyondLabel element
-    Array.from(this.elementRef.nativeElement.children)
-      .filter(
-        (el: any) =>
-          !(el instanceof HTMLInputElement || el instanceof HTMLLabelElement)
-      )
-      .forEach((childEl: any) =>
-        this.renderer.appendChild(beyondLabel, childEl)
+      // Then add the input to our beyondLabel wrapper element
+      this.renderer.appendChild(
+        this.beyondLabelContainer,
+        this.currentInputElement
       );
+    }
+
+    if (this.currentLabelElement) {
+      // Add related classes to label
+      for (const cl of this.labelClasses) {
+        this.renderer.addClass(this.currentLabelElement, cl);
+      }
+    }
+    this.initializeDirectiveListeners();
 
     //Add beyond label as a child of elementRef
-    this.renderer.appendChild(this.elementRef.nativeElement, beyondLabel);
+    this.renderer.appendChild(
+      this.elementRef.nativeElement,
+      this.beyondLabelContainer
+    );
+  }
+
+  /**
+   * Initialize any DOM change/add/removal of the elements with prefix and suffix directives
+   */
+  private initializeDirectiveListeners() {
+    this.allPrefixDirectives.changes
+      .pipe(startWith(this.allPrefixDirectives), takeUntil(this.destroy$))
+      .subscribe({
+        next: (prefixes: QueryList<PrefixDirective>) => {
+          for (const prefix of prefixes) {
+            const prefixRef = (prefix as any).elementRef.nativeElement;
+            if (!this.beyondLabelContainer.contains(prefixRef)) {
+              this.applyPrefixClasses(prefixRef);
+              this.renderer.appendChild(this.beyondLabelContainer, prefixRef);
+            }
+          }
+        },
+      });
+    this.allSuffixDirectives.changes
+      .pipe(startWith(this.allSuffixDirectives), takeUntil(this.destroy$))
+      .subscribe({
+        next: (suffixes: QueryList<SuffixDirective>) => {
+          for (const suffix of suffixes) {
+            const suffixRef = (suffix as any).elementRef.nativeElement;
+            if (!this.beyondLabelContainer.contains(suffixRef)) {
+              this.applySuffixClasses(suffixRef);
+              this.renderer.appendChild(this.beyondLabelContainer, suffixRef);
+            }
+          }
+        },
+      });
+  }
+
+  /**
+   * Update prefix element with the needed classes
+   *
+   * @param prefixElement prefix directive element
+   */
+  private applyPrefixClasses(prefixElement: any) {
+    this.renderer.addClass(prefixElement, 'order-first');
+    this.renderer.addClass(prefixElement, 'pr-2');
+  }
+
+  /**
+   * Update suffix element with the needed classes
+   *
+   * @param suffixElement suffix directive element
+   */
+  private applySuffixClasses(suffixElement: any) {
+    this.renderer.addClass(suffixElement, 'order-last');
+    this.renderer.addClass(suffixElement, 'pl-2');
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  //We need to use afterViewInit for select menu, otherwise removing class does not work
+  ngAfterViewInit() {
+    this.currentSelectElement =
+      this.elementRef.nativeElement.querySelector('ui-select-menu');
+
+    // Do the same with selectMenu
+    if (this.currentSelectElement !== null) {
+      //Get select-menu button in order to remove styling elements
+      const selectButton = this.currentSelectElement.querySelector('button');
+      for (const cl of this.selectButtonRemove) {
+        this.renderer.removeClass(selectButton, cl);
+      }
+      // Class change in order to make the select list display full width and aligned with the form wrapper element
+      const listWrapperContainer =
+        this.currentSelectElement.querySelector('div');
+      this.renderer.removeClass(listWrapperContainer, 'relative');
+      const selectList =
+        this.currentSelectElement.querySelector('#listWrapper');
+      this.renderer.addClass(selectList, 'left-0');
+      // Add related classes to select menu element
+      if (!this.outline) {
+        for (const cl of this.selectClassesNoOutline) {
+          this.renderer.addClass(this.currentSelectElement, cl);
+        }
+      } else {
+        for (const cl of this.selectClassesOutline) {
+          this.renderer.addClass(this.currentSelectElement, cl);
+        }
+        this.renderer.removeClass(selectButton, 'bg-white');
+        this.renderer.addClass(selectButton, 'bg-gray-50');
+      }
+      //Add reworked element to beyond label
+      this.renderer.appendChild(
+        this.beyondLabelContainer,
+        this.currentSelectElement
+      );
+    }
   }
 }

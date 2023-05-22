@@ -6,16 +6,18 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
-import { SafeButtonModule } from '../../ui/button/button.module';
-import { TooltipModule } from '@oort-front/ui';
 import { SafeIconModule } from '../../ui/icon/icon.module';
-import { MenuModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeAddCardModule } from './add-card/add-card.module';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SummaryCardItemModule } from '../summary-card/summary-card-item/summary-card-item.module';
-import { RadioModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  TooltipModule,
+  RadioModule,
+  ButtonModule,
+} from '@oort-front/ui';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -28,7 +30,6 @@ import { RadioModule } from '@oort-front/ui';
     MatInputModule,
     TranslateModule,
     LayoutModule,
-    SafeButtonModule,
     TooltipModule,
     SafeIconModule,
     MenuModule,
@@ -38,6 +39,7 @@ import { RadioModule } from '@oort-front/ui';
     MatButtonModule,
     SummaryCardItemModule,
     RadioModule,
+    ButtonModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

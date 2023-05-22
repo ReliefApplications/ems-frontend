@@ -4,10 +4,11 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import {
   FullScreenModule,
-  SafeButtonModule,
   SafeSkeletonModule,
   SafeWidgetGridModule,
 } from '@oort-front/safe';
+import { ButtonModule } from '@oort-front/ui';
+
 /**
  * Dashboard page.
  * Dashboard is one of the available content types of application pages.
@@ -20,7 +21,7 @@ import {
     SafeWidgetGridModule,
     FullScreenModule,
     SafeSkeletonModule,
-    SafeButtonModule,
+    ButtonModule,
   ],
   exports: [DashboardComponent],
 })

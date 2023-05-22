@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Variant } from '../shared/variant.enum';
+import { Variant } from '../types/variant';
 
 /**
  * UI Radio button component
@@ -16,7 +16,7 @@ export class RadioComponent {
   @Input() required = false;
   @Input() checked = false;
   @Input() ariaLabelledby = '';
-  @Input() variant: Variant = Variant.DEFAULT;
+  @Input() variant: Variant = 'default';
 
   /**
    * Getter resolving the variant classes
@@ -25,9 +25,9 @@ export class RadioComponent {
    */
   get getVariant(): string[] {
     const classes = [
-      this.variant === Variant.DEFAULT
+      this.variant === 'default'
         ? 'radio-primary'
-        : this.variant === Variant.LIGHT
+        : this.variant === 'light'
         ? 'radio-grey'
         : 'radio-' + this.variant,
     ];

@@ -15,9 +15,18 @@ export default {
     return {
       props: args,
       template: `<ui-tabs [vertical]=${args.vertical}>
-        <ui-tab label="First">Content 1</ui-tab>
-        <ui-tab label="Second">Content 2</ui-tab>
-        <ui-tab label="Disabled" [disabled]="true">Content 3</ui-tab>
+        <ui-tab>
+          <ng-container ngProjectAs="label">First</ng-container>
+          Content 1
+        </ui-tab>
+        <ui-tab>
+          <ng-container ngProjectAs="label">Second</ng-container>
+          Content 2
+        </ui-tab>
+        <ui-tab [disabled]="true">
+          <ng-container ngProjectAs="label">Disabled</ng-container>
+          Content 3
+        </ui-tab>
       </ui-tabs>`,
     };
   },

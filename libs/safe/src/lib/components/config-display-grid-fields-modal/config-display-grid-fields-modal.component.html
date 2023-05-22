@@ -17,10 +17,10 @@
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <safe-button uiDialogClose *ngIf="!loading">{{
+    <ui-button uiDialogClose *ngIf="!loading">{{
       'common.cancel' | translate
-    }}</safe-button>
-    <safe-button
+    }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [uiDialogClose]="form"
@@ -29,6 +29,6 @@
       *ngIf="!loading"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
+    </ui-button>
   </ng-container>
 </ui-dialog>

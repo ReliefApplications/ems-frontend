@@ -12,8 +12,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogModule } from '@oort-front/ui';
-// @TODO: Remove SafeButtonModule import after ui-button is being used in the app
-import { SafeButtonModule } from '../ui/button/button.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Interface for the dialog data input */
 interface DialogData {
@@ -31,7 +30,7 @@ interface DialogData {
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    SafeButtonModule,
+    ButtonModule,
   ],
   selector: 'safe-email-template-modal',
   templateUrl: './email-template-modal.component.html',
@@ -40,6 +39,7 @@ interface DialogData {
 export class EmailTemplateModalComponent implements OnInit {
   public templates: any[] = [];
   public form!: UntypedFormGroup;
+
   /**
    * Component for choosing an email template to send an email with
    *

@@ -19,10 +19,10 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <safe-button (click)="onClose()">{{
+    <ui-button (click)="onClose()">{{
       'common.close' | translate
-    }}</safe-button>
-    <safe-button
+    }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [uiDialogClose]="apiForm.value"
@@ -30,6 +30,6 @@
       [disabled]="!apiForm.valid"
     >
       {{ 'common.create' | translate }}
-    </safe-button>
+    </ui-button>
   </ng-container>
 </ui-dialog>

@@ -35,6 +35,7 @@ import {
   GET_RESOURCE,
   GET_RESOURCES,
 } from './graphql/queries';
+import { ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 
 /** Default items per resources query, for pagination */
@@ -77,8 +78,8 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     DialogModule,
     SafeGraphQLSelectModule,
     SafeAlertModule,
-    SafeButtonModule,
     SafeIconModule,
+    ButtonModule,
   ],
   templateUrl: './context-datasource.component.html',
   styleUrls: ['./context-datasource.component.scss'],

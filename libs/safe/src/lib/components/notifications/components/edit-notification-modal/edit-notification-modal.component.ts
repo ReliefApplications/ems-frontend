@@ -24,15 +24,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { TooltipModule } from '@oort-front/ui';
 import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
-import { DividerModule } from '@oort-front/ui';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
-import { RadioModule } from '@oort-front/ui';
+import {
+  DividerModule,
+  TooltipModule,
+  RadioModule,
+  ButtonModule,
+} from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
-// @TODO: Remove SafeButtonModule import after ui-button is being used in the app
-import { SafeButtonModule } from '../../../ui/button/button.module';
 
 /**
  * Dialog data interface
@@ -63,7 +64,7 @@ const ITEMS_PER_PAGE = 10;
     SafeGraphQLSelectModule,
     CronExpressionControlModule,
     RadioModule,
-    SafeButtonModule,
+    ButtonModule,
   ],
   selector: 'safe-edit-notification-modal',
   templateUrl: './edit-notification-modal.component.html',

@@ -10,8 +10,6 @@ import { ChannelsRoutingModule } from '../../channels-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MenuModule } from '@oort-front/ui';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { DividerModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
@@ -19,8 +17,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-// @TODO: Remove SafeButtonModule import after ui-button is being used in the app
-import { SafeButtonModule } from '@oort-front/safe';
+import {
+  SpinnerModule,
+  DividerModule,
+  MenuModule,
+  ButtonModule,
+} from '@oort-front/ui';
 
 /**
  * Edit channel component, act as modal.
@@ -35,14 +37,14 @@ import { SafeButtonModule } from '@oort-front/safe';
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    SpinnerModule,
     MenuModule,
-    MatProgressSpinnerModule,
     MatTableModule,
     MatSelectModule,
     DividerModule,
-    SafeButtonModule,
     MatButtonModule,
     DialogModule,
+    ButtonModule,
   ],
   selector: 'app-edit-channel-modal',
   templateUrl: './edit-channel-modal.component.html',

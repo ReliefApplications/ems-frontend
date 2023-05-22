@@ -9,16 +9,12 @@
         ></safe-record-summary>
         <safe-form-actions *ngIf="survey" [survey]="survey"></safe-form-actions>
       </div>
-      <mat-tab-group
-        animationDuration="0ms"
+      <ui-tabs
         [selectedIndex]="selectedTabIndex"
         (selectedIndexChange)="onShowPage($event)"
       >
-        <mat-tab
-          *ngFor="let page of pages$ | async"
-          [label]="page.title ? page.title : page.name"
-        >
-          <ng-template mat-tab-label>
+        <ui-tab *ngFor="let page of pages$ | async">
+          <ng-container ngProjectAs="label">
             {{ page.title ? page.title : page.name }}
             <safe-icon
               *ngIf="page.containsErrors"
@@ -27,24 +23,24 @@
               [inline]="true"
               [size]="20"
             ></safe-icon>
-          </ng-template>
-        </mat-tab>
-      </mat-tab-group>
+          </ng-container>
+        </ui-tab>
+      </ui-tabs>
     </ng-container>
   </ng-container>
   <ng-container ngProjectAs="content">
     <div class="grow max-h-full" #formContainer>
       <div *ngIf="loading" class="h-full flex">
-        <safe-spinner class="m-auto block"></safe-spinner>
+        <ui-spinner class="m-auto block"></ui-spinner>
       </div>
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <safe-button (click)="onClose()" variant="danger">{{
+    <ui-button (click)="onClose()" variant="danger">{{
       'common.cancel' | translate
-    }}</safe-button>
+    }}</ui-button>
     <ng-container *ngIf="pages$ | async as pages">
-      <safe-button
+      <ui-button
         category="secondary"
         variant="primary"
         *ngIf="pages.length > 1"
@@ -53,8 +49,8 @@
         [disabled]="!survey || survey.isFirstPage"
       >
         {{ 'common.previous' | translate }}
-      </safe-button>
-      <safe-button
+      </ui-button>
+      <ui-button
         category="secondary"
         variant="primary"
         *ngIf="pages.length > 1"
@@ -63,9 +59,9 @@
         [disabled]="!survey || survey.isLastPage"
       >
         {{ 'common.next' | translate }}
-      </safe-button>
+      </ui-button>
     </ng-container>
-    <safe-button
+    <ui-button
       category="secondary"
       variant="primary"
       [disabled]="saving"
@@ -73,6 +69,6 @@
       cdkFocusInitial
     >
       {{ 'components.record.modal.update' | translate }}
-    </safe-button>
+    </ui-button>
   </ng-container>
 </ui-dialog>

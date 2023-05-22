@@ -5,11 +5,7 @@
     </h1>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <mat-spinner
-      diameter="45"
-      class="page-loader"
-      *ngIf="loading"
-    ></mat-spinner>
+    <ui-spinner *ngIf="loading"></ui-spinner>
     <form [formGroup]="roleForm" class="flex flex-col" *ngIf="!loading">
       <mat-form-field appearance="outline">
         <mat-label>{{ 'common.role.one' | translate }}</mat-label>
@@ -24,10 +20,8 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
-    <safe-button
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [uiDialogClose]="roleForm.value"
@@ -35,6 +29,6 @@
       [disabled]="!roleForm.valid"
     >
       {{ 'common.preview' | translate }}
-    </safe-button>
+    </ui-button>
   </ng-container>
 </ui-dialog>

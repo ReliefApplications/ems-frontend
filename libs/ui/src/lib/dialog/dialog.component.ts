@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
-import { DialogSize } from './enums/dialog-size.enum';
-import { Variant } from '../shared/variant.enum';
+import { DialogSize } from './types/dialog-size';
+import { Variant } from '../types/variant';
 
 /**
  * Dialog component.
@@ -14,7 +14,7 @@ import { Variant } from '../shared/variant.enum';
 export class DialogComponent implements OnChanges, OnInit {
   @Input() closable = false;
   @Input() padding = true;
-  @Input() size: DialogSize | string = '';
+  @Input() size!: DialogSize;
 
   public buttonVariant = Variant;
 
@@ -32,19 +32,19 @@ export class DialogComponent implements OnChanges, OnInit {
 
   ngOnInit(): void {
     switch (this.size) {
-      case DialogSize.FULLSCREEN: {
+      case 'fullscreen': {
         this.dialogRef.addPanelClass('fullscreen-dialog');
         break;
       }
-      case DialogSize.SMALL: {
+      case 'small': {
         this.dialogRef.updateSize('300px');
         break;
       }
-      case DialogSize.MEDIUM: {
+      case 'medium': {
         this.dialogRef.updateSize('700px');
         break;
       }
-      case DialogSize.BIG: {
+      case 'big': {
         this.dialogRef.updateSize('100vw', '98%');
         break;
       }
@@ -61,19 +61,19 @@ export class DialogComponent implements OnChanges, OnInit {
 
   ngOnChanges(): void {
     switch (this.size) {
-      case DialogSize.FULLSCREEN: {
+      case 'fullscreen': {
         this.dialogRef.addPanelClass('fullscreen-dialog');
         break;
       }
-      case DialogSize.SMALL: {
+      case 'small': {
         this.dialogRef.updateSize('300px');
         break;
       }
-      case DialogSize.MEDIUM: {
+      case 'medium': {
         this.dialogRef.updateSize('700px');
         break;
       }
-      case DialogSize.BIG: {
+      case 'big': {
         this.dialogRef.updateSize('100vw', '98%');
         break;
       }

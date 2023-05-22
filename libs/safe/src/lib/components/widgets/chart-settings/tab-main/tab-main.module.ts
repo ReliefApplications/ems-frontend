@@ -6,22 +6,22 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { ExpansionPanelModule } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePaletteControlModule } from '../../../palette-control/palette-control.module';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
 import { SafeAggregationBuilderModule } from '../../../ui/aggregation-builder/aggregation-builder.module';
-import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeGridModule } from '../../../ui/core-grid/grid/grid.module';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-mapping/series-mapping.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Main tab of chart settings modal.
@@ -40,9 +40,8 @@ import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-
     TextFieldModule,
     SafeQueryBuilderModule,
     SafeChartModule,
-    MatExpansionModule,
-    MatTabsModule,
-    SafeButtonModule,
+    TabsModule,
+    ExpansionPanelModule,
     TranslateModule,
     SafeAggregationBuilderModule,
     MatAutocompleteModule,
@@ -52,6 +51,7 @@ import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-
     SafePaletteControlModule,
     SafeGraphQLSelectModule,
     SafeSeriesMappingModule,
+    ButtonModule,
   ],
   exports: [TabMainComponent],
 })

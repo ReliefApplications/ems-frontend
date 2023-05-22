@@ -8,13 +8,13 @@
     <div class="share-url">{{ data.url }}</div>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <safe-button
+    <ui-button
       category="secondary"
       variant="primary"
       cdkFocusInitial
       (click)="onCopy()"
     >
       {{ 'components.share.modal.copy' | translate }}
-    </safe-button>
+    </ui-button>
   </ng-container>
 </ui-dialog>

@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 
 // Http
 import {
@@ -114,7 +113,6 @@ export const httpTranslateLoader = (http: HttpClient) =>
     OAuthModule.forRoot(),
     GraphQLModule,
     DateInputsModule,
-    MatTabsModule,
     MonacoEditorModule.forRoot(),
   ],
   providers: [

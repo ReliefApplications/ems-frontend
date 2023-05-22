@@ -40,16 +40,16 @@
     <p>{{ 'components.widget.grid.validation.help' | translate }}</p>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <safe-button uiDialogClose>
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [uiDialogClose]="true"
       cdkFocusInitial
     >
       {{ 'common.update' | translate }}
-    </safe-button>
+    </ui-button>
   </ng-container>
 </ui-dialog>

@@ -27,6 +27,7 @@ export class ChoseRoleComponent implements OnInit {
 
   // === ROLES QUERY ===
   public rolesQuery!: QueryRef<GetRolesQueryResponse>;
+
   /**
    * Chose role component, to preview application with selected role.
    *

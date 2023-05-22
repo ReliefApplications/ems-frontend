@@ -150,25 +150,23 @@
           </mat-form-field>
         </div>
         <!-- Mapping -->
-        <mat-expansion-panel
+        <ui-expansion-panel
           [expanded]="false"
           [disabled]="!formGroup.value.convertTo"
         >
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              {{ 'components.pullJob.modal.mapping' | translate }}
-            </mat-panel-title>
-          </mat-expansion-panel-header>
+          <ng-container ngProjectAs="title">
+            {{ 'components.pullJob.modal.mapping' | translate }}
+          </ng-container>
           <div class="flex flex-col gap-4">
             <div class="flex justify-end">
-              <safe-button
+              <ui-button
                 icon="edit_note"
                 category="secondary"
                 variant="primary"
                 (click)="toggleRawJSON()"
               >
                 {{ 'components.pullJob.modal.switch' | translate }}
-              </safe-button>
+              </ui-button>
             </div>
             <ng-container *ngIf="openRawJSON">
               <mat-form-field appearance="outline">
@@ -207,26 +205,26 @@
                     <mat-label>{{ 'common.value.one' | translate }}</mat-label>
                     <input matInput formControlName="value" type="string" />
                   </mat-form-field>
-                  <safe-button
+                  <ui-button
                     [isIcon]="true"
                     icon="remove_circle_outline"
                     variant="danger"
                     (click)="onDeleteElement(i)"
                   >
-                  </safe-button>
+                  </ui-button>
                 </form>
-                <safe-button
+                <ui-button
                   *ngIf="filteredFields('').length > 0"
                   [isIcon]="true"
                   icon="add_circle_outline"
                   variant="primary"
                   (click)="onAddElement()"
                 >
-                </safe-button>
+                </ui-button>
               </div>
             </ng-container>
           </div>
-        </mat-expansion-panel>
+        </ui-expansion-panel>
         <!-- Unique identifiers -->
         <mat-form-field
           *ngIf="mappingArray.controls.length > 0"
@@ -250,8 +248,8 @@
   </ng-container>
   <!-- Modal actions -->
   <ng-container ngProjectAs="actions">
-    <safe-button uiDialogClose>{{ 'common.close' | translate }}</safe-button>
-    <safe-button
+    <ui-button uiDialogClose>{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [uiDialogClose]="returnFormValue()"
@@ -260,7 +258,7 @@
       (click)="toggleRawJSON()"
     >
       {{ (data.pullJob ? 'common.update' : 'common.create') | translate }}
-    </safe-button>
+    </ui-button>
   </ng-container>
 </ui-dialog>
 

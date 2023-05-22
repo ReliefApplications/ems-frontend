@@ -25,10 +25,8 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
-    <safe-button
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [uiDialogClose]="positionForm.value"
@@ -36,6 +34,6 @@
       [disabled]="!positionForm.valid"
     >
       {{ (data.add ? 'common.create' : 'common.update') | translate }}
-    </safe-button>
+    </ui-button>
   </ng-container>
 </ui-dialog>

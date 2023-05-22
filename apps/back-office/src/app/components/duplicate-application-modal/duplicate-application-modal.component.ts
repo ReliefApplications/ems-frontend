@@ -19,8 +19,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
-// @TODO: Remove SafeButtonModule import after ui-button is being used in the app
-import { SafeButtonModule } from '@oort-front/safe';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Duplicate application component (modal)
@@ -36,7 +35,7 @@ import { SafeButtonModule } from '@oort-front/safe';
     MatButtonModule,
     TranslateModule,
     DialogModule,
-    SafeButtonModule,
+    ButtonModule,
   ],
   selector: 'app-duplicate-application-modal',
   templateUrl: './duplicate-application-modal.component.html',

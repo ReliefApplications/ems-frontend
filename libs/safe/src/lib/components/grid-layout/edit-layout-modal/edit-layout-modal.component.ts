@@ -18,8 +18,7 @@ import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { flattenDeep } from 'lodash';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogModule } from '@oort-front/ui';
-// @TODO: Remove SafeButtonModule import after ui-button is being used in the app
-import { SafeButtonModule } from '../../ui/button/button.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -43,7 +42,7 @@ interface DialogData {
     SafeQueryBuilderModule,
     SafeCoreGridModule,
     DialogModule,
-    SafeButtonModule,
+    ButtonModule,
   ],
   selector: 'safe-edit-layout-modal',
   templateUrl: './edit-layout-modal.component.html',

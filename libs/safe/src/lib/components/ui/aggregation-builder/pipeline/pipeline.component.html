@@ -1,30 +1,26 @@
-<mat-accordion
-  cdkDropList
-  (cdkDropListDropped)="drop($event)"
-  class="collapsible-form-group"
->
-  <mat-expansion-panel
+<cdk-accordion cdkDropList (cdkDropListDropped)="drop($event)">
+  <ui-expansion-panel
     cdkDrag
     *ngFor="let stageForm of pipelineForm.controls; let index = index"
+    [index]="index"
+    class="bg-white"
   >
-    <mat-expansion-panel-header cdkDragHandle>
-      <mat-panel-title>
-        {{
-          'components.aggregationBuilder.stages.' + stageForm.value.type
+    <ng-container ngProjectAs="title">
+      {{
+        'components.aggregationBuilder.stages.' + stageForm.value.type
+          | translate
+      }}
+      <safe-icon
+        icon="info_outline"
+        variant="grey"
+        [inline]="true"
+        [size]="18"
+        [uiTooltip]="
+          'components.aggregationBuilder.tooltip.' + stageForm.value.type
             | translate
-        }}
-        <safe-icon
-          icon="info_outline"
-          variant="grey"
-          [inline]="true"
-          [size]="18"
-          [uiTooltip]="
-            'components.aggregationBuilder.tooltip.' + stageForm.value.type
-              | translate
-          "
-        ></safe-icon>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
+        "
+      ></safe-icon>
+    </ng-container>
     <ng-container [ngSwitch]="stageForm.value.type">
       <ng-container *ngSwitchCase="stageType.FILTER">
         <safe-filter
@@ -68,18 +64,18 @@
         </mat-form-field>
       </ng-container>
     </ng-container>
-    <mat-action-row>
-      <safe-button
+    <div class="panel-actions">
+      <ui-button
         [isIcon]="true"
         icon="delete"
         variant="danger"
         (click)="deleteStage(index)"
-      ></safe-button>
-    </mat-action-row>
-  </mat-expansion-panel>
-</mat-accordion>
+      ></ui-button>
+    </div>
+  </ui-expansion-panel>
+</cdk-accordion>
 <div>
-  <safe-button
+  <ui-button
     icon="add"
     category="primary"
     [uiMenuTriggerFor]="menu"
@@ -87,7 +83,7 @@
     (click)="$event.stopPropagation()"
   >
     {{ 'components.aggregationBuilder.addStage' | translate }}
-  </safe-button>
+  </ui-button>
   <ui-menu #menu>
     <button
       *ngFor="let stage of stageList"

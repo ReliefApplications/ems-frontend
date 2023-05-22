@@ -6,7 +6,8 @@
     {{ content }}
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <!-- <button mat-button uiDialogClose>{{ cancelText }}</button>
+     <!--
+    <ui-button uiDialogClose>{{ cancelText }}</ui-button>
     <button
       mat-flat-button
       [color]="confirmColor"
@@ -15,14 +16,14 @@
     >
       {{ confirmText }}
     </button> -->
-    <safe-button uiDialogClose>{{ cancelText }}</safe-button>
-    <safe-button
+    <ui-button uiDialogClose>{{ cancelText }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [uiDialogClose]="true"
       cdkFocusInitial
     >
       {{ confirmText }}
-    </safe-button>
+    </ui-button>
   </ng-container>
 </ui-dialog>

@@ -5,15 +5,17 @@ import { ChannelsComponent } from './channels.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MenuModule } from '@oort-front/ui';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import {
+  SpinnerModule,
+  MenuModule,
+  DividerModule,
+  ButtonModule,
+} from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { SafeButtonModule } from '@oort-front/safe';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
-import { DividerModule } from '@oort-front/ui';
 
 /**
  * Channels page module.
@@ -28,14 +30,14 @@ import { DividerModule } from '@oort-front/ui';
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    SpinnerModule,
     MenuModule,
-    MatProgressSpinnerModule,
     MatTableModule,
     MatSelectModule,
     DividerModule,
-    SafeButtonModule,
     MatButtonModule,
     TranslateModule,
+    ButtonModule,
   ],
 })
 export class ChannelsModule {}

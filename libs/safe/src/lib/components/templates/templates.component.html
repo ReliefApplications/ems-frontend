@@ -2,14 +2,14 @@
 <div class="flex mb-6 justify-end gap-4">
   <!-- Actions -->
   <div class="flex gap-2 items-center flex-wrap justify-end justify-self-end">
-    <safe-button
+    <ui-button
       icon="add"
       category="secondary"
       variant="primary"
       (click)="addEmailTemplate()"
     >
       {{ 'components.templates.edit.new' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </div>
 <!-- Table container -->
@@ -42,13 +42,13 @@
       <ng-container matColumnDef="actions" [stickyEnd]="true">
         <th mat-header-cell *matHeaderCellDef mat-sort-header class="w-16"></th>
         <td mat-cell *matCellDef="let element">
-          <safe-button
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
             [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
           >
-          </safe-button>
+          </ui-button>
           <ui-menu #menu>
             <button uiMenuItem (click)="editEmailTemplate(element)">
               <mat-icon>edit</mat-icon>

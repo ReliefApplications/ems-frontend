@@ -14,10 +14,10 @@
     <span
       aria-hidden="true"
       [ngClass]="{
-        'span-simple': type === toggleTypes.SIMPLE,
-        'span-short': type === toggleTypes.SHORT,
-        'translate-x-0': !value && type === toggleTypes.SIMPLE,
-        'translate-x-5': value && type === toggleTypes.SIMPLE
+        'span-simple': type === 'simple',
+        'span-short': type === 'short',
+        'translate-x-0': !value && type === 'simple',
+        'translate-x-5': value && type === 'simple'
       }"
       class="pointer-events-none"
     >
@@ -27,7 +27,7 @@
       </ng-container>
     </span>
 
-    <ng-container *ngIf="type === toggleTypes.SHORT">
+    <ng-container *ngIf="type === 'short'">
       <ng-container *ngTemplateOutlet="shortToggleTemplate"></ng-container>
     </ng-container>
   </button>

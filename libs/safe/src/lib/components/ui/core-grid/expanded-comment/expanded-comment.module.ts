@@ -6,8 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { DialogModule } from '@oort-front/ui';
-// @TODO: Remove SafeButtonModule import after ui-button is being used in the app
-import { SafeButtonModule } from '../../button/button.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Module for expanded comment component */
 @NgModule({
@@ -20,7 +19,7 @@ import { SafeButtonModule } from '../../button/button.module';
     TranslateModule,
     MatInputModule,
     MatFormFieldModule,
-    SafeButtonModule,
+    ButtonModule,
   ],
   exports: [SafeExpandedCommentComponent],
 })

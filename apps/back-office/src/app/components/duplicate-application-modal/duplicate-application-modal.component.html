@@ -25,10 +25,10 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <safe-button (click)="onCancel()">{{
+    <ui-button (click)="onCancel()">{{
       'common.close' | translate
-    }}</safe-button>
-    <safe-button
+    }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       (click)="onSubmit()"
@@ -36,6 +36,6 @@
       [disabled]="!duplicateForm.valid"
     >
       {{ 'common.duplicate' | translate }}
-    </safe-button>
+    </ui-button>
   </ng-container>
 </ui-dialog>

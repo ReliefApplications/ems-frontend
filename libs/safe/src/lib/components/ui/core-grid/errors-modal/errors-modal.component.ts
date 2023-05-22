@@ -5,8 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogModule } from '@oort-front/ui';
-// @TODO: Remove SafeButtonModule import after ui-button is being used in the app
-import { SafeButtonModule } from '../../button/button.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Model for the dialog data */
 interface DialogData {
@@ -26,7 +25,7 @@ interface DialogData {
     TranslateModule,
     MatTableModule,
     DialogModule,
-    SafeButtonModule,
+    ButtonModule,
   ],
   selector: 'safe-errors-modal',
   templateUrl: './errors-modal.component.html',

@@ -7,10 +7,10 @@ import {
   QueryList,
   ContentChildren,
 } from '@angular/core';
-import { AvatarGroupStack } from './enums/avatar-group-stack.enum';
+import { AvatarGroupStack } from './types/avatar-group-stack';
 import { AvatarComponent } from '../avatar/avatar.component';
-import { Size } from '../shared/size.enum';
-import { AvatarShape } from '../avatar/enums/avatar-shape.enum';
+import { Size } from '../types/size';
+import { AvatarShape } from '../avatar/types/avatar-shape';
 
 /**
  * UI Avatar group component
@@ -21,9 +21,9 @@ import { AvatarShape } from '../avatar/enums/avatar-shape.enum';
   styleUrls: ['./avatar-group.component.scss'],
 })
 export class AvatarGroupComponent implements AfterViewInit {
-  @Input() size: Size | string = Size.MEDIUM;
-  @Input() shape: AvatarShape | string = AvatarShape.CIRCLE;
-  @Input() stack: AvatarGroupStack | string = AvatarGroupStack.TOP;
+  @Input() size: Size = 'medium';
+  @Input() shape: AvatarShape = 'circle';
+  @Input() stack: AvatarGroupStack = 'top';
   @Input() limit = 5;
 
   @ContentChildren(AvatarComponent) avatars!: QueryList<AvatarComponent>;
@@ -36,10 +36,8 @@ export class AvatarGroupComponent implements AfterViewInit {
    */
   constructor(private renderer: Renderer2, private el: ElementRef) {}
 
-  avatarGroupStack = AvatarGroupStack;
-
   ngAfterViewInit(): void {
-    if (this.stack === AvatarGroupStack.TOP) {
+    if (this.stack === 'top') {
       const avatars = this.el.nativeElement.querySelectorAll('ui-avatar');
       const total_avatars = avatars.length;
       Array.from(avatars).forEach((avatar: any, index: number) => {

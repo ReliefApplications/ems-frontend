@@ -38,13 +38,12 @@ import { cleanRecord } from '../../utils/cleanRecord';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { SafeButtonModule } from '../ui/button/button.module';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { ButtonModule, TabsModule } from '@oort-front/ui';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
+import { SpinnerModule } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { DialogModule } from '@oort-front/ui';
@@ -76,14 +75,14 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     CommonModule,
     MatIconModule,
     MatButtonModule,
-    MatTabsModule,
-    SafeButtonModule,
+    TabsModule,
     SafeIconModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,
     DialogModule,
-    SafeSpinnerModule,
+    ButtonModule,
+    SpinnerModule,
   ],
 })
 export class SafeFormModalComponent

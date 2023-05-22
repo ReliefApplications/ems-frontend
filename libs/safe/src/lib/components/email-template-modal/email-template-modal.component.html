@@ -19,16 +19,16 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <safe-button uiDialogClose>
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [disabled]="!form.valid"
       [uiDialogClose]="form.value"
     >
       {{ 'components.confirmModal.confirm' | translate }}
-    </safe-button>
+    </ui-button>
   </ng-container>
 </ui-dialog>
