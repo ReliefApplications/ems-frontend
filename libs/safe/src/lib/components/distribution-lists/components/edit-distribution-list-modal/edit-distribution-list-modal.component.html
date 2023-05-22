@@ -29,12 +29,11 @@
               {{ email }}
               <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
             </ui-chip>
-            <!-- @TODO verify [matChipInputSeparatorKeyCodes]="separatorKeysCodes" and matChipInputTokenEnd-->
             <input
               [uiChipListFor]="chipList"
+              [chipInputSeparatorKeyCodes]="separatorKeysCodes"
               #emailsInput
               (focusout)="addEmail($event)"
-              (matChipInputTokenEnd)="addEmail($event)"
             />
           </div>
           <mat-error>{{ errorMessage('emails') | translate }}</mat-error>

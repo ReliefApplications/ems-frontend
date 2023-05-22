@@ -19,7 +19,6 @@
       ></safe-icon>
     </ui-chip>
     <!-- Search text control -->
-    <!-- @TODO verify [matChipInputSeparatorKeyCodes]="separatorKeysCodes" and (matChipInputTokenEnd)="add($event)"-->
     <input
       type="text"
       [placeholder]="label"
@@ -28,6 +27,7 @@
       [formControl]="inputFormControl"
       [matAutocomplete]="auto"
       [uiChipListFor]="chipList"
+      [chipInputSeparatorKeyCodes]="separatorKeysCodes"
       [disabled]="choicesEmpty"
       *ngIf="showInput"
     />
