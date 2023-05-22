@@ -2,46 +2,46 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table cdk-table uiTableWrapper [dataSource]="dataSource">
+    <table cdk-table uiTableStyle uiTableWrapper [dataSource]="dataSource">
       <ng-container cdkColumnDef="field">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'components.mapping.field' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">{{ element.field }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.field }}</td>
       </ng-container>
 
       <ng-container cdkColumnDef="path">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'components.mapping.path' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">{{ element.path }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.path }}</td>
       </ng-container>
 
       <ng-container cdkColumnDef="value">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'components.mapping.value' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">{{ element.value }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.value }}</td>
       </ng-container>
 
       <ng-container cdkColumnDef="text">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'components.mapping.text' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">{{ element.text }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.text }}</td>
       </ng-container>
 
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-        <td cdk-cell *cdkCellDef="let element; let index = index">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element; let index = index">
           <safe-button
             [isIcon]="true"
             icon="more_vert"

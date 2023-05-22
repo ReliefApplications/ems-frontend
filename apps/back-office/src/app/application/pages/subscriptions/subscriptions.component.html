@@ -14,34 +14,34 @@
   <div class="overflow-x-hidden shadow-2lg">
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
-      <table cdk-table uiTableWrapper [dataSource]="subscriptions">
+      <table cdk-table uiTableStyle uiTableWrapper [dataSource]="subscriptions">
         <ng-container cdkColumnDef="title">
-          <th cdk-header-cell *cdkHeaderCellDef>
+          <th uiCellHeader *cdkHeaderCellDef>
             {{ 'common.title' | translate }}
           </th>
-          <td cdk-cell *cdkCellDef="let element" class="font-bold">
+          <td uiCell *cdkCellDef="let element" class="font-bold">
             {{ element.title }}
           </td>
         </ng-container>
         <ng-container cdkColumnDef="convertTo">
-          <th cdk-header-cell *cdkHeaderCellDef>
+          <th uiCellHeader *cdkHeaderCellDef>
             {{ 'components.record.convert.select' | translate }}
           </th>
-          <td cdk-cell *cdkCellDef="let element">
+          <td uiCell *cdkCellDef="let element">
             {{ element.convertTo ? element.convertTo.name : '-' }}
           </td>
         </ng-container>
         <ng-container cdkColumnDef="channel">
-          <th cdk-header-cell *cdkHeaderCellDef>
+          <th uiCellHeader *cdkHeaderCellDef>
             {{ 'components.channel.dropdown.select' | translate }}
           </th>
-          <td cdk-cell *cdkCellDef="let element">
+          <td uiCell *cdkCellDef="let element">
             {{ element.channel ? element.channel.title : '-' }}
           </td>
         </ng-container>
         <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-          <th cdk-header-cell *cdkHeaderCellDef class="w-16"></th>
-          <td cdk-cell *cdkCellDef="let element">
+          <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
             <safe-button
               [isIcon]="true"
               icon="more_vert"

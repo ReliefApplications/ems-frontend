@@ -2,30 +2,30 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="forms">
+    <table *ngIf="!loading" cdk-table uiTableStyle uiTableWrapper [dataSource]="forms">
       <ng-container cdkColumnDef="name">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.name' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element" class="font-bold">
+        <td uiCell *cdkCellDef="let element" class="font-bold">
           {{ element.name }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="createdAt">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.createdOn' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.createdAt | safeDate }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="status">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.status' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           <mat-chip-list>
             <mat-chip
               class="success-chip !rounded-lg"
@@ -55,19 +55,19 @@
       </ng-container>
 
       <ng-container cdkColumnDef="recordsCount">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.record.few' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.recordsCount }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="core">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'components.forms.isCore' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           <mat-chip-list *ngIf="element.core">
             <mat-chip class="primary-chip !rounded-lg" disabled>{{
               'models.form.core' | translate
@@ -77,8 +77,8 @@
       </ng-container>
 
       <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-        <td cdk-cell *cdkCellDef="let element">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
           <safe-button
             [isIcon]="true"
             icon="more_vert"

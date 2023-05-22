@@ -13,20 +13,20 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="pullJobs">
+    <table *ngIf="!loading" cdk-table uiTableStyle uiTableWrapper [dataSource]="pullJobs">
       <ng-container cdkColumnDef="name">
-        <th cdk-header-cell *cdkHeaderCellDef>
+        <th uiCellHeader *cdkHeaderCellDef>
           {{ 'common.name' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element" class="font-bold">
+        <td uiCell *cdkCellDef="let element" class="font-bold">
           {{ element.name }}
         </td>
       </ng-container>
       <ng-container cdkColumnDef="status">
-        <th cdk-header-cell *cdkHeaderCellDef>
+        <th uiCellHeader *cdkHeaderCellDef>
           {{ 'common.status' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           <mat-chip-list>
             <mat-chip
               class="success-chip !rounded-lg"
@@ -55,32 +55,32 @@
         </td>
       </ng-container>
       <!-- <ng-container cdkColumnDef="apiConfiguration">
-        <th cdk-header-cell *cdkHeaderCellDef>
+        <th uiCellHeader *cdkHeaderCellDef>
           {{ 'common.apiConfiguration.one' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.apiConfiguration ? element.apiConfiguration.name : '-' }}
         </td>
       </ng-container> -->
       <ng-container cdkColumnDef="schedule">
-        <th cdk-header-cell *cdkHeaderCellDef>
+        <th uiCellHeader *cdkHeaderCellDef>
           {{ 'models.pullJob.nextIteration' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.schedule | safeCronParser | safeDate : 'short' }}
         </td>
       </ng-container>
       <!-- <ng-container cdkColumnDef="convertTo">
-        <th cdk-header-cell *cdkHeaderCellDef>
+        <th uiCellHeader *cdkHeaderCellDef>
           {{ 'components.record.convert.select' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.convertTo ? element.convertTo.name : '-' }}
         </td>
       </ng-container> -->
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef class="w-16"></th>
-        <td cdk-cell *cdkCellDef="let element">
+        <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
           <safe-button
             [isIcon]="true"
             icon="more_vert"

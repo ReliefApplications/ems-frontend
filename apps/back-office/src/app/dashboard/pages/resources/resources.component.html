@@ -23,45 +23,45 @@
   <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
-      cdk-table
+      cdk-table uiTableStyle
       uiTableWrapper
       [dataSource]="resources"
       (sortChange)="onSort($event)"
     >
       <ng-container cdkColumnDef="name">
-        <th uiTableHeaderSort="name" cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiTableHeaderSort="name" uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element" class="font-bold">
+        <td uiCell *cdkCellDef="let element" class="font-bold">
           {{ element.name }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="createdAt">
-        <th uiTableHeaderSort="createdAt" cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiTableHeaderSort="createdAt" uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.createdOn' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.createdAt | safeDate }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="recordsCount">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.record.few' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">{{ element.recordsCount }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.recordsCount }}</td>
       </ng-container>
 
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-        <td cdk-cell *cdkCellDef="let element">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
           <safe-button
             [isIcon]="true"
             icon="more_vert"

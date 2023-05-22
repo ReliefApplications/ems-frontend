@@ -1,9 +1,9 @@
-<table cdk-table uiTableWrapper [dataSource]="dataSource">
+<table cdk-table uiTableStyle uiTableWrapper [dataSource]="dataSource">
   <ng-container cdkColumnDef="select" *ngIf="checkbox">
-    <th cdk-header-cell *cdkHeaderCellDef scope="col">
+    <th uiCellHeader *cdkHeaderCellDef scope="col">
       <ui-checkbox></ui-checkbox>
     </th>
-    <td cdk-cell *cdkCellDef="let element">
+    <td uiCell *cdkCellDef="let element">
       <ui-checkbox></ui-checkbox>
     </td>
   </ng-container>
@@ -13,10 +13,10 @@
       [cdkColumnDef]="column"
       *ngIf="column !== 'actions' && column !== 'select'"
     >
-      <th cdk-header-cell *cdkHeaderCellDef scope="col">
+      <th uiCellHeader *cdkHeaderCellDef scope="col">
         {{ column | translate }}
       </th>
-      <td cdk-cell *cdkCellDef="let element">
+      <td uiCell *cdkCellDef="let element">
         <kendo-skeleton
           shape="text"
           animation="pulse"
@@ -27,8 +27,8 @@
   </ng-container>
 
   <ng-container cdkColumnDef="actions" *ngIf="actions" [stickyEnd]="true">
-    <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-    <td cdk-cell *cdkCellDef="let element">
+    <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+    <td uiCell *cdkCellDef="let element">
       <safe-button [isIcon]="true" icon="more_vert"> </safe-button>
     </td>
   </ng-container>

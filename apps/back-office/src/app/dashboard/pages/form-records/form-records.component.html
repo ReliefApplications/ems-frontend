@@ -76,31 +76,31 @@
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <!-- Records table -->
-    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="dataSource">
+    <table *ngIf="!loading" cdk-table uiTableStyle uiTableWrapper [dataSource]="dataSource">
       <ng-container
         *ngFor="let column of displayedColumns"
         [cdkColumnDef]="column"
         [stickyEnd]="column === '_actions'"
       >
         <ng-container *ngIf="!defaultColumns.includes(column)">
-          <th cdk-header-cell *cdkHeaderCellDef>
+          <th uiCellHeader *cdkHeaderCellDef>
             <div>{{ column }}</div>
           </th>
-          <td cdk-cell *cdkCellDef="let element">
+          <td uiCell *cdkCellDef="let element">
             <div>{{ element.data[column] }}</div>
           </td>
         </ng-container>
         <ng-container *ngIf="column === '_incrementalId'">
-          <th cdk-header-cell *cdkHeaderCellDef>
+          <th uiCellHeader *cdkHeaderCellDef>
             <div>ID</div>
           </th>
-          <td cdk-cell *cdkCellDef="let element">
+          <td uiCell *cdkCellDef="let element">
             <div>{{ element.incrementalId }}</div>
           </td>
         </ng-container>
         <ng-container *ngIf="column === '_actions'">
-          <th cdk-header-cell *cdkHeaderCellDef></th>
-          <td cdk-cell *cdkCellDef="let element">
+          <th uiCellHeader *cdkHeaderCellDef></th>
+          <td uiCell *cdkCellDef="let element">
             <safe-button
               [isIcon]="true"
               icon="more_vert"

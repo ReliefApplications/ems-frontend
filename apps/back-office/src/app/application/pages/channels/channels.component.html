@@ -14,20 +14,20 @@
   <div class="overflow-x-hidden shadow-2lg">
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
-      <table cdk-table uiTableWrapper [dataSource]="channelsData">
+      <table cdk-table uiTableStyle uiTableWrapper [dataSource]="channelsData">
         <ng-container cdkColumnDef="title">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
             {{ 'common.title' | translate }}
           </th>
-          <td cdk-cell *cdkCellDef="let element" class="font-bold">
+          <td uiCell *cdkCellDef="let element" class="font-bold">
             {{ element.title }}
           </td>
         </ng-container>
         <ng-container cdkColumnDef="subscribedRoles">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
             {{ 'common.role.few' | translate }}
           </th>
-          <td cdk-cell *cdkCellDef="let element">
+          <td uiCell *cdkCellDef="let element">
             <span
               *ngFor="
                 let subscribedApplication of element.subscribedApplications
@@ -44,13 +44,13 @@
         </ng-container>
 
         <ng-container cdkColumnDef="recordsCount">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col">Records</th>
-          <td cdk-cell *cdkCellDef="let element">{{ element.recordsCount }}</td>
+          <th uiCellHeader *cdkHeaderCellDef scope="col">Records</th>
+          <td uiCell *cdkCellDef="let element">{{ element.recordsCount }}</td>
         </ng-container>
 
         <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-          <td cdk-cell *cdkCellDef="let element">
+          <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
             <safe-button
               [isIcon]="true"
               icon="more_vert"

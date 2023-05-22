@@ -14,14 +14,14 @@
     <div class="overflow-x-hidden shadow-2lg">
       <!-- Table scroll container -->
       <div class="overflow-x-auto">
-        <table class="mb-6" cdk-table uiTableWrapper [dataSource]="data.errors">
+        <table class="mb-6" cdk-table uiTableStyle uiTableWrapper [dataSource]="data.errors">
           <ng-container cdkColumnDef="question">
-            <th cdk-header-cell *cdkHeaderCellDef scope="col">Field</th>
-            <td cdk-cell *cdkCellDef="let element">{{ element.question }}</td>
+            <th uiCellHeader *cdkHeaderCellDef scope="col">Field</th>
+            <td uiCell *cdkCellDef="let element">{{ element.question }}</td>
           </ng-container>
           <ng-container cdkColumnDef="errors">
-            <th cdk-header-cell *cdkHeaderCellDef scope="col">Errors</th>
-            <td cdk-cell *cdkCellDef="let element">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">Errors</th>
+            <td uiCell *cdkCellDef="let element">
               <ul>
                 <li *ngFor="let error of element.errors">
                   {{ error }}

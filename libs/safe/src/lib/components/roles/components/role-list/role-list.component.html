@@ -33,32 +33,32 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="roles">
+    <table *ngIf="!loading" cdk-table uiTableStyle uiTableWrapper [dataSource]="roles">
       <ng-container cdkColumnDef="title">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.title' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element" class="font-bold">
+        <td uiCell *cdkCellDef="let element" class="font-bold">
           {{ element.title }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="usersCount">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.user.few' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.users?.totalCount }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-        <td cdk-cell *cdkCellDef="let element">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
           <safe-button
             [isIcon]="true"
             icon="more_vert"

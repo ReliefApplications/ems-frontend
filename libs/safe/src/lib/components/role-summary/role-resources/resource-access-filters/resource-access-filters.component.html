@@ -10,22 +10,22 @@
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table
-      cdk-table
+      cdk-table uiTableStyle
       uiTableWrapper
       [dataSource]="filters"
       *ngIf="filters.data.length > 0"
       multiTemplateDataRows
     >
       <ng-container cdkColumnDef="filter">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'components.queryBuilder.filter.title' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ getAccessString(element.access) }}
         </td>
       </ng-container>
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col" class="text-end w-16">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="text-end w-16">
           <safe-button
             [disabled]="disabled"
             variant="primary"
@@ -34,7 +34,7 @@
             >{{ 'common.save' | translate }}</safe-button
           >
         </th>
-        <td cdk-cell *cdkCellDef="let element; let i = dataIndex">
+        <td uiCell *cdkCellDef="let element; let i = dataIndex">
           <div class="flex">
             <ng-container *ngFor="let permission of element.permissions">
               <safe-button
@@ -56,7 +56,7 @@
       </ng-container>
       <ng-container cdkColumnDef="expandedDetail">
         <td
-          cdk-cell
+          uiCell
           *cdkCellDef="let element; let i = dataIndex"
           [attr.colspan]="displayedColumns.length"
         >

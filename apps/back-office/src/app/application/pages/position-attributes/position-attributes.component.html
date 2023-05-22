@@ -9,22 +9,22 @@
   <div class="overflow-x-hidden shadow-2lg">
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
-      <table cdk-table uiTableWrapper [dataSource]="positionAttributes">
+      <table cdk-table uiTableStyle uiTableWrapper [dataSource]="positionAttributes">
         <ng-container cdkColumnDef="value">
-          <th uiTableHeaderSort="value" cdk-header-cell *cdkHeaderCellDef>
+          <th uiTableHeaderSort="value" uiCellHeader *cdkHeaderCellDef>
             <span class="headerTitle">
               {{ 'common.name' | translate }}
             </span>
           </th>
-          <td cdk-cell *cdkCellDef="let element">{{ element.value }}</td>
+          <td uiCell *cdkCellDef="let element">{{ element.value }}</td>
         </ng-container>
         <ng-container cdkColumnDef="usersCount">
-          <th uiTableHeaderSort="usersCount" cdk-header-cell *cdkHeaderCellDef>
+          <th uiTableHeaderSort="usersCount" uiCellHeader *cdkHeaderCellDef>
             <span class="headerTitle">
               {{ 'common.user.few' | translate }}
             </span>
           </th>
-          <td cdk-cell *cdkCellDef="let element">{{ element.usersCount }}</td>
+          <td uiCell *cdkCellDef="let element">{{ element.usersCount }}</td>
         </ng-container>
         <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
         <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>

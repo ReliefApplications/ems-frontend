@@ -20,18 +20,18 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table cdk-table uiTableWrapper [dataSource]="rules" *ngIf="!loading">
+    <table cdk-table uiTableStyle uiTableWrapper [dataSource]="rules" *ngIf="!loading">
       <ng-container cdkColumnDef="filter">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'components.role.summary.autoAssignment.rule.title' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element" class="capitalize">
+        <td uiCell *cdkCellDef="let element" class="capitalize">
           {{ getRuleDisplay(element) }}
         </td>
       </ng-container>
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-        <td cdk-cell *cdkCellDef="let i = index">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let i = index">
           <div class="flex">
             <safe-button
               [isIcon]="true"

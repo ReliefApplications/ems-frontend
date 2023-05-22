@@ -1,18 +1,18 @@
 <div *ngIf="filteredPages.length">
   <h2>{{ 'common.workflow.few' | translate }}</h2>
-  <table cdk-table uiTableWrapper [dataSource]="filteredPages" multiTemplateDataRows>
+  <table cdk-table uiTableStyle uiTableWrapper [dataSource]="filteredPages" multiTemplateDataRows>
     <ng-container cdkColumnDef="name">
-      <th cdk-header-cell *cdkHeaderCellDef scope="col">
+      <th uiCellHeader *cdkHeaderCellDef scope="col">
         {{ 'common.name' | translate }}
       </th>
-      <td cdk-cell *cdkCellDef="let element" class="font-bold">
+      <td uiCell *cdkCellDef="let element" class="font-bold">
         {{ element.name }}
       </td>
     </ng-container>
 
     <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-      <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-      <td cdk-cell *cdkCellDef="let element">
+      <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+      <td uiCell *cdkCellDef="let element">
         <div class="flex">
           <safe-button
             [isIcon]="true"
@@ -51,7 +51,7 @@
 
     <ng-container cdkColumnDef="expandedDetail">
       <td
-        cdk-cell
+        uiCell
         *cdkCellDef="let element"
         [attr.colspan]="displayedColumns.length"
       >
@@ -63,22 +63,22 @@
         >
           <table
             class="my-4 mx-0"
-            cdk-table
+            cdk-table uiTableStyle
             uiTableWrapper
             [dataSource]="filteredSteps"
             *ngIf="filteredSteps.length"
           >
             <ng-container cdkColumnDef="name">
-              <th cdk-header-cell *cdkHeaderCellDef scope="col">
+              <th uiCellHeader *cdkHeaderCellDef scope="col">
                 {{ 'common.step.one' | translate }}
               </th>
-              <td cdk-cell *cdkCellDef="let element" class="font-bold">
+              <td uiCell *cdkCellDef="let element" class="font-bold">
                 {{ element.name }}
               </td>
             </ng-container>
             <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-              <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-              <td cdk-cell *cdkCellDef="let element">
+              <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+              <td uiCell *cdkCellDef="let element">
                 <safe-button
                   [isIcon]="true"
                   [icon]="

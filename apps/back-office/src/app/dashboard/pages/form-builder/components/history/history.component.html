@@ -3,17 +3,17 @@
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <!-- Records table -->
-    <table cdk-table [dataSource]="dataSource">
+    <table cdk-table uiTableStyle [dataSource]="dataSource">
       <ng-container cdkColumnDef="id">
-        <th cdk-header-cell *cdkHeaderCellDef>{{ 'common.id' | translate }}</th>
-        <td cdk-cell *cdkCellDef="let element">{{ element.id }}</td>
+        <th uiCellHeader *cdkHeaderCellDef>{{ 'common.id' | translate }}</th>
+        <td uiCell *cdkCellDef="let element">{{ element.id }}</td>
       </ng-container>
 
       <ng-container cdkColumnDef="createdAt">
-        <th cdk-header-cell *cdkHeaderCellDef>
+        <th uiCellHeader *cdkHeaderCellDef>
           {{ 'common.createdOn' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.createdAt | safeDate }}
         </td>
       </ng-container>

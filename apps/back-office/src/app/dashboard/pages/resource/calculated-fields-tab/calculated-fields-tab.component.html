@@ -11,26 +11,26 @@
 <div>
   <div class="overflow-x-hidden shadow-2lg">
     <div class="overflow-x-auto">
-      <table cdk-table uiTableWrapper [dataSource]="fields">
+      <table cdk-table uiTableStyle uiTableWrapper [dataSource]="fields">
         <ng-container cdkColumnDef="name">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
             {{ 'models.form.field.name' | translate }}
           </th>
-          <td cdk-cell *cdkCellDef="let element">{{ element.name }}</td>
+          <td uiCell *cdkCellDef="let element">{{ element.name }}</td>
         </ng-container>
 
         <ng-container cdkColumnDef="createdAt">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
             {{ 'components.calculatedFields.expression' | translate }}
           </th>
-          <td cdk-cell *cdkCellDef="let element">
+          <td uiCell *cdkCellDef="let element">
             {{ element.expression }}
           </td>
         </ng-container>
 
         <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-          <td cdk-cell *cdkCellDef="let element">
+          <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
             <safe-button
               [isIcon]="true"
               icon="more_vert"

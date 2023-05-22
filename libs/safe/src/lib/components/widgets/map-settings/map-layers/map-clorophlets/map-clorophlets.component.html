@@ -10,18 +10,18 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table cdk-table uiTableWrapper [dataSource]="clorophlets.value">
+    <table cdk-table uiTableStyle uiTableWrapper [dataSource]="clorophlets.value">
       <ng-container cdkColumnDef="name">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.name' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element" class="font-bold">
+        <td uiCell *cdkCellDef="let element" class="font-bold">
           {{ element.name }}
         </td>
       </ng-container>
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-        <td cdk-cell *cdkCellDef="let element; let i = index">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element; let i = index">
           <div>
             <safe-button
               [isIcon]="true"

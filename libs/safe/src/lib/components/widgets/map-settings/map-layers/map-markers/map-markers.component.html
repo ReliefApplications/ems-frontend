@@ -67,12 +67,12 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table cdk-table uiTableWrapper [dataSource]="rules.value">
+    <table cdk-table uiTableStyle uiTableWrapper [dataSource]="rules.value">
       <ng-container cdkColumnDef="color">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.preview' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           <span
             [style]="'background-color:' + element.color"
             class="color-indicator"
@@ -80,14 +80,14 @@
         </td>
       </ng-container>
       <ng-container cdkColumnDef="label">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.label' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element">{{ element.label }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.label }}</td>
       </ng-container>
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-        <td cdk-cell *cdkCellDef="let element; let i = index">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element; let i = index">
           <div>
             <safe-button
               [isIcon]="true"

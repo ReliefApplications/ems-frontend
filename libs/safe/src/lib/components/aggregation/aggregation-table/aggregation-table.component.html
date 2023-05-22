@@ -3,7 +3,7 @@
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table
-      cdk-table
+      cdk-table uiTableStyle
       uiTableWrapper
       [dataSource]="aggregations"
       cdkDropList
@@ -11,26 +11,26 @@
       [cdkDropListData]="aggregations"
     >
       <ng-container cdkColumnDef="name">
-        <th cdk-header-cell *cdkHeaderCellDef>
+        <th uiCellHeader *cdkHeaderCellDef>
           {{ 'common.name' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element" class="font-bold">
+        <td uiCell *cdkCellDef="let element" class="font-bold">
           {{ element.name }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="createdAt">
-        <th cdk-header-cell *cdkHeaderCellDef>
+        <th uiCellHeader *cdkHeaderCellDef>
           {{ 'common.createdOn' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.createdAt | safeDate }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef class="w-16"></th>
-        <td cdk-cell *cdkCellDef="let element">
+        <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
           <safe-button
             [isIcon]="true"
             icon="more_vert"

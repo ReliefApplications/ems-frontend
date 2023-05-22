@@ -2,25 +2,25 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="users">
+    <table *ngIf="!loading" cdk-table uiTableStyle uiTableWrapper [dataSource]="users">
       <ng-container cdkColumnDef="name">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element" class="font-black bold">
+        <td uiCell *cdkCellDef="let element" class="font-black bold">
           {{ element.name }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="username">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span>
             {{ 'models.user.username' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">{{ element.username }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.username }}</td>
       </ng-container>
 
       <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>

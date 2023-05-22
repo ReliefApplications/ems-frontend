@@ -103,10 +103,10 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="users">
+    <table *ngIf="!loading" cdk-table uiTableStyle uiTableWrapper [dataSource]="users">
       <!-- Checkbox Column -->
       <ng-container cdkColumnDef="select">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <ui-checkbox
             (change)="$event ? masterToggle() : null"
             [checked]="selection.hasValue() && isAllSelected()"
@@ -115,7 +115,7 @@
           >
           </ui-checkbox>
         </th>
-        <td cdk-cell *cdkCellDef="let row">
+        <td uiCell *cdkCellDef="let row">
           <ui-checkbox
             (click)="$event.stopPropagation()"
             (change)="$event ? selection.toggle(row) : null"
@@ -126,48 +126,48 @@
         </td>
       </ng-container>
       <ng-container cdkColumnDef="username">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'models.user.username' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">{{ element.username }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.username }}</td>
       </ng-container>
 
       <ng-container cdkColumnDef="name">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element" class="font-bold">
+        <td uiCell *cdkCellDef="let element" class="font-bold">
           {{ element.name }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="roles">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.role.few' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           <span *ngFor="let role of element.roles"> {{ role.title }}</span>
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="oid">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.id' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">{{ element.oid }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.oid }}</td>
       </ng-container>
 
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-        <td cdk-cell *cdkCellDef="let element">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
           <safe-button
             [isIcon]="true"
             icon="more_vert"

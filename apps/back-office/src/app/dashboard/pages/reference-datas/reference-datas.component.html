@@ -35,56 +35,56 @@
   <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
-      cdk-table
+      cdk-table uiTableStyle
       uiTableWrapper
       [dataSource]="dataSource"
       (sortChange)="onSort($event)"
     >
       <ng-container cdkColumnDef="name">
-        <th uiTableHeaderSort="name" cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiTableHeaderSort="name" uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element" class="font-bold">
+        <td uiCell *cdkCellDef="let element" class="font-bold">
           {{ element.name }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="type">
-        <th uiTableHeaderSort="type" cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiTableHeaderSort="type" uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'pages.referenceData.type' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">{{ element.type }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.type }}</td>
       </ng-container>
 
       <ng-container cdkColumnDef="apiConfiguration">
-        <th uiTableHeaderSort="apiConfiguration" cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiTableHeaderSort="apiConfiguration" uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.apiConfiguration.one' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.apiConfiguration ? element.apiConfiguration.name : '' }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="modifiedAt">
-        <th uiTableHeaderSort="modifiedAt" cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiTableHeaderSort="modifiedAt" uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.modifiedOn' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.modifiedAt | safeDate : 'medium' }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-        <td cdk-cell *cdkCellDef="let element">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
           <safe-button
             [isIcon]="true"
             icon="more_vert"

@@ -82,29 +82,29 @@
   <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
-      cdk-table
+      cdk-table uiTableStyle
       uiTableWrapper
       (sortChange)="onSort($event)"
       [dataSource]="dataSource"
     >
       <ng-container cdkColumnDef="name">
-        <th uiTableHeaderSort="name" cdk-header-cell *cdkHeaderCellDef>
+        <th uiTableHeaderSort="name" uiCellHeader *cdkHeaderCellDef>
           <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element" class="font-bold">
+        <td uiCell *cdkCellDef="let element" class="font-bold">
           {{ element.name }}
         </td>
       </ng-container>
 
       <ng-container cdkColumnDef="status">
-        <th uiTableHeaderSort="status" cdk-header-cell *cdkHeaderCellDef>
+        <th uiTableHeaderSort="status" uiCellHeader *cdkHeaderCellDef>
           <span class="headerTitle">
             {{ 'common.status' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           <mat-chip-list>
             <mat-chip
               class="success-chip !rounded-lg"
@@ -134,17 +134,17 @@
       </ng-container>
 
       <ng-container cdkColumnDef="authType">
-        <th uiTableHeaderSort="authType" cdk-header-cell *cdkHeaderCellDef>
+        <th uiTableHeaderSort="authType" uiCellHeader *cdkHeaderCellDef>
           <span class="headerTitle">
             {{ 'models.apiConfiguration.authType' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">{{ element.authType }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.authType }}</td>
       </ng-container>
 
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef class="w-16"></th>
-        <td cdk-cell *cdkCellDef="let element">
+        <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
           <safe-button
             [isIcon]="true"
             icon="more_vert"

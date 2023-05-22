@@ -16,23 +16,23 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="notifications">
+    <table *ngIf="!loading" cdk-table uiTableStyle uiTableWrapper [dataSource]="notifications">
       <ng-container cdkColumnDef="name">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">{{ element.name }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.name }}</td>
       </ng-container>
 
       <ng-container cdkColumnDef="status">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.status' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           <mat-chip-list>
             <mat-chip
               class="success-chip !rounded-lg"
@@ -62,17 +62,17 @@
       </ng-container>
 
       <ng-container cdkColumnDef="lastExecution">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'models.customNotification.lastExecution' | translate }}
           </span>
         </th>
-        <td cdk-cell *cdkCellDef="let element">{{ element.lastExecution }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.lastExecution }}</td>
       </ng-container>
 
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-        <td cdk-cell *cdkCellDef="let element">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
           <safe-button
             [isIcon]="true"
             icon="more_vert"

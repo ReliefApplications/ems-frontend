@@ -67,27 +67,27 @@
   <!-- Table scroll container -->
   <div class="overflow-x-scroll">
     <!-- Records table -->
-    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="dataSource">
+    <table *ngIf="!loading" cdk-table uiTableStyle uiTableWrapper [dataSource]="dataSource">
       <ng-container
         *ngFor="let column of displayedColumnsRecords"
         [cdkColumnDef]="column"
         [stickyEnd]="column === '_actions'"
       >
         <ng-container *ngIf="!recordsDefaultColumns.includes(column)">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col">{{ column }}</th>
-          <td cdk-cell *cdkCellDef="let element">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">{{ column }}</th>
+          <td uiCell *cdkCellDef="let element">
             <div>{{ element.data[column] }}</div>
           </td>
         </ng-container>
         <ng-container *ngIf="column === '_incrementalId'">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col">ID</th>
-          <td cdk-cell *cdkCellDef="let element">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">ID</th>
+          <td uiCell *cdkCellDef="let element">
             <div>{{ element.incrementalId }}</div>
           </td>
         </ng-container>
         <ng-container *ngIf="column === '_actions'">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col"></th>
-          <td cdk-cell *cdkCellDef="let element">
+          <th uiCellHeader *cdkHeaderCellDef scope="col"></th>
+          <td uiCell *cdkCellDef="let element">
             <safe-button
               [isIcon]="true"
               icon="more_vert"

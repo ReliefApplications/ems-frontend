@@ -35,16 +35,16 @@
   <div class="overflow-x-hidden shadow-2lg mt-6">
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
-      <table cdk-table uiTableWrapper [dataSource]="user.applications">
+      <table cdk-table uiTableStyle uiTableWrapper [dataSource]="user.applications">
         <ng-container cdkColumnDef="name">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
             <span class="headerTitle">
               {{ 'common.application.few' | translate }} ({{
                 user.applications.length
               }})
             </span>
           </th>
-          <td cdk-cell *cdkCellDef="let element" class="font-bold">
+          <td uiCell *cdkCellDef="let element" class="font-bold">
             {{ element.name
             }}<span *ngIf="user.favoriteApp === element.id">
               <mat-icon inline="true" color="primary">star</mat-icon>
@@ -52,30 +52,30 @@
           </td>
         </ng-container>
         <ng-container cdkColumnDef="role">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
             <span class="headerTitle">
               {{ 'common.role.one' | translate }}
             </span>
           </th>
-          <td cdk-cell *cdkCellDef="let element">
+          <td uiCell *cdkCellDef="let element">
             {{ element.role ? element.role.title : '' }}
           </td>
         </ng-container>
         <ng-container cdkColumnDef="positionAttributes">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
             <span class="headerTitle">
               {{ 'common.positionAttribute.few' | translate }}
             </span>
           </th>
-          <td cdk-cell *cdkCellDef="let element">
+          <td uiCell *cdkCellDef="let element">
             <span *ngFor="let e of element.positionAttributes"
               >{{ e.value }},
             </span>
           </td>
         </ng-container>
         <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-          <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-          <td cdk-cell *cdkCellDef="let element">
+          <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
             <safe-button
               [isIcon]="true"
               icon="more_vert"

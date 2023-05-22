@@ -11,24 +11,24 @@
   <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
-      cdk-table
+      cdk-table uiTableStyle
       uiTableWrapper
       [dataSource]="resources"
       multiTemplateDataRows
     >
       <!-- Resource Name -->
       <ng-container cdkColumnDef="name">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.name' | translate }}
         </th>
-        <td cdk-cell *cdkCellDef="let element" class="font-bold">
+        <td uiCell *cdkCellDef="let element" class="font-bold">
           {{ element.resource.name }}
         </td>
       </ng-container>
       <!-- Resource Actions & Permissions -->
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th cdk-header-cell *cdkHeaderCellDef scope="col" class="w-16"></th>
-        <td cdk-cell *cdkCellDef="let element">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
           <div class="flex">
             <!-- Permissions -->
             <ng-container *ngFor="let permission of element.permissions">
@@ -62,7 +62,7 @@
       </ng-container>
       <ng-container cdkColumnDef="expandedDetail">
         <td
-          cdk-cell
+          uiCell
           *cdkCellDef="let element"
           [attr.colspan]="displayedColumns.length"
         >
