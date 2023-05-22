@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Variant } from '../shared/variant.enum';
+import { Variant } from '../types/variant';
 
 /**
  * UI Chip Component
@@ -12,12 +12,10 @@ import { Variant } from '../shared/variant.enum';
 export class ChipComponent {
   @Input() value = '';
   @Input() removable = false;
-  @Input() variant: Variant = Variant.DEFAULT;
+  @Input() variant: Variant = 'default';
   @Input() disabled = false;
 
   @Output() removed = new EventEmitter<void>();
-
-  public chipVariant = Variant;
 
   /** @returns general chip classes and variant */
   get chipClasses(): string[] {
@@ -29,19 +27,19 @@ export class ChipComponent {
       classes.push('cursor-pointer');
       // Variants
       switch (this.variant) {
-        case this.chipVariant.DEFAULT:
+        case 'default':
           classes.push('bg-gray-300 hover:bg-gray-400 text-gray-500');
           break;
-        case this.chipVariant.PRIMARY:
+        case 'primary':
           classes.push('bg-primary-100 hover:bg-primary-200 text-primary-400');
           break;
-        case this.chipVariant.SUCCESS:
+        case 'success':
           classes.push('bg-green-100 hover:bg-green-200 text-green-400');
           break;
-        case this.chipVariant.DANGER:
+        case 'danger':
           classes.push('bg-red-100 hover:bg-red-200 text-red-400');
           break;
-        case this.chipVariant.ACCENT:
+        case 'accent':
           classes.push('bg-orange-100 hover:bg-orange-200 text-orange-400');
           break;
         default:

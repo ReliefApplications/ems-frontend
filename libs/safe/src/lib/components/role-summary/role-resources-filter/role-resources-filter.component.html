@@ -7,9 +7,9 @@
         [formControl]="search"
         type="text"
       />
-      <ui-spinner [size]="size.SMALL" *ngIf="loading" uiSuffix></ui-spinner>
+      <ui-spinner [size]="'small'" *ngIf="loading" uiSuffix></ui-spinner>
     </div>
-    <safe-button
+    <ui-button
       icon="filter_list"
       category="tertiary"
       variant="primary"
@@ -20,7 +20,7 @@
           ? ('common.filter.hide' | translate)
           : ('common.filter.show' | translate)
       }}
-    </safe-button>
+    </ui-button>
   </div>
   <div class="flex flex-wrap gap-2 items-center" *ngIf="show">
     <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
@@ -35,21 +35,21 @@
       ></mat-datepicker-toggle>
       <mat-date-range-picker #rangePicker>
         <mat-date-range-picker-actions>
-          <safe-button matDateRangePickerCancel (click)="clearDateFilter()">
+          <ui-button matDateRangePickerCancel (click)="clearDateFilter()">
             {{ 'common.clear' | translate }}
-          </safe-button>
-          <safe-button
+          </ui-button>
+          <ui-button
             category="secondary"
             variant="primary"
             matDateRangePickerApply
           >
             {{ 'common.filter.apply' | translate }}
-          </safe-button>
+          </ui-button>
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
-    <safe-button variant="danger" (click)="clear()">
+    <ui-button variant="danger" (click)="clear()">
       {{ 'common.filter.clear' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </div>

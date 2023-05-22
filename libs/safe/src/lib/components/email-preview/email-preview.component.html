@@ -27,16 +27,16 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+    <ui-button mat-dialog-close>
       {{ 'common.dismiss' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [mat-dialog-close]="form.value"
       cdkFocusInitial
     >
       {{ 'common.send' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

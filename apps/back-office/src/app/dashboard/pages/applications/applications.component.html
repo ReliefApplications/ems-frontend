@@ -66,20 +66,20 @@
               <ui-chip
                 class="!rounded-lg"
                 *ngIf="element.status === 'active'"
-                [variant]="colorVariant.SUCCESS"
+                variant="success"
               >
                 {{ 'common.status_active' | translate | titlecase }}
               </ui-chip>
               <ui-chip
                 class="!rounded-lg"
-                [variant]="colorVariant.ACCENT"
+                variant="accent"
                 *ngIf="element.status === 'pending'"
               >
                 {{ 'common.status_pending' | translate | titlecase }}
               </ui-chip>
               <ui-chip
                 class="!rounded-lg"
-                [variant]="colorVariant.DANGER"
+                variant="danger"
                 *ngIf="element.status === 'archived'"
               >
                 {{ 'common.status_archived' | translate | titlecase }}
@@ -102,13 +102,13 @@
         <ng-container matColumnDef="actions" [stickyEnd]="true">
           <th mat-header-cell *matHeaderCellDef class="w-16"></th>
           <td mat-cell *matCellDef="let element">
-            <safe-button
+            <ui-button
               [isIcon]="true"
               icon="more_vert"
               [uiMenuTriggerFor]="menu"
               (click)="$event.stopPropagation()"
             >
-            </safe-button>
+            </ui-button>
             <ui-menu #menu>
               <button uiMenuItem (click)="onPreview(element)">
                 <mat-icon>preview</mat-icon>

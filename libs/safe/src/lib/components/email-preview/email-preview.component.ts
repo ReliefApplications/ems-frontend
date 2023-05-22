@@ -32,9 +32,6 @@ export class SafeEmailPreviewComponent implements OnInit {
   /** tinymce editor */
   public editor: any = EMAIL_EDITOR_CONFIG;
 
-  // === COLOR VARIANT ===
-  public colorVariant = Variant;
-
   /**
    * Preview Email component.
    * Modal in read-only mode.

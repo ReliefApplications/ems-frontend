@@ -4,9 +4,7 @@ import { SafeApplicationUsersComponent } from './application-users.component';
 import { SafeApplicationUsersRoutingModule } from './application-users-routing.module';
 import { UserListModule } from './components/user-list/user-list.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../../components/ui/button/button.module';
-import { TabsModule } from '@oort-front/ui';
-import { MenuModule } from '@oort-front/ui';
+import { TabsModule, ButtonModule, MenuModule } from '@oort-front/ui';
 import { SafeInviteUsersModule } from '../../components/users/components/invite-users/invite-users.module';
 
 /**
@@ -19,10 +17,10 @@ import { SafeInviteUsersModule } from '../../components/users/components/invite-
     SafeApplicationUsersRoutingModule,
     UserListModule,
     TranslateModule,
-    SafeButtonModule,
     TabsModule,
     MenuModule,
     SafeInviteUsersModule,
+    ButtonModule,
   ],
   exports: [SafeApplicationUsersComponent],
 })

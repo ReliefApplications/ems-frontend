@@ -36,9 +36,6 @@ export class FormsTabComponent implements OnInit {
     '_actions',
   ];
 
-  // === COLOR VARIANT ===
-  public colorVariant = Variant;
-
   /**
    * Forms tab of resource page
    *

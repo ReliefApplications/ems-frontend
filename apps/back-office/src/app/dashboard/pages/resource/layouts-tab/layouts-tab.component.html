@@ -1,8 +1,8 @@
 <div class="self-end" *ngIf="!loading">
-  <safe-button variant="primary" category="secondary" (click)="onAddLayout()">
+  <ui-button variant="primary" category="secondary" (click)="onAddLayout()">
     {{
       'components.widget.settings.grid.layouts.add.choice.create' | translate
-    }}</safe-button
+    }}</ui-button
   >
 </div>
 <div>
@@ -32,14 +32,14 @@
         <ng-container matColumnDef="_actions" [stickyEnd]="true">
           <th mat-header-cell *matHeaderCellDef class="w-16"></th>
           <td mat-cell *matCellDef="let element">
-            <safe-button
+            <ui-button
               [isIcon]="true"
               icon="more_vert"
               [uiMenuTriggerFor]="resMenu"
               (click)="$event.stopPropagation()"
               [disabled]="!resource.canUpdate"
             >
-            </safe-button>
+            </ui-button>
             <ui-menu #resMenu>
               <button uiMenuItem (click)="onEditLayout(element)">
                 <mat-icon>edit</mat-icon>

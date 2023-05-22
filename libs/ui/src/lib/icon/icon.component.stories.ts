@@ -1,6 +1,6 @@
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { IconComponent } from './icon.component';
-import { Variant } from '../shared/variant.enum';
+import { variants } from '../types/variant';
 import { IconModule } from './icon.module';
 
 export default {
@@ -8,7 +8,7 @@ export default {
   component: IconComponent,
   argTypes: {
     variant: {
-      options: Object.values(Variant),
+      options: variants,
       control: {
         type: 'select',
       },
@@ -45,6 +45,6 @@ const Template: StoryFn<IconComponent> = (args: IconComponent) => ({
 export const Primary = Template.bind({});
 Primary.args = {
   icon: 'search_outline',
-  variant: Variant.DEFAULT,
+  variant: 'default',
   size: 24,
 };

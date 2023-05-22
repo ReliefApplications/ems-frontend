@@ -3,20 +3,24 @@ import { CommonModule } from '@angular/common';
 import { SafeLayoutComponent } from './layout.component';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule } from '@oort-front/ui';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { TooltipModule } from '@oort-front/ui';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { SafeSearchMenuModule } from '../search-menu/search-menu.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeDateModule } from '../../pipes/date/date.module';
-import { BreadcrumbsModule, DividerModule } from '@oort-front/ui';
 import { SafeIconModule } from '../ui/icon/icon.module';
+import {
+  BreadcrumbsModule,
+  DividerModule,
+  TooltipModule,
+  MenuModule,
+  ButtonModule,
+  IconModule,
+} from '@oort-front/ui';
 
 /**
  * SafeLayoutModule is a class used to manage all the modules and components
@@ -35,7 +39,6 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     DragDropModule,
     TooltipModule,
     DividerModule,
-    SafeButtonModule,
     IndicatorsModule,
     TranslateModule,
     SafeSearchMenuModule,
@@ -43,6 +46,8 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     SafeDateModule,
     BreadcrumbsModule,
     SafeIconModule,
+    ButtonModule,
+    IconModule,
   ],
   exports: [SafeLayoutComponent],
 })

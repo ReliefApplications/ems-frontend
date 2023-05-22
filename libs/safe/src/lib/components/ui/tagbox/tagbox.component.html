@@ -1,7 +1,7 @@
 <mat-form-field appearance="outline" class="flex-1">
   <mat-label>{{ label }}</mat-label>
   <!-- Chip list -->
-  <div uiChipList #chipList>
+  <div uiChipList #chipList class="mt-5">
     <!-- Individual chip choice -->
     <!-- @TODO verify selectable-->
     <ui-chip
@@ -11,12 +11,6 @@
       (removed)="remove(choice)"
     >
       {{ choice[displayKey] }}
-      <safe-icon
-        *ngIf="!choice.used"
-        matChipRemove
-        icon="cancel"
-        [size]="18"
-      ></safe-icon>
     </ui-chip>
     <!-- Search text control -->
     <input
@@ -30,6 +24,7 @@
       [chipInputSeparatorKeyCodes]="separatorKeysCodes"
       [disabled]="choicesEmpty"
       *ngIf="showInput"
+      class="mt-5"
     />
   </div>
   <!-- Filter choices -->

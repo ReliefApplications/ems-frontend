@@ -87,10 +87,10 @@
   </mat-dialog-content>
   <!-- Modal actions ( close / save ) -->
   <div mat-dialog-actions class="mat-dialog-actions" align="end">
-    <safe-button mat-dialog-close>
+    <ui-button mat-dialog-close>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       (click)="onSubmit()"
@@ -98,6 +98,6 @@
       [disabled]="!form || !form.valid"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

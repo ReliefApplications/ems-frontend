@@ -70,9 +70,6 @@ export class PullJobsComponent
     endCursor: '',
   };
 
-  // === COLOR VARIANT ===
-  public colorVariant = Variant;
-
   /**
    * PullJobsComponent constructor.
    *

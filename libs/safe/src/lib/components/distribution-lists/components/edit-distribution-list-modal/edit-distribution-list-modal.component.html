@@ -19,7 +19,6 @@
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>{{ 'common.email.few' | translate }}</mat-label>
-          <!-- @TODO verify selectable-->
           <div uiChipList #chipList formControlName="emails">
             <ui-chip
               *ngFor="let email of emails"
@@ -27,12 +26,11 @@
               (removed)="removeEmail(email)"
             >
               {{ email }}
-              <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
             </ui-chip>
             <input
+              #emailsInput
               [uiChipListFor]="chipList"
               [chipInputSeparatorKeyCodes]="separatorKeysCodes"
-              #emailsInput
               (focusout)="addEmail($event)"
             />
           </div>
@@ -42,16 +40,16 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+    <ui-button mat-dialog-close>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [mat-dialog-close]="form.value"
       [disabled]="!form.valid"
     >
       {{ (data ? 'common.update' : 'common.create') | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

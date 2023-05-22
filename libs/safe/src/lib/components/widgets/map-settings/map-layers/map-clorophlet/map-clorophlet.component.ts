@@ -6,6 +6,7 @@ import {
 } from '@angular/material/legacy-dialog';
 import { clorophletForm, divisionForm } from '../../map-forms';
 
+
 /** Interface of dialog data of the component */
 interface DialogData {
   value: any;
@@ -31,6 +32,8 @@ export class MapClorophletComponent {
   public formattedFields: any[] = [];
   public geoJSONfields: string[] = [];
   public query: any;
+
+  
 
   /**
    * Clorophlet divisions as form array.

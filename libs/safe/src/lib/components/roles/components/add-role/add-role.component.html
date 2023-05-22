@@ -14,10 +14,10 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">
+    <ui-button (click)="onClose()">
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [mat-dialog-close]="roleForm.value"
@@ -25,6 +25,6 @@
       [disabled]="!roleForm.valid"
     >
       {{ 'common.create' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

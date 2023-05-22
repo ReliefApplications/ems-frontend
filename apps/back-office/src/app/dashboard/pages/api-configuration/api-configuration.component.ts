@@ -52,9 +52,6 @@ export class ApiConfigurationComponent
   public authType = authType;
   public authTypeChoices = Object.values(authType);
 
-  // === COLOR VARIANT ===
-  public colorVariant = Variant;
-
   /** @returns API configuration name */
   get name(): AbstractControl | null {
     return this.apiForm.get('name');

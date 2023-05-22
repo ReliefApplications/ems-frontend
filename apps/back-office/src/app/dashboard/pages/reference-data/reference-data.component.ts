@@ -31,7 +31,6 @@ import {
   GET_REFERENCE_DATA,
 } from './graphql/queries';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 import { takeUntil } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -420,36 +419,53 @@ export class ReferenceDataComponent
    *
    * @param event input event.
    */
-  add(event: MatChipInputEvent | any): void {
-    // use setTimeout to prevent add input value on focusout
-    setTimeout(
-      () => {
-        const input =
-          event.type === 'focusout'
-            ? this.fieldInput?.nativeElement
-            : event.input;
-        const value =
-          event.type === 'focusout'
-            ? this.fieldInput?.nativeElement.value
-            : event.value;
+  add(event: string | any): void {
+    const input = event.input;
+    const value = event.value;
+    // Add the mail
+    if ((value || '').trim()) {
+      // Deep copy needed for the edition
+      const valueFieldsCopy = [...this.valueFields];
+      valueFieldsCopy.push(value.trim());
+      this.valueFields = valueFieldsCopy;
+    }
+    this.referenceForm?.get('fields')?.setValue(this.valueFields);
+    this.referenceForm?.get('fields')?.updateValueAndValidity();
+    this.referenceForm?.markAsDirty();
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
 
-        // Add the mail
-        if ((value || '').trim()) {
-          // Deep copy needed for the edition
-          const valueFieldsCopy = [...this.valueFields];
-          valueFieldsCopy.push(value.trim());
-          this.valueFields = valueFieldsCopy;
-        }
-        this.referenceForm?.get('fields')?.setValue(this.valueFields);
-        this.referenceForm?.get('fields')?.updateValueAndValidity();
-        this.referenceForm?.markAsDirty();
-        // Reset the input value
-        if (input) {
-          input.value = '';
-        }
-      },
-      event.type === 'focusout' ? 500 : 0
-    );
+    // // use setTimeout to prevent add input value on focusout
+    // setTimeout(
+    //   () => {
+    //     const input = 
+    //       event.type === 'focusout'
+    //         ? this.fieldInput?.nativeElement
+    //         : event.input;
+    //     const value =
+    //       event.type === 'focusout'
+    //         ? this.fieldInput?.nativeElement.value
+    //         : event.value;
+
+    //     // Add the mail
+    //     if ((value || '').trim()) {
+    //       // Deep copy needed for the edition
+    //       const valueFieldsCopy = [...this.valueFields];
+    //       valueFieldsCopy.push(value.trim());
+    //       this.valueFields = valueFieldsCopy;
+    //     }
+    //     this.referenceForm?.get('fields')?.setValue(this.valueFields);
+    //     this.referenceForm?.get('fields')?.updateValueAndValidity();
+    //     this.referenceForm?.markAsDirty();
+    //     // Reset the input value
+    //     if (input) {
+    //       input.value = '';
+    //     }
+    //   },
+    //   event.type === 'focusout' ? 500 : 0
+    // );
   }
 
   /**

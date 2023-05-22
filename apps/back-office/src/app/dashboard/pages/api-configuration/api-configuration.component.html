@@ -74,7 +74,7 @@
         {{ 'pages.apiConfiguration.host' | translate }}
       </h2>
       <!-- Send ping request -->
-      <safe-button
+      <ui-button
         icon="online_prediction"
         category="secondary"
         variant="primary"
@@ -82,7 +82,7 @@
         [disabled]="!apiForm.value.pingUrl || !apiForm.value.endpoint"
       >
         {{ 'pages.apiConfiguration.ping' | translate }}
-      </safe-button>
+      </ui-button>
     </div>
     <div class="flex gap-x-2">
       <!-- Endpoint -->
@@ -231,14 +231,14 @@
     </div>
 
     <!-- Save button -->
-    <safe-button
+    <ui-button
       category="secondary"
       variant="primary"
       (click)="onSave()"
       [disabled]="apiForm.invalid || !apiForm.dirty"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
+    </ui-button>
   </form>
 </ng-container>
 
@@ -247,21 +247,21 @@
   <div uiChipList>
     <ui-chip
       class="!rounded-lg"
-      [variant]="colorVariant.SUCCESS"
+      variant="success"
       *ngIf="status === 'active'"
     >
       {{ 'common.status_active' | translate | titlecase }}
     </ui-chip>
     <ui-chip
       class="!rounded-lg"
-      [variant]="colorVariant.ACCENT"
+      variant="accent"
       *ngIf="status === 'pending'"
     >
       {{ 'common.status_pending' | translate | titlecase }}
     </ui-chip>
     <ui-chip
       class="!rounded-lg"
-      [variant]="colorVariant.DANGER"
+      variant="danger"
       *ngIf="status === 'archived'"
     >
       {{ 'common.status_archived' | translate | titlecase }}

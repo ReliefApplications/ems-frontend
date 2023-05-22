@@ -73,9 +73,6 @@ export class ApplicationsComponent
     endCursor: '',
   };
 
-  // === COLOR VARIANT ===
-  public colorVariant = Variant;
-
   @ViewChild('startDate', { read: MatStartDate })
   startDate!: MatStartDate<string>;
   @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;

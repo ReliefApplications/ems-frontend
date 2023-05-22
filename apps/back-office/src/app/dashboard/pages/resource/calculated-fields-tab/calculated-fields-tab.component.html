@@ -1,11 +1,11 @@
 <div class="self-end">
-  <safe-button
+  <ui-button
     variant="primary"
     class="actions"
     category="secondary"
     (click)="onAddCalculatedField()"
   >
-    {{ 'components.calculatedFields.add' | translate }}</safe-button
+    {{ 'components.calculatedFields.add' | translate }}</ui-button
   >
 </div>
 <div>
@@ -31,14 +31,14 @@
         <ng-container matColumnDef="_actions" [stickyEnd]="true">
           <th mat-header-cell *matHeaderCellDef class="w-16"></th>
           <td mat-cell *matCellDef="let element">
-            <safe-button
+            <ui-button
               [isIcon]="true"
               icon="more_vert"
               [uiMenuTriggerFor]="resMenu"
               (click)="$event.stopPropagation()"
               [disabled]="!resource.canUpdate"
             >
-            </safe-button>
+            </ui-button>
             <ui-menu #resMenu>
               <button uiMenuItem (click)="onEditCalculatedField(element)">
                 <mat-icon>edit</mat-icon>

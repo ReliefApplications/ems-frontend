@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceDatasRoutingModule } from './reference-datas-routing.module';
 import { ReferenceDatasComponent } from './reference-datas.component';
-import { FormWrapperModule, IconModule, MenuModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
@@ -13,7 +12,6 @@ import {
 } from '@angular/forms';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import {
-  SafeButtonModule,
   SafeDateModule,
   SafeModalModule,
   SafeSkeletonTableModule,
@@ -24,6 +22,12 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
 import { TranslateModule } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
 import { AbilityModule } from '@casl/angular';
+import {
+  MenuModule,
+  ButtonModule,
+  FormWrapperModule,
+  IconModule,
+} from '@oort-front/ui';
 
 /**
  * List of reference data page module
@@ -42,7 +46,6 @@ import { AbilityModule } from '@casl/angular';
     AngularFormsModule,
     ReactiveFormsModule,
     MatDialogModule,
-    SafeButtonModule,
     MatIconModule,
     MatButtonModule,
     MatPaginatorModule,
@@ -51,6 +54,7 @@ import { AbilityModule } from '@casl/angular';
     SafeDateModule,
     SafeModalModule,
     AbilityModule,
+    ButtonModule,
     FormWrapperModule,
     IconModule,
   ],

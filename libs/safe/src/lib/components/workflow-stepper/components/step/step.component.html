@@ -5,7 +5,7 @@
   [ngClass]="{ active: active }"
 >
   <div class="step-actions">
-    <safe-button
+    <ui-button
       *ngIf="canUpdate"
       [isIcon]="true"
       icon="delete_outline"
@@ -17,8 +17,8 @@
       "
       (click)="onDelete($event)"
     >
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       *ngIf="canUpdate"
       [isIcon]="true"
       icon="content_copy"
@@ -26,7 +26,7 @@
       variant="primary"
       [disabled]="true"
     >
-    </safe-button>
+    </ui-button>
   </div>
   <img class="h-9 mt-5" [src]="type?.img" />
   <span>{{ step.name | titlecase }}</span>

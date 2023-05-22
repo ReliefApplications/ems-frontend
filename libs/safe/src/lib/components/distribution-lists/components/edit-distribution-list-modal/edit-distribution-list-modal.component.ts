@@ -11,10 +11,6 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  MatLegacyChipInputEvent as MatChipInputEvent,
-  MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS,
-} from '@angular/material/legacy-chips';
-import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
@@ -28,7 +24,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { ChipModule, Variant } from '@oort-front/ui';
+import { ButtonModule, ChipModule } from '@oort-front/ui';
 
 /** Model for the data input */
 interface DialogData {
@@ -68,20 +64,17 @@ export function codesFactory(): () => any {
     ReactiveFormsModule,
     TranslateModule,
     MatChipsModule,
+    ButtonModule,
     ChipModule,
   ],
   selector: 'safe-edit-distribution-list-modal',
   templateUrl: './edit-distribution-list-modal.component.html',
   styleUrls: ['./edit-distribution-list-modal.component.scss'],
-  providers: [{ provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory }],
 })
 export class EditDistributionListModalComponent implements OnInit {
   // === REACTIVE FORM ===
   public form: UntypedFormGroup = new UntypedFormGroup({});
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
-
-  // === COLOR VARIANT ===
-  public colorVariant = Variant;
 
   /** @returns list of emails */
   get emails(): string[] {
@@ -105,6 +98,7 @@ export class EditDistributionListModalComponent implements OnInit {
 
   /** Build the form. */
   ngOnInit(): void {
+    console.log(this.data);
     this.form = this.formBuilder.group({
       name: [get(this.data, 'name', null), Validators.required],
       emails: [get(this.data, 'emails', []), Validators.required],
@@ -116,7 +110,7 @@ export class EditDistributionListModalComponent implements OnInit {
    *
    * @param event The event triggered when we exit the input
    */
-  addEmail(event: MatChipInputEvent | any): void {
+  addEmail(event: string | any): void {
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {

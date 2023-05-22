@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Variant } from '../shared/variant.enum';
-import { Category } from '../shared/category.enum';
+import { Variant } from '../types/variant';
+import { Category } from '../types/category';
 
 /**
  * UI Icon Component
@@ -12,9 +12,10 @@ import { Category } from '../shared/category.enum';
 })
 export class IconComponent {
   @Input() icon = '';
-  @Input() category: Category = Category.PRIMARY;
-  @Input() variant: Variant = Variant.DEFAULT;
+  @Input() category: Category = 'primary';
+  @Input() variant: Variant = 'default';
   @Input() size = 24;
+  @Input() isOutlined = false;
 
   /**
    * Formats the size input adding a 'px' suffix
@@ -33,15 +34,15 @@ export class IconComponent {
   get iconVariantAndCategory(): string[] {
     const classes = [];
     classes.push(
-      this.category === Category.SECONDARY || this.variant === Variant.LIGHT
+      this.category === 'secondary' || this.variant === 'light'
         ? 'icon-light'
-        : this.variant === Variant.PRIMARY
+        : this.variant === 'primary'
         ? 'icon-primary'
-        : this.variant === Variant.SUCCESS
+        : this.variant === 'success'
         ? 'icon-success'
-        : this.variant === Variant.GREY
+        : this.variant === 'grey'
         ? 'icon-grey'
-        : this.variant === Variant.DANGER
+        : this.variant === 'danger'
         ? 'icon-danger'
         : ''
     );

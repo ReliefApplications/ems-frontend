@@ -18,7 +18,7 @@
       <mat-label>{{ 'common.name' | translate }}</mat-label>
       <input matInput [formControl]="formControl" type="string" />
       <!-- Validate value -->
-      <safe-button
+      <ui-button
         matSuffix
         [isIcon]="true"
         icon="done"
@@ -26,17 +26,16 @@
         [disabled]="!formControl.valid"
         (click)="onChange.emit(formControl.value)"
       >
-      </safe-button>
+      </ui-button>
       <!-- Undo change -->
-      <safe-button
+      <ui-button
         matSuffix
-        mat-icon-button
         [isIcon]="true"
         icon="close"
         variant="danger"
         (click)="onChange.emit()"
       >
-      </safe-button>
+      </ui-button>
     </mat-form-field>
   </ng-container>
 </div>

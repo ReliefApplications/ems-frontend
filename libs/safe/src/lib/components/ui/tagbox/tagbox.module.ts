@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeTagboxComponent } from './tagbox.component';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { SafeIconModule } from '../icon/icon.module';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
@@ -19,7 +18,6 @@ import { TooltipModule, ChipModule } from '@oort-front/ui';
     CommonModule,
     TranslateModule,
     MatFormFieldModule,
-    MatChipsModule,
     SafeIconModule,
     MatAutocompleteModule,
     MatInputModule,

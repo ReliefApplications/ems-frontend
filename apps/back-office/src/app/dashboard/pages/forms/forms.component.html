@@ -3,7 +3,7 @@
   <app-filter (filter)="onFilter($event)" [loading]="updating"></app-filter>
   <!-- ACTIONS -->
   <div class="flex items-center">
-    <safe-button
+    <ui-button
       icon="add"
       category="secondary"
       variant="primary"
@@ -11,7 +11,7 @@
       *ngIf="'create' | able : 'Form'"
     >
       {{ 'models.form.create' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </div>
 <!-- Table container -->
@@ -57,21 +57,21 @@
           <div uiChipList>
             <ui-chip
               class="!rounded-lg"
-              [variant]="colorVariant.SUCCESS"
+              variant="success"
               *ngIf="element.status === 'active'"
             >
               {{ 'common.status_active' | translate | titlecase }}
             </ui-chip>
             <ui-chip
               class="!rounded-lg"
-              [variant]="colorVariant.ACCENT"
+              variant="accent"
               *ngIf="element.status === 'pending'"
             >
               {{ 'common.status_pending' | translate | titlecase }}
             </ui-chip>
             <ui-chip
               class="!rounded-lg"
-              [variant]="colorVariant.DANGER"
+              variant="danger"
               *ngIf="element.status === 'archived'"
             >
               {{ 'common.status_archived' | translate | titlecase }}
@@ -106,7 +106,7 @@
         </th>
         <td mat-cell *matCellDef="let element">
           <div uiChipList *ngIf="element.core">
-            <ui-chip class="!rounded-lg" [variant]="colorVariant.PRIMARY">{{
+            <ui-chip class="!rounded-lg" variant="primary">{{
               'models.form.core' | translate
             }}</ui-chip>
           </div>
@@ -120,19 +120,19 @@
           </span>
         </th>
         <td mat-cell *matCellDef="let element">
-          <safe-button
+          <ui-button
             *ngIf="!element.core && element.resource?.coreForm?.name"
             [routerLink]="[element.resource.coreForm.id + '/builder']"
           >
             {{ element.resource.coreForm.name }}
-          </safe-button>
+          </ui-button>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="actions" [stickyEnd]="true">
         <th mat-header-cell *matHeaderCellDef class="w-16"></th>
         <td mat-cell *matCellDef="let element">
-          <safe-button
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
             [uiMenuTriggerFor]="menu"
@@ -145,7 +145,7 @@
               )
             "
           >
-          </safe-button>
+          </ui-button>
           <ui-menu #menu>
             <button
               uiMenuItem

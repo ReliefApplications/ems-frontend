@@ -9,10 +9,14 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeGraphQLSelectModule } from '../../../../graphql-select/graphql-select.module';
 import { SafeFormsDropdownModule } from '../../../../ui/aggregation-builder/public-api';
-import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeDataSourceTabComponent } from './data-source-tab.component';
-import { RadioModule, DividerModule, CheckboxModule } from '@oort-front/ui';
+import {
+  RadioModule,
+  DividerModule,
+  CheckboxModule,
+  ButtonModule,
+} from '@oort-front/ui';
 
 /** Data Source tab Module for summary card edition */
 @NgModule({
@@ -30,10 +34,10 @@ import { RadioModule, DividerModule, CheckboxModule } from '@oort-front/ui';
     SafeIconModule,
     SpinnerModule,
     SafeGraphQLSelectModule,
-    SafeButtonModule,
     CheckboxModule,
     DividerModule,
     RadioModule,
+    ButtonModule,
   ],
   exports: [SafeDataSourceTabComponent],
 })

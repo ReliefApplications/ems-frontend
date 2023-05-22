@@ -19,7 +19,6 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeGraphQLSelectModule,
@@ -32,7 +31,7 @@ import {
   ChipModule,
   RadioModule,
   IconModule,
-  Variant,
+  ButtonModule,
 } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
@@ -52,7 +51,6 @@ const ITEMS_PER_PAGE = 10;
     MatSelectModule,
     MatButtonModule,
     ToggleModule,
-    MatChipsModule,
     TranslateModule,
     SafeIconModule,
     SafeGraphQLSelectModule,
@@ -61,6 +59,7 @@ const ITEMS_PER_PAGE = 10;
     RadioModule,
     IconModule,
     ChipModule,
+    ButtonModule,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',
@@ -74,9 +73,6 @@ export class AddFormModalComponent implements OnInit {
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
   public templates: any[] = [];
-
-  // === COLOR VARIANT ===
-  public colorVariant = Variant;
 
   @ViewChild('resourceSelect') resourceSelect?: MatSelect;
 

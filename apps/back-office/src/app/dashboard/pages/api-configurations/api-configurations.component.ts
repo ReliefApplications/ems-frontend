@@ -66,9 +66,6 @@ export class ApiConfigurationsComponent
     endCursor: '',
   };
 
-  // === COLOR VARIANT ===
-  public colorVariant = Variant;
-
   /**
    * API configurations page component
    *

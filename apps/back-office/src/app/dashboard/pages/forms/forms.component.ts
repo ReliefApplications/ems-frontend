@@ -69,9 +69,6 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
     endCursor: '',
   };
 
-  // === COLOR VARIANT ===
-  public colorVariant = Variant;
-
   /**
    * Forms page component
    *

@@ -2,7 +2,7 @@
 <div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
   <!-- Actions -->
   <div class="flex gap-2 items-center ml-auto">
-    <safe-button
+    <ui-button
       icon="file_download"
       category="secondary"
       variant="primary"
@@ -12,19 +12,19 @@
         'common.exportObject'
           | translate : { name: 'common.user.few' | translate }
       }}
-    </safe-button>
+    </ui-button>
     <ui-menu #menu>
       <button uiMenuItem (click)="onExport('csv')">.csv</button>
       <button uiMenuItem (click)="onExport('xlsx')">.xlsx</button>
     </ui-menu>
-    <safe-button
+    <ui-button
       icon="send"
       category="secondary"
       variant="primary"
       (click)="onInvite()"
     >
       {{ 'components.users.invite.confirm' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </div>
 <ui-tabs>

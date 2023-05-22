@@ -35,10 +35,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns = ['name', 'status', 'lastExecution', 'actions'];
-
-  // === COLOR VARIANT ===
-  public colorVariant = Variant;
-
+  
   public loading = true;
   public updating = false;
   public pageInfo = {
