@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { SidenavDirective } from './sidenav.directive';
 import { Subject, takeUntil } from 'rxjs';
+import { SidenavTypes } from './types/sidenavs';
 
 /**
  * UI Sidenav component
@@ -24,6 +25,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('sidenav') sidenav!: ElementRef;
 
   public showSidenav!: boolean;
+  public mode!: SidenavTypes;
   private destroy$ = new Subject<void>();
   sidenavWidth = 0;
   animationClasses = ['transition-all', 'duration-500', 'ease-in-out'] as const;
@@ -39,9 +41,10 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
     // Initialize width and show sidenav value
     this.sidenavWidth = this.sidenav.nativeElement.clientWidth;
     this.showSidenav = this.uiSidenavDirective.opened;
+    this.mode = this.uiSidenavDirective.mode;
 
     // If is set to show, move the content
-    if (this.showSidenav) {
+    if (this.showSidenav && this.mode === 'side') {
       this.moveContent();
     }
 
@@ -54,7 +57,9 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((opened: boolean) => {
         this.showSidenav = opened;
-        this.moveContent();
+        if (this.mode === 'side') {
+          this.moveContent();
+        }
       });
   }
 

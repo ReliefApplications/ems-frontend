@@ -11,6 +11,13 @@
   </div>
   <!-- CONTENT -->
   <div #content>
+    <div
+      [ngClass]="{
+        'visible bg-black opacity-50': showSidenav && mode === 'over',
+        'invisible bg-transparent': !showSidenav || mode === 'side'
+      }"
+      class="block transition-visibility duration-500 transition-all ease-in-out absolute inset-0 pointer-events-none z-[1034]"
+    ></div>
     <ng-content select="content"></ng-content>
   </div>
 </div>

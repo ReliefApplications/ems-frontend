@@ -1,4 +1,14 @@
-import { Directive, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Directive,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  Renderer2,
+  ElementRef,
+  OnDestroy,
+} from '@angular/core';
+import { SidenavTypes } from './types/sidenavs';
 
 /**
  * UI Sidenav directive
@@ -7,13 +17,51 @@ import { Directive, Input, Output, EventEmitter } from '@angular/core';
   selector: '[uiSidenavDirective]',
   exportAs: 'uiSidenavDirective',
 })
-export class SidenavDirective {
+export class SidenavDirective implements OnInit, OnDestroy {
   @Input() opened = true;
+  @Input() mode: SidenavTypes = 'side';
   @Output() openedChange = new EventEmitter<boolean>();
+
+  private clickOutsideListener!: any;
+  private toggleUsed = false;
+  /**
+   * UI Sidenav directive constructor
+   *
+   * @param el host element
+   * @param renderer Renderer2
+   */
+  constructor(private el: ElementRef, private renderer: Renderer2) {}
+
+  ngOnInit(): void {
+    this.clickOutsideListener = this.renderer.listen(
+      window,
+      'click',
+      (event) => {
+        if (
+          !this.toggleUsed &&
+          this.opened &&
+          !this.el.nativeElement.contains(event.target)
+        ) {
+          this.opened = false;
+          this.openedChange.emit(this.opened);
+        }
+      }
+    );
+  }
 
   /** Handles the toggle of the sidenav status */
   public toggle() {
-    this.opened = !this.opened;
-    this.openedChange.emit(this.opened);
+    this.toggleUsed = true;
+    setTimeout(() => {
+      this.opened = !this.opened;
+      this.openedChange.emit(this.opened);
+      this.toggleUsed = false;
+    }, 0);
+  }
+
+  ngOnDestroy(): void {
+    if (this.clickOutsideListener) {
+      this.clickOutsideListener();
+    }
   }
 }
