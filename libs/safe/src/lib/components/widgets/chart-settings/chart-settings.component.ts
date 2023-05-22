@@ -3,7 +3,6 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
 import { MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/legacy-chips';
-import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
 import { scrollFactory } from '../../../utils/scroll-factory';
 import { codesFactory } from '../../distribution-lists/components/edit-distribution-list-modal/edit-distribution-list-modal.component';
 import { createChartWidgetForm } from './chart-forms';
@@ -73,7 +72,7 @@ export class SafeChartSettingsComponent implements OnInit {
    *
    * @param event Event triggered on tab switch
    */
-  handleTabChange(event: MatTabChangeEvent): void {
-    this.selectedTab = event.index;
+  handleTabChange(event: number): void {
+    this.selectedTab = event;
   }
 }

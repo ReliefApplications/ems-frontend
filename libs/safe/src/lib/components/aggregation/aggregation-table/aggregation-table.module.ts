@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AggregationTableComponent } from './aggregation-table.component';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule } from '@oort-front/ui';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeDateModule } from '../../../pipes/date/date.module';
+import { MenuModule, ButtonModule } from '@oort-front/ui';
 
 /** Module for aggregation table component */
 @NgModule({
@@ -19,8 +18,8 @@ import { SafeDateModule } from '../../../pipes/date/date.module';
     MenuModule,
     MatIconModule,
     DragDropModule,
-    SafeButtonModule,
     SafeDateModule,
+    ButtonModule,
   ],
   exports: [AggregationTableComponent],
 })

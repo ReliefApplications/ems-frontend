@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import {
   Directive,
   ElementRef,
@@ -5,6 +6,7 @@ import {
   Input,
   HostListener,
   OnDestroy,
+  Inject,
 } from '@angular/core';
 
 /**
@@ -40,10 +42,15 @@ export class TooltipDirective implements OnDestroy {
   /**
    * Constructor of the directive
    *
+   * @param document current DOCUMENT
    * @param elementRef Tooltip host reference
    * @param renderer Angular renderer to work with DOM
    */
-  constructor(private elementRef: ElementRef, private renderer: Renderer2) {
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    private elementRef: ElementRef,
+    private renderer: Renderer2
+  ) {
     // Creation of the tooltip element
     this.createTooltipElement();
   }
@@ -72,7 +79,7 @@ export class TooltipDirective implements OnDestroy {
    * Destroy the tooltip and stop its display
    */
   private removeHint() {
-    this.renderer.removeChild(document.body, this.elToolTip);
+    this.renderer.removeChild(this.document.body, this.elToolTip);
   }
 
   /**
@@ -80,9 +87,13 @@ export class TooltipDirective implements OnDestroy {
    */
   private showHint() {
     this.elToolTip.textContent = this.uiTooltip;
+    this.renderer.addClass(this.elToolTip, 'opacity-0');
+    this.renderer.appendChild(this.document.body, this.elToolTip);
     // Management of tooltip placement in the screen (including screen edges cases)
     const hostPos = this.elementRef.nativeElement.getBoundingClientRect();
     const tooltipPos = this.elToolTip.getBoundingClientRect();
+    this.renderer.removeClass(this.elToolTip, 'opacity-0');
+    this.renderer.removeChild(this.document.body, this.elToolTip);
 
     const top = hostPos.bottom;
     const left = hostPos.left;
@@ -102,7 +113,7 @@ export class TooltipDirective implements OnDestroy {
     }
     this.renderer.setStyle(this.elToolTip, 'top', topValue);
     this.renderer.setStyle(this.elToolTip, 'left', leftValue);
-    this.renderer.appendChild(document.body, this.elToolTip);
+    this.renderer.appendChild(this.document.body, this.elToolTip);
   }
 
   /**

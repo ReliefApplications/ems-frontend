@@ -15,11 +15,11 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   styleUrls: ['./role-resources-filter.component.scss'],
 })
 export class FilterComponent implements OnInit {
+  @Output() filter = new EventEmitter<any>();
+  @Input() loading = false;
   public form!: UntypedFormGroup;
   public search = new UntypedFormControl('');
   public show = false;
-  @Output() filter = new EventEmitter<any>();
-  @Input() loading = false;
 
   /**
    * Role filter component

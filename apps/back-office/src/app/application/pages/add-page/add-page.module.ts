@@ -9,13 +9,12 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatRippleModule } from '@angular/material/core';
 import {
-  SafeButtonModule,
   SafeContentChoiceModule,
   SafeFormsDropdownModule,
 } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
-import { DividerModule } from '@oort-front/ui';
+import { DividerModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * Add page module.
@@ -32,12 +31,12 @@ import { DividerModule } from '@oort-front/ui';
     MatDialogModule,
     AddPageRoutingModule,
     MatRippleModule,
-    SafeButtonModule,
     SafeContentChoiceModule,
     TranslateModule,
     SafeFormsDropdownModule,
     DividerModule,
     AbilityModule,
+    ButtonModule,
   ],
 })
 export class AddPageModule {}

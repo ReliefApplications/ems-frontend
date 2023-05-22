@@ -6,7 +6,7 @@
     class="w-full whitespace-nowrap py-2 text-sm font-medium"
     (click)="openTab.emit()"
   >
-    {{ label }}
+    <ng-content select="label"></ng-content>
   </button>
 </div>
 

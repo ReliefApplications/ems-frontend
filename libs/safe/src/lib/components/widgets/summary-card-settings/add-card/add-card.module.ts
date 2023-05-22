@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeAddCardComponent } from './add-card.component';
@@ -14,9 +13,9 @@ import { SafeAlertModule } from '../../../ui/alert/alert.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { SafeSpinnerModule } from '../../../ui/spinner/spinner.module';
+import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
-import { RadioModule } from '@oort-front/ui';
+import { TooltipModule, RadioModule, ButtonModule } from '@oort-front/ui';
 
 /** Module to add new card in summary card widget */
 @NgModule({
@@ -36,9 +35,12 @@ import { RadioModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    SafeSpinnerModule,
+    SpinnerModule,
     MatIconModule,
+    FormWrapperModule,
+    IconModule,
     RadioModule,
+    ButtonModule,
   ],
   exports: [SafeAddCardComponent, SafeCardTemplateComponent],
 })

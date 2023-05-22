@@ -9,6 +9,17 @@
   padding: 16px;
 }
 
+.show-icons {
+  .hide-icons {
+    display: none;
+  }
+  &:hover {
+    .hide-icons {
+      display: block;
+    }
+  }
+}
+
 .nav-item {
   cursor: pointer;
   height: 56px;
@@ -44,6 +55,10 @@
 
   .nav-text {
     text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    min-width: 0;
+    max-width: calc(80%);
     padding-left: 8px;
   }
 }

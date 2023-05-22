@@ -37,21 +37,23 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MenuModule } from '@oort-front/ui';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SubscriptionsRoutingModule } from '../../subscriptions-routing.module';
 import {
-  SafeButtonModule,
   SafeIconModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
 } from '@oort-front/safe';
-import { DividerModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
-import { TooltipModule } from '@oort-front/ui';
+import {
+  SpinnerModule,
+  DividerModule,
+  MenuModule,
+  TooltipModule,
+  ButtonModule,
+} from '@oort-front/ui';
 
 /** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -71,17 +73,17 @@ const ITEMS_PER_PAGE = 10;
     MatIconModule,
     MatInputModule,
     MatSelectModule,
+    SpinnerModule,
     MenuModule,
-    MatProgressSpinnerModule,
     MatTableModule,
     MatAutocompleteModule,
     DividerModule,
-    SafeButtonModule,
     SafeIconModule,
     TranslateModule,
     SafeGraphQLSelectModule,
     SafeModalModule,
     TooltipModule,
+    ButtonModule,
   ],
   selector: 'app-subscription-modal',
   templateUrl: './subscription-modal.component.html',

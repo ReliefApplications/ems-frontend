@@ -17,16 +17,16 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+    <ui-button mat-dialog-close>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [disabled]="!form.valid"
       [mat-dialog-close]="form.value"
     >
       {{ 'components.confirmModal.confirm' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

@@ -25,18 +25,18 @@
       </ng-container>
       <ng-container matColumnDef="actions" [stickyEnd]="true">
         <th mat-header-cell *matHeaderCellDef class="text-end w-16">
-          <safe-button
+          <ui-button
             [disabled]="disabled"
             variant="primary"
             category="tertiary"
             (click)="save()"
-            >{{ 'common.save' | translate }}</safe-button
+            >{{ 'common.save' | translate }}</ui-button
           >
         </th>
         <td mat-cell *matCellDef="let element; let i = dataIndex">
           <div class="flex">
             <ng-container *ngFor="let permission of element.permissions">
-              <safe-button
+              <ui-button
                 [disabled]="disabled"
                 *ngIf="permission.name !== 'canCreateRecords'"
                 [isIcon]="true"
@@ -48,7 +48,7 @@
                   toggleFilterAccess(i, permission.name)
                 "
               >
-              </safe-button>
+              </ui-button>
             </ng-container>
           </div>
         </td>
@@ -71,7 +71,7 @@
               [fields]="filterFields"
             >
             </safe-filter>
-            <safe-button
+            <ui-button
               *ngIf="i === openedFilterIndex"
               [disabled]="disabled"
               variant="danger"
@@ -81,7 +81,7 @@
               class="w-fit"
             >
               {{ 'components.role.summary.removeFilter' | translate }}
-            </safe-button>
+            </ui-button>
           </div>
         </td>
       </ng-container>
@@ -101,7 +101,7 @@
     </table>
   </div>
 </div>
-<safe-button
+<ui-button
   [disabled]="disabled"
   variant="primary"
   category="secondary"
@@ -109,4 +109,4 @@
   class="self-center"
 >
   {{ 'components.role.summary.addFilter' | translate }}
-</safe-button>
+</ui-button>

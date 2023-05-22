@@ -1,6 +1,9 @@
-<button mat-icon-button [uiMenuTriggerFor]="menu">
-  <mat-icon>more_vert</mat-icon>
-</button>
+<ui-button
+  [isIcon]="true"
+  icon="more_vert"
+  [uiMenuTriggerFor]="menu"
+>
+</ui-button>
 <ui-menu #menu>
   <ng-container *ngFor="let item of items">
     <ui-divider *ngIf="item.name === 'Delete'" class="m-0"></ui-divider>

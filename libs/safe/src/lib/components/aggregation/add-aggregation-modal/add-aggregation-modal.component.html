@@ -5,32 +5,32 @@
   <div mat-dialog-content>
     <div class="flex gap-4 flex-col" *ngIf="!nextStep">
       <!-- Load from existing Aggregation -->
-      <safe-button
+      <ui-button
         class="!w-auto"
         variant="primary"
         category="secondary"
         (click)="nextStep = true"
         [disabled]="!hasAggregations"
-        >{{ 'components.aggregation.add.choice.load' | translate }}</safe-button
+        >{{ 'components.aggregation.add.choice.load' | translate }}</ui-button
       >
       <!-- Add a new aggregation -->
-      <safe-button
+      <ui-button
         class="!w-auto"
         variant="primary"
         category="tertiary"
         (click)="onCreate()"
         >{{
           'components.aggregation.add.choice.create' | translate
-        }}</safe-button
+        }}</ui-button
       >
     </div>
     <div *ngIf="nextStep">
       <div class="flex items-center gap-4 mb-3">
-        <safe-button
+        <ui-button
           [isIcon]="true"
           icon="arrow_back"
           (click)="nextStep = false"
-        ></safe-button>
+        ></ui-button>
         <div>
           {{ 'components.aggregation.add.choice.load' | translate }}
         </div>
@@ -53,6 +53,6 @@
     </div>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
+    <ui-button mat-dialog-close>{{ 'common.close' | translate }}</ui-button>
   </div>
 </safe-modal>

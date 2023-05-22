@@ -45,20 +45,20 @@
             aggregation.name
           }}</mat-option>
         </mat-select>
-        <safe-button
+        <ui-button
           matSuffix
           variant="primary"
           [isIcon]="true"
           icon="edit"
           (click)="editAggregation()"
-        ></safe-button>
-        <safe-button
+        ></ui-button>
+        <ui-button
           matSuffix
           variant="danger"
           [isIcon]="true"
           icon="close"
           (click)="formGroup.get('chart.aggregationId')?.setValue(null)"
-        ></safe-button>
+        ></ui-button>
       </mat-form-field>
       <h3>{{ 'components.mapping.title' | translate }}</h3>
       <safe-series-mapping
@@ -67,12 +67,12 @@
       ></safe-series-mapping>
     </ng-container>
     <ng-container *ngIf="!formGroup.value.chart.aggregationId">
-      <safe-button
+      <ui-button
         class="!w-auto"
         category="tertiary"
         variant="primary"
         (click)="addAggregation()"
-        >{{ 'components.aggregation.add.title' | translate }}</safe-button
+        >{{ 'components.aggregation.add.title' | translate }}</ui-button
       >
     </ng-container>
   </ng-container>

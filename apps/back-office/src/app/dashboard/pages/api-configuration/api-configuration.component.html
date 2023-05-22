@@ -1,4 +1,4 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ui-spinner *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading && apiConfiguration">
   <div class="page-header">
     <h1 class="page-title">
@@ -74,7 +74,7 @@
         {{ 'pages.apiConfiguration.host' | translate }}
       </h2>
       <!-- Send ping request -->
-      <safe-button
+      <ui-button
         icon="online_prediction"
         category="secondary"
         variant="primary"
@@ -82,7 +82,7 @@
         [disabled]="!apiForm.value.pingUrl || !apiForm.value.endpoint"
       >
         {{ 'pages.apiConfiguration.ping' | translate }}
-      </safe-button>
+      </ui-button>
     </div>
     <div class="flex gap-x-2">
       <!-- Endpoint -->
@@ -231,14 +231,14 @@
     </div>
 
     <!-- Save button -->
-    <safe-button
+    <ui-button
       category="secondary"
       variant="primary"
       (click)="onSave()"
       [disabled]="apiForm.invalid || !apiForm.dirty"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
+    </ui-button>
   </form>
 </ng-container>
 

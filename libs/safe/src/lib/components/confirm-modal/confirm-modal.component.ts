@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SafeModalModule } from '../ui/modal/modal.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * This interface describes the structure of the data to be displayed in the modal
@@ -23,7 +24,13 @@ interface DialogData {
  */
 @Component({
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, SafeModalModule],
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatButtonModule,
+    SafeModalModule,
+    ButtonModule,
+  ],
   selector: 'safe-confirm-modal',
   templateUrl: './confirm-modal.component.html',
   styleUrls: ['./confirm-modal.component.scss'],

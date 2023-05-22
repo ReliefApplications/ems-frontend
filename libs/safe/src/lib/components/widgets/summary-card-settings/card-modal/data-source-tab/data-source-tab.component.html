@@ -20,14 +20,14 @@
     </div>
     <ng-container *ngIf="!selectedLayout && !selectedAggregation">
       <div class="flex justify-center mt-4">
-        <safe-button
+        <ui-button
           class="max-w-xs grow"
           category="tertiary"
           variant="primary"
           (click)="addLayout()"
           >{{
             'components.widget.settings.grid.layouts.add.title' | translate
-          }}</safe-button
+          }}</ui-button
         >
       </div>
     </ng-container>
@@ -40,12 +40,12 @@
     </div>
     <ng-container *ngIf="!selectedLayout && !selectedAggregation">
       <div class="flex justify-center mt-4">
-        <safe-button
+        <ui-button
           class="max-w-xs grow"
           category="tertiary"
           variant="primary"
           (click)="addAggregation()"
-          >{{ 'components.aggregation.add.title' | translate }}</safe-button
+          >{{ 'components.aggregation.add.title' | translate }}</ui-button
         >
       </div>
     </ng-container>
@@ -60,14 +60,14 @@
           selectedLayout.name
         }}</mat-option>
       </mat-select>
-      <safe-button
+      <ui-button
         matSuffix
         variant="primary"
         [isIcon]="true"
         icon="edit"
         (click)="editLayout()"
-      ></safe-button>
-      <safe-button
+      ></ui-button>
+      <ui-button
         matSuffix
         variant="danger"
         [isIcon]="true"
@@ -76,7 +76,7 @@
           form.get('layout')?.setValue(null);
           form.patchValue({ isAggregation: true })
         "
-      ></safe-button>
+      ></ui-button>
     </mat-form-field>
     <h2>
       {{
@@ -128,20 +128,20 @@
           selectedAggregation.name
         }}</mat-option>
       </mat-select>
-      <safe-button
+      <ui-button
         matSuffix
         variant="primary"
         [isIcon]="true"
         icon="edit"
         (click)="editAggregation()"
-      ></safe-button>
-      <safe-button
+      ></ui-button>
+      <ui-button
         matSuffix
         variant="danger"
         [isIcon]="true"
         icon="close"
         (click)="form.get('aggregation')?.setValue(null)"
-      ></safe-button>
+      ></ui-button>
     </mat-form-field>
   </ng-container>
 </div>

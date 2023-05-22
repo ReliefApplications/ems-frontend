@@ -50,9 +50,12 @@ import {
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { TooltipModule } from '@oort-front/ui';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
+import {
+  TooltipModule,
+  ButtonModule,
+  ExpansionPanelModule,
+} from '@oort-front/ui';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -75,9 +78,10 @@ const DEFAULT_FIELDS = ['createdBy'];
     MatInputModule,
     MatSelectModule,
     MatFormFieldModule,
-    MatExpansionModule,
+    ExpansionPanelModule,
     MatChipsModule,
     CronExpressionControlModule,
+    ButtonModule,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',
