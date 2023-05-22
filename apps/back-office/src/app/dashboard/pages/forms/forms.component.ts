@@ -25,7 +25,6 @@ import {
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
 import { takeUntil } from 'rxjs';
-import { Variant } from '@oort-front/ui';
 
 /** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;

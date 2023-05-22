@@ -6,7 +6,6 @@ import {
 } from '@angular/material/legacy-dialog';
 import { EMAIL_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
-import { Variant } from '@oort-front/ui';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {

@@ -27,7 +27,6 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
-import { Variant } from '@oort-front/ui';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;

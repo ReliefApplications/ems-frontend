@@ -13,7 +13,12 @@ import {
 } from '@oort-front/safe';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
-import { DividerModule, MenuModule, ButtonModule, ChipModule } from '@oort-front/ui';
+import {
+  DividerModule,
+  MenuModule,
+  ButtonModule,
+  ChipModule,
+} from '@oort-front/ui';
 
 /** Pull Jobs page module. */
 @NgModule({

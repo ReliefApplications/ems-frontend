@@ -26,7 +26,6 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { takeUntil } from 'rxjs';
-import { Variant } from '@oort-front/ui';
 
 /**
  * Limit of pull jobs shown at once.

@@ -27,7 +27,7 @@ import {
   GetApiConfigurationQueryResponse,
   GET_API_CONFIGURATION,
 } from './graphql/queries';
-import { Variant } from '@oort-front/ui';
+
 /**
  * API configuration page component.
  */

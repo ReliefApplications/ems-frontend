@@ -440,7 +440,7 @@ export class ReferenceDataComponent
     // // use setTimeout to prevent add input value on focusout
     // setTimeout(
     //   () => {
-    //     const input = 
+    //     const input =
     //       event.type === 'focusout'
     //         ? this.fieldInput?.nativeElement
     //         : event.input;

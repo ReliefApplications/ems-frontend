@@ -12,7 +12,6 @@ import get from 'lodash/get';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { GetResourceByIdQueryResponse } from '../graphql/queries';
 import { GET_RESOURCE_FORMS } from './graphql/queries';
-import { Variant } from '@oort-front/ui';
 
 /**
  *Forms tab of resource page
