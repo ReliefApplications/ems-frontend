@@ -197,7 +197,7 @@ const columnDefinitionArray = [
 ];
 
 /**
- * Template divider
+ * Template divider for table
  *
  * @param args Table component args
  * @returns TableComponent story
