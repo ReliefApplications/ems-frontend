@@ -54,8 +54,6 @@ export class ReferenceDatasComponent
     'modifiedAt',
     'actions',
   ];
-  private completeDataTable: ReferenceData[] = [];
-  private currentDataWithoutSort: ReferenceData[] = [];
   dataSource = new MatTableDataSource<ReferenceData>([]);
   public cachedReferenceDatas: ReferenceData[] = [];
 
@@ -320,32 +318,8 @@ export class ReferenceDatasComponent
    * @param event sort event
    */
   onSort(event: TableSort): void {
-    // if there was no sort before, we save the current data list in a private variable
-    if (this.sort?.sortDirection === '') {
-      this.currentDataWithoutSort = this.dataSource.data;
-    }
-    // We change the sort for the current value
     this.sort = event;
-    //Get list of all values if is not already done, then use sorting function
-    if (this.completeDataTable.length !== this.pageInfo.length) {
-      const variables = {
-        first: this.pageInfo.length,
-        afterCursor: this.pageInfo.endCursor,
-      };
-      this.referenceDatasQuery
-        .refetch(variables)
-        .then((results: ApolloQueryResult<GetReferenceDatasQueryResponse>) => {
-          this.completeDataTable = updateQueryUniqueValues(
-            this.cachedReferenceDatas,
-            results.data.referenceDatas.edges.map((x) => x.node)
-          );
-          this.sorting();
-        });
-    }
-    // Else just use sorting function
-    else {
-      this.sorting();
-    }
+    this.fetchReferenceDatas(true);
   }
 
   /**
@@ -370,124 +344,44 @@ export class ReferenceDatasComponent
   }
 
   /**
-   * Compares two rows of API configuration table and give a compare value in order to sort them
+   * Update reference datas query.
    *
-   * @param row1 row 1
-   * @param row2 row 2
-   * @returns the compare value
+   * @param refetch erase previous query results
    */
-  compare(row1: ReferenceData, row2: ReferenceData): number {
-    //Initializes compare value
-    let compareValue = 0;
-    //If the sort is on Name, compare names
-    if (this.sort?.active === 'name') {
-      const row1Value = row1.name;
-      const row2Value = row2.name;
-      if (typeof row1Value === 'string') {
-        compareValue = (row1Value as string).localeCompare(row2Value as string);
-      } else {
-        if (row1Value !== undefined && row2Value !== undefined) {
-          compareValue = Number((row1Value as string) > row2Value);
-        }
-      }
-      if (this.sort?.sortDirection === 'asc') {
-        return compareValue;
-      } else if (this.sort?.sortDirection === 'desc') {
-        return compareValue === 1 ? -1 : 1;
-      }
-      return compareValue;
+  private fetchReferenceDatas(refetch?: boolean): void {
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      sortField: this.sort?.sortDirection && this.sort.active,
+      sortOrder: this.sort?.sortDirection,
+    };
+    const cachedValues: GetReferenceDatasQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_REFERENCE_DATAS,
+      variables
+    );
+    if (refetch) {
+      this.cachedReferenceDatas = [];
+      this.pageInfo.pageIndex = 0;
     }
-    //If the sort is on type, compare type
-    else if (this.sort?.active === 'type') {
-      const row1Value = row1.type;
-      const row2Value = row2.type;
-      //Deal with undefined values and put them on the bottom of the list
-      if (row1Value !== null && row1Value !== undefined) {
-        if (row2Value !== null) {
-          compareValue = (row1Value as string).localeCompare(
-            row2Value as string
-          );
-        } else {
-          return -1;
-        }
-      } else {
-        return 1;
-      }
-      if (compareValue !== undefined) {
-        if (this.sort?.sortDirection === 'asc') {
-          return compareValue as number;
-        } else if (this.sort?.sortDirection === 'desc') {
-          return compareValue === 1 ? -1 : 1;
-        }
-        return compareValue as number;
-      } else {
-        return compareValue;
-      }
-    }
-    //If the sort is on Modified on, compare Modified On
-    else if (this.sort?.active === 'modifiedAt') {
-      const row1Value = row1.modifiedAt;
-      const row2Value = row2.modifiedAt;
-      compareValue = (row1Value as string).localeCompare(row2Value as string);
-      if (compareValue !== undefined) {
-        if (this.sort?.sortDirection === 'asc') {
-          return compareValue as number;
-        } else if (this.sort?.sortDirection === 'desc') {
-          return compareValue === 1 ? -1 : 1;
-        }
-        return compareValue as number;
-      } else {
-        return compareValue;
-      }
-    }
-    //If the sort is on api configuration, compare api configurations
-    else if (this.sort?.active === 'apiConfiguration') {
-      const row1Value = row1.apiConfiguration?.name;
-      const row2Value = row2.apiConfiguration?.name;
-      //Deal with undefined values and put them on the bottom of the list
-      if (row1Value !== null && row1Value !== undefined) {
-        if (row2Value !== null) {
-          compareValue = (row1Value as string).localeCompare(
-            row2Value as string
-          );
-        } else {
-          return -1;
-        }
-      } else {
-        return 1;
-      }
-      if (compareValue !== undefined) {
-        if (this.sort?.sortDirection === 'asc') {
-          return compareValue as number;
-        } else if (this.sort?.sortDirection === 'desc') {
-          return compareValue === 1 ? -1 : 1;
-        }
-        return compareValue as number;
-      } else {
-        return compareValue;
-      }
-    }
-    //Else, it returns 0 so no change is made to the list
-    else {
-      return compareValue;
-    }
-  }
-
-  /**
-   * Function that sorts and give the good value to data source data according to the current sort
-   */
-  sorting(): void {
-    if (this.sort?.sortDirection !== '') {
-      this.dataSource.data = this.completeDataTable
-        .sort((row1, row2) => {
-          return this.compare(row1, row2);
-        })
-        .slice(
-          this.pageInfo.pageSize * this.pageInfo.pageIndex,
-          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-        );
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
     } else {
-      this.dataSource.data = this.currentDataWithoutSort;
+      if (refetch) {
+        // Rebuild the query
+        this.referenceDatasQuery.refetch(variables);
+      } else {
+        // Fetch more records
+        this.referenceDatasQuery
+          .fetchMore({
+            variables,
+          })
+          .then(
+            (results: ApolloQueryResult<GetReferenceDatasQueryResponse>) => {
+              this.updateValues(results.data, results.loading);
+            }
+          );
+      }
     }
   }
 }

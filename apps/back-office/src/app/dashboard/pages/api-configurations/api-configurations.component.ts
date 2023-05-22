@@ -47,8 +47,6 @@ export class ApiConfigurationsComponent
   // === DATA ===
   public loading = true;
   private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
-  private completeDataTable: ApiConfiguration[] = [];
-  private currentDataWithoutSort: ApiConfiguration[] = [];
   displayedColumns = ['name', 'status', 'authType', 'actions'];
   dataSource = new MatTableDataSource<ApiConfiguration>([]);
   public cachedApiConfigurations: ApiConfiguration[] = [];
@@ -357,122 +355,50 @@ export class ApiConfigurationsComponent
    * @param event sort event
    */
   onSort(event: TableSort): void {
-    // if there was no sort before, we save the current data list in a private variable
-    if (this.sort?.sortDirection === '') {
-      this.currentDataWithoutSort = this.dataSource.data;
-    }
     // We change the sort for the current value
     this.sort = event;
-    //Get list of all values if is not already done, then use sorting function
-    if (this.completeDataTable.length !== this.pageInfo.length) {
-      const variables = {
-        first: this.pageInfo.length,
-        afterCursor: this.pageInfo.endCursor,
-      };
-      this.apiConfigurationsQuery
-        .refetch(variables)
-        .then(
-          (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
-            this.completeDataTable = updateQueryUniqueValues(
-              this.cachedApiConfigurations,
-              results.data.apiConfigurations.edges.map((x) => x.node)
-            );
-            this.sorting();
-          }
-        );
-    }
-    // Else just use sorting function
-    else {
-      this.sorting();
-    }
+    this.fetchApiConfigurations(true);
   }
 
   /**
-   * Compares two rows of API configuration table and give a compare value in order to sort them
+   * Update api configurations query.
    *
-   * @param row1 row 1
-   * @param row2 row 2
-   * @param sortMemory the sort used here for comparison
-   * @returns the compare value
+   * @param refetch erase previous query results
    */
-  compare(
-    row1: ApiConfiguration,
-    row2: ApiConfiguration,
-    sortMemory: TableSort
-  ): number {
-    //Initializes compare value
-    let compareValue = 0;
-    //If the sort is on Name, compare names
-    if (sortMemory.active === 'name') {
-      const row1Value = row1.name;
-      const row2Value = row2.name;
-      if (typeof row1Value === 'string') {
-        compareValue = (row1Value as string).localeCompare(row2Value as string);
-      } else {
-        if (row1Value !== undefined && row2Value !== undefined) {
-          compareValue = Number((row1Value as string) > row2Value);
-        }
-      }
-      if (sortMemory.sortDirection === 'asc') {
-        return compareValue;
-      } else if (sortMemory.sortDirection === 'desc') {
-        return compareValue === 1 ? -1 : 1;
-      }
-      return compareValue;
+  private fetchApiConfigurations(refetch?: boolean): void {
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      sortField: this.sort?.sortDirection && this.sort.active,
+      sortOrder: this.sort?.sortDirection,
+    };
+    const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_API_CONFIGURATIONS,
+      variables
+    );
+    if (refetch) {
+      this.cachedApiConfigurations = [];
+      this.pageInfo.pageIndex = 0;
     }
-    //If the sort is on Status, compare statuses
-    else if (sortMemory.active === 'status') {
-      const row1Value = row1.status;
-      const row2Value = row2.status;
-      compareValue = (row1Value as string).localeCompare(row2Value as string);
-      if (compareValue !== undefined) {
-        if (sortMemory.sortDirection === 'asc') {
-          return compareValue as number;
-        } else if (sortMemory.sortDirection === 'desc') {
-          return compareValue === 1 ? -1 : 1;
-        }
-        return compareValue as number;
-      } else {
-        return compareValue;
-      }
-    }
-    //If the sort is on authentication type, compare authentication Types
-    else if (sortMemory.active === 'authType') {
-      const row1Value = row1.authType;
-      const row2Value = row2.authType;
-      compareValue = (row1Value as string).localeCompare(row2Value as string);
-      if (compareValue !== undefined) {
-        if (sortMemory.sortDirection === 'asc') {
-          return compareValue as number;
-        } else if (sortMemory.sortDirection === 'desc') {
-          return compareValue === 1 ? -1 : 1;
-        }
-        return compareValue as number;
-      } else {
-        return compareValue;
-      }
-    }
-    //Else, it returns 0 so no change is made to the list
-    else {
-      return compareValue;
-    }
-  }
-
-  /**
-   * Function that sorts and give the good value to data source data according to the current sort
-   */
-  sorting(): void {
-    if (this.sort?.sortDirection !== '') {
-      this.dataSource.data = this.completeDataTable
-        .sort((row1, row2) => {
-          return this.compare(row1, row2, this.sort as TableSort);
-        })
-        .slice(
-          this.pageInfo.pageSize * this.pageInfo.pageIndex,
-          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-        );
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
     } else {
-      this.dataSource.data = this.currentDataWithoutSort;
+      if (refetch) {
+        // Rebuild the query
+        this.apiConfigurationsQuery.refetch(variables);
+      } else {
+        // Fetch more records
+        this.apiConfigurationsQuery
+          .fetchMore({
+            variables,
+          })
+          .then(
+            (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
+              this.updateValues(results.data, results.loading);
+            }
+          );
+      }
     }
   }
 }
