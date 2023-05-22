@@ -13,16 +13,14 @@
       ></safe-form-actions>
     </div>
     <div mat-dialog-title>
-      <mat-tab-group
-        animationDuration="0ms"
+      <ui-tabs
         [selectedIndex]="selectedTabIndex"
         (selectedIndexChange)="onShowPage($event)"
       >
-        <mat-tab
-          *ngFor="let page of pages$ | async"
-          [label]="page.title ? page.title : page.name"
-        ></mat-tab>
-      </mat-tab-group>
+        <ui-tab *ngFor="let page of pages$ | async">
+          <ng-container ngProjectAs="label">{{page.title ? page.title : page.name}}</ng-container>
+        </ui-tab>
+      </ui-tabs>
       <div class="versions-info" *ngIf="data.compareTo">
         <div class="version-info">
           <div>{{ 'components.record.history.version.old' | translate }}</div>
@@ -46,7 +44,7 @@
       <div #formContainer class="grow"></div>
     </ng-container>
     <div *ngIf="loading" class="h-full w-full flex">
-      <safe-spinner class="m-auto block"></safe-spinner>
+      <ui-spinner class="m-auto block"></ui-spinner>
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end" *ngIf="!loading && data.compareTo">

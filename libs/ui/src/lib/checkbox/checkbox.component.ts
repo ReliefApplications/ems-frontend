@@ -29,7 +29,7 @@ export class CheckboxComponent implements ControlValueAccessor {
   @Input() indeterminate = false;
   @Input() ariaLabel = '';
   @Input() name = '';
-  @Input() variant: Variant = Variant.DANGER;
+  @Input() variant: Variant = Variant.PRIMARY;
 
   disabled = false;
   valueChange: EventEmitter<boolean> = new EventEmitter<boolean>();

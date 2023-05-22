@@ -25,6 +25,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Breadcrumb } from '@oort-front/ui';
+import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 
 /**
  * Component for the main layout of the platform
@@ -83,6 +85,9 @@ export class SafeLayoutComponent
   // === APP SEARCH ===
   public showAppMenu = false;
 
+  // === BREADCRUMB ===
+  public breadcrumbs: Breadcrumb[] = [];
+
   /**
    * Gets URI of the other office
    *
@@ -140,6 +145,7 @@ export class SafeLayoutComponent
    * @param dialog This is the dialog service provided by Angular Material
    * @param translate This is the Angular service that translates text
    * @param dateTranslate Service used for date formatting
+   * @param breadcrumbService Shared breadcrumb service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -150,7 +156,8 @@ export class SafeLayoutComponent
     private confirmService: SafeConfirmService,
     public dialog: MatDialog,
     private translate: TranslateService,
-    private dateTranslate: SafeDateTranslateService
+    private dateTranslate: SafeDateTranslateService,
+    private breadcrumbService: SafeBreadcrumbService
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -212,6 +219,12 @@ export class SafeLayoutComponent
         }
       }
     });
+
+    this.breadcrumbService.breadcrumbs$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        this.breadcrumbs = res;
+      });
   }
 
   /**
@@ -346,12 +359,12 @@ export class SafeLayoutComponent
    * @returns language id of the language
    */
   getLanguage(): string {
-    // select the langage saved (or default if not)
+    // select the language saved (or default if not)
     let language = localStorage.getItem('lang');
     if (!language || !this.languages.includes(language)) {
       language = this.translate.defaultLang;
     }
-    // if not default language, change langage of the interface
+    // if not default language, change language of the interface
     if (language !== this.translate.defaultLang) {
       this.translate.use(language);
     }

@@ -17,7 +17,7 @@
   >
     {{ getDisplayValue(element) }}
   </mat-option>
-  <mat-spinner *ngIf="loading" class="my-2" diameter="24"></mat-spinner>
+  <ui-spinner [size]="size.MEDIUM" *ngIf="loading" class="my-2"></ui-spinner>
 </mat-select>
 
 <!-- Search template -->

@@ -11,9 +11,10 @@
     </ng-container>
     <!-- Form selection -->
     <ng-container *ngSwitchCase="2">
-      <div class="flex flex-col w-80 items-center">
+      <div class="flex flex-col w-80">
         <!-- Existing form -->
         <safe-forms-dropdown
+          class="self-center"
           [forms$]="forms$"
           [label]="'models.form.select' | translate"
           [sourceControl]="pageForm.controls.content"
@@ -21,10 +22,10 @@
           (filter)="onFilterDataSource($event)"
           (scrolled)="onScrollDataSource($event)"
         ></safe-forms-dropdown>
-        <safe-divider [text]="'or'"></safe-divider>
+        <ui-divider [text]="'or'"></ui-divider>
         <!-- New form -->
         <safe-button
-          class="mt-4"
+          class="mt-4 self-center"
           icon="add"
           category="secondary"
           variant="primary"
