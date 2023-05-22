@@ -79,14 +79,14 @@
       <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
         <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
         <td uiCell *cdkCellDef="let element">
-          <safe-button
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
             [uiMenuTriggerFor]="resMenu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
           >
-          </safe-button>
+          </ui-button>
           <ui-menu #resMenu>
             <button
               uiMenuItem

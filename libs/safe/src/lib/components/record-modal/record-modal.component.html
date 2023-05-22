@@ -48,25 +48,25 @@
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end" *ngIf="!loading && data.compareTo">
-    <safe-button (click)="onClose()">
+    <ui-button (click)="onClose()">
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       mat-dialog-close="true"
       cdkFocusInitial
     >
       {{ 'components.record.history.revert' | translate }}
-    </safe-button>
+    </ui-button>
   </mat-dialog-actions>
   <mat-dialog-actions align="end" *ngIf="!loading && !data.compareTo">
-    <safe-button (click)="onClose()" variant="danger">
+    <ui-button (click)="onClose()" variant="danger">
       {{ 'common.close' | translate }}
-    </safe-button>
+    </ui-button>
 
     <ng-container *ngIf="pages$ | async as pages">
-      <safe-button
+      <ui-button
         category="secondary"
         variant="primary"
         cdkFocusInitial
@@ -75,8 +75,8 @@
         [disabled]="survey.isFirstPage"
       >
         {{ 'common.previous' | translate }}
-      </safe-button>
-      <safe-button
+      </ui-button>
+      <ui-button
         category="secondary"
         variant="primary"
         cdkFocusInitial
@@ -85,9 +85,9 @@
         [disabled]="survey.isLastPage"
       >
         {{ 'common.next' | translate }}
-      </safe-button>
+      </ui-button>
     </ng-container>
-    <safe-button
+    <ui-button
       category="secondary"
       variant="primary"
       cdkFocusInitial
@@ -98,6 +98,6 @@
         'common.editObject'
           | translate : { name: 'common.record.one' | translate }
       }}
-    </safe-button>
+    </ui-button>
   </mat-dialog-actions>
 </safe-modal>

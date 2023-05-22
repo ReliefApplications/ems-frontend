@@ -5,11 +5,7 @@ import { ResourceComponent } from './resource.component';
 import { SpinnerModule, MenuModule, TabsModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import {
-  SafeAccessModule,
-  SafeButtonModule,
-  SafeDateModule,
-} from '@oort-front/safe';
+import { SafeAccessModule, SafeDateModule } from '@oort-front/safe';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -27,7 +23,6 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     MenuModule,
     MatChipsModule,
     SafeAccessModule,
-    SafeButtonModule,
     MatPaginatorModule,
     TranslateModule,
     OverlayModule,

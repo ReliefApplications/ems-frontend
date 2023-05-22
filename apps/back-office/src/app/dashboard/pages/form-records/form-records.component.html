@@ -11,7 +11,7 @@
   </h1>
   <!-- Actions -->
   <div *ngIf="!loading" class="flex gap-2 items-center flex-wrap justify-end">
-    <safe-button
+    <ui-button
       *ngIf="form.canUpdate && !showDeletedRecords"
       icon="search_off"
       category="primary"
@@ -19,8 +19,8 @@
       (click)="onSwitchView($event)"
     >
       {{ 'components.records.showArchived' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       *ngIf="form.canUpdate && showDeletedRecords"
       icon="restore_page"
       category="primary"
@@ -28,8 +28,8 @@
       (click)="onSwitchView($event)"
     >
       {{ 'components.records.showActive' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       icon="file_download"
       category="secondary"
       variant="primary"
@@ -39,12 +39,12 @@
         'common.downloadObject'
           | translate : { name: 'common.record.few' | translate }
       }}
-    </safe-button>
+    </ui-button>
     <ui-menu #menu>
       <button uiMenuItem (click)="onDownload('csv')">.csv</button>
       <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
     </ui-menu>
-    <safe-button
+    <ui-button
       icon="file_upload"
       category="secondary"
       variant="primary"
@@ -57,7 +57,7 @@
         'common.uploadObject'
           | translate : { name: 'common.record.few' | translate }
       }}
-    </safe-button>
+    </ui-button>
     <ng-template
       cdkConnectedOverlay
       [cdkConnectedOverlayOrigin]="uploadTrigger"
@@ -101,13 +101,13 @@
         <ng-container *ngIf="column === '_actions'">
           <th uiCellHeader *cdkHeaderCellDef></th>
           <td uiCell *cdkCellDef="let element">
-            <safe-button
+            <ui-button
               [isIcon]="true"
               icon="more_vert"
               [uiMenuTriggerFor]="menu"
               (click)="$event.stopPropagation()"
             >
-            </safe-button>
+            </ui-button>
             <ui-menu #menu>
               <button
                 uiMenuItem

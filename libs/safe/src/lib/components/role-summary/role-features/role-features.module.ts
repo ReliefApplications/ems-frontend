@@ -5,13 +5,12 @@ import { RoleDashboardsComponent } from './role-dashboards/role-dashboards.compo
 import { RoleFormsComponent } from './role-forms/role-forms.component';
 import { RoleWorkflowsComponent } from './role-workflows/role-workflows.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatIconModule } from '@angular/material/icon';
-import { TooltipModule, TableModule } from '@oort-front/ui';
+import { TooltipModule, ButtonModule, TableModule } from '@oort-front/ui';
 import { SafeEmptyModule } from '../../ui/empty/empty.module';
 
 /**
@@ -34,7 +33,7 @@ import { SafeEmptyModule } from '../../ui/empty/empty.module';
     ReactiveFormsModule,
     TranslateModule,
     TooltipModule,
-    SafeButtonModule,
+    ButtonModule,
     SafeIconModule,
     SafeEmptyModule,
     TableModule,

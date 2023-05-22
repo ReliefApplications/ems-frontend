@@ -9,6 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MapClorophletDivisionModule } from '../map-clorophlet-division/map-clorophlet-division.module';
 import { SafeModalModule } from '../../../../ui/modal/modal.module';
+import { ButtonModule } from '@oort-front/ui';
 import { TableModule, SliderModule } from '@oort-front/ui';
 
 /**
@@ -28,6 +29,7 @@ import { TableModule, SliderModule } from '@oort-front/ui';
     MatSelectModule,
     MapClorophletDivisionModule,
     SafeModalModule,
+    ButtonModule,
     TableModule,
   ],
   exports: [MapClorophletComponent],

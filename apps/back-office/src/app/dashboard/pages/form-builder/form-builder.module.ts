@@ -5,7 +5,6 @@ import { FormBuilderComponent } from './form-builder.component';
 import {
   SafeAccessModule,
   SafeFormBuilderModule,
-  SafeButtonModule,
   SafeDateModule,
   SafeEditableTextModule,
 } from '@oort-front/safe';
@@ -27,7 +26,6 @@ import { TableModule } from '@oort-front/ui';
     MatButtonToggleModule,
     SafeFormBuilderModule,
     SafeAccessModule,
-    SafeButtonModule,
     TranslateModule,
     SafeDateModule,
     SafeEditableTextModule,

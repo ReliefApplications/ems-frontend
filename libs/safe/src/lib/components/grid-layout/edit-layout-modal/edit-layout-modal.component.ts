@@ -21,6 +21,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { SafeModalModule } from '../../ui/modal/modal.module';
 import { flattenDeep } from 'lodash';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -44,6 +45,7 @@ interface DialogData {
     SafeQueryBuilderModule,
     SafeCoreGridModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'safe-edit-layout-modal',
   templateUrl: './edit-layout-modal.component.html',

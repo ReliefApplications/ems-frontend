@@ -44,10 +44,10 @@
     </form>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{
+    <ui-button mat-dialog-close>{{
       'common.cancel' | translate
-    }}</safe-button>
-    <safe-button
+    }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [disabled]="!preferencesForm.valid"
@@ -55,6 +55,6 @@
       cdkFocusInitial
     >
       {{ 'common.save' | translate }}
-    </safe-button>
+    </ui-button>
   </mat-dialog-actions>
 </safe-modal>

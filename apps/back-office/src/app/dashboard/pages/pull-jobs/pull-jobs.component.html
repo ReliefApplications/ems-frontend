@@ -1,12 +1,12 @@
 <div class="mb-4 flex flex-row justify-end">
-  <safe-button
+  <ui-button
     icon="add"
     category="secondary"
     variant="primary"
     (click)="onAdd()"
   >
     {{ 'pages.pullJobs.create' | translate }}
-  </safe-button>
+  </ui-button>
 </div>
 
 <!-- Table container -->
@@ -81,13 +81,13 @@
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
         <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
         <td uiCell *cdkCellDef="let element">
-          <safe-button
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
             [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
           >
-          </safe-button>
+          </ui-button>
           <ui-menu #menu>
             <button uiMenuItem (click)="onEdit(element)">
               <mat-icon>edit</mat-icon>

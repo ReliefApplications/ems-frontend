@@ -14,19 +14,19 @@
         }}</mat-option>
       </mat-select>
     </mat-form-field>
-    <safe-button category="tertiary" (click)="addFilter()">
+    <ui-button category="tertiary" (click)="addFilter()">
       {{ 'components.queryBuilder.filter.new' | translate }}
-    </safe-button>
-    <safe-button category="tertiary" (click)="addGroup()">
+    </ui-button>
+    <ui-button category="tertiary" (click)="addGroup()">
       {{ 'components.queryBuilder.filter.newGroup' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       [isIcon]="true"
       icon="delete"
       variant="danger"
       (click)="delete.emit()"
     >
-    </safe-button>
+    </ui-button>
   </div>
   <!-- FILTERS -->
   <div

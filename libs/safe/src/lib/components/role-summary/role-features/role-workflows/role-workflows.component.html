@@ -14,7 +14,7 @@
       <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
       <td uiCell *cdkCellDef="let element">
         <div class="flex">
-          <safe-button
+          <ui-button
             [isIcon]="true"
             [icon]="
               accessiblePages.includes(element.id)
@@ -33,8 +33,8 @@
               ) | translate : { page: element.name }
             "
           >
-          </safe-button>
-          <safe-button
+          </ui-button>
+          <ui-button
             [isIcon]="true"
             [icon]="
               openedWorkflowId === element.id
@@ -44,7 +44,7 @@
             (click)="toggleWorkflow(element)"
             [disabled]="loading"
           >
-          </safe-button>
+          </ui-button>
         </div>
       </td>
     </ng-container>
@@ -79,7 +79,7 @@
             <ng-container cdkColumnDef="actions" [stickyEnd]="true">
               <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
               <td uiCell *cdkCellDef="let element">
-                <safe-button
+                <ui-button
                   [isIcon]="true"
                   [icon]="
                     accessibleSteps.includes(element.id)
@@ -98,7 +98,7 @@
                     ) | translate : { page: element.name }
                   "
                 >
-                </safe-button>
+                </ui-button>
               </td>
             </ng-container>
 

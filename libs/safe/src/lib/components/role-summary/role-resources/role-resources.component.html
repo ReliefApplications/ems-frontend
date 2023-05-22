@@ -32,7 +32,7 @@
           <div class="flex">
             <!-- Permissions -->
             <ng-container *ngFor="let permission of element.permissions">
-              <safe-button
+              <ui-button
                 [isIcon]="true"
                 [icon]="permission.icon"
                 [variant]="permission.variant"
@@ -43,10 +43,10 @@
                     | translate : { resource: element.resource.name }
                 "
               >
-              </safe-button>
+              </ui-button>
             </ng-container>
             <!-- Open Resource -->
-            <safe-button
+            <ui-button
               [isIcon]="true"
               [icon]="
                 element.resource.id === openedResource?.id
@@ -56,7 +56,7 @@
               (click)="toggleResource(element.resource)"
               [disabled]="loading || updating"
             >
-            </safe-button>
+            </ui-button>
           </div>
         </td>
       </ng-container>

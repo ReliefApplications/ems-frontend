@@ -33,13 +33,13 @@
       <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
         <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
         <td uiCell *cdkCellDef="let element; let i = index">
-          <safe-button
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
             [uiMenuTriggerFor]="resMenu"
             (click)="$event.stopPropagation()"
           >
-          </safe-button>
+          </ui-button>
           <ui-menu #resMenu>
             <button uiMenuItem (click)="edit.emit(i)">
               <mat-icon>edit</mat-icon>

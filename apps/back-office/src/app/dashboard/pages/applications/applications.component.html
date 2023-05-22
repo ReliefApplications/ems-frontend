@@ -104,13 +104,13 @@
         <ng-container cdkColumnDef="actions" [stickyEnd]="true">
           <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
           <td uiCell *cdkCellDef="let element">
-            <safe-button
+            <ui-button
               [isIcon]="true"
               icon="more_vert"
               [uiMenuTriggerFor]="menu"
               (click)="$event.stopPropagation()"
             >
-            </safe-button>
+            </ui-button>
             <ui-menu #menu>
               <button uiMenuItem (click)="onPreview(element)">
                 <mat-icon>preview</mat-icon>

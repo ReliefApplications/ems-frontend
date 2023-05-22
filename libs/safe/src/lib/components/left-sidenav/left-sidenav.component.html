@@ -2,7 +2,7 @@
   <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
     <div class="sidenav-header">
       {{ group.name }}
-      <safe-button
+      <ui-button
         *ngIf="appLayout && canAddPage"
         [isIcon]="true"
         icon="add"
@@ -10,7 +10,7 @@
         [uiTooltip]="'models.page.add' | translate"
         routerLink="./add-page"
         (click)="largeDevice ? null : nav.toggle()"
-      ></safe-button>
+      ></ui-button>
     </div>
     <div
       cdkDropList
@@ -31,7 +31,7 @@
       <!-- Classes determine nav-list height for application layout -->
       <ul>
         <ng-container *ngFor="let item of group.navItems">
-          <div cdkDrag [cdkDragDisabled]="!item.orderable">
+          <div cdkDrag [cdkDragDisabled]="!item.orderable" class="show-icons">
             <li class="nav-item">
               <a
                 [routerLink]="item.path"
@@ -42,32 +42,31 @@
                 <mat-icon class="nav-icon">
                   {{ item.icon }}
                 </mat-icon>
-                <div class="nav-text" [uiTooltip]="item.name">
+                <p class="nav-text m-0" [uiTooltip]="item.name">
                   {{ item.name }}
-                </div>
+                </p>
               </a>
               <div
                 class="nav-actions items-center"
                 *ngIf="item.action || item.orderable"
               >
-                <button
-                  mat-icon-button
-                  class="nav-action"
+                <ui-button
+                  class="hide-icons"
+                  [isIcon]="true"
                   *ngIf="item.action"
                   (click)="onClick(item.action.callback, $event)"
+                  uiTooltip="{{ item.action.toolTip }}"
+                  icon="delete"
                 >
-                  <mat-icon uiTooltip="{{ item.action.toolTip }}">{{
-                    item.action.icon
-                  }}</mat-icon>
-                </button>
-                <button
-                  mat-icon-button
+                </ui-button>
+                <ui-button
+                  class="hide-icons"
+                  [isIcon]="true"
                   cdkDragHandle
-                  class="nav-item-handle"
                   *ngIf="item.orderable"
+                  icon="drag_indicator"
                 >
-                  <mat-icon>drag_indicator</mat-icon>
-                </button>
+                </ui-button>
               </div>
             </li>
             <!-- Preview when dragging element -->
@@ -86,7 +85,7 @@
     <ng-container *ngIf="appLayout && canAddPage">
       <div class="flex flex-col items-center w-full absolute bottom-0">
         <ui-divider class="m-0"></ui-divider>
-        <safe-button
+        <ui-button
           class="my-4"
           icon="add"
           category="secondary"
@@ -95,7 +94,7 @@
           (click)="largeDevice ? null : nav.toggle()"
         >
           {{ 'models.page.add' | translate }}
-        </safe-button>
+        </ui-button>
       </div>
     </ng-container>
     <ui-divider class="m-0" *ngIf="i < navGroups.length - 1"></ui-divider>

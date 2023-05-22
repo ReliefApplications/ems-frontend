@@ -5,10 +5,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../../../../components/skeleton/skeleton-table/skeleton-table.module';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { SafeEmptyModule } from '../../../../components/ui/empty/empty.module';
-import { MenuModule, TableModule } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
-import { SafeButtonModule } from '../../../../components/ui/button/button.module';
-import { CheckboxModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  CheckboxModule,
+  ButtonModule,
+  TableModule,
+} from '@oort-front/ui';
 
 /**
  * Users list module.
@@ -23,8 +26,8 @@ import { CheckboxModule } from '@oort-front/ui';
     SafeEmptyModule,
     MenuModule,
     MatIconModule,
-    SafeButtonModule,
     CheckboxModule,
+    ButtonModule,
     TableModule,
   ],
   exports: [UserListComponent],

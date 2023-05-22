@@ -1,5 +1,5 @@
 <div class="self-end" *ngIf="!loading">
-  <safe-button
+  <ui-button
     variant="primary"
     category="secondary"
     (click)="onAddAggregation()"
@@ -7,7 +7,7 @@
     {{
       'components.widget.settings.grid.aggregations.add.choice.create'
         | translate
-    }}</safe-button
+    }}</ui-button
   >
 </div>
 <div>
@@ -42,14 +42,14 @@
         <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
           <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
           <td uiCell *cdkCellDef="let element">
-            <safe-button
+            <ui-button
               [isIcon]="true"
               icon="more_vert"
               [uiMenuTriggerFor]="resMenu"
               (click)="$event.stopPropagation()"
               [disabled]="!resource.canUpdate"
             >
-            </safe-button>
+            </ui-button>
             <ui-menu #resMenu>
               <button uiMenuItem (click)="onEditAggregation(element)">
                 <mat-icon>edit</mat-icon>

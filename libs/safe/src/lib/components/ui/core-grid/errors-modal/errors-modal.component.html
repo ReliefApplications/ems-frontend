@@ -38,16 +38,16 @@
     <p>{{ 'components.widget.grid.validation.help' | translate }}</p>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+    <ui-button mat-dialog-close>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [mat-dialog-close]="true"
       cdkFocusInitial
     >
       {{ 'common.update' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

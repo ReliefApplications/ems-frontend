@@ -10,13 +10,18 @@ import { ChannelsRoutingModule } from '../../channels-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MenuModule, SpinnerModule } from '@oort-front/ui';
-import { SafeButtonModule, SafeModalModule } from '@oort-front/safe';
-import { DividerModule } from '@oort-front/ui';
+import { SafeModalModule } from '@oort-front/safe';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
+import {
+  SpinnerModule,
+  DividerModule,
+  MenuModule,
+  ButtonModule,
+  TableModule,
+} from '@oort-front/ui';
 
 /**
  * Add channel component, act as modal.
@@ -35,10 +40,11 @@ import { TranslateModule } from '@ngx-translate/core';
     MenuModule,
     MatSelectModule,
     DividerModule,
-    SafeButtonModule,
     MatButtonModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
+    TableModule,
   ],
   selector: 'app-add-channel-modal',
   templateUrl: './add-channel-modal.component.html',

@@ -3,7 +3,7 @@
   *ngIf="selection.selected.length > 0"
   class="flex gap-2 items-center mb-2 justify-end"
 >
-  <safe-button
+  <ui-button
     icon="delete"
     category="secondary"
     variant="danger"
@@ -13,7 +13,7 @@
       'common.deleteObject'
         | translate : { name: 'common.user.few' | translate }
     }}
-  </safe-button>
+  </ui-button>
 </div>
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
@@ -97,13 +97,13 @@
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
         <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
         <td uiCell *cdkCellDef="let element">
-          <safe-button
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
             [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
           >
-          </safe-button>
+          </ui-button>
           <ui-menu #menu>
             <button uiMenuItem (click)="onDelete([element])">
               <mat-icon>delete</mat-icon>

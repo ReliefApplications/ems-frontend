@@ -3,6 +3,7 @@ export * from './lib/ui.module';
 // === TAILWIND COMPONENTS === //
 export * from './lib/avatar/avatar.module';
 export * from './lib/button/button.module';
+export * from './lib/button/button.component';
 export * from './lib/checkbox/checkbox.module';
 export * from './lib/menu/menu.module';
 export * from './lib/icon/icon.module';
@@ -24,23 +25,27 @@ export * from './lib/chip/chip.module';
 export * from './lib/form-wrapper/form-wrapper.module';
 export * from './lib/dialog/dialog.module';
 export * from './lib/tabs/tabs.module';
+export * from './lib/snackbar/snackbar.service';
 
-// === ENUMS === //
-export * from './lib/shared/size.enum';
-export * from './lib/shared/variant.enum';
-export * from './lib/shared/category.enum';
-export * from './lib/button/enums/button-icon-position.enum';
-export * from './lib/toggle/enums/toggle-type.enum';
-export * from './lib/divider/enums/divider-position.enum';
-export * from './lib/divider/enums/divider-orientation.enum';
-export * from './lib/breadcrumbs/enums/breadcrumb-display.enum';
-export * from './lib/breadcrumbs/enums/breadcrumb-separator.enum';
+// === TYPES === //
+export * from './lib/types/variant';
+export * from './lib/types/category';
+export * from './lib/types/size';
+export * from './lib/button/types/button-icon-position';
+export * from './lib/toggle/types/toggle-type';
+export * from './lib/divider/types/divider-position';
+export * from './lib/divider/types/divider-orientation';
+export * from './lib/breadcrumbs/types/breadcrumb-display';
+export * from './lib/breadcrumbs/types/breadcrumb-separator';
 
 // === INTERFACES === //
 export * from './lib/table/interfaces/table-column.interface';
 export * from './lib/toggle/interfaces/toggle-icon.interface';
 export * from './lib/breadcrumbs/interfaces/breadcrumb.interface';
 export * from './lib/paginator/interfaces/paginator.interfaces';
+
+// === TOKENS === //
+export * from './lib/snackbar/snackbar.token';
 
 // === MODULE === //
 export * from './lib/ui.module';

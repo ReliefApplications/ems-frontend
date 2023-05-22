@@ -5,11 +5,11 @@ import { FormComponent } from './form.component';
 import {
   SafeFormModule,
   SafeAccessModule,
-  SafeButtonModule,
   SafeEditableTextModule,
 } from '@oort-front/safe';
 import { SpinnerModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Application form page module.
@@ -22,9 +22,9 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeFormModule,
     SafeAccessModule,
     SpinnerModule,
-    SafeButtonModule,
     TranslateModule,
     SafeEditableTextModule,
+    ButtonModule,
   ],
   exports: [FormComponent],
 })

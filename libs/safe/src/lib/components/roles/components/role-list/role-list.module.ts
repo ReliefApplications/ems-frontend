@@ -1,17 +1,21 @@
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MenuModule, TableModule, SpinnerModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
 import { SafeRoleListComponent } from './role-list.component';
-import { DividerModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  DividerModule,
+  ButtonModule,
+  TableModule,
+  SpinnerModule,
+} from '@oort-front/ui';
 import { AbilityModule } from '@casl/angular';
 
 /**
@@ -32,10 +36,10 @@ import { AbilityModule } from '@casl/angular';
     MatSortModule,
     MatAutocompleteModule,
     DividerModule,
-    SafeButtonModule,
     TranslateModule,
     SafeSkeletonTableModule,
     AbilityModule,
+    ButtonModule,
     TableModule,
   ],
   exports: [SafeRoleListComponent],

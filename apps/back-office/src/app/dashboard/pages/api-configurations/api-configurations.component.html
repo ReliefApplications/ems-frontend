@@ -15,7 +15,7 @@
         />
       </mat-form-field>
       <!-- Toggle advanced filters -->
-      <safe-button
+      <ui-button
         class="max-sm:!w-auto"
         icon="filter_list"
         category="tertiary"
@@ -27,7 +27,7 @@
             ? ('common.filter.hide' | translate)
             : ('common.filter.show' | translate)
         }}
-      </safe-button>
+      </ui-button>
     </div>
     <!-- Advanced filters -->
     <div
@@ -54,17 +54,17 @@
         </mat-select>
       </mat-form-field>
       <!-- Clear filters -->
-      <safe-button
+      <ui-button
         variant="danger"
         (click)="clearAllFilters()"
         class="max-sm:!w-auto"
-        >{{ 'common.filter.clear' | translate }}</safe-button
+        >{{ 'common.filter.clear' | translate }}</ui-button
       >
     </div>
   </div>
   <!-- Actions -->
   <div class="flex items-center">
-    <safe-button
+    <ui-button
       icon="add"
       category="secondary"
       variant="primary"
@@ -72,7 +72,7 @@
       *ngIf="'create' | able : 'ApiConfiguration'"
     >
       {{ 'pages.apiConfigurations.create' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </div>
 
@@ -145,14 +145,14 @@
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
         <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
         <td uiCell *cdkCellDef="let element">
-          <safe-button
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
             [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
           >
-          </safe-button>
+          </ui-button>
           <ui-menu #menu>
             <button
               uiMenuItem

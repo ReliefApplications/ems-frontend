@@ -4,13 +4,9 @@ import { FormsTabRoutingModule } from './forms-tab-routing.module';
 import { FormsTabComponent } from './forms-tab.component';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule, TableModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  SafeButtonModule,
-  SafeDateModule,
-  SafeSkeletonTableModule,
-} from '@oort-front/safe';
+import { SafeDateModule, SafeSkeletonTableModule } from '@oort-front/safe';
+import { MenuModule, ButtonModule, TableModule } from '@oort-front/ui';
 
 /**
  * Forms tab of resource page.
@@ -23,10 +19,10 @@ import {
     MatIconModule,
     MenuModule,
     MatChipsModule,
-    SafeButtonModule,
     TranslateModule,
     SafeDateModule,
     SafeSkeletonTableModule,
+    ButtonModule,
     TableModule,
   ],
 })

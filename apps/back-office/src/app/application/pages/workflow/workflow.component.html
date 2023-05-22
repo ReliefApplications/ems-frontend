@@ -28,7 +28,7 @@
           (save)="saveAccess($event)"
           *ngIf="workflow.page?.canUpdate || false"
         ></safe-access>
-        <safe-button
+        <ui-button
           variant="grey"
           [isIcon]="true"
           icon="more_vert"
@@ -36,7 +36,7 @@
           cdkOverlayOrigin
           #appMenuTrigger="cdkOverlayOrigin"
         >
-        </safe-button>
+        </ui-button>
         <ui-menu #menu>
           <button uiMenuItem (click)="onAppSelection()">
             <mat-icon>file_copy</mat-icon>

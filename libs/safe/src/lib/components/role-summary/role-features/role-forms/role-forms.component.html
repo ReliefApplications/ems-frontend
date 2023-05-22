@@ -17,7 +17,7 @@
         <ng-container cdkColumnDef="actions" [stickyEnd]="true">
           <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
           <td uiCell *cdkCellDef="let element">
-            <safe-button
+            <ui-button
               [isIcon]="true"
               [icon]="
                 accessiblePages.includes(element.id)
@@ -36,7 +36,7 @@
                 ) | translate : { page: element.name }
               "
             >
-            </safe-button>
+            </ui-button>
           </td>
         </ng-container>
 

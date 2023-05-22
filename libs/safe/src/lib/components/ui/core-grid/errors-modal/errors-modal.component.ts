@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../modal/modal.module';
+import { ButtonModule } from '@oort-front/ui';
 import { TableModule } from '@oort-front/ui';
 
 /** Model for the dialog data */
@@ -26,6 +27,7 @@ interface DialogData {
     MatButtonModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
     TableModule,
   ],
   selector: 'safe-errors-modal',

@@ -26,7 +26,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
-import { TableSort, Size } from '@oort-front/ui';
+import { TableSort } from '@oort-front/ui';
 import { ApolloQueryResult } from '@apollo/client';
 
 /** Default pagination settings. */
@@ -69,7 +69,6 @@ export class ReferenceDatasComponent
     length: 0,
     endCursor: '',
   };
-  size = Size;
 
   /**
    * List of Reference data page.

@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, Inject, OnDestroy } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
 import { Subject, takeUntil } from 'rxjs';
-import { DialogSize } from './enums/dialog-size.enum';
+import { DialogSize, dialogSizes } from './types/dialog-size';
 
 /**
  * LaunchDialog component.
@@ -24,7 +24,7 @@ import { DialogSize } from './enums/dialog-size.enum';
 })
 class LaunchDialogComponent implements OnDestroy {
   @Input() animal = '';
-  @Input() size: DialogSize = DialogSize.MEDIUM;
+  @Input() size: DialogSize = 'medium';
   private destroy$ = new Subject<void>();
   /**
    * Constructor for the launchDialog component
@@ -144,12 +144,7 @@ export default {
   ],
   argTypes: {
     size: {
-      options: [
-        DialogSize.SMALL,
-        DialogSize.MEDIUM,
-        DialogSize.BIG,
-        DialogSize.FULLSCREEN,
-      ],
+      options: dialogSizes,
       control: {
         type: 'select',
       },
@@ -173,5 +168,5 @@ const Template: Story<LaunchDialogComponent> = (
 export const Default = Template.bind({});
 Default.args = {
   animal: 'panda',
-  size: DialogSize.SMALL,
+  size: 'small',
 };

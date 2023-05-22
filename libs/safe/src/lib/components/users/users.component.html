@@ -15,7 +15,7 @@
         />
       </mat-form-field>
       <!-- Toggle advanced filters -->
-      <safe-button
+      <ui-button
         class="max-sm:!w-auto"
         icon="filter_list"
         category="tertiary"
@@ -27,7 +27,7 @@
             ? ('common.filter.hide' | translate)
             : ('common.filter.show' | translate)
         }}
-      </safe-button>
+      </ui-button>
     </div>
     <!-- Advanced filters -->
     <div
@@ -48,11 +48,11 @@
         </mat-select>
       </mat-form-field>
       <!-- Clear filters -->
-      <safe-button
+      <ui-button
         class="max-sm:!w-auto"
         variant="danger"
         (click)="clearAllFilters()"
-        >{{ 'common.filter.clear' | translate }}</safe-button
+        >{{ 'common.filter.clear' | translate }}</ui-button
       >
     </div>
   </div>
@@ -60,7 +60,7 @@
   <div class="flex gap-2 items-center">
     <!-- Actions when selected items -->
     <ng-container *ngIf="selection.selected.length > 0">
-      <safe-button
+      <ui-button
         icon="delete"
         category="secondary"
         variant="danger"
@@ -70,11 +70,11 @@
           'common.deleteObject'
             | translate : { name: 'common.user.few' | translate }
         }}
-      </safe-button>
+      </ui-button>
     </ng-container>
 
     <!-- Default actions -->
-    <safe-button
+    <ui-button
       icon="file_download"
       category="secondary"
       variant="primary"
@@ -84,19 +84,19 @@
         'common.exportObject'
           | translate : { name: 'common.user.few' | translate }
       }}
-    </safe-button>
+    </ui-button>
     <ui-menu #menu>
       <button uiMenuItem (click)="onExport('csv')">.csv</button>
       <button uiMenuItem (click)="onExport('xlsx')">.xlsx</button>
     </ui-menu>
-    <safe-button
+    <ui-button
       icon="send"
       category="secondary"
       variant="primary"
       (click)="onInvite()"
     >
       {{ 'components.users.invite.confirm' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </div>
 <!-- Table container -->
@@ -168,13 +168,13 @@
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
         <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
         <td uiCell *cdkCellDef="let element">
-          <safe-button
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
             [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
           >
-          </safe-button>
+          </ui-button>
           <ui-menu #menu>
             <button uiMenuItem (click)="onDelete([element])">
               <mat-icon>delete</mat-icon>

@@ -7,14 +7,13 @@ import {
 import { createFormGroup, Mapping } from '../mapping-forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { MenuModule } from '@oort-front/ui';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SafeModalModule } from '../../ui/modal/modal.module';
+import { MenuModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * Interface for the data injected into the modal.
@@ -38,8 +37,8 @@ interface MappingDialogData {
     MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
-    SafeButtonModule,
     SafeModalModule,
+    ButtonModule,
   ],
   selector: 'safe-mapping-modal',
   templateUrl: './mapping-modal.component.html',
@@ -48,6 +47,7 @@ interface MappingDialogData {
 export class SafeMappingModalComponent implements OnInit {
   public form: UntypedFormGroup = new UntypedFormGroup({});
   public isNew = false;
+
   /**
    * Constructor of the SafeMappingModalComponent.
    *

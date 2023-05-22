@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { MapClorophletsComponent } from './map-clorophlets.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeAlertModule } from '../../../../ui/alert/alert.module';
 import { MapClorophletModule } from '../map-clorophlet/map-clorophlet.module';
+import { ButtonModule } from '@oort-front/ui';
 import { TableModule } from '@oort-front/ui';
 
 /**
@@ -19,10 +19,10 @@ import { TableModule } from '@oort-front/ui';
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    SafeButtonModule,
     SafeIconModule,
     SafeAlertModule,
     MapClorophletModule,
+    ButtonModule,
     TableModule,
   ],
   exports: [MapClorophletsComponent],

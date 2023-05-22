@@ -9,9 +9,8 @@ import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/m
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { LayoutTableModule } from '../../../grid-layout/layout-table/layout-table.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
-import { TooltipModule } from '@oort-front/ui';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
-import { DividerModule } from '@oort-front/ui';
+import { TooltipModule, DividerModule } from '@oort-front/ui';
 import { AggregationTableModule } from '../../../aggregation/aggregation-table/aggregation-table.module';
 
 /**

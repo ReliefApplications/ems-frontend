@@ -4,12 +4,11 @@ import { MapMarkersComponent } from './map-markers.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeAlertModule } from '../../../../ui/alert/alert.module';
-import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MapMarkerRuleModule } from '../map-marker-rule/map-marker-rule.module';
-import { TooltipModule, TableModule } from '@oort-front/ui';
+import { TooltipModule, ButtonModule, TableModule } from '@oort-front/ui';
 
 /**
  * Module of Map Widget marker rules.
@@ -21,13 +20,13 @@ import { TooltipModule, TableModule } from '@oort-front/ui';
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    SafeButtonModule,
     SafeIconModule,
     SafeAlertModule,
     MatFormFieldModule,
     MatSelectModule,
     MapMarkerRuleModule,
     TooltipModule,
+    ButtonModule,
     TableModule,
   ],
   exports: [MapMarkersComponent],

@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { CalculatedFieldsTabRoutingModule } from './calculated-fields-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule, TableModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule, SafeEmptyModule } from '@oort-front/safe';
+import { SafeEmptyModule } from '@oort-front/safe';
 import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component';
+import { MenuModule, ButtonModule, TableModule } from '@oort-front/ui';
 
 /**
  * Calculated fields tab of resource page
@@ -18,10 +18,10 @@ import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component'
     CalculatedFieldsTabRoutingModule,
     MatIconModule,
     MenuModule,
-    SafeButtonModule,
     TranslateModule,
     OverlayModule,
     SafeEmptyModule,
+    ButtonModule,
     TableModule,
   ],
 })

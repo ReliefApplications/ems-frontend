@@ -31,13 +31,13 @@
       <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
         <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
         <td uiCell *cdkCellDef="let element">
-          <safe-button
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
             [uiMenuTriggerFor]="resMenu"
             (click)="$event.stopPropagation()"
           >
-          </safe-button>
+          </ui-button>
           <ui-menu #resMenu>
             <button uiMenuItem (click)="onEditAggregation(element)">
               <mat-icon>edit</mat-icon>
@@ -61,12 +61,12 @@
   </div>
 </div>
 <div class="flex mt-4 justify-center">
-  <safe-button
+  <ui-button
     class="max-w-xs grow"
     category="tertiary"
     variant="primary"
     (click)="onAdd()"
     [disabled]="!resource && !form"
-    >{{ 'components.aggregation.add.title' | translate }}</safe-button
+    >{{ 'components.aggregation.add.title' | translate }}</ui-button
   >
 </div>

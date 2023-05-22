@@ -1,12 +1,12 @@
 <div class="flex justify-end">
-  <safe-button
+  <ui-button
     icon="add"
     variant="primary"
     category="secondary"
     (click)="addRule()"
     >{{
       'components.role.summary.autoAssignment.rule.add' | translate
-    }}</safe-button
+    }}</ui-button
   >
 </div>
 <safe-skeleton-table
@@ -33,15 +33,15 @@
         <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
         <td uiCell *cdkCellDef="let i = index">
           <div class="flex">
-            <safe-button
+            <ui-button
               [isIcon]="true"
               icon="edit"
               variant="grey"
               [uiTooltip]="'common.edit' | translate"
               (click)="editRule(i)"
             >
-            </safe-button>
-            <safe-button
+            </ui-button>
+            <ui-button
               [isIcon]="true"
               icon="delete"
               variant="grey"
@@ -50,7 +50,7 @@
               "
               (click)="deleteRule(i)"
             >
-            </safe-button>
+            </ui-button>
           </div>
         </td>
       </ng-container>

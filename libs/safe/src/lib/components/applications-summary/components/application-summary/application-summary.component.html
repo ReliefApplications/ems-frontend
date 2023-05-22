@@ -39,13 +39,13 @@
       }}</span
     >
     <!-- Actions -->
-    <safe-button
+    <ui-button
       [isIcon]="true"
       icon="more_vert"
       [uiMenuTriggerFor]="menu"
       (click)="$event.stopPropagation()"
     >
-    </safe-button>
+    </ui-button>
     <ui-menu #menu>
       <!-- Preview -->
       <button uiMenuItem (click)="preview.emit()">

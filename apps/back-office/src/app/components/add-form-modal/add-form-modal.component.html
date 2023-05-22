@@ -26,7 +26,7 @@
               <ui-icon
                 [size]="18"
                 icon="info_outline"
-                [variant]="colorVariant.GREY"
+                variant="grey"
                 [uiTooltip]="
                   'components.form.create.tooltip.resource' | translate
                 "
@@ -43,7 +43,7 @@
               <ui-icon
                 [size]="18"
                 icon="info_outline"
-                [variant]="colorVariant.GREY"
+                variant="grey"
                 [uiTooltip]="
                   'components.form.create.tooltip.inherit' | translate
                 "
@@ -116,10 +116,8 @@
     </form>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
-    <safe-button
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [mat-dialog-close]="form.value"
@@ -127,6 +125,6 @@
       [disabled]="!form.valid"
     >
       {{ 'common.create' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>
