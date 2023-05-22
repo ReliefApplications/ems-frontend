@@ -1,3 +1,11 @@
+:host button > * {
+  pointer-events: none;
+}
+
+:host button {
+  pointer-events: auto;
+}
+
 .ui-button {
   &.primary {
     @apply rounded-md text-sm font-medium shadow-sm;
@@ -32,11 +40,9 @@
   &.small {
     @apply p-1.5;
   }
-  &.medium {
-    @apply p-2.5;
-  }
+  &.medium,
   &.large {
-    @apply p-3.5;
+    @apply p-2.5;
   }
 }
 
@@ -99,7 +105,7 @@
     @apply text-neutral-400;
   }
   &:not(:disabled) {
-    @apply hover:bg-neutral-100;
+    @apply hover:bg-neutral-200;
   }
   &.secondary {
     @apply bg-neutral-400 text-white;
@@ -110,4 +116,27 @@
   &.tertiary {
     @apply border-neutral-400 text-neutral-400;
   }
+}
+
+.button-light {
+  &.primary {
+    @apply text-neutral-400;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-neutral-100 hover:bg-opacity-20;
+  }
+  &.secondary {
+    @apply bg-neutral-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-neutral-500 focus-visible:outline-neutral-600;
+  }
+  &.tertiary {
+    @apply border-neutral-400 text-neutral-400;
+  }
+}
+
+button.ui-button:disabled,
+button.ui-button-icon:disabled {
+  @apply text-neutral-400 bg-neutral-500 bg-opacity-20;
 }

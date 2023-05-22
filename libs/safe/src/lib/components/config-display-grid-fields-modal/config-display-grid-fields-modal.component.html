@@ -15,10 +15,10 @@
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <safe-button mat-dialog-close *ngIf="!loading">{{
+    <ui-button mat-dialog-close *ngIf="!loading">{{
       'common.cancel' | translate
-    }}</safe-button>
-    <safe-button
+    }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [mat-dialog-close]="form"
@@ -27,6 +27,6 @@
       *ngIf="!loading"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
+    </ui-button>
   </mat-dialog-actions>
 </safe-modal>

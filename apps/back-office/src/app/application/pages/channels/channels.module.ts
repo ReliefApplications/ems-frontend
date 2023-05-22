@@ -5,14 +5,14 @@ import { ChannelsComponent } from './channels.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import {
-  SafeButtonModule,
-  SafeModalModule,
-  SafeDividerModule,
-} from '@oort-front/safe';
+  SpinnerModule,
+  MenuModule,
+  DividerModule,
+  ButtonModule,
+} from '@oort-front/ui';
+import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
+import { SafeModalModule } from '@oort-front/safe';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
@@ -31,15 +31,15 @@ import { TranslateModule } from '@ngx-translate/core';
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatMenuModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
+    MenuModule,
     MatTableModule,
     MatSelectModule,
-    SafeDividerModule,
-    SafeButtonModule,
+    DividerModule,
     MatButtonModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
   ],
 })
 export class ChannelsModule {}

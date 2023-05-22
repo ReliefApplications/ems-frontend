@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SafeSkeletonTableComponent } from './skeleton-table.component';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SafeAccessModule } from '../../access/access.module';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
@@ -11,7 +10,7 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
+import { CheckboxModule, ButtonModule } from '@oort-front/ui';
 
 /** Skeleton table module */
 @NgModule({
@@ -20,7 +19,6 @@ import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/
     CommonModule,
     MatTableModule,
     SafeAccessModule,
-    SafeButtonModule,
     MatSortModule,
     MatChipsModule,
     MatPaginatorModule,
@@ -28,7 +26,8 @@ import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/
     LayoutModule,
     ButtonsModule,
     TranslateModule,
-    MatCheckboxModule,
+    CheckboxModule,
+    ButtonModule,
   ],
   exports: [SafeSkeletonTableComponent],
 })

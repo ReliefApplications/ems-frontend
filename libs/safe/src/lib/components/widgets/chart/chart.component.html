@@ -4,7 +4,7 @@
   }}</span>
 </kendo-tilelayout-item-header>
 <ng-container *ngIf="!hasError && (series$ | async) as series">
-  <safe-button
+  <ui-button
     *ngIf="export"
     [isIcon]="true"
     icon="get_app"
@@ -12,7 +12,7 @@
     variant="grey"
     (click)="onExport()"
   >
-  </safe-button>
+  </ui-button>
   <div class="group flex-1">
     <safe-line-chart
       #chartWrapper
@@ -91,11 +91,10 @@
     </div>
   </div>
 </ng-container>
-<mat-spinner
-  class="absolute top-0 bottom-0 left-0 right-0 m-auto"
-  [diameter]="30"
+<ui-spinner
+  class="absolute top-0 bottom-0 left-0 right-0 flex-col items-center"
   *ngIf="loading"
-></mat-spinner>
+></ui-spinner>
 <div *ngIf="hasError" class="chart-error">
   <safe-icon variant="danger" icon="error_outline"></safe-icon>
   <p color="danger">

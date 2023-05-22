@@ -1,4 +1,4 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ui-spinner *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading && referenceData">
   <!-- Header -->
   <div class="page-header">
@@ -95,7 +95,7 @@
           <div *ngIf="triedToGetFields && !loadingFields">
             {{ 'pages.referenceData.fields.noFields' | translate }}
           </div>
-          <safe-button
+          <ui-button
             *ngIf="!loadingFields"
             category="secondary"
             variant="primary"
@@ -103,12 +103,8 @@
             class="mx-auto my-1"
           >
             {{ 'pages.referenceData.fields.fetch' | translate }}
-          </safe-button>
-          <mat-spinner
-            diameter="45"
-            class="my-2"
-            *ngIf="loadingFields"
-          ></mat-spinner>
+          </ui-button>
+          <ui-spinner class="my-2" *ngIf="loadingFields"></ui-spinner>
         </ng-template>
       </kendo-grid>
     </div>
@@ -123,19 +119,15 @@
           [value]="csvValue"
         ></textarea>
       </mat-form-field>
-      <safe-button
+      <ui-button
         category="secondary"
         variant="primary"
         (click)="onValidateCSV()"
       >
         {{ 'pages.referenceData.validateCsv' | translate }}
-      </safe-button>
+      </ui-button>
     </div>
-    <mat-spinner
-      diameter="45"
-      class="page-loader"
-      *ngIf="csvLoading"
-    ></mat-spinner>
+    <ui-spinner *ngIf="csvLoading"></ui-spinner>
     <div class="flex gap-x-2">
       <!-- Path -->
       <mat-form-field
@@ -185,7 +177,7 @@
         class="cursor-pointer"
         variant="grey"
         matSuffix
-        [matTooltip]="'pages.referenceData.tooltip.graphQLFilter' | translate"
+        [uiTooltip]="'pages.referenceData.tooltip.graphQLFilter' | translate"
       ></safe-icon>
     </mat-form-field>
     <!-- Kendo grid to preview data on static type -->
@@ -200,7 +192,7 @@
     </div>
   </form>
   <!-- Submit button -->
-  <safe-button
+  <ui-button
     class="!w-auto"
     category="secondary"
     variant="primary"
@@ -208,5 +200,5 @@
     [disabled]="referenceForm.invalid || !referenceForm.dirty"
   >
     {{ 'common.save' | translate }}
-  </safe-button>
+  </ui-button>
 </ng-container>

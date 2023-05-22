@@ -20,7 +20,7 @@
             class="cursor-pointer"
             variant="grey"
             matSuffix
-            [matTooltip]="'components.calculatedFields.hint.name' | translate"
+            [uiTooltip]="'components.calculatedFields.hint.name' | translate"
           ></safe-icon>
         </mat-form-field>
         <h2>
@@ -31,10 +31,10 @@
     </form>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+    <ui-button mat-dialog-close>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       (click)="onSubmit()"
@@ -42,6 +42,6 @@
       [disabled]="!form.valid"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
+    </ui-button>
   </mat-dialog-actions>
 </safe-modal>

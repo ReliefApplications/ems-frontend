@@ -6,13 +6,12 @@ import { RoleFormsComponent } from './role-forms/role-forms.component';
 import { RoleWorkflowsComponent } from './role-workflows/role-workflows.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule, ButtonModule } from '@oort-front/ui';
 import { SafeEmptyModule } from '../../ui/empty/empty.module';
 
 /**
@@ -34,11 +33,11 @@ import { SafeEmptyModule } from '../../ui/empty/empty.module';
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatTooltipModule,
+    TooltipModule,
     MatTableModule,
-    SafeButtonModule,
     SafeIconModule,
     SafeEmptyModule,
+    ButtonModule,
   ],
   exports: [RoleFeaturesComponent],
 })

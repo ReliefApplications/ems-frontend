@@ -4,11 +4,11 @@ import { SafeMapSettingsComponent } from './map-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeIconModule } from '../../ui/icon/icon.module';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { TabsModule } from '@oort-front/ui';
 import { MapGeneralModule } from './map-general/map-general.module';
 import { MapLayersModule } from './map-layers/map-layers.module';
 import { MapPropertiesModule } from './map-properties/map-properties.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule } from '@oort-front/ui';
 
 /** Module for map settings component */
 @NgModule({
@@ -19,11 +19,11 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     ReactiveFormsModule,
     SafeIconModule,
     TranslateModule,
-    MatTabsModule,
+    TabsModule,
     MapGeneralModule,
     MapLayersModule,
     MapPropertiesModule,
-    MatTooltipModule,
+    TooltipModule,
   ],
   exports: [SafeMapSettingsComponent],
 })

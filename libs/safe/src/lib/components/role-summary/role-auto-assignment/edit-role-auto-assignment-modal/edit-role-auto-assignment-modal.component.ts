@@ -4,6 +4,7 @@ import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/leg
 import { CommonModule } from '@angular/common';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { SafeFilterModule } from '../../../filter/filter.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /** Interface of component dialog data */
 interface DialogData {
@@ -16,7 +17,7 @@ interface DialogData {
  */
 @Component({
   standalone: true,
-  imports: [CommonModule, SafeModalModule, SafeFilterModule],
+  imports: [CommonModule, SafeModalModule, SafeFilterModule, ButtonModule],
   selector: 'safe-edit-role-auto-assignment-modal',
   templateUrl: './edit-role-auto-assignment-modal.component.html',
   styleUrls: ['./edit-role-auto-assignment-modal.component.scss'],
