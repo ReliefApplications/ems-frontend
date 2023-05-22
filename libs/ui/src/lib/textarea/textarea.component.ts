@@ -5,9 +5,12 @@ import {
   Provider,
   ViewChild,
   EventEmitter,
+  Optional,
+  Self,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { FocusableDirective } from '@progress/kendo-angular-grid';
 
 /**
  * Control value accessor
@@ -49,6 +52,13 @@ export class TextareaComponent implements ControlValueAccessor {
     }
   }
   @Input() maxRows = 5;
+
+  /**
+   * UI Textarea constructor
+   *
+   * @param kendoFocus FocusableDirective
+   */
+  constructor(@Self() @Optional() public kendoFocus: FocusableDirective) {}
 
   minRowsNumber = 2;
   valueChange: EventEmitter<boolean> = new EventEmitter();

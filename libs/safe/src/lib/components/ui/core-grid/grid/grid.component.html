@@ -446,15 +446,14 @@
         >
           <!-- EDITION ( text / comment ) -->
           <ng-container *ngIf="field.meta.type === 'text'">
-            <!-- @TODO check kendoGridFocusable -->
             <ui-textarea
               [formControl]="formGroup.get(field.name)"
               [minRows]="2"
               [name]="field.name"
               class="w-full"
-              [uiTextareaDirective]
+              kendoGridFocusable
             >
-            </ui-textarea>   
+            </ui-textarea>
           </ng-container>
           <!-- EDITION ( url / email / tel ) -->
           <ng-container
@@ -464,7 +463,7 @@
               [formControl]="formGroup.get(field.name)"
               [name]="field.name"
               class="k-textbox"
-              [uiTextareaDirective]
+              kendoGridFocusable
             />
           </ng-container>
           <!-- EDITION ( color ) -->
@@ -825,7 +824,6 @@
                   <ng-container *ngIf="field.meta.type === 'matrixdropdown'">
                     <li *ngFor="let row of field.meta.rows">
                       <ng-container *ngIf="column.type === 'text'">
-                         <!-- @TODO check kendoGridFocusable -->
                         <ui-textarea
                           [formControl]="
                             formGroup.get([field.name, row.name, column.name])
@@ -833,7 +831,7 @@
                           [minRows]="2"
                           [name]="row.name"
                           class="w-full"
-                          [uiTextareaDirective]
+                          kendoGridFocusable
                         >
                         </ui-textarea>
                       </ng-container>
@@ -863,13 +861,12 @@
                       [formGroup]="group"
                     >
                       <ng-container *ngIf="column.cellType === 'text'">
-                        <!-- @TODO check kendoGridFocusable -->
                         <ui-textarea
                           [formControlName]="column.name"
                           [name]="field.name + i"
                           [minRows]="2"
                           class="w-full"
-                          [uiTextareaDirective]
+                          kendoGridFocusable
                         >
                         </ui-textarea>
                       </ng-container>
@@ -913,13 +910,12 @@
               </ng-container>
               <!-- EDITION ( multipletext ) -->
               <ng-container *ngIf="field.meta.type === 'multipletext'">
-                <!-- @TODO check kendoGridFocusable -->
                 <ui-textarea
                   [formControl]="formGroup.get([field.name, column.name])"
                   [minRows]="2"
                   [name]="column.name"
                   class="w-full"
-                  [uiTextareaDirective]
+                  kendoGridFocusable
                 >
                 </ui-textarea>
               </ng-container>
