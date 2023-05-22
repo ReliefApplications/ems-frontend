@@ -4,8 +4,8 @@ import { RoleChannelsComponent } from './role-channels.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Channels tab of Role Summary.
@@ -18,8 +18,8 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    SafeButtonModule,
     MatSelectModule,
+    ButtonModule,
   ],
   exports: [RoleChannelsComponent],
 })

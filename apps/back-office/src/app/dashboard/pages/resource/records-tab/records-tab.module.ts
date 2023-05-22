@@ -4,17 +4,12 @@ import { RecordsTabRoutingModule } from './records-tab-routing.module';
 import { RecordsTabComponent } from './records-tab.component';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule } from '@oort-front/ui';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  SafeButtonModule,
-  SafeSkeletonTableModule,
-  SafeEmptyModule,
-} from '@oort-front/safe';
+import { SafeSkeletonTableModule, SafeEmptyModule } from '@oort-front/safe';
 import { UploadMenuModule } from '../../../../components/upload-menu/upload-menu.module';
+import { TooltipModule, MenuModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * Records tab module for resource page.
@@ -27,7 +22,6 @@ import { UploadMenuModule } from '../../../../components/upload-menu/upload-menu
     MatTableModule,
     MatIconModule,
     MenuModule,
-    SafeButtonModule,
     TooltipModule,
     MatPaginatorModule,
     TranslateModule,
@@ -35,6 +29,7 @@ import { UploadMenuModule } from '../../../../components/upload-menu/upload-menu
     UploadMenuModule,
     SafeSkeletonTableModule,
     SafeEmptyModule,
+    ButtonModule,
   ],
 })
 export class RecordsTabModule {}

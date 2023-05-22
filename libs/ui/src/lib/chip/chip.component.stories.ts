@@ -1,7 +1,7 @@
 import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
 import { ChipComponent } from './chip.component';
 import { ChipModule } from './chip.module';
-import { Variant } from '../shared/variant.enum';
+import { variants } from '../types/variant';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
@@ -10,8 +10,8 @@ export default {
   component: ChipComponent,
   argTypes: {
     variant: {
-      defaultValue: Variant.DEFAULT,
-      options: Object.values(Variant),
+      defaultValue: 'default',
+      options: variants,
       control: {
         type: 'select',
       },
@@ -74,11 +74,11 @@ const ChipVariantsTemplate: StoryFn<ChipComponent> = (args: ChipComponent) => {
     component: ChipComponent,
     template: `
       <div class="flex gap-1">
-        <ui-chip [variant]="'${Variant.DEFAULT}'" [removable]="true"> Default </ui-chip>
-        <ui-chip [variant]="'${Variant.PRIMARY}'" [removable]="true"> Primary </ui-chip>
-        <ui-chip [variant]="'${Variant.SUCCESS}'" [removable]="true"> Success </ui-chip>
-        <ui-chip [variant]="'${Variant.DANGER}'" [removable]="true"> Danger </ui-chip>
-        <ui-chip [variant]="'${Variant.DANGER}'" [removable]="true" [disabled]="true"> Disabled </ui-chip>
+        <ui-chip variant="default" [removable]="true"> Default </ui-chip>
+        <ui-chip variant="primary" [removable]="true"> Primary </ui-chip>
+        <ui-chip variant="success" [removable]="true"> Success </ui-chip>
+        <ui-chip variant="danger" [removable]="true"> Danger </ui-chip>
+        <ui-chip variant="danger" [removable]="true" [disabled]="true"> Disabled </ui-chip>
       </div>
     `,
     props: {
@@ -135,6 +135,6 @@ const ChipsInputTemplate: StoryFn<ChipComponent> = (args: ChipComponent) => {
 export const ChipWithInput = ChipsInputTemplate.bind({});
 ChipWithInput.args = {
   removable: true,
-  variant: Variant.DEFAULT,
+  variant: 'default',
   disabled: false,
 };

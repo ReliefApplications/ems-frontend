@@ -43,8 +43,7 @@ import { CommonModule } from '@angular/common';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { SafeButtonModule } from '../ui/button/button.module';
-import { TabsModule } from '@oort-front/ui';
+import { ButtonModule, TabsModule } from '@oort-front/ui';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
@@ -83,12 +82,12 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     MatIconModule,
     MatButtonModule,
     TabsModule,
-    SafeButtonModule,
     SafeIconModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
     SpinnerModule,
   ],
 })

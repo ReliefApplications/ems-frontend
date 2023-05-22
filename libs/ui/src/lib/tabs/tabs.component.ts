@@ -10,7 +10,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { Variant } from '../shared/variant.enum';
+import { Variant } from '../types/variant';
 import {
   trigger,
   state,
@@ -58,7 +58,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy {
   /**
    * True if the navigation tab is to be vertical, false otherwise
    */
-  @Input() variant = Variant.DEFAULT;
+  @Input() variant: Variant = 'default';
   /**
    * Output emitted whenever a new tab is clicked, gives the index of the new tab
    */

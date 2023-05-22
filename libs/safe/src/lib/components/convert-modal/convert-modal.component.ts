@@ -25,7 +25,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { SpinnerModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { RadioModule } from '@oort-front/ui';
+import { RadioModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * An interface to define the structure of the data displayed in the modal
@@ -52,6 +52,7 @@ interface DialogData {
     SpinnerModule,
     TranslateModule,
     SafeModalModule,
+    ButtonModule,
     RadioModule,
   ],
   selector: 'safe-convert-modal',
@@ -72,6 +73,7 @@ export class SafeConvertModalComponent
 
   // === LOAD DATA ===
   public loading = true;
+
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.

@@ -6,13 +6,13 @@
           'components.widget.settings.grid.buttons.enable' | translate
         }}</ng-container>
       </ui-toggle>
-      <safe-button
+      <ui-button
         icon="remove_circle_outline"
         variant="danger"
         (click)="emitDeleteButton()"
       >
         {{ 'common.delete' | translate }}
-      </safe-button>
+      </ui-button>
     </div>
     <ng-container *ngIf="formGroup.value.show">
       <!-- Name -->
@@ -162,21 +162,21 @@
                 <input matInput formControlName="value" type="string" />
               </ng-container>
             </mat-form-field>
-            <safe-button
+            <ui-button
               [isIcon]="true"
               icon="remove_circle_outline"
               variant="danger"
               (click)="onDeleteModification(i)"
             >
-            </safe-button>
+            </ui-button>
           </form>
-          <safe-button
+          <ui-button
             [isIcon]="true"
             icon="add_circle_outline"
             variant="primary"
             (click)="onAddModification()"
           >
-          </safe-button>
+          </ui-button>
         </div>
       </div>
 
@@ -356,7 +356,7 @@
                 | translate
             "
           ></safe-icon>
-          <safe-button
+          <ui-button
             matSuffix
             [isIcon]="true"
             icon="add_circle_outline"
@@ -364,7 +364,7 @@
             (click)="$event.stopPropagation(); addDistributionList()"
             [uiTooltip]="'components.distributionLists.edit.new' | translate"
           >
-          </safe-button>
+          </ui-button>
         </mat-form-field>
         <!-- Templates -->
         <mat-form-field appearance="outline">
@@ -390,7 +390,7 @@
                 | translate
             "
           ></safe-icon>
-          <safe-button
+          <ui-button
             matSuffix
             [isIcon]="true"
             icon="add_circle_outline"
@@ -398,7 +398,7 @@
             (click)="$event.stopPropagation(); addEmailTemplate()"
             [uiTooltip]="'components.templates.edit.new' | translate"
           >
-          </safe-button>
+          </ui-button>
           <mat-error
             *ngIf="
               formGroup.get('sendMail')?.value &&
