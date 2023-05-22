@@ -17,7 +17,7 @@
           <ng-container *ngIf="!snackBarContentView?.length">
             <div class="flex-shrink-0 pr-2">
               <ui-icon
-                [variant]="error ? variant.DANGER : variant.SUCCESS"
+                [variant]="error ? 'danger' : 'success'"
                 [size]="21"
                 [icon]="error ? 'close' : 'done'"
               ></ui-icon>

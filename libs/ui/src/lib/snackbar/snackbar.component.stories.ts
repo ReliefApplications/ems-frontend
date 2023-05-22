@@ -7,7 +7,6 @@ import { SNACKBAR_DATA, SnackBarData } from './snackbar.token';
 import { SnackbarService } from './snackbar.service';
 import { IconModule } from '../icon/icon.module';
 import { SpinnerModule } from '../spinner/spinner.module';
-import { Variant } from '../shared/variant.enum';
 import { StorybookTranslateModule } from '../../storybook-translate.module';
 
 /**
@@ -71,13 +70,13 @@ class LaunchSnackbarComponent {
           class="h-6"
           *ngIf="!data.error"
           [icon]="check"
-          [variant]="variant.SUCCESS"
+          variant="success"
         ></ui-icon>
         <ui-icon
           class="h-6"
           *ngIf="data.error"
           [icon]="error"
-          [variant]="variant.DANGER"
+          variant="danger"
         ></ui-icon>
       </ng-container>
       <div></div>
@@ -86,7 +85,6 @@ class LaunchSnackbarComponent {
 })
 class CustomSnackbarComponent {
   data: SnackBarData;
-  variant = Variant;
   /**
    * Snackbar child component
    *

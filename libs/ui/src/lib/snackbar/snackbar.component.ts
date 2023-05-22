@@ -10,7 +10,6 @@ import { SnackBarConfig } from './interfaces/snackbar.interfaces';
 import { ComponentType } from '@angular/cdk/portal';
 import { SnackBarData, SNACKBAR_DATA } from './snackbar.token';
 import { BehaviorSubject } from 'rxjs';
-import { Variant } from '../shared/variant.enum';
 
 /**
  * UI Snackbar component
@@ -28,7 +27,6 @@ export class SnackbarComponent {
   message!: string;
   error = false;
   displaySnackBar = false;
-  variant = Variant;
   durationResolver = (duration: number) =>
     new Promise((resolve) => setTimeout(resolve, duration));
 
