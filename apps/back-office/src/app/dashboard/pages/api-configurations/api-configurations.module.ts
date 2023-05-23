@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiConfigurationsRoutingModule } from './api-configurations-routing.module';
 import { ApiConfigurationsComponent } from './api-configurations.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
@@ -24,6 +22,7 @@ import {
   MenuModule,
   SpinnerModule,
   ChipModule,
+  TableModule,
 } from '@oort-front/ui';
 
 /**
@@ -36,8 +35,6 @@ import {
     ApiConfigurationsRoutingModule,
     SpinnerModule,
     MenuModule,
-    MatTableModule,
-    MatSortModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -53,6 +50,7 @@ import {
     AbilityModule,
     ChipModule,
     ButtonModule,
+    TableModule,
   ],
   exports: [ApiConfigurationsComponent],
 })

@@ -7,9 +7,9 @@ import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/uns
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import { Role } from '../../models/user.model';
 import { SafeApplicationService } from '../../services/application/application.service';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { AddUsersMutationResponse, ADD_USERS } from './graphql/mutations';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Application users component.
@@ -42,7 +42,7 @@ export class SafeApplicationUsersComponent
     private applicationService: SafeApplicationService,
     private apollo: Apollo,
     private translate: TranslateService,
-    private snackBar: SafeSnackBarService
+    private snackBar: SnackbarService
   ) {
     super();
   }

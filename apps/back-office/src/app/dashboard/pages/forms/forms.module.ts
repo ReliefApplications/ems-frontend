@@ -4,7 +4,6 @@ import { FormsRoutingModule } from './forms-routing.module';
 import { FormsComponent } from './forms.component';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SafeSkeletonTableModule, SafeDateModule } from '@oort-front/safe';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
@@ -28,6 +27,7 @@ import {
   IconModule,
   SpinnerModule,
   ChipModule,
+  TableModule,
 } from '@oort-front/ui';
 
 /** Forms page module */
@@ -39,7 +39,6 @@ import {
     AngularFormsModule,
     ReactiveFormsModule,
     SpinnerModule,
-    MatTableModule,
     MatSortModule,
     MatDialogModule,
     MenuModule,
@@ -59,6 +58,7 @@ import {
     FormWrapperModule,
     IconModule,
     ChipModule,
+    TableModule,
   ],
   exports: [FormsComponent],
 })

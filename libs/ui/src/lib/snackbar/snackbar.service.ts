@@ -67,7 +67,6 @@ export class SnackbarService {
   public openSnackBar(message: string, config?: SnackBarConfig): any {
     config = {
       ...DEFAULT_SNACKBAR,
-      action: this.translate.instant('common.dismiss'),
       ...config,
     };
     const snackBar = createComponent(SnackbarComponent, {
@@ -91,7 +90,6 @@ export class SnackbarService {
   ): any {
     config = {
       ...DEFAULT_SNACKBAR,
-      action: this.translate.instant('common.dismiss'),
       ...config,
     };
     const snackBar = createComponent(SnackbarComponent, {
@@ -115,7 +113,6 @@ export class SnackbarService {
   ): any {
     config = {
       ...DEFAULT_SNACKBAR,
-      action: this.translate.instant('common.dismiss'),
       ...config,
     };
     const snackBar = createComponent(SnackbarComponent, {

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationsComponent } from './notifications.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 import {
@@ -9,6 +8,7 @@ import {
   DividerModule,
   ButtonModule,
   ChipModule,
+  TableModule,
 } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
@@ -20,7 +20,6 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
   declarations: [NotificationsComponent],
   imports: [
     CommonModule,
-    MatTableModule,
     MenuModule,
     TranslateModule,
     SafeSkeletonTableModule,
@@ -29,6 +28,7 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
     MatPaginatorModule,
     ChipModule,
     ButtonModule,
+    TableModule,
   ],
   exports: [NotificationsComponent],
 })

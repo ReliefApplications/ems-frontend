@@ -1,7 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import {
   DateTimeProvider,
   OAuthLogger,
@@ -35,7 +34,6 @@ describe('SafeUsersComponent', () => {
       ],
       declarations: [SafeUsersComponent],
       imports: [
-        MatSnackBarModule,
         HttpClientModule,
         MatDialogModule,
         TranslateModule.forRoot({

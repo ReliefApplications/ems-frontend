@@ -7,7 +7,12 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { RoleUsersModule } from '../role-users/role-users.module';
-import { TabsModule, ButtonModule } from '@oort-front/ui';
+import {
+  TabsModule,
+  ButtonModule,
+  TextareaModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * General tab of Role Summary.
@@ -25,7 +30,9 @@ import { TabsModule, ButtonModule } from '@oort-front/ui';
     MatSelectModule,
     RoleUsersModule,
     TabsModule,
+    TextareaModule,
     ButtonModule,
+    FormWrapperModule,
   ],
   exports: [RoleDetailsComponent],
 })

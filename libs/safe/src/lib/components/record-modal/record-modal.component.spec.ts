@@ -13,7 +13,6 @@ import {
   UrlHelperService,
 } from 'angular-oauth2-oidc';
 import { environment } from 'projects/back-office/src/environments/environment';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import {
   ApolloTestingModule,
   ApolloTestingController,
@@ -47,7 +46,6 @@ describe('SafeRecordModalComponent', () => {
       imports: [
         MatDialogModule,
         HttpClientModule,
-        MatSnackBarModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

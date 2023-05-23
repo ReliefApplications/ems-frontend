@@ -6,7 +6,6 @@ import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 
 describe('SafeFormBuilderComponent', () => {
   let component: SafeFormBuilderComponent;
@@ -20,7 +19,7 @@ describe('SafeFormBuilderComponent', () => {
         { provide: 'environment', useValue: environment },
       ],
       declarations: [SafeFormBuilderComponent],
-      imports: [MatDialogModule, MatSnackBarModule],
+      imports: [MatDialogModule],
     }).compileComponents();
   });
 

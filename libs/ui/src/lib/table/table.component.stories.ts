@@ -197,7 +197,7 @@ const columnDefinitionArray = [
 ];
 
 /**
- * Template divider
+ * Template divider for table
  *
  * @param args Table component args
  * @returns TableComponent story
@@ -208,7 +208,7 @@ const Template: StoryFn<any> = (args: any) => {
     template: `
     <!--TABLE CONTENT-->
 <table
-  cdk-table
+  cdk-table 
   uiTableWrapper
   (sortChange)="sortTableByKey($event)"
   [dataSource]="pagedTableData"
@@ -216,28 +216,28 @@ const Template: StoryFn<any> = (args: any) => {
   <ng-container cdkColumnDef="name">
     <th
     uiTableHeaderSort="name"
-      cdk-header-cell
+      uiCellHeader
       *cdkHeaderCellDef
       scope="col"
       
     >
       name
     </th>
-    <td cdk-cell *cdkCellDef="let element">
+    <td uiCell *cdkCellDef="let element">
       {{ element.name }}
     </td>
   </ng-container>
 
   <ng-container cdkColumnDef="email">
     <th
-      cdk-header-cell
+      uiCellHeader
       *cdkHeaderCellDef
       scope="col"
       
     >
       email
     </th>
-    <td cdk-cell *cdkCellDef="let element">
+    <td uiCell *cdkCellDef="let element">
       {{ element.email.value }}
     </td>
   </ng-container>
@@ -245,14 +245,14 @@ const Template: StoryFn<any> = (args: any) => {
   <ng-container cdkColumnDef="phone">
     <th
     uiTableHeaderSort="phone"
-      cdk-header-cell
+      uiCellHeader
       *cdkHeaderCellDef
       scope="col"
       
     >
       phone
     </th>
-    <td cdk-cell *cdkCellDef="let element">
+    <td uiCell *cdkCellDef="let element">
       {{ element.phone.value }}
     </td>
   </ng-container>
@@ -260,28 +260,28 @@ const Template: StoryFn<any> = (args: any) => {
   <ng-container cdkColumnDef="city">
     <th
     uiTableHeaderSort="cityVal"
-      cdk-header-cell
+      uiCellHeader
       *cdkHeaderCellDef
       scope="col"
       
     >
       city
     </th>
-    <td cdk-cell *cdkCellDef="let element">
+    <td uiCell *cdkCellDef="let element">
       {{ element.cityVal }}
     </td>
   </ng-container>
 
   <ng-container cdkColumnDef="active">
     <th
-      cdk-header-cell
+      uiCellHeader
       *cdkHeaderCellDef
       scope="col"
       
     >
       active
     </th>
-    <td cdk-cell *cdkCellDef="let element">
+    <td uiCell *cdkCellDef="let element">
     <div class="flex items-center justify-end gap-x-2 sm:justify-start">
     <div [ngClass]="{'text-rose-400 bg-rose-400/10': !element.isValid, 'text-green-400 bg-green-400/10': element.isValid}" class="flex-none rounded-full p-1">
       <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
@@ -293,28 +293,28 @@ const Template: StoryFn<any> = (args: any) => {
 
   <ng-container cdkColumnDef="selected">
     <th
-      cdk-header-cell
+      uiCellHeader
       *cdkHeaderCellDef
       scope="col"
       
     >
       selected
     </th>
-    <td cdk-cell *cdkCellDef="let element">
+    <td uiCell *cdkCellDef="let element">
       <ui-toggle></ui-toggle>
     </td>
   </ng-container>
 
   <ng-container cdkColumnDef="id">
     <th
-      cdk-header-cell
+      uiCellHeader
       *cdkHeaderCellDef
       scope="col"
       
     >
       id
     </th>
-    <td cdk-cell *cdkCellDef="let element">
+    <td uiCell *cdkCellDef="let element">
       {{ element.id }}
     </td>
   </ng-container>

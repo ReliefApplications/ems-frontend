@@ -4,7 +4,6 @@
 
 // === SERVICES ===
 export * from './lib/services/auth/auth.service';
-export * from './lib/services/snackbar/snackbar.service';
 export * from './lib/services/grid/grid.service';
 export * from './lib/services/application/application.service';
 export * from './lib/services/download/download.service';
@@ -99,7 +98,6 @@ export * from './lib/components/dashboard-filter/public-api';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';
-export * from './lib/components/snackbar-spinner/public-api';
 
 // === UI ===
 export * from './lib/components/ui/alert/public-api';

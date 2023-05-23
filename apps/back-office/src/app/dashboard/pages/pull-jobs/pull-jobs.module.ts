@@ -4,7 +4,6 @@ import { PullJobsRoutingModule } from './pull-jobs-routing.module';
 import { PullJobsComponent } from './pull-jobs.component';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import {
   SafeSkeletonTableModule,
   SafeIconModule,
@@ -18,6 +17,7 @@ import {
   MenuModule,
   ButtonModule,
   ChipModule,
+  TableModule,
 } from '@oort-front/ui';
 
 /** Pull Jobs page module. */
@@ -29,7 +29,6 @@ import {
     MatButtonModule,
     MatIconModule,
     MenuModule,
-    MatTableModule,
     DividerModule,
     MatPaginatorModule,
     TranslateModule,
@@ -39,6 +38,7 @@ import {
     SafeDateModule,
     ChipModule,
     ButtonModule,
+    TableModule,
   ],
 })
 export class PullJobsModule {}

@@ -39,22 +39,21 @@
         <input matInput formControlName="id" type="text" />
       </mat-form-field>
     </div>
-
-    <mat-form-field appearance="outline">
-      <mat-label>
+    <div uiFormFieldDirective>
+      <label>
         {{ 'models.application.description' | translate }}
-      </mat-label>
-      <textarea
-        matInput
+      </label>
+      <ui-textarea
         formControlName="description"
         [placeholder]="
           'components.application.update.placeholder.description' | translate
         "
-        [cdkTextareaAutosize]="true"
-        [cdkAutosizeMinRows]="2"
-        [cdkAutosizeMaxRows]="5"
-      ></textarea>
-    </mat-form-field>
+        [minRows]="2"
+        [maxRows]="5"
+        name="textarea"
+      >
+      </ui-textarea>
+    </div>
   </div>
   <ui-button
     category="secondary"
@@ -73,11 +72,7 @@
   <h1>{{ 'pages.application.settings.actions' | translate }}</h1>
   <div class="flex gap-2 flex-wrap">
     <!-- Styling -->
-    <ui-button
-      category="secondary"
-      variant="primary"
-      (click)="onOpenStyle()"
-    >
+    <ui-button category="secondary" variant="primary" (click)="onOpenStyle()">
       {{ 'components.application.customStyling' | translate }}
     </ui-button>
     <ui-button

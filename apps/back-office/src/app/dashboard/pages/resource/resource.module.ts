@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ResourceRoutingModule } from './resource-routing.module';
 import { ResourceComponent } from './resource.component';
 import { SpinnerModule, MenuModule, TabsModule } from '@oort-front/ui';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeAccessModule, SafeDateModule } from '@oort-front/safe';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
@@ -19,7 +18,6 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     ResourceRoutingModule,
     SpinnerModule,
     TabsModule,
-    MatTableModule,
     MatIconModule,
     MenuModule,
     SafeAccessModule,

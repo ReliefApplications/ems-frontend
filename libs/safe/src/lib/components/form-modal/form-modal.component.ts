@@ -31,7 +31,6 @@ import {
 } from './graphql/mutations';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import addCustomFunctions from '../../utils/custom-functions';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, firstValueFrom, Observable, takeUntil } from 'rxjs';
@@ -43,7 +42,7 @@ import { CommonModule } from '@angular/common';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { ButtonModule, TabsModule } from '@oort-front/ui';
+import { ButtonModule, SnackbarService, TabsModule } from '@oort-front/ui';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
@@ -143,7 +142,7 @@ export class SafeFormModalComponent
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeFormModalComponent>,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
     private formHelpersService: SafeFormHelpersService,
