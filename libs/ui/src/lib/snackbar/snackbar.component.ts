@@ -81,8 +81,15 @@ export class SnackbarComponent {
     this.displaySnackBar = false;
     setTimeout(() => {
       this.host.nativeElement.remove();
-      this.actionComplete.emit();
     }, 300);
+  }
+
+  /**
+   * Trigger the action event for the parent using the snackbar reference
+   */
+  triggerActionEvent() {
+    this.dismiss();
+    this.actionComplete.emit();
   }
 
   /**

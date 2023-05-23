@@ -49,6 +49,7 @@ class LaunchSnackbarComponent implements OnDestroy {
         CustomSnackbarComponent,
         {
           duration: 0,
+          action: 'Reload',
           data: {
             message: 'Processing',
             loading: true,
