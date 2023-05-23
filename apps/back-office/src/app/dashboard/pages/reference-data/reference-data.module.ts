@@ -9,14 +9,16 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyOptionModule as MatOptionModule } from '@angular/material/legacy-core';
-import { SafeButtonModule } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { SafeIconModule } from '@oort-front/safe';
 import { GridModule } from '@progress/kendo-angular-grid';
-import { TooltipModule } from '@oort-front/ui';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
-import { TextareaModule } from '@oort-front/ui';
+import {
+  TooltipModule,
+  ButtonModule as UiButtonModule,
+  TextareaModule,
+} from '@oort-front/ui';
 
 /**
  * Reference Data page module.
@@ -33,7 +35,6 @@ import { TextareaModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatSelectModule,
     MatOptionModule,
-    SafeButtonModule,
     TranslateModule,
     MatChipsModule,
     SafeIconModule,
@@ -42,6 +43,7 @@ import { TextareaModule } from '@oort-front/ui';
     SafeGraphQLSelectModule,
     ButtonModule,
     TextareaModule,
+    UiButtonModule,
   ],
 })
 export class ReferenceDataModule {}

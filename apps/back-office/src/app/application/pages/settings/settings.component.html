@@ -52,14 +52,14 @@
     >
     </ui-textarea>
   </div>
-  <safe-button
+  <ui-button
     category="secondary"
     variant="primary"
     (click)="onSubmit()"
     [disabled]="settingsForm.invalid || !settingsForm.dirty"
   >
     {{ 'common.saveChanges' | translate }}
-  </safe-button>
+  </ui-button>
 </form>
 <!-- Actions -->
 <div
@@ -69,10 +69,14 @@
   <h1>{{ 'pages.application.settings.actions' | translate }}</h1>
   <div class="flex gap-2 flex-wrap">
     <!-- Styling -->
-    <safe-button category="secondary" variant="primary" (click)="onOpenStyle()">
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onOpenStyle()"
+    >
       {{ 'components.application.customStyling' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       icon="file_copy"
       category="tertiary"
       variant="primary"
@@ -80,8 +84,8 @@
       *ngIf="application.canUpdate"
     >
       {{ 'common.duplicate' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       icon="delete"
       category="tertiary"
       variant="danger"
@@ -89,6 +93,6 @@
       *ngIf="application.canDelete"
     >
       {{ 'common.delete' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </div>

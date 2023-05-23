@@ -1,7 +1,4 @@
-<cdk-accordion
-  cdkDropList
-  (cdkDropListDropped)="drop($event)"
->
+<cdk-accordion cdkDropList (cdkDropListDropped)="drop($event)">
   <ui-expansion-panel
     cdkDrag
     *ngFor="let stageForm of pipelineForm.controls; let index = index"
@@ -68,17 +65,17 @@
       </ng-container>
     </ng-container>
     <div class="panel-actions">
-      <safe-button
+      <ui-button
         [isIcon]="true"
         icon="delete"
         variant="danger"
         (click)="deleteStage(index)"
-      ></safe-button>
+      ></ui-button>
     </div>
   </ui-expansion-panel>
 </cdk-accordion>
 <div>
-  <safe-button
+  <ui-button
     icon="add"
     category="primary"
     [uiMenuTriggerFor]="menu"
@@ -86,7 +83,7 @@
     (click)="$event.stopPropagation()"
   >
     {{ 'components.aggregationBuilder.addStage' | translate }}
-  </safe-button>
+  </ui-button>
   <ui-menu #menu>
     <button
       *ngFor="let stage of stageList"

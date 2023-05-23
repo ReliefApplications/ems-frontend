@@ -6,7 +6,7 @@ import {
   forwardRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Variant } from '../shared/variant.enum';
+import { Variant } from '../types/variant';
 
 /** A provider for the ControlValueAccessor interface. */
 const CONTROL_VALUE_ACCESSOR: Provider = {
@@ -29,7 +29,7 @@ export class CheckboxComponent implements ControlValueAccessor {
   @Input() indeterminate = false;
   @Input() ariaLabel = '';
   @Input() name = '';
-  @Input() variant: Variant = Variant.PRIMARY;
+  @Input() variant: Variant = 'primary';
 
   disabled = false;
   valueChange: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -39,9 +39,9 @@ export class CheckboxComponent implements ControlValueAccessor {
   /** @returns shot toggle classes and variant */
   get checkboxClasses(): string[] {
     const classes = [
-      this.variant === Variant.DEFAULT
+      this.variant === 'default'
         ? 'checkbox-primary'
-        : this.variant === Variant.LIGHT
+        : this.variant === 'light'
         ? 'checkbox-grey'
         : 'checkbox-' + this.variant,
     ];

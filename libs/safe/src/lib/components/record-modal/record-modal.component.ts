@@ -38,12 +38,11 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { SpinnerModule } from '@oort-front/ui';
+import { SpinnerModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -67,12 +66,12 @@ interface DialogData {
     MatGridListModule,
     MatIconModule,
     MatButtonModule,
-    SafeButtonModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,
     SafeDateModule,
     SafeModalModule,
+    ButtonModule,
     SpinnerModule,
   ],
   selector: 'safe-record-modal',

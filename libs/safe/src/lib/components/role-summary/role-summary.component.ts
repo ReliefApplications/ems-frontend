@@ -5,7 +5,6 @@ import { Role } from '../../models/user.model';
 import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 import { EditRoleMutationResponse, EDIT_ROLE } from './graphql/mutations';
 import { GetRoleQueryResponse, GET_ROLE } from './graphql/queries';
-import { Size } from '@oort-front/ui';
 
 /**
  * Shared role summary component.
@@ -22,7 +21,6 @@ export class SafeRoleSummaryComponent implements OnInit {
   @Input() application?: Application;
   public role?: Role;
   public loading = true;
-  size = Size;
 
   /**
    * Shared role summary component.

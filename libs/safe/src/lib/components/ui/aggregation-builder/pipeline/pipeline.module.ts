@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafePipelineComponent } from './pipeline.component';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
-import { SafeButtonModule } from '../../button/button.module';
-import { MenuModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { ExpansionPanelModule } from '@oort-front/ui';
 import { SafeGroupStageComponent } from './group-stage/group-stage.component';
@@ -15,7 +13,7 @@ import { SafeAddFieldStageComponent } from './add-field-stage/add-field-stage.co
 import { SafeExpressionsComponent } from './expressions/expressions.component';
 import { SafeFieldDropdownComponent } from './field-dropdown/field-dropdown.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { TooltipModule } from '@oort-front/ui';
+import { MenuModule, TooltipModule, ButtonModule } from '@oort-front/ui';
 import { SafeIconModule } from '../../icon/icon.module';
 import { SafeFilterModule } from '../../../filter/filter.module';
 import { SafeSortStageComponent } from './sort-stage/sort-stage.component';
@@ -36,7 +34,6 @@ import { TextareaModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     SafeQueryBuilderModule,
-    SafeButtonModule,
     MenuModule,
     TranslateModule,
     ExpansionPanelModule,
@@ -50,6 +47,7 @@ import { TextareaModule } from '@oort-front/ui';
     TooltipModule,
     SafeFilterModule,
     TextareaModule,
+    ButtonModule,
   ],
   exports: [
     SafePipelineComponent,

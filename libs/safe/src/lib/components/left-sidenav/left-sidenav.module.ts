@@ -5,10 +5,8 @@ import { SafeLeftSidenavComponent } from './left-sidenav.component';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { TooltipModule } from '@oort-front/ui';
 import { RouterModule } from '@angular/router';
-import { SafeButtonModule } from '../ui/button/button.module';
-import { DividerModule } from '@oort-front/ui';
+import { TooltipModule, DividerModule, ButtonModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -24,9 +22,9 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSidenavModule,
     TooltipModule,
     RouterModule,
-    SafeButtonModule,
     DividerModule,
     TranslateModule,
+    ButtonModule,
   ],
   exports: [SafeLeftSidenavComponent],
 })

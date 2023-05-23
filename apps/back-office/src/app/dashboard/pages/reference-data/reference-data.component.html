@@ -95,7 +95,7 @@
           <div *ngIf="triedToGetFields && !loadingFields">
             {{ 'pages.referenceData.fields.noFields' | translate }}
           </div>
-          <safe-button
+          <ui-button
             *ngIf="!loadingFields"
             category="secondary"
             variant="primary"
@@ -103,32 +103,32 @@
             class="mx-auto my-1"
           >
             {{ 'pages.referenceData.fields.fetch' | translate }}
-          </safe-button>
-          <ui-spinner
-            class="my-2"
-            *ngIf="loadingFields"
-          ></ui-spinner>
+          </ui-button>
+          <ui-spinner class="my-2" *ngIf="loadingFields"></ui-spinner>
         </ng-template>
       </kendo-grid>
     </div>
     <!-- CSV Input for static type -->
     <div *ngIf="type === 'static'" class="flex gap-2">
-      <ui-textarea
-        label="{{ 'pages.referenceData.csv' | translate }}"
-        #csvData
-        [placeholder]="'pages.referenceData.placeholder.csv' | translate"
-        [value]="csvValue"
-        class="flex-auto"
-      >
-      </ui-textarea>
-      <safe-button
+      <mat-form-field appearance="outline" class="flex-auto">
+        <mat-label>{{ 'pages.referenceData.csv' | translate }}</mat-label>
+        <ui-textarea
+          label="{{ 'pages.referenceData.csv' | translate }}"
+          #csvData
+          [placeholder]="'pages.referenceData.placeholder.csv' | translate"
+          [value]="csvValue"
+          class="flex-auto"
+        >
+        </ui-textarea>
+      </mat-form-field>
+      <ui-button
         category="secondary"
         variant="primary"
         (click)="onValidateCSV()"
         class="mt-8"
       >
         {{ 'pages.referenceData.validateCsv' | translate }}
-      </safe-button>
+      </ui-button>
     </div>
     <ui-spinner *ngIf="csvLoading"></ui-spinner>
     <div class="flex gap-x-2">
@@ -195,7 +195,7 @@
     </div>
   </form>
   <!-- Submit button -->
-  <safe-button
+  <ui-button
     class="!w-auto"
     category="secondary"
     variant="primary"
@@ -203,5 +203,5 @@
     [disabled]="referenceForm.invalid || !referenceForm.dirty"
   >
     {{ 'common.save' | translate }}
-  </safe-button>
+  </ui-button>
 </ng-container>

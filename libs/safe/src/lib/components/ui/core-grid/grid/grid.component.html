@@ -996,7 +996,7 @@
   <ng-template kendoGridNoRecordsTemplate>
     {{ statusMessage }}
     <div class="mt-8 flex justify-center">
-      <safe-button
+      <ui-button
         *ngIf="
           !loadingSettings &&
           !loadingRecords &&
@@ -1007,7 +1007,7 @@
         category="secondary"
         (click)="openSettings()"
         >{{ 'components.widget.grid.openSettings' | translate }}
-      </safe-button>
+      </ui-button>
     </div>
   </ng-template>
 </kendo-grid>

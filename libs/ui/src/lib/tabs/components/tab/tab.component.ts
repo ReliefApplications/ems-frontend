@@ -7,7 +7,7 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { Variant } from '../../../shared/variant.enum';
+import { Variant } from '../../../types/variant';
 
 /**
  * UI Tab component
@@ -27,7 +27,7 @@ export class TabComponent {
   @ViewChild('tabContent')
   tabContent!: TemplateRef<any>;
 
-  variant: Variant = Variant.DEFAULT;
+  variant: Variant = 'default';
   vertical = false;
   selected = false;
   index = 0;
@@ -46,10 +46,10 @@ export class TabComponent {
       if (this.selected) {
         classes.push(
           'ui-tab__' +
-            (this.variant === Variant.DEFAULT
-              ? Variant.PRIMARY
-              : this.variant === Variant.LIGHT
-              ? Variant.GREY
+            (this.variant === 'default'
+              ? 'primary'
+              : this.variant === 'light'
+              ? 'grey'
               : this.variant)
         );
       }

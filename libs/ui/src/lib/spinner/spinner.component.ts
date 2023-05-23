@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { Size } from '../shared/size.enum';
-import { Variant } from '../shared/variant.enum';
-import { Category } from '../shared/category.enum';
+import { Size } from '../types/size';
+import { Variant } from '../types/variant';
+import { Category } from '../types/category';
 
 /**
  * UI Spinner component
@@ -12,26 +12,22 @@ import { Category } from '../shared/category.enum';
   styleUrls: ['./spinner.component.scss'],
 })
 export class SpinnerComponent {
-  @Input() size: Size | string = Size.LARGE;
-  @Input() variant: Variant = Variant.DEFAULT;
-  @Input() category: Category = Category.PRIMARY;
-
-  spinnerSize = Size;
-  spinnerVariant = Variant;
-  spinnerCategory = Category;
+  @Input() size: Size = 'large';
+  @Input() variant: Variant = 'default';
+  @Input() category: Category = 'primary';
 
   /** @returns general resolved classes and variant for spinner*/
   get resolveSpinnerClasses(): string[] {
     const classes = [];
     classes.push('spinner-' + this.size);
     classes.push(
-      this.category === Category.SECONDARY || this.variant === Variant.LIGHT
+      this.category === 'secondary' || this.variant === 'light'
         ? 'spinner-light'
-        : this.variant === Variant.DEFAULT || this.variant === Variant.PRIMARY
+        : this.variant === 'default' || this.variant === 'primary'
         ? 'spinner-primary'
-        : this.variant == Variant.DANGER
+        : this.variant == 'danger'
         ? 'spinner-danger'
-        : this.variant === Variant.GREY
+        : this.variant === 'grey'
         ? 'spinner-grey'
         : 'spinner-success'
     );

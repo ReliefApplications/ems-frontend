@@ -21,6 +21,7 @@ export class DistributionListsComponent implements OnInit {
   public displayedColumns = ['name', 'actions'];
 
   public loading = false;
+
   /**
    * Constructor of the distribution lists component
    *

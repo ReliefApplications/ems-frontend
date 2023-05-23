@@ -6,12 +6,10 @@ import {
 } from '@progress/kendo-angular-dateinputs';
 import * as SurveyCreator from 'survey-creator';
 import { EmbeddedViewRef } from '@angular/core';
-import { ButtonCategory } from '../../components/ui/button/button-category.enum';
-import { SafeButtonComponent } from '../../components/ui/button/button.component';
-import { ButtonSize } from '../../components/ui/button/button-size.enum';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Question, QuestionText } from '../types';
 import { SafeIconComponent } from '../../components/ui/icon/icon.component';
+import { ButtonComponent } from '@oort-front/ui';
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 
@@ -217,15 +215,14 @@ export const init = (Survey: any, domService: DomService): void => {
         if (parentElement) {
           // Generate the dynamic component with its parameters
           const button = domService.appendComponentToBody(
-            SafeButtonComponent,
+            ButtonComponent,
             parentElement
           );
-          const instance: SafeButtonComponent = button.instance;
+          const instance: ButtonComponent = button.instance;
           instance.isIcon = true;
           instance.icon = 'open_in_new';
-          instance.size = ButtonSize.SMALL;
-          instance.category = ButtonCategory.TERTIARY;
-          instance.variant = 'default';
+          instance.size = 'small';
+          instance.category = 'tertiary';
           // we override the css of the component
           const domElem = (button.hostView as EmbeddedViewRef<any>)
             .rootNodes[0] as HTMLElement;

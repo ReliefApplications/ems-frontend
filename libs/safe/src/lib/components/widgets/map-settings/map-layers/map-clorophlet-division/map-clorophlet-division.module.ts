@@ -8,6 +8,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeFilterModule } from '../../../../filter/filter.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Single Division of clorophlet configuration module.
@@ -24,6 +25,7 @@ import { SafeFilterModule } from '../../../../filter/filter.module';
     MatInputModule,
     MatButtonModule,
     SafeFilterModule,
+    ButtonModule,
   ],
   exports: [MapClorophletDivisionComponent],
 })

@@ -7,7 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../modal/modal.module';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { TextareaModule } from '@oort-front/ui';
+import { ButtonModule, TextareaModule } from '@oort-front/ui';
 
 /** Module for expanded comment component */
 @NgModule({
@@ -22,6 +22,7 @@ import { TextareaModule } from '@oort-front/ui';
     MatInputModule,
     MatFormFieldModule,
     TextareaModule,
+    ButtonModule,
   ],
   exports: [SafeExpandedCommentComponent],
 })
