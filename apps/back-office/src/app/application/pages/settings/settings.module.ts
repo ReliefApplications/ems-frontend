@@ -7,7 +7,11 @@ import { SettingsRoutingModule } from './settings-routing.module';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  TextareaModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * Application settings module.
@@ -23,7 +27,9 @@ import { ButtonModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatSelectModule,
     TranslateModule,
+    TextareaModule,
     ButtonModule,
+    FormWrapperModule,
   ],
 })
 export class SettingsModule {}

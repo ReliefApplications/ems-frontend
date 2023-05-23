@@ -21,7 +21,6 @@ import {
   SafeRecordHistoryComponent,
   SafeLayoutService,
   SafeConfirmService,
-  SafeSnackBarService,
   SafeBreadcrumbService,
   SafeUnsubscribeComponent,
   SafeDownloadService,
@@ -32,6 +31,7 @@ import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '@oort-front/safe';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -96,7 +96,7 @@ export class FormRecordsComponent
     private downloadService: SafeDownloadService,
     private layoutService: SafeLayoutService,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
     private breadcrumbService: SafeBreadcrumbService,
     private confirmService: SafeConfirmService

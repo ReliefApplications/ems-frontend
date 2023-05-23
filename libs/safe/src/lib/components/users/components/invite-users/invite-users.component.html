@@ -78,14 +78,15 @@
             </ng-template>
             <ng-template kendoGridEditTemplate>
               <ng-container *ngIf="positionAttributes">
-                <textarea
-                  rows="2"
+                <ui-textarea
                   [formControl]="
                     $any(positionAttributes.at(index).get('value'))
                   "
+                  [minRows]="2"
+                  [maxRows]="2"
                   kendoGridFocusable
-                  class="k-textbox"
-                ></textarea>
+                >
+                </ui-textarea>
               </ng-container>
             </ng-template>
           </kendo-grid-column>

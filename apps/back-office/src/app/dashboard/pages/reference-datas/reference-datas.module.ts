@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceDatasRoutingModule } from './reference-datas-routing.module';
 import { ReferenceDatasComponent } from './reference-datas.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -27,6 +26,7 @@ import {
   ButtonModule,
   FormWrapperModule,
   IconModule,
+  TableModule,
 } from '@oort-front/ui';
 
 /**
@@ -38,8 +38,6 @@ import {
     CommonModule,
     MenuModule,
     ReferenceDatasRoutingModule,
-
-    MatTableModule,
     MatSortModule,
     MatFormFieldModule,
     MatInputModule,
@@ -57,6 +55,7 @@ import {
     ButtonModule,
     FormWrapperModule,
     IconModule,
+    TableModule,
   ],
   exports: [ReferenceDatasComponent],
 })

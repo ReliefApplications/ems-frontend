@@ -40,7 +40,8 @@ export class FormWrapperDirective
 
   private currentInputElement!: HTMLInputElement;
   private currentLabelElement!: HTMLLabelElement;
-  private currentSelectElement!: HTMLLabelElement;
+  private currentSelectElement!: any;
+  private currentTextareaElement!: any;
   private beyondLabelContainer!: HTMLDivElement;
 
   // === LISTS OF CLASSES TO APPLY TO ELEMENTS ===
@@ -82,18 +83,12 @@ export class FormWrapperDirective
     'sm:leading-6',
   ] as const;
 
-  private selectClassesNoOutline = [
-    'block',
-    'w-full',
-    'py-1.5',
-    'pr-1',
-  ] as const;
+  private selectClassesNoOutline = ['block', 'w-full', 'pr-1'] as const;
 
   private selectClassesOutline = [
     'block',
     'w-full',
     'border-0',
-    'py-1.5',
     'pr-1',
     'bg-gray-50',
   ] as const;
@@ -128,7 +123,6 @@ export class FormWrapperDirective
     'focus-within:border-b-2',
     'focus-within:border-b-primary-600',
   ] as const;
-  private destroy$ = new Subject<void>();
 
   private selectButtonRemove = [
     'ring-1',
@@ -138,6 +132,19 @@ export class FormWrapperDirective
     'focus:ring-primary-600',
     'shadow-sm',
   ] as const;
+
+  private textareaRemove = [
+    'rounded-md',
+    'shadow-sm',
+    'ring-1',
+    'ring-inset',
+    'ring-gray-300',
+    'focus:ring-2',
+    'focus:ring-inset',
+    'focus:ring-primary-600',
+  ];
+
+  private destroy$ = new Subject<void>();
 
   /**
    * Constructor including a ref to the element on which the directive is applied
@@ -267,6 +274,9 @@ export class FormWrapperDirective
     this.currentSelectElement =
       this.elementRef.nativeElement.querySelector('ui-select-menu');
 
+    this.currentTextareaElement =
+      this.elementRef.nativeElement.querySelector('ui-textarea');
+
     // Do the same with selectMenu
     if (this.currentSelectElement !== null) {
       //Get select-menu button in order to remove styling elements
@@ -306,6 +316,32 @@ export class FormWrapperDirective
         'relative'
       );
       this.renderer.addClass(this.elementRef.nativeElement, 'relative');
+    }
+
+    if (this.currentTextareaElement !== null) {
+      const textareaElement =
+        this.currentTextareaElement.querySelector('textarea');
+      this.renderer.addClass(textareaElement, 'bg-transparent');
+
+      for (const cl of this.textareaRemove) {
+        this.renderer.removeClass(textareaElement, cl);
+      }
+      // Add related classes to input element
+      if (!this.outline) {
+        for (const cl of this.inputClassesNoOutline) {
+          this.renderer.addClass(this.currentTextareaElement, cl);
+        }
+      } else {
+        for (const cl of this.inputClassesOutline) {
+          this.renderer.addClass(this.currentTextareaElement, cl);
+        }
+      }
+      this.renderer.addClass(this.elementRef.nativeElement, 'pb-4');
+      // Then add the input to our beyondLabel wrapper element
+      this.renderer.appendChild(
+        this.beyondLabelContainer,
+        this.currentTextareaElement
+      );
     }
   }
 }
