@@ -4,7 +4,6 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import {
   TranslateModule,
   TranslateService,
@@ -28,7 +27,6 @@ describe('AddAggregationModalComponent', () => {
       declarations: [AddAggregationModalComponent],
       imports: [
         DialogCdkModule,
-        MatSnackBarModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

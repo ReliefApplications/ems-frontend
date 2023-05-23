@@ -5,7 +5,6 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import {
   Application,
   SafeApplicationService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
   SafeConfirmService,
 } from '@oort-front/safe';
@@ -15,7 +14,7 @@ import { Apollo } from 'apollo-angular';
 import { UploadApplicationStyleMutationResponse } from './graphql/mutations';
 import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, SnackbarService } from '@oort-front/ui';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -62,7 +61,7 @@ export class CustomStyleComponent
    */
   constructor(
     private applicationService: SafeApplicationService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private apollo: Apollo,
     private translate: TranslateService,
     private confirmService: SafeConfirmService

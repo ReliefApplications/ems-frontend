@@ -12,13 +12,13 @@ import {
   FETCH_GROUPS,
 } from '../../graphql/mutations';
 import { GetGroupsQueryResponse, GET_GROUPS } from '../../graphql/queries';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { SafeSnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 import get from 'lodash/get';
 import { SafeRestService } from '../../../../services/rest/rest.service';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * This component is used to display the groups tab in the platform
@@ -54,7 +54,7 @@ export class SafeGroupListComponent
   constructor(
     private apollo: Apollo,
     public dialog: Dialog,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private restService: SafeRestService
@@ -191,23 +191,21 @@ export class SafeGroupListComponent
         next: ({ data, loading }) => {
           if (data) this.groups.data = data.fetchGroups || [];
           this.loadingFetch = loading;
-          snackBarRef.instance.data = {
-            message: this.translate.instant(
-              'common.notifications.groups.ready'
-            ),
-            loading: false,
-          };
-          setTimeout(() => snackBarRef.dismiss(), 1000);
+          snackBarRef.instance.message = this.translate.instant(
+            'common.notifications.groups.ready'
+          );
+          snackBarRef.instance.loading = false;
+
+          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
         },
         error: () => {
-          snackBarRef.instance.data = {
-            message: this.translate.instant(
-              'common.notifications.groups.error'
-            ),
-            loading: false,
-            error: true,
-          };
-          setTimeout(() => snackBarRef.dismiss(), 1000);
+          snackBarRef.instance.message = this.translate.instant(
+            'common.notifications.groups.error'
+          );
+          snackBarRef.instance.loading = false;
+          snackBarRef.instance.error = true;
+
+          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
         },
       });
   }

@@ -6,7 +6,6 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import { SafeIconModule, SafeGraphQLSelectModule } from '@oort-front/safe';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
@@ -18,6 +17,7 @@ import {
   ButtonModule,
   DividerModule,
   SpinnerModule,
+  TableModule,
 } from '@oort-front/ui';
 
 /**
@@ -37,7 +37,6 @@ import {
     MatSelectModule,
     SpinnerModule,
     MenuModule,
-    MatTableModule,
     MatAutocompleteModule,
     DividerModule,
     SafeIconModule,
@@ -45,6 +44,7 @@ import {
     SafeGraphQLSelectModule,
     DialogModule,
     ButtonModule,
+    TableModule,
   ],
 })
 export class SubscriptionsModule {}

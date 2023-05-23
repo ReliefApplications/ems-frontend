@@ -1,17 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import {
-  Form,
-  Resource,
-  SafeConfirmService,
-  SafeSnackBarService,
-} from '@oort-front/safe';
+import { Form, Resource, SafeConfirmService } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { DeleteFormMutationResponse, DELETE_FORM } from './graphql/mutations';
 import get from 'lodash/get';
 import { GetResourceByIdQueryResponse } from '../graphql/queries';
 import { GET_RESOURCE_FORMS } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  *Forms tab of resource page
@@ -46,7 +42,7 @@ export class FormsTabComponent implements OnInit {
    */
   constructor(
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private dialog: Dialog

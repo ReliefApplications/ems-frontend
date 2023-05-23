@@ -1,6 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeGridWidgetComponent } from './grid.component';
@@ -43,7 +42,6 @@ describe('SafeGridWidgetComponent', () => {
       declarations: [SafeGridWidgetComponent],
       imports: [
         DialogCdkModule,
-        MatSnackBarModule,
         RouterTestingModule,
         HttpClientModule,
         TranslateModule.forRoot({

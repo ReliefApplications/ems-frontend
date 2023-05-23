@@ -4,10 +4,10 @@ import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Application } from '../../models/application.model';
 import { SafeApplicationService } from '../../services/application/application.service';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Toolbar component visible when editing application.
@@ -48,7 +48,7 @@ export class SafeApplicationToolbarComponent
     private applicationService: SafeApplicationService,
     private router: Router,
     public dialog: Dialog,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {

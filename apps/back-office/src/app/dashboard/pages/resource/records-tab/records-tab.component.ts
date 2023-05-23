@@ -5,7 +5,6 @@ import {
   Record,
   Form,
   SafeConfirmService,
-  SafeSnackBarService,
   Resource,
   SafeDownloadService,
 } from '@oort-front/safe';
@@ -25,6 +24,7 @@ import {
   GetResourceRecordsQueryResponse,
   GET_RESOURCE_RECORDS,
 } from './graphql/queries';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Quantity of resource that will be loaded at once. */
 const ITEMS_PER_PAGE = 10;
@@ -77,7 +77,7 @@ export class RecordsTabComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private translate: TranslateService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private downloadService: SafeDownloadService
   ) {}

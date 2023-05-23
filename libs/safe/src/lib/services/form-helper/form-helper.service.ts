@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as Survey from 'survey-angular';
 import { Apollo } from 'apollo-angular';
-import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../confirm/confirm.service';
 import { firstValueFrom } from 'rxjs';
@@ -10,6 +9,7 @@ import {
   UploadFileMutationResponse,
 } from '../../components/form/graphql/mutations';
 import { DialogRef } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Shared survey helper service.
@@ -28,7 +28,7 @@ export class SafeFormHelpersService {
    */
   constructor(
     public apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {}

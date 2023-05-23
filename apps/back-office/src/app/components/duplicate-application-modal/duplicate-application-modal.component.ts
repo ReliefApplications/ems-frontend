@@ -9,7 +9,7 @@ import {
   DuplicateApplicationMutationResponse,
   DUPLICATE_APPLICATION,
 } from './graphql/mutations';
-import { Application, SafeSnackBarService } from '@oort-front/safe';
+import { Application } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,7 +19,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, SnackbarService } from '@oort-front/ui';
 
 /**
  * Duplicate application component (modal)
@@ -56,7 +56,7 @@ export class DuplicateApplicationModalComponent implements OnInit {
    * @param data Injected dialog data
    */
   constructor(
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     public dialogRef: DialogRef<DuplicateApplicationModalComponent>,

@@ -53,15 +53,15 @@
         ></safe-field-dropdown>
       </ng-container>
       <ng-container *ngSwitchCase="stageType.CUSTOM">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.input.rawJson' | translate }}</mat-label>
-          <textarea
-            matInput
+        <div uiFormFieldDirective>
+          <label>{{ 'common.input.rawJson' | translate }}</label>
+          <ui-textarea
             [formControl]="$any(stageForm).controls.form.controls.raw"
-            [cdkTextareaAutosize]="true"
-            [cdkAutosizeMinRows]="5"
-          ></textarea>
-        </mat-form-field>
+            [minRows]="4"
+            [maxRows]="20"
+          >
+          </ui-textarea>
+        </div>
       </ng-container>
     </ng-container>
     <div class="panel-actions">

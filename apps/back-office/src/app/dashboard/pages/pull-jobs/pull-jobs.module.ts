@@ -4,7 +4,6 @@ import { PullJobsRoutingModule } from './pull-jobs-routing.module';
 import { PullJobsComponent } from './pull-jobs.component';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import {
   SafeSkeletonTableModule,
   SafeIconModule,
@@ -14,7 +13,12 @@ import {
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { DividerModule, MenuModule, ButtonModule } from '@oort-front/ui';
+import {
+  DividerModule,
+  MenuModule,
+  ButtonModule,
+  TableModule,
+} from '@oort-front/ui';
 
 /** Pull Jobs page module. */
 @NgModule({
@@ -25,7 +29,6 @@ import { DividerModule, MenuModule, ButtonModule } from '@oort-front/ui';
     MatButtonModule,
     MatIconModule,
     MenuModule,
-    MatTableModule,
     DividerModule,
     MatPaginatorModule,
     TranslateModule,
@@ -35,6 +38,7 @@ import { DividerModule, MenuModule, ButtonModule } from '@oort-front/ui';
     SafeCronParserModule,
     SafeDateModule,
     ButtonModule,
+    TableModule,
   ],
 })
 export class PullJobsModule {}

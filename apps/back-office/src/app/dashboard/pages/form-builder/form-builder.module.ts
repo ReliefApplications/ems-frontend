@@ -10,9 +10,9 @@ import {
 } from '@oort-front/safe';
 import { SpinnerModule } from '@oort-front/ui';
 import { HistoryComponent } from './components/history/history.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TranslateModule } from '@ngx-translate/core';
+import { TableModule } from '@oort-front/ui';
 
 /**
  * Form builder module.
@@ -23,13 +23,13 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     FormBuilderRoutingModule,
     SpinnerModule,
-    MatTableModule,
     MatButtonToggleModule,
     SafeFormBuilderModule,
     SafeAccessModule,
     TranslateModule,
     SafeDateModule,
     SafeEditableTextModule,
+    TableModule,
   ],
   exports: [FormBuilderComponent],
 })

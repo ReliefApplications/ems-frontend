@@ -50,11 +50,7 @@ import { get, intersection } from 'lodash';
 import { applyLayoutFormat } from '../../../widgets/summary-card/parser/utils';
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
-import {
-  MatLegacySnackBarRef as MatSnackBarRef,
-  LegacyTextOnlySnackBar as TextOnlySnackBar,
-} from '@angular/material/legacy-snack-bar';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Factory for creating scroll strategy
@@ -220,7 +216,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() columnChange = new EventEmitter();
 
   // === SNACKBAR ===
-  private snackBarRef: MatSnackBarRef<TextOnlySnackBar> | undefined;
+  private snackBarRef!: any;
 
   /**
    * Constructor of the grid component
@@ -242,7 +238,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     private downloadService: SafeDownloadService,
     private dashboardService: SafeDashboardService,
     private translate: TranslateService,
-    private snackBar: SafeSnackBarService
+    private snackBar: SnackbarService
   ) {
     this.environment = environment.module || 'frontoffice';
   }
@@ -793,7 +789,9 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   public getStatusMessage(): string {
     if (this.status.error) {
       if (this.status.message && this.environment === 'backoffice') {
-        if (this.snackBarRef) this.snackBarRef.dismiss();
+        if (this.snackBarRef) {
+          this.snackBarRef.instance.dismiss();
+        }
         this.snackBarRef = this.snackBar.openSnackBar(this.status.message, {
           error: true,
         });

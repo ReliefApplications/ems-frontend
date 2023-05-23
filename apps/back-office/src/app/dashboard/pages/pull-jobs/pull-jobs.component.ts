@@ -4,7 +4,6 @@ import {
   Channel,
   PullJob,
   SafeConfirmService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -25,6 +24,7 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { takeUntil } from 'rxjs';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Limit of pull jobs shown at once.
@@ -80,7 +80,7 @@ export class PullJobsComponent
   constructor(
     public dialog: Dialog,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {

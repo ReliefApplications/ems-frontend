@@ -6,7 +6,6 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { environment } from 'projects/back-office/src/environments/environment';
 import {
   TranslateModule,
@@ -38,7 +37,6 @@ describe('SafeInviteUsersComponent', () => {
       declarations: [SafeInviteUsersComponent],
       imports: [
         HttpClientModule,
-        MatSnackBarModule,
         DialogCdkModule,
         TranslateModule.forRoot({
           loader: {

@@ -5,7 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   Workflow,
   Step,
-  SafeSnackBarService,
   SafeConfirmService,
   ContentType,
   SafeApplicationService,
@@ -25,6 +24,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Application workflow page component.
@@ -80,7 +80,7 @@ export class WorkflowComponent
     private route: ActivatedRoute,
     private router: Router,
     public dialog: Dialog,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService

@@ -10,8 +10,8 @@ import {
   MenuModule,
   DividerModule,
   ButtonModule,
+  TableModule,
 } from '@oort-front/ui';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
@@ -32,12 +32,12 @@ import { TranslateModule } from '@ngx-translate/core';
     MatInputModule,
     SpinnerModule,
     MenuModule,
-    MatTableModule,
     MatSelectModule,
     DividerModule,
     MatButtonModule,
     TranslateModule,
     ButtonModule,
+    TableModule,
   ],
 })
 export class ChannelsModule {}

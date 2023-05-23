@@ -20,7 +20,6 @@ import {
 } from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
@@ -30,6 +29,7 @@ import { SafeRecordHistoryComponent } from '../record-history/record-history.com
 import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * This component is used to display forms
@@ -92,7 +92,7 @@ export class SafeFormComponent
   constructor(
     public dialog: Dialog,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private formBuilderService: SafeFormBuilderService,

@@ -2,10 +2,10 @@ import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
+import { TableModule } from '@oort-front/ui';
 
 /** Model for the dialog data */
 interface DialogData {
@@ -23,9 +23,9 @@ interface DialogData {
     CommonModule,
     MatButtonModule,
     TranslateModule,
-    MatTableModule,
     DialogModule,
     ButtonModule,
+    TableModule,
   ],
   selector: 'safe-errors-modal',
   templateUrl: './errors-modal.component.html',

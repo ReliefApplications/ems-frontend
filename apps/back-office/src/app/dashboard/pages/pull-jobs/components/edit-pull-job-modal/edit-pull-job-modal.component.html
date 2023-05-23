@@ -169,16 +169,15 @@
               </ui-button>
             </div>
             <ng-container *ngIf="openRawJSON">
-              <mat-form-field appearance="outline">
-                <mat-label>{{ 'common.input.rawJson' | translate }}</mat-label>
-                <textarea
-                  matInput
+              <div uiFormFieldDirective>
+                <label>{{ 'common.input.rawJson' | translate }}</label>
+                <ui-textarea
                   formControlName="rawMapping"
                   placeholder="Please enter a JSON for the data mapping between the API and the Form."
-                  [cdkTextareaAutosize]="true"
-                  [cdkAutosizeMinRows]="2"
-                ></textarea>
-              </mat-form-field>
+                  [minRows]="2"
+                >
+                </ui-textarea>
+              </div>
             </ng-container>
             <ng-container *ngIf="!openRawJSON">
               <div class="flex flex-col gap-2 overflow-x-auto">

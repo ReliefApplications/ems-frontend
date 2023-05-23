@@ -1,8 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { SafeSnackBarService } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Component to display current url and copy it. */
 @Component({
@@ -22,7 +22,7 @@ export class ShareUrlComponent {
    * @param translate Angular translate service
    */
   constructor(
-    public snackBar: SafeSnackBarService,
+    public snackBar: SnackbarService,
     private clipboard: Clipboard,
     public dialogRef: DialogRef<ShareUrlComponent>,
     @Inject(DIALOG_DATA)

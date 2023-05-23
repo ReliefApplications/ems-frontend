@@ -6,7 +6,6 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 
 describe('SafeFormBuilderComponent', () => {
   let component: SafeFormBuilderComponent;
@@ -20,7 +19,7 @@ describe('SafeFormBuilderComponent', () => {
         { provide: 'environment', useValue: environment },
       ],
       declarations: [SafeFormBuilderComponent],
-      imports: [DialogCdkModule, MatSnackBarModule],
+      imports: [DialogCdkModule],
     }).compileComponents();
   });
 

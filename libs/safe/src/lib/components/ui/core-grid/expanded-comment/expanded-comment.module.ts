@@ -5,8 +5,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { DialogModule } from '@oort-front/ui';
-import { ButtonModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  TextareaModule,
+  FormWrapperModule,
+  DialogModule,
+} from '@oort-front/ui';
 
 /** Module for expanded comment component */
 @NgModule({
@@ -19,7 +23,9 @@ import { ButtonModule } from '@oort-front/ui';
     TranslateModule,
     MatInputModule,
     MatFormFieldModule,
+    TextareaModule,
     ButtonModule,
+    FormWrapperModule,
   ],
   exports: [SafeExpandedCommentComponent],
 })

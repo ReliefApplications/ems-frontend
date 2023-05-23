@@ -6,7 +6,6 @@ import {
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
 import { SafeFormComponent } from './form.component';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { HttpClientModule } from '@angular/common/http';
 import {
   DateTimeProvider,
@@ -46,7 +45,6 @@ describe('SafeFormComponent', () => {
       declarations: [SafeFormComponent],
       imports: [
         DialogCdkModule,
-        MatSnackBarModule,
         HttpClientModule,
         RouterTestingModule,
         TranslateModule.forRoot({

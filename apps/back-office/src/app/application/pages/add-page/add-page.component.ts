@@ -10,7 +10,6 @@ import {
   CONTENT_TYPES,
   Form,
   SafeApplicationService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
@@ -23,6 +22,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { SnackbarService } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 
 /**
@@ -76,7 +76,7 @@ export class AddPageComponent
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
     public dialog: Dialog,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
     super();

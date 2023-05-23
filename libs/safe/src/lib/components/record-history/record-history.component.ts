@@ -13,7 +13,6 @@ import { SafeDownloadService } from '../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { Apollo } from 'apollo-angular';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import {
   GetRecordByIdQueryResponse,
   GetRecordHistoryByIdResponse,
@@ -25,6 +24,7 @@ import { Version } from '../../models/form.model';
 import { Subject } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -107,7 +107,7 @@ export class SafeRecordHistoryComponent
     private translate: TranslateService,
     private dateFormat: SafeDateTranslateService,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService
+    private snackBar: SnackbarService
   ) {
     super();
   }

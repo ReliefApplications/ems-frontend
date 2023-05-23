@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Resource, SafeSnackBarService } from '@oort-front/safe';
+import { Resource } from '@oort-front/safe';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
 import {
@@ -8,6 +8,7 @@ import {
   CalculatedFieldUpdateMutationResponse,
 } from './graphql/mutations';
 import { Dialog } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Calculated fields tab of resource page
@@ -35,7 +36,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
     private apollo: Apollo,
     private dialog: Dialog,
     private translate: TranslateService,
-    private snackBar: SafeSnackBarService
+    private snackBar: SnackbarService
   ) {}
 
   ngOnInit(): void {

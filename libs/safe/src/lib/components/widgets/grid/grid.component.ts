@@ -28,7 +28,6 @@ import {
   EventEmitter,
   Inject,
 } from '@angular/core';
-import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
 import { SafeWorkflowService } from '../../../services/workflow/workflow.service';
 import { SafeAuthService } from '../../../services/auth/auth.service';
 import { SafeEmailService } from '../../../services/email/email.service';
@@ -45,6 +44,7 @@ import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { firstValueFrom } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Component for the grid widget */
 @Component({
@@ -122,13 +122,12 @@ export class SafeGridWidgetComponent implements OnInit {
    * @param applicationService The safe application service
    * @param translate Angular translate service
    * @param aggregationService Shared aggregation service
-   * @param snackbarService Shared snackbar service
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: Dialog,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private workflowService: SafeWorkflowService,
     private safeAuthService: SafeAuthService,
     private emailService: SafeEmailService,
@@ -137,8 +136,7 @@ export class SafeGridWidgetComponent implements OnInit {
     private confirmService: SafeConfirmService,
     private applicationService: SafeApplicationService,
     private translate: TranslateService,
-    private aggregationService: SafeAggregationService,
-    private snackbarService: SafeSnackBarService
+    private aggregationService: SafeAggregationService
   ) {
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
@@ -341,7 +339,7 @@ export class SafeGridWidgetComponent implements OnInit {
         ) || [];
       if (templates.length === 0) {
         // no template found, skip
-        this.snackbarService.openSnackBar(
+        this.snackBar.openSnackBar(
           this.translate.instant(
             'common.notifications.email.errors.noTemplate'
           ),
@@ -355,7 +353,7 @@ export class SafeGridWidgetComponent implements OnInit {
           )?.emails || [];
         if (recipients.length === 0) {
           // no recipient found, skip
-          this.snackbarService.openSnackBar(
+          this.snackBar.openSnackBar(
             this.translate.instant(
               'common.notifications.email.errors.noDistributionList'
             ),

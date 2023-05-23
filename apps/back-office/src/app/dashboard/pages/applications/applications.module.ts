@@ -7,7 +7,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import {
   SafeAccessModule,
   SafeApplicationsSummaryModule,
@@ -33,6 +32,7 @@ import {
   SpinnerModule,
   FormWrapperModule,
   IconModule,
+  TableModule,
 } from '@oort-front/ui';
 
 /**
@@ -49,7 +49,6 @@ import {
     MatInputModule,
     MatSelectModule,
     SpinnerModule,
-    MatTableModule,
     MatSortModule,
     MenuModule,
     MatIconModule,
@@ -70,6 +69,7 @@ import {
     ButtonModule,
     FormWrapperModule,
     IconModule,
+    TableModule,
   ],
   exports: [ApplicationsComponent],
 })

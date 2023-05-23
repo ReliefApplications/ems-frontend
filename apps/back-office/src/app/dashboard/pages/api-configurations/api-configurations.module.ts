@@ -2,9 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiConfigurationsRoutingModule } from './api-configurations-routing.module';
 import { ApiConfigurationsComponent } from './api-configurations.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
@@ -19,8 +17,13 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
-import { DialogModule } from '@oort-front/ui';
-import { ButtonModule, MenuModule, SpinnerModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  MenuModule,
+  SpinnerModule,
+  TableModule,
+  DialogModule,
+} from '@oort-front/ui';
 
 /**
  * API configurations page module.
@@ -32,9 +35,7 @@ import { ButtonModule, MenuModule, SpinnerModule } from '@oort-front/ui';
     ApiConfigurationsRoutingModule,
     SpinnerModule,
     MenuModule,
-    MatTableModule,
     MatChipsModule,
-    MatSortModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -48,6 +49,7 @@ import { ButtonModule, MenuModule, SpinnerModule } from '@oort-front/ui';
     SafeSkeletonTableModule,
     AbilityModule,
     ButtonModule,
+    TableModule,
   ],
   exports: [ApiConfigurationsComponent],
 })

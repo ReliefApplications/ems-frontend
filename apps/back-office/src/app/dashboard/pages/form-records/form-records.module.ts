@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormRecordsRoutingModule } from './form-records-routing.module';
 import { FormRecordsComponent } from './form-records.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatIconModule } from '@angular/material/icon';
 import {
   SafeRecordHistoryModule,
@@ -17,6 +16,7 @@ import {
   TooltipModule,
   MenuModule,
   ButtonModule,
+  TableModule,
 } from '@oort-front/ui';
 
 /** Forms records page module */
@@ -25,7 +25,6 @@ import {
   imports: [
     CommonModule,
     FormRecordsRoutingModule,
-    MatTableModule,
     MatIconModule,
     MenuModule,
     SafeRecordHistoryModule,
@@ -37,6 +36,7 @@ import {
     UploadMenuModule,
     SafeSkeletonTableModule,
     ButtonModule,
+    TableModule,
   ],
   exports: [FormRecordsComponent],
 })

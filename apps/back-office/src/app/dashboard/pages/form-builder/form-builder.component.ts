@@ -15,7 +15,6 @@ import {
 import { Dialog } from '@angular/cdk/dialog';
 import {
   SafeAuthService,
-  SafeSnackBarService,
   Form,
   SafeConfirmService,
   SafeBreadcrumbService,
@@ -23,6 +22,7 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Form builder page
@@ -82,7 +82,7 @@ export class FormBuilderComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     public dialog: Dialog,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,

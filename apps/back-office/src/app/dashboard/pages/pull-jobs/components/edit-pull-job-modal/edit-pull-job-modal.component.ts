@@ -51,6 +51,8 @@ import {
   TooltipModule,
   ButtonModule,
   ExpansionPanelModule,
+  TextareaModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 
@@ -79,7 +81,9 @@ const DEFAULT_FIELDS = ['createdBy'];
     MatChipsModule,
     CronExpressionControlModule,
     SafeIconModule,
+    TextareaModule,
     ButtonModule,
+    FormWrapperModule,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',

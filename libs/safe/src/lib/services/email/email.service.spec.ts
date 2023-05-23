@@ -1,7 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { environment } from 'projects/back-office/src/environments/environment';
 import {
   TranslateModule,
@@ -23,7 +22,6 @@ describe('SafeEmailService', () => {
       ],
       imports: [
         HttpClientModule,
-        MatSnackBarModule,
         DialogCdkModule,
         TranslateModule.forRoot({
           loader: {

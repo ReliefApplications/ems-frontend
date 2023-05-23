@@ -67,7 +67,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,
+      // A700: #ffffff
     ),
 );
 
@@ -124,16 +124,6 @@ $safe-theme: mat.define-light-theme(
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
-
-  .snack-error {
-    background-color: mat.get-color-from-palette($warn);
-    color: white;
-    white-space: pre-wrap;
-
-    .mat-simple-snackbar-action {
-      color: white;
-    }
-  }
 
   .active-link {
     .nav-icon {
@@ -259,7 +249,6 @@ $safe-theme: mat.define-light-theme(
   }
 }
 
-
 // === CHECKBOX ===
 @mixin checkbox($theme) {
   ui-checkbox {
@@ -313,30 +302,6 @@ $safe-theme: mat.define-light-theme(
   }
 }
 
-// === GLOBAL STYLES ==
-.mat-table {
-  font-size: 14px;
-  opacity: 0.87;
-  border-radius: 4px;
-  width: 100%;
-  th,
-  td {
-    padding: 0 4px !important;
-    &:first-of-type {
-      padding-left: 24px !important;
-      &:not(:last-of-type) {
-        padding-right: 4px !important;
-      }
-    }
-    &:last-of-type {
-      padding-right: 24px !important;
-      &:not(:first-of-type) {
-        padding-left: 4px !important;
-      }
-    }
-  }
-}
-
 .success-button {
   &:not(:disabled) {
     background-color: #63d168 !important;
@@ -346,21 +311,6 @@ $safe-theme: mat.define-light-theme(
 
 .danger-button {
   background: mat.get-color-from-palette($safe-warn) !important;
-}
-
-// Mat table
-mat-header-row {
-  border-bottom: none !important;
-}
-
-.mat-header-cell {
-  @apply text-gray-500 border-b border-solid border-zinc-300 #{!important};
-}
-
-.mat-row {
-  .mat-cell {
-    @apply text-gray-600 border-b border-solid border-zinc-100 #{!important};
-  }
 }
 
 *:focus,
