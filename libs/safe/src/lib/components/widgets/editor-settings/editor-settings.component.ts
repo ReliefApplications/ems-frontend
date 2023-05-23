@@ -15,7 +15,7 @@ import { Layout } from '../../../models/layout.model';
 import { Apollo } from 'apollo-angular';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { get } from 'lodash';
-import { getDataKeys } from '../summary-card/parser/utils';
+import { getCalcKeys, getDataKeys } from '../summary-card/parser/utils';
 
 /**
  * Creates the form for the editor widget settings.
@@ -134,8 +134,10 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
         }
       });
     });
-
-    const keys = getDataKeys(fields);
+    const dataKeys = getDataKeys(fields);
+    const calcKeys = getCalcKeys();
+    const keys = dataKeys.concat(calcKeys);
+    // Setup editor auto complete
     this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
   }
 }
