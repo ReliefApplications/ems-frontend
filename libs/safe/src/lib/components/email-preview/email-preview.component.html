@@ -10,14 +10,16 @@
         <mat-label>From</mat-label>
         <input matInput formControlName="from" type="text" />
       </mat-form-field>
-      <mat-form-field id="previewEmailTo">
-        <mat-label>To</mat-label>
+      <div id="previewEmailTo">
+        <label class="block text-sm font-medium leading-6 text-gray-900"
+          >To</label
+        >
         <div uiChipList formControlName="to" #chipList>
-          <ui-chip *ngFor="let email of form.controls.to.value">
+          <ui-chip [value]="email" *ngFor="let email of form.controls.to.value">
             {{ email }}
           </ui-chip>
         </div>
-      </mat-form-field>
+      </div>
       <kendo-fileselect
         class="mb-4"
         [multiple]="true"

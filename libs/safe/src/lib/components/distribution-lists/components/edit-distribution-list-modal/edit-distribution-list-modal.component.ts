@@ -114,25 +114,20 @@ export class EditDistributionListModalComponent implements OnInit {
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
-        const input =
-          event.type === 'focusout'
-            ? this.emailsInput?.nativeElement
-            : event.input;
         const value =
           event.type === 'focusout'
             ? this.emailsInput?.nativeElement.value
-            : event.value;
+            : event;
 
         // Add the mail
-        const emails = [...this.emails];
         if ((value || '').trim()) {
           if (EMAIL_REGEX.test(value.trim())) {
-            emails.push(value.trim());
+            const emails = [...this.emails];
+            emails.push(value);
             this.form.get('emails')?.setValue(emails);
-            this.form.get('emails')?.updateValueAndValidity();
             // Reset the input value
-            if (input) {
-              input.value = '';
+            if (this.emailsInput?.nativeElement) {
+              this.emailsInput.nativeElement.value = '';
             }
           } else {
             this.form.get('emails')?.setErrors({ pattern: true });
@@ -149,43 +144,9 @@ export class EditDistributionListModalComponent implements OnInit {
    * @param email The email to remove
    */
   removeEmail(email: string): void {
-    const emails = [...this.emails];
-    const index = emails.indexOf(email);
-    if (index >= 0) {
-      emails.splice(index, 1);
-      this.form.get('emails')?.setValue(emails);
-      this.form.get('emails')?.updateValueAndValidity();
-    }
-  }
-
-  /**
-   * Get error message of field
-   *
-   * @param formControlName field name
-   * @returns error message
-   */
-  public errorMessage(formControlName: string): string {
-    switch (formControlName) {
-      case 'name': {
-        const control = this.form.get('name');
-        if (control?.hasError('required')) {
-          return 'components.distributionLists.errors.name.required';
-        }
-        return '';
-      }
-      case 'emails': {
-        const control = this.form.get('emails');
-        if (control?.hasError('required')) {
-          return 'components.distributionLists.errors.emails.required';
-        }
-        if (control?.hasError('pattern')) {
-          return 'components.distributionLists.errors.emails.pattern';
-        }
-        return '';
-      }
-      default: {
-        return '';
-      }
-    }
+    const emails = [...this.emails].filter(
+      (emailData) => emailData.toLowerCase() !== email.toLowerCase()
+    );
+    this.form.get('emails')?.setValue(emails);
   }
 }

@@ -1,7 +1,19 @@
-<mat-form-field appearance="outline" class="flex-1">
-  <mat-label>{{ label }}</mat-label>
+<div class="flex-1 pb-4">
+  <div class="flex">
+    <label class="block text-sm font-medium leading-6 text-gray-900">{{
+      label
+    }}</label>
+    <safe-icon
+      class="cursor-pointer ml-2"
+      icon="info"
+      variant="grey"
+      [uiTooltip]="
+        'components.aggregationBuilder.tooltip.selectedFields' | translate
+      "
+    ></safe-icon>
+  </div>
   <!-- Chip list -->
-  <div uiChipList #chipList class="mt-5">
+  <div uiChipList #chipList>
     <!-- Individual chip choice -->
     <!-- @TODO verify selectable-->
     <ui-chip
@@ -12,22 +24,21 @@
     >
       {{ choice[displayKey] }}
     </ui-chip>
-    <!-- Search text control -->
-    <input
-      type="text"
-      [placeholder]="label"
-      #textInput
-      matInput
-      [formControl]="inputFormControl"
-      [matAutocomplete]="auto"
-      [uiChipListFor]="chipList"
-      [chipInputSeparatorKeyCodes]="separatorKeysCodes"
-      [disabled]="choicesEmpty"
-      *ngIf="showInput"
-      class="mt-5"
-      (chipTokenEnd)="add($event)"
-    />
   </div>
+  <!-- Search text control -->
+  <input
+    type="text"
+    [placeholder]="label"
+    #textInput
+    [formControl]="inputFormControl"
+    [matAutocomplete]="auto"
+    [uiChipListFor]="chipList"
+    [chipInputSeparatorKeyCodes]="separatorKeysCodes"
+    [disabled]="choicesEmpty"
+    *ngIf="showInput"
+    class="bg-transparent block overflow-hidden border-0 rounded-md w-full p-0 text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:ring-0 focus:ring-inset"
+    (chipTokenEnd)="add($event)"
+  />
   <!-- Filter choices -->
   <mat-autocomplete
     #auto="matAutocomplete"
@@ -38,13 +49,4 @@
       {{ choice[displayKey] }}
     </mat-option>
   </mat-autocomplete>
-  <safe-icon
-    matSuffix
-    class="cursor-pointer"
-    icon="info"
-    variant="grey"
-    [uiTooltip]="
-      'components.aggregationBuilder.tooltip.selectedFields' | translate
-    "
-  ></safe-icon>
-</mat-form-field>
+</div>
