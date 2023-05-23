@@ -1,0 +1,40 @@
+<form [formGroup]="form">
+  <ng-container formGroupName="card">
+    <div class="form-group">
+      <mat-form-field appearance="outline">
+        <mat-label>{{
+          'components.widget.settings.summaryCard.card.display.header'
+            | translate
+        }}</mat-label>
+        <input matInput formControlName="title" type="string" />
+      </mat-form-field>
+      <div class="flex flex-1 gap-4">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'common.row.few' | translate }}</mat-label>
+          <input matInput formControlName="height" type="number" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'common.column.few' | translate }}</mat-label>
+          <input matInput formControlName="width" type="number" />
+        </mat-form-field>
+      </div>
+      <mat-divider class="space-divider"></mat-divider>
+      <mat-slide-toggle formControlName="showDataSourceLink">
+        {{
+          'components.widget.settings.summaryCard.card.display.dataSource'
+            | translate
+        }}
+        <safe-icon
+          icon="info_outline"
+          variant="grey"
+          [inline]="true"
+          [size]="18"
+          [matTooltip]="
+            'components.widget.settings.summaryCard.card.display.tooltip.datasource'
+              | translate
+          "
+        ></safe-icon>
+      </mat-slide-toggle>
+    </div>
+  </ng-container>
+</form>

@@ -37,6 +37,15 @@ export const init = (Survey: any, environment: any): void => {
       options.request.setRequestHeader('Authorization', `Bearer ${token}`);
     }
   };
+
+  // // Add file option for file columns on matrix questions
+  Survey.matrixDropdownColumnTypes.file = {
+    properties: ['showPreview', 'imageHeight', 'imageWidth'],
+    tabs: [
+      { name: 'visibleIf', index: 12 },
+      { name: 'enableIf', index: 20 },
+    ],
+  };
 };
 
 /**

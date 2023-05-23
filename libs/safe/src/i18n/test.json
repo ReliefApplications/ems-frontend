@@ -725,6 +725,7 @@
 			},
 			"fields": {
 				"available": "******",
+				"column": "******",
 				"format": {
 					"info": "******",
 					"title": "******"
@@ -1181,6 +1182,10 @@
 				"close": {
 					"confirmationMessage": "******"
 				},
+				"editor": {
+					"recordSelection": "******",
+					"title": "******"
+				},
 				"grid": {
 					"actions": {
 						"add": "******",
@@ -1258,12 +1263,12 @@
 								"create": "******",
 								"load": "******"
 							},
-							"select": "******",
 							"title": "******"
 						},
 						"edit": {
 							"title": "******"
 						},
+						"select": "******",
 						"title": "******"
 					},
 					"tooltip": {
@@ -1352,6 +1357,7 @@
 							}
 						},
 						"textEditor": {
+							"alert": "****** {{data.variable}} ****** {{calc.round( value ; precision )}}",
 							"title": "******"
 						},
 						"title": "******",
@@ -1368,6 +1374,11 @@
 					"dynamic": "******",
 					"hint": {
 						"dynamic": "******"
+					},
+					"loadMore": {
+						"infiniteScroll": "******",
+						"pagination": "******",
+						"title": "******"
 					},
 					"options": {
 						"ariaLabel": "******"
@@ -1455,6 +1466,7 @@
 			"underline": "******",
 			"undo": "******",
 			"unlink": "******",
+			"unselectAll": "******",
 			"viewSource": "******"
 		},
 		"fileselect": {
@@ -1533,6 +1545,14 @@
 			"stick": "******",
 			"unlock": "******",
 			"unstick": "******"
+		},
+		"tilelayout": {
+			"component": {
+				"items": "******",
+				"itemsPerPage": "******",
+				"of": "******",
+				"page": "******"
+			}
 		},
 		"timepicker": {
 			"accept": "******",
@@ -1653,7 +1673,8 @@
 				"rowsNotAdded": "******",
 				"uploadSuccessful": "******"
 			},
-			"restore": "******"
+			"restore": "******",
+			"select": "******"
 		},
 		"referenceData": {
 			"add": "******"
@@ -1693,6 +1714,7 @@
 			},
 			"display": {
 				"border": "******",
+				"searchable": "******",
 				"title": "******"
 			},
 			"map": {

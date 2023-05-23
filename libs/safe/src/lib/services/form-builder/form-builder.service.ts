@@ -60,6 +60,7 @@ export class SafeFormBuilderService {
     );
     survey.onCompleting.add(() => {
       for (const page of survey.toJSON().pages) {
+        if (!page.elements) continue;
         for (const element of page.elements) {
           if (element.type === 'resources' || element.type === 'resource') {
             // if its a single record, the value will be string

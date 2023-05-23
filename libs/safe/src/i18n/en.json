@@ -725,6 +725,7 @@
 			},
 			"fields": {
 				"available": "Available fields",
+				"column": "Column width (px)",
 				"format": {
 					"info": "Left empty to ignore formatting",
 					"title": "Display format"
@@ -1181,6 +1182,10 @@
 				"close": {
 					"confirmationMessage": "Some changes will be lost when closing edition. Do you want to continue?"
 				},
+				"editor": {
+					"recordSelection": "Record selection",
+					"title": "Editor"
+				},
 				"grid": {
 					"actions": {
 						"add": "Add new records",
@@ -1258,12 +1263,12 @@
 								"create": "Create a new layout",
 								"load": "Load existing layout"
 							},
-							"select": "Select a layout",
 							"title": "Add new layout"
 						},
 						"edit": {
 							"title": "Layout configuration"
 						},
+						"select": "Select a layout",
 						"title": "Grid layouts"
 					},
 					"tooltip": {
@@ -1352,6 +1357,7 @@
 							}
 						},
 						"textEditor": {
+							"alert": "You can add variables e.g: {{data.variable}} and calculate e.g: {{calc.round( value ; precision )}}",
 							"title": "Text editor"
 						},
 						"title": "Card settings",
@@ -1368,6 +1374,11 @@
 					"dynamic": "Dynamic",
 					"hint": {
 						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
+					},
+					"loadMore": {
+						"infiniteScroll": "Use infinite scrolling",
+						"pagination": "Use pagination",
+						"title": "Trigger for loading more data"
 					},
 					"options": {
 						"ariaLabel": "Select an option"
@@ -1455,6 +1466,7 @@
 			"underline": "Underline",
 			"undo": "Undo",
 			"unlink": "Remove Link",
+			"unselectAll": "Unselect all",
 			"viewSource": "View source"
 		},
 		"fileselect": {
@@ -1533,6 +1545,14 @@
 			"stick": "Stick",
 			"unlock": "Unlock",
 			"unstick": "Unstick"
+		},
+		"tilelayout": {
+			"component": {
+				"items": "items",
+				"itemsPerPage": "Items per page",
+				"of": "of",
+				"page": "Page"
+			}
 		},
 		"timepicker": {
 			"accept": "Accept",
@@ -1653,7 +1673,8 @@
 				"rowsNotAdded": "Error on add row(s).",
 				"uploadSuccessful": "Records upload successful."
 			},
-			"restore": "Restore"
+			"restore": "Restore",
+			"select": "Select a record"
 		},
 		"referenceData": {
 			"add": "Add new reference data"
@@ -1693,6 +1714,7 @@
 			},
 			"display": {
 				"border": "Show widget border",
+				"searchable": "Allow search",
 				"title": "Widget display"
 			},
 			"map": {
