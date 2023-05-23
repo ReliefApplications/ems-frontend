@@ -1,7 +1,9 @@
 import {
   Component,
   ElementRef,
+  EventEmitter,
   Inject,
+  Output,
   TemplateRef,
   ViewChild,
   ViewContainerRef,
@@ -20,6 +22,7 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./snackbar.component.scss'],
 })
 export class SnackbarComponent {
+  @Output() actionComplete = new EventEmitter<void>();
   @ViewChild('snackBarContent', { static: true, read: ViewContainerRef })
   snackBarContentView!: ViewContainerRef;
 
@@ -27,6 +30,7 @@ export class SnackbarComponent {
   message!: string;
   error = false;
   displaySnackBar = false;
+  action!: string;
   durationResolver = (duration: number) =>
     new Promise((resolve) => setTimeout(resolve, duration));
 
@@ -52,6 +56,7 @@ export class SnackbarComponent {
   private setSnackbarProperties(config: SnackBarConfig, message: string = '') {
     this.error = config.error ?? false;
     this.message = message;
+    this.action = config.action ?? '';
     this.data.next(config.data);
     this.snackBarContentView?.clear();
   }
@@ -64,7 +69,9 @@ export class SnackbarComponent {
   private async triggerSnackBar(duration: number | undefined) {
     this.displaySnackBar = true;
     await this.durationResolver(duration ?? 0);
-    this.dismiss();
+    if (duration) {
+      this.dismiss();
+    }
   }
 
   /**
@@ -76,6 +83,15 @@ export class SnackbarComponent {
       this.host.nativeElement.remove();
     }, 300);
   }
+
+  /**
+   * Trigger the action event for the parent using the snackbar reference
+   */
+  triggerActionEvent() {
+    this.dismiss();
+    this.actionComplete.emit();
+  }
+
   /**
    * Display snackbar with the given message and config
    *

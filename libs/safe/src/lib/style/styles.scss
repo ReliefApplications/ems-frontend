@@ -67,7 +67,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,
+      // A700: #ffffff,,,,,
     ),
 );
 
@@ -124,16 +124,6 @@ $safe-theme: mat.define-light-theme(
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
-
-  .snack-error {
-    background-color: mat.get-color-from-palette($warn);
-    color: white;
-    white-space: pre-wrap;
-
-    .mat-simple-snackbar-action {
-      color: white;
-    }
-  }
 
   .active-link {
     .nav-icon {
@@ -258,7 +248,6 @@ $safe-theme: mat.define-light-theme(
     }
   }
 }
-
 
 // === CHECKBOX ===
 @mixin checkbox($theme) {

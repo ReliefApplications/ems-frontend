@@ -20,8 +20,8 @@ import {
   EditApplicationMutationResponse,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { ContextService } from '../../services/context/context.service';
+import { SnackbarService } from '@oort-front/ui';
 
 /**  Dashboard contextual filter component. */
 @Component({
@@ -64,13 +64,14 @@ export class DashboardFilterComponent
    * @param applicationService Shared application service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param contextService ContextService
    */
   constructor(
     private hostElement: ElementRef,
     private dialog: MatDialog,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
     private contextService: ContextService
   ) {

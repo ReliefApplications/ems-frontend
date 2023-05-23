@@ -6,7 +6,6 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ApiConfiguration,
   SafeConfirmService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import {
@@ -27,6 +26,7 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -78,7 +78,7 @@ export class ApiConfigurationsComponent
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private router: Router,
     private translate: TranslateService

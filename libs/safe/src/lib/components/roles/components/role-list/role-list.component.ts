@@ -10,7 +10,6 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Application } from '../../../../models/application.model';
 import { Role } from '../../../../models/user.model';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeApplicationService } from '../../../../services/application/application.service';
 import {
   AddRoleMutationResponse,
@@ -25,6 +24,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * This component is used to display the back-office roles tab
@@ -80,7 +80,7 @@ export class SafeRoleListComponent
     public dialog: MatDialog,
     private applicationService: SafeApplicationService,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private router: Router,
