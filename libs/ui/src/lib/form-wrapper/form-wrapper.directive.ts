@@ -1,6 +1,7 @@
 import {
   AfterContentInit,
   AfterViewInit,
+  ContentChild,
   ContentChildren,
   Directive,
   ElementRef,
@@ -11,6 +12,7 @@ import {
 } from '@angular/core';
 import { SuffixDirective } from './suffix.directive';
 import { PrefixDirective } from './prefix.directive';
+import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
 import { Subject, startWith, takeUntil } from 'rxjs';
 
 /**
@@ -32,6 +34,9 @@ export class FormWrapperDirective
   private allSuffixDirectives: QueryList<SuffixDirective> = new QueryList();
   @ContentChildren(PrefixDirective)
   private allPrefixDirectives: QueryList<PrefixDirective> = new QueryList();
+
+  @ContentChild(AutocompleteComponent, { read: ElementRef })
+  private autocompleteContent!: ElementRef;
 
   private currentInputElement!: HTMLInputElement;
   private currentLabelElement!: HTMLLabelElement;
@@ -293,6 +298,14 @@ export class FormWrapperDirective
         this.beyondLabelContainer,
         this.currentSelectElement
       );
+    }
+
+    if (this.autocompleteContent) {
+      this.renderer.removeClass(
+        this.autocompleteContent.nativeElement.querySelector('div'),
+        'relative'
+      );
+      this.renderer.addClass(this.elementRef.nativeElement, 'relative');
     }
   }
 }
