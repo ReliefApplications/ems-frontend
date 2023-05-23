@@ -1,35 +1,48 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  UntypedFormArray,
-} from '@angular/forms';
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  LayoutModule,
-  TileLayoutReorderEvent,
-  TileLayoutResizeEvent,
-} from '@progress/kendo-angular-layout';
+import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import {
+  MatLegacyRadioModule,
+  MatLegacyRadioModule as MatRadioModule,
+} from '@angular/material/legacy-radio';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
-import { SafeAddCardModule } from '../add-card/add-card.module';
 import { SummaryCardItemModule } from '../../summary-card/summary-card-item/summary-card-item.module';
 import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { cloneDeep } from 'lodash';
-import { createCardForm } from '../summary-card-settings.component';
+import { SummaryCardFormT } from '../summary-card-settings.component';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { GET_RESOURCES, GetResourcesQueryResponse } from '../graphql/queries';
+import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
+import { Aggregation } from '../../../../models/aggregation.model';
+import { Resource } from '../../../../models/resource.model';
+import { Layout } from '../../../../models/layout.model';
+import { get } from 'lodash';
+import { SafeDividerModule } from '../../../ui/divider/divider.module';
+import { SafeGridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
+import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
+import { MatLegacySelectModule } from '@angular/material/legacy-select';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
+import { MatLegacyCheckboxModule } from '@angular/material/legacy-checkbox';
 
-/** Define max height of summary card */
-const MAX_ROW_SPAN = 4;
+/** Default number of resources to be fetched per page */
+const ITEMS_PER_PAGE = 10;
 /** Define max width of summary card */
 const MAX_COL_SPAN = 8;
 
@@ -52,21 +65,36 @@ const MAX_COL_SPAN = 8;
     MatMenuModule,
     MatIconModule,
     MatDividerModule,
-    SafeAddCardModule,
     MatButtonModule,
     SummaryCardItemModule,
+    SafeGraphQLSelectModule,
+    SafeDividerModule,
+    MatLegacySelectModule,
+    MatLegacyRadioModule,
+    MatLegacyCheckboxModule,
   ],
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
 })
-export class SummaryCardGeneralComponent implements OnInit {
-  @Input() tileForm!: FormGroup;
+export class SummaryCardGeneralComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
+  @Input() tileForm!: SummaryCardFormT;
+
+  @Input() selectedResource: Resource | null = null;
+  @Input() selectedLayout: Layout | null = null;
+  @Input() selectedAggregation: Aggregation | null = null;
+
+  @Output() resourceChange = new EventEmitter<Resource | null>();
+  @Output() layoutChange = new EventEmitter<Layout | null>();
+  @Output() aggregationChange = new EventEmitter<Aggregation | null>();
 
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
 
-  // To prevent issues where dynamic would erase all cards
-  private cachedCards: any = undefined;
+  // === DATA ===
+  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
 
   /**
    * Changes display when windows size changes.
@@ -82,42 +110,44 @@ export class SummaryCardGeneralComponent implements OnInit {
    * Component for the general summary cards tab
    *
    * @param dialog Shared dialog service
+   * @param apollo Apollo service
+   * @param layoutService Shared layout service
+   * @param aggregationService Shared aggregation service
    */
-  constructor(private dialog: MatDialog) {}
-
-  /**
-   * Get cards settings as Form Array
-   *
-   * @returns cards as Form Array
-   */
-  get cards(): UntypedFormArray {
-    return this.tileForm?.get('cards') as UntypedFormArray;
+  constructor(
+    private dialog: MatDialog,
+    private apollo: Apollo,
+    private layoutService: SafeGridLayoutService,
+    private aggregationService: SafeAggregationService
+  ) {
+    super();
   }
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
 
-    // Prevents user from having both dynamic and static cards
-    this.tileForm.get('isDynamic')?.valueChanges.subscribe(() => {
-      // if (!this.tileForm?.value.isDynamic) {
-      // }
-
-      // caches the cards of the other type
-      const newCache = cloneDeep(this.cards.value);
-
-      // removes the cards of the other type
-      this.cards.clear();
-
-      // add cards from cache
-      if (this.cachedCards) {
-        this.cachedCards.forEach((card: any) => {
-          this.cards.push(createCardForm(card));
-        });
-      }
-
-      // update cache
-      this.cachedCards = newCache;
+    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+      query: GET_RESOURCES,
+      variables: {
+        first: ITEMS_PER_PAGE,
+        sortField: 'name',
+      },
     });
+
+    // Resource change
+    this.tileForm
+      .get('card.resource')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((resource) => {
+        if (!resource) this.resourceChange.emit(null);
+        else
+          this.resourceChange.emit(
+            this.resourcesQuery
+              .getCurrentResult()
+              .data.resources.edges.find((r) => r.node.id === resource)?.node ||
+              null
+          );
+      });
   }
 
   /**
@@ -142,96 +172,128 @@ export class SummaryCardGeneralComponent implements OnInit {
     return MAX_COL_SPAN;
   }
 
-  /**
-   * Add a new card to the cards form array.
-   * Open a modal before adding it.
-   */
-  async addCard() {
-    const { SafeAddCardComponent } = await import(
-      '../add-card/add-card.component'
+  /** Opens modal for layout selection/creation */
+  public async addLayout() {
+    const { AddLayoutModalComponent } = await import(
+      '../../../grid-layout/add-layout-modal/add-layout-modal.component'
     );
-    const dialogRef = this.dialog.open(SafeAddCardComponent, {
-      data: { isDynamic: this.tileForm?.value.isDynamic },
-    });
-    dialogRef.afterClosed().subscribe((res: any) => {
-      if (res) {
-        this.cards.push(createCardForm(res));
-        setTimeout(() => {
-          const el = document.getElementById(`card-${this.cards.length - 1}`);
-          el?.scrollIntoView({ behavior: 'smooth' });
-        });
-      }
-    });
-  }
-
-  /**
-   * Remove a card from the cards form array.
-   *
-   * @param index index of card to remove
-   */
-  removeCard(index: number) {
-    this.cards.removeAt(index);
-  }
-
-  /**
-   * Open Card at index
-   *
-   * @param index index of card to open
-   */
-  async openCard(index: number) {
-    const { SafeCardModalComponent } = await import(
-      '../card-modal/card-modal.component'
-    );
-    const dialogRef = this.dialog.open(SafeCardModalComponent, {
-      disableClose: true,
-      data: this.cards.at(index).value,
-      position: {
-        bottom: '0',
-        right: '0',
+    if (!this.selectedResource) return;
+    const dialogRef = this.dialog.open(AddLayoutModalComponent, {
+      data: {
+        resource: this.selectedResource,
+        hasLayouts: get(this.selectedResource, 'layouts.totalCount', 0) > 0,
       },
-      panelClass: 'tile-settings-dialog',
     });
-
-    dialogRef.afterClosed().subscribe((value: any) => {
+    dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        this.cards.at(index).setValue(value);
+        if (typeof value === 'string') {
+          this.tileForm.get('card.layout')?.setValue(value);
+        } else {
+          this.tileForm.get('card.layout')?.setValue(value.id);
+          this.layoutChange.emit(value);
+        }
       }
     });
   }
 
   /**
-   * Emits reorder event.
-   *
-   * @param e reorder event.
+   * Edit chosen layout, in a modal. If saved, update it.
    */
-  onReorder(e: TileLayoutReorderEvent) {
-    const newValue = (this.tileForm?.controls.cards as any).controls[
-      e.oldIndex
-    ];
-    const oldValue = (this.tileForm?.controls.cards as any).controls[
-      e.newIndex
-    ];
-    (this.tileForm?.controls.cards as any).removeAt(e.newIndex);
-    (this.tileForm?.controls.cards as any).insert(e.newIndex, newValue);
-    (this.tileForm?.controls.cards as any).removeAt(e.oldIndex);
-    (this.tileForm?.controls.cards as any).insert(e.oldIndex, oldValue);
+  public async editLayout(): Promise<void> {
+    const { SafeEditLayoutModalComponent } = await import(
+      '../../../grid-layout/edit-layout-modal/edit-layout-modal.component'
+    );
+    const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
+      disableClose: true,
+      data: {
+        layout: this.selectedLayout,
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value && this.selectedLayout) {
+        this.layoutService
+          .editLayout(this.selectedLayout, value, this.selectedResource?.id)
+          .subscribe((res: any) => {
+            this.layoutChange.emit(res.data?.editLayout || null);
+          });
+      }
+    });
   }
 
   /**
-   * Handles resize widget event.
-   *
-   * @param e Resize event.
+   * Adds a new aggregation for the resource.
    */
-  public onResize(e: TileLayoutResizeEvent) {
-    if (e.newRowSpan > MAX_ROW_SPAN) {
-      e.newRowSpan = MAX_ROW_SPAN;
-    }
-    if (e.newColSpan > MAX_COL_SPAN) {
-      e.newColSpan = MAX_COL_SPAN;
-    }
-    (this.tileForm?.controls.cards as any).controls[e.item.order].patchValue({
-      height: e.newRowSpan,
-      width: e.newColSpan,
+  async addAggregation(): Promise<void> {
+    const { AddAggregationModalComponent } = await import(
+      '../../../aggregation/add-aggregation-modal/add-aggregation-modal.component'
+    );
+    const dialogRef = this.dialog.open(AddAggregationModalComponent, {
+      data: {
+        hasAggregations:
+          get(this.selectedResource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
+        resource: this.selectedResource,
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value) {
+        if (typeof value === 'string') {
+          this.tileForm.get('card.aggregation')?.setValue(value);
+        } else {
+          this.tileForm.get('card.aggregation')?.setValue(value.id);
+          this.aggregationChange.emit(value);
+        }
+      }
+    });
+  }
+
+  /**
+   * Edit chosen aggregation, in a modal. If saved, update it.
+   */
+  public async editAggregation(): Promise<void> {
+    const { SafeEditAggregationModalComponent } = await import(
+      '../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component'
+    );
+    const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
+      disableClose: true,
+      data: {
+        resource: this.selectedResource,
+        aggregation: this.selectedAggregation,
+      },
+    });
+    dialogRef.afterClosed().subscribe((value) => {
+      if (value && this.selectedAggregation) {
+        this.aggregationService
+          .editAggregation(
+            this.selectedAggregation,
+            value,
+            this.selectedResource?.id
+          )
+          .subscribe((res) => {
+            this.aggregationChange.emit(res.data?.editAggregation || null);
+          });
+      }
+    });
+  }
+
+  /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  public onResourceSearchChange(search: string): void {
+    const variables = this.resourcesQuery.variables;
+    this.resourcesQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
     });
   }
 }

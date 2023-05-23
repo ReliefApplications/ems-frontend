@@ -8,7 +8,7 @@ import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/mat
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDisplayTabComponent } from './display-tab.component';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { SafeIconModule } from '../../../../ui/icon/icon.module';
+import { SafeIconModule } from '../../../ui/icon/icon.module';
 
 /** Display tab Module for summary card edition */
 @NgModule({

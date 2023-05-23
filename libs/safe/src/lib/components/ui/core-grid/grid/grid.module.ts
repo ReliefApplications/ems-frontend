@@ -22,6 +22,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../../../pipes/date/date.module';
 import { SafeButtonModule } from '../../button/button.module';
 import { SafeDateFilterMenuModule } from '../date-filter-menu/date-filter-menu.module';
+import { SafeGridColumnChooserModule } from '../grid-column-chooser/grid-column-chooser.module';
+import { PopupModule } from '@progress/kendo-angular-popup';
 
 /** Module for the grid component */
 @NgModule({
@@ -42,6 +44,7 @@ import { SafeDateFilterMenuModule } from '../date-filter-menu/date-filter-menu.m
     DateInputsModule,
     DropDownsModule,
     ButtonsModule,
+    PopupModule,
     // === UTILS ===
     SafeExpandedCommentModule,
     // === FILTER ===
@@ -50,6 +53,7 @@ import { SafeDateFilterMenuModule } from '../date-filter-menu/date-filter-menu.m
     SafeDropdownFilterModule,
     SafeDropdownFilterMenuModule,
     SafeDateFilterMenuModule,
+    SafeGridColumnChooserModule,
     // === ROW ===
     SafeGridRowActionsModule,
     // === TOOLBAR ===

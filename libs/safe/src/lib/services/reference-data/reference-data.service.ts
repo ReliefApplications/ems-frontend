@@ -91,9 +91,10 @@ export class SafeReferenceDataService {
       a[displayField] > b[displayField] ? 1 : -1;
 
     // get items
-    const { items: items_, valueField } = (await localForage.getItem(
-      referenceDataID
-    )) as CachedItems;
+    const stored = (await localForage.getItem(referenceDataID)) as CachedItems;
+    const items_ = stored?.items || [];
+    const valueField = stored?.valueField || '';
+
     // sort items by displayField
     const items = items_.sort(sortByDisplayField);
     const foreignIsMultiselect = Array.isArray(filter?.foreignValue);
