@@ -10,12 +10,7 @@ import { CheckboxModule, ButtonModule } from '@oort-front/ui';
  */
 @NgModule({
   declarations: [SafeCheckboxTreeComponent],
-  imports: [
-    CommonModule,
-    CdkTreeModule,
-    CheckboxModule,
-    ButtonModule,
-  ],
+  imports: [CommonModule, CdkTreeModule, CheckboxModule, ButtonModule],
   exports: [SafeCheckboxTreeComponent],
 })
 export class SafeCheckboxTreeModule {}

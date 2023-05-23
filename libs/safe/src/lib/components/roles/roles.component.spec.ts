@@ -13,7 +13,6 @@ import {
   UrlHelperService,
 } from 'angular-oauth2-oidc';
 import { HttpClientModule } from '@angular/common/http';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   TranslateModule,
@@ -48,7 +47,6 @@ describe('SafeRolesComponent', () => {
       imports: [
         MatDialogModule,
         HttpClientModule,
-        MatSnackBarModule,
         RouterTestingModule,
         TranslateModule.forRoot({
           loader: {

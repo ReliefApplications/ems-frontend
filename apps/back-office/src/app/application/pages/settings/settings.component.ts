@@ -9,7 +9,6 @@ import {
   Application,
   SafeApplicationService,
   SafeConfirmService,
-  SafeSnackBarService,
   SafeAuthService,
   SafeUnsubscribeComponent,
   SafeLayoutService,
@@ -24,6 +23,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { CustomStyleComponent } from '../../../components/custom-style/custom-style.component';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Application settings page component.
@@ -62,7 +62,7 @@ export class SettingsComponent
     private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     private router: Router,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private applicationService: SafeApplicationService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,

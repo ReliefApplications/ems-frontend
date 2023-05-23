@@ -10,11 +10,7 @@ import {
   GetResourcesQueryResponse,
   GET_RESOURCES_EXTENDED,
 } from './graphql/queries';
-import {
-  Resource,
-  SafeConfirmService,
-  SafeSnackBarService,
-} from '@oort-front/safe';
+import { Resource, SafeConfirmService } from '@oort-front/safe';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
@@ -24,6 +20,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Default number of resources that will be shown at once.
@@ -78,7 +75,7 @@ export class ResourcesComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private router: Router

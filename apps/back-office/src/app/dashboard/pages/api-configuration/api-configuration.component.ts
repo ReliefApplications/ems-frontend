@@ -10,7 +10,6 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   ApiConfiguration,
   authType,
-  SafeSnackBarService,
   SafeApiProxyService,
   status,
   SafeBreadcrumbService,
@@ -27,6 +26,7 @@ import {
   GetApiConfigurationQueryResponse,
   GET_API_CONFIGURATION,
 } from './graphql/queries';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * API configuration page component.
@@ -72,7 +72,7 @@ export class ApiConfigurationComponent
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private router: Router,
     private formBuilder: UntypedFormBuilder,
     private apiProxy: SafeApiProxyService,
