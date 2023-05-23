@@ -19,12 +19,7 @@ interface StatusDialogData {
  */
 @Component({
   standalone: true,
-  imports: [
-    CommonModule,
-    DialogModule,
-    MatButtonModule,
-    SpinnerModule,
-  ],
+  imports: [CommonModule, DialogModule, MatButtonModule, SpinnerModule],
   selector: 'safe-status-modal',
   templateUrl: './status-modal.component.html',
   styleUrls: ['./status-modal.component.scss'],

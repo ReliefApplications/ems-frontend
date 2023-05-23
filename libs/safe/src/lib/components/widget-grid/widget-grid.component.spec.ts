@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DialogModule } from '@angular/cdk/dialog';
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 
 import { SafeWidgetGridComponent } from './widget-grid.component';
 
@@ -10,7 +10,7 @@ describe('SafeWidgetGridComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SafeWidgetGridComponent],
-      imports: [DialogModule],
+      imports: [DialogCdkModule],
     }).compileComponents();
   });
 

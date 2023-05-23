@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { SafeConfirmModalComponent } from './confirm-modal.component';
 import {
   ApolloTestingModule,
@@ -26,7 +30,7 @@ describe('SafeConfirmModalComponent', () => {
       ],
       declarations: [SafeConfirmModalComponent],
       imports: [
-        DialogModule,
+        DialogCdkModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

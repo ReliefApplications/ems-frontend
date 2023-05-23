@@ -7,7 +7,7 @@ import {
   OAuthService,
   UrlHelperService,
 } from 'angular-oauth2-oidc';
-import { DialogModule } from '@angular/cdk/dialog';
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { UntypedFormBuilder } from '@angular/forms';
 
 import { SafeFormService } from './form.service';
@@ -25,7 +25,7 @@ describe('SafeFormService', () => {
         OAuthLogger,
         DateTimeProvider,
       ],
-      imports: [HttpClientModule, DialogModule],
+      imports: [HttpClientModule, DialogCdkModule],
     });
     service = TestBed.inject(SafeFormService);
   });

@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { SafeEmailPreviewComponent } from './email-preview.component';
 
 describe('SafeEmailPreviewComponent', () => {
@@ -20,7 +24,7 @@ describe('SafeEmailPreviewComponent', () => {
         UntypedFormBuilder,
       ],
       declarations: [SafeEmailPreviewComponent],
-      imports: [DialogModule],
+      imports: [DialogCdkModule],
     }).compileComponents();
   });
 

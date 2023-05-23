@@ -6,7 +6,11 @@ import {
   UrlHelperService,
 } from 'angular-oauth2-oidc';
 import { environment } from 'projects/back-office/src/environments/environment';
-import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { SafeCoreGridComponent } from './core-grid.component';
 import { UntypedFormBuilder } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -47,7 +51,7 @@ describe('SafeCoreGridComponent', () => {
       declarations: [SafeCoreGridComponent],
       imports: [
         HttpClientModule,
-        DialogModule,
+        DialogCdkModule,
         RouterTestingModule,
         MatSnackBarModule,
         TranslateModule.forRoot({

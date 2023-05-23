@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeRecordHistoryComponent } from './record-history.component';
 import {
@@ -40,7 +44,7 @@ describe('SafeRecordHistoryComponent', () => {
       ],
       declarations: [SafeRecordHistoryComponent],
       imports: [
-        DialogModule,
+        DialogCdkModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {

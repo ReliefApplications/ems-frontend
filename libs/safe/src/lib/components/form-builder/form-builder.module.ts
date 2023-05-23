@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeFormBuilderComponent } from './form-builder.component';
-import { DialogModule } from '@angular/cdk/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateInputModule } from '@progress/kendo-angular-dateinputs';
+import { DialogModule } from '@oort-front/ui';
 
 /**
  * SafeFormBuilderModule is a class used to manage all the modules and components

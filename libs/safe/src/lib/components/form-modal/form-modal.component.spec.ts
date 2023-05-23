@@ -1,6 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeFormModalComponent } from './form-modal.component';
@@ -35,7 +39,7 @@ describe('SafeFormModalComponent', () => {
       ],
       declarations: [SafeFormModalComponent],
       imports: [
-        DialogModule,
+        DialogCdkModule,
         MatSnackBarModule,
         HttpClientModule,
         TranslateModule.forRoot({

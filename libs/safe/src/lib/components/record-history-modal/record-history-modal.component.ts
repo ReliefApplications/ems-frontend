@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeRecordHistoryModule } from '../record-history/record-history.module';
-import { Dialog,DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { DialogModule } from '@oort-front/ui';
 
 /**

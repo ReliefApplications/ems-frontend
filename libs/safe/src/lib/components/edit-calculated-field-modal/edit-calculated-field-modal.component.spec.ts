@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { SafeEditCalculatedFieldModalComponent } from './edit-calculated-field-modal.component';
 import {
   TranslateModule,
@@ -28,7 +32,7 @@ describe('SafeEditCalculatedFieldModalComponent', () => {
       ],
       declarations: [SafeEditCalculatedFieldModalComponent],
       imports: [
-        DialogModule,
+        DialogCdkModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { SafeEditLayoutModalComponent } from './edit-layout-modal.component';
 import {
   TranslateModule,
@@ -28,7 +32,7 @@ describe('SafeEditLayoutModalComponent', () => {
       ],
       declarations: [SafeEditLayoutModalComponent],
       imports: [
-        DialogModule,
+        DialogCdkModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

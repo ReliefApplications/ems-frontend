@@ -28,7 +28,6 @@ import isEqual from 'lodash/isEqual';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { CommonModule } from '@angular/common';
-import { DialogModule } from '@angular/cdk/dialog';
 import { TabsModule } from '@oort-front/ui';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -66,7 +65,6 @@ interface DialogData {
     SafeFormActionsModule,
     TranslateModule,
     SafeDateModule,
-    DialogModule,
     ButtonModule,
     SpinnerModule,
   ],

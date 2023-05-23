@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { DialogModule } from '@angular/cdk/dialog';
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { MenuModule } from '@oort-front/ui';
 import {
   TranslateModule,
@@ -19,7 +19,7 @@ describe('SafeFloatingOptionsComponent', () => {
       providers: [TranslateService],
       declarations: [SafeFloatingOptionsComponent],
       imports: [
-        DialogModule,
+        DialogCdkModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

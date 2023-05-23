@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import {
   TranslateModule,
@@ -23,7 +27,7 @@ describe('AddAggregationModalComponent', () => {
       ],
       declarations: [AddAggregationModalComponent],
       imports: [
-        DialogModule,
+        DialogCdkModule,
         MatSnackBarModule,
         TranslateModule.forRoot({
           loader: {

@@ -4,7 +4,7 @@ import { SafeMappingModalComponent } from './mapping-modal.component';
 import { SafeMappingModule } from '../mapping.module';
 import { StorybookTranslateModule } from '../../storybook-translate/storybook-translate-module';
 import { ReactiveFormsModule } from '@angular/forms';
-import { DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
 export default {
   component: SafeMappingModalComponent,

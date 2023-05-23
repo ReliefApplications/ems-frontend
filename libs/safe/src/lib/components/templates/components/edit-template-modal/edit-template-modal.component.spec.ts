@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { EditTemplateModalComponent } from './edit-template-modal.component';
 import {
   TranslateModule,
@@ -23,7 +27,7 @@ describe('EditTemplateModalComponent', () => {
       ],
       declarations: [EditTemplateModalComponent],
       imports: [
-        DialogModule,
+        DialogCdkModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

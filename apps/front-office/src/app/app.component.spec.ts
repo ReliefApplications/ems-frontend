@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { DialogModule } from '@angular/cdk/dialog';
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { OAuthModule } from 'angular-oauth2-oidc';
@@ -15,7 +15,7 @@ describe('AppComponent', () => {
         RouterTestingModule,
         HttpClientModule,
         OAuthModule.forRoot(),
-        DialogModule,
+        DialogCdkModule,
         ReactiveFormsModule,
         TranslateModule.forRoot(),
       ],

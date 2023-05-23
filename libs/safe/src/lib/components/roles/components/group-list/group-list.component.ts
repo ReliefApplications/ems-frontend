@@ -126,53 +126,47 @@ export class SafeGroupListComponent
     const dialogRef = this.dialog.open(SafeAddRoleComponent, {
       data: { title: 'components.group.add.title' },
     });
-    dialogRef
-      .closed
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        if (value) {
-          this.apollo
-            .mutate<AddGroupMutationResponse>({
-              mutation: ADD_GROUP,
-              variables: {
-                title: value.title,
-              },
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe({
-              next: ({ errors }) => {
-                if (errors) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectNotCreated',
-                      {
-                        type: this.translate
-                          .instant('common.role.one')
-                          .toLowerCase(),
-                        error: errors ? errors[0].message : '',
-                      }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectCreated',
-                      {
-                        type: this.translate.instant('common.role.one'),
-                        value: value.title,
-                      }
-                    )
-                  );
-                  this.getGroups();
-                }
-              },
-              error: (err) => {
-                this.snackBar.openSnackBar(err.message, { error: true });
-              },
-            });
-        }
-      });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        this.apollo
+          .mutate<AddGroupMutationResponse>({
+            mutation: ADD_GROUP,
+            variables: {
+              title: value.title,
+            },
+          })
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: ({ errors }) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate
+                        .instant('common.role.one')
+                        .toLowerCase(),
+                      error: errors ? errors[0].message : '',
+                    }
+                  ),
+                  { error: true }
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate.instant('common.role.one'),
+                    value: value.title,
+                  })
+                );
+                this.getGroups();
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
+          });
+      }
+    });
   }
 
   /** Fetches groups from service */

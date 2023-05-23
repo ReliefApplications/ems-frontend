@@ -5,7 +5,11 @@ import {
 } from 'apollo-angular/testing';
 import { environment } from 'projects/back-office/src/environments/environment';
 import { SafePreferencesModalComponent } from './preferences-modal.component';
-import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { UntypedFormBuilder } from '@angular/forms';
 import {
   TranslateModule,
@@ -36,7 +40,7 @@ describe('SafePreferencesModalComponent', () => {
       declarations: [SafePreferencesModalComponent],
       imports: [
         ApolloTestingModule,
-        DialogModule,
+        DialogCdkModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

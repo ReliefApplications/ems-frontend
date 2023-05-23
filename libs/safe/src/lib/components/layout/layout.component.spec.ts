@@ -9,7 +9,11 @@ import {
 } from 'angular-oauth2-oidc';
 import { SafeLayoutComponent } from './layout.component';
 import { HttpClientModule } from '@angular/common/http';
-import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import {
   TranslateModule,
   TranslateService,
@@ -45,7 +49,7 @@ describe('SafeLayoutComponent', () => {
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        DialogModule,
+        DialogCdkModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { RecordHistoryModalComponent } from './record-history-modal.component';
 
 describe('HistoryModalComponent', () => {
@@ -13,7 +17,7 @@ describe('HistoryModalComponent', () => {
         { provide: DIALOG_DATA, useValue: {} },
       ],
       declarations: [RecordHistoryModalComponent],
-      imports: [DialogModule],
+      imports: [DialogCdkModule],
     }).compileComponents();
   });
 

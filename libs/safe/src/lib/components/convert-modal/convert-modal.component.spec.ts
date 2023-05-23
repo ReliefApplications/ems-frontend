@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { SafeConvertModalComponent } from './convert-modal.component';
 import {
   ApolloTestingModule,
@@ -21,7 +25,7 @@ describe('SafeConvertModalComponent', () => {
         { provide: DIALOG_DATA, useValue: {} },
       ],
       declarations: [SafeConvertModalComponent],
-      imports: [DialogModule, ApolloTestingModule],
+      imports: [DialogCdkModule, ApolloTestingModule],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);

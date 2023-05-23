@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { environment } from 'projects/back-office/src/environments/environment';
-import { Dialog, DialogRef , DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { SafeFormComponent } from './form.component';
 import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { HttpClientModule } from '@angular/common/http';
@@ -41,7 +45,7 @@ describe('SafeFormComponent', () => {
       ],
       declarations: [SafeFormComponent],
       imports: [
-        DialogModule,
+        DialogCdkModule,
         MatSnackBarModule,
         HttpClientModule,
         RouterTestingModule,
