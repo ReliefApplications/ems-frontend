@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  HostListener,
   Input,
   OnInit,
   Output,
@@ -20,6 +21,7 @@ export class SafeGridColumnChooserComponent implements OnInit {
   @Input() originalColumns: QueryList<ColumnBase> | undefined;
   @Output() hideColumnChooser = new EventEmitter<boolean>();
   public columns: { title: string; visible: boolean }[] = [];
+  private show = true;
 
   /**
    * Column chooser for the grid widget
@@ -39,6 +41,21 @@ export class SafeGridColumnChooserComponent implements OnInit {
       this.columns = this.originalColumns.toArray().map((column) => {
         return { title: column.title, visible: !column.hidden };
       });
+  }
+
+  /** Listen to click event on the document */
+  @HostListener('click')
+  clickInside() {
+    this.show = true;
+  }
+
+  /** Listen to document click event and close the component if outside of it */
+  @HostListener('document:click')
+  clickout() {
+    if (!this.show) {
+      this.hideColumnChooser.emit(false);
+    }
+    this.show = false;
   }
 
   /**
