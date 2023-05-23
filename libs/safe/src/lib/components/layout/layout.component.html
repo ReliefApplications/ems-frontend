@@ -1,6 +1,5 @@
 <mat-toolbar [color]="theme.headerColor">
   <safe-button
-    *ngIf="!largeDevice"
     [isIcon]="true"
     icon="menu"
     (click)="nav.toggle()"
@@ -9,16 +8,14 @@
         ? 'components.header.sidenav.collapse'
         : 'components.header.sidenav.show'
       ) | translate
-    "
-  >
+    ">
   </safe-button>
   <safe-button
     [isIcon]="true"
     icon="keyboard_backspace"
     (click)="goBack()"
     *ngIf="route"
-    [matTooltip]="'pages.applications.goTo' | translate"
-  >
+    [matTooltip]="'pages.applications.goTo' | translate">
   </safe-button>
   <ng-container *ngIf="!applications || applications.length === 0">
     <h1 *ngIf="!route">
@@ -34,21 +31,18 @@
       mat-button
       (click)="showAppMenu = !showAppMenu"
       cdkOverlayOrigin
-      #appMenuTrigger="cdkOverlayOrigin"
-    >
+      #appMenuTrigger="cdkOverlayOrigin">
       {{ theme.prefix }} {{ title }}
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
     <ng-template
       cdkConnectedOverlay
       [cdkConnectedOverlayOrigin]="appMenuTrigger"
-      [cdkConnectedOverlayOpen]="showAppMenu"
-    >
+      [cdkConnectedOverlayOpen]="showAppMenu">
       <safe-search-menu
         [applications]="this.applications"
         (close)="showAppMenu = false"
-        (open)="onOpenApplication($event)"
-      ></safe-search-menu>
+        (open)="onOpenApplication($event)"></safe-search-menu>
     </ng-template>
   </ng-container>
   <div class="account-container">
@@ -58,22 +52,19 @@
   <safe-button
     [isIcon]="true"
     icon="account_circle"
-    [matMenuTriggerFor]="accountMenu"
-  >
+    [matMenuTriggerFor]="accountMenu">
   </safe-button>
   <button
     mat-icon-button
     [matMenuTriggerFor]="notificationMenu"
-    [disabled]="notifications.length === 0"
-  >
+    [disabled]="notifications.length === 0">
     <mat-icon class="mat-badge-notification">
       <kendo-badge-container>
         notifications
         <kendo-badge
           shape="dot"
           themeColor="error"
-          *ngIf="notifications.length > 0"
-        ></kendo-badge>
+          *ngIf="notifications.length > 0"></kendo-badge>
       </kendo-badge-container>
     </mat-icon>
   </button>
@@ -96,8 +87,7 @@
       {{ 'components.header.logout' | translate }}
     </button>
     <div
-      class="absolute bottom-0 right-1 text-gray-400 text-xs pointer-events-none"
-    >
+      class="absolute bottom-0 right-1 text-gray-400 text-xs pointer-events-none">
       {{ environment.version }}
     </div>
   </mat-menu>
@@ -110,8 +100,7 @@
       <button
         mat-menu-item
         (click)="onNotificationClick(notification)"
-        *ngFor="let notification of notifications"
-      >
+        *ngFor="let notification of notifications">
         {{ notification.action }} - {{ notification.createdAt | safeDate }}
       </button>
     </div>
@@ -122,8 +111,7 @@
       class="!w-auto"
       [disabled]="loadingNotifications"
       [loading]="loadingNotifications"
-      (click)="onLoadMoreNotifications($event)"
-    >
+      (click)="onLoadMoreNotifications($event)">
       {{ 'common.pagination.loadMore' | translate }}
     </safe-button>
   </mat-menu>
@@ -138,13 +126,11 @@
     class="sidenav"
     #nav
     [mode]="largeDevice ? 'side' : 'over'"
-    [opened]="largeDevice"
-  >
+    [opened]="largeDevice">
     <ng-container *ngIf="leftSidenav">
       <ng-container
         [ngTemplateOutlet]="leftSidenav"
-        [ngTemplateOutletContext]="{ $implicit: nav }"
-      ></ng-container>
+        [ngTemplateOutletContext]="{ $implicit: nav }"></ng-container>
     </ng-container>
   </mat-sidenav>
 
