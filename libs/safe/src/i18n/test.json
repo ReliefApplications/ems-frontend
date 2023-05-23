@@ -1357,6 +1357,7 @@
 							}
 						},
 						"textEditor": {
+							"alert": "****** {{data.variable}} ****** {{calc.round( value ; precision )}}",
 							"title": "******"
 						},
 						"title": "******",
@@ -1465,6 +1466,7 @@
 			"underline": "******",
 			"undo": "******",
 			"unlink": "******",
+			"unselectAll": "******",
 			"viewSource": "******"
 		},
 		"fileselect": {

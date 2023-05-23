@@ -1357,6 +1357,7 @@
 							}
 						},
 						"textEditor": {
+							"alert": "You can add variables e.g: {{data.variable}} and calculate e.g: {{calc.round( value ; precision )}}",
 							"title": "Text editor"
 						},
 						"title": "Card settings",
@@ -1465,6 +1466,7 @@
 			"underline": "Underline",
 			"undo": "Undo",
 			"unlink": "Remove Link",
+			"unselectAll": "Unselect all",
 			"viewSource": "View source"
 		},
 		"fileselect": {
