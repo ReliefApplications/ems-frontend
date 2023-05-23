@@ -5,7 +5,6 @@ import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeFormModalComponent } from './form-modal.component';
 import {
@@ -40,7 +39,6 @@ describe('SafeFormModalComponent', () => {
       declarations: [SafeFormModalComponent],
       imports: [
         MatDialogModule,
-        MatSnackBarModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {

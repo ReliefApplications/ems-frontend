@@ -6,7 +6,6 @@ import {
   ReferenceData,
   SafeAuthService,
   SafeConfirmService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import {
@@ -28,6 +27,7 @@ import {
 } from '../../../utils/update-queries';
 import { TableSort } from '@oort-front/ui';
 import { ApolloQueryResult } from '@apollo/client';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
@@ -84,7 +84,7 @@ export class ReferenceDatasComponent
   constructor(
     private apollo: Apollo,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private router: Router,

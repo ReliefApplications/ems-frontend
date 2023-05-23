@@ -15,7 +15,6 @@ import {
 } from './graphql/queries';
 import {
   Dashboard,
-  SafeSnackBarService,
   SafeDashboardService,
   SafeUnsubscribeComponent,
   SafeWidgetGridComponent,
@@ -24,6 +23,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Dashboard page.
@@ -70,7 +70,7 @@ export class DashboardComponent
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private dashboardService: SafeDashboardService,
     private translate: TranslateService,
     private confirmService: SafeConfirmService

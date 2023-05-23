@@ -10,7 +10,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
   ReferenceData,
-  SafeSnackBarService,
   referenceDataType,
   ApiConfiguration,
   SafeBreadcrumbService,
@@ -37,6 +36,7 @@ import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { inferTypeFromString } from './utils/inferTypeFromString';
 import { get } from 'lodash';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default pagination parameter. */
 const ITEMS_PER_PAGE = 10;
@@ -105,7 +105,7 @@ export class ReferenceDataComponent
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private router: Router,
     private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService,

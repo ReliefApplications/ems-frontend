@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import {
   Application,
   SafeConfirmService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import {
@@ -31,6 +30,7 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { TableSort } from '@oort-front/ui';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -91,7 +91,7 @@ export class ApplicationsComponent
     private apollo: Apollo,
     public dialog: MatDialog,
     private router: Router,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private previewService: PreviewService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService

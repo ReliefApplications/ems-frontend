@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
 import {
-  SafeSnackBarService,
   SafeAuthService,
   SafeConfirmService,
   Form,
@@ -25,6 +24,7 @@ import {
 import { ApolloQueryResult } from '@apollo/client';
 import { takeUntil } from 'rxjs';
 import { TableSort } from '@oort-front/ui';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -83,7 +83,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
     private apollo: Apollo,
     public dialog: MatDialog,
     private router: Router,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
