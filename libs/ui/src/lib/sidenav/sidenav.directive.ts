@@ -40,7 +40,8 @@ export class SidenavDirective implements OnInit, OnDestroy {
         if (
           !this.toggleUsed &&
           this.opened &&
-          !this.el.nativeElement.contains(event.target)
+          !this.el.nativeElement.contains(event.target) &&
+          this.mode === 'over'
         ) {
           this.opened = false;
           this.openedChange.emit(this.opened);
