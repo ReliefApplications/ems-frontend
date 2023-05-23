@@ -1,0 +1,67 @@
+<div class="form-group" [formGroup]="form">
+  <div class="w-full flex gap-2">
+    <!-- RESOURCE SELECTION  -->
+    <mat-form-field fxFlex appearance="outline">
+      <mat-label>{{ 'models.resource.select' | translate }}</mat-label>
+      <safe-graphql-select
+        valueField="id"
+        textField="name"
+        [query]="resourcesQuery"
+        formControlName="resource"
+        [selectedElements]="[selectedResource]"
+        (searchChange)="onResourceSearchChange($event)"
+        [filterable]="true"
+      ></safe-graphql-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" *ngIf="!selectedLayout">
+      <mat-label>{{
+        'components.widget.settings.grid.layouts.select' | translate
+      }}</mat-label>
+      <mat-select
+        [disabled]="!selectedResource"
+        (click)="$event.preventDefault(); addLayout()"
+      >
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" *ngIf="selectedLayout">
+      <mat-label>{{
+        'components.widget.settings.grid.layouts.select' | translate
+      }}</mat-label>
+      <mat-select [disabled]="true" [value]="selectedLayout.id">
+        <mat-option [value]="selectedLayout.id">{{
+          selectedLayout.name
+        }}</mat-option>
+      </mat-select>
+      <safe-button
+        matSuffix
+        variant="primary"
+        [isIcon]="true"
+        icon="edit"
+        (click)="editLayout()"
+      ></safe-button>
+      <safe-button
+        matSuffix
+        variant="danger"
+        [isIcon]="true"
+        icon="close"
+        (click)="deselectLayout()"
+      ></safe-button>
+    </mat-form-field>
+  </div>
+
+  <div class="flex flex-col mt-2" *ngIf="selectedLayout">
+    <h2>{{ 'models.record.select' | translate }}</h2>
+    <safe-core-grid
+      [settings]="selectedLayout"
+      [multiSelect]="false"
+      [selectable]="true"
+      [showExport]="false"
+      [selectedRows]="selectedRecordID ? [selectedRecordID] : []"
+      (selectionChange)="onSelectionChange($event)"
+      style="height: 600px"
+    >
+    </safe-core-grid>
+  </div>
+</div>

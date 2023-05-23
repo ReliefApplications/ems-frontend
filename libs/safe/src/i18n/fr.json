@@ -1189,6 +1189,10 @@
 				"close": {
 					"confirmationMessage": "Vos changements vont être perdus si vous fermez la fenêtre d'édition. Voulez-vous continuer ?"
 				},
+				"editor": {
+					"recordSelection": "Sélection d'enregistrement",
+					"title": "Éditeur"
+				},
 				"grid": {
 					"actions": {
 						"add": "Ajouter de nouveaux enregistrements",
@@ -1266,12 +1270,12 @@
 								"create": "Créer une nouvelle mise en page",
 								"load": "Charger une mise en page existante"
 							},
-							"select": "Sélectionner une mise en page",
 							"title": "Ajouter une nouvelle mise en page"
 						},
 						"edit": {
 							"title": "Configuration de la mise en page"
 						},
+						"select": "Sélectionner une mise en page",
 						"title": "Mise en page de la grille"
 					},
 					"tooltip": {
@@ -1378,6 +1382,11 @@
 					"dynamic": "Dynamique",
 					"hint": {
 						"dynamic": "Les cartes dynamiques adaptent leur affichage en fonction du nombre d'éléments dans la source de données. Vous devez définir une unique carte qui sera répétée pour chaque élément."
+					},
+					"loadMore": {
+						"infiniteScroll": "Utiliser le défilement infini",
+						"pagination": "Utiliser la pagination",
+						"title": "Déclencheur pour charger plus de données"
 					},
 					"options": {
 						"ariaLabel": "***"
@@ -1545,6 +1554,14 @@
 			"unlock": "Déverrouiller",
 			"unstick": "Désépingler"
 		},
+		"tilelayout": {
+			"component": {
+				"items": "articles",
+				"itemsPerPage": "Articles par page",
+				"of": "de",
+				"page": "Page"
+			}
+		},
 		"timepicker": {
 			"accept": "Accepter",
 			"acceptLabel": "Accepter",
@@ -1659,7 +1676,8 @@
 				"rowsNotAdded": "Erreur lors de l'ajout de ligne(s).",
 				"uploadSuccessful": "Enregistrements importés avec succès"
 			},
-			"restore": "Restaurer"
+			"restore": "Restaurer",
+			"select": "Sélectionnez un enregistrement"
 		},
 		"referenceData": {
 			"add": "Ajouter une référence de données"
@@ -1699,6 +1717,7 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"searchable": "Autoriser la recherche",
 				"title": "Affichage des widgets"
 			},
 			"map": {
