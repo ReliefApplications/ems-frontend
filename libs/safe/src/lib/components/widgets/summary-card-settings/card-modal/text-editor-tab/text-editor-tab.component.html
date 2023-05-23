@@ -1,3 +1,11 @@
 <form [formGroup]="form">
+  <!-- Indicate possibilities of the template editor -->
+  <safe-alert class="mb-2"
+    ><safe-icon icon="info"></safe-icon>
+    {{
+      'components.widget.settings.summaryCard.card.textEditor.alert' | translate
+    }}
+  </safe-alert>
+  <!-- Template editor -->
   <editor [init]="editor" formControlName="html"></editor>
 </form>

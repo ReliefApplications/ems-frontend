@@ -137,7 +137,7 @@ export class SafeFormHelpersService {
     const surveyData = survey.data;
     const questions = survey.getAllQuestions();
     for (const question of questions) {
-      if (question) {
+      if (question && question.value) {
         if (
           question.getType() === 'resources' ||
           question.getType() == 'resource'
@@ -210,7 +210,10 @@ export class SafeFormHelpersService {
    */
   cleanCachedRecords(survey: Survey.SurveyModel): void {
     survey.getAllQuestions().forEach((question) => {
-      if (['resources', 'resource'].includes(question.getType())) {
+      if (
+        question.value &&
+        ['resources', 'resource'].includes(question.getType())
+      ) {
         question.value.forEach((recordId: any) =>
           localForage.removeItem(recordId)
         );
