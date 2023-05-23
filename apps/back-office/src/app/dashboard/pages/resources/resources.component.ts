@@ -14,12 +14,12 @@ import { Resource, SafeConfirmService } from '@oort-front/safe';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { TableSort } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 
 /**
@@ -46,7 +46,7 @@ export class ResourcesComponent implements OnInit {
 
   // === SORTING ===
   public updating = false;
-  private sort: Sort = { active: '', direction: '' };
+  private sort: TableSort = { active: '', sortDirection: '' };
 
   // === FILTERING ===
   public filter: any = {
@@ -148,7 +148,7 @@ export class ResourcesComponent implements OnInit {
    *
    * @param event sort event
    */
-  onSort(event: Sort): void {
+  onSort(event: TableSort): void {
     this.sort = event;
     this.fetchResources(true);
   }
@@ -166,10 +166,11 @@ export class ResourcesComponent implements OnInit {
       afterCursor: refetch ? null : this.pageInfo.endCursor,
       filter: filter ?? this.filter,
       sortField:
-        (this.sort?.direction && this.sort.active) !== ''
-          ? this.sort?.direction && this.sort.active
+        (this.sort?.sortDirection && this.sort.active) !== ''
+          ? this.sort?.sortDirection && this.sort.active
           : 'name',
-      sortOrder: this.sort?.direction !== '' ? this.sort?.direction : 'asc',
+      sortOrder:
+        this.sort?.sortDirection !== '' ? this.sort?.sortDirection : 'asc',
     };
     const cachedValues: GetResourcesQueryResponse = getCachedValues(
       this.apollo.client,
