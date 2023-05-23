@@ -1,8 +1,8 @@
 import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { SnackbarModule } from './snackbar.module';
 import { CommonModule } from '@angular/common';
-import { Component, Inject, Input } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Component, Inject, Input, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { SNACKBAR_DATA, SnackBarData } from './snackbar.token';
 import { SnackbarService } from './snackbar.service';
 import { IconModule } from '../icon/icon.module';
@@ -24,8 +24,10 @@ import { StorybookTranslateModule } from '../../storybook-translate.module';
     </button>
   `,
 })
-class LaunchSnackbarComponent {
+class LaunchSnackbarComponent implements OnDestroy {
   @Input() default = true;
+
+  destroy$ = new Subject<void>();
   /**
    * Constructor for the launchDialog component
    *
@@ -43,14 +45,27 @@ class LaunchSnackbarComponent {
         error: true,
       });
     } else {
-      this.snackBar.openComponentSnackBar(CustomSnackbarComponent, {
-        duration: 0,
-        data: {
-          message: 'Processing',
-          loading: true,
-        },
-      });
+      const snackbarRef = this.snackBar.openComponentSnackBar(
+        CustomSnackbarComponent,
+        {
+          duration: 0,
+          data: {
+            message: 'Processing',
+            loading: true,
+          },
+        }
+      );
+      snackbarRef.instance.actionComplete
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => window.alert('Action complete!!'),
+        });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
 
