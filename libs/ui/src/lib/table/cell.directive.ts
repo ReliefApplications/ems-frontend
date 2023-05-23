@@ -36,6 +36,7 @@ export class CellDirective extends CdkCell implements AfterContentInit {
     'text-sm',
     'font-normal',
     'text-gray-900',
+    'bg-white',
   ];
 
   ngAfterContentInit(): void {

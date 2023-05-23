@@ -32,6 +32,7 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
     'border',
     'py-2',
     'sm:rounded-lg',
+    'bg-gray-50',
   ];
   private tableClasses = ['min-w-full', 'divide-y', 'divide-gray-300'];
   private tbodyClasses = ['divide-y', 'divide-gray-200', 'bg-white'];
