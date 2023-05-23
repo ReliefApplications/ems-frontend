@@ -102,6 +102,7 @@ export class FormWrapperDirective
     'flex',
     'items-center',
     'w-full',
+    'mb-4',
   ] as const;
 
   private beyondLabelNoOutline = [

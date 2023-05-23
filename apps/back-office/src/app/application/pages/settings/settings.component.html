@@ -18,26 +18,24 @@
     </mat-form-field>
   </div>
   <!-- Settings -->
-  <div class="flex flex-col">
+  <div class="flex flex-col gap-4">
     <div class="flex gap-x-2 flex-wrap">
-      <mat-form-field appearance="outline" class="flex-auto">
-        <mat-label>
+      <div uiFormFieldDirective [outline]="true" class="flex-auto">
+        <label>
           {{ 'common.name' | translate }}
-        </mat-label>
+        </label>
         <input
-          matInput
           formControlName="name"
           type="text"
           [placeholder]="'common.placeholder.name' | translate"
         />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+      </div>
+      <div uiFormFieldDirective [outline]="true" class="flex-1">
+        <label>
           {{ 'models.application.id' | translate }}
-        </mat-label>
-        <input matInput formControlName="id" type="text" />
-      </mat-form-field>
+        </label>
+        <input formControlName="id" type="text" />
+      </div>
     </div>
     <div uiFormFieldDirective>
       <label>

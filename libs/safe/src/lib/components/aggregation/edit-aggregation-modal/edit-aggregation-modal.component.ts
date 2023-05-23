@@ -10,11 +10,10 @@ import { createAggregationForm } from '../../ui/aggregation-builder/aggregation-
 import { CommonModule } from '@angular/common';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeModalModule } from '../../ui/modal/modal.module';
 import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -34,7 +33,7 @@ interface DialogData {
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     MatSelectModule,
     SafeModalModule,
     SafeAggregationBuilderModule,

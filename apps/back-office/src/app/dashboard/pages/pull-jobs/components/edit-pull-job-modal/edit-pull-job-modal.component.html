@@ -14,15 +14,14 @@
       <div class="flex flex-col pb-1">
         <div class="flex gap-x-2 flex-wrap">
           <!-- Title -->
-          <mat-form-field appearance="outline" class="flex-auto">
-            <mat-label>{{ 'common.name' | translate }}</mat-label>
+          <div uiFormFieldDirective [outline]="true" class="flex-auto">
+            <label>{{ 'common.name' | translate }}</label>
             <input
               type="text"
               [placeholder]="'common.placeholder.name' | translate"
-              matInput
               formControlName="name"
             />
-          </mat-form-field>
+          </div>
           <!-- Status -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'common.status' | translate }}</mat-label>
@@ -66,43 +65,41 @@
         </mat-form-field>
         <div class="flex gap-x-2 flex-wrap" *ngIf="!isHardcoded">
           <!-- Url to pull -->
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'models.pullJob.url' | translate }}</mat-label>
+          <div uiFormFieldDirective [outline]="true" class="flex-1">
+            <label>{{ 'models.pullJob.url' | translate }}</label>
             <input
               type="text"
               [placeholder]="
                 'components.pullJob.modal.placeholder.url' | translate
               "
-              matInput
               formControlName="url"
             />
             <safe-icon
               icon="info"
               class="cursor-pointer"
               variant="grey"
-              matSuffix
+              uiSuffix
               [uiTooltip]="'components.pullJob.modal.hint.url' | translate"
             ></safe-icon>
-          </mat-form-field>
+          </div>
           <!-- Path to pull -->
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'models.pullJob.path' | translate }}</mat-label>
+          <div uiFormFieldDirective [outline]="true" class="flex-1">
+            <label>{{ 'models.pullJob.path' | translate }}</label>
             <input
               type="text"
               [placeholder]="
                 'components.pullJob.modal.placeholder.path' | translate
               "
-              matInput
               formControlName="path"
             />
             <safe-icon
               icon="info"
               class="cursor-pointer"
               variant="grey"
-              matSuffix
+              uiSuffix
               [uiTooltip]="'components.pullJob.modal.hint.path' | translate"
             ></safe-icon>
-          </mat-form-field>
+          </div>
         </div>
         <div class="flex gap-x-2 flex-wrap">
           <!-- Resource to use for conversion -->
@@ -193,14 +190,14 @@
                       >
                     </mat-select>
                   </mat-form-field>
-                  <mat-form-field
-                    appearance="outline"
+                  <div
+                    uiFormFieldDirective [outline]="true"
                     *ngIf="element.value.name"
                     class="p-0"
                   >
-                    <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-                    <input matInput formControlName="value" type="string" />
-                  </mat-form-field>
+                    <label>{{ 'common.value.one' | translate }}</label>
+                    <input formControlName="value" type="string" />
+                  </div>
                   <ui-button
                     [isIcon]="true"
                     icon="remove_circle_outline"

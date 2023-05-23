@@ -4,16 +4,15 @@
     <!-- Default filter -->
     <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
       <!-- Search text filter -->
-      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-        <mat-icon matPrefix>search</mat-icon>
-        <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
+      <div uiFormFieldDirective [outline]="true" class="mat-form-field-sm p-0">
+        <mat-icon uiPrefix>search</mat-icon>
+        <label>{{ 'common.placeholder.search' | translate }}</label>
         <input
-          matInput
           [ngModel]="searchText"
           (keyup)="applyFilter('', $event)"
           type="search"
         />
-      </mat-form-field>
+      </div>
       <!-- Toggle advanced filters -->
       <ui-button
         class="max-sm:!w-auto"

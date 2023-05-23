@@ -16,15 +16,14 @@
   <form [formGroup]="referenceForm" class="flex flex-col mb-8">
     <div class="flex gap-x-2">
       <!-- Name -->
-      <mat-form-field appearance="outline" class="flex-auto">
-        <mat-label>{{ 'common.name' | translate }}</mat-label>
+      <div uiFormFieldDirective [outline]="true" class="flex-auto">
+        <label>{{ 'common.name' | translate }}</label>
         <input
-          matInput
           formControlName="name"
           type="text"
           [placeholder]="'common.placeholder.name' | translate"
         />
-      </mat-form-field>
+        </div>
       <!-- Type selection -->
       <mat-form-field appearance="outline" class="1">
         <mat-label>{{ 'pages.referenceData.type' | translate }}</mat-label>
@@ -53,17 +52,16 @@
           </safe-graphql-select>
         </mat-form-field>
         <!-- QueryName -->
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{
+        <div uiFormFieldDirective [outline]="true" class="flex-1">
+          <label>{{
             'pages.referenceData.queryName' | translate
-          }}</mat-label>
+          }}</label>
           <input
-            matInput
             formControlName="query"
             type="text"
             [placeholder]="'common.placeholder.name' | translate"
           />
-        </mat-form-field>
+        </div>
       </div>
       <!-- Fields -->
       <kendo-grid [data]="valueFields" class="mb-5" *ngIf="!loading">
@@ -131,19 +129,18 @@
     <ui-spinner *ngIf="csvLoading"></ui-spinner>
     <div class="flex gap-x-2">
       <!-- Path -->
-      <mat-form-field
+      <div
         class="flex-auto"
-        appearance="outline"
+        uiFormFieldDirective [outline]="true"
         *ngIf="['rest', 'graphql'].includes(type)"
       >
-        <mat-label>{{ 'pages.referenceData.path' | translate }}</mat-label>
+        <label>{{ 'pages.referenceData.path' | translate }}</label>
         <input
-          matInput
           formControlName="path"
           type="text"
           [placeholder]="'common.placeholder.name' | translate"
         />
-      </mat-form-field>
+      </div>
       <!-- Value field to be displayed -->
       <mat-form-field
         class="flex-1"
@@ -161,12 +158,11 @@
       </mat-form-field>
     </div>
     <!-- For graphql -->
-    <mat-form-field appearance="outline" *ngIf="type === 'graphql'">
-      <mat-label
+    <div uiFormFieldDirective [outline]="true" *ngIf="type === 'graphql'">
+      <label
         >{{ 'pages.referenceData.graphQLFilter' | translate }}
-      </mat-label>
+      </label>
       <input
-        matInput
         formControlName="graphQLFilter"
         type="text"
         [placeholder]="
@@ -177,10 +173,10 @@
         icon="info_outline"
         class="cursor-pointer"
         variant="grey"
-        matSuffix
+        uiSuffix
         [uiTooltip]="'pages.referenceData.tooltip.graphQLFilter' | translate"
       ></safe-icon>
-    </mat-form-field>
+    </div>
     <!-- Kendo grid to preview data on static type -->
     <div *ngIf="!csvLoading && csvValue && type === 'static'">
       <kendo-grid [data]="newData">

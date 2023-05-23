@@ -8,13 +8,13 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import {
   MenuModule,
   CheckboxModule,
   ButtonModule,
   TableModule,
   SpinnerModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { MatRippleModule } from '@angular/material/core';
@@ -36,7 +36,7 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     MatButtonModule,
     MenuModule,
     MatIconModule,
-    MatInputModule,
+    FormWrapperModule,
     MatAutocompleteModule,
     MatChipsModule,
     MatRippleModule,

@@ -10,15 +10,14 @@
   <div mat-dialog-content>
     <form [formGroup]="subscriptionForm">
       <div class="flex flex-col">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.title' | translate }}</mat-label>
+        <div uiFormFieldDirective [outline]="true">
+          <label>{{ 'common.title' | translate }}</label>
           <input
             type="text"
             [placeholder]="'common.placeholder.title' | translate"
-            matInput
             formControlName="title"
           />
-        </mat-form-field>
+        </div>
         <mat-form-field appearance="outline">
           <mat-label>{{
             'components.application.subscription.modal.listenTo' | translate

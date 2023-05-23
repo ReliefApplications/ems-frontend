@@ -52,6 +52,7 @@ import {
   MenuModule,
   TooltipModule,
   ButtonModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 
 /** Items per query for pagination */
@@ -82,6 +83,7 @@ const ITEMS_PER_PAGE = 10;
     SafeModalModule,
     TooltipModule,
     ButtonModule,
+    FormWrapperModule,
   ],
   selector: 'app-subscription-modal',
   templateUrl: './subscription-modal.component.html',
