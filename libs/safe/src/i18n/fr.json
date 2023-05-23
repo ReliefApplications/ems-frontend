@@ -1361,6 +1361,7 @@
 						},
 						"preview": {},
 						"textEditor": {
+							"alert": "Vous pouvez ajouter des variables ex: {{data.variable}} et faire des calculs ex: {{calc.round( value ; precision )}}",
 							"title": "Éditeur de texte"
 						},
 						"title": "Paramètres de carte",
