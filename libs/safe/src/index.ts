@@ -89,7 +89,6 @@ export * from './lib/components/skeleton/skeleton-table/public-api';
 export * from './lib/components/mapping/public-api';
 export * from './lib/components/role-summary/public-api';
 export * from './lib/components/graphql-select/public-api';
-export * from './lib/components/ui/modal/public-api';
 export * from './lib/components/ui/empty/public-api';
 export * from './lib/components/edit-calculated-field-modal/public-api';
 export * from './lib/components/utils/unsubscribe/public-api';
