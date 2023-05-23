@@ -61,7 +61,6 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((opened: boolean) => {
         this.showSidenav = opened;
-        console.log(this.showSidenav);
         // Change the mode if it has changed since last opening/closure
         this.mode = this.uiSidenavDirective.mode;
         // if (this.mode === 'side') {
