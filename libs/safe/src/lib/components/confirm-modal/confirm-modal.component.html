@@ -2,7 +2,8 @@
   <h1 mat-dialog-title>{{ title }}</h1>
   <mat-dialog-content *ngIf="content">{{ content }}</mat-dialog-content>
   <div mat-dialog-actions align="end">
-    <!-- <button mat-button mat-dialog-close>{{ cancelText }}</button>
+     <!--
+    <ui-button mat-dialog-close>{{ cancelText }}</ui-button>
     <button
       mat-flat-button
       [color]="confirmColor"
@@ -11,14 +12,14 @@
     >
       {{ confirmText }}
     </button> -->
-    <safe-button mat-dialog-close>{{ cancelText }}</safe-button>
-    <safe-button
+    <ui-button mat-dialog-close>{{ cancelText }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [mat-dialog-close]="true"
       cdkFocusInitial
     >
       {{ confirmText }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

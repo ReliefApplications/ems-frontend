@@ -6,13 +6,13 @@
     <div class="share-url">{{ data.url }}</div>
   </div>
   <div mat-dialog-actions align="center">
-    <safe-button
+    <ui-button
       category="secondary"
       variant="primary"
       cdkFocusInitial
       (click)="onCopy()"
     >
       {{ 'components.share.modal.copy' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </safe-modal>

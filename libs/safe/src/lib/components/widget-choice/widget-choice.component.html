@@ -34,8 +34,7 @@
         class="safe-widget-type"
         *ngFor="let type of widgetTypes"
         (click)="onSelect(type)"
-        [matTooltip]="type.name"
-        matTooltipPosition="above"
+        [uiTooltip]="type.name"
         (mouseover)="hovered = type.id"
         (mouseout)="hovered = ''"
       >
@@ -47,15 +46,14 @@
         ></div>
       </div>
     </div>
-    <safe-button
+    <ui-button
       category="secondary"
       variant="primary"
       icon="close"
       [isIcon]="true"
       (click)="collapsed = true"
-      [matTooltip]="'models.widget.tooltip.selector.collapse' | translate"
-      matTooltipPosition="above"
-    ></safe-button>
+      [uiTooltip]="'models.widget.tooltip.selector.collapse' | translate"
+    ></ui-button>
   </div>
 </ng-template>
 
@@ -64,14 +62,13 @@
     class="rounded-full ml-auto mr-6 shadow-lg bg-white pointer-events-auto"
     cdkDrag
   >
-    <safe-button
+    <ui-button
       category="tertiary"
       variant="primary"
       icon="widgets"
       [isIcon]="true"
       (click)="collapsed = false"
-      [matTooltip]="'models.widget.tooltip.selector.expand' | translate"
-      matTooltipPosition="left"
-    ></safe-button>
+      [uiTooltip]="'models.widget.tooltip.selector.expand' | translate"
+    ></ui-button>
   </div>
 </ng-template>

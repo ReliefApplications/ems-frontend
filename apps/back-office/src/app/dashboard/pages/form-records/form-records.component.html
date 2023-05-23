@@ -11,7 +11,7 @@
   </h1>
   <!-- Actions -->
   <div *ngIf="!loading" class="flex gap-2 items-center flex-wrap justify-end">
-    <safe-button
+    <ui-button
       *ngIf="form.canUpdate && !showDeletedRecords"
       icon="search_off"
       category="primary"
@@ -19,8 +19,8 @@
       (click)="onSwitchView($event)"
     >
       {{ 'components.records.showArchived' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       *ngIf="form.canUpdate && showDeletedRecords"
       icon="restore_page"
       category="primary"
@@ -28,27 +28,27 @@
       (click)="onSwitchView($event)"
     >
       {{ 'components.records.showActive' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       icon="file_download"
       category="secondary"
       variant="primary"
-      [matMenuTriggerFor]="menu"
+      [uiMenuTriggerFor]="menu"
     >
       {{
         'common.downloadObject'
           | translate : { name: 'common.record.few' | translate }
       }}
-    </safe-button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="onDownload('csv')">.csv</button>
-      <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
-    </mat-menu>
-    <safe-button
+    </ui-button>
+    <ui-menu #menu>
+      <button uiMenuItem (click)="onDownload('csv')">.csv</button>
+      <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
+    </ui-menu>
+    <ui-button
       icon="file_upload"
       category="secondary"
       variant="primary"
-      [matTooltip]="'components.records.upload.hint' | translate"
+      [uiTooltip]="'components.records.upload.hint' | translate"
       (click)="showUpload = !showUpload"
       cdkOverlayOrigin
       #uploadTrigger="cdkOverlayOrigin"
@@ -57,7 +57,7 @@
         'common.uploadObject'
           | translate : { name: 'common.record.few' | translate }
       }}
-    </safe-button>
+    </ui-button>
     <ng-template
       cdkConnectedOverlay
       [cdkConnectedOverlayOrigin]="uploadTrigger"
@@ -101,26 +101,26 @@
         <ng-container *ngIf="column === '_actions'">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let element">
-            <safe-button
+            <ui-button
               [isIcon]="true"
               icon="more_vert"
-              [matMenuTriggerFor]="menu"
+              [uiMenuTriggerFor]="menu"
               (click)="$event.stopPropagation()"
             >
-            </safe-button>
-            <mat-menu #menu="matMenu">
+            </ui-button>
+            <ui-menu #menu>
               <button
-                mat-menu-item
+                uiMenuItem
                 color="warn"
                 (click)="onViewHistory(element.id)"
               >
                 <mat-icon>library_books</mat-icon>
                 {{ 'common.history' | translate }}
               </button>
-              <safe-divider class="m-0"></safe-divider>
+              <ui-divider class="m-0"></ui-divider>
               <button
                 *ngIf="!showDeletedRecords"
-                mat-menu-item
+                uiMenuItem
                 (click)="onDeleteRecord(element, $event)"
               >
                 <mat-icon>delete</mat-icon>
@@ -128,7 +128,7 @@
               </button>
               <button
                 *ngIf="showDeletedRecords"
-                mat-menu-item
+                uiMenuItem
                 (click)="onDeleteRecord(element, $event)"
               >
                 <mat-icon>delete_forever</mat-icon>
@@ -136,13 +136,13 @@
               </button>
               <button
                 *ngIf="showDeletedRecords"
-                mat-menu-item
+                uiMenuItem
                 (click)="onRestoreRecord(element.id, $event)"
               >
                 <mat-icon>unarchive</mat-icon>
                 {{ 'models.record.restore' | translate }}
               </button>
-            </mat-menu>
+            </ui-menu>
           </td>
         </ng-container>
       </ng-container>

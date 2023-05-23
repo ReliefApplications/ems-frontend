@@ -13,16 +13,14 @@
       ></safe-form-actions>
     </div>
     <div mat-dialog-title>
-      <mat-tab-group
-        animationDuration="0ms"
+      <ui-tabs
         [selectedIndex]="selectedTabIndex"
         (selectedIndexChange)="onShowPage($event)"
       >
-        <mat-tab
-          *ngFor="let page of pages$ | async"
-          [label]="page.title ? page.title : page.name"
-        ></mat-tab>
-      </mat-tab-group>
+        <ui-tab *ngFor="let page of pages$ | async">
+          <ng-container ngProjectAs="label">{{page.title ? page.title : page.name}}</ng-container>
+        </ui-tab>
+      </ui-tabs>
       <div class="versions-info" *ngIf="data.compareTo">
         <div class="version-info">
           <div>{{ 'components.record.history.version.old' | translate }}</div>
@@ -46,29 +44,29 @@
       <div #formContainer class="grow"></div>
     </ng-container>
     <div *ngIf="loading" class="h-full w-full flex">
-      <safe-spinner class="m-auto block"></safe-spinner>
+      <ui-spinner class="m-auto block"></ui-spinner>
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end" *ngIf="!loading && data.compareTo">
-    <safe-button (click)="onClose()">
+    <ui-button (click)="onClose()">
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       mat-dialog-close="true"
       cdkFocusInitial
     >
       {{ 'components.record.history.revert' | translate }}
-    </safe-button>
+    </ui-button>
   </mat-dialog-actions>
   <mat-dialog-actions align="end" *ngIf="!loading && !data.compareTo">
-    <safe-button (click)="onClose()" variant="danger">
+    <ui-button (click)="onClose()" variant="danger">
       {{ 'common.close' | translate }}
-    </safe-button>
+    </ui-button>
 
     <ng-container *ngIf="pages$ | async as pages">
-      <safe-button
+      <ui-button
         category="secondary"
         variant="primary"
         cdkFocusInitial
@@ -77,8 +75,8 @@
         [disabled]="survey.isFirstPage"
       >
         {{ 'common.previous' | translate }}
-      </safe-button>
-      <safe-button
+      </ui-button>
+      <ui-button
         category="secondary"
         variant="primary"
         cdkFocusInitial
@@ -87,9 +85,9 @@
         [disabled]="survey.isLastPage"
       >
         {{ 'common.next' | translate }}
-      </safe-button>
+      </ui-button>
     </ng-container>
-    <safe-button
+    <ui-button
       category="secondary"
       variant="primary"
       cdkFocusInitial
@@ -100,6 +98,6 @@
         'common.editObject'
           | translate : { name: 'common.record.one' | translate }
       }}
-    </safe-button>
+    </ui-button>
   </mat-dialog-actions>
 </safe-modal>

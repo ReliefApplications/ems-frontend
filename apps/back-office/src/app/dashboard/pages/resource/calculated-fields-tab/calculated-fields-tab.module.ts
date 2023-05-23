@@ -3,12 +3,11 @@ import { CommonModule } from '@angular/common';
 import { CalculatedFieldsTabRoutingModule } from './calculated-fields-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule, SafeEmptyModule } from '@oort-front/safe';
+import { SafeEmptyModule } from '@oort-front/safe';
 import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component';
+import { MenuModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * Calculated fields tab of resource page
@@ -20,12 +19,11 @@ import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component'
     CalculatedFieldsTabRoutingModule,
     MatTableModule,
     MatIconModule,
-    MatMenuModule,
-    SafeButtonModule,
-    MatTooltipModule,
+    MenuModule,
     TranslateModule,
     OverlayModule,
     SafeEmptyModule,
+    ButtonModule,
   ],
 })
 export class CalculatedFieldsTabModule {}

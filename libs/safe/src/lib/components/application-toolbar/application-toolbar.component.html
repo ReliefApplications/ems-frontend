@@ -5,13 +5,13 @@
       {{ title }}
     </h2>
     <!-- Settings -->
-    <safe-button
+    <ui-button
       *ngIf="settings.length > 0"
       [isIcon]="true"
       icon="tune"
       variant="grey"
-      [matMenuTriggerFor]="settingsMenu"
-    ></safe-button>
+      [uiMenuTriggerFor]="settingsMenu"
+    ></ui-button>
     <!-- Access -->
     <safe-access
       *ngIf="title && canUpdate"
@@ -21,31 +21,31 @@
     ></safe-access>
   </div>
   <div class="flex flex-row gap-2 items-center" *ngIf="showActions">
-    <safe-button
+    <ui-button
       *ngIf="application?.canUpdate && locked"
       [isIcon]="true"
       icon="lock"
       [variant]="lockedByUser ? 'primary' : 'danger'"
       (click)="onUnlock()"
     >
-    </safe-button>
-    <safe-button variant="danger" (click)="onClose()">{{
+    </ui-button>
+    <ui-button variant="danger" (click)="onClose()">{{
       'common.close' | translate
-    }}</safe-button>
-    <safe-button
+    }}</ui-button>
+    <ui-button
       category="secondary"
       variant="success"
       (click)="onPublish()"
       [disabled]="!canPublish || this.application?.status === 'active'"
-      >{{ 'common.publish' | translate }}</safe-button
+      >{{ 'common.publish' | translate }}</ui-button
     >
   </div>
 </div>
 
 <!-- Admin pages -->
-<mat-menu #settingsMenu="matMenu">
+<ui-menu #settingsMenu>
   <a
-    mat-menu-item
+    uiMenuItem
     *ngFor="let setting of settings"
     [routerLink]="setting.path"
     routerLinkActive="active-link"
@@ -55,4 +55,4 @@
     </mat-icon>
     {{ setting.name }}
   </a>
-</mat-menu>
+</ui-menu>

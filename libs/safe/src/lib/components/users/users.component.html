@@ -15,7 +15,7 @@
         />
       </mat-form-field>
       <!-- Toggle advanced filters -->
-      <safe-button
+      <ui-button
         class="max-sm:!w-auto"
         icon="filter_list"
         category="tertiary"
@@ -27,7 +27,7 @@
             ? ('common.filter.hide' | translate)
             : ('common.filter.show' | translate)
         }}
-      </safe-button>
+      </ui-button>
     </div>
     <!-- Advanced filters -->
     <div
@@ -48,11 +48,11 @@
         </mat-select>
       </mat-form-field>
       <!-- Clear filters -->
-      <safe-button
+      <ui-button
         class="max-sm:!w-auto"
         variant="danger"
         (click)="clearAllFilters()"
-        >{{ 'common.filter.clear' | translate }}</safe-button
+        >{{ 'common.filter.clear' | translate }}</ui-button
       >
     </div>
   </div>
@@ -60,7 +60,7 @@
   <div class="flex gap-2 items-center">
     <!-- Actions when selected items -->
     <ng-container *ngIf="selection.selected.length > 0">
-      <safe-button
+      <ui-button
         icon="delete"
         category="secondary"
         variant="danger"
@@ -70,33 +70,33 @@
           'common.deleteObject'
             | translate : { name: 'common.user.few' | translate }
         }}
-      </safe-button>
+      </ui-button>
     </ng-container>
 
     <!-- Default actions -->
-    <safe-button
+    <ui-button
       icon="file_download"
       category="secondary"
       variant="primary"
-      [matMenuTriggerFor]="menu"
+      [uiMenuTriggerFor]="menu"
     >
       {{
         'common.exportObject'
           | translate : { name: 'common.user.few' | translate }
       }}
-    </safe-button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="onExport('csv')">.csv</button>
-      <button mat-menu-item (click)="onExport('xlsx')">.xlsx</button>
-    </mat-menu>
-    <safe-button
+    </ui-button>
+    <ui-menu #menu>
+      <button uiMenuItem (click)="onExport('csv')">.csv</button>
+      <button uiMenuItem (click)="onExport('xlsx')">.xlsx</button>
+    </ui-menu>
+    <ui-button
       icon="send"
       category="secondary"
       variant="primary"
       (click)="onInvite()"
     >
       {{ 'components.users.invite.confirm' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </div>
 <!-- Table container -->
@@ -107,24 +107,22 @@
       <!-- Checkbox Column -->
       <ng-container matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef>
-          <mat-checkbox
-            class="mr-2"
+          <ui-checkbox
             (change)="$event ? masterToggle() : null"
             [checked]="selection.hasValue() && isAllSelected()"
             [indeterminate]="selection.hasValue() && !isAllSelected()"
-            [aria-label]="checkboxLabel()"
+            [ariaLabel]="checkboxLabel()"
           >
-          </mat-checkbox>
+          </ui-checkbox>
         </th>
         <td mat-cell *matCellDef="let row">
-          <mat-checkbox
-            class="mr-2"
+          <ui-checkbox
             (click)="$event.stopPropagation()"
             (change)="$event ? selection.toggle(row) : null"
             [checked]="selection.isSelected(row)"
-            [aria-label]="checkboxLabel(row)"
+            [ariaLabel]="checkboxLabel(row)"
           >
-          </mat-checkbox>
+          </ui-checkbox>
         </td>
       </ng-container>
       <ng-container matColumnDef="username">
@@ -170,19 +168,19 @@
       <ng-container matColumnDef="actions" [stickyEnd]="true">
         <th mat-header-cell *matHeaderCellDef class="w-16"></th>
         <td mat-cell *matCellDef="let element">
-          <safe-button
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
-            [matMenuTriggerFor]="menu"
+            [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
           >
-          </safe-button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="onDelete([element])">
+          </ui-button>
+          <ui-menu #menu>
+            <button uiMenuItem (click)="onDelete([element])">
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
             </button>
-          </mat-menu>
+          </ui-menu>
         </td>
       </ng-container>
 

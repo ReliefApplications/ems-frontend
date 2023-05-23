@@ -6,13 +6,13 @@
     <safe-filter [form]="formGroup" [fields]="fields"></safe-filter>
   </div>
   <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
-    <safe-button
+    <ui-button mat-dialog-close>{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [mat-dialog-close]="formGroup.value"
       [disabled]="!formGroup.valid"
-      >{{ 'common.update' | translate }}</safe-button
+      >{{ 'common.update' | translate }}</ui-button
     >
   </div>
 </safe-modal>

@@ -7,18 +7,18 @@
         <input matInput formControlName="title" type="string" />
       </mat-form-field>
       <div class="form-group-title">{{ 'global.data' | translate }}</div>
-      <mat-radio-group
-        formControlName="from"
-        class="form-radio-group"
-        (change)="getSources()"
-      >
-        <mat-radio-button value="resource">{{
-          'widgets.scheduler.useRecords' | translate
-        }}</mat-radio-button>
-        <mat-radio-button value="form">{{
-          'widgets.scheduler.useForm' | translate
-        }}</mat-radio-button>
-      </mat-radio-group>
+      <div formControlName="from" uiRadioGroupDirective="fromOptions" (groupValueChange)="getSources()">
+        <ui-radio value="resource" [checked]="tileForm.get('from')?.value === 'resource'">
+          <ng-container ngProjectAs="label">
+            {{ 'widgets.scheduler.useRecords' | translate }}
+          </ng-container>
+        </ui-radio>
+        <ui-radio value="form" [checked]="tileForm.get('from')?.value === 'form'">
+          <ng-container ngProjectAs="label">
+            {{ 'widgets.scheduler.useForm' | translate }}
+          </ng-container>
+        </ui-radio>
+      </div>
       <mat-form-field>
         <mat-label>{{ 'global.dataSrc' | translate }}</mat-label>
         <mat-select
