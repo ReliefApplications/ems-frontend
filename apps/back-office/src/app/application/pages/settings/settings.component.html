@@ -39,18 +39,21 @@
         <input matInput formControlName="id" type="text" />
       </mat-form-field>
     </div>
-    <ui-textarea
-      label="{{ 'models.application.description' | translate }}"
-      formControlName="description"
-      [placeholder]="
-        'components.application.update.placeholder.description' | translate
-      "
-      [minRows]="2"
-      [maxRows]="5"
-      name="textarea"
-      class="mb-6"
-    >
-    </ui-textarea>
+    <div uiFormFieldDirective>
+      <label>
+        {{ 'models.application.description' | translate }}
+      </label>
+      <ui-textarea
+        formControlName="description"
+        [placeholder]="
+          'components.application.update.placeholder.description' | translate
+        "
+        [minRows]="2"
+        [maxRows]="5"
+        name="textarea"
+      >
+      </ui-textarea>
+    </div>
   </div>
   <ui-button
     category="secondary"
@@ -69,11 +72,7 @@
   <h1>{{ 'pages.application.settings.actions' | translate }}</h1>
   <div class="flex gap-2 flex-wrap">
     <!-- Styling -->
-    <ui-button
-      category="secondary"
-      variant="primary"
-      (click)="onOpenStyle()"
-    >
+    <ui-button category="secondary" variant="primary" (click)="onOpenStyle()">
       {{ 'components.application.customStyling' | translate }}
     </ui-button>
     <ui-button

@@ -6,12 +6,12 @@
       </mat-label>
       <input matInput formControlName="title" type="text" />
     </mat-form-field>
-    <ui-textarea
-      label="{{ 'models.role.description' | translate }}"
-      formControlName="description"
-      [minRows]="5"
-    >
-    </ui-textarea>
+    <div uiFormFieldDirective>
+      <label>
+        {{ 'models.role.description' | translate }}
+      </label>
+      <ui-textarea formControlName="description" [minRows]="5"> </ui-textarea>
+    </div>
     <mat-form-field appearance="outline">
       <mat-label>{{
         'components.role.update.permissions' | translate

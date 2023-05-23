@@ -18,6 +18,7 @@ import {
   TooltipModule,
   ButtonModule as UiButtonModule,
   TextareaModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 
 /**
@@ -44,6 +45,7 @@ import {
     ButtonModule,
     TextareaModule,
     UiButtonModule,
+    FormWrapperModule,
   ],
 })
 export class ReferenceDataModule {}

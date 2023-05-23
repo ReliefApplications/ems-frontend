@@ -11,9 +11,6 @@ export default {
     value: {
       control: 'text',
     },
-    label: {
-      control: 'text',
-    },
     name: {
       control: 'text',
     },
@@ -57,12 +54,11 @@ const FormControlTemplate: StoryFn<TextareaComponent> = (
   const formGroup = new FormGroup({
     textarea: new FormControl('Default value'),
   });
-  args.label = 'Form control textarea';
   return {
     component: TextareaComponent,
     template: `
       <form [formGroup]="formGroup">
-      <ui-textarea [placeholder]="'${args.placeholder}'" [label]="'${args.label}'" formControlName="textarea"></ui-textarea>
+      <ui-textarea [placeholder]="'${args.placeholder}'" formControlName="textarea"></ui-textarea>
         </form>
         <br>
         <p>value: {{formGroup.get('textarea').value}}</p>
@@ -84,11 +80,10 @@ const FormControlTemplate: StoryFn<TextareaComponent> = (
 const KendoFocusTemplate: StoryFn<TextareaComponent> = (
   args: TextareaComponent
 ) => {
-  args.label = 'Kendo focusable textarea';
   return {
     component: TextareaComponent,
     template: `
-      <ui-textarea kendoGridFocusable [placeholder]="'${args.placeholder}'" [label]="'${args.label}'"></ui-textarea>
+      <ui-textarea kendoGridFocusable [placeholder]="'${args.placeholder}'"></ui-textarea>
         `,
     props: {
       ...args,
@@ -108,7 +103,6 @@ KendoFocusTextarea.args = {
 export const Primary = Template.bind({});
 Primary.args = {
   value: 'Hi',
-  label: 'Message',
   placeholder: 'Type something',
   name: 'textarea',
   minRows: 15,

@@ -56,6 +56,7 @@ import {
   ButtonModule,
   ExpansionPanelModule,
   TextareaModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 
 /** Items per page for pagination */
@@ -84,6 +85,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     CronExpressionControlModule,
     TextareaModule,
     ButtonModule,
+    FormWrapperModule,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',

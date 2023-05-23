@@ -32,7 +32,6 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
 })
 export class TextareaComponent implements ControlValueAccessor {
   @Input() value: any = '';
-  @Input() label = '';
   @Input() placeholder = '';
   @Input() name!: string;
   /**

@@ -1,11 +1,8 @@
 <safe-modal size="medium" [closable]="true">
   <div mat-dialog-content class="!flex flex-col">
     <h1>{{ data.title }}</h1>
-    <div class="flex-1">
-      <ui-textarea
-        [formControl]="formControl"
-        [minRows]="15"
-      >
+    <div uiFormFieldDirective class="flex-1">
+      <ui-textarea [formControl]="formControl" [minRows]="15" [maxRows]="15">
       </ui-textarea>
     </div>
   </div>

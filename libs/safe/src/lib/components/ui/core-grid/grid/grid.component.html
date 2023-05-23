@@ -449,6 +449,7 @@
             <ui-textarea
               [formControl]="formGroup.get(field.name)"
               [minRows]="2"
+              [maxRows]="2"
               [name]="field.name"
               class="w-full"
               kendoGridFocusable
@@ -829,6 +830,7 @@
                             formGroup.get([field.name, row.name, column.name])
                           "
                           [minRows]="2"
+                          [maxRows]="2"
                           [name]="row.name"
                           class="w-full"
                           kendoGridFocusable
@@ -865,6 +867,7 @@
                           [formControlName]="column.name"
                           [name]="field.name + i"
                           [minRows]="2"
+                          [maxRows]="2"
                           class="w-full"
                           kendoGridFocusable
                         >
@@ -913,6 +916,7 @@
                 <ui-textarea
                   [formControl]="formGroup.get([field.name, column.name])"
                   [minRows]="2"
+                  [maxRows]="2"
                   [name]="column.name"
                   class="w-full"
                   kendoGridFocusable

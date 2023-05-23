@@ -53,9 +53,9 @@
         ></safe-field-dropdown>
       </ng-container>
       <ng-container *ngSwitchCase="stageType.CUSTOM">
-        <div class="w-52">
+        <div uiFormFieldDirective>
+          <label>{{ 'common.input.rawJson' | translate }}</label>
           <ui-textarea
-            label="{{ 'common.input.rawJson' | translate }}"
             [formControl]="$any(stageForm).controls.form.controls.raw"
             [minRows]="4"
             [maxRows]="20"

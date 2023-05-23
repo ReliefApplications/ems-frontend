@@ -110,17 +110,15 @@
     </div>
     <!-- CSV Input for static type -->
     <div *ngIf="type === 'static'" class="flex gap-2">
-      <mat-form-field appearance="outline" class="flex-auto">
-        <mat-label>{{ 'pages.referenceData.csv' | translate }}</mat-label>
+      <div uiFormFieldDirective class="flex-auto">
+        <label>{{ 'pages.referenceData.csv' | translate }}</label>
         <ui-textarea
-          label="{{ 'pages.referenceData.csv' | translate }}"
           #csvData
           [placeholder]="'pages.referenceData.placeholder.csv' | translate"
           [value]="csvValue"
-          class="flex-auto"
         >
         </ui-textarea>
-      </mat-form-field>
+      </div>
       <ui-button
         category="secondary"
         variant="primary"
