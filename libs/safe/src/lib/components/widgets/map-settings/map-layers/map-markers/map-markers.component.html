@@ -67,7 +67,7 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table cdk-table uiTableStyle uiTableWrapper [dataSource]="rules.value">
+    <table cdk-table  uiTableWrapper [dataSource]="rules.value">
       <ng-container cdkColumnDef="color">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.preview' | translate }}

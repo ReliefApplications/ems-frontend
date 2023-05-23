@@ -5,7 +5,6 @@ import { TableWrapperDirective } from './table-wrapper.directive';
 import { TableHeaderSortDirective } from './table-header-sort.directive';
 import { CellDirective } from './cell.directive';
 import { CellHeaderDirective } from './cell-header.directive';
-import { TableDirective } from './table.directive';
 
 /**
  * UI Table module
@@ -16,7 +15,6 @@ import { TableDirective } from './table.directive';
     TableHeaderSortDirective,
     CellDirective,
     CellHeaderDirective,
-    TableDirective,
   ],
   imports: [CommonModule, CdkTableModule],
   exports: [
@@ -25,7 +23,6 @@ import { TableDirective } from './table.directive';
     TableHeaderSortDirective,
     CellDirective,
     CellHeaderDirective,
-    TableDirective,
   ],
 })
 export class TableModule {}

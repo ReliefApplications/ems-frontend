@@ -33,7 +33,7 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table uiTableStyle uiTableWrapper [dataSource]="roles">
+    <table *ngIf="!loading" cdk-table  uiTableWrapper [dataSource]="roles">
       <ng-container cdkColumnDef="title">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">

@@ -35,7 +35,7 @@
   <div class="overflow-x-hidden shadow-2lg">
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
-      <table cdk-table uiTableStyle uiTableWrapper [dataSource]="layers.value">
+      <table cdk-table  uiTableWrapper [dataSource]="layers.value">
         <ng-container cdkColumnDef="title">
           <th uiCellHeader *cdkHeaderCellDef scope="col">
             {{ 'common.name' | translate }}

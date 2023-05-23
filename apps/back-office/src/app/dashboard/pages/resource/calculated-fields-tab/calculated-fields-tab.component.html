@@ -11,7 +11,7 @@
 <div>
   <div class="overflow-x-hidden shadow-2lg">
     <div class="overflow-x-auto">
-      <table cdk-table uiTableStyle uiTableWrapper [dataSource]="fields">
+      <table cdk-table  uiTableWrapper [dataSource]="fields">
         <ng-container cdkColumnDef="name">
           <th uiCellHeader *cdkHeaderCellDef scope="col">
             {{ 'models.form.field.name' | translate }}

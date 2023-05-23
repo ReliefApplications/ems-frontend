@@ -73,7 +73,7 @@
     <div class="overflow-x-hidden shadow-2lg">
       <!-- Table scroll container -->
       <div class="overflow-x-auto">
-        <table cdk-table uiTableStyle uiTableWrapper [dataSource]="divisions.value">
+        <table cdk-table  uiTableWrapper [dataSource]="divisions.value">
           <ng-container cdkColumnDef="label">
             <th uiCellHeader *cdkHeaderCellDef  scope="col">
               {{ 'common.label' | translate }}

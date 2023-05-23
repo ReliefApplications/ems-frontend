@@ -10,7 +10,7 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table cdk-table uiTableStyle uiTableWrapper [dataSource]="clorophlets.value">
+    <table cdk-table  uiTableWrapper [dataSource]="clorophlets.value">
       <ng-container cdkColumnDef="name">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.name' | translate }}

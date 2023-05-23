@@ -13,7 +13,7 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table uiTableStyle uiTableWrapper [dataSource]="pullJobs">
+    <table *ngIf="!loading" cdk-table  uiTableWrapper [dataSource]="pullJobs">
       <ng-container cdkColumnDef="name">
         <th uiCellHeader *cdkHeaderCellDef>
           {{ 'common.name' | translate }}

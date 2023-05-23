@@ -33,7 +33,10 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
     'py-2',
     'sm:rounded-lg',
   ];
+  private tableClasses = ['min-w-full', 'divide-y', 'divide-gray-300'];
+  private tbodyClasses = ['divide-y', 'divide-gray-200', 'bg-white'];
 
+  private tableWrapperElement!: HTMLDivElement;
   private destroy$ = new Subject<void>();
   /**
    * UI Table wrapper directive constructor
@@ -47,17 +50,24 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
     if (!(this.el.nativeElement instanceof HTMLTableElement)) {
       throw new Error('Directive could only be applied to an HTMLTableElement');
     }
+    for (const cl of this.tableClasses) {
+      this.renderer.addClass(this.el.nativeElement, cl);
+    }
+    const body = this.el.nativeElement.querySelector('tbody');
+    for (const cl of this.tbodyClasses) {
+      this.renderer.addClass(body, cl);
+    }
     // Render default classes for the host table parent
-    const tableWrapperElement = this.renderer.createElement('div');
+    this.tableWrapperElement = this.renderer.createElement('div');
     this.tableWrapperClasses.forEach((twClass) => {
-      this.renderer.addClass(tableWrapperElement, twClass);
+      this.renderer.addClass(this.tableWrapperElement, twClass);
     });
     // Append new wrapped up table
     this.renderer.appendChild(
       this.el.nativeElement.parentElement,
-      tableWrapperElement
+      this.tableWrapperElement
     );
-    this.renderer.appendChild(tableWrapperElement, this.el.nativeElement);
+    this.renderer.appendChild(this.tableWrapperElement, this.el.nativeElement);
   }
 
   ngAfterViewInit(): void {
@@ -102,5 +112,8 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    if (this.tableWrapperElement) {
+      this.tableWrapperElement.remove();
+    }
   }
 }

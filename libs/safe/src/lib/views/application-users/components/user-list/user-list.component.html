@@ -19,7 +19,7 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table uiTableStyle uiTableWrapper [dataSource]="users">
+    <table *ngIf="!loading" cdk-table  uiTableWrapper [dataSource]="users">
       <!-- Checkbox Column -->
       <ng-container *ngIf="!autoAssigned" cdkColumnDef="select">
         <th uiCellHeader *cdkHeaderCellDef scope="col">

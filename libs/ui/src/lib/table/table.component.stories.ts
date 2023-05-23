@@ -208,7 +208,7 @@ const Template: StoryFn<any> = (args: any) => {
     template: `
     <!--TABLE CONTENT-->
 <table
-  cdk-table uiTableStyle
+  cdk-table 
   uiTableWrapper
   (sortChange)="sortTableByKey($event)"
   [dataSource]="pagedTableData"

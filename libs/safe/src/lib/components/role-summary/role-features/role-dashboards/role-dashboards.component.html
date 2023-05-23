@@ -4,7 +4,7 @@
   <div class="overflow-x-hidden shadow-2lg">
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
-      <table cdk-table uiTableStyle uiTableWrapper [dataSource]="filteredPages">
+      <table cdk-table  uiTableWrapper [dataSource]="filteredPages">
         <ng-container cdkColumnDef="name">
           <th uiCellHeader *cdkHeaderCellDef scope="col">
             {{ 'common.name' | translate }}

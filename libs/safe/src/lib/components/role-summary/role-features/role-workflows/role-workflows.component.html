@@ -1,6 +1,6 @@
 <div *ngIf="filteredPages.length">
   <h2>{{ 'common.workflow.few' | translate }}</h2>
-  <table cdk-table uiTableStyle uiTableWrapper [dataSource]="filteredPages" multiTemplateDataRows>
+  <table cdk-table  uiTableWrapper [dataSource]="filteredPages" multiTemplateDataRows>
     <ng-container cdkColumnDef="name">
       <th uiCellHeader *cdkHeaderCellDef scope="col">
         {{ 'common.name' | translate }}
@@ -63,7 +63,7 @@
         >
           <table
             class="my-4 mx-0"
-            cdk-table uiTableStyle
+            cdk-table 
             uiTableWrapper
             [dataSource]="filteredSteps"
             *ngIf="filteredSteps.length"

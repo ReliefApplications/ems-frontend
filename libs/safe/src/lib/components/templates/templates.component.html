@@ -16,7 +16,7 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table uiTableStyle uiTableWrapper [dataSource]="templates">
+    <table *ngIf="!loading" cdk-table  uiTableWrapper [dataSource]="templates">
       <ng-container cdkColumnDef="name">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">

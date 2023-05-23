@@ -20,7 +20,7 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table cdk-table uiTableStyle uiTableWrapper [dataSource]="rules" *ngIf="!loading">
+    <table cdk-table  uiTableWrapper [dataSource]="rules" *ngIf="!loading">
       <ng-container cdkColumnDef="filter">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'components.role.summary.autoAssignment.rule.title' | translate }}

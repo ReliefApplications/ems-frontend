@@ -35,7 +35,7 @@
   <div class="overflow-x-hidden shadow-2lg mt-6">
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
-      <table cdk-table uiTableStyle uiTableWrapper [dataSource]="user.applications">
+      <table cdk-table  uiTableWrapper [dataSource]="user.applications">
         <ng-container cdkColumnDef="name">
           <th uiCellHeader *cdkHeaderCellDef scope="col">
             <span class="headerTitle">

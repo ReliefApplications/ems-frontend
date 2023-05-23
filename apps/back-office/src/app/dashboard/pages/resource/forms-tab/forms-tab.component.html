@@ -2,7 +2,7 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table uiTableStyle uiTableWrapper [dataSource]="forms">
+    <table *ngIf="!loading" cdk-table  uiTableWrapper [dataSource]="forms">
       <ng-container cdkColumnDef="name">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.name' | translate }}
