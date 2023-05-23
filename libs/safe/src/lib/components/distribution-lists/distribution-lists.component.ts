@@ -3,6 +3,7 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
+import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 
 /**
  * Component to show the list of distribution lists of an application
@@ -26,8 +27,13 @@ export class DistributionListsComponent implements OnInit {
    *
    * @param dialog The material dialog service
    * @param translate The translation service
+   * @param snackBar Shared snackbar service
    */
-  constructor(public dialog: MatDialog, private translate: TranslateService) {}
+  constructor(
+    public dialog: MatDialog,
+    private translate: TranslateService,
+    private snackBar: SafeSnackBarService
+  ) {}
 
   ngOnInit(): void {
     this.applicationService.application$.subscribe((value) => {
@@ -56,6 +62,12 @@ export class DistributionListsComponent implements OnInit {
           name: value.name,
           emails: value.emails,
         });
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectUpdated', {
+            value: value.name,
+            type: this.translate.instant('common.distributionList.one'),
+          })
+        );
       }
     });
   }
@@ -77,6 +89,12 @@ export class DistributionListsComponent implements OnInit {
           name: value.name,
           emails: value.emails,
         });
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectCreated', {
+            value: value.name,
+            type: this.translate.instant('common.distributionList.one'),
+          })
+        );
       }
     });
   }
@@ -109,6 +127,11 @@ export class DistributionListsComponent implements OnInit {
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
         this.applicationService.deleteDistributionList(distributionList.id);
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectDeleted', {
+            value: distributionList.name,
+          })
+        );
       }
     });
   }
