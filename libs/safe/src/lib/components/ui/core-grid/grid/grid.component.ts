@@ -193,6 +193,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() selectedRows: string[] = [];
   @Output() selectionChange = new EventEmitter();
   public selectedItems: any[] = [];
+  public showColumnChooser = false;
 
   // === FILTER ===
   @Input() filterable = true;
@@ -217,7 +218,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
 
   // === TEMPLATE ===
   @ViewChild(GridComponent)
-  private grid?: GridComponent;
+  public grid?: GridComponent;
 
   // === ADMIN ===
   @Input() admin = false;
@@ -464,6 +465,16 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     this.selectedItems = this.data.data.filter((x) =>
       this.selectedRows.includes(x.id)
     );
+  }
+
+  /**
+   * Toggles the menu for choosing columns
+   *
+   * @param showColumnChooser optional parameter to decide of the state of the popup
+   */
+  public toggleColumnChooser(showColumnChooser?: boolean) {
+    if (showColumnChooser) this.showColumnChooser = showColumnChooser;
+    else this.showColumnChooser = !this.showColumnChooser;
   }
 
   // === LAYOUT ===
