@@ -725,6 +725,7 @@
 			},
 			"fields": {
 				"available": "******",
+				"column": "******",
 				"format": {
 					"info": "******",
 					"title": "******"
@@ -1352,6 +1353,7 @@
 							}
 						},
 						"textEditor": {
+							"alert": "****** {{data.variable}} ****** {{calc.round( value ; precision )}}",
 							"title": "******"
 						},
 						"title": "******",

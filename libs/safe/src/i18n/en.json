@@ -725,6 +725,7 @@
 			},
 			"fields": {
 				"available": "Available fields",
+				"column": "Column width (px)",
 				"format": {
 					"info": "Left empty to ignore formatting",
 					"title": "Display format"
@@ -1352,6 +1353,7 @@
 							}
 						},
 						"textEditor": {
+							"alert": "You can add variables e.g: {{data.variable}} and calculate e.g: {{calc.round( value ; precision )}}",
 							"title": "Text editor"
 						},
 						"title": "Card settings",
