@@ -16,10 +16,12 @@ import { ExpansionPanelModule } from './expansion-panel/expansion-panel.module';
 import { SliderModule } from './slider/slider.module';
 import { TextareaModule } from './textarea/textarea.module';
 import { RadioModule } from './radio/radio.module';
+import { SidenavContainerModule } from './sidenav/sidenav-container.module';
 import { ChipModule } from './chip/chip.module';
 import { FormWrapperModule } from './form-wrapper/form-wrapper.module';
 import { DialogModule } from './dialog/dialog.module';
 import { TabsModule } from './tabs/tabs.module';
+import { SnackbarModule } from './snackbar/snackbar.module';
 
 /**
  * UI Library Module
@@ -43,11 +45,12 @@ import { TabsModule } from './tabs/tabs.module';
     SliderModule,
     TextareaModule,
     RadioModule,
+    SidenavContainerModule,
     ChipModule,
     FormWrapperModule,
     DialogModule,
     TabsModule,
+    SnackbarModule,
   ],
-  imports: [],
 })
 export class UiModule {}

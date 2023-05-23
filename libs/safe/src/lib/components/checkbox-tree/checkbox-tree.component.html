@@ -1,54 +1,42 @@
-<mat-tree
-  class="border border-gray-200 rounded overflow-auto max-h-80"
-  [dataSource]="dataSource"
-  [treeControl]="treeControl"
->
-  <mat-tree-node
-    *matTreeNodeDef="let node"
-    matTreeNodeToggle
-    matTreeNodePadding
+<div class="border border-gray-200 rounded overflow-auto max-h-80 p-4">
+  <cdk-tree
+    [dataSource]="dataSource"
+    [treeControl]="treeControl"
+    class="flex flex-col gap-2"
   >
-    <ui-button [disabled]="true" [icon]="''"></ui-button>
-    <ui-checkbox
-      class="checklist-leaf-node"
-      [checked]="checklistSelection.isSelected(node)"
-      (change)="todoLeafItemSelectionToggle(node)"
+    <cdk-tree-node
+      *cdkTreeNodeDef="let node"
+      cdkTreeNodeToggle
+      cdkTreeNodePadding
+      class="flex items-center"
     >
-      <ng-container ngProjectAs="label">{{ node.item }}</ng-container>
-    </ui-checkbox>
-  </mat-tree-node>
+      <ui-checkbox
+        [checked]="checklistSelection.isSelected(node)"
+        (change)="todoLeafItemSelectionToggle(node)"
+      >
+        <ng-container ngProjectAs="label">{{ node.item }}</ng-container>
+      </ui-checkbox>
+    </cdk-tree-node>
 
-  <!-- <mat-tree-node
-    *matTreeNodeDef="let node; when: hasNoContent"
-    matTreeNodePadding
-  >
-    <button mat-icon-button disabled></button>
-    <mat-form-field appearance="fill">
-      <mat-label>New item...</mat-label>
-      <input matInput #itemValue placeholder="Ex. Lettuce" />
-    </mat-form-field>
-    <ui-button (click)="saveNode(node, itemValue.value)">Save</ui-button>
-  </mat-tree-node> -->
-
-  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-    <ui-button
-      [attr.aria-label]="'Toggle ' + node.item"
-      icon="{{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}"
-      matTreeNodeToggle
+    <cdk-tree-node
+      class="flex items-center"
+      *cdkTreeNodeDef="let node; when: hasChild"
+      cdkTreeNodePadding
     >
-      <mat-icon class="mat-icon-rtl-mirror">
-        {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-      </mat-icon>
-    </ui-button>
-    <ui-checkbox
-      [checked]="descendantsAllSelected(node)"
-      [indeterminate]="descendantsPartiallySelected(node)"
-      (change)="todoItemSelectionToggle(node)"
-    >
-      <ng-container ngProjectAs="label">{{ node.item }}</ng-container>
-    </ui-checkbox>
-    <!-- <button mat-icon-button (click)="addNewItem(node)">
-      <mat-icon>add</mat-icon>
-    </button> -->
-  </mat-tree-node>
-</mat-tree>
+      <ui-button
+        [attr.aria-label]="'Toggle ' + node.item"
+        icon="{{
+          treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'
+        }}"
+        matTreeNodeToggle
+      ></ui-button>
+      <ui-checkbox
+        [checked]="descendantsAllSelected(node)"
+        [indeterminate]="descendantsPartiallySelected(node)"
+        (change)="todoItemSelectionToggle(node)"
+      >
+        <ng-container ngProjectAs="label">{{ node.item }}</ng-container>
+      </ui-checkbox>
+    </cdk-tree-node>
+  </cdk-tree>
+</div>
