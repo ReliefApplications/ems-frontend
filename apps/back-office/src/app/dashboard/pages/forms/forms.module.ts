@@ -29,7 +29,7 @@ import {
   SpinnerModule,
   SelectMenuModule,
   SelectOptionModule,
-  FormWrapperModule
+  FormWrapperModule,
 } from '@oort-front/ui';
 
 /** Forms page module */

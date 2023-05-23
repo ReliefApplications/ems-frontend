@@ -57,7 +57,7 @@ import {
   ExpansionPanelModule,
   SelectMenuModule,
   SelectOptionModule,
-  FormWrapperModule, 
+  FormWrapperModule,
 } from '@oort-front/ui';
 
 /** Items per page for pagination */

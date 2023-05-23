@@ -14,7 +14,13 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
 import { SafeIconModule } from '@oort-front/safe';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
-import { TooltipModule, ButtonModule as UiButtonModule, SelectMenuModule ,SelectOptionModule, FormWrapperModule } from '@oort-front/ui';
+import {
+  TooltipModule,
+  ButtonModule as UiButtonModule,
+  SelectMenuModule,
+  SelectOptionModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * Reference Data page module.

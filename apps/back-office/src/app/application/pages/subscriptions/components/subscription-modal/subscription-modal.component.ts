@@ -55,7 +55,7 @@ import {
   ButtonModule,
   SelectMenuModule,
   SelectOptionModule,
-  FormWrapperModule, 
+  FormWrapperModule,
 } from '@oort-front/ui';
 
 /** Items per query for pagination */

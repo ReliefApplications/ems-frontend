@@ -114,10 +114,10 @@ export class SelectMenuComponent
    */
   writeValue(value: string[]): void {
     console.log(value);
-    if(value && typeof value === 'string'){
+    if (value && typeof value === 'string') {
       this.selectedValues = [value];
       this.setDisplayTriggerText();
-    }else if (value){
+    } else if (value) {
       this.selectedValues = [...value];
       this.setDisplayTriggerText();
     }
@@ -149,14 +149,14 @@ export class SelectMenuComponent
   onChangeFunction() {
     // Emit the list of values selected as an output
     this.setDisplayTriggerText();
-    if(this.multiselect){
+    if (this.multiselect) {
       // Manage control access value
       if (this.onChange && this.onTouch) {
         this.onChange(this.selectedValues);
         this.onTouch();
       }
       this.selectedOption.emit(this.selectedValues);
-    }else{
+    } else {
       // Manage control access value
       if (this.onChange && this.onTouch) {
         this.onChange(this.selectedValues[0]);
