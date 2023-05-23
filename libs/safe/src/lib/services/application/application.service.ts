@@ -232,8 +232,9 @@ export class SafeApplicationService {
             duration: 0,
           }
         );
-        //@TODO snackbar
-        snackBar.onAction().subscribe(() => window.location.reload());
+        snackBar.instance.actionComplete.subscribe(() =>
+          window.location.reload()
+        );
       });
     this.lockSubscription = this.apollo
       .subscribe<ApplicationUnlockedSubscriptionResponse>({

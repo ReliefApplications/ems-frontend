@@ -44,7 +44,7 @@ class LaunchSnackbarComponent {
       });
     } else {
       this.snackBar.openComponentSnackBar(CustomSnackbarComponent, {
-        duration: 6000,
+        duration: 0,
         data: {
           message: 'Processing',
           loading: true,
@@ -64,7 +64,7 @@ class LaunchSnackbarComponent {
   template: `
     <div class="flex">
       <span class="pr-2">{{ data.message }}</span>
-      <ui-spinner *ngIf="data.loading"></ui-spinner>
+      <ui-spinner size="medium" *ngIf="data.loading"></ui-spinner>
       <ng-container *ngIf="!data.loading">
         <ui-icon
           class="h-6"
