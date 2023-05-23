@@ -7,6 +7,8 @@ import {
   Renderer2,
   ElementRef,
   OnDestroy,
+  SimpleChanges,
+  OnChanges,
 } from '@angular/core';
 import { SidenavTypes } from './types/sidenavs';
 
@@ -17,7 +19,7 @@ import { SidenavTypes } from './types/sidenavs';
   selector: '[uiSidenavDirective]',
   exportAs: 'uiSidenavDirective',
 })
-export class SidenavDirective implements OnInit, OnDestroy {
+export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
   @Input() opened = true;
   @Input() mode: SidenavTypes = 'side';
   @Output() openedChange = new EventEmitter<boolean>();
@@ -48,6 +50,11 @@ export class SidenavDirective implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  ngOnChanges(change: SimpleChanges) {
+    this.opened = change['opened'].currentValue;
+    this.openedChange.emit(this.opened);
   }
 
   /** Handles the toggle of the sidenav status */

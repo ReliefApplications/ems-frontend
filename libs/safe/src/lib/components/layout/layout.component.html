@@ -152,12 +152,14 @@
   <ng-container *ngTemplateOutlet="toolbar"></ng-container>
 </ng-container>
 
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav
+<ui-sidenav-container class="sidenav-container">
+  <div
+    uiSidenavDirective
     class="sidenav"
-    #nav
+    #nav="uiSidenavDirective"
     [mode]="largeDevice ? 'side' : 'over'"
     [opened]="largeDevice"
+    ngProjectAs="sidenavContent"
   >
     <ng-container *ngIf="leftSidenav">
       <ng-container
@@ -165,17 +167,24 @@
         [ngTemplateOutletContext]="{ $implicit: nav }"
       ></ng-container>
     </ng-container>
-  </mat-sidenav>
+  </div>
 
-  <mat-sidenav-content class="sidenav-content">
+  <ng-container ngProjectAs="content" class="sidenav-content">
     <ui-breadcrumbs
       *ngIf="breadcrumbs.length > 1"
       [breadcrumbs]="breadcrumbs"
     ></ui-breadcrumbs>
     <router-outlet></router-outlet>
-  </mat-sidenav-content>
+  </ng-container>
 
-  <mat-sidenav mode="side" position="end" [(opened)]="showSidenav">
+  <!-- <div
+    uiSidenavDirective
+    mode="side"
+    #nav="uiSidenavDirective"
+    position="end"
+    [(opened)]="showSidenav"
+    ngProjectAs="sidenavContent"
+  >
     <ng-template #rightSidenav></ng-template>
-  </mat-sidenav>
-</mat-sidenav-container>
+  </div> -->
+</ui-sidenav-container>

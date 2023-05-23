@@ -1,11 +1,12 @@
-<div class="w-screen h-screen">
+<div class="w-screen h-[calc(100vh-76px)] overflow-y-auto">
   <!-- SIDENAV CONTENT -->
   <div
     #sidenav
-    class="will-change-transform fixed left-0 top-0 z-[1035] h-screen w-60 data-[sidenav-show='false']:-translate-x-full overflow-hidden bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] translate-x-0 dark:bg-zinc-800"
+    class="will-change-transform fixed left-0 top-0 z-[1035] h-full w-60 data-[sidenav-show='false']:-translate-x-full overflow-y-auto bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] translate-x-0 dark:bg-zinc-800"
     [attr.data-sidenav-show]="showSidenav"
+    [ngClass]="{ 'navbar-offset': mode === 'side' }"
   >
-    <div class="flex flex-col flex-grow pb-4 overflow-y-auto h-full">
+    <div class="flex flex-col flex-grow pb-20 overflow-y-auto h-full">
       <ng-content select="sidenavContent"></ng-content>
     </div>
   </div>
@@ -16,7 +17,7 @@
         'visible bg-black opacity-50': showSidenav && mode === 'over',
         'invisible bg-transparent': !showSidenav || mode === 'side'
       }"
-      class="block transition-visibility duration-500 transition-all ease-in-out absolute inset-0 pointer-events-none z-[1034]"
+      class="block w-full overflow-y-auto min-h-full transition-visibility duration-500 transition-all ease-in-out absolute inset-0 pointer-events-none z-[1034]"
     ></div>
     <ng-content select="content"></ng-content>
   </div>

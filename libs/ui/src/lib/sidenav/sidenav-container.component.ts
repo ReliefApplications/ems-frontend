@@ -53,13 +53,20 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       this.setTransitionForContent();
     }, 0);
 
+    this.renderer.addClass(this.content.nativeElement, 'overflow-y-auto');
+    this.renderer.addClass(this.content.nativeElement, 'm-2');
+    this.renderer.addClass(this.content.nativeElement, 'flex-col');
+
     this.uiSidenavDirective.openedChange
       .pipe(takeUntil(this.destroy$))
       .subscribe((opened: boolean) => {
         this.showSidenav = opened;
-        if (this.mode === 'side') {
-          this.moveContent();
-        }
+        console.log(this.showSidenav);
+        // Change the mode if it has changed since last opening/closure
+        this.mode = this.uiSidenavDirective.mode;
+        // if (this.mode === 'side') {
+        this.moveContent();
+        // }
       });
   }
 
@@ -68,7 +75,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
    * Padding used as set in the tailwind official elements https://tailwind-elements.com/docs/standard/navigation/sidenav/#positioning
    */
   private moveContent() {
-    if (this.showSidenav) {
+    if (this.showSidenav && this.mode === 'side') {
       this.renderer.setStyle(
         this.content.nativeElement,
         'padding-left',
