@@ -86,19 +86,17 @@
             (searchChange)="onSearchChange($event)"
             [filterable]="true"
           ></safe-graphql-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{
-            'components.channel.dropdown.select' | translate
-          }}</mat-label>
-          <mat-select formControlName="channel">
-            <mat-option
+        </mat-form-field>          
+        <div uiFormFieldDirective>
+          <ui-select-menu formControlName="channel">
+            <ui-select-option
               *ngFor="let channel of data.channels"
               [value]="channel.id"
-              >{{ channel.title }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            >
+              {{ channel.title }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
       </div>
     </form>
   </div>

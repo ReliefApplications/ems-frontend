@@ -47,7 +47,7 @@ export class SelectMenuComponent
   // Emits when the list is closed
   @Output() closed = new EventEmitter<void>();
   // Emits the list of the selected options
-  @Output() selectedOption = new EventEmitter<string[]>();
+  @Output() selectedOption = new EventEmitter<string | string[]>();
 
   @ContentChildren(SelectOptionComponent, { descendants: true })
   optionList!: QueryList<SelectOptionComponent>;
@@ -113,7 +113,11 @@ export class SelectMenuComponent
    * @param value value set from parent form control
    */
   writeValue(value: string[]): void {
-    if (value) {
+    console.log(value);
+    if(value && typeof value === 'string'){
+      this.selectedValues = [value];
+      this.setDisplayTriggerText();
+    }else if (value){
       this.selectedValues = [...value];
       this.setDisplayTriggerText();
     }
@@ -145,15 +149,21 @@ export class SelectMenuComponent
   onChangeFunction() {
     // Emit the list of values selected as an output
     this.setDisplayTriggerText();
-    // Manage control access value
-    if (this.onChange && this.onTouch) {
-      this.onChange(this.selectedValues);
-      this.onTouch();
-    }
-
-    this.selectedOption.emit(this.selectedValues);
-    // If no multiselect, close list after selection
-    if (!this.multiselect) {
+    if(this.multiselect){
+      // Manage control access value
+      if (this.onChange && this.onTouch) {
+        this.onChange(this.selectedValues);
+        this.onTouch();
+      }
+      this.selectedOption.emit(this.selectedValues);
+    }else{
+      // Manage control access value
+      if (this.onChange && this.onTouch) {
+        this.onChange(this.selectedValues[0]);
+        this.onTouch();
+      }
+      this.selectedOption.emit(this.selectedValues[0]);
+      //close list after selection
       this.closeListBox();
     }
   }

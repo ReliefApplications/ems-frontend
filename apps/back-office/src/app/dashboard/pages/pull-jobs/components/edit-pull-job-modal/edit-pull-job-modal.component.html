@@ -223,23 +223,16 @@
           </div>
         </ui-expansion-panel>
         <!-- Unique identifiers -->
-        <mat-form-field
-          *ngIf="mappingArray.controls.length > 0"
-          appearance="outline"
-          class="mt-4"
-        >
-          <mat-label>{{
-            'components.pullJob.modal.identifier' | translate
-          }}</mat-label>
-          <mat-select formControlName="uniqueIdentifiers" multiple>
-            <mat-option
+        <div uiFormFieldDirective [outline]="false" class="mt-4">
+          <ui-select-menu formControlName="uniqueIdentifiers" [multiselect]="true">
+            <ui-select-option
               *ngFor="let element of mappingArray.controls"
               [value]="element.value.value"
             >
               {{ element.value.value }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
       </div>
     </form>
   </div>

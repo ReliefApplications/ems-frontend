@@ -32,6 +32,9 @@ import {
   RadioModule,
   IconModule,
   ButtonModule,
+  SelectMenuModule,
+  SelectOptionModule,
+  FormWrapperModule, 
 } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
@@ -60,6 +63,9 @@ const ITEMS_PER_PAGE = 10;
     RadioModule,
     IconModule,
     ButtonModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    FormWrapperModule, 
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',

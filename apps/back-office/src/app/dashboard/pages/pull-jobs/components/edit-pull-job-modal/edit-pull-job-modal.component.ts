@@ -55,6 +55,9 @@ import {
   TooltipModule,
   ButtonModule,
   ExpansionPanelModule,
+  SelectMenuModule,
+  SelectOptionModule,
+  FormWrapperModule, 
 } from '@oort-front/ui';
 
 /** Items per page for pagination */
@@ -82,6 +85,9 @@ const DEFAULT_FIELDS = ['createdBy'];
     MatChipsModule,
     CronExpressionControlModule,
     ButtonModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    FormWrapperModule,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',

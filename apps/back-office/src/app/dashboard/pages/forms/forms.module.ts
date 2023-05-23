@@ -25,9 +25,11 @@ import {
   DividerModule,
   MenuModule,
   ButtonModule,
-  FormWrapperModule,
   IconModule,
   SpinnerModule,
+  SelectMenuModule,
+  SelectOptionModule,
+  FormWrapperModule
 } from '@oort-front/ui';
 
 /** Forms page module */
@@ -59,6 +61,8 @@ import {
     ButtonModule,
     FormWrapperModule,
     IconModule,
+    SelectMenuModule,
+    SelectOptionModule,
   ],
   exports: [FormsComponent],
 })

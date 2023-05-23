@@ -26,16 +26,16 @@
         />
       </mat-form-field>
       <!-- Type selection -->
-      <mat-form-field appearance="outline" class="1">
-        <mat-label>{{ 'pages.referenceData.type' | translate }}</mat-label>
-        <mat-select formControlName="type">
-          <mat-option
+      <div uiFormFieldDirective [outline]="false" class="w-44">
+        <ui-select-menu formControlName="type">
+          <ui-select-option
             *ngFor="let referenceTypeChoice of referenceTypeChoices"
             [value]="referenceTypeChoice"
-            >{{ referenceTypeChoice }}</mat-option
           >
-        </mat-select>
-      </mat-form-field>
+            {{ referenceTypeChoice }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
     </div>
     <!-- Specific to GraphQL and Rest type -->
     <div *ngIf="['rest', 'graphql'].includes(type)" class="flex flex-col">

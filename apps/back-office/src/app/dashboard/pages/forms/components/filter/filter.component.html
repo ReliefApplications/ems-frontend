@@ -58,22 +58,33 @@
       </mat-date-range-picker>
     </mat-form-field>
     <!-- Status filter -->
-    <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
-      <mat-label>{{ 'common.status' | translate }}</mat-label>
-      <mat-select formControlName="status">
-        <mat-option>-</mat-option>
-        <mat-option value="active">
+    <div uiFormFieldDirective [outline]="false" class="p-0 w-44">
+      <ui-select-menu formControlName="status" class="h-8 mb-1.5 -mt-1.5">
+        <ui-select-option value="active">
           {{ 'common.status_active' | translate }}
-        </mat-option>
-        <mat-option value="pending">
+        </ui-select-option>
+        <ui-select-option value="pending">
           {{ 'common.status_pending' | translate }}
-        </mat-option>
-        <mat-option value="archived">
+        </ui-select-option>
+        <ui-select-option value="archived">
           {{ 'common.status_archived' | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
     <!-- Core filter -->
+    
+    <div uiFormFieldDirective [outline]="false" class="p-0 w-32">
+      <ui-select-menu formControlName="core" class="h-8 mb-1.5 -mt-1.5">
+        <ui-select-option>-</ui-select-option>
+        <ui-select-option [value]="true">
+          {{ 'common.true' | translate }}
+        </ui-select-option>
+        <ui-select-option [value]="false">
+          {{ 'common.false' | translate }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+<!-- 
     <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
       <mat-label>{{ 'components.forms.isCore' | translate }}</mat-label>
       <mat-select formControlName="core">
@@ -85,7 +96,7 @@
           {{ 'common.false' | translate }}
         </mat-option>
       </mat-select>
-    </mat-form-field>
+    </mat-form-field> -->
     <!-- Clear filters -->
     <ui-button class="max-sm:!w-auto" variant="danger" (click)="clear()">{{
       'common.filter.clear' | translate

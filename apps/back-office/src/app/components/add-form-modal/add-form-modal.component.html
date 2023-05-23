@@ -82,18 +82,10 @@
                 ></safe-icon>
               </ng-container>
             </ui-toggle>
-            <ng-container *ngIf="form.controls.inheritsTemplate.value">
-              <mat-form-field appearance="outline">
-                <mat-label>{{
-                  'components.form.create.template.from' | translate
-                }}</mat-label>
-                <mat-select
-                  formControlName="template"
-                  [placeholder]="
-                    'components.form.create.template.placeholder' | translate
-                  "
-                >
-                  <mat-option
+            <ng-container *ngIf="form.controls.inheritsTemplate.value"> 
+              <div uiFormFieldDirective [outline]="false">
+                <ui-select-menu formControlName="template">
+                  <ui-select-option
                     *ngFor="let template of templates"
                     [value]="template.id"
                   >
@@ -106,9 +98,9 @@
                         'models.form.core' | translate
                       }}</mat-chip>
                     </mat-chip-list>
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
+                  </ui-select-option>
+                </ui-select-menu>
+              </div>
             </ng-container>
           </ng-container>
         </ng-container>
