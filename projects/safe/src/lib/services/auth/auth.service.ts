@@ -48,12 +48,14 @@ type Subjects =
   | 'Group'
   | 'Form';
 
+// eslint-disable-next-line deprecation/deprecation
 export type AppAbility = Ability<
   [Actions, Subjects | ForcedSubject<Subjects>],
   { application: string }
 >;
 
 /** Application AppAbility */
+// eslint-disable-next-line deprecation/deprecation
 export const AppAbility = Ability as AbilityClass<AppAbility>;
 
 /**
