@@ -148,10 +148,6 @@
   </ui-menu>
 </nav>
 
-<ng-container *ngIf="toolbar">
-  <ng-container *ngTemplateOutlet="toolbar"></ng-container>
-</ng-container>
-
 <ui-sidenav-container class="sidenav-container">
   <div
     uiSidenavDirective
@@ -174,6 +170,9 @@
       *ngIf="breadcrumbs.length > 1"
       [breadcrumbs]="breadcrumbs"
     ></ui-breadcrumbs>
+    <ng-container *ngIf="toolbar">
+      <ng-container *ngTemplateOutlet="toolbar"></ng-container>
+    </ng-container>
     <router-outlet></router-outlet>
   </ng-container>
 
