@@ -1,10 +1,10 @@
 <div [formGroup]="formGroup" class="flex flex-col">
   <h2>{{ 'common.general' | translate }}</h2>
   <!-- Widget title -->
-  <mat-form-field appearance="outline">
-    <mat-label>{{ 'common.title' | translate }}</mat-label>
-    <input matInput formControlName="title" type="string" />
-  </mat-form-field>
+  <div uiFormFieldDirective [outline]="true">
+    <label>{{ 'common.title' | translate }}</label>
+    <input formControlName="title" type="string" />
+  </div>
   <div class="flex gap-2 flex-wrap">
     <!-- Resource selection -->
     <mat-form-field appearance="outline" class="flex-1">

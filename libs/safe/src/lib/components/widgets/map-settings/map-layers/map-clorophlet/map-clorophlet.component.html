@@ -4,15 +4,14 @@
     [formGroup]="form"
     class="flex flex-col gap-3 [&:not(td)]:flex [&:not(td)]:flex-col"
   >
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.name' | translate }}</mat-label>
+    <div uiFormFieldDirective [outline]="true">
+      <label>{{ 'common.name' | translate }}</label>
       <input
         type="text"
         [placeholder]="'common.placeholder.name' | translate"
-        matInput
         formControlName="name"
       />
-    </mat-form-field>
+    </div>
     <ui-button category="tertiary" (click)="fileInput.click()">{{
       form.value.geoJSONname
         ? form.value.geoJSONname

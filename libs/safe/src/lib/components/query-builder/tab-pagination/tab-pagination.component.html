@@ -1,11 +1,11 @@
 <form [formGroup]="form">
-  <mat-form-field appearance="outline">
-    <mat-label>{{
+  <div appearance="outline">
+    <label>{{
       'components.queryBuilder.pagination.first' | translate
-    }}</mat-label>
-    <input matInput formControlName="first" type="number" />
+    }}</label>
+    <input formControlName="first" type="number" />
     <safe-icon
-      matSuffix
+      uiSuffix
       icon="info"
       class="cursor-pointer"
       variant="grey"
@@ -14,5 +14,5 @@
         'components.queryBuilder.tooltip.pagination.first' | translate
       "
     ></safe-icon>
-  </mat-form-field>
+  </div>
 </form>

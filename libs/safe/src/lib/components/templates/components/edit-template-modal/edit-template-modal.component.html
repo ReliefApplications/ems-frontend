@@ -20,19 +20,19 @@
             }}</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{
+        <div uiFormFieldDirective [outline]="true" class="flex-1">
+          <label>{{
             'components.templates.edit.name' | translate
-          }}</mat-label>
-          <input matInput formControlName="name" type="text" />
-        </mat-form-field>
+          }}</label>
+          <input formControlName="name" type="text" />
+        </div>
       </div>
-      <mat-form-field appearance="outline">
-        <mat-label>{{
+      <div uiFormFieldDirective [outline]="true">
+        <label>{{
           'components.templates.edit.subject' | translate
-        }}</mat-label>
-        <input matInput formControlName="subject" type="text" />
-      </mat-form-field>
+        }}</label>
+        <input formControlName="subject" type="text" />
+      </div>
       <editor [init]="editor" formControlName="body"></editor>
     </form>
   </div>

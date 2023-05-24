@@ -55,10 +55,10 @@
 
   <!-- TEXT EDITOR -->
   <ng-template #textEditor>
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-      <input matInput formControlName="value" type="string" />
-    </mat-form-field>
+    <div uiFormFieldDirective [outline]="true">
+      <label>{{ 'common.value.one' | translate }}</label>
+      <input formControlName="value" type="string" />
+    </div>
   </ng-template>
 
   <!-- BOOLEAN EDITOR -->
@@ -79,10 +79,10 @@
 
   <!-- NUMERIC EDITOR -->
   <ng-template #numericEditor>
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-      <input matInput formControlName="value" type="number" />
-    </mat-form-field>
+    <div uiFormFieldDirective [outline]="true">
+      <label>{{ 'common.value.one' | translate }}</label>
+      <input formControlName="value" type="number" />
+    </div>
   </ng-template>
 
   <!-- SELECT EDITOR -->

@@ -10,10 +10,9 @@ import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/lega
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeModalModule } from '../ui/modal/modal.module';
 import { AbilityModule } from '@casl/angular';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
 
 /**
  * SafeRolesModule manages modules and components for the roles page
@@ -32,7 +31,7 @@ import { ButtonModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatButtonModule,
-    MatInputModule,
+    FormWrapperModule,
     SafeModalModule,
     AbilityModule,
     ButtonModule,

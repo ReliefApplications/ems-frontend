@@ -4,9 +4,13 @@ import { SafeGroupListComponent } from './group-list.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
-import { MenuModule, ButtonModule, TableModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  ButtonModule,
+  TableModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * SafeGroupsModule manages modules and components
@@ -19,7 +23,7 @@ import { MenuModule, ButtonModule, TableModule } from '@oort-front/ui';
     TranslateModule,
     MatIconModule,
     MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     SafeSkeletonTableModule,
     MenuModule,
     TableModule,

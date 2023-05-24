@@ -41,24 +41,24 @@
         >
           <ng-container formArrayName="positionAttributes">
             <label class="invite-label">Set additional attributes</label>
-            <mat-form-field
-              appearance="outline"
+            <div
+              uiFormFieldDirective
+              [outline]="true"
               *ngFor="
                 let category of positionAttributes.controls;
                 let index = index
               "
               [formGroup]="$any(category)"
             >
-              <mat-label>{{
+              <label>{{
                 data.positionAttributeCategories[index].title | titlecase
-              }}</mat-label>
+              }}</label>
               <input
-                matInput
                 formControlName="value"
                 type="text"
                 placeholder="Enter a value for the category"
               />
-            </mat-form-field>
+            </div>
           </ng-container>
         </ng-container>
       </div>

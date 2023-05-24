@@ -38,10 +38,10 @@
       </mat-select>
     </mat-form-field>
   </div>
-  <mat-form-field appearance="outline" *ngIf="showLimit">
-    <mat-label>{{
+  <div uiFormFieldDirective [outline]="true" *ngIf="showLimit">
+    <label>{{
       'components.queryBuilder.sort.limit' | translate
-    }}</mat-label>
-    <input matInput formControlName="first" type="number" min="1" />
-  </mat-form-field>
+    }}</label>
+    <input formControlName="first" type="number" min="1" />
+  </div>
 </form>

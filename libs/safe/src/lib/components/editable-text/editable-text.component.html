@@ -14,12 +14,12 @@
   </ng-container>
   <!-- Text edition -->
   <ng-container *ngIf="!formControl.disabled">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.name' | translate }}</mat-label>
-      <input matInput [formControl]="formControl" type="string" />
+    <div uiFormFieldDirective [outline]="true">
+      <label>{{ 'common.name' | translate }}</label>
+      <input [formControl]="formControl" type="string" />
       <!-- Validate value -->
       <ui-button
-        matSuffix
+        uiSuffix
         [isIcon]="true"
         icon="done"
         variant="primary"
@@ -29,14 +29,14 @@
       </ui-button>
       <!-- Undo change -->
       <ui-button
-        matSuffix
+        uiSuffix
         [isIcon]="true"
         icon="close"
         variant="danger"
         (click)="onChange.emit()"
       >
       </ui-button>
-    </mat-form-field>
+    </div>
   </ng-container>
 </div>
 

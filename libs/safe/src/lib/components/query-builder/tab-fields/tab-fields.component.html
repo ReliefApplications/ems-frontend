@@ -14,18 +14,18 @@
     <h2>{{ 'components.queryBuilder.fields.available' | translate }}</h2>
 
     <!-- Search through fields -->
-    <mat-form-field appearance="outline" class="!w-full">
-      <mat-label>{{
+    <div uiFormFieldDirective [outline]="true" class="!w-full">
+      <label>{{
         'components.queryBuilder.fields.search' | translate
-      }}</mat-label>
-      <input type="text" matInput [(ngModel)]="searchAvailable" />
+      }}</label>
+      <input type="text" [(ngModel)]="searchAvailable" />
       <ui-button
-        matSuffix
+        uiSuffix
         (click)="searchAvailable = ''"
         [isIcon]="true"
         [icon]="searchAvailable ? 'cancel' : 'search'"
       ></ui-button>
-    </mat-form-field>
+    </div>
 
     <!-- List of fields -->
     <div class="overflow-auto max-h-[400px]">
@@ -60,18 +60,18 @@
     <h2>{{ 'components.queryBuilder.fields.selected' | translate }}</h2>
 
     <!-- Search through fields -->
-    <mat-form-field appearance="outline" class="!w-full">
-      <mat-label>{{
+    <div uiFormFieldDirective [outline]="true" class="!w-full">
+      <label>{{
         'components.queryBuilder.fields.search' | translate
-      }}</mat-label>
-      <input type="text" matInput [(ngModel)]="searchSelected" />
+      }}</label>
+      <input type="text" [(ngModel)]="searchSelected" />
       <ui-button
-        matSuffix
+        uiSuffix
         (click)="searchSelected = ''"
         [isIcon]="true"
         [icon]="searchSelected ? 'cancel' : 'search'"
       ></ui-button>
-    </mat-form-field>
+    </div>
 
     <!-- List of fields -->
     <div class="overflow-auto max-h-[400px]">
@@ -155,19 +155,18 @@
           (click)="onCloseField()"
         >
         </ui-button>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'models.form.field.name' | translate }}</mat-label>
+        <div uiFormFieldDirective [outline]="true">
+          <label>{{ 'models.form.field.name' | translate }}</label>
           <input
-            matInput
             formControlName="name"
             type="text"
             [disabled]="true"
           />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'models.form.field.label' | translate }}</mat-label>
-          <input matInput formControlName="label" type="text" />
-        </mat-form-field>
+        </div>
+        <div uiFormFieldDirective [outline]="true">
+          <label>{{ 'models.form.field.label' | translate }}</label>
+          <input formControlName="label" type="text" />
+        </div>
       </div>
       <h3 style="margin: 0">
         {{ 'components.queryBuilder.fields.format.title' | translate }}

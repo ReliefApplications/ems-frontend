@@ -1,15 +1,15 @@
 <form mat-dialog-content [formGroup]="form" class="flex flex-col gap-3">
-  <mat-form-field appearance="outline">
-    <mat-label>{{ 'common.label' | translate }}</mat-label>
-    <input type="text" matInput formControlName="label" />
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-label>{{
+  <div uiFormFieldDirective [outline]="true">
+    <label>{{ 'common.label' | translate }}</label>
+    <input type="text" formControlName="label" />
+  </div>
+  <div uiFormFieldDirective [outline]="true">
+    <label>{{
       'components.widget.settings.map.layers.point.color' | translate
-    }}</mat-label>
+    }}</label>
     <h4></h4>
-    <input type="color" matInput formControlName="color" />
-  </mat-form-field>
+    <input type="color" formControlName="color" />
+  </div>
   <safe-filter
     [form]="$any(form.controls.filter)"
     [fields]="fields"
