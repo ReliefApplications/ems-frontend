@@ -38,13 +38,11 @@ import { timeDimensionGeoJSON } from './test/timedimension-test';
 import { SafeMapControlsService } from '../../../services/map/map-controls.service';
 import * as L from 'leaflet';
 import { Layer } from './layer';
-import { LayerFormData } from './interfaces/layer-settings.type';
 import { GeoJsonObject } from 'geojson';
 import { ArcgisService } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { flatten, isNil, omitBy } from 'lodash';
 import { takeUntil } from 'rxjs';
-// import { legendControl } from '@oort-front/leaflet';
 import { SafeMapPopupService } from './map-popup/map-popup.service';
 
 /** Component for the map widget */
@@ -66,28 +64,6 @@ export class MapComponent
       } else {
         this.deleteLayers(layerAction.layerData);
       }
-    }
-  }
-  /** Update layer options setters */
-  @Input() set updateLayerOptions(layerWithOptions: {
-    layer: any;
-    options: Pick<
-      LayerFormData,
-      'name' | 'visibility' | 'opacity' | 'layerDefinition'
-    >;
-    icon?: any;
-  }) {
-    if (layerWithOptions) {
-      Layer.applyOptionsToLayer(
-        this.map,
-        layerWithOptions.layer,
-        layerWithOptions.options
-      );
-      this.map.removeControl(this.layerControl);
-      // Layer edition takes one layer per edition, therefor we set the updated name as this to the control
-      // If multiple layers, we will have to iterate over children property until we match given layer ids with the ids in the overlaysTree to update name
-      this.layerControl._overlaysTree.label = layerWithOptions.options.name;
-      this.layerControl.addTo(this.map);
     }
   }
 
@@ -177,6 +153,7 @@ export class MapComponent
     this.translate.onLangChange
       .pipe(takeUntil(this.destroy$))
       .subscribe((event) => {
+        // Update controls that use translation
         if (event.lang !== this.mapControlsService.lang) {
           this.mapControlsService.getMeasureControl(
             this.map,
@@ -266,7 +243,6 @@ export class MapComponent
    * @param initMap Does the map need to be reloaded
    */
   private drawMap(initMap: boolean = true): void {
-    console.log('draw map');
     const {
       initialState,
       maxBounds,
@@ -279,19 +255,6 @@ export class MapComponent
       layers,
       controls,
     } = this.extractSettings();
-
-    console.log({
-      initialState,
-      maxBounds,
-      basemap,
-      maxZoom,
-      minZoom,
-      worldCopyJump,
-      zoomControl,
-      arcGisWebMap,
-      layers,
-      controls,
-    });
 
     if (initMap) {
       // Create leaflet map
@@ -357,29 +320,18 @@ export class MapComponent
     this.map.eachLayer((layer) => {
       this.map.removeLayer(layer);
     });
-    // If no basemap, we check if a basemap was used before
-    if (basemap) {
-      promises.push(this.setBasemap(this.map, basemap));
-    }
 
     // Get arcgis layers
     if (arcGisWebMap) {
-      // Prevent basemap to be loaded if any provided in settings
-      promises.push(this.setWebmap(arcGisWebMap, { loadBasemap: !basemap }));
+      // Load arcgis webmap
+      promises.push(this.setWebmap(arcGisWebMap));
     } else {
-      if (!basemap) {
-        promises.push(this.setBasemap(this.map, basemap));
-      }
+      // else, load basemap ( default to osm )
+      promises.push(this.setBasemap(this.map, basemap));
     }
 
     if (layers?.length) {
       promises.push(this.getLayers(layers));
-      // Add legend control
-      // this.mapControlsService.getLegendControl(
-      //   this.map,
-      //   this.layers,
-      //   this.extractSettings().controls.legend
-      // );
     }
 
     // Add layers on map
@@ -391,12 +343,11 @@ export class MapComponent
         tree.layers && layers.push(tree.layers);
       }
       this.setLayersControl(flatten(basemaps), flatten(layers));
-      // legendControl().addTo(this.map);
     });
 
     // Add zoom control
     if (initMap) {
-      L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
+      L.control.zoom({ position: 'bottomright' }).addTo(this.map);
     }
     this.setMapControls(controls, initMap);
   }
@@ -442,14 +393,8 @@ export class MapComponent
       this.map,
       controls.download ?? true
     );
-    // Add legend control if layers ready
-    if (this.layerControl) {
-      this.mapControlsService.getLegendControl(
-        this.map,
-        this.layers,
-        controls.legend ?? true
-      );
-    }
+    // Add legend control
+    this.mapControlsService.getLegendControl(this.map, controls.legend ?? true);
     // Add layer control
     if (controls.layer) {
       if (this.layerControl) {
@@ -489,6 +434,9 @@ export class MapComponent
     //   this.layerControl.setLayersControl
     // }
     if (this.layerControl) {
+      if (this.extractSettings().controls.layer) {
+        this.map.removeControl(this.layerControl);
+      }
       this.layerControl.setBaseTree(this.baseTree);
       this.layerControl.setOverlayTree(this.layersTree);
     } else {
@@ -602,6 +550,10 @@ export class MapComponent
       }
     } else {
       drawLayer(layers);
+    }
+
+    if (this.layerControl && this.extractSettings().controls.layer) {
+      this.map.removeControl(this.layerControl);
     }
 
     this.layerControl = L.control.layers.tree(this.baseTree, layers as any);
@@ -825,12 +777,10 @@ export class MapComponent
     map: L.Map,
     basemap: any
   ): Promise<{ basemaps: L.Control.Layers.TreeObject[] }> {
-    console.log('there');
     const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
     this.basemap = Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
     });
-    console.log(basemapName);
     return Promise.resolve({
       basemaps: [
         {
@@ -849,12 +799,8 @@ export class MapComponent
    * @param options.loadBasemap set to true to confirm basemap loading
    * @returns loaded basemaps and layers as Promise
    */
-  public setWebmap(
-    webmap: any,
-    options: { loadBasemap: boolean } = { loadBasemap: true }
-  ) {
-    console.log(options.loadBasemap);
+  public setWebmap(webmap: any) {
     this.arcGisWebMap = webmap;
-    return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap, options);
+    return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
   }
 }

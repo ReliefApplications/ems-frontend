@@ -6,12 +6,21 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { SafeIconModule } from '../../ui/icon/icon.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
+import { RecordSelectionTabComponent } from './record-selection-tab/record-selection-tab.component';
+import { SafeGraphQLSelectModule } from '../../graphql-select/graphql-select.module';
+import { SafeButtonModule } from '../../ui/button/button.module';
+import { MatLegacySelectModule } from '@angular/material/legacy-select';
+import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
 
 /**
  * Module for the safeEditorSetting component
  */
 @NgModule({
-  declarations: [SafeEditorSettingsComponent],
+  declarations: [SafeEditorSettingsComponent, RecordSelectionTabComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -20,6 +29,14 @@ import { TranslateModule } from '@ngx-translate/core';
     MatInputModule,
     EditorModule,
     TranslateModule,
+    MatTabsModule,
+    SafeIconModule,
+    MatTooltipModule,
+    DisplaySettingsComponent,
+    SafeGraphQLSelectModule,
+    SafeButtonModule,
+    MatLegacySelectModule,
+    SafeCoreGridModule,
   ],
   exports: [SafeEditorSettingsComponent],
   providers: [

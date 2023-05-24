@@ -136,6 +136,21 @@ Then, run `webpack-bundle-analyzer` command to see the tree of your bundles:
 npx webpack-bundle-analyzer dist/apps/back-office/stats.json
 ```
 
+## Storybook
+
+UI library has its own storybook definition. To execute storybook locally, you can run:
+
+```
+npx nx run ui:storybook
+```
+
+To build it, you can run:
+```
+npx nx run ui:build-storybook
+```
+
+Pushing the code on the repo should automatically deploy storybook on a public environment.
+
 <!-- ## Build the web components
 
 We first need to generate the elements, using this command:

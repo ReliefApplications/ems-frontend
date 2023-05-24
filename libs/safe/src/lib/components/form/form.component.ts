@@ -261,12 +261,19 @@ export class SafeFormComponent
   public onComplete = async () => {
     let mutation: any;
     this.surveyActive = false;
-    await this.formHelpersService.uploadFiles(
-      this.survey,
-      this.temporaryFilesStorage,
-      this.form?.id
+    const promises: Promise<any>[] =
+      this.formHelpersService.uploadTemporaryRecords(this.survey);
+    promises.push(
+      this.formHelpersService.uploadFiles(
+        this.survey,
+        this.temporaryFilesStorage,
+        this.form?.id
+      )
     );
     this.formHelpersService.setEmptyQuestions(this.survey);
+    // We wait for the resources questions to update their ids
+    await Promise.allSettled(promises);
+    // this.survey.data = surveyData;
     // If is an already saved record, edit it
     if (this.record || this.form.uniqueRecord) {
       const recordId = this.record
@@ -347,6 +354,7 @@ export class SafeFormComponent
     }
     this.temporaryFilesStorage = {};
     localStorage.removeItem(this.storageId);
+    this.formHelpersService.cleanCachedRecords(this.survey);
     this.isFromCacheData = false;
     this.storageDate = undefined;
     this.survey.render();
@@ -413,6 +421,7 @@ export class SafeFormComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     localStorage.removeItem(this.storageId);
+    this.formHelpersService.cleanCachedRecords(this.survey);
     this.formBuilderService.selectedPageIndex.next(0);
   }
 }

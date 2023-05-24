@@ -115,12 +115,21 @@ const replaceRecordFields = (
       let convertedValue = '';
       if (!isNil(value)) {
         switch (field.type) {
-          case 'url':
+          case 'url': {
+            // Specific case
+            // First, try to find cases where the url is used as src of image or link
+            const srcRegex = new RegExp(
+              `src="${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}"`,
+              'gi'
+            );
+            formattedHtml = formattedHtml.replace(srcRegex, `src=${value}`);
+            // Then, follow same logic than for other fields
             convertedValue = `<a href="${value}" style="${style}" target="_blank">${applyLayoutFormat(
               value,
               field
             )}</a>`;
             break;
+          }
           case 'email':
             convertedValue = `<a href="mailto:${value}"
               style="${style}"
@@ -205,10 +214,12 @@ const replaceRecordFields = (
             } items</span>`;
             break;
           default:
-            convertedValue = `<span style='${style}'>${applyLayoutFormat(
-              value,
-              field
-            )}</span>`;
+            convertedValue = style
+              ? `<span style='${style}'>${applyLayoutFormat(
+                  value,
+                  field
+                )}</span>`
+              : applyLayoutFormat(value, field) || '';
             break;
         }
       }

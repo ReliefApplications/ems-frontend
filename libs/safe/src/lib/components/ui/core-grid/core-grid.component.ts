@@ -6,6 +6,7 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
@@ -46,6 +47,7 @@ import get from 'lodash/get';
 import { SafeGridService } from '../../../services/grid/grid.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDatePipe } from '../../../pipes/date/date.pipe';
+import { SafeGridComponent } from './grid/grid.component';
 import { SafeDateTranslateService } from '../../../services/date-translate/date-translate.service';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -84,9 +86,9 @@ export class SafeCoreGridComponent
   @Input() defaultLayout: GridLayout = {};
 
   /** @returns current grid layout */
-  // get layout(): any {
-  // return this.grid?.layout;
-  // }
+  get layout(): any {
+    return this.grid?.layout;
+  }
 
   /**
    * Gets whether the grid settings are loading.
@@ -125,8 +127,8 @@ export class SafeCoreGridComponent
   @Output() rowSelected: EventEmitter<any> = new EventEmitter<any>();
 
   // === TEMPLATE REFERENCE TO GRID ===
-  // @ViewChild(SafeGridComponent)
-  // private grid?: SafeGridComponent;
+  @ViewChild(SafeGridComponent)
+  private grid?: SafeGridComponent;
 
   // === DATA ===
   @Input() widget: any;
@@ -623,32 +625,40 @@ export class SafeCoreGridComponent
             error: false,
           };
           for (const field in data) {
-            if (Object.prototype.hasOwnProperty.call(data, field)) {
-              const nodes =
-                data[field].edges.map((x: any) => ({
-                  ...x.node,
-                  _meta: {
-                    style: x.meta.style,
-                  },
-                })) || [];
-              this.totalCount = data[field].totalCount;
-              this.items = cloneData(nodes);
-              this.convertDateFields(this.items);
-              this.originalItems = cloneData(this.items);
-              this.loadItems();
-              for (const updatedItem of this.updatedItems) {
-                const item: any = this.items.find(
-                  (x) => x.id === updatedItem.id
-                );
-                if (item) {
-                  Object.assign(item, updatedItem);
-                  item.saved = false;
+            try {
+              if (Object.prototype.hasOwnProperty.call(data, field)) {
+                const nodes =
+                  data[field]?.edges.map((x: any) => ({
+                    ...x.node,
+                    _meta: {
+                      style: x.meta.style,
+                    },
+                  })) || [];
+                this.totalCount = data[field] ? data[field].totalCount : 0;
+                this.items = cloneData(nodes);
+                this.convertDateFields(this.items);
+                this.originalItems = cloneData(this.items);
+                this.loadItems();
+                for (const updatedItem of this.updatedItems) {
+                  const item: any = this.items.find(
+                    (x) => x.id === updatedItem.id
+                  );
+                  if (item) {
+                    Object.assign(item, updatedItem);
+                    item.saved = false;
+                  }
                 }
+                // if (!this.readOnly) {
+                //   this.initSelectedRows();
+                // }
               }
-              // if (!this.readOnly) {
-              //   this.initSelectedRows();
-              // }
+            } catch (error) {
+              console.error(error);
             }
+          }
+          if (this.settings.query.temporaryRecords) {
+            //Handles temporary records for resources creation in forms
+            this.getTemporaryRecords();
           }
         },
         error: (err: any) => {
@@ -670,6 +680,19 @@ export class SafeCoreGridComponent
     } else {
       this.loading = false;
     }
+  }
+
+  /**
+   * Loads temporary records for resources questions
+   */
+  public getTemporaryRecords() {
+    const ids = this.items.map((item) => item.id);
+    this.settings.query.temporaryRecords.forEach((record: any) => {
+      if (!ids.includes(record.id)) this.items.unshift(record);
+    });
+    this.totalCount =
+      this.totalCount + this.settings.query.temporaryRecords.length;
+    this.loadItems();
   }
 
   /**
@@ -888,6 +911,23 @@ export class SafeCoreGridComponent
             name: this.queryBuilder.getQueryNameFromResourceName(field.type),
             template: null,
           },
+        },
+      });
+    } else if (
+      (!isArray && items.isTemporary) ||
+      (isArray && items[0].isTemporary)
+    ) {
+      const { SafeRecordModalComponent } = await import(
+        '../../record-modal/record-modal.component'
+      );
+      //case for temporary records
+      this.dialog.open(SafeRecordModalComponent, {
+        data: {
+          isTemporary: true,
+          template: isArray ? items[0].template : items.template,
+          canUpdate: false,
+          compareTo: false,
+          temporaryRecordData: isArray ? items[0] : items,
         },
       });
     } else {
@@ -1145,7 +1185,7 @@ export class SafeCoreGridComponent
     }
 
     // Builds the request body with all the useful data
-    // const currentLayout = this.layout;
+    const currentLayout = this.layout;
     const body = {
       ids,
       filter:
@@ -1163,32 +1203,32 @@ export class SafeCoreGridComponent
       fileName: this.fileName,
       email: e.email,
       // we only export visible fields ( not hidden )
-      // ...(e.fields === 'visible' && {
-      // fields: Object.values(currentLayout.fields)
-      // .filter((x: any) => !x.hidden)
-      // .sort((a: any, b: any) => a.order - b.order)
-      // .map((x: any) => ({
-      //   name: x.field,
-      //   title: x.title,
-      //   subFields: x.subFields.map((y: any) => ({
-      //     name: y.name,
-      //     title: y.title,
-      //   })),
-      // })),
-      // }),
+      ...(e.fields === 'visible' && {
+        fields: Object.values(currentLayout.fields)
+          .filter((x: any) => !x.hidden)
+          .sort((a: any, b: any) => a.order - b.order)
+          .map((x: any) => ({
+            name: x.field,
+            title: x.title,
+            subFields: x.subFields.map((y: any) => ({
+              name: y.name,
+              title: y.title,
+            })),
+          })),
+      }),
       // we export ALL fields of the grid ( including hidden columns )
-      //   ...(e.fields === 'all' && {
-      //     fields: Object.values(currentLayout.fields)
-      //       .sort((a: any, b: any) => a.order - b.order)
-      //       .map((x: any) => ({
-      //         name: x.field,
-      //         title: x.title,
-      //         subFields: x.subFields.map((y: any) => ({
-      //           name: y.name,
-      //           title: y.title,
-      //         })),
-      //       })),
-      //   }),
+      ...(e.fields === 'all' && {
+        fields: Object.values(currentLayout.fields)
+          .sort((a: any, b: any) => a.order - b.order)
+          .map((x: any) => ({
+            name: x.field,
+            title: x.title,
+            subFields: x.subFields.map((y: any) => ({
+              name: y.name,
+              title: y.title,
+            })),
+          })),
+      }),
     };
 
     // Builds and make the request
@@ -1289,7 +1329,7 @@ export class SafeCoreGridComponent
    * Saves the current layout of the grid as local layout for this user
    */
   saveLocalLayout(): void {
-    // this.layoutChanged.emit(this.layout);
+    this.layoutChanged.emit(this.layout);
     if (!this.hasLayoutChanges) {
       this.hasLayoutChanges = true;
     }

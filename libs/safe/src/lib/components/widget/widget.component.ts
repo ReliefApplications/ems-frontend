@@ -43,5 +43,5 @@ export class SafeWidgetComponent {
   @Output() edit: EventEmitter<any> = new EventEmitter();
 
   // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
 }

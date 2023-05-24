@@ -15,14 +15,21 @@
       <div *ngSwitchCase="'heatmap'">
         <ng-container *ngTemplateOutlet="heatmapRenderer"></ng-container>
       </div>
+      <div *ngSwitchCase="'uniqueValue'">
+        <ng-container *ngTemplateOutlet="uniqueValueRenderer"></ng-container>
+      </div>
     </div>
   </div>
 </div>
 
 <ng-template #simpleRenderer>
-  <safe-simple-renderer [formGroup]="$any(formGroup.get('renderer'))"></safe-simple-renderer>
+  <safe-simple-renderer [formGroup]="$any(formGroup.get('renderer.symbol'))"></safe-simple-renderer>
 </ng-template>
 
 <ng-template #heatmapRenderer>
   <safe-heatmap-renderer [formGroup]="$any(formGroup.get('renderer'))"></safe-heatmap-renderer>
+</ng-template>
+
+<ng-template #uniqueValueRenderer>
+  <safe-unique-value-renderer [formGroup]="$any(formGroup.get('renderer'))" [fields$]="fields$"></safe-unique-value-renderer>
 </ng-template>

@@ -23,10 +23,22 @@
             [matTooltip]="'components.calculatedFields.hint.name' | translate"
           ></safe-icon>
         </mat-form-field>
-        <h2>
-          {{ 'components.calculatedFields.expression' | translate }}
-        </h2>
-        <editor [init]="editor" formControlName="expression"></editor>
+        <mat-form-field appearance="outline">
+          <mat-label>{{
+            'components.calculatedFields.expression' | translate
+          }}</mat-label>
+          <safe-editor-control
+            formControlName="expression"
+            [editorConfig]="editor"
+          ></safe-editor-control>
+          <safe-icon
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            matSuffix
+            [matTooltip]="'common.tooltip.editor.insert' | translate"
+          ></safe-icon>
+        </mat-form-field>
       </div>
     </form>
   </mat-dialog-content>

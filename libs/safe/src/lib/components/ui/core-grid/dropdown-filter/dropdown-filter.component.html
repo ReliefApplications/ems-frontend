@@ -1,6 +1,7 @@
 <kendo-dropdownlist
   [filterable]="true"
   [data]="choices"
+  [popupSettings]="{ width: 'auto' }"
   (valueChange)="onChange($event)"
   [value]="selectedValue"
   [valuePrimitive]="true"

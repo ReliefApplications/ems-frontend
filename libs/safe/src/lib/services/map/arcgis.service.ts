@@ -13,11 +13,13 @@ import {
 } from '@esri/arcgis-rest-portal';
 import * as EsriHeat from 'esri-leaflet-heatmap';
 import * as EsriCluster from 'esri-leaflet-cluster';
-import * as EsriRenderers from 'esri-leaflet-renderers';
+// import * as EsriRenderers from 'esri-leaflet-renderers';
+// import * as EsriRenderers from '@oort-front/esri';
 import * as Esri from 'esri-leaflet';
 import * as Vector from 'esri-leaflet-vector';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import * as L from 'leaflet';
+import { GradientPipe } from '../../pipes/gradient/gradient.pipe';
 
 /**
  * Define the ArcGIS projected coordinate system (102100 is the WKID for Web Mercator)
@@ -60,10 +62,7 @@ export class ArcgisService {
    */
   public loadWebMap(
     map: L.Map,
-    id: string,
-    options: {
-      loadBasemap?: boolean;
-    } = { loadBasemap: true }
+    id: string
   ): Promise<{ basemaps: TreeObject[]; layers: TreeObject[] }> {
     return new Promise((resolve) => {
       getItemData(id, {
@@ -71,9 +70,7 @@ export class ArcgisService {
       }).then((webMap: any) => {
         this.setDefaultView(map, webMap);
         Promise.all([
-          options.loadBasemap
-            ? this.loadBaseMap(map, webMap)
-            : Promise.resolve([]),
+          this.loadBaseMap(map, webMap),
           this.loadOperationalLayers(map, webMap),
         ]).then(([basemaps, layers]) => {
           resolve({ basemaps, layers });
@@ -264,8 +261,16 @@ export class ArcgisService {
         break;
       }
       case 'ArcGISFeatureLayer': {
+        console.log(layer);
         let featureLayer: L.Layer | undefined = undefined;
         if (layer.url) {
+          // if (layer.itemId) {
+          //   await getItemData(layer.itemId, {
+          //     authentication: this.session,
+          //   }).then((item: any) => {
+          //     console.log(item);
+          //   });
+          // }
           const reduction = get(layer, 'layerDefinition.featureReduction');
           if (reduction) {
             switch (reduction.type) {
@@ -275,15 +280,18 @@ export class ArcgisService {
                   url: layer.url,
                   token: this.esriApiKey,
                   // If popup is not disabled we want to show the cluster popup, no zoom to bounds
-                  zoomToBoundsOnClick:
-                    layer.layerDefinition.featureReduction.disablePopup,
+                  zoomToBoundsOnClick: get(
+                    layer,
+                    'layerDefinition.featureReduction.disablePopup',
+                    true
+                  ),
                   // opacity,
                   // polygonOptions: {
                   //   opacity,
                   // },
                   // pane,
                   clusterPane: pane,
-                  drawingInfo: layer.layerDefinition.drawingInfo,
+                  drawingInfo: get(layer, 'layerDefinition.drawingInfo'),
                   minZoom: minScaleLevel,
                   maxZoom: maxScaleLevel,
                 });
@@ -315,7 +323,7 @@ export class ArcgisService {
                       colorStop.color[0],
                       colorStop.color[1],
                       colorStop.color[2]
-                    );
+                    ).toString();
                   }
                   const pane = map.createPane(layer.id);
                   // todo(arcgis): not working with current options
@@ -336,6 +344,60 @@ export class ArcgisService {
                       drawingInfo: layer.layerDefinition.drawingInfo,
                     }),
                   });
+                  if (featureLayer) {
+                    const gradientPipe = new GradientPipe();
+                    const gradientForPipe: any[] = [];
+                    Object.keys(gradient).map((key) => {
+                      gradientForPipe.push({
+                        color: gradient[key],
+                        ratio: key,
+                      });
+                    });
+                    featureLayer.onAdd = (map: L.Map) => {
+                      // call default onAdd
+                      const l = EsriHeat.FeatureLayer.prototype.onAdd.call(
+                        featureLayer,
+                        map
+                      );
+                      // Create legend element
+                      const container = document.createElement('div');
+                      container.className = 'flex gap-1';
+                      const linearGradient = document.createElement('div');
+                      linearGradient.className = 'w-4 h-16';
+                      linearGradient.style.background = gradientPipe.transform(
+                        gradientForPipe,
+                        180
+                      );
+                      const legend = document.createElement('div');
+                      legend.className = 'flex flex-col justify-between';
+                      legend.innerHTML = '<span>Min</span><span>Max</span>';
+                      container.innerHTML =
+                        linearGradient.outerHTML + legend.outerHTML;
+                      const html =
+                        `<div class="font-bold">${layer.title}</div>` +
+                        container.outerHTML;
+                      // Add legend
+                      const legendControl = (map as any).legendControl;
+                      if (legendControl) {
+                        legendControl.addLayer(featureLayer, html);
+                      }
+                      return l;
+                    };
+                    featureLayer.onRemove = (map: L.Map) => {
+                      // call default onRemove
+                      const l = EsriHeat.FeatureLayer.prototype.onRemove.call(
+                        featureLayer,
+                        map
+                      );
+                      // remove legend
+                      const legendControl = (map as any).legendControl;
+                      if (legendControl) {
+                        legendControl.removeLayer(featureLayer);
+                      }
+                      return l;
+                    };
+                  }
+
                   pane.style.opacity = `${opacity}`;
                   break;
                 }
@@ -348,10 +410,9 @@ export class ArcgisService {
                       drawingInfo: layer.layerDefinition.drawingInfo,
                     }),
                   });
-                  const renderer = EsriRenderers.simpleRenderer(
-                    get(layer, 'layerDefinition.drawingInfo.renderer')
-                  );
-                  console.log(renderer._symbols);
+                  // const renderer = EsriRenderers.simpleRenderer(
+                  //   get(layer, 'layerDefinition.drawingInfo.renderer')
+                  // );
                   break;
                 }
                 case 'uniqueValue': {
@@ -449,10 +510,22 @@ export class ArcgisService {
           token: this.esriApiKey,
           opacity,
         });
-        layers.push({
-          label: layer.title,
-          layer: tiledMapLayer,
-        });
+        // if (layer.itemId) {
+        //   await getItemData(layer.itemId, {
+        //     authentication: this.session,
+        //   }).then((item: any) => {
+        //     console.log(item);
+        //   });
+        // }
+        if (tiledMapLayer) {
+          if (get(layer, 'visibility', true) && visibility) {
+            tiledMapLayer.addTo(map);
+          }
+          layers.push({
+            label: layer.title,
+            layer: tiledMapLayer,
+          });
+        }
         break;
       }
       case 'WMS': {
@@ -517,6 +590,12 @@ export class ArcgisService {
     return this.http.get(path + `?token=${this.esriApiKey}`).toPromise();
   }
 
+  /**
+   * Execute reverse geosearch
+   *
+   * @param latlng latlng to reverse search
+   * @returns seerch as promise
+   */
   public reverseSearch(latlng: L.LatLng) {
     return new Promise((resolve, reject) =>
       (Geocoding as any)
@@ -526,7 +605,6 @@ export class ArcgisService {
         .latlng(latlng)
         .run((err: any, res: any) => {
           if (res) {
-            console.log(res);
             resolve(res);
           }
           if (err) {

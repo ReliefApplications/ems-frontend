@@ -286,6 +286,11 @@
 			"one": "******"
 		},
 		"title": "******",
+		"tooltip": {
+			"editor": {
+				"insert": "******"
+			}
+		},
 		"true": "******",
 		"type": {
 			"few": "******",
@@ -403,7 +408,11 @@
 			"customStyling": "******",
 			"dashboard": {
 				"editFilter": "******",
-				"empty": "******"
+				"empty": "******",
+				"filterSettings": "******",
+				"settings": {
+					"defaultPosition": "******"
+				}
 			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
@@ -741,6 +750,7 @@
 			},
 			"fields": {
 				"available": "******",
+				"column": "******",
 				"format": {
 					"info": "******",
 					"title": "******"
@@ -1198,6 +1208,10 @@
 				"close": {
 					"confirmationMessage": "******"
 				},
+				"editor": {
+					"recordSelection": "******",
+					"title": "******"
+				},
 				"grid": {
 					"actions": {
 						"add": "******",
@@ -1239,7 +1253,8 @@
 							"workflow": {
 								"close": "******",
 								"confirm": "******",
-								"next": "******"
+								"next": "******",
+								"previous": "******"
 							}
 						},
 						"create": "******",
@@ -1275,12 +1290,12 @@
 								"create": "******",
 								"load": "******"
 							},
-							"select": "******",
 							"title": "******"
 						},
 						"edit": {
 							"title": "******"
 						},
+						"select": "******",
 						"title": "******"
 					},
 					"tooltip": {
@@ -1489,6 +1504,7 @@
 							}
 						},
 						"textEditor": {
+							"alert": "****** {{data.variable}} ****** {{calc.round( value ; precision )}}",
 							"title": "******"
 						},
 						"title": "******",
@@ -1505,6 +1521,11 @@
 					"dynamic": "******",
 					"hint": {
 						"dynamic": "******"
+					},
+					"loadMore": {
+						"infiniteScroll": "******",
+						"pagination": "******",
+						"title": "******"
 					},
 					"options": {
 						"ariaLabel": "******"
@@ -1592,6 +1613,7 @@
 			"underline": "******",
 			"undo": "******",
 			"unlink": "******",
+			"unselectAll": "******",
 			"viewSource": "******"
 		},
 		"fileselect": {
@@ -1671,6 +1693,14 @@
 			"unlock": "******",
 			"unstick": "******"
 		},
+		"tilelayout": {
+			"component": {
+				"items": "******",
+				"itemsPerPage": "******",
+				"of": "******",
+				"page": "******"
+			}
+		},
 		"timepicker": {
 			"accept": "******",
 			"acceptLabel": "******",
@@ -1692,6 +1722,7 @@
 		"application": {
 			"description": "******",
 			"id": "******",
+			"menu": "******",
 			"new": "******",
 			"notifications": {
 				"notPublished": "******",
@@ -1713,6 +1744,7 @@
 			"type": "******"
 		},
 		"dashboard": {
+			"activateFiltering": "******",
 			"context": {
 				"datasource": {
 					"alert": "******",
@@ -1731,6 +1763,7 @@
 					"element": "******"
 				}
 			},
+			"deactivateFiltering": "******",
 			"share": "******"
 		},
 		"form": {
@@ -1783,7 +1816,8 @@
 				"rowsNotAdded": "******",
 				"uploadSuccessful": "******"
 			},
-			"restore": "******"
+			"restore": "******",
+			"select": "******"
 		},
 		"referenceData": {
 			"add": "******"
@@ -1821,6 +1855,11 @@
 				"confirmationMessage": "******",
 				"title": "******"
 			},
+			"display": {
+				"border": "******",
+				"searchable": "******",
+				"title": "******"
+			},
 			"map": {
 				"defaultTitle": "******",
 				"latitude": "******",
@@ -1840,6 +1879,7 @@
 		"workflow": {
 			"notifications": {
 				"cannotGoToNextStep": "******",
+				"cannotGoToPreviousStep": "******",
 				"goToStep": "****** {{step}} ******"
 			}
 		}
@@ -1964,7 +2004,8 @@
 			},
 			"queryName": "******",
 			"tooltip": {
-				"graphQLFilter": "****** {{lastUpdate}} ******"
+				"graphQLFilter": "****** {{lastUpdate}} ******",
+				"path": "******"
 			},
 			"type": "******",
 			"validateCsv": "******",

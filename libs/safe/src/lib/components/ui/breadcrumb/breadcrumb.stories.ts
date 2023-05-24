@@ -30,6 +30,9 @@ const TEMPLATE: StoryFn<SafeBreadcrumbComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',

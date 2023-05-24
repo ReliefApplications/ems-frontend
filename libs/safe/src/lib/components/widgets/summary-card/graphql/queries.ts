@@ -72,3 +72,31 @@ export const GET_RESOURCE_METADATA = gql`
 export interface GetResourceMetadataQueryResponse {
   resource: Resource;
 }
+
+/** Graphql request for getting resource layout */
+export const GET_LAYOUT = gql`
+  query GetLayout($resource: ID!, $id: ID) {
+    resource(id: $resource) {
+      layouts(ids: [$id]) {
+        edges {
+          node {
+            id
+            name
+            query
+            createdAt
+            display
+          }
+        }
+      }
+      metadata {
+        name
+        type
+      }
+    }
+  }
+`;
+
+/** Model for GetLayoutQueryResponse object */
+export interface GetLayoutQueryResponse {
+  resource: Resource;
+}

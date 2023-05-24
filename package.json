@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "2.0.0-alpha.8",
+  "version": "2.0.0-alpha.12",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
@@ -46,6 +46,7 @@
     "@progress/kendo-angular-l10n": "^11.2.0",
     "@progress/kendo-angular-label": "^11.2.0",
     "@progress/kendo-angular-layout": "11",
+    "@progress/kendo-angular-listbox": "^11.2.0",
     "@progress/kendo-angular-listview": "^11.2.0",
     "@progress/kendo-angular-pdf-export": "^11.2.0",
     "@progress/kendo-angular-popup": "^11.2.0",
@@ -54,7 +55,6 @@
     "@progress/kendo-angular-toolbar": "^11.2.0",
     "@progress/kendo-angular-treeview": "^11.2.0",
     "@progress/kendo-angular-upload": "^11.2.0",
-    "@progress/kendo-angular-listbox": "^11.2.0",
     "@progress/kendo-data-query": "^1.6.0",
     "@progress/kendo-date-math": "^1.5.10",
     "@progress/kendo-drawing": "^1.17.3",
@@ -87,6 +87,7 @@
     "leaflet.control.layers.tree": "^1.1.0",
     "leaflet.heat": "^0.2.0",
     "leaflet.markercluster": "^1.5.3",
+    "jsonpath": "^1.1.1",
     "localforage": "^1.10.0",
     "monaco-editor": "^0.34.1",
     "ng2-charts": "^4.1.1",
@@ -116,6 +117,7 @@
     "@angular/compiler-cli": "~15.1.1",
     "@angular/language-service": "~15.1.1",
     "@nrwl/cypress": "15.7.2",
+    "@nrwl/esbuild": "15.9.1",
     "@nrwl/eslint-plugin-nx": "15.7.2",
     "@nrwl/jest": "15.7.2",
     "@nrwl/js": "15.9.1",
@@ -127,13 +129,12 @@
     "@semantic-release/changelog": "^6.0.2",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/release-notes-generator": "^10.0.3",
-    "@types/color": "^3.0.3",
-    "@types/esri-leaflet": "^2.1.9",
     "@storybook/addon-essentials": "^7.0.5",
     "@storybook/addon-mdx-gfm": "^7.0.5",
     "@storybook/angular": "^7.0.5",
     "@storybook/core-server": "^7.0.5",
     "@types/color": "^3.0.3",
+    "@types/esri-leaflet": "^2.1.9",
     "@types/extract-files": "^8.1.1",
     "@types/geojson": "^7946.0.10",
     "@types/jasmine": "~3.8.0",
@@ -142,14 +143,14 @@
     "@types/leaflet-fullscreen": "^1.0.6",
     "@types/leaflet.heat": "^0.2.1",
     "@types/leaflet.markercluster": "^1.5.1",
-    "@types/lodash": "^4.14.175",
-    "@types/node": "16.11.7",
+    "@types/jsonpath": "^0.2.0",
+    "@types/node": "18.7.1",
     "@types/proj4": "^2.5.2",
-    "@types/uuid": "^8.3.0",
     "@types/ws": "^7.4.1",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
     "cypress": "^12.2.0",
+    "esbuild": "^0.17.5",
     "eslint": "~8.15.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",
@@ -177,39 +178,5 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ReliefApplications/oort-frontend.git"
-  },
-  "release": {
-    "branches": [
-      "+([0-9])?(.{+([0-9]),x}).x",
-      "main",
-      "next",
-      "next-major",
-      {
-        "name": "beta",
-        "prerelease": true
-      },
-      {
-        "name": "alpha",
-        "prerelease": true
-      }
-    ],
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      "@semantic-release/changelog",
-      [
-        "@semantic-release/npm",
-        {
-          "npmPublish": false
-        }
-      ],
-      [
-        "@semantic-release/github",
-        {
-          "successComment": false
-        }
-      ],
-      "@semantic-release/git"
-    ]
   }
 }

@@ -14,7 +14,7 @@
     class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
-    (goToNextStep)="goToNextStep.emit($event)"
+    (changeStep)="changeStep.emit($event)"
     (edit)="edit.emit($event)"
     [widget]="widget"
     [canUpdate]="canUpdate"
@@ -37,6 +37,7 @@
     [header]="header"
     [title]="widget.settings.title"
     [text]="widget.settings.text"
+    [record]="widget.settings.record"
   >
   </safe-editor>
 </ng-container>
@@ -47,7 +48,6 @@
     class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
-    (goToNextStep)="goToNextStep.emit($event)"
     (edit)="edit.emit($event)"
     [widget]="widget"
   >

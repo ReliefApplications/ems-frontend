@@ -2,6 +2,7 @@
 <kendo-grid
   id="recordsGrid"
   class="w-full"
+  [class.border-none]="!showBorder"
   [loading]="loadingRecords || loadingSettings"
   [data]="status.error ? [] : data"
   [autoSize]="false"
@@ -47,7 +48,26 @@
       [formControl]="search"
       class="!w-full"
     />
-    <kendo-grid-column-chooser *ngIf="reorderable"></kendo-grid-column-chooser>
+
+    <!-- Column Chooser -->
+    <kendo-button
+      #anchor
+      fillMode="flat"
+      (click)="toggleColumnChooser()"
+      icon="columns"
+    ></kendo-button>
+    <kendo-popup
+      [anchor]="anchor.element"
+      (anchorViewportLeave)="showColumnChooser = false"
+      [collision]="{ horizontal: 'fit', vertical: 'fit' }"
+      *ngIf="showColumnChooser"
+    >
+      <safe-grid-column-chooser
+        [originalColumns]="grid?.columns"
+        (hideColumnChooser)="toggleColumnChooser($event)"
+      ></safe-grid-column-chooser>
+    </kendo-popup>
+
     <button
       *ngIf="actions.add && canAdd"
       kendoButton

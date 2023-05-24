@@ -14,9 +14,11 @@ import {
   LayerModel,
   PopupElement,
   PopupElementType,
+  UniqueValueInfo,
 } from '../../../models/layer.model';
 import { IconName } from '../../icon-picker/icon-picker.const';
 import { LayerType } from '../../ui/map/interfaces/layer-settings.type';
+import { set } from 'lodash';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -148,6 +150,7 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
 /**
  * Create layer definition form group
  *
+ * @param type layer type
  * @param value layer definition
  * @returns layer definition form group
  */
@@ -163,26 +166,16 @@ const createLayerDefinitionForm = (type: LayerType, value?: any): FormGroup => {
     }),
   });
   if (type !== 'GroupLayer') {
-    const rendererType = formGroup.value.drawingInfo.renderer.type;
-    // Add more conditions there to disabled aggregation
-    if (rendererType === 'heatmap') {
-      formGroup.get('featureReduction')?.disable();
-    }
+    // Add more conditions there so we subscribe to the type to update the form
     const setTypeListeners = () => {
       formGroup
         .get('drawingInfo.renderer.type')
-        ?.valueChanges.subscribe((type) => {
-          if (type === 'heatmap') {
-            formGroup.get('featureReduction')?.disable();
-          } else {
-            formGroup.get('featureReduction')?.enable();
-          }
+        ?.valueChanges.subscribe((type: string) => {
+          const drawingInfo = { ...formGroup.get('drawingInfo')?.value };
+          set(drawingInfo, 'renderer.type', type);
           formGroup.setControl(
             'drawingInfo',
-            createLayerDrawingInfoForm({
-              ...formGroup.get('drawingInfo'),
-              type,
-            })
+            createLayerDrawingInfoForm(drawingInfo)
           );
           setTypeListeners();
         });
@@ -226,7 +219,7 @@ export const createLayerFeatureReductionForm = (value: any) => {
  * @returns layer drawing info form
  */
 export const createLayerDrawingInfoForm = (value: any): FormGroup => {
-  const type = get(value, 'type', 'simple');
+  const type = get(value, 'renderer.type', 'simple');
   const formGroup = fb.group({
     renderer: fb.group({
       type: [type, Validators.required],
@@ -254,10 +247,49 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup => {
           Validators.required,
         ],
       }),
+      ...(type === 'uniqueValue' && {
+        defaultLabel: get(value, 'renderer.defaultLabel', 'Other'),
+        defaultSymbol: fb.group({
+          color: [
+            get(value, 'renderer.defaultSymbol.color', ''),
+            Validators.required,
+          ],
+          size: [get(value, 'renderer.defaultSymbol.size', 24)],
+          style: new FormControl<IconName>(
+            get(value, 'renderer.defaultSymbol.style', 'location-dot')
+          ),
+        }),
+        field1: [get(value, 'renderer.field1', null), Validators.required],
+        uniqueValueInfos: fb.array(
+          get(value, 'renderer.uniqueValueInfos', []).map(
+            (uniqueValueInfo: UniqueValueInfo) =>
+              createUniqueValueInfoForm(uniqueValueInfo)
+          )
+        ),
+      }),
     }),
   });
   return formGroup;
 };
+
+/**
+ * Create unique value form group
+ *
+ * @param value unique value
+ * @returns unique value form group
+ */
+export const createUniqueValueInfoForm = (value?: any) =>
+  fb.group({
+    label: [get(value, 'label', ''), Validators.required],
+    value: [get(value, 'value', ''), Validators.required],
+    symbol: fb.group({
+      color: [get(value, 'symbol.color', ''), Validators.required],
+      size: [get(value, 'symbol.size', 24)],
+      style: new FormControl<IconName>(
+        get(value, 'symbol.style', 'location-dot')
+      ),
+    }),
+  });
 
 /**
  * Create popup info form group
@@ -347,8 +379,8 @@ export const createMapControlsForm = (value?: MapControls): FormGroup =>
  * @param value map settings ( optional )
  * @returns map form
  */
-export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup =>
-  fb.group({
+export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
+  const formGroup = fb.group({
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],
     initialState: fb.group({
@@ -390,3 +422,15 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup =>
     ),
     arcGisWebMap: [get(value, 'arcGisWebMap', DEFAULT_MAP.arcGisWebMap)],
   });
+  if (formGroup.get('arcGisWebMap')?.value) {
+    formGroup.get('basemap')?.disable({ emitEvent: false });
+  }
+  formGroup.get('arcGisWebMap')?.valueChanges.subscribe((value) => {
+    if (value) {
+      formGroup.get('basemap')?.disable({ emitEvent: false });
+    } else {
+      formGroup.get('basemap')?.enable({ emitEvent: false });
+    }
+  });
+  return formGroup;
+};

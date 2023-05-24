@@ -46,6 +46,7 @@ import { Observable } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
+import localForage from 'localforage';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -69,6 +70,7 @@ export class DashboardComponent
   public loading = true;
   public tiles: any[] = [];
   public dashboard?: Dashboard;
+  public showFilter?: boolean;
 
   // === GRID ===
   private generatedTiles = 0;
@@ -78,7 +80,7 @@ export class DashboardComponent
   public formActive = false;
 
   // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   // === DUP APP SELECTION ===
   public showAppMenu = false;
@@ -163,6 +165,7 @@ export class DashboardComponent
                 ? this.dashboard.step.workflow?.page?.application?.id
                 : '';
               this.loading = loading;
+              this.showFilter = this.dashboard.showFilter;
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
@@ -200,6 +203,8 @@ export class DashboardComponent
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    localForage.removeItem(this.applicationId + 'contextualFilterPosition'); //remove temporary contextual filter data
+    localForage.removeItem(this.applicationId + 'contextualFilter');
     this.dashboardService.closeDashboard();
   }
 
@@ -500,14 +505,18 @@ export class DashboardComponent
     }
   }
 
+  /**
+   * Toggles the filter for the current dashboard.
+   */
   toggleFiltering(): void {
     if (this.dashboard) {
+      this.showFilter = !this.showFilter;
       this.apollo
         .mutate<EditDashboardMutationResponse>({
           mutation: EDIT_DASHBOARD,
           variables: {
             id: this.id,
-            showFilter: !this.dashboard.showFilter,
+            showFilter: this.showFilter,
           },
         })
         .subscribe({

@@ -5,20 +5,18 @@ import {
   EventEmitter,
   Input,
   AfterViewInit,
-  HostListener,
 } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  UntypedFormArray,
-  Validators,
-} from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import {
-  TileLayoutReorderEvent,
-  TileLayoutResizeEvent,
-} from '@progress/kendo-angular-layout';
-import { cloneDeep, get } from 'lodash';
+import { Validators, FormGroup, FormControl } from '@angular/forms';
+
+import { get } from 'lodash';
+import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { Apollo } from 'apollo-angular';
+import { Resource } from '../../../models/resource.model';
+import { Layout } from '../../../models/layout.model';
+import { Aggregation } from '../../../models/aggregation.model';
+import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
+import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
+import { MatLegacyTabChangeEvent } from '@angular/material/legacy-tabs';
 
 /** Define max height of summary card */
 const MAX_ROW_SPAN = 4;
@@ -31,6 +29,63 @@ const DEFAULT_CARD_HEIGHT = 2;
 const DEFAULT_CARD_WIDTH = 2;
 
 /**
+ * Create a card form
+ *
+ * @param value card value, optional
+ * @returns card as form group
+ */
+const createCardForm = (value?: any) => {
+  return new FormGroup({
+    title: new FormControl<string>(get(value, 'title', 'New Card')),
+    height: new FormControl<number>(get(value, 'height', DEFAULT_CARD_HEIGHT), [
+      Validators.min(1),
+      Validators.max(MAX_ROW_SPAN),
+    ]),
+    width: new FormControl<number>(get(value, 'width', DEFAULT_CARD_WIDTH), [
+      Validators.min(1),
+      Validators.max(MAX_COL_SPAN),
+    ]),
+    resource: new FormControl<string>(get(value, 'resource', null)),
+    layout: new FormControl<string>(get(value, 'layout', null)),
+    aggregation: new FormControl<string>(get(value, 'aggregation', null)),
+    html: new FormControl<string>(get(value, 'html', null)),
+    showDataSourceLink: new FormControl<boolean>(
+      get(value, 'showDataSourceLink', false)
+    ),
+    useStyles: new FormControl<boolean>(get(value, 'useStyles', true)),
+    wholeCardStyles: new FormControl<boolean>(
+      get(value, 'wholeCardStyles', false)
+    ),
+  });
+};
+
+/**
+ * Create a summary card form from definition
+ *
+ * @param def Widget definition
+ * @returns Summary card widget form
+ */
+const createSummaryCardForm = (def: any) => {
+  const settings = get(def, 'settings', {});
+
+  const form = new FormGroup({
+    id: new FormControl<number>(def.id),
+    title: new FormControl<string>(get(settings, 'title', '')),
+    card: createCardForm(get(settings, 'card', null)),
+  });
+
+  return extendWidgetForm(form, settings?.widgetDisplay, {
+    searchable: new FormControl(
+      get<boolean>(settings, 'widgetDisplay.searchable', false)
+    ),
+    usePagination: new FormControl(
+      get<boolean>(settings, 'widgetDisplay.usePagination', false)
+    ),
+  });
+};
+export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
+
+/**
  * Summary Card Settings component.
  */
 @Component({
@@ -40,13 +95,7 @@ const DEFAULT_CARD_WIDTH = 2;
 })
 export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
-  tileForm: UntypedFormGroup | undefined;
-
-  // === GRID ===
-  colsNumber = MAX_COL_SPAN;
-
-  // To prevent issues where dynamic would erase all cards
-  private cachedCards: any = undefined;
+  tileForm: SummaryCardFormT | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -55,91 +104,45 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
-  /**
-   * Changes display when windows size changes.
-   *
-   * @param event window resize event
-   */
-  @HostListener('window:resize', ['$event'])
-  onWindowResize(event: any): void {
-    this.colsNumber = this.setColsNumber(event.target.innerWidth);
-  }
+  public selectedResource: Resource | null = null;
+  public selectedLayout: Layout | null = null;
+  public selectedAggregation: Aggregation | null = null;
+  public customAggregation: any;
 
-  /**
-   * Get cards settings as Form Array
-   *
-   * @returns cards as Form Array
-   */
-  get cards(): UntypedFormArray {
-    return this.tileForm?.get('cards') as UntypedFormArray;
-  }
+  public fields: any[] = [];
+  public activeTabIndex: number | undefined;
 
   /**
    * Summary Card Settings component.
    *
-   * @param fb Angular Form Builder.
-   * @param dialog Material Dialog Service.
+   * @param apollo Apollo service
+   * @param aggregationService Shared aggregation service
    */
-  constructor(private fb: UntypedFormBuilder, private dialog: MatDialog) {}
+  constructor(
+    private apollo: Apollo,
+    private aggregationService: SafeAggregationService
+  ) {}
 
   /**
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
-    this.colsNumber = this.setColsNumber(window.innerWidth);
-    this.tileForm = this.fb.group({
-      id: this.tile.id,
-      title: this.tile.settings.title,
-      isDynamic: get(this.tile, 'settings.isDynamic', false),
-      cards: this.fb.array(
-        get(this.tile, 'settings.cards', []).map((x: any) => this.cardForm(x))
-      ),
-    });
+    this.tileForm = createSummaryCardForm(this.tile);
     this.change.emit(this.tileForm);
 
-    // Prevents user from having both dynamic and static cards
-    this.tileForm.get('isDynamic')?.valueChanges.subscribe(() => {
-      // if (!this.tileForm?.value.isDynamic) {
-      // }
-
-      // caches the cards of the other type
-      const newCache = cloneDeep(this.cards.value);
-
-      // removes the cards of the other type
-      this.cards.clear();
-
-      // add cards from cache
-      if (this.cachedCards) {
-        this.cachedCards.forEach((card: any) => {
-          this.cards.push(this.cardForm(card));
-        });
-      }
-
-      // update cache
-      this.cachedCards = newCache;
-    });
+    const resourceID = this.tileForm?.get('card.resource')?.value;
+    if (resourceID) {
+      this.getResource(resourceID);
+    }
+  }
+  /** @returns a FormControl for the searchable field */
+  get searchableControl(): FormControl {
+    return this.tileForm?.get('widgetDisplay.searchable') as any;
   }
 
-  /**
-   * Changes the number of displayed columns.
-   *
-   * @param width width of the screen.
-   * @returns new number of cols.
-   */
-  private setColsNumber(width: number): number {
-    if (width <= 480) {
-      return 1;
-    }
-    if (width <= 600) {
-      return 2;
-    }
-    if (width <= 800) {
-      return 4;
-    }
-    if (width <= 1024) {
-      return 6;
-    }
-    return MAX_COL_SPAN;
+  /** @returns a FormControl for the usePagination field */
+  get usePaginationControl(): FormControl {
+    return this.tileForm?.get('widgetDisplay.usePagination') as any;
   }
 
   /**
@@ -152,126 +155,137 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Add a new card to the cards form array.
-   * Open a modal before adding it.
+   * Sets an internal variable with the current tab.
+   *
+   * @param e Change tab event.
    */
-  async addCard() {
-    const { SafeAddCardComponent } = await import(
-      './add-card/add-card.component'
-    );
-    const dialogRef = this.dialog.open(SafeAddCardComponent, {
-      data: { isDynamic: this.tileForm?.value.isDynamic },
-    });
-    dialogRef.afterClosed().subscribe((res: any) => {
-      if (res) {
-        this.cards.push(this.cardForm(res));
-        setTimeout(() => {
-          const el = document.getElementById(`card-${this.cards.length - 1}`);
-          el?.scrollIntoView({ behavior: 'smooth' });
-        });
-      }
-    });
+  handleTabChange(e: MatLegacyTabChangeEvent) {
+    this.activeTabIndex = e.index;
   }
 
   /**
-   * Create a card form
+   * Get resource by id, doing graphQL query
    *
-   * @param value card value, optional
-   * @returns card as form group
+   * @param id resource id
    */
-  private cardForm(value?: any): UntypedFormGroup {
-    return this.fb.group({
-      title: get(value, 'title', 'New Card'),
-      isDynamic: value.isDynamic,
-      height: [
-        get(value, 'height', DEFAULT_CARD_HEIGHT),
-        [Validators.min(1), Validators.max(MAX_ROW_SPAN)],
-      ],
-      width: [
-        get(value, 'width', DEFAULT_CARD_WIDTH),
-        [Validators.min(1), Validators.max(MAX_COL_SPAN)],
-      ],
-      isAggregation: get(value, 'isAggregation', true),
-      resource: get(value, 'resource', null),
-      layout: [get(value, 'layout', null)],
-      aggregation: [get(value, 'aggregation', null)],
-      record: get(value, 'record', null),
-      html: get(value, 'html', null),
-      showDataSourceLink: get(value, 'showDataSourceLink', false),
-      availableFields: [get(value, 'availableFields', [])],
-      useStyles: get(value, 'useStyles', true),
-      wholeCardStyles: get(value, 'wholeCardStyles', false),
-    });
+  private getResource(id: string): void {
+    const form = this.tileForm;
+    if (!form) return;
+    const layoutID = form.get('card.layout')?.value;
+    const aggregationID = form.get('card.aggregation')?.value;
+    this.fields = [];
+    this.apollo
+      .query<GetResourceByIdQueryResponse>({
+        query: GET_RESOURCE,
+        variables: {
+          id,
+          layout: layoutID ? [layoutID] : undefined,
+          aggregation: aggregationID ? [aggregationID] : undefined,
+        },
+      })
+      .subscribe((res) => {
+        if (res.errors) {
+          form.get('card.resource')?.patchValue(null);
+          form.get('card.layout')?.patchValue(null);
+          form.get('card.aggregation')?.patchValue(null);
+          this.selectedResource = null;
+          this.selectedLayout = null;
+          this.selectedAggregation = null;
+        } else {
+          this.selectedResource = res.data.resource;
+          if (layoutID) {
+            this.selectedLayout =
+              res.data?.resource.layouts?.edges[0]?.node || null;
+            this.fields = [];
+            get(res, 'data.resource.metadata', []).map((metaField: any) => {
+              get(this.selectedLayout, 'query.fields', []).map((field: any) => {
+                if (field.name === metaField.name) {
+                  const type = metaField.type;
+                  this.fields.push({ ...field, type });
+                }
+              });
+            });
+          }
+          if (aggregationID) {
+            this.selectedAggregation =
+              res.data?.resource.aggregations?.edges[0]?.node || null;
+            this.getCustomAggregation();
+          }
+        }
+      });
   }
 
   /**
-   * Remove a card from the cards form array.
-   *
-   * @param index index of card to remove
+   * Gets the custom aggregation
+   * for the selected resource and aggregation.
    */
-  removeCard(index: number) {
-    this.cards.removeAt(index);
+  private getCustomAggregation(): void {
+    if (!this.selectedAggregation || !this.selectedResource?.id) return;
+    this.aggregationService
+      .aggregationDataQuery(
+        this.selectedResource.id,
+        this.selectedAggregation.id || ''
+      )
+      ?.subscribe((res) => {
+        if (res.data?.recordsAggregation) {
+          this.customAggregation = res.data.recordsAggregation;
+          // @TODO: Figure out fields' types from aggregation
+          this.fields = this.customAggregation.items[0]
+            ? Object.keys(this.customAggregation.items[0]).map((f) => ({
+                name: f,
+                editor: 'text',
+              }))
+            : [];
+        }
+      });
   }
 
   /**
-   * Open Card at index
+   * Updates modified resource
    *
-   * @param index index of card to open
+   * @param resource the modified resource
    */
-  async openCard(index: number) {
-    const { SafeCardModalComponent } = await import(
-      './card-modal/card-modal.component'
-    );
-    const dialogRef = this.dialog.open(SafeCardModalComponent, {
-      disableClose: true,
-      data: this.cards.at(index).value,
-      position: {
-        bottom: '0',
-        right: '0',
-      },
-      panelClass: 'tile-settings-dialog',
-    });
+  handleResourceChange(resource: Resource | null) {
+    this.selectedResource = resource;
+    this.fields = [];
 
-    dialogRef.afterClosed().subscribe((value: any) => {
-      if (value) {
-        this.cards.at(index).setValue(value);
-      }
-    });
+    // clear layout and record
+    this.tileForm?.get('card.layout')?.setValue(null);
+    this.tileForm?.get('card.aggregation')?.setValue(null);
+    this.selectedLayout = null;
+    this.selectedAggregation = null;
+    this.customAggregation = null;
   }
 
   /**
-   * Emits reorder event.
+   * Updates modified layout
    *
-   * @param e reorder event.
+   * @param layout the modified layout
    */
-  onReorder(e: TileLayoutReorderEvent) {
-    const newValue = (this.tileForm?.controls.cards as any).controls[
-      e.oldIndex
-    ];
-    const oldValue = (this.tileForm?.controls.cards as any).controls[
-      e.newIndex
-    ];
-    (this.tileForm?.controls.cards as any).removeAt(e.newIndex);
-    (this.tileForm?.controls.cards as any).insert(e.newIndex, newValue);
-    (this.tileForm?.controls.cards as any).removeAt(e.oldIndex);
-    (this.tileForm?.controls.cards as any).insert(e.oldIndex, oldValue);
+  handleLayoutChange(layout: Layout | null) {
+    this.selectedLayout = layout;
+
+    // extract data keys from metadata
+    const fields: any = [];
+    get(this.selectedResource, 'metadata', []).forEach((metaField: any) => {
+      get(this.selectedLayout, 'query.fields', []).forEach((field: any) => {
+        if (field.name === metaField.name) {
+          const type = metaField.type;
+          fields.push({ ...field, type });
+        }
+      });
+    });
+
+    this.fields = fields;
   }
 
   /**
-   * Handles resize widget event.
+   * Updates modified aggregation
    *
-   * @param e Resize event.
+   * @param aggregation the modified aggregation
    */
-  public onResize(e: TileLayoutResizeEvent) {
-    if (e.newRowSpan > MAX_ROW_SPAN) {
-      e.newRowSpan = MAX_ROW_SPAN;
-    }
-    if (e.newColSpan > MAX_COL_SPAN) {
-      e.newColSpan = MAX_COL_SPAN;
-    }
-    (this.tileForm?.controls.cards as any).controls[e.item.order].patchValue({
-      height: e.newRowSpan,
-      width: e.newColSpan,
-    });
+  handleAggregationChange(aggregation: Aggregation | null) {
+    this.selectedAggregation = aggregation;
+    this.getCustomAggregation();
   }
 }

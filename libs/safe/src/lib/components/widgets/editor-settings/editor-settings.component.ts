@@ -6,9 +6,39 @@ import {
   Input,
   AfterViewInit,
 } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { SafeEditorService } from '../../../services/editor/editor.service';
+import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { Resource } from '../../../models/resource.model';
+import { Layout } from '../../../models/layout.model';
+import { Apollo } from 'apollo-angular';
+import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
+import { get } from 'lodash';
+import { getCalcKeys, getDataKeys } from '../summary-card/parser/utils';
+
+/**
+ * Creates the form for the editor widget settings.
+ *
+ * @param tile editor widget
+ * @returns the editor widget form group
+ */
+const createEditorForm = (tile: any) => {
+  const form = new FormGroup({
+    id: new FormControl<string>(tile.id),
+    title: new FormControl<string>(tile.settings.title),
+    text: new FormControl<string>(tile.settings.text),
+
+    // for record selection
+    resource: new FormControl<string>(tile.settings.resource),
+    layout: new FormControl<string>(tile.settings.layout),
+    record: new FormControl<string>(tile.settings.record),
+  });
+
+  return extendWidgetForm(form, tile?.settings?.widgetDisplay);
+};
+
+export type EditorFormType = ReturnType<typeof createEditorForm>;
 
 /**
  * Modal content for the settings of the editor widgets.
@@ -20,7 +50,7 @@ import { SafeEditorService } from '../../../services/editor/editor.service';
 })
 export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
-  tileForm: UntypedFormGroup | undefined;
+  tileForm: ReturnType<typeof createEditorForm> | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -32,15 +62,17 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   /** tinymce editor */
   public editor: any = WIDGET_EDITOR_CONFIG;
 
+  public selectedResource: Resource | null = null;
+  public selectedLayout: Layout | null = null;
   /**
    * Modal content for the settings of the editor widgets.
    *
-   * @param formBuilder Angular Form Builder
    * @param editorService Editor service used to get main URL and current language
+   * @param apollo Apollo service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
-    private editorService: SafeEditorService
+    private editorService: SafeEditorService,
+    private apollo: Apollo
   ) {
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
@@ -52,12 +84,32 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
    * Build the settings form, using the widget saved parameters.
    */
   ngOnInit(): void {
-    this.tileForm = this.formBuilder.group({
-      id: this.tile.id,
-      title: this.tile.settings.title,
-      text: this.tile.settings.text,
-    });
+    this.tileForm = createEditorForm(this.tile);
     this.change.emit(this.tileForm);
+
+    // Initialize the selected resource, layout and record from the form
+    const resourceID = this.tileForm?.get('resource')?.value;
+    const layoutID = this.tileForm?.get('layout')?.value;
+    if (resourceID) {
+      this.apollo
+        .query<GetResourceByIdQueryResponse>({
+          query: GET_RESOURCE,
+          variables: {
+            id: resourceID,
+            layout: layoutID ? [layoutID] : undefined,
+          },
+        })
+        .subscribe((res) => {
+          if (res.data) {
+            this.selectedResource = res.data.resource;
+            if (layoutID) {
+              this.selectedLayout =
+                res.data?.resource.layouts?.edges[0]?.node || null;
+              this.updateFields();
+            }
+          }
+        });
+    }
   }
 
   /**
@@ -67,5 +119,25 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
+    this.updateFields();
+  }
+
+  /** Extracts the fields from the resource/layout */
+  public updateFields() {
+    // extract data keys from metadata
+    const fields: any = [];
+    get(this.selectedResource, 'metadata', []).forEach((metaField: any) => {
+      get(this.selectedLayout, 'query.fields', []).forEach((field: any) => {
+        if (field.name === metaField.name) {
+          const type = metaField.type;
+          fields.push({ ...field, type });
+        }
+      });
+    });
+    const dataKeys = getDataKeys(fields);
+    const calcKeys = getCalcKeys();
+    const keys = dataKeys.concat(calcKeys);
+    // Setup editor auto complete
+    this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
   }
 }

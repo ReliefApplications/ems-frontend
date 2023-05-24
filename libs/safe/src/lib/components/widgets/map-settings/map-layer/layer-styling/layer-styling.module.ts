@@ -7,6 +7,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { SimpleRendererComponent } from './simple-renderer/simple-renderer.component';
 import { HeatmapRendererComponent } from './heatmap-renderer/heatmap-renderer.component';
+import { UniqueValueRendererComponent } from './unique-value-renderer/unique-value-renderer.component';
 
 /**
  * Layer styling module.
@@ -22,6 +23,7 @@ import { HeatmapRendererComponent } from './heatmap-renderer/heatmap-renderer.co
     MatFormFieldModule,
     SimpleRendererComponent,
     HeatmapRendererComponent,
+    UniqueValueRendererComponent,
   ],
   exports: [LayerStylingComponent],
 })

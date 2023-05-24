@@ -58,6 +58,8 @@ export class SafeLayoutComponent
 
   @Input() profileRoute = '/profile';
 
+  @Input() sideMenu = true;
+
   languages: string[] = [];
 
   // === NOTIFICATIONS ===

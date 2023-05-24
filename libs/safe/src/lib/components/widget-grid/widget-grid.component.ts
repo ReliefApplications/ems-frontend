@@ -2,6 +2,7 @@ import {
   Component,
   EventEmitter,
   HostListener,
+  Inject,
   Input,
   OnInit,
   Output,
@@ -51,7 +52,7 @@ export class SafeWidgetGridComponent implements OnInit {
   @Output() add: EventEmitter<any> = new EventEmitter();
 
   // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   @ViewChildren(SafeWidgetComponent)
   widgetComponents!: QueryList<SafeWidgetComponent>;
@@ -64,6 +65,8 @@ export class SafeWidgetGridComponent implements OnInit {
   get canDeactivate() {
     return !this.widgetComponents.some((x) => !x.canDeactivate);
   }
+
+  public isBackOffice = false;
 
   /**
    * Changes display when windows size changes.
@@ -79,13 +82,17 @@ export class SafeWidgetGridComponent implements OnInit {
   /**
    * Constructor of the grid widget component
    *
+   * @param environment This is the environment in which we are running the application
    * @param dialog The material dialog service
    * @param dashboardService Shared dashboard service
    */
   constructor(
+    @Inject('environment') environment: any,
     public dialog: MatDialog,
     private dashboardService: SafeDashboardService
-  ) {}
+  ) {
+    if (environment.module === 'backoffice') this.isBackOffice = true;
+  }
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
@@ -149,8 +156,8 @@ export class SafeWidgetGridComponent implements OnInit {
       },
       autoFocus: false,
     });
-    dialogRef.componentInstance.goToNextStep.subscribe((event: any) => {
-      this.goToNextStep.emit(event);
+    dialogRef.componentInstance.changeStep.subscribe((event: number) => {
+      this.changeStep.emit(event);
       dialogRef.close();
     });
   }

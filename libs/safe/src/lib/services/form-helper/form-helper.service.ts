@@ -9,7 +9,10 @@ import { firstValueFrom } from 'rxjs';
 import {
   UPLOAD_FILE,
   UploadFileMutationResponse,
+  AddRecordMutationResponse,
+  ADD_RECORD,
 } from '../../components/form/graphql/mutations';
+import localForage from 'localforage';
 
 /**
  * Shared survey helper service.
@@ -121,5 +124,100 @@ export class SafeFormHelpersService {
       }
     }
     survey.data = data;
+  }
+
+  /**
+   * Return an array of promises to upload asynchronously records created on the go while creating a parent record
+   *
+   * @param survey The form of the parent record
+   * @returns A promise with all the requests to upload files
+   */
+  uploadTemporaryRecords(survey: Survey.SurveyModel): Promise<any>[] {
+    const promises: Promise<any>[] = [];
+    const surveyData = survey.data;
+    const questions = survey.getAllQuestions();
+    for (const question of questions) {
+      if (question && question.value) {
+        if (
+          question.getType() === 'resources' ||
+          question.getType() == 'resource'
+        ) {
+          //We save the records created from the resources question
+          for (const recordId of question.value) {
+            const promise = new Promise<void>((resolve, reject) => {
+              localForage
+                .getItem(recordId)
+                .then((data: any) => {
+                  if (data != null) {
+                    // We ensure to make it only if such a record is found
+                    const recordFromResource = JSON.parse(data);
+                    this.apollo
+                      .mutate<AddRecordMutationResponse>({
+                        mutation: ADD_RECORD,
+                        variables: {
+                          form: recordFromResource.template,
+                          data: recordFromResource.data,
+                        },
+                      })
+                      .subscribe({
+                        next: ({ data, errors }) => {
+                          if (errors) {
+                            this.snackBar.openSnackBar(
+                              `Error. ${errors[0].message}`,
+                              {
+                                error: true,
+                              }
+                            );
+                            reject(errors);
+                          } else {
+                            question.value[question.value.indexOf(recordId)] =
+                              question.value.includes(recordId)
+                                ? data?.addRecord.id
+                                : recordId; // If there is no error, we replace in the question the temporary id by the final one
+                            surveyData[question.name] = question.value; // We update the survey data to consider our changes
+                            resolve();
+                          }
+                        },
+                        error: (err) => {
+                          this.snackBar.openSnackBar(err.message, {
+                            error: true,
+                          });
+                          reject(err);
+                        },
+                      });
+                  } else {
+                    resolve(); //there is no data
+                  }
+                })
+                .catch((error: any) => {
+                  console.error(error); // Handle any errors that occur while getting the item
+                  reject(error);
+                });
+              localForage.removeItem(recordId); // We clear it from the local storage once we have retrieved it
+            });
+            promises.push(promise);
+          }
+        }
+      }
+    }
+    return promises;
+  }
+
+  /**
+   * Clean cached records from passed survey.
+   *
+   * @param survey Survey from which we need to clean cached records.
+   */
+  cleanCachedRecords(survey: Survey.SurveyModel): void {
+    survey.getAllQuestions().forEach((question) => {
+      if (
+        question.value &&
+        ['resources', 'resource'].includes(question.getType())
+      ) {
+        question.value.forEach((recordId: any) =>
+          localForage.removeItem(recordId)
+        );
+      }
+    });
   }
 }
