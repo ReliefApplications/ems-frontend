@@ -6,8 +6,17 @@
   order: 2;
 }
 
+.mat-list-base {
+  display: flex;
+  padding: 0px;
+  max-height: 64px !important;
+}
+
 .nav-items-list {
-  overflow: hidden;
+  overflow-y: hidden;
+  display: flex;
+  margin: 0;
+  height: auto;
 }
 
 .nav-item-add {
@@ -24,7 +33,8 @@
   }
 
   .nav-actions {
-    display: none;
+    margin-left: 10px;
+    display: block;
   }
 
   .nav-action,
@@ -33,6 +43,7 @@
     width: 24px;
     height: 24px;
     line-height: 24px;
+    pointer-events: none;
   }
   &:hover {
     .nav-actions {
@@ -41,6 +52,7 @@
     .nav-action,
     .nav-item-handle {
       color: #aeaeaf;
+      pointer-events: initial;
     }
   }
 
@@ -53,30 +65,8 @@
   cursor: move;
 }
 
-.app-sidenav-add-page {
-  // Subtracts topbar, sub-topbar, header and add-page height
-  max-height: calc(100vh - 64px - 60px - 48px - 84px);
-  overflow: auto;
-}
-
-.app-sidenav-phone-add-page {
-  // Subtracts header and add-page height
-  max-height: calc(100vh - 48px - 84px);
-  overflow: auto;
-}
-
-.app-sidenav {
-  // Subtracts topbar, sub-topbar, header height
-  max-height: calc(100vh - 64px - 60px - 48px);
-  overflow: auto;
-}
-
-.app-sidenav-phone {
-  // Subtracts header height
-  max-height: calc(100vh - 48px);
-  overflow: auto;
-}
-
 .sidenav-header {
   justify-content: space-between;
+  margin-top: 0px !important;
+  height: 56px !important;
 }

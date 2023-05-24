@@ -1583,6 +1583,7 @@
 		"application": {
 			"description": "Description",
 			"id": "ID de l'application",
+			"menu": "Menu latéral",
 			"new": "Nouvelle application",
 			"notifications": {
 				"notPublished": "Candidature non publiée.",

@@ -133,7 +133,13 @@
   <ng-container *ngTemplateOutlet="toolbar"></ng-container>
 </ng-container>
 
-<mat-sidenav-container class="sidenav-container">
+<mat-sidenav-container
+  [class]="
+    !sideMenu && largeDevice
+      ? 'sidenav-container top-menu'
+      : 'sidenav-container'
+  "
+>
   <mat-sidenav
     class="sidenav"
     #nav
