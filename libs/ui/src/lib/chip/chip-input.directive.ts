@@ -27,7 +27,8 @@ export class ChipInputDirective implements AfterContentInit, OnDestroy {
     'rounded-md',
     'border',
     'border-gray-200',
-    'p-1',
+    'px-1',
+    'py-2',
     'gap-1',
     'flex',
     'w-full',
@@ -71,6 +72,7 @@ export class ChipInputDirective implements AfterContentInit, OnDestroy {
   private setWrapperDiv(): void {
     const wrapper = this.renderer.createElement('div');
     const parent = this.elementRef.nativeElement.parentNode;
+    this.renderer.addClass(this.elementRef.nativeElement, 'flex-1');
     this.renderer.insertBefore(parent, wrapper, this.elementRef.nativeElement);
     this.renderer.appendChild(wrapper, this.chipList);
     this.renderer.appendChild(wrapper, this.elementRef.nativeElement);

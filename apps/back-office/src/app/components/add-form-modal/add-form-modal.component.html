@@ -100,14 +100,15 @@
                     [value]="template.id"
                   >
                     {{ template.name }}
-                    <mat-chip-list
+                    <div
+                      uiChipList
                       *ngIf="template.core"
                       class="float-right py-1.5 px-0 rounded-lg"
                     >
-                      <mat-chip class="primary-chip !rounded-lg" disabled>{{
+                      <ui-chip class="!rounded-lg" variant="primary">{{
                         'models.form.core' | translate
-                      }}</mat-chip>
-                    </mat-chip-list>
+                      }}</ui-chip>
+                    </div>
                   </mat-option>
                 </mat-select>
               </mat-form-field>
