@@ -2,10 +2,10 @@
   <form [formGroup]="tileForm">
     <div class="form-group">
       <div class="form-group-title">{{ 'common.general' | translate }}</div>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.title' | translate }}</mat-label>
-        <input matInput formControlName="title" type="string" />
-      </mat-form-field>
+      <div uiFormFieldDirective [outline]="true">
+        <label>{{ 'common.title' | translate }}</label>
+        <input formControlName="title" type="string" />
+      </div>
       <div class="form-group-title">{{ 'global.data' | translate }}</div>
       <div formControlName="from" uiRadioGroupDirective="fromOptions" (groupValueChange)="getSources()">
         <ui-radio value="resource" [checked]="tileForm.get('from')?.value === 'resource'">

@@ -1,5 +1,5 @@
 <form [formGroup]="form">
-  <div appearance="outline">
+  <div uiFormFieldDirective [outline]="true">
     <label>{{
       'components.queryBuilder.pagination.first' | translate
     }}</label>
@@ -9,7 +9,6 @@
       icon="info"
       class="cursor-pointer"
       variant="grey"
-      matSuffix
       [uiTooltip]="
         'components.queryBuilder.tooltip.pagination.first' | translate
       "
