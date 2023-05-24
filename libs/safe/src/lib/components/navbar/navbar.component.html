@@ -1,16 +1,5 @@
-<mat-nav-list>
+<mat-nav-list class="border-b">
   <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
-    <div mat-subheader class="sidenav-header">
-      {{ group.name }}
-      <safe-button
-        *ngIf="appLayout && canAddPage"
-        [isIcon]="true"
-        icon="add"
-        variant="grey"
-        [matTooltip]="'models.page.add' | translate"
-        routerLink="./add-page"
-      ></safe-button>
-    </div>
     <div
       cdkDropList
       cdkDropListOrientation="horizontal"
@@ -74,5 +63,14 @@
         </div>
       </ng-container>
     </div>
+    <safe-button
+      *ngIf="appLayout && canAddPage"
+      [isIcon]="true"
+      class="self-center"
+      icon="add"
+      variant="primary"
+      [matTooltip]="'models.page.add' | translate"
+      routerLink="./add-page"
+    ></safe-button>
   </ng-container>
 </mat-nav-list>
