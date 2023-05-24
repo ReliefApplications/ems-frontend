@@ -12,12 +12,12 @@ import {
 } from '@oort-front/safe';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import {
   DividerModule,
   MenuModule,
   ButtonModule,
   TableModule,
+  ChipModule,
 } from '@oort-front/ui';
 
 /** Pull Jobs page module. */
@@ -32,13 +32,13 @@ import {
     DividerModule,
     MatPaginatorModule,
     TranslateModule,
-    MatChipsModule,
     SafeSkeletonTableModule,
     SafeIconModule,
     SafeCronParserModule,
     SafeDateModule,
     ButtonModule,
     TableModule,
+    ChipModule,
   ],
 })
 export class PullJobsModule {}
