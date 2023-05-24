@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
@@ -41,7 +41,7 @@ const ITEMS_PER_PAGE = 10;
 })
 export class ApiConfigurationsComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit, OnChanges
+  implements OnInit, AfterViewInit
 {
   // === DATA ===
   public loading = true;
@@ -103,14 +103,7 @@ export class ApiConfigurationsComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((results) => {
         this.updateValues(results.data, results.loading);
-      });    
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.statusFilter);
-      if(changes.statusFilter && changes.statusFilter.currentValue){
-        alert("123");
-      }
+      });
   }
 
   /**
