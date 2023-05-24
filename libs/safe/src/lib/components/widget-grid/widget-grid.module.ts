@@ -22,6 +22,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeModalModule } from '../ui/modal/modal.module';
 import { SafeDividerModule } from '../ui/divider/divider.module';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 /** Module for the widget-related components */
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
     LayoutModule,
     IndicatorsModule,
     SafeModalModule,
+    DragDropModule,
   ],
   exports: [SafeWidgetGridComponent, SafeTileDataComponent],
 })

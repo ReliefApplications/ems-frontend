@@ -4,6 +4,7 @@ import {
   HostListener,
   Inject,
   Input,
+  OnChanges,
   OnInit,
   Output,
   QueryList,
@@ -17,6 +18,7 @@ import {
 } from '@progress/kendo-angular-layout';
 import { SafeDashboardService } from '../../services/dashboard/dashboard.service';
 import { SafeWidgetComponent } from '../widget/widget.component';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 /** Maximum height of the widget in row units */
 const MAX_ROW_SPAN = 4;
@@ -32,7 +34,7 @@ const MAX_COL_SPAN = 8;
   templateUrl: './widget-grid.component.html',
   styleUrls: ['./widget-grid.component.scss'],
 })
-export class SafeWidgetGridComponent implements OnInit {
+export class SafeWidgetGridComponent implements OnInit, OnChanges {
   public availableWidgets: any[] = WIDGET_TYPES;
 
   @Input() loading = false;
@@ -67,6 +69,7 @@ export class SafeWidgetGridComponent implements OnInit {
   }
 
   public isBackOffice = false;
+  public colsNumberString = '';
 
   /**
    * Changes display when windows size changes.
@@ -98,6 +101,10 @@ export class SafeWidgetGridComponent implements OnInit {
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.skeletons = this.getSkeletons();
     this.availableWidgets = this.dashboardService.availableWidgets;
+  }
+
+  ngOnChanges() {
+    this.colsNumberString = 'repeat(' + this.colsNumber + ', minmax(0, 1fr))';
   }
 
   /**
@@ -207,6 +214,15 @@ export class SafeWidgetGridComponent implements OnInit {
         rows: e.newRowSpan,
       },
     });
+  }
+
+  /**
+   * Changes the array order so the drop list is organized once again
+   *
+   * @param event cdk drag drop
+   */
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.widgets, event.previousIndex, event.currentIndex);
   }
 
   /**
