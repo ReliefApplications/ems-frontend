@@ -31,6 +31,7 @@ import { SafeModalModule } from './components/ui/modal/modal.module';
 import { SafeEmptyModule } from './components/ui/empty/empty.module';
 import { SafeDividerModule } from './components/ui/divider/divider.module';
 import { SafeLeftSidenavModule } from './components/left-sidenav/left-sidenav.module';
+import { SafeNavbarModule } from './components/navbar/navbar.module';
 import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.module';
 import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
 import { SafeUnsubscribeModule } from './components/utils/unsubscribe/unsubscribe.module';
@@ -82,6 +83,7 @@ import { DashboardFilterModule } from './components/dashboard-filter/dashboard-f
     SafeEmptyModule,
     SafeDividerModule,
     SafeLeftSidenavModule,
+    SafeNavbarModule,
     // === Directives
     SafeSkeletonModule,
     FullScreenModule,
@@ -90,5 +92,7 @@ import { DashboardFilterModule } from './components/dashboard-filter/dashboard-f
     // === VIEWS ===
     SafeViewsModule,
   ],
+  declarations: [],
+  imports: [],
 })
 export class SafeModule {}

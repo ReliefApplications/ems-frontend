@@ -23,6 +23,11 @@
   </div>
   <!-- HTML content -->
   <safe-summary-card-item-content
+    *ngIf="
+      card.html &&
+      card.wholeCardStyles !== null &&
+      card.wholeCardStyles !== undefined
+    "
     [html]="card.html"
     [fields]="fields"
     [fieldsValue]="fieldsValue"

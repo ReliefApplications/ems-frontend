@@ -62,7 +62,7 @@ export class ApiConfigurationComponent
    *
    * @param apollo Apollo service
    * @param route Angular activated route
-   * @param snackBar Shared snackar service
+   * @param snackBar Shared snackbar service
    * @param router Angular router
    * @param formBuilder Angular form builder
    * @param apiProxy Shared API proxy service

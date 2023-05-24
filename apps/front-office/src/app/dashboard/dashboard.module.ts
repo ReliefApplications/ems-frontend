@@ -7,6 +7,7 @@ import {
   SafeLayoutModule,
   SafeLeftSidenavModule,
   SafeEmptyModule,
+  SafeNavbarModule,
 } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -25,6 +26,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeApplicationToolbarModule,
     SafeEmptyModule,
     TranslateModule,
+    SafeNavbarModule,
   ],
 })
 export class DashboardModule {}

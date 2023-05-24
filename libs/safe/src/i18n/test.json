@@ -1207,6 +1207,10 @@
 				"close": {
 					"confirmationMessage": "******"
 				},
+				"editor": {
+					"recordSelection": "******",
+					"title": "******"
+				},
 				"grid": {
 					"actions": {
 						"add": "******",
@@ -1285,12 +1289,12 @@
 								"create": "******",
 								"load": "******"
 							},
-							"select": "******",
 							"title": "******"
 						},
 						"edit": {
 							"title": "******"
 						},
+						"select": "******",
 						"title": "******"
 					},
 					"tooltip": {
@@ -1499,6 +1503,7 @@
 							}
 						},
 						"textEditor": {
+							"alert": "****** {{data.variable}} ****** {{calc.round( value ; precision )}}",
 							"title": "******"
 						},
 						"title": "******",
@@ -1515,6 +1520,11 @@
 					"dynamic": "******",
 					"hint": {
 						"dynamic": "******"
+					},
+					"loadMore": {
+						"infiniteScroll": "******",
+						"pagination": "******",
+						"title": "******"
 					},
 					"options": {
 						"ariaLabel": "******"
@@ -1602,6 +1612,7 @@
 			"underline": "******",
 			"undo": "******",
 			"unlink": "******",
+			"unselectAll": "******",
 			"viewSource": "******"
 		},
 		"fileselect": {
@@ -1681,6 +1692,14 @@
 			"unlock": "******",
 			"unstick": "******"
 		},
+		"tilelayout": {
+			"component": {
+				"items": "******",
+				"itemsPerPage": "******",
+				"of": "******",
+				"page": "******"
+			}
+		},
 		"timepicker": {
 			"accept": "******",
 			"acceptLabel": "******",
@@ -1702,6 +1721,7 @@
 		"application": {
 			"description": "******",
 			"id": "******",
+			"menu": "******",
 			"new": "******",
 			"notifications": {
 				"notPublished": "******",
@@ -1795,7 +1815,8 @@
 				"rowsNotAdded": "******",
 				"uploadSuccessful": "******"
 			},
-			"restore": "******"
+			"restore": "******",
+			"select": "******"
 		},
 		"referenceData": {
 			"add": "******"
@@ -1835,6 +1856,7 @@
 			},
 			"display": {
 				"border": "******",
+				"searchable": "******",
 				"title": "******"
 			},
 			"map": {
@@ -1981,7 +2003,8 @@
 			},
 			"queryName": "******",
 			"tooltip": {
-				"graphQLFilter": "****** {{lastUpdate}} ******"
+				"graphQLFilter": "****** {{lastUpdate}} ******",
+				"path": "******"
 			},
 			"type": "******",
 			"validateCsv": "******",

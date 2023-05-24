@@ -1214,6 +1214,10 @@
 				"close": {
 					"confirmationMessage": "Vos changements vont être perdus si vous fermez la fenêtre d'édition. Voulez-vous continuer ?"
 				},
+				"editor": {
+					"recordSelection": "Sélection d'enregistrement",
+					"title": "Éditeur"
+				},
 				"grid": {
 					"actions": {
 						"add": "Ajouter de nouveaux enregistrements",
@@ -1292,12 +1296,12 @@
 								"create": "Créer une nouvelle mise en page",
 								"load": "Charger une mise en page existante"
 							},
-							"select": "Sélectionner une mise en page",
 							"title": "Ajouter une nouvelle mise en page"
 						},
 						"edit": {
 							"title": "Configuration de la mise en page"
 						},
+						"select": "Sélectionner une mise en page",
 						"title": "Mise en page de la grille"
 					},
 					"tooltip": {
@@ -1507,6 +1511,7 @@
 						},
 						"preview": {},
 						"textEditor": {
+							"alert": "Vous pouvez ajouter des variables ex: {{data.variable}} et faire des calculs ex: {{calc.round( value ; precision )}}",
 							"title": "Éditeur de texte"
 						},
 						"title": "Paramètres de carte",
@@ -1523,6 +1528,11 @@
 					"dynamic": "Dynamique",
 					"hint": {
 						"dynamic": "Les cartes dynamiques adaptent leur affichage en fonction du nombre d'éléments dans la source de données. Vous devez définir une unique carte qui sera répétée pour chaque élément."
+					},
+					"loadMore": {
+						"infiniteScroll": "Utiliser le défilement infini",
+						"pagination": "Utiliser la pagination",
+						"title": "Déclencheur pour charger plus de données"
 					},
 					"options": {
 						"ariaLabel": "***"
@@ -1610,6 +1620,7 @@
 			"underline": "Souligner",
 			"undo": "Annuler",
 			"unlink": "Supprimer le lien",
+			"unselectAll": "Tout déselectionner",
 			"viewSource": "Voir la source"
 		},
 		"fileselect": {
@@ -1689,6 +1700,14 @@
 			"unlock": "Déverrouiller",
 			"unstick": "Désépingler"
 		},
+		"tilelayout": {
+			"component": {
+				"items": "articles",
+				"itemsPerPage": "Articles par page",
+				"of": "de",
+				"page": "Page"
+			}
+		},
 		"timepicker": {
 			"accept": "Accepter",
 			"acceptLabel": "Accepter",
@@ -1710,6 +1729,7 @@
 		"application": {
 			"description": "Description",
 			"id": "ID de l'application",
+			"menu": "Menu latéral",
 			"new": "Nouvelle application",
 			"notifications": {
 				"notPublished": "L'application n'a pas pu être publiée.",
@@ -1803,7 +1823,8 @@
 				"rowsNotAdded": "Erreur lors de l'ajout de ligne(s).",
 				"uploadSuccessful": "Enregistrements importés avec succès"
 			},
-			"restore": "Restaurer"
+			"restore": "Restaurer",
+			"select": "Sélectionnez un enregistrement"
 		},
 		"referenceData": {
 			"add": "Ajouter une référence de données"
@@ -1843,6 +1864,7 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"searchable": "Autoriser la recherche",
 				"title": "Affichage des widgets"
 			},
 			"map": {
@@ -1989,7 +2011,8 @@
 			},
 			"queryName": "Nom de la requête",
 			"tooltip": {
-				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés. Vous pouvez utiliser le code {{lastUpdate}} pour insérer dynamiquement la date de la dernière mise à jour des choix dans un format compatible SQL."
+				"graphQLFilter": "Vous pouvez utiliser {{lastUpdate}} pour obtenir dynamiquement la dernière date de récupération au format SQL.",
+				"path": "Utilise la syntaxe JSONPath pour extraire les éléments de la réponse JSON. Exemples: $.data[*].name, $.data..countries, $.data.countries.*"
 			},
 			"type": "Type",
 			"validateCsv": "Valider le CSV",
