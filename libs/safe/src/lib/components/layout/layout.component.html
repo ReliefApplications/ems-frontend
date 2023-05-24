@@ -147,11 +147,12 @@
     </ui-button>
   </ui-menu>
 </nav>
-
+<ng-container *ngIf="toolbar">
+  <ng-container *ngTemplateOutlet="toolbar"></ng-container>
+</ng-container>
 <ui-sidenav-container class="sidenav-container">
   <div
     uiSidenavDirective
-    class="sidenav"
     #nav="uiSidenavDirective"
     [mode]="largeDevice ? 'side' : 'over'"
     [opened]="largeDevice"
@@ -165,14 +166,11 @@
     </ng-container>
   </div>
 
-  <ng-container ngProjectAs="content" class="sidenav-content">
+  <ng-container ngProjectAs="content">
     <ui-breadcrumbs
       *ngIf="breadcrumbs.length > 1"
       [breadcrumbs]="breadcrumbs"
     ></ui-breadcrumbs>
-    <ng-container *ngIf="toolbar">
-      <ng-container *ngTemplateOutlet="toolbar"></ng-container>
-    </ng-container>
     <router-outlet></router-outlet>
   </ng-container>
 

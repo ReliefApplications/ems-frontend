@@ -1,18 +1,12 @@
-<ui-sidenav-container class="grow">
-  <ng-container ngProjectAs="content">
+<mat-sidenav-container class="grow">
+  <mat-sidenav-content>
     <div class="min-h-full py-8 px-6">
       <app-dashboard [id]="id"></app-dashboard>
     </div>
-  </ng-container>
-  <div
-    uiSidenavDirective
-    #nav="uiSidenavDirective"
-    mode="side"
-    ngProjectAs="sidenavContent"
-    [(opened)]="showSidenav"
-  >
+  </mat-sidenav-content>
+  <mat-sidenav mode="side" position="end" [(opened)]="showSidenav">
     <ng-template #rightSidenav></ng-template>
-  </div>
-</ui-sidenav-container>
+  </mat-sidenav>
+</mat-sidenav-container>
 
 <div id="angular-app-root" cdkOverlayOrigin></div>
