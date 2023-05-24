@@ -5,7 +5,6 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { ExpansionPanelModule } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -45,7 +44,6 @@ import { ButtonModule } from '@oort-front/ui';
     TranslateModule,
     SafeAggregationBuilderModule,
     MatAutocompleteModule,
-    MatChipsModule,
     SafeGridModule,
     SafeIconModule,
     SafePaletteControlModule,

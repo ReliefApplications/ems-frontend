@@ -16,7 +16,6 @@ import {
   TableModule,
   SpinnerModule,
 } from '@oort-front/ui';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
@@ -38,7 +37,6 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     MatIconModule,
     MatInputModule,
     MatAutocompleteModule,
-    MatChipsModule,
     MatRippleModule,
     SpinnerModule,
     CheckboxModule,

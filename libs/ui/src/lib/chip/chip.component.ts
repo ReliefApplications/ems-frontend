@@ -39,6 +39,9 @@ export class ChipComponent {
         case 'danger':
           classes.push('bg-red-100 hover:bg-red-200 text-red-400');
           break;
+        case 'warning':
+          classes.push('bg-orange-100 hover:bg-orange-200 text-orange-400');
+          break;
         default:
           break;
       }
