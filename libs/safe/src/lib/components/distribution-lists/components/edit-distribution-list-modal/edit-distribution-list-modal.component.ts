@@ -11,10 +11,6 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  MatLegacyChipInputEvent as MatChipInputEvent,
-  MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS,
-} from '@angular/material/legacy-chips';
-import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
@@ -27,8 +23,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
+import { ButtonModule, ChipModule, FormWrapperModule } from '@oort-front/ui';
 
 /** Model for the data input */
 interface DialogData {
@@ -67,14 +62,13 @@ export function codesFactory(): () => any {
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatChipsModule,
     ButtonModule,
+    ChipModule,
     FormWrapperModule,
   ],
   selector: 'safe-edit-distribution-list-modal',
   templateUrl: './edit-distribution-list-modal.component.html',
   styleUrls: ['./edit-distribution-list-modal.component.scss'],
-  providers: [{ provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory }],
 })
 export class EditDistributionListModalComponent implements OnInit {
   // === REACTIVE FORM ===
@@ -114,29 +108,29 @@ export class EditDistributionListModalComponent implements OnInit {
    *
    * @param event The event triggered when we exit the input
    */
-  addEmail(event: MatChipInputEvent | any): void {
+  addEmail(event: string | any): void {
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
-        const input =
-          event.type === 'focusout'
-            ? this.emailsInput?.nativeElement
-            : event.input;
+        // const input =
+        //   event.type === 'focusout'
+        //     ? this.emailsInput?.nativeElement
+        //     : event.input;
         const value =
           event.type === 'focusout'
             ? this.emailsInput?.nativeElement.value
-            : event.value;
+            : event;
 
         // Add the mail
-        const emails = [...this.emails];
         if ((value || '').trim()) {
           if (EMAIL_REGEX.test(value.trim())) {
+            const emails = [...this.emails];
             emails.push(value.trim());
             this.form.get('emails')?.setValue(emails);
             this.form.get('emails')?.updateValueAndValidity();
             // Reset the input value
-            if (input) {
-              input.value = '';
+            if (this.emailsInput?.nativeElement) {
+              this.emailsInput.nativeElement.value = '';
             }
           } else {
             this.form.get('emails')?.setErrors({ pattern: true });
@@ -153,43 +147,9 @@ export class EditDistributionListModalComponent implements OnInit {
    * @param email The email to remove
    */
   removeEmail(email: string): void {
-    const emails = [...this.emails];
-    const index = emails.indexOf(email);
-    if (index >= 0) {
-      emails.splice(index, 1);
-      this.form.get('emails')?.setValue(emails);
-      this.form.get('emails')?.updateValueAndValidity();
-    }
-  }
-
-  /**
-   * Get error message of field
-   *
-   * @param formControlName field name
-   * @returns error message
-   */
-  public errorMessage(formControlName: string): string {
-    switch (formControlName) {
-      case 'name': {
-        const control = this.form.get('name');
-        if (control?.hasError('required')) {
-          return 'components.distributionLists.errors.name.required';
-        }
-        return '';
-      }
-      case 'emails': {
-        const control = this.form.get('emails');
-        if (control?.hasError('required')) {
-          return 'components.distributionLists.errors.emails.required';
-        }
-        if (control?.hasError('pattern')) {
-          return 'components.distributionLists.errors.emails.pattern';
-        }
-        return '';
-      }
-      default: {
-        return '';
-      }
-    }
+    const emails = [...this.emails].filter(
+      (emailData) => emailData.toLowerCase() !== email.toLowerCase()
+    );
+    this.form.get('emails')?.setValue(emails);
   }
 }

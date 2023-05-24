@@ -345,17 +345,6 @@ $safe-theme: mat.define-light-theme(
   }
 }
 
-.mat-chip {
-  min-width: 75px;
-  justify-content: center;
-  font-weight: 500 !important;
-
-  &.mat-chip-disabled {
-    opacity: 1 !important;
-    pointer-events: none;
-  }
-}
-
 // === FORMS ===
 .auth-form {
   padding: 32px 24px;

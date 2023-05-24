@@ -9,7 +9,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyOptionModule as MatOptionModule } from '@angular/material/legacy-core';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { SafeIconModule } from '@oort-front/safe';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
@@ -35,7 +34,6 @@ import {
     MatSelectModule,
     MatOptionModule,
     TranslateModule,
-    MatChipsModule,
     SafeIconModule,
     GridModule,
     TooltipModule,

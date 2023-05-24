@@ -8,10 +8,10 @@ import {
   DividerModule,
   ButtonModule,
   TableModule,
+  ChipModule,
 } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 
 /**
  * Module for custom notifications table.
@@ -26,9 +26,9 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
     DividerModule,
     MatIconModule,
     MatPaginatorModule,
-    MatChipsModule,
     ButtonModule,
     TableModule,
+    ChipModule,
   ],
   exports: [NotificationsComponent],
 })

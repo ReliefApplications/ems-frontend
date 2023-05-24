@@ -18,7 +18,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeGraphQLSelectModule,
@@ -31,6 +30,7 @@ import {
   RadioModule,
   IconModule,
   ButtonModule,
+  ChipModule,
   FormWrapperModule,
 } from '@oort-front/ui';
 
@@ -51,7 +51,6 @@ const ITEMS_PER_PAGE = 10;
     MatSelectModule,
     MatButtonModule,
     ToggleModule,
-    MatChipsModule,
     TranslateModule,
     SafeIconModule,
     SafeGraphQLSelectModule,
@@ -60,6 +59,7 @@ const ITEMS_PER_PAGE = 10;
     RadioModule,
     IconModule,
     ButtonModule,
+    ChipModule,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',

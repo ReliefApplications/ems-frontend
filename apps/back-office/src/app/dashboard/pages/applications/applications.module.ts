@@ -17,7 +17,6 @@ import {
   SafeModalModule,
 } from '@oort-front/safe';
 import { MatSortModule } from '@angular/material/sort';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -34,6 +33,7 @@ import {
   FormWrapperModule,
   IconModule,
   TableModule,
+  ChipModule,
 } from '@oort-front/ui';
 
 /**
@@ -54,7 +54,6 @@ import {
     MatDialogModule,
     MenuModule,
     MatIconModule,
-    MatChipsModule,
     SafeAccessModule,
     MatDatepickerModule,
     MatNativeDateModule,
@@ -72,6 +71,7 @@ import {
     FormWrapperModule,
     IconModule,
     TableModule,
+    ChipModule,
   ],
   exports: [ApplicationsComponent],
 })
