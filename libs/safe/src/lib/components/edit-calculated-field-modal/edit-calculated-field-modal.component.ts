@@ -15,8 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { ButtonModule } from '@oort-front/ui';
-import { DialogModule } from '@oort-front/ui';
+import { DialogModule, ButtonModule, TooltipModule } from '@oort-front/ui';
 // @TODO: Remove SafeIconModule import after ui-icon is being used in the app
 import { SafeIconModule } from '../ui/icon/icon.module';
 /**
@@ -43,6 +42,7 @@ interface DialogData {
     EditorModule,
     ButtonModule,
     SafeIconModule,
+    TooltipModule,
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },

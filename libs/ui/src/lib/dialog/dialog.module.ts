@@ -5,7 +5,6 @@ import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { DialogCloseDirective } from './dialog-close.directive';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from '../tooltip/tooltip.module';
-import { IconModule } from '../icon/icon.module';
 import { ButtonModule } from '../button/button.module';
 
 /**
@@ -17,17 +16,9 @@ import { ButtonModule } from '../button/button.module';
     CommonModule,
     DialogCdkModule,
     TranslateModule,
-    TooltipModule,
     ButtonModule,
-    IconModule,
-  ],
-  exports: [
-    DialogComponent,
-    DialogCloseDirective,
-    TranslateModule,
     TooltipModule,
-    ButtonModule,
-    IconModule,
   ],
+  exports: [DialogComponent, DialogCloseDirective, TranslateModule],
 })
 export class DialogModule {}
