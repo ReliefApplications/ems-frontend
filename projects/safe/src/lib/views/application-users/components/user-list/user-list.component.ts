@@ -108,6 +108,7 @@ export class UserListComponent
           this.usersQuery.valueChanges
             .pipe(takeUntil(this.destroy$))
             .subscribe(({ data, loading }) => {
+              console.log('there');
               this.cachedUsers = data.application.users.edges.map(
                 (x) => x.node
               );
@@ -131,6 +132,7 @@ export class UserListComponent
    * @param e page event.
    */
   onPage(e: any): void {
+    console.log('doing pagination');
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
@@ -186,7 +188,7 @@ export class UserListComponent
             return prev;
           }
           return Object.assign({}, prev, {
-            role: {
+            application: {
               users: {
                 edges: [
                   ...prev.application.users.edges,

@@ -120,9 +120,14 @@ export class SafeReferenceDataService {
       a[displayField] > b[displayField] ? 1 : -1;
 
     // get items
-    const { items: items_, valueField } = (await localForage.getItem(
+    const referenceDataObj = (await localForage.getItem(
       referenceDataID
     )) as CachedItems;
+
+    if (!referenceDataObj) {
+      return [];
+    }
+    const { items: items_, valueField } = referenceDataObj;
     // sort items by displayField
     const items = items_.sort(sortByDisplayField);
     const foreignIsMultiselect = Array.isArray(filter?.foreignValue);

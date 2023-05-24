@@ -1,3 +1,28 @@
+## [1.3.13](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.12...v1.3.13) (2023-05-24)
+
+
+### Bug Fixes
+
+* incorrect tooltip position on forms when multi questions per line active ([c0b24b9](https://github.com/ReliefApplications/oort-frontend/commit/c0b24b964e275978f8dab79fe8ee1215b6508c3a))
+* pagination issue in ref data table ([3dd142e](https://github.com/ReliefApplications/oort-frontend/commit/3dd142e68729bf6272214f48610d5c558bf94c60))
+* user list would not perform pagination as expected ([0636e49](https://github.com/ReliefApplications/oort-frontend/commit/0636e49420dfcde2bd08bc2df852859d7758c784))
+
+## [1.3.12](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.11...v1.3.12) (2023-05-15)
+
+
+### Bug Fixes
+
+* date / datetime / time can now be used in triggers in surveyjs ([6b1fc3d](https://github.com/ReliefApplications/oort-frontend/commit/6b1fc3d7f40a0136907bb52ba69dbd80cf713c02))
+
+## [1.3.11](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.10...v1.3.11) (2023-04-14)
+
+
+### Bug Fixes
+
+* AB[#57872](https://github.com/ReliefApplications/oort-frontend/issues/57872) add isnull / isnotnull to available operators for boolean fields ([1338eea](https://github.com/ReliefApplications/oort-frontend/commit/1338eea7ea6b70fed3ff80fcab75e7b124d360a3))
+* delete questions from surveyjs if not accessible ([f3785e6](https://github.com/ReliefApplications/oort-frontend/commit/f3785e69b51be23e95e51c9ccad1478c81976b92)), closes [bugfix/AB#35551_SA-HQ-and-all-RO-R4](https://github.com/bugfix/AB/issues/35551_SA-HQ-and-all-RO-R4)
+* tagboxes and checkboxes fields of merged records could contain duplicates ([3f3beca](https://github.com/ReliefApplications/oort-frontend/commit/3f3beca89aebcdbb523bc9fa61f12ec84b094301))
+
 ## [1.3.10](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.9...v1.3.10) (2023-02-21)
 
 
