@@ -3,7 +3,7 @@ import { AvatarGroupComponent } from './avatar-group.component';
 import { AvatarGroupModule } from './avatar-group.module';
 import { AvatarShape, avatarShapes } from '../avatar/types/avatar-shape';
 import { Size, sizes } from '../types/size';
-import { Category, categories } from '../types/category';
+import { Category } from '../types/category';
 
 type MockedAvatar = {
   size: Size;
@@ -60,10 +60,6 @@ export default {
       options: avatarShapes,
       control: 'select',
     },
-    variant: {
-      options: categories,
-      control: 'select',
-    },
     size: {
       options: sizes,
       control: 'select',
@@ -94,7 +90,7 @@ export default {
  * AvatarGroup with top stack, limit 2
  */
 export const Default: StoryObj<StoryType> = {
-  args: {},
+  args: { shape: 'circle', size: 'medium', limit: 3 },
 };
 // AvatarGroupTemplate.args = {
 //   stack: AvatarGroupStack.TOP,

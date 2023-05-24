@@ -24,7 +24,7 @@ export class AvatarGroupComponent implements AfterViewInit {
   @Input() size: Size = 'medium';
   @Input() shape: AvatarShape = 'circle';
   @Input() stack: AvatarGroupStack = 'top';
-  @Input() limit = 5;
+  @Input() limit = 3;
 
   @ContentChildren(AvatarComponent) avatars!: QueryList<AvatarComponent>;
 
