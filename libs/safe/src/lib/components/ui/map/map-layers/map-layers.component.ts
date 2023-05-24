@@ -26,9 +26,7 @@ export class MapLayersComponent {
     this.mapContainer
       .querySelector('.leaflet-control-layers')
       ?.classList.remove('hidden');
-    this.mapContainer
-      .querySelector('.leaflet-top.leaflet-right')
-      ?.classList.add('bg-white');
+    this.openMenu();
   }
 
   /** Opens the bookmarks menu */
@@ -38,9 +36,19 @@ export class MapLayersComponent {
     this.mapContainer
       .querySelector('.leaflet-control-layers')
       ?.classList.add('hidden');
+    this.openMenu();
+  }
+
+  /**
+   * Update menu style
+   */
+  private openMenu() {
     this.mapContainer
       .querySelector('.leaflet-top.leaflet-right')
       ?.classList.add('bg-white');
+    this.mapContainer
+      .querySelector('.leaflet-top.leaflet-right')
+      ?.classList.add('shadow-2lg');
   }
 
   /** Closes the layers menu */
@@ -53,6 +61,9 @@ export class MapLayersComponent {
     this.mapContainer
       .querySelector('.leaflet-top.leaflet-right')
       ?.classList.remove('bg-white');
+    this.mapContainer
+      .querySelector('.leaflet-top.leaflet-right')
+      ?.classList.remove('shadow-2lg');
   }
 
   /** Sets up */
