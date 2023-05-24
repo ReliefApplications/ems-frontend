@@ -36,7 +36,7 @@ export default {
 const panelOptions: PanelOption[] = [
   {
     title: 'Item 1',
-    expanded: true,
+    expanded: false,
     text: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis excepturi incidunt ipsum deleniti labore, tempore non nam doloribus blanditiis veritatis illo autem iure aliquid ullam rem tenetur deserunt velit culpa?',
   },
   {
@@ -46,7 +46,7 @@ const panelOptions: PanelOption[] = [
   },
   {
     title: 'Item 3',
-    expanded: false,
+    expanded: true,
     text: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perferendis excepturi incidunt ipsum deleniti labore, tempore non nam doloribus blanditiis veritatis illo autem iure aliquid ullam rem tenetur deserunt velit culpa?',
   },
 ];
