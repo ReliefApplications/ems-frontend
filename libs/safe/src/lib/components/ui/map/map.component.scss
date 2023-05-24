@@ -5,6 +5,25 @@
   background-image: none;
 }
 
+::ng-deep .leaflet-top.leaflet-right {
+  height: 100%;
+  // width: 40%;
+  z-index: 1001;
+}
+
+::ng-deep .leaflet-control-layers-expanded {
+  height: 100%;
+  width: 100%;
+  margin: 0px !important;
+  border: none !important;
+  padding: 0px !important;
+}
+
+::ng-deep .layers-bookmarks-menu {
+  width: 100%;
+  margin-right: 0px !important;
+}
+
 ::ng-deep .leaflet-layerstree-header input {
   margin-left: 0px;
 }
@@ -34,4 +53,26 @@
 
 ::ng-deep .leaflet-layerstree-expand-collapse {
   cursor: pointer;
+}
+
+::ng-deep .leaflet-control-layers-base {
+  padding: 8px;
+}
+
+::ng-deep .leaflet-control-layers-overlays {
+  padding: 8px;
+}
+
+::ng-deep .leaflet-layerstree-header-label {
+  display: flex !important;
+  align-items: baseline;
+  gap: 4px;
+}
+  
+::ng-deep .leaflet-layerstree-header {
+  &:not(.leaflet-layerstree-nevershow) {
+    display: flex;
+  }
+  align-items: baseline;
+  gap: 4px;
 }
