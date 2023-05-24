@@ -10,7 +10,14 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { TooltipModule, MenuModule, ButtonModule } from '@oort-front/ui';
+import {
+  TooltipModule,
+  MenuModule,
+  ButtonModule,
+  SelectMenuModule,
+  SelectOptionModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * SafeAccessModule is a class used to manage all the modules and components related to the access properties.
@@ -31,6 +38,9 @@ import { TooltipModule, MenuModule, ButtonModule } from '@oort-front/ui';
     TranslateModule,
     SafeModalModule,
     ButtonModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    FormWrapperModule,
   ],
   exports: [SafeAccessComponent],
 })

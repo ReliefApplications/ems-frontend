@@ -9,8 +9,23 @@
       <safe-alert class="mb-6">
         {{ 'models.dashboard.context.datasource.alert' | translate }}
       </safe-alert>
+      
       <!-- Origin -->
-      <mat-form-field appearance="outline" class="grow">
+      <div uiFormFieldDirective [outline]="false" class="mb-2">
+        <mat-label>{{
+          'models.dashboard.context.origin' | translate
+        }}</mat-label>
+        <ui-select-menu formControlName="origin">
+          <ui-select-option value="resource">{{
+            'common.resource.one' | translate
+          }}</ui-select-option>
+          <ui-select-option value="refData">{{
+            'common.referenceData.one' | translate
+          }}</ui-select-option>
+        </ui-select-menu>
+      </div>
+
+      <!-- <mat-form-field appearance="outline" class="grow">
         <mat-label>{{
           'models.dashboard.context.origin' | translate
         }}</mat-label>
@@ -22,7 +37,7 @@
             'common.referenceData.one' | translate
           }}</mat-option>
         </mat-select>
-      </mat-form-field>
+      </mat-form-field> -->
 
       <!-- Resource selection -->
       <mat-form-field
@@ -64,7 +79,21 @@
       </mat-form-field>
 
       <!-- Field selection -->
-      <mat-form-field appearance="outline" class="grow">
+      <div uiFormFieldDirective [outline]="false">
+        <ui-select-menu formControlName="displayField" [multiselect]="false">
+          <ui-select-option *ngFor="let field of availableFields" [value]="field" uiPrefix>
+            {{ field }}
+          </ui-select-option>
+        </ui-select-menu>
+        <safe-icon
+          icon="info"
+          class="cursor-pointer"
+          variant="'grey'"
+          uiSuffix
+          [uiTooltip]="'models.dashboard.context.datasource.info' | translate"
+        ></safe-icon>
+      </div>
+      <!-- <mat-form-field appearance="outline" class="grow">
         <mat-label>{{
           'models.dashboard.context.displayField' | translate
         }}</mat-label>
@@ -80,7 +109,8 @@
           matSuffix
           [uiTooltip]="'models.dashboard.context.datasource.info' | translate"
         ></safe-icon>
-      </mat-form-field>
+      </mat-form-field> -->
+    
     </form>
     <ui-button
       category="secondary"

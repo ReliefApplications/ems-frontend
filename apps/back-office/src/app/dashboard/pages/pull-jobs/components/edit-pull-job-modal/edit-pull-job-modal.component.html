@@ -24,7 +24,25 @@
             />
           </mat-form-field>
           <!-- Status -->
-          <mat-form-field appearance="outline" class="flex-1">
+          
+          <div uiFormFieldDirective [outline]="false" class="flex-1">
+            <!-- <mat-label>{{ 'common.status' | translate }}</mat-label> -->
+            <ui-select-menu 
+              formControlName="status" 
+              [customTemplate]="statusTemplate"
+            >
+              <ui-select-option *ngFor="let status of statusChoices" [value]="status">
+                <ng-container
+                  *ngTemplateOutlet="
+                    statusTemplate;
+                    context: { $implicit: status }
+                  "
+                ></ng-container>
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+
+          <!-- <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'common.status' | translate }}</mat-label>
             <mat-select formControlName="status">
               <mat-select-trigger>
@@ -44,7 +62,8 @@
                 ></ng-container>
               </mat-option>
             </mat-select>
-          </mat-form-field>
+          </mat-form-field> -->
+
         </div>
         <!-- Schedule -->
         <safe-cron-expression-control
@@ -122,6 +141,22 @@
             </safe-graphql-select>
           </mat-form-field>
           <!-- Channel to notify on -->
+          <div uiFormFieldDirective [outline]="false" class="flex-1">
+            <!-- <mat-label>{{ 'common.status' | translate }}</mat-label> -->
+            <ui-select-menu 
+              formControlName="status" 
+              [customTemplate]="statusTemplate"
+            >
+              <ui-select-option *ngFor="let status of statusChoices" [value]="status">
+                <ng-container
+                  *ngTemplateOutlet="
+                    statusTemplate;
+                    context: { $implicit: status }
+                  "
+                ></ng-container>
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{
               'components.channel.dropdown.select' | translate
@@ -145,6 +180,7 @@
               </mat-optgroup>
             </mat-select>
           </mat-form-field>
+        
         </div>
         <!-- Mapping -->
         <ui-expansion-panel
@@ -184,16 +220,17 @@
                   *ngFor="let element of mappingArray.controls; index as i"
                   class="flex gap-x-2 items-center"
                 >
-                  <mat-form-field appearance="outline" class="p-0">
-                    <mat-label>{{ 'common.field.one' | translate }}</mat-label>
-                    <mat-select formControlName="name">
-                      <mat-option
-                        *ngFor="let field of filteredFields(element.value.name)"
-                        [value]="field.name"
-                        >{{ field.name }}</mat-option
-                      >
-                    </mat-select>
-                  </mat-form-field>
+                <div uiFormFieldDirective [outline]="false" class="p-0 w-32">
+                  <!-- <mat-label>{{ 'common.field.one' | translate }}</mat-label> -->
+                  <ui-select-menu formControlName="name">
+                    <mat-option
+                      *ngFor="let field of filteredFields(element.value.name)"
+                      [value]="field.name"
+                    >
+                      {{ field.name }}
+                    </mat-option>
+                  </ui-select-menu>
+                </div>                  
                   <mat-form-field
                     appearance="outline"
                     *ngIf="element.value.name"

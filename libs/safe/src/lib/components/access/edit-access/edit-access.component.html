@@ -7,24 +7,53 @@
   </h1>
   <div mat-dialog-content>
     <form [formGroup]="accessForm" class="flex flex-col">
-      <mat-form-field appearance="outline">
+
+      <div uiFormFieldDirective [outline]="false">
+        <!-- <mat-label>{{ 'components.access.canSee' | translate }}</mat-label> -->
+        <ui-select-menu formControlName="canSee" [multiselect]="true">
+          <ui-select-option *ngFor="let role of roles" [value]="role.id">
+            {{ role.title }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <!-- <mat-form-field appearance="outline">
         <mat-label>{{ 'components.access.canSee' | translate }}</mat-label>
         <mat-select formControlName="canSee" multiple>
           <mat-option *ngFor="let role of roles" [value]="role.id">
             {{ role.title }}
           </mat-option>
         </mat-select>
-      </mat-form-field>
+      </mat-form-field> -->
       <ng-container *ngIf="!data.application">
-        <mat-form-field appearance="outline">
+        
+        <div uiFormFieldDirective [outline]="false">
+          <!-- <mat-label>{{ 'components.access.canUpdate' | translate }}</mat-label> -->
+          <ui-select-menu formControlName="canUpdate" [multiselect]="true">
+            <ui-select-option *ngFor="let role of roles" [value]="role.id">
+              {{ role.title }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+
+        <!-- <mat-form-field appearance="outline">
           <mat-label>{{ 'components.access.canUpdate' | translate }}</mat-label>
           <mat-select formControlName="canUpdate" multiple>
             <mat-option *ngFor="let role of roles" [value]="role.id">
               {{ role.title }}
             </mat-option>
           </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
+        </mat-form-field> -->
+
+        <div uiFormFieldDirective [outline]="false">
+          <!-- <mat-label>{{ 'components.access.canDelete' | translate }}</mat-label> -->
+          <ui-select-menu formControlName="canDelete" [multiselect]="true">
+            <ui-select-option *ngFor="let role of roles" [value]="role.id">
+              {{ role.title }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+        
+        <!-- <mat-form-field appearance="outline">
           <mat-label>{{ 'components.access.canDelete' | translate }}</mat-label>
           <mat-select formControlName="canDelete" multiple>
             <mat-option *ngFor="let role of roles" [value]="role.id">
@@ -32,6 +61,7 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+       -->
       </ng-container>
     </form>
   </div>

@@ -11,7 +11,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatLegacyOptionModule as MatOptionModule } from '@angular/material/legacy-core';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, SelectMenuModule, SelectOptionModule, FormWrapperModule } from '@oort-front/ui';
 
 /**
  * API configuration page module.
@@ -31,6 +31,9 @@ import { ButtonModule } from '@oort-front/ui';
     TranslateModule,
     MatChipsModule,
     ButtonModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    FormWrapperModule,
   ],
 })
 export class ApiConfigurationModule {}

@@ -35,24 +35,20 @@
       class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row"
     >
       <!-- Status filter -->
-      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-        <mat-label>{{ 'common.status' | translate }}</mat-label>
-        <mat-select
-          [ngModel]="statusFilter"
-          (selectionChange)="applyFilter('status', $event)"
-        >
-          <mat-option>-</mat-option>
-          <mat-option value="active">
+      <div uiFormFieldDirective [outline]="false" class="mt-4 w-32">
+        <ui-select-menu [ngModel]="statusFilter" (selectedOption)="applyFilter('status', $event)" >
+          <ui-select-option>-</ui-select-option>
+          <ui-select-option value="active">
             {{ 'common.status_active' | translate }}
-          </mat-option>
-          <mat-option value="pending">
+          </ui-select-option>
+          <ui-select-option value="pending">
             {{ 'common.status_pending' | translate }}
-          </mat-option>
-          <mat-option value="archived">
+          </ui-select-option>
+          <ui-select-option value="archived">
             {{ 'common.status_archived' | translate }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
       <!-- Clear filters -->
       <ui-button
         variant="danger"

@@ -34,6 +34,8 @@ import {
   SpinnerModule,
   FormWrapperModule,
   IconModule,
+  SelectMenuModule,
+  SelectOptionModule,
 } from '@oort-front/ui';
 
 /**
@@ -72,6 +74,10 @@ import {
     ButtonModule,
     FormWrapperModule,
     IconModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    SelectMenuModule,
+    SelectOptionModule,
   ],
   exports: [ApplicationsComponent],
 })

@@ -144,20 +144,14 @@
         />
       </mat-form-field>
       <!-- Value field to be displayed -->
-      <mat-form-field
-        class="flex-1"
-        appearance="outline"
-        *ngIf="!csvLoading && type && valueFields.length > 0"
-      >
-        <mat-label>{{
-          'pages.referenceData.valueField' | translate
-        }}</mat-label>
-        <mat-select formControlName="valueField">
-          <mat-option *ngFor="let value of valueFields" [value]="value.name">{{
+      <div uiFormFieldDirective [outline]="false" class="flex-1" *ngIf="!csvLoading && type && valueFields.length > 0">
+        <!-- <mat-label>{{ 'pages.referenceData.valueField' | translate }}</mat-label> -->
+        <ui-select-menu formControlName="valueField">
+          <ui-select-option *ngFor="let value of valueFields" [value]="value.name">{{
             value.name
-          }}</mat-option>
-        </mat-select>
-      </mat-form-field>
+          }}</ui-select-option>
+        </ui-select-menu>
+      </div>
     </div>
     <!-- For graphql -->
     <mat-form-field appearance="outline" *ngIf="type === 'graphql'">

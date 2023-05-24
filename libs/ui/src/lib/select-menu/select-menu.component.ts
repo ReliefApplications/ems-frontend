@@ -113,7 +113,6 @@ export class SelectMenuComponent
    * @param value value set from parent form control
    */
   writeValue(value: string[]): void {
-    console.log(value);
     if (value && typeof value === 'string') {
       this.selectedValues = [value];
       this.setDisplayTriggerText();
@@ -147,6 +146,7 @@ export class SelectMenuComponent
    * Emit selectedOption output, change trigger text and deal with control access value when an element of the list is clicked
    */
   onChangeFunction() {
+    console.log(this.selectedValues);
     // Emit the list of values selected as an output
     this.setDisplayTriggerText();
     if (this.multiselect) {

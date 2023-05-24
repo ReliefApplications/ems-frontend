@@ -15,8 +15,24 @@
     <!-- General settings -->
     <div class="flex justify-between mt-8">
       <h2>{{ 'common.general' | translate }}</h2>
+      
       <!-- Status -->
-      <mat-form-field appearance="outline" class="p-0">
+      <div uiFormFieldDirective [outline]="false" class="mt-4 w-32">
+        <ui-select-menu formControlName="status">
+          <ui-select-option>-</ui-select-option>
+          <ui-select-option value="active">
+            {{ 'common.status_active' | translate }}
+          </ui-select-option>
+          <ui-select-option value="pending">
+            {{ 'common.status_pending' | translate }}
+          </ui-select-option>
+          <ui-select-option value="archived">
+            {{ 'common.status_archived' | translate }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+
+      <!-- <mat-form-field appearance="outline" class="p-0">
         <mat-label>{{ 'common.status' | translate }}</mat-label>
         <mat-select formControlName="status">
           <mat-select-trigger>
@@ -33,7 +49,8 @@
             ></ng-container>
           </mat-option>
         </mat-select>
-      </mat-form-field>
+      </mat-form-field> -->
+    
     </div>
     <div class="flex flex-col last:mb-0">
       <div class="flex gap-x-2 flex-wrap">
@@ -53,18 +70,19 @@
           </mat-error>
         </mat-form-field>
         <!-- Authentication type -->
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>
+
+        <div uiFormFieldDirective [outline]="false" class="flex-1">
+          <!-- <mat-label>
             {{ 'models.apiConfiguration.authType' | translate }}
-          </mat-label>
-          <mat-select formControlName="authType">
-            <mat-option
+          </mat-label> -->
+          <ui-select-menu formControlName="authType">
+            <ui-select-option
               *ngFor="let authTypeChoice of authTypeChoices"
               [value]="authTypeChoice"
-              >{{ authTypeChoice }}</mat-option
+              >{{ authTypeChoice }}</ui-select-option
             >
-          </mat-select>
-        </mat-form-field>
+          </ui-select-menu>
+        </div>
       </div>
     </div>
 
