@@ -206,7 +206,7 @@ export class ReferenceDatasComponent
       './add-reference-data/add-reference-data.component'
     );
     const dialogRef = this.dialog.open(AddReferenceDataComponent);
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<AddReferenceDataMutationResponse>({
@@ -266,7 +266,7 @@ export class ReferenceDatasComponent
       confirmText: this.translate.instant('common.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteReferenceDataMutationResponse>({

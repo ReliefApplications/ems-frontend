@@ -70,7 +70,7 @@ export class PositionComponent
         add: true,
       },
     });
-    dialogRef.closed.subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
         this.applicationService.addPositionAttributeCategory(value);
       }
@@ -92,7 +92,7 @@ export class PositionComponent
         title: positionCategory.title,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.editPositionAttributeCategory(
           value,
@@ -121,7 +121,7 @@ export class PositionComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deletePositionAttributeCategory(
           positionCategory

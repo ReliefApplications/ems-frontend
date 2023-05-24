@@ -44,13 +44,14 @@ import { PopupService } from '@progress/kendo-angular-popup';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { SafeGridService } from '../../../../services/grid/grid.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
 import { get, intersection } from 'lodash';
 import { applyLayoutFormat } from '../../../widgets/summary-card/parser/utils';
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Factory for creating scroll strategy
@@ -101,7 +102,10 @@ const matches = (el: any, selector: any) =>
     },
   ],
 })
-export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
+export class SafeGridComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit, OnChanges
+{
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
   public environment: 'frontoffice' | 'backoffice';
@@ -240,6 +244,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     private translate: TranslateService,
     private snackBar: SnackbarService
   ) {
+    super();
     this.environment = environment.module || 'frontoffice';
   }
 
@@ -652,7 +657,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       },
       autoFocus: false,
     });
-    dialogRef.closed.subscribe((res: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res) {
         this.exportSettings = res;
         this.export.emit(this.exportSettings);
@@ -692,7 +697,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       },
       autoFocus: false,
     });
-    dialogRef.closed.subscribe((res: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res && res !== get(item, field)) {
         const value = { field: res };
         this.action.emit({ action: 'edit', item, value });
@@ -716,7 +721,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       },
       autoFocus: false,
     });
-    dialogRef.closed.subscribe((res: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res) {
         this.action.emit({ action: 'update', item });
       }
@@ -737,7 +742,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
         template: this.dashboardService.findSettingsTemplate(this.widget),
       },
     });
-    dialogRef.closed.subscribe((res: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res) {
         this.edit.emit({ type: 'data', id: this.widget.id, options: res });
       }

@@ -244,11 +244,13 @@ export class FormRecordsComponent
         confirmText: this.translate.instant('components.confirmModal.delete'),
         confirmColor: 'warn',
       });
-      dialogRef.closed.subscribe((value: any) => {
-        if (value) {
-          this.deleteRecord(element.id);
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.deleteRecord(element.id);
+          }
+        });
     } else {
       this.deleteRecord(element.id);
     }
@@ -317,7 +319,7 @@ export class FormRecordsComponent
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmColor: 'primary',
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({

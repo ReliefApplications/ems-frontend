@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
 import { markerRuleForm } from '../../map-forms';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Component of Map widget marker rules.
@@ -11,7 +13,10 @@ import { markerRuleForm } from '../../map-forms';
   templateUrl: './map-markers.component.html',
   styleUrls: ['./map-markers.component.scss'],
 })
-export class MapMarkersComponent implements OnInit {
+export class MapMarkersComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() form!: UntypedFormGroup;
 
   @Input() selectedFields: any[] = [];
@@ -34,7 +39,9 @@ export class MapMarkersComponent implements OnInit {
    *
    * @param dialog Material Dialog Service
    */
-  constructor(private dialog: Dialog) {}
+  constructor(private dialog: Dialog) {
+    super();
+  }
 
   ngOnInit(): void {
     // Build list of number fields
@@ -65,7 +72,7 @@ export class MapMarkersComponent implements OnInit {
         query: this.form.get('query'),
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.rules.setControl(index, markerRuleForm(value));
       }

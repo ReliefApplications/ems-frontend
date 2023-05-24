@@ -110,13 +110,15 @@ export class CustomStyleComponent
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'warn',
       });
-      confirmDialogRef.closed.subscribe((confirm: any) => {
-        if (confirm) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.applicationService.customStyle!.innerText = this.savedStyle;
-          this.cancel.emit(true);
-        }
-      });
+      confirmDialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((confirm: any) => {
+          if (confirm) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.applicationService.customStyle!.innerText = this.savedStyle;
+            this.cancel.emit(true);
+          }
+        });
     }
   }
 

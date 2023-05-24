@@ -1,6 +1,8 @@
 import { Component, Optional, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Cron expression form control
@@ -11,7 +13,10 @@ import { Dialog } from '@angular/cdk/dialog';
   styleUrls: ['./cron-expression-control.component.scss'],
   // providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class CronExpressionControlComponent implements ControlValueAccessor {
+export class CronExpressionControlComponent
+  extends SafeUnsubscribeComponent
+  implements ControlValueAccessor
+{
   // /** @returns the value */
   // get value(): string | undefined | null {
   //   return this.ngControl.value;
@@ -37,6 +42,7 @@ export class CronExpressionControlComponent implements ControlValueAccessor {
     @Optional() @Self() public ngControl: NgControl,
     private dialog: Dialog
   ) {
+    super();
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
@@ -89,7 +95,7 @@ export class CronExpressionControlComponent implements ControlValueAccessor {
         value: this.value,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.writeValue(value);
         this.onChanged(value);

@@ -19,6 +19,8 @@ import { SafeGraphQLSelectModule } from '../../../components/graphql-select/grap
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Data needed for the dialog, should contain an aggregations array, a form and a resource
@@ -50,7 +52,10 @@ interface DialogData {
   templateUrl: './add-aggregation-modal.component.html',
   styleUrls: ['./add-aggregation-modal.component.scss'],
 })
-export class AddAggregationModalComponent implements OnInit {
+export class AddAggregationModalComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   private form?: Form;
   private resource?: Resource;
   public hasAggregations = false;
@@ -81,6 +86,7 @@ export class AddAggregationModalComponent implements OnInit {
     @Inject(DIALOG_DATA) public data: DialogData,
     private aggregationService: SafeAggregationService
   ) {
+    super();
     this.hasAggregations = data.hasAggregations;
     this.form = data.form;
     this.resource = data.resource;
@@ -119,18 +125,20 @@ export class AddAggregationModalComponent implements OnInit {
         resource: this.resource,
       },
     });
-    dialogRef.closed.subscribe((aggregation: any) => {
-      if (aggregation) {
-        this.aggregationService
-          .addAggregation(aggregation, this.resource?.id, this.form?.id)
-          .subscribe(({ data }) => {
-            if (data?.addAggregation) {
-              this.dialogRef.close(data.addAggregation as any);
-            } else {
-              this.dialogRef.close();
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((aggregation: any) => {
+        if (aggregation) {
+          this.aggregationService
+            .addAggregation(aggregation, this.resource?.id, this.form?.id)
+            .subscribe(({ data }) => {
+              if (data?.addAggregation) {
+                this.dialogRef.close(data.addAggregation as any);
+              } else {
+                this.dialogRef.close();
+              }
+            });
+        }
+      });
   }
 }

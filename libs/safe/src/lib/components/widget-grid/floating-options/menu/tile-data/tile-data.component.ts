@@ -9,6 +9,8 @@ import { UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../../services/confirm/confirm.service';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 
 /** Model for dialog data */
 interface DialogData {
@@ -23,7 +25,10 @@ interface DialogData {
   styleUrls: ['./tile-data.component.scss'],
 })
 /** Modal content to edit the settings of a component. */
-export class SafeTileDataComponent implements AfterViewInit {
+export class SafeTileDataComponent
+  extends SafeUnsubscribeComponent
+  implements AfterViewInit
+{
   // === REACTIVE FORM ===
   tileForm?: UntypedFormGroup;
 
@@ -46,7 +51,9 @@ export class SafeTileDataComponent implements AfterViewInit {
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private dialog: Dialog
-  ) {}
+  ) {
+    super();
+  }
 
   /** Once the template is ready, inject the settings component linked to the widget type passed as a parameter. */
   ngAfterViewInit(): void {
@@ -82,11 +89,13 @@ export class SafeTileDataComponent implements AfterViewInit {
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'warn',
       });
-      confirmDialogRef.closed.subscribe((value: any) => {
-        if (value) {
-          this.dialogRef.close();
-        }
-      });
+      confirmDialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.dialogRef.close();
+          }
+        });
     }
   }
 }

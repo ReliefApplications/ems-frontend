@@ -112,7 +112,7 @@ export class LayoutTableComponent
         resource: this.resource,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         if (!this.allLayouts.find((x) => x.id === value.id)) {
           this.allLayouts.push(value);
@@ -140,7 +140,7 @@ export class LayoutTableComponent
         queryName: this.resource?.queryName,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.gridLayoutService
           .editLayout(layout, value, this.resource?.id, this.form?.id)

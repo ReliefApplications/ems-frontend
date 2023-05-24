@@ -271,7 +271,7 @@ export class SafeRecordHistoryComponent
       },
       autoFocus: false,
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.revert(version);
       }

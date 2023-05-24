@@ -315,13 +315,15 @@ export class SafeFormModalComponent
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       });
-      dialogRef.closed.subscribe(async (value: any) => {
-        if (value) {
-          await this.onUpdate(survey);
-        } else {
-          this.saving = false;
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(async (value: any) => {
+          if (value) {
+            await this.onUpdate(survey);
+          } else {
+            this.saving = false;
+          }
+        });
       // Updates the data directly.
     } else {
       this.onUpdate(survey);
@@ -614,7 +616,7 @@ export class SafeFormModalComponent
    */
   private confirmRevertDialog(record: any, version: any) {
     const dialogRef = this.formHelpersService.createRevertDialog(version);
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({

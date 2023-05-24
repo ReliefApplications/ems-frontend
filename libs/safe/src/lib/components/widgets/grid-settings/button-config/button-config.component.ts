@@ -391,7 +391,7 @@ export class ButtonConfigComponent
       data: null,
       disableClose: true,
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.addDistributionList(
           {
@@ -414,7 +414,7 @@ export class ButtonConfigComponent
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       disableClose: true,
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value)
         this.applicationService.addTemplate(
           {

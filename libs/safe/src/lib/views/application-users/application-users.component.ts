@@ -81,7 +81,7 @@ export class SafeApplicationUsersComponent
         }),
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<AddUsersMutationResponse>({

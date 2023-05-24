@@ -6,6 +6,7 @@ import {
   SafeAggregationService,
   SafeConfirmService,
   Resource,
+  SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -17,6 +18,7 @@ import {
   GetResourceByIdQueryResponse,
   GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
+import { takeUntil } from 'rxjs';
 
 /**
  * Aggregations tab of resource page
@@ -26,7 +28,10 @@ import {
   templateUrl: './aggregations-tab.component.html',
   styleUrls: ['./aggregations-tab.component.scss'],
 })
-export class AggregationsTabComponent implements OnInit {
+export class AggregationsTabComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public resource!: Resource;
   public aggregations: Aggregation[] = [];
   public loading = true;
@@ -67,7 +72,9 @@ export class AggregationsTabComponent implements OnInit {
     private aggregationService: SafeAggregationService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     const state = history.state;
@@ -161,7 +168,7 @@ export class AggregationsTabComponent implements OnInit {
         resource: this.resource,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
           .addAggregation(value, this.resource.id)
@@ -190,7 +197,7 @@ export class AggregationsTabComponent implements OnInit {
         aggregation,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
           .editAggregation(aggregation, value, this.resource.id)
@@ -227,7 +234,7 @@ export class AggregationsTabComponent implements OnInit {
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
           .deleteAggregation(aggregation, this.resource.id)

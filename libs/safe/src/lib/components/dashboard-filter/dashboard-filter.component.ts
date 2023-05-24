@@ -149,13 +149,15 @@ export class DashboardFilterComponent
           data: { surveyStructure: this.surveyStructure },
           autoFocus: false,
         });
-        dialogRef.closed.subscribe((newStructure: any) => {
-          if (newStructure) {
-            this.surveyStructure = newStructure;
-            this.initSurvey();
-            this.saveFilter();
-          }
-        });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((newStructure: any) => {
+            if (newStructure) {
+              this.surveyStructure = newStructure;
+              this.initSurvey();
+              this.saveFilter();
+            }
+          });
       }
     );
   }

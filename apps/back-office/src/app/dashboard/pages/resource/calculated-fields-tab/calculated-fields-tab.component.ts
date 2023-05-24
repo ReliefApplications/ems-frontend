@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Resource } from '@oort-front/safe';
+import { Resource, SafeUnsubscribeComponent } from '@oort-front/safe';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
 import {
@@ -9,6 +9,7 @@ import {
 } from './graphql/mutations';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
 
 /**
  * Calculated fields tab of resource page
@@ -18,7 +19,10 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './calculated-fields-tab.component.html',
   styleUrls: ['./calculated-fields-tab.component.scss'],
 })
-export class CalculatedFieldsTabComponent implements OnInit {
+export class CalculatedFieldsTabComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public resource!: Resource;
   public fields: any[] = [];
 
@@ -37,7 +41,9 @@ export class CalculatedFieldsTabComponent implements OnInit {
     private dialog: Dialog,
     private translate: TranslateService,
     private snackBar: SnackbarService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     const state = history.state;
@@ -62,7 +68,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
         ),
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<CalculatedFieldUpdateMutationResponse>({
@@ -124,7 +130,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
         ),
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (!value) {
         return;
       }
@@ -191,7 +197,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
       },
     });
 
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<CalculatedFieldUpdateMutationResponse>({

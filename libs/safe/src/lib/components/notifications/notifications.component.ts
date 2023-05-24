@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Subscription } from 'rxjs';
+import { Subscription, takeUntil } from 'rxjs';
 import { Application } from '../../models/application.model';
 import { CustomNotification } from '../../models/custom-notification.model';
 import { SafeApplicationService } from '../../services/application/application.service';
@@ -12,6 +12,7 @@ import {
   GET_CUSTOM_NOTIFICATIONS,
 } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -24,7 +25,10 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss'],
 })
-export class NotificationsComponent implements OnInit, OnDestroy {
+export class NotificationsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   // === INPUT DATA ===
   public notifications: MatTableDataSource<CustomNotification> =
     new MatTableDataSource<CustomNotification>([]);
@@ -59,7 +63,9 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     private confirmService: SafeConfirmService,
     private apollo: Apollo,
     private applicationService: SafeApplicationService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.applicationSubscription =
@@ -118,7 +124,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       disableClose: true,
       autoFocus: false,
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.updating = true;
         this.applicationService.updateCustomNotification(
@@ -150,7 +156,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deleteCustomNotification(
           notification.id,
@@ -171,7 +177,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       disableClose: true,
       autoFocus: false,
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.addCustomNotification(value, () => {
           this.notificationsQuery.refetch();
@@ -180,7 +186,8 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
     if (this.applicationSubscription) {
       this.applicationSubscription.unsubscribe();
     }

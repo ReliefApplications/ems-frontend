@@ -57,12 +57,14 @@ export class SafeMappingComponent
         mapping: element,
       },
     });
-    dialogRef.closed.subscribe((mapping: any) => {
-      if (mapping) {
-        this.mappingForm.at(index).setValue(mapping);
-        this.mappingForm.markAsDirty();
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((mapping: any) => {
+        if (mapping) {
+          this.mappingForm.at(index).setValue(mapping);
+          this.mappingForm.markAsDirty();
+        }
+      });
   }
 
   /**
@@ -87,11 +89,13 @@ export class SafeMappingComponent
         mapping: null,
       },
     });
-    dialogRef.closed.subscribe((mapping: any) => {
-      if (mapping) {
-        this.mappingForm.push(createFormGroup(mapping));
-        this.mappingForm.markAsDirty();
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((mapping: any) => {
+        if (mapping) {
+          this.mappingForm.push(createFormGroup(mapping));
+          this.mappingForm.markAsDirty();
+        }
+      });
   }
 }

@@ -86,7 +86,7 @@ export class ChannelsComponent
       './components/add-channel-modal/add-channel-modal.component'
     );
     const dialogRef = this.dialog.open(AddChannelModalComponent);
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.addChannel(value);
       }
@@ -107,7 +107,7 @@ export class ChannelsComponent
         channel,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.editChannel(channel, value.title);
       }
@@ -134,7 +134,7 @@ export class ChannelsComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deleteChannel(channel);
       }

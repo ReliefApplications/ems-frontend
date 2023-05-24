@@ -3,6 +3,8 @@ import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/materia
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Component to show the list of distribution lists of an application
@@ -12,7 +14,10 @@ import { Dialog } from '@angular/cdk/dialog';
   templateUrl: './distribution-lists.component.html',
   styleUrls: ['./distribution-lists.component.scss'],
 })
-export class DistributionListsComponent implements OnInit {
+export class DistributionListsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === INPUT DATA ===
   public distributionLists: MatTableDataSource<any> =
     new MatTableDataSource<any>([]);
@@ -28,7 +33,9 @@ export class DistributionListsComponent implements OnInit {
    * @param dialog The material dialog service
    * @param translate The translation service
    */
-  constructor(public dialog: Dialog, private translate: TranslateService) {}
+  constructor(public dialog: Dialog, private translate: TranslateService) {
+    super();
+  }
 
   ngOnInit(): void {
     this.applicationService.application$.subscribe((value) => {
@@ -50,7 +57,7 @@ export class DistributionListsComponent implements OnInit {
       data: distributionList,
       disableClose: true,
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.editDistributionList({
           id: distributionList.id,
@@ -72,7 +79,7 @@ export class DistributionListsComponent implements OnInit {
       data: null,
       disableClose: true,
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.addDistributionList({
           name: value.name,
@@ -107,7 +114,7 @@ export class DistributionListsComponent implements OnInit {
         confirmColor: 'warn',
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deleteDistributionList(distributionList.id);
       }

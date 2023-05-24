@@ -12,6 +12,8 @@ import { getFilterGroupDisplay } from '../../../utils/filter/filter-display.help
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { GetGroupsQueryResponse, GET_GROUPS } from '../graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Component for Auto assignment of role
@@ -21,7 +23,10 @@ import { Dialog } from '@angular/cdk/dialog';
   templateUrl: './role-auto-assignment.component.html',
   styleUrls: ['./role-auto-assignment.component.scss'],
 })
-export class RoleAutoAssignmentComponent implements OnInit {
+export class RoleAutoAssignmentComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() role!: Role;
   public formArray!: UntypedFormArray;
   @Output() edit = new EventEmitter();
@@ -55,7 +60,9 @@ export class RoleAutoAssignmentComponent implements OnInit {
     private dialog: Dialog,
     private translate: TranslateService,
     private restService: SafeRestService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.formArray = this.fb.array(
@@ -131,7 +138,7 @@ export class RoleAutoAssignmentComponent implements OnInit {
         fields: this.fields,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.edit.emit({
           autoAssignment: {
@@ -173,7 +180,7 @@ export class RoleAutoAssignmentComponent implements OnInit {
         fields: this.fields,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.edit.emit({
           autoAssignment: {

@@ -90,7 +90,7 @@ export class SafeApplicationToolbarComponent
       ),
       confirmColor: 'primary',
     });
-    dialogRef.closed.subscribe(() => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.applicationService.toggleApplicationLock();
     });
   }
@@ -116,11 +116,13 @@ export class SafeApplicationToolbarComponent
         ),
         confirmColor: 'primary',
       });
-      dialogRef.closed.subscribe((value: any) => {
-        if (value) {
-          this.applicationService.publish();
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.applicationService.publish();
+          }
+        });
     }
   }
 

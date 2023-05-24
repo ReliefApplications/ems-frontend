@@ -172,7 +172,7 @@ export class TabMainComponent
         resource: this.resource,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.formGroup.get('chart.aggregationId')?.setValue(value.id);
         this.aggregation = value;
@@ -196,7 +196,7 @@ export class TabMainComponent
         aggregation: this.aggregation,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value && this.aggregation) {
         this.aggregationService
           .editAggregation(this.aggregation, value, this.resource?.id)

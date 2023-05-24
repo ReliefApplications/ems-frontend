@@ -4,6 +4,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { TemplateTypeEnum } from '../../models/template.model';
 import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /**
  * A component to display the list of templates of an application
@@ -13,7 +15,10 @@ import { Dialog } from '@angular/cdk/dialog';
   templateUrl: './templates.component.html',
   styleUrls: ['./templates.component.scss'],
 })
-export class SafeTemplatesComponent implements OnInit {
+export class SafeTemplatesComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === INPUT DATA ===
   public templates: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   @Input() applicationService!: SafeApplicationService;
@@ -29,7 +34,9 @@ export class SafeTemplatesComponent implements OnInit {
    * @param dialog The material dialog service
    * @param translate The translation service
    */
-  constructor(public dialog: Dialog, private translate: TranslateService) {}
+  constructor(public dialog: Dialog, private translate: TranslateService) {
+    super();
+  }
 
   ngOnInit(): void {
     this.applicationService.application$.subscribe((value) => {
@@ -50,7 +57,7 @@ export class SafeTemplatesComponent implements OnInit {
       data: template,
       disableClose: true,
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value)
         this.applicationService.editTemplate({
           id: template.id,
@@ -89,7 +96,7 @@ export class SafeTemplatesComponent implements OnInit {
         confirmColor: 'warn',
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deleteTemplate(template.id);
       }
@@ -104,7 +111,7 @@ export class SafeTemplatesComponent implements OnInit {
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       disableClose: true,
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value)
         this.applicationService.addTemplate({
           name: value.name,

@@ -2,6 +2,8 @@ import { Component, Input } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
 import { clorophletForm } from '../../map-forms';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * List of clorophlets in Map Settings
@@ -11,7 +13,7 @@ import { clorophletForm } from '../../map-forms';
   templateUrl: './map-clorophlets.component.html',
   styleUrls: ['./map-clorophlets.component.scss'],
 })
-export class MapClorophletsComponent {
+export class MapClorophletsComponent extends SafeUnsubscribeComponent {
   @Input() clorophlets!: UntypedFormArray;
 
   @Input() selectedFields: any[] = [];
@@ -25,7 +27,9 @@ export class MapClorophletsComponent {
    *
    * @param dialog Material Dialog Service
    */
-  constructor(private dialog: Dialog) {}
+  constructor(private dialog: Dialog) {
+    super();
+  }
 
   /**
    * Adds a new clorophlet.
@@ -52,7 +56,7 @@ export class MapClorophletsComponent {
         query: this.query,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.clorophlets.setControl(index, clorophletForm(value));
       }

@@ -281,13 +281,15 @@ export class SafeLayoutComponent
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       });
-      dialogRef.closed.subscribe((value: any) => {
-        if (value) {
-          this.authService.canLogout.next(true);
-          localStorage.clear();
-          this.authService.logout();
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.authService.canLogout.next(true);
+            localStorage.clear();
+            this.authService.logout();
+          }
+        });
     } else {
       this.authService.logout();
     }
@@ -305,7 +307,7 @@ export class SafeLayoutComponent
         languages: this.languages,
       },
     });
-    dialogRef.closed.subscribe((form: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((form: any) => {
       if (form && form.touched) {
         this.setLanguage(form.value.language);
         this.dateTranslate.use(form.value.dateFormat);

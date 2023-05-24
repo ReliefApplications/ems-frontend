@@ -115,7 +115,7 @@ export class AggregationTableComponent
         resource: this.resource,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         if (!this.allAggregations.find((x) => x.id === value.id)) {
           this.allAggregations.push(value);
@@ -143,7 +143,7 @@ export class AggregationTableComponent
         resource: this.resource,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
           .editAggregation(aggregation, value, this.resource?.id, this.form?.id)

@@ -829,11 +829,13 @@ export class SafeCoreGridComponent
         },
         autoFocus: false,
       });
-      dialogRef.closed.subscribe((value: any) => {
-        if (value) {
-          this.reloadData();
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.reloadData();
+          }
+        });
     }
   }
 
@@ -913,7 +915,7 @@ export class SafeCoreGridComponent
       },
       autoFocus: false,
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.validateRecords(ids);
         this.reloadData();
@@ -958,7 +960,7 @@ export class SafeCoreGridComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({
@@ -992,7 +994,7 @@ export class SafeCoreGridComponent
         record: items[0].id ? items[0].id : items[0],
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const promises: Promise<any>[] = [];
         for (const item of items) {
@@ -1057,7 +1059,7 @@ export class SafeCoreGridComponent
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmColor: 'primary',
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({

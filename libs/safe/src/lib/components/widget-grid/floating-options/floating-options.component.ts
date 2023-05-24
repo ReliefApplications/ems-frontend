@@ -3,6 +3,8 @@ import { SafeDashboardService } from '../../../services/dashboard/dashboard.serv
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Button on top left of each widget, if user can see it, with menu of possible
@@ -13,7 +15,10 @@ import { Dialog } from '@angular/cdk/dialog';
   templateUrl: './floating-options.component.html',
   styleUrls: ['./floating-options.component.scss'],
 })
-export class SafeFloatingOptionsComponent implements OnInit {
+export class SafeFloatingOptionsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === WIDGET ===
   @Input() widget: any;
 
@@ -39,7 +44,9 @@ export class SafeFloatingOptionsComponent implements OnInit {
     private dashboardService: SafeDashboardService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Sets the list of available actions.
@@ -82,7 +89,7 @@ export class SafeFloatingOptionsComponent implements OnInit {
           template: this.dashboardService.findSettingsTemplate(this.widget),
         },
       });
-      dialogRef.closed.subscribe((res: any) => {
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
         if (res) {
           this.edit.emit({ type: 'data', id: this.widget.id, options: res });
         }
@@ -100,11 +107,13 @@ export class SafeFloatingOptionsComponent implements OnInit {
         confirmText: this.translate.instant('components.confirmModal.delete'),
         confirmColor: 'warn',
       });
-      dialogRef.closed.subscribe((value: any) => {
-        if (value) {
-          this.delete.emit({ id: this.widget.id });
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.delete.emit({ id: this.widget.id });
+          }
+        });
     }
   }
 }

@@ -157,7 +157,7 @@ export class PullJobsComponent
         channels: this.channels,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const variables = {
           name: value.name,
@@ -246,55 +246,57 @@ export class PullJobsComponent
         confirmText: this.translate.instant('components.confirmModal.delete'),
         confirmColor: 'warn',
       });
-      dialogRef.closed.subscribe((value: any) => {
-        if (value) {
-          this.apollo
-            .mutate<DeletePullJobMutationResponse>({
-              mutation: DELETE_PULL_JOB,
-              variables: {
-                id: element.id,
-              },
-            })
-            .subscribe({
-              next: ({ errors, data }) => {
-                if (errors) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectNotDeleted',
-                      {
-                        value: this.translate.instant('common.pullJob.one'),
-                        error: errors ? errors[0].message : '',
-                      }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  if (data?.deletePullJob) {
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.apollo
+              .mutate<DeletePullJobMutationResponse>({
+                mutation: DELETE_PULL_JOB,
+                variables: {
+                  id: element.id,
+                },
+              })
+              .subscribe({
+                next: ({ errors, data }) => {
+                  if (errors) {
                     this.snackBar.openSnackBar(
                       this.translate.instant(
-                        'common.notifications.objectDeleted',
+                        'common.notifications.objectNotDeleted',
                         {
                           value: this.translate.instant('common.pullJob.one'),
+                          error: errors ? errors[0].message : '',
                         }
-                      )
+                      ),
+                      { error: true }
                     );
-                    this.cachedPullJobs = this.cachedPullJobs.filter(
-                      (x) => x.id !== data?.deletePullJob.id
-                    );
-                    this.pageInfo.length -= 1;
-                    this.pullJobs.data = this.cachedPullJobs.slice(
-                      ITEMS_PER_PAGE * this.pageInfo.pageIndex,
-                      ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
-                    );
+                  } else {
+                    if (data?.deletePullJob) {
+                      this.snackBar.openSnackBar(
+                        this.translate.instant(
+                          'common.notifications.objectDeleted',
+                          {
+                            value: this.translate.instant('common.pullJob.one'),
+                          }
+                        )
+                      );
+                      this.cachedPullJobs = this.cachedPullJobs.filter(
+                        (x) => x.id !== data?.deletePullJob.id
+                      );
+                      this.pageInfo.length -= 1;
+                      this.pullJobs.data = this.cachedPullJobs.slice(
+                        ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+                        ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+                      );
+                    }
                   }
-                }
-              },
-              error: (err) => {
-                this.snackBar.openSnackBar(err.message, { error: true });
-              },
-            });
-        }
-      });
+                },
+                error: (err) => {
+                  this.snackBar.openSnackBar(err.message, { error: true });
+                },
+              });
+          }
+        });
     }
   }
 
@@ -313,7 +315,7 @@ export class PullJobsComponent
         pullJob: element,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const variables = {
           id: element.id,

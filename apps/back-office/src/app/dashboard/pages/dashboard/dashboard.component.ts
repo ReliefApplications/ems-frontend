@@ -219,7 +219,7 @@ export class DashboardComponent
         ),
         confirmColor: 'primary',
       });
-      return dialogRef.closed.pipe(
+      return dialogRef.closed.pipe(takeUntil(this.destroy$)).pipe(
         map((confirm) => {
           if (confirm) {
             return true;
@@ -557,7 +557,7 @@ export class DashboardComponent
         url,
       },
     });
-    dialogRef.closed.subscribe();
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   /**
@@ -601,35 +601,37 @@ export class DashboardComponent
       data: currContext,
     });
 
-    dialogRef.closed.subscribe(async (context: any) => {
-      if (context) {
-        if (isEqual(context, currContext)) return;
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (context: any) => {
+        if (context) {
+          if (isEqual(context, currContext)) return;
 
-        await this.dashboardService.updateContext(context);
-        this.dashboard = {
-          ...this.dashboard,
-          page: {
-            ...this.dashboard?.page,
-            context,
-          },
-        };
+          await this.dashboardService.updateContext(context);
+          this.dashboard = {
+            ...this.dashboard,
+            page: {
+              ...this.dashboard?.page,
+              context,
+            },
+          };
 
-        const newSource =
-          (currContext as any)?.resource !== (context as any).resource ||
-          (currContext as any)?.refData !== (context as any).refData;
+          const newSource =
+            (currContext as any)?.resource !== (context as any).resource ||
+            (currContext as any)?.refData !== (context as any).refData;
 
-        const urlArr = this.router.url.split('/');
+          const urlArr = this.router.url.split('/');
 
-        if (
-          newSource &&
-          this.dashboard?.page?.content &&
-          urlArr[urlArr.length - 1] !== this.dashboard.page.content
-        ) {
-          urlArr[urlArr.length - 1] = this.dashboard.page.content;
-          this.router.navigateByUrl(urlArr.join('/'));
-        } else this.updateContextOptions();
-      }
-    });
+          if (
+            newSource &&
+            this.dashboard?.page?.content &&
+            urlArr[urlArr.length - 1] !== this.dashboard.page.content
+          ) {
+            urlArr[urlArr.length - 1] = this.dashboard.page.content;
+            this.router.navigateByUrl(urlArr.join('/'));
+          } else this.updateContextOptions();
+        }
+      });
   }
 
   /**

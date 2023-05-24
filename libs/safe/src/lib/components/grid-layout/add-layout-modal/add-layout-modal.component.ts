@@ -21,6 +21,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { DialogModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Data needed for the dialog, should contain a layouts array, a form and a resource
@@ -53,7 +55,10 @@ interface DialogData {
   templateUrl: './add-layout-modal.component.html',
   styleUrls: ['./add-layout-modal.component.scss'],
 })
-export class AddLayoutModalComponent implements OnInit {
+export class AddLayoutModalComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   private form?: Form;
   public resource?: Resource;
   public hasLayouts = false;
@@ -84,6 +89,7 @@ export class AddLayoutModalComponent implements OnInit {
     private gridLayoutService: SafeGridLayoutService,
     private apollo: Apollo
   ) {
+    super();
     this.hasLayouts = data.hasLayouts;
     this.form = data.form;
     this.resource = data.resource;
@@ -127,7 +133,7 @@ export class AddLayoutModalComponent implements OnInit {
         queryName: this.resource?.queryName || this.form?.queryName,
       },
     });
-    dialogRef.closed.subscribe((layout: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((layout: any) => {
       if (layout) {
         this.gridLayoutService
           .addLayout(layout, this.resource?.id, this.form?.id)

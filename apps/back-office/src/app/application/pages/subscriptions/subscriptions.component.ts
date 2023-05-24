@@ -77,7 +77,7 @@ export class SubscriptionsComponent
         channels: this.channels,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.addSubscription(value);
       }
@@ -110,7 +110,7 @@ export class SubscriptionsComponent
         subscription: element,
       },
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.editSubscription(value, element.routingKey);
       }

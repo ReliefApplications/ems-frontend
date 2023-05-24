@@ -13,6 +13,8 @@ import { SafeDownloadService } from '../../../../services/download/download.serv
 import { TranslateService } from '@ngx-translate/core';
 import { UploadEvent } from '@progress/kendo-angular-upload';
 import { SnackbarService } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /** Model fot the input data */
 interface DialogData {
@@ -29,7 +31,7 @@ interface DialogData {
   templateUrl: './invite-users.component.html',
   styleUrls: ['./invite-users.component.scss'],
 })
-export class SafeInviteUsersComponent {
+export class SafeInviteUsersComponent extends SafeUnsubscribeComponent {
   public gridData: GridDataResult = { data: [], total: 0 };
   public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   private editedRowIndex = 0;
@@ -67,7 +69,9 @@ export class SafeInviteUsersComponent {
     public dialogRef: DialogRef<SafeInviteUsersComponent>,
     public translate: TranslateService,
     @Inject(DIALOG_DATA) public data: DialogData
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Closes the modal.
@@ -96,7 +100,7 @@ export class SafeInviteUsersComponent {
       },
       autoFocus: false,
     });
-    dialogRef.closed.subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.gridData.data.push(value);
       }
