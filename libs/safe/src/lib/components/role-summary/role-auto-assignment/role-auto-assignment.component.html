@@ -1,12 +1,12 @@
 <div class="flex justify-end">
-  <safe-button
+  <ui-button
     icon="add"
     variant="primary"
     category="secondary"
     (click)="addRule()"
     >{{
       'components.role.summary.autoAssignment.rule.add' | translate
-    }}</safe-button
+    }}</ui-button
   >
 </div>
 <safe-skeleton-table
@@ -20,45 +20,45 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table mat-table [dataSource]="rules" *ngIf="!loading">
-      <ng-container matColumnDef="filter">
-        <th mat-header-cell *matHeaderCellDef>
+    <table cdk-table  uiTableWrapper [dataSource]="rules" *ngIf="!loading">
+      <ng-container cdkColumnDef="filter">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'components.role.summary.autoAssignment.rule.title' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element" class="capitalize">
+        <td uiCell *cdkCellDef="let element" class="capitalize">
           {{ getRuleDisplay(element) }}
         </td>
       </ng-container>
-      <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-        <td mat-cell *matCellDef="let i = index">
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let i = index">
           <div class="flex">
-            <safe-button
+            <ui-button
               [isIcon]="true"
               icon="edit"
               variant="grey"
-              [matTooltip]="'common.edit' | translate"
+              [uiTooltip]="'common.edit' | translate"
               (click)="editRule(i)"
             >
-            </safe-button>
-            <safe-button
+            </ui-button>
+            <ui-button
               [isIcon]="true"
               icon="delete"
               variant="grey"
-              [matTooltip]="
+              [uiTooltip]="
                 'components.role.summary.autoAssignment.rule.delete' | translate
               "
               (click)="deleteRule(i)"
             >
-            </safe-button>
+            </ui-button>
           </div>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr
-        *matRowDef="let row; columns: displayedColumns; let i = index"
-        mat-row
+        *cdkRowDef="let row; columns: displayedColumns; let i = index"
+        cdk-row
       ></tr>
     </table>
   </div>

@@ -11,7 +11,6 @@ import {
   CONTENT_TYPES,
   Form,
   SafeAuthService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
   SafeWorkflowService,
 } from '@oort-front/safe';
@@ -25,6 +24,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../../utils/update-queries';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -75,7 +75,7 @@ export class AddStepComponent
     private route: ActivatedRoute,
     private formBuilder: UntypedFormBuilder,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private apollo: Apollo,
     private workflowServive: SafeWorkflowService

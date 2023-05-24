@@ -4,10 +4,10 @@
     <template #settingsContainer></template>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">
+    <ui-button (click)="onClose()">
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       (click)="onSubmit()"
@@ -15,6 +15,6 @@
       [disabled]="!tileForm || !tileForm.valid"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
+    </ui-button>
   </mat-dialog-actions>
 </safe-modal>

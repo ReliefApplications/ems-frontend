@@ -3,9 +3,7 @@ import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 
 // Http
 import {
@@ -99,7 +97,6 @@ export const httpTranslateLoader = (http: HttpClient) =>
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSnackBarModule,
     BrowserAnimationsModule,
     MatDatepickerModule,
     MatNativeDateModule,
@@ -114,7 +111,6 @@ export const httpTranslateLoader = (http: HttpClient) =>
     OAuthModule.forRoot(),
     GraphQLModule,
     DateInputsModule,
-    MatTabsModule,
     MonacoEditorModule.forRoot(),
   ],
   providers: [

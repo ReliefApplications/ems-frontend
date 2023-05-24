@@ -1,5 +1,5 @@
 <div class="self-end" *ngIf="!loading">
-  <safe-button
+  <ui-button
     variant="primary"
     category="secondary"
     (click)="onAddAggregation()"
@@ -7,7 +7,7 @@
     {{
       'components.widget.settings.grid.aggregations.add.choice.create'
         | translate
-    }}</safe-button
+    }}</ui-button
   >
 </div>
 <div>
@@ -15,53 +15,58 @@
   <div class="overflow-x-hidden shadow-2lg">
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
-      <table *ngIf="!loading" mat-table [dataSource]="aggregations">
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>
+      <table
+        *ngIf="!loading"
+        cdk-table 
+        uiTableWrapper
+        [dataSource]="aggregations"
+      >
+        <ng-container cdkColumnDef="name">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
             {{ 'common.name' | translate }}
           </th>
-          <td mat-cell *matCellDef="let element" class="font-bold">
+          <td uiCell *cdkCellDef="let element" class="font-bold">
             {{ element.name }}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="createdAt">
-          <th mat-header-cell *matHeaderCellDef>
+        <ng-container cdkColumnDef="createdAt">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
             {{ 'common.createdOn' | translate }}
           </th>
-          <td mat-cell *matCellDef="let element">
+          <td uiCell *cdkCellDef="let element">
             {{ element.createdAt | safeDate }}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="_actions" [stickyEnd]="true">
-          <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-          <td mat-cell *matCellDef="let element">
-            <safe-button
+        <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
+          <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
+            <ui-button
               [isIcon]="true"
               icon="more_vert"
-              [matMenuTriggerFor]="resMenu"
+              [uiMenuTriggerFor]="resMenu"
               (click)="$event.stopPropagation()"
               [disabled]="!resource.canUpdate"
             >
-            </safe-button>
-            <mat-menu #resMenu="matMenu">
-              <button mat-menu-item (click)="onEditAggregation(element)">
+            </ui-button>
+            <ui-menu #resMenu>
+              <button uiMenuItem (click)="onEditAggregation(element)">
                 <mat-icon>edit</mat-icon>
                 {{ 'common.edit' | translate }}
               </button>
-              <button mat-menu-item (click)="onDeleteAggregation(element)">
+              <button uiMenuItem (click)="onDeleteAggregation(element)">
                 <mat-icon>delete</mat-icon>
                 {{ 'common.delete' | translate }}
               </button>
-            </mat-menu>
+            </ui-menu>
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumnsAggregations"></tr>
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumnsAggregations"></tr>
         <tr
-          mat-row
-          *matRowDef="let row; columns: displayedColumnsAggregations"
+          cdk-row
+          *cdkRowDef="let row; columns: displayedColumnsAggregations"
         ></tr>
       </table>
       <safe-skeleton-table

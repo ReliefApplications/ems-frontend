@@ -3,10 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RoleAutoAssignmentComponent } from './role-auto-assignment.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../../ui/button/button.module';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TooltipModule, ButtonModule, TableModule } from '@oort-front/ui';
 
 /**
  * Component for Auto assignment of role
@@ -18,10 +16,10 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    SafeButtonModule,
-    MatTableModule,
     SafeSkeletonTableModule,
-    MatTooltipModule,
+    TooltipModule,
+    ButtonModule,
+    TableModule,
   ],
   exports: [RoleAutoAssignmentComponent],
 })

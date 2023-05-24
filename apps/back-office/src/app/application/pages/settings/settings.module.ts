@@ -6,8 +6,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SettingsRoutingModule } from './settings-routing.module';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { SafeButtonModule } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
+import {
+  ButtonModule,
+  TextareaModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * Application settings module.
@@ -22,8 +26,10 @@ import { TranslateModule } from '@ngx-translate/core';
     MatInputModule,
     ReactiveFormsModule,
     MatSelectModule,
-    SafeButtonModule,
     TranslateModule,
+    TextareaModule,
+    ButtonModule,
+    FormWrapperModule,
   ],
 })
 export class SettingsModule {}

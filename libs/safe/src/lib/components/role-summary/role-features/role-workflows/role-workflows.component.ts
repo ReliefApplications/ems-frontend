@@ -26,7 +26,7 @@ import {
   EditStepAccessMutationResponse,
   EDIT_STEP_ACCESS,
 } from '../../graphql/mutations';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Component for the workflows section of the roles features */
 @Component({
@@ -66,7 +66,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
    * @param apollo Apollo service
    * @param snackBar Shared snackbar service
    */
-  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {}
+  constructor(private apollo: Apollo, private snackBar: SnackbarService) {}
 
   ngOnInit(): void {
     this.accessiblePages = this.filteredPages

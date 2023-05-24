@@ -5,30 +5,30 @@
     }}</span>
     <!-- Switch between grid and cards view -->
     <div class="flex" *ngIf="settings.isDynamic === true">
-      <safe-button
+      <ui-button
         [isIcon]="true"
         icon="grid_view"
         [disabled]="displayMode === 'cards'"
         (click)="displayMode = 'cards'"
-        [matTooltip]="'components.widget.summaryCard.viewAsCards' | translate"
-      ></safe-button>
-      <safe-button
+        [uiTooltip]="'components.widget.summaryCard.viewAsCards' | translate"
+      ></ui-button>
+      <ui-button
         [isIcon]="true"
         icon="view_list"
         [disabled]="displayMode === 'grid'"
         (click)="displayMode = 'grid'"
-        [matTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
-      ></safe-button>
+        [uiTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
+      ></ui-button>
     </div>
   </kendo-tilelayout-item-header>
   <ng-container *ngIf="displayMode === 'cards' || settings.isDynamic === false">
-    <safe-button
+    <ui-button
       *ngIf="export && (displayMode === 'cards' || settings.isDynamic === false)"
       [isIcon]="true"
       icon="get_app"
       class="export-button"
       (click)="pdf.saveAs(exportName)"
-    ></safe-button>
+    ></ui-button>
     <kendo-pdf-export #pdf paperSize="A4" margin="2cm" style="overflow: auto">
       <div
         #summaryCardGrid

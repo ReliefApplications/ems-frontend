@@ -1,9 +1,9 @@
 import { Component, HostBinding, Input } from '@angular/core';
-import { ButtonIconPosition } from './enums/button-icon-position.enum';
-import { Category } from '../shared/category.enum';
-import { Variant } from '../shared/variant.enum';
+import { ButtonIconPosition } from './types/button-icon-position';
+import { Category } from '../types/category';
+import { Variant } from '../types/variant';
 import { Subject } from 'rxjs';
-import { Size } from '../shared/size.enum';
+import { Size } from '../types/size';
 
 /**
  * UI Button Component
@@ -15,23 +15,17 @@ import { Size } from '../shared/size.enum';
 })
 export class ButtonComponent {
   @Input() icon = '';
-  @Input() label = '';
-  @Input() value: any = '';
-  @Input() iconPosition: ButtonIconPosition = ButtonIconPosition.PREFIX;
-  @Input() category: Category = Category.PRIMARY;
-  @Input() size: Size = Size.MEDIUM;
-  @Input() variant: Variant = Variant.DEFAULT;
+  @Input() iconPosition: ButtonIconPosition = 'prefix';
+  @Input() category: Category = 'primary';
+  @Input() size: Size = 'medium';
+  @Input() variant: Variant = 'default';
   @Input() isIcon = false;
   @Input() loading = false;
   @Input() buttonGroupClasses = '';
   @HostBinding('class.disabled')
   @Input()
   disabled = false;
-
-  buttonIconPosition = ButtonIconPosition;
-  buttonCategory = Category;
-  buttonSize = Size;
-  buttonVariant = Variant;
+  @Input() isOutlined = false;
 
   public emittedEventSubject: Subject<string> = new Subject();
 
@@ -42,9 +36,9 @@ export class ButtonComponent {
    */
   get iconSize(): number {
     switch (this.size) {
-      case Size.SMALL:
+      case 'small':
         return 18;
-      case Size.LARGE:
+      case 'large':
         return 24;
       default:
         return 21;
@@ -59,12 +53,7 @@ export class ButtonComponent {
     classes.push(this.category);
     classes.push(this.size);
     classes.push(
-      'button-' +
-        (this.variant === Variant.DEFAULT
-          ? Variant.PRIMARY
-          : this.variant === Variant.LIGHT
-          ? Variant.GREY
-          : this.variant)
+      'button-' + (this.variant === 'default' ? 'primary' : this.variant)
     );
     if ((this.icon || this.loading) && !this.isIcon) {
       classes.push('inline-flex items-center gap-x-2');

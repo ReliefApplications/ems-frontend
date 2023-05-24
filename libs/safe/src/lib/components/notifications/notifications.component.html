@@ -2,37 +2,37 @@
 <div class="flex mb-6 justify-end gap-4">
   <!-- Actions -->
   <div class="flex gap-2 items-center flex-wrap justify-end justify-self-end">
-    <safe-button
+    <ui-button
       icon="add"
       category="secondary"
       variant="primary"
       (click)="addNotification()"
     >
       {{ 'components.customNotifications.edit.new' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </div>
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" mat-table [dataSource]="notifications" matSort>
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+    <table *ngIf="!loading" cdk-table  uiTableWrapper [dataSource]="notifications">
+      <ng-container cdkColumnDef="name">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.name }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="status">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'common.status' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           <mat-chip-list>
             <mat-chip
               class="success-chip !rounded-lg"
@@ -61,41 +61,41 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="lastExecution">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="lastExecution">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'models.customNotification.lastExecution' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.lastExecution }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.lastExecution }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="w-16"></th>
-        <td mat-cell *matCellDef="let element">
-          <safe-button
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
-            [matMenuTriggerFor]="menu"
+            [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
           >
-          </safe-button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="editNotification(element)">
+          </ui-button>
+          <ui-menu #menu>
+            <button uiMenuItem (click)="editNotification(element)">
               <mat-icon>edit</mat-icon>
               {{ 'common.edit' | translate }}
             </button>
-            <safe-divider class="!m-0"></safe-divider>
-            <button mat-menu-item (click)="deleteNotification(element)">
+            <ui-divider class="m-0"></ui-divider>
+            <button uiMenuItem (click)="deleteNotification(element)">
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
             </button>
-          </mat-menu>
+          </ui-menu>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+      <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
     </table>
     <!-- Loading indicator -->
     <safe-skeleton-table

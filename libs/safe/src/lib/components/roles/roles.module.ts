@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeRolesComponent } from './roles.component';
 import { SafeRoleListModule } from './components/role-list/role-list.module';
@@ -13,6 +13,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeModalModule } from '../ui/modal/modal.module';
 import { AbilityModule } from '@casl/angular';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * SafeRolesModule manages modules and components for the roles page
@@ -24,7 +25,7 @@ import { AbilityModule } from '@casl/angular';
     SafeRoleListModule,
     SafeGroupListModule,
     TranslateModule,
-    MatTabsModule,
+    TabsModule,
     MatDialogModule,
     TranslateModule,
     FormsModule,
@@ -34,6 +35,7 @@ import { AbilityModule } from '@casl/angular';
     MatInputModule,
     SafeModalModule,
     AbilityModule,
+    ButtonModule,
   ],
   exports: [SafeRolesComponent],
 })

@@ -14,6 +14,7 @@ export class SafeModalComponent implements OnInit, OnChanges {
   @Input() closable = false;
   @Input() padding = true;
   @Input() size: ModalSize | string = '';
+
   /**
    * Close material dialog.
    */

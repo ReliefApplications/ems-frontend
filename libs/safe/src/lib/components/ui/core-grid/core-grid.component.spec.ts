@@ -14,7 +14,6 @@ import {
 import { SafeCoreGridComponent } from './core-grid.component';
 import { UntypedFormBuilder } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { HttpClientModule } from '@angular/common/http';
 import {
   ApolloTestingModule,
@@ -53,7 +52,6 @@ describe('SafeCoreGridComponent', () => {
         HttpClientModule,
         MatDialogModule,
         RouterTestingModule,
-        MatSnackBarModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

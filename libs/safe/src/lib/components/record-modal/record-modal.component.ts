@@ -24,7 +24,6 @@ import {
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { EDIT_RECORD, EditRecordMutationResponse } from './graphql/mutations';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, firstValueFrom, Observable, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -33,17 +32,16 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.compo
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { CommonModule } from '@angular/common';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { SnackbarService, TabsModule } from '@oort-front/ui';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
+import { SpinnerModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -63,17 +61,17 @@ interface DialogData {
   imports: [
     CommonModule,
     MatDialogModule,
-    MatTabsModule,
+    TabsModule,
     MatGridListModule,
     MatIconModule,
     MatButtonModule,
-    SafeButtonModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,
     SafeDateModule,
     SafeModalModule,
-    SafeSpinnerModule,
+    ButtonModule,
+    SpinnerModule,
   ],
   selector: 'safe-record-modal',
   templateUrl: './record-modal.component.html',
@@ -130,7 +128,7 @@ export class SafeRecordModalComponent
     private apollo: Apollo,
     public dialog: MatDialog,
     private authService: SafeAuthService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private formBuilderService: SafeFormBuilderService,
     private formHelpersService: SafeFormHelpersService,
     private translate: TranslateService

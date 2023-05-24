@@ -18,6 +18,7 @@ export class FilterComponent implements OnInit {
   public form!: UntypedFormGroup;
   public search = new UntypedFormControl('');
   public show = false;
+
   @Output() filter = new EventEmitter<any>();
   @Input() loading = false;
 

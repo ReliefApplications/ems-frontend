@@ -3,7 +3,7 @@
   *ngIf="selection.selected.length > 0"
   class="flex gap-2 items-center mb-2 justify-end"
 >
-  <safe-button
+  <ui-button
     icon="delete"
     category="secondary"
     variant="danger"
@@ -13,112 +13,110 @@
       'common.deleteObject'
         | translate : { name: 'common.user.few' | translate }
     }}
-  </safe-button>
+  </ui-button>
 </div>
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" mat-table [dataSource]="users" matSort>
+    <table *ngIf="!loading" cdk-table  uiTableWrapper [dataSource]="users">
       <!-- Checkbox Column -->
-      <ng-container *ngIf="!autoAssigned" matColumnDef="select">
-        <th mat-header-cell *matHeaderCellDef>
-          <mat-checkbox
-            class="mr-2"
+      <ng-container *ngIf="!autoAssigned" cdkColumnDef="select">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <ui-checkbox
             (change)="$event ? masterToggle() : null"
             [checked]="selection.hasValue() && isAllSelected()"
             [indeterminate]="selection.hasValue() && !isAllSelected()"
-            [aria-label]="checkboxLabel()"
+            [ariaLabel]="checkboxLabel()"
           >
-          </mat-checkbox>
+          </ui-checkbox>
         </th>
-        <td mat-cell *matCellDef="let row">
-          <mat-checkbox
-            class="mr-2"
+        <td uiCell *cdkCellDef="let row">
+          <ui-checkbox
             (click)="$event.stopPropagation()"
             (change)="$event ? selection.toggle(row) : null"
             [checked]="selection.isSelected(row)"
-            [aria-label]="checkboxLabel(row)"
+            [ariaLabel]="checkboxLabel(row)"
           >
-          </mat-checkbox>
+          </ui-checkbox>
         </td>
       </ng-container>
-      <ng-container matColumnDef="username">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="username">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'models.user.username' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.username }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.username }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="name">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element" class="font-bold">
+        <td uiCell *cdkCellDef="let element" class="font-bold">
           {{ element.name }}
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="roles">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="roles">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'common.role.few' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           <span *ngFor="let role of element.roles"> {{ role.title }}</span>
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="attributes">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="attributes">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'common.positionAttribute.few' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           <span *ngFor="let attribute of element.positionAttributes">
             {{ attribute.value }},
           </span>
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="oid">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="oid">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'common.id' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.oid }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.oid }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="w-16"></th>
-        <td mat-cell *matCellDef="let element">
-          <safe-button
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
-            [matMenuTriggerFor]="menu"
+            [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
           >
-          </safe-button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="onDelete([element])">
+          </ui-button>
+          <ui-menu #menu>
+            <button uiMenuItem (click)="onDelete([element])">
               <mat-icon>delete</mat-icon>
               {{ 'common.delete' | translate }}
             </button>
-          </mat-menu>
+          </ui-menu>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
+        cdk-row
+        *cdkRowDef="let row; columns: displayedColumns"
         (click)="onClick(row)"
         class="cursor-pointer"
       ></tr>

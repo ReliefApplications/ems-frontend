@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 
 import { SafeGridRowActionsComponent } from './row-actions.component';
 
@@ -10,7 +10,7 @@ describe('SafeGridRowActionsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SafeGridRowActionsComponent],
-      imports: [MatMenuModule],
+      imports: [MenuModule],
     }).compileComponents();
   });
 
