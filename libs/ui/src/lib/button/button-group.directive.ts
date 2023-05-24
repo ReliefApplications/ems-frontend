@@ -7,8 +7,10 @@ import {
   Renderer2,
   OnDestroy,
   ElementRef,
+  ContentChildren,
 } from '@angular/core';
 import { Observable, Subject, fromEvent, merge, takeUntil } from 'rxjs';
+import { ButtonComponent } from './button.component';
 
 /**
  * UI Button group directive
@@ -20,9 +22,11 @@ export class ButtonGroupDirective implements AfterContentInit, OnDestroy {
   @Input() uiButtonGroup!: any;
   @Output() uiButtonGroupChange = new EventEmitter<any>();
 
+  @ContentChildren(ButtonComponent, { read: ElementRef })
+  currentButtons: Array<ElementRef> = [];
+
   private selectedButton!: any;
   private destroy$: Subject<void> = new Subject<void>();
-  private currentButtons: any[] = [];
 
   /**
    * UI Button directive constructor
@@ -39,21 +43,20 @@ export class ButtonGroupDirective implements AfterContentInit, OnDestroy {
     this.renderer.addClass(this.elementRef.nativeElement, 'inline-flex');
     this.renderer.addClass(this.elementRef.nativeElement, 'shadow-sm');
 
-    // Get all the ui-buttons inside the element with the directive
-    this.currentButtons =
-      this.elementRef.nativeElement.querySelectorAll('ui-button');
     const childrenEventStream: Observable<Event>[] = [];
-    this.currentButtons.forEach((button: any) => {
+    this.currentButtons.forEach((button: ElementRef) => {
       // Reset all buttons styling to button group(no rounded corner, tertiary type, and index priority)
-      this.renderer.addClass(button.firstChild, 'focus:z-10');
-      this.renderer.addClass(button.firstChild, 'rounded-none');
-      this.renderer.addClass(button.firstChild, 'tertiary');
+      this.renderer.addClass(button.nativeElement.firstChild, 'focus:z-10');
+      this.renderer.addClass(button.nativeElement.firstChild, 'rounded-none');
+      this.renderer.addClass(button.nativeElement.firstChild, 'tertiary');
       //If value is already selected from the directive, apply changes
-      if (this.uiButtonGroup === button.firstChild.value) {
-        this.setButtonSelected(button.firstChild);
+      if (this.uiButtonGroup === button.nativeElement.firstChild.value) {
+        this.setButtonSelected(button.nativeElement.firstChild);
       }
       // Get all click event streams from the children buttons
-      childrenEventStream.push(fromEvent(button, 'click'));
+      childrenEventStream.push(
+        fromEvent(button.nativeElement.firstChild, 'click')
+      );
     });
     this.setButtonEventsListener(childrenEventStream);
   }
@@ -68,9 +71,8 @@ export class ButtonGroupDirective implements AfterContentInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (event: Event) => {
-          const selectedButtonElement = (
-            event?.currentTarget as HTMLElement
-          ).querySelector('button');
+          const selectedButtonElement =
+            event?.currentTarget as HTMLButtonElement;
           if (selectedButtonElement) {
             this.setButtonSelected(selectedButtonElement);
           }
@@ -86,8 +88,8 @@ export class ButtonGroupDirective implements AfterContentInit, OnDestroy {
   private setButtonSelected(button: HTMLButtonElement) {
     // Reset all buttons styling
     this.currentButtons.forEach((button: any) => {
-      this.renderer.removeClass(button.firstChild, 'secondary');
-      this.renderer.removeClass(button.firstChild, 'text-white');
+      this.renderer.removeClass(button.nativeElement.firstChild, 'secondary');
+      this.renderer.removeClass(button.nativeElement.firstChild, 'text-white');
     });
     // Add selected class to the given button
     this.renderer.addClass(button, 'secondary');

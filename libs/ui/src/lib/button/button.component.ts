@@ -26,6 +26,7 @@ export class ButtonComponent {
   @Input()
   disabled = false;
   @Input() isOutlined = false;
+  @Input() value?: any;
 
   public emittedEventSubject: Subject<string> = new Subject();
 

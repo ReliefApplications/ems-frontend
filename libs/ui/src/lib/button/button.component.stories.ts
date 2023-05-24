@@ -200,3 +200,6 @@ const GroupTemplate: StoryFn<ButtonComponent> = (args: ButtonComponent) => {
 
 /** Group button */
 export const ButtonGroup = GroupTemplate.bind({});
+ButtonGroup.args = {
+  variant: 'primary',
+};
