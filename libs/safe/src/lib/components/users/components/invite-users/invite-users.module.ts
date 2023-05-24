@@ -11,7 +11,7 @@ import { SafeAddUserModule } from '../add-user/add-user.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
-import { ButtonModule as uiButtonModule } from '@oort-front/ui';
+import { ButtonModule as uiButtonModule, TextareaModule } from '@oort-front/ui';
 
 /** Module for invite users component */
 @NgModule({
@@ -31,6 +31,7 @@ import { ButtonModule as uiButtonModule } from '@oort-front/ui';
     TranslateModule,
     UploadsModule,
     SafeModalModule,
+    TextareaModule,
     uiButtonModule,
   ],
   exports: [SafeInviteUsersComponent],

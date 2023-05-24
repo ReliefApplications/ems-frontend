@@ -11,7 +11,6 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Dashboard,
-  SafeSnackBarService,
   SafeApplicationService,
   SafeWorkflowService,
   SafeDashboardService,
@@ -46,6 +45,7 @@ import { Observable } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -117,7 +117,7 @@ export class DashboardComponent
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private dashboardService: SafeDashboardService,
     private translateService: TranslateService,
     private authService: SafeAuthService,
