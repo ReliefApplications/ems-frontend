@@ -30,7 +30,6 @@ import {
   GET_REFERENCE_DATA,
 } from './graphql/queries';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 import { takeUntil } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -420,7 +419,7 @@ export class ReferenceDataComponent
    *
    * @param event input event.
    */
-  add(event: MatChipInputEvent | any): void {
+  add(event: string | any): void {
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
