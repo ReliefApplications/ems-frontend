@@ -399,6 +399,10 @@ export class MapComponent
     if (controls.layer) {
       if (this.layerControl) {
         this.layerControl.addTo(this.map);
+        this.map
+          .getContainer()
+          .querySelector('.leaflet-control-layers')
+          ?.classList.add('hidden');
       }
     } else {
       if (this.layerControl) {
