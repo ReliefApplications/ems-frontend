@@ -8,17 +8,16 @@
         <h3>
           {{ 'components.application.duplicate.name.description' | translate }}
         </h3>
-        <mat-form-field appearance="outline">
-          <mat-label>
+        <div uiFormFieldDirective>
+          <label>
             {{ 'common.name' | translate }}
-          </mat-label>
+          </label>
           <input
-            matInput
             type="text"
             formControlName="name"
             [placeholder]="'common.placeholder.name' | translate"
           />
-        </mat-form-field>
+        </div>
       </div>
     </form>
   </div>

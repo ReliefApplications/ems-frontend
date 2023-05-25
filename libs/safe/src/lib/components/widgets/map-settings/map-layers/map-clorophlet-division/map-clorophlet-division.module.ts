@@ -6,9 +6,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeFilterModule } from '../../../../filter/filter.module';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
 
 /**
  * Single Division of clorophlet configuration module.
@@ -22,7 +21,7 @@ import { ButtonModule } from '@oort-front/ui';
     TranslateModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     MatButtonModule,
     SafeFilterModule,
     ButtonModule,
