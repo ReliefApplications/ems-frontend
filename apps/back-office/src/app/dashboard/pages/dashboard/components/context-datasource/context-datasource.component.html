@@ -12,33 +12,24 @@
       
       <!-- Origin -->
       <div uiFormFieldDirective [outline]="false" class="mb-2">
-        <mat-label>{{
+        <label>{{
           'models.dashboard.context.origin' | translate
-        }}</mat-label>
+        }}</label>
         <ui-select-menu formControlName="origin">
-          <ui-select-option value="resource">{{
-            'common.resource.one' | translate
-          }}</ui-select-option>
-          <ui-select-option value="refData">{{
-            'common.referenceData.one' | translate
-          }}</ui-select-option>
+          <ui-select-option  
+            value="resource" 
+            [label]="'common.resource.one' | translate"
+          >
+            {{ 'common.resource.one' | translate }}
+          </ui-select-option>
+          <ui-select-option 
+            value="refData"
+            [label]="'common.referenceData.one' | translate"
+          >
+            {{ 'common.referenceData.one' | translate }}
+          </ui-select-option>
         </ui-select-menu>
       </div>
-
-      <!-- <mat-form-field appearance="outline" class="grow">
-        <mat-label>{{
-          'models.dashboard.context.origin' | translate
-        }}</mat-label>
-        <mat-select formControlName="origin">
-          <mat-option value="resource">{{
-            'common.resource.one' | translate
-          }}</mat-option>
-          <mat-option value="refData">{{
-            'common.referenceData.one' | translate
-          }}</mat-option>
-        </mat-select>
-      </mat-form-field> -->
-
       <!-- Resource selection -->
       <mat-form-field
         appearance="outline"
@@ -80,8 +71,11 @@
 
       <!-- Field selection -->
       <div uiFormFieldDirective [outline]="false">
-        <ui-select-menu formControlName="displayField" [multiselect]="false">
-          <ui-select-option *ngFor="let field of availableFields" [value]="field" uiPrefix>
+        <label>{{
+          'models.dashboard.context.displayField' | translate
+        }}</label>
+        <ui-select-menu formControlName="displayField">
+          <ui-select-option *ngFor="let field of availableFields" [value]="field" [label]="field" uiPrefix>
             {{ field }}
           </ui-select-option>
         </ui-select-menu>
@@ -92,25 +86,7 @@
           uiSuffix
           [uiTooltip]="'models.dashboard.context.datasource.info' | translate"
         ></safe-icon>
-      </div>
-      <!-- <mat-form-field appearance="outline" class="grow">
-        <mat-label>{{
-          'models.dashboard.context.displayField' | translate
-        }}</mat-label>
-        <mat-select formControlName="displayField">
-          <mat-option *ngFor="let field of availableFields" [value]="field">
-            {{ field }}
-          </mat-option>
-        </mat-select>
-        <safe-icon
-          icon="info"
-          class="cursor-pointer"
-          variant="'grey'"
-          matSuffix
-          [uiTooltip]="'models.dashboard.context.datasource.info' | translate"
-        ></safe-icon>
-      </mat-form-field> -->
-    
+      </div>    
     </form>
     <ui-button
       category="secondary"

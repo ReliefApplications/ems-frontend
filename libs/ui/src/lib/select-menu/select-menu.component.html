@@ -10,7 +10,9 @@
     }"
   >
     <ng-container *ngIf="selectedValues?.length">
-      <ng-container [ngTemplateOutlet]="customTemplate"> </ng-container>
+      <ng-container *ngIf="customTemplate">
+        <ng-container *ngTemplateOutlet="customTemplate.template; context: customTemplate.context"></ng-container>
+      </ng-container>
       <div class="default">
         <ng-container *ngIf="!customTemplate">
           <span class="block truncate text-sm">{{ displayTrigger }}</span>

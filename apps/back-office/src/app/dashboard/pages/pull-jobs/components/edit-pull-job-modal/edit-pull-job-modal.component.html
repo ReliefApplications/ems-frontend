@@ -26,10 +26,10 @@
           <!-- Status -->
           
           <div uiFormFieldDirective [outline]="false" class="flex-1">
-            <!-- <mat-label>{{ 'common.status' | translate }}</mat-label> -->
+            <label>{{ 'common.status' | translate }}</label>
             <ui-select-menu 
               formControlName="status" 
-              [customTemplate]="statusTemplate"
+              [customTemplate]="{ template : statusTemplate, context: { $implicit: formGroup.value.status } }"
             >
               <ui-select-option *ngFor="let status of statusChoices" [value]="status">
                 <ng-container
@@ -41,29 +41,6 @@
               </ui-select-option>
             </ui-select-menu>
           </div>
-
-          <!-- <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'common.status' | translate }}</mat-label>
-            <mat-select formControlName="status">
-              <mat-select-trigger>
-                <ng-container
-                  *ngTemplateOutlet="
-                    statusTemplate;
-                    context: { $implicit: formGroup.value.status }
-                  "
-                ></ng-container>
-              </mat-select-trigger>
-              <mat-option *ngFor="let status of statusChoices" [value]="status">
-                <ng-container
-                  *ngTemplateOutlet="
-                    statusTemplate;
-                    context: { $implicit: status }
-                  "
-                ></ng-container>
-              </mat-option>
-            </mat-select>
-          </mat-form-field> -->
-
         </div>
         <!-- Schedule -->
         <safe-cron-expression-control
@@ -141,8 +118,8 @@
             </safe-graphql-select>
           </mat-form-field>
           <!-- Channel to notify on -->
-          <div uiFormFieldDirective [outline]="false" class="flex-1">
-            <!-- <mat-label>{{ 'common.status' | translate }}</mat-label> -->
+          <!-- <div uiFormFieldDirective [outline]="false" class="flex-1">
+            <mat-label>{{ 'common.status' | translate }}</mat-label>
             <ui-select-menu 
               formControlName="status" 
               [customTemplate]="statusTemplate"
@@ -156,7 +133,7 @@
                 ></ng-container>
               </ui-select-option>
             </ui-select-menu>
-          </div>
+          </div> -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{
               'components.channel.dropdown.select' | translate

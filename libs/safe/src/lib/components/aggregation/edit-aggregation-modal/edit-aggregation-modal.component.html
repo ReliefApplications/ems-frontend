@@ -9,12 +9,20 @@
           <mat-label>{{ 'common.name' | translate }}</mat-label>
           <input matInput formControlName="name" type="string" />
         </mat-form-field>
+        
+        <!-- <div uiFormFieldDirective [outline]="false">
+          <ui-select-menu>
+            <ui-select-option [value]="resource.id" [selected]="true">{{ resource.name }}</ui-select-option>
+          </ui-select-menu>
+        </div> -->
+
         <mat-form-field appearance="outline">
           <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
           <mat-select [disabled]="true" [value]="resource.id">
             <mat-option [value]="resource.id">{{ resource.name }}</mat-option>
           </mat-select>
         </mat-form-field>
+      
       </div>
       <div class="flex flex-col">
         <safe-aggregation-builder

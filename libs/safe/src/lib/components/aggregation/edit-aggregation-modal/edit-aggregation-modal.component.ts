@@ -14,7 +14,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeModalModule } from '../../ui/modal/modal.module';
 import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, SelectMenuModule, SelectOptionModule, FormWrapperModule } from '@oort-front/ui';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -39,6 +39,9 @@ interface DialogData {
     SafeModalModule,
     SafeAggregationBuilderModule,
     ButtonModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    FormWrapperModule,
   ],
   selector: 'safe-edit-aggregation-modal',
   templateUrl: './edit-aggregation-modal.component.html',

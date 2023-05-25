@@ -40,7 +40,7 @@ export class SelectMenuComponent
   @Input() disabled = false;
   // Any custom template provided for display
   @Input()
-  customTemplate!: TemplateRef<any>;
+  customTemplate!: { template: TemplateRef<any>; context: any };
 
   // Emits when the list is opened
   @Output() opened = new EventEmitter<void>();
@@ -83,28 +83,31 @@ export class SelectMenuComponent
         }
       }
     );
-    this.optionList.forEach((option: SelectOptionComponent) => {
-      option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
-        next: (isSelected: boolean) => {
-          this.updateSelectedValues(option, isSelected);
-          this.onChangeFunction();
-        },
+    setTimeout(() => {
+      this.optionList.forEach((option: SelectOptionComponent) => {
+        option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
+          next: (isSelected: boolean) => {
+            this.updateSelectedValues(option, isSelected);
+            this.onChangeFunction();
+          },
+        });
       });
-    });
-    // Initialize any selected values
-    this.optionList?.changes
-      .pipe(startWith(this.optionList), takeUntil(this.destroy$))
-      .subscribe({
-        next: (options: QueryList<SelectOptionComponent>) => {
-          options.forEach((option) => {
-            if (this.selectedValues.includes(option.value)) {
-              option.selected = true;
-            } else {
-              option.selected = false;
-            }
-          });
-        },
-      });
+      // Initialize any selected values
+      this.optionList?.changes
+        .pipe(startWith(this.optionList), takeUntil(this.destroy$))
+        .subscribe({
+          next: (options: QueryList<SelectOptionComponent>) => {
+            options.forEach((option) => {
+              if (this.selectedValues.includes(option.value)) {
+                option.selected = true;
+              } else {
+                option.selected = false;
+              }
+            });
+          },
+        });
+      this.setDisplayTriggerText();
+    }, 1750)
   }
 
   /**
@@ -115,10 +118,8 @@ export class SelectMenuComponent
   writeValue(value: string[]): void {
     if (value && typeof value === 'string') {
       this.selectedValues = [value];
-      this.setDisplayTriggerText();
     } else if (value) {
       this.selectedValues = [...value];
-      this.setDisplayTriggerText();
     }
   }
 
@@ -146,7 +147,6 @@ export class SelectMenuComponent
    * Emit selectedOption output, change trigger text and deal with control access value when an element of the list is clicked
    */
   onChangeFunction() {
-    console.log(this.selectedValues);
     // Emit the list of values selected as an output
     this.setDisplayTriggerText();
     if (this.multiselect) {
@@ -191,16 +191,17 @@ export class SelectMenuComponent
 
   /** Builds the text displayed from selected options */
   private setDisplayTriggerText() {
+    let labelValues = this.getValuesLabel(this.selectedValues);
     // Adapt the text to be displayed in the trigger if no custom template for display is provided
-    if (this.selectedValues?.length) {
+    if (labelValues?.length) {
       if (!this.customTemplate) {
-        if (this.selectedValues.length === 1) {
-          this.displayTrigger = this.selectedValues[0];
-        } else if (this.selectedValues.length >= 1) {
+        if (labelValues.length === 1) {
+          this.displayTrigger = labelValues[0];
+        } else if (labelValues.length >= 1) {
           this.displayTrigger =
-            this.selectedValues[0] +
+            labelValues[0] +
             ' (+' +
-            (this.selectedValues.length - 1) +
+            (labelValues.length - 1) +
             ' others)';
         } else {
           this.displayTrigger = '';
@@ -250,5 +251,21 @@ export class SelectMenuComponent
     }
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  getValuesLabel(selectedValues: any[]){
+    let values = this.optionList.filter((val: any) => {
+      if(selectedValues.includes(val.value)){
+        return val;
+      }
+    })
+    console.log(values);
+    return values = values.map((val: any) => {
+      if(val.label){
+        return val.label;
+      }else{
+        return val.value;
+      }
+    })
   }
 }
