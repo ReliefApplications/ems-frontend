@@ -183,7 +183,7 @@ export class SafeEmailService {
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SafeSnackbarSpinnerComponent,
       {
-        duration: 10000,
+        duration: 0,
         data: {
           message: this.translate.instant(
             'common.notifications.email.processing'
