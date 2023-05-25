@@ -28,15 +28,18 @@
       (click)="pdf.saveAs(exportName)"
     ></safe-button>
   </kendo-tilelayout-item-header>
-  <div class="bg-zinc-50 p-2" *ngIf="!!settings.widgetDisplay?.searchable">
-    <input
-      [placeholder]="'common.placeholder.search' | translate"
-      kendoTextBox
-      [formControl]="searchControl"
-      class="!w-full"
-    />
-  </div>
+  <!-- Cards display mode -->
   <ng-container *ngIf="displayMode === 'cards'">
+    <!-- Search -->
+    <div class="bg-zinc-50 p-2" *ngIf="!!settings.widgetDisplay?.searchable">
+      <input
+        [placeholder]="'common.placeholder.search' | translate"
+        kendoTextBox
+        [formControl]="searchControl"
+        class="!w-full"
+      />
+    </div>
+    <!-- Export -->
     <div class="w-full grow overflow-auto" #summaryCardGrid>
       <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
         <div
@@ -60,17 +63,18 @@
         </div>
       </kendo-pdf-export>
     </div>
+    <!-- Pagination -->
+    <kendo-datapager
+      [style.width.%]="100"
+      [pageSize]="pageInfo.first"
+      [pageSizeValues]="[10, 25, 50, 100]"
+      [skip]="pageInfo.skip"
+      [total]="pageInfo.totalCount"
+      (pageChange)="onPageChange($event)"
+    >
+    </kendo-datapager>
   </ng-container>
-  <kendo-datapager
-    *ngIf="settings.widgetDisplay?.usePagination && displayMode === 'cards'"
-    [style.width.%]="100"
-    [pageSize]="pageInfo.first"
-    [pageSizeValues]="[10, 25, 50, 100]"
-    [skip]="pageInfo.skip"
-    [total]="pageInfo.totalCount"
-    (pageChange)="onPageChange($event)"
-  >
-  </kendo-datapager>
+  <!-- Grid display mode -->
   <ng-container *ngIf="displayMode === 'grid'">
     <div class="w-full h-full">
       <safe-grid-widget
