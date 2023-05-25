@@ -18,7 +18,11 @@ import {
 } from '@progress/kendo-angular-layout';
 import { SafeDashboardService } from '../../services/dashboard/dashboard.service';
 import { SafeWidgetComponent } from '../widget/widget.component';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
 
 /** Maximum height of the widget in row units */
 const MAX_ROW_SPAN = 4;
@@ -46,6 +50,8 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
 
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
+  public colsNumberTable = new Array(this.colsNumber - 1);
+  public sampleList: any[] = [];
 
   // === EVENT EMITTER ===
   @Output() move: EventEmitter<any> = new EventEmitter();
@@ -101,10 +107,17 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.skeletons = this.getSkeletons();
     this.availableWidgets = this.dashboardService.availableWidgets;
+    for (let i = 0; i < this.colsNumber - 1; i++) {
+      this.colsNumberTable[i] = String(i + 1);
+    }
   }
 
   ngOnChanges() {
     this.colsNumberString = 'repeat(' + this.colsNumber + ', minmax(0, 1fr))';
+    this.colsNumberTable = new Array(this.colsNumber - 1);
+    for (let i = 0; i < this.colsNumber - 1; i++) {
+      this.colsNumberTable[i] = String(i + 1);
+    }
   }
 
   /**
@@ -222,11 +235,27 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
    * @param event cdk drag drop
    */
   drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.widgets, event.previousIndex, event.currentIndex);
+    // moveItemInArray(this.widgets, event.previousIndex, event.currentIndex);
+    if (event.previousContainer === event.container) {
+      console.log('same container');
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else {
+      console.log(event.container);
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
   }
 
   /**
-   * Generates a list of skeletongs, for loading.
+   * Generates a list of skeletons, for loading.
    *
    * @returns List of skeletons.
    */
