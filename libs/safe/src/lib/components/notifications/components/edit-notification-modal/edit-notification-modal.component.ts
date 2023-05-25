@@ -26,7 +26,6 @@ import { CommonModule } from '@angular/common';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
@@ -36,6 +35,7 @@ import {
   TooltipModule,
   RadioModule,
   ButtonModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 
 /**
@@ -59,7 +59,7 @@ const ITEMS_PER_PAGE = 10;
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     MatSelectModule,
     TooltipModule,
     SafeReadableCronModule,

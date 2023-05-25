@@ -23,7 +23,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
-import { ButtonModule, ChipModule } from '@oort-front/ui';
+import { ButtonModule, ChipModule, FormWrapperModule } from '@oort-front/ui';
 
 /** Model for the data input */
 interface DialogData {
@@ -64,6 +64,7 @@ export function codesFactory(): () => any {
     TranslateModule,
     ButtonModule,
     ChipModule,
+    FormWrapperModule,
   ],
   selector: 'safe-edit-distribution-list-modal',
   templateUrl: './edit-distribution-list-modal.component.html',

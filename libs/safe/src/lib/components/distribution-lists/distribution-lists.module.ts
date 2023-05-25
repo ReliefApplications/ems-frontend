@@ -10,6 +10,7 @@ import {
   ButtonModule,
   TableModule,
 } from '@oort-front/ui';
+import { SafeEmptyModule } from '../ui/empty/empty.module';
 
 /**
  * Module of distribution list table
@@ -24,6 +25,7 @@ import {
     MatIconModule,
     DividerModule,
     ButtonModule,
+    SafeEmptyModule,
     TableModule,
   ],
   exports: [DistributionListsComponent],

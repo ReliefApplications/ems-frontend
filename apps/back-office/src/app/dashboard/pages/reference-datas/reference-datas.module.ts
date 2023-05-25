@@ -4,7 +4,6 @@ import { ReferenceDatasRoutingModule } from './reference-datas-routing.module';
 import { ReferenceDatasComponent } from './reference-datas.component';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import {
   FormsModule as AngularFormsModule,
   ReactiveFormsModule,
@@ -40,7 +39,6 @@ import {
     ReferenceDatasRoutingModule,
     MatSortModule,
     MatFormFieldModule,
-    MatInputModule,
     AngularFormsModule,
     ReactiveFormsModule,
     MatDialogModule,

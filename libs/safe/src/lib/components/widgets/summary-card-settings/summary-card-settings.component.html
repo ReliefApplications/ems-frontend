@@ -1,10 +1,10 @@
 <ng-container *ngIf="tileForm">
   <form [formGroup]="tileForm">
     <div class="form-group">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.title' | translate }}</mat-label>
-        <input matInput formControlName="title" type="string" />
-      </mat-form-field>
+      <div uiFormFieldDirective>
+        <label>{{ 'common.title' | translate }}</label>
+        <input formControlName="title" type="string" />
+      </div>
     </div>
     <div class="settings">
       <div formControlName="isDynamic" uiRadioGroupDirective="isDynamicOptions" class="flex gap-4 items-center">
