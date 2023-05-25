@@ -16,11 +16,12 @@
   <!-- GRID OF WIDGETS -->
   <!-- <div cdkDropList class="grid grid-cols-[repeat(${colsNumber}, minmax(0, 1fr))] -m-4" (cdkDropListDropped)="drop($event)"> -->
   <div
-    cdkDropList
-    class="flex flex-wrap -m-4"
-    [cdkDropListData]="widgets"
-    cdkDropListOrientation="horizontal"
-    (cdkDropListDropped)="drop($event)"
+    cdkDropListGroup
+    class="grid -m-4"
+    [ngStyle]="{
+      'grid-template-columns': colsNumberString,
+      'grid-template-rows': '200px'
+    }"
   >
     <!-- [columns]="colsNumber"
     [rowHeight]="200"
@@ -28,7 +29,7 @@
     [reorderable]="canUpdate"
     (reorder)="onReorder($event)"
     (resize)="onResize($event)" -->
-    <!-- <div
+    <div
       cdkDropList
       class="h-full"
       [ngStyle]="{
@@ -36,10 +37,9 @@
       }"
       (cdkDropListDropped)="drop($event)"
       [id]="'0'"
-      [cdkDropListConnectedTo]="'1'"
+      [cdkDropListConnectedTo]="colsNumberConnections"
       [cdkDropListData]="widgets"
-      cdkDropListOrientation="horizontal"
-    > -->
+    >
       <div
         cdkDrag
         *ngFor="let widget of widgets; let i = index"
@@ -94,8 +94,8 @@
         >
         </safe-button>
       </div>
-    <!-- </div> -->
-    <!-- <div
+    </div>
+    <div
       cdkDropList
       class="h-full"
       [ngStyle]="{
@@ -104,10 +104,10 @@
       *ngFor="let c of colsNumberTable"
       (cdkDropListDropped)="drop($event)"
       [id]="c"
-      [cdkDropListConnectedTo]="colsNumberTable"
-      [cdkDropListData]="widgets"
-    >Oui</div>
-  </div> -->
+      [cdkDropListConnectedTo]="colsNumberConnections"
+      [cdkDropListData]="sampleList"
+    ></div>
+  </div>
 </div>
 <!-- LOADING INDICATOR -->
 <div *ngIf="loading" class="mt-6">

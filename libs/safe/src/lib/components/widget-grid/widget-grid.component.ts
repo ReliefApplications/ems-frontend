@@ -51,6 +51,7 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
   public colsNumberTable = new Array(this.colsNumber - 1);
+  public colsNumberConnections = new Array(this.colsNumber);
   public sampleList: any[] = [];
 
   // === EVENT EMITTER ===
@@ -110,6 +111,9 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
     for (let i = 0; i < this.colsNumber - 1; i++) {
       this.colsNumberTable[i] = String(i + 1);
     }
+    for (let i = 0; i < this.colsNumber; i++) {
+      this.colsNumberConnections[i] = String(i);
+    }
   }
 
   ngOnChanges() {
@@ -117,6 +121,9 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
     this.colsNumberTable = new Array(this.colsNumber - 1);
     for (let i = 0; i < this.colsNumber - 1; i++) {
       this.colsNumberTable[i] = String(i + 1);
+    }
+    for (let i = 0; i < this.colsNumber; i++) {
+      this.colsNumberConnections[i] = String(i);
     }
   }
 
@@ -235,6 +242,7 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
    * @param event cdk drag drop
    */
   drop(event: CdkDragDrop<string[]>) {
+    console.log(event);
     // moveItemInArray(this.widgets, event.previousIndex, event.currentIndex);
     if (event.previousContainer === event.container) {
       console.log('same container');
@@ -245,6 +253,7 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
       );
     } else {
       console.log(event.container);
+      console.log(this.sampleList);
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
