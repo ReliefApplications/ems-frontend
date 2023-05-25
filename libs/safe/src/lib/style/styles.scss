@@ -206,7 +206,7 @@ $safe-theme: mat.define-light-theme(
     &-default {
       $variant-color: #f1f1f1;
       background-color: $variant-color;
-      color: darken($variant-color, 30%);
+      color: darken($variant-color, 40%);
     }
 
     &-primary {
@@ -220,13 +220,17 @@ $safe-theme: mat.define-light-theme(
     }
 
     &-success {
-      background-color: rgba(149, 221, 101, 0.2);
-      color: rgb(149, 221, 101);
+      @apply text-green-700 bg-green-50;
+      safe-icon {
+        @apply text-green-400;
+      }
     }
 
     &-warning {
-      background-color: rgba(244, 174, 82, 0.2);
-      color: rgb(244, 174, 82);
+      @apply text-yellow-700 bg-yellow-50;
+      safe-icon {
+        @apply text-yellow-400;
+      }
     }
   }
 }

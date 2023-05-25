@@ -5,7 +5,7 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { AlertVariant } from './alert-variant.enum';
+import { AlertVariant } from './types/alert-variant';
 
 /** Simple alert message component */
 @Component({
@@ -14,8 +14,9 @@ import { AlertVariant } from './alert-variant.enum';
   styleUrls: ['./alert.component.scss'],
 })
 export class SafeAlertComponent implements OnChanges {
-  @Input() variant: AlertVariant | string = AlertVariant.DEFAULT;
+  @Input() variant: AlertVariant = 'default';
   @Input() closable = false;
+  @Input() border = false;
 
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter<Event>();

@@ -17,8 +17,19 @@ $spacing-right: 0.8em;
   animation: close-sequence 300ms ease-in-out forwards;
 }
 
+.close-button {
+  ::ng-deep button:not(:hover) {
+    box-shadow: none;
+  }
+}
+
 @keyframes close-sequence {
   100% {
     opacity: 0;
   }
+}
+
+// Optional left border
+.left-border {
+  @apply border-l-4;
 }
