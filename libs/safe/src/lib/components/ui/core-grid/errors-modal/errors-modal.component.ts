@@ -1,12 +1,9 @@
 import { Component, Inject } from '@angular/core';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
 import { CommonModule } from '@angular/common';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../../modal/modal.module';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+import { DialogModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 import { TableModule } from '@oort-front/ui';
 
@@ -26,7 +23,7 @@ interface DialogData {
     CommonModule,
     MatButtonModule,
     TranslateModule,
-    SafeModalModule,
+    DialogModule,
     ButtonModule,
     TableModule,
   ],
@@ -44,7 +41,7 @@ export class SafeErrorsModalComponent {
    * @param data The data for the dialog
    */
   constructor(
-    public dialogRef: MatDialogRef<SafeErrorsModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    public dialogRef: DialogRef<SafeErrorsModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {}
 }

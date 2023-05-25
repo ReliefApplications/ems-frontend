@@ -26,7 +26,7 @@ import {
   SafeDownloadService,
   Record,
 } from '@oort-front/safe';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
@@ -100,7 +100,7 @@ export class FormRecordsComponent
     private route: ActivatedRoute,
     private downloadService: SafeDownloadService,
     private layoutService: SafeLayoutService,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private breadcrumbService: SafeBreadcrumbService,
@@ -249,11 +249,13 @@ export class FormRecordsComponent
         confirmText: this.translate.instant('components.confirmModal.delete'),
         confirmColor: 'warn',
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.deleteRecord(element.id);
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.deleteRecord(element.id);
+          }
+        });
     } else {
       this.deleteRecord(element.id);
     }
@@ -322,7 +324,7 @@ export class FormRecordsComponent
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmColor: 'primary',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({

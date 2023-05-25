@@ -7,10 +7,7 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Apollo } from 'apollo-angular';
 import {
   GET_RESOURCE,
@@ -38,8 +35,10 @@ import { SafeValueSelectorTabModule } from './value-selector-tab/value-selector.
 import { SafeDisplayTabModule } from './display-tab/display.module';
 import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
 import { SafePreviewTabModule } from './preview-tab/preview.module';
-import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { TooltipModule, ButtonModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
+// @TODO: Remove SafeIconModule import after ui-icon is being used in the app
+import { SafeIconModule } from '../../../ui/icon/icon.module';
 
 /**
  * Card modal component.
@@ -61,8 +60,9 @@ import { TooltipModule, ButtonModule } from '@oort-front/ui';
     SafeDisplayTabModule,
     SafeTextEditorTabModule,
     SafePreviewTabModule,
-    SafeModalModule,
+    DialogModule,
     ButtonModule,
+    SafeIconModule,
   ],
   selector: 'safe-card-modal',
   templateUrl: './card-modal.component.html',
@@ -102,8 +102,8 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    * @param aggregationService Aggregation  service
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<SafeCardModalComponent>,
+    @Inject(DIALOG_DATA) public data: any,
+    public dialogRef: DialogRef<SafeCardModalComponent>,
     public fb: UntypedFormBuilder,
     private cdRef: ChangeDetectorRef,
     private apollo: Apollo,

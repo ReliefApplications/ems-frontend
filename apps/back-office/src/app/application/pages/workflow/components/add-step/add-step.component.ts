@@ -5,7 +5,6 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   ContentType,
   CONTENT_TYPES,
@@ -24,6 +23,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../../utils/update-queries';
+import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 
 /** Default items per query for pagination */
@@ -74,7 +74,7 @@ export class AddStepComponent
   constructor(
     private route: ActivatedRoute,
     private formBuilder: UntypedFormBuilder,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private apollo: Apollo,
@@ -191,7 +191,7 @@ export class AddStepComponent
       '../../../../../components/add-form-modal/add-form-modal.component'
     );
     const dialogRef = this.dialog.open(AddFormModalComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const variablesData = { name: value.name };
         Object.assign(

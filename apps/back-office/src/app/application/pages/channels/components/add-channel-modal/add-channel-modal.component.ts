@@ -4,16 +4,15 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
 import { ChannelsRoutingModule } from '../../channels-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { SafeModalModule } from '@oort-front/safe';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { TranslateModule } from '@ngx-translate/core';
+import { DialogModule } from '@oort-front/ui';
 import {
   SpinnerModule,
   DividerModule,
@@ -41,8 +40,7 @@ import {
     MatSelectModule,
     DividerModule,
     MatButtonModule,
-    TranslateModule,
-    SafeModalModule,
+    DialogModule,
     ButtonModule,
     TableModule,
   ],
@@ -62,7 +60,7 @@ export class AddChannelModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<AddChannelModalComponent>
+    public dialogRef: DialogRef<AddChannelModalComponent>
   ) {}
 
   ngOnInit(): void {

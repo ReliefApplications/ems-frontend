@@ -8,12 +8,7 @@ import {
   FormsModule as AngularFormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import {
-  SafeDateModule,
-  SafeModalModule,
-  SafeSkeletonTableModule,
-} from '@oort-front/safe';
+import { SafeDateModule, SafeSkeletonTableModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
@@ -27,6 +22,7 @@ import {
   IconModule,
   TableModule,
 } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
 
 /**
  * List of reference data page module
@@ -41,14 +37,13 @@ import {
     MatFormFieldModule,
     AngularFormsModule,
     ReactiveFormsModule,
-    MatDialogModule,
     MatIconModule,
     MatButtonModule,
     MatPaginatorModule,
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
-    SafeModalModule,
+    DialogModule,
     AbilityModule,
     ButtonModule,
     FormWrapperModule,

@@ -1,6 +1,8 @@
-<safe-modal>
-  <h1 mat-dialog-title>Email Preview</h1>
-  <div mat-dialog-content>
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h1>Email Preview</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form class="flex flex-col" [formGroup]="form" *ngIf="form">
       <div uiFormFieldDirective>
         <label>Subject</label>
@@ -27,18 +29,18 @@
       ></kendo-fileselect>
       <editor [init]="editor" formControlName="html"></editor>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <ui-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.dismiss' | translate }}
     </ui-button>
     <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="form.value"
+      [uiDialogClose]="form.value"
       cdkFocusInitial
     >
       {{ 'common.send' | translate }}
     </ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

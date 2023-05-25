@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Layout,
   SafeGridLayoutService,
   SafeConfirmService,
   Resource,
+  SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -17,6 +17,8 @@ import {
   GetResourceByIdQueryResponse,
   GET_RESOURCE_LAYOUTS,
 } from './graphql/queries';
+import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
 
 /**
  * Layouts tab of resource page
@@ -26,7 +28,10 @@ import {
   templateUrl: './layouts-tab.component.html',
   styleUrls: ['./layouts-tab.component.scss'],
 })
-export class LayoutsTabComponent implements OnInit {
+export class LayoutsTabComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public resource!: Resource;
   public layouts: Layout[] = [];
   public loading = true;
@@ -59,11 +64,13 @@ export class LayoutsTabComponent implements OnInit {
    */
   constructor(
     private apollo: Apollo,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private gridLayoutService: SafeGridLayoutService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     const state = history.state;
@@ -153,7 +160,7 @@ export class LayoutsTabComponent implements OnInit {
         queryName: this.resource.queryName,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.gridLayoutService
           .addLayout(value, this.resource.id)
@@ -180,7 +187,7 @@ export class LayoutsTabComponent implements OnInit {
         queryName: this.resource.queryName,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.gridLayoutService
           .editLayout(layout, value, this.resource.id)
@@ -217,7 +224,7 @@ export class LayoutsTabComponent implements OnInit {
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.gridLayoutService
           .deleteLayout(layout, this.resource.id)

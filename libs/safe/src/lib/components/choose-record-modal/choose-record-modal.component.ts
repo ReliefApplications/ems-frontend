@@ -4,10 +4,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import { Apollo } from 'apollo-angular';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
@@ -17,7 +14,6 @@ import { QueryBuilderService } from '../../services/query-builder/query-builder.
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SpinnerModule } from '@oort-front/ui';
@@ -26,7 +22,7 @@ import { SafeApplicationDropdownModule } from '../application-dropdown/applicati
 import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../ui/modal/modal.module';
+import { DialogModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 
 /**
@@ -60,7 +56,6 @@ interface IRecord {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatDialogModule,
     MatSelectModule,
     MatButtonModule,
     SpinnerModule,
@@ -69,7 +64,7 @@ interface IRecord {
     SafeRecordDropdownModule,
     SafeCoreGridModule,
     TranslateModule,
-    SafeModalModule,
+    DialogModule,
     ButtonModule,
   ],
   selector: 'safe-choose-record-modal',
@@ -121,8 +116,8 @@ export class SafeChooseRecordModalComponent
     private queryBuilder: QueryBuilderService,
     private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
-    public dialogRef: MatDialogRef<SafeChooseRecordModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    public dialogRef: DialogRef<SafeChooseRecordModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {
     super();
   }

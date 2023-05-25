@@ -6,8 +6,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { SafeModalModule } from '../ui/modal/modal.module';
-import { ButtonModule, ChipModule, FormWrapperModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  ChipModule,
+  DialogModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * Preview Email Component Module.
@@ -23,7 +27,7 @@ import { ButtonModule, ChipModule, FormWrapperModule } from '@oort-front/ui';
     FormWrapperModule,
     UploadsModule,
     EditorModule,
-    SafeModalModule,
+    DialogModule,
     ButtonModule,
     ChipModule,
   ],

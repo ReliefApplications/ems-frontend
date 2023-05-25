@@ -7,11 +7,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialog as MatDialog,
-} from '@angular/material/legacy-dialog';
+import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
 import * as Survey from 'survey-angular';
@@ -31,7 +27,6 @@ import isEqual from 'lodash/isEqual';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { CommonModule } from '@angular/common';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { SnackbarService, TabsModule } from '@oort-front/ui';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -40,8 +35,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
-import { SafeModalModule } from '../ui/modal/modal.module';
 import { SpinnerModule, ButtonModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -60,7 +55,7 @@ interface DialogData {
   standalone: true,
   imports: [
     CommonModule,
-    MatDialogModule,
+    DialogModule,
     TabsModule,
     MatGridListModule,
     MatIconModule,
@@ -69,7 +64,6 @@ interface DialogData {
     SafeFormActionsModule,
     TranslateModule,
     SafeDateModule,
-    SafeModalModule,
     ButtonModule,
     SpinnerModule,
   ],
@@ -123,10 +117,10 @@ export class SafeRecordModalComponent
    * @param translate This is the service that allows us to translate the text in the modal.
    */
   constructor(
-    public dialogRef: MatDialogRef<SafeRecordModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<SafeRecordModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private authService: SafeAuthService,
     private snackBar: SnackbarService,
     private formBuilderService: SafeFormBuilderService,
@@ -270,7 +264,7 @@ export class SafeRecordModalComponent
    * Handles the edition of the record and closes the dialog
    */
   public onEdit(): void {
-    this.dialogRef.close(true);
+    this.dialogRef.close(true as any);
   }
 
   /**
@@ -305,7 +299,7 @@ export class SafeRecordModalComponent
    */
   private confirmRevertDialog(record: any, version: any) {
     const dialogRef = this.formHelpersService.createRevertDialog(version);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({

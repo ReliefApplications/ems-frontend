@@ -4,7 +4,12 @@ import { RoleAutoAssignmentComponent } from './role-auto-assignment.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
-import { TooltipModule, ButtonModule, TableModule } from '@oort-front/ui';
+import {
+  TooltipModule,
+  ButtonModule,
+  TableModule,
+  DialogModule,
+} from '@oort-front/ui';
 import { SafeEmptyModule } from '../../ui/empty/empty.module';
 
 /**
@@ -20,6 +25,7 @@ import { SafeEmptyModule } from '../../ui/empty/empty.module';
     SafeSkeletonTableModule,
     TooltipModule,
     ButtonModule,
+    DialogModule,
     SafeEmptyModule,
     TableModule,
   ],

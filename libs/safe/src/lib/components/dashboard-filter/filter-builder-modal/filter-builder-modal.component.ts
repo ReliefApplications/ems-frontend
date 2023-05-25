@@ -7,16 +7,13 @@ import {
 } from '@angular/core';
 import * as SurveyCreator from 'survey-creator';
 import * as Survey from 'survey-angular';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeFormService } from '../../../services/form/form.service';
 import { CommonModule } from '@angular/common';
 import { SafeFormBuilderModule } from '../../form-builder/form-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from '@oort-front/ui';
-import { SafeModalModule } from '../../ui/modal/modal.module';
+import { DialogModule } from '@oort-front/ui';
 
 /**
  * Data passed to initialize the filter builder
@@ -99,7 +96,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
     SafeFormBuilderModule,
     TranslateModule,
     TooltipModule,
-    SafeModalModule,
+    DialogModule,
   ],
 })
 export class FilterBuilderModalComponent
@@ -116,8 +113,8 @@ export class FilterBuilderModalComponent
    */
   constructor(
     private formService: SafeFormService,
-    private dialogRef: MatDialogRef<FilterBuilderModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    private dialogRef: DialogRef<FilterBuilderModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {}
 
   ngOnInit(): void {
@@ -181,7 +178,7 @@ export class FilterBuilderModalComponent
    * Custom SurveyJS method, save the survey when edited.
    */
   saveMySurvey = () => {
-    this.dialogRef.close(this.surveyCreator);
+    this.dialogRef.close(this.surveyCreator as any);
   };
 
   ngOnDestroy(): void {

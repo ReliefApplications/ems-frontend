@@ -4,7 +4,6 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
@@ -13,9 +12,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { TabsModule } from '@oort-front/ui';
-import { SafeModalModule } from '../ui/modal/modal.module';
-import { ButtonModule } from '@oort-front/ui';
+import {
+  TabsModule,
+  DialogModule,
+  ButtonModule,
+  TooltipModule,
+} from '@oort-front/ui';
+import { DIALOG_DATA } from '@angular/cdk/dialog';
+// @TODO: Remove SafeIconModule import after ui-icon is being used in the app
+import { SafeIconModule } from '../ui/icon/icon.module';
 
 /** Preferences Dialog Data */
 interface PreferencesDialogData {
@@ -34,8 +39,10 @@ interface PreferencesDialogData {
     MatFormFieldModule,
     MatSelectModule,
     TabsModule,
-    SafeModalModule,
+    DialogModule,
+    SafeIconModule,
     ButtonModule,
+    TooltipModule,
   ],
   selector: 'safe-preferences-modal',
   templateUrl: './preferences-modal.component.html',
@@ -60,7 +67,7 @@ export class SafePreferencesModalComponent implements OnInit {
    * @param dateTranslate Shared service for Date Translation
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: PreferencesDialogData,
+    @Inject(DIALOG_DATA) public data: PreferencesDialogData,
     private formBuilder: UntypedFormBuilder,
     private translate: TranslateService,
     private dateTranslate: SafeDateTranslateService

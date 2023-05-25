@@ -4,10 +4,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { FIELD_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
@@ -15,11 +12,16 @@ import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
 import { CommonModule } from '@angular/common';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SafeModalModule } from '../ui/modal/modal.module';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
-
+import {
+  DialogModule,
+  ButtonModule,
+  TooltipModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
+// @TODO: Remove SafeIconModule import after ui-icon is being used in the app
+import { SafeIconModule } from '../ui/icon/icon.module';
 /**
  * Interface describing the structure of the data displayed in the dialog
  */
@@ -40,9 +42,11 @@ interface DialogData {
     MatFormFieldModule,
     FormWrapperModule,
     MatSelectModule,
-    SafeModalModule,
+    DialogModule,
     EditorModule,
     ButtonModule,
+    SafeIconModule,
+    TooltipModule,
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
@@ -71,10 +75,10 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
    * @param translate Translate service
    */
   constructor(
-    public dialogRef: MatDialogRef<SafeEditCalculatedFieldModalComponent>,
+    public dialogRef: DialogRef<SafeEditCalculatedFieldModalComponent>,
     public formBuilder: UntypedFormBuilder,
     private editorService: SafeEditorService,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(DIALOG_DATA) public data: DialogData,
     @Inject('environment') environment: any,
     private translate: TranslateService
   ) {

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -25,6 +24,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { Dialog } from '@angular/cdk/dialog';
 import { TableSort } from '@oort-front/ui';
 import { ApolloQueryResult } from '@apollo/client';
 import { SnackbarService } from '@oort-front/ui';
@@ -83,7 +83,7 @@ export class ReferenceDatasComponent
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
@@ -206,7 +206,7 @@ export class ReferenceDatasComponent
       './add-reference-data/add-reference-data.component'
     );
     const dialogRef = this.dialog.open(AddReferenceDataComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<AddReferenceDataMutationResponse>({
@@ -266,7 +266,7 @@ export class ReferenceDatasComponent
       confirmText: this.translate.instant('common.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteReferenceDataMutationResponse>({

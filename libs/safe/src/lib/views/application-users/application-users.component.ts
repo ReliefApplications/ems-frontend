@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { Subject, takeUntil } from 'rxjs';
@@ -38,7 +38,7 @@ export class SafeApplicationUsersComponent
    * @param snackBar Shared snackbar service
    */
   constructor(
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private applicationService: SafeApplicationService,
     private apollo: Apollo,
     private translate: TranslateService,
@@ -81,7 +81,7 @@ export class SafeApplicationUsersComponent
         }),
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<AddUsersMutationResponse>({

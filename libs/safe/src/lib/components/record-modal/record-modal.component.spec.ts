@@ -1,10 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { SafeRecordModalComponent } from './record-modal.component';
 import {
   DateTimeProvider,
@@ -33,8 +33,8 @@ describe('SafeRecordModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {} },
+        { provide: DialogRef, useValue: {} },
+        { provide: DIALOG_DATA, useValue: {} },
         { provide: 'environment', useValue: environment },
         OAuthService,
         UrlHelperService,
@@ -44,7 +44,7 @@ describe('SafeRecordModalComponent', () => {
       ],
       declarations: [SafeRecordModalComponent],
       imports: [
-        MatDialogModule,
+        DialogCdkModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {
