@@ -1,6 +1,7 @@
 import {
   AfterContentInit,
   AfterViewInit,
+  ContentChild,
   ContentChildren,
   Directive,
   ElementRef,
@@ -12,6 +13,7 @@ import {
 import { SuffixDirective } from './suffix.directive';
 import { PrefixDirective } from './prefix.directive';
 import { Subject, startWith, takeUntil } from 'rxjs';
+import { FormControlName, Validators } from '@angular/forms';
 
 /**
  * UI Form Wrapper Directive
@@ -32,6 +34,9 @@ export class FormWrapperDirective
   private allSuffixDirectives: QueryList<SuffixDirective> = new QueryList();
   @ContentChildren(PrefixDirective)
   private allPrefixDirectives: QueryList<PrefixDirective> = new QueryList();
+
+  @ContentChild(FormControlName)
+  public childControl!: FormControlName;
 
   private currentInputElement!: HTMLInputElement;
   private currentLabelElement!: HTMLLabelElement;
@@ -199,6 +204,12 @@ export class FormWrapperDirective
     }
 
     if (this.currentLabelElement) {
+      if (this.childControl?.control?.hasValidator(Validators.required)) {
+        this.renderer.appendChild(
+          this.currentLabelElement,
+          this.renderer.createText(' *')
+        );
+      }
       // Add related classes to label
       for (const cl of this.labelClasses) {
         this.renderer.addClass(this.currentLabelElement, cl);
