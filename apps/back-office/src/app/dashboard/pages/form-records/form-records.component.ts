@@ -74,6 +74,11 @@ export class FormRecordsComponent
     endCursor: '',
   };
 
+  /** @returns True if the layouts tab is empty */
+  get empty(): boolean {
+    return !this.loading && this.dataSource.length === 0;
+  }
+
   @ViewChild('xlsxFile') xlsxFile: any;
   public showUpload = false;
 
