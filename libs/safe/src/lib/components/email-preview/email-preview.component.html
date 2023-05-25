@@ -5,6 +5,9 @@
       <mat-form-field>
         <mat-label>Subject</mat-label>
         <input matInput formControlName="subject" type="text" />
+        <mat-error *ngIf="this.form.controls.subject.hasError('required')">
+          Subject is <strong>required</strong>
+        </mat-error>
       </mat-form-field>
       <mat-form-field>
         <mat-label>From</mat-label>
@@ -34,6 +37,7 @@
       category="secondary"
       variant="primary"
       [mat-dialog-close]="form.value"
+      [disabled]="!form.valid"
       cdkFocusInitial
     >
       {{ 'common.send' | translate }}
