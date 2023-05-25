@@ -156,7 +156,6 @@
     #nav="uiSidenavDirective"
     [mode]="largeDevice ? 'side' : 'over'"
     [opened]="largeDevice"
-    ngProjectAs="sidenavContent"
   >
     <ng-container *ngIf="leftSidenav">
       <ng-container
@@ -164,6 +163,15 @@
         [ngTemplateOutletContext]="{ $implicit: nav }"
       ></ng-container>
     </ng-container>
+  </div>
+  <div
+    uiSidenavDirective
+    class="h-full"
+    position="end"
+    [opened]="showSidenav"
+    #rightNav="uiSidenavDirective"
+  >
+    <ng-template #rightSidenav></ng-template>
   </div>
 
   <ng-container ngProjectAs="content">
@@ -173,15 +181,4 @@
     ></ui-breadcrumbs>
     <router-outlet></router-outlet>
   </ng-container>
-
-  <div
-    uiSidenavDirective
-    mode="side"
-    #nav="uiSidenavDirective"
-    position="end"
-    [(opened)]="showSidenav"
-    ngProjectAs="sidenavContent"
-  >
-    <ng-template #rightSidenav></ng-template>
-  </div>
 </ui-sidenav-container>

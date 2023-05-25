@@ -10,7 +10,7 @@ import {
   SimpleChanges,
   OnChanges,
 } from '@angular/core';
-import { SidenavTypes } from './types/sidenavs';
+import { SidenavPositionTypes, SidenavTypes } from './types/sidenavs';
 
 /**
  * UI Sidenav directive
@@ -22,6 +22,7 @@ import { SidenavTypes } from './types/sidenavs';
 export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
   @Input() opened = true;
   @Input() mode: SidenavTypes = 'side';
+  @Input() position: SidenavPositionTypes = 'start';
   @Output() openedChange = new EventEmitter<boolean>();
 
   private clickOutsideListener!: any;
@@ -32,7 +33,7 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
    * @param el host element
    * @param renderer Renderer2
    */
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  constructor(public el: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit(): void {
     this.clickOutsideListener = this.renderer.listen(
@@ -53,7 +54,7 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(change: SimpleChanges) {
-    this.opened = change['opened'].currentValue;
+    this.opened = change['opened']?.currentValue ?? false;
     this.openedChange.emit(this.opened);
   }
 
