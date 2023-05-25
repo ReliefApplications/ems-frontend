@@ -62,16 +62,34 @@
             'span ' +
             (!canUpdate && widgets.length === 1 ? 4 : widget.defaultRows)
         }"
+        class="border-0 border-gray-800 rounded-md"
       >
-        <safe-floating-options
-          *ngIf="canUpdate"
-          class="widget-options"
-          [widget]="widget"
-          (edit)="onEditWidget($event)"
-          (delete)="onDeleteWidget($event)"
-          (expand)="onExpandWidget($event)"
-        >
-        </safe-floating-options>
+        <div class="flex items-center justify-between">
+          <safe-floating-options
+            *ngIf="canUpdate"
+            class="widget-options"
+            [widget]="widget"
+            (edit)="onEditWidget($event)"
+            (delete)="onDeleteWidget($event)"
+            (expand)="onExpandWidget($event)"
+          >
+          </safe-floating-options>
+          <safe-icon
+            *ngIf="canUpdate"
+            icon="drag_indicator"
+            class="widget-handle"
+            cdkDragHandle
+          >
+          </safe-icon>
+          <safe-button
+            *ngIf="!canUpdate"
+            [isIcon]="true"
+            icon="open_in_full"
+            class="widget-expand"
+            (click)="onExpandWidget(widget)"
+          >
+          </safe-button>
+        </div>
         <safe-widget
           [widget]="widget"
           (goToNextStep)="goToNextStep.emit($event)"
@@ -79,20 +97,6 @@
           (edit)="onEditWidget($event)"
           [canUpdate]="canUpdate"
         ></safe-widget>
-        <safe-icon
-          *ngIf="canUpdate"
-          icon="drag_indicator"
-          class="widget-handle"
-        >
-        </safe-icon>
-        <safe-button
-          *ngIf="!canUpdate"
-          [isIcon]="true"
-          icon="open_in_full"
-          class="widget-expand"
-          (click)="onExpandWidget(widget)"
-        >
-        </safe-button>
       </div>
     </div>
     <div
@@ -101,7 +105,7 @@
       [ngStyle]="{
         'grid-column': 'span ' + colsNumber / 4
       }"
-      *ngFor="let c of colsNumberTable, let i = index"
+      *ngFor="let c of colsNumberTable; let i = index"
       (cdkDropListDropped)="drop($event)"
       [id]="c"
       [cdkDropListConnectedTo]="colsNumberConnections"
@@ -130,15 +134,32 @@
             (!canUpdate && widgets.length === 1 ? 4 : widget.defaultRows)
         }"
       >
-        <safe-floating-options
-          *ngIf="canUpdate"
-          class="widget-options"
-          [widget]="widget"
-          (edit)="onEditWidget($event)"
-          (delete)="onDeleteWidget($event)"
-          (expand)="onExpandWidget($event)"
-        >
-        </safe-floating-options>
+        <div class="flex justify-between items-center">
+          <safe-floating-options
+            *ngIf="canUpdate"
+            class="widget-options"
+            [widget]="widget"
+            (edit)="onEditWidget($event)"
+            (delete)="onDeleteWidget($event)"
+            (expand)="onExpandWidget($event)"
+          >
+          </safe-floating-options>
+          <safe-icon
+            *ngIf="canUpdate"
+            icon="drag_indicator"
+            class="widget-handle"
+            cdkDragHandle
+          >
+          </safe-icon>
+          <safe-button
+            *ngIf="!canUpdate"
+            [isIcon]="true"
+            icon="open_in_full"
+            class="widget-expand"
+            (click)="onExpandWidget(widget)"
+          >
+          </safe-button>
+        </div>
         <safe-widget
           [widget]="widget"
           (goToNextStep)="goToNextStep.emit($event)"
@@ -146,20 +167,6 @@
           (edit)="onEditWidget($event)"
           [canUpdate]="canUpdate"
         ></safe-widget>
-        <safe-icon
-          *ngIf="canUpdate"
-          icon="drag_indicator"
-          class="widget-handle"
-        >
-        </safe-icon>
-        <safe-button
-          *ngIf="!canUpdate"
-          [isIcon]="true"
-          icon="open_in_full"
-          class="widget-expand"
-          (click)="onExpandWidget(widget)"
-        >
-        </safe-button>
       </div>
     </div>
   </div>
