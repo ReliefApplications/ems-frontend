@@ -11,17 +11,16 @@
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="positionForm" class="flex flex-col">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.title' | translate }}</mat-label>
+      <div uiFormFieldDirective>
+        <label>{{ 'common.title' | translate }}</label>
         <input
-          matInput
           formControlName="title"
           type="text"
           [placeholder]="
             data.add ? ('common.placeholder.title' | translate) : data.title
           "
         />
-      </mat-form-field>
+      </div>
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">

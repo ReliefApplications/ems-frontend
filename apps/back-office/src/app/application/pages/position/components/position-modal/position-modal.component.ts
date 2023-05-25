@@ -7,14 +7,18 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule, MenuModule, SpinnerModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import {
+  ButtonModule,
+  MenuModule,
+  SpinnerModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * Add new application position component (modal)
@@ -26,7 +30,7 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     MatSelectModule,
     SpinnerModule,
     MatIconModule,

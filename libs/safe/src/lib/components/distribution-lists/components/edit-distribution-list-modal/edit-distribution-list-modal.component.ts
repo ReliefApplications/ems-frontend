@@ -23,7 +23,12 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { TranslateModule } from '@ngx-translate/core';
 // @TODO: Remove SafeIconModule import after ui-icon is being used in the app
 import { SafeIconModule } from '../../../ui/icon/icon.module';
-import { ButtonModule, ChipModule, DialogModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  ChipModule,
+  DialogModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /** Model for the data input */
 interface DialogData {
@@ -65,6 +70,7 @@ export function codesFactory(): () => any {
     ButtonModule,
     SafeIconModule,
     ChipModule,
+    FormWrapperModule,
   ],
   selector: 'safe-edit-distribution-list-modal',
   templateUrl: './edit-distribution-list-modal.component.html',

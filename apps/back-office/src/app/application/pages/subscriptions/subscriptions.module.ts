@@ -7,7 +7,12 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
-import { SafeIconModule, SafeGraphQLSelectModule } from '@oort-front/safe';
+import {
+  SafeIconModule,
+  SafeGraphQLSelectModule,
+  SafeSkeletonTableModule,
+  SafeEmptyModule,
+} from '@oort-front/safe';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
@@ -29,6 +34,8 @@ import {
     CommonModule,
     SubscriptionsRoutingModule,
     FormsModule,
+    SafeSkeletonTableModule,
+    SafeEmptyModule,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,

@@ -13,11 +13,10 @@ import { CommonModule } from '@angular/common';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { flattenDeep } from 'lodash';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { DialogModule } from '@oort-front/ui';
+import { DialogModule, FormWrapperModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 
 /**
@@ -38,7 +37,7 @@ interface DialogData {
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     SafeQueryBuilderModule,
     SafeCoreGridModule,
     DialogModule,

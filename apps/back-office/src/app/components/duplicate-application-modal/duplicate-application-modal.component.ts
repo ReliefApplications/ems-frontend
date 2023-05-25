@@ -14,12 +14,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
-import { ButtonModule, SnackbarService } from '@oort-front/ui';
+import {
+  ButtonModule,
+  SnackbarService,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * Duplicate application component (modal)
@@ -30,7 +33,7 @@ import { ButtonModule, SnackbarService } from '@oort-front/ui';
     CommonModule,
     FormsModule,
     MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     ReactiveFormsModule,
     MatButtonModule,
     TranslateModule,

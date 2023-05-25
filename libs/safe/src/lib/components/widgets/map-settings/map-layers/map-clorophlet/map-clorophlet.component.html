@@ -4,15 +4,14 @@
       [formGroup]="form"
       class="flex flex-col gap-3 [&:not(td)]:flex [&:not(td)]:flex-col"
     >
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.name' | translate }}</mat-label>
+      <div uiFormFieldDirective>
+        <label>{{ 'common.name' | translate }}</label>
         <input
           type="text"
           [placeholder]="'common.placeholder.name' | translate"
-          matInput
           formControlName="name"
         />
-      </mat-form-field>
+      </div>
       <ui-button category="tertiary" (click)="fileInput.click()">{{
         form.value.geoJSONname
           ? form.value.geoJSONname
@@ -73,15 +72,15 @@
       <div class="overflow-x-hidden shadow-2lg">
         <!-- Table scroll container -->
         <div class="overflow-x-auto">
-          <table cdk-table  uiTableWrapper [dataSource]="divisions.value">
+          <table cdk-table uiTableWrapper [dataSource]="divisions.value">
             <ng-container cdkColumnDef="label">
-              <th uiCellHeader *cdkHeaderCellDef  scope="col">
+              <th uiCellHeader *cdkHeaderCellDef scope="col">
                 {{ 'common.label' | translate }}
               </th>
               <td uiCell *cdkCellDef="let element">{{ element.label }}</td>
             </ng-container>
             <ng-container cdkColumnDef="color">
-              <th uiCellHeader *cdkHeaderCellDef  scope="col">
+              <th uiCellHeader *cdkHeaderCellDef scope="col">
                 {{ 'common.preview' | translate }}
               </th>
               <td uiCell *cdkCellDef="let element">
@@ -92,7 +91,7 @@
               </td>
             </ng-container>
             <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-              <th uiCellHeader *cdkHeaderCellDef  scope="col" class="w-16"></th>
+              <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
               <td uiCell *cdkCellDef="let element; let i = index">
                 <div>
                   <ui-button
@@ -111,7 +110,7 @@
                 </div>
               </td>
             </ng-container>
-  
+
             <tr cdk-header-row *cdkHeaderRowDef="tableColumns"></tr>
             <tr *cdkRowDef="let row; columns: tableColumns" cdk-row></tr>
           </table>

@@ -12,6 +12,7 @@ import {
   ButtonModule,
   TableModule,
 } from '@oort-front/ui';
+import { SafeEmptyModule, SafeSkeletonTableModule } from '@oort-front/safe';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
@@ -38,6 +39,8 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     ButtonModule,
     TableModule,
+    SafeEmptyModule,
+    SafeSkeletonTableModule,
   ],
 })
 export class ChannelsModule {}

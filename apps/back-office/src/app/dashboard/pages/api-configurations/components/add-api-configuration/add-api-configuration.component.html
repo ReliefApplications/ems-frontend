@@ -4,10 +4,9 @@
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="apiForm" class="flex flex-col">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.name' | translate }}</mat-label>
+      <div uiFormFieldDirective>
+        <label>{{ 'common.name' | translate }}</label>
         <input
-          matInput
           formControlName="name"
           type="text"
           [placeholder]="'common.placeholder.name' | translate"
@@ -15,7 +14,7 @@
         <mat-error *ngIf="name?.errors">
           {{ 'components.apiConfiguration.create.errors.name' | translate }}
         </mat-error>
-      </mat-form-field>
+      </div>
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">

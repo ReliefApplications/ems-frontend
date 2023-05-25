@@ -3,25 +3,25 @@
   <!-- User details -->
   <div class="flex flex-col">
     <div class="flex gap-2 flex-wrap">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+      <div uiFormFieldDirective class="flex-1">
+        <label>
           {{ 'models.user.firstName' | translate }}
-        </mat-label>
-        <input matInput formControlName="firstName" type="text" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+        </label>
+        <input formControlName="firstName" type="text" />
+      </div>
+      <div uiFormFieldDirective class="flex-1">
+        <label>
           {{ 'models.user.lastName' | translate }}
-        </mat-label>
-        <input matInput formControlName="lastName" type="text" />
-      </mat-form-field>
+        </label>
+        <input formControlName="lastName" type="text" />
+      </div>
     </div>
-    <mat-form-field appearance="outline">
-      <mat-label>
+    <div uiFormFieldDirective>
+      <label>
         {{ 'models.user.username' | translate }}
-      </mat-label>
-      <input matInput formControlName="username" type="text" />
-    </mat-form-field>
+      </label>
+      <input formControlName="username" type="text" />
+    </div>
   </div>
   <ui-button
     category="secondary"

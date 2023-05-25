@@ -9,10 +9,9 @@ import { SafeAddRoleComponent } from './components/add-role/add-role.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { AbilityModule } from '@casl/angular';
 import { ButtonModule } from '@oort-front/ui';
-import { DialogModule } from '@oort-front/ui';
+import { DialogModule, FormWrapperModule } from '@oort-front/ui';
 
 /**
  * SafeRolesModule manages modules and components for the roles page
@@ -30,8 +29,8 @@ import { DialogModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatButtonModule,
-    MatInputModule,
     DialogModule,
+    FormWrapperModule,
     AbilityModule,
     ButtonModule,
   ],

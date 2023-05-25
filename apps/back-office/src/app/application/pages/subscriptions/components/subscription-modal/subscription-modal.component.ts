@@ -44,6 +44,7 @@ import {
   MenuModule,
   TooltipModule,
   ButtonModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
@@ -76,6 +77,7 @@ const ITEMS_PER_PAGE = 10;
     DialogModule,
     TooltipModule,
     ButtonModule,
+    FormWrapperModule,
   ],
   selector: 'app-subscription-modal',
   templateUrl: './subscription-modal.component.html',

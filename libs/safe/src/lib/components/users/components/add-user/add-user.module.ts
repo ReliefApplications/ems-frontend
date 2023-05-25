@@ -8,8 +8,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule } from '@oort-front/ui';
-import { DialogModule } from '@oort-front/ui';
+import { ButtonModule, DialogModule, FormWrapperModule } from '@oort-front/ui';
 
 /** Module for the add user component */
 @NgModule({
@@ -26,6 +25,7 @@ import { DialogModule } from '@oort-front/ui';
     TranslateModule,
     DialogModule,
     ButtonModule,
+    FormWrapperModule,
   ],
   exports: [SafeAddUserComponent],
 })

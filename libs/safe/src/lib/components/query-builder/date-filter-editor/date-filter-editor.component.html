@@ -4,16 +4,15 @@
   <mat-datepicker-toggle matSuffix [for]="datePicker"> </mat-datepicker-toggle>
   <mat-datepicker #datePicker></mat-datepicker>
 </mat-form-field>
-<mat-form-field appearance="outline" *ngIf="useExpression">
-  <mat-label>{{ 'common.value.one' | translate }}</mat-label>
+<div uiFormFieldDirective  *ngIf="useExpression">
+  <label>{{ 'common.value.one' | translate }}</label>
   <input
-    matInput
     uiTooltip="YYYY/MM/DD"
     [formControl]="control"
     type="text"
     placeholder="YYYY/MM/DD"
   />
-</mat-form-field>
+</div>
 <ui-button
   [isIcon]="true"
   icon="change_circle_outline"

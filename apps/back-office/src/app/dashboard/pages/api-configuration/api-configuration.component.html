@@ -38,12 +38,11 @@
     <div class="flex flex-col last:mb-0">
       <div class="flex gap-x-2 flex-wrap">
         <!-- Name -->
-        <mat-form-field appearance="outline" class="flex-auto">
-          <mat-label>
+        <div uiFormFieldDirective class="flex-auto">
+          <label>
             {{ 'common.name' | translate }}
-          </mat-label>
+          </label>
           <input
-            matInput
             formControlName="name"
             type="text"
             [placeholder]="'common.placeholder.name' | translate"
@@ -51,7 +50,7 @@
           <mat-error *ngIf="name?.errors">
             {{ 'components.apiConfiguration.create.errors.name' | translate }}
           </mat-error>
-        </mat-form-field>
+        </div>
         <!-- Authentication type -->
         <mat-form-field appearance="outline" class="flex-1">
           <mat-label>
@@ -86,33 +85,31 @@
     </div>
     <div class="flex gap-x-2">
       <!-- Endpoint -->
-      <mat-form-field appearance="outline" class="flex-auto">
-        <mat-label>
+      <div uiFormFieldDirective class="flex-auto">
+        <label>
           {{ 'pages.apiConfiguration.baseUrl' | translate }}
-        </mat-label>
+        </label>
         <input
-          matInput
           formControlName="endpoint"
           type="text"
           [placeholder]="
             'pages.apiConfiguration.placeholder.baseUrl' | translate
           "
         />
-      </mat-form-field>
+      </div>
       <!-- Path to ping -->
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+      <div uiFormFieldDirective class="flex-1">
+        <label>
           {{ 'pages.apiConfiguration.pingUrl' | translate }}
-        </mat-label>
+        </label>
         <input
-          matInput
           formControlName="pingUrl"
           type="text"
           [placeholder]="
             'pages.apiConfiguration.placeholder.pingUrl' | translate
           "
         />
-      </mat-form-field>
+      </div>
     </div>
 
     <!-- Authentication settings -->
@@ -126,12 +123,11 @@
       >
         <div formGroupName="settings" class="flex flex-col">
           <!-- Token url -->
-          <mat-form-field appearance="outline">
-            <mat-label>
+          <div uiFormFieldDirective>
+            <label>
               {{ 'pages.apiConfiguration.tokenUrl' | translate }}
-            </mat-label>
+            </label>
             <input
-              matInput
               formControlName="authTargetUrl"
               type="text"
               [placeholder]="
@@ -139,14 +135,13 @@
               "
               onfocus="this.value=''"
             />
-          </mat-form-field>
+          </div>
           <!-- Client id -->
-          <mat-form-field appearance="outline">
-            <mat-label>
+          <div uiFormFieldDirective>
+            <label>
               {{ 'pages.apiConfiguration.clientId' | translate }}
-            </mat-label>
+            </label>
             <input
-              matInput
               formControlName="apiClientID"
               type="text"
               [placeholder]="
@@ -154,14 +149,13 @@
               "
               onfocus="this.value=''"
             />
-          </mat-form-field>
+          </div>
           <!-- Client secret -->
-          <mat-form-field appearance="outline">
-            <mat-label>
+          <div uiFormFieldDirective>
+            <label>
               {{ 'pages.apiConfiguration.secret' | translate }}
-            </mat-label>
+            </label>
             <input
-              matInput
               formControlName="safeSecret"
               type="text"
               [placeholder]="
@@ -169,14 +163,13 @@
               "
               onfocus="this.value=''"
             />
-          </mat-form-field>
+          </div>
           <!-- Token scope -->
-          <mat-form-field appearance="outline">
-            <mat-label>
+          <div uiFormFieldDirective>
+            <label>
               {{ 'pages.apiConfiguration.scope' | translate }}
-            </mat-label>
+            </label>
             <input
-              matInput
               formControlName="scope"
               type="text"
               [placeholder]="
@@ -184,19 +177,18 @@
               "
               onfocus="this.value=''"
             />
-          </mat-form-field>
+          </div>
         </div>
       </ng-container>
       <!-- User to service connection -->
       <ng-container *ngIf="apiForm.value.authType === authType.userToService">
         <div formGroupName="settings" class="flex flex-col">
           <!-- Token -->
-          <mat-form-field appearance="outline">
-            <mat-label>
+          <div uiFormFieldDirective>
+            <label>
               {{ 'pages.apiConfiguration.token' | translate }}
-            </mat-label>
+            </label>
             <input
-              matInput
               formControlName="token"
               type="text"
               [placeholder]="
@@ -204,7 +196,7 @@
               "
               onfocus="this.value=''"
             />
-          </mat-form-field>
+          </div>
         </div>
       </ng-container>
     </ng-container>
@@ -215,19 +207,18 @@
     </h2>
     <div class="flex flex-col">
       <!-- GraphQL endpoint -->
-      <mat-form-field appearance="outline">
-        <mat-label>
+      <div uiFormFieldDirective>
+        <label>
           {{ 'pages.apiConfiguration.graphQL.endpoint' | translate }}
-        </mat-label>
+        </label>
         <input
-          matInput
           formControlName="graphQLEndpoint"
           type="text"
           [placeholder]="
             'pages.apiConfiguration.placeholder.graphQLEndpoint' | translate
           "
         />
-      </mat-form-field>
+      </div>
     </div>
 
     <!-- Save button -->
@@ -245,25 +236,13 @@
 <!-- Template to display status -->
 <ng-template #statusTemplate let-status>
   <div uiChipList>
-    <ui-chip
-      class="!rounded-lg"
-      variant="success"
-      *ngIf="status === 'active'"
-    >
+    <ui-chip class="!rounded-lg" variant="success" *ngIf="status === 'active'">
       {{ 'common.status_active' | translate | titlecase }}
     </ui-chip>
-    <ui-chip
-      class="!rounded-lg"
-      variant="warning"
-      *ngIf="status === 'pending'"
-    >
+    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
       {{ 'common.status_pending' | translate | titlecase }}
     </ui-chip>
-    <ui-chip
-      class="!rounded-lg"
-      variant="danger"
-      *ngIf="status === 'archived'"
-    >
+    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
       {{ 'common.status_archived' | translate | titlecase }}
     </ui-chip>
   </div>

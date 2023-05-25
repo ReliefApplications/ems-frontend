@@ -10,6 +10,7 @@ import {
   TableModule,
   DialogModule,
 } from '@oort-front/ui';
+import { SafeEmptyModule } from '../../ui/empty/empty.module';
 
 /**
  * Component for Auto assignment of role
@@ -25,6 +26,7 @@ import {
     TooltipModule,
     ButtonModule,
     DialogModule,
+    SafeEmptyModule,
     TableModule,
   ],
   exports: [RoleAutoAssignmentComponent],

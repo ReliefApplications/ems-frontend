@@ -15,15 +15,14 @@
     <form [formGroup]="formGroup" class="flex flex-col pb-1">
       <div class="flex gap-x-2 flex-wrap">
         <!-- Title -->
-        <mat-form-field appearance="outline" class="flex-auto">
-          <mat-label>{{ 'common.name' | translate }}</mat-label>
+        <div uiFormFieldDirective  class="flex-auto">
+          <label>{{ 'common.name' | translate }}</label>
           <input
             type="text"
             [placeholder]="'common.placeholder.name' | translate"
-            matInput
             formControlName="name"
           />
-        </mat-form-field>
+        </div>
         <!-- Type -->
         <mat-form-field appearance="outline" class="flex-1">
           <mat-label>{{
@@ -214,22 +213,22 @@
             </mat-select>
           </mat-form-field>
           <!-- Using email -->
-          <mat-form-field
-            appearance="outline"
+          <div
+            uiFormFieldDirective
+            
             *ngIf="formGroup.value.recipientsType === 'email'"
             class="flex-1"
           >
-            <mat-label>{{ 'common.email.one' | translate }}</mat-label>
+            <label>{{ 'common.email.one' | translate }}</label>
             <input
               type="text"
               [placeholder]="'common.placeholder.email' | translate"
-              matInput
               formControlName="recipients"
             />
             <mat-error *ngIf="formGroup.get('recipients')?.errors">
               {{ 'components.customNotifications.errors.email' | translate }}
             </mat-error>
-          </mat-form-field>
+          </div>
         </div>
       </div>
     </form>

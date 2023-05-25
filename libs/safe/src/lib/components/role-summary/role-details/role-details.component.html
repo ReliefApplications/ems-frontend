@@ -1,11 +1,11 @@
 <form [formGroup]="form">
   <div class="flex flex-col">
-    <mat-form-field appearance="outline">
-      <mat-label>
+    <div uiFormFieldDirective >
+      <label>
         {{ 'models.role.title' | translate }}
-      </mat-label>
-      <input matInput formControlName="title" type="text" />
-    </mat-form-field>
+      </label>
+      <input formControlName="title" type="text" />
+    </div>
     <div uiFormFieldDirective>
       <label>
         {{ 'models.role.description' | translate }}
