@@ -113,7 +113,9 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
     }
     for (let i = 0; i < this.colsNumber; i++) {
       this.colsNumberConnections[i] = String(i);
+      this.sampleList.push([]);
     }
+    console.log(this.canUpdate);
   }
 
   ngOnChanges() {
@@ -253,6 +255,7 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
       );
     } else {
       console.log(event.container);
+      console.log('before');
       console.log(this.sampleList);
       transferArrayItem(
         event.previousContainer.data,
@@ -260,7 +263,11 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
         event.previousIndex,
         event.currentIndex
       );
+      console.log('after');
+      console.log(this.sampleList);
     }
+    console.log('canUpdate');
+    console.log(this.canUpdate);
   }
 
   /**
