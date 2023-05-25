@@ -10,4 +10,4 @@ export const variants = [
   'light',
   'warning',
 ] as const;
-export type Variant = typeof variants[number];
+export type Variant = (typeof variants)[number];
