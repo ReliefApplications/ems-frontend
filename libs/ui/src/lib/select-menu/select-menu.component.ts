@@ -107,7 +107,7 @@ export class SelectMenuComponent
           },
         });
       this.setDisplayTriggerText();
-    }, 1750)
+    }, 1750);
   }
 
   /**
@@ -191,7 +191,7 @@ export class SelectMenuComponent
 
   /** Builds the text displayed from selected options */
   private setDisplayTriggerText() {
-    let labelValues = this.getValuesLabel(this.selectedValues);
+    const labelValues = this.getValuesLabel(this.selectedValues);
     // Adapt the text to be displayed in the trigger if no custom template for display is provided
     if (labelValues?.length) {
       if (!this.customTemplate) {
@@ -199,10 +199,7 @@ export class SelectMenuComponent
           this.displayTrigger = labelValues[0];
         } else if (labelValues.length >= 1) {
           this.displayTrigger =
-            labelValues[0] +
-            ' (+' +
-            (labelValues.length - 1) +
-            ' others)';
+            labelValues[0] + ' (+' + (labelValues.length - 1) + ' others)';
         } else {
           this.displayTrigger = '';
         }
@@ -253,19 +250,19 @@ export class SelectMenuComponent
     this.destroy$.complete();
   }
 
-  getValuesLabel(selectedValues: any[]){
+  getValuesLabel(selectedValues: any[]) {
     let values = this.optionList.filter((val: any) => {
-      if(selectedValues.includes(val.value)){
+      if (selectedValues.includes(val.value)) {
         return val;
       }
-    })
+    });
     console.log(values);
-    return values = values.map((val: any) => {
-      if(val.label){
+    return (values = values.map((val: any) => {
+      if (val.label) {
         return val.label;
-      }else{
+      } else {
         return val.value;
       }
-    })
+    }));
   }
 }

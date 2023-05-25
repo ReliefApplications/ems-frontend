@@ -27,7 +27,12 @@ import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.mod
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { ButtonModule, FormWrapperModule, SelectOptionModule, SelectMenuModule} from '@oort-front/ui';
+import {
+  ButtonModule,
+  FormWrapperModule,
+  SelectOptionModule,
+  SelectMenuModule,
+} from '@oort-front/ui';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.

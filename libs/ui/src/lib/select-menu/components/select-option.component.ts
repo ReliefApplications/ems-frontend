@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output, ContentChildren, forwardRef, QueryList } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ContentChildren,
+  forwardRef,
+  QueryList,
+} from '@angular/core';
 
 /**
  * UI Select option component
@@ -11,13 +19,13 @@ import { Component, EventEmitter, Input, Output, ContentChildren, forwardRef, Qu
 export class SelectOptionComponent {
   @Input() value!: any;
   @Input() selected = false;
-  @Input() label = ''
+  @Input() label = '';
   @Input() isGrouped = false;
   @Output() optionClick = new EventEmitter<any>();
 
   @ContentChildren(forwardRef(() => SelectOptionComponent))
   options!: QueryList<SelectOptionComponent>;
-  
+
   /**
    * Emit optionClick output and updates option selected status
    */
