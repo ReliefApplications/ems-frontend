@@ -342,7 +342,9 @@ export class MapComponent
         tree.basemaps && basemaps.push(tree.basemaps);
         tree.layers && layers.push(tree.layers);
       }
-      this.setLayersControl(flatten(basemaps), flatten(layers));
+      if (!this.layerControl) {
+        this.setLayersControl(flatten(basemaps), flatten(layers));
+      }
     });
 
     // Add zoom control
