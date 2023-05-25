@@ -1,15 +1,17 @@
-<safe-modal size="medium">
+<ui-dialog size="medium">
   <!-- Modal header -->
-  <h1 mat-dialog-title>
-    {{
-      (notification
-        ? 'components.customNotifications.edit.update'
-        : 'components.customNotifications.edit.new'
-      ) | translate
-    }}
-  </h1>
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        (notification
+          ? 'components.customNotifications.edit.update'
+          : 'components.customNotifications.edit.new'
+        ) | translate
+      }}
+    </h1>
+  </ng-container>
   <!-- Modal content -->
-  <div mat-dialog-content>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="formGroup" class="flex flex-col pb-1">
       <div class="flex gap-x-2 flex-wrap">
         <!-- Title -->
@@ -230,19 +232,19 @@
         </div>
       </div>
     </form>
-  </div>
+  </ng-container>
   <!-- Modal actions -->
-  <div mat-dialog-actions align="end">
-    <ui-button mat-dialog-close>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="formGroup.getRawValue()"
+      [uiDialogClose]="formGroup.getRawValue()"
       [disabled]="!formGroup.valid"
     >
       {{ (notification ? 'common.update' : 'common.create') | translate }}
     </ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

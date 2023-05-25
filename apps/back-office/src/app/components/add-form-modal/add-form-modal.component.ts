@@ -5,7 +5,6 @@ import {
   UntypedFormBuilder,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import {
   GetResourcesQueryResponse,
   GET_RESOURCES,
@@ -19,11 +18,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  SafeGraphQLSelectModule,
-  SafeIconModule,
-  SafeModalModule,
-} from '@oort-front/safe';
+import { SafeGraphQLSelectModule, SafeIconModule } from '@oort-front/safe';
 import {
   ToggleModule,
   TooltipModule,
@@ -33,6 +28,8 @@ import {
   ChipModule,
   FormWrapperModule,
 } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
+import { DialogRef } from '@angular/cdk/dialog';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -54,7 +51,7 @@ const ITEMS_PER_PAGE = 10;
     TranslateModule,
     SafeIconModule,
     SafeGraphQLSelectModule,
-    SafeModalModule,
+    DialogModule,
     TooltipModule,
     RadioModule,
     IconModule,
@@ -85,7 +82,7 @@ export class AddFormModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<AddFormModalComponent>,
+    public dialogRef: DialogRef<AddFormModalComponent>,
     private apollo: Apollo
   ) {}
 

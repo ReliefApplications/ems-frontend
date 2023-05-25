@@ -9,8 +9,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { SafeModalModule, SafeSkeletonTableModule } from '@oort-front/safe';
+import { SafeSkeletonTableModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
@@ -22,6 +21,7 @@ import {
   MenuModule,
   SpinnerModule,
   TableModule,
+  DialogModule,
   FormWrapperModule,
 } from '@oort-front/ui';
 
@@ -41,13 +41,12 @@ import {
     MatSelectModule,
     AngularFormsModule,
     ReactiveFormsModule,
-    MatDialogModule,
+    DialogModule,
     MatIconModule,
     MatButtonModule,
     MatPaginatorModule,
     TranslateModule,
     SafeSkeletonTableModule,
-    SafeModalModule,
     AbilityModule,
     ButtonModule,
     TableModule,

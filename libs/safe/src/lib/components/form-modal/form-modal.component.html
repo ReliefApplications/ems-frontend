@@ -1,14 +1,14 @@
-<safe-modal size="big" [closable]="true">
-  <ng-container *ngIf="!loading">
-    <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
-      <safe-record-summary
-        *ngIf="record"
-        [record]="record"
-        (showHistory)="onShowHistory()"
-      ></safe-record-summary>
-      <safe-form-actions *ngIf="survey" [survey]="survey"></safe-form-actions>
-    </div>
-    <div mat-dialog-title>
+<ui-dialog size="big" [closable]="true">
+  <ng-container ngProjectAs="header">
+    <ng-container *ngIf="!loading">
+      <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+        <safe-record-summary
+          *ngIf="record"
+          [record]="record"
+          (showHistory)="onShowHistory()"
+        ></safe-record-summary>
+        <safe-form-actions *ngIf="survey" [survey]="survey"></safe-form-actions>
+      </div>
       <ui-tabs
         [selectedIndex]="selectedTabIndex"
         (selectedIndexChange)="onShowPage($event)"
@@ -26,14 +26,16 @@
           </ng-container>
         </ui-tab>
       </ui-tabs>
+    </ng-container>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <div class="grow max-h-full" #formContainer>
+      <div *ngIf="loading" class="h-full flex">
+        <ui-spinner class="m-auto block"></ui-spinner>
+      </div>
     </div>
   </ng-container>
-  <mat-dialog-content class="grow max-h-full" #formContainer>
-    <div *ngIf="loading" class="h-full flex">
-      <ui-spinner class="m-auto block"></ui-spinner>
-    </div>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
+  <ng-container ngProjectAs="actions">
     <ui-button (click)="onClose()" variant="danger">{{
       'common.cancel' | translate
     }}</ui-button>
@@ -68,5 +70,5 @@
     >
       {{ 'components.record.modal.update' | translate }}
     </ui-button>
-  </mat-dialog-actions>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

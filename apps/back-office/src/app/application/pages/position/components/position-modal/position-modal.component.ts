@@ -4,18 +4,15 @@ import {
   UntypedFormBuilder,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { SafeModalModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
+import { DialogModule } from '@oort-front/ui';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
   ButtonModule,
   MenuModule,
@@ -40,7 +37,7 @@ import {
     MenuModule,
     MatButtonModule,
     TranslateModule,
-    SafeModalModule,
+    DialogModule,
     ButtonModule,
   ],
   selector: 'app-position-modal',
@@ -63,8 +60,8 @@ export class PositionModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<PositionModalComponent>,
-    @Inject(MAT_DIALOG_DATA)
+    public dialogRef: DialogRef<PositionModalComponent>,
+    @Inject(DIALOG_DATA)
     public data: {
       add: boolean;
       edit: boolean;

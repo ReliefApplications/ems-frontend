@@ -1,5 +1,5 @@
-<safe-modal [closable]="true" size="fullscreen">
-  <div mat-dialog-content class="max-h-full h-full">
+<ui-dialog [closable]="true" size="fullscreen">
+  <ng-container ngProjectAs="content">
     <div class="w-full h-full" id="dashboardSurveyCreatorContainer"></div>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

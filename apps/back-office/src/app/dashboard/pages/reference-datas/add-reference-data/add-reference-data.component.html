@@ -1,8 +1,10 @@
-<safe-modal size="small">
-  <h1 mat-dialog-title>
-    {{ 'components.referenceData.create.title' | translate }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="small">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.referenceData.create.title' | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="referenceForm" class="flex flex-col">
       <div uiFormFieldDirective >
         <label>{{ 'common.name' | translate }}</label>
@@ -13,19 +15,19 @@
         />
       </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
+  </ng-container>
+  <ng-container ngProjectAs="actions">
     <ui-button (click)="onClose()">{{
       'common.close' | translate
     }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="referenceForm.value"
+      [uiDialogClose]="referenceForm.value"
       cdkFocusInitial
       [disabled]="!referenceForm.valid"
     >
       {{ 'common.create' | translate }}
     </ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

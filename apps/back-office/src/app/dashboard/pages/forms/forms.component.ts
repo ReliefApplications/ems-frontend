@@ -1,6 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import {
   SafeAuthService,
@@ -81,7 +81,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private router: Router,
     private snackBar: SnackbarService,
     private authService: SafeAuthService,
@@ -227,7 +227,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const id = form.id;
         this.apollo
@@ -279,7 +279,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
       '../../../components/add-form-modal/add-form-modal.component'
     );
     const dialogRef = this.dialog.open(AddFormModalComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const variablesData = { name: value.name };
         Object.assign(

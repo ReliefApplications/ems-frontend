@@ -4,14 +4,15 @@ import {
   UntypedFormBuilder,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '@oort-front/safe';
-import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
+import { DialogRef } from '@angular/cdk/dialog';
+import { ButtonModule } from '@oort-front/ui';
+import { FormWrapperModule } from '@oort-front/ui';
 
 /**
  * Modal to add a new resource.
@@ -26,7 +27,7 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     FormWrapperModule,
     MatButtonModule,
     TranslateModule,
-    SafeModalModule,
+    DialogModule,
     ButtonModule,
   ],
   selector: 'app-add-resource-modal',
@@ -44,7 +45,7 @@ export class AddResourceModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<AddResourceModalComponent>
+    public dialogRef: DialogRef<AddResourceModalComponent>
   ) {}
 
   /**

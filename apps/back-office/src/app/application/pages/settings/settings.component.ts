@@ -13,7 +13,7 @@ import {
   SafeUnsubscribeComponent,
   SafeLayoutService,
 } from '@oort-front/safe';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   DeleteApplicationMutationResponse,
   DELETE_APPLICATION,
@@ -66,7 +66,7 @@ export class SettingsComponent
     private applicationService: SafeApplicationService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private translate: TranslateService,
     private layoutService: SafeLayoutService
   ) {
@@ -145,50 +145,56 @@ export class SettingsComponent
         confirmText: this.translate.instant('components.confirmModal.delete'),
         confirmColor: 'warn',
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          const id = this.application?.id;
-          this.apollo
-            .mutate<DeleteApplicationMutationResponse>({
-              mutation: DELETE_APPLICATION,
-              variables: {
-                id,
-              },
-            })
-            .subscribe({
-              next: ({ errors, data }) => {
-                if (errors) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectNotDeleted',
-                      {
-                        value: this.translate.instant('common.application.one'),
-                        error: errors ? errors[0].message : '',
-                      }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectDeleted',
-                      {
-                        value: this.translate.instant('common.application.one'),
-                      }
-                    )
-                  );
-                  this.applications.data = this.applications.data.filter(
-                    (x) => x.id !== data?.deleteApplication.id
-                  );
-                }
-              },
-              error: (err) => {
-                this.snackBar.openSnackBar(err.message, { error: true });
-              },
-            });
-          this.router.navigate(['/applications']);
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            const id = this.application?.id;
+            this.apollo
+              .mutate<DeleteApplicationMutationResponse>({
+                mutation: DELETE_APPLICATION,
+                variables: {
+                  id,
+                },
+              })
+              .subscribe({
+                next: ({ errors, data }) => {
+                  if (errors) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectNotDeleted',
+                        {
+                          value: this.translate.instant(
+                            'common.application.one'
+                          ),
+                          error: errors ? errors[0].message : '',
+                        }
+                      ),
+                      { error: true }
+                    );
+                  } else {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectDeleted',
+                        {
+                          value: this.translate.instant(
+                            'common.application.one'
+                          ),
+                        }
+                      )
+                    );
+                    this.applications.data = this.applications.data.filter(
+                      (x) => x.id !== data?.deleteApplication.id
+                    );
+                  }
+                },
+                error: (err) => {
+                  this.snackBar.openSnackBar(err.message, { error: true });
+                },
+              });
+            this.router.navigate(['/applications']);
+          }
+        });
     }
   }
 

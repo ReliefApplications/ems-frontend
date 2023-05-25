@@ -10,8 +10,11 @@ import {
   GetResourcesQueryResponse,
   GET_RESOURCES_EXTENDED,
 } from './graphql/queries';
-import { Resource, SafeConfirmService } from '@oort-front/safe';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import {
+  Resource,
+  SafeConfirmService,
+  SafeUnsubscribeComponent,
+} from '@oort-front/safe';
 import { Router } from '@angular/router';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,8 +22,10 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { Dialog } from '@angular/cdk/dialog';
 import { TableSort } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
 
 /**
  * Default number of resources that will be shown at once.
@@ -35,7 +40,10 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './resources.component.html',
   styleUrls: ['./resources.component.scss'],
 })
-export class ResourcesComponent implements OnInit {
+export class ResourcesComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public filterLoading = false;
@@ -73,13 +81,15 @@ export class ResourcesComponent implements OnInit {
    * @param router Used to change the app route.
    */
   constructor(
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private router: Router
-  ) {}
+  ) {
+    super();
+  }
 
   /** Load the resources. */
   ngOnInit(): void {
@@ -217,7 +227,7 @@ export class ResourcesComponent implements OnInit {
       confirmColor: 'warn',
     });
 
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteResourceMutationResponse>({
@@ -262,7 +272,7 @@ export class ResourcesComponent implements OnInit {
       '../../../components/add-resource-modal/add-resource-modal.component'
     );
     const dialogRef = this.dialog.open(AddResourceModalComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const variablesData = { name: value.name };
         this.apollo

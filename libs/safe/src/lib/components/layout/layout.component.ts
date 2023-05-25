@@ -18,7 +18,7 @@ import { User } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Notification } from '../../models/notification.model';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { SafeNotificationService } from '../../services/notification/notification.service';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -142,7 +142,7 @@ export class SafeLayoutComponent
    * @param notificationService This is the service that handles the notifications.
    * @param layoutService Shared layout service
    * @param confirmService This is the service that is used to display a confirm window.
-   * @param dialog This is the dialog service provided by Angular Material
+   * @param dialog This is the dialog service provided by Angular Material CDK
    * @param translate This is the Angular service that translates text
    * @param dateTranslate Service used for date formatting
    * @param breadcrumbService Shared breadcrumb service
@@ -154,7 +154,7 @@ export class SafeLayoutComponent
     private notificationService: SafeNotificationService,
     private layoutService: SafeLayoutService,
     private confirmService: SafeConfirmService,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private translate: TranslateService,
     private dateTranslate: SafeDateTranslateService,
     private breadcrumbService: SafeBreadcrumbService
@@ -281,13 +281,15 @@ export class SafeLayoutComponent
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.authService.canLogout.next(true);
-          localStorage.clear();
-          this.authService.logout();
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.authService.canLogout.next(true);
+            localStorage.clear();
+            this.authService.logout();
+          }
+        });
     } else {
       this.authService.logout();
     }
@@ -305,7 +307,7 @@ export class SafeLayoutComponent
         languages: this.languages,
       },
     });
-    dialogRef.afterClosed().subscribe((form) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((form: any) => {
       if (form && form.touched) {
         this.setLanguage(form.value.language);
         this.dateTranslate.use(form.value.dateFormat);

@@ -1,13 +1,15 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>
-    {{
-      data.subscription
-        ? ('common.editObject'
-          | translate : { name: 'common.subscription.one' | translate })
-        : ('models.subscription.new' | translate)
-    }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        data.subscription
+          ? ('common.editObject'
+            | translate : { name: 'common.subscription.one' | translate })
+          : ('models.subscription.new' | translate)
+      }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="subscriptionForm">
       <div class="flex flex-col">
         <div uiFormFieldDirective>
@@ -100,17 +102,17 @@
         </mat-form-field>
       </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
+  </ng-container>
+  <ng-container ngProjectAs="actions">
     <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="subscriptionForm.value"
+      [uiDialogClose]="subscriptionForm.value"
       cdkFocusInitial
       [disabled]="!subscriptionForm.valid"
     >
       {{ (data.subscription ? 'common.update' : 'common.create') | translate }}
     </ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

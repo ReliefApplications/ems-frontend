@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsRoutingModule } from './forms-routing.module';
 import { FormsComponent } from './forms.component';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeSkeletonTableModule, SafeDateModule } from '@oort-front/safe';
 import { MatSortModule } from '@angular/material/sort';
@@ -40,7 +39,6 @@ import {
     ReactiveFormsModule,
     SpinnerModule,
     MatSortModule,
-    MatDialogModule,
     MenuModule,
     MatIconModule,
     MatFormFieldModule,
