@@ -2,15 +2,15 @@
   <!-- Filters -->
   <div class="flex flex-col gap-4">
     <!-- Default filter -->
-    <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
+    <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
       <!-- Search text filter -->
-      <div uiFormFieldDirective [outline]="true" class="mat-form-field-sm p-0">
+      <div uiFormFieldDirective [outline]="true">
         <mat-icon uiPrefix>search</mat-icon>
-        <label>{{ 'common.placeholder.search' | translate }}</label>
         <input
           [ngModel]="searchText"
           (keyup)="applyFilter('', $event)"
-          type="search"
+          type="text"
+          [placeholder]="'common.placeholder.search' | translate"
         />
       </div>
       <!-- Toggle advanced filters -->
@@ -62,17 +62,15 @@
     </div>
   </div>
   <!-- Actions -->
-  <div class="flex items-center">
-    <ui-button
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="onAdd()"
-      *ngIf="'create' | able : 'ApiConfiguration'"
-    >
-      {{ 'pages.apiConfigurations.create' | translate }}
-    </ui-button>
-  </div>
+  <ui-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="onAdd()"
+    *ngIf="'create' | able : 'ApiConfiguration'"
+  >
+    {{ 'pages.apiConfigurations.create' | translate }}
+  </ui-button>
 </div>
 
 <!-- Table container -->
@@ -81,7 +79,7 @@
   <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
-      cdk-table 
+      cdk-table
       uiTableWrapper
       (sortChange)="onSort($event)"
       [dataSource]="dataSource"

@@ -1,16 +1,19 @@
-<div class="flex justify-end">
-  <div uiFormFieldDirective [outline]="true" class="mat-form-field-sm p-0">
-    <label>{{ 'common.placeholder.search' | translate }}</label>
-    <input [(ngModel)]="search" type="search" />
+<div class="flex justify-start">
+  <div uiFormFieldDirective [outline]="false">
+    <input
+      [(ngModel)]="search"
+      type="text"
+      [placeholder]="'common.placeholder.search' | translate"
+    />
     <mat-icon uiPrefix>search</mat-icon>
-    <ui-button
+    <ui-icon
       uiSuffix
-      [isIcon]="true"
+      class="cursor-pointer"
       [icon]="'close'"
       *ngIf="search"
       [ariaLabel]="'common.ariaLabel.search.clear' | translate"
       (click)="search = ''"
-    ></ui-button>
+    ></ui-icon>
   </div>
 </div>
 <safe-role-dashboards

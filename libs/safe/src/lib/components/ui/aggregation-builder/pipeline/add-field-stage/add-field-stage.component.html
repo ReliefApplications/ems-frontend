@@ -5,9 +5,10 @@
 >
   <div uiFormFieldDirective [outline]="true" *ngIf="displayName">
     <label>{{ 'common.name' | translate }}</label>
-    <input formControlName="name" />
+    <input formControlName="name" [placeholder]="'common.name' | translate" />
   </div>
   <safe-expressions
+    class="pl-4"
     [fields]="fields"
     [form]="$any(fieldForm.get('expression'))"
     [operators]="$any(operators)"

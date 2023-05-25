@@ -14,6 +14,7 @@ import {
   ButtonModule,
   TableModule,
   FormWrapperModule,
+  IconModule,
 } from '@oort-front/ui';
 import { SafeEmptyModule } from '../../ui/empty/empty.module';
 
@@ -41,6 +42,7 @@ import { SafeEmptyModule } from '../../ui/empty/empty.module';
     SafeIconModule,
     SafeEmptyModule,
     TableModule,
+    IconModule,
   ],
   exports: [RoleFeaturesComponent],
 })
