@@ -12,6 +12,7 @@ import {
 } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
+import { SafeEmptyModule } from '../ui/empty/empty.module';
 
 /**
  * Module for custom notifications table.
@@ -25,6 +26,7 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
     SafeSkeletonTableModule,
     DividerModule,
     MatIconModule,
+    SafeEmptyModule,
     MatPaginatorModule,
     ButtonModule,
     TableModule,

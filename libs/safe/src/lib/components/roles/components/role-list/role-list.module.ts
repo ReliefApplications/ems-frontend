@@ -17,6 +17,7 @@ import {
   FormWrapperModule,
 } from '@oort-front/ui';
 import { AbilityModule } from '@casl/angular';
+import { SafeEmptyModule } from '../../../ui/empty/empty.module';
 
 /**
  * BackOfficeRolesModule manages modules and components
@@ -41,6 +42,7 @@ import { AbilityModule } from '@casl/angular';
     ButtonModule,
     TableModule,
     FormWrapperModule,
+    SafeEmptyModule,
   ],
   exports: [SafeRoleListComponent],
 })

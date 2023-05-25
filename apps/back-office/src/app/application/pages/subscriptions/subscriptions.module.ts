@@ -11,6 +11,8 @@ import {
   SafeIconModule,
   SafeGraphQLSelectModule,
   SafeModalModule,
+  SafeSkeletonTableModule,
+  SafeEmptyModule,
 } from '@oort-front/safe';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
@@ -32,6 +34,8 @@ import {
     CommonModule,
     SubscriptionsRoutingModule,
     FormsModule,
+    SafeSkeletonTableModule,
+    SafeEmptyModule,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
