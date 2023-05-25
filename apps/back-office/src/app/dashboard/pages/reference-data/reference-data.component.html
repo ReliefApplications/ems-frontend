@@ -16,14 +16,14 @@
   <form [formGroup]="referenceForm" class="flex flex-col mb-8">
     <div class="flex gap-x-2">
       <!-- Name -->
-      <div uiFormFieldDirective [outline]="true" class="flex-auto">
+      <div uiFormFieldDirective class="flex-auto">
         <label>{{ 'common.name' | translate }}</label>
         <input
           formControlName="name"
           type="text"
           [placeholder]="'common.placeholder.name' | translate"
         />
-        </div>
+      </div>
       <!-- Type selection -->
       <mat-form-field appearance="outline" class="1">
         <mat-label>{{ 'pages.referenceData.type' | translate }}</mat-label>
@@ -52,10 +52,8 @@
           </safe-graphql-select>
         </mat-form-field>
         <!-- QueryName -->
-        <div uiFormFieldDirective [outline]="true" class="flex-1">
-          <label>{{
-            'pages.referenceData.queryName' | translate
-          }}</label>
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{ 'pages.referenceData.queryName' | translate }}</label>
           <input
             formControlName="query"
             type="text"
@@ -131,7 +129,7 @@
       <!-- Path -->
       <div
         class="flex-auto"
-        uiFormFieldDirective [outline]="true"
+        uiFormFieldDirective
         *ngIf="['rest', 'graphql'].includes(type)"
       >
         <label>{{ 'pages.referenceData.path' | translate }}</label>
@@ -158,10 +156,8 @@
       </mat-form-field>
     </div>
     <!-- For graphql -->
-    <div uiFormFieldDirective [outline]="true" *ngIf="type === 'graphql'">
-      <label
-        >{{ 'pages.referenceData.graphQLFilter' | translate }}
-      </label>
+    <div uiFormFieldDirective *ngIf="type === 'graphql'">
+      <label>{{ 'pages.referenceData.graphQLFilter' | translate }} </label>
       <input
         formControlName="graphQLFilter"
         type="text"

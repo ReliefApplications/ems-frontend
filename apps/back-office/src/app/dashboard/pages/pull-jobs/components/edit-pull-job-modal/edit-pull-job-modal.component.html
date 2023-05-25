@@ -14,7 +14,7 @@
       <div class="flex flex-col pb-1">
         <div class="flex gap-x-2 flex-wrap">
           <!-- Title -->
-          <div uiFormFieldDirective [outline]="true" class="flex-auto">
+          <div uiFormFieldDirective class="flex-auto">
             <label>{{ 'common.name' | translate }}</label>
             <input
               type="text"
@@ -65,7 +65,7 @@
         </mat-form-field>
         <div class="flex gap-x-2 flex-wrap" *ngIf="!isHardcoded">
           <!-- Url to pull -->
-          <div uiFormFieldDirective [outline]="true" class="flex-1">
+          <div uiFormFieldDirective class="flex-1">
             <label>{{ 'models.pullJob.url' | translate }}</label>
             <input
               type="text"
@@ -83,7 +83,7 @@
             ></safe-icon>
           </div>
           <!-- Path to pull -->
-          <div uiFormFieldDirective [outline]="true" class="flex-1">
+          <div uiFormFieldDirective class="flex-1">
             <label>{{ 'models.pullJob.path' | translate }}</label>
             <input
               type="text"
@@ -191,7 +191,7 @@
                     </mat-select>
                   </mat-form-field>
                   <div
-                    uiFormFieldDirective [outline]="true"
+                    uiFormFieldDirective
                     *ngIf="element.value.name"
                     class="p-0"
                   >
@@ -265,18 +265,10 @@
     >
       {{ 'common.status_active' | translate | titlecase }}
     </ui-chip>
-    <ui-chip
-      class="!rounded-lg"
-      variant="warning"
-      *ngIf="status === 'pending'"
-    >
+    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
       {{ 'common.status_pending' | translate | titlecase }}
     </ui-chip>
-    <ui-chip
-      class="!rounded-lg"
-      variant="danger"
-      *ngIf="status === 'archived'"
-    >
+    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
       {{ 'common.status_archived' | translate | titlecase }}
     </ui-chip>
   </div>

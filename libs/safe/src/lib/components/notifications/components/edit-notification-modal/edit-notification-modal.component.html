@@ -13,7 +13,7 @@
     <form [formGroup]="formGroup" class="flex flex-col pb-1">
       <div class="flex gap-x-2 flex-wrap">
         <!-- Title -->
-        <div uiFormFieldDirective [outline]="true" class="flex-auto">
+        <div uiFormFieldDirective  class="flex-auto">
           <label>{{ 'common.name' | translate }}</label>
           <input
             type="text"
@@ -213,7 +213,7 @@
           <!-- Using email -->
           <div
             uiFormFieldDirective
-            [outline]="true"
+            
             *ngIf="formGroup.value.recipientsType === 'email'"
             class="flex-1"
           >

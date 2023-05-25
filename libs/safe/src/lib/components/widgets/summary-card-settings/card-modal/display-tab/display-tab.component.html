@@ -1,17 +1,17 @@
 <form [formGroup]="form">
   <div class="form-group">
-    <div uiFormFieldDirective [outline]="true">
+    <div uiFormFieldDirective>
       <label>{{
         'components.widget.settings.summaryCard.card.display.header' | translate
       }}</label>
       <input formControlName="title" type="string" />
     </div>
     <div class="flex flex-1 gap-4">
-      <div uiFormFieldDirective [outline]="true">
+      <div uiFormFieldDirective>
         <label>{{ 'common.row.few' | translate }}</label>
         <input formControlName="height" type="number" />
         </div>
-      <div uiFormFieldDirective [outline]="true">
+      <div uiFormFieldDirective>
         <label>{{ 'common.column.few' | translate }}</label>
         <input formControlName="width" type="number" />
       </div>

@@ -5,7 +5,7 @@
   <mat-dialog-content>
     <form [formGroup]="formGroup" class="flex flex-col gap-8">
       <div class="flex flex-col">
-        <div uiFormFieldDirective [outline]="true">
+        <div uiFormFieldDirective >
           <label>{{ 'common.name' | translate }}</label>
           <input formControlName="name" type="string" />
         </div>

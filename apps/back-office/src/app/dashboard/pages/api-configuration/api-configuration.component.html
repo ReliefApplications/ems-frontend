@@ -38,7 +38,7 @@
     <div class="flex flex-col last:mb-0">
       <div class="flex gap-x-2 flex-wrap">
         <!-- Name -->
-        <div uiFormFieldDirective [outline]="true" class="flex-auto">
+        <div uiFormFieldDirective class="flex-auto">
           <label>
             {{ 'common.name' | translate }}
           </label>
@@ -85,7 +85,7 @@
     </div>
     <div class="flex gap-x-2">
       <!-- Endpoint -->
-      <div uiFormFieldDirective [outline]="true" class="flex-auto">
+      <div uiFormFieldDirective class="flex-auto">
         <label>
           {{ 'pages.apiConfiguration.baseUrl' | translate }}
         </label>
@@ -98,7 +98,7 @@
         />
       </div>
       <!-- Path to ping -->
-      <div uiFormFieldDirective [outline]="true" class="flex-1">
+      <div uiFormFieldDirective class="flex-1">
         <label>
           {{ 'pages.apiConfiguration.pingUrl' | translate }}
         </label>
@@ -123,7 +123,7 @@
       >
         <div formGroupName="settings" class="flex flex-col">
           <!-- Token url -->
-          <div uiFormFieldDirective [outline]="true">
+          <div uiFormFieldDirective>
             <label>
               {{ 'pages.apiConfiguration.tokenUrl' | translate }}
             </label>
@@ -137,7 +137,7 @@
             />
           </div>
           <!-- Client id -->
-          <div uiFormFieldDirective [outline]="true">
+          <div uiFormFieldDirective>
             <label>
               {{ 'pages.apiConfiguration.clientId' | translate }}
             </label>
@@ -151,7 +151,7 @@
             />
           </div>
           <!-- Client secret -->
-          <div uiFormFieldDirective [outline]="true">
+          <div uiFormFieldDirective>
             <label>
               {{ 'pages.apiConfiguration.secret' | translate }}
             </label>
@@ -165,7 +165,7 @@
             />
           </div>
           <!-- Token scope -->
-          <div uiFormFieldDirective [outline]="true">
+          <div uiFormFieldDirective>
             <label>
               {{ 'pages.apiConfiguration.scope' | translate }}
             </label>
@@ -184,7 +184,7 @@
       <ng-container *ngIf="apiForm.value.authType === authType.userToService">
         <div formGroupName="settings" class="flex flex-col">
           <!-- Token -->
-          <div uiFormFieldDirective [outline]="true">
+          <div uiFormFieldDirective>
             <label>
               {{ 'pages.apiConfiguration.token' | translate }}
             </label>
@@ -207,7 +207,7 @@
     </h2>
     <div class="flex flex-col">
       <!-- GraphQL endpoint -->
-      <div uiFormFieldDirective [outline]="true">
+      <div uiFormFieldDirective>
         <label>
           {{ 'pages.apiConfiguration.graphQL.endpoint' | translate }}
         </label>
@@ -236,25 +236,13 @@
 <!-- Template to display status -->
 <ng-template #statusTemplate let-status>
   <div uiChipList>
-    <ui-chip
-      class="!rounded-lg"
-      variant="success"
-      *ngIf="status === 'active'"
-    >
+    <ui-chip class="!rounded-lg" variant="success" *ngIf="status === 'active'">
       {{ 'common.status_active' | translate | titlecase }}
     </ui-chip>
-    <ui-chip
-      class="!rounded-lg"
-      variant="warning"
-      *ngIf="status === 'pending'"
-    >
+    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
       {{ 'common.status_pending' | translate | titlecase }}
     </ui-chip>
-    <ui-chip
-      class="!rounded-lg"
-      variant="danger"
-      *ngIf="status === 'archived'"
-    >
+    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
       {{ 'common.status_archived' | translate | titlecase }}
     </ui-chip>
   </div>

@@ -3,20 +3,20 @@
   <!-- User details -->
   <div class="flex flex-col">
     <div class="flex gap-2 flex-wrap">
-      <div uiFormFieldDirective [outline]="true" class="flex-1">
+      <div uiFormFieldDirective class="flex-1">
         <label>
           {{ 'models.user.firstName' | translate }}
         </label>
         <input formControlName="firstName" type="text" />
       </div>
-      <div uiFormFieldDirective [outline]="true" class="flex-1">
+      <div uiFormFieldDirective class="flex-1">
         <label>
           {{ 'models.user.lastName' | translate }}
         </label>
         <input formControlName="lastName" type="text" />
       </div>
     </div>
-    <div uiFormFieldDirective [outline]="true">
+    <div uiFormFieldDirective>
       <label>
         {{ 'models.user.username' | translate }}
       </label>
