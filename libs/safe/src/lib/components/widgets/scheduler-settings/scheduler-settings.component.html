@@ -2,7 +2,7 @@
   <form [formGroup]="tileForm">
     <div class="form-group">
       <div class="form-group-title">{{ 'common.general' | translate }}</div>
-      <div uiFormFieldDirective [outline]="true">
+      <div uiFormFieldDirective>
         <label>{{ 'common.title' | translate }}</label>
         <input formControlName="title" type="string" />
       </div>

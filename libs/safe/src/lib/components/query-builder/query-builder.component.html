@@ -46,11 +46,11 @@
       <div class="flex gap-2">
         <ui-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
         </ui-button>
-        <div uiFormFieldDirective [outline]="true">
+        <div uiFormFieldDirective >
           <label>{{ 'models.form.field.name' | translate }}</label>
           <input formControlName="name" type="text" />
         </div>
-        <div uiFormFieldDirective [outline]="true">
+        <div uiFormFieldDirective >
           <label>{{ 'models.form.field.label' | translate }}</label>
           <input formControlName="label" type="text" />
           </div>

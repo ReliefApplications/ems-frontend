@@ -1,7 +1,7 @@
 <ng-container *ngIf="tileForm">
   <form [formGroup]="tileForm">
     <div class="flex flex-col">
-      <div uiFormFieldDirective [outline]="true">
+      <div uiFormFieldDirective >
         <label>{{ 'common.title' | translate }}</label>
         <input formControlName="title" type="string" />
       </div>

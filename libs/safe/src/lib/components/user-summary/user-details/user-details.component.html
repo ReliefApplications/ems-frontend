@@ -1,20 +1,20 @@
 <form [formGroup]="form">
   <div class="flex flex-col">
     <div class="flex gap-2">
-      <div uiFormFieldDirective [outline]="true">
+      <div uiFormFieldDirective >
         <label>
           {{ 'components.user.summary.firstName' | translate }}
         </label>
         <input formControlName="firstName" type="text" />
       </div>
-      <div uiFormFieldDirective [outline]="true">
+      <div uiFormFieldDirective >
         <label>
           {{ 'components.user.summary.lastName' | translate }}
         </label>
         <input formControlName="lastName" type="text" />
       </div>
     </div>
-    <div uiFormFieldDirective [outline]="true">
+    <div uiFormFieldDirective >
       <label>
         {{ 'common.email.one' | translate }}
       </label>
@@ -23,7 +23,7 @@
     <ng-container *ngIf="attributes.length > 0" formGroupName="attributes">
       <h2 class="mt-8">{{ 'common.attribute.few' | translate }}</h2>
       <ng-container *ngFor="let attribute of attributes">
-        <div uiFormFieldDirective [outline]="true">
+        <div uiFormFieldDirective >
           <label>{{ attribute.text }}</label>
           <input [formControlName]="attribute.value" type="text" />
         </div>

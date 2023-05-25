@@ -16,7 +16,7 @@
     </div>
     <ng-container *ngIf="formGroup.value.show">
       <!-- Name -->
-      <div uiFormFieldDirective [outline]="true">
+      <div uiFormFieldDirective >
         <label>{{ 'common.name' | translate }}</label>
         <input formControlName="name" type="string" />
       </div>
@@ -76,7 +76,7 @@
         <!-- Confirm action -->
         <div
           uiFormFieldDirective
-          [outline]="true"
+          
           class="sub-parameters"
           *ngIf="formGroup.value.closeWorkflow"
         >
@@ -286,7 +286,7 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <div uiFormFieldDirective [outline]="true">
+        <div uiFormFieldDirective >
           <label>{{
             'components.widget.settings.grid.buttons.callback.notify.message'
               | translate

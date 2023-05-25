@@ -55,7 +55,7 @@
 
   <!-- TEXT EDITOR -->
   <ng-template #textEditor>
-    <div uiFormFieldDirective [outline]="true">
+    <div uiFormFieldDirective >
       <label>{{ 'common.value.one' | translate }}</label>
       <input formControlName="value" type="string" />
     </div>
@@ -79,7 +79,7 @@
 
   <!-- NUMERIC EDITOR -->
   <ng-template #numericEditor>
-    <div uiFormFieldDirective [outline]="true">
+    <div uiFormFieldDirective >
       <label>{{ 'common.value.one' | translate }}</label>
       <input formControlName="value" type="number" />
     </div>
