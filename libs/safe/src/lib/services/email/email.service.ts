@@ -229,33 +229,17 @@ export class SafeEmailService {
           });
           dialogRef.afterClosed().subscribe((value) => {
             if (value) {
-              if (value.subject) {
-                this.sendMail(
-                  recipient,
-                  value.subject,
-                  value.html,
-                  filter,
-                  query,
-                  sortField,
-                  sortOrder,
-                  attachment,
-                  value.files
-                );
-              } else {
-                this.snackBar.openComponentSnackBar(
-                  SafeSnackbarSpinnerComponent,
-                  {
-                    duration: 1000,
-                    data: {
-                      message: this.translate.instant(
-                        'common.notifications.email.noSubject'
-                      ),
-                      loading: false,
-                      error: true,
-                    },
-                  }
-                );
-              }
+              this.sendMail(
+                recipient,
+                value.subject,
+                value.html,
+                filter,
+                query,
+                sortField,
+                sortOrder,
+                attachment,
+                value.files
+              );
             }
           });
         },

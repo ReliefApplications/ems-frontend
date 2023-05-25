@@ -143,7 +143,6 @@
 					"noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
 					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté"
 				},
-				"noSubject": "Veuillez choisir un objet pour votre mail",
 				"processing": "Envoi en cours...",
 				"ready": "E-mail prêt",
 				"sent": "E-mail envoyé"
