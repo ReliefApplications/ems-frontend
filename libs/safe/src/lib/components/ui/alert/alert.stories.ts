@@ -2,6 +2,7 @@ import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeAlertModule } from './alert.module';
 import { SafeAlertComponent } from './alert.component';
 import { SafeIconModule } from '../icon/icon.module';
+import { alertVariants } from './types/alert-variant';
 
 export default {
   component: SafeAlertComponent,
@@ -13,7 +14,7 @@ export default {
   title: 'UI/Alert',
   argTypes: {
     variant: {
-      options: ['default', 'primary', 'success', 'danger', 'warning'],
+      options: alertVariants,
       control: { type: 'select' },
     },
     content: {
