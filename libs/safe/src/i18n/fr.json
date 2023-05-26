@@ -549,6 +549,15 @@
 			"subject": "Objet",
 			"withoutRecords": "Sans enregistrements"
 		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "L'objet du mail ne peut être vide."
+			},
+			"from": "De",
+			"subject": "Objet",
+			"title": "Prévisualisation de mail",
+			"to": "À"
+		},
 		"floating": {
 			"menuButton": {
 				"ariaLabel": "***"

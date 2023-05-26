@@ -549,6 +549,15 @@
 			"subject": "Subject",
 			"withoutRecords": "Without records"
 		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "Subject cannot be left empty."
+			},
+			"from": "From",
+			"subject": "Subject",
+			"title": "Email Preview",
+			"to": "To"
+		},
 		"form": {
 			"aggregation": {
 				"delete": {
