@@ -1158,7 +1158,7 @@
 							"step": "Step interpolation",
 							"title": "Interpolation"
 						},
-						"showSerie": "Show serie",
+						"showSerie": "Show series",
 						"stack": {
 							"enable": "Plot series",
 							"usePercentage": "Use percentage"
