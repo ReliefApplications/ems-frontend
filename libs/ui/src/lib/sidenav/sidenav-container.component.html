@@ -3,7 +3,7 @@
   <ng-container *ngFor="let sidenav of uiSidenavDirective; let i = index">
     <div
       #sidenav
-      class="will-change-transform h-full overflow-y-auto bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] translate-x-0"
+      class="will-change-transform h-full overflow-y-auto bg-white translate-x-0"
       [attr.data-sidenav-show]="showSidenav[i]"
       [ngClass]="resolveSidenavClasses(i)"
     >

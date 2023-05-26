@@ -75,6 +75,8 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       classes.push("data-[sidenav-show='false']:-translate-x-full");
       classes.push('z-[999]');
       classes.push('w-60');
+      classes.push('border-r');
+      classes.push('border-gray-200');
     }
     if (this.mode[index] === 'over') {
       classes.push('left-0');
@@ -86,6 +88,9 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       classes.push('right-0 ');
       classes.push("data-[sidenav-show='false']:translate-x-full");
       classes.push('z-[997]');
+      classes.push(
+        'shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]'
+      );
     }
     return classes;
   }
