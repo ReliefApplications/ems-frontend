@@ -5,6 +5,8 @@ import calcFunctions from './calcFunctions';
 const DATA_PREFIX = '{{data.';
 /** Prefix for calc keys */
 const CALC_PREFIX = '{{calc.';
+/** Prefix for page key */
+const PAGE_PREFIX = '{{page';
 /** Suffix for all keys */
 const PLACEHOLDER_SUFFIX = '}}';
 
@@ -70,9 +72,11 @@ export const parseHtml = (
       styles,
       wholeCardStyles
     );
-    return applyOperations(htmlWithRecord);
+    const htmlWithPageLink = applyPage(htmlWithRecord);
+    return applyOperations(htmlWithPageLink);
   } else {
-    return applyOperations(html);
+    const htmlWithPageLink = applyPage(html);
+    return applyOperations(htmlWithPageLink);
   }
 };
 
@@ -256,6 +260,19 @@ export const getFieldsValue = (record: any) => {
     }
   }
   return fields;
+};
+
+const applyPage = (html: string): string => {
+  const regex = new RegExp(
+    `${PAGE_PREFIX}\\([a-z0-9]{24}\\)${PLACEHOLDER_SUFFIX}`
+  );
+  let result = regex.exec(html);
+  while (result !== null) {
+    const resultText = 'WILL BE REPLACED BY A LINK';
+    html = html.replace(result[0], resultText);
+    result = regex.exec(html);
+  }
+  return html;
 };
 
 /**

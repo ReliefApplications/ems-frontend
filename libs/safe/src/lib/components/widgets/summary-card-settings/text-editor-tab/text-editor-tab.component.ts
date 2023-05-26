@@ -35,6 +35,7 @@ export class SafeTextEditorTabComponent implements OnChanges {
     const dataKeys = getDataKeys(this.fields);
     const calcKeys = getCalcKeys();
     const keys = dataKeys.concat(calcKeys);
+    keys.push('{{page( value )}}');
     // Setup editor auto complete
     this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
   }
