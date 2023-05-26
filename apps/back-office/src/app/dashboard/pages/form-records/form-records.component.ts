@@ -192,7 +192,7 @@ export class FormRecordsComponent
     this.pageInfo.pageIndex = e.pageIndex;
     if (
       e.pageIndex > e.previousPageIndex &&
-      e.length > this.cachedRecords.length &&
+      e.totalItems > this.cachedRecords.length &&
       ITEMS_PER_PAGE * this.pageInfo.pageIndex >= this.cachedRecords.length
     ) {
       this.loadingMore = true;

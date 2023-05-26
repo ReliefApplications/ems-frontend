@@ -82,7 +82,7 @@ export class RoleUsersComponent
       ((e.pageIndex > e.previousPageIndex &&
         e.pageIndex * this.pageInfo.pageSize >= this.cachedUsers.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedUsers.length
+      e.totalItems > this.cachedUsers.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used

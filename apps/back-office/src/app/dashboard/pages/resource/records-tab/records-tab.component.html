@@ -165,14 +165,14 @@
         </table>
       </div>
       <!-- Pagination -->
-      <mat-paginator
+      <ui-paginator
         [disabled]="loading"
         [pageIndex]="pageInfo.pageIndex"
         [pageSize]="pageInfo.pageSize"
-        [length]="pageInfo.length"
+        [totalItems]="pageInfo.length"
         [ariaLabel]="'components.records.paginator.ariaLabel' | translate"
-        (page)="onPage($event)"
-      ></mat-paginator>
+        (pageChange)="onPage($event)"
+      ></ui-paginator>
     </div>
   </ng-container>
   <ng-template #emptyTmpl>

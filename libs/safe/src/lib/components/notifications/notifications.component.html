@@ -103,16 +103,16 @@
         </table>
       </div>
       <!-- Pagination -->
-      <mat-paginator
+      <ui-paginator
         [disabled]="loading || updating"
         [pageIndex]="pageInfo.pageIndex"
         [pageSize]="pageInfo.pageSize"
         [pageSizeOptions]="[10, 25, 50]"
-        [length]="pageInfo.length"
+        [totalItems]="pageInfo.length"
         [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
-        (page)="onPage($event)"
+        (pageChange)="onPage($event)"
       >
-      </mat-paginator>
+      </ui-paginator>
     </div>
   </ng-container>
   <ng-template #emptyTmpl>

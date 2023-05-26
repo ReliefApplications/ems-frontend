@@ -123,15 +123,15 @@
             class="cursor-pointer"
           ></tr>
         </table>
-        <mat-paginator
+        <ui-paginator
           [disabled]="loading || updating"
           [pageIndex]="pageInfo.pageIndex"
           [pageSize]="pageInfo.pageSize"
           [pageSizeOptions]="[10, 25, 50]"
-          [length]="pageInfo.length"
-          (page)="onPage($event)"
+          [totalItems]="pageInfo.length"
+          (pageChange)="onPage($event)"
         >
-        </mat-paginator>
+        </ui-paginator>
       </div>
     </div>
   </ng-container>

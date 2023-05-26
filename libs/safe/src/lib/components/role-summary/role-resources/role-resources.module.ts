@@ -4,8 +4,12 @@ import { RoleResourcesComponent } from './role-resources.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../../pipes/date/date.module';
 import { SafeSkeletonTableModule } from '../../../components/skeleton/skeleton-table/skeleton-table.module';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
-import { TooltipModule, ButtonModule, TableModule } from '@oort-front/ui';
+import {
+  TooltipModule,
+  ButtonModule,
+  TableModule,
+  PaginatorModule,
+} from '@oort-front/ui';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { FilterComponent } from '../role-resources-filter/role-resources-filter.component';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -33,7 +37,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
   imports: [
     CommonModule,
     TooltipModule,
-    MatPaginatorModule,
+    PaginatorModule,
     TranslateModule,
     SafeDateModule,
     SafeIconModule,

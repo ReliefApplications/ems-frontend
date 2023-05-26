@@ -131,7 +131,7 @@ export class ReferenceDatasComponent
         e.pageIndex * this.pageInfo.pageSize >=
           this.cachedReferenceDatas.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedReferenceDatas.length
+      e.totalItems > this.cachedReferenceDatas.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used

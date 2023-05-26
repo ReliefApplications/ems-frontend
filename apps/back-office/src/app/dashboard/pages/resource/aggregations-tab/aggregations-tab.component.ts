@@ -108,7 +108,7 @@ export class AggregationsTabComponent
         e.pageIndex * this.pageInfo.pageSize >=
           this.cachedAggregations.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedAggregations.length
+      e.totalItems > this.cachedAggregations.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used

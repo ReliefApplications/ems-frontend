@@ -148,7 +148,7 @@ export class ApplicationsComponent
         e.pageIndex * this.pageInfo.pageSize >=
           this.cachedApplications.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedApplications.length
+      e.totalItems > this.cachedApplications.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used

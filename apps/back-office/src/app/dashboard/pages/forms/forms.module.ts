@@ -14,7 +14,6 @@ import {
   FormsModule as AngularFormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
@@ -27,6 +26,7 @@ import {
   SpinnerModule,
   TableModule,
   ChipModule,
+  PaginatorModule,
 } from '@oort-front/ui';
 
 /** Forms page module */
@@ -47,7 +47,7 @@ import {
     MatInputModule,
     MatSelectModule,
     DividerModule,
-    MatPaginatorModule,
+    PaginatorModule,
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,

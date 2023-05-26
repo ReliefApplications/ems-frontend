@@ -114,7 +114,7 @@ export class PullJobsComponent
       ((e.pageIndex > e.previousPageIndex &&
         e.pageIndex * this.pageInfo.pageSize >= this.cachedPullJobs.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedPullJobs.length
+      e.totalItems > this.cachedPullJobs.length
     ) {
       this.loading = true;
       const variables = {
