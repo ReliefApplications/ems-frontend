@@ -95,6 +95,7 @@ export class AutocompleteDirective
    * @param renderer Renderer2
    * @param viewContainerRef ViewContainerRef
    * @param overlay Overlay
+   * @param document Document
    */
   constructor(
     @Self() @Optional() control: NgControl,
@@ -112,7 +113,6 @@ export class AutocompleteDirective
   @HostListener('click')
   onClick() {
     if (!this.autocompletePanel.openPanel) {
-      this.highLightSelectedOption();
       this.openAutocompletePanel();
     }
   }
@@ -128,6 +128,11 @@ export class AutocompleteDirective
         );
       }
     );
+    if (this.control?.control) {
+      this.selectedOption = this.control.control.value;
+    } else if (this.inputElement?.value) {
+      this.selectedOption = this.inputElement.value;
+    }
   }
 
   ngAfterContentInit(): void {
@@ -258,7 +263,9 @@ export class AutocompleteDirective
     );
     // Attach it to our overlay
     this.overlayRef.attach(templatePortal);
-    this.highLightSelectedOption();
+    if (this.inputElement.value !== '' && this.inputElement.value) {
+      this.highLightSelectedOption();
+    }
     this.filterAutocompleteOptions(this.inputElement.value);
     // We add the needed classes to create the animation on autocomplete display
     setTimeout(() => {
