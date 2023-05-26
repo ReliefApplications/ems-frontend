@@ -10,17 +10,21 @@
     <div mat-dialog-content>
       <form [formGroup]="chooseRecordForm" *ngIf="!isSearchActivated">
         <div class="flex flex-col">
-          <mat-form-field appearance="outline">
-            <mat-label>{{ 'common.record.one' | translate }}</mat-label>
-            <mat-select formControlName="record">
-              <mat-option
+          
+          <div uiFormFieldDirective [outline]="false">
+            <label>{{ 'common.record.one' | translate }}</label>
+            <ui-select-menu 
+              formControlName="record"
+            >
+              <ui-select-option
                 *ngFor="let record of records$ | async"
                 [value]="record.value"
+                [label]="record.label"
               >
                 {{ record.label }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+              </ui-select-option>
+            </ui-select-menu>
+          </div>        
         </div>
       </form>
       <safe-core-grid

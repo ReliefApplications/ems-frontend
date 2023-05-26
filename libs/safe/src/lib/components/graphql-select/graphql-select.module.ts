@@ -7,7 +7,12 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { SpinnerModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { ButtonModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  SelectMenuModule,
+  SelectOptionModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * Select module for GraphQL queries.
@@ -24,6 +29,9 @@ import { ButtonModule } from '@oort-front/ui';
     SpinnerModule,
     MatInputModule,
     ButtonModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    FormWrapperModule,
   ],
   exports: [SafeGraphQLSelectComponent],
 })

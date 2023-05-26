@@ -5,16 +5,18 @@
     <div mat-dialog-content>
       <form [formGroup]="convertForm">
         <div class="flex flex-col">
-          <mat-form-field appearance="outline">
-            <mat-label>{{
+          <div uiFormFieldDirective [outline]="false" class="flex-1">
+            <label>{{
               'components.record.convert.select' | translate
-            }}</mat-label>
-            <mat-select formControlName="targetForm">
-              <mat-option *ngFor="let form of availableForms" [value]="form">
+            }}</label>
+            <ui-select-menu 
+              formControlName="targetForm"
+            >
+              <ui-select-option *ngFor="let form of availableForms" [value]="form" [label]="form.name || ''">
                 {{ form.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+              </ui-select-option>              
+            </ui-select-menu>
+          </div>
           <div
             class="flex flex-col mb-5 gap-1"
             formControlName="copyRecord"

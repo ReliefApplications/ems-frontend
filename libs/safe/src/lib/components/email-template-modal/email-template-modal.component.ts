@@ -15,7 +15,12 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { ButtonModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  SelectMenuModule,
+  SelectOptionModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /** Interface for the dialog data input */
 interface DialogData {
@@ -34,6 +39,9 @@ interface DialogData {
     ReactiveFormsModule,
     TranslateModule,
     ButtonModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    FormWrapperModule,
   ],
   selector: 'safe-email-template-modal',
   templateUrl: './email-template-modal.component.html',

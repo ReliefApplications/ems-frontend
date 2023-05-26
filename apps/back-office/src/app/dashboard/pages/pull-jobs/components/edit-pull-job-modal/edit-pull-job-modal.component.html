@@ -118,46 +118,31 @@
             </safe-graphql-select>
           </mat-form-field>
           <!-- Channel to notify on -->
-          <!-- <div uiFormFieldDirective [outline]="false" class="flex-1">
-            <mat-label>{{ 'common.status' | translate }}</mat-label>
-            <ui-select-menu 
-              formControlName="status" 
-              [customTemplate]="statusTemplate"
-            >
-              <ui-select-option *ngFor="let status of statusChoices" [value]="status">
-                <ng-container
-                  *ngTemplateOutlet="
-                    statusTemplate;
-                    context: { $implicit: status }
-                  "
-                ></ng-container>
-              </ui-select-option>
-            </ui-select-menu>
-          </div> -->
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{
+          
+          <div uiFormFieldDirective [outline]="false" class="flex-1">
+            <label>{{
               'components.channel.dropdown.select' | translate
-            }}</mat-label>
-            <mat-select
-              #channelSelect
-              formControlName="channel"
-              placeholder="Select a channel"
+            }}</label>
+            <ui-select-menu 
+              formControlName="channel" 
               (opened)="onOpenApplicationSelect()"
             >
-              <mat-optgroup
-                *ngFor="let application of applications | async"
-                [label]="application.name || ''"
+              <ui-select-option 
+                *ngFor="let application of applications | async" 
+                [label]="application.name || ''" 
+                [isGrouped]="true"
               >
-                <mat-option
+                {{ application.name }}
+                <ui-select-option 
                   *ngFor="let channel of application.channels"
                   [value]="channel.id"
+                  [label]="channel.title || ''"
                 >
                   {{ channel.title }}
-                </mat-option>
-              </mat-optgroup>
-            </mat-select>
-          </mat-form-field>
-        
+                </ui-select-option>
+              </ui-select-option>
+            </ui-select-menu>
+          </div>        
         </div>
         <!-- Mapping -->
         <ui-expansion-panel

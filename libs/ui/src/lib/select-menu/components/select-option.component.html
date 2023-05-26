@@ -1,8 +1,10 @@
 <li
   [ngClass]="{
-    'bg-primary-600 text-white': selected
+    'bg-neutral-100' : isGrouped,
+    'text-gray-900 cursor-pointer hover:bg-primary-600 hover:text-white' : !isGrouped,
+    'bg-violet-800 text-white': selected
   }"
-  class="text-gray-900 relative cursor-pointer select-none py-2 pl-3 pr-9 hover:bg-primary-600 hover:text-white"
+  class="relative select-none py-2 pl-3 pr-9"
   (click)="onChangeFunction()"
 >
   <!-- Text, changes if selected -->

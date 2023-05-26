@@ -25,7 +25,13 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { SpinnerModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../ui/modal/modal.module';
-import { RadioModule, ButtonModule } from '@oort-front/ui';
+import {
+  RadioModule,
+  ButtonModule,
+  SelectMenuModule,
+  SelectOptionModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * An interface to define the structure of the data displayed in the modal
@@ -54,6 +60,9 @@ interface DialogData {
     SafeModalModule,
     ButtonModule,
     RadioModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    FormWrapperModule,
   ],
   selector: 'safe-convert-modal',
   templateUrl: './convert-modal.component.html',

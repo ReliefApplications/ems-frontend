@@ -36,6 +36,9 @@ import {
   TooltipModule,
   RadioModule,
   ButtonModule,
+  SelectMenuModule,
+  SelectOptionModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 
 /**
@@ -68,6 +71,9 @@ const ITEMS_PER_PAGE = 10;
     CronExpressionControlModule,
     RadioModule,
     ButtonModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    FormWrapperModule,
   ],
   selector: 'safe-edit-notification-modal',
   templateUrl: './edit-notification-modal.component.html',

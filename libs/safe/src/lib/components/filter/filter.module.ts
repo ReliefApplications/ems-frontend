@@ -9,7 +9,12 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { ButtonModule } from '@oort-front/ui';
+import { 
+  ButtonModule,
+  SelectMenuModule,
+  SelectOptionModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * Composite Filter module.
@@ -26,6 +31,9 @@ import { ButtonModule } from '@oort-front/ui';
     MatInputModule,
     MatDatepickerModule,
     ButtonModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    FormWrapperModule,
   ],
   exports: [SafeFilterComponent],
 })

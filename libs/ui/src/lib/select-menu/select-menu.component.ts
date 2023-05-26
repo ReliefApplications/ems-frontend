@@ -83,31 +83,28 @@ export class SelectMenuComponent
         }
       }
     );
-    setTimeout(() => {
-      this.optionList.forEach((option: SelectOptionComponent) => {
-        option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
-          next: (isSelected: boolean) => {
-            this.updateSelectedValues(option, isSelected);
-            this.onChangeFunction();
-          },
-        });
-      });
-      // Initialize any selected values
-      this.optionList?.changes
-        .pipe(startWith(this.optionList), takeUntil(this.destroy$))
-        .subscribe({
-          next: (options: QueryList<SelectOptionComponent>) => {
-            options.forEach((option) => {
-              if (this.selectedValues.includes(option.value)) {
-                option.selected = true;
-              } else {
-                option.selected = false;
-              }
+    this.optionList?.changes
+      .pipe(startWith(this.optionList), takeUntil(this.destroy$))
+      .subscribe({
+        next: (options: QueryList<SelectOptionComponent>) => {
+          options.forEach((option) => {
+            option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
+              next: (isSelected: boolean) => {
+                this.updateSelectedValues(option, isSelected);
+                this.onChangeFunction();
+              },
             });
-          },
-        });
-      this.setDisplayTriggerText();
-    }, 1750);
+            // Initialize any selected values
+            if (this.selectedValues.includes(option.value)) {
+              option.selected = true;
+            } else {
+              option.selected = false;
+            }
+            this.setDisplayTriggerText();
+          });
+        },
+      });
+    
   }
 
   /**
@@ -192,6 +189,7 @@ export class SelectMenuComponent
   /** Builds the text displayed from selected options */
   private setDisplayTriggerText() {
     const labelValues = this.getValuesLabel(this.selectedValues);
+    console.log(labelValues);
     // Adapt the text to be displayed in the trigger if no custom template for display is provided
     if (labelValues?.length) {
       if (!this.customTemplate) {
@@ -256,7 +254,6 @@ export class SelectMenuComponent
         return val;
       }
     });
-    console.log(values);
     return (values = values.map((val: any) => {
       if (val.label) {
         return val.label;
