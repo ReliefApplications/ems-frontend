@@ -16,6 +16,7 @@ export * from './lib/toggle/toggle.module';
 export * from './lib/textarea/textarea.module';
 export * from './lib/breadcrumbs/breadcrumbs.module';
 export * from './lib/divider/divider.module';
+export * from './lib/autocomplete/autocomplete.module';
 export * from './lib/select-menu/select-menu.module';
 export * from './lib/select-menu/components/select-option.module';
 export * from './lib/expansion-panel/expansion-panel.module';
