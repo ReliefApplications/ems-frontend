@@ -8,9 +8,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatIconModule } from '@angular/material/icon';
-import { TooltipModule, ButtonModule, TableModule } from '@oort-front/ui';
+import {
+  TooltipModule,
+  ButtonModule,
+  TableModule,
+  FormWrapperModule,
+  IconModule,
+} from '@oort-front/ui';
 import { SafeEmptyModule } from '../../ui/empty/empty.module';
 
 /**
@@ -27,7 +32,7 @@ import { SafeEmptyModule } from '../../ui/empty/empty.module';
   imports: [
     CommonModule,
     MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     MatIconModule,
     FormsModule,
     ReactiveFormsModule,
@@ -37,6 +42,7 @@ import { SafeEmptyModule } from '../../ui/empty/empty.module';
     SafeIconModule,
     SafeEmptyModule,
     TableModule,
+    IconModule,
   ],
   exports: [RoleFeaturesComponent],
 })

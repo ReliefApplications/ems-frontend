@@ -1,13 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { Form, Resource, SafeConfirmService } from '@oort-front/safe';
+import {
+  Form,
+  Resource,
+  SafeConfirmService,
+  SafeUnsubscribeComponent,
+} from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { DeleteFormMutationResponse, DELETE_FORM } from './graphql/mutations';
 import get from 'lodash/get';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { GetResourceByIdQueryResponse } from '../graphql/queries';
 import { GET_RESOURCE_FORMS } from './graphql/queries';
+import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
 
 /**
  *Forms tab of resource page
@@ -17,7 +23,10 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './forms-tab.component.html',
   styleUrls: ['./forms-tab.component.scss'],
 })
-export class FormsTabComponent implements OnInit {
+export class FormsTabComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   private resource!: Resource;
   public forms: Form[] = [];
   public loading = true;
@@ -45,8 +54,10 @@ export class FormsTabComponent implements OnInit {
     private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
-    private dialog: MatDialog
-  ) {}
+    private dialog: Dialog
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     const state = history.state;
@@ -88,7 +99,7 @@ export class FormsTabComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteFormMutationResponse>({

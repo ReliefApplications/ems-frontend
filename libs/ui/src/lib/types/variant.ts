@@ -8,5 +8,6 @@ export const variants = [
   'danger',
   'grey',
   'light',
+  'warning',
 ] as const;
 export type Variant = (typeof variants)[number];

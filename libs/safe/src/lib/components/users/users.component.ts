@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, Input, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { User, Role } from '../../models/user.model';
 import {
@@ -15,6 +15,8 @@ import { SafeDownloadService } from '../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SnackbarService } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /**
  * A component to display the list of users
@@ -24,7 +26,10 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-export class SafeUsersComponent implements OnInit {
+export class SafeUsersComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === INPUT DATA ===
   @Input() users: MatTableDataSource<User> = new MatTableDataSource<User>([]);
   @Input() roles: Role[] = [];
@@ -62,13 +67,15 @@ export class SafeUsersComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private downloadService: SafeDownloadService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private router: Router,
     private activatedRoute: ActivatedRoute
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.users.filterPredicate = (data: any) =>
@@ -100,7 +107,7 @@ export class SafeUsersComponent implements OnInit {
         uploadPath: 'upload/invite',
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<AddUsersMutationResponse>({
@@ -190,7 +197,7 @@ export class SafeUsersComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const ids = users.map((u) => u.id);
         this.loading = true;

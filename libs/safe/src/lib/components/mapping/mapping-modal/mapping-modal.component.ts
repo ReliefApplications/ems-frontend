@@ -1,19 +1,15 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { createFormGroup, Mapping } from '../mapping-forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { SafeModalModule } from '../../ui/modal/modal.module';
-import { MenuModule, ButtonModule } from '@oort-front/ui';
+import { MenuModule, ButtonModule, FormWrapperModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
 
 /**
  * Interface for the data injected into the modal.
@@ -33,11 +29,11 @@ interface MappingDialogData {
     MenuModule,
     MatIconModule,
     MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
-    SafeModalModule,
+    DialogModule,
     ButtonModule,
   ],
   selector: 'safe-mapping-modal',
@@ -55,8 +51,8 @@ export class SafeMappingModalComponent implements OnInit {
    * @param dialogRef Dialog reference for this modal.
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: MappingDialogData,
-    private dialogRef: MatDialogRef<SafeMappingModalComponent>
+    @Inject(DIALOG_DATA) public data: MappingDialogData,
+    private dialogRef: DialogRef<SafeMappingModalComponent>
   ) {}
 
   ngOnInit(): void {

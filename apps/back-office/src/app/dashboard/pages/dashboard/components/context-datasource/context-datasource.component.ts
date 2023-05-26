@@ -8,10 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import {
@@ -21,8 +18,8 @@ import {
   SafeAlertModule,
   SafeGraphQLSelectComponent,
   SafeGraphQLSelectModule,
-  SafeModalModule,
   SafeUnsubscribeComponent,
+  SafeIconModule,
 } from '@oort-front/safe';
 import { takeUntil } from 'rxjs';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -36,7 +33,7 @@ import {
   GET_RESOURCE,
   GET_RESOURCES,
 } from './graphql/queries';
-import { ButtonModule } from '@oort-front/ui';
+import { DialogModule, ButtonModule, TooltipModule } from '@oort-front/ui';
 
 /** Default items per resources query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -75,9 +72,11 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     TranslateModule,
     MatSelectModule,
     MatFormFieldModule,
-    SafeModalModule,
+    DialogModule,
     SafeGraphQLSelectModule,
     SafeAlertModule,
+    SafeIconModule,
+    TooltipModule,
     ButtonModule,
   ],
   templateUrl: './context-datasource.component.html',
@@ -116,8 +115,8 @@ export class ContextDatasourceComponent
    */
   constructor(
     private apollo: Apollo,
-    @Inject(MAT_DIALOG_DATA) public data: PageContextT,
-    public dialogRef: MatDialogRef<ContextDatasourceComponent>
+    @Inject(DIALOG_DATA) public data: PageContextT,
+    public dialogRef: DialogRef<ContextDatasourceComponent>
   ) {
     super();
     this.form = createContextDatasourceForm(data);
@@ -283,6 +282,6 @@ export class ContextDatasourceComponent
             displayField: formValue.displayField ?? '',
           };
 
-    this.dialogRef.close(context);
+    this.dialogRef.close(context as any);
   }
 }

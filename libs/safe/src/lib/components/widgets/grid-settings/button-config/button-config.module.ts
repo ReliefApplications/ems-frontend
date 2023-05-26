@@ -14,6 +14,7 @@ import {
   TooltipModule,
   ToggleModule,
   ButtonModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 
 /**
@@ -36,6 +37,7 @@ import {
     SafeIconModule,
     SafeQueryBuilderModule,
     ButtonModule,
+    FormWrapperModule,
   ],
   exports: [ButtonConfigComponent],
 })

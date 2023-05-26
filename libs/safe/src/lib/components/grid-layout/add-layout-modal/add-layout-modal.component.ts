@@ -1,9 +1,4 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import {
-  MatLegacyDialog as MatDialog,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
@@ -21,10 +16,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { SafeModalModule } from '../../ui/modal/modal.module';
 import { SafeGraphQLSelectModule } from '../../graphql-select/graphql-select.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { DialogModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Data needed for the dialog, should contain a layouts array, a form and a resource
@@ -47,7 +45,7 @@ interface DialogData {
     MatButtonModule,
     MatFormFieldModule,
     MatSelectModule,
-    SafeModalModule,
+    DialogModule,
     SafeGraphQLSelectModule,
     FormsModule,
     ReactiveFormsModule,
@@ -57,7 +55,10 @@ interface DialogData {
   templateUrl: './add-layout-modal.component.html',
   styleUrls: ['./add-layout-modal.component.scss'],
 })
-export class AddLayoutModalComponent implements OnInit {
+export class AddLayoutModalComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   private form?: Form;
   public resource?: Resource;
   public hasLayouts = false;
@@ -82,12 +83,13 @@ export class AddLayoutModalComponent implements OnInit {
    * @param apollo Apollo service
    */
   constructor(
-    private dialogRef: MatDialogRef<AddLayoutModalComponent>,
-    private dialog: MatDialog,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private dialogRef: DialogRef<AddLayoutModalComponent>,
+    private dialog: Dialog,
+    @Inject(DIALOG_DATA) public data: DialogData,
     private gridLayoutService: SafeGridLayoutService,
     private apollo: Apollo
   ) {
+    super();
     this.hasLayouts = data.hasLayouts;
     this.form = data.form;
     this.resource = data.resource;
@@ -131,13 +133,13 @@ export class AddLayoutModalComponent implements OnInit {
         queryName: this.resource?.queryName || this.form?.queryName,
       },
     });
-    dialogRef.afterClosed().subscribe((layout) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((layout: any) => {
       if (layout) {
         this.gridLayoutService
           .addLayout(layout, this.resource?.id, this.form?.id)
           .subscribe(({ data }) => {
             if (data?.addLayout) {
-              this.dialogRef.close(data.addLayout);
+              this.dialogRef.close(data.addLayout as any);
             } else {
               this.dialogRef.close();
             }

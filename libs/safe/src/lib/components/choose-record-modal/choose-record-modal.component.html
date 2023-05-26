@@ -1,13 +1,15 @@
-<safe-modal size="medium">
+<ui-dialog size="medium">
   <ui-spinner *ngIf="loading"></ui-spinner>
   <div *ngIf="!loading">
-    <h1 mat-dialog-title>
-      {{
-        'components.record.attach.selectTarget'
-          | translate : { name: data.targetForm.name }
-      }}
-    </h1>
-    <div mat-dialog-content>
+    <ng-container ngProjectAs="header">
+      <h1>
+        {{
+          'components.record.attach.selectTarget'
+            | translate : { name: data.targetForm.name }
+        }}
+      </h1>
+    </ng-container>
+    <ng-container ngProjectAs="content">
       <form [formGroup]="chooseRecordForm" *ngIf="!isSearchActivated">
         <div class="flex flex-col">
           <mat-form-field appearance="outline">
@@ -32,8 +34,8 @@
         class="h-96"
       >
       </safe-core-grid>
-    </div>
-    <div mat-dialog-actions align="end">
+    </ng-container>
+    <ng-container ngProjectAs="actions">
       <ui-button
         category="secondary"
         cdkFocusInitial
@@ -48,12 +50,12 @@
       <ui-button
         category="secondary"
         variant="primary"
-        [mat-dialog-close]="chooseRecordForm.value"
+        [uiDialogClose]="chooseRecordForm.value"
         cdkFocusInitial
         [disabled]="!chooseRecordForm.valid"
       >
         {{ 'components.record.attach.confirm' | translate }}
       </ui-button>
-    </div>
+    </ng-container>
   </div>
-</safe-modal>
+</ui-dialog>

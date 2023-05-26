@@ -3,8 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { ToggleModule, TooltipModule } from '@oort-front/ui';
+import { ToggleModule, TooltipModule, FormWrapperModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDisplayTabComponent } from './display-tab.component';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
@@ -18,7 +17,7 @@ import { SafeIconModule } from '../../../../ui/icon/icon.module';
     FormsModule,
     MatFormFieldModule,
     ReactiveFormsModule,
-    MatInputModule,
+    FormWrapperModule,
     MatDividerModule,
     TooltipModule,
     ToggleModule,

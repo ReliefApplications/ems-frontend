@@ -46,12 +46,12 @@
           </ng-container>
           <div class="flex flex-col gap-2">
             <!-- Text -->
-            <mat-form-field appearance="outline" class="flex-1">
-              <mat-label>{{
+            <div uiFormFieldDirective  class="flex-1">
+              <label>{{
                 'components.widget.settings.chart.text' | translate
-              }}</mat-label>
-              <input matInput formControlName="text" />
-            </mat-form-field>
+              }}</label>
+              <input formControlName="text" />
+            </div>
             <div class="flex gap-2 items-center">
               <!-- Font size -->
               <mat-form-field appearance="outline" class="flex-1">
@@ -231,31 +231,29 @@
             </h3>
             <div class="axis-container">
               <ui-toggle formControlName="enableMin"></ui-toggle>
-              <mat-form-field appearance="outline" floatLabel="always">
-                <mat-label>{{
+              <div uiFormFieldDirective >
+                <label>{{
                   'components.aggregationBuilder.operators.min' | translate
-                }}</mat-label>
+                }}</label>
                 <input
-                  matInput
                   formControlName="min"
                   type="number"
                   [placeholder]="'common.auto' | translate"
                 />
-              </mat-form-field>
+              </div>
             </div>
             <div class="axis-container">
               <ui-toggle formControlName="enableMax"></ui-toggle>
-              <mat-form-field appearance="outline" floatLabel="always">
-                <mat-label>{{
+              <div uiFormFieldDirective  floatLabel="always">
+                <label>{{
                   'components.aggregationBuilder.operators.max' | translate
-                }}</mat-label>
+                }}</label>
                 <input
-                  matInput
                   formControlName="max"
                   type="number"
                   [placeholder]="'common.auto' | translate"
                 />
-              </mat-form-field>
+              </div>
             </div>
           </ng-container>
           <!-- === Y AXIS PARAMETERS === -->
@@ -268,31 +266,29 @@
             </h3>
             <div class="axis-container">
               <ui-toggle formControlName="enableMin"></ui-toggle>
-              <mat-form-field appearance="outline" floatLabel="always">
-                <mat-label>{{
+              <div uiFormFieldDirective  floatLabel="always">
+                <label>{{
                   'components.aggregationBuilder.operators.min' | translate
-                }}</mat-label>
+                }}</label>
                 <input
-                  matInput
                   formControlName="min"
                   type="number"
                   [placeholder]="'common.auto' | translate"
                 />
-              </mat-form-field>
+              </div>
             </div>
             <div class="axis-container">
               <ui-toggle formControlName="enableMax"></ui-toggle>
-              <mat-form-field appearance="outline" floatLabel="always">
-                <mat-label>{{
+              <div uiFormFieldDirective  floatLabel="always">
+                <label>{{
                   'components.aggregationBuilder.operators.max' | translate
-                }}</mat-label>
+                }}</label>
                 <input
-                  matInput
                   formControlName="max"
                   type="number"
                   [placeholder]="'common.auto' | translate"
                 />
-              </mat-form-field>
+              </div>
             </div>
           </ng-container>
         </ui-expansion-panel>

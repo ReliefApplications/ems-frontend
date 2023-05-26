@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { SafeModalModule } from '@oort-front/safe';
+import { SafeEmptyModule, SafeSkeletonTableModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
@@ -15,6 +15,7 @@ import {
   MenuModule,
   ButtonModule,
   TableModule,
+  DialogModule,
 } from '@oort-front/ui';
 
 /**
@@ -35,7 +36,9 @@ import {
     MenuModule,
     MatButtonModule,
     TranslateModule,
-    SafeModalModule,
+    DialogModule,
+    SafeSkeletonTableModule,
+    SafeEmptyModule,
     ButtonModule,
     TableModule,
   ],

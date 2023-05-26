@@ -235,16 +235,18 @@ export class UserListComponent
         confirmText: this.translate.instant('components.confirmModal.delete'),
         confirmColor: 'warn',
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          const ids = users.map((u) => u.id);
-          this.loading = true;
-          this.selection.clear();
-          this.applicationService.deleteUsersFromApplication(ids, () =>
-            this.fetchUsers(true)
-          );
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            const ids = users.map((u) => u.id);
+            this.loading = true;
+            this.selection.clear();
+            this.applicationService.deleteUsersFromApplication(ids, () =>
+              this.fetchUsers(true)
+            );
+          }
+        });
     }
   }
 

@@ -260,6 +260,10 @@ $safe-theme: mat.define-light-theme(
 
 // === FORM FIELD ===
 @mixin form-field($theme) {
+  div > input:disabled {
+    opacity: 0.5;
+  }
+
   mat-label {
     safe-icon {
       vertical-align: text-bottom;
@@ -292,13 +296,6 @@ $safe-theme: mat.define-light-theme(
       transform: translateY(-1.1em) scale(0.75);
       width: 133.33333%;
     }
-  }
-}
-
-// === MODAL ===
-@mixin modal($theme) {
-  .mat-dialog-actions {
-    gap: 8px;
   }
 }
 
@@ -341,17 +338,6 @@ $safe-theme: mat.define-light-theme(
   }
 }
 
-.mat-chip {
-  min-width: 75px;
-  justify-content: center;
-  font-weight: 500 !important;
-
-  &.mat-chip-disabled {
-    opacity: 1 !important;
-    pointer-events: none;
-  }
-}
-
 // === FORMS ===
 .auth-form {
   padding: 32px 24px;
@@ -370,7 +356,6 @@ $safe-theme: mat.define-light-theme(
 @include slide-toggle($safe-theme);
 @include checkbox($safe-theme);
 @include form-field($safe-theme);
-@include modal($safe-theme);
 @include tooltip($safe-theme);
 @include custom-theme($safe-theme);
 
@@ -409,33 +394,29 @@ body {
 }
 
 // === DIALOGS ===
+.cdk-dialog-container {
+  @media (max-width: 640px) {
+    padding: 24px !important;
+  }
+}
+
 .fullscreen-dialog {
   max-width: unset !important;
   width: 100%;
   height: 100%;
+  .cdk-dialog-container {
+    @media (max-width: 640px) {
+      padding: unset !important;
+    }
+  }
+  ui-dialog {
+    max-height: 100vh !important;
+  }
 }
 
 .no-padding-dialog {
-  mat-dialog-container {
+  .cdk-dialog-container {
     padding: unset;
-  }
-}
-
-.resource-access-dialog {
-  max-width: unset !important;
-  width: 90%;
-  height: calc(100% - 72px);
-
-  mat-dialog-container {
-    position: relative;
-    border-radius: 4px 4px 0 0;
-    width: 100%;
-    background-color: #fafafa;
-  }
-
-  .mat-dialog-content {
-    max-height: calc(100% - 68px - 32px);
-    height: 100%;
   }
 }
 

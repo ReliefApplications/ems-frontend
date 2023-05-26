@@ -2,10 +2,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
 import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { environment } from 'projects/back-office/src/environments/environment';
 import {
   TranslateModule,
@@ -25,9 +25,9 @@ describe('SafeInviteUsersComponent', () => {
       providers: [
         { provide: 'environment', useValue: environment },
         UntypedFormBuilder,
-        { provide: MatDialogRef, useValue: {} },
+        { provide: DialogRef, useValue: {} },
         {
-          provide: MAT_DIALOG_DATA,
+          provide: DIALOG_DATA,
           useValue: {
             access: { canSee: null, canUpdate: null, canDelete: null },
           },
@@ -37,7 +37,7 @@ describe('SafeInviteUsersComponent', () => {
       declarations: [SafeInviteUsersComponent],
       imports: [
         HttpClientModule,
-        MatDialogModule,
+        DialogCdkModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

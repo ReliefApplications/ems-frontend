@@ -95,7 +95,6 @@ export class FormWrapperDirective
 
   private beyondLabelGeneral = [
     'relative',
-    'mt-0.5',
     'py-1.5',
     'px-2',
     'flex',
@@ -153,7 +152,9 @@ export class FormWrapperDirective
    * @param renderer renderer
    * @param elementRef references to the element on which the directive is applied
    */
-  constructor(private renderer: Renderer2, private elementRef: ElementRef) {}
+  constructor(private renderer: Renderer2, private elementRef: ElementRef) {
+    this.renderer.addClass(this.elementRef.nativeElement, 'mb-4');
+  }
 
   ngAfterContentInit() {
     // Get inner input and label elements

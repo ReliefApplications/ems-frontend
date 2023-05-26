@@ -5,7 +5,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { UntypedFormGroup } from '@angular/forms';
 import { PopupService } from '@progress/kendo-angular-popup';
@@ -21,7 +21,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../ui/modal/modal.module';
+import { DialogModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 
 /**
@@ -58,7 +58,7 @@ interface DialogData {
     MatButtonModule,
     MatInputModule,
     TranslateModule,
-    SafeModalModule,
+    DialogModule,
     ButtonModule,
   ],
   selector: 'safe-config-display-grid-fields-modal',
@@ -93,7 +93,7 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
    * @param queryBuilder The service used to build queries
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(DIALOG_DATA) public data: DialogData,
     private queryBuilder: QueryBuilderService
   ) {}
 

@@ -1,6 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import {
   Application,
@@ -89,7 +89,7 @@ export class ApplicationsComponent
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private router: Router,
     private snackBar: SnackbarService,
     private previewService: PreviewService,
@@ -251,7 +251,7 @@ export class ApplicationsComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const id = element.id;
         this.apollo
@@ -398,7 +398,7 @@ export class ApplicationsComponent
         application: element.id,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.previewService.setRole(value.role);
         this.router.navigate(['./app-preview', element.id]);
@@ -421,7 +421,7 @@ export class ApplicationsComponent
         name: application.name,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applications.data.push(value);
         // eslint-disable-next-line no-self-assign

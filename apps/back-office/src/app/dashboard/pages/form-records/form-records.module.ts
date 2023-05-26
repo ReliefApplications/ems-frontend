@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import {
   SafeRecordHistoryModule,
   SafeSkeletonTableModule,
+  SafeEmptyModule,
 } from '@oort-front/safe';
 import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
@@ -37,6 +38,7 @@ import {
     SafeSkeletonTableModule,
     ButtonModule,
     TableModule,
+    SafeEmptyModule,
   ],
   exports: [FormRecordsComponent],
 })

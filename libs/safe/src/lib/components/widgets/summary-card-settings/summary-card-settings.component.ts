@@ -13,12 +13,14 @@ import {
   UntypedFormArray,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   TileLayoutReorderEvent,
   TileLayoutResizeEvent,
 } from '@progress/kendo-angular-layout';
 import { cloneDeep, get } from 'lodash';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /** Define max height of summary card */
 const MAX_ROW_SPAN = 4;
@@ -38,7 +40,10 @@ const DEFAULT_CARD_WIDTH = 2;
   templateUrl: './summary-card-settings.component.html',
   styleUrls: ['./summary-card-settings.component.scss'],
 })
-export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
+export class SafeSummaryCardSettingsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit
+{
   // === REACTIVE FORM ===
   tileForm: UntypedFormGroup | undefined;
 
@@ -80,7 +85,9 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * @param fb Angular Form Builder.
    * @param dialog Material Dialog Service.
    */
-  constructor(private fb: UntypedFormBuilder, private dialog: MatDialog) {}
+  constructor(private fb: UntypedFormBuilder, private dialog: Dialog) {
+    super();
+  }
 
   /**
    * Build the settings form, using the widget saved parameters.
@@ -162,7 +169,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(SafeAddCardComponent, {
       data: { isDynamic: this.tileForm?.value.isDynamic },
     });
-    dialogRef.afterClosed().subscribe((res: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res) {
         this.cards.push(this.cardForm(res));
         setTimeout(() => {
@@ -230,9 +237,9 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
         right: '0',
       },
       panelClass: 'tile-settings-dialog',
-    });
+    } as any);
 
-    dialogRef.afterClosed().subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.cards.at(index).setValue(value);
       }

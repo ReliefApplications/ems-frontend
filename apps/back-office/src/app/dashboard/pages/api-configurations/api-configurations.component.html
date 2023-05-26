@@ -2,18 +2,17 @@
   <!-- Filters -->
   <div class="flex flex-col gap-4">
     <!-- Default filter -->
-    <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
+    <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
       <!-- Search text filter -->
-      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-        <mat-icon matPrefix>search</mat-icon>
-        <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
+      <div uiFormFieldDirective>
+        <mat-icon uiPrefix>search</mat-icon>
         <input
-          matInput
           [ngModel]="searchText"
           (keyup)="applyFilter('', $event)"
-          type="search"
+          type="text"
+          [placeholder]="'common.placeholder.search' | translate"
         />
-      </mat-form-field>
+      </div>
       <!-- Toggle advanced filters -->
       <ui-button
         class="max-sm:!w-auto"
@@ -63,17 +62,15 @@
     </div>
   </div>
   <!-- Actions -->
-  <div class="flex items-center">
-    <ui-button
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="onAdd()"
-      *ngIf="'create' | able : 'ApiConfiguration'"
-    >
-      {{ 'pages.apiConfigurations.create' | translate }}
-    </ui-button>
-  </div>
+  <ui-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="onAdd()"
+    *ngIf="'create' | able : 'ApiConfiguration'"
+  >
+    {{ 'pages.apiConfigurations.create' | translate }}
+  </ui-button>
 </div>
 
 <!-- Table container -->
@@ -82,7 +79,7 @@
   <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
-      cdk-table 
+      cdk-table
       uiTableWrapper
       (sortChange)="onSort($event)"
       [dataSource]="dataSource"
@@ -105,31 +102,29 @@
           </span>
         </th>
         <td uiCell *cdkCellDef="let element">
-          <mat-chip-list>
-            <mat-chip
-              class="success-chip !rounded-lg"
-              disabled
+          <div uiChipList="">
+            <ui-chip
+              class="!rounded-lg"
+              variant="success"
               *ngIf="element.status === 'active'"
             >
               {{ 'common.status_active' | translate | titlecase }}
-            </mat-chip>
-            <mat-chip
-              class="accent-chip !rounded-lg"
-              disabled
-              color="accent"
+            </ui-chip>
+            <ui-chip
+              class="!rounded-lg"
+              variant="warning"
               *ngIf="element.status === 'pending'"
             >
               {{ 'common.status_pending' | translate | titlecase }}
-            </mat-chip>
-            <mat-chip
-              class="warn-chip !rounded-lg"
-              disabled
-              color="warn"
+            </ui-chip>
+            <ui-chip
+              class="!rounded-lg"
+              variant="danger"
               *ngIf="element.status === 'archived'"
             >
               {{ 'common.status_archived' | translate | titlecase }}
-            </mat-chip>
-          </mat-chip-list>
+            </ui-chip>
+          </div>
         </td>
       </ng-container>
 

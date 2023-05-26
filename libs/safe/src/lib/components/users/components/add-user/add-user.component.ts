@@ -7,10 +7,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { GET_USERS, GetUsersQueryResponse } from '../../graphql/queries';
@@ -58,8 +55,8 @@ export class SafeAddUserComponent
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<SafeAddUserComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<SafeAddUserComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,
     public translate: TranslateService
   ) {

@@ -5,10 +5,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
   GetRecordDetailsQueryResponse,
   GET_RECORD_DETAILS,
@@ -24,7 +21,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SpinnerModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../ui/modal/modal.module';
+import { DialogModule } from '@oort-front/ui';
 import { RadioModule, ButtonModule } from '@oort-front/ui';
 
 /**
@@ -51,7 +48,7 @@ interface DialogData {
     MatSelectModule,
     SpinnerModule,
     TranslateModule,
-    SafeModalModule,
+    DialogModule,
     ButtonModule,
     RadioModule,
   ],
@@ -86,8 +83,8 @@ export class SafeConvertModalComponent
   constructor(
     private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
-    public dialogRef: MatDialogRef<SafeConvertModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    public dialogRef: DialogRef<SafeConvertModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {
     super();
   }

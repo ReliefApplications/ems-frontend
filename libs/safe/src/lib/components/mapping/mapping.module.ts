@@ -7,8 +7,12 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { SafeModalModule } from '../ui/modal/modal.module';
-import { MenuModule, ButtonModule, TableModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  ButtonModule,
+  TableModule,
+  DialogModule,
+} from '@oort-front/ui';
 
 /**
  * Mapping module
@@ -25,7 +29,7 @@ import { MenuModule, ButtonModule, TableModule } from '@oort-front/ui';
     MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
-    SafeModalModule,
+    DialogModule,
     ButtonModule,
     TableModule,
   ],
