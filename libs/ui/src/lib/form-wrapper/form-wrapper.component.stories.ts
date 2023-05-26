@@ -5,6 +5,8 @@ import { IconModule } from '../icon/icon.module';
 import { SpinnerModule } from '../spinner/spinner.module';
 import { SelectMenuModule } from '../select-menu/select-menu.module';
 import { SelectOptionModule } from '../select-menu/components/select-option.module';
+import { AutocompleteModule } from '../autocomplete/autocomplete.module';
+import { OptionModule } from '../option/option.module';
 
 export default {
   title: 'Form Wrapper',
@@ -17,6 +19,8 @@ export default {
         SpinnerModule,
         SelectMenuModule,
         SelectOptionModule,
+        AutocompleteModule,
+        OptionModule,
       ],
     }),
   ],
@@ -79,6 +83,59 @@ const TemplateSelect: StoryFn<any> = (args: any) => {
       options,
     },
   };
+};
+
+/**
+ * Template to create form wrapper component's story using autocomplete
+ *
+ * @param args args
+ * @returns StoryFn<FormWrapperComponent> story
+ */
+const TemplateAutocomplete: StoryFn<any> = (args: any) => {
+  return {
+    template: `<div uiFormFieldDirective [outline]="${args.outline}">
+    <label>Choose language</label>
+    <input
+    type="text"
+    placeholder="Select a value"
+    [uiAutocomplete]="auto"
+    (optionSelected)="selectedOption($event)"
+  >
+  <ui-autocomplete #auto>
+  <ui-option *ngFor="let option of options" [value]="option">
+    {{option}}
+    <ng-container ngProjectsAs="icon">
+    <ui-icon
+      [icon]="'edit'"
+      [size]="18"
+    ></ui-icon>
+    </ng-container>
+  </ui-option>
+  </ui-autocomplete>
+    <ui-spinner [size]="'medium'" uiSuffix></ui-spinner>
+    <ui-icon icon="search" uiPrefix></ui-icon>
+  </div>`,
+    props: {
+      ...args,
+      options,
+    },
+  };
+};
+
+/**
+ * Outline = False design + use of autocomplete
+ */
+export const OutlineFalseAutocomplete = TemplateAutocomplete.bind({});
+OutlineFalseAutocomplete.args = {
+  outline: false,
+};
+
+/**
+ * Outline = True design + use of autocomplete
+ */
+export const OutlineTrueAutocomplete = TemplateAutocomplete.bind({});
+OutlineTrueAutocomplete.args = {
+  outline: true,
 };
 
 /**

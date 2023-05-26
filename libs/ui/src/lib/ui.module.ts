@@ -10,6 +10,8 @@ import { PaginatorModule } from './paginator/paginator.module';
 import { AvatarGroupModule } from './avatar-group/avatar-group.module';
 import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
+import { AutocompleteModule } from './autocomplete/autocomplete.module';
+import { OptionModule } from './option/option.module';
 import { SelectMenuModule } from './select-menu/select-menu.module';
 import { SelectOptionModule } from './select-menu/components/select-option.module';
 import { ExpansionPanelModule } from './expansion-panel/expansion-panel.module';
@@ -22,6 +24,8 @@ import { FormWrapperModule } from './form-wrapper/form-wrapper.module';
 import { DialogModule } from './dialog/dialog.module';
 import { TabsModule } from './tabs/tabs.module';
 import { SnackbarModule } from './snackbar/snackbar.module';
+import { DatePickerModule } from './date/date-picker/date-picker.module';
+import { DateRangeModule } from './date/date-range/date-range.module';
 
 /**
  * UI Library Module
@@ -39,6 +43,8 @@ import { SnackbarModule } from './snackbar/snackbar.module';
     PaginatorModule,
     ToggleModule,
     DividerModule,
+    AutocompleteModule,
+    OptionModule,
     SelectMenuModule,
     SelectOptionModule,
     ExpansionPanelModule,
@@ -51,6 +57,8 @@ import { SnackbarModule } from './snackbar/snackbar.module';
     DialogModule,
     TabsModule,
     SnackbarModule,
+    DatePickerModule,
+    DateRangeModule,
   ],
 })
 export class UiModule {}
