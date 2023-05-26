@@ -50,7 +50,6 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
       parseHtml(this.html, this.fieldsValue, this.fields, this.styles)
     );
-    console.log(this.fieldsValue);
   }
 
   /**
@@ -65,7 +64,6 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
       parseHtml(this.html, this.fieldsValue, this.fields, this.styles)
     );
-    console.log(this.fieldsValue);
   }
 
   /**

@@ -84,14 +84,13 @@ export const parseHtml = (
 export const getCardStyle = (
   wholeCardStyles: boolean = false,
   styles: any[] = [],
-  fieldsValue: any[]
+  fieldsValue: any
 ) => {
   if (wholeCardStyles) {
     let lastRowStyle = '';
     if (fieldsValue) {
       styles.map((style: any) => {
         if (style.fields.length === 0) {
-          console.log('fields', style, fieldsValue);
           if (applyFilters(style.filter, fieldsValue)) {
             lastRowStyle = getLayoutStyle(style);
           }
@@ -114,7 +113,7 @@ export const getCardStyle = (
  */
 const replaceRecordFields = (
   html: string,
-  fieldsValue: any[],
+  fieldsValue: any,
   fields: any,
   styles: any[] = []
 ): string => {
