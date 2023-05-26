@@ -6,14 +6,13 @@ import { LabelModule } from '@progress/kendo-angular-label';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DateRangeComponent } from './date-range.component';
 import { IconModule } from '../../icon/icon.module';
-import { DatePickerDirective } from '../date-picker.directive';
-import { DateWrapperDirective } from '../date-wrapper.directive';
 import { TranslateModule } from '@ngx-translate/core';
+import { DateModule } from '../date.module';
 /**
  * UI Daterange module
  */
 @NgModule({
-  declarations: [DateRangeComponent, DatePickerDirective, DateWrapperDirective],
+  declarations: [DateRangeComponent],
   imports: [
     CommonModule,
     ButtonsModule,
@@ -22,7 +21,8 @@ import { TranslateModule } from '@ngx-translate/core';
     LabelModule,
     IconModule,
     TranslateModule,
+    DateModule,
   ],
-  exports: [DateRangeComponent, DatePickerDirective, DateWrapperDirective],
+  exports: [DateRangeComponent],
 })
 export class DateRangeModule {}
