@@ -15,21 +15,22 @@
   </div>
   <!-- GRID OF WIDGETS -->
   <!-- <div cdkDropList class="grid grid-cols-[repeat(${colsNumber}, minmax(0, 1fr))] -m-4" (cdkDropListDropped)="drop($event)"> -->
-  <div
+  <!-- <div
     cdkDropListGroup
     class="grid -m-4"
     [ngStyle]="{
       'grid-template-columns': colsNumberString,
       'grid-template-rows': '200px'
     }"
-  >
+  > -->
+  <safe-grid-stack class="-m-4">
     <!-- [columns]="colsNumber"
     [rowHeight]="200"
     [resizable]="canUpdate"
     [reorderable]="canUpdate"
     (reorder)="onReorder($event)"
     (resize)="onResize($event)" -->
-    <div
+    <!-- <div
       cdkDropList
       class="h-full"
       [ngStyle]="{
@@ -39,14 +40,18 @@
       [id]="'0'"
       [cdkDropListConnectedTo]="colsNumberConnections"
       [cdkDropListData]="widgets"
+    > -->
+    <div
+      class="safe-grid-item"
+      *ngFor="let widget of widgets; let i = index"
+      [class.shadow-2lg]="widget.settings.widgetDisplay?.showBorder ?? true"
+      [class.hover:shadow-2lg]="isBackOffice"
+      [class.bg-inherit]="!(widget.settings.widgetDisplay?.showBorder ?? true)"
     >
-      <div
+      <!-- <div
         cdkDrag
         *ngFor="let widget of widgets; let i = index"
         [class.shadow-2lg]="widget.settings.widgetDisplay?.showBorder ?? true"
-        [class.hide-border]="
-          !(widget.settings.widgetDisplay?.showBorder ?? true)
-        "
         [class.hover:shadow-2lg]="isBackOffice"
         [class.bg-inherit]="
           !(widget.settings.widgetDisplay?.showBorder ?? true)
@@ -63,7 +68,8 @@
             (!canUpdate && widgets.length === 1 ? 4 : widget.defaultRows)
         }"
         class="border-0 border-gray-800 rounded-md"
-      >
+      > -->
+      <div class="safe-grid-item-content">
         <div class="flex items-center justify-between">
           <safe-floating-options
             *ngIf="canUpdate"
@@ -78,7 +84,6 @@
             *ngIf="canUpdate"
             icon="drag_indicator"
             class="widget-handle"
-            cdkDragHandle
           >
           </safe-icon>
           <safe-button
@@ -99,7 +104,7 @@
         ></safe-widget>
       </div>
     </div>
-    <div
+    <!-- <div
       cdkDropList
       class="h-full"
       [ngStyle]="{
@@ -170,30 +175,32 @@
       </div>
     </div>
   </div>
-</div>
-<!-- LOADING INDICATOR -->
-<div *ngIf="loading" class="mt-6">
-  <div
-    class="grid -m-4"
-    [ngStyle]="{
-      'grid-template-columns': colsNumberString,
-      'grid-template-rows': '200px'
-    }"
-    class="-m-4"
-  >
+</div> -->
+  </safe-grid-stack>
+  <!-- LOADING INDICATOR -->
+  <div *ngIf="loading" class="mt-6">
     <div
-      *ngFor="let skeleton of skeletons"
+      class="grid -m-4"
       [ngStyle]="{
-        'grid-column': 'span ' + skeleton.colSpan,
-        'grid-row': 'span ' + skeleton.rowSpan
+        'grid-template-columns': colsNumberString,
+        'grid-template-rows': '200px'
       }"
+      class="-m-4"
     >
-      <kendo-skeleton
-        shape="rectangle"
-        animation="pulse"
-        [width]="'100%'"
-        [height]="'100%'"
-      ></kendo-skeleton>
+      <div
+        *ngFor="let skeleton of skeletons"
+        [ngStyle]="{
+          'grid-column': 'span ' + skeleton.colSpan,
+          'grid-row': 'span ' + skeleton.rowSpan
+        }"
+      >
+        <kendo-skeleton
+          shape="rectangle"
+          animation="pulse"
+          [width]="'100%'"
+          [height]="'100%'"
+        ></kendo-skeleton>
+      </div>
     </div>
   </div>
 </div>

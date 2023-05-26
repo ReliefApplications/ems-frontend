@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   HostListener,
   Inject,
@@ -76,6 +77,7 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
   }
 
   public isBackOffice = false;
+  private gridIsInitiated = false;
   public colsNumberString = '';
 
   /**
@@ -99,7 +101,8 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
   constructor(
     @Inject('environment') environment: any,
     public dialog: MatDialog,
-    private dashboardService: SafeDashboardService
+    private dashboardService: SafeDashboardService,
+    private el: ElementRef
   ) {
     if (environment.module === 'backoffice') this.isBackOffice = true;
   }
@@ -115,7 +118,7 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
       this.colsNumberConnections[i] = String(i);
       this.sampleList.push([]);
     }
-    console.log(this.canUpdate);
+    //console.log(this.canUpdate);
   }
 
   ngOnChanges() {
@@ -244,30 +247,30 @@ export class SafeWidgetGridComponent implements OnInit, OnChanges {
    * @param event cdk drag drop
    */
   drop(event: CdkDragDrop<string[]>) {
-    console.log(event);
+    //console.log(event);
     // moveItemInArray(this.widgets, event.previousIndex, event.currentIndex);
     if (event.previousContainer === event.container) {
-      console.log('same container');
+      //console.log('same container');
       moveItemInArray(
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
     } else {
-      console.log(event.container);
-      console.log('before');
-      console.log(this.sampleList);
+      //console.log(event.container);
+      //console.log('before');
+      //console.log(this.sampleList);
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
-      console.log('after');
-      console.log(this.sampleList);
+      //console.log('after');
+      //console.log(this.sampleList);
     }
-    console.log('canUpdate');
-    console.log(this.canUpdate);
+    //console.log('canUpdate');
+    //console.log(this.canUpdate);
   }
 
   /**
