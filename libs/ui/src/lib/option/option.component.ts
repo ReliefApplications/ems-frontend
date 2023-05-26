@@ -18,6 +18,7 @@ import {
 })
 export class OptionComponent {
   @Input() value!: any;
+  @Input() label: any = '';
   @Input() isGroup = false;
   @Output() itemClick = new EventEmitter<any>();
   @ContentChildren(forwardRef(() => OptionComponent))
@@ -30,6 +31,9 @@ export class OptionComponent {
    * Emit the value attribute of the option
    */
   onClickItem() {
+    if (this.isGroup) {
+      return;
+    }
     this.selected = !this.selected;
     this.itemClick.emit(this.selected);
   }

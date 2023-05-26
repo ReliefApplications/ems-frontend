@@ -20,60 +20,59 @@
             formControlName="title"
           />
         </div>
-        <mat-form-field appearance="outline">
-          <mat-label>{{
+        <div uiFormFieldDirective>
+          <label>{{
             'components.application.subscription.modal.listenTo' | translate
-          }}</mat-label>
+          }}</label>
           <input
             type="text"
             [placeholder]="
               'components.application.subscription.modal.placeholder.listenTo'
                 | translate
             "
-            matInput
             formControlName="routingKey"
-            [matAutocomplete]="auto"
-          />
-          <mat-autocomplete
-            autoActiveFirstOption
-            #auto="matAutocomplete"
-            #applicationSelect
+            [uiAutocomplete]="auto"
             (opened)="onOpenApplicationSelect()"
-          >
-            <mat-optgroup
-              *ngFor="let application of applications$ | async"
+          />
+          <ui-autocomplete #auto>
+            <ui-option
+              [isGroup]="true"
               [label]="application.name || ''"
+              *ngFor="let application of applications$ | async"
             >
-              <mat-option
+              {{ application.name || '' }}
+              <ui-option
                 *ngFor="let channel of application.channels"
                 [value]="channel.routingKey"
+                [label]="channel.title ?? ''"
               >
-                {{ channel.title }}
-              </mat-option>
-            </mat-optgroup>
-          </mat-autocomplete>
-          <ui-button
+                {{ channel.title ?? '' }}
+              </ui-option>
+            </ui-option>
+          </ui-autocomplete>
+          <safe-icon
             *ngIf="routingKey"
-            matSuffix
-            [isIcon]="true"
             icon="close"
-            [ariaLabel]="
+            class="cursor-pointer"
+            variant="primary"
+            uiSuffix
+            [uiTooltip]="
               'components.application.subscription.modal.routingKey.clear.ariaLabel'
                 | translate
             "
             (click)="routingKey = ''"
-          ></ui-button>
+          ></safe-icon>
           <safe-icon
             icon="info"
             class="cursor-pointer"
             variant="'grey'"
-            matSuffix
+            uiSuffix
             [uiTooltip]="
               'components.application.subscription.modal.hint.listenTo'
                 | translate
             "
           ></safe-icon>
-        </mat-form-field>
+        </div>
         <mat-form-field appearance="outline">
           <mat-label>{{
             'components.record.convert.select' | translate

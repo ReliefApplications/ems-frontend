@@ -1,8 +1,9 @@
-<div class="relative w-full">
-  <ul
-    [ngClass]="{ block: openPanel, hidden: !openPanel }"
-    class="z-10 absolute top-full max-h-60 w-full overflow-auto mt-2 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-  >
-    <ng-content></ng-content>
-  </ul>
-</div>
+<ng-template>
+  <div class="relative w-full">
+    <ul
+      class="z-10 block max-h-60 w-full overflow-auto mt-2 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+    >
+      <ng-content></ng-content>
+    </ul>
+  </div>
+</ng-template>

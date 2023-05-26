@@ -1,7 +1,7 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { DatePickerComponent } from './date-picker.component';
-import { DatePickerModule } from './date-picker.module';
+import { DateModule } from '../date.module';
 import { StorybookTranslateModule } from '../../../storybook-translate.module';
 
 export default {
@@ -9,11 +9,7 @@ export default {
   component: DatePickerComponent,
   decorators: [
     moduleMetadata({
-      imports: [
-        DatePickerModule,
-        ReactiveFormsModule,
-        StorybookTranslateModule,
-      ],
+      imports: [DateModule, ReactiveFormsModule, StorybookTranslateModule],
     }),
   ],
 } as Meta<DatePickerComponent>;

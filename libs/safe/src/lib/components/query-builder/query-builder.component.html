@@ -1,30 +1,29 @@
 <ng-container *ngIf="form">
   <form [formGroup]="form" [ngClass]="{ 'field-form': isField }">
     <div>
-      <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
-        <mat-label>{{
+      <div uiFormFieldDirective *ngIf="!isField && canSelectDataSet">
+        <label>{{
           'components.queryBuilder.dataset.select' | translate
-        }}</mat-label>
+        }}</label>
         <input
           type="text"
           [placeholder]="'components.queryBuilder.dataset.select' | translate"
-          matInput
           formControlName="name"
-          [matAutocomplete]="auto"
+          [uiAutocomplete]="auto"
         />
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-          <mat-option *ngFor="let option of filteredQueries" [value]="option">
+        <ui-autocomplete #auto>
+          <ui-option *ngFor="let option of filteredQueries" [value]="option">
             {{ option }}
-          </mat-option>
-        </mat-autocomplete>
+          </ui-option>
+        </ui-autocomplete>
         <safe-icon
           *ngIf="canSelectDataSet && form.invalid"
-          matSuffix
+          uiSuffix
           icon="error"
           variant="danger"
           [uiTooltip]="'components.form.layout.errors.invalid' | translate"
         ></safe-icon>
-      </mat-form-field>
+      </div>
 
       <mat-form-field
         appearance="outline"
@@ -46,30 +45,30 @@
       <div class="flex gap-2">
         <ui-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
         </ui-button>
-        <div uiFormFieldDirective >
+        <div uiFormFieldDirective>
           <label>{{ 'models.form.field.name' | translate }}</label>
           <input formControlName="name" type="text" />
         </div>
-        <div uiFormFieldDirective >
+        <div uiFormFieldDirective>
           <label>{{ 'models.form.field.label' | translate }}</label>
           <input formControlName="label" type="text" />
-          </div>
+        </div>
       </div>
     </ng-container>
-    <ui-tabs
-      *ngIf="form.getRawValue().name"
-    >
+    <ui-tabs *ngIf="form.getRawValue().name">
       <ui-tab>
-        <ng-container ngProjectAs="label">{{'components.queryBuilder.fields.title' | translate}}</ng-container>
+        <ng-container ngProjectAs="label">{{
+          'components.queryBuilder.fields.title' | translate
+        }}</ng-container>
 
-          <safe-tab-fields
-            *ngIf="availableFields.length > 0"
-            [form]="$any(form.controls.fields)"
-            [fields]="availableFields"
-            [showLimit]="true"
-          ></safe-tab-fields>
+        <safe-tab-fields
+          *ngIf="availableFields.length > 0"
+          [form]="$any(form.controls.fields)"
+          [fields]="availableFields"
+          [showLimit]="true"
+        ></safe-tab-fields>
       </ui-tab>
-      <ui-tab *ngIf="form.get('sort')" >
+      <ui-tab *ngIf="form.get('sort')">
         <ng-container ngProjectAs="label">{{
           (showLimit && form.get('first') !== null
             ? 'components.queryBuilder.sort.limitTitle'
@@ -83,10 +82,10 @@
           [showLimit]="showLimit && form.get('first') !== null"
         ></safe-tab-sort>
       </ui-tab>
-      <ui-tab
-        *ngIf="showFilter && form.get('filter')"
-      >
-        <ng-container ngProjectAs="label">{{'components.queryBuilder.filter.title' | translate}}</ng-container>
+      <ui-tab *ngIf="showFilter && form.get('filter')">
+        <ng-container ngProjectAs="label">{{
+          'components.queryBuilder.filter.title' | translate
+        }}</ng-container>
 
         <safe-tab-filter
           [form]="$any(form.controls.filter)"
@@ -95,7 +94,9 @@
         </safe-tab-filter>
       </ui-tab>
       <ui-tab *ngIf="showStyle && form.get('style')">
-        <ng-container ngProjectAs="label">{{'components.queryBuilder.style.title' | translate}}</ng-container>
+        <ng-container ngProjectAs="label">{{
+          'components.queryBuilder.style.title' | translate
+        }}</ng-container>
 
         <safe-tab-style
           [form]="$any(form.controls.style)"
@@ -105,7 +106,9 @@
         </safe-tab-style>
       </ui-tab>
       <ui-tab *ngIf="layoutPreviewData">
-        <ng-container ngProjectAs="label">{{'common.preview' | translate}}</ng-container>
+        <ng-container ngProjectAs="label">{{
+          'common.preview' | translate
+        }}</ng-container>
 
         <safe-tab-layout-preview [data]="layoutPreviewData">
         </safe-tab-layout-preview>

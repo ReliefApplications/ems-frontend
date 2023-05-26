@@ -1,7 +1,7 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { moduleMetadata, StoryFn, Meta } from '@storybook/angular';
 import { DateRangeComponent } from './date-range.component';
-import { DateRangeModule } from './date-range.module';
+import { DateModule } from '../date.module';
 import { StorybookTranslateModule } from '../../../storybook-translate.module';
 
 export default {
@@ -9,7 +9,7 @@ export default {
   component: DateRangeComponent,
   decorators: [
     moduleMetadata({
-      imports: [DateRangeModule, StorybookTranslateModule, ReactiveFormsModule],
+      imports: [DateModule, StorybookTranslateModule, ReactiveFormsModule],
     }),
   ],
 } as Meta<DateRangeComponent>;

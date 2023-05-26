@@ -5,10 +5,6 @@ import {
   FormControl,
   UntypedFormControl,
 } from '@angular/forms';
-import {
-  MatLegacyAutocompleteSelectedEvent as MatAutocompleteSelectedEvent,
-  MatLegacyAutocompleteTrigger as MatAutocompleteTrigger,
-} from '@angular/material/legacy-autocomplete';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 
@@ -33,8 +29,6 @@ export class SafeTagboxComponent implements OnInit {
   @Input() public label!: any;
   public separatorKeysCodes: number[] = [ENTER, COMMA];
   @ViewChild('textInput') private textInput?: ElementRef<HTMLInputElement>;
-  @ViewChild(MatAutocompleteTrigger)
-  private autoTrigger?: MatAutocompleteTrigger;
   public inputControl: AbstractControl = new UntypedFormControl();
   public showInput = true;
   public choicesEmpty = false;
@@ -200,8 +194,7 @@ export class SafeTagboxComponent implements OnInit {
    *
    * @param event Autocomplete event with the selected choice.
    */
-  selected(event: MatAutocompleteSelectedEvent): void {
-    window.requestAnimationFrame(() => this.autoTrigger?.openPanel());
+  selected(event: any): void {
     this.selectedChoices.push(
       this.currentChoices.find(
         (x) => x[this.valueKey] === event.option.value[this.valueKey]

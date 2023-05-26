@@ -1,7 +1,6 @@
 import {
   AfterContentInit,
   AfterViewInit,
-  ContentChild,
   ContentChildren,
   Directive,
   ElementRef,
@@ -12,7 +11,6 @@ import {
 } from '@angular/core';
 import { SuffixDirective } from './suffix.directive';
 import { PrefixDirective } from './prefix.directive';
-import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
 import { Subject, startWith, takeUntil } from 'rxjs';
 
 /**
@@ -34,9 +32,6 @@ export class FormWrapperDirective
   private allSuffixDirectives: QueryList<SuffixDirective> = new QueryList();
   @ContentChildren(PrefixDirective)
   private allPrefixDirectives: QueryList<PrefixDirective> = new QueryList();
-
-  @ContentChild(AutocompleteComponent, { read: ElementRef })
-  private autocompleteContent!: ElementRef;
 
   private currentInputElement!: HTMLInputElement;
   private currentLabelElement!: HTMLLabelElement;
@@ -234,13 +229,29 @@ export class FormWrapperDirective
       .pipe(startWith(this.allSuffixDirectives), takeUntil(this.destroy$))
       .subscribe({
         next: (suffixes: QueryList<SuffixDirective>) => {
-          for (const suffix of suffixes) {
+          suffixes.forEach((suffix) => {
             const suffixRef = (suffix as any).elementRef.nativeElement;
             if (!this.beyondLabelContainer.contains(suffixRef)) {
               this.applySuffixClasses(suffixRef);
-              this.renderer.appendChild(this.beyondLabelContainer, suffixRef);
+              // Support to insert elements in order if more than one suffix element is set
+              if (suffix === suffixes.first) {
+                try {
+                  this.renderer.insertBefore(
+                    this.beyondLabelContainer,
+                    suffixRef,
+                    suffixes.last.elementRef.nativeElement
+                  );
+                } catch (error) {
+                  this.renderer.appendChild(
+                    this.beyondLabelContainer,
+                    suffixRef
+                  );
+                }
+              } else {
+                this.renderer.appendChild(this.beyondLabelContainer, suffixRef);
+              }
             }
-          }
+          });
         },
       });
   }
@@ -309,14 +320,6 @@ export class FormWrapperDirective
         this.beyondLabelContainer,
         this.currentSelectElement
       );
-    }
-
-    if (this.autocompleteContent) {
-      this.renderer.removeClass(
-        this.autocompleteContent.nativeElement.querySelector('div'),
-        'relative'
-      );
-      this.renderer.addClass(this.elementRef.nativeElement, 'relative');
     }
 
     if (this.currentTextareaElement !== null) {

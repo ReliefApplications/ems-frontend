@@ -6,19 +6,13 @@ import { LabelModule } from '@progress/kendo-angular-label';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DatePickerComponent } from './date-picker.component';
 import { IconModule } from '../../icon/icon.module';
-import { DatePickerDirective } from '../date-picker.directive';
-import { DateWrapperDirective } from '../date-wrapper.directive';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * UI Datepicker module
  */
 @NgModule({
-  declarations: [
-    DatePickerComponent,
-    DatePickerDirective,
-    DateWrapperDirective,
-  ],
+  declarations: [DatePickerComponent],
   imports: [
     CommonModule,
     ButtonsModule,
@@ -28,6 +22,6 @@ import { TranslateModule } from '@ngx-translate/core';
     IconModule,
     TranslateModule,
   ],
-  exports: [DatePickerComponent, DatePickerDirective, DateWrapperDirective],
+  exports: [DatePickerComponent],
 })
 export class DatePickerModule {}

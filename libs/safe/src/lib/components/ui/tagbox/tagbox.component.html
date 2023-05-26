@@ -27,26 +27,27 @@
   </div>
   <!-- Search text control -->
   <input
+    *ngIf="showInput"
     type="text"
     [placeholder]="label"
     #textInput
     [formControl]="inputFormControl"
-    [matAutocomplete]="auto"
+    [uiAutocomplete]="auto"
+    (optionSelected)="selected($event)"
     [uiChipListFor]="chipList"
     [chipInputSeparatorKeyCodes]="separatorKeysCodes"
     [disabled]="choicesEmpty"
-    *ngIf="showInput"
     class="bg-transparent block overflow-hidden border-0 rounded-md w-full p-0 text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:ring-0 focus:ring-inset"
     (chipTokenEnd)="add($event)"
   />
   <!-- Filter choices -->
-  <mat-autocomplete
-    #auto="matAutocomplete"
-    (optionSelected)="selected($event)"
-    [displayWith]="displayName"
-  >
-    <mat-option *ngFor="let choice of filteredChoices | async" [value]="choice">
+  <ui-autocomplete #auto>
+    <ui-option
+      *ngFor="let choice of filteredChoices | async"  
+      [value]="choice"
+      [label]="choice[displayKey]"
+    >
       {{ choice[displayKey] }}
-    </mat-option>
-  </mat-autocomplete>
+    </ui-option>
+  </ui-autocomplete>
 </div>
