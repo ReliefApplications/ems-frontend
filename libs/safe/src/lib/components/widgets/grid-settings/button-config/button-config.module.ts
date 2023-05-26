@@ -4,15 +4,18 @@ import { ButtonConfigComponent } from './button-config.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { TabsModule } from '@oort-front/ui';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import {
+  CheckboxModule,
+  TooltipModule,
+  ToggleModule,
+  ButtonModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * Button config component for grid widget.
@@ -25,15 +28,16 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatSlideToggleModule,
+    ToggleModule,
     MatInputModule,
-    MatCheckboxModule,
+    CheckboxModule,
     MatSelectModule,
-    MatTabsModule,
-    MatTooltipModule,
-    SafeButtonModule,
+    TabsModule,
+    TooltipModule,
     SafeIconModule,
     SafeQueryBuilderModule,
+    ButtonModule,
+    FormWrapperModule,
   ],
   exports: [ButtonConfigComponent],
 })

@@ -1,13 +1,10 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatSort } from '@angular/material/sort';
+import { Component, OnInit } from '@angular/core';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ReferenceData,
   SafeAuthService,
   SafeConfirmService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import {
@@ -27,6 +24,10 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { Dialog } from '@angular/cdk/dialog';
+import { TableSort } from '@oort-front/ui';
+import { ApolloQueryResult } from '@apollo/client';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
@@ -41,7 +42,7 @@ const ITEMS_PER_PAGE = 10;
 })
 export class ReferenceDatasComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
   // === DATA ===
   public loading = true;
@@ -57,7 +58,7 @@ export class ReferenceDatasComponent
   public cachedReferenceDatas: ReferenceData[] = [];
 
   // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
+  sort?: TableSort;
 
   // === FILTERS ===
   public searchText = '';
@@ -82,8 +83,8 @@ export class ReferenceDatasComponent
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private router: Router,
@@ -110,6 +111,11 @@ export class ReferenceDatasComponent
       .subscribe(({ data, loading }) => {
         this.updateValues(data, loading);
       });
+    // Initializing sort to an empty one
+    this.sort = {
+      active: '',
+      sortDirection: '',
+    };
   }
 
   /**
@@ -200,7 +206,7 @@ export class ReferenceDatasComponent
       './add-reference-data/add-reference-data.component'
     );
     const dialogRef = this.dialog.open(AddReferenceDataComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<AddReferenceDataMutationResponse>({
@@ -260,7 +266,7 @@ export class ReferenceDatasComponent
       confirmText: this.translate.instant('common.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteReferenceDataMutationResponse>({
@@ -306,10 +312,13 @@ export class ReferenceDatasComponent
   }
 
   /**
-   * Sets the sort in the view.
+   * Handle sort change.
+   *
+   * @param event sort event
    */
-  ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort || null;
+  onSort(event: TableSort): void {
+    this.sort = event;
+    this.fetchReferenceDatas(true);
   }
 
   /**
@@ -331,5 +340,47 @@ export class ReferenceDatasComponent
     this.pageInfo.endCursor = data.referenceDatas.pageInfo.endCursor;
     this.loading = loading;
     this.filterPredicate();
+  }
+
+  /**
+   * Update reference datas query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchReferenceDatas(refetch?: boolean): void {
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      sortField: this.sort?.sortDirection && this.sort.active,
+      sortOrder: this.sort?.sortDirection,
+    };
+    const cachedValues: GetReferenceDatasQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_REFERENCE_DATAS,
+      variables
+    );
+    if (refetch) {
+      this.cachedReferenceDatas = [];
+      this.pageInfo.pageIndex = 0;
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
+    } else {
+      if (refetch) {
+        // Rebuild the query
+        this.referenceDatasQuery.refetch(variables);
+      } else {
+        // Fetch more records
+        this.referenceDatasQuery
+          .fetchMore({
+            variables,
+          })
+          .then(
+            (results: ApolloQueryResult<GetReferenceDatasQueryResponse>) => {
+              this.updateValues(results.data, results.loading);
+            }
+          );
+      }
+    }
   }
 }

@@ -12,10 +12,9 @@ import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
 } from './graphql/queries';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   SafeAuthService,
-  SafeSnackBarService,
   Form,
   SafeConfirmService,
   SafeBreadcrumbService,
@@ -23,6 +22,7 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Form builder page
@@ -82,8 +82,8 @@ export class FormBuilderComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SafeSnackBarService,
-    public dialog: MatDialog,
+    private snackBar: SnackbarService,
+    public dialog: Dialog,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
@@ -103,7 +103,7 @@ export class FormBuilderComponent implements OnInit {
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       });
-      return dialogRef.afterClosed().pipe(
+      return dialogRef.closed.pipe(
         map((value) => {
           if (value) {
             this.authService.canLogout.next(true);

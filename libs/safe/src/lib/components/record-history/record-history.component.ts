@@ -8,12 +8,11 @@ import {
 } from '@angular/core';
 import { Record } from '../../models/record.model';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { SafeDownloadService } from '../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { Apollo } from 'apollo-angular';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import {
   GetRecordByIdQueryResponse,
   GetRecordHistoryByIdResponse,
@@ -25,6 +24,7 @@ import { Version } from '../../models/form.model';
 import { Subject } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -102,12 +102,12 @@ export class SafeRecordHistoryComponent
    * @param snackBar The snackbar service
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private downloadService: SafeDownloadService,
     private translate: TranslateService,
     private dateFormat: SafeDateTranslateService,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService
+    private snackBar: SnackbarService
   ) {
     super();
   }
@@ -271,7 +271,7 @@ export class SafeRecordHistoryComponent
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.revert(version);
       }

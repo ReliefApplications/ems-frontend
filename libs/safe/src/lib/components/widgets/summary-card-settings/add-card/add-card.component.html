@@ -1,21 +1,28 @@
-<safe-modal [closable]="true" size="medium">
-  <h1 mat-dialog-title>
-    {{ 'components.widget.settings.summaryCard.add' | translate }}
-  </h1>
-  <mat-dialog-content>
-    <!-- <mat-radio-group
-      [ariaLabel]="'components.widget.settings.summaryCard.options.ariaLabel' | translate"
-      [value]="false"
-      (change)="radioChange($event)"
-    >
-      <mat-radio-button [value]="false">{{
-        'components.widget.settings.summaryCard.static' | translate
-      }}</mat-radio-button>
-      <mat-radio-button [value]="true">{{
-        'components.widget.settings.summaryCard.dynamic' | translate
-      }}</mat-radio-button>
-    </mat-radio-group> -->
+<ui-dialog [closable]="true" size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.widget.settings.summaryCard.add' | translate }}
+    </h1>
+  </ng-container>
 
+  <ng-container ngProjectAs="content">
+    <!-- <div
+      uiRadioGroupDirective="recipientsTypeOptions"
+      [ariaLabel]="'components.widget.settings.summaryCard.options.ariaLabel' | translate"
+      (change)="radioChange($event)"
+      class="flex gap-12"
+    >
+      <ui-radio [value]="false" [checked]="true">
+        <ng-container ngProjectAs="label">
+          {{ 'components.widget.settings.summaryCard.static' | translate }}
+        </ng-container>
+      </ui-radio>
+      <ui-radio [value]="true">
+        <ng-container ngProjectAs="label">
+          {{ 'components.widget.settings.summaryCard.dynamic' | translate }}
+        </ng-container>
+      </ui-radio>
+    </div> -->
     <h2>
       {{
         'components.widget.settings.summaryCard.create.choice.template'
@@ -26,17 +33,16 @@
       <safe-icon icon="info"></safe-icon>
       {{ 'components.widget.settings.summaryCard.hint.dynamic' | translate }}
     </safe-alert>
-    <mat-form-field appearance="outline">
-      <mat-icon matPrefix>search</mat-icon>
+    <div uiFormFieldDirective>
+      <ui-icon [icon]="'search'" uiPrefix></ui-icon>
       <input
         id="custom-search"
-        matInput
         [formControl]="searchControl"
-        type="search"
+        type="text"
         [placeholder]="'common.placeholder.search' | translate"
       />
-      <safe-spinner *ngIf="loading" matSuffix></safe-spinner>
-    </mat-form-field>
+      <ui-spinner [size]="'small'" *ngIf="loading" uiSuffix></ui-spinner>
+    </div>
     <div class="card-templates">
       <ng-container *ngIf="loading">
         <ng-container *ngFor="let item of [].constructor(3); let i = index">
@@ -60,7 +66,7 @@
       </ng-container>
     </div>
     <mat-divider></mat-divider>
-    <safe-button
+    <ui-button
       class="!w-auto"
       variant="primary"
       category="secondary"
@@ -68,12 +74,12 @@
     >
       {{
         'components.widget.settings.summaryCard.create.choice.blank' | translate
-      }}</safe-button
+      }}</ui-button
     >
-  </mat-dialog-content>
-  <div mat-dialog-actions class="mat-dialog-actions" align="end">
-    <safe-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

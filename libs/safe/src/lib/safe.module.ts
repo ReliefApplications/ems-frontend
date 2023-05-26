@@ -11,7 +11,6 @@ import { SafeWidgetGridModule } from './components/widget-grid/widget-grid.modul
 import { SafeUsersModule } from './components/users/users.module';
 import { SafeRolesModule } from './components/roles/roles.module';
 import { SafeRecordHistoryModule } from './components/record-history/record-history.module';
-import { SafeButtonModule } from './components/ui/button/button.module';
 import { SafeContentChoiceModule } from './components/content-choice/content-choice.module';
 import { SafeWorkflowStepperModule } from './components/workflow-stepper/workflow-stepper.module';
 import { SafeApplicationsSummaryModule } from './components/applications-summary/applications-summary.module';
@@ -27,9 +26,7 @@ import { SafeIconModule } from './components/ui/icon/icon.module';
 import { SafeSummaryCardSettingsModule } from './components/widgets/summary-card-settings/summary-card-settings.module';
 import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
 import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-select.module';
-import { SafeModalModule } from './components/ui/modal/modal.module';
 import { SafeEmptyModule } from './components/ui/empty/empty.module';
-import { SafeDividerModule } from './components/ui/divider/divider.module';
 import { SafeLeftSidenavModule } from './components/left-sidenav/left-sidenav.module';
 import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.module';
 import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
@@ -55,7 +52,6 @@ import { DashboardFilterModule } from './components/dashboard-filter/dashboard-f
     SafeUsersModule,
     SafeRolesModule,
     SafeRecordHistoryModule,
-    SafeButtonModule,
     SafeContentChoiceModule,
     SafeWorkflowStepperModule,
     SafeApplicationsSummaryModule,
@@ -76,9 +72,7 @@ import { DashboardFilterModule } from './components/dashboard-filter/dashboard-f
     SafeSummaryCardSettingsModule,
     SafeRoleSummaryModule,
     SafeGraphQLSelectModule,
-    SafeModalModule,
     SafeEmptyModule,
-    SafeDividerModule,
     SafeLeftSidenavModule,
     // === Directives
     SafeSkeletonModule,

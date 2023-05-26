@@ -1,24 +1,25 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>
-    {{
-      data.subscription
-        ? ('common.editObject'
-          | translate : { name: 'common.subscription.one' | translate })
-        : ('models.subscription.new' | translate)
-    }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        data.subscription
+          ? ('common.editObject'
+            | translate : { name: 'common.subscription.one' | translate })
+          : ('models.subscription.new' | translate)
+      }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="subscriptionForm">
       <div class="flex flex-col">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.title' | translate }}</mat-label>
+        <div uiFormFieldDirective>
+          <label>{{ 'common.title' | translate }}</label>
           <input
             type="text"
             [placeholder]="'common.placeholder.title' | translate"
-            matInput
             formControlName="title"
           />
-        </mat-form-field>
+        </div>
         <mat-form-field appearance="outline">
           <mat-label>{{
             'components.application.subscription.modal.listenTo' | translate
@@ -51,7 +52,7 @@
               </mat-option>
             </mat-optgroup>
           </mat-autocomplete>
-          <safe-button
+          <ui-button
             *ngIf="routingKey"
             matSuffix
             [isIcon]="true"
@@ -61,13 +62,13 @@
                 | translate
             "
             (click)="routingKey = ''"
-          ></safe-button>
+          ></ui-button>
           <safe-icon
             icon="info"
             class="cursor-pointer"
-            variant="grey"
+            variant="'grey'"
             matSuffix
-            [matTooltip]="
+            [uiTooltip]="
               'components.application.subscription.modal.hint.listenTo'
                 | translate
             "
@@ -101,19 +102,17 @@
         </mat-form-field>
       </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
-    <safe-button
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="subscriptionForm.value"
+      [uiDialogClose]="subscriptionForm.value"
       cdkFocusInitial
       [disabled]="!subscriptionForm.valid"
     >
       {{ (data.subscription ? 'common.update' : 'common.create') | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

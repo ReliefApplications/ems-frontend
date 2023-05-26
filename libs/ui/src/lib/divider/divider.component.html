@@ -1,15 +1,15 @@
 <div
   class="divider-container"
   [ngClass]="{
-    'items-center': orientation === dividerOrientations.HORIZONTAL,
-    'vertical-right': position === dividerPositions.RIGHT,
-    'vertical-left': position === dividerPositions.LEFT
+    'items-center': orientation === 'horizontal',
+    'vertical-right': position === 'right',
+    'vertical-left': position === 'left'
   }"
 >
   <div
     [ngClass]="{
-      'orientation-horizontal': orientation === dividerOrientations.HORIZONTAL,
-      'orientation-vertical': orientation === dividerOrientations.VERTICAL
+      'orientation-horizontal': orientation === 'horizontal',
+      'orientation-vertical': orientation === 'vertical'
     }"
   >
     <!-- DIVIDER -->
@@ -17,15 +17,15 @@
       class="inset-0 flex items-center"
       aria-hidden="true"
       [ngClass]="{
-        horizontal: orientation === dividerOrientations.HORIZONTAL,
-        vertical: orientation === dividerOrientations.VERTICAL
+        horizontal: orientation === 'horizontal',
+        vertical: orientation === 'vertical'
       }"
     >
       <div
         class="border-t border-gray-300"
         [ngClass]="{
-          'w-full': orientation === dividerOrientations.HORIZONTAL,
-          'h-full': orientation === dividerOrientations.VERTICAL
+          'w-full': orientation === 'horizontal',
+          'h-full': orientation === 'vertical'
         }"
       ></div>
     </div>
@@ -33,19 +33,13 @@
     <div
       class="flex whitespace-nowrap"
       [ngClass]="{
-        'position-center':
-          position === dividerPositions.CENTER &&
-          orientation !== dividerOrientations.VERTICAL,
-        'position-left':
-          position === dividerPositions.LEFT &&
-          orientation !== dividerOrientations.VERTICAL,
-        'position-right':
-          position === dividerPositions.RIGHT &&
-          orientation !== dividerOrientations.VERTICAL,
-        'vertical-center': orientation === dividerOrientations.VERTICAL
+        'position-center': position === 'center' && orientation !== 'vertical',
+        'position-left': position === 'left' && orientation !== 'vertical',
+        'position-right': position === 'right' && orientation !== 'vertical',
+        'vertical-center': orientation === 'vertical'
       }"
     >
-      <span *ngIf="text" class="bg-white px-2 text-sm text-gray-500">
+      <span *ngIf="text" class="bg-[#FAFAFA] px-2 text-sm text-gray-500">
         {{ text }}
       </span>
     </div>

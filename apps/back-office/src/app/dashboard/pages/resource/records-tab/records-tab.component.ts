@@ -5,9 +5,9 @@ import {
   Record,
   Form,
   SafeConfirmService,
-  SafeSnackBarService,
   Resource,
   SafeDownloadService,
+  SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -25,6 +25,8 @@ import {
   GetResourceRecordsQueryResponse,
   GET_RESOURCE_RECORDS,
 } from './graphql/queries';
+import { SnackbarService } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
 
 /** Quantity of resource that will be loaded at once. */
 const ITEMS_PER_PAGE = 10;
@@ -42,7 +44,10 @@ const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
   templateUrl: './records-tab.component.html',
   styleUrls: ['./records-tab.component.scss'],
 })
-export class RecordsTabComponent implements OnInit {
+export class RecordsTabComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
   public dataSource = new MatTableDataSource<Record>([]);
   private cachedRecords: Record[] = [];
@@ -77,10 +82,12 @@ export class RecordsTabComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private translate: TranslateService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private downloadService: SafeDownloadService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     const state = history.state;
@@ -124,11 +131,13 @@ export class RecordsTabComponent implements OnInit {
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.deleteRecord(element.id);
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.deleteRecord(element.id);
+          }
+        });
     } else {
       this.deleteRecord(element.id);
     }

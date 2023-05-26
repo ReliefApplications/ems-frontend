@@ -6,10 +6,6 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
-import {
   Application,
   Channel,
   Form,
@@ -37,21 +33,21 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SubscriptionsRoutingModule } from '../../subscriptions-routing.module';
-import {
-  SafeButtonModule,
-  SafeIconModule,
-  SafeGraphQLSelectModule,
-  SafeModalModule,
-  SafeDividerModule,
-} from '@oort-front/safe';
+import { SafeIconModule, SafeGraphQLSelectModule } from '@oort-front/safe';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import {
+  SpinnerModule,
+  DividerModule,
+  MenuModule,
+  TooltipModule,
+  ButtonModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
 /** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -71,17 +67,17 @@ const ITEMS_PER_PAGE = 10;
     MatIconModule,
     MatInputModule,
     MatSelectModule,
-    MatMenuModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
+    SpinnerModule,
+    MenuModule,
     MatAutocompleteModule,
-    SafeDividerModule,
-    SafeButtonModule,
+    DividerModule,
     SafeIconModule,
     TranslateModule,
-    MatTooltipModule,
     SafeGraphQLSelectModule,
-    SafeModalModule,
+    DialogModule,
+    TooltipModule,
+    ButtonModule,
+    FormWrapperModule,
   ],
   selector: 'app-subscription-modal',
   templateUrl: './subscription-modal.component.html',
@@ -140,9 +136,9 @@ export class SubscriptionModalComponent
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<SubscriptionModalComponent>,
+    public dialogRef: DialogRef<SubscriptionModalComponent>,
     private apollo: Apollo,
-    @Inject(MAT_DIALOG_DATA)
+    @Inject(DIALOG_DATA)
     public data: {
       channels: Channel[];
       subscription?: Subscription;

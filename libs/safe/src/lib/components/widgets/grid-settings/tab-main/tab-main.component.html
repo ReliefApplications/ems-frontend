@@ -1,10 +1,10 @@
 <div [formGroup]="formGroup" class="flex flex-col">
   <h2>{{ 'common.general' | translate }}</h2>
   <!-- Widget title -->
-  <mat-form-field appearance="outline">
-    <mat-label>{{ 'common.title' | translate }}</mat-label>
-    <input matInput formControlName="title" type="string" />
-  </mat-form-field>
+  <div uiFormFieldDirective >
+    <label>{{ 'common.title' | translate }}</label>
+    <input formControlName="title" type="string" />
+  </div>
   <div class="flex gap-2 flex-wrap">
     <!-- Resource selection -->
     <mat-form-field appearance="outline" class="flex-1">
@@ -48,7 +48,7 @@
         matSuffix
         icon="info_outline"
         variant="grey"
-        [matTooltip]="
+        [uiTooltip]="
           'components.widget.settings.grid.tooltip.template' | translate
         "
       ></safe-icon>
@@ -66,13 +66,13 @@
       [selectedAggregations]="$any(formGroup).get('aggregations')"
     ></safe-aggregation-table>
   </div>
-  <safe-divider
+  <ui-divider
     *ngIf="
       !(formGroup.get('layouts')?.value.length > 0) &&
       !(formGroup.get('aggregations')?.value.length > 0)
     "
     [text]="'common.or' | translate"
-  ></safe-divider>
+  ></ui-divider>
   <!-- Layouts -->
   <div *ngIf="!(formGroup.get('aggregations')?.value.length > 0)">
     <h2>

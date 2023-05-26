@@ -18,52 +18,49 @@
     </mat-form-field>
   </div>
   <!-- Settings -->
-  <div class="flex flex-col">
+  <div class="flex flex-col gap-4">
     <div class="flex gap-x-2 flex-wrap">
-      <mat-form-field appearance="outline" class="flex-auto">
-        <mat-label>
+      <div uiFormFieldDirective class="flex-auto">
+        <label>
           {{ 'common.name' | translate }}
-        </mat-label>
+        </label>
         <input
-          matInput
           formControlName="name"
           type="text"
           [placeholder]="'common.placeholder.name' | translate"
         />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+      </div>
+      <div uiFormFieldDirective class="flex-1">
+        <label>
           {{ 'models.application.id' | translate }}
-        </mat-label>
-        <input matInput formControlName="id" type="text" />
-      </mat-form-field>
+        </label>
+        <input formControlName="id" type="text" />
+      </div>
     </div>
-
-    <mat-form-field appearance="outline">
-      <mat-label>
+    <div uiFormFieldDirective>
+      <label>
         {{ 'models.application.description' | translate }}
-      </mat-label>
-      <textarea
-        matInput
+      </label>
+      <ui-textarea
         formControlName="description"
         [placeholder]="
           'components.application.update.placeholder.description' | translate
         "
-        [cdkTextareaAutosize]="true"
-        [cdkAutosizeMinRows]="2"
-        [cdkAutosizeMaxRows]="5"
-      ></textarea>
-    </mat-form-field>
+        [minRows]="2"
+        [maxRows]="5"
+        name="textarea"
+      >
+      </ui-textarea>
+    </div>
   </div>
-  <safe-button
+  <ui-button
     category="secondary"
     variant="primary"
     (click)="onSubmit()"
     [disabled]="settingsForm.invalid || !settingsForm.dirty"
   >
     {{ 'common.saveChanges' | translate }}
-  </safe-button>
+  </ui-button>
 </form>
 <!-- Actions -->
 <div
@@ -73,14 +70,10 @@
   <h1>{{ 'pages.application.settings.actions' | translate }}</h1>
   <div class="flex gap-2 flex-wrap">
     <!-- Styling -->
-    <safe-button
-      category="secondary"
-      variant="primary"
-      (click)="onOpenStyle()"
-    >
+    <ui-button category="secondary" variant="primary" (click)="onOpenStyle()">
       {{ 'components.application.customStyling' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       icon="file_copy"
       category="tertiary"
       variant="primary"
@@ -88,8 +81,8 @@
       *ngIf="application.canUpdate"
     >
       {{ 'common.duplicate' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       icon="delete"
       category="tertiary"
       variant="danger"
@@ -97,6 +90,6 @@
       *ngIf="application.canDelete"
     >
       {{ 'common.delete' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </div>

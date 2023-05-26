@@ -1,8 +1,5 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -33,9 +30,9 @@ export class SafeAddCardComponent implements OnInit {
    * @param http Angular http client
    */
   constructor(
-    public dialogRef: MatDialogRef<SafeAddCardComponent>,
+    public dialogRef: DialogRef<SafeAddCardComponent>,
     @Inject('environment') environment: any,
-    @Inject(MAT_DIALOG_DATA) public data: { isDynamic: any },
+    @Inject(DIALOG_DATA) public data: { isDynamic: any },
     private http: HttpClient
   ) {
     this.templatesUrl = environment.apiUrl + '/summarycards/templates/';
@@ -83,7 +80,7 @@ export class SafeAddCardComponent implements OnInit {
    * Closes the modal sending the modal data.
    */
   onCreate(): void {
-    this.dialogRef.close(this.data);
+    this.dialogRef.close(this.data as any);
   }
 
   /**

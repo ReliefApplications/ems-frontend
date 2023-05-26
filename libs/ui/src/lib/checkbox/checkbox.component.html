@@ -1,5 +1,5 @@
-<div class="relative flex items-start">
-  <div class="flex h-6 items-center">
+<label for="{{ name }}" class="inline-flex">
+  <span class="mr-2">
     <input
       [attr.aria-describedby]="name + '-description'"
       [attr.aria-label]="ariaLabel"
@@ -12,14 +12,12 @@
       class="h-4 w-4 rounded border-gray-300"
       (click)="onSelect()"
     />
-  </div>
-  <div class="ml-3 text-sm leading-6">
-    <label for="{{ name }}" class="font-medium mr-1 text-gray-900">
-      <ng-content select="label"></ng-content>
-    </label>
+  </span>
+  <span class="text-sm text-dark-100 font-medium leading-6">
+    <ng-content select="label"></ng-content>
     <ng-content select="icon"></ng-content>
-    <p id="{{ name }}-description" class="text-gray-500">
+    <p id="{{ name }}-description" class="m-0 font-normal text-gray-500">
       <ng-content select="description"></ng-content>
     </p>
-  </div>
-</div>
+  </span>
+</label>

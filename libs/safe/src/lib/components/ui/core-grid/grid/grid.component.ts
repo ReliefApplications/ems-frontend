@@ -17,7 +17,7 @@ import {
   RowArgs,
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   EXPORT_SETTINGS,
   GRADIENT_SETTINGS,
@@ -44,17 +44,14 @@ import { PopupService } from '@progress/kendo-angular-popup';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { SafeGridService } from '../../../../services/grid/grid.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
 import { get, intersection } from 'lodash';
 import { applyLayoutFormat } from '../../../widgets/summary-card/parser/utils';
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
-import {
-  MatLegacySnackBarRef as MatSnackBarRef,
-  LegacyTextOnlySnackBar as TextOnlySnackBar,
-} from '@angular/material/legacy-snack-bar';
+import { SnackbarService } from '@oort-front/ui';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Factory for creating scroll strategy
@@ -105,7 +102,10 @@ const matches = (el: any, selector: any) =>
     },
   ],
 })
-export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
+export class SafeGridComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit, OnChanges
+{
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
   public environment: 'frontoffice' | 'backoffice';
@@ -220,7 +220,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() columnChange = new EventEmitter();
 
   // === SNACKBAR ===
-  private snackBarRef: MatSnackBarRef<TextOnlySnackBar> | undefined;
+  private snackBarRef!: any;
 
   /**
    * Constructor of the grid component
@@ -236,14 +236,15 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
    */
   constructor(
     @Inject('environment') environment: any,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private gridService: SafeGridService,
     private renderer: Renderer2,
     private downloadService: SafeDownloadService,
     private dashboardService: SafeDashboardService,
     private translate: TranslateService,
-    private snackBar: SafeSnackBarService
+    private snackBar: SnackbarService
   ) {
+    super();
     this.environment = environment.module || 'frontoffice';
   }
 
@@ -656,7 +657,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((res) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res) {
         this.exportSettings = res;
         this.export.emit(this.exportSettings);
@@ -696,7 +697,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((res) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res && res !== get(item, field)) {
         const value = { field: res };
         this.action.emit({ action: 'edit', item, value });
@@ -720,7 +721,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((res) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res) {
         this.action.emit({ action: 'update', item });
       }
@@ -741,7 +742,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
         template: this.dashboardService.findSettingsTemplate(this.widget),
       },
     });
-    dialogRef.afterClosed().subscribe((res) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res) {
         this.edit.emit({ type: 'data', id: this.widget.id, options: res });
       }
@@ -793,7 +794,9 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   public getStatusMessage(): string {
     if (this.status.error) {
       if (this.status.message && this.environment === 'backoffice') {
-        if (this.snackBarRef) this.snackBarRef.dismiss();
+        if (this.snackBarRef) {
+          this.snackBarRef.instance.dismiss();
+        }
         this.snackBarRef = this.snackBar.openSnackBar(this.status.message, {
           error: true,
         });

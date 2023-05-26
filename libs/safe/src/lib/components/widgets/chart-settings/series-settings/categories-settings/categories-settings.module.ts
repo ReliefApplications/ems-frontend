@@ -4,9 +4,8 @@ import { CategoriesSettingsComponent } from './categories-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ColorPickerModule } from '@progress/kendo-angular-inputs';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { ToggleModule, TooltipModule } from '@oort-front/ui';
 
 /**
  * Chart Serie: Categories settings module.
@@ -19,9 +18,9 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     ReactiveFormsModule,
     ColorPickerModule,
     TranslateModule,
-    MatSlideToggleModule,
+    ToggleModule,
     SafeIconModule,
-    MatTooltipModule,
+    TooltipModule,
   ],
   exports: [CategoriesSettingsComponent],
 })

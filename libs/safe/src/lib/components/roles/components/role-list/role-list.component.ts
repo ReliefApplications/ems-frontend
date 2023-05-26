@@ -6,11 +6,10 @@ import {
   AfterViewInit,
   ViewChild,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { Application } from '../../../../models/application.model';
 import { Role } from '../../../../models/user.model';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeApplicationService } from '../../../../services/application/application.service';
 import {
   AddRoleMutationResponse,
@@ -25,6 +24,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * This component is used to display the back-office roles tab
@@ -77,10 +77,10 @@ export class SafeRoleListComponent
    * @param activatedRoute Current Angular route
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private applicationService: SafeApplicationService,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private router: Router,
@@ -146,7 +146,7 @@ export class SafeRoleListComponent
     const dialogRef = this.dialog.open(SafeAddRoleComponent, {
       data: { title: 'components.role.add.title' },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         if (this.inApplication) {
           this.applicationService.addRole(value);
@@ -214,7 +214,7 @@ export class SafeRoleListComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         if (this.inApplication) {
           this.applicationService.deleteRole(item);

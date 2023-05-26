@@ -899,6 +899,7 @@
 						"add": "Ajouter une règle d'attribution",
 						"delete": "Supprimer la règle",
 						"edit": "Mettre à jour la règle d'attribution",
+						"none": "@TODO",
 						"title": "Règle"
 					},
 					"title": "Attribution automatique"

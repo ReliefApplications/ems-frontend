@@ -4,26 +4,24 @@
   <mat-datepicker-toggle matSuffix [for]="datePicker"> </mat-datepicker-toggle>
   <mat-datepicker #datePicker></mat-datepicker>
 </mat-form-field>
-<mat-form-field appearance="outline" *ngIf="useExpression">
-  <mat-label>{{ 'common.value.one' | translate }}</mat-label>
+<div uiFormFieldDirective  *ngIf="useExpression">
+  <label>{{ 'common.value.one' | translate }}</label>
   <input
-    matInput
-    matTooltip="YYYY/MM/DD"
-    matTooltipPosition="above"
+    uiTooltip="YYYY/MM/DD"
     [formControl]="control"
     type="text"
     placeholder="YYYY/MM/DD"
   />
-</mat-form-field>
-<safe-button
+</div>
+<ui-button
   [isIcon]="true"
   icon="change_circle_outline"
   variant="primary"
   (click)="changeEditor()"
-  [matTooltip]="
+  [uiTooltip]="
     (useExpression
       ? 'components.queryBuilder.tooltip.filter.date.usePicker'
       : 'components.queryBuilder.tooltip.filter.date.useExpression'
     ) | translate
   "
-></safe-button>
+></ui-button>

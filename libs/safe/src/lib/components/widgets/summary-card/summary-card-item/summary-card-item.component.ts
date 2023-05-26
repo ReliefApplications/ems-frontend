@@ -5,10 +5,9 @@ import {
   OnInit,
   TemplateRef,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
@@ -21,6 +20,7 @@ import {
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
 import { firstValueFrom } from 'rxjs';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Single Item component of Summary card widget.
@@ -53,8 +53,8 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    */
   constructor(
     private apollo: Apollo,
-    private dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    private dialog: Dialog,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
     private aggregationService: SafeAggregationService,
     private queryBuilder: QueryBuilderService

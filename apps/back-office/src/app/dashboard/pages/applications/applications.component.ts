@@ -1,11 +1,10 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import {
   Application,
   SafeConfirmService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import {
@@ -21,7 +20,6 @@ import {
   EDIT_APPLICATION,
 } from './graphql/mutations';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { Sort } from '@angular/material/sort';
 import { PreviewService } from '../../../services/preview.service';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
@@ -31,6 +29,8 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { TableSort } from '@oort-front/ui';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -63,7 +63,7 @@ export class ApplicationsComponent
     filters: [],
     logic: 'and',
   };
-  private sort: Sort = { active: '', direction: '' };
+  private sort: TableSort = { active: '', sortDirection: '' };
 
   public pageInfo = {
     pageIndex: 0,
@@ -89,9 +89,9 @@ export class ApplicationsComponent
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private router: Router,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private previewService: PreviewService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
@@ -110,8 +110,8 @@ export class ApplicationsComponent
           first: DEFAULT_PAGE_SIZE,
           afterCursor: null,
           filter: this.filter,
-          sortField: this.sort?.direction && this.sort.active,
-          sortOrder: this.sort?.direction,
+          sortField: this.sort?.sortDirection && this.sort.active,
+          sortOrder: this.sort?.sortDirection,
         },
       });
     this.apollo
@@ -183,7 +183,7 @@ export class ApplicationsComponent
    *
    * @param event sort event
    */
-  onSort(event: Sort): void {
+  onSort(event: TableSort): void {
     this.sort = event;
     this.fetchApplications(true);
   }
@@ -199,8 +199,8 @@ export class ApplicationsComponent
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
       filter: this.filter,
-      sortField: this.sort?.direction && this.sort.active,
-      sortOrder: this.sort?.direction,
+      sortField: this.sort?.sortDirection && this.sort.active,
+      sortOrder: this.sort?.sortDirection,
     };
     const cachedValues: GetApplicationsQueryResponse = getCachedValues(
       this.apollo.client,
@@ -251,7 +251,7 @@ export class ApplicationsComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const id = element.id;
         this.apollo
@@ -398,7 +398,7 @@ export class ApplicationsComponent
         application: element.id,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.previewService.setRole(value.role);
         this.router.navigate(['./app-preview', element.id]);
@@ -421,7 +421,7 @@ export class ApplicationsComponent
         name: application.name,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applications.data.push(value);
         // eslint-disable-next-line no-self-assign

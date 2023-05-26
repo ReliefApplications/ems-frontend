@@ -32,15 +32,16 @@
     >
       <!-- Edition -->
       <div class="flex-auto">
-        <safe-button
+        <ui-button
+          variant="light"
           [isIcon]="true"
           icon="edit"
           (click)="onEditFilter()"
-          [matTooltip]="
+          [uiTooltip]="
             'components.application.dashboard.editFilter' | translate
           "
         >
-        </safe-button>
+        </ui-button>
       </div>
       <!-- Position -->
       <div
@@ -52,13 +53,14 @@
         class="flex flex-auto justify-end"
       >
         <ng-container *ngFor="let position of positionList">
-          <safe-button
+          <ui-button
+            variant="light"
             matSuffix
             [isIcon]="true"
             icon="{{ position + '_panel_open' }}"
-            [fontSet]="'material-symbols-outlined'"
+            [isOutlined]="true"
             (click)="changeFilterPosition(position)"
-          ></safe-button>
+          ></ui-button>
         </ng-container>
       </div>
       <!-- Toggle opened status -->

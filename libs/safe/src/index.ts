@@ -4,7 +4,6 @@
 
 // === SERVICES ===
 export * from './lib/services/auth/auth.service';
-export * from './lib/services/snackbar/snackbar.service';
 export * from './lib/services/grid/grid.service';
 export * from './lib/services/application/application.service';
 export * from './lib/services/download/download.service';
@@ -89,9 +88,7 @@ export * from './lib/components/skeleton/skeleton-table/public-api';
 export * from './lib/components/mapping/public-api';
 export * from './lib/components/role-summary/public-api';
 export * from './lib/components/graphql-select/public-api';
-export * from './lib/components/ui/modal/public-api';
 export * from './lib/components/ui/empty/public-api';
-export * from './lib/components/ui/divider/public-api';
 export * from './lib/components/edit-calculated-field-modal/public-api';
 export * from './lib/components/utils/unsubscribe/public-api';
 export * from './lib/components/editable-text/public-api';
@@ -100,10 +97,8 @@ export * from './lib/components/dashboard-filter/public-api';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';
-export * from './lib/components/snackbar-spinner/public-api';
 
 // === UI ===
-export * from './lib/components/ui/button/public-api';
 export * from './lib/components/ui/alert/public-api';
 export * from './lib/components/ui/aggregation-builder/public-api';
 export * from './lib/components/ui/tagbox/public-api';

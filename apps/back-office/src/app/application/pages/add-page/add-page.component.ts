@@ -5,13 +5,11 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   ContentType,
   CONTENT_TYPES,
   Form,
   SafeApplicationService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
@@ -24,6 +22,8 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { SnackbarService } from '@oort-front/ui';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Number of items per page.
@@ -75,8 +75,8 @@ export class AddPageComponent
     private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
     super();
@@ -191,7 +191,7 @@ export class AddPageComponent
       '../../../components/add-form-modal/add-form-modal.component'
     );
     const dialogRef = this.dialog.open(AddFormModalComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const variablesData = { name: value.name };
         Object.assign(

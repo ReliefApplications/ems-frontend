@@ -7,11 +7,7 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
-import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Apollo } from 'apollo-angular';
 import {
   GET_RESOURCE,
@@ -29,20 +25,20 @@ import { Resource } from '../../../../models/resource.model';
 import get from 'lodash/get';
 import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
 import { CommonModule } from '@angular/common';
-import { SafeButtonModule } from '../../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import { TabsModule } from '@oort-front/ui';
 import { SafeDataSourceTabModule } from './data-source-tab/data-source.module';
 import { SafeValueSelectorTabModule } from './value-selector-tab/value-selector.module';
 import { SafeDisplayTabModule } from './display-tab/display.module';
 import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
 import { SafePreviewTabModule } from './preview-tab/preview.module';
-import { SafeModalModule } from '../../../ui/modal/modal.module';
+import { TooltipModule, ButtonModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
+// @TODO: Remove SafeIconModule import after ui-icon is being used in the app
+import { SafeIconModule } from '../../../ui/icon/icon.module';
 
 /**
  * Card modal component.
@@ -52,21 +48,21 @@ import { SafeModalModule } from '../../../ui/modal/modal.module';
   standalone: true,
   imports: [
     CommonModule,
-    SafeButtonModule,
     TranslateModule,
-    MatTooltipModule,
+    TooltipModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatTabsModule,
-    MatRadioModule,
+    TabsModule,
     SafeDataSourceTabModule,
     SafeValueSelectorTabModule,
     SafeDisplayTabModule,
     SafeTextEditorTabModule,
     SafePreviewTabModule,
-    SafeModalModule,
+    DialogModule,
+    ButtonModule,
+    SafeIconModule,
   ],
   selector: 'safe-card-modal',
   templateUrl: './card-modal.component.html',
@@ -106,8 +102,8 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
    * @param aggregationService Aggregation  service
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<SafeCardModalComponent>,
+    @Inject(DIALOG_DATA) public data: any,
+    public dialogRef: DialogRef<SafeCardModalComponent>,
     public fb: UntypedFormBuilder,
     private cdRef: ChangeDetectorRef,
     private apollo: Apollo,
@@ -348,10 +344,10 @@ export class SafeCardModalComponent implements OnInit, AfterViewInit {
   /**
    * Sets an internal variable with the current tab.
    *
-   * @param e Change tab event.
+   * @param event Change tab event.
    */
-  handleTabChange(e: MatTabChangeEvent) {
-    this.activeTabIndex = e.index;
+  handleTabChange(event: number) {
+    this.activeTabIndex = event;
   }
 
   /**

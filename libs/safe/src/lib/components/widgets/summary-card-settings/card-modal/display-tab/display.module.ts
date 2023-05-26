@@ -3,11 +3,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { ToggleModule, TooltipModule, FormWrapperModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDisplayTabComponent } from './display-tab.component';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 
 /** Display tab Module for summary card edition */
@@ -19,10 +17,10 @@ import { SafeIconModule } from '../../../../ui/icon/icon.module';
     FormsModule,
     MatFormFieldModule,
     ReactiveFormsModule,
-    MatInputModule,
+    FormWrapperModule,
     MatDividerModule,
-    MatSlideToggleModule,
-    MatTooltipModule,
+    TooltipModule,
+    ToggleModule,
     SafeIconModule,
   ],
   exports: [SafeDisplayTabComponent],

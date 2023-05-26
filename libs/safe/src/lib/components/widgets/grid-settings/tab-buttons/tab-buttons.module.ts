@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { TabButtonsComponent } from './tab-buttons.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SafeButtonModule } from '../../../ui/button/button.module';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { TabsModule } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ButtonConfigModule } from '../button-config/button-config.module';
 import { SafeAlertModule } from '../../../ui/alert/alert.module';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Buttons tab of grid widget configuration modal.
@@ -20,12 +20,12 @@ import { SafeAlertModule } from '../../../ui/alert/alert.module';
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    SafeButtonModule,
     SafeIconModule,
-    MatTabsModule,
+    TabsModule,
     DragDropModule,
     ButtonConfigModule,
     SafeAlertModule,
+    ButtonModule,
   ],
   exports: [TabButtonsComponent],
 })

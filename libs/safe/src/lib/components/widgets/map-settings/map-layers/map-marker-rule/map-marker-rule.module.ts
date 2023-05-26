@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import { MapMarkerRuleComponent } from './map-marker-rule.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeFilterModule } from '../../../../filter/filter.module';
+import { ButtonModule, DialogModule, FormWrapperModule } from '@oort-front/ui';
 
 /**
  * Single Marker Rule configuration module.
@@ -19,11 +18,12 @@ import { SafeFilterModule } from '../../../../filter/filter.module';
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatDialogModule,
+    DialogModule,
     MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     MatButtonModule,
     SafeFilterModule,
+    ButtonModule,
   ],
   exports: [MapMarkerRuleComponent],
 })

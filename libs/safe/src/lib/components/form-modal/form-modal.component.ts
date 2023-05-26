@@ -7,11 +7,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialog as MatDialog,
-} from '@angular/material/legacy-dialog';
+import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
   GetFormByIdQueryResponse,
   GetRecordByIdQueryResponse,
@@ -31,7 +27,6 @@ import {
 } from './graphql/mutations';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import addCustomFunctions from '../../utils/custom-functions';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, firstValueFrom, Observable, takeUntil } from 'rxjs';
@@ -40,19 +35,17 @@ import omitBy from 'lodash/omitBy';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../utils/cleanRecord';
 import { CommonModule } from '@angular/common';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { SafeButtonModule } from '../ui/button/button.module';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { ButtonModule, SnackbarService, TabsModule } from '@oort-front/ui';
 import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../ui/modal/modal.module';
-import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
+import { SpinnerModule } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
+import { DialogModule } from '@oort-front/ui';
 
 /**
  * Interface of Dialog data.
@@ -79,17 +72,16 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
   styleUrls: ['./form-modal.component.scss'],
   imports: [
     CommonModule,
-    MatDialogModule,
     MatIconModule,
     MatButtonModule,
-    MatTabsModule,
-    SafeButtonModule,
+    TabsModule,
     SafeIconModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,
-    SafeModalModule,
-    SafeSpinnerModule,
+    DialogModule,
+    ButtonModule,
+    SpinnerModule,
   ],
 })
 export class SafeFormModalComponent
@@ -140,11 +132,11 @@ export class SafeFormModalComponent
    * @param ngZone Angular Service to execute code inside Angular environment
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    public dialog: MatDialog,
-    public dialogRef: MatDialogRef<SafeFormModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
+    public dialog: Dialog,
+    public dialogRef: DialogRef<SafeFormModalComponent>,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
     private formHelpersService: SafeFormHelpersService,
@@ -323,13 +315,15 @@ export class SafeFormModalComponent
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       });
-      dialogRef.afterClosed().subscribe(async (value) => {
-        if (value) {
-          await this.onUpdate(survey);
-        } else {
-          this.saving = false;
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(async (value: any) => {
+          if (value) {
+            await this.onUpdate(survey);
+          } else {
+            this.saving = false;
+          }
+        });
       // Updates the data directly.
     } else {
       this.onUpdate(survey);
@@ -376,7 +370,7 @@ export class SafeFormModalComponent
                 this.dialogRef.close({
                   template: this.data.template,
                   data: data?.addRecord,
-                });
+                } as any);
               });
             }
           },
@@ -425,7 +419,7 @@ export class SafeFormModalComponent
               this.dialogRef.close({
                 template: this.form?.id,
                 data: data.editRecord,
-              });
+              } as any);
             }
           }
         },
@@ -473,7 +467,7 @@ export class SafeFormModalComponent
               this.dialogRef.close({
                 template: this.form?.id,
                 data: data.editRecords,
-              });
+              } as any);
             }
           }
         },
@@ -584,7 +578,7 @@ export class SafeFormModalComponent
     //       confirmColor: 'primary'
     //     }
     //   });
-    //   closeDialogRef.afterClosed().subscribe((value) => {
+    //   closeDialogRef.closed.subscribe((value: any) => {
     //     if(value){
     //       this.dialogRef.close();
     //     }
@@ -622,7 +616,7 @@ export class SafeFormModalComponent
    */
   private confirmRevertDialog(record: any, version: any) {
     const dialogRef = this.formHelpersService.createRevertDialog(version);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({

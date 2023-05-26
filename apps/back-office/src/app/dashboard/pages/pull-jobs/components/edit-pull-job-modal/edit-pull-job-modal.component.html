@@ -1,28 +1,30 @@
-<safe-modal size="medium">
+<ui-dialog size="medium">
   <!-- Modal header -->
-  <h1 mat-dialog-title>
-    {{
-      data.pullJob
-        ? ('common.editObject'
-          | translate : { name: 'common.pullJob.one' | translate })
-        : ('models.pullJob.new' | translate)
-    }}
-  </h1>
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        data.pullJob
+          ? ('common.editObject'
+            | translate : { name: 'common.pullJob.one' | translate })
+          : ('models.pullJob.new' | translate)
+      }}
+    </h1>
+  </ng-container>
+
   <!-- Modal content -->
-  <div mat-dialog-content>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="formGroup">
       <div class="flex flex-col pb-1">
         <div class="flex gap-x-2 flex-wrap">
           <!-- Title -->
-          <mat-form-field appearance="outline" class="flex-auto">
-            <mat-label>{{ 'common.name' | translate }}</mat-label>
+          <div uiFormFieldDirective class="flex-auto">
+            <label>{{ 'common.name' | translate }}</label>
             <input
               type="text"
               [placeholder]="'common.placeholder.name' | translate"
-              matInput
               formControlName="name"
             />
-          </mat-form-field>
+          </div>
           <!-- Status -->
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'common.status' | translate }}</mat-label>
@@ -66,43 +68,41 @@
         </mat-form-field>
         <div class="flex gap-x-2 flex-wrap" *ngIf="!isHardcoded">
           <!-- Url to pull -->
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'models.pullJob.url' | translate }}</mat-label>
+          <div uiFormFieldDirective class="flex-1">
+            <label>{{ 'models.pullJob.url' | translate }}</label>
             <input
               type="text"
               [placeholder]="
                 'components.pullJob.modal.placeholder.url' | translate
               "
-              matInput
               formControlName="url"
             />
             <safe-icon
               icon="info"
               class="cursor-pointer"
               variant="grey"
-              matSuffix
-              [matTooltip]="'components.pullJob.modal.hint.url' | translate"
+              uiSuffix
+              [uiTooltip]="'components.pullJob.modal.hint.url' | translate"
             ></safe-icon>
-          </mat-form-field>
+          </div>
           <!-- Path to pull -->
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'models.pullJob.path' | translate }}</mat-label>
+          <div uiFormFieldDirective class="flex-1">
+            <label>{{ 'models.pullJob.path' | translate }}</label>
             <input
               type="text"
               [placeholder]="
                 'components.pullJob.modal.placeholder.path' | translate
               "
-              matInput
               formControlName="path"
             />
             <safe-icon
               icon="info"
               class="cursor-pointer"
               variant="grey"
-              matSuffix
-              [matTooltip]="'components.pullJob.modal.hint.path' | translate"
+              uiSuffix
+              [uiTooltip]="'components.pullJob.modal.hint.path' | translate"
             ></safe-icon>
-          </mat-form-field>
+          </div>
         </div>
         <div class="flex gap-x-2 flex-wrap">
           <!-- Resource to use for conversion -->
@@ -147,37 +147,34 @@
           </mat-form-field>
         </div>
         <!-- Mapping -->
-        <mat-expansion-panel
+        <ui-expansion-panel
           [expanded]="false"
           [disabled]="!formGroup.value.convertTo"
         >
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              {{ 'components.pullJob.modal.mapping' | translate }}
-            </mat-panel-title>
-          </mat-expansion-panel-header>
+          <ng-container ngProjectAs="title">
+            {{ 'components.pullJob.modal.mapping' | translate }}
+          </ng-container>
           <div class="flex flex-col gap-4">
             <div class="flex justify-end">
-              <safe-button
+              <ui-button
                 icon="edit_note"
                 category="secondary"
                 variant="primary"
                 (click)="toggleRawJSON()"
               >
                 {{ 'components.pullJob.modal.switch' | translate }}
-              </safe-button>
+              </ui-button>
             </div>
             <ng-container *ngIf="openRawJSON">
-              <mat-form-field appearance="outline">
-                <mat-label>{{ 'common.input.rawJson' | translate }}</mat-label>
-                <textarea
-                  matInput
+              <div uiFormFieldDirective>
+                <label>{{ 'common.input.rawJson' | translate }}</label>
+                <ui-textarea
                   formControlName="rawMapping"
                   placeholder="Please enter a JSON for the data mapping between the API and the Form."
-                  [cdkTextareaAutosize]="true"
-                  [cdkAutosizeMinRows]="2"
-                ></textarea>
-              </mat-form-field>
+                  [minRows]="2"
+                >
+                </ui-textarea>
+              </div>
             </ng-container>
             <ng-container *ngIf="!openRawJSON">
               <div class="flex flex-col gap-2 overflow-x-auto">
@@ -196,34 +193,34 @@
                       >
                     </mat-select>
                   </mat-form-field>
-                  <mat-form-field
-                    appearance="outline"
+                  <div
+                    uiFormFieldDirective
                     *ngIf="element.value.name"
                     class="p-0"
                   >
-                    <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-                    <input matInput formControlName="value" type="string" />
-                  </mat-form-field>
-                  <safe-button
+                    <label>{{ 'common.value.one' | translate }}</label>
+                    <input formControlName="value" type="string" />
+                  </div>
+                  <ui-button
                     [isIcon]="true"
                     icon="remove_circle_outline"
                     variant="danger"
                     (click)="onDeleteElement(i)"
                   >
-                  </safe-button>
+                  </ui-button>
                 </form>
-                <safe-button
+                <ui-button
                   *ngIf="filteredFields('').length > 0"
                   [isIcon]="true"
                   icon="add_circle_outline"
                   variant="primary"
                   (click)="onAddElement()"
                 >
-                </safe-button>
+                </ui-button>
               </div>
             </ng-container>
           </div>
-        </mat-expansion-panel>
+        </ui-expansion-panel>
         <!-- Unique identifiers -->
         <mat-form-field
           *ngIf="mappingArray.controls.length > 0"
@@ -244,48 +241,38 @@
         </mat-form-field>
       </div>
     </form>
-  </div>
+  </ng-container>
   <!-- Modal actions -->
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
-    <safe-button
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="returnFormValue()"
+      [uiDialogClose]="returnFormValue()"
       cdkFocusInitial
       [disabled]="!formGroup.valid"
       (click)="toggleRawJSON()"
     >
       {{ (data.pullJob ? 'common.update' : 'common.create') | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>
 
 <!-- Template to display status -->
 <ng-template #statusTemplate let-status>
-  <mat-chip-list>
-    <mat-chip
+  <div uiChipList>
+    <ui-chip
       class="success-chip !rounded-lg"
-      disabled
+      variant="success"
       *ngIf="status === 'active'"
     >
       {{ 'common.status_active' | translate | titlecase }}
-    </mat-chip>
-    <mat-chip
-      class="accent-chip !rounded-lg"
-      disabled
-      color="accent"
-      *ngIf="status === 'pending'"
-    >
+    </ui-chip>
+    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
       {{ 'common.status_pending' | translate | titlecase }}
-    </mat-chip>
-    <mat-chip
-      class="warn-chip !rounded-lg"
-      disabled
-      color="warn"
-      *ngIf="status === 'archived'"
-    >
+    </ui-chip>
+    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
       {{ 'common.status_archived' | translate | titlecase }}
-    </mat-chip>
-  </mat-chip-list>
+    </ui-chip>
+  </div>
 </ng-template>
