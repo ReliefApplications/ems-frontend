@@ -27,6 +27,8 @@ export * from './lib/chip/chip.module';
 export * from './lib/form-wrapper/form-wrapper.module';
 export * from './lib/dialog/dialog.module';
 export * from './lib/tabs/tabs.module';
+export * from './lib/date/date-range/date-range.module';
+export * from './lib/date/date-picker/date-picker.module';
 export * from './lib/snackbar/snackbar.service';
 
 // === TYPES === //
