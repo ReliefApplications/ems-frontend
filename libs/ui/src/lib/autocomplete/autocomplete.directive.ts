@@ -13,22 +13,16 @@ import {
   Optional,
   Self,
   ViewContainerRef,
+  Inject,
 } from '@angular/core';
 import { AutocompleteComponent } from './autocomplete.component';
 import { isEqual } from 'lodash';
-import {
-  Observable,
-  Subject,
-  Subscription,
-  filter,
-  merge,
-  startWith,
-  takeUntil,
-} from 'rxjs';
+import { Observable, Subject, Subscription, merge, takeUntil } from 'rxjs';
 import { OptionComponent } from '../option/option.component';
 import { NgControl } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * UI Autocomplete directive
@@ -51,11 +45,11 @@ export class AutocompleteDirective
   private inputElement!: HTMLInputElement;
   private selectedOption!: any;
   private inputEventListener!: any;
-  // private outsideClickListener!: any;
   private destroy$ = new Subject<void>();
   private control!: NgControl;
   private overlayRef!: OverlayRef;
   private autocompleteClosingActionsSubscription!: Subscription;
+  private selectOptionListener!: any;
 
   /**
    * Get the value from the option to set in the input host element
@@ -107,7 +101,8 @@ export class AutocompleteDirective
     private el: ElementRef,
     private renderer: Renderer2,
     private viewContainerRef: ViewContainerRef,
-    private overlay: Overlay
+    private overlay: Overlay,
+    @Inject(DOCUMENT) private document: Document
   ) {
     this.control = control;
     this.inputElement = el.nativeElement as HTMLInputElement;
@@ -145,70 +140,7 @@ export class AutocompleteDirective
             this.updateListAndSelectedOption(value);
           },
         });
-      this.selectedOption = this.control.control.value;
-      const optionToInputValue = this.getOptionValue({
-        value: this.selectedOption,
-      } as OptionComponent);
-      this.highLightSelectedOption();
-      this.filterAutocompleteOptions(optionToInputValue);
     }
-    this.autocompletePanel.options.changes
-      .pipe(
-        startWith(this.autocompletePanel.options),
-        filter(() => this.autocompletePanel.options.length !== 0),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: () => {
-          // Create the autocomplete panel items
-          this.setAutocompletePanelItemsListener();
-        },
-      });
-    // Create default autocomplete panel with all options
-    this.setAutocompletePanel();
-  }
-
-  /** Creates the autocomplete panel with the options list */
-  private setAutocompletePanel(): void {
-    // Get value from input
-    const searchText = this.inputElement.value;
-
-    // Create the autocomplete panel items
-    this.setAutocompletePanelItemsListener();
-
-    // Filter the options based on the search text, if no search text, display all options
-    this.filterAutocompleteOptions(searchText);
-  }
-
-  /**
-   * Recursively creates li elements to the options
-   */
-  private setAutocompletePanelItemsListener(): void {
-    // Highlight selected option
-    this.highLightSelectedOption();
-    // Listen to clickable elements in the list
-    this.getNotGroupOptionList().forEach((option: OptionComponent) => {
-      option.itemClick.pipe(takeUntil(this.destroy$)).subscribe({
-        next: (isSelected: boolean) => {
-          const optionToInputValue = isSelected
-            ? this.getOptionValue(option)
-            : '';
-          if (isSelected) {
-            this.selectedOption = option.value;
-          } else {
-            this.selectedOption = null;
-          }
-          if (this.control?.control) {
-            this.control.control.setValue(this.selectedOption);
-          } else {
-            this.inputElement.value = this.selectedOption;
-          }
-          this.optionSelected.emit(this.selectedOption);
-          this.filterAutocompleteOptions(optionToInputValue);
-          this.closeAutocompletePanel();
-        },
-      });
-    });
   }
 
   /**
@@ -326,6 +258,8 @@ export class AutocompleteDirective
     );
     // Attach it to our overlay
     this.overlayRef.attach(templatePortal);
+    this.highLightSelectedOption();
+    this.filterAutocompleteOptions(this.inputElement.value);
     // We add the needed classes to create the animation on autocomplete display
     setTimeout(() => {
       this.applyAutocompleteDisplayAnimation(true);
@@ -336,6 +270,40 @@ export class AutocompleteDirective
         // If so, destroy autocomplete
         () => this.closeAutocompletePanel()
       );
+
+    // Listeners to get the selected option
+    if (this.selectOptionListener) {
+      this.selectOptionListener();
+    }
+    this.selectOptionListener = this.renderer.listen(
+      this.document.getElementById('autocompleteList'),
+      'click',
+      (event: any) => {
+        const isGroup = JSON.parse(event.target.getAttribute('data-is-group'));
+        if (!isGroup) {
+          const optionValue = JSON.parse(
+            event.target.getAttribute('data-value')
+          );
+          const isSelected = JSON.parse(
+            event.target.getAttribute('data-selected')
+          );
+          if (isSelected) {
+            this.selectedOption = optionValue;
+          } else {
+            this.selectedOption = null;
+          }
+          if (this.control?.control) {
+            this.control.control.setValue(this.selectedOption, {
+              emitEvent: false,
+            });
+          } else {
+            this.inputElement.value = this.selectedOption;
+          }
+          this.optionSelected.emit(this.selectedOption);
+          this.closeAutocompletePanel();
+        }
+      }
+    );
     this.opened.emit();
   }
 
@@ -392,6 +360,9 @@ export class AutocompleteDirective
   ngOnDestroy(): void {
     if (this.inputEventListener) {
       this.inputEventListener();
+    }
+    if (this.selectOptionListener) {
+      this.selectOptionListener();
     }
     this.destroy$.next();
     this.destroy$.complete();

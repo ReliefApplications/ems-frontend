@@ -12,42 +12,44 @@
       "
     ></safe-icon>
   </div>
-  <!-- Chip list -->
-  <div uiChipList #chipList>
-    <!-- Individual chip choice -->
-    <!-- @TODO verify selectable-->
-    <ui-chip
-      *ngFor="let choice of selectedChoices"
-      [removable]="!choice.used"
-      [value]="choice"
-      (removed)="remove(choice)"
-    >
-      {{ choice[displayKey] }}
-    </ui-chip>
-  </div>
-  <!-- Search text control -->
-  <input
-    *ngIf="showInput"
-    type="text"
-    [placeholder]="label"
-    #textInput
-    [formControl]="inputFormControl"
-    [uiAutocomplete]="auto"
-    (optionSelected)="selected($event)"
-    [uiChipListFor]="chipList"
-    [chipInputSeparatorKeyCodes]="separatorKeysCodes"
-    [disabled]="choicesEmpty"
-    class="bg-transparent block overflow-hidden border-0 rounded-md w-full p-0 text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:ring-0 focus:ring-inset"
-    (chipTokenEnd)="add($event)"
-  />
-  <!-- Filter choices -->
-  <ui-autocomplete #auto>
-    <ui-option
-      *ngFor="let choice of filteredChoices | async"  
-      [value]="choice"
-      [label]="choice[displayKey]"
-    >
-      {{ choice[displayKey] }}
-    </ui-option>
-  </ui-autocomplete>
+  <ng-container *ngIf="showInput">
+    <!-- Chip list -->
+    <div uiChipList #chipList>
+      <!-- Individual chip choice -->
+      <!-- @TODO verify selectable-->
+      <ui-chip
+        *ngFor="let choice of selectedChoices"
+        [removable]="!choice.used"
+        [value]="choice"
+        (removed)="remove(choice)"
+      >
+        {{ choice[displayKey] }}
+      </ui-chip>
+    </div>
+    <!-- Search text control -->
+    <input
+      type="text"
+      [placeholder]="label"
+      #textInput
+      [formControl]="inputControl"
+      [uiAutocomplete]="auto"
+      [autocompleteDisplayKey]="'name'"
+      (optionSelected)="add($event)"
+      [uiChipListFor]="chipList"
+      [chipInputSeparatorKeyCodes]="separatorKeysCodes"
+      [disabled]="choicesEmpty"
+      class="bg-transparent block overflow-hidden border-0 rounded-md w-full p-0 text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:ring-0 focus:ring-inset"
+      (chipTokenEnd)="add($event)"
+    />
+    <!-- Filter choices -->
+    <ui-autocomplete #auto>
+      <ui-option
+        *ngFor="let choice of filteredChoices"
+        [value]="choice"
+        [label]="choice[displayKey]"
+      >
+        {{ choice[displayKey] }}
+      </ui-option>
+    </ui-autocomplete>
+  </ng-container>
 </div>
