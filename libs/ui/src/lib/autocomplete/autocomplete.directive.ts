@@ -17,7 +17,14 @@ import {
 } from '@angular/core';
 import { AutocompleteComponent } from './autocomplete.component';
 import { isEqual } from 'lodash';
-import { Observable, Subject, Subscription, merge, takeUntil } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  Subscription,
+  fromEvent,
+  merge,
+  takeUntil,
+} from 'rxjs';
 import { OptionComponent } from '../option/option.component';
 import { NgControl } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
@@ -189,6 +196,7 @@ export class AutocompleteDirective
           : this.getOptionValue(option);
       const childOptions = option.options.toArray();
       if (checkValue.toLowerCase().includes(searchText.toLowerCase())) {
+        option.display = true;
         childOptions.forEach((option) => (option.display = true));
       } else {
         if (childOptions.every((option) => !option.display)) {
@@ -218,7 +226,9 @@ export class AutocompleteDirective
       this.selectedOption = null;
       this.highLightSelectedOption();
     }
-    this.filterAutocompleteOptions(value);
+    if (this.autocompletePanel.openPanel) {
+      this.filterAutocompleteOptions(value);
+    }
   }
 
   // AUTOCOMPLETE DISPLAY LOGIC //
@@ -227,11 +237,13 @@ export class AutocompleteDirective
    */
   private openAutocompletePanel() {
     this.autocompletePanel.openPanel = true;
+    if (this.inputElement.value !== '' && this.inputElement.value) {
+      this.highLightSelectedOption();
+    }
+    this.filterAutocompleteOptions(this.inputElement.value);
     // We create an overlay for the displayed autocomplete as done for UI menu
     this.overlayRef = this.overlay.create({
-      hasBackdrop: true,
-      // Set overlay class - would be transparent
-      backdropClass: 'cdk-overlay-transparent-backdrop',
+      hasBackdrop: false,
       // close autocomplete on user scroll - default behavior, could be changed
       scrollStrategy: this.overlay.scrollStrategies.close(),
       // We position the displayed autocomplete taking current directive host element as reference
@@ -263,10 +275,6 @@ export class AutocompleteDirective
     );
     // Attach it to our overlay
     this.overlayRef.attach(templatePortal);
-    if (this.inputElement.value !== '' && this.inputElement.value) {
-      this.highLightSelectedOption();
-    }
-    this.filterAutocompleteOptions(this.inputElement.value);
     // We add the needed classes to create the animation on autocomplete display
     setTimeout(() => {
       this.applyAutocompleteDisplayAnimation(true);
@@ -338,11 +346,11 @@ export class AutocompleteDirective
    *
    * @returns Observable of actions
    */
-  private autocompleteClosingActions(): Observable<MouseEvent | void> {
-    const backdropClick$ = this.overlayRef.backdropClick();
+  private autocompleteClosingActions(): Observable<Event | void> {
+    const outsideClick$ = fromEvent(this.inputElement, 'focusout');
     const detachment$ = this.overlayRef.detachments();
 
-    return merge(backdropClick$, detachment$);
+    return merge(outsideClick$, detachment$);
   }
 
   /**
