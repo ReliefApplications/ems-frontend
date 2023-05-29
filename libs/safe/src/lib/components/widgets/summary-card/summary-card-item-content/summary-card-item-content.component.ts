@@ -3,6 +3,7 @@ import {
   Input,
   OnChanges,
   OnInit,
+  Inject,
   ViewEncapsulation,
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -39,6 +40,7 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
 
   public formattedHtml?: SafeHtml;
   resultText = '';
+  public environment: any;
 
   /**
    * Content component of Single Item of Summary Card.
@@ -48,12 +50,15 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    * @param apollo Apollo service
    */
   constructor(
+    @Inject('environment') environment: any,
     private sanitizer: DomSanitizer,
     private downloadService: SafeDownloadService,
     private router: Router,
     private route: ActivatedRoute,
     private apollo: Apollo
-  ) {}
+  ) {
+    this.environment = environment;
+  }
 
   ngOnInit(): void {
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
@@ -109,11 +114,25 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
         result[0].indexOf('(') + 1,
         result[0].lastIndexOf(')')
       );
+      //Get current app ID through the url of the current page
+      let currentAppId: string;
+      if (this.router.url.includes('applications/')) {
+        currentAppId = this.router.url.split('/')[2];
+      } else {
+        const urlAfterApp = this.router.url.substring(
+          this.router.url.lastIndexOf(
+            this.environment.frontOfficeUri + 'applications/'
+          ) + 1
+        );
+        currentAppId = urlAfterApp.split('/')[1];
+      }
+      //Check if page to link is from same app or not. If not, do not link it
       const sameApplication = await this.checkPageApplication(
         pageId,
-        this.router.url.split('/')[2]
+        currentAppId
       );
       if (sameApplication) {
+        //Get page information from the database
         const pagePromise: Promise<any> = firstValueFrom(
           this.apollo.query<GetPageByIdQueryResponse>({
             query: GET_PAGE_BY_ID,
@@ -123,13 +142,30 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
           })
         );
         const pageToLink = await Promise.resolve(pagePromise);
-        const url =
-          './applications/' +
-          pageId +
-          '/' +
-          pageToLink.data.page.type +
-          '/' +
-          pageToLink.data.page.id;
+        //Build the url depending on whether we are in the front or back office
+        let url: string;
+        if (this.router.url.includes('/applications')) {
+          url =
+            './applications/' +
+            currentAppId +
+            '/' +
+            pageToLink.data.page.type +
+            '/' +
+            pageToLink.data.page.id;
+        } else {
+          let finalUrlElement;
+          pageToLink.data.page.type === 'dashboard'
+            ? (finalUrlElement = pageToLink.data.page.content)
+            : (finalUrlElement = pageToLink.data.page.id);
+          url =
+            './' +
+            currentAppId +
+            '/' +
+            pageToLink.data.page.type +
+            '/' +
+            finalUrlElement;
+        }
+
         this.resultText =
           '<a href="' + url + '">' + pageToLink.data.page.name + '</a>';
       } else {
