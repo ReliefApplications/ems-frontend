@@ -1,6 +1,6 @@
 <section class="pt-2 block">
   <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
-    <div class="text-xs font-semibold pt-2 leading-6 text-gray-400">
+    <div class="ml-1 text-xs font-semibold pt-2 leading-6 text-gray-400">
       {{ group.name }}
       <ui-button
         *ngIf="appLayout && canAddPage"
@@ -31,12 +31,12 @@
       <ul>
         <ng-container *ngFor="let item of group.navItems">
           <div cdkDrag [cdkDragDisabled]="!item.orderable" class="show-icons">
-            <li class="flex items-center flex-row hover:bg-gray-50 rounded-md p-2 m-2">
+            <li class="flex items-center flex-row text-gray-700 active:text-primary-600 active:bg-gray-50 hover:bg-gray-50 hover:text-primary-600 rounded-md p-2 m-2">
               <a
                 [routerLink]="item.path"
                 routerLinkActive="active-link"
                 (click)="largeDevice ? null : nav.toggle()"
-                class ="text-gray-700 focus:text-primary-600 hover:text-primary-600 group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
+                class ="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
               >
                 <mat-icon class="nav-icon">
                   {{ item.icon }}
