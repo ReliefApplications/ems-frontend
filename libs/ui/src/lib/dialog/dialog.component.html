@@ -9,11 +9,14 @@
 >
 </ui-button>
 <div class="flex flex-col h-full overflow-hidden">
+  <!-- Dialog header -->
   <ng-content select="header"></ng-content>
+  <!-- Dialog content -->
   <div class="flex-1 overflow-auto">
     <ng-content select="content"></ng-content>
   </div>
-  <div class="py-2 flex flex-wrap min-h-[52px] align-center box-content -mb-6 justify-end gap-2">
+  <!-- Dialog footer -->
+  <div class="py-2 flex flex-wrap min-h-[52px] items-center box-content -mb-4 justify-end gap-2">
     <ng-content select="actions"></ng-content>
   </div>
 </div>

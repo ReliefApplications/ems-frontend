@@ -114,31 +114,6 @@ $ui-palette-warn: (
   }
 }
 
-// === ALERT ===
-@mixin alert($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
-
-  .safe-alert {
-    &-default {
-      $variant-color: #f1f1f1;
-      background-color: $variant-color;
-      color: darken($variant-color, 30%);
-    }
-
-    &-success {
-      background-color: rgba(149, 221, 101, 0.2);
-      color: rgb(149, 221, 101);
-    }
-
-    &-warning {
-      background-color: rgba(244, 174, 82, 0.2);
-      color: rgb(244, 174, 82);
-    }
-  }
-}
-
 *:focus,
 *:active:focus,
 *.active:focus {

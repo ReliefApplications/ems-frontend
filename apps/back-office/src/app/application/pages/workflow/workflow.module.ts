@@ -4,7 +4,6 @@ import { WorkflowRoutingModule } from './workflow-routing.module';
 import { WorkflowComponent } from './workflow.component';
 import {
   SafeAccessModule,
-  SafeAlertModule,
   SafeWorkflowStepperModule,
   SafeIconModule,
   SafeSkeletonModule,
@@ -15,7 +14,12 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeSearchMenuModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import { ButtonModule, MenuModule, SpinnerModule } from '@oort-front/ui';
+import {
+  AlertModule,
+  ButtonModule,
+  MenuModule,
+  SpinnerModule,
+} from '@oort-front/ui';
 
 /**
  * Application workflow page module.
@@ -34,11 +38,11 @@ import { ButtonModule, MenuModule, SpinnerModule } from '@oort-front/ui';
     MatIconModule,
     MenuModule,
     IndicatorsModule,
-    SafeAlertModule,
     SafeIconModule,
     SafeSkeletonModule,
     SafeEditableTextModule,
     ButtonModule,
+    AlertModule,
   ],
   exports: [WorkflowComponent],
 })
