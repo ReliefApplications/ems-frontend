@@ -34,7 +34,7 @@
             <li
               [routerLink]="item.path"
               routerLinkActive="active-link bg-gray-50"
-              class="flex items-center cursor-pointer flex-row text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md px-2 py-3 m-2"
+              class="flex justify-between items-center cursor-pointer flex-row text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md px-2 py-3 m-2"
             >
               <a
                 (click)="largeDevice ? null : nav.toggle()"
@@ -55,6 +55,7 @@
                   class="hide-icons hover:text-primary-600"
                   [isIcon]="true"
                   *ngIf="item.action"
+                  size="small"
                   (click)="onClick(item.action.callback, $event)"
                   uiTooltip="{{ item.action.toolTip }}"
                   icon="delete"
@@ -63,6 +64,7 @@
                 <ui-button
                   class="hide-icons hover:text-primary-600"
                   [isIcon]="true"
+                  size="small"
                   cdkDragHandle
                   *ngIf="item.orderable"
                   icon="drag_indicator"
