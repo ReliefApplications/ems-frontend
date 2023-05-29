@@ -1,10 +1,10 @@
-<div class="group flex-1">
+<div class="flex flex-col h-full">
   <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
     <span class="widget-title" [title]="settings.title">{{
       settings.title
     }}</span>
     <!-- Switch between grid and cards view -->
-    <div class="flex" *ngIf="settings.isDynamic === true">
+    <div class="flex">
       <safe-button
         [isIcon]="true"
         icon="grid_view"
@@ -20,44 +20,69 @@
         [matTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
       ></safe-button>
     </div>
-  </kendo-tilelayout-item-header>
-  <ng-container *ngIf="displayMode === 'cards' || settings.isDynamic === false">
     <safe-button
-      *ngIf="export && (displayMode === 'cards' || settings.isDynamic === false)"
+      *ngIf="export && displayMode === 'cards'"
       [isIcon]="true"
       icon="get_app"
-      class="export-button"
+      class="text-neutral-700"
       (click)="pdf.saveAs(exportName)"
     ></safe-button>
-    <kendo-pdf-export #pdf paperSize="A4" margin="2cm" style="overflow: auto">
-      <div
-        #summaryCardGrid
-        class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
-        style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
-      >
-        <safe-summary-card-item
-          *ngFor="let card of cards; let i = index"
-          class="k-tilelayout-item k-card"
-          [style.order]="i"
-          style.grid-column-end="{{
-            'span ' + (card.width > colsNumber ? colsNumber : card.width)
-          }}"
-          style.grid-row-end="{{ 'span ' + card.height }}"
-          [card]="card"
+  </kendo-tilelayout-item-header>
+  <!-- Cards display mode -->
+  <ng-container *ngIf="displayMode === 'cards'">
+    <!-- Search -->
+    <div class="bg-zinc-50 p-2" *ngIf="!!settings.widgetDisplay?.searchable">
+      <input
+        [placeholder]="'common.placeholder.search' | translate"
+        kendoTextBox
+        [formControl]="searchControl"
+        class="!w-full"
+      />
+    </div>
+    <!-- Export -->
+    <div class="w-full grow overflow-auto" #summaryCardGrid>
+      <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+        <div
+          class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
+          style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
         >
-        </safe-summary-card-item>
-      </div>
-    </kendo-pdf-export>
+          <safe-summary-card-item
+            *ngFor="let card of cards; let i = index"
+            class="k-tilelayout-item k-card"
+            [style.order]="i"
+            style.grid-column-end="{{
+              'span ' +
+                (card.width && card.width > colsNumber
+                  ? colsNumber
+                  : card.width)
+            }}"
+            style.grid-row-end="{{ 'span ' + card.height }}"
+            [card]="card"
+          >
+          </safe-summary-card-item>
+        </div>
+      </kendo-pdf-export>
+    </div>
+    <!-- Pagination -->
+    <kendo-datapager
+      [style.width.%]="100"
+      [pageSize]="pageInfo.first"
+      [pageSizeValues]="[10, 25, 50, 100]"
+      [skip]="pageInfo.skip"
+      [total]="pageInfo.totalCount"
+      (pageChange)="onPageChange($event)"
+    >
+    </kendo-datapager>
+  </ng-container>
+  <!-- Grid display mode -->
+  <ng-container *ngIf="displayMode === 'grid'">
+    <div class="w-full h-full">
+      <safe-grid-widget
+        class="flex-auto max-h-full w-full"
+        [header]="false"
+        [settings]="gridSettings"
+        [widget]="widget"
+      ></safe-grid-widget>
+    </div>
   </ng-container>
 </div>
-
-<ng-container *ngIf="displayMode === 'grid' && settings.isDynamic === true">
-  <div class="summary-grid">
-    <safe-grid-widget
-      class="flex-auto max-h-full w-full"
-      [header]="false"
-      [settings]="gridSettings"
-      [widget]="widget"
-    ></safe-grid-widget>
-  </div>
-</ng-container>

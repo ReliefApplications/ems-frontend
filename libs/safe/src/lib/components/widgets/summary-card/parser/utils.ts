@@ -52,28 +52,54 @@ const ICON_EXTENSIONS: any = {
  * @param fieldsValue Field value.
  * @param fields Available fields.
  * @param styles Array of layout styles.
- * @param wholeCardStyles Boolean indicating if styles should be applied to the wholecard.
  * @returns The parsed html.
  */
 export const parseHtml = (
   html: string,
   fieldsValue: any,
   fields: any,
-  styles?: any[],
-  wholeCardStyles?: boolean
+  styles?: any[]
 ) => {
   if (fieldsValue) {
     const htmlWithRecord = replaceRecordFields(
       html,
       fieldsValue,
       fields,
-      styles,
-      wholeCardStyles
+      styles
     );
     return applyOperations(htmlWithRecord);
   } else {
     return applyOperations(html);
   }
+};
+
+/**
+ * gets the style for the cards
+ *
+ * @param wholeCardStyles boolean
+ * @param styles available
+ * @param fieldsValue array of fields to apply the filters
+ * @returns the html styles
+ */
+export const getCardStyle = (
+  wholeCardStyles: boolean = false,
+  styles: any[] = [],
+  fieldsValue: any
+) => {
+  if (wholeCardStyles) {
+    let lastRowStyle = '';
+    if (fieldsValue) {
+      styles.map((style: any) => {
+        if (style.fields.length === 0) {
+          if (applyFilters(style.filter, fieldsValue)) {
+            lastRowStyle = getLayoutStyle(style);
+          }
+        }
+      });
+    }
+    return lastRowStyle;
+  }
+  return '';
 };
 
 /**
@@ -83,31 +109,15 @@ export const parseHtml = (
  * @param fieldsValue Content of the fields.
  * @param fields Available fields.
  * @param styles Array of layout styles.
- * @param wholeCardStyles Boolean indicating if styles should be applied to the whole card.
  * @returns formatted html.
  */
 const replaceRecordFields = (
   html: string,
-  fieldsValue: any[],
+  fieldsValue: any,
   fields: any,
-  styles: any[] = [],
-  wholeCardStyles: boolean = false
+  styles: any[] = []
 ): string => {
   let formattedHtml = html;
-  if (wholeCardStyles) {
-    let lastRowStyle: any = null;
-    styles.map((style: any) => {
-      if (style.fields.length === 0) {
-        lastRowStyle = style;
-      }
-    });
-    if (lastRowStyle) {
-      formattedHtml =
-        `<div style='${getLayoutStyle(lastRowStyle)}'>` +
-        formattedHtml +
-        '</div>';
-    }
-  }
   if (fields) {
     for (const field of fields) {
       const value = fieldsValue[field.name];
@@ -115,12 +125,21 @@ const replaceRecordFields = (
       let convertedValue = '';
       if (!isNil(value)) {
         switch (field.type) {
-          case 'url':
+          case 'url': {
+            // Specific case
+            // First, try to find cases where the url is used as src of image or link
+            const srcRegex = new RegExp(
+              `src="${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}"`,
+              'gi'
+            );
+            formattedHtml = formattedHtml.replace(srcRegex, `src=${value}`);
+            // Then, follow same logic than for other fields
             convertedValue = `<a href="${value}" style="${style}" target="_blank">${applyLayoutFormat(
               value,
               field
             )}</a>`;
             break;
+          }
           case 'email':
             convertedValue = `<a href="mailto:${value}"
               style="${style}"

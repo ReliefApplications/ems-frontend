@@ -549,6 +549,15 @@
 			"subject": "Subject",
 			"withoutRecords": "Without records"
 		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "Subject cannot be left empty."
+			},
+			"from": "From",
+			"subject": "Subject",
+			"title": "Email Preview",
+			"to": "To"
+		},
 		"form": {
 			"aggregation": {
 				"delete": {
@@ -1158,7 +1167,7 @@
 							"step": "Step interpolation",
 							"title": "Interpolation"
 						},
-						"showSerie": "Show serie",
+						"showSeries": "Show series",
 						"stack": {
 							"enable": "Plot series",
 							"usePercentage": "Use percentage"
@@ -1181,6 +1190,10 @@
 				},
 				"close": {
 					"confirmationMessage": "Some changes will be lost when closing edition. Do you want to continue?"
+				},
+				"editor": {
+					"recordSelection": "Record selection",
+					"title": "Editor"
 				},
 				"grid": {
 					"actions": {
@@ -1259,12 +1272,12 @@
 								"create": "Create a new layout",
 								"load": "Load existing layout"
 							},
-							"select": "Select a layout",
 							"title": "Add new layout"
 						},
 						"edit": {
 							"title": "Layout configuration"
 						},
+						"select": "Select a layout",
 						"title": "Grid layouts"
 					},
 					"tooltip": {
@@ -1353,6 +1366,7 @@
 							}
 						},
 						"textEditor": {
+							"alert": "You can add variables e.g: {{data.variable}} and calculate e.g: {{calc.round( value ; precision )}}",
 							"title": "Text editor"
 						},
 						"title": "Card settings",
@@ -1369,6 +1383,11 @@
 					"dynamic": "Dynamic",
 					"hint": {
 						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
+					},
+					"loadMore": {
+						"infiniteScroll": "Use infinite scrolling",
+						"pagination": "Use pagination",
+						"title": "Trigger for loading more data"
 					},
 					"options": {
 						"ariaLabel": "Select an option"
@@ -1456,6 +1475,7 @@
 			"underline": "Underline",
 			"undo": "Undo",
 			"unlink": "Remove Link",
+			"unselectAll": "Unselect all",
 			"viewSource": "View source"
 		},
 		"fileselect": {
@@ -1535,6 +1555,14 @@
 			"unlock": "Unlock",
 			"unstick": "Unstick"
 		},
+		"tilelayout": {
+			"component": {
+				"items": "items",
+				"itemsPerPage": "Items per page",
+				"of": "of",
+				"page": "Page"
+			}
+		},
 		"timepicker": {
 			"accept": "Accept",
 			"acceptLabel": "Accept",
@@ -1556,6 +1584,7 @@
 		"application": {
 			"description": "Description",
 			"id": "Application ID",
+			"menu": "Side menu",
 			"new": "New application",
 			"notifications": {
 				"notPublished": "Application not published.",
@@ -1649,7 +1678,8 @@
 				"rowsNotAdded": "Error on add row(s).",
 				"uploadSuccessful": "Records upload successful."
 			},
-			"restore": "Restore"
+			"restore": "Restore",
+			"select": "Select a record"
 		},
 		"referenceData": {
 			"add": "Add new reference data"
@@ -1689,6 +1719,7 @@
 			},
 			"display": {
 				"border": "Show widget border",
+				"searchable": "Allow search",
 				"title": "Widget display"
 			},
 			"map": {
@@ -1834,7 +1865,8 @@
 			},
 			"queryName": "Query Name",
 			"tooltip": {
-				"graphQLFilter": "Enter a query parameter to be used as a filter once choices are already cached. You can use {{lastUpdate}} to insert dynamically the last fetch date in SQL format."
+				"graphQLFilter": "You can use {{lastUpdate}} to dynamically get the last fetch date in SQL format.",
+				"path": "Uses JSONPath syntax to extract items from the JSON response. Examples: $.data[*].name, $.data..countries, $.data.countries.*"
 			},
 			"type": "Type",
 			"validateCsv": "Validate CSV",
