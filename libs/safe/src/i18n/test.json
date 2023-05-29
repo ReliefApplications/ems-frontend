@@ -1004,6 +1004,7 @@
 			},
 			"invite": {
 				"confirm": "******",
+				"error": "******",
 				"role": {
 					"description": "******"
 				}

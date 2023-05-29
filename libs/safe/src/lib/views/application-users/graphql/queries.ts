@@ -54,3 +54,23 @@ export interface GetApplicationUsersQueryResponse {
     };
   };
 }
+
+// === GET APPLICATION STATUS ===
+
+/** Application status query */
+export const GET_APPLICATION_STATUS = gql`
+  query GetApplicationStatus($id: ID!) {
+    application(id: $id) {
+      id
+      status
+    }
+  }
+`;
+
+/** Interface of application status query response */
+export interface GetApplicationStatusQueryResponse {
+  application: {
+    id: string;
+    status: string;
+  };
+}

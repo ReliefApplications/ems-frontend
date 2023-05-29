@@ -10,6 +10,12 @@ import { SafeApplicationService } from '../../services/application/application.s
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { AddUsersMutationResponse, ADD_USERS } from './graphql/mutations';
+import {
+  GET_APPLICATION_STATUS,
+  GET_APPLICATION_USERS,
+  GetApplicationStatusQueryResponse,
+  GetApplicationUsersQueryResponse,
+} from './graphql/queries';
 
 /**
  * Application users component.
@@ -92,17 +98,40 @@ export class SafeApplicationUsersComponent
             },
           })
           .subscribe(({ errors, data }) => {
+            const data1 = data; // there is probably a better way to do this 😅
             if (!errors) {
-              if (data?.addUsers.length) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('components.users.onInvite.plural')
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('components.users.onInvite.singular')
-                );
-              }
-              this.userList?.fetchUsers(true);
+              // check the status of te application
+              this.apollo
+                .query<GetApplicationStatusQueryResponse>({
+                  query: GET_APPLICATION_STATUS,
+                  variables: {
+                    id: this.roles[0].application?.id,
+                  },
+                })
+                .subscribe(({ data }) => {
+                  console.log(data);
+                  if (data?.application?.status === 'active') {
+                    // again, we should probably store it on a const file somewhere
+                    if (data1?.addUsers.length) {
+                      this.snackBar.openSnackBar(
+                        this.translate.instant(
+                          'components.users.onInvite.plural'
+                        )
+                      );
+                    } else {
+                      this.snackBar.openSnackBar(
+                        this.translate.instant(
+                          'components.users.onInvite.singular'
+                        )
+                      );
+                    }
+                    this.userList?.fetchUsers(true);
+                  } else {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant('components.user.invite.error')
+                    );
+                  }
+                });
             } else {
               if (data?.addUsers?.length) {
                 this.snackBar.openSnackBar(

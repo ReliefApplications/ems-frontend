@@ -1004,6 +1004,7 @@
 			},
 			"invite": {
 				"confirm": "Invite",
+				"error": "The app is not published yet. You can add new users, but they won’t receive an invitation message. Once the app is published, they will be able to connect to the system and create their account.",
 				"role": {
 					"description": "Select the role to assign"
 				}

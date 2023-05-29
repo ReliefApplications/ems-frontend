@@ -1010,6 +1010,7 @@
 			},
 			"invite": {
 				"confirm": "Inviter",
+				"error": "L'application n'est pas encore publiée. Vous pouvez ajouter de nouveaux utilisateurs, mais ils ne recevront pas de message d'invitation. Une fois l'application publiée, ils pourront se connecter au système et créer leur compte.",
 				"role": {
 					"description": "Sélectionner le rôle à assigner"
 				}
