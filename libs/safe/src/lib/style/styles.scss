@@ -196,45 +196,6 @@ $safe-theme: mat.define-light-theme(
   }
 }
 
-// === ALERT ===
-@mixin alert($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
-
-  .ui-alert {
-    &-default {
-      $variant-color: #f1f1f1;
-      background-color: $variant-color;
-      color: darken($variant-color, 40%);
-    }
-
-    &-primary {
-      background-color: mat.get-color-from-palette($primary, 50);
-      color: mat.get-color-from-palette($primary);
-    }
-
-    &-danger {
-      background-color: mat.get-color-from-palette($warn, 50);
-      color: mat.get-color-from-palette($warn);
-    }
-
-    &-success {
-      @apply text-green-700 bg-green-50;
-      safe-icon {
-        @apply text-green-400;
-      }
-    }
-
-    &-warning {
-      @apply text-yellow-700 bg-yellow-50;
-      safe-icon {
-        @apply text-yellow-400;
-      }
-    }
-  }
-}
-
 // === RADIO ===
 @mixin radio($theme) {
   .mat-radio-label-content {
@@ -358,7 +319,6 @@ $safe-theme: mat.define-light-theme(
 @include mat.all-legacy-component-themes($safe-theme);
 @include chip($safe-theme);
 @include button($safe-theme);
-@include alert($safe-theme);
 @include radio($safe-theme);
 @include slide-toggle($safe-theme);
 @include checkbox($safe-theme);

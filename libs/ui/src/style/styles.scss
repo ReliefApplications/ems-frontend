@@ -114,35 +114,6 @@ $ui-palette-warn: (
   }
 }
 
-// === ALERT ===
-@mixin alert($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
-
-  .ui-alert {
-    &-default {
-      $variant-color: #f1f1f1;
-      background-color: $variant-color;
-      color: darken($variant-color, 40%);
-    }
-
-    &-success {
-      @apply text-green-700 bg-green-50;
-      safe-icon {
-        @apply text-green-400;
-      }
-    }
-
-    &-warning {
-      @apply text-yellow-700 bg-yellow-50;
-      safe-icon {
-        @apply text-yellow-400;
-      }
-    }
-  }
-}
-
 *:focus,
 *:active:focus,
 *.active:focus {
