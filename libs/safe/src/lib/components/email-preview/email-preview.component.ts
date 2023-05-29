@@ -109,8 +109,7 @@ export class SafeEmailPreviewComponent implements OnInit {
    *
    * @param event The event triggered when we exit the input
    */
-  addEmail(event: any): void {
-    // MatChipInputEvent deprecated, but it used to be MatChipInputEvent | any
+  addEmail(event: MatChipInputEvent | any): void {
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
