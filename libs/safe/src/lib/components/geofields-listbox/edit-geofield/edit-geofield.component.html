@@ -1,0 +1,41 @@
+<safe-modal size="small">
+    <h1 mat-dialog-title>Edit Geofield</h1>
+    <div mat-dialog-content>
+      <form [formGroup]="geoFieldForm" class="flex flex-col">
+        <mat-form-field appearance="outline">
+          <mat-label>Value</mat-label>
+          <input
+            matInput
+            type="text"
+            [disabled]="true"
+            [value]="data.geofield.value"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Label</mat-label>
+          <input
+            matInput
+            formControlName="label"
+            type="text"
+            [placeholder]="'label'"
+            [value]="data.geofield.label"
+          />
+        </mat-form-field>
+      </form>
+    </div>
+    <div mat-dialog-actions align="end">
+      <safe-button (click)="onClose()">{{
+        'common.close' | translate
+      }}</safe-button>
+      <safe-button
+        category="secondary"
+        variant="primary"
+        [mat-dialog-close]="geoFieldForm.value"
+        cdkFocusInitial
+        [disabled]="!geoFieldForm.valid"
+      >
+        {{ 'common.create' | translate }}
+      </safe-button>
+    </div>
+  </safe-modal>
+  
