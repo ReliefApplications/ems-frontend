@@ -64,19 +64,15 @@
       </div>
       <!-- Quick filter -->
       <div
-        class="flex flex-row justify-center gap-4 items-center"
+        class="flex flex-row overflow-auto justify-center gap-4 items-center"
         [ngClass]="{
-          'overflow-auto':
-            position === filterPosition.TOP || position === filterPosition.BOTTOM,
-          'rotate-90':
-            position === filterPosition.LEFT,
-          '-rotate-90':
-            position === filterPosition.RIGHT
+          'text-side': position === filterPosition.LEFT,
+          'text-side rotate-180': position === filterPosition.RIGHT
         }"
       >
         <ng-container
           *ngFor="let quickFilter of quickFilters"
-          class="flex flex-auto justify-center gap-4"
+          class="flex flex-auto overflow-auto justify-center gap-4"
         >
           <div
             class="z-20 whitespace-nowrap"
