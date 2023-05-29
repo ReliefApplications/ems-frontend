@@ -53,11 +53,9 @@
       category="secondary"
       variant="primary"
       [mat-dialog-close]="form.value"
-      <<<<<<<
-      HEAD
       cdkFocusInitial
+      [disabled]="!form.valid"
     >
-      ======= [disabled]="!form.valid" cdkFocusInitial > >>>>>>> 2.0.x
       {{ 'common.send' | translate }}
     </safe-button>
   </div>
