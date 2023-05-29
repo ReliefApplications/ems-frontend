@@ -12,17 +12,28 @@
       </mat-form-field>
       <mat-form-field id="previewEmailTo">
         <mat-label>To</mat-label>
-        <mat-chip-list formControlName="to">
-          <mat-chip *ngFor="let email of form.controls.to.value">
+        <mat-chip-list #chipList formControlName="to">
+          <mat-chip
+            *ngFor="let email of emails"
+            [selectable]="true"
+            [removable]="true"
+            (removed)="removeEmail(email)">
             {{ email }}
+            <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
           </mat-chip>
+          <input
+            #emailsInput
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            (focusout)="addEmail($event)"
+            (matChipInputTokenEnd)="addEmail($event)" />
         </mat-chip-list>
+        <mat-error>{{ errorMessage() | translate }}</mat-error>
       </mat-form-field>
       <kendo-fileselect
         class="mb-4"
         [multiple]="true"
-        formControlName="files"
-      ></kendo-fileselect>
+        formControlName="files"></kendo-fileselect>
       <editor [init]="editor" formControlName="html"></editor>
     </form>
   </div>
@@ -34,8 +45,7 @@
       category="secondary"
       variant="primary"
       [mat-dialog-close]="form.value"
-      cdkFocusInitial
-    >
+      cdkFocusInitial>
       {{ 'common.send' | translate }}
     </safe-button>
   </div>
