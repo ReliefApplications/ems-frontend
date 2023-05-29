@@ -1,11 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DistributionListsComponent } from './distribution-lists.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  DividerModule,
+  ButtonModule,
+  TableModule,
+} from '@oort-front/ui';
+import { SafeEmptyModule } from '../ui/empty/empty.module';
 
 /**
  * Module of distribution list table
@@ -14,13 +19,14 @@ import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
   declarations: [DistributionListsComponent],
   imports: [
     CommonModule,
-    MatTableModule,
     TranslateModule,
     SafeSkeletonTableModule,
     MenuModule,
     MatIconModule,
     DividerModule,
     ButtonModule,
+    SafeEmptyModule,
+    TableModule,
   ],
   exports: [DistributionListsComponent],
 })

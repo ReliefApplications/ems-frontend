@@ -1,7 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import {
   DateTimeProvider,
   OAuthLogger,
@@ -35,9 +34,8 @@ describe('SafeTemplatesComponent', () => {
       ],
       declarations: [SafeTemplatesComponent],
       imports: [
-        MatSnackBarModule,
         HttpClientModule,
-        MatDialogModule,
+        DialogCdkModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

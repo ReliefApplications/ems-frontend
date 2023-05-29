@@ -8,21 +8,16 @@ import {
   Validators,
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import {
   PageContextT,
   ReferenceData,
   Resource,
-  SafeAlertModule,
   SafeGraphQLSelectComponent,
   SafeGraphQLSelectModule,
-  SafeModalModule,
   SafeUnsubscribeComponent,
+  SafeIconModule,
 } from '@oort-front/safe';
 import { takeUntil } from 'rxjs';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -41,6 +36,9 @@ import {
   SelectMenuModule,
   SelectOptionModule,
   FormWrapperModule,
+  AlertModule,
+  DialogModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /** Default items per resources query, for pagination */
@@ -78,15 +76,16 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatSelectModule,
     MatFormFieldModule,
-    SafeModalModule,
+    DialogModule,
     SafeGraphQLSelectModule,
-    SafeAlertModule,
+    SafeIconModule,
+    TooltipModule,
     ButtonModule,
     SelectMenuModule,
     SelectOptionModule,
     FormWrapperModule,
+    AlertModule,
   ],
   templateUrl: './context-datasource.component.html',
   styleUrls: ['./context-datasource.component.scss'],
@@ -124,8 +123,8 @@ export class ContextDatasourceComponent
    */
   constructor(
     private apollo: Apollo,
-    @Inject(MAT_DIALOG_DATA) public data: PageContextT,
-    public dialogRef: MatDialogRef<ContextDatasourceComponent>
+    @Inject(DIALOG_DATA) public data: PageContextT,
+    public dialogRef: DialogRef<ContextDatasourceComponent>
   ) {
     super();
     this.form = createContextDatasourceForm(data);
@@ -291,6 +290,6 @@ export class ContextDatasourceComponent
             displayField: formValue.displayField ?? '',
           };
 
-    this.dialogRef.close(context);
+    this.dialogRef.close(context as any);
   }
 }

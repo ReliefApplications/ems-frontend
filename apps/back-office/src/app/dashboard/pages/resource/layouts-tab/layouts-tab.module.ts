@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { LayoutsTabRoutingModule } from './layouts-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeDateModule,
@@ -11,8 +10,12 @@ import {
   SafeEmptyModule,
 } from '@oort-front/safe';
 import { LayoutsTabComponent } from './layouts-tab.component';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
-import { MenuModule, ButtonModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  ButtonModule,
+  TableModule,
+  PaginatorModule,
+} from '@oort-front/ui';
 
 /**
  * Layouts tab of resource page
@@ -22,16 +25,16 @@ import { MenuModule, ButtonModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     LayoutsTabRoutingModule,
-    MatTableModule,
     MatIconModule,
     MenuModule,
     TranslateModule,
     OverlayModule,
     SafeDateModule,
     SafeSkeletonTableModule,
-    MatPaginatorModule,
+    PaginatorModule,
     SafeEmptyModule,
     ButtonModule,
+    TableModule,
   ],
 })
 export class LayoutsTabModule {}

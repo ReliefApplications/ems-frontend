@@ -5,9 +5,12 @@ import {
   Provider,
   ViewChild,
   EventEmitter,
+  Optional,
+  Self,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { FocusableDirective } from '@progress/kendo-angular-grid';
 
 /**
  * Control value accessor
@@ -29,7 +32,6 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
 })
 export class TextareaComponent implements ControlValueAccessor {
   @Input() value: any = '';
-  @Input() label = '';
   @Input() placeholder = '';
   @Input() name!: string;
   /**
@@ -50,6 +52,13 @@ export class TextareaComponent implements ControlValueAccessor {
   }
   @Input() maxRows = 5;
 
+  /**
+   * UI Textarea constructor
+   *
+   * @param kendoFocus FocusableDirective
+   */
+  constructor(@Self() @Optional() public kendoFocus: FocusableDirective) {}
+
   minRowsNumber = 2;
   valueChange: EventEmitter<boolean> = new EventEmitter();
   onTouched!: () => void;
@@ -64,7 +73,6 @@ export class TextareaComponent implements ControlValueAccessor {
    */
   public registerOnChange(fn: any): void {
     this.onChanged = fn;
-    console.log('registerOnChange');
   }
 
   /**
@@ -74,7 +82,6 @@ export class TextareaComponent implements ControlValueAccessor {
    */
   public registerOnTouched(fn: any): void {
     this.onTouched = fn;
-    console.log('registerOnTouched');
   }
 
   /**
@@ -84,7 +91,6 @@ export class TextareaComponent implements ControlValueAccessor {
    */
   writeValue(value: string): void {
     this.value = value;
-    console.log('writeValue =', this.value);
   }
 
   /**
@@ -99,6 +105,5 @@ export class TextareaComponent implements ControlValueAccessor {
       this.onChanged(this.value);
     }
     this.valueChange.emit(this.value);
-    console.log(this.value);
   }
 }

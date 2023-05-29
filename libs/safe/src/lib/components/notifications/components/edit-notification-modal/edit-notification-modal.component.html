@@ -1,38 +1,40 @@
-<safe-modal size="medium">
+<ui-dialog size="medium">
   <!-- Modal header -->
-  <h1 mat-dialog-title>
-    {{
-      (notification
-        ? 'components.customNotifications.edit.update'
-        : 'components.customNotifications.edit.new'
-      ) | translate
-    }}
-  </h1>
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        (notification
+          ? 'components.customNotifications.edit.update'
+          : 'components.customNotifications.edit.new'
+        ) | translate
+      }}
+    </h1>
+  </ng-container>
   <!-- Modal content -->
-  <div mat-dialog-content>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="formGroup" class="flex flex-col pb-1">
       <div class="flex gap-x-2 flex-wrap">
         <!-- Title -->
-        <mat-form-field appearance="outline" class="flex-auto">
-          <mat-label>{{ 'common.name' | translate }}</mat-label>
+        <div uiFormFieldDirective class="flex-auto">
+          <label>{{ 'common.name' | translate }}</label>
           <input
             type="text"
             [placeholder]="'common.placeholder.name' | translate"
-            matInput
             formControlName="name"
           />
-        </mat-form-field>
-        <!-- Type --> 
+        </div>
+        <!-- Type -->
         <div uiFormFieldDirective [outline]="false" class="flex-1 w-28">
-          <label>{{
-            'models.customNotification.type' | translate
-          }}</label>
+          <label>{{ 'models.customNotification.type' | translate }}</label>
           <ui-select-menu formControlName="notificationType">
-            <ui-select-option value="email" [label]="'common.email.one' | translate">
+            <ui-select-option
+              value="email"
+              [label]="'common.email.one' | translate"
+            >
               {{ 'common.email.one' | translate }}
             </ui-select-option>
           </ui-select-menu>
-        </div>      
+        </div>
       </div>
       <ui-divider></ui-divider>
       <!-- Schedule builder -->
@@ -64,10 +66,8 @@
             <!-- Layout is selected -->
 
             <div uiFormFieldDirective [outline]="false" class="w-60">
-              <label>{{
-                'common.layout.one' | translate
-              }}</label>
-              <input [value]="layout.id" [disabled]="true">
+              <label>{{ 'common.layout.one' | translate }}</label>
+              <input [value]="layout.id" [disabled]="true" />
               <ui-button
                 uiPrefix
                 variant="primary"
@@ -122,11 +122,9 @@
       <h3>{{ 'components.customNotifications.edit.email' | translate }}</h3>
       <div class="flex flex-col">
         <!-- Template -->
-        
+
         <div uiFormFieldDirective [outline]="false" class="w-60 flex-1">
-          <label>{{
-            'common.template.one' | translate
-          }}</label>
+          <label>{{ 'common.template.one' | translate }}</label>
           <ui-select-menu formControlName="template">
             <ui-select-option
               *ngFor="let template of templates"
@@ -230,8 +228,13 @@
         <!-- Recipients value -->
         <div class="mt-6 flex">
           <!-- Using user field -->
-          
-          <div uiFormFieldDirective [outline]="false" class="w-60 flex-1" *ngIf="formGroup.value.recipientsType === 'field'">
+
+          <div
+            uiFormFieldDirective
+            [outline]="false"
+            class="w-60 flex-1"
+            *ngIf="formGroup.value.recipientsType === 'field'"
+          >
             <label>{{
               'components.customNotifications.edit.recipients.userField'
                 | translate
@@ -244,7 +247,7 @@
               >
             </ui-select-menu>
           </div>
-          
+
           <!-- <mat-form-field
             appearance="outline"
             *ngIf="formGroup.value.recipientsType === 'field'"
@@ -265,11 +268,14 @@
 
           </mat-form-field> -->
           <!-- Using distribution list -->
-          
-          <div uiFormFieldDirective [outline]="false" class="w-60 flex-1" *ngIf="formGroup.value.recipientsType === 'distributionList'">
-            <label>{{
-              'common.distributionList.one' | translate
-            }}</label>
+
+          <div
+            uiFormFieldDirective
+            [outline]="false"
+            class="w-60 flex-1"
+            *ngIf="formGroup.value.recipientsType === 'distributionList'"
+          >
+            <label>{{ 'common.distributionList.one' | translate }}</label>
             <ui-select-menu formControlName="recipients">
               <ui-select-option
                 *ngFor="let list of distributionLists"
@@ -296,40 +302,39 @@
               >
             </mat-select>
           </mat-form-field> -->
-          
+
           <!-- Using email -->
-          <mat-form-field
-            appearance="outline"
+          <div
+            uiFormFieldDirective
             *ngIf="formGroup.value.recipientsType === 'email'"
             class="flex-1"
           >
-            <mat-label>{{ 'common.email.one' | translate }}</mat-label>
+            <label>{{ 'common.email.one' | translate }}</label>
             <input
               type="text"
               [placeholder]="'common.placeholder.email' | translate"
-              matInput
               formControlName="recipients"
             />
             <mat-error *ngIf="formGroup.get('recipients')?.errors">
               {{ 'components.customNotifications.errors.email' | translate }}
             </mat-error>
-          </mat-form-field>
+          </div>
         </div>
       </div>
     </form>
-  </div>
+  </ng-container>
   <!-- Modal actions -->
-  <div mat-dialog-actions align="end">
-    <ui-button mat-dialog-close>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="formGroup.getRawValue()"
+      [uiDialogClose]="formGroup.getRawValue()"
       [disabled]="!formGroup.valid"
     >
       {{ (notification ? 'common.update' : 'common.create') | translate }}
     </ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

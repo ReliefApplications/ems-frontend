@@ -4,12 +4,9 @@ import { SafeAccessComponent } from './access.component';
 import { SafeEditAccessComponent } from './edit-access/edit-access.component';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../ui/modal/modal.module';
 import {
   TooltipModule,
   MenuModule,
@@ -17,6 +14,7 @@ import {
   SelectMenuModule,
   SelectOptionModule,
   FormWrapperModule,
+  DialogModule,
 } from '@oort-front/ui';
 
 /**
@@ -28,15 +26,13 @@ import {
     CommonModule,
     MatButtonModule,
     MatIconModule,
-    MatDialogModule,
+    DialogModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatSelectModule,
     TooltipModule,
     MenuModule,
     TranslateModule,
-    SafeModalModule,
     ButtonModule,
     SelectMenuModule,
     SelectOptionModule,

@@ -5,9 +5,9 @@ import {
   Record,
   Form,
   SafeConfirmService,
-  SafeSnackBarService,
   Resource,
   SafeDownloadService,
+  SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -25,6 +25,8 @@ import {
   GetResourceRecordsQueryResponse,
   GET_RESOURCE_RECORDS,
 } from './graphql/queries';
+import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
 
 /** Quantity of resource that will be loaded at once. */
 const ITEMS_PER_PAGE = 10;
@@ -42,7 +44,10 @@ const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
   templateUrl: './records-tab.component.html',
   styleUrls: ['./records-tab.component.scss'],
 })
-export class RecordsTabComponent implements OnInit {
+export class RecordsTabComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
   public dataSource = new MatTableDataSource<Record>([]);
   private cachedRecords: Record[] = [];
@@ -77,10 +82,12 @@ export class RecordsTabComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private translate: TranslateService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private downloadService: SafeDownloadService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     const state = history.state;
@@ -124,11 +131,13 @@ export class RecordsTabComponent implements OnInit {
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.deleteRecord(element.id);
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.deleteRecord(element.id);
+          }
+        });
     } else {
       this.deleteRecord(element.id);
     }
@@ -331,14 +340,14 @@ export class RecordsTabComponent implements OnInit {
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
       ((e.pageIndex > e.previousPageIndex &&
         e.pageIndex * this.pageInfo.pageSize >= this.cachedRecords.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedRecords.length
+      e.totalItems > this.cachedRecords.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -406,14 +415,12 @@ export class RecordsTabComponent implements OnInit {
     data: GetResourceRecordsQueryResponse,
     loading: boolean
   ) {
+    const mappedValues = data.resource.records.edges.map((x) => x.node);
     this.cachedRecords = updateQueryUniqueValues(
       this.cachedRecords,
-      data.resource.records.edges.map((x) => x.node)
+      mappedValues
     );
-    this.dataSource.data = this.cachedRecords.slice(
-      this.pageInfo.pageSize * this.pageInfo.pageIndex,
-      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-    );
+    this.dataSource.data = mappedValues;
     this.pageInfo.length = data.resource.records.totalCount;
     this.pageInfo.endCursor = data.resource.records.pageInfo.endCursor;
     this.loading = loading;

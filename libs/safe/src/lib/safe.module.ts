@@ -26,7 +26,6 @@ import { SafeIconModule } from './components/ui/icon/icon.module';
 import { SafeSummaryCardSettingsModule } from './components/widgets/summary-card-settings/summary-card-settings.module';
 import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
 import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-select.module';
-import { SafeModalModule } from './components/ui/modal/modal.module';
 import { SafeEmptyModule } from './components/ui/empty/empty.module';
 import { SafeLeftSidenavModule } from './components/left-sidenav/left-sidenav.module';
 import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.module';
@@ -73,7 +72,6 @@ import { DashboardFilterModule } from './components/dashboard-filter/dashboard-f
     SafeSummaryCardSettingsModule,
     SafeRoleSummaryModule,
     SafeGraphQLSelectModule,
-    SafeModalModule,
     SafeEmptyModule,
     SafeLeftSidenavModule,
     // === Directives

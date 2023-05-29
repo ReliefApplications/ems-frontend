@@ -27,7 +27,7 @@ export default {
 const PushSidenavTemplate: StoryFn<SidenavContainerComponent> = (
   args: SidenavContainerComponent
 ) => {
-  args.showSidenav = true;
+  args.showSidenav = [true];
   return {
     component: SidenavContainerComponent,
     template: `
@@ -64,7 +64,7 @@ export const PushSidenav = PushSidenavTemplate.bind({});
 const OverlaySidenavTemplate: StoryFn<SidenavContainerComponent> = (
   args: SidenavContainerComponent
 ) => {
-  args.showSidenav = true;
+  args.showSidenav = [true];
   return {
     component: SidenavContainerComponent,
     template: `

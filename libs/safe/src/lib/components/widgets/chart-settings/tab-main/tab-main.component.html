@@ -1,9 +1,9 @@
 <div [formGroup]="formGroup" class="flex flex-col last:mb-0">
   <h2>{{ 'common.general' | translate }}</h2>
-  <mat-form-field appearance="outline">
-    <mat-label>{{ 'common.title' | translate }}</mat-label>
-    <input matInput formControlName="title" type="string" />
-  </mat-form-field>
+  <div uiFormFieldDirective >
+    <label>{{ 'common.title' | translate }}</label>
+    <input formControlName="title" type="string" />
+    </div>
   <ng-container formGroupName="chart">
     <mat-form-field appearance="outline">
       <mat-label>{{

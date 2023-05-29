@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   Aggregation,
   SafeAggregationService,
   SafeConfirmService,
   Resource,
+  SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -17,6 +18,8 @@ import {
   GetResourceByIdQueryResponse,
   GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
+import { takeUntil } from 'rxjs';
+import { UIPageChangeEvent } from '@oort-front/ui';
 
 /**
  * Aggregations tab of resource page
@@ -26,7 +29,10 @@ import {
   templateUrl: './aggregations-tab.component.html',
   styleUrls: ['./aggregations-tab.component.scss'],
 })
-export class AggregationsTabComponent implements OnInit {
+export class AggregationsTabComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public resource!: Resource;
   public aggregations: Aggregation[] = [];
   public loading = true;
@@ -63,11 +69,13 @@ export class AggregationsTabComponent implements OnInit {
    */
   constructor(
     private apollo: Apollo,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private aggregationService: SafeAggregationService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     const state = history.state;
@@ -93,7 +101,7 @@ export class AggregationsTabComponent implements OnInit {
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
@@ -101,7 +109,7 @@ export class AggregationsTabComponent implements OnInit {
         e.pageIndex * this.pageInfo.pageSize >=
           this.cachedAggregations.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedAggregations.length
+      e.totalItems > this.cachedAggregations.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -161,7 +169,7 @@ export class AggregationsTabComponent implements OnInit {
         resource: this.resource,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
           .addAggregation(value, this.resource.id)
@@ -190,7 +198,7 @@ export class AggregationsTabComponent implements OnInit {
         aggregation,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
           .editAggregation(aggregation, value, this.resource.id)
@@ -227,7 +235,7 @@ export class AggregationsTabComponent implements OnInit {
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
           .deleteAggregation(aggregation, this.resource.id)
@@ -250,14 +258,13 @@ export class AggregationsTabComponent implements OnInit {
    */
   private updateValues(data: GetResourceByIdQueryResponse, loading: boolean) {
     if (data.resource) {
+      const mappedValues =
+        data.resource.aggregations?.edges.map((x) => x.node) ?? [];
       this.cachedAggregations = updateQueryUniqueValues(
         this.cachedAggregations,
-        data.resource.aggregations?.edges.map((x) => x.node) ?? []
+        mappedValues
       );
-      this.aggregations = this.cachedAggregations.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.aggregations = mappedValues;
       this.pageInfo.length = data.resource.aggregations?.totalCount || 0;
       this.pageInfo.endCursor =
         data.resource.aggregations?.pageInfo.endCursor || '';

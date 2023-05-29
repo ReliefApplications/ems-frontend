@@ -4,10 +4,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import { Apollo } from 'apollo-angular';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
@@ -17,8 +14,6 @@ import { QueryBuilderService } from '../../services/query-builder/query-builder.
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SpinnerModule } from '@oort-front/ui';
 import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
@@ -26,13 +21,14 @@ import { SafeApplicationDropdownModule } from '../application-dropdown/applicati
 import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../ui/modal/modal.module';
 import {
-  ButtonModule,
+  DialogModule,
   FormWrapperModule,
   SelectOptionModule,
   SelectMenuModule,
+  ButtonModule,
 } from '@oort-front/ui';
+import {} from '@oort-front/ui';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.
@@ -65,8 +61,6 @@ interface IRecord {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatDialogModule,
-    MatSelectModule,
     MatButtonModule,
     SpinnerModule,
     SafeResourceDropdownModule,
@@ -74,7 +68,7 @@ interface IRecord {
     SafeRecordDropdownModule,
     SafeCoreGridModule,
     TranslateModule,
-    SafeModalModule,
+    DialogModule,
     ButtonModule,
     FormWrapperModule,
     SelectOptionModule,
@@ -129,8 +123,8 @@ export class SafeChooseRecordModalComponent
     private queryBuilder: QueryBuilderService,
     private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
-    public dialogRef: MatDialogRef<SafeChooseRecordModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    public dialogRef: DialogRef<SafeChooseRecordModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {
     super();
   }

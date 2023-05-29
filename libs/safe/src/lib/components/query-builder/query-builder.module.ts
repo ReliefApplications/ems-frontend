@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeQueryBuilderComponent } from './query-builder.component';
-import { TabsModule } from '@oort-front/ui';
+import { AlertModule, TabsModule } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeTabFieldsComponent } from './tab-fields/tab-fields.component';
 import { SafeTabSortComponent } from './tab-sort/tab-sort.component';
@@ -20,7 +20,6 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { SafeQueryStyleListComponent } from './tab-style/query-style-list/query-style-list.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { SafeQueryStyleComponent } from './tab-style/query-style/query-style.component';
 import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/query-style-preview.component';
 import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
@@ -32,12 +31,13 @@ import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.comp
 import { SafeFilterModule } from '../filter/filter.module';
 import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { SafeAlertModule } from '../ui/alert/alert.module';
 import {
   MenuModule,
   TooltipModule,
   RadioModule,
   ButtonModule,
+  TableModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 
 /**
@@ -66,7 +66,6 @@ import {
     MatInputModule,
     TabsModule,
     MenuModule,
-    MatTableModule,
     DragDropModule,
     MatButtonModule,
     MatIconModule,
@@ -84,9 +83,11 @@ import {
     MatDatepickerModule,
     SafeFilterModule,
     EditorModule,
-    SafeAlertModule,
     RadioModule,
     ButtonModule,
+    TableModule,
+    AlertModule,
+    FormWrapperModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

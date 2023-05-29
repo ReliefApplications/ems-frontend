@@ -1,10 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit, Inject } from '@angular/core';
 import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
-import {
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
@@ -13,17 +9,20 @@ import {
   DuplicateApplicationMutationResponse,
   DUPLICATE_APPLICATION,
 } from './graphql/mutations';
-import { Application, SafeSnackBarService } from '@oort-front/safe';
+import { Application } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '@oort-front/safe';
-import { ButtonModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  SnackbarService,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * Duplicate application component (modal)
@@ -34,12 +33,11 @@ import { ButtonModule } from '@oort-front/ui';
     CommonModule,
     FormsModule,
     MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MatDialogModule,
     TranslateModule,
-    SafeModalModule,
+    DialogModule,
     ButtonModule,
   ],
   selector: 'app-duplicate-application-modal',
@@ -61,12 +59,12 @@ export class DuplicateApplicationModalComponent implements OnInit {
    * @param data Injected dialog data
    */
   constructor(
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
-    public dialogRef: MatDialogRef<DuplicateApplicationModalComponent>,
+    public dialogRef: DialogRef<DuplicateApplicationModalComponent>,
     private translateService: TranslateService,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(DIALOG_DATA) public data: any
   ) {
     this.currentApp = data;
   }
@@ -118,7 +116,7 @@ export class DuplicateApplicationModalComponent implements OnInit {
               )
             );
           }
-          this.dialogRef.close(data?.duplicateApplication);
+          this.dialogRef.close(data?.duplicateApplication as any);
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });

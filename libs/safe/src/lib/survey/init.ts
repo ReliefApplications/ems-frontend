@@ -5,7 +5,6 @@
 /// <reference path="../../typings/extract-files/index.d.ts" />
 
 import { Apollo } from 'apollo-angular';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { UntypedFormBuilder } from '@angular/forms';
 import * as SurveyJSWidgets from 'surveyjs-widgets';
 import { DomService } from '../services/dom/dom.service';
@@ -22,6 +21,7 @@ import * as OtherProperties from './global-properties/others';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Executes all init methods of custom SurveyJS.
@@ -39,7 +39,7 @@ import { initLocalization } from './localization';
 export const initCustomSurvey = (
   Survey: any,
   domService: DomService,
-  dialog: MatDialog,
+  dialog: Dialog,
   apollo: Apollo,
   formBuilder: UntypedFormBuilder,
   authService: SafeAuthService,

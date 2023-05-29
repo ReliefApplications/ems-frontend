@@ -4,22 +4,18 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../ui/modal/modal.module';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
-  ButtonModule,
+  DialogModule,
   SelectMenuModule,
   SelectOptionModule,
   FormWrapperModule,
+  ButtonModule,
 } from '@oort-front/ui';
 
 /** Interface for the dialog data input */
@@ -32,9 +28,8 @@ interface DialogData {
   standalone: true,
   imports: [
     CommonModule,
-    SafeModalModule,
+    DialogModule,
     MatFormFieldModule,
-    MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
@@ -60,8 +55,8 @@ export class EmailTemplateModalComponent implements OnInit {
    * @param fb Form builder service
    */
   constructor(
-    public dialogRef: MatDialogRef<EmailTemplateModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<EmailTemplateModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
     public translate: TranslateService,
     public fb: UntypedFormBuilder
   ) {
@@ -70,7 +65,7 @@ export class EmailTemplateModalComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.templates.length === 1)
-      this.dialogRef.close({ template: this.templates[0] });
+      this.dialogRef.close({ template: this.templates[0] } as any);
 
     this.form = this.fb.group({
       template: [null, Validators.required],

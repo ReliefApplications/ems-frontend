@@ -18,7 +18,6 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { SafeGridModule } from '../../../components/ui/core-grid/grid/grid.module';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { SafePaletteControlModule } from '../../palette-control/palette-control.module';
@@ -45,7 +44,6 @@ import { TabDisplayModule } from './tab-display/tab-display.module';
     TranslateModule,
     SafeAggregationBuilderModule,
     MatAutocompleteModule,
-    MatChipsModule,
     SafeGridModule,
     SafeIconModule,
     SafePaletteControlModule,

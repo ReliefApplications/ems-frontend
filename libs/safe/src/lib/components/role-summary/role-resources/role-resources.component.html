@@ -11,23 +11,24 @@
   <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
-      mat-table
+      cdk-table
+      uiTableWrapper
       [dataSource]="resources"
       multiTemplateDataRows
     >
       <!-- Resource Name -->
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="name">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.name' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element" class="font-bold">
+        <td uiCell *cdkCellDef="let element" class="font-bold">
           {{ element.resource.name }}
         </td>
       </ng-container>
       <!-- Resource Actions & Permissions -->
-      <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-        <td mat-cell *matCellDef="let element">
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
           <div class="flex">
             <!-- Permissions -->
             <ng-container *ngFor="let permission of element.permissions">
@@ -59,10 +60,10 @@
           </div>
         </td>
       </ng-container>
-      <ng-container matColumnDef="expandedDetail">
+      <ng-container cdkColumnDef="expandedDetail">
         <td
-          mat-cell
-          *matCellDef="let element"
+          uiCell
+          *cdkCellDef="let element"
           [attr.colspan]="displayedColumns.length"
         >
           <div
@@ -103,11 +104,11 @@
           </div>
         </td>
       </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+      <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
       <tr
-        mat-row
-        *matRowDef="let row; columns: ['expandedDetail']"
+        cdk-row
+        *cdkRowDef="let row; columns: ['expandedDetail']"
         class="h-0"
       ></tr>
     </table>
@@ -118,14 +119,14 @@
     >
     </safe-skeleton-table>
   </div>
-  <mat-paginator
-    [disabled]="loading || updating"
-    [pageIndex]="pageInfo.pageIndex"
-    [pageSize]="pageInfo.pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    [length]="pageInfo.length"
-    [ariaLabel]="'components.resource.paginator.ariaLabel' | translate"
-    (page)="onPage($event)"
-  >
-  </mat-paginator>
 </div>
+<ui-paginator
+  [disabled]="loading || updating"
+  [pageIndex]="pageInfo.pageIndex"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.resource.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

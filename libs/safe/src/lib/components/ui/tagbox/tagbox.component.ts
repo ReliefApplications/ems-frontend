@@ -9,7 +9,6 @@ import {
   MatLegacyAutocompleteSelectedEvent as MatAutocompleteSelectedEvent,
   MatLegacyAutocompleteTrigger as MatAutocompleteTrigger,
 } from '@angular/material/legacy-autocomplete';
-import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 
@@ -152,7 +151,7 @@ export class SafeTagboxComponent implements OnInit {
    *
    * @param event Chip event with the text input.
    */
-  add(event: MatChipInputEvent): void {
+  add(event: string | any): void {
     const value = (event.value || '').trim();
 
     if (

@@ -1,12 +1,10 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatSort } from '@angular/material/sort';
+import { Component, OnInit } from '@angular/core';
+import { Dialog } from '@angular/cdk/dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ApiConfiguration,
   SafeConfirmService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import {
@@ -27,6 +25,8 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
+import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -41,7 +41,7 @@ const ITEMS_PER_PAGE = 10;
 })
 export class ApiConfigurationsComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
   // === DATA ===
   public loading = true;
@@ -51,7 +51,7 @@ export class ApiConfigurationsComponent
   public cachedApiConfigurations: ApiConfiguration[] = [];
 
   // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
+  sort?: TableSort;
 
   // === FILTERS ===
   public showFilters = false;
@@ -77,11 +77,11 @@ export class ApiConfigurationsComponent
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService // private uiTableWrapper: TableWrapperDirective
   ) {
     super();
   }
@@ -104,6 +104,11 @@ export class ApiConfigurationsComponent
       .subscribe((results) => {
         this.updateValues(results.data, results.loading);
       });
+    // Initializing sort to an empty one
+    this.sort = {
+      active: '',
+      sortDirection: '',
+    };
   }
 
   /**
@@ -111,7 +116,7 @@ export class ApiConfigurationsComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
@@ -119,7 +124,7 @@ export class ApiConfigurationsComponent
         e.pageIndex * this.pageInfo.pageSize >=
           this.cachedApiConfigurations.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedApiConfigurations.length
+      e.totalItems > this.cachedApiConfigurations.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -206,7 +211,7 @@ export class ApiConfigurationsComponent
       './components/add-api-configuration/add-api-configuration.component'
     );
     const dialogRef = this.dialog.open(AddApiConfigurationComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<AddApiConfigurationMutationResponse>({
@@ -274,7 +279,7 @@ export class ApiConfigurationsComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteApiConfigurationMutationResponse>({
@@ -329,23 +334,68 @@ export class ApiConfigurationsComponent
     data: GetApiConfigurationsQueryResponse,
     loading: boolean
   ): void {
+    const mappedValues = data.apiConfigurations.edges.map((x) => x.node);
     this.cachedApiConfigurations = updateQueryUniqueValues(
       this.cachedApiConfigurations,
-      data.apiConfigurations.edges.map((x) => x.node)
+      mappedValues
     );
-    this.dataSource.data = this.cachedApiConfigurations.slice(
-      this.pageInfo.pageSize * this.pageInfo.pageIndex,
-      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-    );
+    this.dataSource.data = mappedValues;
     this.pageInfo.length = data.apiConfigurations.totalCount;
     this.pageInfo.endCursor = data.apiConfigurations.pageInfo.endCursor;
     this.loading = loading;
     this.filterPredicate();
   }
+
   /**
-   * Sets the sort in the view.
+   * Handle sort change.
+   *
+   * @param event sort event
    */
-  ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort || null;
+  onSort(event: TableSort): void {
+    // We change the sort for the current value
+    this.sort = event;
+    this.fetchApiConfigurations(true);
+  }
+
+  /**
+   * Update api configurations query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchApiConfigurations(refetch?: boolean): void {
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      sortField: this.sort?.sortDirection && this.sort.active,
+      sortOrder: this.sort?.sortDirection,
+    };
+    const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_API_CONFIGURATIONS,
+      variables
+    );
+    if (refetch) {
+      this.cachedApiConfigurations = [];
+      this.pageInfo.pageIndex = 0;
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
+    } else {
+      if (refetch) {
+        // Rebuild the query
+        this.apiConfigurationsQuery.refetch(variables);
+      } else {
+        // Fetch more records
+        this.apiConfigurationsQuery
+          .fetchMore({
+            variables,
+          })
+          .then(
+            (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
+              this.updateValues(results.data, results.loading);
+            }
+          );
+      }
+    }
   }
 }

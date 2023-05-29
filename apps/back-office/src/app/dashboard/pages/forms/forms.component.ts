@@ -1,9 +1,8 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import {
-  SafeSnackBarService,
   SafeAuthService,
   SafeConfirmService,
   Form,
@@ -17,7 +16,6 @@ import {
   ADD_FORM,
 } from './graphql/mutations';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import {
   getCachedValues,
@@ -25,6 +23,8 @@ import {
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
 import { takeUntil } from 'rxjs';
+import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -58,7 +58,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
     filters: [],
     logic: 'and',
   };
-  private sort: Sort = { active: '', direction: '' };
+  private sort: TableSort = { active: '', sortDirection: '' };
 
   // === PAGINATION ===
   public pageInfo = {
@@ -81,9 +81,9 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private router: Router,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
@@ -101,8 +101,8 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
         first: DEFAULT_PAGE_SIZE,
         afterCursor: null,
         filter: this.filter,
-        sortField: this.sort?.direction && this.sort.active,
-        sortOrder: this.sort?.direction,
+        sortField: this.sort?.sortDirection && this.sort.active,
+        sortOrder: this.sort?.sortDirection,
       },
     });
 
@@ -118,14 +118,14 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
       ((e.pageIndex > e.previousPageIndex &&
         e.pageIndex * this.pageInfo.pageSize >= this.cachedForms.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedForms.length
+      e.totalItems > this.cachedForms.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -160,7 +160,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
    *
    * @param event sort event
    */
-  onSort(event: Sort): void {
+  onSort(event: TableSort): void {
     this.sort = event;
     this.fetchForms(true);
   }
@@ -176,8 +176,8 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
       filter: this.filter,
-      sortField: this.sort?.direction && this.sort.active,
-      sortOrder: this.sort?.direction,
+      sortField: this.sort?.sortDirection && this.sort.active,
+      sortOrder: this.sort?.sortDirection,
     };
 
     const cachedValues: GetFormsQueryResponse = getCachedValues(
@@ -227,7 +227,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const id = form.id;
         this.apollo
@@ -279,7 +279,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
       '../../../components/add-form-modal/add-form-modal.component'
     );
     const dialogRef = this.dialog.open(AddFormModalComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const variablesData = { name: value.name };
         Object.assign(
@@ -329,14 +329,9 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
    * @param loading Loading state
    */
   private updateValues(data: GetFormsQueryResponse, loading: boolean): void {
-    this.cachedForms = updateQueryUniqueValues(
-      this.cachedForms,
-      data.forms.edges.map((x) => x.node)
-    );
-    this.forms.data = this.cachedForms.slice(
-      this.pageInfo.pageSize * this.pageInfo.pageIndex,
-      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-    );
+    const mappedValues = data.forms.edges.map((x) => x.node);
+    this.cachedForms = updateQueryUniqueValues(this.cachedForms, mappedValues);
+    this.forms.data = mappedValues;
     this.pageInfo.length = data.forms.totalCount;
     this.pageInfo.endCursor = data.forms.pageInfo.endCursor;
     this.loading = loading;

@@ -8,7 +8,7 @@ import {
   UntypedFormBuilder,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 
 export default {
   component: SafeMappingComponent,
@@ -19,7 +19,7 @@ export default {
         BrowserAnimationsModule,
         StorybookTranslateModule,
         ReactiveFormsModule,
-        MatDialogModule,
+        DialogCdkModule,
       ],
       providers: [
         {

@@ -1,13 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserListComponent } from './user-list.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../../../../components/skeleton/skeleton-table/skeleton-table.module';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { SafeEmptyModule } from '../../../../components/ui/empty/empty.module';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuModule, CheckboxModule, ButtonModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  CheckboxModule,
+  ButtonModule,
+  TableModule,
+  PaginatorModule,
+} from '@oort-front/ui';
 
 /**
  * Users list module.
@@ -17,14 +21,14 @@ import { MenuModule, CheckboxModule, ButtonModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     TranslateModule,
-    MatTableModule,
     SafeSkeletonTableModule,
-    MatPaginatorModule,
+    PaginatorModule,
     SafeEmptyModule,
     MenuModule,
     MatIconModule,
     CheckboxModule,
     ButtonModule,
+    TableModule,
   ],
   exports: [UserListComponent],
 })

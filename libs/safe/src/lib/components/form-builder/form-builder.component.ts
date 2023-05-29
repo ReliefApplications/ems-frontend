@@ -6,15 +6,15 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import * as SurveyCreator from 'survey-creator';
 import * as Survey from 'survey-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { snakeCase, get, uniqBy, difference } from 'lodash';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Array containing the different types of questions.
@@ -104,8 +104,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param referenceDataService Reference data service
    */
   constructor(
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
     private referenceDataService: SafeReferenceDataService
   ) {

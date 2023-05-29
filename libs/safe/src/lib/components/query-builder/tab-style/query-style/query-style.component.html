@@ -12,9 +12,9 @@
         <span class="field-name">{{
           'components.queryBuilder.style.edit.name' | translate
         }}</span>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="name" type="text" />
-        </mat-form-field>
+        <div uiFormFieldDirective >
+          <input formControlName="name" type="text" />
+        </div>
       </div>
 
       <!-- DEFINITION OF FILTERS -->

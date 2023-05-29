@@ -1,14 +1,6 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_LEGACY_SNACK_BAR_DATA as MAT_SNACK_BAR_DATA } from '@angular/material/legacy-snack-bar';
-
-/**
- * Interface that describes the structure of the data displayed in the snackbar
- */
-interface SnackBarData {
-  loading: boolean;
-  error?: boolean;
-  message: string;
-}
+import { SnackBarData, SNACKBAR_DATA } from '@oort-front/ui';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * Snackbar to indicate progress of an async task.
@@ -20,14 +12,18 @@ interface SnackBarData {
   styleUrls: ['./snackbar-spinner.component.scss'],
 })
 export class SafeSnackbarSpinnerComponent {
+  data!: SnackBarData;
+
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param data The data that will be displayed in the snackbar
+   * @param dataToken The data that will be displayed in the snackbar
    */
   constructor(
-    @Inject(MAT_SNACK_BAR_DATA)
-    public data: SnackBarData
-  ) {}
+    @Inject(SNACKBAR_DATA)
+    public dataToken: BehaviorSubject<SnackBarData>
+  ) {
+    this.data = this.dataToken.getValue();
+  }
 }

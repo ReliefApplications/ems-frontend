@@ -10,9 +10,9 @@ import {
   GET_APPLICATIONS,
   GET_ROLES,
 } from '../../graphql/queries';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Roles tab for the user summary */
 @Component({
@@ -53,7 +53,7 @@ export class UserAppRolesComponent
   constructor(
     private fb: UntypedFormBuilder,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService
+    private snackBar: SnackbarService
   ) {
     super();
   }

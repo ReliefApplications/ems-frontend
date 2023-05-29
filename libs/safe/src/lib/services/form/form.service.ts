@@ -4,7 +4,7 @@ import * as Survey from 'survey-angular';
 import { initCreatorSettings } from '../../survey/creator';
 import { initCustomSurvey } from '../../survey/init';
 import { DomService } from '../dom/dom.service';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { Apollo } from 'apollo-angular';
 import { UntypedFormBuilder } from '@angular/forms';
 import { SafeAuthService } from '../auth/auth.service';
@@ -34,7 +34,7 @@ export class SafeFormService {
   constructor(
     @Inject('environment') environment: any,
     public domService: DomService,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     public apollo: Apollo,
     public formBuilder: UntypedFormBuilder,
     public authService: SafeAuthService,

@@ -2,13 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormRecordsRoutingModule } from './form-records-routing.module';
 import { FormRecordsComponent } from './form-records.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { MatIconModule } from '@angular/material/icon';
 import {
   SafeRecordHistoryModule,
   SafeSkeletonTableModule,
+  SafeEmptyModule,
 } from '@oort-front/safe';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.module';
@@ -17,6 +16,8 @@ import {
   TooltipModule,
   MenuModule,
   ButtonModule,
+  TableModule,
+  PaginatorModule,
 } from '@oort-front/ui';
 
 /** Forms records page module */
@@ -25,18 +26,19 @@ import {
   imports: [
     CommonModule,
     FormRecordsRoutingModule,
-    MatTableModule,
     MatIconModule,
     MenuModule,
     SafeRecordHistoryModule,
     TooltipModule,
     DividerModule,
-    MatPaginatorModule,
+    PaginatorModule,
     TranslateModule,
     OverlayModule,
     UploadMenuModule,
     SafeSkeletonTableModule,
     ButtonModule,
+    TableModule,
+    SafeEmptyModule,
   ],
   exports: [FormRecordsComponent],
 })

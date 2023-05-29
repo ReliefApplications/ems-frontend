@@ -3,7 +3,6 @@ import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Http
@@ -19,7 +18,7 @@ import { environment } from '../environments/environment';
 // Config
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 
 // TRANSLATOR
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -98,11 +97,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSnackBarModule,
     BrowserAnimationsModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatDialogModule,
+    DialogCdkModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

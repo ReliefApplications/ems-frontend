@@ -2,18 +2,17 @@
   <!-- Filters -->
   <div class="flex flex-col gap-4">
     <!-- Default filter -->
-    <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
+    <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
       <!-- Search text filter -->
-      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-        <mat-icon matPrefix>search</mat-icon>
-        <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
+      <div uiFormFieldDirective>
+        <mat-icon uiPrefix>search</mat-icon>
         <input
-          matInput
           [ngModel]="searchText"
           (keyup)="applyFilter('', $event)"
-          type="search"
+          type="text"
+          [placeholder]="'common.placeholder.search' | translate"
         />
-      </mat-form-field>
+      </div>
       <!-- Toggle advanced filters -->
       <ui-button
         class="max-sm:!w-auto"
@@ -59,82 +58,84 @@
     </div>
   </div>
   <!-- Actions -->
-  <div class="flex items-center">
-    <ui-button
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="onAdd()"
-      *ngIf="'create' | able : 'ApiConfiguration'"
-    >
-      {{ 'pages.apiConfigurations.create' | translate }}
-    </ui-button>
-  </div>
+  <ui-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="onAdd()"
+    *ngIf="'create' | able : 'ApiConfiguration'"
+  >
+    {{ 'pages.apiConfigurations.create' | translate }}
+  </ui-button>
 </div>
 
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" mat-table [dataSource]="dataSource" matSort>
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+    <table
+      *ngIf="!loading"
+      cdk-table
+      uiTableWrapper
+      (sortChange)="onSort($event)"
+      [dataSource]="dataSource"
+    >
+      <ng-container cdkColumnDef="name">
+        <th uiTableHeaderSort="name" uiCellHeader *cdkHeaderCellDef>
+          <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element" class="font-bold">
+        <td uiCell *cdkCellDef="let element" class="font-bold">
           {{ element.name }}
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="status">
+        <th uiTableHeaderSort="status" uiCellHeader *cdkHeaderCellDef>
+          <span class="headerTitle">
             {{ 'common.status' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">
-          <mat-chip-list>
-            <mat-chip
-              class="success-chip !rounded-lg"
-              disabled
+        <td uiCell *cdkCellDef="let element">
+          <div uiChipList="">
+            <ui-chip
+              class="!rounded-lg"
+              variant="success"
               *ngIf="element.status === 'active'"
             >
               {{ 'common.status_active' | translate | titlecase }}
-            </mat-chip>
-            <mat-chip
-              class="accent-chip !rounded-lg"
-              disabled
-              color="accent"
+            </ui-chip>
+            <ui-chip
+              class="!rounded-lg"
+              variant="warning"
               *ngIf="element.status === 'pending'"
             >
               {{ 'common.status_pending' | translate | titlecase }}
-            </mat-chip>
-            <mat-chip
-              class="warn-chip !rounded-lg"
-              disabled
-              color="warn"
+            </ui-chip>
+            <ui-chip
+              class="!rounded-lg"
+              variant="danger"
               *ngIf="element.status === 'archived'"
             >
               {{ 'common.status_archived' | translate | titlecase }}
-            </mat-chip>
-          </mat-chip-list>
+            </ui-chip>
+          </div>
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="authType">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="authType">
+        <th uiTableHeaderSort="authType" uiCellHeader *cdkHeaderCellDef>
+          <span class="headerTitle">
             {{ 'models.apiConfiguration.authType' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.authType }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.authType }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-        <td mat-cell *matCellDef="let element">
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
           <ui-button
             [isIcon]="true"
             icon="more_vert"
@@ -156,10 +157,10 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
+        cdk-row
+        *cdkRowDef="let row; columns: displayedColumns"
         class="cursor-pointer"
         [routerLink]="['/settings/apiconfigurations', row.id]"
       ></tr>
@@ -175,13 +176,13 @@
     >
     </safe-skeleton-table>
   </div>
-  <mat-paginator
-    [disabled]="loading"
-    [pageSize]="pageInfo.pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    [length]="pageInfo.length"
-    [ariaLabel]="'components.apiConfiguration.paginator.ariaLabel' | translate"
-    (page)="onPage($event)"
-  >
-  </mat-paginator>
 </div>
+<ui-paginator
+  [disabled]="loading"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.apiConfiguration.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

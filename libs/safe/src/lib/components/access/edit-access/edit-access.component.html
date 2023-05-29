@@ -1,11 +1,13 @@
-<safe-modal>
-  <h1 mat-dialog-title>
-    {{
-      'components.access.description'
-        | translate : { name: data.objectTypeName }
-    }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        'components.access.description'
+          | translate : { name: data.objectTypeName }
+      }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="accessForm" class="flex flex-col">
 
       <div uiFormFieldDirective [outline]="false">
@@ -36,19 +38,19 @@
         </div>
       </ng-container>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
+  </ng-container>
+  <ng-container ngProjectAs="actions">
     <ui-button (click)="onClose()">{{
       'common.close' | translate
     }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="accessForm.value"
+      [uiDialogClose]="accessForm.value"
       cdkFocusInitial
       [disabled]="!accessForm.valid"
     >
       {{ 'common.update' | translate }}
     </ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>
