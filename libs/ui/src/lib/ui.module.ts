@@ -22,6 +22,7 @@ import { FormWrapperModule } from './form-wrapper/form-wrapper.module';
 import { DialogModule } from './dialog/dialog.module';
 import { TabsModule } from './tabs/tabs.module';
 import { SnackbarModule } from './snackbar/snackbar.module';
+import { AlertModule } from './alert/alert.module';
 
 /**
  * UI Library Module
@@ -51,6 +52,7 @@ import { SnackbarModule } from './snackbar/snackbar.module';
     DialogModule,
     TabsModule,
     SnackbarModule,
+    AlertModule,
   ],
 })
 export class UiModule {}

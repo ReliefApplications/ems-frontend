@@ -7,7 +7,6 @@ import {
   SafeRecordHistoryModule,
   SafeWidgetGridModule,
   SafeSkeletonModule,
-  SafeAlertModule,
   SafeSearchMenuModule,
   SafeIconModule,
   SafeModalModule,
@@ -26,7 +25,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MenuModule, TooltipModule, ButtonModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  TooltipModule,
+  ButtonModule,
+  AlertModule,
+} from '@oort-front/ui';
 
 /**
  * Dashboard page module.
@@ -50,7 +54,6 @@ import { MenuModule, TooltipModule, ButtonModule } from '@oort-front/ui';
     OverlayModule,
     SafeSearchMenuModule,
     SafeSkeletonModule,
-    SafeAlertModule,
     SafeModalModule,
     SafeEditableTextModule,
     FullScreenModule,
@@ -61,6 +64,7 @@ import { MenuModule, TooltipModule, ButtonModule } from '@oort-front/ui';
     DashboardFilterModule,
     TooltipModule,
     ButtonModule,
+    AlertModule,
   ],
   exports: [DashboardComponent],
 })

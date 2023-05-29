@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeQueryBuilderComponent } from './query-builder.component';
-import { TabsModule } from '@oort-front/ui';
+import { AlertModule, TabsModule } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeTabFieldsComponent } from './tab-fields/tab-fields.component';
 import { SafeTabSortComponent } from './tab-sort/tab-sort.component';
@@ -31,7 +31,6 @@ import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.comp
 import { SafeFilterModule } from '../filter/filter.module';
 import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { SafeAlertModule } from '../ui/alert/alert.module';
 import {
   MenuModule,
   TooltipModule,
@@ -83,10 +82,10 @@ import {
     MatDatepickerModule,
     SafeFilterModule,
     EditorModule,
-    SafeAlertModule,
     RadioModule,
     ButtonModule,
     TableModule,
+    AlertModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

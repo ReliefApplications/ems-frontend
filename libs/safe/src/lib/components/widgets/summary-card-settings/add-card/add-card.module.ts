@@ -9,11 +9,15 @@ import { SafeCardTemplateComponent } from './card-template/card-template.compone
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeSkeletonModule } from '../../../../directives/skeleton/skeleton.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import { SafeAlertModule } from '../../../ui/alert/alert.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
+import {
+  SpinnerModule,
+  FormWrapperModule,
+  IconModule,
+  AlertModule,
+} from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { TooltipModule, RadioModule, ButtonModule } from '@oort-front/ui';
 
@@ -30,7 +34,6 @@ import { TooltipModule, RadioModule, ButtonModule } from '@oort-front/ui';
     SafeIconModule,
     SafeSkeletonModule,
     IndicatorsModule,
-    SafeAlertModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -41,6 +44,7 @@ import { TooltipModule, RadioModule, ButtonModule } from '@oort-front/ui';
     IconModule,
     RadioModule,
     ButtonModule,
+    AlertModule,
   ],
   exports: [SafeAddCardComponent, SafeCardTemplateComponent],
 })

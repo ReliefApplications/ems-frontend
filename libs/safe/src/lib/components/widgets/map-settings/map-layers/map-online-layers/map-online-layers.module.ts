@@ -6,9 +6,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeBadgeModule } from '../../../../ui/badge/badge.module';
-import { SafeAlertModule } from '../../../../ui/alert/alert.module';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
-import { TableModule } from '@oort-front/ui';
+import { AlertModule, TableModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 
 /**
@@ -24,10 +23,10 @@ import { ButtonModule } from '@oort-front/ui';
     MatFormFieldModule,
     MatInputModule,
     SafeBadgeModule,
-    SafeAlertModule,
     SafeIconModule,
     TableModule,
     ButtonModule,
+    AlertModule,
   ],
   exports: [MapOnlineLayersComponent],
 })

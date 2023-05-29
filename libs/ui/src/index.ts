@@ -26,6 +26,9 @@ export * from './lib/chip/chip.module';
 export * from './lib/form-wrapper/form-wrapper.module';
 export * from './lib/dialog/dialog.module';
 export * from './lib/tabs/tabs.module';
+export * from './lib/alert/alert.module';
+
+// === SERVICES === //
 export * from './lib/snackbar/snackbar.service';
 
 // === TYPES === //

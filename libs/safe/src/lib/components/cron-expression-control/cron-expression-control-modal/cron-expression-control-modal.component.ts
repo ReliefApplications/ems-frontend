@@ -8,11 +8,10 @@ import { CronEditorModule } from 'ngx-cron-editor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeModalModule } from '../../ui/modal/modal.module';
 import { SafeReadableCronModule } from '../../../pipes/readable-cron/readable-cron.module';
-import { SafeAlertModule } from '../../ui/alert/alert.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { ButtonModule } from '@oort-front/ui';
+import { AlertModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * Cron expression form control modal
@@ -26,11 +25,11 @@ import { ButtonModule } from '@oort-front/ui';
     FormsModule,
     ReactiveFormsModule,
     SafeReadableCronModule,
-    SafeAlertModule,
     MatFormFieldModule,
     MatDialogModule,
     MatInputModule,
     ButtonModule,
+    AlertModule,
   ],
   selector: 'safe-cron-expression-control-modal',
   templateUrl: './cron-expression-control-modal.component.html',

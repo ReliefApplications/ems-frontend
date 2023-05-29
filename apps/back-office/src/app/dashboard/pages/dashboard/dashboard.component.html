@@ -93,10 +93,10 @@
         </ui-menu>
 
         <ng-template #searchMenuHeaderTemplate>
-          <safe-alert
+          <ui-alert
             ><safe-icon icon="info"></safe-icon>
             {{ 'models.page.tooltip.duplicate' | translate }}
-          </safe-alert>
+          </ui-alert>
         </ng-template>
 
         <ng-template
@@ -116,17 +116,17 @@
     </div>
     <ng-container *ngIf="dashboard.page?.context">
       <!-- todo(translate) -->
-      <safe-alert *ngIf="!contextRecord" class="mb-4"
+      <ui-alert *ngIf="!contextRecord" class="mb-4"
         ><safe-icon icon="info"></safe-icon
         >{{
           'models.dashboard.context.edition.template' | translate
-        }}</safe-alert
+        }}</ui-alert
       >
-      <safe-alert *ngIf="contextRecord" class="mb-4"
+      <ui-alert *ngIf="contextRecord" class="mb-4"
         ><safe-icon icon="info"></safe-icon
         >{{
           'models.dashboard.context.edition.element' | translate
-        }}</safe-alert
+        }}</ui-alert
       >
     </ng-container>
     <span>

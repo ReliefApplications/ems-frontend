@@ -120,7 +120,7 @@ $ui-palette-warn: (
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
 
-  .safe-alert {
+  .ui-alert {
     &-default {
       $variant-color: #f1f1f1;
       background-color: $variant-color;
