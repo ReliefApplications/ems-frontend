@@ -15,6 +15,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UIPageChangeEvent } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -120,14 +121,14 @@ export class UserListComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
       ((e.pageIndex > e.previousPageIndex &&
         e.pageIndex * this.pageInfo.pageSize >= this.cachedUsers.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedUsers.length
+      e.totalItems > this.cachedUsers.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -270,15 +271,10 @@ export class UserListComponent
     data: GetApplicationUsersQueryResponse,
     loading: boolean
   ) {
-    this.cachedUsers = updateQueryUniqueValues(
-      this.cachedUsers,
-      data.application.users.edges.map((x) => x.node)
-    );
+    const mappedValues = data.application.users.edges.map((x) => x.node);
+    this.cachedUsers = updateQueryUniqueValues(this.cachedUsers, mappedValues);
 
-    this.users.data = this.cachedUsers.slice(
-      this.pageInfo.pageSize * this.pageInfo.pageIndex,
-      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-    );
+    this.users.data = mappedValues;
     this.pageInfo.length = data.application.users.totalCount;
     this.pageInfo.endCursor = data.application.users.pageInfo.endCursor;
     this.loading = loading;

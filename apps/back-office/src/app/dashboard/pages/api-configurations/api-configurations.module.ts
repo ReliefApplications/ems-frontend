@@ -12,7 +12,6 @@ import { AddApiConfigurationComponent } from './components/add-api-configuration
 import { SafeSkeletonTableModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
 import {
@@ -23,6 +22,7 @@ import {
   TableModule,
   DialogModule,
   FormWrapperModule,
+  PaginatorModule,
 } from '@oort-front/ui';
 
 /**
@@ -44,7 +44,7 @@ import {
     DialogModule,
     MatIconModule,
     MatButtonModule,
-    MatPaginatorModule,
+    PaginatorModule,
     TranslateModule,
     SafeSkeletonTableModule,
     AbilityModule,

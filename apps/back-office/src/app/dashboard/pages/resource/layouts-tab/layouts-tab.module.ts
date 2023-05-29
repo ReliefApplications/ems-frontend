@@ -10,8 +10,12 @@ import {
   SafeEmptyModule,
 } from '@oort-front/safe';
 import { LayoutsTabComponent } from './layouts-tab.component';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
-import { MenuModule, ButtonModule, TableModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  ButtonModule,
+  TableModule,
+  PaginatorModule,
+} from '@oort-front/ui';
 
 /**
  * Layouts tab of resource page
@@ -27,7 +31,7 @@ import { MenuModule, ButtonModule, TableModule } from '@oort-front/ui';
     OverlayModule,
     SafeDateModule,
     SafeSkeletonTableModule,
-    MatPaginatorModule,
+    PaginatorModule,
     SafeEmptyModule,
     ButtonModule,
     TableModule,

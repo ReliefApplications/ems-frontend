@@ -24,7 +24,7 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { takeUntil } from 'rxjs';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 
 /**
  * Limit of pull jobs shown at once.
@@ -108,13 +108,13 @@ export class PullJobsComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     if (
       ((e.pageIndex > e.previousPageIndex &&
         e.pageIndex * this.pageInfo.pageSize >= this.cachedPullJobs.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedPullJobs.length
+      e.totalItems > this.cachedPullJobs.length
     ) {
       this.loading = true;
       const variables = {
@@ -397,14 +397,12 @@ export class PullJobsComponent
    * @param loading Loading state
    */
   private updateValues(data: GetPullJobsQueryResponse, loading: boolean): void {
+    const mappedValues = data.pullJobs.edges.map((x) => x.node);
     this.cachedPullJobs = updateQueryUniqueValues(
       this.cachedPullJobs,
-      data.pullJobs.edges.map((x) => x.node)
+      mappedValues
     );
-    this.pullJobs.data = this.cachedPullJobs.slice(
-      ITEMS_PER_PAGE * this.pageInfo.pageIndex,
-      ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
-    );
+    this.pullJobs.data = mappedValues;
     this.pageInfo.length = data.pullJobs.totalCount;
     this.pageInfo.endCursor = data.pullJobs.pageInfo.endCursor;
     this.loading = loading;

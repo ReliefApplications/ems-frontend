@@ -19,7 +19,6 @@ import { ChoseRoleComponent } from './components/chose-role/chose-role.component
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
@@ -33,6 +32,7 @@ import {
   IconModule,
   TableModule,
   ChipModule,
+  PaginatorModule,
 } from '@oort-front/ui';
 
 /**
@@ -56,7 +56,7 @@ import {
     MatDatepickerModule,
     MatNativeDateModule,
     MatButtonModule,
-    MatPaginatorModule,
+    PaginatorModule,
     SafeApplicationsSummaryModule,
     TranslateModule,
     SafeSkeletonTableModule,

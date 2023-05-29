@@ -8,7 +8,6 @@ import {
   SafeSkeletonTableModule,
   SafeEmptyModule,
 } from '@oort-front/safe';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.module';
@@ -18,6 +17,7 @@ import {
   MenuModule,
   ButtonModule,
   TableModule,
+  PaginatorModule,
 } from '@oort-front/ui';
 
 /** Forms records page module */
@@ -31,7 +31,7 @@ import {
     SafeRecordHistoryModule,
     TooltipModule,
     DividerModule,
-    MatPaginatorModule,
+    PaginatorModule,
     TranslateModule,
     OverlayModule,
     UploadMenuModule,
