@@ -144,27 +144,19 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
         const pageToLink = await Promise.resolve(pagePromise);
         //Build the url depending on whether we are in the front or back office
         let url: string;
-        if (this.router.url.includes('/applications')) {
-          url =
-            './applications/' +
-            currentAppId +
-            '/' +
-            pageToLink.data.page.type +
-            '/' +
-            pageToLink.data.page.id;
-        } else {
-          let finalUrlElement;
-          pageToLink.data.page.type === 'dashboard'
-            ? (finalUrlElement = pageToLink.data.page.content)
-            : (finalUrlElement = pageToLink.data.page.id);
-          url =
-            './' +
-            currentAppId +
-            '/' +
-            pageToLink.data.page.type +
-            '/' +
-            finalUrlElement;
-        }
+        this.router.url.includes('/applications')
+          ? (url = './applications/')
+          : (url = './');
+        let finalUrlElement;
+        pageToLink.data.page.type === 'dashboard'
+          ? (finalUrlElement = pageToLink.data.page.content)
+          : (finalUrlElement = pageToLink.data.page.id);
+        url +=
+          currentAppId +
+          '/' +
+          pageToLink.data.page.type +
+          '/' +
+          finalUrlElement;
 
         this.resultText =
           '<a href="' + url + '">' + pageToLink.data.page.name + '</a>';
