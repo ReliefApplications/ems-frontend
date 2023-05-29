@@ -55,7 +55,7 @@ $ui-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,,,,,
+      // A700: #ffffff
     ),
 );
 
@@ -184,12 +184,6 @@ body {
   height: 100%;
 }
 
-.resource-access-dialog {
-  max-width: unset !important;
-  width: 90%;
-  height: calc(100% - 72px);
-}
-
 // === KENDO THEME ===
 @import 'theme.scss';
 
@@ -289,6 +283,18 @@ body {
       @apply transition-transform;
     }
   }
+}
+
+input[type='date'] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+input[type='date']::-webkit-inner-spin-button,
+input[type='date']::-webkit-calendar-picker-indicator {
+  display: none !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
 }
 
 // Define new colors

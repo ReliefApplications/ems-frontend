@@ -1,24 +1,26 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>
-    {{
-      (data
-        ? 'components.distributionLists.edit.update'
-        : 'components.distributionLists.edit.new'
-      ) | translate
-    }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        (data
+          ? 'components.distributionLists.edit.update'
+          : 'components.distributionLists.edit.new'
+        ) | translate
+      }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="form" class="flex flex-col">
       <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{
+        <div uiFormFieldDirective  class="flex-1">
+          <label>{{
             'components.distributionLists.edit.name' | translate
-          }}</mat-label>
-          <input matInput formControlName="name" type="text" />
+          }}</label>
+          <input formControlName="name" type="text" />
           <mat-error>{{
             'components.distributionLists.errors.name.required' | translate
           }}</mat-error>
-        </mat-form-field>
+        </div>
         <div>
           <label class="block text-sm font-medium leading-6 text-gray-900">{{
             'common.email.few' | translate
@@ -49,18 +51,18 @@
         </div>
       </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <ui-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="form.value"
+      [uiDialogClose]="form.value"
       [disabled]="!form.valid"
     >
       {{ (data ? 'common.update' : 'common.create') | translate }}
     </ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

@@ -3,7 +3,6 @@ import { SafeSummaryCardSettingsComponent } from './summary-card-settings.compon
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SafeIconModule } from '../../ui/icon/icon.module';
@@ -17,6 +16,7 @@ import {
   TooltipModule,
   RadioModule,
   ButtonModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 
 /** Summary Card Settings Module */
@@ -27,7 +27,6 @@ import {
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule,
     TranslateModule,
     LayoutModule,
     TooltipModule,
@@ -40,6 +39,7 @@ import {
     SummaryCardItemModule,
     RadioModule,
     ButtonModule,
+    FormWrapperModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

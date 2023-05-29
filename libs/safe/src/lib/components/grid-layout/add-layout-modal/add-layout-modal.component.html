@@ -1,8 +1,10 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>
-    {{ 'components.widget.settings.grid.layouts.add.title' | translate }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.widget.settings.grid.layouts.add.title' | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <div class="flex gap-4 flex-col" *ngIf="!nextStep">
       <!-- LOAD FROM EXISTING LAYOUT -->
       <ui-button
@@ -57,8 +59,8 @@
         </safe-graphql-select>
       </mat-form-field>
     </div>
-  </div>
-  <div mat-dialog-actions align="end">
-    <ui-button mat-dialog-close>{{ 'common.close' | translate }}</ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>{{ 'common.close' | translate }}</ui-button>
+  </ng-container>
+</ui-dialog>

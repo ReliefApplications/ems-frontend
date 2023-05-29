@@ -15,6 +15,11 @@ export class DialogComponent implements OnChanges, OnInit {
   @Input() padding = true;
   @Input() size!: DialogSize;
 
+  /** Close material dialog. */
+  @Input() onClose = () => {
+    this.dialogRef.close();
+  };
+
   /**
    * Constructor for the modal component
    *

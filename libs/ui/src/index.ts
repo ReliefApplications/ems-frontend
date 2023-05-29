@@ -16,6 +16,7 @@ export * from './lib/toggle/toggle.module';
 export * from './lib/textarea/textarea.module';
 export * from './lib/breadcrumbs/breadcrumbs.module';
 export * from './lib/divider/divider.module';
+export * from './lib/autocomplete/autocomplete.module';
 export * from './lib/select-menu/select-menu.module';
 export * from './lib/select-menu/components/select-option.module';
 export * from './lib/expansion-panel/expansion-panel.module';
@@ -27,6 +28,8 @@ export * from './lib/form-wrapper/form-wrapper.module';
 export * from './lib/dialog/dialog.module';
 export * from './lib/tabs/tabs.module';
 export * from './lib/alert/alert.module';
+export * from './lib/date/date-range/date-range.module';
+export * from './lib/date/date-picker/date-picker.module';
 
 // === SERVICES === //
 export * from './lib/snackbar/snackbar.service';

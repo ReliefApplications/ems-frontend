@@ -1,8 +1,11 @@
-<safe-modal [closable]="true" size="medium">
-  <h1 mat-dialog-title>
-    {{ 'components.widget.settings.summaryCard.add' | translate }}
-  </h1>
-  <mat-dialog-content>
+<ui-dialog [closable]="true" size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.widget.settings.summaryCard.add' | translate }}
+    </h1>
+  </ng-container>
+
+  <ng-container ngProjectAs="content">
     <!-- <div
       uiRadioGroupDirective="recipientsTypeOptions"
       [ariaLabel]="'components.widget.settings.summaryCard.options.ariaLabel' | translate"
@@ -72,10 +75,10 @@
         'components.widget.settings.summaryCard.create.choice.blank' | translate
       }}</ui-button
     >
-  </mat-dialog-content>
-  <div mat-dialog-actions class="mat-dialog-actions" align="end">
-    <ui-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
     </ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

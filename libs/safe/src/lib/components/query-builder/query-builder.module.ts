@@ -37,6 +37,7 @@ import {
   RadioModule,
   ButtonModule,
   TableModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 
 /**
@@ -86,6 +87,7 @@ import {
     ButtonModule,
     TableModule,
     AlertModule,
+    FormWrapperModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

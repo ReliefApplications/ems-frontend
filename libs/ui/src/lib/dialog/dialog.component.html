@@ -1,7 +1,19 @@
-<div class="flex flex-col h-full">
+<ui-button
+  *ngIf="closable"
+  class="absolute z-10 right-1.5 top-1.5"
+  [isIcon]="true"
+  icon="close"
+  [variant]="'danger'"
+  [uiTooltip]="'common.close' | translate"
+  (click)="onClose()"
+>
+</ui-button>
+<div class="flex flex-col h-full overflow-hidden">
   <ng-content select="header"></ng-content>
-  <div class="flex-1">
+  <div class="flex-1 overflow-auto">
     <ng-content select="content"></ng-content>
   </div>
-  <ng-content select="actions"></ng-content>
+  <div class="py-2 flex flex-wrap min-h-[52px] align-center box-content -mb-6 justify-end gap-2">
+    <ng-content select="actions"></ng-content>
+  </div>
 </div>

@@ -5,12 +5,11 @@ import { ApiConfigurationComponent } from './api-configuration.component';
 import { SafeAccessModule } from '@oort-front/safe';
 import { ChipModule, SpinnerModule } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyOptionModule as MatOptionModule } from '@angular/material/legacy-core';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
 
 /**
  * API configuration page module.
@@ -23,7 +22,7 @@ import { ButtonModule } from '@oort-front/ui';
     SafeAccessModule,
     SpinnerModule,
     MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     ReactiveFormsModule,
     MatSelectModule,
     MatOptionModule,

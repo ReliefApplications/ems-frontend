@@ -1,10 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeFormModalComponent } from './form-modal.component';
 import {
@@ -27,8 +27,8 @@ describe('SafeFormModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {} },
+        { provide: DialogRef, useValue: {} },
+        { provide: DIALOG_DATA, useValue: {} },
         { provide: 'environment', useValue: environment },
         OAuthService,
         UrlHelperService,
@@ -38,7 +38,7 @@ describe('SafeFormModalComponent', () => {
       ],
       declarations: [SafeFormModalComponent],
       imports: [
-        MatDialogModule,
+        DialogCdkModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {

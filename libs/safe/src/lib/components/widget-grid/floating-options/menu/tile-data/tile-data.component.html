@@ -1,9 +1,11 @@
-<safe-modal [closable]="true" size="fullscreen" [onClose]="onClose.bind(this)">
-  <h1 mat-dialog-title>{{ 'common.settings' | translate }}</h1>
-  <mat-dialog-content class="flex max-h-full grow">
+<ui-dialog [closable]="true" size="fullscreen" [onClose]="onClose.bind(this)">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'common.settings' | translate }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <template #settingsContainer></template>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
+  </ng-container>
+  <ng-container ngProjectAs="actions">
     <ui-button (click)="onClose()">
       {{ 'common.close' | translate }}
     </ui-button>
@@ -16,5 +18,5 @@
     >
       {{ 'common.save' | translate }}
     </ui-button>
-  </mat-dialog-actions>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

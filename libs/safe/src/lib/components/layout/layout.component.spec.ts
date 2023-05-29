@@ -10,10 +10,10 @@ import {
 import { SafeLayoutComponent } from './layout.component';
 import { HttpClientModule } from '@angular/common/http';
 import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import {
   TranslateModule,
   TranslateService,
@@ -41,15 +41,15 @@ describe('SafeLayoutComponent', () => {
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {} },
+        { provide: DialogRef, useValue: {} },
+        { provide: DIALOG_DATA, useValue: {} },
         TranslateService,
       ],
       declarations: [SafeLayoutComponent],
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        MatDialogModule,
+        DialogCdkModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

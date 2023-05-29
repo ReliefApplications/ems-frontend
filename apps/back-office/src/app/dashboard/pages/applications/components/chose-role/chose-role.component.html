@@ -1,8 +1,10 @@
-<safe-modal size="small">
-  <h1 mat-dialog-title>
-    {{ 'components.role.impersonate.title' | translate }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="small">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.role.impersonate.title' | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <ui-spinner *ngIf="loading"></ui-spinner>
     <form [formGroup]="roleForm" class="flex flex-col" *ngIf="!loading">
       <mat-form-field appearance="outline">
@@ -16,17 +18,17 @@
         </safe-graphql-select>
       </mat-form-field>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
+  </ng-container>
+  <ng-container ngProjectAs="actions">
     <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="roleForm.value"
+      [uiDialogClose]="roleForm.value"
       cdkFocusInitial
       [disabled]="!roleForm.valid"
     >
       {{ 'common.preview' | translate }}
     </ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

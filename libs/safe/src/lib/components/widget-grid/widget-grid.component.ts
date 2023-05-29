@@ -8,7 +8,7 @@ import {
   QueryList,
   ViewChildren,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
 import {
   TileLayoutReorderEvent,
@@ -16,6 +16,8 @@ import {
 } from '@progress/kendo-angular-layout';
 import { SafeDashboardService } from '../../services/dashboard/dashboard.service';
 import { SafeWidgetComponent } from '../widget/widget.component';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /** Maximum height of the widget in row units */
 const MAX_ROW_SPAN = 4;
@@ -31,7 +33,10 @@ const MAX_COL_SPAN = 8;
   templateUrl: './widget-grid.component.html',
   styleUrls: ['./widget-grid.component.scss'],
 })
-export class SafeWidgetGridComponent implements OnInit {
+export class SafeWidgetGridComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public availableWidgets: any[] = WIDGET_TYPES;
 
   @Input() loading = false;
@@ -83,9 +88,11 @@ export class SafeWidgetGridComponent implements OnInit {
    * @param dashboardService Shared dashboard service
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private dashboardService: SafeDashboardService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
@@ -149,10 +156,12 @@ export class SafeWidgetGridComponent implements OnInit {
       },
       autoFocus: false,
     });
-    dialogRef.componentInstance.goToNextStep.subscribe((event: any) => {
-      this.goToNextStep.emit(event);
-      dialogRef.close();
-    });
+    dialogRef.componentInstance?.goToNextStep
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event: any) => {
+        this.goToNextStep.emit(event);
+        dialogRef.close();
+      });
   }
 
   /**

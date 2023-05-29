@@ -9,7 +9,6 @@ import {
   SafeSkeletonModule,
   SafeSearchMenuModule,
   SafeIconModule,
-  SafeModalModule,
   SafeEditableTextModule,
   FullScreenModule,
   SafeGraphQLSelectModule,
@@ -18,7 +17,6 @@ import {
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
@@ -30,6 +28,7 @@ import {
   TooltipModule,
   ButtonModule,
   AlertModule,
+  DialogModule,
 } from '@oort-front/ui';
 
 /**
@@ -45,7 +44,7 @@ import {
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
-    MatDialogModule,
+    DialogModule,
     MenuModule,
     ClipboardModule,
     SafeRecordHistoryModule,
@@ -54,7 +53,6 @@ import {
     OverlayModule,
     SafeSearchMenuModule,
     SafeSkeletonModule,
-    SafeModalModule,
     SafeEditableTextModule,
     FullScreenModule,
     SafeGraphQLSelectModule,

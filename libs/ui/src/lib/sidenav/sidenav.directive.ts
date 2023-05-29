@@ -7,8 +7,10 @@ import {
   Renderer2,
   ElementRef,
   OnDestroy,
+  SimpleChanges,
+  OnChanges,
 } from '@angular/core';
-import { SidenavTypes } from './types/sidenavs';
+import { SidenavPositionTypes, SidenavTypes } from './types/sidenavs';
 
 /**
  * UI Sidenav directive
@@ -17,9 +19,10 @@ import { SidenavTypes } from './types/sidenavs';
   selector: '[uiSidenavDirective]',
   exportAs: 'uiSidenavDirective',
 })
-export class SidenavDirective implements OnInit, OnDestroy {
+export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
   @Input() opened = true;
   @Input() mode: SidenavTypes = 'side';
+  @Input() position: SidenavPositionTypes = 'start';
   @Output() openedChange = new EventEmitter<boolean>();
 
   private clickOutsideListener!: any;
@@ -30,7 +33,7 @@ export class SidenavDirective implements OnInit, OnDestroy {
    * @param el host element
    * @param renderer Renderer2
    */
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  constructor(public el: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit(): void {
     this.clickOutsideListener = this.renderer.listen(
@@ -40,13 +43,19 @@ export class SidenavDirective implements OnInit, OnDestroy {
         if (
           !this.toggleUsed &&
           this.opened &&
-          !this.el.nativeElement.contains(event.target)
+          !this.el.nativeElement.contains(event.target) &&
+          this.mode === 'over'
         ) {
           this.opened = false;
           this.openedChange.emit(this.opened);
         }
       }
     );
+  }
+
+  ngOnChanges(change: SimpleChanges) {
+    this.opened = change['opened']?.currentValue ?? false;
+    this.openedChange.emit(this.opened);
   }
 
   /** Handles the toggle of the sidenav status */

@@ -1,23 +1,23 @@
-<safe-modal size="medium" [closable]="true">
-  <div mat-dialog-content class="!flex flex-col">
+<ui-dialog size="medium" [closable]="true">
+  <ng-container ngProjectAs="content">
     <h1>{{ data.title }}</h1>
     <div uiFormFieldDirective class="flex-1">
       <ui-textarea [formControl]="formControl" [minRows]="15" [maxRows]="15">
       </ui-textarea>
     </div>
-  </div>
-  <div mat-dialog-actions align="end">
-    <ui-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="formControl.value"
+      [uiDialogClose]="formControl.value"
       cdkFocusInitial
       *ngIf="!data.readonly"
     >
       {{ 'common.save' | translate }}
     </ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

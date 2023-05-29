@@ -2,7 +2,7 @@
   <!-- Filters -->
   <div class="flex flex-col gap-4">
     <!-- Default filter -->
-    <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
+    <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
       <!-- Search text filter -->
       <div uiFormFieldDirective>
         <ui-icon [icon]="'search'" uiPrefix></ui-icon>
@@ -16,17 +16,15 @@
     </div>
   </div>
   <!-- Actions -->
-  <div class="flex items-center">
-    <ui-button
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="onAdd()"
-      *ngIf="'create' | able : 'ReferenceData'"
-    >
-      {{ 'models.referenceData.add' | translate }}
-    </ui-button>
-  </div>
+  <ui-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="onAdd()"
+    *ngIf="'create' | able : 'ReferenceData'"
+  >
+    {{ 'models.referenceData.add' | translate }}
+  </ui-button>
 </div>
 
 <!-- Table container -->
@@ -35,7 +33,7 @@
   <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
-      cdk-table 
+      cdk-table
       uiTableWrapper
       [dataSource]="dataSource"
       (sortChange)="onSort($event)"
@@ -61,7 +59,12 @@
       </ng-container>
 
       <ng-container cdkColumnDef="apiConfiguration">
-        <th uiTableHeaderSort="apiConfiguration" uiCellHeader *cdkHeaderCellDef scope="col">
+        <th
+          uiTableHeaderSort="apiConfiguration"
+          uiCellHeader
+          *cdkHeaderCellDef
+          scope="col"
+        >
           <span class="headerTitle">
             {{ 'common.apiConfiguration.one' | translate }}
           </span>
@@ -72,7 +75,12 @@
       </ng-container>
 
       <ng-container cdkColumnDef="modifiedAt">
-        <th uiTableHeaderSort="modifiedAt" uiCellHeader *cdkHeaderCellDef scope="col">
+        <th
+          uiTableHeaderSort="modifiedAt"
+          uiCellHeader
+          *cdkHeaderCellDef
+          scope="col"
+        >
           <span class="headerTitle">
             {{ 'common.modifiedOn' | translate }}
           </span>
