@@ -1,7 +1,11 @@
 <section class="pt-2 block">
   <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
-    <div class="ml-1 text-xs font-semibold pt-2 leading-6 text-gray-400">
-      {{ group.name }}
+    <div
+      class="ml-1 overflow-clip flex flex-row justify-between items-center text-xs font-semibold pt-2 leading-6 text-gray-400"
+    >
+      <div class="truncate">
+        {{ group.name }}
+      </div>
       <ui-button
         *ngIf="appLayout && canAddPage"
         [isIcon]="true"
@@ -10,6 +14,7 @@
         [uiTooltip]="'models.page.add' | translate"
         routerLink="./add-page"
         (click)="largeDevice ? null : nav.toggle()"
+        class="overflow-visible"
       ></ui-button>
     </div>
     <div
@@ -73,8 +78,13 @@
               </div>
             </li>
             <!-- Preview when dragging element -->
-            <li *cdkDragPreview class="flex items-center flex-row text-gray-700 bg-white rounded-md px-2 py-3 m-2 shadow-2lg">
-              <a class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold">
+            <li
+              *cdkDragPreview
+              class="flex items-center flex-row text-gray-700 bg-white rounded-md px-2 py-3 m-2 shadow-2lg"
+            >
+              <a
+                class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
+              >
                 <mat-icon class="nav-icon-active">
                   {{ item.icon }}
                 </mat-icon>
