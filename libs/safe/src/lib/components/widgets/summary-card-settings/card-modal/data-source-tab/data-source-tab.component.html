@@ -53,22 +53,24 @@
 
   <!-- FROM LAYOUTS -->
   <ng-container *ngIf="selectedLayout && form.get('resource')?.value">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.layout.one' | translate }}</mat-label>
-      <mat-select [disabled]="true" [value]="selectedLayout.id">
-        <mat-option [value]="selectedLayout.id">{{
-          selectedLayout.name
-        }}</mat-option>
-      </mat-select>
+    <div uiFormFieldDirective>
+      <label>{{ 'common.layout.one' | translate }}</label>
+      <ui-select-menu [disabled]="true" [value]="selectedLayout.id">
+        <ui-select-option
+          [value]="selectedLayout.id"
+          [label]="selectedLayout.name ?? ''"
+          >{{ selectedLayout.name }}</ui-select-option
+        >
+      </ui-select-menu>
       <ui-button
-        matSuffix
+        uiSuffix
         variant="primary"
         [isIcon]="true"
         icon="edit"
         (click)="editLayout()"
       ></ui-button>
       <ui-button
-        matSuffix
+        uiSuffix
         variant="danger"
         [isIcon]="true"
         icon="close"
@@ -77,7 +79,7 @@
           form.patchValue({ isAggregation: true })
         "
       ></ui-button>
-    </mat-form-field>
+    </div>
     <h2>
       {{
         'components.widget.settings.summaryCard.card.dataSource.layoutStyles.title'
@@ -99,8 +101,15 @@
             | translate
         }}
       </p>
-      <div class="flex gap-12 items-center my-4" formControlName="wholeCardStyles" uiRadioGroupDirective="wholeCardStylesOptions">
-        <ui-radio [value]="false" [checked]="form.get('wholeCardStyles')?.value === false">
+      <div
+        class="flex gap-12 items-center my-4"
+        formControlName="wholeCardStyles"
+        uiRadioGroupDirective="wholeCardStylesOptions"
+      >
+        <ui-radio
+          [value]="false"
+          [checked]="form.get('wholeCardStyles')?.value === false"
+        >
           <ng-container ngProjectAs="label">
             {{
               'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option1'
@@ -108,7 +117,10 @@
             }}
           </ng-container>
         </ui-radio>
-        <ui-radio [value]="true" [checked]="form.get('wholeCardStyles')?.value === true">
+        <ui-radio
+          [value]="true"
+          [checked]="form.get('wholeCardStyles')?.value === true"
+        >
           <ng-container ngProjectAs="label">
             {{
               'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option2'
@@ -121,27 +133,29 @@
   </ng-container>
   <!-- FROM AGGREGATIONS -->
   <ng-container *ngIf="selectedAggregation && form.get('resource')?.value">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.aggregation.one' | translate }}</mat-label>
-      <mat-select [disabled]="true" [value]="selectedAggregation.id">
-        <mat-option [value]="selectedAggregation.id">{{
-          selectedAggregation.name
-        }}</mat-option>
-      </mat-select>
+    <div uiFormFieldDirective>
+      <label>{{ 'common.aggregation.one' | translate }}</label>
+      <ui-select-menu [disabled]="true" [value]="selectedAggregation.id">
+        <ui-select-option
+          [value]="selectedAggregation.id"
+          [label]="selectedAggregation.name ?? ''"
+          >{{ selectedAggregation.name }}</ui-select-option
+        >
+      </ui-select-menu>
       <ui-button
-        matSuffix
+        uiSuffix
         variant="primary"
         [isIcon]="true"
         icon="edit"
         (click)="editAggregation()"
       ></ui-button>
       <ui-button
-        matSuffix
+        uiSuffix
         variant="danger"
         [isIcon]="true"
         icon="close"
         (click)="form.get('aggregation')?.setValue(null)"
       ></ui-button>
-    </mat-form-field>
+    </div>
   </ng-container>
 </div>

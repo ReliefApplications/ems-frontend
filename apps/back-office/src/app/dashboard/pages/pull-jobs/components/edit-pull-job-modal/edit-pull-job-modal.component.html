@@ -136,7 +136,7 @@
               <ui-select-option
                 *ngFor="let application of applications | async"
                 [label]="application.name || ''"
-                [isGrouped]="true"
+                [isGroup]="true"
               >
                 {{ application.name }}
                 <ui-select-option
@@ -190,12 +190,12 @@
                   <div uiFormFieldDirective [outline]="false" class="p-0 w-32">
                     <!-- <mat-label>{{ 'common.field.one' | translate }}</mat-label> -->
                     <ui-select-menu formControlName="name">
-                      <mat-option
+                      <ui-select-option
                         *ngFor="let field of filteredFields(element.value.name)"
                         [value]="field.name"
                       >
                         {{ field.name }}
-                      </mat-option>
+                      </ui-select-option>
                     </ui-select-menu>
                   </div>
                   <div

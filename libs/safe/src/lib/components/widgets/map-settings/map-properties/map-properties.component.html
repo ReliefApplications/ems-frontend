@@ -3,17 +3,17 @@
     <h2>
       {{ 'components.widget.settings.map.properties.title' | translate }}
     </h2>
-    <mat-form-field appearance="outline">
-      <mat-label>{{
+    <div uiFormFieldDirective>
+      <label>{{
         'components.widget.settings.map.properties.basemap' | translate
-      }}</mat-label>
-      <mat-select formControlName="basemap" placeholder="OSM">
-        <mat-option *ngFor="let map of basemaps" [value]="map">
-          {{ map }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-label>
+      }}</label>
+      <ui-select-menu formControlName="basemap" placeholder="OSM">
+        <ui-select-option *ngFor="let map of basemaps" [value]="map">{{
+          map
+        }}</ui-select-option>
+      </ui-select-menu>
+    </div>
+    <label>
       {{ 'components.widget.settings.map.properties.zoom' | translate }}
       <safe-icon
         icon="info_outline"
@@ -25,7 +25,7 @@
         [size]="18"
         variant="grey"
       ></safe-icon>
-    </mat-label>
+    </label>
     <ui-slider
       class="mb-2"
       formControlName="zoom"

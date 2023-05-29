@@ -4,13 +4,14 @@ import { RoleDetailsComponent } from './role-details.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { RoleUsersModule } from '../role-users/role-users.module';
 import {
   TabsModule,
   ButtonModule,
   TextareaModule,
   FormWrapperModule,
+  SelectMenuModule,
+  SelectOptionModule,
 } from '@oort-front/ui';
 
 /**
@@ -25,12 +26,13 @@ import {
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatSelectModule,
     RoleUsersModule,
     TabsModule,
     TextareaModule,
     ButtonModule,
     FormWrapperModule,
+    SelectMenuModule,
+    SelectOptionModule,
   ],
   exports: [RoleDetailsComponent],
 })

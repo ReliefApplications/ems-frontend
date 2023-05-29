@@ -26,14 +26,18 @@
         <label class="invite-label">{{
           'components.user.invite.role.description' | translate
         }}</label>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.role.one' | translate }}</mat-label>
-          <mat-select formControlName="role">
-            <mat-option *ngFor="let role of data.roles" [value]="role.id">{{
-              role.title
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div uiFormFieldDirective>
+          <label>{{ 'common.role.one' | translate }}</label>
+          <ui-select-menu formControlName="role">
+            <ui-select-option
+              *ngFor="let role of data.roles"
+              [value]="role.id"
+              [label]="role.title ?? ''"
+            >
+              {{ role.title }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
         <ng-container
           *ngIf="
             data.positionAttributeCategories &&
@@ -45,7 +49,6 @@
             <label class="invite-label">Set additional attributes</label>
             <div
               uiFormFieldDirective
-              
               *ngFor="
                 let category of positionAttributes.controls;
                 let index = index

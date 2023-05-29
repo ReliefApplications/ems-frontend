@@ -4,7 +4,7 @@
     <!-- Default filter -->
     <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
       <!-- Search text filter -->
-      <div uiFormFieldDirective >
+      <div uiFormFieldDirective>
         <mat-icon uiPrefix>search</mat-icon>
         <input
           [ngModel]="searchText"
@@ -34,18 +34,18 @@
       *ngIf="showFilters"
     >
       <!-- Title filter -->
-      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-        <mat-label>{{ 'common.title' | translate }}</mat-label>
-        <mat-select
+      <div uiFormFieldDirective>
+        <label>{{ 'common.title' | translate }}</label>
+        <ui-select-menu
           [ngModel]="roleFilter"
           (selectionChange)="applyFilter('role', $event)"
         >
-          <mat-option>-</mat-option>
-          <mat-option [value]="role.title" *ngFor="let role of roles">
+          <ui-select-option>-</ui-select-option>
+          <ui-select-option [value]="role.title" *ngFor="let role of roles">
             {{ role.title }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
       <!-- Clear filters -->
       <ui-button
         class="max-sm:!w-auto"

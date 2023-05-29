@@ -9,6 +9,8 @@ import {
   ButtonModule,
   TableModule,
   PaginatorModule,
+  SelectMenuModule,
+  SelectOptionModule,
 } from '@oort-front/ui';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { FilterComponent } from '../role-resources-filter/role-resources-filter.component';
@@ -22,7 +24,6 @@ import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
 import { ResourceFieldsComponent } from './resource-fields/resource-fields.component';
 import { SafeRoleResourceFiltersComponent } from './resource-access-filters/resource-access-filters.component';
 import { SafeFilterModule } from '../../filter/filter.module';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 
 /**
  * Resources tab of Role Summary component.
@@ -53,7 +54,8 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
     FormWrapperModule,
     IconModule,
     SafeFilterModule,
-    MatSelectModule,
+    SelectMenuModule,
+    SelectOptionModule,
     ButtonModule,
     TableModule,
   ],

@@ -5,10 +5,13 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { ExpansionPanelModule } from '@oort-front/ui';
+import {
+  ExpansionPanelModule,
+  SelectMenuModule,
+  SelectOptionModule,
+} from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePaletteControlModule } from '../../../palette-control/palette-control.module';
@@ -32,7 +35,6 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatFormFieldModule,
     FormWrapperModule,
-    MatSelectModule,
     MatButtonModule,
     MatIconModule,
     TextFieldModule,
@@ -49,6 +51,8 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     SafeGraphQLSelectModule,
     SafeSeriesMappingModule,
     ButtonModule,
+    SelectOptionModule,
+    SelectMenuModule,
   ],
   exports: [TabMainComponent],
 })

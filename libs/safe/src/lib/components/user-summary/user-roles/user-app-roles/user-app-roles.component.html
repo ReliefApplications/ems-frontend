@@ -17,14 +17,18 @@
     </safe-graphql-select>
   </mat-form-field>
   <!-- Selection of roles -->
-  <mat-form-field appearance="outline">
-    <mat-label>{{
+  <div uiFormFieldDirective>
+    <label>{{
       'components.user.summary.roles.selectedRoles' | translate
-    }}</mat-label>
-    <mat-select [formControl]="selectedRoles" multiple>
-      <mat-option *ngFor="let role of roles" [value]="role.id">
+    }}</label>
+    <ui-select-menu [formControl]="selectedRoles" [multiselect]="true">
+      <ui-select-option
+        *ngFor="let role of roles"
+        [value]="role.id"
+        [label]="role.title ?? ''"
+      >
         {{ role.title }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+      </ui-select-option>
+    </ui-select-menu>
+  </div>
 </div>

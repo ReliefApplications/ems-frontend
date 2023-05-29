@@ -13,7 +13,6 @@ import {
   SafeSkeletonTableModule,
   SafeEmptyModule,
 } from '@oort-front/safe';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
@@ -41,7 +40,6 @@ import {
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatSelectModule,
     SpinnerModule,
     MenuModule,
     MatAutocompleteModule,

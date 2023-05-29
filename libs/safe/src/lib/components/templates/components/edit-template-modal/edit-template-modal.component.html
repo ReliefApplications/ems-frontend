@@ -12,27 +12,21 @@
   <ng-container ngProjectAs="content">
     <form [formGroup]="form" class="flex flex-col">
       <div class="flex gap-2">
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{
-            'components.templates.type.title' | translate
-          }}</mat-label>
-          <mat-select formControlName="type" [disabled]="true">
-            <mat-option value="email">{{
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{ 'components.templates.type.title' | translate }}</label>
+          <ui-select-menu formControlName="type" [disabled]="true">
+            <ui-select-option value="email">{{
               'components.templates.type.email' | translate
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <div uiFormFieldDirective  class="flex-1">
-          <label>{{
-            'components.templates.edit.name' | translate
-          }}</label>
+            }}</ui-select-option>
+          </ui-select-menu>
+        </div>
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{ 'components.templates.edit.name' | translate }}</label>
           <input formControlName="name" type="text" />
         </div>
       </div>
-      <div uiFormFieldDirective >
-        <label>{{
-          'components.templates.edit.subject' | translate
-        }}</label>
+      <div uiFormFieldDirective>
+        <label>{{ 'components.templates.edit.subject' | translate }}</label>
         <input formControlName="subject" type="text" />
       </div>
       <editor [init]="editor" formControlName="body"></editor>

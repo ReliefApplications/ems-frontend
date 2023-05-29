@@ -15,7 +15,6 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeGraphQLSelectModule } from '../../graphql-select/graphql-select.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
@@ -44,7 +43,6 @@ interface DialogData {
     TranslateModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatSelectModule,
     DialogModule,
     SafeGraphQLSelectModule,
     FormsModule,

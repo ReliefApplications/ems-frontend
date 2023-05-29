@@ -4,7 +4,6 @@ import { SafePipelineComponent } from './pipeline.component';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeGroupStageComponent } from './group-stage/group-stage.component';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeAddFieldStageComponent } from './add-field-stage/add-field-stage.component';
@@ -21,6 +20,8 @@ import {
   TooltipModule,
   ButtonModule,
   ExpansionPanelModule,
+  SelectMenuModule,
+  SelectOptionModule,
 } from '@oort-front/ui';
 
 /**
@@ -41,7 +42,6 @@ import {
     MenuModule,
     TranslateModule,
     ExpansionPanelModule,
-    MatSelectModule,
     MatFormFieldModule,
     FormsModule,
     ReactiveFormsModule,
@@ -52,6 +52,8 @@ import {
     TextareaModule,
     ButtonModule,
     FormWrapperModule,
+    SelectMenuModule,
+    SelectOptionModule,
   ],
   exports: [
     SafePipelineComponent,

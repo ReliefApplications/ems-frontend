@@ -24,7 +24,8 @@ export class SelectOptionComponent implements AfterViewInit {
   @Input() value!: any;
   @Input() selected = false;
   @Input() label = '';
-  @Input() isGrouped = false;
+  @Input() isGroup = false;
+  @Input() disabled = false;
   @Output() optionClick = new EventEmitter<any>();
 
   @ContentChildren(forwardRef(() => SelectOptionComponent))
@@ -47,7 +48,7 @@ export class SelectOptionComponent implements AfterViewInit {
    * Emit optionClick output and updates option selected status
    */
   onChangeFunction(): void {
-    if (this.isGrouped) {
+    if (this.isGroup || this.disabled) {
       return;
     }
     this.selected = !this.selected;

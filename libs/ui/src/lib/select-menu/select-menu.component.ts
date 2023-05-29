@@ -38,6 +38,8 @@ export class SelectMenuComponent
   @Input() multiselect = false;
   // Tells if the select menu should be disabled
   @Input() disabled = false;
+  // Default selected value
+  @Input() value?: string | string[];
   // Any custom template provided for display
   @Input()
   customTemplate!: { template: TemplateRef<any>; context: any };
@@ -87,6 +89,11 @@ export class SelectMenuComponent
       .pipe(startWith(this.optionList), takeUntil(this.destroy$))
       .subscribe({
         next: (options: QueryList<SelectOptionComponent>) => {
+          if (this.value) {
+            this.selectedValues.push(
+              this.value instanceof Array ? [...this.value] : this.value
+            );
+          }
           options.forEach((option) => {
             option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
               next: (isSelected: boolean) => {
