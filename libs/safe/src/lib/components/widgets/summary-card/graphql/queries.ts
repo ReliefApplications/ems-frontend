@@ -3,6 +3,7 @@ import { Record } from '../../../../models/record.model';
 import { Layout } from '../../../../models/layout.model';
 import { Resource } from '../../../../models/resource.model';
 import { Page } from '../../../../models/page.model';
+import { Application } from '../../../../models/application.model';
 
 // === GET RECORD BY ID ===
 /** Graphql request for getting a record by its id */
@@ -125,4 +126,26 @@ export const GET_PAGE_BY_ID = gql`
 export interface GetPageByIdQueryResponse {
   /** Application page */
   page: Page;
+}
+
+// === GET APPLICATION BY ID ===
+/** Get application query */
+export const GET_APPLICATION_BY_ID = gql`
+  query GetApplicationById($id: ID!) {
+    application(id: $id) {
+      id
+      name
+      pages {
+        id
+        name
+        type
+        content
+      }
+    }
+  }
+`;
+
+/** Get application query response */
+export interface GetApplicationByIdQueryResponse {
+  application: Application;
 }

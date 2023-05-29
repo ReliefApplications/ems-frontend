@@ -9,10 +9,16 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { parseHtml } from '../parser/utils';
 import get from 'lodash/get';
-import { GET_PAGE_BY_ID, GetPageByIdQueryResponse } from '../graphql/queries';
+import {
+  GET_PAGE_BY_ID,
+  GetPageByIdQueryResponse,
+  GET_APPLICATION_BY_ID,
+  GetApplicationByIdQueryResponse,
+} from '../graphql/queries';
+import { Page } from '../../../../models/page.model';
 import { Apollo } from 'apollo-angular';
-//import { Page } from '../../../../models/page.model';
 import { firstValueFrom } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -44,6 +50,8 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   constructor(
     private sanitizer: DomSanitizer,
     private downloadService: SafeDownloadService,
+    private router: Router,
+    private route: ActivatedRoute,
     private apollo: Apollo
   ) {}
 
@@ -101,21 +109,49 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
         result[0].indexOf('(') + 1,
         result[0].lastIndexOf(')')
       );
-      const pagePromise: Promise<any> = firstValueFrom(
-        this.apollo.query<GetPageByIdQueryResponse>({
-          query: GET_PAGE_BY_ID,
-          variables: {
-            id: pageId,
-          },
-        })
+      const sameApplication = await this.checkPageApplication(
+        pageId,
+        this.router.url.split('/')[2]
       );
-      const pageToLink = await Promise.resolve(pagePromise);
+      console.log('SAME APP', sameApplication);
+      if (sameApplication) {
+        const pagePromise: Promise<any> = firstValueFrom(
+          this.apollo.query<GetPageByIdQueryResponse>({
+            query: GET_PAGE_BY_ID,
+            variables: {
+              id: pageId,
+            },
+          })
+        );
+        const pageToLink = await Promise.resolve(pagePromise);
+        this.resultText =
+          '<a href="./applications">' + pageToLink.data.page.name + '</a>';
+      } else {
+        this.resultText = 'Cannot link to page outside of this application';
+      }
 
-      this.resultText =
-        '<a href="./applications">' + pageToLink.data.page.name + '</a>';
       html = html.replace(result[0], this.resultText);
       result = regex.exec(html);
     }
     return html;
   };
+
+  private async checkPageApplication(pageId: any, currentAppId: string) {
+    const appPromise: Promise<any> = firstValueFrom(
+      this.apollo.query<GetApplicationByIdQueryResponse>({
+        query: GET_APPLICATION_BY_ID,
+        variables: {
+          id: currentAppId,
+        },
+      })
+    );
+    const appToCheck = await Promise.resolve(appPromise);
+    let isSameApp = false;
+    appToCheck.data.application.pages.map((elt: Page) => {
+      if (elt.id === pageId) {
+        isSameApp = true;
+      }
+    });
+    return isSameApp;
+  }
 }
