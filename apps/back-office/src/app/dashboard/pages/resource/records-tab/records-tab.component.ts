@@ -25,7 +25,7 @@ import {
   GetResourceRecordsQueryResponse,
   GET_RESOURCE_RECORDS,
 } from './graphql/queries';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 
 /** Quantity of resource that will be loaded at once. */
@@ -340,7 +340,7 @@ export class RecordsTabComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
@@ -415,14 +415,12 @@ export class RecordsTabComponent
     data: GetResourceRecordsQueryResponse,
     loading: boolean
   ) {
+    const mappedValues = data.resource.records.edges.map((x) => x.node);
     this.cachedRecords = updateQueryUniqueValues(
       this.cachedRecords,
-      data.resource.records.edges.map((x) => x.node)
+      mappedValues
     );
-    this.dataSource.data = this.cachedRecords.slice(
-      this.pageInfo.pageSize * this.pageInfo.pageIndex,
-      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-    );
+    this.dataSource.data = mappedValues;
     this.pageInfo.length = data.resource.records.totalCount;
     this.pageInfo.endCursor = data.resource.records.pageInfo.endCursor;
     this.loading = loading;

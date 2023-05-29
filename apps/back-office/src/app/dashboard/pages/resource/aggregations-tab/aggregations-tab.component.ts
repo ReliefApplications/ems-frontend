@@ -19,6 +19,7 @@ import {
   GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
 import { takeUntil } from 'rxjs';
+import { UIPageChangeEvent } from '@oort-front/ui';
 
 /**
  * Aggregations tab of resource page
@@ -100,7 +101,7 @@ export class AggregationsTabComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
@@ -257,14 +258,13 @@ export class AggregationsTabComponent
    */
   private updateValues(data: GetResourceByIdQueryResponse, loading: boolean) {
     if (data.resource) {
+      const mappedValues =
+        data.resource.aggregations?.edges.map((x) => x.node) ?? [];
       this.cachedAggregations = updateQueryUniqueValues(
         this.cachedAggregations,
-        data.resource.aggregations?.edges.map((x) => x.node) ?? []
+        mappedValues
       );
-      this.aggregations = this.cachedAggregations.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.aggregations = mappedValues;
       this.pageInfo.length = data.resource.aggregations?.totalCount || 0;
       this.pageInfo.endCursor =
         data.resource.aggregations?.pageInfo.endCursor || '';
