@@ -74,11 +74,9 @@
             "
           ></safe-icon>
         </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{
-            'components.record.convert.select' | translate
-          }}</mat-label>
-          <safe-graphql-select
+        <div uiFormFieldDirective>
+          <label>{{ 'components.record.convert.select' | translate }}</label>
+          <ui-graphql-select
             valueField="id"
             textField="name"
             [query]="formsQuery"
@@ -86,9 +84,10 @@
             [selectedElements]="[defaultForm]"
             (searchChange)="onSearchChange($event)"
             [filterable]="true"
-          ></safe-graphql-select>
-        </mat-form-field>          
+          ></ui-graphql-select>
+        </div>
         <div uiFormFieldDirective>
+          <label>{{ 'components.channel.dropdown.select' | translate }}</label>
           <ui-select-menu formControlName="channel">
             <ui-select-option
               *ngFor="let channel of data.channels"

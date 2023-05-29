@@ -9,14 +9,16 @@ import {
 } from './graphql/queries';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { UntypedFormControl } from '@angular/forms';
-import { SafeGraphQLSelectComponent } from '../../graphql-select/graphql-select.component';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { SafeGraphQLSelectModule } from '../../../components/graphql-select/graphql-select.module';
 import { ReactiveFormsModule } from '@angular/forms';
-import { DialogModule } from '@oort-front/ui';
+import {
+  DialogModule,
+  GraphQLSelectComponent,
+  GraphQLSelectModule,
+} from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -42,7 +44,7 @@ interface DialogData {
     MatButtonModule,
     MatFormFieldModule,
     DialogModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     ReactiveFormsModule,
     ButtonModule,
   ],
@@ -64,8 +66,8 @@ export class AddAggregationModalComponent
   public selectedAggregationControl = new UntypedFormControl('');
 
   /** Reference to graphql select for layout */
-  @ViewChild(SafeGraphQLSelectComponent)
-  aggregationSelect?: SafeGraphQLSelectComponent;
+  @ViewChild(GraphQLSelectComponent)
+  aggregationSelect?: GraphQLSelectComponent;
 
   /**
    * Modal to add or select an aggregation.

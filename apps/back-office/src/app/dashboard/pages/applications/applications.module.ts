@@ -11,7 +11,6 @@ import {
   SafeApplicationsSummaryModule,
   SafeSkeletonTableModule,
   SafeDateModule,
-  SafeGraphQLSelectModule,
 } from '@oort-front/safe';
 import { MatSortModule } from '@angular/material/sort';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
@@ -21,7 +20,7 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
-import { DialogModule } from '@oort-front/ui';
+import { DialogModule, GraphQLSelectModule } from '@oort-front/ui';
 import {
   ButtonModule,
   MenuModule,
@@ -61,7 +60,7 @@ import {
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     DividerModule,
     AbilityModule,
     DialogModule,

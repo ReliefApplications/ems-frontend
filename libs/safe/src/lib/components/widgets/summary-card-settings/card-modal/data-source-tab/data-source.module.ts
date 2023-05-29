@@ -5,12 +5,12 @@ import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/m
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import {
+  GraphQLSelectModule,
   SelectMenuModule,
   SelectOptionModule,
   SpinnerModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeGraphQLSelectModule } from '../../../../graphql-select/graphql-select.module';
 import { SafeFormsDropdownModule } from '../../../../ui/aggregation-builder/public-api';
 import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeDataSourceTabComponent } from './data-source-tab.component';
@@ -35,7 +35,7 @@ import {
     MatInputModule,
     SafeIconModule,
     SpinnerModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     CheckboxModule,
     DividerModule,
     RadioModule,

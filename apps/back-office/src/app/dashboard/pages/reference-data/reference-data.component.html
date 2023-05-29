@@ -40,17 +40,17 @@
     <div *ngIf="['rest', 'graphql'].includes(type)" class="flex flex-col">
       <div class="flex gap-x-2">
         <!-- API Configuration -->
-        <mat-form-field appearance="outline" class="flex-auto">
-          <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
-          <safe-graphql-select
+        <div uiFormFieldDirective class="flex-auto">
+          <label>{{ 'common.apiConfiguration.one' | translate }}</label>
+          <ui-graphql-select
             valueField="id"
             textField="name"
             [query]="apiConfigurationsQuery"
             formControlName="apiConfiguration"
             [selectedElements]="[selectedApiConfiguration]"
           >
-          </safe-graphql-select>
-        </mat-form-field>
+          </ui-graphql-select>
+        </div>
         <!-- QueryName -->
         <div uiFormFieldDirective class="flex-1">
           <label>{{ 'pages.referenceData.queryName' | translate }}</label>
@@ -140,12 +140,19 @@
         />
       </div>
       <!-- Value field to be displayed -->
-      <div uiFormFieldDirective [outline]="false" class="flex-1" *ngIf="!csvLoading && type && valueFields.length > 0">
+      <div
+        uiFormFieldDirective
+        [outline]="false"
+        class="flex-1"
+        *ngIf="!csvLoading && type && valueFields.length > 0"
+      >
         <!-- <mat-label>{{ 'pages.referenceData.valueField' | translate }}</mat-label> -->
         <ui-select-menu formControlName="valueField">
-          <ui-select-option *ngFor="let value of valueFields" [value]="value.name">{{
-            value.name
-          }}</ui-select-option>
+          <ui-select-option
+            *ngFor="let value of valueFields"
+            [value]="value.name"
+            >{{ value.name }}</ui-select-option
+          >
         </ui-select-menu>
       </div>
     </div>

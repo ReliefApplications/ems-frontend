@@ -7,9 +7,9 @@
   </div>
   <div class="flex gap-2 flex-wrap">
     <!-- Resource selection -->
-    <mat-form-field appearance="outline" class="flex-1">
-      <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-      <safe-graphql-select
+    <div uiFormFieldDirective class="flex-1">
+      <label>{{ 'common.resource.one' | translate }}</label>
+      <ui-graphql-select
         valueField="id"
         textField="name"
         [query]="resourcesQuery"
@@ -18,7 +18,7 @@
         (searchChange)="onResourceSearchChange($event)"
         [filterable]="true"
       >
-      </safe-graphql-select>
+      </ui-graphql-select>
       <!-- <mat-label>{{
       'components.queryBuilder.dataset.select' | translate
     }}</mat-label>
@@ -34,7 +34,7 @@
         {{ option }}
       </mat-option>
     </mat-autocomplete> -->
-    </mat-form-field>
+    </div>
     <!-- Template selection -->
     <div uiFormFieldDirective class="flex-1">
       <label>{{ 'models.form.template' | translate }}</label>

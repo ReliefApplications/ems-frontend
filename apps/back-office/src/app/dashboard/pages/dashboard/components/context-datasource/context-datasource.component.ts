@@ -14,8 +14,6 @@ import {
   PageContextT,
   ReferenceData,
   Resource,
-  SafeGraphQLSelectComponent,
-  SafeGraphQLSelectModule,
   SafeUnsubscribeComponent,
   SafeIconModule,
 } from '@oort-front/safe';
@@ -39,6 +37,8 @@ import {
   AlertModule,
   DialogModule,
   TooltipModule,
+  GraphQLSelectComponent,
+  GraphQLSelectModule,
 } from '@oort-front/ui';
 
 /** Default items per resources query, for pagination */
@@ -78,7 +78,6 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     TranslateModule,
     MatFormFieldModule,
     DialogModule,
-    SafeGraphQLSelectModule,
     SafeIconModule,
     TooltipModule,
     ButtonModule,
@@ -86,6 +85,7 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     SelectOptionModule,
     FormWrapperModule,
     AlertModule,
+    GraphQLSelectModule,
   ],
   templateUrl: './context-datasource.component.html',
   styleUrls: ['./context-datasource.component.scss'],
@@ -106,10 +106,10 @@ export class ContextDatasourceComponent
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public refDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
 
-  @ViewChild(SafeGraphQLSelectComponent)
-  resourceSelect?: SafeGraphQLSelectComponent;
-  @ViewChild(SafeGraphQLSelectComponent)
-  refDataSelect?: SafeGraphQLSelectComponent;
+  @ViewChild(GraphQLSelectComponent)
+  resourceSelect?: GraphQLSelectComponent;
+  @ViewChild(GraphQLSelectComponent)
+  refDataSelect?: GraphQLSelectComponent;
 
   // Available fields
   public availableFields: string[] = [];

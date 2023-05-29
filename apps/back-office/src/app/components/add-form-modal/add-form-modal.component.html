@@ -54,11 +54,11 @@
           </ui-radio>
         </div>
         <ng-container *ngIf="!form.value.newResource">
-          <mat-form-field appearance="outline">
-            <mat-label>{{
+          <div uiFormFieldDirective>
+            <label>{{
               'components.form.create.template.title' | translate
-            }}</mat-label>
-            <safe-graphql-select
+            }}</label>
+            <ui-graphql-select
               valueField="id"
               textField="name"
               [query]="resourcesQuery"
@@ -66,8 +66,8 @@
               (searchChange)="onResourceSearchChange($event)"
               [filterable]="true"
             >
-            </safe-graphql-select>
-          </mat-form-field>
+            </ui-graphql-select>
+          </div>
           <ng-container *ngIf="form.controls.resource.value !== null">
             <ui-toggle formControlName="inheritsTemplate" class="mb-5">
               <ng-container ngProjectAs="label">
@@ -83,7 +83,7 @@
                 ></safe-icon>
               </ng-container>
             </ui-toggle>
-            <ng-container *ngIf="form.controls.inheritsTemplate.value"> 
+            <ng-container *ngIf="form.controls.inheritsTemplate.value">
               <div uiFormFieldDirective [outline]="false">
                 <ui-select-menu formControlName="template">
                   <ui-select-option

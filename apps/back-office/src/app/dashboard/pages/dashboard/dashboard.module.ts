@@ -11,7 +11,6 @@ import {
   SafeIconModule,
   SafeEditableTextModule,
   FullScreenModule,
-  SafeGraphQLSelectModule,
   DashboardFilterModule,
 } from '@oort-front/safe';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
@@ -31,6 +30,7 @@ import {
   FormWrapperModule,
   AlertModule,
   DialogModule,
+  GraphQLSelectModule,
 } from '@oort-front/ui';
 
 /**
@@ -56,7 +56,6 @@ import {
     SafeSkeletonModule,
     SafeEditableTextModule,
     FullScreenModule,
-    SafeGraphQLSelectModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -66,6 +65,7 @@ import {
     SelectMenuModule,
     SelectOptionModule,
     FormWrapperModule,
+    GraphQLSelectModule,
     AlertModule,
   ],
   exports: [DashboardComponent],

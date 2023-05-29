@@ -29,14 +29,13 @@
         </div>
 
         <!-- Resource selection -->
-        <mat-form-field
-          appearance="outline"
+        <div
+          uiFormFieldDirective
           class="grow"
           *ngIf="form.get('origin')?.value === 'resource'"
         >
-          <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-
-          <safe-graphql-select
+          <label>{{ 'common.resource.one' | translate }}</label>
+          <ui-graphql-select
             *ngIf="resourcesQuery"
             valueField="id"
             textField="name"
@@ -46,17 +45,17 @@
             (searchChange)="onResourceSearchChange($event)"
             [filterable]="true"
           >
-          </safe-graphql-select>
-        </mat-form-field>
+          </ui-graphql-select>
+        </div>
 
         <!-- Reference data selection  -->
-        <mat-form-field
-          appearance="outline"
+        <div
+          uiFormFieldDirective
           class="grow"
           *ngIf="form.get('origin')?.value === 'refData'"
         >
-          <mat-label>{{ 'common.referenceData.one' | translate }}</mat-label>
-          <safe-graphql-select
+          <label>{{ 'common.referenceData.one' | translate }}</label>
+          <ui-graphql-select
             *ngIf="refDatasQuery"
             valueField="id"
             textField="name"
@@ -64,8 +63,8 @@
             formControlName="refData"
             [selectedElements]="[refData]"
           >
-          </safe-graphql-select>
-        </mat-form-field>
+          </ui-graphql-select>
+        </div>
 
         <!-- Field selection -->
         <div uiFormFieldDirective [outline]="false">

@@ -7,6 +7,7 @@ import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/m
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import {
   ExpansionPanelModule,
+  GraphQLSelectModule,
   SelectMenuModule,
   SelectOptionModule,
 } from '@oort-front/ui';
@@ -20,7 +21,6 @@ import { SafeAggregationBuilderModule } from '../../../ui/aggregation-builder/ag
 import { SafeGridModule } from '../../../ui/core-grid/grid/grid.module';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
-import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-mapping/series-mapping.module';
 import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
 
@@ -48,7 +48,7 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     SafeGridModule,
     SafeIconModule,
     SafePaletteControlModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     SafeSeriesMappingModule,
     ButtonModule,
     SelectOptionModule,

@@ -49,17 +49,17 @@
       <h3>{{ 'components.customNotifications.edit.dataset' | translate }}</h3>
       <div class="flex flex-col">
         <!-- Resource -->
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-          <safe-graphql-select
+        <div uiFormFieldDirective>
+          <label>{{ 'common.resource.one' | translate }}</label>
+          <ui-graphql-select
             valueField="id"
             textField="name"
             [query]="resourcesQuery"
             formControlName="resource"
             [selectedElements]="[resource]"
           >
-          </safe-graphql-select>
-        </mat-form-field>
+          </ui-graphql-select>
+        </div>
         <!-- Layout -->
         <ng-container *ngIf="resource">
           <ng-container *ngIf="layout">

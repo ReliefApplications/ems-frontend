@@ -7,8 +7,11 @@ import { UserBackRolesComponent } from './user-back-roles/user-back-roles.compon
 import { UserAppRolesComponent } from './user-app-roles/user-app-roles.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserGroupsComponent } from './user-groups/user-groups.component';
-import { SafeGraphQLSelectModule } from '../../graphql-select/graphql-select.module';
-import { SelectMenuModule, SelectOptionModule } from '@oort-front/ui';
+import {
+  GraphQLSelectModule,
+  SelectMenuModule,
+  SelectOptionModule,
+} from '@oort-front/ui';
 
 /**
  * User summary roles module
@@ -26,7 +29,7 @@ import { SelectMenuModule, SelectOptionModule } from '@oort-front/ui';
     MatFormFieldModule,
     FormsModule,
     ReactiveFormsModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     SelectMenuModule,
     SelectOptionModule,
   ],

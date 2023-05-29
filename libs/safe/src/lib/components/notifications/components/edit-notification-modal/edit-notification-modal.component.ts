@@ -23,7 +23,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
-import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
 import {
   DividerModule,
@@ -34,6 +33,7 @@ import {
   SelectOptionModule,
   FormWrapperModule,
   DialogModule,
+  GraphQLSelectModule,
 } from '@oort-front/ui';
 
 /**
@@ -61,7 +61,7 @@ const ITEMS_PER_PAGE = 10;
     TooltipModule,
     SafeReadableCronModule,
     DividerModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     CronExpressionControlModule,
     RadioModule,
     ButtonModule,

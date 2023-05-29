@@ -26,9 +26,9 @@
       </ui-select-menu>
     </div>
   </ng-container>
-  <mat-form-field appearance="outline">
-    <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-    <safe-graphql-select
+  <div uiFormFieldDirective>
+    <label>{{ 'common.resource.one' | translate }}</label>
+    <ui-graphql-select
       valueField="id"
       textField="name"
       [query]="resourcesQuery"
@@ -37,8 +37,8 @@
       (searchChange)="onResourceSearchChange($event)"
       [filterable]="true"
     >
-    </safe-graphql-select>
-  </mat-form-field>
+    </ui-graphql-select>
+  </div>
   <ng-container *ngIf="resource">
     <h2>{{ 'common.aggregation.one' | translate }}</h2>
     <ng-container *ngIf="formGroup.value.chart.aggregationId">

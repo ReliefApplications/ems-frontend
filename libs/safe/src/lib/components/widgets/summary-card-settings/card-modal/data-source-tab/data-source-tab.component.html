@@ -1,8 +1,8 @@
 <div class="form-group" [formGroup]="form">
   <!-- RESOURCE SELECTION  -->
-  <mat-form-field fxFlex appearance="outline">
-    <mat-label>{{ 'models.resource.select' | translate }}</mat-label>
-    <safe-graphql-select
+  <div fxFlex uiFormFieldDirective>
+    <label>{{ 'models.resource.select' | translate }}</label>
+    <ui-graphql-select
       valueField="id"
       textField="name"
       [query]="resourcesQuery"
@@ -10,8 +10,8 @@
       [selectedElements]="[selectedResource]"
       (searchChange)="onResourceSearchChange($event)"
       [filterable]="true"
-    ></safe-graphql-select>
-  </mat-form-field>
+    ></ui-graphql-select>
+  </div>
 
   <!-- SELECT AGGREGATION OR LAYOUT -->
   <div class="flex flex-col mt-8 gap-8" *ngIf="form.get('resource')?.value">

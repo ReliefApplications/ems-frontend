@@ -38,7 +38,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  SafeGraphQLSelectModule,
   SafeReadableCronModule,
   CronExpressionControlModule,
   SafeIconModule,
@@ -53,6 +52,7 @@ import {
   FormWrapperModule,
   TextareaModule,
   ChipModule,
+  GraphQLSelectModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 
@@ -71,7 +71,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     ReactiveFormsModule,
     TranslateModule,
     DialogModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     SafeReadableCronModule,
     TooltipModule,
     MatFormFieldModule,

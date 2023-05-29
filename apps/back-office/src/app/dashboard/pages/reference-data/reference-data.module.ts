@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceDataRoutingModule } from './reference-data-routing.module';
 import { ReferenceDataComponent } from './reference-data.component';
-import { SafeAccessModule, SafeGraphQLSelectModule } from '@oort-front/safe';
-import { SpinnerModule } from '@oort-front/ui';
+import { SafeAccessModule } from '@oort-front/safe';
+import { GraphQLSelectModule, SpinnerModule } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyOptionModule as MatOptionModule } from '@angular/material/legacy-core';
@@ -37,7 +37,7 @@ import {
     SafeIconModule,
     GridModule,
     TooltipModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     ButtonModule,
     TextareaModule,
     UiButtonModule,

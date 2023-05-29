@@ -18,6 +18,7 @@ import {
   TooltipModule,
   SelectMenuModule,
   SelectOptionModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
 // @TODO: Remove SafeIconModule import after ui-icon is being used in the app
@@ -45,6 +46,7 @@ interface PreferencesDialogData {
     TooltipModule,
     SelectMenuModule,
     SelectOptionModule,
+    FormWrapperModule,
   ],
   selector: 'safe-preferences-modal',
   templateUrl: './preferences-modal.component.html',
