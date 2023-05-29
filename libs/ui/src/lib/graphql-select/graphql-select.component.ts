@@ -32,7 +32,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { takeUntil } from 'rxjs/operators';
 import { SelectMenuComponent } from '../select-menu/select-menu.component';
-import { updateQueryUniqueValues } from '../../../../../apps/back-office/src/app/utils/update-queries';
+import { updateQueryUniqueValues } from './utils/update-queries';
 import { scrollFactory } from './utils/scroll-factory';
 import { DOCUMENT } from '@angular/common';
 

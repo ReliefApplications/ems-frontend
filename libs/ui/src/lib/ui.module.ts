@@ -62,7 +62,7 @@ import { GraphQLSelectModule } from './graphql-select/graphql-select.module';
     AlertModule,
     DatePickerModule,
     DateRangeModule,
-    GraphQLSelectModule
+    GraphQLSelectModule,
   ],
 })
 export class UiModule {}
