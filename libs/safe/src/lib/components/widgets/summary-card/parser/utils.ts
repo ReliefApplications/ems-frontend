@@ -5,8 +5,6 @@ import calcFunctions from './calcFunctions';
 const DATA_PREFIX = '{{data.';
 /** Prefix for calc keys */
 const CALC_PREFIX = '{{calc.';
-/** Prefix for page key */
-const PAGE_PREFIX = '{{page';
 /** Suffix for all keys */
 const PLACEHOLDER_SUFFIX = '}}';
 
