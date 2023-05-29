@@ -67,7 +67,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,,,,,,,
+      // A700: #ffffff,,,,,,,,,,,
     ),
 );
 
@@ -330,6 +330,10 @@ $safe-theme: mat.define-light-theme(
   .mat-tooltip-panel {
     pointer-events: none !important;
   }
+}
+
+.multiline-tooltip {
+  white-space: pre-line;
 }
 
 // === GLOBAL STYLES ==
