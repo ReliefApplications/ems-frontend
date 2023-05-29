@@ -3,7 +3,9 @@
   <div mat-dialog-content>
     <form class="flex flex-col gap-4" [formGroup]="form" *ngIf="form">
       <mat-form-field>
-        <mat-label>{{ 'components.emailPreview.subject' | translate }}</mat-label>
+        <mat-label>{{
+          'components.emailPreview.subject' | translate
+        }}</mat-label>
         <input matInput formControlName="subject" type="text" />
         <mat-error *ngIf="this.form.controls.subject.hasError('required')">
           {{ 'components.emailPreview.errors.missingSubject' | translate }}
@@ -15,11 +17,25 @@
       </mat-form-field>
       <mat-form-field id="previewEmailTo">
         <mat-label>{{ 'components.emailPreview.to' | translate }}</mat-label>
-        <mat-chip-list formControlName="to">
-          <mat-chip *ngFor="let email of form.controls.to.value">
+        <mat-chip-list #chipList formControlName="to">
+          <mat-chip
+            *ngFor="let email of emails"
+            [selectable]="true"
+            [removable]="true"
+            (removed)="removeEmail(email)"
+          >
             {{ email }}
+            <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
           </mat-chip>
+          <input
+            #emailsInput
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            (focusout)="addEmail($event)"
+            (matChipInputTokenEnd)="addEmail($event)"
+          />
         </mat-chip-list>
+        <mat-error>{{ errorMessage() | translate }}</mat-error>
       </mat-form-field>
       <kendo-fileselect
         class="mb-4"
@@ -37,8 +53,8 @@
       category="secondary"
       variant="primary"
       [mat-dialog-close]="form.value"
-      [disabled]="!form.valid"
       cdkFocusInitial
+      [disabled]="!form.valid"
     >
       {{ 'common.send' | translate }}
     </safe-button>
