@@ -32,6 +32,7 @@ import {
   RadioModule,
   ButtonModule,
   FormWrapperModule,
+  ErrorMessageModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 
@@ -65,6 +66,7 @@ const ITEMS_PER_PAGE = 10;
     CronExpressionControlModule,
     RadioModule,
     ButtonModule,
+    ErrorMessageModule,
   ],
   selector: 'safe-edit-notification-modal',
   templateUrl: './edit-notification-modal.component.html',

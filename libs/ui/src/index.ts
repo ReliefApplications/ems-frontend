@@ -30,6 +30,7 @@ export * from './lib/tabs/tabs.module';
 export * from './lib/alert/alert.module';
 export * from './lib/date/date-range/date-range.module';
 export * from './lib/date/date-picker/date-picker.module';
+export * from './lib/error-message/error-message.module';
 
 // === SERVICES === //
 export * from './lib/snackbar/snackbar.service';

@@ -6,7 +6,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { SliderModule, FormWrapperModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
-import { TooltipModule } from '@oort-front/ui';
+import { TooltipModule, ErrorMessageModule } from '@oort-front/ui';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeMapModule } from '../../map/map.module';
 
@@ -27,6 +27,7 @@ import { SafeMapModule } from '../../map/map.module';
     MatSelectModule,
     SafeIconModule,
     SafeMapModule,
+    ErrorMessageModule,
   ],
   exports: [MapPropertiesComponent],
 })

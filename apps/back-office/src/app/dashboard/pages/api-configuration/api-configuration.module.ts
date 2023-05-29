@@ -9,7 +9,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyOptionModule as MatOptionModule } from '@angular/material/legacy-core';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  FormWrapperModule,
+  ErrorMessageModule,
+} from '@oort-front/ui';
 
 /**
  * API configuration page module.
@@ -28,6 +32,7 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     MatOptionModule,
     TranslateModule,
     ButtonModule,
+    ErrorMessageModule,
     ChipModule,
   ],
 })

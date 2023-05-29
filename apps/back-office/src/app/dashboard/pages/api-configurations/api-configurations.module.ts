@@ -23,6 +23,7 @@ import {
   DialogModule,
   FormWrapperModule,
   PaginatorModule,
+  ErrorMessageModule,
 } from '@oort-front/ui';
 
 /**
@@ -49,6 +50,7 @@ import {
     SafeSkeletonTableModule,
     AbilityModule,
     ButtonModule,
+    ErrorMessageModule,
     TableModule,
   ],
   exports: [ApiConfigurationsComponent],
