@@ -29,10 +29,9 @@
           | translate
       }}
     </h2>
-    <safe-alert *ngIf="data.isDynamic">
-      <safe-icon icon="info"></safe-icon>
+    <ui-alert *ngIf="data.isDynamic">
       {{ 'components.widget.settings.summaryCard.hint.dynamic' | translate }}
-    </safe-alert>
+    </ui-alert>
     <div uiFormFieldDirective>
       <ui-icon [icon]="'search'" uiPrefix></ui-icon>
       <input

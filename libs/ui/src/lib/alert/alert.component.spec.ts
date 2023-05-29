@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeAlertComponent } from './alert.component';
+import { AlertComponent } from './alert.component';
 
-describe('SafeAlertComponent', () => {
-  let component: SafeAlertComponent;
-  let fixture: ComponentFixture<SafeAlertComponent>;
+describe('AlertComponent', () => {
+  let component: AlertComponent;
+  let fixture: ComponentFixture<AlertComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SafeAlertComponent],
+      declarations: [AlertComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeAlertComponent);
+    fixture = TestBed.createComponent(AlertComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

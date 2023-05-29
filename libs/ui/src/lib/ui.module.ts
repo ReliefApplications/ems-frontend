@@ -24,6 +24,7 @@ import { FormWrapperModule } from './form-wrapper/form-wrapper.module';
 import { DialogModule } from './dialog/dialog.module';
 import { TabsModule } from './tabs/tabs.module';
 import { SnackbarModule } from './snackbar/snackbar.module';
+import { AlertModule } from './alert/alert.module';
 import { DatePickerModule } from './date/date-picker/date-picker.module';
 import { DateRangeModule } from './date/date-range/date-range.module';
 
@@ -57,6 +58,7 @@ import { DateRangeModule } from './date/date-range/date-range.module';
     DialogModule,
     TabsModule,
     SnackbarModule,
+    AlertModule,
     DatePickerModule,
     DateRangeModule,
   ],

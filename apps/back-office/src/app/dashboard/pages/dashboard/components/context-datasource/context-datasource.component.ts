@@ -15,7 +15,6 @@ import {
   PageContextT,
   ReferenceData,
   Resource,
-  SafeAlertModule,
   SafeGraphQLSelectComponent,
   SafeGraphQLSelectModule,
   SafeUnsubscribeComponent,
@@ -33,7 +32,12 @@ import {
   GET_RESOURCE,
   GET_RESOURCES,
 } from './graphql/queries';
-import { DialogModule, ButtonModule, TooltipModule } from '@oort-front/ui';
+import {
+  AlertModule,
+  DialogModule,
+  ButtonModule,
+  TooltipModule,
+} from '@oort-front/ui';
 
 /** Default items per resources query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -74,10 +78,10 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     MatFormFieldModule,
     DialogModule,
     SafeGraphQLSelectModule,
-    SafeAlertModule,
     SafeIconModule,
     TooltipModule,
     ButtonModule,
+    AlertModule,
   ],
   templateUrl: './context-datasource.component.html',
   styleUrls: ['./context-datasource.component.scss'],

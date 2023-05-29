@@ -1,3 +1,7 @@
+:host {
+  display: block;
+}
+
 :host button > * {
   pointer-events: none;
 }
@@ -97,6 +101,24 @@
   }
   &.tertiary {
     @apply border-red-400 text-red-400;
+  }
+}
+
+.button-warning {
+  &.primary {
+    @apply text-yellow-400;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-yellow-50;
+  }
+  &.secondary {
+    @apply bg-yellow-400 text-white;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-yellow-500 focus-visible:outline-yellow-600;
+  }
+  &.tertiary {
+    @apply border-yellow-400 text-yellow-400;
   }
 }
 
