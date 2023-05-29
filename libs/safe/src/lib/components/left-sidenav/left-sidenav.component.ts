@@ -63,7 +63,6 @@ export class SafeLeftSidenavComponent {
   drop(event: any, group: any): void {
     moveItemInArray(group.navItems, event.previousIndex, event.currentIndex);
     this.reorder.emit(group.navItems);
-    console.log(this.navGroups);
   }
 
   /**

@@ -34,7 +34,7 @@
             <li
               [routerLink]="item.path"
               routerLinkActive="active-link bg-gray-50"
-              class="flex items-center cursor-pointer flex-row text-gray-700 active:text-primary-600 hover:bg-gray-50 hover:text-primary-600 rounded-md px-2 py-3 m-2"
+              class="flex items-center cursor-pointer flex-row text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md px-2 py-3 m-2"
             >
               <a
                 (click)="largeDevice ? null : nav.toggle()"
@@ -43,7 +43,7 @@
                 <mat-icon class="nav-icon-active">
                   {{ item.icon }}
                 </mat-icon>
-                <p class="nav-text nav-text-active m-0" [uiTooltip]="item.name">
+                <p class="nav-text-active m-0" [uiTooltip]="item.name">
                   {{ item.name }}
                 </p>
               </a>
@@ -71,9 +71,9 @@
               </div>
             </li>
             <!-- Preview when dragging element -->
-            <li *cdkDragPreview class="nav-item bg-white shadow-2lg rounded-lg">
-              <a [class]="item.class ? item.class : ''">
-                <mat-icon class="nav-icon">
+            <li *cdkDragPreview class="flex items-center flex-row text-gray-700 bg-white rounded-md px-2 py-3 m-2 shadow-2lg">
+              <a class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold">
+                <mat-icon class="nav-icon-active">
                   {{ item.icon }}
                 </mat-icon>
                 <div class="pl-2">{{ item.name }}</div>
