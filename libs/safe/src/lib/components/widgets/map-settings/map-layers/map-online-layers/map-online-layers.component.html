@@ -1,19 +1,16 @@
-<safe-alert>
-  <safe-icon icon="info"></safe-icon>
+<ui-alert>
   {{ 'components.widget.settings.map.layers.online.info' | translate }}
-</safe-alert>
+</ui-alert>
 <!-- LAYER SEARCHBAR -->
-<mat-form-field appearance="outline" class="w-full">
-  <mat-label>{{
+<div uiFormFieldDirective  class="w-full">
+  <label>{{
     'components.widget.settings.map.layers.online.select' | translate
-  }}</mat-label>
+  }}</label>
   <input
     type="text"
-    matInput
     [(ngModel)]="search"
     [ngModelOptions]="{ standalone: true }"
     (ngModelChange)="onSearch($event)"
-    autocomplete="off"
     placeholder="{{ 'common.placeholder.search' | translate }}"
   />
   <div *ngIf="availableLayers.length > 0" class="layer-suggestions">
@@ -25,7 +22,7 @@
       <safe-badge *ngFor="let tag of layer.tags">{{ tag }}</safe-badge>
     </ui-button>
   </div>
-</mat-form-field>
+</div>
 <!-- LIST of LAYERS -->
 <ng-container *ngIf="layers.value.length > 0">
   <h2>

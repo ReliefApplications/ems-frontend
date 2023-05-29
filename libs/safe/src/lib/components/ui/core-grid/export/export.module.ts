@@ -1,16 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeExportComponent } from './export.component';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../../modal/modal.module';
 import {
   RadioModule,
   TooltipModule,
   ToggleModule,
   ButtonModule,
 } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
+// @TODO: Remove SafeIconModule import after ui-icon is being used in the app
+import { SafeIconModule } from '../../icon/icon.module';
 
 /** Module for the export component */
 @NgModule({
@@ -18,12 +19,12 @@ import {
   imports: [
     CommonModule,
     FormsModule,
-    MatDialogModule,
+    DialogModule,
     TooltipModule,
     ToggleModule,
     TranslateModule,
-    SafeModalModule,
     RadioModule,
+    SafeIconModule,
     ButtonModule,
   ],
   exports: [SafeExportComponent],

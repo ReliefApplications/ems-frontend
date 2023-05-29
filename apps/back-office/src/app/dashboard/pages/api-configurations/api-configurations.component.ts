@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -25,7 +25,7 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
-import { TableSort } from '@oort-front/ui';
+import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 
 /** Default items per page for pagination. */
@@ -77,7 +77,7 @@ export class ApiConfigurationsComponent
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private router: Router,
@@ -116,7 +116,7 @@ export class ApiConfigurationsComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
@@ -124,7 +124,7 @@ export class ApiConfigurationsComponent
         e.pageIndex * this.pageInfo.pageSize >=
           this.cachedApiConfigurations.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedApiConfigurations.length
+      e.totalItems > this.cachedApiConfigurations.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -211,7 +211,7 @@ export class ApiConfigurationsComponent
       './components/add-api-configuration/add-api-configuration.component'
     );
     const dialogRef = this.dialog.open(AddApiConfigurationComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<AddApiConfigurationMutationResponse>({
@@ -279,7 +279,7 @@ export class ApiConfigurationsComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteApiConfigurationMutationResponse>({
@@ -334,14 +334,12 @@ export class ApiConfigurationsComponent
     data: GetApiConfigurationsQueryResponse,
     loading: boolean
   ): void {
+    const mappedValues = data.apiConfigurations.edges.map((x) => x.node);
     this.cachedApiConfigurations = updateQueryUniqueValues(
       this.cachedApiConfigurations,
-      data.apiConfigurations.edges.map((x) => x.node)
+      mappedValues
     );
-    this.dataSource.data = this.cachedApiConfigurations.slice(
-      this.pageInfo.pageSize * this.pageInfo.pageIndex,
-      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-    );
+    this.dataSource.data = mappedValues;
     this.pageInfo.length = data.apiConfigurations.totalCount;
     this.pageInfo.endCursor = data.apiConfigurations.pageInfo.endCursor;
     this.loading = loading;

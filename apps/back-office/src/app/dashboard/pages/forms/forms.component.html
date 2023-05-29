@@ -2,17 +2,15 @@
   <!-- FILTERING -->
   <app-filter (filter)="onFilter($event)" [loading]="updating"></app-filter>
   <!-- ACTIONS -->
-  <div class="flex items-center">
-    <ui-button
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="onAdd()"
-      *ngIf="'create' | able : 'Form'"
-    >
-      {{ 'models.form.create' | translate }}
-    </ui-button>
-  </div>
+  <ui-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="onAdd()"
+    *ngIf="'create' | able : 'Form'"
+  >
+    {{ 'models.form.create' | translate }}
+  </ui-button>
 </div>
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
@@ -20,19 +18,13 @@
   <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
-      cdk-table 
-      
+      cdk-table
       uiTableWrapper
       (sortChange)="onSort($event)"
       [dataSource]="forms"
     >
       <ng-container cdkColumnDef="name">
-        <th
-          uiCellHeader
-          uiTableHeaderSort="name"
-          *cdkHeaderCellDef
-          scope="col"
-        >
+        <th uiCellHeader uiTableHeaderSort="name" *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
@@ -59,11 +51,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="status">
-        <th
-          uiCellHeader
-          *cdkHeaderCellDef
-          scope="col"
-        >
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.status' | translate }}
           </span>
@@ -96,11 +84,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="versionsCount">
-        <th
-          uiCellHeader
-          *cdkHeaderCellDef
-          scope="col"
-        >
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.history' | translate }}
           </span>
@@ -109,11 +93,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="recordsCount">
-        <th
-          uiCellHeader
-          *cdkHeaderCellDef
-          scope="col"
-        >
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.record.few' | translate }}
           </span>
@@ -122,11 +102,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="core">
-        <th
-          uiCellHeader
-          *cdkHeaderCellDef
-          scope="col"
-        >
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'components.forms.isCore' | translate }}
           </span>
@@ -141,11 +117,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="parentForm">
-        <th
-          uiCellHeader
-          *cdkHeaderCellDef
-          scope="col"
-        >
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'components.forms.parent' | translate }}
           </span>
@@ -161,12 +133,7 @@
       </ng-container>
 
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-        <th
-          uiCellHeader
-          *cdkHeaderCellDef
-          scope="col"
-          class="w-16"
-        ></th>
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
         <td uiCell *cdkCellDef="let element">
           <ui-button
             [isIcon]="true"
@@ -241,15 +208,15 @@
     >
     </safe-skeleton-table>
   </div>
-  <!-- Pagination -->
-  <mat-paginator
-    [disabled]="loading || updating"
-    [pageIndex]="pageInfo.pageIndex"
-    [pageSize]="pageInfo.pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    [length]="pageInfo.length"
-    [ariaLabel]="'components.forms.paginator.ariaLabel' | translate"
-    (page)="onPage($event)"
-  >
-  </mat-paginator>
 </div>
+<!-- Pagination -->
+<ui-paginator
+  [disabled]="loading || updating"
+  [pageIndex]="pageInfo.pageIndex"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.forms.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

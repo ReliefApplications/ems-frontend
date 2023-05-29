@@ -1,15 +1,17 @@
-<safe-modal>
-  <h1 mat-dialog-title>Email Preview</h1>
-  <div mat-dialog-content>
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h1>Email Preview</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form class="flex flex-col" [formGroup]="form" *ngIf="form">
-      <mat-form-field>
-        <mat-label>Subject</mat-label>
-        <input matInput formControlName="subject" type="text" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>From</mat-label>
-        <input matInput formControlName="from" type="text" />
-      </mat-form-field>
+      <div uiFormFieldDirective>
+        <label>Subject</label>
+        <input formControlName="subject" type="text" />
+      </div>
+      <div uiFormFieldDirective>
+        <label>From</label>
+        <input formControlName="from" type="text" />
+      </div>
       <div id="previewEmailTo">
         <label class="block text-sm font-medium leading-6 text-gray-900"
           >To</label
@@ -27,18 +29,18 @@
       ></kendo-fileselect>
       <editor [init]="editor" formControlName="html"></editor>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <ui-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.dismiss' | translate }}
     </ui-button>
     <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="form.value"
+      [uiDialogClose]="form.value"
       cdkFocusInitial
     >
       {{ 'common.send' | translate }}
     </ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

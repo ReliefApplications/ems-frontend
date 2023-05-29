@@ -4,10 +4,7 @@ import {
   UntypedFormBuilder,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
 /**
  * This component allows the user to add a role to the platform or to an application.
@@ -34,8 +31,8 @@ export class SafeAddRoleComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<SafeAddRoleComponent>,
-    @Inject(MAT_DIALOG_DATA)
+    public dialogRef: DialogRef<SafeAddRoleComponent>,
+    @Inject(DIALOG_DATA)
     public data: {
       title: string;
     }

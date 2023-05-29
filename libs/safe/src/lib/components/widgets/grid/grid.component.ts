@@ -1,5 +1,4 @@
 import { Apollo } from 'apollo-angular';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   EDIT_RECORD,
   EditRecordMutationResponse,
@@ -43,8 +42,10 @@ import get from 'lodash/get';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
+import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /** Component for the grid widget */
 @Component({
@@ -53,7 +54,10 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./grid.component.scss'],
 })
 /** Grid widget using KendoUI. */
-export class SafeGridWidgetComponent implements OnInit {
+export class SafeGridWidgetComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === TEMPLATE REFERENCE ===
   @ViewChild(SafeCoreGridComponent)
   private grid!: SafeCoreGridComponent;
@@ -126,7 +130,7 @@ export class SafeGridWidgetComponent implements OnInit {
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SnackbarService,
     private workflowService: SafeWorkflowService,
     private safeAuthService: SafeAuthService,
@@ -138,6 +142,7 @@ export class SafeGridWidgetComponent implements OnInit {
     private translate: TranslateService,
     private aggregationService: SafeAggregationService
   ) {
+    super();
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
@@ -370,7 +375,7 @@ export class SafeGridWidgetComponent implements OnInit {
             },
           });
 
-          const value = await firstValueFrom(dialogRef.afterClosed());
+          const value = (await firstValueFrom(dialogRef.closed)) as any;
           const template = value?.template;
 
           if (template) {
@@ -450,11 +455,13 @@ export class SafeGridWidgetComponent implements OnInit {
           ),
           confirmColor: 'primary',
         });
-        dialogRef.afterClosed().subscribe((confirm: boolean) => {
-          if (confirm) {
-            this.workflowService.closeWorkflow();
-          }
-        });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((confirm: any) => {
+            if (confirm) {
+              this.workflowService.closeWorkflow();
+            }
+          });
       }
     } else {
       this.grid.reloadData();
@@ -527,7 +534,7 @@ export class SafeGridWidgetComponent implements OnInit {
             },
           });
           const value = await Promise.resolve(
-            firstValueFrom(dialogRef.afterClosed())
+            firstValueFrom(dialogRef.closed) as any
           );
           if (value && value.record) {
             this.apollo

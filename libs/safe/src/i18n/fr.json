@@ -678,10 +678,10 @@
 			"readAll": "Tout marquer comme lu"
 		},
 		"paginator": {
-			"items": "@TODO",
-			"itemsPerPage": "@TODO",
-			"of": "@TODO",
-			"page": "@TODO"
+			"items": "élements",
+			"itemsPerPage": "éléments par page",
+			"of": "de",
+			"page": "Page"
 		},
 		"preferences": {
 			"dateFormat": "Format de date et heure",
@@ -899,6 +899,7 @@
 						"add": "Ajouter une règle d'attribution",
 						"delete": "Supprimer la règle",
 						"edit": "Mettre à jour la règle d'attribution",
+						"none": "Aucune règle d'attribution automatique",
 						"title": "Règle"
 					},
 					"title": "Attribution automatique"

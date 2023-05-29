@@ -1,14 +1,16 @@
-<safe-modal>
-  <h1 mat-dialog-title>
-    {{
-      'components.widget.grid.validation.title'
-        | translate
-          : {
-              record: data.incrementalId
-            }
-    }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        'components.widget.grid.validation.title'
+          | translate
+            : {
+                record: data.incrementalId
+              }
+      }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <p>{{ 'components.widget.grid.validation.subtitle' | translate }}</p>
     <!-- Table container -->
     <div class="overflow-x-hidden shadow-2lg">
@@ -36,18 +38,18 @@
       </div>
     </div>
     <p>{{ 'components.widget.grid.validation.help' | translate }}</p>
-  </div>
-  <div mat-dialog-actions align="end">
-    <ui-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="true"
+      [uiDialogClose]="true"
       cdkFocusInitial
     >
       {{ 'common.update' | translate }}
     </ui-button>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

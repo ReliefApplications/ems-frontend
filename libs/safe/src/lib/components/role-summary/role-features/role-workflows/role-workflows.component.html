@@ -106,7 +106,6 @@
             <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
           </table>
           <safe-empty
-            class="py-3 px-0"
             *ngIf="filteredSteps.length === 0"
             [title]="'components.role.summary.noSteps' | translate"
           >

@@ -27,7 +27,7 @@ import { Permission } from './permissions.types';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../../utils/update-queries';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -157,14 +157,14 @@ export class RoleResourcesComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
       ((e.pageIndex > e.previousPageIndex &&
         e.pageIndex * this.pageInfo.pageSize >= this.cachedResources.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedResources.length
+      e.totalItems > this.cachedResources.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -617,16 +617,12 @@ export class RoleResourcesComponent
    * @param loading loading status
    */
   private updateValues(data: GetResourcesQueryResponse, loading: boolean) {
+    const mappedValues = data.resources.edges.map((x) => x.node);
     this.cachedResources = updateQueryUniqueValues(
       this.cachedResources,
-      data.resources.edges.map((x) => x.node)
+      mappedValues
     );
-    this.resources.data = this.setTableElements(
-      this.cachedResources.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      )
-    );
+    this.resources.data = this.setTableElements(mappedValues);
     this.pageInfo.length = data.resources.totalCount;
     this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
     this.loading = loading;

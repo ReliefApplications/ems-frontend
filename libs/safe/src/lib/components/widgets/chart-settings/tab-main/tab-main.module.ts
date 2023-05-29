@@ -8,7 +8,6 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { ExpansionPanelModule } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
@@ -20,7 +19,7 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-mapping/series-mapping.module';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
 
 /**
  * Main tab of chart settings modal.
@@ -32,7 +31,7 @@ import { ButtonModule } from '@oort-front/ui';
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     MatSelectModule,
     MatButtonModule,
     MatIconModule,

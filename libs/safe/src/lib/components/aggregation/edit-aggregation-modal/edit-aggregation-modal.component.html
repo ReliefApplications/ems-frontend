@@ -1,14 +1,16 @@
-<safe-modal [closable]="true" size="fullscreen">
-  <h1 mat-dialog-title>
-    {{ 'components.aggregation.edit.title' | translate }}
-  </h1>
-  <mat-dialog-content>
+<ui-dialog [closable]="true" size="fullscreen">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.aggregation.edit.title' | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="formGroup" class="flex flex-col gap-8">
       <div class="flex flex-col">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.name' | translate }}</mat-label>
-          <input matInput formControlName="name" type="string" />
-        </mat-form-field>
+        <div uiFormFieldDirective >
+          <label>{{ 'common.name' | translate }}</label>
+          <input formControlName="name" type="string" />
+        </div>
         <mat-form-field appearance="outline">
           <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
           <mat-select [disabled]="true" [value]="resource.id">
@@ -23,9 +25,9 @@
         ></safe-aggregation-builder>
       </div>
     </form>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <ui-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button
@@ -37,5 +39,5 @@
     >
       {{ 'common.save' | translate }}
     </ui-button>
-  </mat-dialog-actions>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

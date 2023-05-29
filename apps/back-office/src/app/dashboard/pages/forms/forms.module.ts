@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsRoutingModule } from './forms-routing.module';
 import { FormsComponent } from './forms.component';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { SafeSkeletonTableModule, SafeDateModule } from '@oort-front/safe';
 import { MatSortModule } from '@angular/material/sort';
@@ -15,7 +14,6 @@ import {
   FormsModule as AngularFormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
@@ -28,6 +26,7 @@ import {
   SpinnerModule,
   TableModule,
   ChipModule,
+  PaginatorModule,
 } from '@oort-front/ui';
 
 /** Forms page module */
@@ -40,7 +39,6 @@ import {
     ReactiveFormsModule,
     SpinnerModule,
     MatSortModule,
-    MatDialogModule,
     MenuModule,
     MatIconModule,
     MatFormFieldModule,
@@ -49,7 +47,7 @@ import {
     MatInputModule,
     MatSelectModule,
     DividerModule,
-    MatPaginatorModule,
+    PaginatorModule,
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,

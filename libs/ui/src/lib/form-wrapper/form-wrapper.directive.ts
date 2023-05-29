@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { SuffixDirective } from './suffix.directive';
 import { PrefixDirective } from './prefix.directive';
+import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
 import { Subject, startWith, takeUntil } from 'rxjs';
 import { FormControlName, Validators } from '@angular/forms';
 
@@ -37,6 +38,8 @@ export class FormWrapperDirective
 
   @ContentChild(FormControlName)
   public childControl!: FormControlName;
+  @ContentChild(AutocompleteComponent, { read: ElementRef })
+  private autocompleteContent!: ElementRef;
 
   private currentInputElement!: HTMLInputElement;
   private currentLabelElement!: HTMLLabelElement;
@@ -83,25 +86,18 @@ export class FormWrapperDirective
     'sm:leading-6',
   ] as const;
 
-  private selectClassesNoOutline = [
-    'block',
-    'w-full',
-    'py-1.5',
-    'pr-1',
-  ] as const;
+  private selectClassesNoOutline = ['block', 'w-full', 'pr-1'] as const;
 
   private selectClassesOutline = [
     'block',
     'w-full',
     'border-0',
-    'py-1.5',
     'pr-1',
     'bg-gray-50',
   ] as const;
 
   private beyondLabelGeneral = [
     'relative',
-    'mt-0.5',
     'py-1.5',
     'px-2',
     'flex',
@@ -159,7 +155,9 @@ export class FormWrapperDirective
    * @param renderer renderer
    * @param elementRef references to the element on which the directive is applied
    */
-  constructor(private renderer: Renderer2, private elementRef: ElementRef) {}
+  constructor(private renderer: Renderer2, private elementRef: ElementRef) {
+    this.renderer.addClass(this.elementRef.nativeElement, 'mb-4');
+  }
 
   ngAfterContentInit() {
     // Get inner input and label elements
@@ -320,6 +318,14 @@ export class FormWrapperDirective
         this.beyondLabelContainer,
         this.currentSelectElement
       );
+    }
+
+    if (this.autocompleteContent) {
+      this.renderer.removeClass(
+        this.autocompleteContent.nativeElement.querySelector('div'),
+        'relative'
+      );
+      this.renderer.addClass(this.elementRef.nativeElement, 'relative');
     }
 
     if (this.currentTextareaElement !== null) {

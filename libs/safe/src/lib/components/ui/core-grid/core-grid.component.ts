@@ -8,7 +8,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   GridDataResult,
   PageChangeEvent,
@@ -36,7 +36,6 @@ import {
 } from './graphql/mutations';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from './graphql/queries';
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
-import { Form } from '../../../models/form.model';
 import { Record } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
@@ -279,7 +278,7 @@ export class SafeCoreGridComponent
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private queryBuilder: QueryBuilderService,
     private layoutService: SafeLayoutService,
     private snackBar: SnackbarService,
@@ -830,11 +829,13 @@ export class SafeCoreGridComponent
         },
         autoFocus: false,
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.reloadData();
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.reloadData();
+          }
+        });
     }
   }
 
@@ -886,10 +887,9 @@ export class SafeCoreGridComponent
         },
         autoFocus: false,
       });
-      dialogRef
-        .afterClosed()
+      dialogRef.closed
         .pipe(takeUntil(this.destroy$))
-        .subscribe((value) => {
+        .subscribe((value: any) => {
           if (value) {
             this.onUpdate(isArray ? items : [items]);
           }
@@ -915,7 +915,7 @@ export class SafeCoreGridComponent
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.validateRecords(ids);
         this.reloadData();
@@ -960,7 +960,7 @@ export class SafeCoreGridComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({
@@ -994,30 +994,28 @@ export class SafeCoreGridComponent
         record: items[0].id ? items[0].id : items[0],
       },
     });
-    dialogRef
-      .afterClosed()
-      .subscribe((value: { targetForm: Form; copyRecord: boolean }) => {
-        if (value) {
-          const promises: Promise<any>[] = [];
-          for (const item of items) {
-            promises.push(
-              firstValueFrom(
-                this.apollo.mutate<ConvertRecordMutationResponse>({
-                  mutation: CONVERT_RECORD,
-                  variables: {
-                    id: item.id ? item.id : item,
-                    form: value.targetForm.id,
-                    copyRecord: value.copyRecord,
-                  },
-                })
-              )
-            );
-          }
-          Promise.all(promises).then(() => {
-            this.reloadData();
-          });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        const promises: Promise<any>[] = [];
+        for (const item of items) {
+          promises.push(
+            firstValueFrom(
+              this.apollo.mutate<ConvertRecordMutationResponse>({
+                mutation: CONVERT_RECORD,
+                variables: {
+                  id: item.id ? item.id : item,
+                  form: value.targetForm.id,
+                  copyRecord: value.copyRecord,
+                },
+              })
+            )
+          );
         }
-      });
+        Promise.all(promises).then(() => {
+          this.reloadData();
+        });
+      }
+    });
   }
 
   // === HISTORY ===
@@ -1061,7 +1059,7 @@ export class SafeCoreGridComponent
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmColor: 'primary',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({

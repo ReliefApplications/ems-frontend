@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
@@ -53,7 +53,7 @@ export class SafeGroupListComponent
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
@@ -126,53 +126,47 @@ export class SafeGroupListComponent
     const dialogRef = this.dialog.open(SafeAddRoleComponent, {
       data: { title: 'components.group.add.title' },
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
-          this.apollo
-            .mutate<AddGroupMutationResponse>({
-              mutation: ADD_GROUP,
-              variables: {
-                title: value.title,
-              },
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe({
-              next: ({ errors }) => {
-                if (errors) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectNotCreated',
-                      {
-                        type: this.translate
-                          .instant('common.role.one')
-                          .toLowerCase(),
-                        error: errors ? errors[0].message : '',
-                      }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectCreated',
-                      {
-                        type: this.translate.instant('common.role.one'),
-                        value: value.title,
-                      }
-                    )
-                  );
-                  this.getGroups();
-                }
-              },
-              error: (err) => {
-                this.snackBar.openSnackBar(err.message, { error: true });
-              },
-            });
-        }
-      });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        this.apollo
+          .mutate<AddGroupMutationResponse>({
+            mutation: ADD_GROUP,
+            variables: {
+              title: value.title,
+            },
+          })
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: ({ errors }) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate
+                        .instant('common.role.one')
+                        .toLowerCase(),
+                      error: errors ? errors[0].message : '',
+                    }
+                  ),
+                  { error: true }
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate.instant('common.role.one'),
+                    value: value.title,
+                  })
+                );
+                this.getGroups();
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
+          });
+      }
+    });
   }
 
   /** Fetches groups from service */
@@ -234,7 +228,7 @@ export class SafeGroupListComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteGroupMutationResponse>({

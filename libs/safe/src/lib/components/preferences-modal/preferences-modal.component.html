@@ -1,6 +1,9 @@
-<safe-modal [closable]="true" size="medium">
-  <h1 mat-dialog-title>{{ 'components.preferences.title' | translate }}</h1>
-  <mat-dialog-content>
+<ui-dialog [closable]="true" [size]="'medium'">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'components.preferences.title' | translate }}</h1>
+  </ng-container>
+
+  <ng-container ngProjectAs="content">
     <form [formGroup]="preferencesForm">
       <ui-tabs [vertical]="true">
         <ui-tab>
@@ -42,19 +45,19 @@
         </ui-tab>
       </ui-tabs>
     </form>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <ui-button mat-dialog-close>{{
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>{{
       'common.cancel' | translate
     }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
       [disabled]="!preferencesForm.valid"
-      [mat-dialog-close]="preferencesForm"
+      [uiDialogClose]="preferencesForm"
       cdkFocusInitial
     >
       {{ 'common.save' | translate }}
     </ui-button>
-  </mat-dialog-actions>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

@@ -46,14 +46,14 @@
       <div class="flex gap-2">
         <ui-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
         </ui-button>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'models.form.field.name' | translate }}</mat-label>
-          <input matInput formControlName="name" type="text" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'models.form.field.label' | translate }}</mat-label>
-          <input matInput formControlName="label" type="text" />
-        </mat-form-field>
+        <div uiFormFieldDirective >
+          <label>{{ 'models.form.field.name' | translate }}</label>
+          <input formControlName="name" type="text" />
+        </div>
+        <div uiFormFieldDirective >
+          <label>{{ 'models.form.field.label' | translate }}</label>
+          <input formControlName="label" type="text" />
+          </div>
       </div>
     </ng-container>
     <ui-tabs

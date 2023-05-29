@@ -3,11 +3,12 @@
   class="flex flex-row"
   *ngFor="let fieldForm of form.controls; let index = index"
 >
-  <mat-form-field appearance="outline" *ngIf="displayName">
-    <mat-label>{{ 'common.name' | translate }}</mat-label>
-    <input matInput formControlName="name" />
-  </mat-form-field>
+  <div uiFormFieldDirective  *ngIf="displayName">
+    <label>{{ 'common.name' | translate }}</label>
+    <input formControlName="name" [placeholder]="'common.name' | translate" />
+  </div>
   <safe-expressions
+    class="pl-4"
     [fields]="fields"
     [form]="$any(fieldForm.get('expression'))"
     [operators]="$any(operators)"

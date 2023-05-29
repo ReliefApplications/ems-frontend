@@ -1,20 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Aggregation } from '../../../models/aggregation.model';
 import { Resource } from '../../../models/resource.model';
 import { createAggregationForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 import { CommonModule } from '@angular/common';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { SafeModalModule } from '../../ui/modal/modal.module';
+import { DialogModule } from '@oort-front/ui';
 import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -34,9 +30,9 @@ interface DialogData {
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     MatSelectModule,
-    SafeModalModule,
+    DialogModule,
     SafeAggregationBuilderModule,
     ButtonModule,
   ],
@@ -58,8 +54,8 @@ export class SafeEditAggregationModalComponent implements OnInit {
    * @param data This is the data that is passed to the modal when it is opened.
    */
   constructor(
-    public dialogRef: MatDialogRef<SafeEditAggregationModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    public dialogRef: DialogRef<SafeEditAggregationModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {}
 
   ngOnInit(): void {

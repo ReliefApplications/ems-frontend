@@ -5,16 +5,14 @@
     [loading]="filterLoading"
   ></app-filter>
   <!-- ACTIONS -->
-  <div class="flex items-center">
-    <ui-button
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="onAdd()"
-    >
-      {{ 'models.resource.create' | translate }}
-    </ui-button>
-  </div>
+  <ui-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="onAdd()"
+  >
+    {{ 'models.resource.create' | translate }}
+  </ui-button>
 </div>
 
 <!-- Table container -->
@@ -23,7 +21,7 @@
   <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
-      cdk-table 
+      cdk-table
       uiTableWrapper
       [dataSource]="resources"
       (sortChange)="onSort($event)"
@@ -40,7 +38,12 @@
       </ng-container>
 
       <ng-container cdkColumnDef="createdAt">
-        <th uiTableHeaderSort="createdAt" uiCellHeader *cdkHeaderCellDef scope="col">
+        <th
+          uiTableHeaderSort="createdAt"
+          uiCellHeader
+          *cdkHeaderCellDef
+          scope="col"
+        >
           <span class="headerTitle">
             {{ 'common.createdOn' | translate }}
           </span>
@@ -95,15 +98,15 @@
     >
     </safe-skeleton-table>
   </div>
-  <!-- Pagination -->
-  <mat-paginator
-    [disabled]="loading || updating"
-    [pageIndex]="pageInfo.pageIndex"
-    [pageSize]="pageInfo.pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    [length]="pageInfo.length"
-    [ariaLabel]="'components.resource.paginator.ariaLabel' | translate"
-    (page)="onPage($event)"
-  >
-  </mat-paginator>
 </div>
+<!-- Pagination -->
+<ui-paginator
+  [disabled]="loading || updating"
+  [pageIndex]="pageInfo.pageIndex"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.resource.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

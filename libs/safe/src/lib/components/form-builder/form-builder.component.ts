@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import * as SurveyCreator from 'survey-creator';
 import * as Survey from 'survey-angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -104,7 +104,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param referenceDataService Reference data service
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private referenceDataService: SafeReferenceDataService

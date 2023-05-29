@@ -1,5 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeGridWidgetComponent } from './grid.component';
@@ -41,7 +41,7 @@ describe('SafeGridWidgetComponent', () => {
       ],
       declarations: [SafeGridWidgetComponent],
       imports: [
-        MatDialogModule,
+        DialogCdkModule,
         RouterTestingModule,
         HttpClientModule,
         TranslateModule.forRoot({

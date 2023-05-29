@@ -2,18 +2,17 @@
   <!-- Filters -->
   <div class="flex flex-col gap-4">
     <!-- Default filter -->
-    <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
+    <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
       <!-- Search text filter -->
-      <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-        <mat-icon matPrefix>search</mat-icon>
-        <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
+      <div uiFormFieldDirective>
+        <mat-icon uiPrefix>search</mat-icon>
         <input
-          matInput
           [ngModel]="searchText"
           (keyup)="applyFilter('', $event)"
-          type="search"
+          type="text"
+          [placeholder]="'common.placeholder.search' | translate"
         />
-      </mat-form-field>
+      </div>
       <!-- Toggle advanced filters -->
       <ui-button
         class="max-sm:!w-auto"
@@ -63,17 +62,15 @@
     </div>
   </div>
   <!-- Actions -->
-  <div class="flex items-center">
-    <ui-button
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="onAdd()"
-      *ngIf="'create' | able : 'ApiConfiguration'"
-    >
-      {{ 'pages.apiConfigurations.create' | translate }}
-    </ui-button>
-  </div>
+  <ui-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="onAdd()"
+    *ngIf="'create' | able : 'ApiConfiguration'"
+  >
+    {{ 'pages.apiConfigurations.create' | translate }}
+  </ui-button>
 </div>
 
 <!-- Table container -->
@@ -82,7 +79,7 @@
   <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
-      cdk-table 
+      cdk-table
       uiTableWrapper
       (sortChange)="onSort($event)"
       [dataSource]="dataSource"
@@ -183,13 +180,13 @@
     >
     </safe-skeleton-table>
   </div>
-  <mat-paginator
-    [disabled]="loading"
-    [pageSize]="pageInfo.pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    [length]="pageInfo.length"
-    [ariaLabel]="'components.apiConfiguration.paginator.ariaLabel' | translate"
-    (page)="onPage($event)"
-  >
-  </mat-paginator>
 </div>
+<ui-paginator
+  [disabled]="loading"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.apiConfiguration.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>
