@@ -3,7 +3,7 @@ import {
   Input,
   Output,
   EventEmitter,
-  Renderer2,
+  ElementRef,
 } from '@angular/core';
 import { AlertVariant } from './types/alert-variant';
 import { Variant } from '../types/variant';
@@ -26,16 +26,16 @@ export class AlertComponent {
   /**
    * UI Alert Component
    *
-   * @param renderer Angular renderer
+   * @param host Angular element ref
    */
-  constructor(private renderer: Renderer2) {}
+  constructor(private host: ElementRef<HTMLElement>) {}
 
   /** Closes the alert and emits an event */
   onClose() {
     setTimeout(() => {
       this.close.emit();
     }, 300);
-    this.renderer.destroy();
+    this.host.nativeElement.remove();
   }
 
   /** @returns icon */
@@ -77,39 +77,47 @@ export class AlertComponent {
     switch (this.variant) {
       case 'default': {
         classes.push('bg-gray-50');
+        classes.push('text-gray-800');
         if (this.border) {
           classes.push(...borderClasses);
-          classes.push('text-grey-800');
           classes.push('border-gray-400');
         }
         break;
       }
       case 'primary': {
         classes.push('bg-primary-50');
-        classes.push(...borderClasses);
         classes.push('text-primary-800');
-        classes.push('border-primary-400');
+        if (this.border) {
+          classes.push(...borderClasses);
+          classes.push('border-primary-400');
+        }
         break;
       }
       case 'success': {
         classes.push('bg-green-50');
-        classes.push(...borderClasses);
         classes.push('text-green-800');
-        classes.push('border-green-400');
+        if (this.border) {
+          classes.push(...borderClasses);
+          classes.push('border-green-400');
+        }
         break;
       }
       case 'danger': {
         classes.push('bg-red-50');
-        classes.push(...borderClasses);
         classes.push('text-red-800');
-        classes.push('border-red-400');
+        if (this.border) {
+          classes.push(...borderClasses);
+          classes.push('border-red-400');
+        }
         break;
       }
       case 'warning': {
         classes.push('bg-yellow-50');
-        classes.push(...borderClasses);
         classes.push('text-yellow-800');
-        classes.push('border-yellow-400');
+        if (this.border) {
+          classes.push(...borderClasses);
+          classes.push('border-yellow-400');
+        }
         break;
       }
     }

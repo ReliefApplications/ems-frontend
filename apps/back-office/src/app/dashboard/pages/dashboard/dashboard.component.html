@@ -93,8 +93,7 @@
         </ui-menu>
 
         <ng-template #searchMenuHeaderTemplate>
-          <ui-alert
-            ><safe-icon icon="info"></safe-icon>
+          <ui-alert [closable]="true">
             {{ 'models.page.tooltip.duplicate' | translate }}
           </ui-alert>
         </ng-template>
@@ -116,18 +115,12 @@
     </div>
     <ng-container *ngIf="dashboard.page?.context">
       <!-- todo(translate) -->
-      <ui-alert *ngIf="!contextRecord" class="mb-4"
-        ><safe-icon icon="info"></safe-icon
-        >{{
-          'models.dashboard.context.edition.template' | translate
-        }}</ui-alert
-      >
-      <ui-alert *ngIf="contextRecord" class="mb-4"
-        ><safe-icon icon="info"></safe-icon
-        >{{
-          'models.dashboard.context.edition.element' | translate
-        }}</ui-alert
-      >
+      <ui-alert *ngIf="!contextRecord" class="mb-4">{{
+        'models.dashboard.context.edition.template' | translate
+      }}</ui-alert>
+      <ui-alert *ngIf="contextRecord" class="mb-4">{{
+        'models.dashboard.context.edition.element' | translate
+      }}</ui-alert>
     </ng-container>
     <span>
       <!-- Selection of record, to see dashboard per record -->
