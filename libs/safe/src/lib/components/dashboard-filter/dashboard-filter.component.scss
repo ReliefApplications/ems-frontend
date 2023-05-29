@@ -24,28 +24,31 @@
 }
 
 .dashboard-filter-tab {
-  width: 80px;
   &.top {
     top: 40px;
+    width: 80px;
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
     @extend .dashboard-filter-y-axis;
   }
   &.bottom {
     bottom: 40px;
+    width: 80px;
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
     @extend .dashboard-filter-y-axis;
   }
   &.right {
-    right: 0;
+    right: 45px;
+    width: 40px;
     border-bottom-left-radius: 1rem;
     border-top-left-radius: 1rem;
     @extend .dashboard-filter-x-axis;
     justify-content: start;
   }
   &.left {
-    left: 0;
+    left: 45px;
+    width: 40px;
     border-bottom-right-radius: 1rem;
     border-top-right-radius: 1rem;
     @extend .dashboard-filter-x-axis;

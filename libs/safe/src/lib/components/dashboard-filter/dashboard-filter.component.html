@@ -64,13 +64,14 @@
       </div>
       <!-- Quick filter -->
       <div
-        class="flex justify-center gap-4 items-center"
+        class="flex flex-row justify-center gap-4 items-center"
         [ngClass]="{
-          'flex-row':
-            position === filterPosition.BOTTOM ||
-            position === filterPosition.RIGHT,
-          'flex-col':
-            position === filterPosition.TOP || position === filterPosition.LEFT
+          'overflow-auto':
+            position === filterPosition.TOP || position === filterPosition.BOTTOM,
+          'rotate-90':
+            position === filterPosition.LEFT,
+          '-rotate-90':
+            position === filterPosition.RIGHT
         }"
       >
         <ng-container
@@ -78,7 +79,7 @@
           class="flex flex-auto justify-center gap-4"
         >
           <div
-            class="z-20"
+            class="z-20 whitespace-nowrap"
             [matTooltip]="quickFilter.tooltip ? quickFilter.tooltip : ''"
             matTooltipClass="multiline-tooltip"
           >
