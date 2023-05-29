@@ -31,7 +31,7 @@
           : widget.defaultCols
       "
       [rowSpan]="!canUpdate && widgets.length === 1 ? 4 : widget.defaultRows"
-      class="!shadow-2lg"
+      class="rounded-lg border border-gray-300 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
     >
       <safe-floating-options
         *ngIf="canUpdate"
