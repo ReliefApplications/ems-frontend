@@ -13,7 +13,7 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table  uiTableWrapper [dataSource]="pullJobs">
+    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="pullJobs">
       <ng-container cdkColumnDef="name">
         <th uiCellHeader *cdkHeaderCellDef>
           {{ 'common.name' | translate }}
@@ -114,13 +114,13 @@
     >
     </safe-skeleton-table>
   </div>
-  <ui-paginator
-    [disabled]="loading"
-    [pageSize]="pageInfo.pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    [totalItems]="pageInfo.length"
-    [ariaLabel]="'components.pullJob.paginator.ariaLabel' | translate"
-    (pageChange)="onPage($event)"
-  >
-  </ui-paginator>
 </div>
+<ui-paginator
+  [disabled]="loading"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.pullJob.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

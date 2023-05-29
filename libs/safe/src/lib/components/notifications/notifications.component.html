@@ -102,18 +102,18 @@
           <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
         </table>
       </div>
-      <!-- Pagination -->
-      <ui-paginator
-        [disabled]="loading || updating"
-        [pageIndex]="pageInfo.pageIndex"
-        [pageSize]="pageInfo.pageSize"
-        [pageSizeOptions]="[10, 25, 50]"
-        [totalItems]="pageInfo.length"
-        [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
-        (pageChange)="onPage($event)"
-      >
-      </ui-paginator>
     </div>
+    <!-- Pagination -->
+    <ui-paginator
+      [disabled]="loading || updating"
+      [pageIndex]="pageInfo.pageIndex"
+      [pageSize]="pageInfo.pageSize"
+      [pageSizeOptions]="[10, 25, 50]"
+      [totalItems]="pageInfo.length"
+      [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
+      (pageChange)="onPage($event)"
+    >
+    </ui-paginator>
   </ng-container>
   <ng-template #emptyTmpl>
     <!-- Empty indicator -->

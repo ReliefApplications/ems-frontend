@@ -11,7 +11,7 @@
   <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
-      cdk-table 
+      cdk-table
       uiTableWrapper
       [dataSource]="resources"
       multiTemplateDataRows
@@ -119,14 +119,14 @@
     >
     </safe-skeleton-table>
   </div>
-  <ui-paginator
-    [disabled]="loading || updating"
-    [pageIndex]="pageInfo.pageIndex"
-    [pageSize]="pageInfo.pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    [totalItems]="pageInfo.length"
-    [ariaLabel]="'components.resource.paginator.ariaLabel' | translate"
-    (pageChange)="onPage($event)"
-  >
-  </ui-paginator>
 </div>
+<ui-paginator
+  [disabled]="loading || updating"
+  [pageIndex]="pageInfo.pageIndex"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.resource.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

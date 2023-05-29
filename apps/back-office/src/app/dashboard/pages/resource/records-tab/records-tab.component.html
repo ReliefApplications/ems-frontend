@@ -164,16 +164,16 @@
           ></tr>
         </table>
       </div>
-      <!-- Pagination -->
-      <ui-paginator
-        [disabled]="loading"
-        [pageIndex]="pageInfo.pageIndex"
-        [pageSize]="pageInfo.pageSize"
-        [totalItems]="pageInfo.length"
-        [ariaLabel]="'components.records.paginator.ariaLabel' | translate"
-        (pageChange)="onPage($event)"
-      ></ui-paginator>
     </div>
+    <!-- Pagination -->
+    <ui-paginator
+      [disabled]="loading"
+      [pageIndex]="pageInfo.pageIndex"
+      [pageSize]="pageInfo.pageSize"
+      [totalItems]="pageInfo.length"
+      [ariaLabel]="'components.records.paginator.ariaLabel' | translate"
+      (pageChange)="onPage($event)"
+    ></ui-paginator>
   </ng-container>
   <ng-template #emptyTmpl>
     <!-- Empty indicator -->

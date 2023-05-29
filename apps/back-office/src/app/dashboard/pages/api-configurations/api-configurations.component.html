@@ -180,13 +180,13 @@
     >
     </safe-skeleton-table>
   </div>
-  <ui-paginator
-    [disabled]="loading"
-    [pageSize]="pageInfo.pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    [totalItems]="pageInfo.length"
-    [ariaLabel]="'components.apiConfiguration.paginator.ariaLabel' | translate"
-    (pageChange)="onPage($event)"
-  >
-  </ui-paginator>
 </div>
+<ui-paginator
+  [disabled]="loading"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.apiConfiguration.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

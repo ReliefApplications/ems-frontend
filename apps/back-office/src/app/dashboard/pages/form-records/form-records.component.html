@@ -156,15 +156,15 @@
           ></tr>
         </table>
       </div>
-      <ui-paginator
-        [disabled]="loadingMore"
-        [pageSize]="pageInfo.pageSize"
-        [totalItems]="pageInfo.length"
-        [ariaLabel]="'components.records.paginator.ariaLabel' | translate"
-        (pageChange)="onPage($event)"
-      >
-      </ui-paginator>
     </div>
+    <ui-paginator
+      [disabled]="loadingMore"
+      [pageSize]="pageInfo.pageSize"
+      [totalItems]="pageInfo.length"
+      [ariaLabel]="'components.records.paginator.ariaLabel' | translate"
+      (pageChange)="onPage($event)"
+    >
+    </ui-paginator>
   </ng-container>
   <ng-template #emptyTmpl>
     <safe-empty [title]="'kendo.grid.noRecords' | translate"></safe-empty>
