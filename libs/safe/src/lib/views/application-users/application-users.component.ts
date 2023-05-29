@@ -12,9 +12,7 @@ import { UserListComponent } from './components/user-list/user-list.component';
 import { AddUsersMutationResponse, ADD_USERS } from './graphql/mutations';
 import {
   GET_APPLICATION_STATUS,
-  GET_APPLICATION_USERS,
   GetApplicationStatusQueryResponse,
-  GetApplicationUsersQueryResponse,
 } from './graphql/queries';
 
 /**
