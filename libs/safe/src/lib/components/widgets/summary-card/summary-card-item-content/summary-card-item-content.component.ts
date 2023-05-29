@@ -113,7 +113,6 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
         pageId,
         this.router.url.split('/')[2]
       );
-      console.log('SAME APP', sameApplication);
       if (sameApplication) {
         const pagePromise: Promise<any> = firstValueFrom(
           this.apollo.query<GetPageByIdQueryResponse>({
@@ -124,8 +123,15 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
           })
         );
         const pageToLink = await Promise.resolve(pagePromise);
+        const url =
+          './applications/' +
+          pageId +
+          '/' +
+          pageToLink.data.page.type +
+          '/' +
+          pageToLink.data.page.id;
         this.resultText =
-          '<a href="./applications">' + pageToLink.data.page.name + '</a>';
+          '<a href="' + url + '">' + pageToLink.data.page.name + '</a>';
       } else {
         this.resultText = 'Cannot link to page outside of this application';
       }
