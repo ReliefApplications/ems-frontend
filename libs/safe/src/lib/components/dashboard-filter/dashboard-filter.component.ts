@@ -214,12 +214,17 @@ export class DashboardFilterComponent
     Survey.StylesManager.applyTheme();
     const surveyStructure = this.surveyStructure;
     this.survey = new Survey.Model(surveyStructure);
+
     if (this.value) {
       this.survey.data = this.value;
     }
     this.survey.showCompletedPage = false;
     this.survey.showNavigationButtons = false;
-    this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
+
+    if (this.survey.getAllQuestions().length) {
+      this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
+    }
+
     this.survey.onValueChanged.add(this.onValueChange.bind(this));
   }
 
