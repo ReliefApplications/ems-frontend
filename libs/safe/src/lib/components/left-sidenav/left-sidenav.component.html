@@ -38,12 +38,12 @@
             >
               <a
                 (click)="largeDevice ? null : nav.toggle()"
-                class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
+                class="group flex overflow-clip flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
               >
-                <mat-icon class="nav-icon-active">
+                <mat-icon class="nav-icon-active overflow-visible">
                   {{ item.icon }}
                 </mat-icon>
-                <p class="nav-text-active m-0" [uiTooltip]="item.name">
+                <p class="nav-text-active truncate m-0" [uiTooltip]="item.name">
                   {{ item.name }}
                 </p>
               </a>
