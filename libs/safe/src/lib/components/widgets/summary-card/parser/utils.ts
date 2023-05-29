@@ -72,11 +72,9 @@ export const parseHtml = (
       styles,
       wholeCardStyles
     );
-    const htmlWithPageLink = applyPage(htmlWithRecord);
-    return applyOperations(htmlWithPageLink);
+    return applyOperations(htmlWithRecord);
   } else {
-    const htmlWithPageLink = applyPage(html);
-    return applyOperations(htmlWithPageLink);
+    return applyOperations(html);
   }
 };
 
@@ -260,19 +258,6 @@ export const getFieldsValue = (record: any) => {
     }
   }
   return fields;
-};
-
-const applyPage = (html: string): string => {
-  const regex = new RegExp(
-    `${PAGE_PREFIX}\\([a-z0-9]{24}\\)${PLACEHOLDER_SUFFIX}`
-  );
-  let result = regex.exec(html);
-  while (result !== null) {
-    const resultText = 'WILL BE REPLACED BY A LINK';
-    html = html.replace(result[0], resultText);
-    result = regex.exec(html);
-  }
-  return html;
 };
 
 /**

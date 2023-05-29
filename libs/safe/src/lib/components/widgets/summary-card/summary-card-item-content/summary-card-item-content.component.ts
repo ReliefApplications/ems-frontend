@@ -9,6 +9,10 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { parseHtml } from '../parser/utils';
 import get from 'lodash/get';
+import { GET_PAGE_BY_ID, GetPageByIdQueryResponse } from '../graphql/queries';
+import { Apollo } from 'apollo-angular';
+//import { Page } from '../../../../models/page.model';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -28,16 +32,19 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   @Input() wholeCardStyles = false;
 
   public formattedHtml?: SafeHtml;
+  resultText = '';
 
   /**
    * Content component of Single Item of Summary Card.
    *
    * @param sanitizer Sanitizes the cards content so angular can show it up.
    * @param downloadService Used to download file type fields
+   * @param apollo Apollo service
    */
   constructor(
     private sanitizer: DomSanitizer,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private apollo: Apollo
   ) {}
 
   ngOnInit(): void {
@@ -55,15 +62,16 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   /**
    * Detects when the html or record inputs change.
    */
-  ngOnChanges(): void {
+  async ngOnChanges() {
+    const parsedHtml = parseHtml(
+      this.html,
+      this.fieldsValue,
+      this.fields,
+      this.styles,
+      this.wholeCardStyles
+    );
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(
-        this.html,
-        this.fieldsValue,
-        this.fields,
-        this.styles,
-        this.wholeCardStyles
-      )
+      await this.applyPage(parsedHtml)
     );
   }
 
@@ -84,4 +92,30 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
       }
     }
   }
+
+  public applyPage = async (html: string): Promise<string> => {
+    const regex = new RegExp(`{{page\\([a-z0-9]{24}\\)}}`);
+    let result = regex.exec(html);
+    while (result !== null) {
+      const pageId = result[0].substring(
+        result[0].indexOf('(') + 1,
+        result[0].lastIndexOf(')')
+      );
+      const pagePromise: Promise<any> = firstValueFrom(
+        this.apollo.query<GetPageByIdQueryResponse>({
+          query: GET_PAGE_BY_ID,
+          variables: {
+            id: pageId,
+          },
+        })
+      );
+      const pageToLink = await Promise.resolve(pagePromise);
+
+      this.resultText =
+        '<a href="./applications">' + pageToLink.data.page.name + '</a>';
+      html = html.replace(result[0], this.resultText);
+      result = regex.exec(html);
+    }
+    return html;
+  };
 }
