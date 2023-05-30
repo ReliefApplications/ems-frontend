@@ -29,11 +29,7 @@ import {
   MatLegacyFormFieldControl as MatFormFieldControl,
   MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
 } from '@angular/material/legacy-form-field';
-import {
-  NgControl,
-  ControlValueAccessor,
-  UntypedFormControl,
-} from '@angular/forms';
+import { NgControl, ControlValueAccessor, FormControl } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
@@ -77,7 +73,7 @@ export class SafeGraphQLSelectComponent
 
   @Input() filterable = false;
   @Output() searchChange = new EventEmitter<string>();
-  public searchControl = new UntypedFormControl('');
+  public searchControl = new FormControl('');
 
   /**
    * Gets the value
@@ -318,7 +314,7 @@ export class SafeGraphQLSelectComponent
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
         this.cachedElements = [];
-        this.searchChange.emit(value);
+        this.searchChange.emit(value || undefined);
       });
   }
 

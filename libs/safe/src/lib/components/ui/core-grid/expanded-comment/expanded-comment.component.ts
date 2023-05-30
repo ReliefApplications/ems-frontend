@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
@@ -19,7 +19,7 @@ interface DialogData {
   styleUrls: ['./expanded-comment.component.scss'],
 })
 export class SafeExpandedCommentComponent implements OnInit {
-  public formControl!: UntypedFormControl;
+  public formControl!: FormControl;
 
   /**
    * Constructor of this component
@@ -31,13 +31,13 @@ export class SafeExpandedCommentComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<SafeExpandedCommentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private fb: UntypedFormBuilder
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
     this.formControl = this.fb.control({
       value: this.data.value,
-      disabled: this.data.readonly,
+      disabled: this.data.readonly || false,
     });
   }
 }
