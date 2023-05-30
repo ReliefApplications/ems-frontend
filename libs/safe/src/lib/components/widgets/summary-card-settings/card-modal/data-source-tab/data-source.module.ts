@@ -11,7 +11,6 @@ import {
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeFormsDropdownModule } from '../../../../ui/aggregation-builder/public-api';
-import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { SafeDataSourceTabComponent } from './data-source-tab.component';
 import {
   RadioModule,
@@ -32,7 +31,6 @@ import {
     MatFormFieldModule,
     MatAutocompleteModule,
     MatInputModule,
-    SafeIconModule,
     SpinnerModule,
     GraphQLSelectModule,
     CheckboxModule,

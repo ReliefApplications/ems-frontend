@@ -91,7 +91,7 @@
               *ngIf="element.canUpdate"
               [routerLink]="[element.id + '/builder']"
             >
-              <mat-icon>edit</mat-icon>
+              <ui-icon icon="edit"></ui-icon>
               {{ 'common.edit' | translate }}
             </button>
             <button
@@ -99,7 +99,7 @@
               (click)="deleteForm(element, $event)"
               *ngIf="element.canDelete"
             >
-              <mat-icon>delete</mat-icon>
+              <ui-icon icon="delete"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
           </ui-menu>

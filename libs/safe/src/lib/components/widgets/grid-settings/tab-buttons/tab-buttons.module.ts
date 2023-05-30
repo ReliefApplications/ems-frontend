@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TabButtonsComponent } from './tab-buttons.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SafeIconModule } from '../../../ui/icon/icon.module';
-import { AlertModule, TabsModule } from '@oort-front/ui';
+import { AlertModule, IconModule, TabsModule } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ButtonConfigModule } from '../button-config/button-config.module';
 import { ButtonModule } from '@oort-front/ui';
@@ -19,7 +18,7 @@ import { ButtonModule } from '@oort-front/ui';
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    SafeIconModule,
+    IconModule,
     TabsModule,
     DragDropModule,
     ButtonConfigModule,

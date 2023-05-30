@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LayoutsTabRoutingModule } from './layouts-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeDateModule,
@@ -25,7 +25,7 @@ import {
   imports: [
     CommonModule,
     LayoutsTabRoutingModule,
-    MatIconModule,
+    IconModule,
     MenuModule,
     TranslateModule,
     OverlayModule,

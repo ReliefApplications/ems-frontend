@@ -116,7 +116,7 @@
                     color="warn"
                     (click)="onViewHistory(element.id)"
                   >
-                    <mat-icon>library_books</mat-icon>
+                    <ui-icon icon="library_books"></ui-icon>
                     {{ 'common.history' | translate }}
                   </button>
                   <ui-divider class="m-0"></ui-divider>
@@ -125,7 +125,7 @@
                     uiMenuItem
                     (click)="onDeleteRecord(element, $event)"
                   >
-                    <mat-icon>delete</mat-icon>
+                    <ui-icon icon="delete"></ui-icon>
                     {{ 'common.delete' | translate }}
                   </button>
                   <button
@@ -133,7 +133,7 @@
                     uiMenuItem
                     (click)="onDeleteRecord(element, $event)"
                   >
-                    <mat-icon>delete_forever</mat-icon>
+                    <ui-icon icon="delete_forever"></ui-icon>
                     {{ 'components.record.delete.permanently' | translate }}
                   </button>
                   <button
@@ -141,7 +141,7 @@
                     uiMenuItem
                     (click)="onRestoreRecord(element.id, $event)"
                   >
-                    <mat-icon>unarchive</mat-icon>
+                    <ui-icon icon="unarchive"></ui-icon>
                     {{ 'models.record.restore' | translate }}
                   </button>
                 </ui-menu>

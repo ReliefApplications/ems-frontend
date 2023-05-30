@@ -8,7 +8,6 @@ import {
   SafeWidgetGridModule,
   SafeSkeletonModule,
   SafeSearchMenuModule,
-  SafeIconModule,
   SafeEditableTextModule,
   FullScreenModule,
   DashboardFilterModule,
@@ -16,7 +15,7 @@ import {
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -43,12 +42,11 @@ import {
     SafeAccessModule,
     SafeWidgetGridModule,
     MatButtonModule,
-    MatIconModule,
+    IconModule,
     DialogModule,
     MenuModule,
     ClipboardModule,
     SafeRecordHistoryModule,
-    SafeIconModule,
     TranslateModule,
     OverlayModule,
     SafeSearchMenuModule,

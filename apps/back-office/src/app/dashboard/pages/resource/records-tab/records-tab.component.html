@@ -104,7 +104,7 @@
                     [uiTooltip]="'Edit as ' + element.form.name"
                     [tooltipDisabled]="(resource.forms?.length || 0) <= 1"
                   >
-                    <mat-icon>edit</mat-icon>
+                    <ui-icon icon="edit"></ui-icon>
                     {{ 'common.edit' | translate }}
                   </button>
                   <button
@@ -112,7 +112,7 @@
                     uiMenuItem
                     [uiMenuTriggerFor]="templates"
                   >
-                    <mat-icon>edit_note</mat-icon>
+                    <ui-icon icon="edit_note"></ui-icon>
                     {{
                       'common.editObject'
                         | translate : { name: 'common.child' | translate }
@@ -123,7 +123,7 @@
                     uiMenuItem
                     (click)="onDeleteRecord(element, $event)"
                   >
-                    <mat-icon>delete</mat-icon>
+                    <ui-icon icon="delete"></ui-icon>
                     {{ 'common.delete' | translate }}
                   </button>
                   <button
@@ -131,7 +131,7 @@
                     uiMenuItem
                     (click)="onDeleteRecord(element, $event)"
                   >
-                    <mat-icon>delete_forever</mat-icon>
+                    <ui-icon icon="delete_forever"></ui-icon>
                     {{ 'components.record.delete.permanently' | translate }}
                   </button>
                   <button
@@ -139,7 +139,7 @@
                     uiMenuItem
                     (click)="onRestoreRecord(element.id, $event)"
                   >
-                    <mat-icon>unarchive</mat-icon>
+                    <ui-icon icon="unarchive"></ui-icon>
                     {{ 'models.record.restore' | translate }}
                   </button>
                 </ui-menu>

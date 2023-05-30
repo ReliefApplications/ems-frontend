@@ -4,7 +4,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { createFormGroup, Mapping } from '../mapping-forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
@@ -27,7 +27,7 @@ interface MappingDialogData {
     CommonModule,
     TranslateModule,
     MenuModule,
-    MatIconModule,
+    IconModule,
     MatFormFieldModule,
     FormWrapperModule,
     MatButtonModule,

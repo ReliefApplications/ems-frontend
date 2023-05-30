@@ -22,7 +22,6 @@ import { SafeSkeletonTableModule } from './components/skeleton/skeleton-table/sk
 import { SafeSkeletonModule } from './directives/skeleton/skeleton.module';
 import { SafeUserSummaryModule } from './components/user-summary/user-summary.module';
 import { SafeDateModule } from './pipes/date/date.module';
-import { SafeIconModule } from './components/ui/icon/icon.module';
 import { SafeSummaryCardSettingsModule } from './components/widgets/summary-card-settings/summary-card-settings.module';
 import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
 import { SafeEmptyModule } from './components/ui/empty/empty.module';
@@ -68,7 +67,6 @@ import { GraphQLSelectModule } from '@oort-front/ui';
     SafeDateModule,
     SafeReadableCronModule,
     SafeCronParserModule,
-    SafeIconModule,
     SafeSummaryCardSettingsModule,
     SafeRoleSummaryModule,
     GraphQLSelectModule,

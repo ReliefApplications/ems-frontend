@@ -4,7 +4,6 @@ import { ApplicationsRoutingModule } from './applications-routing.module';
 import { ApplicationsComponent } from './applications.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import {
   SafeAccessModule,
@@ -49,7 +48,7 @@ import {
     SpinnerModule,
     MatSortModule,
     MenuModule,
-    MatIconModule,
+    IconModule,
     SafeAccessModule,
     MatDatepickerModule,
     MatNativeDateModule,
@@ -65,7 +64,6 @@ import {
     DialogModule,
     ButtonModule,
     FormWrapperModule,
-    IconModule,
     SelectMenuModule,
     TableModule,
     ChipModule,

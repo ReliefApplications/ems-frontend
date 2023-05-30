@@ -15,7 +15,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeEmptyModule } from '../ui/empty/empty.module';
 
 /**
@@ -33,7 +32,6 @@ import { SafeEmptyModule } from '../ui/empty/empty.module';
     MatInputModule,
     MatNativeDateModule,
     MenuModule,
-    SafeIconModule,
     TranslateModule,
     SafeDateModule,
     IndicatorsModule,

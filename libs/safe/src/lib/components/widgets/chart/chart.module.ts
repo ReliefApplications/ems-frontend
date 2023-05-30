@@ -5,9 +5,8 @@ import { SafePieDonutChartModule } from '../../ui/charts/pie-donut-chart/pie-don
 import { SafeLineChartModule } from '../../ui/charts/line-chart/line-chart.module';
 import { SafeBarChartModule } from '../../ui/charts/bar-chart/bar-chart.module';
 import { LayoutModule } from '@progress/kendo-angular-layout';
-import { SafeIconModule } from '../../ui/icon/icon.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule, SpinnerModule } from '@oort-front/ui';
+import { ButtonModule, IconModule, SpinnerModule } from '@oort-front/ui';
 
 /**
  * Module for the chart component
@@ -21,7 +20,7 @@ import { ButtonModule, SpinnerModule } from '@oort-front/ui';
     SafePieDonutChartModule,
     SafeLineChartModule,
     SafeBarChartModule,
-    SafeIconModule,
+    IconModule,
     TranslateModule,
     ButtonModule,
   ],

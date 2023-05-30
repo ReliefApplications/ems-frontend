@@ -83,7 +83,7 @@
       variant="light"
       [uiMenuTriggerFor]="notificationMenu"
       [disabled]="notifications.length === 0"
-      [icon]="'notifications'"
+      icon="notifications"
       [isIcon]="true"
     >
     </ui-button>
@@ -124,7 +124,7 @@
     <div class="notification-menu">
       <a (click)="onMarkAllNotificationsAsRead()">
         {{ 'components.notifications.readAll' | translate }}
-        <mat-icon [inline]="true">check_circle_outline</mat-icon>
+        <ui-icon icon="check_circle_outline"></ui-icon>
       </a>
       <button
         uiMenuItem

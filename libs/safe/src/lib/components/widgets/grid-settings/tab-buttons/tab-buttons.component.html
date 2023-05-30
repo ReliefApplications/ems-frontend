@@ -41,11 +41,11 @@
               <!-- Drag placeholder-->
               <div *cdkDragPlaceholder></div>
               <!-- Drag indicator -->
-              <safe-icon
+              <ui-icon
                 cdkDragHandle
                 class="draggable"
                 icon="drag_indicator"
-              ></safe-icon>
+              ></ui-icon>
               <!-- Button name -->
               <span
                 class="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap"
@@ -57,13 +57,12 @@
                 }}
               </span>
               <!-- Error indicator -->
-              <safe-icon
+              <ui-icon
                 *ngIf="button.invalid"
                 icon="error_outline"
                 variant="danger"
-                [inline]="true"
                 [size]="18"
-              ></safe-icon>
+              ></ui-icon>
             </div>
           </div>
         </ng-container>

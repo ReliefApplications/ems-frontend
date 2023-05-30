@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { SafeBadgeModule } from '../../../../ui/badge/badge.module';
-import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import {
   AlertModule,
   ButtonModule,
@@ -26,7 +25,6 @@ import {
     MatFormFieldModule,
     FormWrapperModule,
     SafeBadgeModule,
-    SafeIconModule,
     TableModule,
     ButtonModule,
     AlertModule,

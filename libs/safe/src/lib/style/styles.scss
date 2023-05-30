@@ -67,7 +67,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,
+      // A700: #ffffff,,
     ),
 );
 
@@ -193,7 +193,7 @@ $safe-theme: mat.define-light-theme(
 // === RADIO ===
 @mixin radio($theme) {
   .mat-radio-label-content {
-    safe-icon {
+    ui-icon {
       vertical-align: text-bottom;
     }
   }
@@ -202,7 +202,7 @@ $safe-theme: mat.define-light-theme(
 // === SLIDE TOGGLE ===
 @mixin slide-toggle($theme) {
   ui-toggle {
-    safe-icon {
+    ui-icon {
       vertical-align: text-bottom;
     }
   }
@@ -211,7 +211,7 @@ $safe-theme: mat.define-light-theme(
 // === CHECKBOX ===
 @mixin checkbox($theme) {
   ui-checkbox {
-    safe-icon {
+    ui-icon {
       vertical-align: text-bottom;
     }
   }
@@ -224,7 +224,7 @@ $safe-theme: mat.define-light-theme(
   }
 
   mat-label {
-    safe-icon {
+    ui-icon {
       vertical-align: text-bottom;
     }
   }

@@ -4,7 +4,7 @@ import { SafeUsersComponent } from './users.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import {
   MenuModule,
@@ -31,7 +31,7 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     MatFormFieldModule,
     MatButtonModule,
     MenuModule,
-    MatIconModule,
+    IconModule,
     FormWrapperModule,
     MatAutocompleteModule,
     MatRippleModule,

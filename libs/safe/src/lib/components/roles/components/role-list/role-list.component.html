@@ -3,7 +3,7 @@
     <div class="flex gap-8 justify-between flex-col sm:flex-row">
       <!-- Search text filter -->
       <div uiFormFieldDirective>
-        <mat-icon uiPrefix>search</mat-icon>
+        <ui-icon icon="search" uiPrefix></ui-icon>
         <input
           [ngModel]="searchText"
           (keyup)="applyFilter('', $event)"
@@ -68,12 +68,12 @@
               </ui-button>
               <ui-menu #menu>
                 <!-- <button uiMenuItem (click)="onOpen(element)">
-              <mat-icon>edit</mat-icon>
+              <ui-icon icon="edit"></ui-icon>
               {{ 'common.edit' | translate }}
             </button>
             <ui-divider class="m-0"></ui-divider> -->
                 <button uiMenuItem color="warn" (click)="onDelete(element)">
-                  <mat-icon>delete</mat-icon>
+                  <ui-icon icon="delete"></ui-icon>
                   {{ 'common.delete' | translate }}
                 </button>
               </ui-menu>

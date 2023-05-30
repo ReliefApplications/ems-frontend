@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MapClorophletsComponent } from './map-clorophlets.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { MapClorophletModule } from '../map-clorophlet/map-clorophlet.module';
 import { AlertModule, ButtonModule } from '@oort-front/ui';
 import { TableModule } from '@oort-front/ui';
@@ -18,7 +17,6 @@ import { TableModule } from '@oort-front/ui';
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    SafeIconModule,
     MapClorophletModule,
     ButtonModule,
     TableModule,

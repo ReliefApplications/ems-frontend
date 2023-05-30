@@ -4,8 +4,7 @@ import { ButtonConfigComponent } from './button-config.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { SafeIconModule } from '../../../ui/icon/icon.module';
-import { SelectMenuModule, TabsModule } from '@oort-front/ui';
+import { IconModule, SelectMenuModule, TabsModule } from '@oort-front/ui';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
 import {
   CheckboxModule,
@@ -31,7 +30,7 @@ import {
     CheckboxModule,
     TabsModule,
     TooltipModule,
-    SafeIconModule,
+    IconModule,
     SafeQueryBuilderModule,
     ButtonModule,
     FormWrapperModule,

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeTemplatesComponent } from './templates.component';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   MenuModule,
@@ -21,7 +21,7 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     SpinnerModule,
     MenuModule,
     TranslateModule,
-    MatIconModule,
+    IconModule,
     SafeSkeletonTableModule,
     DividerModule,
     ButtonModule,

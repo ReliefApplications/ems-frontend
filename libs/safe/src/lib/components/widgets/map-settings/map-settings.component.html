@@ -6,11 +6,11 @@
     <!-- GENERAL SETTINGS -->
     <ui-tab>
       <ng-container ngProjectAs="label">
-        <safe-icon
+        <ui-icon
           icon="preview"
           [size]="24"
           uiTooltip="{{ 'common.general' | translate }}"
-        ></safe-icon>
+        ></ui-icon>
         <span>{{ 'common.general' | translate }}</span>
       </ng-container>
       <safe-map-general *ngIf="tileForm" [form]="tileForm"></safe-map-general>
@@ -18,11 +18,11 @@
     <!-- LAYERS CONFIGURATION -->
     <ui-tab>
       <ng-container ngProjectAs="label">
-        <safe-icon
+        <ui-icon
           icon="layers"
           [size]="24"
           uiTooltip="{{ 'common.layers' | translate }}"
-        ></safe-icon>
+        ></ui-icon>
         <span>{{ 'common.layers' | translate }}</span>
       </ng-container>
       <safe-map-layers
@@ -34,13 +34,13 @@
     <!-- MAP PARAMETERS -->
     <ui-tab>
       <ng-container ngProjectAs="label">
-        <safe-icon
+        <ui-icon
           icon="map"
           [size]="24"
           uiTooltip="{{
             'components.widget.settings.map.properties.title' | translate
           }}"
-        ></safe-icon>
+        ></ui-icon>
         <span>{{
           'components.widget.settings.map.properties.title' | translate
         }}</span>

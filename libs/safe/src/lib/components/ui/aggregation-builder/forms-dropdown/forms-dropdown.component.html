@@ -22,12 +22,12 @@
       class="form-option"
     >
       {{ form.name }}
-      <safe-icon
+      <ui-icon
         *ngIf="form.core"
         icon="storage"
         variant="primary"
         [size]="20"
-      ></safe-icon>
+      ></ui-icon>
     </mat-option>
   </mat-autocomplete>
   <ui-spinner [size]="'medium'" *ngIf="loadingMore" uiSuffix></ui-spinner>

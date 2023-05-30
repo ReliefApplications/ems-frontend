@@ -41,11 +41,11 @@
               </ui-button>
               <ui-menu #menu>
                 <button uiMenuItem (click)="onEdit(element)">
-                  <mat-icon>edit</mat-icon>
+                  <ui-icon icon="edit"></ui-icon>
                   {{ 'common.edit' | translate }}
                 </button>
                 <button uiMenuItem color="warn" (click)="onDelete(element)">
-                  <mat-icon>delete</mat-icon>
+                  <ui-icon icon="delete"></ui-icon>
                   {{ 'common.delete' | translate }}
                 </button>
               </ui-menu>

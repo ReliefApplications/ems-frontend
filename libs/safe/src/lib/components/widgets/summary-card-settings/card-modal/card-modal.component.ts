@@ -29,7 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { TabsModule } from '@oort-front/ui';
+import { IconModule, TabsModule } from '@oort-front/ui';
 import { SafeDataSourceTabModule } from './data-source-tab/data-source.module';
 import { SafeValueSelectorTabModule } from './value-selector-tab/value-selector.module';
 import { SafeDisplayTabModule } from './display-tab/display.module';
@@ -37,8 +37,6 @@ import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
 import { SafePreviewTabModule } from './preview-tab/preview.module';
 import { TooltipModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
-// @TODO: Remove SafeIconModule import after ui-icon is being used in the app
-import { SafeIconModule } from '../../../ui/icon/icon.module';
 
 /**
  * Card modal component.
@@ -62,7 +60,7 @@ import { SafeIconModule } from '../../../ui/icon/icon.module';
     SafePreviewTabModule,
     DialogModule,
     ButtonModule,
-    SafeIconModule,
+    IconModule,
   ],
   selector: 'safe-card-modal',
   templateUrl: './card-modal.component.html',

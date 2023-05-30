@@ -73,21 +73,21 @@
         ></ui-button>
         <ui-menu #menu>
           <button uiMenuItem (click)="openCard(i)">
-            <mat-icon>insert_chart</mat-icon>
+            <ui-icon icon="insert_chart"></ui-icon>
             <span>{{ 'common.settings' | translate }}</span>
           </button>
           <mat-divider></mat-divider>
           <button uiMenuItem (click)="removeCard(i)">
-            <mat-icon>delete</mat-icon>
+            <ui-icon icon="delete"></ui-icon>
             <span>{{ 'common.delete' | translate }}</span>
           </button>
         </ui-menu>
-        <safe-icon
+        <ui-icon
           *ngIf="!tileForm.value.isDynamic"
           icon="drag_indicator"
           class="widget-handle"
         >
-        </safe-icon>
+        </ui-icon>
       </kendo-tilelayout-item>
     </kendo-tilelayout>
   </form>
