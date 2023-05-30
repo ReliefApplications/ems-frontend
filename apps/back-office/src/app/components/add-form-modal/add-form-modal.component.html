@@ -94,15 +94,13 @@
                     [value]="template.id"
                   >
                     {{ template.name }}
-                    <div
-                      uiChipList
-                      *ngIf="template.core"
-                      class="float-right py-1.5 px-0 rounded-lg"
-                    >
-                      <ui-chip class="!rounded-lg" variant="primary">{{
-                        'models.form.core' | translate
-                      }}</ui-chip>
-                    </div>
+                    <ng-container ngProjectAs="icon">
+                      <div uiChipList *ngIf="template.core">
+                        <ui-chip class="!rounded-lg" variant="grey">{{
+                          'models.form.core' | translate
+                        }}</ui-chip>
+                      </div>
+                    </ng-container>
                   </ui-select-option>
                 </ui-select-menu>
               </div>

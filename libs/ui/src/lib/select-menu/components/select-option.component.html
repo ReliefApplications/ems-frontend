@@ -1,14 +1,15 @@
 <li
   [ngClass]="{
-    'bg-primary-200': !isGroup && selected,
-    'cursor-pointer hover:bg-primary-100 flex text-gray-900': !isGroup,
+    'bg-primary-300 text-white': !isGroup && selected,
+    'cursor-pointer hover:bg-primary-200 hover:text-white flex items-center text-gray-900':
+      !isGroup,
     'text-gray-500 pb-2': isGroup
   }"
   (click)="onChangeFunction()"
   class="px-2 py-1 relative pl-2 w-full justify-between"
 >
   <!-- Text, changes if selected -->
-  <span class="font-normal block truncate">
+  <span class="font-normal truncate">
     <ng-content></ng-content>
   </span>
 
