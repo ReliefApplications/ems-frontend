@@ -277,6 +277,8 @@ export class SafeMapSettingsComponent
       arcGisWebMap: this.tileForm?.value.arcGisWebMap,
       layers: this.tileForm?.value.layers,
     };
+    console.log('onDelete : map settings');
+    console.log(this.mapSettings);
   }
 
   /**
@@ -346,5 +348,7 @@ export class SafeMapSettingsComponent
     this.tileForm?.get('layers')?.setValue(layers);
     this.tileForm?.markAsTouched();
     this.tileForm?.markAsDirty();
+    console.log('update Layers : tile form');
+    console.log(this.tileForm);
   }
 }
