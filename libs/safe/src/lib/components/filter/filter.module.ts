@@ -11,7 +11,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import {
   ButtonModule,
   SelectMenuModule,
-  SelectOptionModule,
   FormWrapperModule,
 } from '@oort-front/ui';
 
@@ -30,7 +29,6 @@ import {
     MatDatepickerModule,
     ButtonModule,
     SelectMenuModule,
-    SelectOptionModule,
     FormWrapperModule,
   ],
   exports: [SafeFilterComponent],

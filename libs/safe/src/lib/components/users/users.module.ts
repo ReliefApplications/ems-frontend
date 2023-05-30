@@ -14,7 +14,6 @@ import {
   SpinnerModule,
   FormWrapperModule,
   SelectMenuModule,
-  SelectOptionModule,
 } from '@oort-front/ui';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
@@ -45,7 +44,6 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     ButtonModule,
     TableModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [SafeUsersComponent],
 })

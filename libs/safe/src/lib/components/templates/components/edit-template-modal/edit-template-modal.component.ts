@@ -16,7 +16,6 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import {
   ButtonModule,
   SelectMenuModule,
-  SelectOptionModule,
 } from '@oort-front/ui';
 import { DialogModule, FormWrapperModule } from '@oort-front/ui';
 
@@ -40,7 +39,6 @@ interface DialogData {
     TranslateModule,
     EditorModule,
     ButtonModule,
-    SelectOptionModule,
     SelectMenuModule,
   ],
   providers: [

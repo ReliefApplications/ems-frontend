@@ -8,7 +8,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { CategoriesSettingsModule } from './categories-settings/categories-settings.module';
 import {
   SelectMenuModule,
-  SelectOptionModule,
   ToggleModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
@@ -29,7 +28,6 @@ import { TranslateModule } from '@ngx-translate/core';
     ToggleModule,
     TranslateModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [SafeSeriesSettingsComponent],
 })

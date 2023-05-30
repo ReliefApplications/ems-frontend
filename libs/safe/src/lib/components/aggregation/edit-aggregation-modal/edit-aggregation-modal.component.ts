@@ -12,7 +12,6 @@ import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggre
 import {
   ButtonModule,
   SelectMenuModule,
-  SelectOptionModule,
   FormWrapperModule,
 } from '@oort-front/ui';
 
@@ -39,7 +38,6 @@ interface DialogData {
     SafeAggregationBuilderModule,
     ButtonModule,
     SelectMenuModule,
-    SelectOptionModule,
     FormWrapperModule,
   ],
   selector: 'safe-edit-aggregation-modal',

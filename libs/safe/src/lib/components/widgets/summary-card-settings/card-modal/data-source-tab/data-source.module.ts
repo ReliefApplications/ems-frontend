@@ -7,7 +7,6 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import {
   GraphQLSelectModule,
   SelectMenuModule,
-  SelectOptionModule,
   SpinnerModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
@@ -41,7 +40,6 @@ import {
     RadioModule,
     ButtonModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [SafeDataSourceTabComponent],
 })

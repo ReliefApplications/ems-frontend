@@ -4,7 +4,6 @@ import { SafeQueryBuilderComponent } from './query-builder.component';
 import {
   AlertModule,
   SelectMenuModule,
-  SelectOptionModule,
   TabsModule,
 } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -92,7 +91,6 @@ import {
     AlertModule,
     FormWrapperModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

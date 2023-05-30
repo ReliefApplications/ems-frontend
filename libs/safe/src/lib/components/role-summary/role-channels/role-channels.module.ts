@@ -7,7 +7,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import {
   ButtonModule,
   SelectMenuModule,
-  SelectOptionModule,
 } from '@oort-front/ui';
 
 /**
@@ -23,7 +22,6 @@ import {
     MatFormFieldModule,
     ButtonModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [RoleChannelsComponent],
 })

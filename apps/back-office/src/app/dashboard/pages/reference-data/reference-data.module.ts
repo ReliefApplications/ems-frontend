@@ -15,7 +15,6 @@ import {
   TooltipModule,
   ButtonModule as UiButtonModule,
   SelectMenuModule,
-  SelectOptionModule,
   TextareaModule,
   FormWrapperModule,
 } from '@oort-front/ui';
@@ -42,7 +41,6 @@ import {
     TextareaModule,
     UiButtonModule,
     SelectMenuModule,
-    SelectOptionModule,
     FormWrapperModule,
   ],
 })

@@ -5,7 +5,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePipelineModule } from '../pipeline/pipeline.module';
-import { SelectMenuModule, SelectOptionModule } from '@oort-front/ui';
+import { SelectMenuModule } from '@oort-front/ui';
 
 /**
  * Series mapping for aggregation builder.
@@ -21,7 +21,6 @@ import { SelectMenuModule, SelectOptionModule } from '@oort-front/ui';
     TranslateModule,
     SafePipelineModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [SafeSeriesMappingComponent],
 })

@@ -11,7 +11,6 @@ import {
   ButtonModule,
   TableModule,
   AlertModule,
-  SelectOptionModule,
   SelectMenuModule,
 } from '@oort-front/ui';
 
@@ -32,7 +31,6 @@ import {
     ButtonModule,
     TableModule,
     AlertModule,
-    SelectOptionModule,
     SelectMenuModule,
   ],
   exports: [MapMarkersComponent],

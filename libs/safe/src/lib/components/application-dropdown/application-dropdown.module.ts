@@ -6,7 +6,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SelectMenuModule,
-  SelectOptionModule,
   FormWrapperModule,
 } from '@oort-front/ui';
 /**
@@ -22,7 +21,6 @@ import {
     MatFormFieldModule,
     TranslateModule,
     SelectMenuModule,
-    SelectOptionModule,
     FormWrapperModule,
   ],
   exports: [SafeApplicationDropdownComponent],

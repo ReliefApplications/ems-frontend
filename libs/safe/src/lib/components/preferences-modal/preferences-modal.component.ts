@@ -17,7 +17,6 @@ import {
   ButtonModule,
   TooltipModule,
   SelectMenuModule,
-  SelectOptionModule,
   FormWrapperModule,
 } from '@oort-front/ui';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
@@ -45,7 +44,6 @@ interface PreferencesDialogData {
     ButtonModule,
     TooltipModule,
     SelectMenuModule,
-    SelectOptionModule,
     FormWrapperModule,
   ],
   selector: 'safe-preferences-modal',

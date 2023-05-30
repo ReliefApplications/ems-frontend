@@ -12,7 +12,6 @@ import {
   DialogModule,
   FormWrapperModule,
   SelectMenuModule,
-  SelectOptionModule,
 } from '@oort-front/ui';
 
 /** Module for the add user component */
@@ -31,7 +30,6 @@ import {
     ButtonModule,
     FormWrapperModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [SafeAddUserComponent],
 })

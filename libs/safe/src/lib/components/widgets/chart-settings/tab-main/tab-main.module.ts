@@ -9,7 +9,6 @@ import {
   ExpansionPanelModule,
   GraphQLSelectModule,
   SelectMenuModule,
-  SelectOptionModule,
 } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -51,7 +50,6 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     GraphQLSelectModule,
     SafeSeriesMappingModule,
     ButtonModule,
-    SelectOptionModule,
     SelectMenuModule,
   ],
   exports: [TabMainComponent],

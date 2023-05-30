@@ -83,26 +83,6 @@
                 (click)="removeLayout()"
               ></ui-button>
             </div>
-            <!-- <mat-form-field appearance="outline">
-              <mat-label>{{ 'common.layout.one' | translate }}</mat-label>
-              <mat-select [disabled]="true" [value]="layout.id">
-                <mat-option [value]="layout.id">{{ layout.name }}</mat-option>
-              </mat-select>
-              <ui-button
-                matSuffix
-                variant="primary"
-                [isIcon]="true"
-                icon="edit"
-                (click)="editLayout()"
-              ></ui-button>
-              <ui-button
-                matSuffix
-                variant="danger"
-                [isIcon]="true"
-                icon="close"
-                (click)="removeLayout()"
-              ></ui-button>
-            </mat-form-field> -->
           </ng-container>
           <ng-container *ngIf="!formGroup.value.layout">
             <!-- Layout is not selected yet -->
@@ -152,34 +132,6 @@
           >
           </ui-button>
         </div>
-        <!-- <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{ 'common.template.one' | translate }}</mat-label>
-          <mat-select formControlName="template">
-            <mat-option
-              *ngFor="let template of templates"
-              [value]="template.id"
-            >
-              {{ template.name }}
-            </mat-option>
-          </mat-select>
-          <safe-icon
-            matSuffix
-            icon="info_outline"
-            class="cursor-pointer"
-            variant="grey"
-            matSuffix
-            uiTooltip="HINT"
-          ></safe-icon>
-          <ui-button
-            matSuffix
-            [isIcon]="true"
-            icon="add_circle_outline"
-            variant="primary"
-            (click)="$event.stopPropagation(); addEmailTemplate()"
-            [uiTooltip]="'components.templates.edit.new' | translate"
-          >
-          </ui-button>
-        </mat-form-field> -->
         <!-- Recipients -->
         <h4>
           {{
@@ -247,28 +199,7 @@
               >
             </ui-select-menu>
           </div>
-
-          <!-- <mat-form-field
-            appearance="outline"
-            *ngIf="formGroup.value.recipientsType === 'field'"
-            class="flex-1"
-          >
-            <mat-label>{{
-              'components.customNotifications.edit.recipients.userField'
-                | translate
-            }}</mat-label>
-            <mat-select formControlName="recipients">
-              <mat-option
-                *ngFor="let field of userFields"
-                [value]="field.name"
-                >{{ field.name }}</mat-option
-              >
-            </mat-select>
-
-
-          </mat-form-field> -->
           <!-- Using distribution list -->
-
           <div
             uiFormFieldDirective
             [outline]="false"
@@ -285,24 +216,6 @@
               >
             </ui-select-menu>
           </div>
-
-          <!-- <mat-form-field
-            appearance="outline"
-            *ngIf="formGroup.value.recipientsType === 'distributionList'"
-            class="flex-1"
-          >
-            <mat-label>{{
-              'common.distributionList.one' | translate
-            }}</mat-label>
-            <mat-select formControlName="recipients">
-              <mat-option
-                *ngFor="let list of distributionLists"
-                [value]="list.id"
-                >{{ list.name }}</mat-option
-              >
-            </mat-select>
-          </mat-form-field> -->
-
           <!-- Using email -->
           <div
             uiFormFieldDirective

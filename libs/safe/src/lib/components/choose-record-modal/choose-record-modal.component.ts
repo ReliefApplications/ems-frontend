@@ -24,7 +24,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   DialogModule,
   FormWrapperModule,
-  SelectOptionModule,
   SelectMenuModule,
   ButtonModule,
 } from '@oort-front/ui';
@@ -71,7 +70,6 @@ interface IRecord {
     DialogModule,
     ButtonModule,
     FormWrapperModule,
-    SelectOptionModule,
     SelectMenuModule,
   ],
   selector: 'safe-choose-record-modal',

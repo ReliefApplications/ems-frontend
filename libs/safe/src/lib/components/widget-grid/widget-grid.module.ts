@@ -17,7 +17,6 @@ import {
   DialogModule,
   IconModule,
   SelectMenuModule,
-  SelectOptionModule,
 } from '@oort-front/ui';
 import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
 
@@ -47,7 +46,6 @@ import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
     ButtonModule,
     IconModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [SafeWidgetGridComponent, SafeTileDataComponent],
 })

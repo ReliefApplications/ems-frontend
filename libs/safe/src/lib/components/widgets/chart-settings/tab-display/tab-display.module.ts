@@ -25,7 +25,6 @@ import {
   TabsModule,
   FormWrapperModule,
   SelectMenuModule,
-  SelectOptionModule,
 } from '@oort-front/ui';
 
 /**
@@ -59,7 +58,6 @@ import {
     DividerModule,
     ButtonModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [TabDisplayComponent],
 })

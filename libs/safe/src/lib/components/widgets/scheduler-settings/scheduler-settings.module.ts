@@ -7,7 +7,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   RadioModule,
   FormWrapperModule,
-  SelectOptionModule,
   SelectMenuModule,
 } from '@oort-front/ui';
 
@@ -22,7 +21,6 @@ import {
     FormWrapperModule,
     TranslateModule,
     RadioModule,
-    SelectOptionModule,
     SelectMenuModule,
   ],
   exports: [SafeSchedulerSettingsComponent],

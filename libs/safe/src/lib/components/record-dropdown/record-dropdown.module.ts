@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeRecordDropdownComponent } from './record-dropdown.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { SelectMenuModule, SelectOptionModule } from '@oort-front/ui';
+import { SelectMenuModule } from '@oort-front/ui';
 
 /**
  * SafeRecordDropdownModule is a class used to manage all the modules and components
@@ -17,7 +17,6 @@ import { SelectMenuModule, SelectOptionModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatFormFieldModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [SafeRecordDropdownComponent],
 })

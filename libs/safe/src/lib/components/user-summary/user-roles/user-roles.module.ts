@@ -10,7 +10,6 @@ import { UserGroupsComponent } from './user-groups/user-groups.component';
 import {
   GraphQLSelectModule,
   SelectMenuModule,
-  SelectOptionModule,
 } from '@oort-front/ui';
 
 /**
@@ -31,7 +30,6 @@ import {
     ReactiveFormsModule,
     GraphQLSelectModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [UserRolesComponent],
 })

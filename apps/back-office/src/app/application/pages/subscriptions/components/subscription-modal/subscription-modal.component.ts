@@ -44,7 +44,6 @@ import {
   TooltipModule,
   ButtonModule,
   SelectMenuModule,
-  SelectOptionModule,
   FormWrapperModule,
   GraphQLSelectModule,
 } from '@oort-front/ui';
@@ -79,7 +78,6 @@ const ITEMS_PER_PAGE = 10;
     TooltipModule,
     ButtonModule,
     SelectMenuModule,
-    SelectOptionModule,
     FormWrapperModule,
   ],
   selector: 'app-subscription-modal',

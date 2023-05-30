@@ -11,7 +11,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
   SelectMenuModule,
-  SelectOptionModule,
   FormWrapperModule,
 } from '@oort-front/ui';
 
@@ -32,7 +31,6 @@ import {
     TranslateModule,
     ButtonModule,
     SelectMenuModule,
-    SelectOptionModule,
     FormWrapperModule,
     ChipModule,
   ],

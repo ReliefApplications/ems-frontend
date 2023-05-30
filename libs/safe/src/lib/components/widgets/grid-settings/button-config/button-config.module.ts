@@ -8,7 +8,6 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import {
   SelectMenuModule,
-  SelectOptionModule,
   TabsModule,
 } from '@oort-front/ui';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
@@ -41,7 +40,6 @@ import {
     ButtonModule,
     FormWrapperModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [ButtonConfigComponent],
 })

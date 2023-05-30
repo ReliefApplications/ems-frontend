@@ -32,7 +32,6 @@ import {
 import {
   ButtonModule,
   SelectMenuModule,
-  SelectOptionModule,
   FormWrapperModule,
   AlertModule,
   DialogModule,
@@ -82,7 +81,6 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     TooltipModule,
     ButtonModule,
     SelectMenuModule,
-    SelectOptionModule,
     FormWrapperModule,
     AlertModule,
     GraphQLSelectModule,
