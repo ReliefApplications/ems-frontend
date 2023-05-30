@@ -11,8 +11,12 @@ import {
   SafeEmptyModule,
 } from '@oort-front/safe';
 import { AggregationsTabComponent } from './aggregations-tab.component';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
-import { MenuModule, ButtonModule, TableModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  ButtonModule,
+  TableModule,
+  PaginatorModule,
+} from '@oort-front/ui';
 
 /**
  * Aggregations tab of resource page
@@ -29,7 +33,7 @@ import { MenuModule, ButtonModule, TableModule } from '@oort-front/ui';
     OverlayModule,
     SafeDateModule,
     SafeSkeletonTableModule,
-    MatPaginatorModule,
+    PaginatorModule,
     SafeEmptyModule,
     ButtonModule,
     TableModule,

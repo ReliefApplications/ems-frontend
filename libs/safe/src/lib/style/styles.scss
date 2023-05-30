@@ -67,7 +67,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff
+      // A700: #ffffff,
     ),
 );
 
@@ -124,12 +124,6 @@ $safe-theme: mat.define-light-theme(
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
-
-  .active-link {
-    .nav-icon {
-      color: mat.get-color-from-palette($primary);
-    }
-  }
 
   .accent {
     color: mat.get-color-from-palette($accent);
@@ -193,41 +187,6 @@ $safe-theme: mat.define-light-theme(
   .mat-flat-button:disabled {
     color: #adadad !important;
     background-color: #d8d8d8 !important;
-  }
-}
-
-// === ALERT ===
-@mixin alert($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
-
-  .safe-alert {
-    &-default {
-      $variant-color: #f1f1f1;
-      background-color: $variant-color;
-      color: darken($variant-color, 30%);
-    }
-
-    &-primary {
-      background-color: mat.get-color-from-palette($primary, 50);
-      color: mat.get-color-from-palette($primary);
-    }
-
-    &-danger {
-      background-color: mat.get-color-from-palette($warn, 50);
-      color: mat.get-color-from-palette($warn);
-    }
-
-    &-success {
-      background-color: rgba(149, 221, 101, 0.2);
-      color: rgb(149, 221, 101);
-    }
-
-    &-warning {
-      background-color: rgba(244, 174, 82, 0.2);
-      color: rgb(244, 174, 82);
-    }
   }
 }
 
@@ -351,7 +310,6 @@ $safe-theme: mat.define-light-theme(
 @include mat.all-legacy-component-themes($safe-theme);
 @include chip($safe-theme);
 @include button($safe-theme);
-@include alert($safe-theme);
 @include radio($safe-theme);
 @include slide-toggle($safe-theme);
 @include checkbox($safe-theme);
@@ -374,15 +332,14 @@ body {
   height: 40px;
   position: relative;
   z-index: 1001;
-  @apply bg-white;
   color: black;
   text-align: left;
   line-height: 40px;
   padding: 0 40px !important;
-  border-bottom: 1px solid #d8d8d8 !important;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  @apply bg-white border-b border-b-gray-300 #{!important};
 
   .widget-title {
     overflow: hidden;

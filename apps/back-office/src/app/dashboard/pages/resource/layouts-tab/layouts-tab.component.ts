@@ -19,6 +19,7 @@ import {
 } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
+import { UIPageChangeEvent } from '@oort-front/ui';
 
 /**
  * Layouts tab of resource page
@@ -95,14 +96,14 @@ export class LayoutsTabComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
       ((e.pageIndex > e.previousPageIndex &&
         e.pageIndex * this.pageInfo.pageSize >= this.cachedLayouts.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedLayouts.length
+      e.totalItems > this.cachedLayouts.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -247,14 +248,13 @@ export class LayoutsTabComponent
    */
   private updateValues(data: GetResourceByIdQueryResponse, loading: boolean) {
     if (data.resource) {
+      const mappedValues =
+        data.resource.layouts?.edges.map((x) => x.node) ?? [];
       this.cachedLayouts = updateQueryUniqueValues(
         this.cachedLayouts,
-        data.resource.layouts?.edges.map((x) => x.node) ?? []
+        mappedValues
       );
-      this.layouts = this.cachedLayouts.slice(
-        this.pageInfo.pageSize * this.pageInfo.pageIndex,
-        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.layouts = mappedValues;
       this.pageInfo.length = data.resource.layouts?.totalCount || 0;
       this.pageInfo.endCursor = data.resource.layouts?.pageInfo.endCursor || '';
     }

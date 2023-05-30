@@ -17,39 +17,40 @@
           </ng-container>
           <div class="flex flex-col">
             <!-- LANGUAGE SELECTION -->
-            <mat-form-field appearance="outline">
-              <mat-label>{{
-                'components.preferences.language' | translate
-              }}</mat-label>
-              <mat-select formControlName="language">
-                <mat-option *ngFor="let lang of languages" [value]="lang.value">
-                  {{ lang.name | titlecase }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+            <div uiFormFieldDirective>
+              <label>{{ 'components.preferences.language' | translate }}</label>
+              <ui-select-menu formControlName="language">
+                <ui-select-option
+                  *ngFor="let lang of languages"
+                  [value]="lang.value"
+                  [label]="lang.name || ''"
+                >
+                  {{ lang.name }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
             <!-- DATE LANGUAGE SELECTION -->
-            <mat-form-field appearance="outline">
-              <mat-label>{{
+            <div uiFormFieldDirective>
+              <label>{{
                 'components.preferences.dateFormat' | translate
-              }}</mat-label>
-              <mat-select formControlName="dateFormat">
-                <mat-option
+              }}</label>
+              <ui-select-menu formControlName="dateFormat">
+                <ui-select-option
                   *ngFor="let dateLang of dateFormats"
                   [value]="dateLang.value"
+                  [label]="dateLang.name || ''"
                 >
                   {{ dateLang.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
           </div>
         </ui-tab>
       </ui-tabs>
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose>{{
-      'common.cancel' | translate
-    }}</ui-button>
+    <ui-button uiDialogClose>{{ 'common.cancel' | translate }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

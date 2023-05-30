@@ -6,24 +6,21 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import {
   SafeAccessModule,
   SafeApplicationsSummaryModule,
   SafeSkeletonTableModule,
   SafeDateModule,
-  SafeGraphQLSelectModule,
 } from '@oort-front/safe';
 import { MatSortModule } from '@angular/material/sort';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
-import { DialogModule } from '@oort-front/ui';
+import { DialogModule, GraphQLSelectModule } from '@oort-front/ui';
 import {
   ButtonModule,
   MenuModule,
@@ -31,8 +28,10 @@ import {
   SpinnerModule,
   FormWrapperModule,
   IconModule,
+  SelectMenuModule,
   TableModule,
   ChipModule,
+  PaginatorModule,
 } from '@oort-front/ui';
 
 /**
@@ -47,7 +46,6 @@ import {
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     SpinnerModule,
     MatSortModule,
     MenuModule,
@@ -56,18 +54,19 @@ import {
     MatDatepickerModule,
     MatNativeDateModule,
     MatButtonModule,
-    MatPaginatorModule,
+    PaginatorModule,
     SafeApplicationsSummaryModule,
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     DividerModule,
     AbilityModule,
     DialogModule,
     ButtonModule,
     FormWrapperModule,
     IconModule,
+    SelectMenuModule,
     TableModule,
     ChipModule,
   ],

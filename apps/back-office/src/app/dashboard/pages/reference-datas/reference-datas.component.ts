@@ -25,7 +25,7 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { Dialog } from '@angular/cdk/dialog';
-import { TableSort } from '@oort-front/ui';
+import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
 import { ApolloQueryResult } from '@apollo/client';
 import { SnackbarService } from '@oort-front/ui';
 
@@ -123,7 +123,7 @@ export class ReferenceDatasComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
@@ -131,7 +131,7 @@ export class ReferenceDatasComponent
         e.pageIndex * this.pageInfo.pageSize >=
           this.cachedReferenceDatas.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedReferenceDatas.length
+      e.totalItems > this.cachedReferenceDatas.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -328,14 +328,12 @@ export class ReferenceDatasComponent
    * @param loading loading status
    */
   private updateValues(data: GetReferenceDatasQueryResponse, loading: boolean) {
+    const mappedValues = data.referenceDatas.edges.map((x) => x.node);
     this.cachedReferenceDatas = updateQueryUniqueValues(
       this.cachedReferenceDatas,
-      data.referenceDatas.edges.map((x) => x.node)
+      mappedValues
     );
-    this.dataSource.data = this.cachedReferenceDatas.slice(
-      this.pageInfo.pageSize * this.pageInfo.pageIndex,
-      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-    );
+    this.dataSource.data = mappedValues;
     this.pageInfo.length = data.referenceDatas.totalCount;
     this.pageInfo.endCursor = data.referenceDatas.pageInfo.endCursor;
     this.loading = loading;

@@ -34,8 +34,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SubscriptionsRoutingModule } from '../../subscriptions-routing.module';
-import { SafeIconModule, SafeGraphQLSelectModule } from '@oort-front/safe';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { SafeIconModule } from '@oort-front/safe';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -44,9 +43,10 @@ import {
   MenuModule,
   TooltipModule,
   ButtonModule,
+  SelectMenuModule,
   FormWrapperModule,
   AutocompleteModule,
-  OptionModule,
+  GraphQLSelectModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
@@ -68,19 +68,18 @@ const ITEMS_PER_PAGE = 10;
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatSelectModule,
     SpinnerModule,
     MenuModule,
     MatAutocompleteModule,
     DividerModule,
     SafeIconModule,
     TranslateModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     DialogModule,
     TooltipModule,
     ButtonModule,
     AutocompleteModule,
-    OptionModule,
+    SelectMenuModule,
     FormWrapperModule,
   ],
   selector: 'app-subscription-modal',

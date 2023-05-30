@@ -9,14 +9,12 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import {
   SafeIconModule,
-  SafeGraphQLSelectModule,
   SafeSkeletonTableModule,
   SafeEmptyModule,
 } from '@oort-front/safe';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
-import { DialogModule } from '@oort-front/ui';
+import { DialogModule, GraphQLSelectModule } from '@oort-front/ui';
 import {
   MenuModule,
   ButtonModule,
@@ -41,14 +39,13 @@ import {
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatSelectModule,
     SpinnerModule,
     MenuModule,
     MatAutocompleteModule,
     DividerModule,
     SafeIconModule,
     TranslateModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     DialogModule,
     ButtonModule,
     TableModule,

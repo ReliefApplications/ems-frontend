@@ -22,18 +22,18 @@ import { takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
-import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
 import {
   DividerModule,
   TooltipModule,
   RadioModule,
   ButtonModule,
+  SelectMenuModule,
   FormWrapperModule,
+  DialogModule,
+  GraphQLSelectModule,
 } from '@oort-front/ui';
-import { DialogModule } from '@oort-front/ui';
 
 /**
  * Dialog data interface
@@ -57,14 +57,15 @@ const ITEMS_PER_PAGE = 10;
     ReactiveFormsModule,
     MatFormFieldModule,
     FormWrapperModule,
-    MatSelectModule,
     TooltipModule,
     SafeReadableCronModule,
     DividerModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     CronExpressionControlModule,
     RadioModule,
     ButtonModule,
+    SelectMenuModule,
+    FormWrapperModule,
   ],
   selector: 'safe-edit-notification-modal',
   templateUrl: './edit-notification-modal.component.html',

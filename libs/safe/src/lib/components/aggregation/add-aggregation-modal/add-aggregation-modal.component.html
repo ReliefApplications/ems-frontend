@@ -21,9 +21,7 @@
         variant="primary"
         category="tertiary"
         (click)="onCreate()"
-        >{{
-          'components.aggregation.add.choice.create' | translate
-        }}</ui-button
+        >{{ 'components.aggregation.add.choice.create' | translate }}</ui-button
       >
     </div>
     <div *ngIf="nextStep">
@@ -37,11 +35,9 @@
           {{ 'components.aggregation.add.choice.load' | translate }}
         </div>
       </div>
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{
-          'components.aggregation.add.select' | translate
-        }}</mat-label>
-        <safe-graphql-select
+      <div uiFormFieldDirective class="w-full">
+        <label>{{ 'components.aggregation.add.select' | translate }}</label>
+        <ui-graphql-select
           *ngIf="queryRef"
           valueField="id"
           textField="name"
@@ -50,8 +46,8 @@
           [query]="queryRef"
           [formControl]="selectedAggregationControl"
         >
-        </safe-graphql-select>
-      </mat-form-field>
+        </ui-graphql-select>
+      </div>
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">

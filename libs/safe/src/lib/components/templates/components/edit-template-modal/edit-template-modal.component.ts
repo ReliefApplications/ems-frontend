@@ -11,10 +11,12 @@ import get from 'lodash/get';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { ButtonModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  SelectMenuModule,
+} from '@oort-front/ui';
 import { DialogModule, FormWrapperModule } from '@oort-front/ui';
 
 /** Model for the data input */
@@ -31,13 +33,13 @@ interface DialogData {
     CommonModule,
     DialogModule,
     MatFormFieldModule,
-    MatSelectModule,
     FormWrapperModule,
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
     EditorModule,
     ButtonModule,
+    SelectMenuModule,
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },

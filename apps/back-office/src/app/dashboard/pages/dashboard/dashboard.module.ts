@@ -7,25 +7,30 @@ import {
   SafeRecordHistoryModule,
   SafeWidgetGridModule,
   SafeSkeletonModule,
-  SafeAlertModule,
   SafeSearchMenuModule,
   SafeIconModule,
   SafeEditableTextModule,
   FullScreenModule,
-  SafeGraphQLSelectModule,
   DashboardFilterModule,
 } from '@oort-front/safe';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MenuModule, TooltipModule, ButtonModule } from '@oort-front/ui';
-import { DialogModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  TooltipModule,
+  ButtonModule,
+  SelectMenuModule,
+  FormWrapperModule,
+  AlertModule,
+  DialogModule,
+  GraphQLSelectModule,
+} from '@oort-front/ui';
 
 /**
  * Dashboard page module.
@@ -39,7 +44,6 @@ import { DialogModule } from '@oort-front/ui';
     SafeWidgetGridModule,
     MatButtonModule,
     MatIconModule,
-    MatSelectModule,
     DialogModule,
     MenuModule,
     ClipboardModule,
@@ -49,16 +53,18 @@ import { DialogModule } from '@oort-front/ui';
     OverlayModule,
     SafeSearchMenuModule,
     SafeSkeletonModule,
-    SafeAlertModule,
     SafeEditableTextModule,
     FullScreenModule,
-    SafeGraphQLSelectModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     DashboardFilterModule,
     TooltipModule,
     ButtonModule,
+    SelectMenuModule,
+    FormWrapperModule,
+    GraphQLSelectModule,
+    AlertModule,
   ],
   exports: [DashboardComponent],
 })

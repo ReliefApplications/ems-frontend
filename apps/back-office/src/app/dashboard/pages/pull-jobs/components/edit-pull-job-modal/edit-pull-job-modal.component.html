@@ -26,27 +26,29 @@
             />
           </div>
           <!-- Status -->
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{ 'common.status' | translate }}</mat-label>
-            <mat-select formControlName="status">
-              <mat-select-trigger>
-                <ng-container
-                  *ngTemplateOutlet="
-                    statusTemplate;
-                    context: { $implicit: formGroup.value.status }
-                  "
-                ></ng-container>
-              </mat-select-trigger>
-              <mat-option *ngFor="let status of statusChoices" [value]="status">
+
+          <div uiFormFieldDirective [outline]="false" class="flex-1">
+            <label>{{ 'common.status' | translate }}</label>
+            <ui-select-menu
+              formControlName="status"
+              [customTemplate]="{
+                template: statusTemplate,
+                context: { $implicit: formGroup.value.status }
+              }"
+            >
+              <ui-select-option
+                *ngFor="let status of statusChoices"
+                [value]="status"
+              >
                 <ng-container
                   *ngTemplateOutlet="
                     statusTemplate;
                     context: { $implicit: status }
                   "
                 ></ng-container>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
         </div>
         <!-- Schedule -->
         <safe-cron-expression-control
@@ -54,9 +56,9 @@
           formControlName="schedule"
         ></safe-cron-expression-control>
         <!-- API to use -->
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
-          <safe-graphql-select
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{ 'common.apiConfiguration.one' | translate }}</label>
+          <ui-graphql-select
             valueField="id"
             textField="name"
             [required]="true"
@@ -64,8 +66,8 @@
             formControlName="apiConfiguration"
             [selectedElements]="[defaultApiConfiguration]"
           >
-          </safe-graphql-select>
-        </mat-form-field>
+          </ui-graphql-select>
+        </div>
         <div class="flex gap-x-2 flex-wrap" *ngIf="!isHardcoded">
           <!-- Url to pull -->
           <div uiFormFieldDirective class="flex-1">
@@ -106,11 +108,9 @@
         </div>
         <div class="flex gap-x-2 flex-wrap">
           <!-- Resource to use for conversion -->
-          <mat-form-field appearance="outline" class="flex-auto">
-            <mat-label>{{
-              'components.record.convert.select' | translate
-            }}</mat-label>
-            <safe-graphql-select
+          <div uiFormFieldDirective class="flex-auto">
+            <label>{{ 'components.record.convert.select' | translate }}</label>
+            <ui-graphql-select
               valueField="id"
               textField="name"
               [query]="formsQuery"
@@ -119,32 +119,34 @@
               (searchChange)="onFormSearchChange($event)"
               [filterable]="true"
             >
-            </safe-graphql-select>
-          </mat-form-field>
+            </ui-graphql-select>
+          </div>
           <!-- Channel to notify on -->
-          <mat-form-field appearance="outline" class="flex-1">
-            <mat-label>{{
+
+          <div uiFormFieldDirective [outline]="false" class="flex-1">
+            <label>{{
               'components.channel.dropdown.select' | translate
-            }}</mat-label>
-            <mat-select
-              #channelSelect
+            }}</label>
+            <ui-select-menu
               formControlName="channel"
-              placeholder="Select a channel"
               (opened)="onOpenApplicationSelect()"
             >
-              <mat-optgroup
+              <ui-select-option
                 *ngFor="let application of applications | async"
                 [label]="application.name || ''"
+                [isGroup]="true"
               >
-                <mat-option
+                {{ application.name }}
+                <ui-select-option
                   *ngFor="let channel of application.channels"
                   [value]="channel.id"
+                  [label]="channel.title || ''"
                 >
                   {{ channel.title }}
-                </mat-option>
-              </mat-optgroup>
-            </mat-select>
-          </mat-form-field>
+                </ui-select-option>
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
         </div>
         <!-- Mapping -->
         <ui-expansion-panel
@@ -183,16 +185,17 @@
                   *ngFor="let element of mappingArray.controls; index as i"
                   class="flex gap-x-2 items-center"
                 >
-                  <mat-form-field appearance="outline" class="p-0">
-                    <mat-label>{{ 'common.field.one' | translate }}</mat-label>
-                    <mat-select formControlName="name">
-                      <mat-option
+                  <div uiFormFieldDirective [outline]="false" class="p-0 w-32">
+                    <!-- <mat-label>{{ 'common.field.one' | translate }}</mat-label> -->
+                    <ui-select-menu formControlName="name">
+                      <ui-select-option
                         *ngFor="let field of filteredFields(element.value.name)"
                         [value]="field.name"
-                        >{{ field.name }}</mat-option
                       >
-                    </mat-select>
-                  </mat-form-field>
+                        {{ field.name }}
+                      </ui-select-option>
+                    </ui-select-menu>
+                  </div>
                   <div
                     uiFormFieldDirective
                     *ngIf="element.value.name"
@@ -222,23 +225,19 @@
           </div>
         </ui-expansion-panel>
         <!-- Unique identifiers -->
-        <mat-form-field
-          *ngIf="mappingArray.controls.length > 0"
-          appearance="outline"
-          class="mt-4"
-        >
-          <mat-label>{{
-            'components.pullJob.modal.identifier' | translate
-          }}</mat-label>
-          <mat-select formControlName="uniqueIdentifiers" multiple>
-            <mat-option
+        <div uiFormFieldDirective [outline]="false" class="mt-4">
+          <ui-select-menu
+            formControlName="uniqueIdentifiers"
+            [multiselect]="true"
+          >
+            <ui-select-option
               *ngFor="let element of mappingArray.controls"
               [value]="element.value.value"
             >
               {{ element.value.value }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
       </div>
     </form>
   </ng-container>

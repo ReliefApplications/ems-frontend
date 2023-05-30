@@ -13,6 +13,7 @@ import {
 } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { UIPageChangeEvent } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -106,7 +107,7 @@ export class NotificationsComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     console.log(e);
   }
 

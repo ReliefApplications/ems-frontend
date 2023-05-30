@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { SafeGraphQLSelectComponent } from './graphql-select.component';
 
-describe('SafeGraphQLSelectComponent', () => {
-  let component: SafeGraphQLSelectComponent;
-  let fixture: ComponentFixture<SafeGraphQLSelectComponent>;
+import { AlertComponent } from './alert.component';
+
+describe('AlertComponent', () => {
+  let component: AlertComponent;
+  let fixture: ComponentFixture<AlertComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SafeGraphQLSelectComponent],
+      declarations: [AlertComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeGraphQLSelectComponent);
+    fixture = TestBed.createComponent(AlertComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

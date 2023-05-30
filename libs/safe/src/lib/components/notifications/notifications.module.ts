@@ -9,9 +9,9 @@ import {
   ButtonModule,
   TableModule,
   ChipModule,
+  PaginatorModule,
 } from '@oort-front/ui';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { SafeEmptyModule } from '../ui/empty/empty.module';
 
 /**
@@ -27,7 +27,7 @@ import { SafeEmptyModule } from '../ui/empty/empty.module';
     DividerModule,
     MatIconModule,
     SafeEmptyModule,
-    MatPaginatorModule,
+    PaginatorModule,
     ButtonModule,
     TableModule,
     ChipModule,

@@ -9,7 +9,6 @@ import { CommonModule } from '@angular/common';
 import { ChannelsRoutingModule } from '../../channels-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { DialogModule } from '@oort-front/ui';
@@ -37,7 +36,6 @@ import {
     FormWrapperModule,
     SpinnerModule,
     MenuModule,
-    MatSelectModule,
     DividerModule,
     MatButtonModule,
     DialogModule,

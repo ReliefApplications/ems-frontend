@@ -25,20 +25,22 @@
         ></safe-icon>
       </div>
 
-      <mat-form-field
-        appearance="outline"
+      <div
         *ngIf="!isField && canSelectDataSet && templates.length > 0"
+        uiFormFieldDirective
       >
-        <mat-label>{{ 'models.form.template' | translate }}</mat-label>
-        <mat-select formControlName="template">
-          <mat-option>-</mat-option>
-          <mat-option
+        <label>{{ 'models.form.template' | translate }}</label>
+        <ui-select-menu formControlName="template">
+          <ui-select-option>-</ui-select-option>
+          <ui-select-option
             *ngFor="let template of templates"
             [value]="template.id"
-            >{{ template.name }}</mat-option
+            [label]="template.name || ''"
           >
-        </mat-select>
-      </mat-form-field>
+            {{ template.name }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
     </div>
 
     <ng-container *ngIf="isField">

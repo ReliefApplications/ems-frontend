@@ -44,6 +44,8 @@ export class IconComponent {
         ? 'icon-grey'
         : this.variant === 'danger'
         ? 'icon-danger'
+        : this.variant === 'warning'
+        ? 'icon-warning'
         : ''
     );
     return classes;

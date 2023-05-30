@@ -4,8 +4,13 @@ import { RoleResourcesComponent } from './role-resources.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../../pipes/date/date.module';
 import { SafeSkeletonTableModule } from '../../../components/skeleton/skeleton-table/skeleton-table.module';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
-import { TooltipModule, ButtonModule, TableModule } from '@oort-front/ui';
+import {
+  TooltipModule,
+  ButtonModule,
+  TableModule,
+  PaginatorModule,
+  SelectMenuModule,
+} from '@oort-front/ui';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { FilterComponent } from '../role-resources-filter/role-resources-filter.component';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -18,7 +23,6 @@ import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
 import { ResourceFieldsComponent } from './resource-fields/resource-fields.component';
 import { SafeRoleResourceFiltersComponent } from './resource-access-filters/resource-access-filters.component';
 import { SafeFilterModule } from '../../filter/filter.module';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 
 /**
  * Resources tab of Role Summary component.
@@ -33,7 +37,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
   imports: [
     CommonModule,
     TooltipModule,
-    MatPaginatorModule,
+    PaginatorModule,
     TranslateModule,
     SafeDateModule,
     SafeIconModule,
@@ -49,7 +53,7 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
     FormWrapperModule,
     IconModule,
     SafeFilterModule,
-    MatSelectModule,
+    SelectMenuModule,
     ButtonModule,
     TableModule,
   ],

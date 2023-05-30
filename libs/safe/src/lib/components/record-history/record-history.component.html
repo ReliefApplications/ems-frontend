@@ -51,26 +51,27 @@
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
     </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'components.history.field.select' | translate }}</mat-label>
-      <mat-select
-        (selectionChange)="applyFilter($event.value)"
+    <div uiFormFieldDirective>
+      <label>{{ 'components.history.field.select' | translate }}</label>
+      <ui-select-menu
+        (selectionChange)="applyFilter($event)"
         [value]="filterFields"
-        multiple
+        [multiselect]="true"
       >
-        <mat-option
+        <ui-select-option
           *ngFor="let field of sortedFields"
           value="{{ field.name }}"
-          >{{ field.title || field.name }}</mat-option
+          [label]="field.title || field.name"
+          >{{ field.title || field.name }}</ui-select-option
         >
-      </mat-select>
+      </ui-select-menu>
       <ui-button
-        matSuffix
+        uiSuffix
         icon="close"
         [isIcon]="true"
         (click)="applyFilter([]); $event.stopPropagation()"
       ></ui-button>
-    </mat-form-field>
+    </div>
   </div>
   <!-- ACTIONS -->
   <div class="flex flex-row justify-start text-end ml-auto">

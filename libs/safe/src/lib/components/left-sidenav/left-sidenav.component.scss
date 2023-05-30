@@ -20,49 +20,6 @@
   }
 }
 
-.nav-item {
-  cursor: pointer;
-  height: 56px;
-  padding: 0 16px;
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  a {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  .nav-action,
-  .nav-item-handle {
-    color: transparent;
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
-  }
-  &:hover {
-    background: rgba(0, 0, 0, 0.04);
-    .nav-actions {
-      display: flex;
-    }
-    .nav-action,
-    .nav-item-handle {
-      color: #aeaeaf;
-    }
-  }
-
-  .nav-text {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    min-width: 0;
-    max-width: calc(80%);
-    padding-left: 8px;
-  }
-}
-
 .nav-item-handle {
   cursor: move;
 }

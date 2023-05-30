@@ -4,7 +4,6 @@ import { SafeAddUserComponent } from './add-user.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
@@ -13,7 +12,7 @@ import {
   DialogModule,
   FormWrapperModule,
   AutocompleteModule,
-  OptionModule,
+  SelectMenuModule,
 } from '@oort-front/ui';
 
 /** Module for the add user component */
@@ -25,7 +24,6 @@ import {
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatSelectModule,
     MatAutocompleteModule,
     MatInputModule,
     TranslateModule,
@@ -33,7 +31,7 @@ import {
     ButtonModule,
     FormWrapperModule,
     AutocompleteModule,
-    OptionModule,
+    SelectMenuModule,
   ],
   exports: [SafeAddUserComponent],
 })
