@@ -14,6 +14,9 @@ import { SuffixDirective } from './suffix.directive';
 import { PrefixDirective } from './prefix.directive';
 import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
 import { BehaviorSubject, Subject, startWith, takeUntil } from 'rxjs';
+import { SelectMenuComponent } from '../select-menu/select-menu.component';
+import { TextareaComponent } from '../textarea/textarea.component';
+import { GraphQLSelectComponent } from '../graphql-select/graphql-select.component';
 import { FormControlName, Validators } from '@angular/forms';
 import { ChipListDirective } from '../chip/chip-list.directive';
 
@@ -41,13 +44,17 @@ export class FormWrapperDirective
   public childControl!: FormControlName;
   @ContentChild(AutocompleteComponent, { read: ElementRef })
   private autocompleteContent!: ElementRef;
+  @ContentChild(SelectMenuComponent, { read: ElementRef })
+  private currentSelectElement!: ElementRef;
+  @ContentChild(TextareaComponent, { read: ElementRef })
+  private currentTextareaElement!: ElementRef;
+  @ContentChild(GraphQLSelectComponent)
+  private currentGraphQLSelectComponent!: GraphQLSelectComponent;
   @ContentChild(ChipListDirective, { read: ElementRef })
   private chipListElement!: ElementRef;
 
   private currentInputElement!: HTMLInputElement;
   private currentLabelElement!: HTMLLabelElement;
-  private currentSelectElement!: any;
-  private currentTextareaElement!: any;
   private beyondLabelContainer!: HTMLDivElement;
 
   // === LISTS OF CLASSES TO APPLY TO ELEMENTS ===
@@ -292,42 +299,36 @@ export class FormWrapperDirective
 
   //We need to use afterViewInit for select menu, otherwise removing class does not work
   ngAfterViewInit() {
-    this.currentSelectElement =
-      this.elementRef.nativeElement.querySelector('ui-select-menu');
-
-    this.currentTextareaElement =
-      this.elementRef.nativeElement.querySelector('ui-textarea');
-
     // Do the same with selectMenu
-    if (this.currentSelectElement) {
+    if (this.currentSelectElement || this.currentGraphQLSelectComponent) {
+      if (this.currentGraphQLSelectComponent) {
+        this.currentGraphQLSelectComponent.elementSelect.isGraphQlSelect = true;
+      }
+      const currentElement = this.currentGraphQLSelectComponent
+        ? this.currentGraphQLSelectComponent.elementRef
+        : this.currentSelectElement;
       //Get select-menu button in order to remove styling elements
-      const selectButton = this.currentSelectElement.querySelector('button');
+      const selectButton = currentElement.nativeElement.querySelector('button');
       for (const cl of this.selectButtonRemove) {
         this.renderer.removeClass(selectButton, cl);
       }
-      // Class change in order to make the select list display full width and aligned with the form wrapper element
-      const listWrapperContainer =
-        this.currentSelectElement.querySelector('div');
-      this.renderer.removeClass(listWrapperContainer, 'relative');
-      const selectList =
-        this.currentSelectElement.querySelector('#listWrapper');
-      this.renderer.addClass(selectList, 'left-0');
       // Add related classes to select menu element
       if (!this.outline) {
         for (const cl of this.selectClassesNoOutline) {
-          this.renderer.addClass(this.currentSelectElement, cl);
+          this.renderer.addClass(currentElement.nativeElement, cl);
         }
       } else {
         for (const cl of this.selectClassesOutline) {
-          this.renderer.addClass(this.currentSelectElement, cl);
+          this.renderer.addClass(currentElement.nativeElement, cl);
         }
         this.renderer.removeClass(selectButton, 'bg-white');
         this.renderer.addClass(selectButton, 'bg-gray-50');
       }
+      // this.renderer.addClass(this.elementRef.nativeElement, 'pb-4');
       //Add reworked element to beyond label
       this.renderer.appendChild(
         this.beyondLabelContainer,
-        this.currentSelectElement
+        currentElement.nativeElement
       );
     }
 
@@ -341,7 +342,7 @@ export class FormWrapperDirective
 
     if (this.currentTextareaElement) {
       const textareaElement =
-        this.currentTextareaElement.querySelector('textarea');
+        this.currentTextareaElement.nativeElement.querySelector('textarea');
       this.renderer.addClass(textareaElement, 'bg-transparent');
 
       for (const cl of this.textareaRemove) {
@@ -350,18 +351,18 @@ export class FormWrapperDirective
       // Add related classes to input element
       if (!this.outline) {
         for (const cl of this.inputClassesNoOutline) {
-          this.renderer.addClass(this.currentTextareaElement, cl);
+          this.renderer.addClass(this.currentTextareaElement.nativeElement, cl);
         }
       } else {
         for (const cl of this.inputClassesOutline) {
-          this.renderer.addClass(this.currentTextareaElement, cl);
+          this.renderer.addClass(this.currentTextareaElement.nativeElement, cl);
         }
       }
-      this.renderer.addClass(this.elementRef.nativeElement, 'pb-4');
+      this.renderer.addClass(this.elementRef.nativeElement, 'pb-3');
       // Then add the input to our beyondLabel wrapper element
       this.renderer.appendChild(
         this.beyondLabelContainer,
-        this.currentTextareaElement
+        this.currentTextareaElement.nativeElement
       );
     }
   }

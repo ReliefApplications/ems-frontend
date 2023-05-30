@@ -38,20 +38,20 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  SafeGraphQLSelectModule,
   SafeReadableCronModule,
   CronExpressionControlModule,
   SafeIconModule,
 } from '@oort-front/safe';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import {
   TooltipModule,
   ButtonModule,
   ExpansionPanelModule,
-  TextareaModule,
+  SelectMenuModule,
   FormWrapperModule,
+  TextareaModule,
   ChipModule,
+  GraphQLSelectModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 
@@ -70,16 +70,16 @@ const DEFAULT_FIELDS = ['createdBy'];
     ReactiveFormsModule,
     TranslateModule,
     DialogModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     SafeReadableCronModule,
     TooltipModule,
-    MatSelectModule,
     MatFormFieldModule,
     ExpansionPanelModule,
     CronExpressionControlModule,
     SafeIconModule,
     TextareaModule,
     ButtonModule,
+    SelectMenuModule,
     FormWrapperModule,
     ChipModule,
   ],

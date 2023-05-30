@@ -1150,6 +1150,7 @@
 					},
 					"position": "******",
 					"series": {
+						"fill": "******",
 						"interpolation": {
 							"step": "******",
 							"title": "******"

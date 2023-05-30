@@ -32,28 +32,30 @@
         (change)="uploadGeoJSON()"
       />
       <div class="flex gap-2">
-        <mat-form-field appearance="outline">
-          <mat-label>{{
+        <div uiFormFieldDirective>
+          <label>{{
             'components.widget.settings.map.layers.clorophlet.identifier'
               | translate
-          }}</mat-label>
-          <mat-select formControlName="place">
-            <mat-option *ngFor="let field of fields" [value]="field">{{
+          }}</label>
+          <ui-select-menu formControlName="place">
+            <ui-select-option *ngFor="let field of fields" [value]="field">{{
               field
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="extraInput">
-          <mat-label>{{
+            }}</ui-select-option>
+          </ui-select-menu>
+        </div>
+        <div uiFormFieldDirective class="extraInput">
+          <label>{{
             'components.widget.settings.map.layers.clorophlet.geoJSONidentifier'
               | translate
-          }}</mat-label>
-          <mat-select formControlName="geoJSONfield">
-            <mat-option *ngFor="let field of geoJSONfields" [value]="field">{{
-              field
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+          }}</label>
+          <ui-select-menu formControlName="geoJSONfield">
+            <ui-select-option
+              *ngFor="let field of geoJSONfields"
+              [value]="field"
+              >{{ field }}</ui-select-option
+            >
+          </ui-select-menu>
+        </div>
       </div>
       <mat-label>Opacity</mat-label>
       <ui-slider

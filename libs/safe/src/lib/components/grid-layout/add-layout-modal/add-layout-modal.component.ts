@@ -10,16 +10,17 @@ import {
   GET_FORM_LAYOUTS,
 } from './graphql/queries';
 import { UntypedFormControl } from '@angular/forms';
-import { SafeGraphQLSelectComponent } from '../../graphql-select/graphql-select.component';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { SafeGraphQLSelectModule } from '../../graphql-select/graphql-select.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { DialogModule } from '@oort-front/ui';
+import {
+  DialogModule,
+  GraphQLSelectComponent,
+  GraphQLSelectModule,
+} from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -44,9 +45,8 @@ interface DialogData {
     TranslateModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatSelectModule,
     DialogModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     FormsModule,
     ReactiveFormsModule,
     ButtonModule,
@@ -70,8 +70,8 @@ export class AddLayoutModalComponent
   public selectedLayoutControl = new UntypedFormControl('');
 
   /** Reference to graphql select for layout */
-  @ViewChild(SafeGraphQLSelectComponent)
-  layoutSelect?: SafeGraphQLSelectComponent;
+  @ViewChild(GraphQLSelectComponent)
+  layoutSelect?: GraphQLSelectComponent;
 
   /**
    * Add layout modal component.

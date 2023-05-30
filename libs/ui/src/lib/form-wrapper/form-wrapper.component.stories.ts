@@ -4,7 +4,6 @@ import { FormWrapperModule } from './form-wrapper.module';
 import { IconModule } from '../icon/icon.module';
 import { SpinnerModule } from '../spinner/spinner.module';
 import { SelectMenuModule } from '../select-menu/select-menu.module';
-import { SelectOptionModule } from '../select-menu/components/select-option.module';
 import { AutocompleteModule } from '../autocomplete/autocomplete.module';
 import { OptionModule } from '../option/option.module';
 
@@ -18,7 +17,6 @@ export default {
         IconModule,
         SpinnerModule,
         SelectMenuModule,
-        SelectOptionModule,
         AutocompleteModule,
         OptionModule,
       ],

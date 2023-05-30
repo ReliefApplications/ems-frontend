@@ -26,50 +26,52 @@
         ></safe-icon>
       </mat-form-field>
 
-      <mat-form-field
-        appearance="outline"
+      <div
         *ngIf="!isField && canSelectDataSet && templates.length > 0"
+        uiFormFieldDirective
       >
-        <mat-label>{{ 'models.form.template' | translate }}</mat-label>
-        <mat-select formControlName="template">
-          <mat-option>-</mat-option>
-          <mat-option
+        <label>{{ 'models.form.template' | translate }}</label>
+        <ui-select-menu formControlName="template">
+          <ui-select-option>-</ui-select-option>
+          <ui-select-option
             *ngFor="let template of templates"
             [value]="template.id"
-            >{{ template.name }}</mat-option
+            [label]="template.name || ''"
           >
-        </mat-select>
-      </mat-form-field>
+            {{ template.name }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
     </div>
 
     <ng-container *ngIf="isField">
       <div class="flex gap-2">
         <ui-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
         </ui-button>
-        <div uiFormFieldDirective >
+        <div uiFormFieldDirective>
           <label>{{ 'models.form.field.name' | translate }}</label>
           <input formControlName="name" type="text" />
         </div>
-        <div uiFormFieldDirective >
+        <div uiFormFieldDirective>
           <label>{{ 'models.form.field.label' | translate }}</label>
           <input formControlName="label" type="text" />
-          </div>
+        </div>
       </div>
     </ng-container>
-    <ui-tabs
-      *ngIf="form.getRawValue().name"
-    >
+    <ui-tabs *ngIf="form.getRawValue().name">
       <ui-tab>
-        <ng-container ngProjectAs="label">{{'components.queryBuilder.fields.title' | translate}}</ng-container>
+        <ng-container ngProjectAs="label">{{
+          'components.queryBuilder.fields.title' | translate
+        }}</ng-container>
 
-          <safe-tab-fields
-            *ngIf="availableFields.length > 0"
-            [form]="$any(form.controls.fields)"
-            [fields]="availableFields"
-            [showLimit]="true"
-          ></safe-tab-fields>
+        <safe-tab-fields
+          *ngIf="availableFields.length > 0"
+          [form]="$any(form.controls.fields)"
+          [fields]="availableFields"
+          [showLimit]="true"
+        ></safe-tab-fields>
       </ui-tab>
-      <ui-tab *ngIf="form.get('sort')" >
+      <ui-tab *ngIf="form.get('sort')">
         <ng-container ngProjectAs="label">{{
           (showLimit && form.get('first') !== null
             ? 'components.queryBuilder.sort.limitTitle'
@@ -83,10 +85,10 @@
           [showLimit]="showLimit && form.get('first') !== null"
         ></safe-tab-sort>
       </ui-tab>
-      <ui-tab
-        *ngIf="showFilter && form.get('filter')"
-      >
-        <ng-container ngProjectAs="label">{{'components.queryBuilder.filter.title' | translate}}</ng-container>
+      <ui-tab *ngIf="showFilter && form.get('filter')">
+        <ng-container ngProjectAs="label">{{
+          'components.queryBuilder.filter.title' | translate
+        }}</ng-container>
 
         <safe-tab-filter
           [form]="$any(form.controls.filter)"
@@ -95,7 +97,9 @@
         </safe-tab-filter>
       </ui-tab>
       <ui-tab *ngIf="showStyle && form.get('style')">
-        <ng-container ngProjectAs="label">{{'components.queryBuilder.style.title' | translate}}</ng-container>
+        <ng-container ngProjectAs="label">{{
+          'components.queryBuilder.style.title' | translate
+        }}</ng-container>
 
         <safe-tab-style
           [form]="$any(form.controls.style)"
@@ -105,7 +109,9 @@
         </safe-tab-style>
       </ui-tab>
       <ui-tab *ngIf="layoutPreviewData">
-        <ng-container ngProjectAs="label">{{'common.preview' | translate}}</ng-container>
+        <ng-container ngProjectAs="label">{{
+          'common.preview' | translate
+        }}</ng-container>
 
         <safe-tab-layout-preview [data]="layoutPreviewData">
         </safe-tab-layout-preview>

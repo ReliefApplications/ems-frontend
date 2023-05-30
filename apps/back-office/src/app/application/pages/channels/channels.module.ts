@@ -13,7 +13,6 @@ import {
   TableModule,
 } from '@oort-front/ui';
 import { SafeEmptyModule, SafeSkeletonTableModule } from '@oort-front/safe';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
@@ -33,7 +32,6 @@ import { TranslateModule } from '@ngx-translate/core';
     MatInputModule,
     SpinnerModule,
     MenuModule,
-    MatSelectModule,
     DividerModule,
     MatButtonModule,
     TranslateModule,

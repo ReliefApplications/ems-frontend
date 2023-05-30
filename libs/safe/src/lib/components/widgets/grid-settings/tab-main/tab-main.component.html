@@ -1,15 +1,15 @@
 <div [formGroup]="formGroup" class="flex flex-col">
   <h2>{{ 'common.general' | translate }}</h2>
   <!-- Widget title -->
-  <div uiFormFieldDirective >
+  <div uiFormFieldDirective>
     <label>{{ 'common.title' | translate }}</label>
     <input formControlName="title" type="string" />
   </div>
   <div class="flex gap-2 flex-wrap">
     <!-- Resource selection -->
-    <mat-form-field appearance="outline" class="flex-1">
-      <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-      <safe-graphql-select
+    <div uiFormFieldDirective class="flex-1">
+      <label>{{ 'common.resource.one' | translate }}</label>
+      <ui-graphql-select
         valueField="id"
         textField="name"
         [query]="resourcesQuery"
@@ -18,7 +18,7 @@
         (searchChange)="onResourceSearchChange($event)"
         [filterable]="true"
       >
-      </safe-graphql-select>
+      </ui-graphql-select>
       <!-- <mat-label>{{
       'components.queryBuilder.dataset.select' | translate
     }}</mat-label>
@@ -34,25 +34,29 @@
         {{ option }}
       </mat-option>
     </mat-autocomplete> -->
-    </mat-form-field>
+    </div>
     <!-- Template selection -->
-    <mat-form-field appearance="outline" class="flex-1">
-      <mat-label>{{ 'models.form.template' | translate }}</mat-label>
-      <mat-select formControlName="template">
-        <mat-option>-</mat-option>
-        <mat-option *ngFor="let template of templates" [value]="template.id">{{
-          template.name
-        }}</mat-option>
-      </mat-select>
+    <div uiFormFieldDirective class="flex-1">
+      <label>{{ 'models.form.template' | translate }}</label>
+      <ui-select-menu formControlName="template">
+        <ui-select-option>-</ui-select-option>
+        <ui-select-option
+          *ngFor="let template of templates"
+          [value]="template.id"
+          [label]="template.name ?? ''"
+        >
+          {{ template.name }}
+        </ui-select-option>
+      </ui-select-menu>
       <safe-icon
-        matSuffix
+        uiSuffix
         icon="info_outline"
         variant="grey"
         [uiTooltip]="
           'components.widget.settings.grid.tooltip.template' | translate
         "
       ></safe-icon>
-    </mat-form-field>
+    </div>
   </div>
 </div>
 <div class="flex flex-col mt-8 gap-8" *ngIf="form || resource">

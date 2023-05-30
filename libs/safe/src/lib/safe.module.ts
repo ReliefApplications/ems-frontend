@@ -25,7 +25,6 @@ import { SafeDateModule } from './pipes/date/date.module';
 import { SafeIconModule } from './components/ui/icon/icon.module';
 import { SafeSummaryCardSettingsModule } from './components/widgets/summary-card-settings/summary-card-settings.module';
 import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
-import { SafeGraphQLSelectModule } from './components/graphql-select/graphql-select.module';
 import { SafeEmptyModule } from './components/ui/empty/empty.module';
 import { SafeLeftSidenavModule } from './components/left-sidenav/left-sidenav.module';
 import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.module';
@@ -36,6 +35,7 @@ import { SafeEditableTextModule } from './components/editable-text/editable-text
 import { CronExpressionControlModule } from './components/cron-expression-control/cron-expression-control.module';
 import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
 import { DashboardFilterModule } from './components/dashboard-filter/dashboard-filter.module';
+import { GraphQLSelectModule } from '@oort-front/ui';
 
 /** Main module for the safe project */
 @NgModule({
@@ -71,7 +71,7 @@ import { DashboardFilterModule } from './components/dashboard-filter/dashboard-f
     SafeIconModule,
     SafeSummaryCardSettingsModule,
     SafeRoleSummaryModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     SafeEmptyModule,
     SafeLeftSidenavModule,
     // === Directives

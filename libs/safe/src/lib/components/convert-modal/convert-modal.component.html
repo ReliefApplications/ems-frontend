@@ -4,18 +4,20 @@
   </ng-container>
   <ng-container ngProjectAs="content">
     <ui-spinner *ngIf="loading"></ui-spinner>
-    <form  *ngIf="!loading" [formGroup]="convertForm">
+    <form *ngIf="!loading" [formGroup]="convertForm">
       <div class="flex flex-col">
-        <mat-form-field appearance="outline">
-          <mat-label>{{
-            'components.record.convert.select' | translate
-          }}</mat-label>
-          <mat-select formControlName="targetForm">
-            <mat-option *ngFor="let form of availableForms" [value]="form">
+        <div uiFormFieldDirective [outline]="false" class="flex-1">
+          <label>{{ 'components.record.convert.select' | translate }}</label>
+          <ui-select-menu formControlName="targetForm">
+            <ui-select-option
+              *ngFor="let form of availableForms"
+              [value]="form"
+              [label]="form.name || ''"
+            >
               {{ form.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
         <div
           class="flex flex-col mb-5 gap-1"
           formControlName="copyRecord"
@@ -51,9 +53,7 @@
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions" *ngIf="!loading">
-    <ui-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</ui-button>
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

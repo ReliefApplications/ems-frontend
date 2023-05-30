@@ -1157,6 +1157,7 @@
 					},
 					"position": "Position",
 					"series": {
+						"fill": "@TODO",
 						"interpolation": {
 							"step": "Étape d'interpolation",
 							"title": "Interpolation"

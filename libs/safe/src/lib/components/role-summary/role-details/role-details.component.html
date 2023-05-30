@@ -1,6 +1,6 @@
 <form [formGroup]="form">
   <div class="flex flex-col">
-    <div uiFormFieldDirective >
+    <div uiFormFieldDirective>
       <label>
         {{ 'models.role.title' | translate }}
       </label>
@@ -12,19 +12,18 @@
       </label>
       <ui-textarea formControlName="description" [minRows]="5"> </ui-textarea>
     </div>
-    <mat-form-field appearance="outline">
-      <mat-label>{{
-        'components.role.update.permissions' | translate
-      }}</mat-label>
-      <mat-select formControlName="permissions" multiple>
-        <mat-option
+    <div uiFormFieldDirective>
+      <label>{{ 'components.role.update.permissions' | translate }}</label>
+      <ui-select-menu [multiselect]="true" formControlName="permissions">
+        <ui-select-option
           *ngFor="let permission of permissions"
           [value]="permission.id"
+          [label]="permission.type ?? ''"
         >
           {{ permission.type }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
   </div>
   <ui-button
     variant="primary"

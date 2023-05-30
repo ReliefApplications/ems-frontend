@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SafeChartSettingsComponent } from './chart-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
@@ -12,6 +11,7 @@ import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module
 import { SafeChartModule } from '../chart/chart.module';
 import {
   ExpansionPanelModule,
+  SelectMenuModule,
   TabsModule,
   TooltipModule,
 } from '@oort-front/ui';
@@ -33,7 +33,6 @@ import { TabDisplayModule } from './tab-display/tab-display.module';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     MatButtonModule,
     MatIconModule,
     TextFieldModule,
@@ -50,6 +49,7 @@ import { TabDisplayModule } from './tab-display/tab-display.module';
     TabMainModule,
     TabDisplayModule,
     TooltipModule,
+    SelectMenuModule,
   ],
   exports: [SafeChartSettingsComponent],
 })
