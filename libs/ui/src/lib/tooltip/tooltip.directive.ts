@@ -102,10 +102,13 @@ export class TooltipDirective implements OnDestroy {
 
     //Default working case
     let topValue = `${top + this.tooltipSeparation}px`;
-    let leftValue = `${left}px`;
+    let leftValue = `${left + 0.5 * (hostPos.width - tooltipWidth)}px`;
     // Case where it on the bottom
     if (tooltipHeight + top > window.innerHeight) {
       topValue = `${hostPos.top - this.tooltipSeparation - tooltipHeight}px`;
+    }
+    if (left + 0.5 * (hostPos.width - tooltipWidth) < 0) {
+      leftValue = `${0}px`;
     }
     //Right placed case
     if (tooltipWidth + left > window.innerWidth) {
