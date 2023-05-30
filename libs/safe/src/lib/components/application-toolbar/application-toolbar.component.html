@@ -48,11 +48,10 @@
     uiMenuItem
     *ngFor="let setting of settings"
     [routerLink]="setting.path"
-    routerLinkActive="active-link"
+    routerLinkActive="text-primary-600 bg-gray-50"
+    class="text-sm font-semibold leading-6"
   >
-    <ui-icon class="nav-icon mr-2.5">
-      {{ setting.icon }}
-    </ui-icon>
+    <ui-icon variant="grey" [icon]="setting.icon"> </ui-icon>
     {{ setting.name }}
   </a>
 </ui-menu>
