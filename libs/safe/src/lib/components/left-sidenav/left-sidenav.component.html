@@ -1,99 +1,97 @@
-<section class="pt-2 block">
+<section class="pt-2 pl-6 flex flex-col gap-y-7">
   <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
-    <div
-      class="ml-1 overflow-clip flex flex-row justify-between items-center text-xs font-semibold pt-2 leading-6 text-gray-400"
-    >
-      <div class="truncate">
-        {{ group.name }}
+    <div>
+      <div
+        class="overflow-clip flex flex-row justify-between items-center text-xs font-semibold pt-2 leading-6 text-gray-400"
+      >
+        <div class="truncate">
+          {{ group.name }}
+        </div>
+        <ui-button
+          *ngIf="appLayout && canAddPage"
+          [isIcon]="true"
+          icon="add"
+          variant="grey"
+          [uiTooltip]="'models.page.add' | translate"
+          routerLink="./add-page"
+          (click)="largeDevice ? null : nav.toggle()"
+          class="overflow-visible"
+        ></ui-button>
       </div>
-      <ui-button
-        *ngIf="appLayout && canAddPage"
-        [isIcon]="true"
-        icon="add"
-        variant="grey"
-        [uiTooltip]="'models.page.add' | translate"
-        routerLink="./add-page"
-        (click)="largeDevice ? null : nav.toggle()"
-        class="overflow-visible"
-      ></ui-button>
-    </div>
-    <div
-      cdkDropList
-      (cdkDropListDropped)="drop($event, group)"
-      [class]="
-        appLayout
-          ? canAddPage
-            ? largeDevice
-              ? 'app-sidenav-add-page'
-              : 'app-sidenav-phone-add-page'
-            : largeDevice
-            ? 'app-sidenav'
-            : 'app-sidenav-phone'
-          : ''
-      "
-    >
-      <!-- Classes determine nav-list height for application layout -->
-      <ul>
-        <ng-container *ngFor="let item of group.navItems">
-          <div cdkDrag [cdkDragDisabled]="!item.orderable" class="show-icons">
-            <li
-              [routerLink]="item.path"
-              routerLinkActive="active-link bg-gray-50"
-              class="flex justify-between items-center cursor-pointer flex-row text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md px-2 py-3 m-2"
-            >
-              <a
-                (click)="largeDevice ? null : nav.toggle()"
-                class="group flex overflow-clip flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
+      <div
+        cdkDropList
+        (cdkDropListDropped)="drop($event, group)"
+        [class]="
+          appLayout
+            ? canAddPage
+              ? largeDevice
+                ? 'app-sidenav-add-page'
+                : 'app-sidenav-phone-add-page'
+              : largeDevice
+              ? 'app-sidenav'
+              : 'app-sidenav-phone'
+            : ''
+        "
+      >
+        <!-- Classes determine nav-list height for application layout -->
+        <ul class="pr-6">
+          <ng-container *ngFor="let item of group.navItems">
+            <div cdkDrag [cdkDragDisabled]="!item.orderable" class="show-icons">
+              <li
+                [routerLink]="item.path"
+                routerLinkActive="text-primary-600 bg-gray-50"
+                class="flex justify-between items-center cursor-pointer flex-row text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md px-2 py-3"
               >
-                <mat-icon class="nav-icon-active overflow-visible">
-                  {{ item.icon }}
-                </mat-icon>
-                <p class="nav-text-active truncate m-0" [uiTooltip]="item.name">
-                  {{ item.name }}
-                </p>
-              </a>
-              <div
-                class="flex flex-row items-center"
-                *ngIf="item.action || item.orderable"
-              >
-                <ui-button
-                  class="hide-icons hover:text-primary-600"
-                  [isIcon]="true"
-                  *ngIf="item.action"
-                  size="small"
-                  (click)="onClick(item.action.callback, $event)"
-                  uiTooltip="{{ item.action.toolTip }}"
-                  icon="delete"
+                <a
+                  (click)="largeDevice ? null : nav.toggle()"
+                  class="group flex overflow-clip flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
                 >
-                </ui-button>
-                <ui-button
-                  class="hide-icons hover:text-primary-600"
-                  [isIcon]="true"
-                  size="small"
-                  cdkDragHandle
-                  *ngIf="item.orderable"
-                  icon="drag_indicator"
+                  <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
+                  <p class="truncate m-0" [uiTooltip]="item.name">
+                    {{ item.name }}
+                  </p>
+                </a>
+                <div
+                  class="flex flex-row items-center"
+                  *ngIf="item.action || item.orderable"
                 >
-                </ui-button>
-              </div>
-            </li>
-            <!-- Preview when dragging element -->
-            <li
-              *cdkDragPreview
-              class="flex items-center flex-row text-gray-700 bg-white rounded-md px-2 py-3 m-2 shadow-2lg"
-            >
-              <a
-                class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
+                  <ui-button
+                    class="hide-icons hover:text-primary-600"
+                    [isIcon]="true"
+                    *ngIf="item.action"
+                    size="small"
+                    (click)="onClick(item.action.callback, $event)"
+                    uiTooltip="{{ item.action.toolTip }}"
+                    icon="delete"
+                  >
+                  </ui-button>
+                  <ui-button
+                    class="hide-icons hover:text-primary-600"
+                    [isIcon]="true"
+                    size="small"
+                    cdkDragHandle
+                    *ngIf="item.orderable"
+                    icon="drag_indicator"
+                  >
+                  </ui-button>
+                </div>
+              </li>
+              <!-- Preview when dragging element -->
+              <li
+                *cdkDragPreview
+                class="flex items-center flex-row text-gray-700 bg-white rounded-md px-2 py-3 shadow-2lg"
               >
-                <mat-icon class="nav-icon-active">
-                  {{ item.icon }}
-                </mat-icon>
-                <div class="pl-2">{{ item.name }}</div>
-              </a>
-            </li>
-          </div>
-        </ng-container>
-      </ul>
+                <a
+                  class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
+                >
+                  <ui-icon variant="grey" [icon]="item.icon"></ui-icon>
+                  <div class="pl-2">{{ item.name }}</div>
+                </a>
+              </li>
+            </div>
+          </ng-container>
+        </ul>
+      </div>
     </div>
     <ng-container *ngIf="appLayout && canAddPage">
       <div class="flex flex-col items-center w-full absolute bottom-0">

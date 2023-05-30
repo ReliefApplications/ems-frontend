@@ -125,15 +125,6 @@ $safe-theme: mat.define-light-theme(
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
 
-  .active-link {
-    .nav-icon-active {
-      color: mat.get-color-from-palette($primary);
-    }
-    .nav-text-active {
-      color: mat.get-color-from-palette($primary);
-    }
-  }
-
   .accent {
     color: mat.get-color-from-palette($accent);
   }
