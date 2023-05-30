@@ -13,10 +13,12 @@ import {
 import { SuffixDirective } from './suffix.directive';
 import { PrefixDirective } from './prefix.directive';
 import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
-import { Subject, startWith, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, startWith, takeUntil } from 'rxjs';
 import { SelectMenuComponent } from '../select-menu/select-menu.component';
 import { TextareaComponent } from '../textarea/textarea.component';
 import { GraphQLSelectComponent } from '../graphql-select/graphql-select.component';
+import { FormControlName, Validators } from '@angular/forms';
+import { ChipListDirective } from '../chip/chip-list.directive';
 
 /**
  * UI Form Wrapper Directive
@@ -38,6 +40,8 @@ export class FormWrapperDirective
   @ContentChildren(PrefixDirective)
   private allPrefixDirectives: QueryList<PrefixDirective> = new QueryList();
 
+  @ContentChild(FormControlName)
+  public childControl!: FormControlName;
   @ContentChild(AutocompleteComponent, { read: ElementRef })
   private autocompleteContent!: ElementRef;
   @ContentChild(SelectMenuComponent, { read: ElementRef })
@@ -46,6 +50,8 @@ export class FormWrapperDirective
   private currentTextareaElement!: ElementRef;
   @ContentChild(GraphQLSelectComponent)
   private currentGraphQLSelectComponent!: GraphQLSelectComponent;
+  @ContentChild(ChipListDirective, { read: ElementRef })
+  private chipListElement!: ElementRef;
 
   private currentInputElement!: HTMLInputElement;
   private currentLabelElement!: HTMLLabelElement;
@@ -100,15 +106,8 @@ export class FormWrapperDirective
     'bg-gray-50',
   ] as const;
 
-  private beyondLabelGeneral = [
-    'relative',
-    'py-1.5',
-    'px-2',
-    'flex',
-    'items-center',
-    'w-full',
-  ] as const;
-
+  private beyondLabelGeneral = ['relative', 'py-1.5', 'px-2'] as const;
+  private beyondLabelNoChipList = ['flex', 'items-center', 'w-full'] as const;
   private beyondLabelNoOutline = [
     'focus-within:ring-2',
     'focus-within:ring-inset',
@@ -151,7 +150,7 @@ export class FormWrapperDirective
   ];
 
   private destroy$ = new Subject<void>();
-
+  elementWrapped = new BehaviorSubject<boolean>(false);
   /**
    * Constructor including a ref to the element on which the directive is applied
    * and the renderer.
@@ -197,7 +196,6 @@ export class FormWrapperDirective
           this.renderer.addClass(this.currentInputElement, cl);
         }
       }
-
       // Then add the input to our beyondLabel wrapper element
       this.renderer.appendChild(
         this.beyondLabelContainer,
@@ -205,12 +203,32 @@ export class FormWrapperDirective
       );
     }
 
+    if (this.chipListElement) {
+      this.renderer.insertBefore(
+        this.beyondLabelContainer,
+        this.chipListElement.nativeElement,
+        this.currentInputElement
+      );
+      this.renderer.removeClass(this.beyondLabelContainer, 'flex');
+    } else {
+      for (const cl of this.beyondLabelNoChipList) {
+        this.renderer.addClass(this.beyondLabelContainer, cl);
+      }
+    }
+
     if (this.currentLabelElement) {
+      if (this.childControl?.control?.hasValidator(Validators.required)) {
+        this.renderer.appendChild(
+          this.currentLabelElement,
+          this.renderer.createText(' *')
+        );
+      }
       // Add related classes to label
       for (const cl of this.labelClasses) {
         this.renderer.addClass(this.currentLabelElement, cl);
       }
     }
+
     this.initializeDirectiveListeners();
 
     //Add beyond label as a child of elementRef
@@ -218,6 +236,8 @@ export class FormWrapperDirective
       this.elementRef.nativeElement,
       this.beyondLabelContainer
     );
+
+    this.elementWrapped.next(true);
   }
 
   /**

@@ -10,7 +10,7 @@ import {
   IconModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { TooltipModule } from '@oort-front/ui';
+import { TooltipModule, ErrorMessageModule } from '@oort-front/ui';
 import { SafeMapModule } from '../../map/map.module';
 
 /**
@@ -30,6 +30,7 @@ import { SafeMapModule } from '../../map/map.module';
     IconModule,
     SafeMapModule,
     SelectMenuModule,
+    ErrorMessageModule,
   ],
   exports: [MapPropertiesComponent],
 })

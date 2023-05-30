@@ -215,6 +215,13 @@
           <!-- Using email -->
           <div
             uiFormFieldDirective
+            [uiErrorMessage]="
+              'components.customNotifications.errors.email' | translate
+            "
+            [uiErrorMessageIf]="
+              formGroup.get('recipients')?.errors &&
+              formGroup.get('recipients')?.touched
+            "
             *ngIf="formGroup.value.recipientsType === 'email'"
             class="flex-1"
           >
@@ -224,9 +231,6 @@
               [placeholder]="'common.placeholder.email' | translate"
               formControlName="recipients"
             />
-            <mat-error *ngIf="formGroup.get('recipients')?.errors">
-              {{ 'components.customNotifications.errors.email' | translate }}
-            </mat-error>
           </div>
         </div>
       </div>

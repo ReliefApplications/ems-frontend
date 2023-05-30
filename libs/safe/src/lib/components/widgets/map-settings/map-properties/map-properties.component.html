@@ -32,7 +32,16 @@
       [maxValue]="18"
     ></ui-slider>
     <div class="flex flex-wrap gap-2">
-      <div uiFormFieldDirective class="flex-1">
+      <div
+        [uiErrorMessage]="
+          'components.widget.settings.map.errors.latitude' | translate
+        "
+        [uiErrorMessageIf]="
+          form.controls.centerLat.errors && form.controls.centerLat.touched
+        "
+        uiFormFieldDirective
+        class="flex-1"
+      >
         <label>
           {{ 'components.widget.settings.map.properties.latitude' | translate }}
         </label>
@@ -47,11 +56,17 @@
               | translate
           "
         ></ui-icon>
-        <mat-error *ngIf="form.controls.centerLat.errors">
-          {{ 'components.widget.settings.map.errors.latitude' | translate }}
-        </mat-error>
       </div>
-      <div uiFormFieldDirective class="flex-1">
+      <div
+        [uiErrorMessage]="
+          'components.widget.settings.map.errors.longitude' | translate
+        "
+        [uiErrorMessageIf]="
+          form.controls.centerLong.errors && form.controls.centerLong.touched
+        "
+        uiFormFieldDirective
+        class="flex-1"
+      >
         <label>
           {{
             'components.widget.settings.map.properties.longitude' | translate
@@ -68,9 +83,6 @@
               | translate
           "
         ></ui-icon>
-        <mat-error *ngIf="form.controls.centerLat.errors">
-          {{ 'components.widget.settings.map.errors.longitude' | translate }}
-        </mat-error>
       </div>
     </div>
     <safe-map [header]="false" [settings]="mapSettings"></safe-map>

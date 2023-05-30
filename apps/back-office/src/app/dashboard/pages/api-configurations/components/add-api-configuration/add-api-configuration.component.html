@@ -4,23 +4,24 @@
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="apiForm" class="flex flex-col">
-      <div uiFormFieldDirective>
+      <div
+        [uiErrorMessage]="
+          'components.apiConfiguration.create.errors.name' | translate
+        "
+        [uiErrorMessageIf]="name?.errors && name?.touched"
+        uiFormFieldDirective
+      >
         <label>{{ 'common.name' | translate }}</label>
         <input
           formControlName="name"
           type="text"
           [placeholder]="'common.placeholder.name' | translate"
         />
-        <mat-error *ngIf="name?.errors">
-          {{ 'components.apiConfiguration.create.errors.name' | translate }}
-        </mat-error>
       </div>
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</ui-button>
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

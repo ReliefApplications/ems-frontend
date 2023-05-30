@@ -23,6 +23,7 @@ import {
   DialogModule,
   FormWrapperModule,
   PaginatorModule,
+  ErrorMessageModule,
 } from '@oort-front/ui';
 
 /**
@@ -50,6 +51,7 @@ import {
     ButtonModule,
     SelectMenuModule,
     FormWrapperModule,
+    ErrorMessageModule,
     TableModule,
   ],
   exports: [ApiConfigurationsComponent],

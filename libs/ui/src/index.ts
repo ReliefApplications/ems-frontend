@@ -33,6 +33,7 @@ export * from './lib/date/date-range/date-range.module';
 export * from './lib/date/date-picker/date-picker.module';
 export * from './lib/graphql-select/graphql-select.module';
 export * from './lib/graphql-select/graphql-select.component';
+export * from './lib/error-message/error-message.module';
 
 // === SERVICES === //
 export * from './lib/snackbar/snackbar.service';

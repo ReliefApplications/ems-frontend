@@ -13,6 +13,7 @@ import {
   TooltipModule,
   FormWrapperModule,
   IconModule,
+  ErrorMessageModule,
 } from '@oort-front/ui';
 
 /** Cron expression control module. */
@@ -32,6 +33,7 @@ import {
     ButtonModule,
     AlertModule,
     FormWrapperModule,
+    ErrorMessageModule,
   ],
   exports: [CronExpressionControlComponent],
 })
