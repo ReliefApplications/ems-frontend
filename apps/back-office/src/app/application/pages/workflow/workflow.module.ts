@@ -12,7 +12,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeSearchMenuModule } from '@oort-front/safe';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import {
   AlertModule,
@@ -35,7 +35,7 @@ import {
     TranslateModule,
     OverlayModule,
     SafeSearchMenuModule,
-    MatIconModule,
+    IconModule,
     MenuModule,
     IndicatorsModule,
     SafeIconModule,

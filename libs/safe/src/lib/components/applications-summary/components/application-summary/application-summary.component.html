@@ -49,7 +49,7 @@
     <ui-menu #menu>
       <!-- Preview -->
       <button uiMenuItem (click)="preview.emit()">
-        <mat-icon>preview</mat-icon>
+        <ui-icon icon="preview"></ui-icon>
         {{ 'common.preview' | translate }}
       </button>
       <!-- Duplication -->
@@ -58,14 +58,14 @@
         (click)="clone.emit()"
         *ngIf="application.canUpdate"
       >
-        <mat-icon>file_copy</mat-icon>
+        <ui-icon icon="file_copy"></ui-icon>
         {{ 'common.duplicate' | translate }}
       </button>
       <!-- Delete -->
       <ng-container *ngIf="application.canDelete">
         <ui-divider class="m-0"></ui-divider>
         <button uiMenuItem (click)="delete.emit()">
-          <mat-icon>delete</mat-icon>
+          <ui-icon icon="delete"></ui-icon>
           {{ 'common.delete' | translate }}
         </button>
       </ng-container>

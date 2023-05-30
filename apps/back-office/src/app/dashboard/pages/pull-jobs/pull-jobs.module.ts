@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { PullJobsRoutingModule } from './pull-jobs-routing.module';
 import { PullJobsComponent } from './pull-jobs.component';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import {
   SafeSkeletonTableModule,
   SafeIconModule,
@@ -27,7 +27,7 @@ import {
     CommonModule,
     PullJobsRoutingModule,
     MatButtonModule,
-    MatIconModule,
+    IconModule,
     MenuModule,
     DividerModule,
     PaginatorModule,

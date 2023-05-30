@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormRecordsRoutingModule } from './form-records-routing.module';
 import { FormRecordsComponent } from './form-records.component';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import {
   SafeRecordHistoryModule,
   SafeSkeletonTableModule,
@@ -26,7 +26,7 @@ import {
   imports: [
     CommonModule,
     FormRecordsRoutingModule,
-    MatIconModule,
+    IconModule,
     MenuModule,
     SafeRecordHistoryModule,
     TooltipModule,

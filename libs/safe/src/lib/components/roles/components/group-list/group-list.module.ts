@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeGroupListComponent } from './group-list.component';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
@@ -21,7 +21,7 @@ import {
   imports: [
     CommonModule,
     TranslateModule,
-    MatIconModule,
+    IconModule,
     MatFormFieldModule,
     FormWrapperModule,
     SafeSkeletonTableModule,

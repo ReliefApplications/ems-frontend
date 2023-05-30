@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 import { ChannelsRoutingModule } from '../../channels-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
@@ -32,7 +32,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatIconModule,
+    IconModule,
     FormWrapperModule,
     SpinnerModule,
     MenuModule,

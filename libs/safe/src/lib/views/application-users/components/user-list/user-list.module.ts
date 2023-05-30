@@ -4,7 +4,7 @@ import { UserListComponent } from './user-list.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../../../../components/skeleton/skeleton-table/skeleton-table.module';
 import { SafeEmptyModule } from '../../../../components/ui/empty/empty.module';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import {
   MenuModule,
   CheckboxModule,
@@ -25,7 +25,7 @@ import {
     PaginatorModule,
     SafeEmptyModule,
     MenuModule,
-    MatIconModule,
+    IconModule,
     CheckboxModule,
     ButtonModule,
     TableModule,

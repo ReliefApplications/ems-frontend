@@ -104,7 +104,7 @@ const TemplateAutocomplete: StoryFn<any> = (args: any) => {
     {{option}}
     <ng-container ngProjectsAs="icon">
     <ui-icon
-      [icon]="'edit'"
+      icon="edit"
       [size]="18"
     ></ui-icon>
     </ng-container>

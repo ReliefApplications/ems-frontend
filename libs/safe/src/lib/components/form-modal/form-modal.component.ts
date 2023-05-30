@@ -35,7 +35,7 @@ import omitBy from 'lodash/omitBy';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../utils/cleanRecord';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { ButtonModule, SnackbarService, TabsModule } from '@oort-front/ui';
 import { SafeIconModule } from '../ui/icon/icon.module';
@@ -72,7 +72,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
   styleUrls: ['./form-modal.component.scss'],
   imports: [
     CommonModule,
-    MatIconModule,
+    IconModule,
     MatButtonModule,
     TabsModule,
     SafeIconModule,

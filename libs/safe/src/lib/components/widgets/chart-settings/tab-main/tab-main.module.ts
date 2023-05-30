@@ -11,7 +11,7 @@ import {
   SelectMenuModule,
 } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePaletteControlModule } from '../../../palette-control/palette-control.module';
@@ -35,7 +35,7 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     MatFormFieldModule,
     FormWrapperModule,
     MatButtonModule,
-    MatIconModule,
+    IconModule,
     TextFieldModule,
     SafeQueryBuilderModule,
     SafeChartModule,

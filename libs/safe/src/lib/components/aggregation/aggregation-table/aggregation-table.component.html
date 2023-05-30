@@ -40,11 +40,11 @@
           </ui-button>
           <ui-menu #resMenu>
             <button uiMenuItem (click)="onEditAggregation(element)">
-              <mat-icon>edit</mat-icon>
+              <ui-icon icon="edit"></ui-icon>
               {{ 'common.edit' | translate }}
             </button>
             <button uiMenuItem (click)="onDeleteAggregation(element)">
-              <mat-icon>delete</mat-icon>
+              <ui-icon icon="delete"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
           </ui-menu>

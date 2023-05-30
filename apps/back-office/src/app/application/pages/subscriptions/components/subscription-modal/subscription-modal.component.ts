@@ -31,7 +31,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SubscriptionsRoutingModule } from '../../subscriptions-routing.module';
 import { SafeIconModule } from '@oort-front/safe';
@@ -65,7 +65,7 @@ const ITEMS_PER_PAGE = 10;
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatIconModule,
+    IconModule,
     MatInputModule,
     SpinnerModule,
     MenuModule,

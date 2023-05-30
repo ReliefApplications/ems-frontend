@@ -11,7 +11,7 @@ import { SafeTabLayoutPreviewComponent } from './tab-layout-preview/tab-layout-p
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
@@ -67,7 +67,7 @@ import {
     MenuModule,
     DragDropModule,
     MatButtonModule,
-    MatIconModule,
+    IconModule,
     TooltipModule,
     MatAutocompleteModule,
     MatButtonToggleModule,

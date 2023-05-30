@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeLayoutComponent } from './layout.component';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
@@ -33,7 +33,7 @@ import {
     RouterModule,
     FormsModule,
     MatButtonModule,
-    MatIconModule,
+    IconModule,
     MenuModule,
     SidenavContainerModule,
     DragDropModule,

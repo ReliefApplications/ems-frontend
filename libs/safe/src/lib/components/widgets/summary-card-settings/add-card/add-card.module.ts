@@ -17,7 +17,7 @@ import {
   IconModule,
   AlertModule,
 } from '@oort-front/ui';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { TooltipModule, RadioModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 
@@ -39,7 +39,7 @@ import { DialogModule } from '@oort-front/ui';
     MatFormFieldModule,
     MatInputModule,
     SpinnerModule,
-    MatIconModule,
+    IconModule,
     FormWrapperModule,
     IconModule,
     RadioModule,

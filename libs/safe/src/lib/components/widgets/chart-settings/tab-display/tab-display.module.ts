@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePaletteControlModule } from '../../../palette-control/palette-control.module';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
@@ -39,7 +39,7 @@ import {
     MatFormFieldModule,
     FormWrapperModule,
     MatButtonModule,
-    MatIconModule,
+    IconModule,
     TextFieldModule,
     SafeQueryBuilderModule,
     SafeChartModule,

@@ -4,7 +4,7 @@ import { SafeSearchMenuComponent } from './search-menu.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import {
   TooltipModule,
   DividerModule,
@@ -23,7 +23,7 @@ import {
     FormsModule,
     MatFormFieldModule,
     FormWrapperModule,
-    MatIconModule,
+    IconModule,
     TooltipModule,
     DividerModule,
     ButtonModule,

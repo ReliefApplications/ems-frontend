@@ -13,7 +13,7 @@ import {
   TableModule,
 } from '@oort-front/ui';
 import { SafeEmptyModule, SafeSkeletonTableModule } from '@oort-front/safe';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -28,7 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatIconModule,
+    IconModule,
     MatInputModule,
     SpinnerModule,
     MenuModule,

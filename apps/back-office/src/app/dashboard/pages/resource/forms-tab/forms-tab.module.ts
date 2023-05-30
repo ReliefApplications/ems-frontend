@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsTabRoutingModule } from './forms-tab-routing.module';
 import { FormsTabComponent } from './forms-tab.component';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule, SafeSkeletonTableModule } from '@oort-front/safe';
 import {
@@ -20,7 +20,7 @@ import {
   imports: [
     CommonModule,
     FormsTabRoutingModule,
-    MatIconModule,
+    IconModule,
     MenuModule,
     TranslateModule,
     SafeDateModule,

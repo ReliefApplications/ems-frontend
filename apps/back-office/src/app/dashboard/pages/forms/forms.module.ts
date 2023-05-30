@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsRoutingModule } from './forms-routing.module';
 import { FormsComponent } from './forms.component';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { SafeSkeletonTableModule, SafeDateModule } from '@oort-front/safe';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
@@ -40,7 +40,7 @@ import {
     SpinnerModule,
     MatSortModule,
     MenuModule,
-    MatIconModule,
+    IconModule,
     MatFormFieldModule,
     MatDatepickerModule,
     MatNativeDateModule,

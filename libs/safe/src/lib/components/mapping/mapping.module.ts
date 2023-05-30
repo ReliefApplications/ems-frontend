@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeMappingComponent } from './mapping.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -23,7 +23,7 @@ import {
     CommonModule,
     TranslateModule,
     MenuModule,
-    MatIconModule,
+    IconModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,

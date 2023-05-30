@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
 import { SafeSkeletonTableModule } from '@oort-front/safe';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
@@ -41,7 +41,7 @@ import {
     AngularFormsModule,
     ReactiveFormsModule,
     DialogModule,
-    MatIconModule,
+    IconModule,
     MatButtonModule,
     PaginatorModule,
     TranslateModule,

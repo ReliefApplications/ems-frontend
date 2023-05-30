@@ -6,7 +6,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { SafeChartModule } from '../chart/chart.module';
 import {
@@ -34,7 +34,7 @@ import { TabDisplayModule } from './tab-display/tab-display.module';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule,
+    IconModule,
     TextFieldModule,
     SafeQueryBuilderModule,
     SafeChartModule,

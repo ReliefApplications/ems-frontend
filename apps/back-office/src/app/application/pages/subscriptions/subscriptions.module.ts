@@ -4,7 +4,7 @@ import { SubscriptionsComponent } from './subscriptions.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import {
@@ -37,7 +37,7 @@ import {
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatIconModule,
+    IconModule,
     MatInputModule,
     SpinnerModule,
     MenuModule,

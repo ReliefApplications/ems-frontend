@@ -47,7 +47,7 @@
           <td uiCell *cdkCellDef="let element" class="font-bold">
             {{ element.name
             }}<span *ngIf="user.favoriteApp === element.id">
-              <mat-icon inline="true" color="primary">star</mat-icon>
+              <ui-icon icon="star" inline="true" variant="primary"></ui-icon>
             </span>
           </td>
         </ng-container>
@@ -85,7 +85,7 @@
             </ui-button>
             <ui-menu #menu>
               <button uiMenuItem (click)="onSelectFavorite(element)">
-                <mat-icon>star</mat-icon>
+                <ui-icon icon="star"></ui-icon>
                 {{ 'models.application.setAsFavorite' | translate }}
               </button>
             </ui-menu>
