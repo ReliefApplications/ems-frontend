@@ -60,14 +60,16 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
     this.environment = environment;
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(
-        this.html,
-        this.fieldsValue,
-        this.fields,
-        this.styles,
-        this.wholeCardStyles
+      await this.applyPage(
+        parseHtml(
+          this.html,
+          this.fieldsValue,
+          this.fields,
+          this.styles,
+          this.wholeCardStyles
+        )
       )
     );
   }
@@ -161,7 +163,8 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
         this.resultText =
           '<a href="' + url + '">' + pageToLink.data.page.name + '</a>';
       } else {
-        this.resultText = 'Cannot link to page outside of this application';
+        this.resultText =
+          'Error : Cannot link to page outside of this application';
       }
 
       html = html.replace(result[0], this.resultText);
