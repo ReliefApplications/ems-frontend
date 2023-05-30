@@ -12,6 +12,7 @@ import {
   ButtonModule,
   TooltipModule,
   FormWrapperModule,
+  ErrorMessageModule,
 } from '@oort-front/ui';
 // @TODO: Remove SafeIconModule import after ui-icon is being used in the app
 import { SafeIconModule } from '../ui/icon/icon.module';
@@ -33,6 +34,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     ButtonModule,
     AlertModule,
     FormWrapperModule,
+    ErrorMessageModule,
   ],
   exports: [CronExpressionControlComponent],
 })

@@ -12,6 +12,7 @@ import {
   ButtonModule,
   SelectMenuModule,
   FormWrapperModule,
+  ErrorMessageModule,
 } from '@oort-front/ui';
 
 /**
@@ -32,6 +33,7 @@ import {
     ButtonModule,
     SelectMenuModule,
     FormWrapperModule,
+    ErrorMessageModule,
     ChipModule,
   ],
 })
