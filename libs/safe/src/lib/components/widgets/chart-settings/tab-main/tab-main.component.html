@@ -13,7 +13,7 @@
       <ui-select-menu
         [customTemplate]="{
           template: chartTemplate,
-          context: formGroup.get('type')?.value
+          context: { $implicit: formGroup.get('type')?.value }
         }"
         formControlName="type"
       >
@@ -45,11 +45,9 @@
       <div *ngIf="aggregation" uiFormFieldDirective>
         <label>{{ 'common.aggregation.one' | translate }}</label>
         <ui-select-menu [disabled]="true" [value]="aggregation.id">
-          <ui-select-option
-            [value]="aggregation.id"
-            [label]="aggregation.name ?? ''"
-            >{{ aggregation.name }}</ui-select-option
-          >
+          <ui-select-option [value]="aggregation.id">{{
+            aggregation.name
+          }}</ui-select-option>
         </ui-select-menu>
         <ui-button
           uiSuffix

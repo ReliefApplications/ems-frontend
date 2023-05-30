@@ -1,19 +1,17 @@
 <li
   [ngClass]="{
-    'bg-neutral-100': isGroup,
-    'text-gray-900 cursor-pointer hover:bg-primary-600 hover:text-white':
+    'bg-primary-300 text-white': !isGroup && selected,
+    'cursor-pointer hover:bg-primary-200 hover:text-white flex items-center text-gray-900':
       !isGroup,
-    'bg-primary-800 text-white': selected
+    'text-gray-500 pb-2': isGroup
   }"
-  class="relative select-none py-2 pl-3 pr-9"
   (click)="onChangeFunction()"
+  class="px-2 py-1 relative pl-2 w-full justify-between"
 >
   <!-- Text, changes if selected -->
-  <span class="font-normal block truncate">
+  <span class="font-normal truncate">
     <ng-content></ng-content>
   </span>
-  <!-- Checkmark showed if the li element is selected -->
-  <span class="absolute inset-y-0 right-0 flex items-center pr-4">
-    <ng-content select="icon"></ng-content>
-  </span>
+
+  <ng-content select="icon"></ng-content>
 </li>

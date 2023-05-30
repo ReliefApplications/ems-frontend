@@ -6,12 +6,10 @@
         <ui-select-option
           [isGroup]="true"
           *ngFor="let application of applications"
-          [label]="application.name || ''"
         >
           <ui-select-option
             *ngFor="let channel of application.channels"
             [value]="channel.id"
-            [label]="channel.title"
           >
             {{ channel.title }}
           </ui-select-option>

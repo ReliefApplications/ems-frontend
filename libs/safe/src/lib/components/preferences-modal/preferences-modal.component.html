@@ -23,7 +23,6 @@
                 <ui-select-option
                   *ngFor="let lang of languages"
                   [value]="lang.value"
-                  [label]="lang.name || ''"
                 >
                   {{ lang.name }}
                 </ui-select-option>
@@ -38,7 +37,6 @@
                 <ui-select-option
                   *ngFor="let dateLang of dateFormats"
                   [value]="dateLang.value"
-                  [label]="dateLang.name || ''"
                 >
                   {{ dateLang.name }}
                 </ui-select-option>

@@ -133,14 +133,12 @@
             >
               <ui-select-option
                 *ngFor="let application of applications | async"
-                [label]="application.name || ''"
                 [isGroup]="true"
               >
                 {{ application.name }}
                 <ui-select-option
                   *ngFor="let channel of application.channels"
                   [value]="channel.id"
-                  [label]="channel.title || ''"
                 >
                   {{ channel.title }}
                 </ui-select-option>
@@ -186,7 +184,7 @@
                   class="flex gap-x-2 items-center"
                 >
                   <div uiFormFieldDirective [outline]="false" class="p-0 w-32">
-                    <!-- <mat-label>{{ 'common.field.one' | translate }}</mat-label> -->
+                    <label>{{ 'common.field.one' | translate }}</label>
                     <ui-select-menu formControlName="name">
                       <ui-select-option
                         *ngFor="let field of filteredFields(element.value.name)"
@@ -225,7 +223,13 @@
           </div>
         </ui-expansion-panel>
         <!-- Unique identifiers -->
-        <div uiFormFieldDirective [outline]="false" class="mt-4">
+        <div
+          *ngIf="mappingArray.controls.length > 0"
+          uiFormFieldDirective
+          [outline]="false"
+          class="mt-4"
+        >
+          <label>{{ 'components.pullJob.modal.identifier' | translate }}</label>
           <ui-select-menu
             formControlName="uniqueIdentifiers"
             [multiselect]="true"

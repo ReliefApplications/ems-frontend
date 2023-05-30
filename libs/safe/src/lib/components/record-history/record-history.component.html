@@ -61,7 +61,6 @@
         <ui-select-option
           *ngFor="let field of sortedFields"
           value="{{ field.name }}"
-          [label]="field.title || field.name"
           >{{ field.title || field.name }}</ui-select-option
         >
       </ui-select-menu>

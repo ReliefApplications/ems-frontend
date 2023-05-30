@@ -15,13 +15,11 @@
           <ui-select-menu formControlName="origin">
             <ui-select-option
               value="resource"
-              [label]="'common.resource.one' | translate"
             >
               {{ 'common.resource.one' | translate }}
             </ui-select-option>
             <ui-select-option
               value="refData"
-              [label]="'common.referenceData.one' | translate"
             >
               {{ 'common.referenceData.one' | translate }}
             </ui-select-option>
@@ -75,7 +73,6 @@
             <ui-select-option
               *ngFor="let field of availableFields"
               [value]="field"
-              [label]="field"
               uiPrefix
             >
               {{ field }}
