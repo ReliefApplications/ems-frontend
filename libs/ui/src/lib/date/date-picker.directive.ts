@@ -17,6 +17,7 @@ import { NgControl } from '@angular/forms';
 import { formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { ButtonComponent } from '../button/button.component';
+import { Subject, takeUntil } from 'rxjs';
 /**
  * UI Datepicker directive
  */
@@ -24,11 +25,12 @@ import { ButtonComponent } from '../button/button.component';
   selector: '[uiDatePicker]',
 })
 export class DatePickerDirective implements OnInit, OnDestroy {
-  @Input() uiDatePicker = 'calendar_today';
+  @Input() uiDatePicker: any = 'calendar_today';
   @Input() label = '';
 
   @Output() clickEvent = new EventEmitter<void>();
 
+  private destroy$ = new Subject<void>();
   private clickEventListener!: any;
   private inputClasses = [
     'peer',
@@ -116,13 +118,28 @@ export class DatePickerDirective implements OnInit, OnDestroy {
       this.setLabelElement();
     }
     this.setIconElement();
-    if (this.control.control?.value) {
-      this.setValue(this.control.control?.value);
-      // Trigger input change event to update date picker/ date range element
-      const event = new Event('change');
-      setTimeout(() => {
-        this.el.nativeElement.dispatchEvent(event);
-      }, 0);
+    if (this.control?.control) {
+      this.control.control.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (value) => {
+            // If the control is reset programmatically trigger event to display selected values in calendar,
+            // rest of values are set directly from input
+            if (!value || value === '') {
+              // Trigger input change event to update date picker/ date range element
+              const event = new Event('change');
+              this.el.nativeElement.dispatchEvent(event);
+            }
+          },
+        });
+      if (this.control.control?.value) {
+        this.setValue(this.control.control.value);
+        // Trigger input change event to update date picker/ date range element
+        const event = new Event('change');
+        setTimeout(() => {
+          this.el.nativeElement.dispatchEvent(event);
+        }, 0);
+      }
     }
   }
 
@@ -178,6 +195,9 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     this.iconClasses.forEach((iClass) => {
       this.renderer.addClass(icon.location.nativeElement, iClass);
     });
+    if (this.clickEventListener) {
+      this.clickEventListener();
+    }
     // Set listener to the icon to display the calendar
     this.clickEventListener = this.renderer.listen(
       icon.location.nativeElement,
@@ -203,7 +223,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     const formattedValue = formatDate(
       value,
       'yyyy-MM-dd',
-      this.translate.currentLang
+      this.translate.currentLang ?? this.translate.defaultLang
     );
     if (this.control) {
       this.control.control?.setValue(formattedValue);
@@ -213,6 +233,10 @@ export class DatePickerDirective implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.clickEventListener();
+    if (this.clickEventListener) {
+      this.clickEventListener();
+    }
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

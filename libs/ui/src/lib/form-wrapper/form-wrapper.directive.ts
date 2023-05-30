@@ -19,6 +19,7 @@ import { TextareaComponent } from '../textarea/textarea.component';
 import { GraphQLSelectComponent } from '../graphql-select/graphql-select.component';
 import { FormControlName, Validators } from '@angular/forms';
 import { ChipListDirective } from '../chip/chip-list.directive';
+import { DateWrapperDirective } from '../date/date-wrapper.directive';
 
 /**
  * UI Form Wrapper Directive
@@ -52,6 +53,8 @@ export class FormWrapperDirective
   private currentGraphQLSelectComponent!: GraphQLSelectComponent;
   @ContentChild(ChipListDirective, { read: ElementRef })
   private chipListElement!: ElementRef;
+  @ContentChild(DateWrapperDirective, { read: ElementRef })
+  private dateWrapperElement!: ElementRef;
 
   private currentInputElement!: HTMLInputElement;
   private currentLabelElement!: HTMLLabelElement;
@@ -158,9 +161,7 @@ export class FormWrapperDirective
    * @param renderer renderer
    * @param elementRef references to the element on which the directive is applied
    */
-  constructor(private renderer: Renderer2, private elementRef: ElementRef) {
-    this.renderer.addClass(this.elementRef.nativeElement, 'mb-4');
-  }
+  constructor(private renderer: Renderer2, private elementRef: ElementRef) {}
 
   ngAfterContentInit() {
     // Get inner input and label elements
@@ -177,15 +178,25 @@ export class FormWrapperDirective
     }
     if (!this.outline) {
       for (const cl of this.beyondLabelNoOutline) {
-        this.renderer.addClass(this.beyondLabelContainer, cl);
+        if (
+          !this.dateWrapperElement ||
+          (this.dateWrapperElement && !cl.includes('ring-'))
+        ) {
+          this.renderer.addClass(this.beyondLabelContainer, cl);
+        }
       }
     } else {
       for (const cl of this.beyondLabelOutline) {
-        this.renderer.addClass(this.beyondLabelContainer, cl);
+        if (
+          !this.dateWrapperElement ||
+          (this.dateWrapperElement && !cl.includes('ring-'))
+        ) {
+          this.renderer.addClass(this.beyondLabelContainer, cl);
+        }
       }
     }
 
-    if (this.currentInputElement) {
+    if (this.currentInputElement && !this.dateWrapperElement) {
       // Add related classes to input element
       if (!this.outline) {
         for (const cl of this.inputClassesNoOutline) {
@@ -226,6 +237,9 @@ export class FormWrapperDirective
       // Add related classes to label
       for (const cl of this.labelClasses) {
         this.renderer.addClass(this.currentLabelElement, cl);
+      }
+      if (this.dateWrapperElement) {
+        this.renderer.addClass(this.currentLabelElement, 'mb-3');
       }
     }
 

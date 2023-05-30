@@ -7,7 +7,6 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DatePickerComponent } from './date-picker.component';
 import { IconModule } from '../../icon/icon.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { DateModule } from '../date.module';
 
 /**
  * UI Datepicker module
@@ -22,7 +21,6 @@ import { DateModule } from '../date.module';
     LabelModule,
     IconModule,
     TranslateModule,
-    DateModule,
   ],
   exports: [DatePickerComponent],
 })

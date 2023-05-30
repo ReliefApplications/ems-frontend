@@ -1,5 +1,6 @@
 import {
   AfterContentInit,
+  ChangeDetectorRef,
   ContentChildren,
   Directive,
   ElementRef,
@@ -8,7 +9,6 @@ import {
   OnDestroy,
   QueryList,
   Renderer2,
-  TemplateRef,
 } from '@angular/core';
 import { SelectionRange } from '@progress/kendo-angular-dateinputs';
 import { Subject, merge, takeUntil } from 'rxjs';
@@ -22,9 +22,7 @@ import { DatePickerDirective } from './date-picker.directive';
   selector: '[uiDateWrapper]',
 })
 export class DateWrapperDirective implements AfterContentInit, OnDestroy {
-  @Input() uiDateWrapper!: TemplateRef<
-    DateRangeComponent | DatePickerComponent
-  >;
+  @Input() uiDateWrapper!: DateRangeComponent | DatePickerComponent;
   @ContentChildren(DatePickerDirective)
   private dateInputs!: QueryList<DatePickerDirective>;
 
@@ -38,7 +36,11 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
    * @param el Directive host element
    * @param renderer Renderer2
    */
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  constructor(
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngAfterContentInit(): void {
     this.renderer.addClass(this.el.nativeElement, 'relative');
@@ -59,6 +61,9 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
    * Set calendar event listeners
    */
   private setDateCalendarListener() {
+    if (this.outsideClickListener) {
+      this.outsideClickListener();
+    }
     this.outsideClickListener = this.renderer.listen(
       'window',
       'click',
@@ -101,6 +106,11 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
    * Set calendar event listeners
    */
   private setDateInputListeners() {
+    this.dateInputListeners.forEach((listener) => {
+      if (listener) {
+        listener();
+      }
+    });
     const listener = this.renderer.listen(
       this.dateInputs.first['el'].nativeElement,
       'change',
@@ -110,6 +120,7 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
         } else {
           (this.uiDateWrapper as any).value = event?.target.valueAsDate;
         }
+        this.cdr.detectChanges();
       }
     );
     this.dateInputListeners.push(listener);
@@ -119,6 +130,7 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
         'change',
         (event) => {
           (this.uiDateWrapper as any).range.end = event?.target.valueAsDate;
+          this.cdr.detectChanges();
         }
       );
       this.dateInputListeners.push(listener);

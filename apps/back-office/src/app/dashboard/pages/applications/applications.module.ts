@@ -13,7 +13,6 @@ import {
 } from '@oort-front/safe';
 import { MatSortModule } from '@angular/material/sort';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { FilterComponent } from './components/filter/filter.component';
@@ -31,6 +30,7 @@ import {
   TableModule,
   ChipModule,
   PaginatorModule,
+  DateModule,
 } from '@oort-front/ui';
 
 /**
@@ -50,7 +50,6 @@ import {
     MenuModule,
     IconModule,
     SafeAccessModule,
-    MatDatepickerModule,
     MatNativeDateModule,
     MatButtonModule,
     PaginatorModule,
@@ -66,6 +65,7 @@ import {
     FormWrapperModule,
     SelectMenuModule,
     TableModule,
+    DateModule,
     ChipModule,
   ],
   exports: [ApplicationsComponent],
