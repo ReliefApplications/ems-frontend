@@ -1,18 +1,18 @@
 <safe-modal size="small">
-    <h1 mat-dialog-title>{{ 'components.formMapProperties.geofields.editModal.editGeofield' | translate }}</h1>
+    <h1 mat-dialog-title>{{ 'components.formMapProperties.geofields.editDialog.editGeofield' | translate }}</h1>
     <div mat-dialog-content>
       <form [formGroup]="geoFieldForm" class="flex flex-col">
         <mat-form-field appearance="outline">
-          <mat-label>{{ 'components.formMapProperties.geofields.editModal.value' | translate }}</mat-label>
+          <mat-label>{{ 'components.formMapProperties.geofields.editDialog.value' | translate }}</mat-label>
           <input
             matInput
             type="text"
             [disabled]="true"
             [value]="data.geofield.value"
           />
-        </mat-form-field>
+        </mat-form-field> 
         <mat-form-field appearance="outline">
-          <mat-label>{{ 'components.formMapProperties.geofields.editModal.label' | translate }}</mat-label>
+          <mat-label>{{ 'components.formMapProperties.geofields.editDialog.label' | translate }}</mat-label>
           <input
             matInput
             formControlName="label"

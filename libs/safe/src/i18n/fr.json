@@ -633,7 +633,7 @@
 		},
 		"formMapProperties": {
 			"geofields": {
-				"editModal": {
+				"editDialog": {
 					"editGeofield": "@TODO",
 					"label": "@TODO",
 					"value": "@TODO"

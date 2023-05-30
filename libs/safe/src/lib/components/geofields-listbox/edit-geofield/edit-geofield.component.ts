@@ -36,7 +36,7 @@ export class EditGeofieldComponent implements OnInit {
   geoFieldForm: UntypedFormGroup = new UntypedFormGroup({});
 
   /**
-   * Add API configuration component
+   * edit GeoField component
    *
    * @param formBuilder Angular form builder
    * @param dialogRef Material dialog ref

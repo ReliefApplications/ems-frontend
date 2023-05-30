@@ -628,7 +628,7 @@
 		},
 		"formMapProperties": {
 			"geofields": {
-				"editModal": {
+				"editDialog": {
 					"editGeofield": "Edit Geo fields",
 					"label": "Label",
 					"value": "Value"
