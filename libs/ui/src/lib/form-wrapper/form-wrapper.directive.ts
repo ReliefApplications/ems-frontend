@@ -234,29 +234,79 @@ export class FormWrapperDirective
   }
 
   ngAfterContentInit() {
-    if (this.control && this.control.control.validator) {
+    // Manage form control status changes
+    if (this.control) {
       this.control.control.statusChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (status: FormControlStatus) => {
-            if (status === 'INVALID') {
-              this.renderer.addClass(this.beyondLabelContainer, 'ring-red-400');
-              if (this.currentLabelElement) {
-                this.renderer.addClass(
-                  this.currentLabelElement,
-                  'text-red-400'
+            // Disabled state
+            if (status === 'DISABLED') {
+              this.renderer.addClass(this.beyondLabelContainer, 'opacity-50');
+              if (!this.outline) {
+                this.renderer.removeClass(
+                  this.beyondLabelContainer,
+                  'focus-within:ring-2'
                 );
+                this.renderer.removeClass(
+                  this.beyondLabelContainer,
+                  'focus-within:ring-inset'
+                );
+                this.renderer.removeClass(
+                  this.beyondLabelContainer,
+                  'focus-within:ring-primary-600'
+                );
+              }
+              if (this.chipListElement && this.currentInputElement) {
+                this.currentInputElement.disabled = true;
               }
             } else {
               this.renderer.removeClass(
                 this.beyondLabelContainer,
-                'ring-red-400'
+                'opacity-50'
               );
-              if (this.currentLabelElement) {
-                this.renderer.removeClass(
-                  this.currentLabelElement,
-                  'text-red-400'
+              if (!this.outline) {
+                this.renderer.addClass(
+                  this.beyondLabelContainer,
+                  'focus-within:ring-2'
                 );
+                this.renderer.addClass(
+                  this.beyondLabelContainer,
+                  'focus-within:ring-inset'
+                );
+                this.renderer.addClass(
+                  this.beyondLabelContainer,
+                  'focus-within:ring-primary-600'
+                );
+              }
+              if (this.chipListElement && this.currentInputElement) {
+                this.currentInputElement.disabled = false;
+              }
+            }
+            // Error state
+            if (this.control.control.validator) {
+              if (status === 'INVALID') {
+                this.renderer.addClass(
+                  this.beyondLabelContainer,
+                  'ring-red-400'
+                );
+                if (this.currentLabelElement) {
+                  this.renderer.addClass(
+                    this.currentLabelElement,
+                    'text-red-400'
+                  );
+                }
+              } else {
+                this.renderer.removeClass(
+                  this.beyondLabelContainer,
+                  'ring-red-400'
+                );
+                if (this.currentLabelElement) {
+                  this.renderer.removeClass(
+                    this.currentLabelElement,
+                    'text-red-400'
+                  );
+                }
               }
             }
           },
@@ -325,6 +375,28 @@ export class FormWrapperDirective
       // Add related classes to label
       for (const cl of this.labelClasses) {
         this.renderer.addClass(this.currentLabelElement, cl);
+      }
+    }
+
+    // Check if form control inits with disabled state
+    if (this.control?.control?.disabled) {
+      this.renderer.addClass(this.beyondLabelContainer, 'opacity-50');
+      if (!this.outline) {
+        this.renderer.removeClass(
+          this.beyondLabelContainer,
+          'focus-within:ring-2'
+        );
+        this.renderer.removeClass(
+          this.beyondLabelContainer,
+          'focus-within:ring-inset'
+        );
+        this.renderer.removeClass(
+          this.beyondLabelContainer,
+          'focus-within:ring-primary-600'
+        );
+      }
+      if (this.chipListElement && this.currentInputElement) {
+        this.currentInputElement.disabled = true;
       }
     }
 
