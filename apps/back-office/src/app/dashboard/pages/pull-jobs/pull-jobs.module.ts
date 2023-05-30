@@ -10,7 +10,6 @@ import {
   SafeCronParserModule,
   SafeDateModule,
 } from '@oort-front/safe';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   DividerModule,
@@ -18,6 +17,7 @@ import {
   ButtonModule,
   TableModule,
   ChipModule,
+  PaginatorModule,
 } from '@oort-front/ui';
 
 /** Pull Jobs page module. */
@@ -30,7 +30,7 @@ import {
     MatIconModule,
     MenuModule,
     DividerModule,
-    MatPaginatorModule,
+    PaginatorModule,
     TranslateModule,
     SafeSkeletonTableModule,
     SafeIconModule,

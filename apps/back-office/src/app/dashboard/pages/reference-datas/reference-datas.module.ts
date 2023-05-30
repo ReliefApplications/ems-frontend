@@ -11,7 +11,6 @@ import {
 import { SafeDateModule, SafeSkeletonTableModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
 import { AbilityModule } from '@casl/angular';
@@ -21,6 +20,7 @@ import {
   FormWrapperModule,
   IconModule,
   TableModule,
+  PaginatorModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 
@@ -39,7 +39,7 @@ import { DialogModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatIconModule,
     MatButtonModule,
-    MatPaginatorModule,
+    PaginatorModule,
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,

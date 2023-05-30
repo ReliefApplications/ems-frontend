@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ApiConfigurationsRoutingModule } from './api-configurations-routing.module';
 import { ApiConfigurationsComponent } from './api-configurations.component';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import {
   FormsModule as AngularFormsModule,
   ReactiveFormsModule,
@@ -12,7 +11,6 @@ import { AddApiConfigurationComponent } from './components/add-api-configuration
 import { SafeSkeletonTableModule } from '@oort-front/safe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
 import {
@@ -20,9 +18,11 @@ import {
   ChipModule,
   MenuModule,
   SpinnerModule,
+  SelectMenuModule,
   TableModule,
   DialogModule,
   FormWrapperModule,
+  PaginatorModule,
 } from '@oort-front/ui';
 
 /**
@@ -38,17 +38,18 @@ import {
     ChipModule,
     MatFormFieldModule,
     FormWrapperModule,
-    MatSelectModule,
     AngularFormsModule,
     ReactiveFormsModule,
     DialogModule,
     MatIconModule,
     MatButtonModule,
-    MatPaginatorModule,
+    PaginatorModule,
     TranslateModule,
     SafeSkeletonTableModule,
     AbilityModule,
     ButtonModule,
+    SelectMenuModule,
+    FormWrapperModule,
     TableModule,
   ],
   exports: [ApiConfigurationsComponent],

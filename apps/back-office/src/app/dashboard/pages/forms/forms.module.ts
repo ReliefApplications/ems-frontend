@@ -9,12 +9,10 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import {
   FormsModule as AngularFormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
@@ -22,11 +20,13 @@ import {
   DividerModule,
   MenuModule,
   ButtonModule,
-  FormWrapperModule,
   IconModule,
   SpinnerModule,
+  SelectMenuModule,
+  FormWrapperModule,
   TableModule,
   ChipModule,
+  PaginatorModule,
 } from '@oort-front/ui';
 
 /** Forms page module */
@@ -45,9 +45,8 @@ import {
     MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,
-    MatSelectModule,
     DividerModule,
-    MatPaginatorModule,
+    PaginatorModule,
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
@@ -55,6 +54,7 @@ import {
     ButtonModule,
     FormWrapperModule,
     IconModule,
+    SelectMenuModule,
     TableModule,
     ChipModule,
   ],

@@ -16,24 +16,23 @@
     <div class="flex justify-between mt-8">
       <h2>{{ 'common.general' | translate }}</h2>
       <!-- Status -->
-      <mat-form-field appearance="outline" class="p-0">
-        <mat-label>{{ 'common.status' | translate }}</mat-label>
-        <mat-select formControlName="status">
-          <mat-select-trigger>
+      
+      <div uiFormFieldDirective [outline]="false" class="p-0">
+        <label>{{ 'common.status' | translate }}</label>
+        <ui-select-menu 
+          formControlName="status" 
+          [customTemplate]="{ template : statusTemplate, context: { $implicit: apiForm.value.status } }"
+        >
+          <ui-select-option *ngFor="let status of statusChoices" [value]="status">
             <ng-container
               *ngTemplateOutlet="
                 statusTemplate;
-                context: { $implicit: apiForm.value.status }
+                context: { $implicit: status }
               "
             ></ng-container>
-          </mat-select-trigger>
-          <mat-option *ngFor="let status of statusChoices" [value]="status">
-            <ng-container
-              *ngTemplateOutlet="statusTemplate; context: { $implicit: status }"
-            ></ng-container>
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
     </div>
     <div class="flex flex-col last:mb-0">
       <div class="flex gap-x-2 flex-wrap">
@@ -52,18 +51,19 @@
           </mat-error>
         </div>
         <!-- Authentication type -->
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>
-            {{ 'models.apiConfiguration.authType' | translate }}
-          </mat-label>
-          <mat-select formControlName="authType">
-            <mat-option
+        
+        <div uiFormFieldDirective [outline]="false" class="flex-1">
+          <label>{{ 'models.apiConfiguration.authType' | translate }}</label>
+          <ui-select-menu 
+            formControlName="authType" 
+          >
+            <ui-select-option
               *ngFor="let authTypeChoice of authTypeChoices"
               [value]="authTypeChoice"
-              >{{ authTypeChoice }}</mat-option
+              >{{ authTypeChoice }}</ui-select-option
             >
-          </mat-select>
-        </mat-form-field>
+          </ui-select-menu>
+        </div>
       </div>
     </div>
 

@@ -5,9 +5,11 @@ import { NgChartsModule } from 'ng2-charts';
 import { ColorPickerModule } from '@progress/kendo-angular-inputs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { CategoriesSettingsModule } from './categories-settings/categories-settings.module';
-import { ToggleModule } from '@oort-front/ui';
+import {
+  SelectMenuModule,
+  ToggleModule,
+} from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -22,10 +24,10 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     ColorPickerModule,
     MatFormFieldModule,
-    MatSelectModule,
     CategoriesSettingsModule,
     ToggleModule,
     TranslateModule,
+    SelectMenuModule,
   ],
   exports: [SafeSeriesSettingsComponent],
 })

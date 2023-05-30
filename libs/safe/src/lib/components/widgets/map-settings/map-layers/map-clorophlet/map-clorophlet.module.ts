@@ -4,7 +4,6 @@ import { MapClorophletComponent } from './map-clorophlet.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MapClorophletDivisionModule } from '../map-clorophlet-division/map-clorophlet-division.module';
 import {
   ButtonModule,
@@ -12,6 +11,7 @@ import {
   TableModule,
   SliderModule,
   FormWrapperModule,
+  SelectMenuModule,
 } from '@oort-front/ui';
 
 /**
@@ -28,10 +28,10 @@ import {
     MatFormFieldModule,
     FormWrapperModule,
     SliderModule,
-    MatSelectModule,
     MapClorophletDivisionModule,
     ButtonModule,
     TableModule,
+    SelectMenuModule,
   ],
   exports: [MapClorophletComponent],
 })

@@ -9,34 +9,33 @@
           <ng-container ngProjectAs="title">
             {{ 'components.widget.settings.chart.legend' | translate }}
           </ng-container>
-          <div>
-            <mat-form-field appearance="outline">
-              <mat-label>{{
-                'components.widget.settings.chart.position' | translate
-              }}</mat-label>
-              <mat-select formControlName="position">
-                <mat-select-trigger>
-                  {{ chartForm.value.legend.position }}
-                </mat-select-trigger>
-                <mat-option value="none">{{
-                  'components.widget.settings.chart.hideLegend' | translate
-                }}</mat-option>
-                <mat-option
-                  *ngFor="let position of legendPositions"
-                  value="{{ position.value }}"
-                >
-                  <div class="flex">
-                    <span class="flex w-full items-center justify-between"
-                      >{{ position.value }}
-                      <safe-icon
-                        [inline]="true"
-                        icon="{{ position.icon }}"
-                      ></safe-icon>
-                    </span>
-                  </div>
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+          <div uiFormFieldDirective>
+            <label>{{
+              'components.widget.settings.chart.position' | translate
+            }}</label>
+            <ng-template #positionLabel>
+              {{ chartForm.value.legend.position }}
+            </ng-template>
+            <ui-select-menu
+              [customTemplate]="{ template: positionLabel, context: null }"
+              formControlName="position"
+            >
+              <ui-select-option value="none">{{
+                'components.widget.settings.chart.hideLegend' | translate
+              }}</ui-select-option>
+              <ui-select-option
+                *ngFor="let position of legendPositions"
+                value="{{ position.value }}"
+              >
+                {{ position.value }}
+                <ng-container ngProjectAs="icon">
+                  <safe-icon
+                    [inline]="true"
+                    icon="{{ position.icon }}"
+                  ></safe-icon>
+                </ng-container>
+              </ui-select-option>
+            </ui-select-menu>
           </div>
         </ui-expansion-panel>
         <!-- === TITLE === -->
@@ -46,7 +45,7 @@
           </ng-container>
           <div class="flex flex-col gap-2">
             <!-- Text -->
-            <div uiFormFieldDirective  class="flex-1">
+            <div uiFormFieldDirective class="flex-1">
               <label>{{
                 'components.widget.settings.chart.text' | translate
               }}</label>
@@ -54,41 +53,42 @@
             </div>
             <div class="flex gap-2 items-center">
               <!-- Font size -->
-              <mat-form-field appearance="outline" class="flex-1">
-                <mat-label>{{
+              <div uiFormFieldDirective>
+                <label>{{
                   'components.widget.settings.chart.size' | translate
-                }}</mat-label>
-                <mat-select formControlName="size">
-                  <mat-option *ngFor="let size of sizes" [value]="size">
+                }}</label>
+                <ui-select-menu formControlName="size">
+                  <ui-select-option *ngFor="let size of sizes" [value]="size">
                     {{ size }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
+                  </ui-select-option>
+                </ui-select-menu>
+              </div>
               <!-- Position -->
-              <mat-form-field appearance="outline" class="flex-1">
-                <mat-label>{{
+              <div uiFormFieldDirective>
+                <label>{{
                   'components.widget.settings.chart.position' | translate
-                }}</mat-label>
-                <mat-select formControlName="position">
-                  <mat-select-trigger>
-                    {{ chartForm.value.title.position }}
-                  </mat-select-trigger>
-                  <mat-option
+                }}</label>
+                <ng-template #positionLabel>
+                  {{ chartForm.value.legend.position }}
+                </ng-template>
+                <ui-select-menu
+                  [customTemplate]="{ template: positionLabel, context: null }"
+                  formControlName="position"
+                >
+                  <ui-select-option
                     *ngFor="let position of titlePositions"
                     value="{{ position.value }}"
                   >
-                    <div class="flex">
-                      <span class="flex w-full items-center justify-between"
-                        >{{ position.value }}
-                        <safe-icon
-                          [inline]="true"
-                          icon="{{ position.icon }}"
-                        ></safe-icon>
-                      </span>
-                    </div>
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
+                    {{ position.value }}
+                    <ng-container ngProjectAs="icon">
+                      <safe-icon
+                        [inline]="true"
+                        icon="{{ position.icon }}"
+                      ></safe-icon>
+                    </ng-container>
+                  </ui-select-option>
+                </ui-select-menu>
+              </div>
             </div>
             <div class="flex gap-2 items-center">
               <!-- Format -->
@@ -143,8 +143,7 @@
           </div>
         </ui-expansion-panel>
         <!-- === PALETTE -->
-        <ui-expansion-panel 
-          formGroupName="palette" [index]="2">
+        <ui-expansion-panel formGroupName="palette" [index]="2">
           <ng-container ngProjectAs="title">
             {{ 'components.widget.settings.chart.palette.title' | translate }}
           </ng-container>
@@ -191,32 +190,32 @@
                 'components.widget.settings.chart.labels.showValue' | translate
               }}</ng-container>
             </ui-toggle>
-            <mat-form-field
-              appearance="outline"
+            <div
               *ngIf="
                 chartForm.value.labels.showValue &&
                 (['donut', 'pie'].includes(type.name) ||
                   (['bar', 'column'].includes(type.name) &&
                     chartForm.value.mapping.series))
               "
+              uiFormFieldDirective
             >
-              <mat-label>{{
+              <label>{{
                 'components.widget.settings.chart.labels.valueType' | translate
-              }}</mat-label>
-              <mat-select formControlName="valueType">
-                <mat-option value="value">{{
+              }}</label>
+              <ui-select-menu formControlName="valueType">
+                <ui-select-option value="value">{{
                   'common.value.one' | translate
-                }}</mat-option>
-                <mat-option value="percentage">{{
+                }}</ui-select-option>
+                <ui-select-option value="percentage">{{
                   'components.widget.settings.chart.labels.percentage'
                     | translate
-                }}</mat-option>
-              </mat-select>
-            </mat-form-field>
+                }}</ui-select-option>
+              </ui-select-menu>
+            </div>
           </div>
         </ui-expansion-panel>
         <!-- === AXES PARAMETERS === -->
-        <ui-expansion-panel 
+        <ui-expansion-panel
           formGroupName="axes"
           *ngIf="['bar', 'column'].includes(type.name)"
           [index]="4"
@@ -231,7 +230,7 @@
             </h3>
             <div class="axis-container">
               <ui-toggle formControlName="enableMin"></ui-toggle>
-              <div uiFormFieldDirective >
+              <div uiFormFieldDirective>
                 <label>{{
                   'components.aggregationBuilder.operators.min' | translate
                 }}</label>
@@ -244,7 +243,7 @@
             </div>
             <div class="axis-container">
               <ui-toggle formControlName="enableMax"></ui-toggle>
-              <div uiFormFieldDirective  floatLabel="always">
+              <div uiFormFieldDirective floatLabel="always">
                 <label>{{
                   'components.aggregationBuilder.operators.max' | translate
                 }}</label>
@@ -266,7 +265,7 @@
             </h3>
             <div class="axis-container">
               <ui-toggle formControlName="enableMin"></ui-toggle>
-              <div uiFormFieldDirective  floatLabel="always">
+              <div uiFormFieldDirective floatLabel="always">
                 <label>{{
                   'components.aggregationBuilder.operators.min' | translate
                 }}</label>
@@ -279,7 +278,7 @@
             </div>
             <div class="axis-container">
               <ui-toggle formControlName="enableMax"></ui-toggle>
-              <div uiFormFieldDirective  floatLabel="always">
+              <div uiFormFieldDirective floatLabel="always">
                 <label>{{
                   'components.aggregationBuilder.operators.max' | translate
                 }}</label>
@@ -293,7 +292,7 @@
           </ng-container>
         </ui-expansion-panel>
         <!-- === DISPLAY GRIDS === -->
-        <ui-expansion-panel 
+        <ui-expansion-panel
           formGroupName="grid"
           *ngIf="['bar', 'column', 'line'].includes(type.name)"
           [index]="5"

@@ -29,7 +29,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
-import { TableSort } from '@oort-front/ui';
+import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
@@ -140,7 +140,7 @@ export class ApplicationsComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
@@ -148,7 +148,7 @@ export class ApplicationsComponent
         e.pageIndex * this.pageInfo.pageSize >=
           this.cachedApplications.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedApplications.length
+      e.totalItems > this.cachedApplications.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -449,14 +449,12 @@ export class ApplicationsComponent
     data: GetApplicationsQueryResponse,
     loading: boolean
   ): void {
+    const mappedValues = data.applications.edges.map((x) => x.node);
     this.cachedApplications = updateQueryUniqueValues(
       this.cachedApplications,
-      data.applications.edges.map((x) => x.node)
+      mappedValues
     );
-    this.applications.data = this.cachedApplications.slice(
-      this.pageInfo.pageSize * this.pageInfo.pageIndex,
-      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-    );
+    this.applications.data = mappedValues;
     this.pageInfo.length = data.applications.totalCount;
     this.pageInfo.endCursor = data.applications.pageInfo.endCursor;
     this.loading = loading;

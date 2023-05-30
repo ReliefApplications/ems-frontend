@@ -7,7 +7,6 @@ import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/m
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePaletteControlModule } from '../../../palette-control/palette-control.module';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
@@ -25,6 +24,7 @@ import {
   ExpansionPanelModule,
   TabsModule,
   FormWrapperModule,
+  SelectMenuModule,
 } from '@oort-front/ui';
 
 /**
@@ -38,7 +38,6 @@ import {
     ReactiveFormsModule,
     MatFormFieldModule,
     FormWrapperModule,
-    MatSelectModule,
     MatButtonModule,
     MatIconModule,
     TextFieldModule,
@@ -58,6 +57,7 @@ import {
     TooltipModule,
     DividerModule,
     ButtonModule,
+    SelectMenuModule,
   ],
   exports: [TabDisplayComponent],
 })

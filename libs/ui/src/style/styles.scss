@@ -158,15 +158,14 @@ body {
   height: 40px;
   position: relative;
   z-index: 1001;
-  @apply bg-white;
   color: black;
   text-align: left;
   line-height: 40px;
   padding: 0 40px !important;
-  border-bottom: 1px solid #d8d8d8 !important;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  @apply bg-white border-b border-b-gray-300 #{!important};
 
   .widget-title {
     overflow: hidden;

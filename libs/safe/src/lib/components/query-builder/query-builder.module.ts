@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeQueryBuilderComponent } from './query-builder.component';
-import { AlertModule, TabsModule } from '@oort-front/ui';
+import {
+  AlertModule,
+  SelectMenuModule,
+  TabsModule,
+} from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeTabFieldsComponent } from './tab-fields/tab-fields.component';
 import { SafeTabSortComponent } from './tab-sort/tab-sort.component';
@@ -13,7 +17,6 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -69,7 +72,6 @@ import {
     DragDropModule,
     MatButtonModule,
     MatIconModule,
-    MatSelectModule,
     TooltipModule,
     MatAutocompleteModule,
     MatButtonToggleModule,
@@ -88,6 +90,7 @@ import {
     TableModule,
     AlertModule,
     FormWrapperModule,
+    SelectMenuModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

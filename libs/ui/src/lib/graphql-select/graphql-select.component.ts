@@ -10,6 +10,7 @@ import {
   OnInit,
   Optional,
   Output,
+  Renderer2,
   Self,
   SimpleChanges,
   ViewChild,
@@ -18,17 +19,10 @@ import { QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import {
   MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
-  MatLegacySelect as MatSelect,
   MatLegacySelectChange as MatSelectChange,
 } from '@angular/material/legacy-select';
 import { Overlay } from '@angular/cdk/overlay';
-import { scrollFactory } from '../../utils/scroll-factory';
 import { get } from 'lodash';
-import {
-  MatLegacyFormField as MatFormField,
-  MatLegacyFormFieldControl as MatFormFieldControl,
-  MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
-} from '@angular/material/legacy-form-field';
 import {
   NgControl,
   ControlValueAccessor,
@@ -36,16 +30,18 @@ import {
 } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { updateQueryUniqueValues } from '../../utils/update-queries';
+import { SelectMenuComponent } from '../select-menu/select-menu.component';
+import { updateQueryUniqueValues } from './utils/update-queries';
+import { scrollFactory } from './utils/scroll-factory';
+import { DOCUMENT } from '@angular/common';
 
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
 
 /** Component for a dropdown with pagination */
 @Component({
-  selector: 'safe-graphql-select',
+  selector: 'ui-graphql-select',
   templateUrl: './graphql-select.component.html',
   styleUrls: ['./graphql-select.component.scss'],
   providers: [
@@ -54,31 +50,22 @@ const ITEMS_PER_RELOAD = 10;
       useFactory: scrollFactory,
       deps: [Overlay],
     },
-    {
-      provide: MatFormFieldControl,
-      useExisting: SafeGraphQLSelectComponent,
-    },
   ],
 })
-export class SafeGraphQLSelectComponent
-  extends SafeUnsubscribeComponent
-  implements
-    OnInit,
-    OnChanges,
-    OnDestroy,
-    ControlValueAccessor,
-    MatFormFieldControl<string | string[]>
+export class GraphQLSelectComponent
+  implements OnInit, OnChanges, OnDestroy, ControlValueAccessor
 {
   static nextId = 0;
 
   @Input() valueField = '';
   @Input() textField = '';
-  @Output() selectionChange = new EventEmitter<string | string[] | null>();
-
+  @Input() path = '';
+  @Input() selectedElements: any[] = [];
   @Input() filterable = false;
-  @Output() searchChange = new EventEmitter<string>();
-  public searchControl = new UntypedFormControl('');
-
+  // eslint-disable-next-line @angular-eslint/no-input-rename
+  @Input('aria-describedby') userAriaDescribedBy!: string;
+  /** Query reference for getting the available contents */
+  @Input() query!: QueryRef<any>;
   /**
    * Gets the value
    *
@@ -87,18 +74,12 @@ export class SafeGraphQLSelectComponent
   @Input() get value(): string | string[] | null {
     return this.ngControl.value;
   }
-
   /** Sets the value */
   set value(val: string | string[] | null) {
     this.onChange(val);
     this.stateChanges.next();
     this.selectionChange.emit(val);
   }
-
-  public stateChanges = new Subject<void>();
-  @HostBinding()
-  id = `safe-graphql-select-${SafeGraphQLSelectComponent.nextId++}`;
-
   /**
    * Gets the placeholder for the select
    *
@@ -107,7 +88,6 @@ export class SafeGraphQLSelectComponent
   @Input() get placeholder() {
     return this.ePlaceholder;
   }
-
   /**
    * Sets the placeholder
    */
@@ -115,19 +95,67 @@ export class SafeGraphQLSelectComponent
     this.ePlaceholder = plh;
     this.stateChanges.next();
   }
-  private ePlaceholder = '';
+  /**
+   * Indicates whether the field is required
+   *
+   * @returns whether the field is required
+   */
+  @Input()
+  get required() {
+    return this.isRequired;
+  }
+  /**
+   * Sets whether the field is required
+   */
+  set required(req) {
+    this.isRequired = coerceBooleanProperty(req);
+    this.stateChanges.next();
+  }
+  /**
+   * Indicates whether the field is disabled
+   *
+   * @returns whether the field is disabled
+   */
+  @Input()
+  get disabled(): boolean {
+    return this.ngControl.disabled || false;
+  }
+  /** Sets whether the field is disabled */
+  set disabled(value: boolean) {
+    const isDisabled = coerceBooleanProperty(value);
+    if (isDisabled) this.ngControl.control?.disable();
+    else this.ngControl.control?.enable();
+    this.stateChanges.next();
+  }
+
+  @Output() selectionChange = new EventEmitter<string | string[] | null>();
+  @Output() searchChange = new EventEmitter<string>();
+
+  public stateChanges = new Subject<void>();
+  public searchControl = new UntypedFormControl('');
+  public controlType = 'ui-graphql-select';
+  public elements = new BehaviorSubject<any[]>([]);
+  public elements$!: Observable<any[]>;
+  public loading = true;
   public focused = false;
   public touched = false;
 
-  /**
-   * Gets the empty status
-   *
-   * @returns if an option is selected
-   */
-  get empty() {
-    // return !this.selected.value;
-    return !this.ngControl.control?.value;
-  }
+  private destroy$ = new Subject<void>();
+  private queryName!: string;
+  private queryChange$ = new Subject<void>();
+  private queryElements: any[] = [];
+  private cachedElements: any[] = [];
+  private pageInfo = {
+    endCursor: '',
+    hasNextPage: true,
+  };
+  private ePlaceholder = '';
+  private isRequired = false;
+  private scrollListener!: any;
+  private document!: Document;
+
+  @ViewChild(SelectMenuComponent)
+  elementSelect!: SelectMenuComponent;
 
   /**
    * Indicates whether the label should be in the floating position
@@ -139,41 +167,17 @@ export class SafeGraphQLSelectComponent
     return this.focused || !this.empty;
   }
 
+  @HostBinding()
+  id = `ui-graphql-select-${GraphQLSelectComponent.nextId++}`;
+
   /**
-   * Indicates whether the field is required
+   * Gets the empty status
    *
-   * @returns whether the field is required
+   * @returns if an option is selected
    */
-  @Input()
-  get required() {
-    return this.isRequired;
-  }
-
-  /**
-   * Sets whether the field is required
-   */
-  set required(req) {
-    this.isRequired = coerceBooleanProperty(req);
-    this.stateChanges.next();
-  }
-  private isRequired = false;
-
-  /**
-   * Indicates whether the field is disabled
-   *
-   * @returns whether the field is disabled
-   */
-  @Input()
-  get disabled(): boolean {
-    return this.ngControl.disabled || false;
-  }
-
-  /** Sets whether the field is disabled */
-  set disabled(value: boolean) {
-    const isDisabled = coerceBooleanProperty(value);
-    if (isDisabled) this.ngControl.control?.disable();
-    else this.ngControl.control?.enable();
-    this.stateChanges.next();
+  get empty() {
+    // return !this.selected.value;
+    return !this.ngControl.control?.value;
   }
 
   /**
@@ -187,46 +191,22 @@ export class SafeGraphQLSelectComponent
     // return this.selected.invalid && this.touched;
   }
 
-  public controlType = 'safe-graphql-select';
-
-  // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input('aria-describedby') userAriaDescribedBy!: string;
-
-  // public selected: FormControl;
-
-  /** Query reference for getting the available contents */
-  @Input() query!: QueryRef<any>;
-
-  private queryName!: string;
-  private queryChange$ = new Subject<void>();
-  @Input() path = '';
-  @Input() selectedElements: any[] = [];
-  public elements = new BehaviorSubject<any[]>([]);
-  public elements$!: Observable<any[]>;
-  private queryElements: any[] = [];
-  private cachedElements: any[] = [];
-  private pageInfo = {
-    endCursor: '',
-    hasNextPage: true,
-  };
-  public loading = true;
-
-  @ViewChild(MatSelect) elementSelect?: MatSelect;
-
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created
    *
+   * @param ngControl form control shared service,
    * @param elementRef shared element ref service
-   * @param formField MatFormField
-   * @param ngControl form control shared service
+   * @param renderer Renderer2
+   * @param document document
    */
   constructor(
-    private elementRef: ElementRef<HTMLElement>,
-    @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
-    @Optional() @Self() public ngControl: NgControl
+    @Optional() @Self() public ngControl: NgControl,
+    public elementRef: ElementRef<HTMLElement>,
+    private renderer: Renderer2,
+    @Inject(DOCUMENT) document: Document
   ) {
-    super();
+    this.document = document;
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
@@ -239,10 +219,14 @@ export class SafeGraphQLSelectComponent
    */
   setDescribedByIds(ids: string[]) {
     const controlElement = this.elementRef.nativeElement.querySelector(
-      '.safe-graphql-select-container'
+      '.ui-graphql-select-container'
     );
     if (!controlElement) return;
-    controlElement.setAttribute('aria-describedby', ids.join(' '));
+    this.renderer.setAttribute(
+      controlElement,
+      'aria-describedby',
+      ids.join(' ')
+    );
   }
 
   /**
@@ -323,7 +307,7 @@ export class SafeGraphQLSelectComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.query && changes.query.previousValue) {
+    if (changes['query'] && changes['query'].previousValue) {
       // Unsubscribe from the old query
       this.queryChange$.next();
 
@@ -372,7 +356,12 @@ export class SafeGraphQLSelectComponent
     }
   }
 
-  override ngOnDestroy(): void {
+  ngOnDestroy(): void {
+    if (this.scrollListener) {
+      this.scrollListener();
+    }
+    this.destroy$.next();
+    this.destroy$.complete();
     this.stateChanges.complete();
   }
 
@@ -406,15 +395,19 @@ export class SafeGraphQLSelectComponent
   /**
    * Adds scroll listener to select.
    *
-   * @param e open select event.
    */
-  onOpenSelect(e: any): void {
-    if (e && this.elementSelect) {
-      const panel = this.elementSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScroll(event)
-      );
+  onOpenSelect(): void {
+    const panel = document.getElementById('optionList');
+    if (this.scrollListener) {
+      this.scrollListener();
     }
+    this.scrollListener = this.renderer.listen(
+      panel,
+      'scroll',
+      (event: any) => {
+        this.loadOnScroll(event);
+      }
+    );
   }
 
   /**

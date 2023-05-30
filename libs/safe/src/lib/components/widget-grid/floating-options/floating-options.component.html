@@ -2,6 +2,7 @@
   [isIcon]="true"
   icon="more_vert"
   [uiMenuTriggerFor]="menu"
+  variant="grey"
 >
 </ui-button>
 <ui-menu #menu>
@@ -9,7 +10,7 @@
     <ui-divider *ngIf="item.name === 'Delete'" class="m-0"></ui-divider>
 
     <button uiMenuItem (click)="onClick(item)" [disabled]="item.disabled">
-      <mat-icon>{{ item.icon }}</mat-icon>
+      <ui-icon [icon]="item.icon"></ui-icon>
       <span>{{ item.text }}</span>
     </button>
   </ng-container>
