@@ -1,6 +1,10 @@
 import { get, isArray, isNil } from 'lodash';
 import calcFunctions from './calcFunctions';
 
+export type ParserOptions = {
+  displayImages?: boolean;
+};
+
 /** Prefix for data keys */
 const DATA_PREFIX = '{{data.';
 /** Prefix for calc keys */
@@ -52,20 +56,23 @@ const ICON_EXTENSIONS: any = {
  * @param fieldsValue Field value.
  * @param fields Available fields.
  * @param styles Array of layout styles.
+ * @param options Options for the parser.
  * @returns The parsed html.
  */
 export const parseHtml = (
   html: string,
   fieldsValue: any,
   fields: any,
-  styles?: any[]
+  styles: any[],
+  options: ParserOptions
 ) => {
   if (fieldsValue) {
     const htmlWithRecord = replaceRecordFields(
       html,
       fieldsValue,
       fields,
-      styles
+      styles,
+      options
     );
     return applyOperations(htmlWithRecord);
   } else {
@@ -109,13 +116,15 @@ export const getCardStyle = (
  * @param fieldsValue Content of the fields.
  * @param fields Available fields.
  * @param styles Array of layout styles.
+ * @param options Options for the parser.
  * @returns formatted html.
  */
 const replaceRecordFields = (
   html: string,
   fieldsValue: any,
   fields: any,
-  styles: any[] = []
+  styles: any[],
+  options: ParserOptions
 ): string => {
   let formattedHtml = html;
   if (fields) {
@@ -190,9 +199,13 @@ const replaceRecordFields = (
           case 'file':
             convertedValue = '';
             if (isArray(value)) {
-              for (let i = 0; value[i]; ) {
+              for (let i = 0; value[i]; i++) {
                 const file = value[i];
                 const fileExt = file.name.split('.').pop();
+                const isImage =
+                  fileExt && ICON_EXTENSIONS[fileExt]
+                    ? ICON_EXTENSIONS[fileExt].includes('image')
+                    : false;
                 const fileIcon =
                   fileExt && ICON_EXTENSIONS[fileExt]
                     ? ICON_EXTENSIONS[fileExt]
@@ -203,7 +216,13 @@ const replaceRecordFields = (
                     : file.name,
                   field
                 );
-                convertedValue += `<button type="file"
+                if (isImage && options.displayImages) {
+                  // Create a div and use image as background
+                  convertedValue += `<div style="background-image: url(${
+                    file?.content || file
+                  }); background-size: cover; background-position: center; width: 100%; height: 200px;"></div>`;
+                } else {
+                  convertedValue += `<button type="file"
                   field="${field.name}"
                   index="${i++}"
                   style="border: none; padding: 4px 6px; cursor: pointer; ${style}" title=
@@ -212,6 +231,7 @@ const replaceRecordFields = (
                   <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
                   ${fileName}
                   </button>`; // add elements to be able to identify file when clicking on button
+                }
               }
             }
 

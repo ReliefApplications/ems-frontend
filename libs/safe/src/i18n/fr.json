@@ -1367,6 +1367,7 @@
 						"display": {
 							"dataSource": "Afficher le lien vers la source de données",
 							"header": "Titre",
+							"image": "Afficher les fichiers image sous forme d'images",
 							"title": "Affichage",
 							"tooltip": {
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"

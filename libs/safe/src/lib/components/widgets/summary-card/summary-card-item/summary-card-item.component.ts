@@ -19,6 +19,7 @@ import { clone, get } from 'lodash';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { firstValueFrom } from 'rxjs';
 import { CardT } from '../summary-card.component';
+import { ParserOptions } from '../parser/utils';
 
 /**
  * Single Item component of Summary card widget.
@@ -38,6 +39,13 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   private layout: any;
 
   @Input() headerTemplate?: TemplateRef<any>;
+
+  /** @returns the parser options for the card */
+  get parserOptions(): ParserOptions {
+    return {
+      displayImages: this.card.displayImages ?? true,
+    };
+  }
 
   /**
    * Single item component of summary card widget.

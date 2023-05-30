@@ -1360,6 +1360,7 @@
 						"display": {
 							"dataSource": "Show link to data source",
 							"header": "Header",
+							"image": "Display image files as images",
 							"title": "Display",
 							"tooltip": {
 								"datasource": "Add a button in widget's header to view card's data source"

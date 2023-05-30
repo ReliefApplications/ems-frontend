@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SafeDownloadService } from '../../../../services/download/download.service';
-import { getCardStyle, parseHtml } from '../parser/utils';
+import { ParserOptions, getCardStyle, parseHtml } from '../parser/utils';
 import get from 'lodash/get';
 
 /**
@@ -26,6 +26,8 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   @Input() fieldsValue: any;
   @Input() styles: any[] = [];
   @Input() wholeCardStyles = false;
+
+  @Input() parserOptions!: ParserOptions;
 
   public formattedHtml?: SafeHtml;
   public cardStyle?: string;
@@ -48,7 +50,13 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
       this.fieldsValue
     );
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(this.html, this.fieldsValue, this.fields, this.styles)
+      parseHtml(
+        this.html,
+        this.fieldsValue,
+        this.fields,
+        this.styles,
+        this.parserOptions
+      )
     );
   }
 
@@ -62,7 +70,13 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
       this.fieldsValue
     );
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(this.html, this.fieldsValue, this.fields, this.styles)
+      parseHtml(
+        this.html,
+        this.fieldsValue,
+        this.fields,
+        this.styles,
+        this.parserOptions
+      )
     );
   }
 

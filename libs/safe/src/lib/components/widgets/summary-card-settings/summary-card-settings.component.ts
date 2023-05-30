@@ -56,6 +56,7 @@ const createCardForm = (value?: any) => {
     wholeCardStyles: new FormControl<boolean>(
       get(value, 'wholeCardStyles', false)
     ),
+    displayImages: new FormControl<boolean>(get(value, 'displayImages', true)),
   });
 };
 

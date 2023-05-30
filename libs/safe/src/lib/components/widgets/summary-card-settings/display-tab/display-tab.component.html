@@ -19,22 +19,30 @@
         </mat-form-field>
       </div>
       <mat-divider class="space-divider"></mat-divider>
-      <mat-slide-toggle formControlName="showDataSourceLink">
-        {{
-          'components.widget.settings.summaryCard.card.display.dataSource'
-            | translate
-        }}
-        <safe-icon
-          icon="info_outline"
-          variant="grey"
-          [inline]="true"
-          [size]="18"
-          [matTooltip]="
-            'components.widget.settings.summaryCard.card.display.tooltip.datasource'
+      <div class="flex flex-col gap-1">
+        <mat-slide-toggle formControlName="showDataSourceLink">
+          {{
+            'components.widget.settings.summaryCard.card.display.dataSource'
               | translate
-          "
-        ></safe-icon>
-      </mat-slide-toggle>
+          }}
+          <safe-icon
+            icon="info_outline"
+            variant="grey"
+            [inline]="true"
+            [size]="18"
+            [matTooltip]="
+              'components.widget.settings.summaryCard.card.display.tooltip.datasource'
+                | translate
+            "
+          ></safe-icon>
+        </mat-slide-toggle>
+        <mat-slide-toggle formControlName="displayImages">
+          {{
+            'components.widget.settings.summaryCard.card.display.image'
+              | translate
+          }}
+        </mat-slide-toggle>
+      </div>
     </div>
   </ng-container>
 </form>
