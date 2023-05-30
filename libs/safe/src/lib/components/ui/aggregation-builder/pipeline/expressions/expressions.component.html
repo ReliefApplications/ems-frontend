@@ -4,9 +4,6 @@
     <ui-select-menu formControlName="operator">
       <ui-select-option
         *ngFor="let operator of operatorsList"
-        [label]="
-          'components.aggregationBuilder.operators.' + operator | translate
-        "
         [value]="operator"
         >{{
           'components.aggregationBuilder.operators.' + operator | translate

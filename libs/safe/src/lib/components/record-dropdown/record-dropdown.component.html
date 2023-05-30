@@ -7,7 +7,7 @@
     (openedChange)="onOpenSelect($event)"
     (selectionChange)="onSelect($event)"
   >
-    <ui-select-option *ngIf="selectedRecord" [value]="selectedRecord.id">{{
+    <ui-select-option *ngIf="selectedRecord">{{
       field ? selectedRecord.data[field] : selectedRecord.id
     }}</ui-select-option>
     <ui-select-option

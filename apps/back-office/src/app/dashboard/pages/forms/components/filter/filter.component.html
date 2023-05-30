@@ -59,6 +59,7 @@
     </mat-form-field>
     <!-- Status filter -->
     <div uiFormFieldDirective [outline]="false" class="p-0 w-44">
+      <label>{{ 'common.status' | translate }}</label>
       <ui-select-menu formControlName="status">
         <ui-select-option value="active">
           {{ 'common.status_active' | translate }}
@@ -72,8 +73,9 @@
       </ui-select-menu>
     </div>
     <!-- Core filter -->
-    
+
     <div uiFormFieldDirective [outline]="false" class="p-0 w-32">
+      <label>{{ 'components.forms.isCore' | translate }}</label>
       <ui-select-menu formControlName="core">
         <ui-select-option>-</ui-select-option>
         <ui-select-option [value]="true">

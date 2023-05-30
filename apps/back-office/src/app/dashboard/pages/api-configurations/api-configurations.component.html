@@ -35,7 +35,11 @@
     >
       <!-- Status filter -->
       <div uiFormFieldDirective [outline]="false" class="mt-4 w-32">
-        <ui-select-menu [ngModel]="statusFilter" (selectedOption)="applyFilter('status', $event)" >
+        <label>{{ 'common.status' | translate }}</label>
+        <ui-select-menu
+          [ngModel]="statusFilter"
+          (selectedOption)="applyFilter('status', $event)"
+        >
           <ui-select-option>-</ui-select-option>
           <ui-select-option value="active">
             {{ 'common.status_active' | translate }}

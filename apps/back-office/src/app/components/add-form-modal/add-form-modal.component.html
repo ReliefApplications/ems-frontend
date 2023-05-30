@@ -85,6 +85,9 @@
             </ui-toggle>
             <ng-container *ngIf="form.controls.inheritsTemplate.value">
               <div uiFormFieldDirective [outline]="false">
+                <label>{{
+                  'components.form.create.template.from' | translate
+                }}</label>
                 <ui-select-menu formControlName="template">
                   <ui-select-option
                     *ngFor="let template of templates"

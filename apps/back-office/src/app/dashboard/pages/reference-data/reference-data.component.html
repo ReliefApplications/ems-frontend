@@ -25,8 +25,8 @@
         />
       </div>
       <!-- Type selection -->
-      <div uiFormFieldDirective [outline]="false" class="w-44">
-        <label>{{ 'common.type.one' | translate }}</label>
+      <div uiFormFieldDirective class="w-44">
+        <label>{{ 'common.type.one' | translate }}</label>
         <ui-select-menu formControlName="type">
           <ui-select-option
             *ngFor="let referenceTypeChoice of referenceTypeChoices"
@@ -147,7 +147,7 @@
         class="flex-1"
         *ngIf="!csvLoading && type && valueFields.length > 0"
       >
-        <!-- <mat-label>{{ 'pages.referenceData.valueField' | translate }}</mat-label> -->
+        <label>{{ 'pages.referenceData.valueField' | translate }}</label>
         <ui-select-menu formControlName="valueField">
           <ui-select-option
             *ngFor="let value of valueFields"

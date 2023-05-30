@@ -14,7 +14,6 @@
   <ui-select-option
     *ngFor="let element of elements$ | async"
     [value]="element[valueField]"
-    [label]="getDisplayValue(element)"
   >
     {{ getDisplayValue(element) }}
   </ui-select-option>

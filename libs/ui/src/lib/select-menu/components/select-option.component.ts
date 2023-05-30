@@ -6,6 +6,8 @@ import {
   ContentChildren,
   forwardRef,
   QueryList,
+  AfterViewInit,
+  ElementRef,
 } from '@angular/core';
 
 /**
@@ -16,16 +18,31 @@ import {
   templateUrl: './select-option.component.html',
   styleUrls: ['./select-option.component.scss'],
 })
-export class SelectOptionComponent {
+export class SelectOptionComponent implements AfterViewInit {
   @Input() value!: any;
   @Input() selected = false;
-  @Input() label = '';
   @Input() isGroup = false;
   @Input() disabled = false;
   @Output() optionClick = new EventEmitter<any>();
 
   @ContentChildren(forwardRef(() => SelectOptionComponent))
   options!: QueryList<SelectOptionComponent>;
+
+  label!: string;
+
+  /**
+   *
+   * UI Select option constructor
+   *
+   * @param el ElementRef
+   */
+  constructor(private el: ElementRef) {}
+
+  ngAfterViewInit(): void {
+    // Set the text content of each option
+    this.label =
+      this.el.nativeElement.querySelector('span').firstChild.textContent;
+  }
 
   /**
    * Emit optionClick output and updates option selected status
