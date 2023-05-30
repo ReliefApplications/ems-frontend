@@ -9,7 +9,7 @@ import { EmbeddedViewRef } from '@angular/core';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Question, QuestionText } from '../types';
 import { ButtonComponent } from '@oort-front/ui';
-import { IconComponent } from 'libs/ui/src/lib/icon/icon.component';
+import { IconComponent } from '@oort-front/ui';
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 
