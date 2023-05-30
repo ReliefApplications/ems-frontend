@@ -1,7 +1,5 @@
 <div uiFormFieldDirective [outline]="false">
-  <label>{{
-    'components.applications.dropdown.select' | translate
-  }}</label>
+  <label>{{ 'components.applications.dropdown.select' | translate }}</label>
   <ui-select-menu
     #applicationSelect
     [(ngModel)]="value"
@@ -13,16 +11,14 @@
     <ui-select-option
       *ngFor="let application of selectedApplications"
       [value]="application.id"
-      [label]="application.name || ''"
     >
       {{ application.name }}
     </ui-select-option>
     <ui-select-option
       *ngFor="let application of applications$ | async"
       [value]="application.id"
-      [label]="application.name || ''"
     >
       {{ application.name }}
     </ui-select-option>
   </ui-select-menu>
-</div>   
+</div>

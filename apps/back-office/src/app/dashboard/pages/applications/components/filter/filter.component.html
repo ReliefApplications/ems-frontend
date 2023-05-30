@@ -58,8 +58,8 @@
     </mat-form-field>
     <!-- Status filter -->
     <div uiFormFieldDirective [outline]="false" class="p-0 w-44">
+      <label>{{ 'common.status' | translate }}</label>
       <ui-select-menu formControlName="status">
-        <ui-select-option [disabled]="true" [selected]="true">Status</ui-select-option>
         <ui-select-option>-</ui-select-option>
         <ui-select-option value="active">
           {{ 'common.status_active' | translate }}

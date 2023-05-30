@@ -31,7 +31,6 @@
             <ui-select-option
               *ngFor="let role of data.roles"
               [value]="role.id"
-              [label]="role.title ?? ''"
             >
               {{ role.title }}
             </ui-select-option>

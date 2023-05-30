@@ -28,6 +28,7 @@ export class ChipComponent {
       // Variants
       switch (this.variant) {
         case 'default':
+        case 'grey':
           classes.push('bg-gray-300 hover:bg-gray-400 text-gray-500');
           break;
         case 'primary':

@@ -10,7 +10,6 @@
       <ui-select-option
         *ngFor="let form of resource.forms"
         [value]="form.id"
-        [label]="form.name ?? ''"
       >
         {{ form.name }}
       </ui-select-option>

@@ -18,7 +18,6 @@
         <ui-select-option
           *ngFor="let permission of permissions"
           [value]="permission.id"
-          [label]="permission.type ?? ''"
         >
           {{ permission.type }}
         </ui-select-option>
