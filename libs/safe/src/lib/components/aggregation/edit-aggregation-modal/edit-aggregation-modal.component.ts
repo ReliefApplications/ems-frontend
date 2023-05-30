@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
@@ -43,7 +43,7 @@ interface DialogData {
   styleUrls: ['./edit-aggregation-modal.component.scss'],
 })
 export class SafeEditAggregationModalComponent implements OnInit {
-  public formGroup!: UntypedFormGroup;
+  public formGroup!: FormGroup;
   public resource!: Resource;
   // public templates: any[] = [];
   // public layoutPreviewData!: { form: FormGroup; defaultLayout: any };

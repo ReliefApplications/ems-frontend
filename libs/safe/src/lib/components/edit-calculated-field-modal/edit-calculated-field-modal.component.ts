@@ -1,9 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
@@ -50,7 +46,7 @@ interface DialogData {
   styleUrls: ['./edit-calculated-field-modal.component.scss'],
 })
 export class SafeEditCalculatedFieldModalComponent implements OnInit {
-  public form!: UntypedFormGroup;
+  public form!: FormGroup;
   public field!: any;
 
   public resourceFields: any[] = [];
@@ -70,7 +66,7 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
    */
   constructor(
     public dialogRef: MatDialogRef<SafeEditCalculatedFieldModalComponent>,
-    public formBuilder: UntypedFormBuilder,
+    public formBuilder: FormBuilder,
     private editorService: SafeEditorService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     @Inject('environment') environment: any,

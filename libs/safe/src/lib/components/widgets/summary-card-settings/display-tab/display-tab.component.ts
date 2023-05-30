@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 /**
  * Component used in the card-modal-settings for configuring some display settings.
@@ -10,5 +10,5 @@ import { UntypedFormGroup } from '@angular/forms';
   styleUrls: ['./display-tab.component.scss'],
 })
 export class SafeDisplayTabComponent {
-  @Input() form!: UntypedFormGroup;
+  @Input() form!: FormGroup;
 }

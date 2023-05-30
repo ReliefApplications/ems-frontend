@@ -3,7 +3,7 @@ import {
   AbstractControl,
   FormControl,
   FormGroup,
-  UntypedFormBuilder,
+  FormBuilder,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -120,7 +120,7 @@ export class ReferenceDataComponent
     private route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private translateService: TranslateService,
     private breadcrumbService: SafeBreadcrumbService,
     private refDataService: SafeReferenceDataService

@@ -1,10 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
@@ -92,7 +88,7 @@ export class SubscriptionModalComponent
   implements OnInit
 {
   // === REACTIVE FORM ===
-  subscriptionForm: UntypedFormGroup = new UntypedFormGroup({});
+  subscriptionForm: FormGroup = new FormGroup({});
 
   // === DATA ===
   public formsQuery!: QueryRef<GetFormsQueryResponse>;
@@ -139,7 +135,7 @@ export class SubscriptionModalComponent
    * @param data.subscription subscription
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SubscriptionModalComponent>,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA)

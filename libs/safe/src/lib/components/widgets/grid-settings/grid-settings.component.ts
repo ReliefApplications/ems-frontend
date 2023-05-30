@@ -7,7 +7,7 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { UntypedFormGroup, UntypedFormArray, Validators } from '@angular/forms';
+import { FormGroup, UntypedFormArray, Validators } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -50,7 +50,7 @@ export class SafeGridSettingsComponent
   implements OnInit, AfterViewInit
 {
   // === REACTIVE FORM ===
-  public formGroup!: UntypedFormGroup;
+  public formGroup!: FormGroup;
 
   // === WIDGET ===
   @Input() tile: any;

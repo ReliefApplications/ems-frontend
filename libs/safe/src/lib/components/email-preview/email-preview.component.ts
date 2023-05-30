@@ -5,11 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
   MatLegacyDialogRef as MatDialogRef,
@@ -59,7 +55,7 @@ export function codesFactory(): () => any {
 })
 export class SafeEmailPreviewComponent implements OnInit {
   /** mail is put in a form to use read-only inputs */ // we want to change that
-  public form!: UntypedFormGroup;
+  public form!: FormGroup;
 
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
 
@@ -85,7 +81,7 @@ export class SafeEmailPreviewComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public dialogRef: MatDialogRef<SafeEmailPreviewComponent>,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private editorService: SafeEditorService
   ) {
     // Set the editor base url based on the environment file

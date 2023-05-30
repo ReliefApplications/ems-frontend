@@ -5,7 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { UntypedFormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import {
   debounceTime,
@@ -30,7 +30,7 @@ export class TabDisplayComponent
   extends SafeUnsubscribeComponent
   implements OnInit, AfterViewInit
 {
-  @Input() formGroup!: UntypedFormGroup;
+  @Input() formGroup!: FormGroup;
   @Input() type: any;
   public chartSettings: any;
 
@@ -42,8 +42,8 @@ export class TabDisplayComponent
   ];
 
   /** @returns the form for the chart */
-  public get chartForm(): UntypedFormGroup {
-    return this.formGroup.get('chart') as UntypedFormGroup;
+  public get chartForm(): FormGroup {
+    return this.formGroup.get('chart') as FormGroup;
   }
 
   @ViewChild(SafeChartComponent) chartComponent!: SafeChartComponent;

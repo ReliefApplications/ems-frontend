@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { SafeEditorService } from '../../../../services/editor/editor.service';
 import { WIDGET_EDITOR_CONFIG } from '../../../../const/tinymce.const';
 import { getCalcKeys, getDataKeys } from '../../summary-card/parser/utils';
@@ -13,7 +13,7 @@ import { getCalcKeys, getDataKeys } from '../../summary-card/parser/utils';
   styleUrls: ['./text-editor-tab.component.scss'],
 })
 export class SafeTextEditorTabComponent implements OnChanges {
-  @Input() form!: UntypedFormGroup;
+  @Input() form!: FormGroup;
   @Input() fields: any[] = [];
 
   /** tinymce editor */

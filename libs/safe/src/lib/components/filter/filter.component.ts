@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 /**
  * Composite filter component.
@@ -10,6 +10,6 @@ import { UntypedFormGroup } from '@angular/forms';
   styleUrls: ['./filter.component.scss'],
 })
 export class SafeFilterComponent {
-  @Input() form!: UntypedFormGroup;
+  @Input() form!: FormGroup;
   @Input() fields: any[] = [];
 }

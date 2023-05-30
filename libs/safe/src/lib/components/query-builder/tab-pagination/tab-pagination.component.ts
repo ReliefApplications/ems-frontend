@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 /**
  * Pagination tab component for the query builder.
@@ -11,5 +11,5 @@ import { UntypedFormGroup } from '@angular/forms';
   styleUrls: ['./tab-pagination.component.scss'],
 })
 export class SafeTabPaginationComponent {
-  @Input() form!: UntypedFormGroup;
+  @Input() form!: FormGroup;
 }

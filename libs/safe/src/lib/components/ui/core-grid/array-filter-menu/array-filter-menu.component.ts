@@ -1,9 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { UntypedFormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { FilterService } from '@progress/kendo-angular-grid';
 
@@ -24,7 +20,7 @@ export class SafeArrayFilterMenuComponent implements OnInit {
   @Input() public textField = '';
   @Input() public valueField = '';
   @Input() public filterService?: FilterService;
-  public form?: UntypedFormGroup;
+  public form?: FormGroup;
 
   /** @returns default item choice */
   public get defaultItem(): any {
@@ -83,10 +79,7 @@ export class SafeArrayFilterMenuComponent implements OnInit {
    * @param fb Angular form builder
    * @param translate Angular translate service
    */
-  constructor(
-    private fb: UntypedFormBuilder,
-    private translate: TranslateService
-  ) {}
+  constructor(private fb: FormBuilder, private translate: TranslateService) {}
 
   ngOnInit(): void {
     this.choices1 = this.data.slice();

@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import {
   Field,
   QueryBuilderService,
@@ -21,8 +21,8 @@ import {
 export class SafeQueryStyleComponent implements OnInit {
   @Input() query: any;
   public selectedFields: any[] = [];
-  @Input() form!: UntypedFormGroup;
-  public wholeRow!: UntypedFormControl;
+  @Input() form!: FormGroup;
+  public wholeRow!: FormControl;
 
   public filterFields: Field[] = [];
 
@@ -43,9 +43,9 @@ export class SafeQueryStyleComponent implements OnInit {
     );
     const fields = this.form.get('fields')?.value || [];
     if (fields.length > 0) {
-      this.wholeRow = new UntypedFormControl(false);
+      this.wholeRow = new FormControl(false);
     } else {
-      this.wholeRow = new UntypedFormControl(true);
+      this.wholeRow = new FormControl(true);
     }
     this.wholeRow.valueChanges.subscribe((value) => {
       if (value) {

@@ -1,10 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  Validators,
-} from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import {
   GetResourcesQueryResponse,
@@ -61,7 +57,7 @@ const ITEMS_PER_PAGE = 10;
 })
 export class AddFormModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public form!: UntypedFormGroup;
+  public form!: FormGroup;
 
   // === DATA ===
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
@@ -78,7 +74,7 @@ export class AddFormModalComponent implements OnInit {
    * @param apollo Apollo service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<AddFormModalComponent>,
     private apollo: Apollo
   ) {}

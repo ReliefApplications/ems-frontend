@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormArray, FormGroup } from '@angular/forms';
 import {
   MatLegacyDialog as MatDialog,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
@@ -23,7 +23,7 @@ interface DialogData {
   styleUrls: ['./map-clorophlet.component.scss'],
 })
 export class MapClorophletComponent {
-  public form!: UntypedFormGroup;
+  public form!: FormGroup;
 
   public tableColumns = ['label', 'color', 'actions'];
 

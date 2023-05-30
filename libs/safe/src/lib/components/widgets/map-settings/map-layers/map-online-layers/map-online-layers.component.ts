@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { SafeArcGISService } from '../../../../../services/arc-gis.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { UntypedFormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 
 /**
  * Online Layers configuration of Map Widget
@@ -16,7 +16,7 @@ export class MapOnlineLayersComponent implements OnInit {
   public search = '';
   private searchChanged: Subject<string> = new Subject<string>();
 
-  @Input() layers!: UntypedFormControl;
+  @Input() layers!: FormControl;
   public availableLayers: any[] = [];
   public tableColumns = ['title', 'actions'];
 

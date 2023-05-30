@@ -1,9 +1,5 @@
 import { Component, Input } from '@angular/core';
-import {
-  UntypedFormArray,
-  UntypedFormControl,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { UntypedFormArray, FormControl, FormGroup } from '@angular/forms';
 
 /**
  * Layers configuration component of Map Widget.
@@ -22,8 +18,8 @@ export class MapLayersComponent {
    *
    * @returns Form control
    */
-  get onlineLayers(): UntypedFormControl {
-    return this.form.get('onlineLayers') as UntypedFormControl;
+  get onlineLayers(): FormControl {
+    return this.form.get('onlineLayers') as FormControl;
   }
 
   /**
@@ -35,5 +31,5 @@ export class MapLayersComponent {
     return this.form.get('clorophlets') as UntypedFormArray;
   }
 
-  @Input() form!: UntypedFormGroup;
+  @Input() form!: FormGroup;
 }

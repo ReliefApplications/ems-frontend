@@ -5,11 +5,7 @@ import {
   OnChanges,
   Output,
 } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
@@ -59,7 +55,7 @@ export class SafeQueryBuilderComponent
     // return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
   }
 
-  @Input() form?: UntypedFormGroup;
+  @Input() form?: FormGroup;
   @Input() canExpand = true;
   @Input() canSelectDataSet = true;
   @Input() templates: Form[] = [];
@@ -84,7 +80,7 @@ export class SafeQueryBuilderComponent
    * @param queryBuilder This is the service that will be used to build the query.
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private queryBuilder: QueryBuilderService
   ) {
     super();
@@ -196,7 +192,7 @@ export class SafeQueryBuilderComponent
    *
    * @param newForm new form value.
    */
-  setForm(newForm: UntypedFormGroup): void {
+  setForm(newForm: FormGroup): void {
     this.form = newForm;
     this.buildSettings();
   }

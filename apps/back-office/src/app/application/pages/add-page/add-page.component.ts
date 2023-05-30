@@ -1,10 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   ContentType,
@@ -58,7 +54,7 @@ export class AddPageComponent
   @ViewChild('formSelect') formSelect?: MatSelect;
 
   // === REACTIVE FORM ===
-  public pageForm: UntypedFormGroup = new UntypedFormGroup({});
+  public pageForm: FormGroup = new FormGroup({});
   public step = 1;
 
   /**
@@ -72,7 +68,7 @@ export class AddPageComponent
    * @param translate Angular translate service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
     public dialog: MatDialog,

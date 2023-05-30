@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import {
   MatLegacyDialogModule as MatDialogModule,
   MatLegacyDialogRef as MatDialogRef,
@@ -26,7 +26,7 @@ describe('SafeAddUserComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        UntypedFormBuilder,
+        FormBuilder,
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: { users: [] } },
         TranslateService,

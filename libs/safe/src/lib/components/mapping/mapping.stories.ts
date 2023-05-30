@@ -5,7 +5,7 @@ import { SafeMappingModule } from './mapping.module';
 import { StorybookTranslateModule } from '../storybook-translate/storybook-translate-module';
 import {
   UntypedFormArray,
-  UntypedFormBuilder,
+  FormBuilder,
   ReactiveFormsModule,
 } from '@angular/forms';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
@@ -37,7 +37,7 @@ export default {
 } as Meta;
 
 /** Angular form builder */
-const fb = new UntypedFormBuilder();
+const fb = new FormBuilder();
 
 /**
  * Template for stories

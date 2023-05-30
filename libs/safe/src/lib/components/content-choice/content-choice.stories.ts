@@ -2,11 +2,7 @@ import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeContentChoiceComponent } from './content-choice.component';
 import { SafeContentChoiceModule } from './content-choice.module';
 import { CONTENT_TYPES } from '../../models/page.model';
-import {
-  UntypedFormControl,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 export default {
   component: SafeContentChoiceComponent,
@@ -29,7 +25,7 @@ const TEMPLATE: StoryFn<SafeContentChoiceComponent> = (args) => ({
     '<safe-content-choice [formControl]="type" [contentTypes]="contentTypes"></safe-content-choice>',
   props: {
     ...args,
-    type: new UntypedFormControl(''),
+    type: new FormControl(''),
   },
 });
 

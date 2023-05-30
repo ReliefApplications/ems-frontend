@@ -17,7 +17,7 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import {
   ApolloTestingModule,
   ApolloTestingController,
@@ -38,7 +38,7 @@ describe('SafeGridWidgetComponent', () => {
         OAuthLogger,
         DateTimeProvider,
         TranslateService,
-        UntypedFormBuilder,
+        FormBuilder,
       ],
       declarations: [SafeGridWidgetComponent],
       imports: [

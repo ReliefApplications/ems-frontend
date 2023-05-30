@@ -7,7 +7,7 @@ import {
   GET_QUERY_META_DATA,
   GET_QUERY_TYPES,
 } from './graphql/queries';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client';
 import get from 'lodash/get';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
@@ -114,7 +114,7 @@ export class QueryBuilderService {
    * @param apollo Apollo client
    * @param formBuilder Angular form builder
    */
-  constructor(private apollo: Apollo, private formBuilder: UntypedFormBuilder) {
+  constructor(private apollo: Apollo, private formBuilder: FormBuilder) {
     this.apollo
       .query<GetQueryTypes>({
         query: GET_QUERY_TYPES,

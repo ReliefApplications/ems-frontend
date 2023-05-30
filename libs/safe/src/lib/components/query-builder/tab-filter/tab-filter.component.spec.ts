@@ -1,9 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
   ApolloTestingModule,
   ApolloTestingController,
@@ -33,7 +29,7 @@ describe('SafeTabFilterComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        UntypedFormBuilder,
+        FormBuilder,
         { provide: 'environment', useValue: environment },
         OAuthService,
         UrlHelperService,
@@ -60,8 +56,8 @@ describe('SafeTabFilterComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeTabFilterComponent);
     component = fixture.componentInstance;
-    component.form = new UntypedFormGroup({
-      filters: new UntypedFormControl([]),
+    component.form = new FormGroup({
+      filters: new FormControl([]),
     });
     fixture.detectChanges();
 

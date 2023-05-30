@@ -5,8 +5,8 @@ import { SafePipelineModule } from './pipeline.module';
 import { StorybookTranslateModule } from '../../../storybook-translate/storybook-translate-module';
 import {
   UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormControl,
+  FormBuilder,
+  FormControl,
   ReactiveFormsModule,
 } from '@angular/forms';
 import { PipelineStage } from './pipeline-stage.enum';
@@ -121,7 +121,7 @@ const DEFAULT_META = {
 /**
  * Form builder reference
  */
-const fb = new UntypedFormBuilder();
+const fb = new FormBuilder();
 
 /**
  * Template used by storybook to display the component.
@@ -135,14 +135,14 @@ const TEMPLATE: StoryFn<SafePipelineComponent> = () => ({
     // Need to pass formArray there otherwise we get an error: https://github.com/storybookjs/storybook/discussions/15602
     pipelineForm: new UntypedFormArray([
       fb.group({
-        type: new UntypedFormControl(PipelineStage.FILTER),
+        type: new FormControl(PipelineStage.FILTER),
         form: fb.group({
           logic: 'and',
           filters: fb.array([]),
         }),
       }),
       fb.group({
-        type: new UntypedFormControl(PipelineStage.SORT),
+        type: new FormControl(PipelineStage.SORT),
         form: fb.group({
           field: [''],
           order: ['asc'],

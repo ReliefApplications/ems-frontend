@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { QueryBuilderService } from './query-builder.service';
 import {
   ApolloTestingModule,
@@ -13,7 +13,7 @@ describe('QueryBuilderService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [UntypedFormBuilder],
+      providers: [FormBuilder],
       imports: [ApolloTestingModule],
     });
     service = TestBed.inject(QueryBuilderService);

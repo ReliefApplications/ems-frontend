@@ -12,7 +12,7 @@ import {
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
 import { SafeCoreGridComponent } from './core-grid.component';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { HttpClientModule } from '@angular/common/http';
@@ -44,7 +44,7 @@ describe('SafeCoreGridComponent', () => {
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
-        UntypedFormBuilder,
+        FormBuilder,
         QueryBuilderService,
         TranslateService,
       ],

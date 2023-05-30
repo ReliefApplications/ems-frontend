@@ -8,7 +8,7 @@ import {
   UrlHelperService,
 } from 'angular-oauth2-oidc';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 
 import { SafeFormService } from './form.service';
 
@@ -19,7 +19,7 @@ describe('SafeFormService', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: 'environment', useValue: environment },
-        UntypedFormBuilder,
+        FormBuilder,
         OAuthService,
         UrlHelperService,
         OAuthLogger,

@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
 import { MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/legacy-chips';
 import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
@@ -29,7 +29,7 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 /** Modal content for the settings of the chart widgets. */
 export class SafeChartSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
-  public formGroup!: UntypedFormGroup;
+  public formGroup!: FormGroup;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -47,8 +47,8 @@ export class SafeChartSettingsComponent implements OnInit {
   public grid: any;
 
   /** @returns the form for the chart */
-  public get chartForm(): UntypedFormGroup {
-    return (this.formGroup?.controls.chart as UntypedFormGroup) || null;
+  public get chartForm(): FormGroup {
+    return (this.formGroup?.controls.chart as FormGroup) || null;
   }
 
   /** Stores the selected tab */

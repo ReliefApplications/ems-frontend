@@ -1,10 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  Validators,
-} from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
@@ -27,7 +23,7 @@ export class ChoseRoleComponent implements OnInit {
   public loading = true;
 
   // === REACTIVE FORM ===
-  roleForm: UntypedFormGroup = new UntypedFormGroup({});
+  roleForm: FormGroup = new FormGroup({});
 
   // === ROLES QUERY ===
   public rolesQuery!: QueryRef<GetRolesQueryResponse>;
@@ -41,7 +37,7 @@ export class ChoseRoleComponent implements OnInit {
    * @param data.application application id
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<ChoseRoleComponent>,
     private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA)

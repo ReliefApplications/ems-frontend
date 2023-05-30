@@ -8,7 +8,7 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   GridDataResult,
@@ -150,7 +150,7 @@ export class SafeCoreGridComponent
   // === INLINE EDITION ===
   private originalItems: any[] = this.gridData.data;
   public updatedItems: any[] = [];
-  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  public formGroup: FormGroup = new FormGroup({});
   public loading = false;
   @Input() status: {
     message?: string;

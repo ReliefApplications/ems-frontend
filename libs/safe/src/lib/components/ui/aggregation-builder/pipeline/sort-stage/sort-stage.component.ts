@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 /**
  * Component that handles sorting
@@ -10,7 +10,7 @@ import { UntypedFormGroup } from '@angular/forms';
   styleUrls: ['./sort-stage.component.scss'],
 })
 export class SafeSortStageComponent {
-  @Input() form: UntypedFormGroup = new UntypedFormGroup({});
+  @Input() form: FormGroup = new FormGroup({});
   @Input() fields: any[] = [];
   @Input() showLimit = false;
 }

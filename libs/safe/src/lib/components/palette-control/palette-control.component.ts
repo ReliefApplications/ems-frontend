@@ -1,7 +1,7 @@
 import { Component, forwardRef, Input, Provider } from '@angular/core';
 import {
   ControlValueAccessor,
-  UntypedFormControl,
+  FormControl,
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
 
@@ -24,7 +24,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class SafePaletteControlComponent implements ControlValueAccessor {
-  @Input() formControl!: UntypedFormControl;
+  @Input() formControl!: FormControl;
 
   @Input() formControlName!: string;
 

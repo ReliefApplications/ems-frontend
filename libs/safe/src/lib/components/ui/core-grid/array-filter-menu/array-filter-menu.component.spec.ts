@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 
 import { SafeArrayFilterMenuComponent } from './array-filter-menu.component';
 
@@ -9,7 +9,7 @@ describe('SafeArrayFilterMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [UntypedFormBuilder],
+      providers: [FormBuilder],
       declarations: [SafeArrayFilterMenuComponent],
     }).compileComponents();
   });

@@ -1,9 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
@@ -50,7 +46,7 @@ interface DialogData {
 })
 export class EditTemplateModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  form: UntypedFormGroup = new UntypedFormGroup({});
+  form: FormGroup = new FormGroup({});
 
   /** tinymce editor */
   public editor: any = EMAIL_EDITOR_CONFIG;
@@ -64,7 +60,7 @@ export class EditTemplateModalComponent implements OnInit {
    * @param editorService Editor service used to get main URL and current language
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<EditTemplateModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private editorService: SafeEditorService

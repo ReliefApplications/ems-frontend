@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormArray, FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
@@ -32,7 +32,7 @@ export class SafeAggregationBuilderComponent
   implements OnInit
 {
   // === REACTIVE FORM ===
-  @Input() aggregationForm: UntypedFormGroup = new UntypedFormGroup({});
+  @Input() aggregationForm: FormGroup = new FormGroup({});
   @Input() resource!: Resource;
 
   @Input() reload$!: Observable<boolean>;

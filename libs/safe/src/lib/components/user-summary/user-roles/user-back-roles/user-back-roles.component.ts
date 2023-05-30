@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Role, User } from '../../../../models/user.model';
@@ -15,7 +15,7 @@ import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.serv
 export class UserBackRolesComponent implements OnInit {
   public roles: Role[] = [];
   @Input() user!: User;
-  selectedRoles!: UntypedFormControl;
+  selectedRoles!: FormControl;
   @Output() edit = new EventEmitter();
 
   /** Setter for the loading state */
@@ -35,7 +35,7 @@ export class UserBackRolesComponent implements OnInit {
    * @param snackBar Shared snackbar service
    */
   constructor(
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService
   ) {}

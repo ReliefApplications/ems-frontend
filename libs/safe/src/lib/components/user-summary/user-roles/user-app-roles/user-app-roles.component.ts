@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { get } from 'lodash';
 import { Role, User } from '../../../../models/user.model';
@@ -27,7 +27,7 @@ export class UserAppRolesComponent
   public roles: Role[] = [];
   @Input() user!: User;
   @Input() application?: Application;
-  selectedRoles!: UntypedFormControl;
+  selectedRoles!: FormControl;
   @Output() edit = new EventEmitter();
 
   /** loading setter */
@@ -39,7 +39,7 @@ export class UserAppRolesComponent
     }
   }
 
-  selectedApplication!: UntypedFormControl;
+  selectedApplication!: FormControl;
   public applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   private readonly PAGE_SIZE = 10;
 
@@ -51,7 +51,7 @@ export class UserAppRolesComponent
    * @param snackBar Shared snackbar service
    */
   constructor(
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     private snackBar: SafeSnackBarService
   ) {

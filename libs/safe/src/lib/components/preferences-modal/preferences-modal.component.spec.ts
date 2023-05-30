@@ -10,7 +10,7 @@ import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import {
   TranslateModule,
   TranslateService,
@@ -26,7 +26,7 @@ describe('SafePreferencesModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        UntypedFormBuilder,
+        FormBuilder,
         TranslateService,
         { provide: 'environment', useValue: environment },
         { provide: MatDialogRef, useValue: {} },

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import {
   TranslateModule,
   TranslateService,
@@ -30,7 +30,7 @@ describe('SafeQueryStyleComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeQueryStyleComponent);
     component = fixture.componentInstance;
-    component.form = new UntypedFormGroup({});
+    component.form = new FormGroup({});
     fixture.detectChanges();
   });
 

@@ -3,11 +3,7 @@ import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { SafeGroupStageComponent } from './group-stage.component';
 import { SafePipelineModule } from '../pipeline.module';
 import { StorybookTranslateModule } from '../../../../storybook-translate/storybook-translate-module';
-import {
-  UntypedFormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 export default {
   component: SafeGroupStageComponent,
@@ -69,7 +65,7 @@ const DEFAULT_FIELDS = [
 /**
  * Form builder reference.
  */
-const fb = new UntypedFormBuilder();
+const fb = new FormBuilder();
 
 /**
  * Template used by storybook to display the component in stories.

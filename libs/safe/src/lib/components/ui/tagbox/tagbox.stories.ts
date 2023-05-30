@@ -6,7 +6,7 @@ import { StorybookTranslateModule } from '../../storybook-translate/storybook-tr
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { BehaviorSubject } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { UntypedFormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 
 export default {
   component: SafeTagboxComponent,
@@ -171,8 +171,8 @@ export const DEFAULT = {
       .pipe(delay(500)),
     availableChoices: new BehaviorSubject<any>([]),
     selectedChoices: [],
-    // parentControl: new UntypedFormControl([]),
-    inputControl: new UntypedFormControl(),
+    // parentControl: new FormControl([]),
+    inputControl: new FormControl(),
   },
 };
 
@@ -182,6 +182,6 @@ export const INITIAL_SOURCE = {
 
   args: {
     ...DEFAULT.args,
-    // parentControl: new UntypedFormControl(['follow', 'date']),
+    // parentControl: new FormControl(['follow', 'date']),
   },
 };

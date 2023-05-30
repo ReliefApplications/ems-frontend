@@ -1,9 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {
-  AbstractControl,
-  UntypedFormArray,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { AbstractControl, UntypedFormArray, FormGroup } from '@angular/forms';
 import { isEmpty } from 'lodash';
 import { AggregationBuilderService } from '../../../../../services/aggregation-builder/aggregation-builder.service';
 import { groupByRuleForm } from '../../aggregation-builder-forms';
@@ -31,7 +27,7 @@ export class SafeGroupStageComponent
 
   /** @returns this for as form group */
   get formGroup() {
-    return this.form as UntypedFormGroup;
+    return this.form as FormGroup;
   }
 
   /** @returns list of addFields of the stage as Form array */

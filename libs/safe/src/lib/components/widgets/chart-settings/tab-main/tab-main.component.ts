@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Resource } from '../../../../models/resource.model';
 import { Subject } from 'rxjs';
@@ -34,7 +34,7 @@ export class TabMainComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  @Input() formGroup!: UntypedFormGroup;
+  @Input() formGroup!: FormGroup;
   @Input() type: any;
   public types = CHART_TYPES;
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;

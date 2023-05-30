@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormArray, FormGroup } from '@angular/forms';
 import { createButtonFormGroup } from '../grid-settings.forms';
 import { Form } from '../../../../models/form.model';
 import { Channel } from '../../../../models/channel.model';
@@ -16,7 +16,7 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./tab-buttons.component.scss'],
 })
 export class TabButtonsComponent implements OnInit {
-  @Input() formGroup!: UntypedFormGroup;
+  @Input() formGroup!: FormGroup;
   @Input() fields: any[] = [];
   @Input() relatedForms: Form[] = [];
   @Input() channels: Channel[] = [];

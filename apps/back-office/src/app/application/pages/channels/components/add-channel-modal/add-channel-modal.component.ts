@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { CommonModule } from '@angular/common';
 import { ChannelsRoutingModule } from '../../channels-routing.module';
@@ -52,7 +48,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class AddChannelModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  channelForm: UntypedFormGroup = new UntypedFormGroup({});
+  channelForm: FormGroup = new FormGroup({});
 
   /**
    * Add channel component
@@ -61,7 +57,7 @@ export class AddChannelModalComponent implements OnInit {
    * @param dialogRef Material dialog ref
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<AddChannelModalComponent>
   ) {}
 

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormArray } from '@angular/forms';
+import { FormBuilder, UntypedFormArray } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
@@ -50,7 +50,7 @@ export class RoleAutoAssignmentComponent implements OnInit {
    * @param restService Safe REST service
    */
   constructor(
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     private dialog: MatDialog,
     private translate: TranslateService,

@@ -1,9 +1,5 @@
 import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
-import {
-  UntypedFormControl,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafePaletteControlComponent } from './palette-control.component';
 import { SafePaletteControlModule } from './palette-control.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -57,7 +53,7 @@ export const DEFAULT = {
   render: TEMPLATE,
 
   args: {
-    formControl: new UntypedFormControl(COLORS),
+    formControl: new FormControl(COLORS),
     colors: COLORS,
   },
 };
@@ -66,6 +62,6 @@ export const DISABLED = {
   render: TEMPLATE,
 
   args: {
-    formControl: new UntypedFormControl({ value: COLORS, disabled: true }),
+    formControl: new FormControl({ value: COLORS, disabled: true }),
   },
 };

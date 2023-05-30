@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
+  FormBuilder,
+  FormGroup,
   Validators,
 } from '@angular/forms';
 import {
@@ -85,7 +85,7 @@ const DEFAULT_FIELDS = ['createdBy'];
 })
 export class EditPullJobModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  public formGroup: FormGroup = new FormGroup({});
   isHardcoded = true;
 
   // === FORMS ===
@@ -147,7 +147,7 @@ export class EditPullJobModalComponent implements OnInit {
    * @param data.pullJob pull job
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<EditPullJobModalComponent>,
     private apollo: Apollo,
     private dialog: MatDialog,

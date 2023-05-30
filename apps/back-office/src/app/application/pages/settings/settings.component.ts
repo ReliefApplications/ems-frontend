@@ -1,10 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   Application,
   SafeApplicationService,
@@ -38,7 +34,7 @@ export class SettingsComponent
   implements OnInit
 {
   public applications = new MatTableDataSource<Application>([]);
-  public settingsForm?: UntypedFormGroup;
+  public settingsForm?: FormGroup;
   public application?: Application;
   public user: any;
   public locked: boolean | undefined = undefined;
@@ -59,7 +55,7 @@ export class SettingsComponent
    * @param layoutService Shared layout service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private apollo: Apollo,
     private router: Router,
     private snackBar: SafeSnackBarService,

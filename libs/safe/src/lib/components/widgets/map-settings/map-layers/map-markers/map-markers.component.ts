@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormArray, FormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { markerRuleForm } from '../../map-forms';
 
@@ -12,7 +12,7 @@ import { markerRuleForm } from '../../map-forms';
   styleUrls: ['./map-markers.component.scss'],
 })
 export class MapMarkersComponent implements OnInit {
-  @Input() form!: UntypedFormGroup;
+  @Input() form!: FormGroup;
 
   @Input() selectedFields: any[] = [];
   @Input() formattedSelectedFields: any[] = [];

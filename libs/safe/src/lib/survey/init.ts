@@ -6,7 +6,7 @@
 
 import { Apollo } from 'apollo-angular';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import * as SurveyJSWidgets from 'surveyjs-widgets';
 import { DomService } from '../services/dom/dom.service';
 import { SafeAuthService } from '../services/auth/auth.service';
@@ -41,7 +41,7 @@ export const initCustomSurvey = (
   domService: DomService,
   dialog: MatDialog,
   apollo: Apollo,
-  formBuilder: UntypedFormBuilder,
+  formBuilder: FormBuilder,
   authService: SafeAuthService,
   environment: any,
   referenceDataService: SafeReferenceDataService,

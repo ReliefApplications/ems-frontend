@@ -1,5 +1,5 @@
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { surveyLocalization } from 'survey-angular';
 
 /**
@@ -13,7 +13,7 @@ import { surveyLocalization } from 'survey-angular';
  */
 export const buildSearchButton = (
   question: any,
-  fieldsSettingsForm: UntypedFormGroup,
+  fieldsSettingsForm: FormGroup,
   multiselect: boolean,
   dialog: MatDialog
 ): any => {

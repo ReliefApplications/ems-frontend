@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  Validators,
-} from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo } from 'apollo-angular';
 import {
@@ -35,7 +31,7 @@ export class SafeProfileComponent
   /** Current user */
   public user: any;
   /** Form to edit the user */
-  public userForm?: UntypedFormGroup;
+  public userForm?: FormGroup;
   /** Displayed columns of table */
   public displayedColumnsApps = [
     'name',
@@ -58,7 +54,7 @@ export class SafeProfileComponent
     private apollo: Apollo,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public translate: TranslateService
   ) {
     super();

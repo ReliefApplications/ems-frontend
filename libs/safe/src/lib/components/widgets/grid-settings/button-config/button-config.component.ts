@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import {
   UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
+  FormBuilder,
+  FormGroup,
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -35,7 +35,7 @@ export class ButtonConfigComponent
   implements OnInit
 {
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
-  @Input() formGroup!: UntypedFormGroup;
+  @Input() formGroup!: FormGroup;
   @Input() fields: any[] = [];
   @Input() channels: Channel[] = [];
   @Input() relatedForms: Form[] = [];
@@ -74,7 +74,7 @@ export class ButtonConfigComponent
    * @param applicationService Shared application service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private router: Router,
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,

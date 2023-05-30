@@ -6,7 +6,7 @@ import { initCustomSurvey } from '../../survey/init';
 import { DomService } from '../dom/dom.service';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Apollo } from 'apollo-angular';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { SafeAuthService } from '../auth/auth.service';
 import { SafeReferenceDataService } from '../reference-data/reference-data.service';
 
@@ -36,7 +36,7 @@ export class SafeFormService {
     public domService: DomService,
     public dialog: MatDialog,
     public apollo: Apollo,
-    public formBuilder: UntypedFormBuilder,
+    public formBuilder: FormBuilder,
     public authService: SafeAuthService,
     public referenceDataService: SafeReferenceDataService
   ) {

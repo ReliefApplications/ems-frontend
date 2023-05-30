@@ -11,7 +11,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormArray, FormGroup } from '@angular/forms';
 import { FIELD_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { SafeEditorService } from '../../../services/editor/editor.service';
 import {
@@ -37,7 +37,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
 
   public availableFields: any[] = [];
   public selectedFields: any[] = [];
-  public fieldForm: UntypedFormGroup | null = null;
+  public fieldForm: FormGroup | null = null;
 
   public searchAvailable = '';
   public searchSelected = '';
@@ -108,10 +108,9 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
       if (this.selectedFields === event.previousContainer.data) {
         // Move from selected fields
         if (
-          this.fieldForm ===
-          (this.form.at(event.previousIndex) as UntypedFormGroup)
+          this.fieldForm === (this.form.at(event.previousIndex) as FormGroup)
         ) {
-          this.fieldForm = new UntypedFormGroup({});
+          this.fieldForm = new FormGroup({});
         }
         const index = this.getItemIndex(
           this.selectedFields,
@@ -184,7 +183,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
    * @param index Index of the field
    */
   public onEdit(index: number): void {
-    this.fieldForm = this.form.at(index) as UntypedFormGroup;
+    this.fieldForm = this.form.at(index) as FormGroup;
     if (this.fieldForm.value.kind === 'SCALAR') {
       // Setup field format editor auto completer
       const dataKeys = getDataKeys([

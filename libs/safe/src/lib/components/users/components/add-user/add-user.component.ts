@@ -3,8 +3,8 @@ import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import {
   UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
+  FormBuilder,
+  FormGroup,
   Validators,
 } from '@angular/forms';
 import {
@@ -36,7 +36,7 @@ export class SafeAddUserComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  form: UntypedFormGroup = new UntypedFormGroup({});
+  form: FormGroup = new FormGroup({});
   public filteredUsers?: Observable<User[]>;
   private users: User[] = [];
 
@@ -57,7 +57,7 @@ export class SafeAddUserComponent
    * @param translate The translation service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<SafeAddUserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,

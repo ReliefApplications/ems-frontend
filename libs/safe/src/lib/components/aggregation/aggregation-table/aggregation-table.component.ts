@@ -3,7 +3,7 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
-import { UntypedFormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
@@ -25,7 +25,7 @@ export class AggregationTableComponent
 {
   @Input() resource: Resource | null = null;
   @Input() form: Form | null = null;
-  @Input() selectedAggregations: UntypedFormControl | null = null;
+  @Input() selectedAggregations: FormControl | null = null;
 
   aggregations: Layout[] = [];
   allAggregations: Layout[] = [];

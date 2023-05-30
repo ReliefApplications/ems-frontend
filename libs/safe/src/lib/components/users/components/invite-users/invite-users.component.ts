@@ -9,8 +9,8 @@ import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import {
   UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
+  FormBuilder,
+  FormGroup,
   Validators,
 } from '@angular/forms';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
@@ -35,7 +35,7 @@ interface DialogData {
 })
 export class SafeInviteUsersComponent {
   public gridData: GridDataResult = { data: [], total: 0 };
-  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  public formGroup: FormGroup = new FormGroup({});
   private editedRowIndex = 0;
   private editionActive = false;
 
@@ -66,7 +66,7 @@ export class SafeInviteUsersComponent {
     private renderer: Renderer2,
     private downloadService: SafeDownloadService,
     private snackBar: SafeSnackBarService,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<SafeInviteUsersComponent>,
     public translate: TranslateService,
@@ -216,7 +216,7 @@ export class SafeInviteUsersComponent {
    * @param dataItem Row data.
    * @returns Form group created from row data.
    */
-  public createFormGroup(dataItem: any): UntypedFormGroup {
+  public createFormGroup(dataItem: any): FormGroup {
     const formGroup: any = {
       email: [dataItem.email, Validators.required],
       role: [dataItem.role, Validators.required],
@@ -243,7 +243,7 @@ export class SafeInviteUsersComponent {
     this.gridData.data.splice(this.editedRowIndex, 1, this.formGroup.value);
     this.editedRowIndex = 0;
     this.editionActive = false;
-    this.formGroup = new UntypedFormGroup({});
+    this.formGroup = new FormGroup({});
   }
 
   /**

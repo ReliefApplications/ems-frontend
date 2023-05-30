@@ -5,7 +5,7 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { cloneDeep } from 'lodash';
 import {
   Field,
@@ -21,7 +21,7 @@ import {
   styleUrls: ['./tab-filter.component.scss'],
 })
 export class SafeTabFilterComponent implements OnInit {
-  @Input() form: UntypedFormGroup = new UntypedFormGroup({});
+  @Input() form: FormGroup = new FormGroup({});
   @Input() query: any;
 
   @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;

@@ -1,9 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
@@ -56,7 +52,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class EditChannelModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  roleForm: UntypedFormGroup = new UntypedFormGroup({});
+  roleForm: FormGroup = new FormGroup({});
 
   /**
    * Edit channel component
@@ -67,7 +63,7 @@ export class EditChannelModalComponent implements OnInit {
    * @param data.channel channel to edit
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<EditChannelModalComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {

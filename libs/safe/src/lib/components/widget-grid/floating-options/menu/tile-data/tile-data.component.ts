@@ -5,7 +5,7 @@ import {
   ViewContainerRef,
   AfterViewInit,
 } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
@@ -29,7 +29,7 @@ interface DialogData {
 /** Modal content to edit the settings of a component. */
 export class SafeTileDataComponent implements AfterViewInit {
   // === REACTIVE FORM ===
-  tileForm?: UntypedFormGroup;
+  tileForm?: FormGroup;
 
   // === TEMPLATE REFERENCE ===
   @ViewChild('settingsContainer', { read: ViewContainerRef })

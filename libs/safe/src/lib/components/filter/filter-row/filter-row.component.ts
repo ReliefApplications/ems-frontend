@@ -9,7 +9,7 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { clone, get } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -27,7 +27,7 @@ export class FilterRowComponent
   extends SafeUnsubscribeComponent
   implements OnInit, OnChanges, AfterViewInit
 {
-  @Input() form!: UntypedFormGroup;
+  @Input() form!: FormGroup;
   @Output() delete = new EventEmitter();
   @Input() fields: any[] = [];
 
@@ -35,8 +35,8 @@ export class FilterRowComponent
   public editor?: TemplateRef<any>;
 
   /** @returns value form field as form control. */
-  get valueControl(): UntypedFormControl {
-    return this.form.get('value') as UntypedFormControl;
+  get valueControl(): FormControl {
+    return this.form.get('value') as FormControl;
   }
 
   @ViewChild('textEditor', { static: false }) textEditor!: TemplateRef<any>;

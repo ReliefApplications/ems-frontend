@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { createMapWidgetFormGroup } from './map-forms';
-import { UntypedFormGroup, UntypedFormArray } from '@angular/forms';
+import { FormGroup, UntypedFormArray } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { debounceTime } from 'rxjs/operators';
 import { cloneDeep } from 'lodash';
@@ -84,7 +84,7 @@ const filterFields = (
 })
 export class SafeMapSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
-  tileForm: UntypedFormGroup | undefined;
+  tileForm: FormGroup | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -136,7 +136,7 @@ export class SafeMapSettingsComponent implements OnInit {
         });
     }
 
-    const queryForm = this.tileForm.get('query') as UntypedFormGroup;
+    const queryForm = this.tileForm.get('query') as FormGroup;
 
     queryForm.controls.name.valueChanges.subscribe((value) => {
       // Prevent to erase everything when queryName does not change

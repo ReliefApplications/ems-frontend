@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
-  UntypedFormBuilder,
-  UntypedFormGroup,
+  FormBuilder,
+  FormGroup,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -46,7 +46,7 @@ export class ApiConfigurationComponent
   public apiConfiguration?: ApiConfiguration;
 
   // === FORM ===
-  public apiForm: UntypedFormGroup = new UntypedFormGroup({});
+  public apiForm: FormGroup = new FormGroup({});
   public status = status;
   public statusChoices = Object.values(status);
   public authType = authType;
@@ -74,7 +74,7 @@ export class ApiConfigurationComponent
     private route: ActivatedRoute,
     private snackBar: SafeSnackBarService,
     private router: Router,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private apiProxy: SafeApiProxyService,
     private translate: TranslateService,
     private breadcrumbService: SafeBreadcrumbService
@@ -157,7 +157,7 @@ export class ApiConfigurationComponent
    * @param type type of API connection
    * @returns settings form group
    */
-  private buildSettingsForm(type: string): UntypedFormGroup {
+  private buildSettingsForm(type: string): FormGroup {
     if (type === authType.serviceToService) {
       return this.formBuilder.group({
         authTargetUrl: [

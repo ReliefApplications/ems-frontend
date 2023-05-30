@@ -5,11 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   MatLegacyChipInputEvent as MatChipInputEvent,
   MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS,
@@ -75,7 +71,7 @@ export function codesFactory(): () => any {
 })
 export class EditDistributionListModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public form: UntypedFormGroup = new UntypedFormGroup({});
+  public form: FormGroup = new FormGroup({});
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
 
   /** @returns list of emails */
@@ -93,7 +89,7 @@ export class EditDistributionListModalComponent implements OnInit {
    * @param data Data input of the modal
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<EditDistributionListModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}

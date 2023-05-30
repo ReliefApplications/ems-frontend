@@ -1,9 +1,5 @@
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
-import {
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { UntypedFormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import {
   FilterService,
@@ -50,7 +46,7 @@ export class SafeDateFilterMenuComponent
   @Input() public valueField = '';
   @Input() public filterService?: FilterService;
 
-  public form?: UntypedFormGroup;
+  public form?: FormGroup;
   public firstDateMode = 'date';
   public secondDateMode = 'date';
 
@@ -84,7 +80,7 @@ export class SafeDateFilterMenuComponent
    * @param popupService kendo popup service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public translate: TranslateService,
     private element: ElementRef,
     private popupService: SinglePopupService

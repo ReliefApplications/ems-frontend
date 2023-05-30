@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 /**
  * Actions tab of grid widget configuration modal.
@@ -10,7 +10,7 @@ import { UntypedFormGroup } from '@angular/forms';
   styleUrls: ['./tab-actions.component.scss'],
 })
 export class TabActionsComponent {
-  @Input() formGroup!: UntypedFormGroup;
+  @Input() formGroup!: FormGroup;
 
   public actions = [
     {

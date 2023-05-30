@@ -4,11 +4,7 @@ import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   DuplicateApplicationMutationResponse,
   DUPLICATE_APPLICATION,
@@ -46,7 +42,7 @@ import { SafeModalModule } from '@oort-front/safe';
 })
 export class DuplicateApplicationModalComponent implements OnInit {
   public currentApp: Application;
-  public duplicateForm: UntypedFormGroup = new UntypedFormGroup({});
+  public duplicateForm: FormGroup = new FormGroup({});
 
   /**
    * Duplicate application component.
@@ -60,7 +56,7 @@ export class DuplicateApplicationModalComponent implements OnInit {
    */
   constructor(
     private snackBar: SafeSnackBarService,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<DuplicateApplicationModalComponent>,
     private translateService: TranslateService,

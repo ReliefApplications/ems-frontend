@@ -6,7 +6,7 @@ import {
 import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { DomService } from '../../services/dom/dom.service';
 import { buildSearchButton, buildAddButton } from './utils';
@@ -28,7 +28,7 @@ export const init = (
   domService: DomService,
   apollo: Apollo,
   dialog: MatDialog,
-  formBuilder: UntypedFormBuilder
+  formBuilder: FormBuilder
 ): void => {
   const getResourceById = (data: {
     id: string;
@@ -364,7 +364,7 @@ export const init = (
           if (obj) {
             obj.gridFieldsSettings = obj.resource
               ? obj.gridFieldsSettings
-              : new UntypedFormGroup({}).getRawValue();
+              : new FormGroup({}).getRawValue();
           }
           return false;
         },
@@ -629,9 +629,7 @@ export const init = (
         });
       }
     },
-    convertFromRawToFormGroup: (
-      gridSettingsRaw: any
-    ): UntypedFormGroup | null => {
+    convertFromRawToFormGroup: (gridSettingsRaw: any): FormGroup | null => {
       if (!gridSettingsRaw.fields) {
         return null;
       }

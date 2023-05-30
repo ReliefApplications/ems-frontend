@@ -1,10 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  Validators,
-} from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import {
   GetResourceByIdQueryResponse,
@@ -22,7 +18,7 @@ import {
 /** Modal content for the settings of the scheduler widgets. */
 export class SafeSchedulerSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
-  tileForm: UntypedFormGroup = new UntypedFormGroup({});
+  tileForm: FormGroup = new FormGroup({});
 
   // === WIDGET ===
   @Input() tile: any;
@@ -42,10 +38,7 @@ export class SafeSchedulerSettingsComponent implements OnInit {
    * @param formBuilder The form builder
    * @param apollo The apollo client
    */
-  constructor(
-    private formBuilder: UntypedFormBuilder,
-    private apollo: Apollo
-  ) {}
+  constructor(private formBuilder: FormBuilder, private apollo: Apollo) {}
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {

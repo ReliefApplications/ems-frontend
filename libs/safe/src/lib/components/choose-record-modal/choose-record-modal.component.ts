@@ -1,9 +1,5 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
@@ -79,7 +75,7 @@ export class SafeChooseRecordModalComponent
   implements OnInit
 {
   // === REACTIVE FORM ===
-  chooseRecordForm: UntypedFormGroup = new UntypedFormGroup({});
+  chooseRecordForm: FormGroup = new FormGroup({});
 
   // === GRID SETTINGS ===
   public settings: GridSettings = {};
@@ -117,7 +113,7 @@ export class SafeChooseRecordModalComponent
    */
   constructor(
     private queryBuilder: QueryBuilderService,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private apollo: Apollo,
     public dialogRef: MatDialogRef<SafeChooseRecordModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData

@@ -8,7 +8,7 @@ import {
   DoCheck,
   ElementRef,
 } from '@angular/core';
-import { AbstractControl, UntypedFormControl } from '@angular/forms';
+import { AbstractControl, FormControl } from '@angular/forms';
 import { MatLegacyAutocomplete as MatAutocomplete } from '@angular/material/legacy-autocomplete';
 import { isMongoId } from '../../../../utils/is-mongo-id';
 import { Observable } from 'rxjs';
@@ -87,8 +87,8 @@ export class SafeFormsDropdownComponent
    *
    * @returns the source control
    */
-  get sourceFormControl(): UntypedFormControl {
-    return this.sourceControl as UntypedFormControl;
+  get sourceFormControl(): FormControl {
+    return this.sourceControl as FormControl;
   }
 
   /**

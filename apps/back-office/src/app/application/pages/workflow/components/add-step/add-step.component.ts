@@ -1,10 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   ContentType,
@@ -57,7 +53,7 @@ export class AddStepComponent
   @ViewChild('formSelect') formSelect?: MatSelect;
 
   // === REACTIVE FORM ===
-  public stepForm: UntypedFormGroup = new UntypedFormGroup({});
+  public stepForm: FormGroup = new FormGroup({});
   public stage = 1;
 
   /**
@@ -73,7 +69,7 @@ export class AddStepComponent
    */
   constructor(
     private route: ActivatedRoute,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private authService: SafeAuthService,
