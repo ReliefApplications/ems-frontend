@@ -7,7 +7,6 @@ import {
   MenuModule,
   ButtonModule,
   SelectMenuModule,
-  SelectOptionModule,
 } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -41,7 +40,6 @@ import { SafeEmptyModule } from '../ui/empty/empty.module';
     SafeEmptyModule,
     ButtonModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [SafeRecordHistoryComponent],
 })

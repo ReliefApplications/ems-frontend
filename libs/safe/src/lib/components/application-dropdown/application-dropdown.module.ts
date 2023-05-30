@@ -4,11 +4,7 @@ import { SafeApplicationDropdownComponent } from './application-dropdown.compone
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  SelectMenuModule,
-  SelectOptionModule,
-  FormWrapperModule,
-} from '@oort-front/ui';
+import { SelectMenuModule, FormWrapperModule } from '@oort-front/ui';
 /**
  * SafeApplicationDropdownModule is a class used to manage all the modules and components
  * related to the dropdown forms where you can select applications.
@@ -22,7 +18,6 @@ import {
     MatFormFieldModule,
     TranslateModule,
     SelectMenuModule,
-    SelectOptionModule,
     FormWrapperModule,
   ],
   exports: [SafeApplicationDropdownComponent],

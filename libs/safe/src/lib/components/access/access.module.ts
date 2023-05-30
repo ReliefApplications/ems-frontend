@@ -12,7 +12,6 @@ import {
   MenuModule,
   ButtonModule,
   SelectMenuModule,
-  SelectOptionModule,
   FormWrapperModule,
   DialogModule,
 } from '@oort-front/ui';
@@ -35,7 +34,6 @@ import {
     TranslateModule,
     ButtonModule,
     SelectMenuModule,
-    SelectOptionModule,
     FormWrapperModule,
   ],
   exports: [SafeAccessComponent],

@@ -304,7 +304,7 @@ export class FormWrapperDirective
         this.renderer.removeClass(selectButton, 'bg-white');
         this.renderer.addClass(selectButton, 'bg-gray-50');
       }
-      this.renderer.addClass(this.elementRef.nativeElement, 'pb-4');
+      // this.renderer.addClass(this.elementRef.nativeElement, 'pb-4');
       //Add reworked element to beyond label
       this.renderer.appendChild(
         this.beyondLabelContainer,

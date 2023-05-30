@@ -13,7 +13,6 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
   DialogModule,
   SelectMenuModule,
-  SelectOptionModule,
   FormWrapperModule,
   ButtonModule,
 } from '@oort-front/ui';
@@ -35,7 +34,6 @@ interface DialogData {
     TranslateModule,
     ButtonModule,
     SelectMenuModule,
-    SelectOptionModule,
     FormWrapperModule,
   ],
   selector: 'safe-email-template-modal',

@@ -12,7 +12,6 @@ import {
   SliderModule,
   FormWrapperModule,
   SelectMenuModule,
-  SelectOptionModule,
 } from '@oort-front/ui';
 
 /**
@@ -33,7 +32,6 @@ import {
     ButtonModule,
     TableModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [MapClorophletComponent],
 })

@@ -12,7 +12,6 @@ import {
   DividerModule,
   FormWrapperModule,
   SelectMenuModule,
-  SelectOptionModule,
   GraphQLSelectModule,
 } from '@oort-front/ui';
 import { AggregationTableModule } from '../../../aggregation/aggregation-table/aggregation-table.module';
@@ -37,7 +36,6 @@ import { AggregationTableModule } from '../../../aggregation/aggregation-table/a
     DividerModule,
     AggregationTableModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [TabMainComponent],
 })

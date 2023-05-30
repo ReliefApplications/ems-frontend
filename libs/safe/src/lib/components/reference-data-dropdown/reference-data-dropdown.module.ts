@@ -4,7 +4,7 @@ import { SafeReferenceDataDropdownComponent } from './reference-data-dropdown.co
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
-import { SelectMenuModule, SelectOptionModule } from '@oort-front/ui';
+import { SelectMenuModule } from '@oort-front/ui';
 
 /**
  * Reference data dropdown module.
@@ -18,7 +18,6 @@ import { SelectMenuModule, SelectOptionModule } from '@oort-front/ui';
     MatFormFieldModule,
     TranslateModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [SafeReferenceDataDropdownComponent],
 })

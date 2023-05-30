@@ -10,7 +10,6 @@ import {
   TableModule,
   PaginatorModule,
   SelectMenuModule,
-  SelectOptionModule,
 } from '@oort-front/ui';
 import { SafeIconModule } from '../../ui/icon/icon.module';
 import { FilterComponent } from '../role-resources-filter/role-resources-filter.component';
@@ -55,7 +54,6 @@ import { SafeFilterModule } from '../../filter/filter.module';
     IconModule,
     SafeFilterModule,
     SelectMenuModule,
-    SelectOptionModule,
     ButtonModule,
     TableModule,
   ],

@@ -26,6 +26,7 @@
       </div>
       <!-- Type selection -->
       <div uiFormFieldDirective [outline]="false" class="w-44">
+        <label>{{ 'common.type.one' | translate }}</label>
         <ui-select-menu formControlName="type">
           <ui-select-option
             *ngFor="let referenceTypeChoice of referenceTypeChoices"

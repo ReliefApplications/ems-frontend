@@ -25,7 +25,6 @@ import {
   RadioModule,
   ButtonModule,
   SelectMenuModule,
-  SelectOptionModule,
   FormWrapperModule,
   DialogModule,
 } from '@oort-front/ui';
@@ -57,7 +56,6 @@ interface DialogData {
     ButtonModule,
     RadioModule,
     SelectMenuModule,
-    SelectOptionModule,
     FormWrapperModule,
   ],
   selector: 'safe-convert-modal',

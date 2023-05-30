@@ -11,7 +11,6 @@ import {
   TextareaModule,
   FormWrapperModule,
   SelectMenuModule,
-  SelectOptionModule,
 } from '@oort-front/ui';
 
 /**
@@ -32,7 +31,6 @@ import {
     ButtonModule,
     FormWrapperModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [RoleDetailsComponent],
 })

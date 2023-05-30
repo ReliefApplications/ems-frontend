@@ -12,7 +12,6 @@ import { SafeChartModule } from '../chart/chart.module';
 import {
   ExpansionPanelModule,
   SelectMenuModule,
-  SelectOptionModule,
   TabsModule,
   TooltipModule,
 } from '@oort-front/ui';
@@ -51,7 +50,6 @@ import { TabDisplayModule } from './tab-display/tab-display.module';
     TabDisplayModule,
     TooltipModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [SafeChartSettingsComponent],
 })

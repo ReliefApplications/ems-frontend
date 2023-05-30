@@ -21,7 +21,6 @@ import {
   ButtonModule,
   ExpansionPanelModule,
   SelectMenuModule,
-  SelectOptionModule,
 } from '@oort-front/ui';
 
 /**
@@ -53,7 +52,6 @@ import {
     ButtonModule,
     FormWrapperModule,
     SelectMenuModule,
-    SelectOptionModule,
   ],
   exports: [
     SafePipelineComponent,
