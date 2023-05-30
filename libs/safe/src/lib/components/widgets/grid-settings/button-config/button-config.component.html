@@ -322,7 +322,6 @@
               'components.widget.settings.grid.buttons.tooltip.publish'
                 | translate
             "
-            matTooltipPosition="right"
           ></safe-icon>
         </ng-container>
       </ui-checkbox>
@@ -385,7 +384,14 @@
           </ui-button>
         </div>
         <!-- Templates -->
-        <div uiFormFieldDirective>
+        <div
+          [uiErrorMessage]="'components.templates.errors.empty' | translate"
+          [uiErrorMessageIf]="
+            formGroup.get('sendMail')?.value &&
+            !formGroup.get('templates')?.valid
+          "
+          uiFormFieldDirective
+        >
           <label>{{ 'components.templates.available' | translate }}</label>
           <ui-select-menu
             class="select"
@@ -419,13 +425,6 @@
             [uiTooltip]="'components.templates.edit.new' | translate"
           >
           </ui-button>
-          <mat-error
-            *ngIf="
-              formGroup.get('sendMail')?.value &&
-              !formGroup.get('templates')?.valid
-            "
-            >{{ 'components.templates.errors.empty' | translate }}</mat-error
-          >
         </div>
         <!-- Export dataset -->
         <ui-checkbox formControlName="export">
