@@ -19,15 +19,17 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 // @TODO: Remove SafeIconModule import after ui-icon is being used in the app
 import { SafeIconModule } from '../../../ui/icon/icon.module';
 import {
   ButtonModule,
   ChipModule,
   DialogModule,
+  ErrorMessageModule,
   FormWrapperModule,
 } from '@oort-front/ui';
+import { BehaviorSubject } from 'rxjs';
 
 /** Model for the data input */
 interface DialogData {
@@ -69,6 +71,7 @@ export function codesFactory(): () => any {
     SafeIconModule,
     ChipModule,
     FormWrapperModule,
+    ErrorMessageModule,
   ],
   selector: 'safe-edit-distribution-list-modal',
   templateUrl: './edit-distribution-list-modal.component.html',
@@ -78,6 +81,8 @@ export class EditDistributionListModalComponent implements OnInit {
   // === REACTIVE FORM ===
   public form: UntypedFormGroup = new UntypedFormGroup({});
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
+  errorEmails = new BehaviorSubject<boolean>(false);
+  errorEmailMessages = new BehaviorSubject<string>('');
 
   /** @returns list of emails */
   get emails(): string[] {
@@ -90,11 +95,13 @@ export class EditDistributionListModalComponent implements OnInit {
    * Component for edition of distribution list
    *
    * @param formBuilder Angular form builder service
+   * @param translateService TranslateService
    * @param dialogRef Material dialog ref of the component
    * @param data Data input of the modal
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
+    private translateService: TranslateService,
     public dialogRef: DialogRef<EditDistributionListModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData
   ) {}
@@ -116,10 +123,6 @@ export class EditDistributionListModalComponent implements OnInit {
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
-        // const input =
-        //   event.type === 'focusout'
-        //     ? this.emailsInput?.nativeElement
-        //     : event.input;
         const value =
           event.type === 'focusout'
             ? this.emailsInput?.nativeElement.value
@@ -139,7 +142,34 @@ export class EditDistributionListModalComponent implements OnInit {
           } else {
             this.form.get('emails')?.setErrors({ pattern: true });
           }
+        } else {
+          this.form.get('emails')?.setErrors({ required: true });
+          if (this.form.get('emails')?.hasError('pattern')) {
+            const currentErrors = this.form.get('emails')?.errors;
+            delete currentErrors?.pattern;
+            if (currentErrors) {
+              this.form.get('emails')?.setErrors(currentErrors);
+            }
+          }
         }
+        const hasError =
+          ((this.form.get('emails')?.hasError('required') &&
+            this.form.get('emails')?.touched) ||
+            this.form.get('emails')?.hasError('pattern')) ??
+          false;
+        this.errorEmails.next(hasError);
+        const errorMessage: string = this.form
+          .get('emails')
+          ?.hasError('pattern')
+          ? this.translateService.instant(
+              'components.distributionLists.errors.emails.pattern'
+            )
+          : this.form.get('emails')?.hasError('required')
+          ? this.translateService.instant(
+              'components.distributionLists.errors.emails.required'
+            )
+          : '';
+        this.errorEmailMessages.next(errorMessage);
       },
       event.type === 'focusout' ? 500 : 0
     );

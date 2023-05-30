@@ -7,7 +7,9 @@ import {
   Renderer2,
   ElementRef,
   OnDestroy,
+  Optional,
 } from '@angular/core';
+import { FormWrapperDirective } from '../form-wrapper/form-wrapper.directive';
 
 /**
  * UI Chip list linked to a input directive
@@ -38,10 +40,15 @@ export class ChipInputDirective implements AfterContentInit, OnDestroy {
   /**
    * UI Chip input directive constructor
    *
+   * @param formWrapperDirective form wrapper directive
    * @param renderer Renderer2
    * @param elementRef ElementRef
    */
-  constructor(private renderer: Renderer2, private elementRef: ElementRef) {}
+  constructor(
+    @Optional() private formWrapperDirective: FormWrapperDirective,
+    private renderer: Renderer2,
+    private elementRef: ElementRef
+  ) {}
 
   ngAfterContentInit() {
     this.setWrapperDiv();
@@ -73,9 +80,17 @@ export class ChipInputDirective implements AfterContentInit, OnDestroy {
     const wrapper = this.renderer.createElement('div');
     const parent = this.elementRef.nativeElement.parentNode;
     this.renderer.addClass(this.elementRef.nativeElement, 'flex-1');
-    this.renderer.insertBefore(parent, wrapper, this.elementRef.nativeElement);
-    this.renderer.appendChild(wrapper, this.chipList);
-    this.renderer.appendChild(wrapper, this.elementRef.nativeElement);
+    // If no form wrapper directive to manage element insertion
+    // We insert chip list in the default element configuration
+    if (!this.formWrapperDirective) {
+      this.renderer.insertBefore(
+        parent,
+        wrapper,
+        this.elementRef.nativeElement
+      );
+      this.renderer.appendChild(wrapper, this.chipList);
+      this.renderer.appendChild(wrapper, this.elementRef.nativeElement);
+    }
 
     // Add classes to the chip list wrapper
     this.renderer.addClass(this.chipList, 'flex');
