@@ -83,10 +83,10 @@ export class SafeEditorComponent implements OnInit {
     let result = regex.exec(html);
     console.log('we are here', regex, html);
     while (result !== null) {
-      const pageId = result[0].substring(
-        result[0].indexOf('(') + 1,
-        result[0].lastIndexOf(')')
-      );
+      const pageId = result[0]
+        .substring(result[0].indexOf('(') + 1, result[0].lastIndexOf(')'))
+        .trim();
+      console.log('PAGE ID', pageId);
       //Get current app ID through the url of the current page
       let currentAppId: string;
       if (this.router.url.includes('applications/')) {

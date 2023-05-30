@@ -109,13 +109,12 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   }
 
   public applyPage = async (html: string): Promise<string> => {
-    const regex = new RegExp(`{{page\\([a-z0-9]{24}\\)}}`);
+    const regex = new RegExp(`{{page\\(\\s*[a-z0-9]{24}\\s*\\)}}`);
     let result = regex.exec(html);
     while (result !== null) {
-      const pageId = result[0].substring(
-        result[0].indexOf('(') + 1,
-        result[0].lastIndexOf(')')
-      );
+      const pageId = result[0]
+        .substring(result[0].indexOf('(') + 1, result[0].lastIndexOf(')'))
+        .trim();
       //Get current app ID through the url of the current page
       let currentAppId: string;
       if (this.router.url.includes('applications/')) {
