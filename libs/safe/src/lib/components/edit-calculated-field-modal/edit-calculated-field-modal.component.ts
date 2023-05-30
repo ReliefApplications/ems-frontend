@@ -12,7 +12,6 @@ import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
 import { CommonModule } from '@angular/common';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import {
   DialogModule,
@@ -41,7 +40,6 @@ interface DialogData {
     ReactiveFormsModule,
     MatFormFieldModule,
     FormWrapperModule,
-    MatSelectModule,
     DialogModule,
     EditorModule,
     ButtonModule,

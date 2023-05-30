@@ -15,7 +15,7 @@
     <form [formGroup]="formGroup" class="flex flex-col pb-1">
       <div class="flex gap-x-2 flex-wrap">
         <!-- Title -->
-        <div uiFormFieldDirective  class="flex-auto">
+        <div uiFormFieldDirective class="flex-auto">
           <label>{{ 'common.name' | translate }}</label>
           <input
             type="text"
@@ -24,16 +24,17 @@
           />
         </div>
         <!-- Type -->
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{
-            'models.customNotification.type' | translate
-          }}</mat-label>
-          <mat-select formControlName="notificationType">
-            <mat-option value="email">
+        <div uiFormFieldDirective [outline]="false" class="flex-1 w-28">
+          <label>{{ 'models.customNotification.type' | translate }}</label>
+          <ui-select-menu formControlName="notificationType">
+            <ui-select-option
+              value="email"
+              [label]="'common.email.one' | translate"
+            >
               {{ 'common.email.one' | translate }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
       </div>
       <ui-divider></ui-divider>
       <!-- Schedule builder -->
@@ -48,41 +49,40 @@
       <h3>{{ 'components.customNotifications.edit.dataset' | translate }}</h3>
       <div class="flex flex-col">
         <!-- Resource -->
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-          <safe-graphql-select
+        <div uiFormFieldDirective>
+          <label>{{ 'common.resource.one' | translate }}</label>
+          <ui-graphql-select
             valueField="id"
             textField="name"
             [query]="resourcesQuery"
             formControlName="resource"
             [selectedElements]="[resource]"
           >
-          </safe-graphql-select>
-        </mat-form-field>
+          </ui-graphql-select>
+        </div>
         <!-- Layout -->
         <ng-container *ngIf="resource">
           <ng-container *ngIf="layout">
             <!-- Layout is selected -->
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'common.layout.one' | translate }}</mat-label>
-              <mat-select [disabled]="true" [value]="layout.id">
-                <mat-option [value]="layout.id">{{ layout.name }}</mat-option>
-              </mat-select>
+
+            <div uiFormFieldDirective [outline]="false" class="w-60">
+              <label>{{ 'common.layout.one' | translate }}</label>
+              <input [value]="layout.id" [disabled]="true" />
               <ui-button
-                matSuffix
+                uiPrefix
                 variant="primary"
                 [isIcon]="true"
                 icon="edit"
                 (click)="editLayout()"
               ></ui-button>
               <ui-button
-                matSuffix
+                uiSuffix
                 variant="danger"
                 [isIcon]="true"
                 icon="close"
                 (click)="removeLayout()"
               ></ui-button>
-            </mat-form-field>
+            </div>
           </ng-container>
           <ng-container *ngIf="!formGroup.value.layout">
             <!-- Layout is not selected yet -->
@@ -102,18 +102,20 @@
       <h3>{{ 'components.customNotifications.edit.email' | translate }}</h3>
       <div class="flex flex-col">
         <!-- Template -->
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{ 'common.template.one' | translate }}</mat-label>
-          <mat-select formControlName="template">
-            <mat-option
+
+        <div uiFormFieldDirective [outline]="false" class="w-60 flex-1">
+          <label>{{ 'common.template.one' | translate }}</label>
+          <ui-select-menu formControlName="template">
+            <ui-select-option
               *ngFor="let template of templates"
               [value]="template.id"
+              [label]="template.name"
             >
               {{ template.name }}
-            </mat-option>
-          </mat-select>
+            </ui-select-option>
+          </ui-select-menu>
           <safe-icon
-            matSuffix
+            uiPrefix
             icon="info_outline"
             class="cursor-pointer"
             variant="grey"
@@ -121,7 +123,7 @@
             uiTooltip="HINT"
           ></safe-icon>
           <ui-button
-            matSuffix
+            uiSuffix
             [isIcon]="true"
             icon="add_circle_outline"
             variant="primary"
@@ -129,7 +131,7 @@
             [uiTooltip]="'components.templates.edit.new' | translate"
           >
           </ui-button>
-        </mat-form-field>
+        </div>
         <!-- Recipients -->
         <h4>
           {{
@@ -178,44 +180,45 @@
         <!-- Recipients value -->
         <div class="mt-6 flex">
           <!-- Using user field -->
-          <mat-form-field
-            appearance="outline"
+
+          <div
+            uiFormFieldDirective
+            [outline]="false"
+            class="w-60 flex-1"
             *ngIf="formGroup.value.recipientsType === 'field'"
-            class="flex-1"
           >
-            <mat-label>{{
+            <label>{{
               'components.customNotifications.edit.recipients.userField'
                 | translate
-            }}</mat-label>
-            <mat-select formControlName="recipients">
-              <mat-option
+            }}</label>
+            <ui-select-menu formControlName="recipients">
+              <ui-select-option
                 *ngFor="let field of userFields"
                 [value]="field.name"
-                >{{ field.name }}</mat-option
+                >{{ field.name }}</ui-select-option
               >
-            </mat-select>
-          </mat-form-field>
+            </ui-select-menu>
+          </div>
           <!-- Using distribution list -->
-          <mat-form-field
-            appearance="outline"
+          <div
+            uiFormFieldDirective
+            [outline]="false"
+            class="w-60 flex-1"
             *ngIf="formGroup.value.recipientsType === 'distributionList'"
-            class="flex-1"
           >
-            <mat-label>{{
-              'common.distributionList.one' | translate
-            }}</mat-label>
-            <mat-select formControlName="recipients">
-              <mat-option
+            <label>{{ 'common.distributionList.one' | translate }}</label>
+            <ui-select-menu formControlName="recipients">
+              <ui-select-option
                 *ngFor="let list of distributionLists"
                 [value]="list.id"
-                >{{ list.name }}</mat-option
+                [label]="list.name"
+                >{{ list.name }}</ui-select-option
               >
-            </mat-select>
-          </mat-form-field>
+            </ui-select-menu>
+          </div>
           <!-- Using email -->
           <div
             uiFormFieldDirective
-            
             *ngIf="formGroup.value.recipientsType === 'email'"
             class="flex-1"
           >

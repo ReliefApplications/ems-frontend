@@ -2,20 +2,30 @@
   <!-- Header -->
   <div class="flex gap-2 flex-wrap justify-between mb-8">
     <h1 class="!m-0">{{ 'common.general' | translate }}</h1>
-    <mat-form-field appearance="outline" class="p-0">
-      <mat-label>{{ 'common.status' | translate }}</mat-label>
-      <mat-select formControlName="status">
-        <mat-option value="active">
+    <!-- Selection of status -->
+    <div uiFormFieldDirective [outline]="false" class="p-0">
+      <label>{{ 'common.status' | translate }}</label>
+      <ui-select-menu formControlName="status">
+        <ui-select-option
+          value="active"
+          [label]="'common.status_active' | translate"
+        >
           {{ 'common.status_active' | translate }}
-        </mat-option>
-        <mat-option value="pending">
+        </ui-select-option>
+        <ui-select-option
+          value="pending"
+          [label]="'common.status_pending' | translate"
+        >
           {{ 'common.status_pending' | translate }}
-        </mat-option>
-        <mat-option value="archived">
+        </ui-select-option>
+        <ui-select-option
+          value="archived"
+          [label]="'common.status_archived' | translate"
+        >
           {{ 'common.status_archived' | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
   </div>
   <!-- Settings -->
   <div class="flex flex-col gap-4">

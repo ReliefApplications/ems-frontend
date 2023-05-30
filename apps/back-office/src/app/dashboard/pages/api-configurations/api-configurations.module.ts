@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ApiConfigurationsRoutingModule } from './api-configurations-routing.module';
 import { ApiConfigurationsComponent } from './api-configurations.component';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import {
   FormsModule as AngularFormsModule,
   ReactiveFormsModule,
@@ -19,6 +18,7 @@ import {
   ChipModule,
   MenuModule,
   SpinnerModule,
+  SelectMenuModule,
   TableModule,
   DialogModule,
   FormWrapperModule,
@@ -38,7 +38,6 @@ import {
     ChipModule,
     MatFormFieldModule,
     FormWrapperModule,
-    MatSelectModule,
     AngularFormsModule,
     ReactiveFormsModule,
     DialogModule,
@@ -49,6 +48,8 @@ import {
     SafeSkeletonTableModule,
     AbilityModule,
     ButtonModule,
+    SelectMenuModule,
+    FormWrapperModule,
     TableModule,
   ],
   exports: [ApiConfigurationsComponent],

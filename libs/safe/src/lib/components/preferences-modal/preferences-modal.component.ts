@@ -11,12 +11,13 @@ import { getLanguageNativeName } from '../../utils/languages';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import {
   TabsModule,
   DialogModule,
   ButtonModule,
   TooltipModule,
+  SelectMenuModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
 // @TODO: Remove SafeIconModule import after ui-icon is being used in the app
@@ -37,12 +38,13 @@ interface PreferencesDialogData {
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatSelectModule,
     TabsModule,
     DialogModule,
     SafeIconModule,
     ButtonModule,
     TooltipModule,
+    SelectMenuModule,
+    FormWrapperModule,
   ],
   selector: 'safe-preferences-modal',
   templateUrl: './preferences-modal.component.html',

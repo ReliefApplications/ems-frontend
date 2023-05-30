@@ -5,9 +5,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
-import { TabsModule } from '@oort-front/ui';
+import {
+  SelectMenuModule,
+  TabsModule,
+} from '@oort-front/ui';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
 import {
   CheckboxModule,
@@ -31,13 +33,13 @@ import {
     ToggleModule,
     MatInputModule,
     CheckboxModule,
-    MatSelectModule,
     TabsModule,
     TooltipModule,
     SafeIconModule,
     SafeQueryBuilderModule,
     ButtonModule,
     FormWrapperModule,
+    SelectMenuModule,
   ],
   exports: [ButtonConfigComponent],
 })

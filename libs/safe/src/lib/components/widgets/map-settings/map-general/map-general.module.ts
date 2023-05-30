@@ -6,8 +6,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
 import { SafeIconModule } from '../../../ui/icon/icon.module';
-import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
-import { AlertModule, FormWrapperModule } from '@oort-front/ui';
+import {
+  AlertModule,
+  FormWrapperModule,
+  GraphQLSelectModule,
+} from '@oort-front/ui';
 
 /**
  * Module of General settings of map widget
@@ -23,7 +26,7 @@ import { AlertModule, FormWrapperModule } from '@oort-front/ui';
     FormWrapperModule,
     SafeQueryBuilderModule,
     SafeIconModule,
-    SafeGraphQLSelectModule,
+    GraphQLSelectModule,
     AlertModule,
   ],
   exports: [MapGeneralComponent],

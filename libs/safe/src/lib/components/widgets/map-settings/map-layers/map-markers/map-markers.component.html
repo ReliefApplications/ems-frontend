@@ -4,36 +4,38 @@
 <div class="flex flex-col mt-0 mb-12" [formGroup]="form">
   <!-- Latitude and longitude -->
   <div class="flex gap-2">
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>{{ 'models.widget.map.latitude' | translate }}</mat-label>
-      <mat-select formControlName="latitude">
-        <mat-option *ngFor="let field of numberFields" [value]="field">
-          {{ field }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>{{ 'models.widget.map.longitude' | translate }}</mat-label>
-      <mat-select formControlName="longitude">
-        <mat-option *ngFor="let field of numberFields" [value]="field">
-          {{ field }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div uiFormFieldDirective class="w-full">
+      <label>{{ 'models.widget.map.latitude' | translate }}</label>
+      <ui-select-menu formControlName="latitude">
+        <ui-select-option *ngFor="let field of numberFields" [value]="field">{{
+          field
+        }}</ui-select-option>
+      </ui-select-menu>
+    </div>
+    <div uiFormFieldDirective class="w-full">
+      <label>{{ 'models.widget.map.longitude' | translate }}</label>
+      <ui-select-menu formControlName="longitude">
+        <ui-select-option *ngFor="let field of numberFields" [value]="field">{{
+          field
+        }}</ui-select-option>
+      </ui-select-menu>
+    </div>
   </div>
   <!-- Quick layer -->
-  <mat-form-field appearance="outline" class="w-full">
-    <mat-label>{{
+  <div uiFormFieldDirective class="w-full">
+    <label>{{
       'components.widget.settings.map.layers.point.category' | translate
-    }}</mat-label>
-    <mat-select formControlName="category">
-      <mat-option [value]="">{{ 'common.input.none' | translate }}</mat-option>
-      <mat-option *ngFor="let field of selectedFields" [value]="field">
-        {{ field }}
-      </mat-option>
-    </mat-select>
+    }}</label>
+    <ui-select-menu formControlName="category">
+      <ui-select-option [value]="">{{
+        'common.input.none' | translate
+      }}</ui-select-option>
+      <ui-select-option *ngFor="let field of selectedFields" [value]="field">{{
+        field
+      }}</ui-select-option>
+    </ui-select-menu>
     <safe-icon
-      matSuffix
+      uiSuffix
       icon="info"
       class="cursor-pointer"
       variant="grey"
@@ -41,18 +43,18 @@
         'components.widget.settings.map.tooltip.category' | translate
       "
     ></safe-icon>
-  </mat-form-field>
+  </div>
   <!-- Popup details selector -->
-  <mat-form-field appearance="outline" class="w-full">
-    <mat-label>
+  <div uiFormFieldDirective class="w-full">
+    <label>
       {{ 'components.widget.settings.map.popup.label' | translate }}
-    </mat-label>
-    <mat-select formControlName="popupFields" multiple>
-      <mat-option *ngFor="let field of selectedFields" [value]="field">
-        {{ field }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+    </label>
+    <ui-select-menu formControlName="popupFields" [multiselect]="true">
+      <ui-select-option *ngFor="let field of selectedFields" [value]="field">{{
+        field
+      }}</ui-select-option>
+    </ui-select-menu>
+  </div>
 </div>
 <!-- LIST of Marker rules -->
 <h2>
@@ -65,7 +67,7 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table cdk-table  uiTableWrapper [dataSource]="rules.value">
+    <table cdk-table uiTableWrapper [dataSource]="rules.value">
       <ng-container cdkColumnDef="color">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.preview' | translate }}

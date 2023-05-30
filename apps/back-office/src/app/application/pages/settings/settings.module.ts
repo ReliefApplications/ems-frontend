@@ -4,10 +4,10 @@ import { SettingsComponent } from './settings.component';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SettingsRoutingModule } from './settings-routing.module';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
+  SelectMenuModule,
   TextareaModule,
   FormWrapperModule,
 } from '@oort-front/ui';
@@ -23,10 +23,10 @@ import {
     SettingsRoutingModule,
     MatFormFieldModule,
     ReactiveFormsModule,
-    MatSelectModule,
     TranslateModule,
     TextareaModule,
     ButtonModule,
+    SelectMenuModule,
     FormWrapperModule,
   ],
 })

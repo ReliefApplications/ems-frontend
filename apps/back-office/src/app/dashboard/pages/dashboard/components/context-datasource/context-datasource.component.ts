@@ -9,14 +9,11 @@ import {
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import {
   PageContextT,
   ReferenceData,
   Resource,
-  SafeGraphQLSelectComponent,
-  SafeGraphQLSelectModule,
   SafeUnsubscribeComponent,
   SafeIconModule,
 } from '@oort-front/safe';
@@ -33,10 +30,14 @@ import {
   GET_RESOURCES,
 } from './graphql/queries';
 import {
+  ButtonModule,
+  SelectMenuModule,
+  FormWrapperModule,
   AlertModule,
   DialogModule,
-  ButtonModule,
   TooltipModule,
+  GraphQLSelectComponent,
+  GraphQLSelectModule,
 } from '@oort-front/ui';
 
 /** Default items per resources query, for pagination */
@@ -74,14 +75,15 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatSelectModule,
     MatFormFieldModule,
     DialogModule,
-    SafeGraphQLSelectModule,
     SafeIconModule,
     TooltipModule,
     ButtonModule,
+    SelectMenuModule,
+    FormWrapperModule,
     AlertModule,
+    GraphQLSelectModule,
   ],
   templateUrl: './context-datasource.component.html',
   styleUrls: ['./context-datasource.component.scss'],
@@ -102,10 +104,10 @@ export class ContextDatasourceComponent
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public refDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
 
-  @ViewChild(SafeGraphQLSelectComponent)
-  resourceSelect?: SafeGraphQLSelectComponent;
-  @ViewChild(SafeGraphQLSelectComponent)
-  refDataSelect?: SafeGraphQLSelectComponent;
+  @ViewChild(GraphQLSelectComponent)
+  resourceSelect?: GraphQLSelectComponent;
+  @ViewChild(GraphQLSelectComponent)
+  refDataSelect?: GraphQLSelectComponent;
 
   // Available fields
   public availableFields: string[] = [];

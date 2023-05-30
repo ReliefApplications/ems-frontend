@@ -14,7 +14,6 @@ import { QueryBuilderService } from '../../services/query-builder/query-builder.
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SpinnerModule } from '@oort-front/ui';
 import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
@@ -22,8 +21,13 @@ import { SafeApplicationDropdownModule } from '../application-dropdown/applicati
 import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { DialogModule } from '@oort-front/ui';
-import { ButtonModule } from '@oort-front/ui';
+import {
+  DialogModule,
+  FormWrapperModule,
+  SelectMenuModule,
+  ButtonModule,
+} from '@oort-front/ui';
+import {} from '@oort-front/ui';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.
@@ -56,7 +60,6 @@ interface IRecord {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSelectModule,
     MatButtonModule,
     SpinnerModule,
     SafeResourceDropdownModule,
@@ -66,6 +69,8 @@ interface IRecord {
     TranslateModule,
     DialogModule,
     ButtonModule,
+    FormWrapperModule,
+    SelectMenuModule,
   ],
   selector: 'safe-choose-record-modal',
   templateUrl: './choose-record-modal.component.html',

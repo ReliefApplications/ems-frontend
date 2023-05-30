@@ -8,11 +8,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { DialogModule } from '@oort-front/ui';
-import { ButtonModule } from '@oort-front/ui';
+import {
+  DialogModule,
+  SelectMenuModule,
+  FormWrapperModule,
+  ButtonModule,
+} from '@oort-front/ui';
 
 /** Interface for the dialog data input */
 interface DialogData {
@@ -26,11 +29,12 @@ interface DialogData {
     CommonModule,
     DialogModule,
     MatFormFieldModule,
-    MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
     ButtonModule,
+    SelectMenuModule,
+    FormWrapperModule,
   ],
   selector: 'safe-email-template-modal',
   templateUrl: './email-template-modal.component.html',

@@ -9,7 +9,6 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import {
   FormsModule as AngularFormsModule,
   ReactiveFormsModule,
@@ -21,9 +20,10 @@ import {
   DividerModule,
   MenuModule,
   ButtonModule,
-  FormWrapperModule,
   IconModule,
   SpinnerModule,
+  SelectMenuModule,
+  FormWrapperModule,
   TableModule,
   ChipModule,
   PaginatorModule,
@@ -45,7 +45,6 @@ import {
     MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,
-    MatSelectModule,
     DividerModule,
     PaginatorModule,
     TranslateModule,
@@ -55,6 +54,7 @@ import {
     ButtonModule,
     FormWrapperModule,
     IconModule,
+    SelectMenuModule,
     TableModule,
     ChipModule,
   ],
