@@ -626,6 +626,15 @@
 			},
 			"saveSurvey": "******"
 		},
+		"formMapProperties": {
+			"geofields": {
+				"editModal": {
+					"editGeofield": "******",
+					"label": "******",
+					"value": "******"
+				}
+			}
+		},
 		"forms": {
 			"isCore": "******",
 			"paginator": {

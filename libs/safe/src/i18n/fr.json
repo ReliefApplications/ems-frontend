@@ -631,6 +631,15 @@
 			},
 			"saveSurvey": "Sauvegarde du questionnaire"
 		},
+		"formMapProperties": {
+			"geofields": {
+				"editModal": {
+					"editGeofield": "@TODO",
+					"label": "@TODO",
+					"value": "@TODO"
+				}
+			}
+		},
 		"forms": {
 			"isCore": "Est un formulaire source",
 			"paginator": {

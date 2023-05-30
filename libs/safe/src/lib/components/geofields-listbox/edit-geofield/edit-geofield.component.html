@@ -1,9 +1,9 @@
 <safe-modal size="small">
-    <h1 mat-dialog-title>Edit Geofield</h1>
+    <h1 mat-dialog-title>{{ 'components.formMapProperties.geofields.editModal.editGeofield' | translate }}</h1>
     <div mat-dialog-content>
       <form [formGroup]="geoFieldForm" class="flex flex-col">
         <mat-form-field appearance="outline">
-          <mat-label>Value</mat-label>
+          <mat-label>{{ 'components.formMapProperties.geofields.editModal.value' | translate }}</mat-label>
           <input
             matInput
             type="text"
@@ -12,12 +12,11 @@
           />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Label</mat-label>
+          <mat-label>{{ 'components.formMapProperties.geofields.editModal.label' | translate }}</mat-label>
           <input
             matInput
             formControlName="label"
             type="text"
-            [placeholder]="'label'"
             [value]="data.geofield.label"
           />
         </mat-form-field>
@@ -34,7 +33,7 @@
         cdkFocusInitial
         [disabled]="!geoFieldForm.valid"
       >
-        {{ 'common.create' | translate }}
+        {{ 'common.edit' | translate }}
       </safe-button>
     </div>
   </safe-modal>

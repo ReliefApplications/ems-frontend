@@ -18,21 +18,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Geofield } from '@oort-front/safe';
-import { Apollo, QueryRef } from 'apollo-angular';
-import { GetGeoFieldsQueryResponse, GET_GEOFIELDS, GetNotificationsQueryResponse, GET_NOTIFICATIONS } from './graphql/queries';
-import { EditGeoFieldMutationResponse, EDIT_GEOFIELD } from './graphql/mutations';
+import { Apollo } from 'apollo-angular';
 
 /** All available fields */
-export const ALL_FIELDS: (keyof GeoProperties)[] = [
-  'coordinates',
-  'city',
-  'countryName',
-  'countryCode',
-  'district',
-  'region',
-  // 'street',
-  'subRegion',
-  'address',
+export const ALL_FIELDS: {value: keyof GeoProperties, label: string}[]= [
+  {value: 'coordinates', label: 'Coordinates'},
+  {value: 'city', label: 'City'},
+  {value: 'countryName', label: 'Country Name'},
+  {value: 'countryCode', label: 'Country Code'},
+  {value: 'district', label: 'District'},
+  {value: 'region', label: 'Region'},
+  //{value: 'street', label: 'Street'},
+  {value: 'subRegion', label: 'Sub Region'},
+  {value: 'address', label: 'Address'}
 ];
 
 /** Component for the selection of the interest fields from geospatial question */
@@ -52,9 +50,8 @@ export const ALL_FIELDS: (keyof GeoProperties)[] = [
   styleUrls: ['./geofields-listbox.component.scss'],
 })
 export class GeofieldsListboxComponent implements OnInit, OnChanges {
-  @Input() selectedFields: (keyof GeoProperties)[] = [];
-  private geofields: Geofield[] = [];
-  public availableFields: (keyof GeoProperties)[] = ALL_FIELDS;
+  @Input() selectedFields: {value: keyof GeoProperties, label: string}[] = [];
+  public availableFields = ALL_FIELDS;
   public toolbarSettings: ListBoxToolbarConfig = {
     position: 'right',
     tools: [
@@ -72,29 +69,13 @@ export class GeofieldsListboxComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.availableFields = ALL_FIELDS.filter(
-      (x) => !this.selectedFields.includes(x)
-    );
-
-    const teste = this.apollo.watchQuery<GetGeoFieldsQueryResponse>({
-      query: GET_GEOFIELDS
-    });
-    teste.valueChanges.subscribe(
-      ({ data }) =>
-        console.log(data)
-    );
-
-    const teste2 = this.apollo.watchQuery<GetNotificationsQueryResponse>({
-      query: GET_NOTIFICATIONS
-    });
-    teste2.valueChanges.subscribe(
-      ({ data }) =>
-        console.log(data)
+      (x) => !this.selectedFields.some(obj => obj.value.includes(x.value))
     );
   }
 
   ngOnChanges(): void {
     this.availableFields = ALL_FIELDS.filter(
-      (x) => !this.selectedFields.includes(x)
+      (x) => !this.selectedFields.some(obj => obj.value.includes(x.value))
     );
   }
 
@@ -114,7 +95,13 @@ export class GeofieldsListboxComponent implements OnInit, OnChanges {
     });
     dialogRef.afterClosed().subscribe((value) => {
       if (value) {
-        alert(value);
+        const modified_fields = this.availableFields.map(field => {
+          if(field.value === geofield.value){
+            return {...field, label: value.label}
+          }
+          return field;
+        })
+        this.availableFields = modified_fields;
       }
     });
   }

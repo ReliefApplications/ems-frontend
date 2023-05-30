@@ -1,0 +1,10 @@
+.geofields-div{
+    &:hover{
+        .icon-geofield{
+            display: block;
+        }
+    }
+}
+.icon-geofield{
+    display: none;
+}

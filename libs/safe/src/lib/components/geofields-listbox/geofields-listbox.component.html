@@ -8,10 +8,12 @@
     (actionClick)="handleActionClick()"
   >
     <ng-template kendoListBoxItemTemplate let-dataItem>
-      <span>
-        {{ dataItem }}
-      </span>
-      <mat-icon (click)="editLabel(dataItem)">edit</mat-icon>
+      <div class="geofields-div inline-flex w-full">
+        <span>
+          {{ dataItem.label }}
+        </span>
+        <mat-icon (click)="editLabel(dataItem)" class="icon-geofield">edit</mat-icon>
+      </div>
     </ng-template>
   </kendo-listbox>
   <kendo-listbox
@@ -20,5 +22,10 @@
     [data]="selectedFields"
     [toolbar]="false"
   >
+    <ng-template kendoListBoxItemTemplate let-dataItem>
+      <span>
+        {{ dataItem.label }}
+      </span>
+  </ng-template>
   </kendo-listbox>
 </div>
