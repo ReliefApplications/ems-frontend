@@ -8,7 +8,7 @@
       'components.queryBuilder.filter.operator' | translate
     }}</label>
     <ui-select-menu formControlName="operator">
-      <ui-select-option *ngFor="let operator of operators" [value]="operator.value" [label]="operator.label || ''">{{
+      <ui-select-option *ngFor="let operator of operators" [value]="operator.value">{{
         operator.label | translate
       }}</ui-select-option>
     </ui-select-menu>
@@ -40,20 +40,14 @@
           <ui-select-option 
             *ngIf="!field.fields" 
             [value]="field.name" 
-            [label]="field.text || field.name || ''"
           >
             {{ field.text || field.name }}
           </ui-select-option>
           
-          <ui-select-option *ngIf="field.fields" [label]="field.text || field.name" [isGroup]="true">
+          <ui-select-option *ngIf="field.fields" [isGroup]="true">
             <ui-select-option
               *ngFor="let subField of field.fields"
               [value]="field.name + '.' + subField.name"
-              [label]="
-                field.name === '$attribute'
-                ? subField.text || subField.name
-                : field.name + ' - ' + (subField.text || subField.name)
-              "
             >
               {{
                 field.name === '$attribute'
@@ -82,13 +76,13 @@
         'common.value.one' | translate
       }}</label>
       <ui-select-menu formControlName="value">
-        <ui-select-option [value]="true" [label]="'common.true' | translate">
+        <ui-select-option [value]="true">
           {{ 'common.true' | translate }}
         </ui-select-option>
-        <ui-select-option [value]="false" [label]="'common.false' | translate">
+        <ui-select-option [value]="false">
           {{ 'common.false' | translate }}
         </ui-select-option>
-        <ui-select-option [value]="null" [label]="'common.input.none' | translate">
+        <ui-select-option [value]="null">
           {{ 'common.input.none' | translate }}
         </ui-select-option>
       </ui-select-menu>
@@ -111,7 +105,7 @@
       }}</label>
       <ui-select-menu *ngIf="!field.multiSelect" formControlName="value">
         <ui-select-option>{{ 'common.input.none' | translate }}</ui-select-option>
-        <ui-select-option *ngFor="let option of field.options" [value]="option.value" [label]="option.text">
+        <ui-select-option *ngFor="let option of field.options" [value]="option.value">
           {{ option.text }}
         </ui-select-option>
       </ui-select-menu>
@@ -121,7 +115,7 @@
         [multiselect]="true"
       >
         <ui-select-option>{{ 'common.input.none' | translate }}</ui-select-option>
-        <ui-select-option *ngFor="let option of field.options" [value]="option.value" [label]="option.text">
+        <ui-select-option *ngFor="let option of field.options" [value]="option.value">
           {{ option.text }}
         </ui-select-option>
       </ui-select-menu>

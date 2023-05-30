@@ -304,6 +304,8 @@ export class FormWrapperDirective
       if (this.currentGraphQLSelectComponent) {
         this.currentGraphQLSelectComponent.elementSelect.isGraphQlSelect = true;
       }
+      this.renderer.removeClass(this.beyondLabelContainer, 'py-1.5');
+      this.renderer.addClass(this.beyondLabelContainer, 'py-1');
       const currentElement = this.currentGraphQLSelectComponent
         ? this.currentGraphQLSelectComponent.elementRef
         : this.currentSelectElement;

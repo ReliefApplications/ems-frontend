@@ -29,7 +29,6 @@
           <ui-select-menu formControlName="notificationType">
             <ui-select-option
               value="email"
-              [label]="'common.email.one' | translate"
             >
               {{ 'common.email.one' | translate }}
             </ui-select-option>
@@ -109,7 +108,6 @@
             <ui-select-option
               *ngFor="let template of templates"
               [value]="template.id"
-              [label]="template.name"
             >
               {{ template.name }}
             </ui-select-option>
@@ -211,7 +209,6 @@
               <ui-select-option
                 *ngFor="let list of distributionLists"
                 [value]="list.id"
-                [label]="list.name"
                 >{{ list.name }}</ui-select-option
               >
             </ui-select-menu>

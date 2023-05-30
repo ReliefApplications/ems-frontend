@@ -17,7 +17,6 @@
             <ui-select-option
               *ngIf="field.type.kind !== 'SCALAR'"
               [isGroup]="true"
-              [label]="field.name"
             >
               <ui-select-option
                 *ngFor="let subField of field.fields"

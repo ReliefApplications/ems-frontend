@@ -13,7 +13,7 @@
       <form [formGroup]="chooseRecordForm" *ngIf="!isSearchActivated">
         <div class="flex flex-col">
           
-          <div uiFormFieldDirective [outline]="false">
+          <div uiFormFieldDirective>
             <label>{{ 'common.record.one' | translate }}</label>
             <ui-select-menu 
               formControlName="record"
@@ -21,7 +21,6 @@
               <ui-select-option
                 *ngFor="let record of records$ | async"
                 [value]="record.value"
-                [label]="record.label"
               >
                 {{ record.label }}
               </ui-select-option>

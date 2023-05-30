@@ -52,7 +52,6 @@
               <ui-select-option>--</ui-select-option>
               <ui-select-option
                 *ngFor="let form of relatedForms"
-                [label]="form.name ?? ''"
                 [value]="form.id"
               >
                 {{ form.name }}
@@ -126,7 +125,6 @@
                 <ui-select-option
                   *ngFor="let field of scalarFields"
                   [value]="field"
-                  [label]="field.name ?? ''"
                   >{{ field.name }}</ui-select-option
                 >
               </ui-select-menu>
@@ -217,7 +215,6 @@
             <ui-select-option
               *ngFor="let resource of relatedResources"
               [value]="resource.id"
-              [label]="resource.name ?? ''"
             >
               {{ resource.name }}
             </ui-select-option>
@@ -231,7 +228,6 @@
             <ui-select-option
               *ngFor="let form of targetResource.forms"
               [value]="form.id"
-              [label]="form.name ?? ''"
             >
               {{ form.name }}
             </ui-select-option>
@@ -249,7 +245,6 @@
               <ui-select-option
                 *ngFor="let field of targetResource.fields"
                 [value]="field.id"
-                [label]="field.name ?? ''"
               >
                 {{ field.name }}
               </ui-select-option>
@@ -292,7 +287,6 @@
             <ui-select-option
               *ngFor="let channel of channels"
               [value]="channel.id"
-              [label]="channel.title ?? ''"
             >
               {{ channel.title }}
             </ui-select-option>
@@ -333,7 +327,6 @@
             <ui-select-option
               *ngFor="let channel of channels"
               [value]="channel.id"
-              [label]="channel.title ?? ''"
             >
               {{ channel.title }}
             </ui-select-option>
@@ -358,7 +351,6 @@
             <ui-select-option
               *ngFor="let list of distributionLists"
               [value]="list.id"
-              [label]="list.name"
             >
               {{ list.name }}
             </ui-select-option>
@@ -401,7 +393,6 @@
             <ui-select-option
               *ngFor="let template of mailTemplates"
               [value]="template.id"
-              [label]="template.name ?? ''"
             >
               {{ template.name }}
             </ui-select-option>
