@@ -3,7 +3,6 @@ import { moduleMetadata, Meta, StoryFn } from '@storybook/angular';
 import { AutocompleteModule } from './autocomplete.module';
 import { AutocompleteComponent } from './autocomplete.component';
 import { IconModule } from '../icon/icon.module';
-import { OptionModule } from '../option/option.module';
 import { CommonModule } from '@angular/common';
 
 /** Autocomplete options example */
@@ -72,7 +71,6 @@ export default {
         AutocompleteModule,
         ReactiveFormsModule,
         IconModule,
-        OptionModule,
       ],
     }),
   ],

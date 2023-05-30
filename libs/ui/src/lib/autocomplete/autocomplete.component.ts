@@ -5,7 +5,7 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { OptionComponent } from '../option/option.component';
+import { OptionComponent } from './components/option.component';
 
 /**
  * UI Autocomplete component

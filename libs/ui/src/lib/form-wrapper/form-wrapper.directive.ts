@@ -38,8 +38,8 @@ export class FormWrapperDirective
   @ContentChildren(PrefixDirective)
   private allPrefixDirectives: QueryList<PrefixDirective> = new QueryList();
 
-  @ContentChild(AutocompleteComponent, { read: ElementRef })
-  private autocompleteContent!: ElementRef;
+  @ContentChild(AutocompleteComponent)
+  private autocompleteContent!: AutocompleteComponent;
   @ContentChild(SelectMenuComponent, { read: ElementRef })
   private currentSelectElement!: ElementRef;
   @ContentChild(TextareaComponent, { read: ElementRef })
@@ -329,10 +329,6 @@ export class FormWrapperDirective
     }
 
     if (this.autocompleteContent) {
-      this.renderer.removeClass(
-        this.autocompleteContent.nativeElement.querySelector('div'),
-        'relative'
-      );
       this.renderer.addClass(this.elementRef.nativeElement, 'relative');
     }
 

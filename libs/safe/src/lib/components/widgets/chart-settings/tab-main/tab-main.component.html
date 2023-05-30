@@ -7,13 +7,15 @@
   <ng-container formGroupName="chart">
     <div uiFormFieldDirective>
       <label>{{ 'components.widget.settings.chart.type' | translate }}</label>
-      <ng-template #chartTemplate let-type="type">
-        <img class="chart-icon" [src]="type.icon" />{{ type.name | uppercase }}
+      <ng-template #chartTemplate let-type>
+        <img class="chart-icon" [src]="type?.icon" />{{
+          type?.name | uppercase
+        }}
       </ng-template>
       <ui-select-menu
         [customTemplate]="{
           template: chartTemplate,
-          context: formGroup.get('type')?.value
+          context: { $implicit: selectedChartType }
         }"
         formControlName="type"
       >

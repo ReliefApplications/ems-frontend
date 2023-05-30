@@ -4,8 +4,9 @@
   [attr.data-selected]="selected"
   [attr.data-is-group]="isGroup"
   [ngClass]="{
-    'bg-primary-200': !isGroup && selected,
-    'cursor-pointer hover:bg-primary-100 flex text-gray-900': !isGroup,
+    'bg-primary-300 text-white': !isGroup && selected,
+    'cursor-pointer hover:bg-primary-200 hover:text-white gap-2 flex items-center text-gray-900':
+      !isGroup,
     'text-gray-500 pb-2': isGroup
   }"
   class="px-2 py-1 relative pl-2 w-full justify-between"

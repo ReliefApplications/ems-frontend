@@ -11,7 +11,6 @@ import { AvatarGroupModule } from './avatar-group/avatar-group.module';
 import { ToggleModule } from './toggle/toggle.module';
 import { DividerModule } from './divider/divider.module';
 import { AutocompleteModule } from './autocomplete/autocomplete.module';
-import { OptionModule } from './option/option.module';
 import { SelectMenuModule } from './select-menu/select-menu.module';
 import { SelectOptionModule } from './select-menu/components/select-option.module';
 import { ExpansionPanelModule } from './expansion-panel/expansion-panel.module';
@@ -46,7 +45,6 @@ import { GraphQLSelectModule } from './graphql-select/graphql-select.module';
     ToggleModule,
     DividerModule,
     AutocompleteModule,
-    OptionModule,
     SelectMenuModule,
     SelectOptionModule,
     ExpansionPanelModule,

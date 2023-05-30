@@ -25,7 +25,7 @@ import {
   merge,
   takeUntil,
 } from 'rxjs';
-import { OptionComponent } from '../option/option.component';
+import { OptionComponent } from './components/option.component';
 import { NgControl } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
@@ -49,12 +49,13 @@ export class AutocompleteDirective
   @Output() closed: EventEmitter<void> = new EventEmitter();
   @Output() optionSelected: EventEmitter<any> = new EventEmitter();
 
+  public overlayRef!: OverlayRef;
+
   private inputElement!: HTMLInputElement;
   private selectedOption!: any;
   private inputEventListener!: any;
   private destroy$ = new Subject<void>();
   private control!: NgControl;
-  private overlayRef!: OverlayRef;
   private autocompleteClosingActionsSubscription!: Subscription;
   private selectOptionListener!: any;
 
@@ -197,9 +198,11 @@ export class AutocompleteDirective
       const childOptions = option.options.toArray();
       if (checkValue.toLowerCase().includes(searchText.toLowerCase())) {
         option.display = true;
-        childOptions.forEach((option) => (option.display = true));
+        childOptions.forEach(
+          (option: OptionComponent) => (option.display = true)
+        );
       } else {
-        if (childOptions.every((option) => !option.display)) {
+        if (childOptions.every((option: OptionComponent) => !option.display)) {
           option.display = false;
         } else {
           option.display = true;

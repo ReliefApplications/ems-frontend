@@ -5,7 +5,6 @@ import { IconModule } from '../icon/icon.module';
 import { SpinnerModule } from '../spinner/spinner.module';
 import { SelectMenuModule } from '../select-menu/select-menu.module';
 import { AutocompleteModule } from '../autocomplete/autocomplete.module';
-import { OptionModule } from '../option/option.module';
 
 export default {
   title: 'Form Wrapper',
@@ -18,7 +17,6 @@ export default {
         SpinnerModule,
         SelectMenuModule,
         AutocompleteModule,
-        OptionModule,
       ],
     }),
   ],
