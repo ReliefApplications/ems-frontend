@@ -91,6 +91,7 @@ export class MapComponent
   // === MARKERS ===
   private baseTree!: L.Control.Layers.TreeObject;
   private layersTree: L.Control.Layers.TreeObject[] = [];
+  private layerControlButtons: any;
   private layerControl: any;
 
   // === Controls ===
@@ -308,6 +309,9 @@ export class MapComponent
       }
     }
 
+    // Close layers/bookmarks menu
+    document.getElementById('layer-control-button-close')?.click();
+
     // Get layers
     const promises: Promise<{
       basemaps?: L.Control.Layers.TreeObject[];
@@ -399,6 +403,10 @@ export class MapComponent
     if (controls.layer) {
       if (this.layerControl) {
         this.layerControl.addTo(this.map);
+        this.map
+          .getContainer()
+          .querySelector('.leaflet-control-layers')
+          ?.classList.add('hidden');
       }
     } else {
       if (this.layerControl) {
@@ -422,7 +430,11 @@ export class MapComponent
     basemaps: L.Control.Layers.TreeObject[],
     layers: L.Control.Layers.TreeObject[]
   ) {
-    this.mapControlsService.getLayerControl(this.map);
+    if (!this.layerControlButtons || !this.layerControlButtons._map) {
+      this.layerControlButtons = this.mapControlsService.getLayerControl(
+        this.map
+      );
+    }
     this.baseTree = {
       label: 'Base Maps',
       children: basemaps,
@@ -552,14 +564,28 @@ export class MapComponent
       drawLayer(layers);
     }
 
-    if (this.layerControl && this.extractSettings().controls.layer) {
-      this.map.removeControl(this.layerControl);
-    }
-
-    this.layerControl = L.control.layers.tree(this.baseTree, layers as any);
-
     if (this.extractSettings().controls.layer) {
-      this.layerControl.addTo(this.map);
+      // this.layerControl.addTo(this.map);
+      if (this.layerControl && this.extractSettings().controls.layer) {
+        if (this.extractSettings().controls.layer) {
+          this.map.removeControl(this.layerControl);
+        }
+        this.layerControl.setBaseTree(this.baseTree);
+        this.layerControl.setOverlayTree(layers as any);
+      } else {
+        this.layerControl = L.control.layers.tree(
+          this.baseTree,
+          layers as any,
+          { collapsed: false }
+        );
+      }
+      if (this.extractSettings().controls.layer) {
+        this.layerControl.addTo(this.map);
+      }
+      this.map
+        .getContainer()
+        .querySelector('.leaflet-control-layers')
+        ?.classList.add('hidden');
     }
   }
 
