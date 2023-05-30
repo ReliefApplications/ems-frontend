@@ -8,8 +8,8 @@ import * as SurveyCreator from 'survey-creator';
 import { EmbeddedViewRef } from '@angular/core';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Question, QuestionText } from '../types';
-import { SafeIconComponent } from '../../components/ui/icon/icon.component';
 import { ButtonComponent } from '@oort-front/ui';
+import { IconComponent } from 'libs/ui/src/lib/icon/icon.component';
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 
@@ -143,14 +143,14 @@ export const init = (Survey: any, domService: DomService): void => {
             );
 
             const icon = domService.appendComponentToBody(
-              SafeIconComponent,
+              IconComponent,
               button
             );
 
             // add the button to the DOM
             el.parentElement?.appendChild(button);
 
-            const iconInstance: SafeIconComponent = icon.instance;
+            const iconInstance: IconComponent = icon.instance;
             iconInstance.icon = 'close';
             iconInstance.variant = 'grey';
 

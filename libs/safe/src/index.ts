@@ -100,7 +100,6 @@ export * from './lib/components/grid-layout/edit-layout-modal/public-api';
 // === UI ===
 export * from './lib/components/ui/aggregation-builder/public-api';
 export * from './lib/components/ui/tagbox/public-api';
-export * from './lib/components/ui/icon/public-api';
 
 // === VIEWS ===
 export * from './lib/views/public-api';
