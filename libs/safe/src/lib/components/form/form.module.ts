@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TabsModule } from '@oort-front/ui';
+import { IconModule, TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeFormComponent } from './form.component';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
-import { SafeIconModule } from '../ui/icon/icon.module';
 import { ButtonModule } from '@oort-front/ui';
 
 /**
@@ -17,7 +16,7 @@ import { ButtonModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     TabsModule,
-    SafeIconModule,
+    IconModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,

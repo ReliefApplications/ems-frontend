@@ -12,9 +12,8 @@ import {
   ButtonModule,
   TooltipModule,
   FormWrapperModule,
+  IconModule,
 } from '@oort-front/ui';
-// @TODO: Remove SafeIconModule import after ui-icon is being used in the app
-import { SafeIconModule } from '../ui/icon/icon.module';
 
 /** Cron expression control module. */
 @NgModule({
@@ -28,7 +27,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
     MatFormFieldModule,
     MatInputModule,
     DialogModule,
-    SafeIconModule,
+    IconModule,
     TooltipModule,
     ButtonModule,
     AlertModule,

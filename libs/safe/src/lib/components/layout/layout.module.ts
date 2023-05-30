@@ -11,14 +11,12 @@ import { FormsModule } from '@angular/forms';
 import { SafeSearchMenuModule } from '../search-menu/search-menu.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeDateModule } from '../../pipes/date/date.module';
-import { SafeIconModule } from '../ui/icon/icon.module';
 import {
   BreadcrumbsModule,
   DividerModule,
   TooltipModule,
   MenuModule,
   ButtonModule,
-  IconModule,
   SidenavContainerModule,
 } from '@oort-front/ui';
 
@@ -33,7 +31,6 @@ import {
     RouterModule,
     FormsModule,
     MatButtonModule,
-    IconModule,
     MenuModule,
     SidenavContainerModule,
     DragDropModule,
@@ -45,7 +42,6 @@ import {
     OverlayModule,
     SafeDateModule,
     BreadcrumbsModule,
-    SafeIconModule,
     ButtonModule,
     IconModule,
   ],

@@ -8,10 +8,9 @@ import {
   TooltipModule,
   ToggleModule,
   ButtonModule,
+  IconModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
-// @TODO: Remove SafeIconModule import after ui-icon is being used in the app
-import { SafeIconModule } from '../../icon/icon.module';
 
 /** Module for the export component */
 @NgModule({
@@ -24,7 +23,7 @@ import { SafeIconModule } from '../../icon/icon.module';
     ToggleModule,
     TranslateModule,
     RadioModule,
-    SafeIconModule,
+    IconModule,
     ButtonModule,
   ],
   exports: [SafeExportComponent],

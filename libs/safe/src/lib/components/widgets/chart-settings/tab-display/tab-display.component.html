@@ -29,10 +29,9 @@
               >
                 {{ position.value }}
                 <ng-container ngProjectAs="icon">
-                  <safe-icon
-                    [inline]="true"
+                  <ui-icon
                     icon="{{ position.icon }}"
-                  ></safe-icon>
+                  ></ui-icon>
                 </ng-container>
               </ui-select-option>
             </ui-select-menu>
@@ -81,10 +80,9 @@
                   >
                     {{ position.value }}
                     <ng-container ngProjectAs="icon">
-                      <safe-icon
-                        [inline]="true"
+                      <ui-icon
                         icon="{{ position.icon }}"
-                      ></safe-icon>
+                      ></ui-icon>
                     </ng-container>
                   </ui-select-option>
                 </ui-select-menu>
@@ -152,17 +150,16 @@
               <ng-container ngProjectAs="label">
                 {{
                   'components.widget.settings.chart.palette.enable' | translate
-                }}<safe-icon
+                }}<ui-icon
                   class="ml-2"
                   variant="grey"
-                  [inline]="true"
                   [size]="18"
                   icon="info_outline"
                   [uiTooltip]="
                     'components.widget.settings.chart.tooltip.palette'
                       | translate
                   "
-                ></safe-icon>
+                ></ui-icon>
               </ng-container>
             </ui-toggle>
             <safe-palette-control

@@ -193,16 +193,15 @@
             }}
           </ng-container>
           <ng-container ngProjectAs="icon">
-            <safe-icon
+            <ui-icon
               icon="info_outline"
               variant="grey"
-              [inline]="true"
               [size]="18"
               [uiTooltip]="
                 'components.widget.settings.grid.buttons.tooltip.attach'
                   | translate
               "
-            ></safe-icon>
+            ></ui-icon>
           </ng-container>
         </ui-checkbox>
       </ng-container>
@@ -267,16 +266,15 @@
           {{ 'components.channel.dropdown.select' | translate }}
         </ng-container>
         <ng-container ngProjectAs="icon">
-          <safe-icon
+          <ui-icon
             icon="info_outline"
             variant="grey"
             [size]="18"
-            [inline]="true"
             [uiTooltip]="
               'components.widget.settings.grid.buttons.tooltip.notify'
                 | translate
             "
-          ></safe-icon>
+          ></ui-icon>
         </ng-container>
       </ui-checkbox>
       <div *ngIf="formGroup.value.notify" class="sub-parameters">
@@ -307,17 +305,16 @@
           {{ 'common.publish' | translate }}
         </ng-container>
         <ng-container ngProjectAs="icon">
-          <safe-icon
+          <ui-icon
             icon="info_outline"
             variant="grey"
             [size]="18"
-            [inline]="true"
             [uiTooltip]="
               'components.widget.settings.grid.buttons.tooltip.publish'
                 | translate
             "
             matTooltipPosition="right"
-          ></safe-icon>
+          ></ui-icon>
         </ng-container>
       </ui-checkbox>
       <div *ngIf="formGroup.value.publish" class="sub-parameters">
@@ -356,7 +353,7 @@
               {{ list.name }}
             </ui-select-option>
           </ui-select-menu>
-          <safe-icon
+          <ui-icon
             uiSuffix
             icon="info_outline"
             class="cursor-pointer"
@@ -365,7 +362,7 @@
               'components.widget.settings.grid.buttons.tooltip.mail.selectDistributionList'
                 | translate
             "
-          ></safe-icon>
+          ></ui-icon>
           <ui-button
             uiSuffix
             [isIcon]="true"
@@ -391,7 +388,7 @@
               {{ template.name }}
             </ui-select-option>
           </ui-select-menu>
-          <safe-icon
+          <ui-icon
             icon="info_outline"
             class="cursor-pointer"
             variant="grey"
@@ -400,7 +397,7 @@
               'components.widget.settings.grid.buttons.tooltip.mail.selectTemplates'
                 | translate
             "
-          ></safe-icon>
+          ></ui-icon>
           <ui-button
             uiSuffix
             [isIcon]="true"

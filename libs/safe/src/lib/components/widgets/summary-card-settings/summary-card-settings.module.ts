@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
-import { SafeIconModule } from '../../ui/icon/icon.module';
 import { IconModule } from '@oort-front/ui';
 import { MatDividerModule } from '@angular/material/divider';
 import { SafeAddCardModule } from './add-card/add-card.module';
@@ -30,7 +29,6 @@ import {
     TranslateModule,
     LayoutModule,
     TooltipModule,
-    SafeIconModule,
     MenuModule,
     IconModule,
     MatDividerModule,

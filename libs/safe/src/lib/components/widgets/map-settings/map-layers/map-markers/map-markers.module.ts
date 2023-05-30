@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MapMarkersComponent } from './map-markers.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeIconModule } from '../../../../ui/icon/icon.module';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MapMarkerRuleModule } from '../map-marker-rule/map-marker-rule.module';
 import {
@@ -12,6 +11,7 @@ import {
   TableModule,
   AlertModule,
   SelectMenuModule,
+  IconModule,
 } from '@oort-front/ui';
 
 /**
@@ -24,7 +24,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    SafeIconModule,
+    IconModule,
     MatFormFieldModule,
     MapMarkerRuleModule,
     TooltipModule,

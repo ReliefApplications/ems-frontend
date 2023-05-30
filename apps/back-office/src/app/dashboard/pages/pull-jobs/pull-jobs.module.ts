@@ -6,7 +6,6 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 import { IconModule } from '@oort-front/ui';
 import {
   SafeSkeletonTableModule,
-  SafeIconModule,
   SafeCronParserModule,
   SafeDateModule,
 } from '@oort-front/safe';
@@ -33,7 +32,6 @@ import {
     PaginatorModule,
     TranslateModule,
     SafeSkeletonTableModule,
-    SafeIconModule,
     SafeCronParserModule,
     SafeDateModule,
     ButtonModule,

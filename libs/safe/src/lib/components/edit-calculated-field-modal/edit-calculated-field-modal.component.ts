@@ -19,8 +19,6 @@ import {
   TooltipModule,
   FormWrapperModule,
 } from '@oort-front/ui';
-// @TODO: Remove SafeIconModule import after ui-icon is being used in the app
-import { SafeIconModule } from '../ui/icon/icon.module';
 /**
  * Interface describing the structure of the data displayed in the dialog
  */
@@ -43,7 +41,6 @@ interface DialogData {
     DialogModule,
     EditorModule,
     ButtonModule,
-    SafeIconModule,
     TooltipModule,
   ],
   providers: [

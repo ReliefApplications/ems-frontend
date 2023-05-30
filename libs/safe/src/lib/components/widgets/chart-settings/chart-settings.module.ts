@@ -19,7 +19,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { SafeGridModule } from '../../../components/ui/core-grid/grid/grid.module';
-import { SafeIconModule } from '../../ui/icon/icon.module';
 import { SafePaletteControlModule } from '../../palette-control/palette-control.module';
 import { TabMainModule } from './tab-main/tab-main.module';
 import { TabDisplayModule } from './tab-display/tab-display.module';
@@ -44,7 +43,6 @@ import { TabDisplayModule } from './tab-display/tab-display.module';
     SafeAggregationBuilderModule,
     MatAutocompleteModule,
     SafeGridModule,
-    SafeIconModule,
     SafePaletteControlModule,
     TabMainModule,
     TabDisplayModule,

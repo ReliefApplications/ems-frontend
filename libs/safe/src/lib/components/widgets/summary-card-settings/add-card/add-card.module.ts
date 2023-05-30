@@ -5,7 +5,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SafeAddCardComponent } from './add-card.component';
 import { MatRippleModule } from '@angular/material/core';
 import { SafeCardTemplateComponent } from './card-template/card-template.component';
-import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeSkeletonModule } from '../../../../directives/skeleton/skeleton.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -17,7 +16,6 @@ import {
   IconModule,
   AlertModule,
 } from '@oort-front/ui';
-import { IconModule } from '@oort-front/ui';
 import { TooltipModule, RadioModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 
@@ -31,7 +29,6 @@ import { DialogModule } from '@oort-front/ui';
     MatDividerModule,
     DialogModule,
     MatRippleModule,
-    SafeIconModule,
     SafeSkeletonModule,
     IndicatorsModule,
     FormsModule,
@@ -39,7 +36,6 @@ import { DialogModule } from '@oort-front/ui';
     MatFormFieldModule,
     MatInputModule,
     SpinnerModule,
-    IconModule,
     FormWrapperModule,
     IconModule,
     RadioModule,

@@ -33,6 +33,7 @@ import {
   FormWrapperModule,
   DialogModule,
   GraphQLSelectModule,
+  IconModule,
 } from '@oort-front/ui';
 
 /**
@@ -62,6 +63,7 @@ const ITEMS_PER_PAGE = 10;
     DividerModule,
     GraphQLSelectModule,
     CronExpressionControlModule,
+    IconModule,
     RadioModule,
     ButtonModule,
     SelectMenuModule,

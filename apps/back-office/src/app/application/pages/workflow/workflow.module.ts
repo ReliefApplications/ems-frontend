@@ -5,7 +5,6 @@ import { WorkflowComponent } from './workflow.component';
 import {
   SafeAccessModule,
   SafeWorkflowStepperModule,
-  SafeIconModule,
   SafeSkeletonModule,
   SafeEditableTextModule,
 } from '@oort-front/safe';
@@ -38,7 +37,6 @@ import {
     IconModule,
     MenuModule,
     IndicatorsModule,
-    SafeIconModule,
     SafeSkeletonModule,
     SafeEditableTextModule,
     ButtonModule,

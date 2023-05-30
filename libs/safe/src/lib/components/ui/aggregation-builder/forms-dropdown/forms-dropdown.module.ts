@@ -6,8 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SafeIconModule } from '../../icon/icon.module';
-import { SpinnerModule, FormWrapperModule } from '@oort-front/ui';
+import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
 
 /**
  * SafeRecordSummaryModule is the module related to the selection of forms by a dropdown menu.
@@ -22,7 +21,7 @@ import { SpinnerModule, FormWrapperModule } from '@oort-front/ui';
     MatFormFieldModule,
     MatAutocompleteModule,
     MatInputModule,
-    SafeIconModule,
+    IconModule,
     SpinnerModule,
     FormWrapperModule,
   ],

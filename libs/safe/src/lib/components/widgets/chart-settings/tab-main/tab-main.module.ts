@@ -18,7 +18,6 @@ import { SafePaletteControlModule } from '../../../palette-control/palette-contr
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
 import { SafeAggregationBuilderModule } from '../../../ui/aggregation-builder/aggregation-builder.module';
 import { SafeGridModule } from '../../../ui/core-grid/grid/grid.module';
-import { SafeIconModule } from '../../../ui/icon/icon.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-mapping/series-mapping.module';
 import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
@@ -45,7 +44,6 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     SafeAggregationBuilderModule,
     MatAutocompleteModule,
     SafeGridModule,
-    SafeIconModule,
     SafePaletteControlModule,
     GraphQLSelectModule,
     SafeSeriesMappingModule,

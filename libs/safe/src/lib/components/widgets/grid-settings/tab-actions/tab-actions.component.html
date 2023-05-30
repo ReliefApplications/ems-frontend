@@ -10,15 +10,14 @@
       >
         <ng-container ngProjectAs="label">
           {{ action.text | translate
-          }}<safe-icon
+          }}<ui-icon
             *ngIf="action.tooltip"
             class="ml-2"
-            [inline]="true"
             variant="grey"
             icon="info_outline"
             [size]="18"
             [uiTooltip]="action.tooltip | translate"
-          ></safe-icon>
+          ></ui-icon>
         </ng-container>
       </ui-toggle>
     </div>

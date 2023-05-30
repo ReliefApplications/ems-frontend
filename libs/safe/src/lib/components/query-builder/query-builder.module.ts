@@ -23,7 +23,6 @@ import { SafeQueryStyleComponent } from './tab-style/query-style/query-style.com
 import { SafeQueryStylePreviewComponent } from './tab-style/query-style-preview/query-style-preview.component';
 import { SafeCheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
-import { SafeIconModule } from '../ui/icon/icon.module';
 import { SliderModule } from '@oort-front/ui';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.component';
@@ -71,7 +70,6 @@ import {
     TooltipModule,
     MatAutocompleteModule,
     MatButtonToggleModule,
-    SafeIconModule,
     TranslateModule,
     InputsModule,
     LabelModule,
