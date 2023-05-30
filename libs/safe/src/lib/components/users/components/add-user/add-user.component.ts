@@ -36,7 +36,7 @@ export class SafeAddUserComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  form: FormGroup = new FormGroup({});
+  form!: FormGroup;
   public filteredUsers?: Observable<User[]>;
   private users: User[] = [];
 

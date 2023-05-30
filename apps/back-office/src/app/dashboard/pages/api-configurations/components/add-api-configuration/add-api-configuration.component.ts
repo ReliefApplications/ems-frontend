@@ -18,7 +18,7 @@ import { apiValidator } from '../../../../../utils/nameValidation';
 })
 export class AddApiConfigurationComponent implements OnInit {
   // === REACTIVE FORM ===
-  apiForm: FormGroup = new FormGroup({});
+  apiForm!: FormGroup;
 
   /** @returns name for the API configuration */
   get name(): AbstractControl | null {

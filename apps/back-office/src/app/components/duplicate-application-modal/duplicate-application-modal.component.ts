@@ -42,7 +42,7 @@ import { SafeModalModule } from '@oort-front/safe';
 })
 export class DuplicateApplicationModalComponent implements OnInit {
   public currentApp: Application;
-  public duplicateForm: FormGroup = new FormGroup({});
+  public duplicateForm!: FormGroup;
 
   /**
    * Duplicate application component.

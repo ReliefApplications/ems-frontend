@@ -48,7 +48,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class AddChannelModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  channelForm: FormGroup = new FormGroup({});
+  channelForm!: FormGroup;
 
   /**
    * Add channel component

@@ -85,7 +85,7 @@ const DEFAULT_FIELDS = ['createdBy'];
 })
 export class EditPullJobModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public formGroup: FormGroup = new FormGroup({});
+  public formGroup!: FormGroup;
   isHardcoded = true;
 
   // === FORMS ===

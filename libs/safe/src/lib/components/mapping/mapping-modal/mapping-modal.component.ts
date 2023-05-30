@@ -48,7 +48,7 @@ interface MappingDialogData {
   styleUrls: ['./mapping-modal.component.scss'],
 })
 export class SafeMappingModalComponent implements OnInit {
-  public form: FormGroup = new FormGroup({});
+  public form!: FormGroup;
   public isNew = false;
   /**
    * Constructor of the SafeMappingModalComponent.

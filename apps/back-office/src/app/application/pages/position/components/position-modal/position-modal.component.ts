@@ -44,7 +44,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class PositionModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  positionForm: FormGroup = new FormGroup({});
+  positionForm!: FormGroup;
 
   /**
    * Add new application position component

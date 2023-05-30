@@ -54,7 +54,7 @@ export class AddPageComponent
   @ViewChild('formSelect') formSelect?: MatSelect;
 
   // === REACTIVE FORM ===
-  public pageForm: FormGroup = new FormGroup({});
+  public pageForm!: FormGroup;
   public step = 1;
 
   /**

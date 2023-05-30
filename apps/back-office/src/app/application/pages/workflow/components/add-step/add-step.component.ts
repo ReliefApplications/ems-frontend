@@ -53,7 +53,7 @@ export class AddStepComponent
   @ViewChild('formSelect') formSelect?: MatSelect;
 
   // === REACTIVE FORM ===
-  public stepForm: FormGroup = new FormGroup({});
+  public stepForm!: FormGroup;
   public stage = 1;
 
   /**

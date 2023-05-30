@@ -17,7 +17,7 @@ export class SafeAddRoleComponent implements OnInit {
   title: string;
 
   // === REACTIVE FORM ===
-  roleForm: FormGroup = new FormGroup({});
+  roleForm!: FormGroup;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is

@@ -61,7 +61,7 @@ export class SafeConvertModalComponent
   implements OnInit
 {
   // === REACTIVE FORM ===
-  convertForm: FormGroup = new FormGroup({});
+  convertForm!: FormGroup;
 
   // === DATA ===
   public form?: Form;

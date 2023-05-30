@@ -17,7 +17,7 @@ import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dia
 })
 export class AddReferenceDataComponent implements OnInit {
   // === REACTIVE FORM ===
-  referenceForm: FormGroup = new FormGroup({});
+  referenceForm!: FormGroup;
 
   /** @returns name of reference data */
   get name(): AbstractControl | null {

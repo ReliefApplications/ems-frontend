@@ -18,7 +18,7 @@ import {
 /** Modal content for the settings of the scheduler widgets. */
 export class SafeSchedulerSettingsComponent implements OnInit {
   // === REACTIVE FORM ===
-  tileForm: FormGroup = new FormGroup({});
+  tileForm!: FormGroup;
 
   // === WIDGET ===
   @Input() tile: any;

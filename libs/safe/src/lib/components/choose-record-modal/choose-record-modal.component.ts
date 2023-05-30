@@ -75,7 +75,7 @@ export class SafeChooseRecordModalComponent
   implements OnInit
 {
   // === REACTIVE FORM ===
-  chooseRecordForm: FormGroup = new FormGroup({});
+  chooseRecordForm!: FormGroup;
 
   // === GRID SETTINGS ===
   public settings: GridSettings = {};
