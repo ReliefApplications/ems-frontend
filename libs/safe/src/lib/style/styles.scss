@@ -67,7 +67,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff
+      // A700: #ffffff,
     ),
 );
 
@@ -124,12 +124,6 @@ $safe-theme: mat.define-light-theme(
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
-
-  .active-link {
-    .nav-icon {
-      color: mat.get-color-from-palette($primary);
-    }
-  }
 
   .accent {
     color: mat.get-color-from-palette($accent);
